@@ -11,12 +11,12 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Day, week, month and year views | Views | have | every site of this kind offers it | void-live-deploy/calendar/index.html:198 `d="vYear" aria-pressed="false">Year</button>` |
-| Make, edit and delete events | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:133 `ton type="button" id="newBtn">New event</button>` |
-| Repeating events | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:126 `th, week and day; events that repeat, remind and invite; everything stays on this device a` |
-| Reminders and notifications | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:138 `pe="button" id="allow" hidden>Allow notifications</button>` |
-| Several calendars with colours | Calendars | have | every site of this kind offers it | void-live-deploy/calendar/index.html:168 `type="submit" id="calAddBtn">Add calendar</button></form>` |
-| Subscribe to a calendar by address | Calendars | have | studied by hand: icloud.com offers this (https://www.icloud.com/calendar) | void-live-deploy/calendar/index.html:169 `ton type="submit" id="feedBtn">Subscribe</button></form>` |
-| Invite people and collect replies | Sharing | have | studied by hand: icloud.com offers this (https://www.icloud.com/calendar) | void-live-deploy/calendar/index.html:210 `o the invitees with the .ics">Invite by email</button>` |
-| Share a calendar | Sharing | have | every site of this kind offers it | void-live-deploy/calendar/index.html:209 `link that carries this event">Share link</button>` |
-| Time zones | Settings | have | every site of this kind offers it | void-live-deploy/calendar/index.html:166 `length="60" placeholder="e.g. America/New_York" style="flex:1 1 180px"></div>` |
+| Day, week, month and year views | Views | have | every site of this kind offers it | void-live-deploy/calendar/index.html:199 `d="vYear" aria-pressed="false">Year</button>` |
+| Make, edit and delete events | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:134 `ton type="button" id="newBtn">New event</button>` |
+| Repeating events | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:127 `th, week and day; events that repeat, remind and invite; everything stays on this device a` |
+| Reminders and notifications | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:139 `pe="button" id="allow" hidden>Allow notifications</button>` |
+| Several calendars with colours | Calendars | have | every site of this kind offers it | void-live-deploy/calendar/index.html:169 `type="submit" id="calAddBtn">Add calendar</button></form>` |
+| Subscribe to a calendar by address | Calendars | have | studied by hand: icloud.com offers this (https://www.icloud.com/calendar) | void-live-deploy/calendar/index.html:170 `ton type="submit" id="feedBtn">Subscribe</button></form>` |
+| Invite people and collect replies | Sharing | have | studied by hand: icloud.com offers this (https://www.icloud.com/calendar) | void-live-deploy/calendar/index.html:211 `o the invitees with the .ics">Invite by email</button>` |
+| Share a calendar | Sharing | have | every site of this kind offers it | void-live-deploy/calendar/index.html:210 `link that carries this event">Share link</button>` |
+| Time zones | Settings | have | every site of this kind offers it | void-live-deploy/calendar/index.html:167 `length="60" placeholder="e.g. America/New_York" style="flex:1 1 180px"></div>` |

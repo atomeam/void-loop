@@ -46,3 +46,11 @@ fetch('/progress/exam.json', { cache: 'no-cache' }).then((r) => r.json()).then((
     list.appendChild(li);
   }
 }).catch(() => { const sum = document.getElementById('fixed'); if (sum) sum.textContent = 'The fixed asks did not load.'; });
+fetch('/progress/nightly.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+  const main = document.querySelector('main'); if (!main) return;
+  const h = document.createElement('h2'); h.textContent = 'Last night';
+  const p = document.createElement('p'); p.className = 'note'; p.id = 'night';
+  if (!j || !j.share) p.textContent = 'No nightly note yet.';
+  else p.textContent = String(j.at || '').slice(0, 10) + ': Verse\'s loop authored ' + (j.share.share == null ? 'no measured share of' : j.share.share + '% of') + ' merged pulls against outside agents. Next: ' + ((j.pick && j.pick.why) || 'nothing picked') + '.';
+  main.append(h, p);
+}).catch(() => {});

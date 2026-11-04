@@ -48,6 +48,7 @@ import * as FP from '../../lib/free-pics.js';
 import { edgeCache, edgeGate, buildId, edgeKeyUrl, edgeGet, edgePut, edgeTtl, marked, storable, HIT, MISS, BYPASS, REFRESH } from '../../lib/answer-edge.js';
 import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE, noteReading, setupFacts, noteFinish } from '../../lib/note-ask.js';
 import { telemetryOf } from '../../lib/telemetry.js';
+import { planOf, runBot, routeFree, freeLlm, loadRegistry } from '../../lib/answer-free.js';
 import { askWords, grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
@@ -455,6 +456,10 @@ async function answerPost({ request, env, waitUntil }, edge = { cache: null, mar
   const self = isSelfAsk(ask) && !isPaste(ask) || isOwnCardNote(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
   // what this person told Verse (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
+  // free-resource routing (lib/answer-free.js): an exact, computable ask goes to the live Verse bot whose job it is, before any cache or model;
+  // a research ask goes to a free public API (OpenAlex) below, after the rate limit; everything else stays with the free Workers AI model
+  const plan = self || told ? null : planOf(ask);
+  if (plan && plan.kind === 'bot') { const b = runBot(plan); if (b) return Response.json({ answer: b.answer, sources: [], at: new Date().toISOString(), route: 'bot', source: 'bot:' + b.bot.id, bot: b.bot }); }
   // the edge cache first, for an allow-listed ask only (lib/answer-edge.js edgeGate: no bearer, cookie, key or extra field, not personal, not
   // about Verse, not a paste); the key carries this deploy's build id, so a deploy never reads the last one's copies. A hit is the whole reply.
   let edgeUrl = null, edgeKind = null;
@@ -471,9 +476,10 @@ async function answerPost({ request, env, waitUntil }, edge = { cache: null, mar
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     // an answer cached before sources were filtered is filtered on the way out (lib/cite.js)
     // a cached answer that cites a caveat or a notation was written before lib/answer-honesty.js checked them: it is answered again, not served
-    if (hit && !isNoAnswer(hit.answer) && !citesUnbacked(hit.answer) && !talksLimits(hit.answer)) { const c = keepCited(dropFiller(dropUnbackedActs(hit.answer)) || hit.answer, JSON.parse(hit.sources)), out = { answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true }; if (edgeKeep) edgeKeep(out, hit.at); return Response.json(out); } // a refusal cached before this check is not served again
+    if (hit && !isNoAnswer(hit.answer) && !citesUnbacked(hit.answer) && !talksLimits(hit.answer)) { const c = keepCited(dropFiller(dropUnbackedActs(hit.answer)) || hit.answer, JSON.parse(hit.sources)), out = { answer: c.answer, sources: linked(c.sources), at: hit.at, cached: true, source: 'cache:d1' }; if (edgeKeep) edgeKeep(out, hit.at); return Response.json(out); } // a refusal cached before this check is not served again
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
+  if (plan && plan.kind === 'api') { const r = await routeFree(ask, { env, registry: await loadRegistry(env, request.url) }).catch(() => null); if (r) return Response.json(r); } // out, failed or empty: the model answers
 
   if (modelsOn(env)) return modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told, edgeKeep);
   if (self) {
@@ -532,6 +538,8 @@ export const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
 
 // The model path (on unless VOID_ANSWER_MODELS=off).
+// which free resource (or paid model) wrote a model answer, by the names resources/free.json uses
+const sourceOf = (model) => model === MODEL ? 'workers-ai-chat' : model === ANSWER_FALLBACK ? 'workers-ai-chat:fallback' : /^free:/.test(String(model)) ? model : model ? 'paid' : 'none';
 async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told = null, edgeKeep = null) {
   const later = (p) => { try { if (waitUntil) waitUntil(p); } catch (_) {} return p; };
   const origin = new URL(request.url).origin;
@@ -622,8 +630,11 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     } catch (e) {
       // the free allowance ran out (or Gemma is down): the free ceiling isn't a stop, but paying still needs both conditions
       later(recordShortfall(env, 'answer', String(e && e.message) === 'empty' ? 'empty' : reasonOf(e)));
+      // the other free LLM tiers Atom has keyed (resources/free.json via lib/free-router.js: per-provider daily share, quota failover)
+      const alt = await freeLlm(messages, { env, registry: await loadRegistry(env, request.url) }).catch(() => null);
+      if (alt) { const a2 = scrubOut(redact(noThink(String(alt.answer).trim())), env); if (a2) { answer = a2; model = alt.source; outcome += '; default busy, ' + alt.source; } }
       // the second free try: the other free model (lib/models.js ANSWER_FALLBACK), before anything paid or the open web
-      try { const r = await within(env.AI.run(ANSWER_FALLBACK, { messages, ...ANSWER_RUN }), STRONG_TIMEOUT_MS); const second = scrubOut(redact(String(pick(r)).trim()), env); if (second) { answer = second; model = ANSWER_FALLBACK; outcome += '; default busy, second free model'; } } catch (_) { /* both free models out: on to paid, then the web */ }
+      if (!answer) try { const r = await within(env.AI.run(ANSWER_FALLBACK, { messages, ...ANSWER_RUN }), STRONG_TIMEOUT_MS); const second = scrubOut(redact(String(pick(r)).trim()), env); if (second) { answer = second; model = ANSWER_FALLBACK; outcome += '; default busy, second free model'; } } catch (_) { /* both free models out: on to paid, then the web */ }
       const access = answer ? null : await paidAccess(env);
       const paid = answer ? answer : access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
@@ -632,7 +643,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
         log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });
         if (own) keepCard(web);
-        return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
+        return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, source: self ? 'self' : told ? 'told' : 'open-web:wikipedia', ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
       }
       if (!answer) { answer = paid; model = access.model; outcome += '; default busy, paid from earnings'; }
     }
@@ -677,7 +688,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // a real place, animal, event or work of art gets a real, licensed picture with its credit (lib/free-pics.js), searched by the fetched source's own title, never the visitor's words;
   // a fictional character or a person keeps Verse's own drawing or neutral plate. Bounded: one picture, a few seconds, and the answer never waits longer.
   const pic = lead && lead.desc ? await picFor(env, lead) : null;
-  const out = { answer, sources: linked(pub), at, route: route.kind, ...nearOut, ...(pic ? { pic } : {}), ...(guess ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) };
+  const out = { answer, sources: linked(pub), at, route: route.kind, source: sourceOf(model), ...nearOut, ...(pic ? { pic } : {}), ...(guess ? { fuzzy: true } : lead ? { name: lead.name, ...(lead.desc ? { desc: lead.desc } : {}), ...(lead.series ? { series: lead.series } : {}) } : {}), ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) };
   // the edge copy goes where the D1 row goes, and only for a free model's answer (a paid escalation is never served again for free, lib/answer-edge.js)
   if (edgeKeep && !masked && !self && !told && storable(out, { paid: model !== MODEL && model !== ANSWER_FALLBACK })) edgeKeep(out, at);
   return Response.json(out);
