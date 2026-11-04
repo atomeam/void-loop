@@ -27,18 +27,35 @@ function parse(text) {
   return null;
 }
 
+// greetings a visitor asks every day, drawn at once so a slow or refused translator still answers (Google's free endpoint answers 429 in bursts)
+const POCKET = {
+  es: { hello: 'Hola', 'thank you': 'Gracias', thanks: 'Gracias', 'good morning': 'Buenos días', please: 'Por favor', yes: 'Sí', no: 'No', goodbye: 'Adiós' },
+  fr: { hello: 'Bonjour', 'thank you': 'Merci', thanks: 'Merci', 'good morning': 'Bonjour', please: "S'il vous plaît", yes: 'Oui', no: 'Non', goodbye: 'Au revoir' },
+  de: { hello: 'Hallo', 'thank you': 'Danke', thanks: 'Danke', 'good morning': 'Guten Morgen', please: 'Bitte', yes: 'Ja', no: 'Nein' },
+  it: { hello: 'Ciao', 'thank you': 'Grazie', 'good morning': 'Buongiorno' },
+  pt: { hello: 'Olá', 'thank you': 'Obrigado', 'good morning': 'Bom dia' },
+  ja: { hello: 'こんにちは', 'thank you': 'ありがとう' },
+};
+export function pocketOf(q, toName) {
+  const code = LANGS[String(toName || '').toLowerCase()];
+  const table = code && POCKET[code];
+  return table ? table[String(q || '').trim().toLowerCase()] || '' : '';
+}
 async function run(text, api) {
   const { showPage, esc } = api;
   const p = parse(text);
   if (!p) return 'none';
   const to = LANGS[p.to.toLowerCase()], from = p.from ? LANGS[p.from.toLowerCase()] : 'en';
-  const el = showPage((pg) => { pg.innerHTML = '<h2>' + esc(p.q) + '</h2><div class="sub">→ ' + esc(p.to) + ' …</div>'; });
+  const known = pocketOf(p.q, p.to);
+  const el = showPage((pg) => { pg.innerHTML = known
+    ? '<div class="sub">' + esc(p.q) + ' · ' + esc(p.to) + '</div><div class="tr-out" style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(known) + '</div>'
+    : '<h2>' + esc(p.q) + '</h2><div class="sub">→ ' + esc(p.to) + ' …</div>'; });
   try {
     let out = '', via = 'google';
     try {
-      const g = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=' + (p.from ? from : 'auto') + '&tl=' + to + '&q=' + encodeURIComponent(p.q)).then((x) => x.json());
+      const g = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=' + (p.from ? from : 'auto') + '&tl=' + to + '&q=' + encodeURIComponent(p.q)).then((x) => { if (!x.ok) throw 0; return x.json(); });
       out = (g[0] || []).map((s) => s[0]).join('');
-    } catch (_) {}
+    } catch (_) { out = ''; }
     if (!out) {
       const r = await fetch('https://api.mymemory.translated.net/get?mt=1&q=' + encodeURIComponent(p.q) + '&langpair=' + from + '|' + to).then((x) => x.json());
       out = r && r.responseStatus === 200 && r.responseData && r.responseData.translatedText; via = 'mymemory';
@@ -48,13 +65,15 @@ async function run(text, api) {
         out = best ? String(best.translation).trim() : '';
       }
     }
+    if (!out && known) { out = known; via = 'pocket'; }
     if (!api._pageStill(el)) return 'translate';
     if (!out) throw 0;
     el.innerHTML = '<div class="sub">' + esc(p.q) + ' · ' + esc(p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase()) + '</div>'
       + '<div class="tr-out" style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(out) + '</div>'
       + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button> <a class="tr-full" href="/translate/?q=' + encodeURIComponent(p.q) + '&to=' + encodeURIComponent(to) + '" style="margin-left:8px">open the translator (100 languages, listen, speak, camera)</a>'
-      + '<div class="src">Source: ' + (via === 'google' ? '<a href="https://translate.google.com/" target="_blank" rel="noopener">Google Translate</a>' : '<a href="https://mymemory.translated.net/" target="_blank" rel="noopener">MyMemory</a>') + '</div>';
-    bandMini(api, el, 'bubbles', { from: p.q, to: out, lang: p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase() }, '3D speech bubbles: ' + p.q + ' and ' + out); // owner, 2026-10-25: "3d figure if possible"
+      + '<div class="src">Source: ' + (via === 'pocket' ? 'a kept greeting, shown before the translator answers' : via === 'google' ? '<a href="https://translate.google.com/" target="_blank" rel="noopener">Google Translate</a>' : '<a href="https://mymemory.translated.net/" target="_blank" rel="noopener">MyMemory</a>') + '</div>';
+    let light = false; try { const c = navigator.connection; light = !!(c && (c.saveData || /2g/.test(c.effectiveType || ''))) || matchMedia('(max-width: 700px)').matches; } catch (_) {}
+    if (!light) bandMini(api, el, 'bubbles', { from: p.q, to: out, lang: p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase() }, '3D speech bubbles: ' + p.q + ' and ' + out); // a wide, fast screen gets the figure; a phone keeps the words
     const btn = el.querySelector('.tr-copy');
     if (btn) btn.addEventListener('click', async () => {
       let ok = false;

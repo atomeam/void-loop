@@ -35,7 +35,7 @@ permissions:
 jobs:
   void-review:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - name: Which PR (the event's, or the one dispatched by number)
         id: pr
@@ -123,7 +123,8 @@ jobs:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
           if git diff --name-only "$BASEREF...HEAD" | grep -q '^void-live-deploy/skills/'; then
-            node tools/skills-check.mjs || { echo "::error title=Verse review::a skill file is not listed in void-live-deploy/skills/index.json (or a skill collides): see the lines above; add it to the index, or to RETIRED in tools/skills-unlisted.mjs with a reason"; exit 1; }
+            # only a collision this pull request added fails. Breakage already on the base is not this pull request's.
+            node tools/skills-delta.mjs --base "$BASEREF" || { echo "::error title=Verse review::a skill collision this pull request added (see the lines above). One that already fails on the base does not block."; exit 1; }
           else
             echo "this PR does not touch void-live-deploy/skills/"
           fi

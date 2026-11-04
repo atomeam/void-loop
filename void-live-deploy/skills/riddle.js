@@ -4,7 +4,7 @@
  * "tell me a riddle", "riddle", "another riddle".
  */
 export function isRiddle(text) {
-  return /^(?:please\s+)?(?:another\s+|(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another)\s+)?)?riddle(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:tell|give|show)\s+(?:me\s+)?)?(?:a|an|another)?\s*riddle(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 const RIDDLES = [
@@ -41,7 +41,7 @@ export default {
   match(lower, text) { return isRiddle(text); },
   run,
   suite() {
-    const ok = isRiddle('riddle') && isRiddle('tell me a riddle') && !isRiddle('what is a riddle');
+    const ok = isRiddle('riddle') && isRiddle('tell me a riddle') && isRiddle('give me a riddle') && isRiddle('another riddle') && !isRiddle('what is a riddle') && !isRiddle('riddle me this');
     return { ok, got: 'match works' };
   }
 };

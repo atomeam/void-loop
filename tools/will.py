@@ -162,6 +162,20 @@ def gather(cap=60, with_done=False):
             cands.append({"kind": "fix myself", "title": f"answer \"{str(m)[:120]}\" right", "why": f"my benchmark on main got it wrong ({str(bm.get('at', ''))[:10]})", "weight": 14, "source": "my benchmark"})
     except Exception as e:
         print("bench misses:", e, file=sys.stderr)
+    # a visitor ask the live pass got wrong (tools/visitor-pass.mjs, written into the site tester's log). Visible: weight sits with the
+    # benchmark's own misses, and the conductor also queues each one as a visit: job.
+    try:
+        _log = json.loads((ROOT / "tools" / "site-test.log.json").read_text(encoding="utf-8"))
+        _vis = next((x for x in reversed(_log) if isinstance(x, dict) and isinstance((x.get("visitor") or {}).get("failed"), list) and x["visitor"]["failed"]), None)
+        if _vis:
+            for f in _vis["visitor"]["failed"][:8]:
+                ask = str(f.get("ask") or "").strip()
+                if len(ask) < 4:
+                    continue
+                why = "; ".join(str(w) for w in (f.get("why") or [])[:3]) or "the visitor pass"
+                cands.append({"kind": "fix myself", "title": f"answer \"{ask[:120]}\" for a visitor", "why": f"the visitor pass on the live site: {why}"[:240], "weight": 34, "source": "visitor pass"})
+    except Exception as e:
+        print("visitor pass:", e, file=sys.stderr)
 
     # 4. everything else on Victus the ingest marked as a capability
     try:

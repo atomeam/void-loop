@@ -2,7 +2,7 @@
 // incident skill answers "what broke lately" from the list (skills/incident.js latelyOf, incidentsHtml).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseFails, incidentOf, addIncident, touchedBy } from './incident-log.mjs';
+import { parseFails, incidentOf, addIncident, touchedBy, mergeEntries, changedEntries } from './incident-log.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -32,6 +32,15 @@ test('incident-log: a second record for the same commit (another shard) adds its
   const one = addIncident([], { at: '1', sha: 'ccc', checks: ['shard 1 check'] });
   const two = addIncident(one, { at: '2', sha: 'ccc', checks: ['shard 3 check', 'shard 1 check'] });
   assert.equal(two.length, 1); assert.deepEqual(two[0].checks, ['shard 1 check', 'shard 3 check']);
+});
+
+test('one file per suite run overlays the legacy list, and an unchanged sha is not written again', () => {
+  const base = [{ at: '1', sha: 'aaa', checks: ['old'] }, { at: '2', sha: 'bbb', checks: ['keep'] }];
+  const merged = mergeEntries(base, [{ at: '3', sha: 'aaa', checks: ['old', 'new'] }]);
+  assert.equal(merged[0].sha, 'aaa');
+  assert.deepEqual(merged.find((i) => i.sha === 'aaa').checks, ['old', 'new']);
+  assert.equal(merged.find((i) => i.sha === 'bbb').checks[0], 'keep');
+  assert.deepEqual(changedEntries(base, merged).map((i) => i.sha), ['aaa']);
 });
 
 test('incident skill: "what broke lately" asks open the list; the brief asks and ordinary words do not', () => {

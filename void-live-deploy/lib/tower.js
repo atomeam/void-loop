@@ -13,6 +13,7 @@
 // stay private; this public side names generic aspects only and counts. Pure.
 
 import { SELF_SITES } from './self-sites.js';
+import { topicOf } from './tower-topic.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
@@ -313,7 +314,24 @@ export function gate(floor, ev = {}) {
   const all = checklist(floor, ev), passed = all.filter((a) => passes(a, ev[a]));
   const regressed = all.filter((a) => ev[a] && ev[a].verdict === 'worse' && ev[a].was && OK.has(ev[a].was));
   const incomplete = all.filter((a) => !passed.includes(a) && !(ev[a] && ev[a].verdict === 'worse') && (ev[a] ? (incompleteRow(ev[a]) || zeroRivalUnread(ev[a]) || barRow(ev[a]) || isJourney(a)) : isJourney(a)));
-  return { aspects: all, measured: all.some((a) => ev[a]), lost: all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten: passed.length === all.length, n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
+  const lost = all.filter((a) => ev[a] && ev[a].verdict === 'worse'), beaten = passed.length === all.length;
+  const bar = barOf(all, ev), better = all.filter((a) => passes(a, ev[a]) && ev[a] && ev[a].verdict === 'better');
+  // PASSED (owner, 2026-11-03): ahead or equal on everything measured, nothing behind, our own bar met, and better on at least one thing
+  const cleared = !beaten && passed.length > 0 && !lost.length && !regressed.length && bar.met && better.length > 0;
+  return { aspects: all, measured: all.some((a) => ev[a]), lost, beaten, cleared, bar, better, open: all.filter((a) => !ev[a] || incomplete.includes(a)), n: passed.length, m: all.length, left: all.filter((a) => !passed.includes(a)), regressed, incomplete };
+}
+// Two levels (owner, 2026-11-03: "the purpose of the tower is not to get stuck waiting for a grade or comparison, its to confidently outclass and
+// outperform and move on"; "moving on fast must still meet Verse's standard and then some"):
+//   PASSED     the Tower moves on: Verse is ahead or equal on every aspect measured so far, behind on none, meets Verse's own bar (BAR: fast,
+//              works on a phone, accessible, a correct answer on its main job) and is better on at least one thing. Aspects not measured yet
+//              never block; they stay open and are measured and fixed in the background until the site flips to CONQUERED.
+//   CONQUERED  100%: every aspect on the checklist passes with evidence (the old "beaten"/"surpassed").
+// Speed comes from never waiting, not from lowering the bar: a bar aspect that is not measured is not met.
+export const BAR = Object.freeze(['speed', 'mobile', 'accessibility', 'accuracy']);
+/** Verse's own bar on a floor's evidence: { met, missing } (missing: bar aspects not measured or not passing). Pure. */
+export function barOf(all, ev = {}) {
+  const missing = BAR.filter((a) => !passes(a, ev[a]));
+  return { met: !missing.length, missing };
 }
 /** evidence rows that pass a floor's whole checklist the way the gate demands (journeys with steps and negative controls): for tests and
  *  fixtures only, never written to tower.evidence.json. Pure. */
@@ -334,7 +352,7 @@ export function frontierOf(frontier, floors = FLOORS) {
   for (const x of list) {
     const host = hostOf(x && (x.site || x.host)); if (!host || taken.has(host) || seen.has(host)) continue;
     const num = (v) => (v !== null && v !== '' && Number.isFinite(+v) ? +v : null);
-    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: num(x.hardness), controls: num(x.controls), bytes: num(x.bytes), ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
+    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: num(x.hardness), controls: num(x.controls), bytes: num(x.bytes), ...(x.blocked ? { blocked: String(x.blocked) } : {}), ...(x.title ? { title: String(x.title).slice(0, 160) } : {}) });
   }
   const h = (x) => (x.hardness === null ? 1e9 : x.hardness), sized = (x) => (x.controls !== null && x.bytes !== null ? 0 : 1), c = (x) => (sized(x) ? 0 : x.controls), by = (x) => (sized(x) ? 0 : x.bytes);
   return out.map((x, i) => [x, i]).sort((a, b) => sized(a[0]) - sized(b[0]) || c(a[0]) - c(b[0]) || by(a[0]) - by(b[0]) || h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
@@ -361,15 +379,23 @@ export function easeLine(f) {
   const bar = (f.barred || []).length;
   return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (bar ? ' (' + bar + ' of them not measured: the site turned the gate away, so only the default bar was scored)' : '') + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
 }
+/** a frontier site's Verse page: the one built for its host (LANE_PAGES), else the page that already does its job, by topic (lib/tower-topic.js;
+ *  owner, 2026-11-03: ndscalc.ru said "no Verse page yet" while /vat/ was live). { page, topic } or {}. Pure. */
+export function frontierPage(x) {
+  if (LANE_PAGES[x.host]) return { page: LANE_PAGES[x.host] };
+  const t = topicOf(x.title, x.host);
+  return t ? { page: t.page, topic: t.topic } : {};
+}
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
-export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null) {
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null, passedIds = null) {
+  const kept = new Set(passedIds || []); // tower.target.json `passed`: a site the Tower passed stays passed (a later loss files a fix, never a move back)
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
-  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(LANE_PAGES[x.host] ? { page: LANE_PAGES[x.host] } : {}), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
+  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...frontierPage(x), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), beaten: g.beaten && !f.held, cleared: !f.held && !g.beaten && (g.cleared || kept.has(f.id)), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   // the queue ranks on measured rows only (2026-10-29): a loss against the default bar (the site turned the gate away, barRow) stays a loss on the
@@ -393,19 +419,26 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // a site counted by tools/tower-size.mjs (controls and bytes) by its controls, then its bytes; then a site only weighed, by its weight; then an
   // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
   // came. Without it the old order stands.
-  const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
+  const pinned = (f) => (target && f.id === target && !f.held && !f.cleared ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
   const counted = (f) => !!f.size && rankableControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2), a row not rendered, a bot wall or a country picker is not counted
   const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
   const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
+  const queue = all.filter((f) => !f.beaten && !f.cleared).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), past = all.filter((f) => f.cleared), floors = won.concat(past, queue);
   // pinned: the target (tower.target.json) stands first because it is the target, not because it is the smallest, so the card says which
-  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten; });
-  return { floors, marker: won.length + 1, beaten: won.length, total: floors.length, open: true };
+  floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f.cleared ? 'passed' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten && !f.cleared; });
+  return { floors, marker: won.length + past.length + 1, beaten: won.length, passed: past.length, total: floors.length, open: true };
 }
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
 // a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
-export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (Verse ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed'; };
+export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (Verse ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed' + (t.passed ? ', ' + t.passed + ' passed' : ''); };
+/** a passed site in one line: "Passed ndscalc.ru (8/12, conquering in background)". Pure. */
+export const passedLine = (f) => 'Passed ' + f.site + ' (' + f.n + '/' + f.m + ', conquering in background)';
+/** the confident headline (owner, 2026-11-03: "Outclassed ndscalc.ru, now taking on X"): the latest site passed or conquered, then the target. Pure. */
+export const outclassLine = (t, lastId = null) => {
+  const done = t.floors.filter((f) => f.beaten || f.cleared), last = (lastId && done.find((f) => f.id === lastId)) || done[done.length - 1], cur = t.floors[t.marker - 1];
+  return (last ? 'Outclassed ' + last.site + (last.beaten ? ' (conquered, ' + last.m + '/' + last.m + ')' : ' (' + last.n + '/' + last.m + ', conquering in background)') + ', ' : '') + (cur ? 'now taking on ' + cur.site : 'the next site the scan finds is next');
+};
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
  *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */
-export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null];
+export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : null];

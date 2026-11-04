@@ -6,7 +6,8 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-67';
+import { towerArtSvg } from '../lib/tower-art.js';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine } from '../lib/tower.js?v=ladder-69';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -117,7 +118,9 @@ export const saveBySize = (on) => { try { const s = prefStore(); if (s) s.setIte
 const pageLang = () => { try { return (typeof document !== 'undefined' && document.documentElement.lang) || (typeof navigator !== 'undefined' && navigator.language) || 'en'; } catch (_) { return 'en'; } };
 /** the "By size" list: every site, smallest first, with its size and where it stands. Pure. */
 /** an entry's own Verse page as a link ("Verse's page /flights/"), or "no Verse page yet" when it has none. Pure. */
-export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '<span class="tw-page tw-nopage">no Verse page yet</span>');
+// a page's mode rides in its name (owner, 2026-11-03: ndscalc.ru is "Verse's page /calculator/ (VAT)"), so a mode of a combined page reads as that mode
+export const pageName = (page) => { const p = String(page || ''), m = (p.match(/[?&]mode=([a-z0-9-]+)/i) || [])[1]; return p.replace(/\?.*$/, '') + (m ? ' (' + (m.length <= 4 ? m.toUpperCase() : m) + ')' : ''); };
+export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' + esc(f.page) + '">Verse\'s page ' + esc(pageName(f.page)) + '</a>' : '<span class="tw-page tw-nopage">no Verse page yet</span>');
 export function sizeListHtml(t, esc, lang = 'en') {
   const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
@@ -171,7 +174,7 @@ export function chipsHtml(f, esc) {
 }
 /** the target at the top: its logo and name (a link to the site), its weight, and why it is the one. Pure. */
 export function heroHtml(f, esc) {
-  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">' + (f.pinned ? 'Now assimilating · the target until Verse surpasses it' : 'Now assimilating · the easiest site left') + '</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
+  return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">' + (f.pinned ? 'Now taking on · the target until Verse passes it' : 'Now taking on · the easiest site left') + '</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
     + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + whyLine(f) + '.') + '</p></div>';
 }
 /** the reason the target is the target, and only that: the line above says it is the target, the chips carry its weight and the matchup
@@ -198,7 +201,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
   const sizeTag = (f) => rk ? '<span class="tw-size" title="' + esc(w.rank) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>' : '';
   const plan = planOf(t, t.plan);
-  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(); // the newest conquest right under the current site
+  const cur = t.floors.find((f) => f.state === 'current'), won = t.floors.filter((f) => f.state === 'beaten').reverse(), passedRows = t.floors.filter((f) => f.state === 'passed').reverse(); // the newest conquest right under the current site
   // the current site's row is the matchup: one line per aspect with the verdict in a word and the measured numbers, then when and what is next
   // a surpassed site's row is a div, not a button, so a copied or saved card keeps it (lib/card-share.js leaves buttons out; owner, 2026-10-25: "theres no way to see the 24 surpassed")
   const row = (f) => (f.state === 'beaten' ? '<div class="tower-floor" role="button" tabindex="0" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="beaten">' : '<button class="tower-floor" data-id="' + esc(f.id) + '" data-floor="' + f.floor + '" data-state="' + f.state + '">')
@@ -214,18 +217,24 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + '<a href="/compare/?floor=' + esc(encodeURIComponent(f.id)) + '">side by side</a></div>';
   // the fight in words for a saved or copied card (lib/card-share.js leaves buttons out, and the aspect list is inside the floor's button):
   // hidden from sight and from screen readers, who have the list itself
-  const fight = cur ? 'Verse is ahead of ' + cur.site + ' on ' + cur.n + ' of ' + cur.m + ' aspects.' + (cur.left.length ? ' Still to pass: ' + cur.left.join(', ') + '.' : '') + (won.length ? ' Surpassed: ' + won.map((f) => f.site).join(', ') + '.' : '') : '';
+  const fight = cur ? 'Verse is ahead of ' + cur.site + ' on ' + cur.n + ' of ' + cur.m + ' aspects.' + (cur.lost.length ? ' Fixing first: ' + cur.lost.join(', ') + '.' : '') + (won.length ? ' Conquered: ' + won.map((f) => f.site).join(', ') + '.' : '') + (passedRows.length ? ' Passed: ' + passedRows.map((f) => f.site).join(', ') + '.' : '') : '';
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
   const lastRow = '<div class="tw-sortrow" data-share-skip style="display:flex;justify-content:space-between;align-items:center;gap:8px">' + (rk ? '<button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') : '') + '</div>';
   const empty = '<div class="tw-empty">Nothing surpassed yet. A site counts only when Verse is better than it on every aspect, checked head to head and by scripted journeys.</div>';
   return TW_CSS + GOOD_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-top"><h2 class="tw-head">Versus</h2></div>'
-    + '<div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? (cur.pinned ? ' · now assimilating: ' : ' · easiest site left: ') + cur.site : '')) + '</div>'
+    + '<div class="tw-outclass" style="text-align:center;font-weight:700;font-size:14px;margin:2px 0">' + esc(outclassLine(t)) + '</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (t.passed ? ' · ' + t.passed + ' passed' : '') + (cur ? (cur.pinned ? ' · now taking on: ' : ' · easiest site left: ') + cur.site : '')) + '</div>'
     + (cur && !on ? heroHtml(cur, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
+    // the card's picture (owner, 2026-11-03: "make the 3d tower on the card 2d but still update with each floor", "make the tower look like an
+    // epic card picture"): a flat SVG from the same floors, one lit floor per site surpassed and the one being fought glowing on top (lib/tower-art.js)
+    + (mini ? '' : '<div class="tw-art-wrap" data-share-skip style="margin:8px auto 4px;max-width:360px">' + towerArtSvg(miniFloors(t)) + '</div>')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
     + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) : '') + '</div>'
     + (on || !cur ? '' : actionsHtml(cur, esc)) + (on ? '' : nextHtml(t, esc))
-    + (on ? '' : '<div class="tw-won"><p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' + (won.length ? won.map((f) => row(f) + links(f)).join('') : empty) + '</div>')
+    // the surpassed list folded (owner, 2026-11-03: the card is a compact summary; "the history of each site should be with what each site taught me"):
+    // tap it for each site, its links and what it taught; the whole history, with dates, tries and ease, is /assimilated/ (tools/assimilated.mjs)
+    + (on || !passedRows.length ? '' : '<details class="tw-passed"><summary style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Passed (' + passedRows.length + ')</b> · moved on, conquering in the background</summary>' + passedRows.map((f) => '<div class="tw-passrow" style="margin:2px 0 2px 10px;font-size:13px">' + esc(passedLine(f)) + (f.behind && f.behind.length ? ' · fixing: ' + esc(f.behind.join(', ')) : '') + '</div>' + links(f)).join('') + '</details>')
+    + (on ? '' : '<details class="tw-won"><summary class="tw-wonhead" style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Conquered (' + won.length + ')</b> · each site and what it taught me</summary>' + (won.length ? won.map((f) => row(f) + links(f) + (learnedOf(f) ? '<div class="tw-taught" style="margin:-2px 0 8px 10px;font-size:12px;opacity:.85">' + esc(learnedOf(f)) + '</div>' : '')).join('') : empty) + '<div style="font-size:12px;margin:4px 0 0 10px"><a href="/assimilated/">The full history: every site, its dates, tries and lessons</a></div></details>')
     + takeHtml(t, esc) + lastRow
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
@@ -237,9 +246,9 @@ export function verseTake(t) {
   let now = '';
   if (cur) {
     const lead = cur.aspects.filter((a) => !cur.left.includes(a)), open = cur.left.filter((a) => !cur.lost.includes(a));
-    now = (cur.page ? 'My page for ' + cur.site + ' is a-to-mind.com' + cur.page.replace(/\?.*$/, '') + '. ' : 'I answer ' + cur.site + '\'s job on the stage; it has no page of mine yet. ')
-      + (lead.length ? 'I lead on ' + lead.join(', ') + '. ' : 'Nothing is measured in my favour yet. ')
-      + (cur.lost.length ? 'I lose on ' + cur.lost.join(', ') + ', so that comes first. ' : '') + (open.length ? 'Still to prove: ' + open.join(', ') + '.' : '')
+    now = (cur.page ? 'My page for ' + cur.site + ' is a-to-mind.com' + pageName(cur.page) + '. ' : 'I answer ' + cur.site + '\'s job on the stage; it has no page of mine yet. ')
+      + (lead.length ? 'I lead on ' + lead.join(', ') + '. ' : 'Measuring it head to head now; I move on the moment I lead on everything measured and meet my own bar. ')
+      + (cur.lost.length ? 'I lose on ' + cur.lost.join(', ') + ', so that comes first. ' : '') + (open.length ? 'Measuring in the background: ' + open.join(', ') + '.' : '')
       + (fatalityOf(cur) ? ' The edge I am building: ' + fatalityOf(cur) + '.' : '');
   }
   return { now, learned: won.map((f) => ({ site: f.site, text: learnedOf(f) || 'Verse\'s edge: ' + fatalityOf(f) })) };
@@ -289,7 +298,7 @@ async function run(text, api) {
     el.classList.add('tower-card');
     el.innerHTML = '<div class="tw-root"></div><div class="tw-live" data-share-skip aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div><div class="tw-updated" style="text-align:center;font-size:11px;opacity:.55;margin-top:6px"></div>';
     const root = el.querySelector('.tw-root'), live = el.querySelector('.tw-live'), stamp = el.querySelector('.tw-updated');
-    let bySizeOn = readBySize(), picked = 0, shown = false, mini = !!(api.stage && api.stage.miniature);
+    let bySizeOn = readBySize(), picked = 0, shown = false, mini = false; // the 2D picture now (lib/tower-art.js); the 3D one (skills/mini/tower.js) stays for the stage, unused here
     const miniKey = 'tower:' + Date.now().toString(36);
     const pick = (f) => { if (!f) return; picked = f.floor; const det = root.querySelector('.tower-detail'); if (det) det.textContent = detailText(f); };
     const draw = (flash) => {

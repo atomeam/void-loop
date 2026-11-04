@@ -40,11 +40,13 @@ export const ROUTES = Object.freeze({
   // a paid member's idea (lib/members.js); the lap holds it to add-only. The cap counts every run of the coder today, and the coder starts
   // about 144 a day (one a tick), so 30 shut members out by early morning UTC; lib/members.js limits each member, so the cap is one a tick.
   member: { wf: AGENT, input: 'job', claims: true, cap: 144 },
+  // a visitor ask that failed on the live site (tools/visitor-pass.mjs, filed by the conductor from the site tester's log)
+  visit: { wf: AGENT, input: 'job', claims: true, cap: 8 },
 });
 
 // what a kind of job is worth (AGENTS.md: Verse's own asks come first; STANDING.md and RULES.md 2026-10-26: Verse earns on its own, and the
 // tower never stops). A broken loop stops everything after it, so its repair outranks all.
-export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, 'store-gap': 90, member: 88, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
+export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, visit: 92, 'store-gap': 90, member: 88, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
 // what goes before any score: a broken loop's repair, then a paid member's idea (2026-10-30: with every free versus job aged to 91, a member's
 // pilot idea at 88 waited behind them tick after tick; a member paid for Verse to build it, so it waits behind nothing but a repair)
 export const FIRST = Object.freeze({ heal: 2, member: 1 });

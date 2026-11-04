@@ -78,7 +78,8 @@ export function adoptOrder(names, dir = ORDER_DIR) {
 // in OFF with why; nothing else can sit in skills/ unregistered.
 export const OFF = {
   map: 'the assimilation map, retired with the assimilation table in cleanup step 2 (domains/void.frontier.md); kept for salvage',
-  vat: 'the VAT card is another worker\'s; this ship does not register it',
+  'idea-clarify': 'an earlier draft of business-clarify (#2091), which answers the same asks; off the order so the two never fight',
+  vat: 'the VAT calculator page is another worker\'s (Versus /vat/). Off the routing order until that work lists the skill itself.',
 };
 const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
 /** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */
@@ -132,10 +133,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       let missing = [], loose = [];
       try { const r = ranksOf(); missing = JSON.parse(readFileSync(INDEX, 'utf8')).filter((n) => !(n in r)); loose = unregistered(readdirSync(skillsDir), (f) => readFileSync(resolve(skillsDir, f), 'utf8'), r); } catch (_) {}
       if (loose.length) { console.log('skills/' + loose.map((x) => x.file).join(', ') + ' is a skill with no order file: node tools/skills-index.mjs --adopt registers it (at the end of the routing order), or name it in OFF in tools/skills-index.mjs with why'); process.exit(1); }
-      console.log(!stale ? names.length + ' skills, index.json matches skills/order/'
-        : missing.length ? 'skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'
-        : 'skills/index.json is stale: node tools/skills-index.mjs --write (the order files in skills/order/ are the source)');
-      process.exit(stale ? 1 : 0); }
+      if (missing.length) { console.log('skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'); process.exit(1); }
+      // a stale index.json is not a pull-request failure: deploy.yml runs --write, and two branches editing the one list always conflict
+      console.log(names.length + ' skills from skills/order/' + (stale ? ' (index.json lags; the deploy rewrites it)' : ', index.json matches'));
+      process.exit(0); }
     console.log(indexText(names).trim()); console.log(stale ? 'index.json differs (run with --write)' : 'index.json matches');
   }
 }

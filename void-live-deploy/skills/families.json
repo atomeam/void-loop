@@ -13,8 +13,8 @@
  "smoke_at": "2026-11-03",
  "bench_at": "2026-10-30",
  "totals": {
-  "experiment": 3,
-  "tested": 2,
+  "experiment": 4,
+  "tested": 1,
   "checked": 8,
   "proven": 380
  },
@@ -624,16 +624,6 @@
      "streak": 5
     },
     {
-     "name": "rps",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
-     "smoke": [
-      "\"play rps\" -> video-play"
-     ],
-     "streak": 0,
-     "since": "2026-11-03"
-    },
-    {
      "name": "aggravation",
      "tier": "proven",
      "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
@@ -946,6 +936,16 @@
      "success_rate": 1,
      "promoted": "2026-10-30",
      "streak": 4
+    },
+    {
+     "name": "rps",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "smoke": [
+      "\"play rps\" -> video-play"
+     ],
+     "streak": 0,
+     "since": "2026-11-03"
     }
    ]
   },
@@ -1199,8 +1199,8 @@
      "name": "stopwatch",
      "tier": "proven",
      "why": "a self-test, 6 browser-suite mentions, 1 real ask in the benchmark",
-     "last_tested": "2026-11-03",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-04",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1708,8 +1708,8 @@
      "name": "pointing-arrow",
      "tier": "checked",
      "why": "a self-test, 1 real ask in the benchmark",
-     "last_tested": "2026-11-03",
-     "last_tested_by": "the daily smoke test",
+     "last_tested": "2026-11-04",
+     "last_tested_by": "its tests",
      "success_rate": 1
     }
    ]
@@ -1720,7 +1720,7 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
     "proven": 42
    },
@@ -2038,14 +2038,6 @@
      }
     },
     {
-     "name": "compliment",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-11-03",
-     "last_tested_by": "the daily smoke test",
-     "streak": 3
-    },
-    {
      "name": "riddle",
      "tier": "experiment",
      "why": "nothing checks it yet",
@@ -2058,11 +2050,12 @@
      "since": "2026-11-03"
     },
     {
-     "name": "palindrome",
+     "name": "compliment",
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-11-03",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "streak": 3
     },
     {
      "name": "quote",
@@ -3503,7 +3496,7 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 1,
+    "experiment": 2,
     "tested": 0,
     "checked": 2,
     "proven": 47
@@ -3529,16 +3522,12 @@
      "streak": 11
     },
     {
-     "name": "delivery-pack",
+     "name": "business-clarify",
      "tier": "experiment",
      "why": "nothing checks it yet",
-     "smoke": [
-      "\"handoff pack for my SaaS idea\" -> null",
-      "\"delivery package: invoice reminders that run themselves\" -> null",
-      "\"make a delivery pack for the support ticket router\" -> null"
-     ],
-     "streak": 0,
-     "since": "2026-11-03"
+     "last_tested": "2026-11-03",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-11-04"
     },
     {
      "name": "studios",
@@ -3728,6 +3717,18 @@
      "last_tested": "2026-11-03",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
+    },
+    {
+     "name": "delivery-pack",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "smoke": [
+      "\"handoff pack for my SaaS idea\" -> null",
+      "\"delivery package: invoice reminders that run themselves\" -> null",
+      "\"make a delivery pack for the support ticket router\" -> null"
+     ],
+     "streak": 0,
+     "since": "2026-11-03"
     },
     {
      "name": "store",
