@@ -13,6 +13,6 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
 | Search jobs by title and place | Find | have | every site of this kind offers it | void-live-deploy/jobs/salary/app.js:3 `ementById('app'), {"panels":["search","saved","alerts","tracker","feed","sources"],"preset` |
-| Filters: remote, type, level, salary | Find | have | every site of this kind offers it | void-live-deploy/jobs/salary/index.html:62 `<h1>Remote jobs with salaries</h1>` |
-| Apply, or go to the application | Apply | have | every site of this kind offers it | void-live-deploy/jobs/salary/index.html:69 `s original posting, where you apply. Your saved jobs, alerts and applications stay in this` |
+| Filters: remote, type, level, salary | Find | have | every site of this kind offers it | void-live-deploy/jobs/salary/index.html:63 `<h1>Remote jobs with salaries</h1>` |
+| Apply, or go to the application | Apply | have | every site of this kind offers it | void-live-deploy/jobs/salary/index.html:70 `s original posting, where you apply. Your saved jobs, alerts and applications stay in this` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://himalayas.app/jobs | not compared yet |

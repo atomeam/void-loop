@@ -2,6 +2,16 @@
 
 > Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.
 
+## Start here
+- [Ask Verse](https://a-to-mind.com/): one box; type what you want and it appears. A link can carry the ask: https://a-to-mind.com/?q=5+miles+in+km
+- [All tool pages](https://a-to-mind.com/tools/): every tool as its own page, free, nothing to sign up for
+- [MCP server](https://a-to-mind.com/api/mcp): every Verse skill as an MCP tool (Streamable HTTP, JSON-RPC); [server card](https://a-to-mind.com/api/mcp/server-card)
+- [OpenAPI 3.1](https://a-to-mind.com/openapi.json): the HTTP API; [API catalog (RFC 9727)](https://a-to-mind.com/.well-known/api-catalog)
+- [Tools as JSON](https://a-to-mind.com/tools.json): every tool page with its asks
+- [agents.txt](https://a-to-mind.com/agents.txt): what an AI agent may do here, and how
+- [Under the hood](https://a-to-mind.com/under-the-hood/): how Verse is built, with live numbers measured in the reader's browser
+- [Source code](https://github.com/atomeam/void-loop): public, with every test
+
 ## What you can ask for today
 - Things on the stage: a clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card ("make a 5 minute timer", "draw a circle", "add a sticky that says hi"). They stay in your browser across visits.
 - Changes to the stage: "make it blue", "make everything bigger", "clear", "undo".

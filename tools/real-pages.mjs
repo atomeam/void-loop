@@ -78,6 +78,13 @@ export const SPECS = {
     await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
     await t.share('#share');
   },
+  '/under-the-hood/': async (t) => { // live numbers only: each section fills from the reader's own browser or a served file
+    await t.waitText('h1', /Under the hood/, 8000);
+    const v = await t.waitText('#vitals', /time to first byte/, 8000); t.ok(/\d+ ms|\d\.\d+ s/.test(v), 'the reader\'s own time to first byte is measured: ' + v.slice(0, 60));
+    const h = await t.waitText('#hdrs', /strict-transport-security/, 10000); t.ok(/content-security-policy/.test(h) && /sent|strict/.test(h), 'the home page\'s headers are read live');
+    const c = await t.waitText('#counts', /skill modules/, 10000); t.ok(/\d{3}/.test(c), 'the skill count is read from /skills/index.json: ' + c.slice(0, 60));
+    const f = await t.waitText('#files', /llms\.txt/, 10000); t.ok(/\/llms\.txt\s*200/.test(f) && /\/agents\.txt\s*200/.test(f), 'every machine file answers 200: ' + f.slice(0, 80));
+  },
   '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
     await t.waitText('h1', /What Verse can actually do/, 8000);
     await t.waitText('#fixed', /No regression|Regressed|did not load/, 8000);
