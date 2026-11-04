@@ -505,6 +505,7 @@ for (const [name, file] of [
   ['queue', 'queue.test.mjs'],
   ['conductor', 'conductor.test.mjs'],
   ['verse-job', 'verse-job.test.mjs'],
+  ['engineer', 'engineer.test.mjs'],
   ['tower-size', 'tower-size.test.mjs'],
   ['history-coverage', 'history-coverage.test.mjs'],
   ['tower-target', 'tower-target.test.mjs'],

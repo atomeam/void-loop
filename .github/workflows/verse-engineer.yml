@@ -1,0 +1,119 @@
+# Verse's own engineer, on the free model stack the coder already uses (Workers AI, then OpenRouter, Groq,
+# Gemini and Cerebras when those keys exist: the free-resource router's llm list that tools/verse-coder.mjs speaks).
+# A deploy: changed pages must return 200, and tools/agent-probe.mjs runs when that file is on the commit.
+# Once a day: one stuck pull request is brought up to main and, when a check is red, the coder fixes the cause.
+# The same run writes the nightly note (loop share, the next pick) as a loop/nightly pull request.
+# It never closes a pull request, never skips or disables a check, and it does not spend money or message anyone.
+name: Verse engineer
+
+on:
+  schedule:
+    - cron: '17 7 * * *'
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: verse-engineer
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  live:
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Changed pages return 200
+        run: |
+          set -euo pipefail
+          git diff --name-only HEAD~1 HEAD > names.txt || true
+          node tools/live-verify.mjs --base https://a-to-mind.com --names names.txt
+          if [ -f tools/agent-probe.mjs ]; then node tools/agent-probe.mjs https://a-to-mind.com; else echo "agent-probe.mjs is not on this commit"; fi
+
+  day:
+    if: github.event_name != 'workflow_run'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Who commits
+        run: |
+          git config user.name "verse-loop"
+          git config user.email "verse-loop@users.noreply.github.com"
+      - name: One stuck pull request
+        env:
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: |
+          set -euo pipefail
+          gh api --paginate 'repos/{owner}/{repo}/pulls?state=open&per_page=50' --jq '.[] | {number, ref: .head.ref, title, updated: .updated_at, state, mergeable: .mergeable_state, behind: (.mergeable_state == "behind" or .mergeable_state == "dirty"), failing: []}' > open.ndjson
+          node tools/pr-doctor.mjs < open.ndjson > plan.json || true
+          node --input-type=module -e '
+            import { readFileSync } from "node:fs";
+            const p = JSON.parse(readFileSync("plan.json", "utf8"));
+            if (!p) { console.log("nothing stuck"); process.exit(0); }
+            if (p.steps.some((s) => p.never.includes(s.do))) { console.error("refusing a close, skip or disable"); process.exit(1); }
+            console.log(p.number + " " + p.steps.map((s) => s.do).join(","));
+          ' | tee plan.txt
+          num=$(awk "{print \$1}" plan.txt)
+          case "$num" in
+            ""|nothing) exit 0 ;;
+          esac
+          ref=$(gh pr view "$num" --json headRefName -q .headRefName)
+          git fetch origin "$ref"
+          git checkout -B "$ref" "origin/$ref"
+          if git diff --name-only --diff-filter=U | grep -q .; then echo "already conflicted; leaving the pull request open"; exit 0; fi
+          node tools/merge-main.mjs || true
+          if git diff --name-only --diff-filter=U | grep -q .; then echo "conflict remains; not pushing"; exit 0; fi
+          if grep -q regenerate plan.txt; then node tools/refresh.mjs || true; fi
+          fail=$(gh api "repos/{owner}/{repo}/commits/$(git rev-parse HEAD)/check-runs" --jq '[.check_runs[] | select(.conclusion=="failure") | .name] | .[0] // empty' || true)
+          if [ -n "$fail" ]; then node tools/verse-coder.mjs --max-turns 12 --task "Make the failing check $fail green. Fix the code that fails. Never skip, disable or weaken a test." || true; fi
+          git add -A -- . ':(exclude)open.ndjson' ':(exclude)plan.json' ':(exclude)plan.txt'
+          git diff --cached --quiet || git commit -m "Verse loop: doctor #$num"
+          git push origin HEAD
+          echo "updated #$num; did not close it"
+      - name: Nightly note
+        env:
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+          gh api --paginate 'repos/{owner}/{repo}/pulls?state=closed&per_page=100' --jq '.[] | select(.merged_at != null) | {number, title, merged_at, ref: .head.ref, login: .user.login}' > pulls.ndjson || true
+          node --input-type=module -e '
+            import { readFileSync, writeFileSync } from "node:fs";
+            const t = readFileSync("pulls.ndjson", "utf8").trim();
+            const pulls = t ? t.split("\n").map((l) => JSON.parse(l)) : [];
+            writeFileSync("pulls.json", JSON.stringify(pulls));
+          '
+          curl -fsS https://a-to-mind.com/exam/latest.json -o exam.json || echo '{}' > exam.json
+          curl -fsS https://a-to-mind.com/api/crew -o crew.json || echo '{}' > crew.json
+          if git fetch origin loop/nightly; then git checkout -B loop/nightly origin/loop/nightly; git merge --no-edit origin/main || { echo "nightly branch conflicts; left open"; exit 0; }; else git checkout -B loop/nightly origin/main; fi
+          node tools/priority-pick.mjs --pulls pulls.json --exam exam.json --crew crew.json --salvage docs/SALVAGE.md > void-live-deploy/progress/nightly.json
+          git add void-live-deploy/progress/nightly.json
+          git diff --cached --quiet && { echo "nightly unchanged"; exit 0; }
+          git commit -m "Verse loop: nightly"
+          git push -u origin loop/nightly
+          gh pr create --base main --head loop/nightly --title "Verse loop: nightly" --label automerge --body "The nightly note: the loop's share of merged pulls, and the next pick. Asked by the owner: measure it." || true

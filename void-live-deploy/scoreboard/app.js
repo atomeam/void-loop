@@ -62,6 +62,13 @@ async function main() {
     out.push(card('Money in (realized)', treasury.revenue.sales ? d(treasury.revenue.realized_cents) : null, treasury.revenue.sales + ' sales'));
     out.push(card('Money out', treasury.committed_cents ? d(treasury.committed_cents) : null, 'balance ' + d(treasury.balance_cents)));
   } else { out.push(card('Money in', null, '')); }
+  let shareOf = null;
+  try { ({ shareOf } = await import('/lib/loop-share.js')); } catch (_) { shareOf = null; }
+  const pulls = shareOf ? await get('https://api.github.com/repos/atomeam/void-loop/pulls?state=closed&per_page=100&sort=updated&direction=desc') : null;
+  if (shareOf && Array.isArray(pulls)) {
+    const s = shareOf(pulls, { since: Date.now() - 14 * 864e5 });
+    out.push(card("Verse's own loop", s.share == null ? null : s.share + '%', s.loop + ' loop and ' + s.outside + ' outside in 14 days (' + s.bot + ' other Verse bots set aside)'));
+  } else { out.push(card("Verse's own loop", null, 'GitHub did not answer')); }
   document.getElementById('cards').replaceChildren(...out);
 }
 main();
