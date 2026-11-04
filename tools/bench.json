@@ -5851,7 +5851,7 @@
   },
   {
     "ask": "the pointing arrow",
-    "want": "skill:make"
+    "want": "skill:pointing-arrow"
   },
   {
     "ask": "how small a button",

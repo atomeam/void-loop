@@ -106,6 +106,7 @@ export function adoptOrder(names, dir = ORDER_DIR) {
 // in OFF with why; nothing else can sit in skills/ unregistered.
 export const OFF = {
   map: 'the assimilation map, retired with the assimilation table in cleanup step 2 (domains/void.frontier.md); kept for salvage',
+  'idea-clarify': 'an earlier draft of business-clarify (#2091), which answers the same asks; off the order so the two never fight',
   vat: 'the VAT calculator page is another worker\'s (Versus /vat/). Off the routing order until that work lists the skill itself.',
   stopwatch: 'RETIRED: "show stopwatch" stays off the order until its asks are its own (tools/skills-unlisted.mjs). The order file was a leftover the index never listed.',
   palindrome: 'RETIRED: "is racecar a palindrome" is util\'s (tools/skills-unlisted.mjs). The order file was a leftover the index never listed.',
