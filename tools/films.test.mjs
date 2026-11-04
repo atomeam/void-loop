@@ -49,7 +49,7 @@ test('the owner posts a film; anyone lists it and plays it from a signed link wi
   const words = parseWords('TITLE\nOdd moments | an AI built this itself #Shorts\n\nDESCRIPTION\nLog each odd moment.\n\nTAGS\nVerse, AI\n');
   assert.deepEqual(words, { title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.', tags: 'Verse, AI' });
   assert.deepEqual(parseWords(JSON.stringify({ title: 't', description: 'd', tags: ['a', 'b'] })), { title: 't', description: 'd', tags: 'a, b' });
-  const r = await post({ mp4: FILM, words, id: '20261014-odd-moments-r6', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
+  const r = await post({ mp4: FILM, words: { ...words, gate: 'pass' }, id: '20261014-odd-moments-r6', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
   assert.equal(r.bytes, 5000);
   await assert.rejects(post({ mp4: FILM, words, id: 'x-y-z', site: 'https://x.test', token: 'wrong', fetchImpl: site(env) }), /403/);
 
@@ -105,7 +105,7 @@ test('without the bucket bound the route says so instead of breaking', async () 
 import * as rev from '../void-live-deploy/functions/api/film-review.js';
 test('members and the owner review a film; a member sees the totals and their own, the owner reads every note; nobody else can', async () => {
   const { env, sess } = await world();
-  await env.FILMS.put('films/20261014-odd-r6.mp4', FILM);
+  await env.FILMS.put('films/20261014-odd-r6.mp4', FILM); await env.FILMS.put('films/20261014-odd-r6.json', JSON.stringify({ title: 'Odd', gate: 'pass' }));
   const A = 'a'.repeat(43), B = 'b'.repeat(43), FREE = 'f'.repeat(43);
   await sess(A, 'u-a', 'paid'); await sess(B, 'u-b', 'paid'); await sess(FREE, 'u-free', 'free');
   const review = (auth, body) => rev.onRequestPost({ request: new Request('https://x.test/api/film-review', { method: 'POST', headers: auth ? { authorization: 'Bearer ' + auth } : {}, body: JSON.stringify(body) }), env });
@@ -137,4 +137,18 @@ test('film metadata: the asks it takes, and each film as { id, day, experiment, 
   assert.deepEqual(m, { id: '20261014-anomalous-event-timeline-4-r6', day: '2026-10-14', experiment: 'anomalous-event-timeline-4', title: 'T', tags: ['Verse', 'AI'],
     source: 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/anomalous-event-timeline-4.html', watch: 'https://a-to-mind.com/films/' });
   assert.equal(filmMeta({ id: '20261015-miss-board-4-r9', title: 'x', tags: '', description: '' }).source, 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/miss-board-4.html', 'an older film without the line still links its experiment');
+});
+
+test('a film that has not passed the quality gate stays unlisted: stored, seen only by the owner (owner, 2026-11-03: "verses videos are bad")', async () => {
+  const { env, sess } = await world();
+  const PAID = 'p'.repeat(43); await sess(PAID, 'u-paid', 'paid');
+  await post({ mp4: FILM, words: { title: 'Old text card', description: 'd', tags: '' }, id: '20261103-old-card-r1', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
+  await post({ mp4: FILM, words: parseWords(JSON.stringify({ title: 'Split the bill', description: 'd', tags: [], gate: { pass: true } })), id: '20261104-split-bill', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
+  const ids = async (auth) => (await (await get(env, auth)).json()).films.map((f) => f.id + (f.unlisted ? ':unlisted' : ''));
+  assert.deepEqual(await ids(null), ['20261104-split-bill'], 'a stranger sees only the passed film');
+  assert.deepEqual(await ids(PAID), ['20261104-split-bill'], 'so does a member');
+  assert.deepEqual((await ids(OWNER)).sort(), ['20261103-old-card-r1:unlisted', '20261104-split-bill'], 'the owner sees both, the old one marked unlisted');
+  // reversible: the words again with gate 'pass' list it
+  await post({ words: { title: 'Old text card', description: 'd', tags: '', gate: 'pass' }, wordsOnly: true, id: '20261103-old-card-r1', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
+  assert.equal((await ids(null)).length, 2);
 });

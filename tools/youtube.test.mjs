@@ -1,6 +1,6 @@
 // tools/youtube.mjs: Verse's films go to Verse's channel and nowhere else.
 import assert from 'node:assert/strict';
-import { accessToken, checkChannel, videoResource, upload, CHANNEL_ID } from './youtube.mjs';
+import { gatePassed, accessToken, checkChannel, videoResource, upload, CHANNEL_ID } from './youtube.mjs';
 
 const calls = [];
 const google = (channel) => async (url, o = {}) => {
@@ -29,3 +29,7 @@ assert.equal(await upload('at-1', Buffer.from('webm'), meta, 'private', f), 'vid
 const open = calls.find((c) => c.url.includes('uploadType=resumable'));
 assert.equal(open.headers.authorization, 'Bearer at-1'); assert.equal(open.headers['x-upload-content-type'], 'video/webm');
 console.log('youtube: ok');
+
+// paused until the quality gate passes (owner, 2026-11-03): only a film tools/video-gate.mjs passed is uploaded
+assert.equal(gatePassed({}), false); assert.equal(gatePassed({ gate: { pass: false } }), false); assert.equal(gatePassed({ gate: 'pass' }), false);
+assert.equal(gatePassed({ gate: { pass: true } }), true);

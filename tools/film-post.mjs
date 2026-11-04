@@ -13,14 +13,16 @@ import { brand } from './record.mjs';
 // the release text record.yml writes: TITLE\n…\n\nDESCRIPTION\n…\n\nTAGS\n…
 export function parseWords(text) {
   const t = String(text || '');
-  try { const j = JSON.parse(t); return { title: j.title || '', description: j.description || '', tags: Array.isArray(j.tags) ? j.tags.join(', ') : (j.tags || '') }; } catch (_) {}
+  // gate: 'pass' only when tools/video-gate.mjs passed the film (meta.gate.pass); without it the site keeps the film unlisted
+  const gateOf = (g) => (g === 'pass' || (g && g.pass === true) ? { gate: 'pass' } : {});
+  try { const j = JSON.parse(t); return { title: j.title || '', description: j.description || '', tags: Array.isArray(j.tags) ? j.tags.join(', ') : (j.tags || ''), ...gateOf(j.gate) }; } catch (_) {}
   const part = (name) => { const m = t.match(new RegExp('(?:^|\\n)' + name + '\\n([\\s\\S]*?)(?=\\n(?:TITLE|DESCRIPTION|TAGS)\\n|$)')); return m ? m[1].trim() : ''; };
   return { title: part('TITLE'), description: part('DESCRIPTION'), tags: part('TAGS') };
 }
 // what a viewer reads says Verse (owner, 2026-10-14: "it shoud say Verse everywhere"); films made before the name keep working
 export function branded(w) {
   const tags = String(w.tags || '').split(/\s*,\s*/).filter(Boolean).map((t) => (t === 'Verse' || t === 'Verse' ? 'Verse' : t));
-  return { title: brand(w.title), description: brand(w.description).replace(/#(?:Void|V01D|Verse)\b/g, '#Verse'), tags: [...new Set(tags)].join(', ') };
+  return { title: brand(w.title), description: brand(w.description).replace(/#(?:Void|V01D|Verse)\b/g, '#Verse'), tags: [...new Set(tags)].join(', '), ...(w.gate === 'pass' ? { gate: 'pass' } : {}) };
 }
 
 export async function post({ mp4, words: raw, id, site = 'https://a-to-mind.com', token, fetchImpl = fetch, wordsOnly = false }) {
