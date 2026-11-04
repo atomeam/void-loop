@@ -2,7 +2,8 @@
 // -14 LUFS, and opens on a hook a stranger cares about (owner, 2026-11-03: "verses videos are bad").
 import assert from 'node:assert/strict';
 import { hookScore, captionCheck, barsOf, flatEdges, noBars, audioCheck, SAFE } from './video-gate.mjs';
-import { SCENES, captionsOf, wrap } from './shorts.mjs';
+import { SCENES, captionsOf, wrap, padExpr, MOODS } from './shorts.mjs';
+for (const m of Object.keys(MOODS)) assert.match(padExpr(m), /^0\.05\*/);
 
 // hooks: the old titles fail, everyday questions pass
 assert.ok(hookScore('A word problem shows the number') < 60, 'the Nov 3 Short\'s hook fails');
@@ -35,5 +36,7 @@ assert.equal(wrap('Splitting a $84 dinner bill 3 ways?', 16), 'Splitting a $84\n
 assert.equal(audioCheck(-14.2, true).ok, true);
 assert.equal(audioCheck(-20, true).ok, false);
 assert.equal(audioCheck(-Infinity, false).ok, true);
+assert.equal(audioCheck(-22, false).ok, true, 'a quiet bed under the captions passes');
+assert.equal(audioCheck(-30, false).ok, false, 'a bed too faint to hear is noise');
 assert.equal(audioCheck(-15.7, false).ok, false, 'the old music bed with nothing over it fails');
 console.log('video-gate: ok');
