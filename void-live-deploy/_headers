@@ -65,10 +65,9 @@
 /under-the-hood/*
   Cache-Control: public, max-age=0, must-revalidate, no-transform
 
-/manifest.webmanifest
-  Content-Type: application/manifest+json
-
-/converter/manifest.webmanifest
+# every web app manifest (/manifest.webmanifest, /converter/manifest.webmanifest): one rule, so the CSP page rules made at deploy
+# (tools/csp-hashes.mjs) and these stay inside Cloudflare's 100 (2026-11-04: 71 + 30 = 101 failed privacy-guard on main)
+/*.webmanifest
   Content-Type: application/manifest+json
 
 /opensearch.xml
@@ -108,15 +107,9 @@
   Content-Type: audio/mpeg
   Access-Control-Allow-Origin: *
 
-/sounds/drums/808/*
-  Content-Type: audio/wav
-  Cache-Control: public, max-age=604800
-
-/sounds/drums/kit/*
-  Content-Type: audio/wav
-  Cache-Control: public, max-age=604800
-
-/sounds/piano/*
+# every instrument sample (drums/808, drums/kit, piano, guitar, bass): one rule for the .wav files, a week in the cache. The
+# CREDITS.md beside them keeps its own type. Three rules were one each for 808, kit and piano, and guitar and bass had none.
+/sounds/*.wav
   Content-Type: audio/wav
   Cache-Control: public, max-age=604800
 
