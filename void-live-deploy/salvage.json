@@ -2,8 +2,8 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 9,
-  "live": 74,
+  "unified": 10,
+  "live": 73,
   "salvageable": 435,
   "history": 24,
   "skipped": 3
@@ -193,12 +193,12 @@
   {
    "id": "archive/repos/ALPHA",
    "kind": "archived repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "Verse's live code reads this path",
-   "into": null,
-   "test": null,
+   "status": "unified",
+   "target": "bot",
+   "value": 130.7,
+   "why": "",
+   "into": "/bots/ (proposal-checker)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": null
   },
