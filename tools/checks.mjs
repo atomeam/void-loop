@@ -526,6 +526,7 @@ for (const [name, file] of [
   ['skills-delta', 'skills-delta.test.mjs'],
   ['tower-files', 'tower-files.test.mjs'],
   ['pre-pr', 'pre-pr.test.mjs'],
+  ['verse-shell', 'verse-shell.test.mjs'],
   ['moved-check', 'moved-check.test.mjs'],
   ['inbox-health', 'inbox-health.test.mjs'],
   ['skill-use', 'skill-use.test.mjs'],
