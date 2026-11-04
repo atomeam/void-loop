@@ -17,7 +17,7 @@
 //                                            (tower.evidence.2.json, or --out <file>; never committed); --list prints the slice and loads nothing
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { FLOORS, LANE_PAGES, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl } from '../void-live-deploy/lib/tower.js';
+import { FLOORS, LANE_PAGES, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl, frontierOf, frontierPage } from '../void-live-deploy/lib/tower.js';
 import { wallOf } from '../void-live-deploy/lib/tower-controls.js';
 import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 // a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
@@ -27,6 +27,14 @@ const probeFor = (id) => withFeatureFacts(probeOf(id), id);
 export const GATE_FLOORS = FLOORS.concat(Object.entries(LANE_PAGES).filter(([k]) => hostOf(k) === k && !FLOORS.some((f) => (hostOf(f.url) || hostOf(f.site)) === k))
   .map(([h, page]) => ({ id: h, site: h, url: 'https://' + h + '/', label: h, page, extra: [] })));
 import { shard, parseShard, merge, selfCalled } from './tower-merge.mjs';
+// a frontier site Verse already has a page for by topic, as a floor the gate can load (lib/tower.js frontierPage): the target, found by pick() or by id
+export const TOPIC_FLOORS = new Map();
+export function gateFloor(id, frontier = null) {
+  const known = GATE_FLOORS.find((x) => x.id === id) || TOPIC_FLOORS.get(id);
+  if (known || !frontier) return known || null;
+  const x = frontierOf(frontier).find((y) => y.host === id), fp = x ? frontierPage(x) : {};
+  return fp.page ? { id, site: id, url: 'https://' + id + '/', label: id, page: fp.page, extra: [] } : null;
+}
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'void-live-deploy', 'tower.evidence.json'), PRIV = process.env.TOWER_PRIVATE || '/workspace/tower-private';
 const VERSE = process.env.VERSE_URL || 'https://a-to-mind.com/';
@@ -344,6 +352,10 @@ export function measurable(f) {
 /** the ids to measure: { current, changed, stale } in that order, no repeats, only floors in GATE_FLOORS (a frontier site with no page in LANE_PAGES has no Verse page yet), at most max. Pure. */
 export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank = null, size = null, target = null) {
   const t = tower([], evidence, frontier, null, rank, size, target), ids = new Set(GATE_FLOORS.map((f) => f.id)), out = [];
+  // the target matched to a Verse page by topic (lib/tower-topic.js; 2026-11-03: ndscalc.ru against the calculator's VAT mode) is measured too, so the
+  // card shows Verse's real score for it, not 0 of 12 against no page; only the target, so the sweep does not grow by every topic match
+  const topical = t.floors.find((f) => f.state === 'current' && f.topic && f.page && !ids.has(f.id));
+  if (topical) { ids.add(topical.id); TOPIC_FLOORS.set(topical.id, { id: topical.id, site: topical.site, url: topical.url, label: topical.site, page: topical.page, extra: [] }); }
   const add = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < max) out.push(id); };
   add((t.floors.find((f) => f.state === 'current' && ids.has(f.id)) || t.floors.find((f) => !f.beaten && ids.has(f.id)) || {}).id);
   // a floor whose own page the deploy changed: /color/ for void-live-deploy/color/index.html; its probe's page counts too
@@ -356,7 +368,7 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank
   const beatenOf = (id) => { const g = t.floors.find((x) => x.id === id); return !!(g && g.beaten); };
   for (const f of onPage.filter((f) => !beatenOf(f.id)).concat(onPage.filter((f) => beatenOf(f.id)))) addMore(f.id);
   if (changed.includes('void-live-deploy/sw.js')) for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !OKV.has(((evidence[f.id] || {}).offline || {}).verdict)) addMore(f.id);
-  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(GATE_FLOORS.find((x) => x.id === f.id)).some((a) => !rows[a])) add(f.id); }
+  for (const f of t.floors) if (ids.has(f.id) && !f.beaten) { const rows = evidence[f.id] || {}; if (measurable(gateFloor(f.id)).some((a) => !rows[a])) add(f.id); }
   return out;
 }
 
@@ -505,7 +517,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const sh = opt.shard !== undefined ? parseShard(opt.shard) : null;
   if (opt.shard !== undefined && !(sh && sh.i >= 1 && sh.i <= sh.n)) { console.error('--shard wants i/N with 1 <= i <= N, e.g. --shard 2/6; got ' + opt.shard); process.exit(2); }
   const ids = sh ? shard(GATE_FLOORS.map((x) => x.id), sh.i, sh.n) : opt.floors !== undefined ? opt.floors.split(',').map((s) => s.trim()).filter(Boolean) : [words.join(' ')];
-  const floors = ids.map((id) => GATE_FLOORS.find((x) => x.id === id) || id), unknown = floors.filter((x) => typeof x === 'string');
+  const frNow = (() => { try { return JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.frontier.json'), 'utf8')); } catch (_) { return null; } })();
+  const floors = ids.map((id) => gateFloor(id, frNow) || id), unknown = floors.filter((x) => typeof x === 'string');
   if (unknown.length || !floors.length) { console.error('no floor ' + (unknown.join(', ') || '(none given)') + '; floors: ' + GATE_FLOORS.map((x) => x.id).join(', ')); process.exit(2); }
   if (opt.list) { for (const f of floors) console.log(f.id); process.exit(0); } // the selection alone, nothing loaded
   if (opt.rescore) { // --rescore: today's rule on the stored numbers, no site loaded (a rule change, not a new measurement)
