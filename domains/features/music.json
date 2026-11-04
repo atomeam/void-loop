@@ -1945,5 +1945,423 @@
     "features": []
    }
   }
+ },
+ "auto": {
+  "scanned": "2026-11-04",
+  "sites": {
+   "neuralframes.com": {
+    "url": "https://www.neuralframes.com/tools/rap-lyrics-generator",
+    "scanned": "2026-11-04",
+    "pages": [
+     "https://www.neuralframes.com/tools/rap-lyrics-generator",
+     "https://www.neuralframes.com/features/autopilot",
+     "https://www.neuralframes.com/features/kling-ai-video-generator",
+     "https://www.neuralframes.com/pricing",
+     "https://www.neuralframes.com/post/how-to-create-nft-art",
+     "https://www.neuralframes.com/post/promote-your-music",
+     "https://www.neuralframes.com/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Rap Lyrics Generator",
+      "detail": "a heading on /tools/rap-lyrics-generator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"rap\"; not \"lyric\", \"generator\""
+     },
+     {
+      "name": "Free AI Rap Lyrics for Song Starters, Hooks, and Verses",
+      "detail": "a heading on /tools/rap-lyrics-generator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"rap\", \"song\"; not \"lyric\", \"starter\""
+     },
+     {
+      "name": "How the Rap Lyrics Generator Works",
+      "detail": "a heading on /tools/rap-lyrics-generator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"rap\"; not \"how\", \"lyric\", \"generator\""
+     },
+     {
+      "name": "Rap Lyrics Generator FAQ",
+      "detail": "a heading on /tools/rap-lyrics-generator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"rap\"; not \"lyric\", \"generator\", \"faq\""
+     },
+     {
+      "name": "Finish the track",
+      "detail": "a heading on /tools/rap-lyrics-generator",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"finish\", \"track\""
+     },
+     {
+      "name": "How Autopilot Works",
+      "detail": "a heading on /features/autopilot",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"work\"; not \"how\", \"autopilot\""
+     },
+     {
+      "name": "Key Features",
+      "detail": "a heading on /features/autopilot",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"key\"; not \"feature\""
+     },
+     {
+      "name": "Perfect For",
+      "detail": "a heading on /features/autopilot",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"perfect\""
+     },
+     {
+      "name": "Introduction",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"introduction\""
+     },
+     {
+      "name": "Why Creators Love the Kling AI Video Generator",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"why\", \"creator\", \"love\", \"kling\""
+     },
+     {
+      "name": "Timeline Control: Direct Kling Shots Like a Pro",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"timeline\", \"control\", \"direct\", \"kling\""
+     },
+     {
+      "name": "Autopilot: From Song to Video in Two Clicks",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"song\"; not \"autopilot\", \"video\", \"two\""
+     },
+     {
+      "name": "Real-World Use Cases",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"real\", \"world\", \"case\""
+     },
+     {
+      "name": "Quick-Start Workflow",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"start\"; not \"quick\", \"workflow\""
+     },
+     {
+      "name": "Kling AI Video Generator FAQ",
+      "detail": "a heading on /features/kling-ai-video-generator",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"kling\", \"video\", \"generator\", \"faq\""
+     },
+     {
+      "name": "A pricing model for every artist",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"every\"; not \"pric\", \"model\", \"artist\""
+     },
+     {
+      "name": "Everything you need to create",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"everyth\", \"need\", \"create\""
+     },
+     {
+      "name": "See what your song costs",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"see\", \"song\"; not \"what\", \"cost\""
+     },
+     {
+      "name": "What our users say",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"what\", \"our\", \"user\", \"say\""
+     },
+     {
+      "name": "Shifting sentiment toward AI-generated NFTs",
+      "detail": "a heading on /post/how-to-create-nft-art",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"shift\", \"sentiment\", \"toward\", \"generat\""
+     },
+     {
+      "name": "New NFT art styles trending in 2025",
+      "detail": "a heading on /post/how-to-create-nft-art",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"nft\", \"art\", \"style\", \"trend\""
+     },
+     {
+      "name": "Making AI music video NFTs with Neural Frames",
+      "detail": "a heading on /post/how-to-create-nft-art",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"making\", \"video\", \"nft\""
+     },
+     {
+      "name": "Your band is a brand: Creating artist profiles",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"band\", \"brand\", \"creat\", \"artist\""
+     },
+     {
+      "name": "Preparing your artist profile on social media platforms",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"prepar\", \"artist\", \"profile\", \"social\""
+     },
+     {
+      "name": "Registering an artist profile on streaming platforms",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"register\", \"artist\", \"profile\", \"stream\""
+     },
+     {
+      "name": "Advertising your music",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"advertis\""
+     },
+     {
+      "name": "Buying ads on social media",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"ads\"; not \"buying\", \"social\", \"media\""
+     },
+     {
+      "name": "How to advertise your music on Instagram",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"how\", \"advertise\", \"instagram\""
+     },
+     {
+      "name": "Advertising your music on Facebook and TikTok",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"advertis\", \"facebook\", \"tiktok\""
+     },
+     {
+      "name": "Promoting music videos on YouTube",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"promot\", \"video\", \"youtube\""
+     },
+     {
+      "name": "Generating audio-reactive music videos with neural frames",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"generat\", \"audio\", \"reactive\""
+     },
+     {
+      "name": "Send out your electronic press kit: Music blogs and playlists",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"press\"; not \"send\", \"out\", \"electronic\""
+     },
+     {
+      "name": "Promoting a new song on editorial playlists",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"song\", \"playlist\"; not \"promot\", \"editorial\""
+     },
+     {
+      "name": "Pitching new songs for review on music blogs",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"song\", \"music\"; not \"pitch\", \"review\""
+     },
+     {
+      "name": "What to expect from your music marketing efforts",
+      "detail": "a heading on /post/promote-your-music",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/music/ shows \"music\"; not \"what\", \"expect\", \"market\""
+     },
+     {
+      "name": "Our Story",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"our\", \"story\""
+     },
+     {
+      "name": "Our Team",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"our\", \"team\""
+     },
+     {
+      "name": "Musicians who need quick, professional music videos for releases",
+      "detail": "a list item on /features/autopilot",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"musician\", \"who\", \"need\", \"quick\""
+     },
+     {
+      "name": "Content creators making videos for YouTube, TikTok, and Instagram",
+      "detail": "a list item on /features/autopilot",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"content\", \"creator\", \"making\", \"video\""
+     },
+     {
+      "name": "Record labels producing multiple videos efficiently",
+      "detail": "a list item on /features/autopilot",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/music/ shows none of its words; not \"record\", \"label\", \"produc\", \"multiple\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "Finish the track",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Perfect For",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Introduction",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Why Creators Love the Kling AI Video Generator",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Timeline Control: Direct Kling Shots Like a Pro",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Real-World Use Cases",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Kling AI Video Generator FAQ",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Everything you need to create",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "What our users say",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Shifting sentiment toward AI-generated NFTs",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "New NFT art styles trending in 2025",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Your band is a brand: Creating artist profiles",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Preparing your artist profile on social media platforms",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Registering an artist profile on streaming platforms",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Our Story",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Our Team",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Musicians who need quick, professional music videos for releases",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Content creators making videos for YouTube, TikTok, and Instagram",
+    "sites": [
+     "neuralframes.com"
+    ]
+   },
+   {
+    "name": "Record labels producing multiple videos efficiently",
+    "sites": [
+     "neuralframes.com"
+    ]
+   }
+  ],
+  "queued": []
  }
 }

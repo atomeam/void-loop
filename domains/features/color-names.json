@@ -1,0 +1,74 @@
+{
+ "floor": "color names",
+ "verse_page": "/color/",
+ "researched": "2026-11-04",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "colornames.org": {
+   "url": "https://colornames.org/",
+   "scanned": "2026-11-04",
+   "leader": true,
+   "pages": [
+    "https://colornames.org/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "NAME ALL THE COLORS",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/color/ shows \"name\", \"color\""
+    },
+    {
+     "name": "DISCOVER TRIPWAFFLE",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"discover\", \"tripwaffle\""
+    },
+    {
+     "name": "NAME A COLOR",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/color/ shows \"name\", \"color\""
+    },
+    {
+     "name": "PROGRESS REPORT",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"progress\", \"report\""
+    },
+    {
+     "name": "Name It",
+     "detail": "a button on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/color/ shows \"name\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "DISCOVER TRIPWAFFLE",
+   "sites": [
+    "colornames.org"
+   ]
+  },
+  {
+   "name": "PROGRESS REPORT",
+   "sites": [
+    "colornames.org"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-04",
+  "queued": []
+ }
+}

@@ -1,0 +1,128 @@
+{
+ "floor": "color canon",
+ "verse_page": "/color/",
+ "researched": "2026-11-04",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "colorcanon.com": {
+   "url": "https://colorcanon.com/",
+   "scanned": "2026-11-04",
+   "leader": true,
+   "pages": [
+    "https://colorcanon.com/",
+    "https://colorcanon.com/about/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Every color has a name",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/color/ shows \"every\", \"color\", \"name\""
+    },
+    {
+     "name": "RECENT AMENDMENTS VIEW ALL →",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"recent\", \"amendment\", \"view\""
+    },
+    {
+     "name": "FEATURED COLOR",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/color/ shows \"color\"; not \"featur\""
+    },
+    {
+     "name": "#35063E",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"35063e\""
+    },
+    {
+     "name": "Laurie",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"laurie\""
+    },
+    {
+     "name": "The complete registry of hex color names",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/color/ shows \"hex\", \"color\"; not \"complete\", \"registry\""
+    },
+    {
+     "name": "HOW IT WORKS",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/color/ shows \"how\", \"work\""
+    },
+    {
+     "name": "A NOTE ON OWNERSHIP",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"note\", \"ownership\""
+    },
+    {
+     "name": "On the Authority of the Canon",
+     "detail": "a heading on /about/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/color/ shows none of its words; not \"authority\", \"canon\""
+    },
+    {
+     "name": "VIEW COLOR →",
+     "detail": "a button on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/color/ shows \"color\"; not \"view\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "RECENT AMENDMENTS VIEW ALL →",
+   "sites": [
+    "colorcanon.com"
+   ]
+  },
+  {
+   "name": "#35063E",
+   "sites": [
+    "colorcanon.com"
+   ]
+  },
+  {
+   "name": "Laurie",
+   "sites": [
+    "colorcanon.com"
+   ]
+  },
+  {
+   "name": "A NOTE ON OWNERSHIP",
+   "sites": [
+    "colorcanon.com"
+   ]
+  },
+  {
+   "name": "On the Authority of the Canon",
+   "sites": [
+    "colorcanon.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-04",
+  "queued": []
+ }
+}
