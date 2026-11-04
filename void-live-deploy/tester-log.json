@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 83,
- "runsTotal": 200,
+ "runsTotal": 201,
  "kinds": {
   "grow": 67,
   "file": 71,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 8
+  "visitor": 9
  },
  "runs": [
+  {
+   "at": "2026-11-04T04:37:52Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T04:00:05Z",
    "passed": 0,
@@ -274,13 +281,6 @@
    "of": 69,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"films by kurosawa pls\" (skill:film-metadata)"
-  },
-  {
-   "at": "2026-10-18T14:06:18Z",
-   "passed": 67,
-   "of": 68,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
   }
  ],
  "weekly": [
@@ -355,7 +355,7 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 9,
+   "runs": 10,
    "passed": 58,
    "of": 87,
    "ms": 554
