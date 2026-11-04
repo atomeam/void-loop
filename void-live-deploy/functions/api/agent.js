@@ -3,11 +3,14 @@
 // POST { thread, id, decision: yes|no }   -> the approval card's answer. Nothing outside the site is ever done: a yes on a send/pay/delete
 //                                            records the yes and Verse says the service isn't connected yet (functions/api/approval.js keeps real executors, owner only).
 // GET ?thread=<id>                        -> the thread, live steps, the Made shelf, the daily brief and the model tier.
-// WHAT A STRANGER COULD MAKE THIS DO: spend up to 20 free model calls a day per visitor (lib/daily-cap.js), 400 a day in all, and read only their own thread.
-import { tierFor, needsYes, pickBot, brief, TIERS } from '../../lib/agent-core.js';
+// WHAT A STRANGER COULD MAKE THIS DO: 20 tasks a day per visitor (lib/daily-cap.js), 400 a day in all. A task may ask the free model,
+// its fallback, and one better bot when the first answer does not address the ask. It can read only its own thread.
+import { tierFor, needsYes, brief, TIERS } from '../../lib/agent-core.js';
+import { attemptsFor, answerBrief, addressesAsk } from '../../lib/agent-answer.js';
 import { cap } from '../../lib/daily-cap.js';
 import { ANSWER_FALLBACK } from '../../lib/models.js';
 import { reasonOf, recordShortfall } from '../../lib/shortfall.js';
+import { planOf, routeFree, loadRegistry } from '../../lib/answer-free.js';
 
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER)';
@@ -40,27 +43,53 @@ async function infraCents(origin) {
 // the reply text, whichever shape the model answers in (Workers AI's { response } or the OpenAI-style choices); never a thinking block
 export const textOf = (out) => String((out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content))) || '').replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 
+// the answer pipeline (lib/answer-free.js) for an exact bot or a research ask; '' when the model should answer. An open ask is the model's.
+async function pipelineAnswer(env, origin, ask) {
+  const plan = planOf(ask);
+  if (!plan || plan.kind === 'llm') return '';
+  try {
+    const registry = plan.kind === 'api' ? await loadRegistry(env, origin) : null;
+    const routed = await routeFree(ask, { env, registry });
+    return routed && routed.answer ? String(routed.answer).trim() : '';
+  } catch (_) { return ''; }
+}
+
+// one bot, the free model then the fallback. Thinking stays off: with it on, Gemma 4 can spend the whole budget and return nothing.
+async function replyFrom(env, db, id, tier, bot, ask) {
+  const messages = [{ role: 'system', content: answerBrief(bot) }, { role: 'user', content: ask }];
+  const runOpts = { messages, max_tokens: 700, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
+  let text = '', why = '';
+  for (const model of [tier.model, ANSWER_FALLBACK]) {
+    try { text = textOf(await env.AI.run(model, runOpts)); why = ''; } catch (e) { why = reasonOf(e); text = ''; }
+    if (text.length >= 2) return { text, why: '' };
+    if (!why) why = 'empty';
+    if (model !== ANSWER_FALLBACK) await step(db, id, 'The ' + tier.name + ' model did not answer (' + why + '); asking the second free model.');
+  }
+  return { text: '', why };
+}
+
 export async function run(env, origin, id, ask) {
   const db = env.DB;
   try {
     await step(db, id, 'Read your task.', { status: 'running' });
-    const bot = pickBot(ask, await bots(origin, env));
-    await step(db, id, 'Handed it to ' + bot.name + '.', { bot: bot.name });
     const tier = tierFor(await infraCents(origin));
     await step(db, id, 'Thinking on the ' + tier.name + ' model tier.', { tier: tier.name });
-    const messages = [
-      { role: 'system', content: 'You are Verse, a helpful agent. You are acting as the bot "' + bot.name + '"' + (bot.description ? ' (' + bot.description + ')' : '') + '. Do the task fully and concretely. Plain text, under 250 words. Never claim to have sent, paid, posted or deleted anything.' },
-      { role: 'user', content: ask } ];
-    // thinking off, like every answer path (functions/api/answer.js): with it on, Gemma 4 can spend all 700 tokens reasoning and the reply comes back empty
-    let text = '', why = '';
-    for (const model of [tier.model, ANSWER_FALLBACK]) {
-      try { text = textOf(await env.AI.run(model, { messages, max_tokens: 700, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' })); } catch (e) { why = reasonOf(e); }
-      if (text.length >= 2) break;
-      if (!why) why = 'empty';
-      if (model !== ANSWER_FALLBACK) await step(db, id, 'The ' + tier.name + ' model did not answer (' + why + '); asking the second free model.');
+    const tries = attemptsFor(ask, await bots(origin, env));
+    let text = '', why = 'empty', missed = false;
+    for (const bot of tries) {
+      if (bot.repair && !missed) break; // the previous try was empty, not a wrong answer: the same models will not do better
+      await step(db, id, 'Handed it to ' + bot.name + (bot.repair ? ' again, to answer the task.' : '.'), { bot: bot.name });
+      if (bot.name === 'verse' && !bot.repair) {
+        const piped = await pipelineAnswer(env, origin, ask);
+        if (addressesAsk(ask, piped)) { text = piped; await step(db, id, 'Checked the result (' + piped.split(/\s+/).length + ' words). It addresses the ask.'); break; }
+      }
+      const got = await replyFrom(env, db, id, tier, bot, ask);
+      if (addressesAsk(ask, got.text)) { text = got.text; await step(db, id, 'Checked the result (' + got.text.split(/\s+/).length + ' words). It addresses the ask.'); break; }
+      text = '';
+      if (got.text) { missed = true; await step(db, id, bot.name + ' did not address the ask.'); }
+      else { why = got.why || why; missed = false; if (bot.name === 'verse') break; }
     }
-    if (text.length < 2) throw new Error(why || 'empty');
-    await step(db, id, 'Checked the result (' + text.split(/\s+/).length + ' words).');
+    if (!text) throw new Error(why || 'empty');
     if (needsYes(ask)) {
       await step(db, id, 'This one sends, pays or deletes something, so it waits for your yes.', { status: 'needs_yes', result: text.slice(0, 4000) });
     } else {

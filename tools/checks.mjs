@@ -528,6 +528,7 @@ for (const [name, file] of [
   ['skills-delta', 'skills-delta.test.mjs'],
   ['tower-files', 'tower-files.test.mjs'],
   ['pre-pr', 'pre-pr.test.mjs'],
+  ['agent-answer', 'agent-answer.test.mjs'],
   ['verse-shell', 'verse-shell.test.mjs'],
   ['split-void-page', 'split-void-page.test.mjs'],
   ['moved-check', 'moved-check.test.mjs'],
