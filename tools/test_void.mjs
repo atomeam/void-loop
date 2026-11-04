@@ -15,6 +15,9 @@ import { parseShard, inShard } from './shard.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
+// the plain-path rules of _redirects (Cloudflare Pages' file): from, to, status. Splats and placeholders are left to the real host.
+const REDIRECTS = new Map();
+try { for (const line of fs.readFileSync(path.join(root, '_redirects'), 'utf8').split('\n')) { const [from, to, st] = line.trim().split(/\s+/); if (from && to && from.startsWith('/') && !/[*:]/.test(from)) REDIRECTS.set(from, { to, status: +st || 302 }); } } catch (_) {}
 const server = http.createServer((req, res) => {
   // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
@@ -22,6 +25,10 @@ const server = http.createServer((req, res) => {
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { // as Pages does: a missing path gets the root 404.html, still a 404
+    // as Pages does: an old address in _redirects (a plain path, no splat) answers with its redirect, the query kept (#2100 combined
+    // pages into modes and 301'd /flip/, /wheel/, /gradient/, /base-converter/ ...; serving them a 404 here left four checks red on main)
+    const to = REDIRECTS.get(p);
+    if (to) { const q = new URL(req.url, 'http://x').search; res.writeHead(to.status, { location: to.to.includes('?') || !q ? to.to : to.to.replace(/(#|$)/, q + '$1') }); return res.end(); }
     const nf = path.join(root, '404.html');
     if (!fs.existsSync(nf)) { res.writeHead(404); return res.end(); }
     res.writeHead(404, { 'content-type': 'text/html' }); return fs.createReadStream(nf).pipe(res);
@@ -3798,13 +3805,13 @@ try {
     await P.p.keyboard.press('Enter');
     const card = await until(async () => { const t = await P.page(); return /Likely cause/.test(t) && t; }, 8000) || await P.page();
     const r = await P.p.evaluate(() => { const el = document.querySelector('.vpage.on'); const sum = el && el.querySelector('.vpaste summary');
-      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
+      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, glimpse: el && el.querySelector('.vpaste div') ? el.querySelector('.vpaste div').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
     await P.p.click('.vpage.on > .vread'); const reading = await P.p.evaluate(() => ({ said: window.__said.join(' '), pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
     await P.p.click('.vpage.on > .vread'); const stopped = await P.p.evaluate(() => ({ cancels: window.__cancels, pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
     const d = (sent && sent.details) || '';
-    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card\'s button reads the whole card aloud and stops when tapped again',
+    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out, a one-line glimpse, never the whole paste echoed back), and the card\'s button reads the whole card aloud and stops when tapped again',
       !!sent && sent.mode === 'fix' && bytes <= 20000 && d.startsWith(first) && /ECONNREFUSED 10\.0\.0\.5:5432/.test(d) && /characters from the middle left out/.test(d)
-      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === log.length && r.button
+      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === 0 && r.glimpse > 0 && r.glimpse <= 91 && r.button
       && /Likely cause: Postgres refuses the connection/.test(reading.said) && /Start the database/.test(reading.said) && !/Worked out by/.test(reading.said) && reading.pressed === 'true'
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
