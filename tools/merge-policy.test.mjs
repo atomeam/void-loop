@@ -45,7 +45,7 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
 test('the automerge workflow arms squash auto-merge and keeps the hourly run', () => {
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
-  assert.match(yml, /administration: write/);
+  assert.match(yml, /pull-requests: write/);
   assert.match(yml, /17 \* \* \* \*/);
   assert.match(yml, /STUCK:/);
   assert.match(src, /enablePullRequestAutoMerge/);

@@ -34,7 +34,6 @@ permissions:
   pull-requests: write # mark a draft ready; the one conflict comment; arm auto-merge
   checks: read
   actions: write # start the deploy of main after a merge; start Verse's review on a head the bot pushed
-  administration: write # turn on the repository's allow_auto_merge, once; ignored when the token cannot
 
 jobs:
   automerge:
