@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-04T14:57:30.585Z",
+ "updated": "2026-11-04T15:08:51.467Z",
  "last24h": {
   "ticks": 120,
-  "started": 99,
+  "started": 100,
   "requeued": 1,
   "setAside": 0,
   "probes": 10,
@@ -157,7 +157,8 @@
   "mw1z429z": 1793788626529,
   "mw1z42ua": 1793789249293,
   "mw1z43dg": 1793789869696,
-  "mw1z43va": 1793790492448
+  "mw1z43va": 1793790492448,
+  "mw21bvh9": 1793804931467
  },
  "visitorAt": "2026-11-04T11:32:55Z",
  "visitorFiled": [
@@ -243,24 +244,6 @@
   "tv:agricultural-market-tracker"
  ],
  "ticks": [
-  {
-   "at": "2026-11-03T14:58:53.082Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 138,
-   "warnings": 0
-  },
   {
    "at": "2026-11-03T15:09:11.188Z",
    "open": 138,
@@ -2853,6 +2836,30 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 170,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T15:08:51.467Z",
+   "open": 176,
+   "started": [
+    {
+     "id": "mw21bvh9",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
     }
    ],
    "requeued": 0,
