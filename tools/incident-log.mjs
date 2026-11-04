@@ -9,13 +9,15 @@
 //                                                                           earlier commit of <sha> closes once every shard it failed has passed
 //   node tools/incident-log.mjs resolve <sha> <run-url>                    close every open incident after a green suite on main: closedAt, closedBy, minutes
 //   node tools/incident-log.mjs list                                       print the entries, newest first
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const OUT = resolve(root, 'void-live-deploy/incidents.json');
+/** one file per suite run, so two red suites never rewrite the same lines of incidents.json */
+export const ENTRIES = resolve(root, 'void-live-deploy/incidents/entries');
 export const KEEP = 30;
 /** the browser suite's shards (verify.yml browser-suite matrix): an incident recorded before the shards were kept waits for all of them */
 export const SHARDS = [1, 2, 3, 4];
@@ -100,33 +102,83 @@ export function isAncestor(older, sha, cwd = root) {
 /** how many incidents are open (not closed by a green suite). Pure. */
 export const openCount = (list) => (Array.isArray(list) ? list : []).filter((i) => i && !i.closedAt).length;
 
-export function readLog(file = OUT) { try { return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')).incidents || [] : []; } catch (_) { return []; } }
+/** the legacy list with each entry file laid over the same sha (the file wins), newest first, capped. Pure. */
+export function mergeEntries(base, entries, keep = KEEP) {
+  const map = new Map();
+  for (const i of base || []) if (i && i.sha) map.set(String(i.sha), i);
+  for (const i of entries || []) if (i && i.sha) map.set(String(i.sha), i);
+  return [...map.values()].sort((a, b) => String(b.at || '').localeCompare(String(a.at || ''))).slice(0, keep);
+}
+
+/** incidents whose text changed, so only those shas are written. Pure. */
+export function changedEntries(prev, next) {
+  const old = new Map((prev || []).filter((i) => i && i.sha).map((i) => [String(i.sha), JSON.stringify(i)]));
+  return (next || []).filter((i) => i && i.sha && old.get(String(i.sha)) !== JSON.stringify(i));
+}
+
+export function readEntries(dir = ENTRIES) {
+  if (!existsSync(dir)) return [];
+  const out = [];
+  for (const name of readdirSync(dir)) {
+    if (!name.endsWith('.json')) continue;
+    try { out.push(JSON.parse(readFileSync(resolve(dir, name), 'utf8'))); } catch (_) { /* skip a torn file */ }
+  }
+  return out;
+}
+
+export function writeChanged(list, dir = ENTRIES) {
+  mkdirSync(dir, { recursive: true });
+  const wrote = [];
+  for (const i of list) {
+    const name = String(i.sha).replace(/[^0-9a-f]/gi, '').slice(0, 40);
+    if (!name) continue;
+    const path = resolve(dir, name + '.json');
+    writeFileSync(path, JSON.stringify(i, null, 1) + '\n');
+    wrote.push(path);
+  }
+  return wrote;
+}
+
+/** the incidents the site shows: incidents.json plus one file per sha written since. */
+export function readLog(file = OUT, dir = ENTRIES) {
+  let base = [];
+  try { if (existsSync(file)) base = JSON.parse(readFileSync(file, 'utf8')).incidents || []; } catch (_) { base = []; }
+  return mergeEntries(base, readEntries(dir));
+}
+
+function save(next, prev) {
+  return writeChanged(changedEntries(prev, next));
+}
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, sha, run, file, failedShards] = process.argv.slice(2);
   if (cmd === 'record') {
     const inc = incidentOf({ sha, run, output: file && existsSync(file) ? readFileSync(file, 'utf8') : '', touched: touchedBy(sha), shards: failedShards });
     if (!inc) { console.log('incident-log: no FAIL line, nothing recorded'); process.exit(0); }
-    const list = addIncident(readLog(), inc);
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
-    console.log('incident-log: recorded ' + inc.checks.length + ' failed check(s) for ' + inc.sha.slice(0, 7) + ' (' + list.length + ' kept)');
+    const before = readLog(), list = addIncident(before, inc);
+    save(list, before);
+    console.log('incident-log: recorded ' + inc.checks.length + ' failed check(s) for ' + inc.sha.slice(0, 7) + ' (' + list.length + ' kept, one file)');
   } else if (cmd === 'resolve') { // after a green suite on main: close the incidents still open
     const before = readLog(), list = closeOpen(before, { sha, run });
     const n = openCount(before) - openCount(list);
     if (!n) { console.log('incident-log: nothing open to close'); process.exit(0); }
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first, with the green suite that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
+    save(list, before);
     console.log('incident-log: closed ' + n + ' incident(s) at ' + String(sha || '').slice(0, 7));
   } else if (cmd === 'pass') { // shards that passed on <sha> (the third argument, "1,3"): close what they fixed on earlier commits
     const before = readLog(), list = passShards(before, { sha, run, shards: file, isEarlier: (older) => isAncestor(older, sha) });
     const n = openCount(before) - openCount(list);
     if (JSON.stringify(before) === JSON.stringify(list)) { console.log('incident-log: shard(s) ' + shardsOf(file).join(',') + ' passed at ' + String(sha || '').slice(0, 7) + ', nothing open to mark'); process.exit(0); }
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
+    save(list, before);
     console.log('incident-log: shard(s) ' + shardsOf(file).join(',') + ' passed at ' + String(sha || '').slice(0, 7) + ', ' + n + ' incident(s) closed');
+  } else if (cmd === 'assemble') {
+    const list = readLog();
+    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs assemble, from incidents.json plus incidents/entries/; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
+    console.log('incident-log: assembled ' + list.length);
   } else if (cmd === 'backfill') {
-    const list = readLog().map((i) => (Array.isArray(i.touched) ? i : { ...i, touched: touchedBy(i.sha) }));
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names, shas and the paths the commit changed only.', incidents: list }, null, 1) + '\n');
+    const before = readLog(), list = before.map((i) => (Array.isArray(i.touched) ? i : { ...i, touched: touchedBy(i.sha) }));
+    save(list, before);
     console.log('incident-log: backfilled ' + list.filter((i) => i.touched.length).length + ' of ' + list.length);
   } else if (cmd === 'list') {
     for (const i of readLog()) console.log(i.at + ' ' + i.sha.slice(0, 7) + (i.closedAt ? ' closed after ' + i.minutes + ' min' : ' OPEN') + ' ' + i.checks.length + ' failed: ' + i.checks.map((c) => c.slice(0, 60)).join(' | '));
-  } else { console.error('usage: node tools/incident-log.mjs record <sha> <run-url> <test-output.txt> [shards] | pass <sha> <run-url> <shards> | resolve <sha> <run-url> | backfill | list'); process.exit(2); }
+  } else { console.error('usage: node tools/incident-log.mjs record <sha> <run-url> <test-output.txt> [shards] | pass <sha> <run-url> <shards> | resolve <sha> <run-url> | assemble | backfill | list'); process.exit(2); }
 }

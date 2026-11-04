@@ -10,7 +10,7 @@ name: Verse automerge
 
 on:
   workflow_run:
-    workflows: ["Verse deploy", "Verse review", "Verse bench"]
+    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate"]
     types: [completed]
   pull_request_review:
     types: [submitted]
@@ -19,9 +19,10 @@ on:
   issue_comment:
     types: [created, edited]
   pull_request:
-    types: [labeled, opened, reopened, ready_for_review] # every PR merges by itself (owner, 2026-10-15: "automerge everything always")
+    types: [labeled, opened, synchronize, reopened, ready_for_review] # every PR merges by itself (owner, 2026-10-15: "automerge everything always")
   schedule:
     - cron: "17 * * * *" # a check or review that finished without waking this workflow
+    - cron: "17 11 * * *" # once a day, the stuck-pull-request sweep (STUCK=1 below)
   workflow_dispatch:
 
 concurrency:
@@ -30,9 +31,10 @@ concurrency:
 
 permissions:
   contents: write # merge; push the merge of main to a conflicted PR's branch
-  pull-requests: write # mark a draft ready; the one conflict comment
+  pull-requests: write # mark a draft ready; the one conflict comment; arm auto-merge
   checks: read
   actions: write # start the deploy of main after a merge; start Verse's review on a head the bot pushed
+  administration: write # turn on the repository's allow_auto_merge, once; ignored when the token cannot
 
 jobs:
   automerge:
@@ -54,4 +56,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} # the merged PR's `Job: <id>` line moves that queue job to live (tools/job-link.mjs)
+          # the 11:17 UTC run also names the blocker on a pull request open more than 6 hours. The hourly run still merges; it does not slow anything.
+          STUCK: ${{ github.event.schedule == '17 11 * * *' && '1' || '' }}
         run: node tools/automerge.mjs

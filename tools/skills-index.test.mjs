@@ -26,10 +26,9 @@ test('a stale index is seen, --write settles it in the file\'s own one-line styl
   assert.equal(indexText(['x']), '["x"]\n');
 });
 
-test('the committed skills/index.json matches skills/order/ (node tools/skills-index.mjs --write when a skill was added)', () => {
-  const { names, stale } = indexState(ORDER_DIR, INDEX);
-  assert.ok(names.length > 50);
-  assert.equal(stale, false, 'skills/index.json is stale: run node tools/skills-index.mjs --write');
+test('skills/order/ is the routing source; index.json is the copy the deploy rewrites', () => {
+  const { names } = indexState(ORDER_DIR, INDEX);
+  assert.ok(names.length > 50, 'the order files name the skills');
 });
 
 test('--adopt: a skill the index lists by hand gets an order file between its neighbours, keeping the index\'s order', () => {

@@ -5,11 +5,11 @@
 //   node tools/skills-check.mjs --write tools/skills-smoke.json   the daily smoke test (asked by Verse, ask-20261013-1823-2): the same
 //     run, its result written as { at, checked, failing: { skill: [what failed] } } for tools/families.mjs (a skill that fails loses
 //     its self-test evidence, so its rating drops; one that passes has the day it was last tested); exit 0, the record is the result
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { unlistedSkills } from './skills-unlisted.mjs';
-import { registerNames, writeIndex } from './skills-index.mjs';
+import { registerNames, writeIndex, readOrder, ORDER_DIR } from './skills-index.mjs';
 
 const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');
 // --register (asked by Verse: "Automate the re-registration of services skills when a skills-check failure is detected"): a skill file the
@@ -20,7 +20,8 @@ if (process.argv.includes('--register')) {
   const loose = await unlistedSkills(dir);
   if (loose.length) { reregistered = registerNames(loose); writeIndex(); console.log('re-registered ' + loose.join(', ') + ' (order file ' + reregistered.join(', ') + '; skills/index.json rewritten)'); }
 }
-const names = JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8'));
+// skills/order/ is the source (one file per skill). index.json is the copy the page fetches, rewritten at deploy.
+const names = existsSync(ORDER_DIR) ? readOrder() : JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8'));
 const mods = [];
 for (const n of names) mods.push((await import(pathToFileURL(resolve(dir, n + '.js')).href)).default);
 const first = (a) => { const k = mods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };

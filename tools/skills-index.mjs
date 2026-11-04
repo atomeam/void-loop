@@ -132,10 +132,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       let missing = [], loose = [];
       try { const r = ranksOf(); missing = JSON.parse(readFileSync(INDEX, 'utf8')).filter((n) => !(n in r)); loose = unregistered(readdirSync(skillsDir), (f) => readFileSync(resolve(skillsDir, f), 'utf8'), r); } catch (_) {}
       if (loose.length) { console.log('skills/' + loose.map((x) => x.file).join(', ') + ' is a skill with no order file: node tools/skills-index.mjs --adopt registers it (at the end of the routing order), or name it in OFF in tools/skills-index.mjs with why'); process.exit(1); }
-      console.log(!stale ? names.length + ' skills, index.json matches skills/order/'
-        : missing.length ? 'skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'
-        : 'skills/index.json is stale: node tools/skills-index.mjs --write (the order files in skills/order/ are the source)');
-      process.exit(stale ? 1 : 0); }
+      if (missing.length) { console.log('skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'); process.exit(1); }
+      // a stale index.json is not a pull-request failure: deploy.yml runs --write, and two branches editing the one list always conflict
+      console.log(names.length + ' skills from skills/order/' + (stale ? ' (index.json lags; the deploy rewrites it)' : ', index.json matches'));
+      process.exit(0); }
     console.log(indexText(names).trim()); console.log(stale ? 'index.json differs (run with --write)' : 'index.json matches');
   }
 }
