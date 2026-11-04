@@ -11,8 +11,8 @@
  },
  "counts": {
   "sites": 255,
-  "surpassed": 4,
-  "passed": 141,
+  "surpassed": 2,
+  "passed": 143,
   "assimilated": 6,
   "current": 1,
   "tried": 103
@@ -234,12 +234,27 @@
     "void-live-deploy/lib/tool-sites.js",
     "void-live-deploy/lib/self-sites.js",
     "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
+    "void-live-deploy/tower.target.json",
+    "void-live-deploy/tower.features.json"
    ],
    "current": true,
    "score": {
     "n": 11,
     "m": 15
+   },
+   "crawl": {
+    "pages": 57,
+    "templates": 13,
+    "features": 25,
+    "missing": [
+     "In 24 languages",
+     "A grid (18: Face smiling, Face affection, Face tongue, Face hand, Face neutral skeptical, ",
+     "Articles (a blog)",
+     "A page: Emoji Keyboard ⌨️♥️😂 Online",
+     "A page: Themes",
+     "A page: 🕹️ Concentration Emoji Game"
+    ],
+    "at": "2026-11-04"
    }
   },
   {
@@ -381,14 +396,14 @@
   {
    "site": "onlineconverter.com",
    "url": "https://onlineconverter.com/",
-   "status": "surpassed",
-   "outcome": "surpassed",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
    "at": "2026-11-03T14:54:07Z",
    "page": "/converter/",
    "lane": "",
    "took": "",
-   "why": "ahead of it on 12 of 12 aspects, measured head to head",
-   "learned": "beaten on 12 of 12 aspects: 136 ms to load against 49 ms; 10 of 10 things a full answer shows against 9 (the site lacked nothing to install)",
+   "why": "Passed onlineconverter.com (12/12, missing 2 features)",
+   "learned": "",
    "ease": null,
    "first": {
     "at": "2026-10-29T16:34:49Z",
@@ -396,11 +411,22 @@
     "file": "void-live-deploy/lib/tower.js"
    },
    "sources": [
-    "void-live-deploy/tower.evidence.json"
+    "void-live-deploy/tower.target.json",
+    "void-live-deploy/tower.features.json"
    ],
    "score": {
     "n": 12,
     "m": 12
+   },
+   "crawl": {
+    "pages": 199,
+    "templates": 13,
+    "features": 36,
+    "missing": [
+     "A grid (7: Introduction, How To Use, Main Options, Other Options, Remarks, Related Video C",
+     "Calculation Results"
+    ],
+    "at": "2026-11-04"
    }
   },
   {
@@ -4287,14 +4313,14 @@
   {
    "site": "howsecureismypassword.net",
    "url": "https://howsecureismypassword.net/",
-   "status": "surpassed",
-   "outcome": "surpassed",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
    "at": "2026-10-30T05:33:34Z",
    "page": "/password/strength/",
    "lane": "",
    "took": "",
-   "why": "ahead of it on 15 of 15 aspects, measured head to head",
-   "learned": "a checker is trusted only when nothing leaves the device: the password never goes in a link, the leak list is asked with five characters of a fingerprint, and the reasons and the fixes stand beside the time to crack; and the gate learned to type a question into Verse's own box when the address must not carry it",
+   "why": "Passed howsecureismypassword.net (15/15, missing 2 features)",
+   "learned": "",
    "ease": null,
    "first": {
     "at": "2026-10-24T04:24:52Z",
@@ -4302,11 +4328,22 @@
     "file": "void-live-deploy/lib/tower.js"
    },
    "sources": [
-    "void-live-deploy/tower.evidence.json"
+    "void-live-deploy/tower.target.json",
+    "void-live-deploy/tower.features.json"
    ],
    "score": {
     "n": 15,
     "m": 15
+   },
+   "crawl": {
+    "pages": 1,
+    "templates": 1,
+    "features": 3,
+    "missing": [
+     "Translations Menu",
+     "Accessibility Menu"
+    ],
+    "at": "2026-11-04"
    }
   },
   {

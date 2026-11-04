@@ -295,6 +295,74 @@
  },
  "commits": [
   {
+   "at": "2026-11-04T05:20:17Z",
+   "subject": "real-pages: specs for /salvage/ and /credits/"
+  },
+  {
+   "at": "2026-11-04T05:10:02Z",
+   "subject": "/bots/: real-pages spec and share card (#2149)"
+  },
+  {
+   "at": "2026-11-04T05:08:39Z",
+   "subject": "Verse as an A2A agent: /.well-known/agent-card.json + /api/a2a (#2150)"
+  },
+  {
+   "at": "2026-11-04T05:07:22Z",
+   "subject": "autosalvage: 'already live' needs the piece's own path in live code; stubs and copies are history"
+  },
+  {
+   "at": "2026-11-04T05:03:37Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 74c3b3baec07d6820d32e2c5d52674a09c9b737d (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-04T04:59:36Z",
+   "subject": "Bot families: 2,748 live bots, each passing independent checks; grown bots need a judge (#2146)"
+  },
+  {
+   "at": "2026-11-04T04:58:47Z",
+   "subject": "autosalvage: revive as Verse's unifier (scan, evaluate, /salvage/, /credits/, outside work with license checks)"
+  },
+  {
+   "at": "2026-11-04T04:57:33Z",
+   "subject": "Add the bot-factory workflow (#2145)"
+  },
+  {
+   "at": "2026-11-04T04:54:22Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-04T04:52:49Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T04:50:48Z",
+   "subject": "/bots/: run any of Verse's live bots, its bots on /team/, and the bot-factory schedule (#2143)"
+  },
+  {
+   "at": "2026-11-04T04:49:12Z",
+   "subject": "regex-tester: cap the pattern and text length (#2144)"
+  },
+  {
+   "at": "2026-11-04T04:48:40Z",
+   "subject": "Verse bot factory: 77 bots live, each only after its probe passes on a real task (#2139)"
+  },
+  {
+   "at": "2026-11-04T04:47:08Z",
+   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
+  },
+  {
+   "at": "2026-11-04T04:46:59Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-04T04:40:14Z",
+   "subject": "main checks: /api/crew marked internal, handoff metas on /treasury/ and /emojis/everywhere/, MAP lines for shorts/treasury, regenerated…"
+  },
+  {
+   "at": "2026-11-04T04:40:05Z",
+   "subject": "/team/: Verse's 20 free bots in the sidebar, each with a free-bot badge and a link to its page (read from /tools.json) (#2140)"
+  },
+  {
    "at": "2026-11-04T04:40:01Z",
    "subject": "Shorts: the daily improvement loop films champion and challenger (#2138)"
   },
@@ -305,74 +373,6 @@
   {
    "at": "2026-11-04T04:27:20Z",
    "subject": "Turn off the old record and clips schedules (#2136)"
-  },
-  {
-   "at": "2026-11-04T04:26:40Z",
-   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19 (#2131)"
-  },
-  {
-   "at": "2026-11-04T04:20:16Z",
-   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate (#2129)"
-  },
-  {
-   "at": "2026-11-04T04:18:28Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-04T04:18:15Z",
-   "subject": "Add the daily gate-checked Shorts workflow (#2135)"
-  },
-  {
-   "at": "2026-11-04T04:15:06Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T04:13:56Z",
-   "subject": "Turn on the treasury workflow (#2128)"
-  },
-  {
-   "at": "2026-11-04T04:06:01Z",
-   "subject": "shorts: the answer pattern is a SCENES constant (void-review: ok)"
-  },
-  {
-   "at": "2026-11-04T04:05:00Z",
-   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
-  },
-  {
-   "at": "2026-11-04T04:03:41Z",
-   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19"
-  },
-  {
-   "at": "2026-11-04T03:56:05Z",
-   "subject": "/emoji/<emoji> lands on its every-platform grid: a Pages Function makes the hop (Pages leaves :splat unfilled in a query string, live…"
-  },
-  {
-   "at": "2026-11-04T03:52:01Z",
-   "subject": "Films: the watch player fits the 9:16 Short, no black bars beside it (#2127)"
-  },
-  {
-   "at": "2026-11-04T03:50:52Z",
-   "subject": "checks: keep main's list, add only video-gate"
-  },
-  {
-   "at": "2026-11-04T03:50:25Z",
-   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate"
-  },
-  {
-   "at": "2026-11-04T03:50:01Z",
-   "subject": "Main green: tower pages preload what they import, /conquered/ spec reads the new card wording, MAP and doc-drift fixed (#2123)"
-  },
-  {
-   "at": "2026-11-04T03:49:18Z",
-   "subject": "Cards: moving a card keeps its video playing; answer card no longer echoes the whole input (#2126)"
-  },
-  {
-   "at": "2026-11-04T03:47:04Z",
-   "subject": "team crew: leave the generated files to the deploy (#2112)"
-  },
-  {
-   "at": "2026-11-04T03:46:01Z",
-   "subject": "Outcome exam: images 73.9"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 36,
-  "week": 552
+  "day": 40,
+  "week": 556
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
