@@ -79,6 +79,23 @@ export const SPECS = {
     const m = (await t.p.locator('body').innerText()); t.ok(/\d+ of \d+ aspects ahead/.test(m), 'the current matchup shows its measured aspects');
     await t.click('.tower-floor'); const d = await t.waitText('#detail', /aspects ahead of/, 5000); t.ok(/^\d+ of \d+ aspects ahead of \S+/.test(d), 'a floor, tapped, reads its measured line: ' + d.slice(0, 60));
   },
+  '/vat/': async (t) => { // 1000 with 22% VAT in it: 180,33 VAT and 819,67 net, to the kopeck; adding 20% to 5000 is 6 000,00
+    await t.fill('#amount', '1000'); await t.fill('#rate', '22'); await t.p.selectOption('#mode', 'extract');
+    const v = await t.waitText('#vatValue', /180,33/, 5000); t.ok(/180,33/.test(v), 'VAT out of 1000 at 22% is 180,33: ' + v);
+    t.ok(/819,67/.test(await t.text('#baseValue')), 'the net is 819,67');
+    await t.fill('#amount', '5000'); await t.fill('#rate', '20'); await t.p.selectOption('#mode', 'add');
+    const g = await t.waitText('#grossValue', /6\s?000,00/, 5000); t.ok(/6\s?000,00/.test(g), 'adding 20% to 5000 is 6 000,00: ' + g);
+    t.ok((await t.p.locator('#related a[href="/calculator/"]').count()) > 0, 'the page links to its related tools');
+    await t.share('#copyLink', async (p) => /6\s?000,00/.test(await p.locator('#grossValue').innerText()));
+    await t.links();
+  },
+  '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
+    const lead = await t.waitText('#lead', /\d+ sites: \d+ surpassed/, 10000); t.ok(/\d+ sites: \d+ surpassed/.test(lead), 'it counts the sites: ' + lead.slice(0, 60));
+    const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
+    await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
+    const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
+    await t.links();
+  },
   '/films/': async (t) => {
     const n = await t.waitText('main, body', /\d+ videos, newest first/, 20000); const c = +((n.match(/(\d+) videos, newest first/) || [])[1] || 0);
     t.ok(c > 0, c + ' films listed from the feed'); await t.links();
@@ -149,6 +166,12 @@ export const SPECS = {
   // never cover it, a word told becomes an orb on it, the live numbers and what it says about itself are the brain's own, Good is heard, the
   // panel and the numbers fold away, and a smaller window refits the field
   '/brain/': async (t) => {
+    // Knows first: what Verse knows, searchable, with no simulation loaded until Watch it think
+    await t.p.waitForFunction(() => document.body.dataset.knowsReady === '1', null, { timeout: 15000 }).catch(() => {});
+    t.ok(await t.p.evaluate(() => !window.verseBrainField && document.querySelectorAll('#kList .k-item').length >= 10), 'Knows opens with what Verse knows and no simulation running');
+    await t.fill('#kFind', 'pdf'); await t.p.waitForTimeout(300);
+    const hit = await t.text('#kSum'); t.ok(/^\d+ things? match “pdf”/.test(hit) && !/^0 /.test(hit), 'search finds what it knows: ' + hit);
+    await t.click('#watchBtn');
     await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 15000 }).catch(() => {});
     const fit = () => t.p.evaluate(() => {
       const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), live = document.querySelector('#live');

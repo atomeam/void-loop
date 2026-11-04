@@ -26,7 +26,7 @@ export function pickSuggestion(list, last, rnd = Math.random) {
 }
 
 export const OFFLINE_PLACEHOLDER = 'offline: skills that need the network will wait';
-export const READY_PLACEHOLDER = 'Command the Verse'; // the owner, 2026-10-18: the stage is the Verse now, and the bar says so
+export const READY_PLACEHOLDER = 'Ask anything'; // the empty stage has no other words: the bar itself has to say a person can type
 
 // The link state, from what the page already sees: the browser's online flag and its own failed requests. Two same-origin requests in a
 // row that never reached the network count as offline; any success (or the browser's `online` event) clears it at once.

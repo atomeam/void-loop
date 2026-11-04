@@ -1,0 +1,670 @@
+{
+ "note": "The commit that first named each assimilated or tried site in void-live-deploy/lib/tool-sites.js, void-live-deploy/lib/self-sites.js, domains/tower-self.json, void-live-deploy/lib/tower.js, from git history (node tools/assimilated.mjs --backfill). Rewritten only by that command.",
+ "hosts": {
+  "10015.io": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "abacktools.com": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "airmilescalculator.com": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "ajsonline.org": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "anycolorid.com": {
+   "at": "2026-10-26T07:10:54Z",
+   "sha": "c9b63a53c",
+   "file": "domains/tower-self.json"
+  },
+  "arbeitnow.com": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "aruljohn.com": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "besslerwheel.com": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "bouldercolorado.gov": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "brandcolors.net": {
+   "at": "2026-10-26T07:34:55Z",
+   "sha": "3b32ed4a3",
+   "file": "domains/tower-self.json"
+  },
+  "c-united.co.jp": {
+   "at": "2026-10-26T22:52:46Z",
+   "sha": "3d7a55681",
+   "file": "domains/tower-self.json"
+  },
+  "clock7.com": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "co2.myclimate.org": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "codeshack.io": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "colorcanon.com": {
+   "at": "2026-10-26T07:10:54Z",
+   "sha": "c9b63a53c",
+   "file": "domains/tower-self.json"
+  },
+  "colorfulbox.jp": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "coloringhome.com": {
+   "at": "2026-11-01T16:55:26Z",
+   "sha": "3eed51126",
+   "file": "domains/tower-self.json"
+  },
+  "coloringnation.com": {
+   "at": "2026-11-01T16:55:26Z",
+   "sha": "3eed51126",
+   "file": "domains/tower-self.json"
+  },
+  "colorjigsaw.com": {
+   "at": "2026-10-29T08:51:01Z",
+   "sha": "ca0e008a0",
+   "file": "domains/tower-self.json"
+  },
+  "colormind.io": {
+   "at": "2026-10-26T07:34:55Z",
+   "sha": "3b32ed4a3",
+   "file": "domains/tower-self.json"
+  },
+  "colornames.org": {
+   "at": "2026-10-26T07:21:38Z",
+   "sha": "c4483396d",
+   "file": "domains/tower-self.json"
+  },
+  "colorzilla.com": {
+   "at": "2026-10-24T15:46:35Z",
+   "sha": "40d72112d",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "communitycollegejobs.com": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "communitydns.net": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  },
+  "communitydragon.org": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "communityos.org": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "convertcart.com": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "convertlive.com": {
+   "at": "2026-10-26T07:21:38Z",
+   "sha": "c4483396d",
+   "file": "domains/tower-self.json"
+  },
+  "convertunits.com": {
+   "at": "2026-10-26T07:34:55Z",
+   "sha": "3b32ed4a3",
+   "file": "domains/tower-self.json"
+  },
+  "convertytmp3.org": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  },
+  "copyemojio.com": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "cpantesters.org": {
+   "at": "2026-10-26T07:18:01Z",
+   "sha": "ae15d18e1",
+   "file": "domains/tower-self.json"
+  },
+  "dafont.com": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "diffen.com": {
+   "at": "2026-10-30T22:38:03Z",
+   "sha": "c167196d0",
+   "file": "domains/tower-self.json"
+  },
+  "diffuse.tools": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "drawnames.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "drawspace.com": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "duniter.org": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "ecommunity.com": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "email-checker.net": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "emojicombos.com": {
+   "at": "2026-10-26T16:56:12Z",
+   "sha": "64805c486",
+   "file": "domains/tower-self.json"
+  },
+  "emojitracker.com": {
+   "at": "2026-10-26T07:18:01Z",
+   "sha": "ae15d18e1",
+   "file": "domains/tower-self.json"
+  },
+  "facemojikeyboard.com": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "fakemailgenerator.com": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "fasterwheeler.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "flightconnections.com": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "font.im": {
+   "at": "2026-10-26T22:52:46Z",
+   "sha": "3d7a55681",
+   "file": "domains/tower-self.json"
+  },
+  "freefonts.co": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "gcmap.com": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "getconverter.org": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "gmgcolor.com": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "greenwichcommunitydirectory.org.uk": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "hexasoftware.dev": {
+   "at": "2026-11-01T16:55:26Z",
+   "sha": "3eed51126",
+   "file": "domains/tower-self.json"
+  },
+  "hexdb.io": {
+   "at": "2026-10-26T22:52:46Z",
+   "sha": "3d7a55681",
+   "file": "domains/tower-self.json"
+  },
+  "hexen.ai": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "hexo.io": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "hexonet.net": {
+   "at": "2026-10-26T16:56:12Z",
+   "sha": "64805c486",
+   "file": "domains/tower-self.json"
+  },
+  "heycolor.com": {
+   "at": "2026-10-26T07:10:56Z",
+   "sha": "de56d99ba",
+   "file": "domains/tower-self.json"
+  },
+  "himalayas.app": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "howsecureismypassword.net": {
+   "at": "2026-10-24T04:24:52Z",
+   "sha": "a15502f14",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "hyperunit.xyz": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "illicitencounters.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "jasperbernaers.com": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "jobicy.com": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "justfont.com": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "kanbanflow.com": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "kingdraw.cn": {
+   "at": "2026-10-30T22:41:16Z",
+   "sha": "5df9592e0",
+   "file": "domains/tower-self.json"
+  },
+  "kingdraw.com": {
+   "at": "2026-10-30T08:55:58Z",
+   "sha": "a09a518b9",
+   "file": "domains/tower-self.json"
+  },
+  "koanruler.com": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "localconditions.com": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "magicchecker.com": {
+   "at": "2026-10-26T07:18:01Z",
+   "sha": "ae15d18e1",
+   "file": "domains/tower-self.json"
+  },
+  "mail-tester.com": {
+   "at": "2026-10-31T15:56:49Z",
+   "sha": "2d2dc3b53",
+   "file": "domains/tower-self.json"
+  },
+  "mycolor.space": {
+   "at": "2026-10-26T07:34:55Z",
+   "sha": "3b32ed4a3",
+   "file": "domains/tower-self.json"
+  },
+  "nameunit.com": {
+   "at": "2026-10-26T07:18:01Z",
+   "sha": "ae15d18e1",
+   "file": "domains/tower-self.json"
+  },
+  "ndscalc.ru": {
+   "at": "2026-10-30T06:07:42Z",
+   "sha": "27bc32562",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "nnamdicenter.org": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "notepad-plus-plus.org": {
+   "at": "2026-10-26T22:52:46Z",
+   "sha": "3d7a55681",
+   "file": "domains/tower-self.json"
+  },
+  "online-calculator.com": {
+   "at": "2026-10-26T07:21:38Z",
+   "sha": "c4483396d",
+   "file": "domains/tower-self.json"
+  },
+  "onlineconverter.com": {
+   "at": "2026-10-29T16:34:49Z",
+   "sha": "b66702e33",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "openspeedtest.com": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "opentimestamps.org": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "pdfcandy.com": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "processchecker.com": {
+   "at": "2026-10-26T22:52:46Z",
+   "sha": "3d7a55681",
+   "file": "domains/tower-self.json"
+  },
+  "qunitjs.com": {
+   "at": "2026-10-29T08:51:01Z",
+   "sha": "ca0e008a0",
+   "file": "domains/tower-self.json"
+  },
+  "racetimer.se": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "randomarea.com": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "remoteok.com": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "remotive.com": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "resizepixel.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "responsivedesignchecker.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "searchexpertfind.com": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "sejda.com": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "seriouswheels.com": {
+   "at": "2026-11-01T09:37:56Z",
+   "sha": "7b8cda199",
+   "file": "domains/tower-self.json"
+  },
+  "sketch.io": {
+   "at": "2026-10-31T15:56:44Z",
+   "sha": "8bf36deae",
+   "file": "domains/tower-self.json"
+  },
+  "sketchersunited.org": {
+   "at": "2026-10-27T16:00:01Z",
+   "sha": "0c982a3b2",
+   "file": "domains/tower-self.json"
+  },
+  "slackcommunity.com": {
+   "at": "2026-11-01T16:55:26Z",
+   "sha": "3eed51126",
+   "file": "domains/tower-self.json"
+  },
+  "smallpdf.com": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "speedchecker.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "speedcheckerapi.com": {
+   "at": "2026-11-01T09:37:51Z",
+   "sha": "a23b165d9",
+   "file": "domains/tower-self.json"
+  },
+  "speedtest.org": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "speedtest.ru": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  },
+  "streamingunity.dog": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "streamingunity.fun": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "streamingunity.win": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "supercolorapp.com": {
+   "at": "2026-10-26T16:56:12Z",
+   "sha": "64805c486",
+   "file": "domains/tower-self.json"
+  },
+  "sycophanthex.com": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "syncsketch.com": {
+   "at": "2026-10-28T22:47:49Z",
+   "sha": "534b870b5",
+   "file": "domains/tower-self.json"
+  },
+  "syncsketch.dev": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  },
+  "tallycount.app": {
+   "at": "2026-10-26T07:34:55Z",
+   "sha": "3b32ed4a3",
+   "file": "domains/tower-self.json"
+  },
+  "thunit.com": {
+   "at": "2026-10-26T07:18:01Z",
+   "sha": "ae15d18e1",
+   "file": "domains/tower-self.json"
+  },
+  "tools.pdf24.org": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "top-password.com": {
+   "at": "2026-10-29T08:51:01Z",
+   "sha": "ca0e008a0",
+   "file": "domains/tower-self.json"
+  },
+  "tripwaffle.com": {
+   "at": "2026-10-26T04:56:18Z",
+   "sha": "380e87492",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "unit.no": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  },
+  "unitedbrands.wine": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "unitedworx.com": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "uptimer.dev": {
+   "at": "2026-10-26T22:52:46Z",
+   "sha": "3d7a55681",
+   "file": "domains/tower-self.json"
+  },
+  "urdufonts.net": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "vcalc.com": {
+   "at": "2026-10-26T07:10:54Z",
+   "sha": "c9b63a53c",
+   "file": "domains/tower-self.json"
+  },
+  "videounit.net": {
+   "at": "2026-10-31T21:51:43Z",
+   "sha": "5aa876681",
+   "file": "domains/tower-self.json"
+  },
+  "vtuner.com": {
+   "at": "2026-10-27T22:34:29Z",
+   "sha": "4d01d60f6",
+   "file": "domains/tower-self.json"
+  },
+  "wekan.fi": {
+   "at": "2026-10-26T03:18:08Z",
+   "sha": "faa6aacdd",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "weworkremotely.com": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "wheelockweb.com": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "wheelockweb.net": {
+   "at": "2026-10-27T08:19:51Z",
+   "sha": "40f5c986d",
+   "file": "domains/tower-self.json"
+  },
+  "wheelofgold.com": {
+   "at": "2026-10-24T15:55:43Z",
+   "sha": "d957075f4",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "wheeloutlet.com": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  },
+  "wheelroot.com": {
+   "at": "2026-10-29T14:46:31Z",
+   "sha": "57aef4e41",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "workingnomads.com": {
+   "at": "2026-10-26T06:59:35Z",
+   "sha": "2a2a6fbbf",
+   "file": "void-live-deploy/lib/tower.js"
+  },
+  "ww2incolor.com": {
+   "at": "2026-11-01T22:17:51Z",
+   "sha": "e915c9296",
+   "file": "domains/tower-self.json"
+  },
+  "yunite.xyz": {
+   "at": "2026-10-26T07:18:01Z",
+   "sha": "ae15d18e1",
+   "file": "domains/tower-self.json"
+  },
+  "zischexpress.de": {
+   "at": "2026-11-01T16:55:26Z",
+   "sha": "3eed51126",
+   "file": "domains/tower-self.json"
+  },
+  "zoopicker.com": {
+   "at": "2026-10-31T08:47:16Z",
+   "sha": "ff6b57c12",
+   "file": "domains/tower-self.json"
+  }
+ }
+}

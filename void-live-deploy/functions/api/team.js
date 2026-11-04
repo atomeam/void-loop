@@ -196,6 +196,21 @@ async function write(env, { c, by, body, thread = 0, job = null, now }) {
   return r.id;
 }
 
+// Verse itself says something in a channel of its team chat: the automations' team.post step and a watch with tell 'team'
+// (lib/automations-run.js; owner, 2026-11-03: "we make our own zapier ... lets start using all our tools"). Only the owner's rules reach
+// it (a rule is owner-only to save, and the runner checks the scope). The body is cleaned and redacted as a member's post is, with a
+// mention of everyone (@here) turned into plain text, so a webhook's data cannot page the whole team. -> the message id
+export async function verseSays(env, { c = 'general', body, thread = 0, now = Date.now() } = {}) {
+  await tables(env, now);
+  const code = String(c || 'general').toLowerCase().trim();
+  if (T.codeProblem(code)) throw new Error('no channel #' + T.clean(code, 24) + ' in the team chat');
+  const text = T.hideSecrets(T.cleanBody(redact(String(body || '')))).replace(/@(here|everyone|channel)\b/gi, '$1');
+  if (!text) throw new Error('nothing to say in the team chat');
+  const ch = await env.DB.prepare('SELECT code FROM void_team_channels WHERE code = ?').bind(code).first();
+  if (!ch) throw new Error('no channel #' + code + ' in the team chat');
+  return write(env, { c: code, by: 'verse', body: text, thread: Number(thread) || 0, now });
+}
+
 // a thread an agent names: its number, or the job it is for (the caller's own job first, else the newest thread of that job). -> id or 0
 async function threadId(env, v, me) {
   const r = T.threadRef(v); if (!r) return 0;

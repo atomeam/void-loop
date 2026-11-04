@@ -4,6 +4,7 @@
  * "distance from London to Paris", "how far is Tokyo from Osaka", "how far from New York to Boston", "is nyc → london".
  * Short names people type (nyc, la, sf, dc, ldn, brum) become the city the place search knows (ALIASES).
  */
+import { placeTries } from '../lib/where.js';
 // the short names people type for a city, as the place search knows it (it finds nothing for "nyc" or "ldn")
 export const ALIASES = {
   nyc: 'New York', ny: 'New York', 'new york city': 'New York', 'the big apple': 'New York', la: 'Los Angeles', sf: 'San Francisco',
@@ -46,6 +47,9 @@ export function placesOf(text) {
   if (q) return out(q[1], q[2]);
   const k = t.match(/^(?:how many\s+)?(?:km|kilomet(?:er|re)s?|miles?|mi)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how many km from Lyon to Turin", "km from Lyon to Turin"
   if (k) return out(k[1], k[2]);
+  // "directions from Lakeland FL to Tampa": the same two places, with the route links the card already draws
+  const dir = t.match(/^(?:(?:get|give)(?:\s+me)?\s+)?directions\s+from\s+(.+?)\s+to\s+(.+)$/i);
+  if (dir) return out(dir[1], dir[2]);
   const f = t.match(/^how\s+long\s+(?:is\s+(?:the|a)\s+flight|does\s+it\s+take\s+to\s+fly)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how long is the flight from London to New York"
   if (f) return out(f[1], f[2], { flight: true });
   // "flight distance from London to Paris", "air distance New York to Tokyo": the same crow-flies distance, with the flight time
@@ -59,8 +63,12 @@ export function flightTime(d) {
   return 'About ' + (mins >= 60 ? Math.floor(mins / 60) + ' h' + (mins % 60 ? ' ' + (mins % 60) + ' min' : '') : mins + ' min');
 }
 export async function geo(name) {
-  const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(name.split(',')[0])).then((r) => r.json());
-  return ((g && g.results) || []).sort((x, y) => (y.population || 0) - (x.population || 0))[0] || null;
+  for (const q of placeTries(name)) {
+    const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(q.split(',')[0])).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
+    const hit = ((g && g.results) || []).sort((x, y) => (y.population || 0) - (x.population || 0))[0];
+    if (hit) return hit;
+  }
+  return null;
 }
 export function km(a, b) {
   const R = 6371.0088, rad = (d) => d * Math.PI / 180;

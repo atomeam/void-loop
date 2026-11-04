@@ -1492,5 +1492,82 @@
    }
   ],
   "note": "new ground passed, kept as a regression case: \"contéstame en español\" (skill:languages)"
+ },
+ {
+  "at": "2026-11-03T21:58:46Z",
+  "passed": 58,
+  "of": 87,
+  "ms": 554,
+  "kind": "file",
+  "key": "which games do you know | nothing appeared",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "which games do you know",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "what do you get if you merge a pizza and a black hole",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "is unwrap risky in rust",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "are you web4",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "what are the figures doing",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "longevity trial watch",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "find a rumble video about bitcoin",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "what rhymes with orange",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "nothing appeared"
+   }
+  ],
+  "note": "fix: \"which games do you know\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T00:28:38Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2068,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11891 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

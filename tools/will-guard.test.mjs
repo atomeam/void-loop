@@ -37,7 +37,7 @@ test('the first want that has tries left is picked; wants above it are named as 
 
 test('the note says how many wants waited and why; the window is 14 days back from now', () => {
   assert.equal(skippedNote([]), '');
-  assert.match(skippedNote([{ title: 'a', tries: 2 }]), / · 1 want above it waits: its jobs ended without shipping 2 times in 14 days$/);
+  assert.match(skippedNote([{ title: 'a', tries: 2 }]), / · 1 want above it waits: its jobs were set aside or failed 2 times in 14 days$/);
   assert.match(skippedNote([{ title: 'a' }, { title: 'b' }]), /2 wants above it waits/);
   const now = Date.parse('2026-10-18T12:00:00Z');
   assert.equal(WINDOW_DAYS, 14);

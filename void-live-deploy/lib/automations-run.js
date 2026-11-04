@@ -12,6 +12,7 @@ import { track, deferred } from './actions.js';
 import { validate, steps, matches, due, MAX_EVENT, RUN_CAP_DAY, QUEUE_DEDUPE_MS } from './automations.js';
 import { evaluate, pageText, checkText, describe, slowDown, waitAfter, waiting, limitText, skipText, answerOf } from './watch.js';
 import { sameSecret } from './guard.js';
+import { verseSays } from '../functions/api/team.js';
 
 export const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_automations (id TEXT PRIMARY KEY, name TEXT NOT NULL, enabled INTEGER NOT NULL, rule TEXT NOT NULL, hook TEXT, created TEXT NOT NULL, updated TEXT NOT NULL, scope TEXT NOT NULL DEFAULT \'\')',
@@ -132,8 +133,10 @@ export async function watchCheck(env, rule, step, opts = {}) {
     }
     const r = evaluate(w, sample, prev);
     const fresh = r.matched && !(prev && prev.matched); // a new match; the same one is not told again every tick
-    const told = fresh ? (step.tell === 'send' ? 'send stubbed (the confirm line would ask first)' : 'told on the stage') : '';
+    const team = step.tell === 'team' && !rule.scope; // only the owner's rules speak in the team chat
+    const told = fresh ? (step.tell === 'send' ? 'send stubbed (the confirm line would ask first)' : team ? 'told the team chat (#general)' : 'told on the stage') : '';
     await keep(env, rule.id, r.state, fresh);
+    if (fresh && team) await verseSays(env, { c: 'general', body: '⚠ ' + (rule.name || rule.id) + ': ' + checkText(w, r, '') + '. (Verse automation ' + rule.id + ')', now: at });
     if (fresh && step.tell === 'send') await track(env, { owner: who, kind: 'watch.send', ref: rule.id }, async () => {}, { stub: 'would have sent: ' + checkText(w, r, '') + '. Sending is not connected; the confirm line would ask first.' });
     return checkText(w, r, told);
   });
@@ -197,6 +200,10 @@ export async function act(env, step, { fetcher = fetch } = {}) {
     const r = await fetcher(step.url, { method: 'POST', headers: { 'content-type': 'application/json', 'user-agent': 'void-automations' }, body: JSON.stringify({ text: step.body }), redirect: 'manual' });
     if (r.status >= 300) throw new Error(step.url + ' answered ' + r.status);
     return step.url + ' answered ' + r.status;
+  }
+  if (step.action === 'team.post') {
+    const id = await verseSays(env, { c: step.c, body: step.body });
+    return 'said in #' + step.c + ' of the team chat (message ' + id + ')';
   }
   throw new Error('unknown action ' + step.action);
 }

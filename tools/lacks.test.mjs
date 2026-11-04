@@ -82,7 +82,11 @@ test('on the real repo files the ranking is non-empty, sorted, and its candidate
   assert.ok(r.length > 0);
   for (let i = 1; i < r.length; i++) assert.ok(r[i - 1].score >= r[i].score);
   const p = plan(d, { n: 4 }), have = new Set(d.bench.map((x) => String(x.ask).toLowerCase()));
-  assert.ok(p.candidates.length > 0);
+  // an empty plan is right only when nothing is left to add: every usable example of every ranked skill is in the benchmark already
+  // (2026-11-03: the real files reached that state, the plan exits 3 "Nothing lacking", and this test had kept grow-self red)
+  const left = r.flatMap((x) => x.examples.map((e) => e.trim())).filter((a) => usable(a) && !have.has(a.toLowerCase()));
+  if (left.length) assert.ok(p.candidates.length > 0, 'unbenched examples are left (' + left.slice(0, 3).join(', ') + '), so the plan must not be empty');
+  else assert.deepEqual(p, { picks: [], candidates: [] });
   for (const c of p.candidates) { assert.ok(usable(c.ask)); assert.ok(!have.has(c.ask.toLowerCase())); assert.match(c.want, /^skill:[a-z0-9-]+$/); }
 });
 

@@ -31,7 +31,8 @@ export function vatStateOf(text) {
   for (const [re, mode] of rules) {
     const r = re.exec(t);
     if (!r) continue;
-    const { amount, rate } = splitRate(r[1]);
+    // "ндс 22% от 1000" names the rate first: its rule has two groups, the rate and then the sum (2026-11-03: it read 22 as the sum)
+    const { amount, rate } = r[2] != null ? { amount: r[2], rate: parseRate(r[1]) } : splitRate(r[1]);
     const n = parseAmount(amount);
     if (n == null) continue;
     return { amount: n, rate: rate == null ? DEFAULT_RATE : rate, mode };

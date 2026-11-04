@@ -22,7 +22,8 @@ sh('git fetch -q origin main');
 // the book were, so nearly every finish after a merge stopped at the fast checks on a stale deps.json or what.json and had to be resumed by hand.
 // (the skill index is settled name by name below, never taken from one side, so it is not in this list; regen() still writes it again after)
 const GENERATED = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json', 'void-live-deploy/skills/deps.json',
-  'void-live-deploy/skills/what.json', 'void-live-deploy/self.json', 'void-live-deploy/void.asks.json', 'void-live-deploy/lib/similar-index.js', 'void-live-deploy/skills/bench-alarms.json'];
+  'void-live-deploy/skills/what.json', 'void-live-deploy/self.json', 'void-live-deploy/void.asks.json', 'void-live-deploy/lib/similar-index.js', 'void-live-deploy/skills/bench-alarms.json',
+  'void-live-deploy/sitemap.xml', 'void-live-deploy/parity.json', 'void-live-deploy/incidents.json', 'void-live-deploy/tower.evidence.json'];
 const REGEN = GENERATED.concat('void-live-deploy/skills/index.json');
 function regen() {
   if (!existsSync(resolve(process.cwd(), 'tools', 'refresh.mjs'))) return;

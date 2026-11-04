@@ -13,6 +13,7 @@
 // stay private; this public side names generic aspects only and counts. Pure.
 
 import { SELF_SITES } from './self-sites.js';
+import { topicOf } from './tower-topic.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
@@ -334,7 +335,7 @@ export function frontierOf(frontier, floors = FLOORS) {
   for (const x of list) {
     const host = hostOf(x && (x.site || x.host)); if (!host || taken.has(host) || seen.has(host)) continue;
     const num = (v) => (v !== null && v !== '' && Number.isFinite(+v) ? +v : null);
-    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: num(x.hardness), controls: num(x.controls), bytes: num(x.bytes), ...(x.blocked ? { blocked: String(x.blocked) } : {}) });
+    seen.add(host); out.push({ host, rank: Number.isFinite(+x.rank) && +x.rank > 0 ? +x.rank : null, hardness: num(x.hardness), controls: num(x.controls), bytes: num(x.bytes), ...(x.blocked ? { blocked: String(x.blocked) } : {}), ...(x.title ? { title: String(x.title).slice(0, 160) } : {}) });
   }
   const h = (x) => (x.hardness === null ? 1e9 : x.hardness), sized = (x) => (x.controls !== null && x.bytes !== null ? 0 : 1), c = (x) => (sized(x) ? 0 : x.controls), by = (x) => (sized(x) ? 0 : x.bytes);
   return out.map((x, i) => [x, i]).sort((a, b) => sized(a[0]) - sized(b[0]) || c(a[0]) - c(b[0]) || by(a[0]) - by(b[0]) || h(a[0]) - h(b[0]) || (b[0].rank || 0) - (a[0].rank || 0) || a[1] - b[1]).map((p) => p[0]);
@@ -361,12 +362,19 @@ export function easeLine(f) {
   const bar = (f.barred || []).length;
   return how + '; ' + left + ' of ' + f.m + ' aspects left to pass' + (bar ? ' (' + bar + ' of them not measured: the site turned the gate away, so only the default bar was scored)' : '') + (f.lost && f.lost.length ? ', and Verse loses on ' + f.lost.length : '') + '; ' + (f.page ? 'Verse has a page for it' : 'Verse has no page for it yet, so it is built first');
 }
+/** a frontier site's Verse page: the one built for its host (LANE_PAGES), else the page that already does its job, by topic (lib/tower-topic.js;
+ *  owner, 2026-11-03: ndscalc.ru said "no Verse page yet" while /vat/ was live). { page, topic } or {}. Pure. */
+export function frontierPage(x) {
+  if (LANE_PAGES[x.host]) return { page: LANE_PAGES[x.host] };
+  const t = topicOf(x.title, x.host);
+  return t ? { page: t.page, topic: t.topic } : {};
+}
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
 export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null) {
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
-  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...(LANE_PAGES[x.host] ? { page: LANE_PAGES[x.host] } : {}), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
+  const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...frontierPage(x), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
   const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), beaten: g.beaten && !f.held, ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });

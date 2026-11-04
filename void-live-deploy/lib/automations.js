@@ -24,7 +24,10 @@
  *   { action: 'http.post', url, body? }                         POSTs JSON to a public https address
  *   { action: 'watch', watch, tell? }                           a standing watch (lib/watch.js): fetch one thing, judge it, keep the
  *                                                               check as a watch.check record; tell 'note' (the record is the note on
- *                                                               the stage) or 'send' (a stubbed send). Only on a schedule.
+ *                                                               the stage), 'send' (a stubbed send) or 'team' (Verse says it in #general
+ *                                                               of its own team chat, /team/, the moment it trips). Only on a schedule.
+ *   { action: 'team.post', c?, body }                           Verse says body in a channel of its own team chat (#general unless c
+ *                                                               names another), as Verse: the owner's rules only, @here never pages
  * What a rule can reach is fenced here, not trusted to the rule: GitHub only in the repos the owner allows
  * (AUTOMATION_REPOS, default atomeam/void-loop), branches only under void/, never workflow files, and http only to
  * public https hosts. Event data can fill text in but never chooses the repo, the branch prefix or a file path's root.
@@ -39,7 +42,9 @@ export const QUEUE_DEDUPE_MS = 6 * 3600e3;
 export const SCHEMA = 'void.automation.v1';
 export const TRIGGERS = ['webhook', 'manual', 'schedule'];
 export const EVERY_MIN = 15, EVERY_MAX = 10080; // minutes between scheduled runs: the clock ticks every 15, a week at most
-export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post', 'watch'];
+export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post', 'watch', 'team.post'];
+// a watch in an owner's rule may also tell the team chat (a member's own watches, functions/api/watch.js, keep lib/watch.js TELLS)
+export const RULE_TELLS = [...TELLS, 'team'];
 export const MAX_STEPS = 5, MAX_FILES = 20, MAX_FILE_BYTES = 100000, MAX_TEXT = 4000, MAX_NAME = 60, MAX_EVENT = 64000; // a GitHub webhook body is often 20 to 40 KB
 export const DEFAULT_REPOS = ['atomeam/void-loop'];
 export const BRANCH_PREFIX = 'void/';
@@ -163,7 +168,11 @@ export function validate(input, env) {
       const v = validateWatch(s.watch);
       if (!v.ok) v.errors.forEach((e) => bad(at + e));
       if (w.on !== 'schedule') bad(at + 'a watch runs on a schedule');
-      rule.do.push({ action: 'watch', watch: v.watch, tell: TELLS.includes(s.tell) ? s.tell : 'note' });
+      rule.do.push({ action: 'watch', watch: v.watch, tell: RULE_TELLS.includes(s.tell) ? s.tell : 'note' });
+    } else if (s.action === 'team.post') {
+      const c = str(s.c || 'general').toLowerCase();
+      if (templated(c) || !/^[a-z0-9][a-z0-9-]{0,20}$/.test(c)) bad(at + 'c is a fixed team channel (general, work or one a member made)');
+      rule.do.push({ action: 'team.post', c, body: text('body', true) });
     }
   });
   return { ok: errors.length === 0, errors, rule: errors.length ? null : rule };
@@ -186,6 +195,7 @@ export function steps(rule, event = {}) {
     }
     if (s.action === 'http.post') return { action: 'http.post', url: s.url, body: fill(s.body, event).slice(0, MAX_TEXT) };
     if (s.action === 'watch') return { action: 'watch', watch: s.watch, tell: s.tell }; // nothing in a watch is filled from the event
+    if (s.action === 'team.post') return { action: 'team.post', c: s.c, body: fill(s.body, event).slice(0, MAX_TEXT) }; // the channel is never filled
     return { action: s.action, error: 'unknown action' };
   });
 }
@@ -200,5 +210,6 @@ export const TEMPLATES = [
   { name: 'Webhook to the build queue', when: { on: 'webhook' }, do: [{ action: 'queue.add', ask: 'from a webhook: {{event.ask}}', target: 'hook' }] },
   { name: 'Comment on a pull request', when: { on: 'webhook', match: { action: 'labeled' } }, do: [{ action: 'github.comment', repo: 'atomeam/void-loop', issue: '{{event.pull_request.number}}', body: 'Verse saw this pull request labelled {{event.label.name}}.' }] },
   { name: 'Every morning, a note', when: { on: 'schedule', every: 1440 }, do: [{ action: 'note', text: 'Verse was here at {{event.at}}' }] },
+  { name: 'Webhook to the team chat', when: { on: 'webhook' }, do: [{ action: 'team.post', c: 'general', body: 'From a webhook: {{event.text}}' }] },
   { name: 'Open a pull request with a file', when: { on: 'manual' }, do: [{ action: 'github.pr', repo: 'atomeam/void-loop', base: 'main', branch: 'void/automation-note', title: 'A note from Verse', body: 'Opened by a Verse automation.', files: [{ path: 'domains/automation-note.md', content: 'Written by a Verse automation.\n' }] }] },
 ];

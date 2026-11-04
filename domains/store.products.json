@@ -185,7 +185,7 @@
    "license": "Free to share and repost with credit: Verse · a-to-mind.com",
    "tier": "personal",
    "origin": "v01d-films+v01d",
-   "status": "live",
+   "status": "unpublished",
    "published": "2026-10-15",
    "bytes": 39606405,
    "contents": [
@@ -205,6 +205,10 @@
     {
      "at": "2026-10-15T06:08:38.111Z",
      "what": "published by V01D: 11 files, 37.8 MB"
+    },
+    {
+     "at": "2026-11-03T18:22:38.982Z",
+     "what": "unpublished automatically: unreachable: fetch failed"
     }
    ]
   },

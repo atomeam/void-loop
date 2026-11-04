@@ -1,15 +1,81 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 83,
- "runsTotal": 191,
+ "runsTotal": 193,
  "kinds": {
   "grow": 67,
-  "file": 70,
+  "file": 71,
   "teach": 7,
   "tighten": 7,
-  "none": 40
+  "none": 40,
+  "visitor": 1
  },
  "runs": [
+  {
+   "at": "2026-11-04T00:28:38Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-03T21:58:46Z",
+   "passed": 58,
+   "of": 87,
+   "kind": "file",
+   "ms": 554,
+   "note": "fix: \"which games do you know\" nothing appeared",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "which games do you know",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "what do you get if you merge a pizza and a black hole",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "is unwrap risky in rust",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "are you web4",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "toss it off the screen",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "what are the figures doing",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "longevity trial watch",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "find a rumble video about bitcoin",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "what rhymes with orange",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "closer on the figure",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "turn the questions i missed into a five-minute challenge",
+     "why": "nothing appeared"
+    }
+   ]
+  },
   {
    "at": "2026-10-22T01:56:37Z",
    "passed": 67,
@@ -215,97 +281,84 @@
    "of": 63,
    "kind": "file",
    "note": "fix: \"what are you?\" missing text /V01D/; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-  },
-  {
-   "at": "2026-10-18T07:27:02Z",
-   "passed": 52,
-   "of": 62,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
-  },
-  {
-   "at": "2026-10-18T07:14:02Z",
-   "passed": 59,
-   "of": 61,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-11",
+   "from": "2026-08-12",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-18",
+   "from": "2026-08-19",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-25",
+   "from": "2026-08-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-01",
+   "from": "2026-09-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-08",
+   "from": "2026-09-09",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-15",
+   "from": "2026-09-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-22",
+   "from": "2026-09-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-29",
+   "from": "2026-09-30",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-06",
+   "from": "2026-10-07",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-13",
-   "runs": 189,
-   "passed": 3017,
-   "of": 5657,
+   "from": "2026-10-14",
+   "runs": 190,
+   "passed": 3084,
+   "of": 5732,
    "broken": 95,
    "brokenOf": 2238,
    "brokenPassed": 22
   },
   {
-   "from": "2026-10-20",
-   "runs": 2,
-   "passed": 134,
-   "of": 153
+   "from": "2026-10-21",
+   "runs": 1,
+   "passed": 67,
+   "of": 78
   },
   {
-   "from": "2026-10-27",
-   "runs": 0,
-   "passed": 0,
-   "of": 0
+   "from": "2026-10-28",
+   "runs": 2,
+   "passed": 58,
+   "of": 87,
+   "ms": 554
   }
  ],
  "seen": {
@@ -316,16 +369,16 @@
   "skill:air": "2026-10-15T06:20:22Z",
   "skill:app": "2026-10-17T23:49:12Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
-  "skill:automations": "2026-10-15T16:35:42Z",
+  "skill:automations": "2026-11-03T21:58:46Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
-  "skill:book": "2026-10-15T07:20:54Z",
+  "skill:book": "2026-11-03T21:58:46Z",
   "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
-  "skill:define": "2026-10-15T08:58:55Z",
+  "skill:define": "2026-11-03T21:58:46Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-10-15T16:35:42Z",
+  "skill:cartoon": "2026-11-03T21:58:46Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",

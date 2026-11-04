@@ -275,7 +275,8 @@ async function readPage(ctx, url) {
   try {
     const r = await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
     await p.waitForLoadState('load', { timeout: 8000 }).catch(() => {}); await p.waitForTimeout(800);
-    const got = await p.evaluate(readInPage);
+    // a page whose script never yields (a bot check working its puzzle) must not hold the read forever (tower-self, 2026-11-03)
+    let t; const got = await Promise.race([p.evaluate(readInPage), new Promise((_, no) => { t = setTimeout(() => no(new Error('the page did not answer in 15 s')), 15000); })]).finally(() => clearTimeout(t));
     return { ok: !!r && r.status() < 400, status: r ? r.status() : 0, url: p.url(), ...got, pricing: /pric|plans?|premium|upgrade/i.test(p.url()) };
   } catch (e) { return { ok: false, url, problem: 'did not load (' + String(e && e.message || e).split('\n')[0].slice(0, 80) + ')' }; } finally { await p.close().catch(() => {}); }
 }

@@ -155,3 +155,28 @@ test('the guard lets the largest body /api/tower-self accepts reach it (a 413 le
   assert.ok(bodyOf(big), 'the route accepts it');
   assert.ok(Buffer.byteLength(JSON.stringify(big)) <= LIMITS['tower-self'].body, 'the guard lets it through');
 });
+
+import { easeOf, withDeadline, SITE_DEADLINE_MS, BUILD_BUDGET_MS } from './tower-self.mjs';
+test('every pick carries its ease, from the scan\'s own numbers, easiest first (owner, 2026-11-03: "goes after the easiest site automatically")', () => {
+  const small = easeOf({ controls: 4, bytes: 20000, hardness: 10, rank: 500000 }), big = easeOf({ controls: 80, bytes: 3e6, hardness: 10, rank: 900 });
+  assert.ok(small.score > big.score, 'fewer controls and fewer bytes are easier');
+  assert.match(small.why, /4 controls, 20 KB, Tranco 500000/);
+  const unsized = easeOf({ controls: null, bytes: null, hardness: 73, rank: null });
+  assert.match(unsized.why, /not sized yet, hardness 73, outside the Tranco list/);
+  assert.ok(easeOf({ controls: null, bytes: null, hardness: 20 }).score > unsized.score, 'a lower hardness is easier');
+  const at = Date.parse('2026-11-03T00:00:00Z'), frontier = { sites: [{ site: 'a.test', hardness: 1 }, { site: 'b.test', hardness: 2 }] };
+  const picked = pickCandidates(frontier, {}, { at, floors: [] });
+  assert.deepEqual(picked.map((x) => x.ease.place), [1, 2]);
+  assert.ok(picked[0].ease.score >= picked[1].ease.score);
+});
+test('a read that never returns is cut off and recorded, so the next run moves on (2026-11-03: four runs cancelled on one stuck site)', async () => {
+  assert.ok(SITE_DEADLINE_MS > 0 && BUILD_BUDGET_MS + 3 * SITE_DEADLINE_MS <= 45 * 60000, 'the reading ends with time left in the job\'s 75 minutes for the push, deploy and gate');
+  // a read far slower than its deadline (its own timer keeps the event loop up: the deadline's timer is unref'd, and Node 20/22 end a test
+  // whose only pending work is an unref'd timer, which held #2076 at the automerge safety-check)
+  let slow; await assert.rejects(withDeadline(new Promise((r) => { slow = setTimeout(r, 2000); }), 20, 'the read'), (e) => e.late === true && /the read did not finish/.test(e.message));
+  clearTimeout(slow);
+  assert.equal(await withDeadline(Promise.resolve(7), 1000, 'x'), 7);
+  const at = Date.parse('2026-11-03T00:00:00Z'), frontier = { sites: [{ site: 'stuck.test', hardness: 1 }, { site: 'next.test', hardness: 2 }] };
+  const state = { sites: { 'stuck.test': { at: '2026-11-03T00:00:00Z', outcome: 'walled', why: 'not read (the read did not finish in 240 s)' } } };
+  assert.deepEqual(pickCandidates(frontier, state, { at, floors: [] }).map((x) => x.host), ['next.test']);
+});
