@@ -7,10 +7,10 @@ import s2 from '../skills/define.js';
 import s3 from '../skills/distance.js';
 import s4 from '../skills/eclipse.js';
 import s5 from '../skills/joke.js';
-import s6 from '../skills/quote.js';
-import s7 from '../skills/swaps.js';
-import s8 from '../skills/translate.js';
-import s9 from '../skills/words.js';
+import s6 from '../skills/swaps.js';
+import s7 from '../skills/translate.js';
+import s8 from '../skills/words.js';
+import s9 from '../skills/worldtime.js';
 export const SKILL_TOOLS = [
  {
   "skill": "constellation",
@@ -79,17 +79,6 @@ export const SKILL_TOOLS = [
   ]
  },
  {
-  "skill": "quote",
-  "tool": "skill_quote",
-  "family": "words",
-  "familyName": "Words and the world",
-  "examples": [
-   "inspirational quote",
-   "random quote",
-   "tell me a quote"
-  ]
- },
- {
   "skill": "swaps",
   "tool": "skill_swaps",
   "family": "words",
@@ -121,6 +110,17 @@ export const SKILL_TOOLS = [
    "how do you spell necessary",
    "what rhymes with orange"
   ]
+ },
+ {
+  "skill": "worldtime",
+  "tool": "skill_worldtime",
+  "family": "sky",
+  "familyName": "Sky and earth",
+  "examples": [
+   "time in tokyo",
+   "what time is it in new york",
+   "sunset in rome"
+  ]
  }
 ];
-export const SKILL_MODULES = { "constellation": s0, "country": s1, "define": s2, "distance": s3, "eclipse": s4, "joke": s5, "quote": s6, "swaps": s7, "translate": s8, "words": s9 };
+export const SKILL_MODULES = { "constellation": s0, "country": s1, "define": s2, "distance": s3, "eclipse": s4, "joke": s5, "swaps": s6, "translate": s7, "words": s8, "worldtime": s9 };
