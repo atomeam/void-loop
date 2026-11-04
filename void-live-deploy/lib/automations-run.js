@@ -9,7 +9,7 @@
  * QUEUE_DEDUPE_MS. A leaked or looping hook secret costs at most a day's cap, not the build queue.
  */
 import { track, deferred } from './actions.js';
-import { validate, steps, matches, due, MAX_EVENT, RUN_CAP_DAY, QUEUE_DEDUPE_MS } from './automations.js';
+import { validate, steps, matches, due, MAX_EVENT, RUN_CAP_DAY, QUEUE_DEDUPE_MS, CAPPED, EVENT_TRIGGERS } from './automations.js';
 import { evaluate, pageText, checkText, describe, slowDown, waitAfter, waiting, limitText, skipText, answerOf } from './watch.js';
 import { sameSecret } from './guard.js';
 import { verseSays } from '../functions/api/team.js';
@@ -213,7 +213,7 @@ export async function run(env, rule, event, trigger, opts = {}) {
   const ev = event && typeof event === 'object' ? event : {};
   if (JSON.stringify(ev).length > MAX_EVENT) return { ok: false, skipped: 'the event is too big' };
   if (!rule.enabled && trigger !== 'manual') return { ok: false, skipped: 'the rule is switched off' };
-  if (trigger === 'webhook' && (await runsToday(env, rule.id)) >= runCap(env)) return { ok: false, skipped: 'this rule has run its ' + runCap(env) + ' times a day from webhooks' };
+  if (CAPPED.includes(trigger) && (await runsToday(env, rule.id)) >= runCap(env)) return { ok: false, skipped: 'this rule has run its ' + runCap(env) + ' times a day from ' + (trigger === 'webhook' ? 'webhooks' : trigger + ' events') };
   if (!matches(rule, ev)) return { ok: true, skipped: 'the event does not match' };
   const log = []; let ok = true;
   for (const s of steps(rule, ev)) {
@@ -227,6 +227,25 @@ export async function run(env, rule, event, trigger, opts = {}) {
   await env.DB.prepare('INSERT INTO void_automation_runs (id, rule_id, at, trigger, ok, log) VALUES (?, ?, ?, ?, ?, ?)').bind(id, rule.id, now(), trigger, ok ? 1 : 0, JSON.stringify(log)).run();
   await env.DB.prepare('DELETE FROM void_automation_runs WHERE id NOT IN (SELECT id FROM void_automation_runs ORDER BY at DESC LIMIT ?)').bind(KEEP_RUNS).run();
   return { ok, log };
+}
+
+/** an event trigger (owner, 2026-11-03: Gumroad sales, team chat messages, GitHub events start automations): run every enabled rule of the
+ * owner's ('' scope) whose when.on is `on`, one after another, each under its own day cap and match. Never throws: a broken rule must not
+ * break the sale, the message or the webhook that fired it. -> [{ id, ok, skipped? }] */
+export async function fire(env, on, event, opts = {}) {
+  if (!env || !env.DB || !EVENT_TRIGGERS.includes(on)) return [];
+  const ran = [];
+  try {
+    await ensure(env);
+    const rows = (await env.DB.prepare("SELECT id, enabled, rule, scope FROM void_automations WHERE enabled = 1 AND scope = '' AND rule LIKE ?").bind('%"on":"' + on + '"%').all()).results || [];
+    for (const r of rows) {
+      let rule; try { rule = { ...JSON.parse(r.rule), id: r.id, enabled: !!r.enabled, scope: '' }; } catch (_) { continue; }
+      if (!rule.when || rule.when.on !== on) continue;
+      try { const out = await run(env, rule, event, on, opts); ran.push({ id: r.id, ok: out.ok, ...(out.skipped ? { skipped: out.skipped } : {}) }); }
+      catch (e) { ran.push({ id: r.id, ok: false, skipped: String((e && e.message) || e).slice(0, 120) }); }
+    }
+  } catch (_) {}
+  return ran;
 }
 
 /** the clock: run every scheduled rule that is due, one after another; the event is { tick: true, at }. Returns what ran. */

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.particle { position:absolute; width:40px; height:40px; border-radius:50%; background:hsla(var(--hue),70%,60%,0.8); border:2px solid #fff3; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; user-select:none; transition:transform 0.05s linear; }
+.particle.sealed { outline:2px solid gold; }
+#ui { position:fixed; top:10px; left:10px; background:#000a; padding:10px; border-radius:8px; z-index:10; }
+button { margin:2px; padding:6px 10px; background:#333; color:#fff; border:1px solid #555; border-radius:4px; cursor:pointer; }
+button:hover { background:#444; }
+#info { position:fixed; bottom:10px; left:10px; font-size:12px; opacity:0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>lennard-jones-mlp-dom-swarm-mind · Verse lab</title>
+<meta name="description" content="A swarm of particles interacting via the Lennard-Jones potential (short-range repulsion + longer-range attraction) is integrated in pure JS (WebGPU compute path">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="lennard-jones-mlp-dom-swarm-mind · Verse lab">
+<meta property="og:description" content="A swarm of particles interacting via the Lennard-Jones potential (short-range repulsion + longer-range attraction) is integrated in pure JS (WebGPU compute path">
+<meta property="og:url" content="https://a-to-mind.com/lab/f503-lennard-jones-mlp-dom-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f503-lennard-jones-mlp-dom-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="ui">
+  <button id="nucleate">Nucleate</button>
+  <button id="sealSel">Seal Selected</button>
+  <button id="transfer">Transfer to Selected</button>
+  <button id="sealAll">Seal All</button>
+  <button id="restore">Restore</button>
+  <button id="clear">Clear</button>
+  <div id="status">LJ Swarm ready. Tilt / drag / click.</div>
+</div>
+<div id="info">F503 · Lennard-Jones + local MLP · DOM embodiments · sealed genomes</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">lennard-jones-mlp-dom-swarm-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
