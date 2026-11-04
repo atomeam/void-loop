@@ -90,6 +90,36 @@
       "into": "/bots/ (ollama-call)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/ALPHA/apps/alpha-orchestrator": {
+      "target": "bot",
+      "into": "/bots/ (agent-transition)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/auto-deploy-action": {
+      "target": "bot",
+      "into": "/bots/ (deploy-command)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/023-agentic-personalization-with-hold-gate": {
+      "target": "bot",
+      "into": "/bots/ (facet-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/030-attested-contact-channel": {
+      "target": "bot",
+      "into": "/bots/ (contact-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/039-attested-permissions-policy": {
+      "target": "bot",
+      "into": "/bots/ (permissions-policy-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
