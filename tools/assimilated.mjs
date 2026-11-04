@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { topicOf } from '../void-live-deploy/lib/tower-topic.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const OUT = 'void-live-deploy/assimilated.json', BACKFILL = 'domains/assimilated.backfill.json', REPO = 'https://github.com/atomeam/void-loop';
@@ -28,7 +29,7 @@ export const hostOf = (u) => { try { return new URL(/^https?:/.test(u) ? u : 'ht
 const what = (r) => { const t = r.tools || r.panels || r.features; return !t ? '' : (Array.isArray(t) ? t : Object.keys(t)).join(', '); };
 
 /** the rows, newest first, from the already-loaded inputs. Pure. */
-export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} }, floors = [], backfill = { hosts: {} } }) {
+export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} }, floors = [], backfill = { hosts: {} }, exists = () => true }) {
   const rows = new Map();
   const row = (site) => { if (!rows.has(site)) rows.set(site, { site, url: 'https://' + site + '/', status: '', outcome: '', at: '', page: '', lane: '', took: '', why: '', learned: '', ease: null, first: (backfill.hosts || {})[site] || null, sources: [] }); return rows.get(site); };
   const lift = (r, outcome) => { if ((RANK[outcome] || 0) >= (RANK[r.outcome] || 0)) { r.outcome = outcome; r.status = LABEL[outcome] || outcome; } };
@@ -59,6 +60,13 @@ export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} 
     r.why = 'ahead of it on ' + f.n + ' of ' + f.m + ' aspects, measured head to head'; if (f.at && (!r.at || f.at > r.at)) r.at = f.at; src(r, 'void-live-deploy/tower.evidence.json');
   }
   for (const r of rows.values()) if (!r.at && r.first) r.at = r.first.at; // a lane page with no date of its own dates from the commit that added it
+  // a row links only to a page that is there (Verse status crawl, 2026-11-03: /text-editor/notepad-plus-plus/ was a 404): a page that was
+  // removed or merged links to the page that does its job now (lib/tower-topic.js, "always combine pages when possible"), else to none,
+  // and `pageWas` keeps the old path as history
+  for (const r of rows.values()) if (r.page && !exists(r.page)) {
+    const t = topicOf([r.took, r.lane, r.site].join(' '), r.site), now = t && exists(t.page) ? t.page : '';
+    r.pageWas = r.page; r.page = now;
+  }
   return [...rows.values()].filter((r) => r.site).sort((a, b) => (b.at || '').localeCompare(a.at || '') || a.site.localeCompare(b.site));
 }
 
@@ -81,9 +89,12 @@ export async function floorsOf(cwd = root) {
   return (cur ? [{ ...cur }] : []).concat(t.floors.filter((f) => f.beaten).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
 }
 
+/** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */
+export const pageExists = (cwd = root) => (path) => { const p = String(path || '').replace(/[?#].*$/, ''); if (!p.startsWith('/') || p.includes('..')) return false; const f = resolve(cwd, 'void-live-deploy' + p); return existsSync(p.endsWith('/') ? f + '/index.html' : f) || existsSync(f + '.html') || existsSync(f + '/index.html'); };
+
 export async function build(cwd = root) {
   const ts = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tool-sites.js')).href);
-  return fileOf(historyOf({ sitePages: ts.SITE_PAGES || [], selfSites: ts.SELF_SITES || [], state: read(cwd, 'domains/tower-self.json') || { sites: {} }, floors: await floorsOf(cwd), backfill: read(cwd, BACKFILL) || { hosts: {} } }));
+  return fileOf(historyOf({ sitePages: ts.SITE_PAGES || [], selfSites: ts.SELF_SITES || [], state: read(cwd, 'domains/tower-self.json') || { sites: {} }, floors: await floorsOf(cwd), backfill: read(cwd, BACKFILL) || { hosts: {} }, exists: pageExists(cwd) }));
 }
 
 /** the first commit that named each host on an added line of SOURCES, from `git log --reverse -p` text. Pure. */
