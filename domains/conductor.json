@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-04T14:18:40.419Z",
+ "updated": "2026-11-04T14:57:30.585Z",
  "last24h": {
-  "ticks": 122,
+  "ticks": 120,
   "started": 99,
   "requeued": 1,
   "setAside": 0,
@@ -111,7 +111,7 @@
   "mva30i2e": 1793801920419,
   "mvu167w7": 1793752643638,
   "mveb8svc": 1793752643638,
-  "mva30j4u": 1793774355909,
+  "mva30j4u": 1793804250585,
   "mvfu4evy": 1793753881889,
   "mvyvpfxi": 1793753881889,
   "mvpuq9g6": 1793754502314,
@@ -243,67 +243,6 @@
   "tv:agricultural-market-tracker"
  ],
  "ticks": [
-  {
-   "at": "2026-11-03T14:27:59.052Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": true,
-   "lap": false,
-   "revived": [],
-   "held": 138,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T14:38:17.804Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 138,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T14:48:33.979Z",
-   "open": 138,
-   "started": [
-    {
-     "id": "mvxd1k6b",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 80
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 16,
-   "warnings": 0
-  },
   {
    "at": "2026-11-03T14:58:53.082Z",
    "open": 138,
@@ -2899,6 +2838,30 @@
    "grow": true,
    "will": true,
    "lap": true,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 170,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T14:57:30.585Z",
+   "open": 176,
+   "started": [
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
    "revived": [
     "void-tick.yml"
    ],
