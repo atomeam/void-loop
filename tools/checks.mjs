@@ -28,9 +28,9 @@ if (args.includes('--changed') && inCI) console.log('--changed ignored in CI: ma
 // the changed files --changed selects by (committed against origin/main and uncommitted); null when git cannot say, and then everything runs
 const changedList = changedMode ? changedFiles() : null;
 // --changed narrows a whole-tree check to the changed files too, unless one of them reaches everything (a narrow run would parse one file after a workflow change)
-// a site page is not the runner: under VOID_GATE it does not pull in every check (main still runs them). A workflow and the runner files already stay out.
+// a site page is not the runner: under VOID_GATE it does not pull in every check (main still runs them). void.html is that page; its deploy copies are index.html. A workflow and the runner files already stay out.
 // the offline shell lists those pages (sw.js). One added address is the same kind of reach as a page, and main's full set still runs after the merge.
-const gateFile = (f) => f.startsWith('.github/workflows/') || f === 'tools/checks.mjs' || f === 'tools/pool.mjs' || f === 'tools/checks-changed.mjs' || f === 'void-live-deploy/sw.js' || /^void-live-deploy\/(?:.*\/)?index\.html$/.test(f);
+const gateFile = (f) => f.startsWith('.github/workflows/') || f === 'tools/checks.mjs' || f === 'tools/pool.mjs' || f === 'tools/checks-changed.mjs' || f === 'void-live-deploy/sw.js' || f === 'void.html' || /^void-live-deploy\/(?:.*\/)?index\.html$/.test(f);
 const reachesAll = (f) => REACHES_ALL.test(f) && !(process.env.VOID_GATE === '1' && gateFile(f));
 const narrowToChanged = !!(changedList && !changedList.some(reachesAll));
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];

@@ -11,14 +11,14 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Write and keep notes | Editing | have | its live page (2026-10-28): "Take notes anywhere for free / Microsoft OneNote for the Web" | void-live-deploy/notes/index.html:115 `" id="newBtn" data-w="newDoc">New note</button>` |
-| Rich text: bold, italic, headings, lists | Editing | have | every site of this kind offers it | void-live-deploy/notes/index.html:137 `type="button" data-cmd="bold" aria-label="Bold" data-wal="bold" title="Bold (Ctrl+B)"><b>B` |
-| Tables | Editing | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:187 `iv id="tblbar" role="toolbar" aria-label="Table" data-wal="tbl" hidden><button type="butto` |
-| Checklists | Editing | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:144 `" data-cmd="todo" aria-label="Checklist" data-wal="todo" title="Checklist">&#9745;</button` |
-| Images in a note | Editing | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:148 `type="file" id="imgF" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>` |
-| Links, and links between notes | Editing | have | every site of this kind offers it | void-live-deploy/notes/index.html:159 `<div id="links" aria-label="Links between notes"></div>` |
-| Search all notes | Organising | have | every site of this kind offers it | void-live-deploy/notes/index.html:129 `"sq" id="sqL" data-w="search">Search all notes</label><input type="search" id="sq" placeho` |
-| Tags or folders | Organising | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:155 `maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></d` |
-| Share a note by link | Sharing | have | every site of this kind offers it | void-live-deploy/notes/index.html:163 `id="shareBtn" data-w="share">Copy share link</button>` |
+| Write and keep notes | Editing | have | its live page (2026-10-28): "Take notes anywhere for free / Microsoft OneNote for the Web" | void-live-deploy/notes/index.html:116 `" id="newBtn" data-w="newDoc">New note</button>` |
+| Rich text: bold, italic, headings, lists | Editing | have | every site of this kind offers it | void-live-deploy/notes/index.html:138 `type="button" data-cmd="bold" aria-label="Bold" data-wal="bold" title="Bold (Ctrl+B)"><b>B` |
+| Tables | Editing | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:188 `iv id="tblbar" role="toolbar" aria-label="Table" data-wal="tbl" hidden><button type="butto` |
+| Checklists | Editing | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:145 `" data-cmd="todo" aria-label="Checklist" data-wal="todo" title="Checklist">&#9745;</button` |
+| Images in a note | Editing | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:149 `type="file" id="imgF" accept="image/png,image/jpeg,image/gif,image/webp" multiple hidden>` |
+| Links, and links between notes | Editing | have | every site of this kind offers it | void-live-deploy/notes/index.html:160 `<div id="links" aria-label="Links between notes"></div>` |
+| Search all notes | Organising | have | every site of this kind offers it | void-live-deploy/notes/index.html:130 `"sq" id="sqL" data-w="search">Search all notes</label><input type="search" id="sq" placeho` |
+| Tags or folders | Organising | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:156 `maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></d` |
+| Share a note by link | Sharing | have | every site of this kind offers it | void-live-deploy/notes/index.html:164 `id="shareBtn" data-w="share">Copy share link</button>` |
 | Edit together in real time | Sharing | missing | studied by hand: onenote.com offers this (https://onenote.com/) | no sign of it in the source of /notes/ |
-| Clip pages from the web | Files | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:259 `const pics = [...(e.clipboardData ? e.clipboardData.files : [])].filter((f) => /^ima` |
+| Clip pages from the web | Files | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:260 `const pics = [...(e.clipboardData ? e.clipboardData.files : [])].filter((f) => /^ima` |
