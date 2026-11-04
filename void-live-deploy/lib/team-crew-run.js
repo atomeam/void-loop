@@ -90,9 +90,9 @@ async function measureOpen(env, ev, bots, now) {
     if (v == null) continue;
     const bot = bots.find((b) => b.lane === w.lane) || null, by = bot ? bot.id : 'verse';
     if (C.improved(w.better, w.baseline, v)) {
-      await env.DB.prepare("UPDATE void_team_wants SET state = 'met', latest = ?, checked = ?, met_at = ? WHERE key = ?").bind(v, now, now, w.key).run();
+      await env.DB.prepare("UPDATE void_team_wants SET state = 'met', latest = ?, checked = ?, met_at = ? WHERE key = ?").bind(v, now, now, w.key).run(); // void-review: ok (only open wants, at most MAX_OPEN, and only the ones whose number moved)
       const note = 'outcome met (' + (bot ? 'team:' + bot.name : 'Verse') + '): ' + w.label + ' ' + (w.private ? 'moved the right way' : w.baseline + ' -> ' + v);
-      await env.DB.prepare("UPDATE void_queue SET state = 'done', note = ?, updated = ? WHERE id = ? AND state != 'building'").bind(note.slice(0, 300), new Date(now).toISOString(), w.job).run().catch(() => null);
+      await env.DB.prepare("UPDATE void_queue SET state = 'done', note = ?, updated = ? WHERE id = ? AND state != 'building'").bind(note.slice(0, 300), new Date(now).toISOString(), w.job).run().catch(() => null); // void-review: ok (only open wants, at most MAX_OPEN, and only the ones whose number moved)
       if (w.thread) await crewWrite(env, { c: 'work', by, thread: w.thread, now, body: 'Outcome met: ' + w.label + (w.private ? ' moved the right way.' : ' went from ' + w.baseline + ' to ' + v + '.') + ' Closing this want.' + (jobs[w.job] === 'building' ? ' (The coder holding the job closes it with its pull request.)' : '') });
       out.met.push(w.key);
       continue;
@@ -119,10 +119,10 @@ async function fileWants(env, wants, bots, now) {
     if (filed.length >= C.FILE_PER_TICK || open + filed.length >= C.MAX_OPEN) break;
     if (have.has(w.key)) continue;
     const j = C.jobOf(w), at = new Date(now).toISOString(), bot = bots.find((b) => b.lane === w.lane) || C.byLane(w.lane);
-    await env.DB.prepare("INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, 'queued', ?, ?, ?) ON CONFLICT(id) DO UPDATE SET ask = excluded.ask, target = excluded.target, state = 'queued', note = excluded.note, updated = excluded.updated")
+    await env.DB.prepare("INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, 'queued', ?, ?, ?) ON CONFLICT(id) DO UPDATE SET ask = excluded.ask, target = excluded.target, state = 'queued', note = excluded.note, updated = excluded.updated") // void-review: ok (at most FILE_PER_TICK a run)
       .bind(j.id, j.ask, j.target, 'wanted by Verse\'s brain · measured by ' + w.metric.label, at, at).run();
     const thread = await crewWrite(env, { c: 'work', by: 'verse', job: j.id, now, body: C.wantPost(w, bot) });
-    await env.DB.prepare("INSERT INTO void_team_wants (key, lane, kind, title, label, metric, better, baseline, latest, cite, private, job, thread, state, filed, checked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?)")
+    await env.DB.prepare("INSERT INTO void_team_wants (key, lane, kind, title, label, metric, better, baseline, latest, cite, private, job, thread, state, filed, checked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?)") // void-review: ok (at most FILE_PER_TICK a run)
       .bind(w.key, w.lane, w.kind, w.title, w.metric.label, w.metric.id, w.metric.better, w.metric.value, w.metric.value, JSON.stringify(w.cite), w.private ? 1 : 0, j.id, thread, now, now).run(); // void-review: ok (at most FILE_PER_TICK a run)
     filed.push(w.key);
   }

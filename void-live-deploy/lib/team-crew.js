@@ -199,7 +199,7 @@ export function publicWant(r) {
   const bot = byLane(r.lane);
   const base = { key: r.key, lane: r.lane, bot: bot ? bot.name : 'Verse', title: s(r.title, 140), state: r.state, filed: r.filed, met: r.met_at || null, thread: r.thread || null, reopened: r.reopened || 0, label: s(r.label, 80), better: r.better };
   if (r.private) return { ...base, private: true, baseline: null, latest: null, cite: [] };
-  let cite = []; try { cite = JSON.parse(r.cite || '[]').filter((c) => c && /^https:\/\//.test(c.url || '')).slice(0, 3); } catch (_) { cite = []; }
+  let cite = []; try { const v = JSON.parse(r.cite || '[]'); cite = (Array.isArray(v) ? v : []).filter((c) => c && /^https:\/\//.test(c.url || '')).slice(0, 3); } catch (_) { cite = []; }
   return { ...base, baseline: num(r.baseline), latest: num(r.latest), cite };
 }
 
