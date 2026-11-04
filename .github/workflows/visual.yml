@@ -12,6 +12,10 @@ permissions:
   contents: read
   actions: read
 
+concurrency:
+  group: verse-visual
+  cancel-in-progress: false
+
 jobs:
   shots:
     runs-on: ubuntu-latest
