@@ -71,7 +71,7 @@ test('a stranger reads the shell (names, presence, counts) and nothing else, and
   const env = world(JOBS);
   const shell = await get(env, '');
   assert.equal(shell.status, 200);
-  assert.deepEqual(shell.channels.map((c) => c.code), ['work', 'general'], 'the two home channels, with no message in either');
+  assert.deepEqual(shell.channels.map((c) => c.code), ['work', 'general', 'ideas'], 'the three home channels, with no message in any');
   assert.ok(shell.channels.every((c) => c.msgs === 0));
   assert.deepEqual(shell.members, []); assert.equal(shell.waiting, 3);
   assert.equal((await get(env, '?c=work')).status, 401);

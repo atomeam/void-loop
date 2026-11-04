@@ -18,6 +18,7 @@ export const BUILD_OUTPUTS = [
   'void-live-deploy/parity.json',
   'void-live-deploy/incidents.json',
   'void-live-deploy/tower.evidence.json',
+  'void-live-deploy/tv-built.json',
   'void-live-deploy/lib/similar-index.js',
 ];
 

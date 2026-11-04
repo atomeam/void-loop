@@ -1,5 +1,8 @@
 # Verse's redirects (Cloudflare Pages): a floor's own name never 404s - Versus's shopping floor is the store
 /shopping /store/ 301
+# the AI check is a mode of the photo details page (owner, 2026-11-03: one page per category, features fold in as modes)
+/ai-authenticity-checker /photos/exif/?mode=ai 301
+/ai-authenticity-checker/ /photos/exif/?mode=ai 301
 /shopping/ /store/ 301
 # plain names for the photos lane pages (owner, 2026-10-28: plain titles, old URLs kept)
 /photos/batch /photos/iloveimg/ 301

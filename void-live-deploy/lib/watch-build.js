@@ -59,6 +59,30 @@ export function matchPage(n, pages = []) {
   return best;
 }
 
+// the one page per category (owner, 2026-11-03: "never make a separate matching tool per idea or rival. Fold new features into the one
+// existing page for that category as a mode; create a new page only when nothing fits"). First match wins; a route counts only when the
+// site has it. A fake-photo check is a mode of the photo details page, a livestock price tracker a mode of /markets/.
+export const CATEGORIES = Object.freeze([
+  { re: /\b(deepfake|synthetic|authentic|ai[- ]generated|altered|exif|metadata|photo|image|picture)/, route: '/photos/exif/' },
+  { re: /\b(price|market|stock|inflation|invest|livestock|commodit|crypto|currency|exchange rate)/, route: '/markets/' },
+  { re: /\b(recipe|snack|meal|cook|food|diet|nutrition)/, route: '/recipes/' },
+  { re: /\b(weather|storm|hurricane|forecast|rain|snow|heat)/, route: '/weather/' },
+  { re: /\b(score|league|game day|playoff|team stat)/, route: '/scores/' },
+  { re: /\b(flight|airport|airline|travel)/, route: '/flights/' },
+  { re: /\b(job|hiring|career|resume)/, route: '/jobs/' },
+  { re: /\b(news|headline|election|ballot)/, route: '/news/' },
+  { re: /\b(convert|conversion|unit)/, route: '/convert/' },
+  { re: /\b(calculat|tax|budget|loan|mortgage|tip)/, route: '/calculators/' },
+  { re: /\b(countdown|time zone|clock|timer)/, route: '/time/' },
+  { re: /\b(radio|tv station|broadcast|podcast)/, route: '/local/' },
+]);
+/** the category page an idea folds into, or null: { route, title, shared: [], share: 0, category: true }. Pure. */
+export function categoryOf(n, pages = []) {
+  const text = (String(n && n.topic || '') + ' ' + String(n && n.note || '')).toLowerCase(), have = new Map(pages.map((p) => [p.route, p]));
+  for (const c of CATEGORIES) if (c.re.test(text) && have.has(c.route)) return { route: c.route, title: have.get(c.route).title, shared: [], share: 0, category: true };
+  return null;
+}
+
 // how a build earns: the store's own products (void-live-deploy/lib/members.js BUY is MultiVerse, the $49 a month membership)
 export const PRODUCTS = Object.freeze({
   fix: { name: 'One-Time Automation Fix ($25)', url: 'https://moonbeam846.gumroad.com/l/eozcma', re: /\b(automat|zap|workflow|integration|script)/ },
@@ -83,7 +107,7 @@ export function planCycle(notes, { pages = [], built = [], today } = {}) {
     .sort((a, b) => b.s.score - a.s.score || String(b.n.at || '').localeCompare(String(a.n.at || '')));
   const top = ranked[0];
   if (!top || top.s.score < 3) return null;
-  const page = matchPage(top.n, pages);
+  const page = matchPage(top.n, pages) || categoryOf(top.n, pages);
   return {
     slug: top.slug, topic: String(top.n.topic || '').slice(0, 80), note: String(top.n.note || '').slice(0, 220), score: top.s,
     source: { medium: top.n.medium || '', station: top.n.station || '', network: top.n.network || '', show: top.n.show || '', day: top.n.day || '', at: top.n.at || '' },
@@ -104,14 +128,15 @@ export function jobOf(plan) {
  *  rebuilt (then the ask alone is the spec). Pure. */
 export function tvSpec(job, plan) {
   const slug = String(job && job.target || '').replace(/^tv:/, '') || (plan && plan.slug) || 'idea';
-  const p = plan || {};
+  const m = /^(Build|Improve) (\/[^\s:]*\/?):\s*([^(]*)/.exec(String(job && job.ask || ''));
+  const p = plan || (m ? { action: m[1] === 'Improve' ? 'improve' : 'new', page: m[2], topic: m[3].trim(), product: productFor(m[3]) } : {});
   return [
     'This came from what Verse watched or heard on TV or radio. It ships as a real feature on a-to-mind.com, never as an idea list.',
-    p.action === 'improve' ? 'A page already does part of this: ' + p.page + ' (shared words: ' + (p.matched && p.matched.shared || []).join(', ') + '). Improve that page; do not add a second page.'
-      : 'Check void-live-deploy/*/index.html titles first: if a page already does this job, improve it and add no new page. Otherwise build ' + (p.page || '/' + slug + '/') + ' (index.html and app.js, its logic in void-live-deploy/lib/ with a node:test file).',
+    p.action === 'improve' ? 'A page already does part of this: ' + p.page + (p.matched ? (p.matched.category ? ' (the page for this category)' : ' (shared words: ' + (p.matched.shared || []).join(', ') + ')') : '') + '. Add this to that page as a mode (a section or tab on the same page, with a ?mode= link); do not add a second page or a separate matching tool.'
+      : 'One page per category: check void-live-deploy/*/index.html titles first; if a page already covers this category, add this to it as a mode and add no new page. Only when nothing fits, build ' + (p.page || '/' + slug + '/') + ' (index.html and app.js, its logic in void-live-deploy/lib/ with a node:test file).',
     'Earn: the page links to ' + (p.product ? p.product.name + ' at ' + p.product.url : 'the Gumroad product that fits (lib/watch-build.js PRODUCTS)') + ', in one honest line that says what the buyer gets.',
     'Test: a spec for the route in tools/real-pages.mjs that uses the feature the way a person would and checks the exact answer.',
-    'Lineage: add domains/tv-built/' + slug + '.json with { slug, topic, source: { medium, station, network, show, day }, feature: <route>, product: <url>, job: "' + (job && job.id || '') + '" } (the pull request is read from git at deploy).',
+    'Lineage: add domains/tv-built/' + slug + '.json with { slug, topic, source: { medium, station, network, show, day }, feature: <the page>, mode: <the page with its ?mode= link, when it is a mode>, product: <url>, job: "' + (job && job.id || '') + '" } (the pull request is read from git at deploy).',
   ].join('\n');
 }
 

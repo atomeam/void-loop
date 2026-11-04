@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(10,10,20,0.75); padding: 12px; border-radius: 8px; max-width: 320px; font-size: 13px; }
+  button { margin: 4px; padding: 6px 10px; background: #2a2a4a; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  #status { margin-top: 8px; font-size: 12px; color: #a0a0c0; }
+  .probe { position: absolute; pointer-events: none; font-size: 11px; background: rgba(20,20,40,0.7); padding: 2px 6px; border-radius: 4px; transform: translate(-50%, -50%); }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-implicit-mind-surface · Verse lab</title>
+<meta name="description" content="A full-viewport WebGPU raymarched signed-distance field (SDF) of a living metaball / implicit mind surface.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-implicit-mind-surface · Verse lab">
+<meta property="og:description" content="A full-viewport WebGPU raymarched signed-distance field (SDF) of a living metaball / implicit mind surface.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f505-webgpu-implicit-mind-surface/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f505-webgpu-implicit-mind-surface/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F505 Implicit Mind Surface</strong><br>
+  Pointer / tilt modulates living SDF.<br>
+  <button id="nucleate">Nucleate</button>
+  <button id="seal">Seal Genome</button>
+  <button id="transfer">Transfer</button>
+  <button id="restore">Restore</button>
+  <button id="clear">Clear</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-implicit-mind-surface</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -24,6 +24,7 @@ export const RESERVED = Object.freeze(['verse', 'void', 'owner', 'admin', 'mod',
 export const HOME = Object.freeze([
   { code: 'work', title: 'work', about: 'Verse hands each idle agent its next job here. Every job is a thread: the agent answers in it and closes it.' },
   { code: 'general', title: 'general', about: 'The whole team, Verse and its agents.' },
+  { code: 'ideas', title: 'ideas', about: 'Members propose changes here. The owner turns a proposal into a job with one press.' },
 ]);
 export const LIMITS = Object.freeze({ body: 4000, lines: 80, about: 160, title: 24, search: 6, page: 60, thread: 300 });
 export const RATES = Object.freeze({ gap: 1000, day: 600, channelsDay: 10, channels: 60, agents: 100, asks: 50, dreamsDay: 4, dreamsOpen: 5 }); // dreams: Verse Brain's posts in #work (api/team.js 'dream')
@@ -247,4 +248,63 @@ export function workSay(job) {
     + ' Read it: GET /api/team?t=' + t + '. Post progress there: {"do":"post","c":"work","thread":' + t + ',"body":"..."}.'
     + ' Say {"do":"here"} at least every 30 minutes while you work. Close it: {"do":"done","ok":true,"link":"<pull request>","note":"..."},'
     + ' or give it back: {"do":"done","ok":false,"note":"why"}.';
+}
+
+// ---- members: people who bought from Verse's store join the team themselves (owner, 2026-11-03: "strengthen it so its easier to build
+// and help build verse for me and paying members"). A purchase is the invite: the buyer gives the license key from the Gumroad receipt
+// and gets a member key at once, with no step for the owner. A member is an agent row with role 'member': it claims and ships jobs,
+// posts, and proposes changes in #ideas. It never invites, removes, queues the owner's work or posts a dream, and nothing in the team
+// holds a secret or spends money, so a member can reach neither.
+export const ROLES = Object.freeze(['agent', 'member']);
+// every paid product in the store opens the team (Gumroad's product id, which the license check needs, and the permalink people see)
+export const MEMBER_PRODUCTS = Object.freeze([
+  { slug: 'join-the-team', id: 'yRV2Tdxi4Sfo93dngFfueQ==', name: 'Join the Team' },
+  { slug: 'yinmj', id: 'ITp6zMMOC7A2h-bsSejYSA==', name: 'Void Monthly' },
+  { slug: 'keep-it-running-membership', id: 'AjM25760yPhdeXKHxMCZKA==', name: 'Keep-It-Running Plan' },
+  { slug: 'void-code-review', id: 'YlFlov3ctn0bOmH5hQTiCw==', name: 'Void Code Review Pro' },
+  { slug: 'full-stack-audit', id: 'thWFjcZJaYVirgcz1GJPgg==', name: 'Full Stack Audit' },
+  { slug: 'first-automation-setup', id: 'bjyuTwHDJocS0A0XMUaeFQ==', name: 'First Automation Setup' },
+  { slug: 'eozcma', id: 'aCzu9KIryaJcwxqWcnRAdg==', name: 'Automation Cleanup' },
+  { slug: 'gqsgib', id: 'GTQsNJR9Nsd66O5QVhI4MA==', name: 'The Big Board' },
+]);
+export const JOIN_PRODUCT = 'https://moonbeam846.gumroad.com/l/join-the-team';
+/** the store product a buyer names: its permalink, its id, its link or its name -> the row, or null. Pure. */
+export function memberProduct(x) {
+  const s = String(x == null ? '' : x).trim(), m = /\/l\/([^/?#\s]+)/.exec(s), k = (m ? m[1] : s).toLowerCase();
+  if (!k) return null;
+  return MEMBER_PRODUCTS.find((p) => p.slug === k || p.id === s || p.name.toLowerCase() === k) || null;
+}
+// a Gumroad license key: four groups of 8 hex digits (Gumroad's own form), or the older longer forms, letters, digits and dashes
+export const LICENSE_RE = /^[A-Za-z0-9][A-Za-z0-9-]{7,63}$/;
+/** why Gumroad's license answer does not open the team, or '' when it does. answer: the JSON of POST /v2/licenses/verify. Pure. */
+export function purchaseProblem(answer, product) {
+  if (!answer || answer.success !== true || !answer.purchase) return 'Gumroad does not know that license key for ' + (product ? product.name : 'that product') + '. Copy it from your Gumroad receipt or library.';
+  const p = answer.purchase;
+  if (product && p.product_id && p.product_id !== product.id) return 'that key is for another product';
+  if (p.refunded || p.chargebacked || p.disputed) return 'that purchase was refunded or disputed';
+  if (p.subscription_ended_at || p.subscription_cancelled_at || p.subscription_failed_at) return 'that membership is cancelled or its payment failed: renew it, then try again';
+  if (!(Number(p.price) > 0) && p.test !== true) return 'a free copy does not open the team: buy Join the Team (' + JOIN_PRODUCT + ')';
+  if (!p.sale_id) return 'Gumroad gave no sale for that key';
+  return '';
+}
+export const memberJoinedSay = (name) => 'Welcome, ' + name + '. You are a member of the Verse team. Save the key straight to a key file or this page keeps it; it is shown once. '
+  + 'Claim a job on the board (one click), ship it as a pull request, and your name goes on the credits. Propose changes in #ideas.';
+// the board: kinds a newcomer can finish alone, from public facts (a rival site's page, a missing answer, a new idea)
+export const GOOD_FIRST = Object.freeze(['versus', 'gap', 'novelty']);
+const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Outdo a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
+/** a queued job as the public board shows it. The owner's own #work asks keep their words in the members-only chat. Pure. */
+export function boardRow(job, now) {
+  const k = kindOf(job.target), mine = ownerAsk(job);
+  const title = mine ? 'An ask from the owner (members read it in #work)' : clean(hideSecrets(String(job.ask || '').replace(/\s*Answer in this thread[\s\S]*$/, '')), 160);
+  return { id: job.id, kind: k, label: KIND_WORD[k] || k, title, good: GOOD_FIRST.includes(k), owner: mine, waiting: Math.max(0, Math.floor((now - msOf(job.at)) / 864e5)) };
+}
+/** the board, best first, good first tasks on top, at most `max`. Pure. */
+export function board(jobs, now, max = 40) {
+  return rank(jobs, now).map((j) => boardRow(j, now)).sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
+}
+/** an owner's one-line post from the site: "idea: ..." goes to #ideas, anything else ("job: ..." or plain words) to #work (a job). Pure. */
+export function quickPost(text) {
+  const t = String(text == null ? '' : text).trim(), m = /^(job|idea|todo|task|fix|bug)\s*[:\-–]\s*/i.exec(t), body = (m ? t.slice(m[0].length) : t).trim();
+  if (!body) return null;
+  return { c: m && /^idea$/i.test(m[1]) ? 'ideas' : 'work', body: m && /^(fix|bug)$/i.test(m[1]) ? 'Fix: ' + body : body };
 }

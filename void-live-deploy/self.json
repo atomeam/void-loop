@@ -295,6 +295,54 @@
  },
  "commits": [
   {
+   "at": "2026-11-04T02:58:58Z",
+   "subject": "Main green: verse-watch parses, every skill has its order place, the red checks fixed (takes over #2064) (#2080)"
+  },
+  {
+   "at": "2026-11-04T02:58:18Z",
+   "subject": "tower-self test, again: gradient is the colour page's mode (#2100). The exam revert took back #2106, a test-only change no visitor can see…"
+  },
+  {
+   "at": "2026-11-04T02:55:42Z",
+   "subject": "The gradient editor is a mode of the colour page, so it is not its own family."
+  },
+  {
+   "at": "2026-11-04T02:55:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-04T02:50:27Z",
+   "subject": "Lab: 361 experiments live at /lab/, 17 waiting for a fix (#2074)"
+  },
+  {
+   "at": "2026-11-04T02:47:59Z",
+   "subject": "Revert 01c8c7c7fcdcc77bd2f405c38c3b91a1b8402fe0: an outcome-exam domain fell by 5 or more (exam.yml)"
+  },
+  {
+   "at": "2026-11-04T02:45:27Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T02:43:43Z",
+   "subject": "Main green: CSP page rules fit Cloudflare's 100 again (two pages share a directory rule), price-lock reads the free items from the store…"
+  },
+  {
+   "at": "2026-11-04T02:42:10Z",
+   "subject": "Score Verse by visitor outcomes, and raise the lowest domains (#2097)"
+  },
+  {
+   "at": "2026-11-04T02:41:06Z",
+   "subject": "Keep main's parity catalog after the refresh."
+  },
+  {
+   "at": "2026-11-04T02:40:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-04T02:38:40Z",
+   "subject": "List the tools the directory was missing, so the search block matches the table."
+  },
+  {
    "at": "2026-11-04T02:37:36Z",
    "subject": "/status/: time 15 of Verse's pages and APIs from the visitor's browser, grouped, with how many answered and the median (#2108)"
   },
@@ -305,6 +353,10 @@
   {
    "at": "2026-11-04T02:33:26Z",
    "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
+  },
+  {
+   "at": "2026-11-04T02:31:25Z",
+   "subject": "Keep main's parity catalog. The refresh rewrote it, and the parity check was already red on main."
   },
   {
    "at": "2026-11-04T02:28:12Z",
@@ -321,58 +373,6 @@
   {
    "at": "2026-11-04T02:27:09Z",
    "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:24:00Z",
-   "subject": "Keep the merge gate on the exam change"
-  },
-  {
-   "at": "2026-11-04T02:18:10Z",
-   "subject": "exam: the merge gate does not run every check for an offline-shell address"
-  },
-  {
-   "at": "2026-11-04T02:17:41Z",
-   "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:07:16Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T02:06:17Z",
-   "subject": "Let Verse's review approve and merge itself (#2103)"
-  },
-  {
-   "at": "2026-11-04T02:03:35Z",
-   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:00:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-04T01:59:21Z",
-   "subject": "exam: revert a deploy only after two runs in a row each drop by 5"
-  },
-  {
-   "at": "2026-11-04T01:55:03Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-04T01:55:00Z",
-   "subject": "/fix/ hub: the combined page's mode bar comes from tools/fix-pages.mjs, so a regenerate keeps it (#2104)"
-  },
-  {
-   "at": "2026-11-04T01:50:46Z",
-   "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T01:50:29Z",
-   "subject": "/progress/ runs its script from /progress/app.js: no inline-script CSP rule, so the headers stay inside Cloudflare's 100"
-  },
-  {
-   "at": "2026-11-04T01:50:06Z",
-   "subject": "Incident: the browser suite failed on c0b0ab8e (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

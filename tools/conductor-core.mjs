@@ -32,6 +32,8 @@ export const ROUTES = Object.freeze({
   voice: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   versus: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   feature: { wf: AGENT, input: 'job', claims: true, cap: 40 },
+  // what Verse heard on TV or radio, built onto the site (tools/watch-build.mjs queues at most one an hour from the watch job)
+  tv: { wf: AGENT, input: 'job', claims: true, cap: 24 },
   review: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   gap: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   novelty: { wf: AGENT, input: 'job', claims: true, cap: 40 },
@@ -46,7 +48,7 @@ export const ROUTES = Object.freeze({
 
 // what a kind of job is worth (AGENTS.md: Verse's own asks come first; STANDING.md and RULES.md 2026-10-26: Verse earns on its own, and the
 // tower never stops). A broken loop stops everything after it, so its repair outranks all.
-export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, visit: 92, 'store-gap': 90, member: 88, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
+export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, visit: 92, 'store-gap': 90, member: 88, tv: 87, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
 // what goes before any score: a broken loop's repair, then a paid member's idea (2026-10-30: with every free versus job aged to 91, a member's
 // pilot idea at 88 waited behind them tick after tick; a member paid for Verse to build it, so it waits behind nothing but a repair)
 export const FIRST = Object.freeze({ heal: 2, member: 1 });

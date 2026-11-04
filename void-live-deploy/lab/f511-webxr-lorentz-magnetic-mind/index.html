@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#050510; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; max-width:280px; font-size:13px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #55f; border-radius:4px; cursor:pointer; }
+.flux-card { position:absolute; width:60px; height:40px; background:rgba(80,40,160,0.7); border:2px solid #aaf; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff; cursor:grab; user-select:none; pointer-events:auto; }
+#status { font-size:11px; color:#8f8; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-lorentz-magnetic-mind · Verse lab</title>
+<meta name="description" content="Slug: webxr-lorentz-magnetic-mind">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-lorentz-magnetic-mind · Verse lab">
+<meta property="og:description" content="Slug: webxr-lorentz-magnetic-mind">
+<meta property="og:url" content="https://a-to-mind.com/lab/f511-webxr-lorentz-magnetic-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f511-webxr-lorentz-magnetic-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>Lorentz Magnetic Mind</strong> F511</div>
+  <div>Hand/Gaze or Pointer sets B dipole. Particles feel F=q(v×B).</div>
+  <button id="seal">Seal Genome</button>
+  <button id="restore">Restore</button>
+  <button id="reset">Reset Field</button>
+  <div id="status">Fallback: pointer + tilt. XR: request on button if supported.</div>
+  <button id="xrbtn" style="display:none">Enter XR</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-lorentz-magnetic-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

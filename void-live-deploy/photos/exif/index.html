@@ -48,6 +48,13 @@
   .warn { background: var(--box); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 8px; padding: 8px 10px; font-size: 14px; } .warn.clean { border-left-color: var(--ok); }
   details summary { cursor: pointer; font-size: 13px; color: var(--soft); min-height: 32px; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; } #lang { float: right; min-height: 32px; font-size: 13px; padding: 2px 10px; }
+  #ai { margin: 14px 0; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--box); } #ai.over { border-color: var(--accent); } #ai h2 { font-size: 16px; margin: 0 0 4px; }
+  #ai .aipick { display: block; border: 2px dashed var(--line); border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; } #aifile { max-width: 100%; min-height: 44px; font: inherit; }
+  .aicard { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 10px 0 0; } .aiv { font-size: 17px; font-weight: 700; margin: 0 0 2px; }
+  .v-ai, .v-ai-edited, .l-ai, .l-ai-edit { color: #ff8a7e; } .v-edited, .l-edit { color: #f5c46b; } .v-camera, .l-camera { color: var(--ok); } .v-unknown { color: var(--soft); } .l-info { color: var(--accent); }
+  .aicard .meta, .aicard .detail, #ai .note { color: var(--soft); font-size: 13px; overflow-wrap: anywhere; } .aicard .detail { display: block; } #ai .note a { color: var(--accent); }
+  ul.sig { list-style: none; padding: 0; margin: 0; } ul.sig li { padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; } ul.sig li:first-child { border-top: 0; }
+  .aicard .tag { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 0 7px; margin-right: 6px; border: 1px solid currentColor; } .airow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   [hidden] { display: none !important; } #related { min-height: 130px; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 </style><script src="/visit.js" defer></script>
@@ -60,10 +67,19 @@
   <section id="uses" aria-labelledby="usesh" class="sub"><h2 id="usesh" data-i="uses_h" style="font-size:16px;margin:6px 0 2px">Before you share</h2><ul style="margin:0 0 10px;padding-left:1.2em">
     <li data-i="uses_sell">Selling something online: remove the place and the camera's serial number, so a buyer cannot find your home.</li>
     <li data-i="uses_trip">A holiday photo: check the time and place it shows before you post it while you are away.</li>
+    <li>A photo or video someone sent you: the AI check below shows whether its file says AI made or edited it.</li>
     <li data-i="uses_scan">A document scan: remove the phone or scanner name and the time before you email it.</li>
   </ul></section>
   <div class="drop" id="drop"><label for="file" data-i="choose">Choose photos, drop them here, or paste one</label><input id="file" type="file" accept="image/*" multiple><small data-i="drophint">JPEG, PNG, WebP, AVIF, GIF, BMP. Several at once make a batch.</small></div>
   <p style="text-align:center;margin:0 0 10px"><button type="button" id="share" data-i="share">Share this tool</button></p>
+  <section id="ai" aria-labelledby="aih">
+    <h2 id="aih">AI check: was this photo or video made or edited by AI?</h2>
+    <p class="note">Reads what the file says about who made it: Content Credentials (C2PA), the AI source type, Stable Diffusion and ComfyUI settings, generator names (Midjourney, Firefly, DALL-E and more), the editor that saved it and the camera or phone. Photos opened above are checked too.</p>
+    <label class="aipick" for="aifile">Choose a photo or video to check (JPEG, PNG, WebP, HEIC, MP4, MOV)<br><input type="file" id="aifile" accept="image/*,video/*,.heic,.mov,.mp4" multiple></label>
+    <div id="aiout" aria-live="polite"></div>
+    <p class="note" data-honest>It reads metadata, the way a forensic examiner's first look does; it does not judge the pixels. Metadata can be stripped (most social apps do) or faked, so "no signs" never proves a file is real. To check a Content Credentials signature, use <a href="https://contentcredentials.org/verify" target="_blank" rel="noopener">contentcredentials.org/verify</a>.</p>
+    <p class="note" id="pro">Checking files for a case, a newsroom or a business? With <a id="pro-link" href="https://moonbeam846.gumroad.com/l/yinmj" target="_blank" rel="noopener">MultiVerse ($49 a month)</a> you get your own Verse, and members ask it to build the next check they need; paid members' asks go to the front of its build queue. Verse built this mode from what it watched on TV (WFTV, ABC, 30 Oct 2026): <a href="/local/#tv-built">what else it built from TV and radio</a>.</p>
+  </section>
   <p class="sub" id="caps" data-i="caps" style="min-height:7.5em">Compress and convert JPEG, PNG, WebP and AVIF with a quality slider, a before and after slider and the size saved. Resize, crop with shapes, rotate and flip. Brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo. See and strip EXIF, GPS and other metadata. Batch many photos into one zip. Paste or drop photos. Nothing is uploaded and it works offline.</p>
   <div id="work" hidden>
     <div class="files" id="files" role="group" aria-label="Your photos"></div>
@@ -127,6 +143,7 @@
   <footer><span data-i="foot">Done on this device: pictures are never uploaded, saved copies are drawn again from the pixels so they carry no camera or place data, and the page opens offline after one visit. Quality 1 to 100 is the browser's encoder; AVIF is offered where this browser can write it.</span> <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module" src="/photos/app.js"></script>
+<script type="module" src="/photos/ai-mode.js"></script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
 </html>
