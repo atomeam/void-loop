@@ -11,7 +11,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
 test('the nav names the shell pages, and the current page is the longest match', () => {
-  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/treasury/']);
+  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/treasury/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
+  assert.equal(currentNav('/scoreboard/').label, 'Scoreboard');
+  assert.equal(currentNav('/limits/').label, 'Limits');
   assert.equal(currentNav('/').label, 'Ask');
   assert.equal(currentNav('/team/').label, 'Team');
   assert.equal(currentNav('/team/join/abc').label, 'Team');
@@ -60,6 +62,8 @@ test('dressHtml adds the shell on the named pages and nowhere else', () => {
   assert.equal(dressHtml(home, '/'), home);
   assert.doesNotMatch(dressHtml(bare, '/team/'), /verse-field\.js/);
   assert.equal(dressHtml(bare, '/calculator/'), bare);
+  assert.match(dressHtml(bare, '/scoreboard/'), /verse-shell\.js/);
+  assert.match(dressHtml(bare, '/contribute/'), /verse-shell\.js/);
   assert.equal(dressPath('/tower/'), false);
   const css = read('void-live-deploy/verse.css');
   assert.match(css, /--d-ink:\s*#f2f4fb/);

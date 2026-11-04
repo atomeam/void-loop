@@ -10,6 +10,10 @@ export const NAV = Object.freeze([
   { href: '/conquered/', label: 'Tower', also: ['/tower/', '/tower'] },
   { href: '/films/', label: 'Films' },
   { href: '/treasury/', label: 'Treasury' },
+  { href: '/scoreboard/', label: 'Scoreboard' },
+  { href: '/security/', label: 'Security' },
+  { href: '/limits/', label: 'Limits' },
+  { href: '/contribute/', label: 'Contribute' },
 ]);
 
 /** the nav item this path is on, or null. `/tower` is the Tower. `/` is Ask and nothing else. */
@@ -77,7 +81,7 @@ export function speculationRules(nav = NAV) {
   };
 }
 
-const DRESS = new Set(['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/treasury/']);
+const DRESS = new Set(NAV.map((n) => n.href));
 
 /** the shell paths the service worker dresses. `/tower` is Tower, which redirects to `/conquered/`. */
 export function dressPath(path) {
