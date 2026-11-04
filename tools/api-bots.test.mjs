@@ -4,13 +4,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { APIS, apiBots, read } from '../void-live-deploy/bots/api-bots.js';
+import { APIS, apiBots, read, askAt, reachable } from '../void-live-deploy/bots/api-bots.js';
+import { relayAddress, RELAYED, onRequestGet } from '../void-live-deploy/functions/api/apibot.js';
 import KEPT from '../void-live-deploy/bots/api-fixtures.js';
 import { check } from '../void-live-deploy/bots/families.js';
 import { familyRows, fixJobs } from './bot-factory.mjs';
 import { trim, corsOfHops } from './api-bots.mjs';
 
-const blocked = (id) => !KEPT[id] || KEPT[id].status !== 200 || !(KEPT[id].cors === '*' || KEPT[id].cors === 'https://a-to-mind.com');
+const blocked = (id) => !KEPT[id] || KEPT[id].status !== 200 || !reachable(APIS.find((a) => a.id === id), KEPT[id]);
 
 test('every API bot with a good kept call passes all its checks; the rest fail and become fix jobs, never live', () => {
   const B = apiBots();
@@ -64,4 +65,32 @@ test('a redirect without CORS on every hop is kept as blocked (browsers refuse i
   assert.equal(corsOfHops(['*', 'https://a-to-mind.com']), 'https://a-to-mind.com');
   assert.equal(corsOfHops(['*', 'https://other.example']), 'https://other.example');
   for (const a of APIS) assert.ok(!KEPT[a.id] || !KEPT[a.id].moved || KEPT[a.id].cors === null, a.id + ' moved to ' + (KEPT[a.id] || {}).moved + ': point its address there');
+});
+
+test('an API without CORS (xkcd, Fruityvice) runs through Verse\'s relay, /api/apibot, and passes on its real kept call', async () => {
+  for (const id of ['xkcd', 'fruit-nutrition']) {
+    const a = APIS.find((x) => x.id === id), k = KEPT[id], b = apiBots().find((x) => x.id === 'api-' + id);
+    assert.equal(k.cors, null, id + ' really sends no CORS header'); assert.equal(a.via, 'verse');
+    assert.deepEqual(check(b).fails, [], id + ' passes every check');
+    assert.equal(askAt(a, a.sample), '/api/apibot?id=' + id + '&q=' + encodeURIComponent(a.sample));
+    assert.equal(relayAddress(id, a.sample), k.url, 'the relay asks the same address the kept call did');
+    const keep = globalThis.fetch, seen = [];
+    globalThis.fetch = async (u) => { seen.push(u); const res = await onRequestGet({ request: new Request('https://a-to-mind.com' + u), env: {}, fetchFn: async (x) => { seen.push(x); return new Response(JSON.stringify(k.body), { status: 200 }); } }); return res; };
+    try { assert.equal(await b.run(a.sample), read(a, k.body, a.sample)); } finally { globalThis.fetch = keep; }
+    assert.deepEqual(seen, [askAt(a, a.sample), k.url], 'browser asks the relay, the relay asks the API');
+  }
+});
+
+test('the relay is not an open proxy: closed list, the API\'s own host only, failures never passed off as answers', async () => {
+  assert.deepEqual(RELAYED.map((a) => a.id).sort(), ['fruit-nutrition', 'xkcd']);
+  assert.equal(relayAddress('zip-lookup', '33801'), null, 'an API with CORS is not relayed');
+  assert.equal(relayAddress('nope', 'x'), null);
+  assert.equal(relayAddress('fruit-nutrition', '../../../evil'), 'https://www.fruityvice.com/api/fruit/..%2F..%2F..%2Fevil');
+  for (const q of ['@evil.example/x', '//evil.example', 'banana#@evil.example']) assert.equal(new URL(relayAddress('fruit-nutrition', q)).host, 'www.fruityvice.com');
+  const ask = (q, fetchFn) => onRequestGet({ request: new Request('https://a-to-mind.com/api/apibot?' + q), env: {}, fetchFn });
+  let called = 0; const r404 = await ask('id=zip-lookup&q=33801', async () => { called++; return new Response('{}'); });
+  assert.equal(r404.status, 404); assert.equal(called, 0, 'an unlisted id never reaches the network');
+  assert.equal((await ask('id=xkcd&q=614', async () => new Response('', { status: 301, headers: { location: 'https://evil.example/' } }))).status, 502, 'a redirect is not followed');
+  assert.equal((await ask('id=xkcd&q=614', async () => new Response('down', { status: 500 }))).status, 502);
+  assert.equal((await ask('id=xkcd&q=614', async () => { throw new Error('timeout'); })).status, 504);
 });
