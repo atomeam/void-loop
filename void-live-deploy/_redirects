@@ -49,4 +49,4 @@
 # the singular name opens the emoji pages (owner, 2026-11-03: /emoji/ was a 404); /emoji/<emoji> opens that emoji on every platform
 /emoji /emojis/ 301
 /emoji/ /emojis/ 301
-/emoji/* /emojis/everywhere/?e=:splat 302
+/emoji/* /emojis/ 302
