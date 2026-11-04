@@ -147,7 +147,7 @@ test('the gradient page\'s card opens on the gradient open there: every stop, it
   for (const g of many) { const ask = 'css gradient ' + G.css(g), back = G.askGradient(ask); assert.ok(back, ask); assert.equal(G.css(back.g), G.css(g), 'the card draws the same gradient: ' + ask); }
   const ask = 'css gradient ' + G.css(many[0]); assert.equal(await firstSkill(ask), 'gradient', 'the stage gives it to the gradient skill');
   assert.equal(G.askGradient('gradient descent'), null); assert.ok(G.askGradient('gradient from red to blue'), 'the old asks still work');
-  const src = fs.readFileSync(new URL('../void-live-deploy/gradient/index.html', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../void-live-deploy/color/gradient/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*'css gradient '\s*\+\s*css\(g\)/, 'the gradient page gives its card the gradient open on it');
 });
 
@@ -159,7 +159,7 @@ test('the wheel page\'s card opens on the wheel open there: every entry and weig
   for (const e of [plain, hard]) { const back = W.askWheel(W.askOf(e)); assert.ok(back, W.askOf(e)); assert.equal(W.textOf(back.entries), W.textOf(e), 'the card spins the same entries'); assert.equal(await firstSkill(W.askOf(e)), 'wheel', 'the stage gives it to the wheel skill'); }
   assert.equal(W.askOf([{ label: 'one', weight: 1 }]), '', 'one entry: nothing to spin, the example');
   assert.equal(W.askWheel('wheel alignment near me'), null); assert.equal(W.askWheel('spin the wheel #!!'), null);
-  const src = fs.readFileSync(new URL('../void-live-deploy/wheel/index.html', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../void-live-deploy/random/wheel/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*askOf\(entries\)/, 'the wheel page gives its card the entries open on it');
 });
 
@@ -243,7 +243,7 @@ test('a made or typed password is never in an address, a hash or history: the st
   // the ask bar sends a typed password to the plain page
   for (const ask of ['how strong is Tr0ub4dor&3', 'check password hunter2hunter2', 'how secure is a b c']) { const u = routeAsk(ask); assert.equal(u, '/password-strength/'); }
   // the pages: no link the password page builds carries a password, and the strength page reads none from the address
-  const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), strength = fs.readFileSync(new URL('../void-live-deploy/password-strength/index.html', import.meta.url), 'utf8');
+  const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), strength = fs.readFileSync(new URL('../void-live-deploy/password/strength/index.html', import.meta.url), 'utf8');
   assert.ok(!page.includes('#p=') && !/encodeURIComponent\((?:pw|made)/.test(page), 'the password page builds no address with a password in it');
   assert.ok(page.includes("handOver(window, pw)") && page.includes("go: () => !handOver(window, made[0])"), 'both checks hand it over in memory');
   assert.ok(!/pw\.value\s*=\s*decodeURIComponent/.test(strength) && !/(?:session|local)Storage/.test(strength) && !/sessionStorage/.test(page), 'the strength page reads nothing from the address and stores nothing');
@@ -269,7 +269,7 @@ test('the made-up people page\'s card shows the people on the page: its count, c
   for (const nat of Object.keys(F.NATS)) assert.deepEqual(F.askFake(C.cardAsk('4', [nat])).nats, [nat], 'each country reads back as itself: ' + nat);
   // other asks keep what they did: no seed, and the countries in the order asked
   assert.deepEqual(F.askFake('generate 5 fake german women'), { n: 5, nats: ['de'], gender: 'female' }); assert.deepEqual(F.askFake('20 random users from japan and brazil').nats, ['jp', 'br']);
-  const page = fs.readFileSync(new URL('../void-live-deploy/random-user/index.html', import.meta.url), 'utf8');
+  const page = fs.readFileSync(new URL('../void-live-deploy/random/people/index.html', import.meta.url), 'utf8');
   assert.ok(page.includes("{ card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) }"), 'the page gives the card its count, countries, gender and seed');
 });
 
@@ -438,7 +438,7 @@ test('the base converter\'s card opens on the number typed there, in the base it
   }
   assert.equal(B.baseAsk('12', 2), '', 'not a binary number: the example'); assert.equal(B.baseAsk('-5', 10), ''); assert.equal(B.baseAsk('', 16), '');
   assert.equal(B.baseAsk('0b101', 16), '', 'a prefix for another base');
-  const src = fs.readFileSync(new URL('../void-live-deploy/base-converter/index.html', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../void-live-deploy/base64/bases/index.html', import.meta.url), 'utf8');
   assert.match(src, /card: \(\) => \(!typedIn \? '' : typedIn\.dataset\.base === 'any' \? baseAsk\(\$\('b10'\)\.value, 10\) : baseAsk\(typedIn\.value, \+typedIn\.dataset\.base\)\)/, 'the page gives its card the box typed in');
   assert.match(src, /const show = \(fromBox\) => \{\n\s+typedIn = fromBox;/, 'every show remembers the box');
 });

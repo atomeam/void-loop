@@ -10,14 +10,14 @@ const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(h
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
 // other agents' floors: tested and reported, never edited from here (see domains/handoff.md)
-export const OTHERS = ['/tournaments/', '/prizes/', '/wheel/', '/boards/', '/resize-image/', '/g/', '/photos/', '/random/', '/random-user/', '/is-it/', '/color/'];
+export const OTHERS = ['/tournaments/', '/prizes/', '/random/wheel/', '/boards/', '/resize-image/', '/g/', '/photos/', '/random/', '/random/people/', '/is-it/', '/color/'];
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
   const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
-const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/full-stack-audit/', '/one-time-fix/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/'];
+const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/'];
 const near = (a, b, e = 0.01) => Math.abs(Number(String(a).replace(/[^0-9.eE+-]/g, '')) - b) <= e;
 
 // ---- the specs: one per route. t.* helpers are defined in run(). ----
@@ -105,7 +105,7 @@ export const SPECS = {
     await t.fill('#input', '12 * 7'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(2500);
     t.ok(/\b84\b/.test(await t.p.locator('body').innerText()), 'the chat answers 12 * 7 = 84');
   },
-  '/base-converter/': async (t) => {
+  '/base64/bases/': async (t) => {
     await t.fill('#b10', '255'); t.ok((await t.val('#b16')).toLowerCase() === 'ff' && (await t.val('#b2')).replace(/\s/g, '') === '11111111' && (await t.val('#b8')) === '377', '255 is ff, 11111111, 377');
     await t.share('#link', async (p) => (await p.inputValue('#b16')).toLowerCase() === 'ff');
   },
@@ -261,14 +261,14 @@ export const SPECS = {
     t.ok(/JFK/.test(await t.p.locator('main').innerText()) && /LHR/.test(await t.p.locator('main').innerText()), 'a pasted flight is read into the trip');
     await t.download('#i-ics', /\.ics$/i);
   },
-  '/flip/': async (t) => { const b = await t.p.locator('main').innerText(); await t.clickText('Flip again'); await t.p.waitForTimeout(1200); t.ok(/Heads|Tails/i.test(await t.p.locator('main').innerText()), 'a flip lands heads or tails'); t.ok(b !== (await t.p.locator('main').innerText()) || true, 'tally kept'); },
+  '/random/coin/': async (t) => { const b = await t.p.locator('main').innerText(); await t.clickText('Flip again'); await t.p.waitForTimeout(1200); t.ok(/Heads|Tails/i.test(await t.p.locator('main').innerText()), 'a flip lands heads or tails'); t.ok(b !== (await t.p.locator('main').innerText()) || true, 'tally kept'); },
   '/g/': async (t) => { await t.fill('#ta', 'hello from the test'); await t.share('#share'); },
   '/generators/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate makes new names'); await t.copies('#copyAll'); await t.share('#share'); },
   '/generators/chat/': async (t) => { await t.fill('#say', 'hello captain'); await t.click('#send'); await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#log').innerText()).length > 20, 'the character answers'); await t.share('#share'); },
   '/generators/forum/': async (t) => { t.ok((await t.p.locator('#tTitle').count()) === 1, 'the thread form is there'); },
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
-  '/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
+  '/color/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
   // Verse raps (2026-10-29): a topic in, a rap written for it by the free answer model (two verses and a hook, the rhymes lettered), performed by
   // Rap it yourself (beat and lights), copied, and shared with the whole rap in the link
   '/rap/': async (t) => {
@@ -335,7 +335,7 @@ export const SPECS = {
     await t.clickText('The Great Wave'); await t.p.waitForTimeout(1200); t.ok(/Great Wave/.test(await t.p.getAttribute('#c', 'aria-label').catch(() => '') || ''), 'and back to The Great Wave');
     await t.click('#next'); await t.download('#png', /\.png$/i); await t.share('#share'); },
   '/password/': async (t) => { await t.fill('#lenN', '24'); await t.click('#go'); await t.p.waitForTimeout(200); const pw = (await t.p.locator('#list').innerText()).split(/\s+/)[0]; t.ok(pw.length === 24, 'a 24 character password: ' + pw.length); await t.share('#link'); },
-  '/password-strength/': async (t) => {
+  '/password/strength/': async (t) => {
     await t.fill('#pw', 'password'); await t.p.waitForTimeout(300); t.ok(/weak|very weak|instant/i.test(await t.p.locator('main').innerText()), '"password" is weak');
     await t.fill('#pw', 'c0rrect-Horse-battery-staple-91'); await t.p.waitForTimeout(300); t.ok(/strong|centur|years/i.test(await t.p.locator('main').innerText()), 'a long passphrase is strong');
     await t.click('#leak'); await t.p.waitForTimeout(3000); t.ok(/leak|breach|found|not found|seen/i.test(await t.p.locator('main').innerText()), 'the leak check answers');
@@ -351,11 +351,11 @@ export const SPECS = {
   },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },
-  '/random-user/': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
+  '/random/people/': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
   '/recipes/': async (t) => { await t.fill('#q', 'chicken'); await t.click('#go'); await t.p.waitForTimeout(4000); t.ok(/chicken/i.test(await t.text('#results')), 'a search for chicken lists recipes'); },
   '/resize-image/': async (t) => { await t.share('#share'); },
   '/scores/': async (t) => { await t.p.waitForTimeout(4000); t.ok(!/couldn.t|error|unavailable/i.test(await t.text('#out')), 'scores load: ' + (await t.text('#out')).slice(0, 60)); await t.share('#share'); },
-  '/sports/': async (t) => { await t.clickText('Basketball'); await t.p.waitForTimeout(800); t.ok(/NBA|basketball/i.test(await t.text('#out')), 'basketball opens its leagues'); await t.share('#share'); },
+  '/scores/sports/': async (t) => { await t.clickText('Basketball'); await t.p.waitForTimeout(800); t.ok(/NBA|basketball/i.test(await t.text('#out')), 'basketball opens its leagues'); await t.share('#share'); },
   '/stopwatch/': async (t) => { await t.click('#swgo'); await t.p.waitForTimeout(1200); await t.click('#swgo'); t.ok(/0?0?:?0?1[.:]\d/.test(await t.p.locator('main').innerText()) || /1\.\d\d/.test(await t.p.locator('main').innerText()), 'about a second passes on the stopwatch'); await t.share('#link'); },
   '/stl/': async (t) => { // the STL checker (asked by Verse): the built-in cube with a hole is found not watertight with its three open edges, the report copies and downloads, and the link reopens it
     await t.click('#sHole'); const v = await t.waitText('#verdict', /watertight/i, 15000); t.ok(/^Not watertight: 3 open edges around 1 hole/.test(v), 'a cube with a hole: ' + v.slice(0, 60));
@@ -372,7 +372,7 @@ export const SPECS = {
   '/translate/': async (t) => { await t.p.selectOption('#to', 'es'); await t.fill('#in', 'good morning'); await t.click('#go'); await t.waitText('#out', /buen|could not|error/i, 30000); t.ok(/buen/i.test(await t.text('#out')), 'good morning is buenos días: ' + (await t.text('#out')).slice(0, 40)); await t.share('#share'); },
   '/tuner/': async (t) => { await t.click('#pipeBtn'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'the pitch pipe plays'); await t.share('#shareBtn'); },
   '/weather/': async (t) => { await t.fill('#q', 'London'); await t.clickText('Look'); await t.waitText('#temp', /\d/, 20000); t.ok(/-?\d+ ?°[FC]/.test(await t.text('#temp')), 'London has a live temperature: ' + (await t.text('#temp'))); },
-  '/wheel/': async (t) => { await t.click('#spin'); await t.p.waitForTimeout(6500); t.ok(/Alice|Bob|Carol|Dave|Eve/.test(await t.p.locator('main').innerText()), 'the wheel lands on a name'); await t.share('#link'); },
+  '/random/wheel/': async (t) => { await t.click('#spin'); await t.p.waitForTimeout(6500); t.ok(/Alice|Bob|Carol|Dave|Eve/.test(await t.p.locator('main').innerText()), 'the wheel lands on a name'); await t.share('#link'); },
   '/word-count/': async (t) => {
     await t.fill('#text', 'The quick brown fox jumps.'); await t.p.waitForTimeout(200); t.ok(/^5 words · 26 characters/.test(await t.text('#big')), '"The quick brown fox jumps." is 5 words, 26 characters');
     await t.click('#upper'); t.ok((await t.val('#text')) === 'THE QUICK BROWN FOX JUMPS.', 'UPPERCASE'); await t.share('#link');

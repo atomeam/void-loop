@@ -9,7 +9,7 @@
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="CSS gradient generator · Verse">
 <meta property="og:description" content="Make a CSS gradient: linear, radial or conic, any number of colour stops with opacity, presets, reverse, hue and saturation, paste CSS to edit it, or take the colours from a picture. Copy the CSS or SCSS, or a link. No ads, nothing sent anywhere.">
-<meta property="og:url" content="https://a-to-mind.com/gradient/">
+<meta property="og:url" content="https://a-to-mind.com/color/gradient/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -44,8 +44,8 @@
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 <!-- seo -->
-<link rel="canonical" href="https://a-to-mind.com/gradient/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"CSS gradient generator","url":"https://a-to-mind.com/gradient/","description":"Make a linear, radial or conic CSS gradient from colour stops, name it, save it as your own preset on your device, pick colours from the screen, and copy its CSS. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"css gradient generator, linear gradient css, radial gradient generator, gradient background css, gradient colour generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"CSS gradient generator","item":"https://a-to-mind.com/gradient/"}]}]}</script>
+<link rel="canonical" href="https://a-to-mind.com/color/gradient/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"CSS gradient generator","url":"https://a-to-mind.com/color/gradient/","description":"Make a linear, radial or conic CSS gradient from colour stops, name it, save it as your own preset on your device, pick colours from the screen, and copy its CSS. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"css gradient generator, linear gradient css, radial gradient generator, gradient background css, gradient colour generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"CSS gradient generator","item":"https://a-to-mind.com/color/gradient/"}]}]}</script>
 <!-- /seo -->
 <script src="/visit.js" defer></script>
 
@@ -64,6 +64,9 @@
 <!-- /modulepreload -->
 </head>
 <body>
+<!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
+<nav class="v-modes" aria-label="Colour modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/color/">Colour codes</a><a href="/color/gradient/" aria-current="page">Gradient</a></nav>
+
 <main>
   <h1>CSS gradient generator</h1>
   <div id="preview" aria-live="polite">Your text here</div>
@@ -94,7 +97,7 @@
   <textarea id="paste" spellcheck="false" aria-label="Paste a CSS gradient" placeholder="Paste a gradient: linear-gradient(to right, #ff5f6d, #ffc371)"></textarea>
   <div class="row"><button type="button" id="import">Read it</button><label for="pic">or take the colours from a picture</label><input id="pic" type="file" accept="image/*"></div>
   <div id="note" role="status" aria-live="polite"></div>
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/color/">Colour codes</a> <a href="/wheel/">Wheel of names</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/color/">Colour codes</a> <a href="/random/wheel/">Wheel of names</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Click the bar to add a stop; drag a stop's slider to move it. A picture is read on this device, along its middle from left to right, and never sent. The fallback colour is the stops' average, for browsers without gradients. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
