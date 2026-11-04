@@ -1158,10 +1158,8 @@
     *,*::before,*::after{box-sizing:border-box}
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
-    #verse-hero{position:fixed;left:0;right:0;top:16vh;z-index:2;margin:0;text-align:center}
-    #verse-hero h1{margin:0;font:200 clamp(72px,16vw,128px)/.9 ui-sans-serif,system-ui,sans-serif;letter-spacing:-.04em;color:#f4f2ff}
-    #verse-hero p{margin:16px 0 0;font:500 12px/1 ui-sans-serif,system-ui,sans-serif;letter-spacing:.46em;color:#9aa3c7}
-    body:has(#v01d) #verse-hero{visibility:hidden}
+    /* no hero words on the home page (owner, 2026-11-04: "supposed to be blank"): the sky and the ask bar, nothing else */
+    #away-note{display:none}
     #v01d{position:fixed;inset:0;z-index:2147483000;display:grid;place-content:center;background:#050505;color:#f4f2ff;font:200 clamp(48px,13vw,112px)/1 ui-sans-serif,system-ui,sans-serif}
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
@@ -1171,7 +1169,7 @@
     #input{flex:1;min-width:0;min-height:44px;border:0;outline:0;background:transparent;color:#f2f4fb;font:16px/1.3 ui-sans-serif,system-ui,sans-serif}
     #input::placeholder{color:#8b90a6}
     #go,#verse-install{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit}
-    #verse-install{position:fixed;left:50%;top:calc(16vh + 148px);transform:translateX(-50%);z-index:7;padding:0 16px}
+    #verse-install{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:7;padding:0 16px}
     #verse-install[hidden]{display:none}
     #void-anchor{position:fixed;right:12px;bottom:12px;z-index:6;width:28px;height:28px;display:grid;place-items:center;color:#d7d2ff;opacity:.12}
     #void-anchor svg{width:16px;height:16px;display:block}
@@ -1190,7 +1188,6 @@
       setTimeout(function () { e.remove(); }, 1900);
     })();
   </script>
-  <header id="verse-hero"><h1>Verse</h1><p>ASK ANYTHING</p></header>
   <button id="verse-install" type="button" hidden>Install</button>
   <noscript><main style="max-width:640px;margin:20vh auto;padding:0 16px;color:#cfcfcf;font:15px/1.5 system-ui,sans-serif">
     <p style="font-weight:400">Verse</p>
@@ -4832,9 +4829,8 @@ say('nothing selected to remove');
       }).catch(() => { share = null; say("sharing can't start in this browser"); });
     }
     document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
-    // For the owner only (owner's choice, 2026-10-13; Verse asked for it five times): when the newest checks or deploy on main failed,
-    // the status card opens by itself (skills/status.js autoOpen). Visitors keep the blank stage; an ask in the address bar goes first.
-    if (ownerToken() && !PAGE && !new URLSearchParams(location.search).get('q') && !new URLSearchParams(location.search).get('ask')) skillsReady.then(() => import('/skills/status.js')).then((m) => m.autoOpen(() => runLearnedSkills('void status', 'void status'))).catch(() => {});
+    // The status card no longer opens by itself (owner, 2026-11-04: the home page is blank, no diagnostic text on it).
+    // It is still one ask away: "void status".
     { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
@@ -5601,12 +5597,12 @@ say('nothing selected to remove');
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
-    // the MultiVerse mark (members perk, 2026-10-30): on a member's own stage, one tier read after load, only when this device is signed in;
-    // on a published page (/@name), when the server said its owner is a member (functions/[handle].js), with no read at all.
+    // the MultiVerse mark (members perk, 2026-10-30): only on a published page (/@name), when the server said its owner is a member
+    // (functions/[handle].js), with no read at all. The home stage stays blank (owner, 2026-11-04: "the words do not belong on verse homepage").
     // The server's word decides: a free or failed read shows nothing
     async function memberMark() {
-      if (document.getElementById('void-member')) return;
-      const label = PAGE ? (PAGE.member ? 'Made with MultiVerse: see what members get' : '') : (me && me.token && (await meTier()) === 'paid' ? 'MultiVerse member: your perks' : '');
+      if (!PAGE || document.getElementById('void-member')) return;
+      const label = PAGE.member ? 'Made with MultiVerse: see what members get' : '';
       if (!label || document.getElementById('void-member')) return;
       const a = document.createElement('a'); a.id = 'void-member'; a.href = '/members/'; a.textContent = 'MultiVerse';
       a.title = label; a.setAttribute('aria-label', label); document.body.append(a);
@@ -6668,17 +6664,8 @@ say('nothing selected to remove');
       if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
       clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { if (awayNote.textContent.startsWith(text)) awayNote.textContent = ''; }, 9000); // a line added since (what Verse made) stays
     }
-    // what Verse made while you were away (skills/showcase.js): on a returning visitor's first touch, move or key, one quiet line
-    // with "show me"; a first visit only remembers when it was (the empty page loads nothing for it). Gone with the first ask.
-    if (!PAGE) {
-      const kick = () => {
-        for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.removeEventListener(ev, kick, true);
-        skillsReady.then(() => import('/skills/showcase.js')).then((m) => { m.watch(stageApi, awayNote); return m.nudge(stageApi, awayNote); }).then((n) => {
-          if (n) input.addEventListener('keydown', function off(e) { if (e.key === 'Enter') { input.removeEventListener('keydown', off); if (awayNote.querySelector('.showcase-pill')) awayNote.textContent = ''; } });
-        }).catch(() => {});
-      };
-      for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
-    }
+    // The "I built this" line (skills/showcase.js) is no longer announced on the home page (owner, 2026-11-04: the home page is blank).
+    // Asking "what's new" still opens the walkthrough.
     // the community milestone card (asked by Verse, 2026-10-17; lib/join-watch.js): when someone joins MultiVerse, one quiet line under the
     // stage with the join link. Read once the page is idle, then every 5 minutes while visible; the first ask clears it.
     if (!PAGE) {
