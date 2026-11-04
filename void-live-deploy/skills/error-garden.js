@@ -40,10 +40,14 @@ export function stageOf(p) {
   return p && p.count >= 2 ? 'weed' : 'sprout';
 }
 
+/** one plant or two: the same words (case and spaces aside), or the same thing said twice. A title made only of stop words ("will") has no content
+ *  words, so sameThing alone never matched it and every new reading planted it again. Pure. */
+const same = (a, b) => String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase() || sameThing(a, b);
+
 /** plant a mistake: a repeat of one already there bumps its count, anything else is a new sprout. Returns { plants, index, stage }. Pure. */
 export function plant(plants, text, now = Date.now()) {
   const list = (plants || []).map((p) => ({ ...p }));
-  const i = list.findIndex((p) => sameThing(p.text, text));
+  const i = list.findIndex((p) => same(p.text, text));
   if (i >= 0) { list[i].count = (list[i].count || 1) + 1; list[i].last = now; return { plants: list, index: i, stage: stageOf(list[i]) }; }
   list.push({ text: String(text).slice(0, 200), count: 1, first: now, last: now, rule: '' });
   const kept = list.slice(-MAX_PLANTS);
@@ -54,7 +58,7 @@ export function plant(plants, text, now = Date.now()) {
 export function plantMany(plants, items, now = Date.now()) {
   let list = (plants || []).map((p) => ({ ...p }));
   for (const it of items || []) {
-    const i = list.findIndex((p) => sameThing(p.text, it.text));
+    const i = list.findIndex((p) => same(p.text, it.text));
     if (i >= 0) { list[i].count = Math.max(list[i].count || 1, it.count || 1); list[i].last = now; }
     else list.push({ text: String(it.text).slice(0, 200), count: Math.max(1, it.count | 0), first: now, last: now, rule: '', from: 'incident' });
   }
