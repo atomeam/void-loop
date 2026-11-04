@@ -18,13 +18,13 @@ async function step(db, id, line, patch = {}) {
   const steps = JSON.parse((row && row.steps) || '[]'); steps.push({ at: Date.now(), line });
   const sets = ['steps = ?'], vals = [JSON.stringify(steps)];
   for (const [k, v] of Object.entries(patch)) { sets.push(k + ' = ?'); vals.push(v); }
-  await db.prepare('UPDATE void_agent_tasks SET ' + sets.join(', ') + ' WHERE id = ?').bind(...vals, id).run();
+  await db.prepare('UPDATE void_agent_tasks SET ' + sets.join(', ') + ' WHERE id = ?').bind(...vals, id).run(); // void-review: ok (column names are this file's fixed keys; every value is bound)
 }
 
 async function bots(origin, env) {
   for (const p of ['/bots/registry.json', '/tools.json']) {
     try {
-      const r = p === '/tools.json' ? await fetch(origin + p) : await env.ASSETS.fetch(new Request(origin + p));
+      const r = p === '/tools.json' ? await fetch(origin + p) : await env.ASSETS.fetch(new Request(origin + p)); // void-review: ok (two fixed files, tried in order until one answers)
       if (r.ok) { const j = await r.json(); const list = Array.isArray(j) ? j : (j.bots || j.tools || []); if (list.length) return list; }
     } catch (_) {}
   }
