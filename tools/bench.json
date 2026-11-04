@@ -7066,5 +7066,20 @@
   {"ask": "is it better to rent or buy a house", "want": "skill:rentbuy"},
   {"ask": "rent vs buy", "want": "skill:rentbuy"},
   {"ask": "how heavy can my suitcase be", "want": "skill:baggage"},
-  {"ask": "heads or tails", "want": "skill:coin"}
+  {"ask": "heads or tails", "want": "skill:coin"},
+  {"ask": "play rps", "want": "skill:rps"},
+  {"ask": "package this idea: automate client onboarding", "want": "skill:delivery-pack"},
+  {"ask": "handoff pack for my SaaS idea", "want": "skill:delivery-pack"},
+  {"ask": "delivery package: invoice reminders that run themselves", "want": "skill:delivery-pack"},
+  {"ask": "play bohemian rhapsody by queen", "want": "skill:hear"},
+  {"ask": "play billie jean by michael jackson", "want": "skill:hear"},
+  {"ask": "play imagine by john lennon", "want": "skill:hear"},
+  {"ask": "riddle", "want": "skill:riddle"},
+  {"ask": "give me a riddle", "want": "skill:riddle"},
+  {"ask": "write a python function factorial of n", "want": "skill:snippet"},
+  {"ask": "write a python function reverse that reverses a string", "want": "skill:snippet"},
+  {"ask": "code", "want": "skill:snippet"},
+  {"ask": "clarify this business idea: a tool that turns customer emails into running automations", "want": "skill:business-clarify"},
+  {"ask": "turn this idea into a system plan: weekly status reports that write themselves", "want": "skill:business-clarify"},
+  {"ask": "structure this business idea for Verse to own the heavy lifting", "want": "skill:business-clarify"}
 ]

@@ -21,6 +21,9 @@ export const HINTS = {
   invalid_client: 'YT_CLIENT_ID or YT_CLIENT_SECRET is wrong: copy both again from Google Cloud, Credentials',
 };
 
+/** true only when tools/video-gate.mjs passed this film (meta.gate.pass === true). Pure. */
+export const gatePassed = (meta) => !!(meta && meta.gate && meta.gate.pass === true);
+
 /** a fresh access token from the refresh token */
 export async function accessToken({ clientId, clientSecret, refreshToken }, fetchFn = fetch) {
   const r = await fetchFn('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -64,6 +67,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   if (!env.clientId || !env.clientSecret || !env.refreshToken) { console.log('No YouTube credentials (YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN): nothing uploaded; the film is kept as the run\'s artifact.'); process.exit(0); }
   if (!metaPath || !fs.existsSync(metaPath)) { console.error('usage: node tools/youtube.mjs media/<id>.json'); process.exit(2); }
   const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+  // paused until the quality gate passes (owner, 2026-11-03: "verses videos are bad"): only a film tools/video-gate.mjs passed goes up
+  if (!gatePassed(meta)) { console.log('Not uploaded: ' + path.basename(metaPath) + ' has not passed the quality gate (tools/video-gate.mjs).'); process.exit(0); }
   const bytes = fs.readFileSync(path.join(path.dirname(metaPath), meta.video));
   const token = await accessToken(env);
   await checkChannel(token);

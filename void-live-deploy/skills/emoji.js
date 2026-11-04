@@ -18,10 +18,52 @@ export function namedEmoji(text) {
   return m ? EMOJI.find((e) => e.n === m[1].trim().toLowerCase()) || null : null;
 }
 export const isCounts = (text) => /^(?:the\s+)?(?:emoji\s+(?:counts?|tracker|leaderboard)|most\s+copied\s+emojis?|top\s+emojis?)$/i.test(clean(text));
+// how one emoji looks everywhere (owner, 2026-11-03: a rival's grid of one emoji on Apple, Google, Samsung, Microsoft and more: "stuff like this is
+// what we need to stop overlooking"): "grinning emoji on all phones", "how does the fire emoji look on iphone and android", "😀 on every platform"
+const PLACES = '(?:all|every|each|different|other|most|any)\\s+(?:the\\s+)?(?:phones?|platforms?|devices?|vendors?|apps?|systems?|os(?:es)?|keyboards?)|iphones?(?:\\s+(?:and|vs\\.?|or)\\s+androids?)?|androids?(?:\\s+(?:and|vs\\.?|or)\\s+iphones?)?|everywhere|apple\\s+and\\s+(?:google|android|samsung)';
+const LOOKS = [
+  new RegExp('^(?:show\\s+(?:me\\s+)?|see\\s+)?(?:the\\s+|an?\\s+)?(.+?)\\s+emoji\\s+(?:on|across|in|for)\\s+(?:' + PLACES + ')$', 'i'),
+  new RegExp('^how\\s+(?:does|do|will)\\s+(?:the\\s+|an?\\s+)?(.+?)(?:\\s+emoji)?\\s+look(?:s)?(?:\\s+like)?\\s+(?:on|across|in)\\s+(?:' + PLACES + ')$', 'i'),
+  new RegExp('^(?:the\\s+)?(.+?)\\s+emoji\\s+(?:on\\s+)?(?:every|all)\\s+platforms?\\s+(?:compared|side by side)$', 'i'),
+  new RegExp('^(.+?)\\s+(?:on|across)\\s+(?:' + PLACES + ')$', 'i'),
+];
+/** the emoji an ask wants to see on every platform: the words naming it ('grinning'), or the emoji itself, or null. Pure. */
+export function looksOf(text) {
+  const t = clean(text).replace(/\s+/g, ' ');
+  for (let i = 0; i < LOOKS.length; i++) {
+    const m = LOOKS[i].exec(t); if (!m) continue;
+    const w = m[1].trim();
+    if ((i === 3 || (i === 1 && !/\bemoji\b/i.test(t))) && !/^\p{Extended_Pictographic}/u.test(w)) continue; // a bare "<x> on all phones" only for an emoji itself, never "games on all phones"
+    if (!w || w.length > 50) continue;
+    return w;
+  }
+  return null;
+}
 const cp = (c) => [...c].map((x) => 'U+' + x.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')).join(' ');
+
+function runLooks(want, api) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>How it looks everywhere</h2><div data-lk-out class="sub">Finding ' + esc(want) + '…</div>'; }); // void-review: ok (escaped)
+  const out = el && el.querySelector ? el.querySelector('[data-lk-out]') : null;
+  import('../lib/emoji-looks.js').then(async (m) => {
+    const list = await m.loadData(), rec = m.findEmoji(list, want);
+    if (!out || (api._pageStill && !api._pageStill(el))) return;
+    if (!rec) { out.textContent = 'No emoji called "' + want + '". Try its name, like "grinning", "red heart" or "thumbs up".'; return; }
+    const c = rec.c, name = rec.n || '';
+    if (!document.getElementById('lk-css')) { const st = document.createElement('style'); st.id = 'lk-css'; st.textContent = m.LOOKS_CSS; document.head.appendChild(st); }
+    const h = el.querySelector('h2'); if (h) h.textContent = c + ' ' + name + ' on ' + (m.VENDORS.length + 1) + ' platforms';
+    out.className = '';
+    out.innerHTML = '<div class="sub">' + esc(m.codepointOf(c)) + (m.shortcodeOf(rec) ? ' · ' + esc(m.shortcodeOf(rec)) : '') + ' · tap one to copy it</div>' + m.gridHtml(c, { name, compact: true }) // void-review: ok (escaped; gridHtml escapes every value)
+      + '<div class="sub"><a href="/emojis/everywhere/?e=' + esc(encodeURIComponent(c)) + '">Open the full view</a>: every vendor\'s name and where it shows up, light or dark, and a link to share</div>';
+    m.wireGrid(out);
+  }).catch(() => { if (out) out.textContent = 'The pictures could not be loaded just now.'; });
+  return 'emoji';
+}
 
 function run(text, api) {
   const { showPage, esc } = api;
+  const want = looksOf(text);
+  if (want) return runLooks(want, api);
   const named = namedEmoji(text);
   if (named) {
     showPage((p) => {
@@ -52,13 +94,14 @@ function run(text, api) {
 
 export default {
   name: 'emoji',
-  examples: ['random emoji', 'give me an emoji', 'another emoji', '3 emojis', 'emoji fire', 'rocket emoji', 'emoji counts'],
-  nearMisses: ['what is an emoji', 'emoji keyboard', 'send emoji', 'emoji for fire'],
-  match(lower, text) { return isEmoji(text) || !!namedEmoji(text) || isCounts(text); },
+  examples: ['random emoji', 'give me an emoji', 'another emoji', '3 emojis', 'emoji fire', 'rocket emoji', 'emoji counts', 'grinning emoji on all phones', 'how does the fire emoji look on iphone and android'],
+  nearMisses: ['what is an emoji', 'emoji keyboard', 'send emoji', 'emoji for fire', 'games on all phones', 'how does it look on iphone'],
+  match(lower, text) { return isEmoji(text) || !!namedEmoji(text) || isCounts(text) || !!looksOf(text); },
   run,
   suite() {
     const ok = isEmoji('random emoji') && isEmoji('3 emojis') && !isEmoji('what is an emoji') && namedEmoji('emoji fire').c === '🔥'
-      && !namedEmoji('emoji keyboard') && isCounts('emoji counts');
+      && !namedEmoji('emoji keyboard') && isCounts('emoji counts') && looksOf('grinning emoji on all phones') === 'grinning'
+      && looksOf('how does the fire emoji look on iphone and android') === 'fire' && looksOf('😀 on every platform') === '😀' && !looksOf('games on all phones');
     return { ok, got: 'match works' };
   }
 };

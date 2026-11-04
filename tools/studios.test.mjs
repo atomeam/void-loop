@@ -11,7 +11,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 test('each studio page\'s own stage link opens that studio', () => {
   for (const s of STUDIOS) {
     const html = readFileSync(resolve(root, 'void-live-deploy' + s.page + 'index.html'), 'utf8');
-    const asks = [...html.matchAll(/href="\/\?ask=([^"]+)"/g)].map((m) => decodeURIComponent(m[1]));
+    const asks = [...html.matchAll(/<a\b(?![^>]*data-not-studio)[^>]*href="\/\?ask=([^"]+)"/g)].map((m) => decodeURIComponent(m[1]));
     assert.ok(asks.length, s.page + ' has a stage link');
     for (const a of asks) assert.equal(studioOf(a) && studioOf(a).page, s.page, s.page + ': "' + a + '"');
   }

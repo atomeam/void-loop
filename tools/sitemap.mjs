@@ -22,6 +22,7 @@ const D = 'void-live-deploy/';
 
 // the pages that were in the hand-written sitemap, kept: what Verse sells from, the hub pages, the guide for agents
 const KEPT = [
+  ['/emojis/everywhere/', 'weekly', '0.8', [D + 'emojis/everywhere/index.html', D + 'lib/emoji-looks.js']], // one emoji on every platform (2026-11-03)
   ['/cheat-codes/', 'weekly', '0.8', [D + 'cheat-codes/index.html']],
   ['/store/', 'weekly', '0.9', [D + 'store/index.html']],
   ['/code-review/', 'weekly', '0.9', [D + 'code-review/index.html']],

@@ -58,13 +58,15 @@ export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} 
   for (const f of floors) {
     if (!f.cleared || f.beaten || !f.site) continue;
     const r = row(hostOf(f.url || f.site)); lift(r, 'passed'); if (f.page) r.page = f.page; if (f.topic) r.topic = f.topic; r.score = { n: f.n, m: f.m };
-    r.why = 'Passed ' + f.site + ' (' + f.n + '/' + f.m + ', conquering in background)' + (f.behind && f.behind.length ? '; fixing: ' + f.behind.join(', ') : ''); if (f.at && (!r.at || f.at > r.at)) r.at = f.at; src(r, 'void-live-deploy/tower.target.json');
+    r.why = 'Passed ' + f.site + ' (' + f.n + '/' + f.m + ', ' + ((f.missingFeatures || []).length ? 'missing ' + f.missingFeatures.length + ' feature' + (f.missingFeatures.length === 1 ? '' : 's') : 'conquering in background') + ')' + (f.behind && f.behind.length ? '; fixing: ' + f.behind.join(', ') : ''); if (f.at && (!r.at || f.at > r.at)) r.at = f.at; src(r, 'void-live-deploy/tower.target.json');
   }
   for (const f of floors) {
     if (!f.beaten || !f.site) continue;
     const r = row(hostOf(f.url || f.site)); lift(r, 'surpassed'); if (f.page) r.page = f.page; if (f.taught || f.learned) r.learned = f.taught || f.learned; r.score = { n: f.n, m: f.m };
     r.why = 'ahead of it on ' + f.n + ' of ' + f.m + ' aspects, measured head to head'; if (f.at && (!r.at || f.at > r.at)) r.at = f.at; src(r, 'void-live-deploy/tower.evidence.json');
   }
+  // the whole-site crawl (tools/site-crawl.mjs, tower.features.json): pages read and the features Verse lacks, on every site the Tower stands on
+  for (const f of floors) { if (!f.crawled || !(f.url || f.site)) continue; const r = rows.get(hostOf(f.url || f.site)); if (!r) continue; r.crawl = { pages: f.crawled.pages, templates: f.crawled.templates, features: f.crawled.features, missing: f.missingFeatures || [], at: f.crawled.at }; src(r, 'void-live-deploy/tower.features.json'); }
   for (const r of rows.values()) if (!r.at && r.first) r.at = r.first.at; // a lane page with no date of its own dates from the commit that added it
   // a row links only to a page that is there (Verse status crawl, 2026-11-03: /text-editor/notepad-plus-plus/ was a 404): a page that was
   // removed or merged links to the page that does its job now (lib/tower-topic.js, "always combine pages when possible"), else to none,
@@ -86,8 +88,8 @@ export function fileOf(rows) {
 /** the floors of the tower as the stage reads them, from the published files. */
 export async function floorsOf(cwd = root) {
   const { tower, towerArgs, learnedOf, fatalityOf } = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tower.js')).href);
-  const [inv, ev, fr, rk, sz, tg] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
-  const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg }));
+  const [inv, ev, fr, rk, sz, tg, ft] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
+  const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }));
   // a surpassed floor is dated by its newest head-to-head measure in the evidence
   // what each site taught Verse, as the card's "What each site taught me" says it (skills/tower.js verseTake): its lesson, else Verse's edge
   const taught = (f) => learnedOf(f) || (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) : '');

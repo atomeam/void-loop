@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verse's treasury · Verse</title>
+<meta name="description" content="Verse's own money, in public: what it has actually earned on Gumroad, Atom's cut paid first, the reserve, where the rest is reinvested and why, every allocation and its return, and the money it found left on the ground.">
+<link rel="canonical" href="https://a-to-mind.com/treasury/">
+<meta property="og:title" content="Verse's treasury · Verse">
+<meta property="og:description" content="Every dollar Verse earns and where it goes, with Verse's own reasons.">
+<meta property="og:url" content="https://a-to-mind.com/treasury/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --bad: #ff8d84; --ok: #7ddeaf; --warn: #ffd27a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; }
+  h2 { font-size: 1.15rem; margin: 28px 0 8px; }
+  a { color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--soft); font-weight: 600; font-size: 13px; }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .note { color: var(--soft); font-size: 14px; }
+  .big { font-size: 2.2rem; font-weight: 700; font-variant-numeric: tabular-nums; margin: 4px 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .card b { display: block; font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+  .card span { color: var(--soft); font-size: 13px; }
+  .tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 99px; border: 1px solid var(--line); color: var(--soft); white-space: nowrap; }
+  .tag.ready { color: var(--warn); border-color: #5a4a20; }
+  .tag.auto { color: var(--ok); border-color: #1f4a39; }
+  .why { color: var(--soft); font-size: 14px; margin: 4px 0 10px; }
+  details { border-top: 1px solid var(--line); padding: 8px 0; }
+  summary { cursor: pointer; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 26px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Verse's treasury</h1>
+  <p class="note">Verse runs its own money in public. The only money in it is what Verse has actually earned on Gumroad, after Gumroad's fees and any refunds. Nothing is borrowed or assumed. Atom's cut is paid first. Verse decides how the rest is reinvested and gives its reasons below.</p>
+  <p id="when" class="note">Reading the ledger…</p>
+  <div class="big" id="balance">…</div>
+  <p class="note" id="balance-note"></p>
+  <div class="grid" id="pots"></div>
+
+  <h2>Verse's policy</h2>
+  <div id="policy"><p class="note">Reading the policy…</p></div>
+
+  <h2>Every allocation</h2>
+  <p class="note">Each line is money moving between pots or out the door: its amount, its purpose, the return it was expected to bring and the return it actually brought. Spends that need a card or a login wait as <span class="tag ready">ready to execute</span> with what they need. Verse holds no card and no login.</p>
+  <table><thead><tr><th>When</th><th>Pot</th><th>Amount</th><th>Purpose</th><th>Expected</th><th>Actual</th><th>Status</th></tr></thead><tbody id="entries"></tbody></table>
+
+  <h2>Weekly review</h2>
+  <div id="reviews"><p class="note">Reading the reviews…</p></div>
+
+  <h2>Found money</h2>
+  <p class="note" id="found-note">Verse checks these places on a schedule for legitimate money left on the ground. A value only appears when its source publishes one (a prize pool, a stated bounty, a program's credit). Anything that needs Atom's identity, a login or a card is <span class="tag ready">ready to claim</span>. What Verse can do itself is <span class="tag auto">Verse does it</span>.</p>
+  <div id="found"></div>
+
+  <nav aria-label="Related pages"><a href="/store/">Store</a> <a href="/members/">Your own Verse</a> <a href="/team/">Team</a> <a href="/progress/">Progress</a> <a href="/api/treasury">The ledger as JSON</a> <a href="/treasury/found.json">Found money as JSON</a></nav>
+</main>
+<script src="/treasury/app.js" defer></script>
+</body>
+</html>
