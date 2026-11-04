@@ -62,10 +62,14 @@ export const SPECS = {
   },
 
   '/bots/': async (t) => {  // Verse's bots: at least 50 live, each card runs its bot on what the visitor types
-    await t.waitText('#sum', /bots live/, 15000); t.ok(Number((await t.text('#sum')).match(/\d+/)[0]) >= 50, 'at least 50 live bots: ' + (await t.text('#sum')));
+    await t.waitText('#sum', /bots live/, 15000); t.ok(Number((await t.text('#sum')).match(/[\d,]+/)[0].replace(/,/g, '')) >= 50, 'at least 50 live bots: ' + (await t.text('#sum')));
     await t.fill('#roman-numerals textarea', '1999'); await t.click('#roman-numerals button'); t.ok((await t.text('#roman-numerals output')).trim() === 'MCMXCIX', 'roman-numerals runs on new input');
     await t.click('#cats [data-c="money"]'); t.ok((await t.p.locator('.bot').count()) >= 5, 'the money filter lists money bots');
     await t.click('#cats [data-c="all"]'); await t.fill('#q', 'mi-to-km'); await t.p.waitForTimeout(400); t.ok(await t.p.locator('#mi-to-km').count() === 1, 'search finds a family bot (mi-to-km) among thousands');
+  },
+  '/scoreboard/': async (t) => {  // measured numbers only: every card drawn from its public source, the bots card counts registry.json's live bots
+    await t.waitText('#cards', /Bots live/, 20000); t.ok((await t.p.locator('#cards .card').count()) >= 8, 'every scoreboard card is drawn: ' + (await t.p.locator('#cards .card').count()));
+    const bots = await t.p.locator('#cards .card', { hasText: 'Bots live' }).first().locator('b').textContent(); t.ok(Number(String(bots).replace(/[^0-9]/g, '')) >= 50, 'the bots card reads the live bots from bots/registry.json: ' + bots);
   },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
