@@ -18,7 +18,7 @@ export function onlyBuildConflicts(files) {
 }
 
 function git(args, cwd) {
-  return spawnSync('git', args, { cwd, encoding: 'utf8' });
+  return spawnSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 20e6 });
 }
 
 function main() {
@@ -31,14 +31,18 @@ function main() {
     const merged = git(['merge', '--no-commit', '--no-ff', base], dir);
     if (merged.status !== 0) {
       const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
-      if (!onlyBuildConflicts(files)) {
-        console.error('merge-gate: conflicts with main in ' + files.join(', '));
+      const merging = git(['rev-parse', '-q', '--verify', 'MERGE_HEAD'], dir).status === 0;
+      if (!files.length && merging) console.log('merge-gate: main is in, nothing left unmerged');
+      else if (!onlyBuildConflicts(files)) {
+        console.error('merge-gate: conflicts with main in ' + (files.join(', ') || '(none)'));
+        console.error(String(merged.stderr || merged.stdout || (merged.error && merged.error.message) || '').slice(0, 800));
         console.error('A build output is regenerated here. These files need a person: run node tools/merge-main.mjs on the branch.');
         process.exit(1);
+      } else {
+        for (const f of files) git(['checkout', '--ours', '--', f], dir);
+        git(['add', '--', ...files], dir);
+        console.log('merge-gate: regenerated through the conflict in ' + files.join(', '));
       }
-      for (const f of files) git(['checkout', '--ours', '--', f], dir);
-      git(['add', '--', ...files], dir);
-      console.log('merge-gate: regenerated through the conflict in ' + files.join(', '));
     }
     // the generators, so the checks see the tree the deploy will serve
     for (const args of [
