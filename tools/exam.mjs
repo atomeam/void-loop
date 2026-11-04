@@ -5,14 +5,15 @@
 //   node tools/exam.mjs --no-holdout        public asks only
 // A non-GET never leaves the browser. Holdout asks are read from tools/exam-holdout.json or EXAM_HOLDOUT, never written back,
 // and the published run names them by id only. Results: void-live-deploy/exam/latest.json and history.json (the tool writes them).
-// A domain that falls by 5 points or more against the previous run exits 1 (exam.yml rolls that deploy back).
-import { readFileSync, writeFileSync, mkdirSync, existsSync, createReadStream, statSync } from 'node:fs';
+// One run that falls by 5 points or more is recorded and exits 0. Two runs in a row that each fall by 5 or more
+// exit 1 and set revert=yes (exam.yml rolls that deploy back; a crash, which never sets the output, does not).
+import { readFileSync, writeFileSync, appendFileSync, mkdirSync, existsSync, createReadStream, statSync } from 'node:fs';
 import http from 'node:http';
 import { request as httpsRequest } from 'node:https';
 import { resolve, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
-import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, isoWeek, holdoutSlice, askId, DROP } from '../void-live-deploy/lib/exam.js';
+import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, DROP } from '../void-live-deploy/lib/exam.js';
 import { songAskOf, findTrack } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
 import { compute, money } from '../void-live-deploy/lib/vat.js';
@@ -254,11 +255,12 @@ export async function runExam({ against = 'live', domains = DOMAINS, holdout = t
   const run = { at: new Date().toISOString(), against, week, domains: domainsOut, lowest: lowestDomain(scores) };
   if (domains.length < DOMAINS.length) run.note = 'Remeasured on this run: ' + domains.join(', ') + '. The other domains are the previous run\'s scores.';
   mkdirSync(dirname(LATEST), { recursive: true });
-  const history = readJson(HISTORY, []);
+  const saved = readJson(HISTORY, []);
+  const history = Array.isArray(saved) ? saved : [];
   history.push(run);
   writeFileSync(LATEST, JSON.stringify(run, null, 2) + '\n');
   writeFileSync(HISTORY, JSON.stringify(history, null, 2) + '\n');
-  return { run, prev };
+  return { run, prev, history };
 }
 
 function table(run) {
@@ -276,14 +278,19 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const only = arg('--domains');
   const domains = only ? only.split(',').filter((d) => DOMAINS.includes(d)) : DOMAINS;
   const against = arg('--against') || 'live';
-  const { run, prev } = await runExam({ against, domains, holdout: !flag('--no-holdout') });
+  const { run, prev, history } = await runExam({ against, domains, holdout: !flag('--no-holdout') });
   console.log('\n' + table(run));
   if (prev && prev.domains) {
     const cmp = compareRuns(prev, run);
     if (!cmp.ok) {
-      console.error('regression: ' + cmp.drops.map((x) => x.domain + ' ' + x.before + ' → ' + x.after).join('; ') + ' (a drop of ' + DROP + ' or more blocks)');
-      process.exit(1);
-    }
-    if (cmp.rises.length) console.log('up: ' + cmp.rises.map((x) => x.domain + ' ' + x.before + ' → ' + x.after).join('; '));
+      const gate = revertAfter(history);
+      const what = cmp.drops.map((x) => x.domain + ' ' + x.before + ' → ' + x.after).join('; ');
+      if (gate.revert) {
+        console.error('regression: ' + what + ' (two runs in a row each dropped by ' + DROP + ' or more; the deploy is reverted)');
+        if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, 'revert=yes\n');
+        process.exit(1);
+      }
+      console.error('regression: ' + what + ' (recorded; a second run in a row that drops by ' + DROP + ' or more reverts the deploy)');
+    } else if (cmp.rises.length) console.log('up: ' + cmp.rises.map((x) => x.domain + ' ' + x.before + ' → ' + x.after).join('; '));
   }
 }

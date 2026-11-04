@@ -14,7 +14,7 @@ Each ask is typed into live https://a-to-mind.com at phone width. A non-GET is a
 
 `node tools/exam.mjs --against local` serves this tree and proxies `/api/` to the live site, so a change can be scored before it deploys.
 
-The will (`tools/will.py`) adds the three failing public asks of the lowest domain at a weight above the frontier. The conductor (`examBoost` in `tools/conductor-core.mjs`) lifts a queued job that names that domain or that ask. A later run whose public score fell by 5 or more in any domain exits 1. On a deploy, `exam.yml` reverts that deploy. A daily run records the drop and does not revert.
+The will (`tools/will.py`) adds the three failing public asks of the lowest domain at a weight above the frontier. The conductor (`examBoost` in `tools/conductor-core.mjs`) lifts a queued job that names that domain or that ask. A later run whose public score fell by 5 or more in any domain is recorded and exits 0. A second run in a row that also falls by 5 or more exits 1. On a deploy, `exam.yml` reverts that deploy only then (`revert=yes`). A crash does not set that output, so it does not revert. A daily run records the drop and does not revert.
 
 ## How to tell it worked
 
@@ -37,3 +37,4 @@ The will (`tools/will.py`) adds the three failing public asks of the lowest doma
 - A directions card can draw a real map and still fail `route`: the check reads the card's words, and an address that lives only in a link's `href` is not among them. Say the kilometres, or the site name, in the text. A landmark Open-Meteo does not know ("eiffel tower", "Penn Station") comes back as "couldn't find", which the exam counts as a refusal. Wikipedia's coordinates cover those. "get me to …" was a food order, so the place skill never ran.
 - The VAT card was not in the routing order, so "add vat to 100" never reached it. An order file is what puts a skill on the page.
 - "news about earthquakes" was taken by the quake list, and "business news" / "science news" matched nothing. A news ask has to reach the news skill, and a section ask should open that section of `/api/news`.
+- One noisy run was enough to revert a deploy. The revert waits for two runs in a row that each fall by 5 or more (`revertAfter` in `lib/exam.js`).
