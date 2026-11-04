@@ -7,11 +7,15 @@
  */
 export function isDeliveryPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:(?:package|pack|handoff|delivery)\s+(?:this\s+)?(?:idea|business|plan)|(?:create|make|generate)\s+(?:a\s+)?(?:handoff|delivery)\s+(?:pack|package|plan))(?:\s*[:\-]\s*.+)?$/i.test(t);
+  // the asks the card claims: "package this idea: …", "handoff pack for …", "delivery package: …", "make a delivery pack for …"
+  return /^(?:package|pack)\s+this\s+(?:idea|business|plan)\b/i.test(t)
+    || /^(?:handoff|delivery)\s+(?:pack|package)\b/i.test(t)
+    || /^(?:create|make|generate)\s+(?:a\s+)?(?:handoff|delivery)\s+(?:pack|package|plan)\b/i.test(t);
 }
 
 function extractIdea(text) {
-  const m = String(text || '').match(/(?:idea|business|plan|for)\s*[:\-]\s*(.+)/i);
+  const t = String(text || '');
+  const m = t.match(/(?:idea|business|plan)\s*[:\-]\s*(.+)/i) || t.match(/\bfor\s+(?:my\s+|the\s+|a\s+)?(.+)/i) || t.match(/[:\-]\s*(.+)/);
   return m ? m[1].trim() : 'unspecified business idea';
 }
 
@@ -53,9 +57,13 @@ export default {
   match(lower, text) { return isDeliveryPack(text); },
   run,
   suite() {
-    const ok = isDeliveryPack('package this idea: automate onboarding') &&
-               isDeliveryPack('handoff pack for my SaaS') &&
-               !isDeliveryPack('what is a package');
+    const ok = isDeliveryPack('package this idea: automate onboarding')
+      && isDeliveryPack('handoff pack for my SaaS idea')
+      && isDeliveryPack('delivery package: invoice reminders that run themselves')
+      && isDeliveryPack('make a delivery pack for the support ticket router')
+      && !isDeliveryPack('what is a package')
+      && !isDeliveryPack('ship the package')
+      && !isDeliveryPack('package.json');
     return { ok, got: 'match works' };
   }
 };

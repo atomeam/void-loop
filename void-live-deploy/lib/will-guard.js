@@ -76,7 +76,7 @@ export function skippedNote(skipped, overCap) {
   const tried = l.filter((x) => !(x.churn && x.churn.length) && !x.gate).length;
   const part = (n, why) => n + ' want' + (n === 1 ? '' : 's') + ' above it waits: ' + why;
   return (gate.length ? ' · ' + part(gate.length, 'it needs a key or a paid plan of its own, which is a spend decision') : '')
-    + (tried ? ' · ' + part(tried, 'its jobs ended without shipping ' + MAX_TRIES + ' times in ' + WINDOW_DAYS + ' days') : '')
+    + (tried ? ' · ' + part(tried, 'its jobs were set aside or failed ' + MAX_TRIES + ' times in ' + WINDOW_DAYS + ' days') : '')
     + (hot.length ? ' · ' + part(hot.length, 'it names ' + [...new Set(hot.flatMap((x) => x.churn))].slice(0, 3).join(', ') + ', changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days') : '')
     + (Array.isArray(overCap) && overCap.length ? ' · every want left names a file changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days, so this one goes ahead anyway (' + overCap.slice(0, 3).join(', ') + ')' : '');
 }

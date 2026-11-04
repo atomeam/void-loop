@@ -79,7 +79,8 @@ test('a question is answered from its state, and an owner key is never told to i
 test('the page wires it: the map, its box and its button are on /brain/, and app.js hands it the one brain', () => {
   const html = readFileSync(new URL('../void-live-deploy/brain/index.html', import.meta.url), 'utf8');
   for (const id of ['mapView', 'map', 'feed', 'mapAsk', 'mapWord', 'viewBtn', 'mapCounts']) assert.match(html, new RegExp('id="' + id + '"'), id);
-  assert.match(html, /import '\/brain\/map\.js';/);
+  assert.match(html, /import '\/brain\/knows\.js';/); // the first view is Knows; it loads the map with the simulation, on Watch
+  assert.match(readFileSync(new URL('../void-live-deploy/brain/knows.js', import.meta.url), 'utf8'), /import\('\/brain\/app\.js'\)\.then\(\(\) => import\('\/brain\/map\.js'\)\)/);
   assert.match(html, /body\.map-on #field \{ left: var\(--mapw, 0px\); \}/, 'the tissue moves over by the map, so neither covers the other');
   assert.match(readFileSync(new URL('../void-live-deploy/brain/app.js', import.meta.url), 'utf8'), /window\.verseBrainField = th;/);
 });

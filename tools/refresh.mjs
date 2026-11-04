@@ -31,6 +31,8 @@ export const STEPS = [
   { name: 'bench-alarms', script: 'bench-alarms.mjs', write: [], check: ['--check'], volatile: true, why: "the Bench icon's count of checked false alarms; regenerated at deploy" },
   { name: 'churn', script: 'churn.mjs', write: ['--write'], check: ['--check'], volatile: true, why: "churn.json: the files changed more than 12 times in 7 days, from git; the will skips a want that names one, and only the deploy keeps the window current" },
   { name: 'assimilated', script: 'assimilated.mjs', write: [], check: ['--check'], volatile: true, why: "assimilated.json, every site Versus took on or tried, for /assimilated/: from the site tables, domains/tower-self.json, the tower evidence and the git backfill; a Versus run or a new gate changes it, so the deploy keeps it current" },
+  { name: 'knowledge', script: 'knowledge-build.mjs', write: [], check: ['--check'], volatile: true, why: "void.knowledge.json, the lessons /api/propose-fix recalls: the intake, each skill's newest live check (findings/) and each site Versus took on (assimilated.json, above); the findings land daily, so the deploy keeps it current" },
+  { name: 'brain-knows', script: 'brain-knows.mjs', write: [], check: ['--check'], volatile: true, why: "brain/knows.json, what /brain/ searches: the book, the tool pages, assimilated.json, the lessons (above) and main's newest commits" },
   { name: 'sitemap', script: 'sitemap.mjs', write: [], check: ['--check'], volatile: true, why: 'sitemap.xml: the home page, every tool page, the tower, the /fix/ and /is-it/ pages, lastmod from git; the deploy sets the dates' },
 ];
 
