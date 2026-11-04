@@ -4,6 +4,13 @@ import { tierFor, needsYes, pickBot, brief } from '../void-live-deploy/lib/agent
 test('tier is free until a realized month is in the pot', () => { assert.equal(tierFor(0).name, 'free'); assert.equal(tierFor(499).name, 'free'); assert.equal(tierFor(500).name, 'strong'); });
 test('sends, pays and deletes wait for a yes', () => { assert.ok(needsYes('send an email to Bob')); assert.ok(needsYes('pay the bill')); assert.ok(!needsYes('plan a trip to Savannah')); });
 test('picks the matching bot', () => { assert.equal(pickBot('convert 5 miles to km', [{ name: 'calculate', description: 'unit conversion', examples: ['5 miles in km'] }, { name: 'page', description: 'topics' }]).name, 'calculate'); assert.equal(pickBot('zzz', []).name, 'verse'); });
+test('one coincidental word is not a match: Verse answers itself', () => {
+  const reg = [{ id: 'keyword-finder', cat: 'writing', job: 'Top three key words in a text', status: 'live' }, { id: 'word-counter', cat: 'writing', job: 'Counts words', status: 'live' }];
+  assert.equal(pickBot('List three free things to do in Savannah, Georgia.', reg).name, 'verse');
+  assert.equal(pickBot('plan a weekend trip to Savannah with a museum', reg).name, 'verse');
+  assert.equal(pickBot('find the key words in this text', reg).name, 'keyword-finder');
+  assert.equal(pickBot('count the words', reg).name, 'word-counter');
+});
 test('brief counts the last day', () => { const now = 1e12; const b = brief([{ status: 'done', created: now - 1 }, { status: 'needs_yes', created: now - 1 }, { status: 'done', created: now - 9e7 }], now); assert.equal(b.made, 1); assert.equal(b.waiting, 1); });
 test('reads the bot factory registry', () => { assert.equal(pickBot('count the words in this', [{ id: 'word-counter', cat: 'writing', job: 'Counts words', status: 'live' }, { id: 'x', job: 'words words', status: 'failed' }]).name, 'word-counter'); });
 
