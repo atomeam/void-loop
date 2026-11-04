@@ -1,1 +1,33 @@
-{ "best": null, "trials": [] }
+{
+  "best": {
+    "hook": 0,
+    "pace": 38,
+    "music": "warm",
+    "style": "ink",
+    "scene": "split-dinner-bill"
+  },
+  "trials": [
+    {
+      "day": "20261104",
+      "knob": "hook",
+      "value": 1,
+      "champion": {
+        "hook": 0,
+        "pace": 38,
+        "music": "warm",
+        "style": "ink",
+        "scene": "split-dinner-bill",
+        "film": "20261104-short-split-dinner-bill-a"
+      },
+      "challenger": {
+        "hook": 1,
+        "pace": 38,
+        "music": "warm",
+        "style": "ink",
+        "scene": "split-dinner-bill",
+        "film": "20261104-short-split-dinner-bill-b"
+      },
+      "verdict": "waiting"
+    }
+  ]
+}
