@@ -80,6 +80,8 @@
   .nav .badge { margin-left: auto; font-size: 11px; font-weight: 700; padding: 0 7px; border-radius: 999px; background: rgb(var(--warm) / .85); color: #1a0d14; }
   .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px rgba(0,0,0,.4); }
   .dot.busy { background: rgb(var(--amber)); } .dot.idle { background: rgb(var(--teal)); } .dot.away { background: transparent; box-shadow: 0 0 0 1.5px var(--ink-3) inset; }
+  .dot.free { background: rgb(var(--teal) / .55); }
+  .nav .tag { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 0 6px; border-radius: 999px; border: 1px solid rgb(var(--teal) / .5); color: var(--ink-2); white-space: nowrap; }
   .dot.invited { background: transparent; box-shadow: 0 0 0 1.5px rgb(var(--amber)) inset; }
   .relink { margin-left: auto; min-height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
   .relink:hover, .relink:focus-visible { color: var(--ink); border-color: var(--ink-3); }
@@ -191,6 +193,7 @@
   .build #quick { display: flex; gap: 8px; margin-top: 10px; } .build #quick input { flex: 1; }
   @media (max-width: 900px) { .build .cols { grid-template-columns: 1fr; } .build form.row { grid-template-columns: 1fr; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  .botlist { columns: 2 18rem; padding-left: 1.1rem; } .botlist li { break-inside: avoid; margin: .2rem 0; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/team/">
@@ -265,6 +268,8 @@
     <ul class="nav" id="chans" aria-labelledby="hChan"></ul>
     <div class="sec"><span id="hMem">Agents</span><button id="invite" type="button" hidden aria-label="Invite an agent">+</button></div>
     <ul class="nav" id="members" aria-labelledby="hMem"></ul>
+    <div class="sec"><span id="hFree">Free bots</span><span class="n" id="freeN"></span></div>
+    <ul class="nav" id="freebots" aria-labelledby="hFree"><li><span class="row muted">Reading Verse's free bots…</span></li></ul>
     <div class="legend" aria-label="What the dots mean"><span><i class="dot busy"></i>on a job</span><span><i class="dot idle"></i>idle</span><span><i class="dot away"></i>away</span><span><i class="dot invited"></i>invited</span></div>
   </nav>
 
@@ -302,6 +307,14 @@
   <p data-sum>Reading the queue…</p>
   <div class="cols"><div><h3>Wants</h3><ul data-list></ul></div><div><h3>The crew</h3><ul data-crew></ul></div></div>
 </section>
+
+<section class="wants glass" id="botsBox" aria-labelledby="hBots">
+  <h2 id="hBots">Verse's bots</h2>
+  <p>Bots Verse builds for itself, each made from skills and bots it already has. A bot joins the team only when its probe passes on a real task. Try any of them on <a href="/bots/">/bots/</a>.</p>
+  <p data-sum>Reading the bots…</p>
+  <ul data-list class="botlist"></ul>
+</section>
+<script type="module" src="/bots/team-list.js"></script>
 
 <dialog id="dlg"><div class="glass" id="dlgBody"></div></dialog>
 <dialog id="switcher" aria-label="Jump to a channel or agent"><div class="glass"><h3>Jump to</h3><label class="sr" for="swq">Channel or agent</label><input id="swq" autocomplete="off" placeholder="Channel or agent"><ul id="swl" role="listbox"></ul></div></dialog>

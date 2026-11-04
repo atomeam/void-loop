@@ -57,6 +57,11 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
 
+  '/bots/': async (t) => {  // Verse's bots: at least 50 live, each card runs its bot on what the visitor types
+    await t.waitText('#sum', /bots live/, 15000); t.ok(Number((await t.text('#sum')).match(/\d+/)[0]) >= 50, 'at least 50 live bots: ' + (await t.text('#sum')));
+    await t.fill('#roman-numerals textarea', '1999'); await t.click('#roman-numerals button'); t.ok((await t.text('#roman-numerals output')).trim() === 'MCMXCIX', 'roman-numerals runs on new input');
+    await t.click('#cats [data-c="money"]'); t.ok((await t.p.locator('.bot').count()) >= 5, 'the money filter lists money bots');
+  },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
     await t.p.locator('#hits a, #hits button').first().click({ timeout: 5000 }); const big = await t.waitText('#big', /\d/, 5000); t.ok(/\d/.test(big), 'the calculator it opens works out a number: ' + big.slice(0, 30));
@@ -417,6 +422,9 @@ SPECS['/emojis/everywhere/'] = async (t) => {
   t.ok(/fire/i.test(await t.text('#ename')) && /e=%F0%9F%94%A5|e=🔥/.test(t.p.url()), 'a search for fire shows 🔥 and the link keeps it: ' + t.p.url().slice(-30));
   await t.p.waitForFunction(() => [...document.querySelectorAll('#grid img')].filter((i) => i.complete && i.naturalWidth > 0).length >= 6, null, { timeout: 15000 }).catch(() => {});
   t.ok((await t.p.evaluate(() => [...document.querySelectorAll('#grid img')].filter((i) => i.complete && i.naturalWidth > 0).length)) >= 6, 'six or more platform pictures loaded');
+  // a name in the link (/emoji/joy goes to ?e=joy) opens that emoji, not the default 😀
+  await t.p.goto(t.p.url().split('?')[0] + '?e=joy'); await t.waitText('#ename', /tears of joy/i, 10000);
+  t.ok(/tears of joy/i.test(await t.text('#ename')) && /e=%F0%9F%98%82|e=😂/.test(t.p.url()), 'a name in the link opens its emoji: ' + (await t.text('#ename')));
 };
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
