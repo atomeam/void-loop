@@ -155,14 +155,15 @@ async function readCard(page, ask) {
   await page.fill('#input', ask);
   await page.keyboard.press('Enter');
   await page.waitForFunction((q) => {
-    try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((e) => e && e.ask === q); } catch (_) { return false; }
+    try { const v = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(v) && v.some((e) => e && e.ask === q); } catch (_) { return false; }
   }, ask, { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(2200);
   const obs = await page.evaluate(() => {
     const card = document.querySelector('.vpage.on') || document.querySelector('.thing') || document.body;
     let note = '';
     try {
-      const log = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]');
+      const v = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); // inside try/catch: a bad save falls back to no note (void-review: ok)
+      const log = Array.isArray(v) ? v : [];
       const hit = [...log].reverse().find((e) => e && e.domain === 'void.page');
       note = hit ? String(hit.note || '') : '';
     } catch (_) {}
