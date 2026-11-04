@@ -30,7 +30,8 @@ test('the loop runs without Claude: its workflow and every file it runs or impor
 
 test('a family is a floor with a page that can be copied and a probe that knows the answer on that page', () => {
   const fams = familiesOf(), ids = fams.map((f) => f.id);
-  for (const id of ['colour', 'calculator', 'unit converter', 'word count', 'gradient']) assert.ok(ids.includes(id), id);
+  // gradient's page is /color/gradient/, two folders deep, so it is not a one-folder family a site can be copied onto
+  for (const id of ['colour', 'calculator', 'unit converter', 'word count']) assert.ok(ids.includes(id), id);
   for (const id of ['is it', 'image boards', 'codebase', 'shopping', 'pdf', 'travel']) assert.ok(!ids.includes(id), id + ' is not a family');
   for (const f of fams) { assert.match(f.base, /^\/[a-z0-9-]+\/$/); assert.ok(f.does.length > 20, f.id + ' says what its page does'); }
   assert.ok(sharesWords(colour(), 'ANYCOLOR ID: find any color by hex code'));
