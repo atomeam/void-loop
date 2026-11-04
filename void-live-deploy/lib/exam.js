@@ -31,7 +31,7 @@ export const FAST_MS = 12000;
 export const SLOW_MS = 20000;
 // scale 2 is the harder exam (rival answer, ambiguous and follow-up asks, more domains). A run on a new scale is a new baseline, not a regression.
 export const SCALE = 2;
-// a domain blocks a merge or a deploy when its public score falls by at least this many points (about one ask of sixteen)
+// a run dropped when a domain's public score falls by at least this many points (about one ask of sixteen). Two such runs in a row revert the deploy.
 export const DROP = 5;
 const REFUSAL = /don.?t know this yet|couldn.?t find|isn.?t connected|something went wrong|didn.?t answer just now|no skill caught/i;
 
@@ -209,6 +209,19 @@ export function compareRuns(prev, next, drop = DROP) {
     else if (b > a + 0.05) rises.push({ domain: d, before: a, after: b });
   }
   return { ok: drops.length === 0, drops, rises };
+}
+
+/**
+ * Whether the deploy should be reverted. `runs` is oldest first and includes the run just recorded.
+ * A revert needs two runs in a row that each fell by `drop` points or more. One drop is recorded and left.
+ * A new scale is a new baseline, so it does not count as a drop. Pure.
+ */
+export function revertAfter(runs, drop = DROP) {
+  const list = Array.isArray(runs) ? runs : [];
+  if (list.length < 3) return { revert: false, first: null, second: null };
+  const first = compareRuns(list[list.length - 3], list[list.length - 2], drop);
+  const second = compareRuns(list[list.length - 2], list[list.length - 1], drop);
+  return { revert: !first.ok && !second.ok, first, second };
 }
 
 /** the will's candidates: up to three failing public asks from the lowest domain. No holdout text. Pure. */

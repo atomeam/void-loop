@@ -1,5 +1,253 @@
 [
  {
+  "slug": "f516-webmidi-local-rnn-spatial-score-mind",
+  "num": 516,
+  "title": "webmidi-local-rnn-spatial-score-mind",
+  "blurb": "Slug: webmidi-local-rnn-spatial-score-mind",
+  "status": "works",
+  "source": "F516-webmidi-local-rnn-spatial-score-mind",
+  "hash": "435af207deb6"
+ },
+ {
+  "slug": "f515-webgpu-mlp-auction-dom-mind",
+  "num": 515,
+  "title": "webgpu-mlp-auction-dom-mind",
+  "blurb": "Slug: webgpu-mlp-auction-dom-mind",
+  "status": "broken",
+  "needs": [
+   "webgpu"
+  ],
+  "error": "pageerror: Cannot read properties of undefined (reading '0')",
+  "source": "F515-webgpu-mlp-auction-dom-mind",
+  "hash": "437404a602b7"
+ },
+ {
+  "slug": "f514-acoustic-swarm-consonance-dom-mind",
+  "num": 514,
+  "title": "acoustic-swarm-consonance-dom-mind",
+  "blurb": "Slug: acoustic-swarm-consonance-dom-mind",
+  "status": "works",
+  "source": "F514-acoustic-swarm-consonance-dom-mind",
+  "hash": "8ea23bd051fa"
+ },
+ {
+  "slug": "f513-mlp-voter-model-dom-mind",
+  "num": 513,
+  "title": "mlp-voter-model-dom-mind",
+  "blurb": "Slug: mlp-voter-model-dom-mind",
+  "status": "works",
+  "source": "F513-mlp-voter-model-dom-mind",
+  "hash": "0e763dd1bab8"
+ },
+ {
+  "slug": "f512-webgpu-entangled-pair-portal-mind",
+  "num": 512,
+  "title": "webgpu-entangled-pair-portal-mind",
+  "blurb": "A set of entangled portal pairs (DOM cards) share a simulated Bell-like state.",
+  "status": "works",
+  "source": "F512-webgpu-entangled-pair-portal-mind",
+  "hash": "55e3588aacb3"
+ },
+ {
+  "slug": "f511-webgpu-memory-palace-evolutionary-mind",
+  "num": 511,
+  "title": "WebGPU Memory Palace Evolutionary Mind",
+  "blurb": "Slug: webgpu-memory-palace-evolutionary-mind",
+  "status": "works",
+  "source": "F511-webgpu-memory-palace-evolutionary-mind",
+  "hash": "4b145c2165a6"
+ },
+ {
+  "slug": "f511-webxr-lorentz-magnetic-mind",
+  "num": 511,
+  "title": "webxr-lorentz-magnetic-mind",
+  "blurb": "Slug: webxr-lorentz-magnetic-mind",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F511-webxr-lorentz-magnetic-mind",
+  "hash": "2e4c8f343812"
+ },
+ {
+  "slug": "f510-webgpu-quantum-walk-observer-mind",
+  "num": 510,
+  "title": "webgpu-quantum-walk-observer-mind",
+  "blurb": "Slug: webgpu-quantum-walk-observer-mind",
+  "status": "works",
+  "source": "F510-webgpu-quantum-walk-observer-mind",
+  "hash": "73f07be2a177"
+ },
+ {
+  "slug": "f509-webxr-hand-gaze-rnn-sph-mind",
+  "num": 509,
+  "title": "WebXR Hand-Gaze Causal RNN Orchestrating WebGPU SPH Particle Mind",
+  "blurb": "Slug: webxr-hand-gaze-rnn-sph-mind",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F509-webxr-hand-gaze-rnn-sph-mind",
+  "hash": "12597f342a2b"
+ },
+ {
+  "slug": "f508-webgpu-spectral-resonance-dom-mind",
+  "num": 508,
+  "title": "WebGPU Spectral Resonance DOM Mind",
+  "blurb": "Slug: webgpu-spectral-resonance-dom-mind",
+  "status": "broken",
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F508-webgpu-spectral-resonance-dom-mind",
+  "hash": "e1b45c3f7f6a"
+ },
+ {
+  "slug": "f507-webrtc-rnn-spatial-dom-auction-mind",
+  "num": 507,
+  "title": "webrtc-rnn-spatial-dom-auction-mind",
+  "blurb": "Slug: webrtc-rnn-spatial-dom-auction-mind",
+  "status": "works",
+  "source": "F507-webrtc-rnn-spatial-dom-auction-mind",
+  "hash": "4b859018cf8c"
+ },
+ {
+  "slug": "f506-tilt-gaze-rnn-tensegrity-mind",
+  "num": 506,
+  "title": "Tilt-Gaze Causal RNN Orchestrating Sealed Multi-Agent Tensegrity Lattice",
+  "blurb": "A purely Canvas-based (no WebGPU) living tensegrity structure: nodes connected by tension cables and compression struts whose equilibrium is continuously solved by",
+  "status": "works",
+  "source": "F506-tilt-gaze-rnn-tensegrity-mind",
+  "hash": "909930f15fc8"
+ },
+ {
+  "slug": "f505-webgpu-implicit-mind-surface",
+  "num": 505,
+  "title": "webgpu-implicit-mind-surface",
+  "blurb": "A full-viewport WebGPU raymarched signed-distance field (SDF) of a living metaball / implicit mind surface.",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F505-webgpu-implicit-mind-surface",
+  "hash": "089e5ba70952"
+ },
+ {
+  "slug": "f504-webgpu-poisson-potential-mlp-dom-mind",
+  "num": 504,
+  "title": "webgpu-poisson-potential-mlp-dom-mind",
+  "blurb": "A 2D Poisson equation (∇²φ = ρ) is relaxed via Jacobi iteration in pure JS (WebGPU compute path reserved for the stencil kernel).",
+  "status": "works",
+  "source": "F504-webgpu-poisson-potential-mlp-dom-mind",
+  "hash": "5b2b093d28ca"
+ },
+ {
+  "slug": "f504-webgpu-stable-fluids-mlp-advection-mind",
+  "num": 504,
+  "title": "webgpu-stable-fluids-mlp-advection-mind",
+  "blurb": "A 2D Navier-Stokes fluid (stable fluids method: advection, diffusion, projection via Jacobi) is simulated with a WebGPU compute path reserved.",
+  "status": "works",
+  "source": "F504-webgpu-stable-fluids-mlp-advection-mind",
+  "hash": "a7b177ebcd4a"
+ },
+ {
+  "slug": "f503-lennard-jones-mlp-dom-swarm-mind",
+  "num": 503,
+  "title": "lennard-jones-mlp-dom-swarm-mind",
+  "blurb": "A swarm of particles interacting via the Lennard-Jones potential (short-range repulsion + longer-range attraction) is integrated in pure JS (WebGPU compute path",
+  "status": "works",
+  "source": "F503-lennard-jones-mlp-dom-swarm-mind",
+  "hash": "02269ff78ddc"
+ },
+ {
+  "slug": "f502-webgpu-kuramoto-phase-dom-orchestra-mind",
+  "num": 502,
+  "title": "webgpu-kuramoto-phase-dom-orchestra-mind",
+  "blurb": "A population of coupled phase oscillators governed by the Kuramoto model is simulated in pure JS (WebGPU compute path reserved as next building block for the",
+  "status": "works",
+  "source": "F502-webgpu-kuramoto-phase-dom-orchestra-mind",
+  "hash": "9dcc8e8229f9"
+ },
+ {
+  "slug": "f501-ambient-light-metabolic-swarm-mind",
+  "num": 501,
+  "title": "ambient-light-metabolic-swarm-mind",
+  "blurb": "Device AmbientLightSensor (or simulated illuminance) supplies a continuous environmental energy flux to a Canvas2D particle swarm (WebGPU compute path reserved as",
+  "status": "works",
+  "source": "F501-ambient-light-metabolic-swarm-mind",
+  "hash": "b513b931de79"
+ },
+ {
+  "slug": "f501-pressure-tilt-mlp-card-sculptor",
+  "num": 501,
+  "title": "pressure-tilt-mlp-card-sculptor",
+  "blurb": "PointerEvent.pressure, tiltX, tiltY (stylus or simulated) and DeviceOrientation (beta/gamma) are continuous causal inputs to a small population of local tiny MLPs",
+  "status": "works",
+  "source": "F501-pressure-tilt-mlp-card-sculptor",
+  "hash": "2779657bdafa"
+ },
+ {
+  "slug": "f500-webgpu-amplitude-collapse-portal-mind",
+  "num": 500,
+  "title": "webgpu-amplitude-collapse-portal-mind",
+  "blurb": "A discrete 2D complex-amplitude field (wavefunction-like) is evolved on a Canvas2D grid (WebGPU compute path is the natural next building block.",
+  "status": "works",
+  "source": "F500-webgpu-amplitude-collapse-portal-mind",
+  "hash": "43486ccd8cbe"
+ },
+ {
+  "slug": "f499-webgpu-battery-metabolism-particle-mind",
+  "num": 499,
+  "title": "webgpu-battery-metabolism-particle-mind",
+  "blurb": "A local metabolic mind reads the device Battery Status API (level, charging, dischargingTime) as an energy substrate.",
+  "status": "works",
+  "source": "F499-webgpu-battery-metabolism-particle-mind",
+  "hash": "d118d2deaf3d"
+ },
+ {
+  "slug": "f498-webgpu-wfc-mlp-living-grid-mind",
+  "num": 498,
+  "title": "webgpu-wfc-mlp-living-grid-mind",
+  "blurb": "A WebGPU compute shader (Canvas2D iterative fallback) performs iterative Wave Function Collapse-style constraint propagation on a discrete tile grid.",
+  "status": "works",
+  "source": "F498-webgpu-wfc-mlp-living-grid-mind",
+  "hash": "34ef4ed6e9b3"
+ },
+ {
+  "slug": "f497-webgpu-echo-state-living-dom-mind",
+  "num": 497,
+  "title": "webgpu-echo-state-living-dom-mind",
+  "blurb": "A WebGPU compute shader runs a spatial Echo State Network (reservoir computing): a large grid of recurrent nodes with fixed random sparse connectivity and leaky",
+  "status": "works",
+  "source": "F497-webgpu-echo-state-living-dom-mind",
+  "hash": "93435d573c51"
+ },
+ {
+  "slug": "f496-devicemotion-kalman-portal-physics-mind",
+  "num": 496,
+  "title": "devicemotion-kalman-portal-physics-mind",
+  "blurb": "DeviceMotionEvent (acceleration including gravity) supplies continuous causal observations to a local 2D Kalman filter (position + velocity state.",
+  "status": "works",
+  "source": "F496-devicemotion-kalman-portal-physics-mind",
+  "hash": "00bd164d3a79"
+ },
+ {
+  "slug": "f495-webgpu-ising-orient-domain-mind",
+  "num": 495,
+  "title": "webgpu-ising-orient-domain-mind",
+  "blurb": "A 2D Ising spin lattice (classic ferromagnetic model) evolves under a WebGPU compute shader (Canvas2D Metropolis fallback).",
+  "status": "works",
+  "source": "F495-webgpu-ising-orient-domain-mind",
+  "hash": "fc533d30a392"
+ },
+ {
+  "slug": "f494-webgpu-ifs-fractal-policy-mind",
+  "num": 494,
+  "title": "webgpu-ifs-fractal-policy-mind",
+  "blurb": "A population of local policy genomes encodes the affine transforms of an Iterated Function System (IFS).",
+  "status": "works",
+  "source": "F494-webgpu-ifs-fractal-policy-mind",
+  "hash": "807297c642f0"
+ },
+ {
   "slug": "f493-webgpu-implicit-sculptor-mind",
   "num": 493,
   "title": "webgpu-implicit-sculptor-mind",
@@ -73,6 +321,18 @@
   "status": "works",
   "source": "F486-orient-rnn-dom-physical-auction-mind",
   "hash": "021ed08e2c08"
+ },
+ {
+  "slug": "f0485-webxr-hand-reservoir-kuramoto-mind",
+  "num": 485,
+  "title": "WebXR Hand Reservoir Kuramoto Mind",
+  "blurb": "WebXR hand pose (or DeviceOrientation + pointer fallback) drives a local Echo State Network (reservoir of 64 leaky units).",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F0485-webxr-hand-reservoir-kuramoto-mind",
+  "hash": "1b64b872ce58"
  },
  {
   "slug": "f485-webgpu-lbm-audio-feedback-mind",

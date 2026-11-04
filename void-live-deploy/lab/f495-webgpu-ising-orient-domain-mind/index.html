@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --m: 0.5; --e: 0.3; }
+html, body { margin: 0; height: 100%; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; }
+#ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(10,10,20,0.7); padding: 8px 12px; border-radius: calc(8px + var(--m) * 20px); backdrop-filter: blur(4px); font-size: 13px; }
+#ui button { margin: 4px; padding: 4px 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; cursor: pointer; }
+.portal { position: absolute; width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, rgba(255,200,100,0.8), rgba(100,50,200,0.4)); pointer-events: none; transition: transform 0.1s linear, left 0.15s, top 0.15s; box-shadow: 0 0 20px rgba(255,180,80,0.6); mix-blend-mode: screen; }
+#status { font-size: 11px; opacity: 0.8; margin-top: 4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-ising-orient-domain-mind · Verse lab</title>
+<meta name="description" content="A 2D Ising spin lattice (classic ferromagnetic model) evolves under a WebGPU compute shader (Canvas2D Metropolis fallback).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-ising-orient-domain-mind · Verse lab">
+<meta property="og:description" content="A 2D Ising spin lattice (classic ferromagnetic model) evolves under a WebGPU compute shader (Canvas2D Metropolis fallback).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f495-webgpu-ising-orient-domain-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f495-webgpu-ising-orient-domain-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div>F495 Ising Domain Mind</div>
+  <button id="sealBtn">Seal (S)</button>
+  <button id="restoreBtn">Restore (R)</button>
+  <div id="status">Tilt or drag to bias field · |M|: 0.00</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-ising-orient-domain-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

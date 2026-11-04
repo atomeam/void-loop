@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1122,
+ "counted": 1124,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1000,7 +1000,7 @@
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 1
   },
   {
@@ -2894,6 +2894,13 @@
    "tests": 1
   },
   {
+   "file": "lib/photo-edit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2990,6 +2997,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 4
+  },
+  {
+   "file": "lib/ai-check.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/ai-generators.js",
@@ -3363,13 +3377,6 @@
    "tests": 1
   },
   {
-   "file": "lib/photo-edit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 2
-  },
-  {
    "file": "lib/podcasts-card.js",
    "skills": 0,
    "direct": 0,
@@ -3515,6 +3522,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/watch-build.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/will-schema.js",
@@ -4621,6 +4635,12 @@
    "reachedBy": [
     "skills/dates.js"
    ]
+  },
+  "lib/ai-check.js": {
+   "imports": [
+    "lib/photo-edit.js"
+   ],
+   "importedBy": []
   },
   "lib/ai-generators.js": {
    "imports": [],
@@ -10035,6 +10055,7 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "lib/ai-check.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
     "skills/shop.js",
@@ -10129,7 +10150,9 @@
    "imports": [
     "lib/pay-share.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/ai-check.js"
+   ]
   },
   "lib/photo-library.js": {
    "imports": [],
@@ -13243,6 +13266,10 @@
     "functions/api/sing.js",
     "functions/api/translate.js"
    ]
+  },
+  "lib/watch-build.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/watch.js": {
    "imports": [],
