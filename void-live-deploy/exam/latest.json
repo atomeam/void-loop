@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T04:46:55.969Z",
+  "at": "2026-11-04T05:16:16.527Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,10 +32,39 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 84,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "fast"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
         {
           "ask": "play the latest episode of crime junkie",
           "failed": [
@@ -78,11 +107,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio",
-            "episode"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -142,7 +169,7 @@
       }
     },
     "weather": {
-      "score": 98.3,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -158,7 +185,7 @@
           "failed": [
             "skill"
           ],
-          "score": 85.7
+          "score": 83.3
         }
       ],
       "holdout": {
