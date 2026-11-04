@@ -474,6 +474,20 @@ SPECS['/autopilot/'] = async (t) => {
   t.ok((await t.text('#t-own')) === 'n/a' && /did not answer/.test(await t.text('#feed')), 'a source that does not answer says so instead of a number');
   t.ok(/days=7/.test(t.p.url()), 'the window is in the link');
 };
+// /agent/: Verse's agent. The API is faked: one finished task with its steps, one waiting on a yes
+const AGENT_FIX = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, running: 0, text: 'Made 1 thing in the last day. 1 waiting on your yes.' },
+  tiers: [{ name: 'free', month_cents: 0 }, { name: 'strong', month_cents: 500 }],
+  tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
+    { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
+AGENT_FIX.made = [AGENT_FIX.tasks[1]];
+SPECS['/agent/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/agent', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AGENT_FIX) }));
+  await t.p.reload(); await t.waitText('#brief', /Daily brief/, 10000);
+  t.ok(/1 waiting on your yes/.test(await t.text('#brief')), 'the daily brief counts what waits');
+  t.ok(/Done\. It is on your Made shelf/.test(await t.text('#thread')), 'the live feed lists the steps');
+  t.ok((await t.p.locator('#thread button[data-d="yes"]').count()) === 1, 'the send waits on an approval card');
+  t.ok(/Forsyth Park/.test(await t.text('#made')), 'finished work is on the Made shelf');
+};
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },
   revenue: { sales: 1, gross_cents: 4900, fee_cents: 712, refunded_cents: 0, realized_cents: 4188 }, balance_cents: 4188, split_cents: 4188,

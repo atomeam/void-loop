@@ -59,6 +59,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 
 | page | takes | gives | reads its link | types from |
 |---|---|---|---|---|
+| /agent/ | - | - | no | its tag |
 | /assimilated/ | - | - | no | its tag |
 | /autopilot/ | - | number, text | yes | its tag |
 | /base64/ | text | text | yes | handoff-types.json |
