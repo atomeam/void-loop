@@ -19,7 +19,7 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'hex to rgb': '/color/', 'rgb to hex': '/color/', 'hex color converter': '/color/', 'color code converter': '/color/', 'colour code converter': '/color/' };
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
-const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/random/wheel/']);
+const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/random/wheel/', '/vat/']);
 const OPEN = /^(?:open|show(?: me)?|go to|take me to|launch|bring up)\s+(?:the |my |a |an )?/i;
 
 /** the tool an ask names, as { href, label }, or null. Pure. */

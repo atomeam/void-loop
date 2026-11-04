@@ -52,6 +52,7 @@
   .ok { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
   .st { display: grid; grid-template-columns: minmax(7em, 10em) 5.5em 1fr 4.5em; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; }
   .st:first-child { border-top: 0; }
+  .st-kind { font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; opacity: .75; margin: 12px 0 2px; }
   .st .hist { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; height: 16px; }
   .st .hist i { display: block; border-radius: 2px; background: #2a2540; } .st .hist i.u { background: var(--good); } .st .hist i.d { background: var(--bad); }
   .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; background: var(--soft); } .dot.up { background: var(--good); } .dot.down { background: var(--bad); }
@@ -82,7 +83,7 @@
     <div id="st-guards"></div>
     <p class="note" style="margin:6px 0 0">Each bar is one hourly check by Verse's own guards (oldest left; green up, red down, grey no answer). Uptime is over the last 7 days.</p>
   </div>
-  <h2>Speed from your browser, now</h2>
+  <h2>Pages and APIs, timed from your browser now</h2>
   <div class="panel"><div id="st-live"><span class="note">Timing a few pages from this browser…</span></div></div>
   <h2>Recent incidents on main</h2>
   <div class="panel"><ul class="feed" id="st-inc"><li><span class="kind">…</span><span class="note">Reading the incident log…</span></li></ul></div>
