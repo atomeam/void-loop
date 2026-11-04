@@ -12,6 +12,13 @@
  *               'schedule' every when.every minutes (15 to 10080), run by the clock: POST /api/automations/tick, which an
  *                          Actions cron calls every 15 minutes today (.github/workflows/void-tick.yml) and a Worker can later
  *                          (the route stays the same, only who calls it changes); the event is { tick: true, at }
+ *               'gumroad'  a sale (or refund, cancellation...) in Atom's Gumroad store: Gumroad's Ping (functions/api/gumroad.js), once per
+ *                          new record; the event is gumroadEvent(): resource, product, price, currency, test, never the buyer
+ *               'team'     a message in Verse's own team chat (/team/) from the owner or an agent (functions/api/team.js); Verse's
+ *                          own posts never fire it, so a rule that says something in the chat cannot loop; the event is teamEvent()
+ *               'github'   a GitHub webhook (functions/api/github-events.js, signed with GITHUB_WEBHOOK_SECRET): the event is
+ *                          githubEvent(), the X-GitHub-Event name in event.event and the usual fields trimmed
+ *                          Event triggers run the owner's rules only and count against RUN_CAP_DAY, as a webhook does
  *   when.match  optional { 'a.b': 'value' }: every listed field of the event must equal its value (strings compared)
  *   do          1 to MAX_STEPS steps, run in order; the first that fails stops the rest
  * Steps (any string field may use {{event.a.b}}, filled from the event; a missing field fills as empty):
@@ -40,7 +47,9 @@ import { validateWatch, describe, fingerprint, TELLS, DEFAULT_EVERY } from './wa
 export const RUN_CAP_DAY = 200;
 export const QUEUE_DEDUPE_MS = 6 * 3600e3;
 export const SCHEMA = 'void.automation.v1';
-export const TRIGGERS = ['webhook', 'manual', 'schedule'];
+export const TRIGGERS = ['webhook', 'manual', 'schedule', 'gumroad', 'team', 'github'];
+export const EVENT_TRIGGERS = ['gumroad', 'team', 'github']; // fired by Verse's own routes for the owner's rules (lib/automations-run.js fire)
+export const CAPPED = ['webhook', ...EVENT_TRIGGERS]; // what a stranger can set off runs at most RUN_CAP_DAY times a day per rule
 export const EVERY_MIN = 15, EVERY_MAX = 10080; // minutes between scheduled runs: the clock ticks every 15, a week at most
 export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post', 'watch', 'team.post'];
 // a watch in an owner's rule may also tell the team chat (a member's own watches, functions/api/watch.js, keep lib/watch.js TELLS)
@@ -206,10 +215,45 @@ export function watchRule(watch, tell = 'note', every = DEFAULT_EVERY) {
 }
 
 /** three rules to start from (the card offers them; each is valid as it stands) */
+const cut = (v, n = 300) => (v == null ? '' : String(v).slice(0, n));
+/** a Gumroad Ping (lib/earnings.js parsePing) -> the event a 'gumroad' rule sees: what sold and for how much, never who bought it
+ * (no email, name, address, IP or license key: event text can be posted in the team chat). Pure. */
+export function gumroadEvent(p, { resource, effect = '', at = new Date().toISOString() } = {}) {
+  const q = p || {}, cents = Number(q.price);
+  return { resource: cut(resource || q.resource_name || 'sale', 40), product: cut(q.product_name || q.product_permalink || q.permalink, 200), permalink: cut(q.product_permalink || q.permalink, 120),
+    price: Number.isFinite(cents) ? cents / 100 : null, currency: cut(q.currency, 8).toUpperCase(), quantity: Number(q.quantity) || 1, recurrence: cut(q.recurrence, 20),
+    test: String(q.test) === 'true', refunded: String(q.refunded) === 'true', effect: cut(effect, 120), at };
+}
+/** a team chat message -> the event a 'team' rule sees. Pure. */
+export function teamEvent({ id, c, by, body, thread = 0, at } = {}) {
+  return { id: Number(id) || 0, channel: cut(c, 40), by: cut(by, 40), text: cut(body, 4000), thread: Number(thread) || 0, reply: !!thread, at: at ? new Date(at).toISOString() : new Date().toISOString() };
+}
+/** a GitHub webhook (event name, delivery id, payload) -> the event a 'github' rule sees: the fields rules use, trimmed (a push or a PR
+ * body can be far bigger than MAX_EVENT). Pure. */
+export function githubEvent(name, delivery, b) {
+  const p = b && typeof b === 'object' ? b : {}, u = (x) => (x && x.login ? cut(x.login, 60) : '');
+  const pr = p.pull_request, is = p.issue, cm = p.comment, wr = p.workflow_run, rel = p.release, hc = p.head_commit;
+  const ev = { event: cut(name, 40), delivery: cut(delivery, 80), action: cut(p.action, 40), repo: cut(p.repository && p.repository.full_name, 120), sender: u(p.sender) };
+  if (p.ref) Object.assign(ev, { ref: cut(p.ref, 200), branch: cut(String(p.ref).replace(/^refs\/heads\//, ''), 200), after: cut(p.after, 40) });
+  if (hc) ev.head_commit = { id: cut(hc.id, 40), message: cut(hc.message, 1000), url: cut(hc.url, 300), author: cut(hc.author && (hc.author.username || hc.author.name), 60) };
+  if (Array.isArray(p.commits)) ev.commits = p.commits.length;
+  if (pr) ev.pull_request = { number: pr.number, title: cut(pr.title, 300), url: cut(pr.html_url, 300), state: cut(pr.state, 20), merged: !!pr.merged, draft: !!pr.draft, user: u(pr.user), head: cut(pr.head && pr.head.ref, 200), base: cut(pr.base && pr.base.ref, 200) };
+  if (is) ev.issue = { number: is.number, title: cut(is.title, 300), url: cut(is.html_url, 300), state: cut(is.state, 20), user: u(is.user) };
+  if (cm) ev.comment = { body: cut(cm.body, 2000), url: cut(cm.html_url, 300), user: u(cm.user) };
+  if (p.label) ev.label = { name: cut(p.label.name, 100) };
+  if (wr) ev.workflow_run = { name: cut(wr.name, 120), status: cut(wr.status, 20), conclusion: cut(wr.conclusion, 20), branch: cut(wr.head_branch, 200), url: cut(wr.html_url, 300), sha: cut(wr.head_sha, 40) };
+  if (rel) ev.release = { tag: cut(rel.tag_name, 100), name: cut(rel.name, 200), url: cut(rel.html_url, 300) };
+  if (p.check_suite) ev.check_suite = { conclusion: cut(p.check_suite.conclusion, 20), branch: cut(p.check_suite.head_branch, 200) };
+  return ev;
+}
+
 export const TEMPLATES = [
   { name: 'Webhook to the build queue', when: { on: 'webhook' }, do: [{ action: 'queue.add', ask: 'from a webhook: {{event.ask}}', target: 'hook' }] },
   { name: 'Comment on a pull request', when: { on: 'webhook', match: { action: 'labeled' } }, do: [{ action: 'github.comment', repo: 'atomeam/void-loop', issue: '{{event.pull_request.number}}', body: 'Verse saw this pull request labelled {{event.label.name}}.' }] },
   { name: 'Every morning, a note', when: { on: 'schedule', every: 1440 }, do: [{ action: 'note', text: 'Verse was here at {{event.at}}' }] },
+  { name: 'A Gumroad sale to the team chat', when: { on: 'gumroad', match: { resource: 'sale' } }, do: [{ action: 'team.post', c: 'general', body: 'A sale on Gumroad: {{event.product}} for {{event.price}} {{event.currency}}.' }] },
+  { name: 'A merged pull request to the team chat', when: { on: 'github', match: { event: 'pull_request', action: 'closed', 'pull_request.merged': true } }, do: [{ action: 'team.post', c: 'general', body: 'Merged: #{{event.pull_request.number}} {{event.pull_request.title}} {{event.pull_request.url}}' }] },
+  { name: 'An owner #work message to a note', when: { on: 'team', match: { channel: 'work', by: 'owner' } }, do: [{ action: 'note', text: 'The owner said in #work: {{event.text}}' }] },
   { name: 'Webhook to the team chat', when: { on: 'webhook' }, do: [{ action: 'team.post', c: 'general', body: 'From a webhook: {{event.text}}' }] },
   { name: 'Open a pull request with a file', when: { on: 'manual' }, do: [{ action: 'github.pr', repo: 'atomeam/void-loop', base: 'main', branch: 'void/automation-note', title: 'A note from Verse', body: 'Opened by a Verse automation.', files: [{ path: 'domains/automation-note.md', content: 'Written by a Verse automation.\n' }] }] },
 ];

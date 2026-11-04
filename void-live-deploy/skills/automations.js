@@ -17,7 +17,8 @@ export function automationsOf(text) {
 const el = (tag, css, text) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (text != null) e.textContent = text; return e; };
 const MUTED = 'color:var(--muted,#9a9aa2)';
 const every = (m) => (m % 1440 === 0 ? (m === 1440 ? 'Every day' : 'Every ' + m / 1440 + ' days') : m % 60 === 0 ? (m === 60 ? 'Every hour' : 'Every ' + m / 60 + ' hours') : 'Every ' + m + ' minutes');
-const describe = (r) => (r.when.on === 'webhook' ? 'When the webhook is called' : r.when.on === 'schedule' ? every(r.when.every) + ' (and when you press Run now)' : 'When you press Run now') + (r.when.match ? ' and ' + Object.entries(r.when.match).map(([k, v]) => k + ' is ' + v).join(', ') : '');
+const ON = { webhook: 'When the webhook is called', gumroad: 'When Gumroad pings a sale, refund or cancellation', team: 'When someone posts in the team chat', github: 'When GitHub sends an event (/api/github-events)' };
+const describe = (r) => (ON[r.when.on] || (r.when.on === 'schedule' ? every(r.when.every) + ' (and when you press Run now)' : 'When you press Run now')) + (r.when.match ? ' and ' + Object.entries(r.when.match).map(([k, v]) => k + ' is ' + v).join(', ') : '');
 const STEP_TEXT = { note: (s) => 'note: ' + s.text, 'queue.add': (s) => 'add a job: ' + s.ask, 'github.comment': (s) => 'comment on ' + s.repo + ' #' + s.issue,
   'github.pr': (s) => 'open a pull request on ' + s.repo + ' (' + s.files.length + ' file' + (s.files.length === 1 ? '' : 's') + ', branch ' + s.branch + ')', 'http.post': (s) => 'post to ' + s.url,
   'team.post': (s) => 'say in the team chat #' + s.c + ': ' + s.body, watch: (s) => 'watch' + (s.tell === 'team' ? ', and tell the team chat when it trips' : '') };
