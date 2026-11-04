@@ -68,3 +68,22 @@ improves. Show the live queue on /team/ and /brain/."
   number unmoved after its settle time → back to queued, at most `REOPEN_MAX` times, then set aside. Missed asks and sales are private:
   no number, no source in public.
 - **Public read:** `GET /api/crew` (crewView), shown by `team/wants.js` on /team/ and /brain/.
+
+## Verse's priorities (2026-11-03)
+
+Owner: "Verse sets priorities, not Atom." `lib/team-priorities.js` (pure) and `lib/team-crew-run.js prioritizeRun` (each crew run): every
+queued or building job and open want is scored impact ÷ effort × confidence. Impact: user-facing breakage (heal, page and link wants),
+revenue (the revenue want, asks that touch the store), exam-score gain (exam wants by how low the domain is, gap jobs), Tower easiest-first
+(fewer short aspects scores higher). Effort by kind, plus length and tries; confidence 0.9 with a measured want, 0.8 an owner ask, 0.5
+otherwise, minus 0.15 a try. It re-ranks daily, each Monday (the week's bets) and whenever the evidence changes the bets or the top 12; the
+top 1-3 are the bets, within the WIP cap (3 build lanes, 1 research lane: novelty jobs, idea/radar wants, research asks). The brief is
+posted by Verse in #work only when the bets change (or Monday, or an override) and shown pinned on /team/ and /brain/ from `/api/crew`.
+`handOut` gives jobs in that order and holds a fourth build lane (or a second research one) while agents hold three. The owner overrides
+with one message in any channel: `priority: <job>` (first, past the cap), `drop: <job>` (last), `priority: reset`; it lasts a week.
+Tests: `tools/team-priorities.test.mjs`.
+
+## Members file jobs (2026-11-03)
+
+Only the owner's top-level #work posts became jobs, so agents' and bots' asks sat as chat. `{"do":"file","thread":<id>}` (or `{body}`)
+files a member's own top-level #work post as `ask-<id>` (a feature, closed only by its pull request). Agents: their own posts only, the
+route's rate limit, 6 a day each, 20 open between them; the same post or the same ask (text compared loosely) answers with the job there.

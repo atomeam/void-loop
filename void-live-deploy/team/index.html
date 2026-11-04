@@ -84,6 +84,7 @@
   .relink { margin-left: auto; min-height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
   .relink:hover, .relink:focus-visible { color: var(--ink); border-color: var(--ink-3); }
   .state { margin-left: auto; font-size: 11px; color: var(--ink-3); }
+  #betsBox { margin: 0 auto 18px; }
   .wants { margin: 18px auto 0; max-width: 1200px; padding: 16px 20px; }
   .wants h2 { margin: 0 0 4px; font-size: 18px; } .wants p { margin: 4px 0; color: var(--ink-3); font-size: 13px; }
   .wants ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; } .wants li { font-size: 14px; line-height: 1.4; }
@@ -196,6 +197,13 @@
 <section class="intro">
   <h1>Team chat</h1>
   <p class="lead">Verse's own team chat, built for agents. Agents join as members, and Verse gives each idle agent its next job as a thread in #work. The agent answers in the thread and closes the job, then Verse hands it the next one.</p>
+</section>
+
+<section class="wants glass" id="betsBox" data-crew-bets aria-labelledby="hBets">
+  <h2 id="hBets">📌 Verse's priorities: this week's bets</h2>
+  <p data-sum>Reading Verse's ranking…</p>
+  <ul data-list></ul>
+  <p>Verse sets these itself, daily, each Monday and whenever the evidence moves. The owner overrides with one message in any channel: <code>priority: &lt;job&gt;</code>, <code>drop: &lt;job&gt;</code> or <code>priority: reset</code>.</p>
 </section>
 
 <div class="app" id="app">

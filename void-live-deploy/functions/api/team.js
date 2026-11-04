@@ -46,6 +46,7 @@
 import { ownerOk } from '../../lib/guard.js';
 import { session } from '../../lib/void-me.js';
 import { redact } from '../../lib/automation-fix.js';
+import * as P from '../../lib/team-priorities.js';
 import * as T from '../../lib/team.js';
 import { briefOf } from '../../lib/job-guide.js';
 import * as Dream from '../../lib/brain-dream.js';
@@ -234,7 +235,7 @@ async function threadId(env, v, me) {
 export async function handOut(env, a, now) {
   if (a.job) return { job: a.job, thread: a.thread, already: true };
   const skip = String(a.skip || '').split(' ').filter(Boolean);
-  for (const j of T.rank(await queued(env), now, skip).slice(0, 8)) {
+  for (const j of await ordered(env, T.rank(await queued(env), now, skip), now)) {
     let took = false;
     try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
@@ -245,6 +246,22 @@ export async function handOut(env, a, now) {
     return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, brief: briefOf(j, T.kindOf(j.target)), thread };
   }
   return null;
+}
+// Verse's own order (lib/team-priorities.js, kept by lib/team-crew-run.js prioritizeRun): the owner's pins first, then Verse's ranking, the
+// owner's drops last; and the WIP cap (3 build lanes, 1 research lane) between the agents. With no ranking yet, the queue's own rank stands.
+async function ordered(env, ranked, now) {
+  let pr = null, ov = null;
+  try {
+    const { results } = await env.DB.prepare("SELECT k, v FROM void_team_crew WHERE k IN ('priorities', 'override')").all();
+    for (const r of results) { const v = JSON.parse(r.v); if (r.k === 'priorities') pr = v; else ov = v; }
+  } catch (_) { return ranked.slice(0, 8); }
+  if (!pr) return ranked.slice(0, 8);
+  const live = ov && now - (ov.at || 0) < P.OVERRIDE_MS ? ov : { pin: [], drop: [] }, at = new Map(pr.order.map((id, i) => [id, i]));
+  const pos = (j) => (live.pin.includes(j.id) ? -100 + live.pin.indexOf(j.id) : live.drop.includes(j.id) ? 1e6 : at.has(j.id) ? at.get(j.id) : 1e5);
+  const list = ranked.map((j, i) => ({ j, k: pos(j), i })).sort((x, y) => x.k - y.k || x.i - y.i).map((x) => x.j);
+  let building = [];
+  try { building = (await env.DB.prepare("SELECT id, ask, target FROM void_queue WHERE state = 'building' AND note LIKE 'claimed by team:%'").all()).results || []; } catch (_) { building = []; }
+  return list.filter((j) => live.pin.includes(j.id) || P.wipAllows(j, building, pr.lanes || {})).slice(0, 8);
 }
 // the owner's post at the top of #work is a job: it goes on the build queue as a feature, and Verse hands it out in that same thread
 async function enqueue(env, msg, body, now, note = 'asked in #work by the owner') {
@@ -525,7 +542,16 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       }
       if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
       const id = await write(env, { c, by: byOf(me), body, thread, now });
-      const queued = me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
+      // the owner overrides Verse's priorities with one message, in any channel: "priority: <job>", "drop: <job>" or "priority: reset"
+      const ov = me.kind === 'owner' && !thread ? P.overrideOf(body) : null;
+      if (ov) {
+        await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_team_crew (k TEXT PRIMARY KEY, v TEXT NOT NULL, at INTEGER NOT NULL)').run();
+        const old = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'override'").first().catch(() => null);
+        const next = P.mergeOverride(old ? JSON.parse(old.v) : null, ov, now);
+        for (const [k, v] of [['override', next], ['override-new', now]]) await env.DB.prepare('INSERT INTO void_team_crew (k, v, at) VALUES (?, ?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, at = excluded.at').bind(k, JSON.stringify(v), now).run(); // void-review: ok (two fixed keys)
+        await write(env, { c, by: 'verse', body: ov.reset ? 'Override cleared: my own ranking stands again.' : ov.pin ? 'Taken: ' + ov.pin + ' goes first, past the WIP cap, for a week or until you say "priority: reset". The pinned brief is re-ranked on my next run.' : 'Taken: ' + ov.drop + ' goes last for a week. The pinned brief is re-ranked on my next run.', thread: id, now });
+      }
+      const queued = !ov && me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
       if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
       if (queued && queued !== 'full') await pushLater(); // an agent with a push address gets it now

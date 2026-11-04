@@ -7,6 +7,8 @@
 // public GitHub API for this repo; writes only to its own D1 tables, the team chat and the build queue (team kinds, ids "want-*").
 // It never spends, never sends anything outside, never merges, never posts on X.
 import * as C from './team-crew.js';
+import * as P from './team-priorities.js';
+import { TEAM_KINDS, kindOf } from './team.js';
 import { readStatus } from '../functions/api/status.js';
 import { crewReady, crewWrite } from '../functions/api/team.js';
 
@@ -264,9 +266,29 @@ export async function crewTick(env, now = Date.now()) {
   for (const b of due) next[b.slug] = now + b.every * 60e3 - 60e3; // a minute early, so the 15-minute clock does not slip a turn
   await setState(env, 'next', next, now);
   const jobs = await Promise.all(due.filter((b) => duties[b.slug]).map((b) => job(env, b, run, TITLES[b.slug], duties[b.slug](env, ev, run, now), now)));
-  const out = { at: ev.at, run, crew: bots.map((b) => b.name), filed, met: m.met, reopened: m.reopened, jobs, ms: Date.now() - t0 };
+  const prio = await prioritizeRun(env, ev, now, { force: !!(await getState(env, 'override-new')) }).catch(() => null);
+  await env.DB.prepare("DELETE FROM void_team_crew WHERE k = 'override-new'").run().catch(() => null);
+  const out = { at: ev.at, run, crew: bots.map((b) => b.name), filed, met: m.met, reopened: m.reopened, jobs, priorities: prio, ms: Date.now() - t0 };
   await setState(env, 'last', out, now);
   return out;
+}
+
+// ---- Priorities (lib/team-priorities.js): Verse ranks its own queue; daily, each Monday, and whenever the evidence moves ----
+const dayKey = (now) => new Date(now).toISOString().slice(0, 10);
+export async function prioritizeRun(env, ev, now, { force = false } = {}) {
+  let jobs = [], wants = [];
+  try { jobs = ((await env.DB.prepare("SELECT id, ask, target, state, note, at FROM void_queue WHERE state IN ('queued', 'building') ORDER BY at ASC LIMIT 400").all()).results || []).filter((j) => TEAM_KINDS.includes(kindOf(j.target))); } catch (_) { jobs = []; }
+  try { wants = (await env.DB.prepare("SELECT * FROM void_team_wants WHERE state = 'open'").all()).results || []; } catch (_) { wants = []; }
+  const override = await getState(env, 'override'), last = await getState(env, 'priorities');
+  const p = P.prioritize(jobs, wants, ev, override, now), week = 'the week of ' + C.weekOf(new Date(now).toISOString()), monday = new Date(now).getUTCDay() === 1;
+  const why = !last ? 'first ranking' : force ? 'the owner overrode' : monday && last.week !== week ? 'Monday: the new week\'s bets' : last.day !== dayKey(now) ? 'the daily ranking' : last.sig !== p.sig ? 'the evidence moved' : '';
+  if (!why) return { changed: false, bets: last.bets.map((b) => b.id) };
+  const betsMoved = !last || last.bets.map((b) => b.id).join(' ') !== p.bets.map((b) => b.id).join(' ');
+  let brief = last ? last.brief : null;
+  if (betsMoved || (monday && last && last.week !== week) || force) brief = await crewWrite(env, { c: 'work', by: 'verse', body: P.briefText(p, week, why), now }); // the pinned brief: posted again only when the bets change
+  const lanes = Object.fromEntries(p.ranked.map((r) => [r.id, r.lane]));
+  await setState(env, 'priorities', { at: now, day: dayKey(now), week, why, sig: p.sig, order: p.order.slice(0, 300), lanes, bets: p.bets, ranked: p.ranked.slice(0, 15), brief, wip: P.WIP }, now);
+  return { changed: true, why, bets: p.bets.map((b) => b.id), brief };
 }
 
 /** the public read (GET /api/crew): the crew, what each last did, and Verse's wants */
@@ -281,6 +303,10 @@ export async function crewView(env, now = Date.now()) {
   } catch (_) { crew = []; }
   try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'last'").first(); last = r ? json(r.v) : null; } catch (_) { last = null; }
   const pub = wants.map(C.publicWant);
-  return { ok: true, at: new Date(now).toISOString(), crew, wants: pub, open: pub.filter((w) => w.state === 'open').length, met: pub.filter((w) => w.state === 'met').length,
+  let pr = null; try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'priorities'").first(); pr = r ? json(r.v) : null; } catch (_) { pr = null; }
+  let ov = null; try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'override'").first(); ov = r ? json(r.v) : null; } catch (_) { ov = null; }
+  const priv = new Set(wants.filter((w) => w.private).map((w) => w.job)), show = (b) => ({ id: b.id, ask: priv.has(b.id) ? 'a private want (owner only)' : b.ask, lane: b.lane, kind: b.kind, state: b.state, score: b.score, impact: b.impact, effort: b.effort, confidence: b.confidence, drivers: priv.has(b.id) ? ['kept private'] : b.drivers, evidence: priv.has(b.id) ? [] : b.evidence, override: b.override || null });
+  const priorities = pr ? { at: pr.at, week: pr.week, why: pr.why, brief: pr.brief, wip: pr.wip, bets: pr.bets.map(show), next: pr.ranked.filter((r) => !pr.bets.some((b) => b.id === r.id)).slice(0, 8).map(show), override: ov && now - (ov.at || 0) < P.OVERRIDE_MS ? { pin: ov.pin, drop: ov.drop, at: ov.at } : null } : null;
+  return { ok: true, at: new Date(now).toISOString(), crew, priorities, wants: pub, open: pub.filter((w) => w.state === 'open').length, met: pub.filter((w) => w.state === 'met').length,
     lastRun: last ? { at: last.at, run: last.run, filed: (last.filed || []).length, met: (last.met || []).length, jobs: (last.jobs || []).length } : null };
 }
