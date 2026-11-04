@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1133,
+ "counted": 1143,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -17,18 +17,18 @@
    "tests": 3
   },
   {
+   "file": "lib/state.js",
+   "skills": 32,
+   "direct": 4,
+   "dependants": 73,
+   "tests": 4
+  },
+  {
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
    "dependants": 72,
    "tests": 8
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 32,
-   "direct": 4,
-   "dependants": 72,
-   "tests": 4
   },
   {
    "file": "lib/placement.js",
@@ -41,28 +41,28 @@
    "file": "lib/load-later.js",
    "skills": 27,
    "direct": 23,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/keeper.js",
    "skills": 23,
    "direct": 0,
-   "dependants": 85,
+   "dependants": 86,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 23,
    "direct": 1,
-   "dependants": 85,
+   "dependants": 86,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 23,
    "direct": 0,
-   "dependants": 84,
+   "dependants": 85,
    "tests": 5
   },
   {
@@ -90,7 +90,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 54,
+   "dependants": 55,
    "tests": 2
   },
   {
@@ -125,70 +125,70 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 66,
+   "dependants": 67,
    "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 57,
+   "dependants": 58,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 56,
+   "dependants": 57,
    "tests": 4
   },
   {
    "file": "lib/corrections.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 3
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 54,
+   "dependants": 55,
    "tests": 4
   },
   {
    "file": "lib/autopsy.js",
    "skills": 15,
    "direct": 5,
-   "dependants": 51,
+   "dependants": 52,
    "tests": 6
   },
   {
    "file": "lib/qr.js",
    "skills": 13,
    "direct": 3,
-   "dependants": 26,
+   "dependants": 28,
    "tests": 3
   },
   {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 23,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/where.js",
    "skills": 13,
    "direct": 11,
-   "dependants": 20,
+   "dependants": 22,
    "tests": 1
   },
   {
@@ -202,14 +202,14 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 44,
+   "dependants": 45,
    "tests": 4
   },
   {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
-   "dependants": 19,
+   "dependants": 21,
    "tests": 2
   },
   {
@@ -223,77 +223,77 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 44,
+   "dependants": 45,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 44,
+   "dependants": 45,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 1
   },
   {
    "file": "lib/hardened-line.js",
    "skills": 9,
    "direct": 2,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 0
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 1
   },
   {
    "file": "lib/card-mini.js",
    "skills": 9,
    "direct": 5,
-   "dependants": 19,
+   "dependants": 21,
    "tests": 0
   },
   {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
-   "dependants": 16,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -342,14 +342,14 @@
    "file": "lib/note-tools.js",
    "skills": 8,
    "direct": 4,
-   "dependants": 18,
+   "dependants": 20,
    "tests": 1
   },
   {
    "file": "lib/skyask.js",
    "skills": 8,
    "direct": 7,
-   "dependants": 15,
+   "dependants": 17,
    "tests": 1
   },
   {
@@ -461,14 +461,14 @@
    "file": "lib/colour.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 16,
+   "dependants": 18,
    "tests": 1
   },
   {
    "file": "lib/pwcheck.js",
    "skills": 5,
    "direct": 2,
-   "dependants": 14,
+   "dependants": 16,
    "tests": 1
   },
   {
@@ -566,71 +566,78 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 96,
+   "dependants": 98,
    "tests": 2
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/hash.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 14,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/cssmin.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 15,
    "tests": 1
   },
   {
    "file": "lib/csvjson.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 15,
    "tests": 1
   },
   {
    "file": "lib/markdown.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 15,
    "tests": 1
   },
   {
    "file": "lib/textdiff.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 15,
    "tests": 1
   },
   {
    "file": "lib/yamljson.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 15,
    "tests": 1
+  },
+  {
+   "file": "lib/stars.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 13,
+   "tests": 2
   },
   {
    "file": "lib/field-resonance.js",
@@ -638,13 +645,6 @@
    "direct": 1,
    "dependants": 12,
    "tests": 1
-  },
-  {
-   "file": "lib/stars.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 11,
-   "tests": 2
   },
   {
    "file": "lib/tower-controls.js",
@@ -762,35 +762,35 @@
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 96,
+   "dependants": 98,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 95,
+   "dependants": 97,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 93,
+   "dependants": 95,
    "tests": 9
   },
   {
    "file": "lib/share.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 14,
+   "dependants": 16,
    "tests": 3
   },
   {
    "file": "lib/share-client.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 11,
+   "dependants": 13,
    "tests": 1
   },
   {
@@ -993,7 +993,7 @@
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 3
   },
   {
@@ -1007,8 +1007,22 @@
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 1
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 31,
+   "tests": 1
+  },
+  {
+   "file": "lib/markets.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 31,
+   "tests": 5
   },
   {
    "file": "lib/store-db.js",
@@ -1018,31 +1032,17 @@
    "tests": 3
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 30,
-   "tests": 1
-  },
-  {
-   "file": "lib/markets.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 30,
-   "tests": 5
-  },
-  {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 6
   },
   {
@@ -1063,14 +1063,28 @@
    "file": "lib/cook-flow.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 11,
    "tests": 1
   },
   {
    "file": "lib/eclipses.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-card.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/showers.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 10,
    "tests": 1
   },
   {
@@ -1088,25 +1102,11 @@
    "tests": 2
   },
   {
-   "file": "lib/translate-card.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
    "file": "lib/rap-fft.js",
    "skills": 2,
    "direct": 0,
    "dependants": 8,
    "tests": 0
-  },
-  {
-   "file": "lib/showers.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 8,
-   "tests": 1
   },
   {
    "file": "lib/rap-ears.js",
@@ -1280,28 +1280,28 @@
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/rap.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 5
   },
   {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 2
   },
   {
@@ -1315,21 +1315,21 @@
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 2
   },
   {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -1345,6 +1345,13 @@
    "direct": 0,
    "dependants": 18,
    "tests": 6
+  },
+  {
+   "file": "lib/writing-aids.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 10,
+   "tests": 2
   },
   {
    "file": "lib/brain-creature.js",
@@ -1463,13 +1470,6 @@
    "skills": 1,
    "direct": 0,
    "dependants": 9,
-   "tests": 2
-  },
-  {
-   "file": "lib/writing-aids.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 8,
    "tests": 2
   },
   {
@@ -2316,252 +2316,266 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 91,
+   "dependants": 92,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 90,
-   "tests": 33
+   "dependants": 91,
+   "tests": 34
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 60,
-   "tests": 12
+   "dependants": 64,
+   "tests": 14
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 55,
    "tests": 9
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 45,
+   "dependants": 46,
    "tests": 0
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 43,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 42,
    "tests": 6
-  },
-  {
-   "file": "lib/persona.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 35,
-   "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 38,
+   "tests": 0
+  },
+  {
+   "file": "lib/persona.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 36,
    "tests": 0
   },
   {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 3
+  },
+  {
+   "file": "lib/daily-cap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 31,
+   "tests": 1
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 8
+  },
+  {
+   "file": "lib/free-router.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 29,
+   "tests": 1
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 0
+  },
+  {
+   "file": "lib/answer-free.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 27,
+   "tests": 1
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
-   "tests": 1
-  },
-  {
-   "file": "lib/daily-cap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 8
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 3
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/free-pics.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 2
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
@@ -2617,8 +2631,36 @@
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7,
+   "dependants": 9,
    "tests": 1
+  },
+  {
+   "file": "lib/drive.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp-skills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/seo-audit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 3
   },
   {
    "file": "lib/paid-access.js",
@@ -2628,39 +2670,11 @@
    "tests": 0
   },
   {
-   "file": "lib/drive.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/mcp-skills.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/seo-audit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
    "dependants": 6,
    "tests": 1
-  },
-  {
-   "file": "lib/mcp.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 3
   },
   {
    "file": "lib/watch-along.js",
@@ -2794,6 +2808,27 @@
    "direct": 0,
    "dependants": 2,
    "tests": 0
+  },
+  {
+   "file": "lib/a2a.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/agent-answer.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/agent-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/approval-gate.js",
@@ -3185,7 +3220,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/epub-edit.js",
@@ -3294,6 +3329,13 @@
   },
   {
    "file": "lib/ledger.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/loop-share.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3566,6 +3608,13 @@
    "tests": 2
   },
   {
+   "file": "lib/verse-shell.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/will-schema.js",
    "skills": 0,
    "direct": 0,
@@ -3595,12 +3644,30 @@
    ],
    "importedBy": []
   },
+  "functions/api/a2a.js": {
+   "imports": [
+    "lib/a2a.js",
+    "functions/api/answer.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/actions.js": {
    "imports": [
     "lib/guard.js",
     "lib/actions.js",
     "lib/memory-scope.js",
     "lib/scene-advance.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/agent.js": {
+   "imports": [
+    "lib/agent-core.js",
+    "lib/agent-answer.js",
+    "lib/daily-cap.js",
+    "lib/models.js",
+    "lib/shortfall.js",
+    "lib/answer-free.js"
    ],
    "importedBy": []
   },
@@ -3643,9 +3710,11 @@
     "lib/answer-edge.js",
     "lib/note-ask.js",
     "lib/telemetry.js",
+    "lib/answer-free.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/local.js",
@@ -3909,6 +3978,12 @@
     "functions/films/rss.js"
    ]
   },
+  "functions/api/free.js": {
+   "imports": [
+    "lib/free-router.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/gallery.js": {
    "imports": [
     "lib/guard.js",
@@ -4057,6 +4132,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -4678,6 +4754,14 @@
     "skills/accessibility-modes.js"
    ]
   },
+  "lib/a2a.js": {
+   "imports": [
+    "lib/mcp.js"
+   ],
+   "importedBy": [
+    "functions/api/a2a.js"
+   ]
+  },
   "lib/about-skill.js": {
    "imports": [
     "skills/guide.js"
@@ -4736,6 +4820,20 @@
     "skills/dates.js"
    ]
   },
+  "lib/agent-answer.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/agent.js"
+   ]
+  },
+  "lib/agent-core.js": {
+   "imports": [
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/agent.js"
+   ]
+  },
   "lib/ai-check.js": {
    "imports": [
     "lib/photo-edit.js"
@@ -4753,6 +4851,7 @@
     "lib/store.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -4796,6 +4895,45 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/answer-free.js": {
+   "imports": [
+    "bots/kit.js",
+    "bots/families.js",
+    "lib/free-router.js"
+   ],
+   "importedBy": [
+    "functions/api/agent.js",
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -4830,6 +4968,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -4966,6 +5105,7 @@
     "lib/wiki-look.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/clip.js",
@@ -5119,10 +5259,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -5184,6 +5326,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -5229,6 +5372,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/automations-run.js",
     "lib/built-detail.js",
     "lib/clef.js",
@@ -5322,6 +5466,7 @@
     "skills/status.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -5433,6 +5578,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6065,6 +6211,7 @@
     "lib/measure-ask.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6152,6 +6299,7 @@
     "skills/rally.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6297,6 +6445,7 @@
     "lib/card-frame.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -6353,10 +6502,12 @@
     "skills/wheel.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
@@ -6415,6 +6566,7 @@
     "lib/void-seal.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6478,6 +6630,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -6561,6 +6714,7 @@
     "lib/answer-honesty.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -6597,6 +6751,7 @@
     "functions/api/bench.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -6632,6 +6787,7 @@
     "lib/review-api.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6666,6 +6822,7 @@
     "functions/films/rss.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
@@ -6690,10 +6847,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
     "lib/wordcount.js",
@@ -6729,6 +6888,7 @@
     "skills/music.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6814,10 +6974,12 @@
     "skills/swaps.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -6847,6 +7009,7 @@
     "lib/correction-heat.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -6914,10 +7077,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -6936,10 +7101,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -6960,17 +7127,21 @@
   "lib/daily-cap.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/coder.js",
     "functions/api/daily-art.js",
     "functions/api/rapvoice.js",
     "functions/api/report.js",
-    "functions/api/sing.js"
+    "functions/api/sing.js",
+    "lib/free-router.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/free.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -6987,6 +7158,7 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "lib/answer-free.js",
     "lib/bench-asks.js"
    ]
   },
@@ -7071,6 +7243,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -7107,10 +7280,12 @@
     "lib/mcp.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ]
   },
@@ -7132,6 +7307,7 @@
     "lib/router.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -7188,10 +7364,12 @@
     "skills/eclipse.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -7700,9 +7878,49 @@
     "functions/api/daily-art.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/free-router.js": {
+   "imports": [
+    "lib/daily-cap.js",
+    "lib/shortfall.js"
+   ],
+   "importedBy": [
+    "functions/api/free.js",
+    "lib/answer-free.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/agent.js",
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7899,6 +8117,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
     "functions/api/crew.js",
@@ -7947,6 +8166,7 @@
     "skills/mini/book.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8060,6 +8280,7 @@
     "skills/showcase.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8109,10 +8330,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -8221,6 +8444,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8370,6 +8594,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8458,6 +8683,7 @@
     "lib/image-gen.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/daily-art.js",
     "functions/api/local.js",
@@ -8563,6 +8789,7 @@
     "skills/void-breaker.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8631,6 +8858,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8787,10 +9015,12 @@
     "skills/tictactoe.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/arena.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
@@ -8825,16 +9055,22 @@
     "skills/local-stations.js"
    ]
   },
+  "lib/loop-share.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/markdown.js": {
    "imports": [],
    "importedBy": [
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -8859,6 +9095,7 @@
     "functions/api/markets.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8896,6 +9133,7 @@
     "skills/stocks.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -8950,10 +9188,12 @@
     "lib/skill-compose.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ]
   },
@@ -8974,10 +9214,12 @@
     "lib/mcp.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ]
   },
@@ -8997,9 +9239,11 @@
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/team/mcp.js"
    ]
   },
@@ -9015,6 +9259,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9082,6 +9327,7 @@
     "functions/api/studies.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9127,6 +9373,7 @@
     "functions/api/memory.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9161,6 +9408,7 @@
     "skills/merge.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -9312,6 +9560,7 @@
   "lib/models.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/appraise.js",
     "functions/api/bench.js",
@@ -9333,6 +9582,7 @@
     "functions/api/voice-reply.js",
     "functions/api/watchalong.js",
     "functions/api/will.js",
+    "lib/agent-core.js",
     "lib/approval-core.js",
     "lib/clef.js",
     "lib/review-api.js",
@@ -9341,6 +9591,7 @@
     "lib/studio.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/clip.js",
@@ -9368,6 +9619,7 @@
     "functions/films/rss.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/approval-gate.js",
     "lib/bench-asks.js",
     "lib/mcp.js",
@@ -9467,6 +9719,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9507,6 +9760,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9549,6 +9803,7 @@
     "lib/news-report.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -9582,6 +9837,7 @@
     "lib/card-frame.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9637,6 +9893,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -9699,6 +9956,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -9751,10 +10009,12 @@
     "skills/qr-scan.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -9838,6 +10098,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -9878,6 +10139,7 @@
    "reachedBy": [
     "functions/[handle].js",
     "functions/api/_middleware.js",
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
@@ -10003,6 +10265,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
@@ -10146,6 +10409,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10178,6 +10442,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10212,6 +10477,7 @@
     "lib/store.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -10286,6 +10552,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10386,6 +10653,7 @@
     "skills/intent.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10453,6 +10721,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10502,6 +10771,7 @@
     "lib/jobs-core.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10558,6 +10828,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -10656,6 +10927,7 @@
     "skills/proposal.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -10715,10 +10987,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -10738,10 +11012,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
@@ -10961,6 +11237,7 @@
     "skills/rap.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -11030,6 +11307,7 @@
     "skills/showcase.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -11143,6 +11421,7 @@
     "skills/repo.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -11178,6 +11457,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -11212,6 +11492,7 @@
     "lib/report-run.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -11272,6 +11553,7 @@
     "lib/paid-access.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
@@ -11302,6 +11584,7 @@
     "functions/films/rss.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ]
   },
@@ -11327,6 +11610,7 @@
     "lib/clef.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11402,6 +11686,7 @@
     "lib/tome.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -11543,6 +11828,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -11588,6 +11874,7 @@
     "lib/bench-asks.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11660,10 +11947,12 @@
     "lib/mcp.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ]
   },
@@ -11687,11 +11976,13 @@
     "skills/is-it.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/is-it/[what].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -11707,11 +11998,13 @@
     "lib/share-client.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/is-it/[what].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -11762,6 +12055,7 @@
   "lib/shortfall.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/coder.js",
     "functions/api/earnings.js",
@@ -11773,13 +12067,16 @@
     "functions/api/sing.js",
     "functions/api/tower-self.js",
     "functions/api/voice-reply.js",
-    "functions/api/will.js"
+    "functions/api/will.js",
+    "lib/free-router.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/free.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11796,6 +12093,7 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "lib/answer-free.js",
     "lib/bench-asks.js"
    ]
   },
@@ -11806,10 +12104,12 @@
     "skills/meteors.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js",
     "skills/time.js"
    ]
@@ -11841,6 +12141,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -11914,10 +12215,12 @@
     "skills/sky-card-rules.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/skyfacts.js",
     "lib/sun-day.js",
@@ -11947,10 +12250,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -11972,10 +12277,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -11989,6 +12296,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -12272,10 +12580,12 @@
     "skills/sky-world.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -12297,6 +12607,7 @@
     "skills/state.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -12437,6 +12748,7 @@
     "lib/store.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -12480,6 +12792,7 @@
     "skills/store.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -12517,6 +12830,7 @@
     "lib/rap.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -12587,6 +12901,7 @@
     "lib/card-frame.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -12779,6 +13094,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
@@ -12841,6 +13157,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -12907,10 +13224,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -13155,10 +13474,12 @@
     "skills/translate.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -13261,6 +13582,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
@@ -13324,6 +13646,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/automation-fix.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
@@ -13356,6 +13679,10 @@
     "skills/routine.js",
     "skills/work.js"
    ]
+  },
+  "lib/verse-shell.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/video-gen.js": {
    "imports": [
@@ -13431,6 +13758,7 @@
     "lib/self-context.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -13483,6 +13811,7 @@
     "lib/paid-access.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
@@ -13619,6 +13948,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -13681,6 +14011,7 @@
    ],
    "reachedBy": [
     "functions/[handle].js",
+    "functions/api/a2a.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
@@ -13762,10 +14093,12 @@
     "skills/weather.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -13802,6 +14135,7 @@
     "skills/growth.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -13864,10 +14198,12 @@
     "skills/writing-aids.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/team-mcp.js"
    ]
   },
@@ -13877,10 +14213,12 @@
     "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -14393,10 +14731,12 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -14465,10 +14805,12 @@
     "lib/mcp-skills.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -14559,10 +14901,12 @@
     "lib/mcp-skills.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -14635,10 +14979,12 @@
     "skills/place.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -14731,10 +15077,12 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -15217,6 +15565,7 @@
     "skills/walker.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -15276,6 +15625,7 @@
     "skills/own-parts.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -15541,10 +15891,12 @@
     "skills/translate.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
@@ -15557,10 +15909,12 @@
     "lib/mcp-skills.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -17515,10 +17869,12 @@
     "skills/recipe.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -17550,6 +17906,7 @@
     "functions/api/answer.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -17786,10 +18143,12 @@
     "skills/languages.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -17835,10 +18194,12 @@
     "skills/password.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -18023,10 +18384,12 @@
     "lib/mcp-skills.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
@@ -18046,10 +18409,12 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/a2a.js",
     "lib/mcp.js",
     "lib/sun-day.js",
     "lib/team-mcp.js"

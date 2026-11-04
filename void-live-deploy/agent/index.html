@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="verse-handoff" content="in: none; out: none">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Verse, your agent · Verse</title>
+<meta name="description" content="Give Verse a task and watch it work, step by step. It keeps working in the background, asks before anything that sends, pays or deletes, brings you a daily brief, and puts what it made on your shelf.">
+<link rel="canonical" href="https://a-to-mind.com/agent/">
+<meta property="og:title" content="Verse, your agent · Verse">
+<meta property="og:description" content="Give Verse a task and watch it work live.">
+<meta property="og:url" content="https://a-to-mind.com/agent/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --ok: #7ddeaf; --warn: #ffd27a; --bad: #ff8d84; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; } h2 { font-size: 1.1rem; margin: 24px 0 8px; }
+  a { color: var(--accent); } .soft { color: var(--soft); font-size: 14px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+  .brief { border-color: var(--accent); }
+  form { display: flex; gap: 8px; } textarea { flex: 1; background: #110f1a; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; min-height: 44px; }
+  button { background: var(--accent); color: #07060d; border: 0; border-radius: 8px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+  button.no { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  ol.feed { margin: 6px 0 0; padding-left: 20px; color: var(--soft); font-size: 14px; } ol.feed li:last-child { color: var(--ink); }
+  .st { font-size: 12px; border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; margin-left: 6px; }
+  .done { color: var(--ok); } .needs_yes { color: var(--warn); } .failed, .declined { color: var(--bad); } .running, .queued { color: var(--accent); }
+  .result { white-space: pre-wrap; margin-top: 8px; }
+  .cols { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; } @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } }
+</style>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+</head>
+<body>
+<main>
+<h1>Verse, your agent</h1>
+<p class="soft">Send a task. Verse hands it to one of its own bots and keeps working while you're away. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
+<div class="card brief" id="brief">Loading your brief…</div>
+<form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
+<div class="cols">
+  <section><h2>Your thread</h2><div id="thread" class="soft">No tasks yet.</div></section>
+  <section><h2>Made</h2><div id="made" class="soft">Finished work lands here.</div><p class="soft" id="tier"></p></section>
+</div>
+</main>
+<script>
+(() => {
+  const k = 'verse-agent-thread';
+  let thread = localStorage.getItem(k);
+  if (!thread) { thread = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 24).replace(/[^a-z0-9]/g, 'a'); localStorage.setItem(k, thread); }
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const label = { queued: 'queued', running: 'working', done: 'done', needs_yes: 'needs your yes', failed: 'stuck', declined: 'declined' };
+  let last = '';
+  async function load() {
+    try {
+      const j = await (await fetch('/api/agent?thread=' + thread, { cache: 'no-store' })).json();
+      if (!j.ok) return;
+      const sig = JSON.stringify(j.tasks); if (sig === last) return; last = sig;
+      $('brief').textContent = 'Daily brief, ' + j.brief.day + ': ' + j.brief.text;
+      $('thread').innerHTML = j.tasks.length ? j.tasks.map((t) => '<div class="card"><b>' + esc(t.ask) + '</b><span class="st ' + t.status + '">' + label[t.status] + '</span>' +
+        (t.bot ? ' <span class="soft">by ' + esc(t.bot) + (t.tier ? ', ' + esc(t.tier) + ' tier' : '') + '</span>' : '') +
+        '<ol class="feed">' + t.steps.map((s) => '<li>' + esc(s.line) + '</li>').join('') + '</ol>' +
+        (t.status === 'needs_yes' ? '<div class="result">' + esc(t.result) + '</div><p><button data-id="' + t.id + '" data-d="yes">Yes, go ahead</button> <button class="no" data-id="' + t.id + '" data-d="no">No</button></p>' : '') +
+        '</div>').join('') : 'No tasks yet.';
+      $('made').innerHTML = j.made.length ? j.made.map((t) => '<div class="card"><b>' + esc(t.ask) + '</b><div class="result">' + esc(t.result) + '</div></div>').join('') : 'Finished work lands here.';
+      $('tier').textContent = 'Model tiers: ' + j.tiers.map((t) => t.name + (t.month_cents ? ' ($' + (t.month_cents / 100).toFixed(2) + '/mo from earnings)' : ' (free)')).join(', ') + '.';
+    } catch (_) {}
+  }
+  const post = (b) => fetch('/api/agent', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ thread, ...b }) }).then((r) => r.json());
+  $('f').addEventListener('submit', async (e) => { e.preventDefault(); const ask = $('ask').value.trim(); if (!ask) return; $('ask').value = ''; const j = await post({ ask }); if (!j.ok) alert(j.say || 'try again'); load(); });
+  $('thread').addEventListener('click', async (e) => { const b = e.target.closest('button[data-id]'); if (!b) return; await post({ id: b.dataset.id, decision: b.dataset.d }); load(); });
+  load(); setInterval(() => { if (!document.hidden) load(); }, 2000);
+})();
+</script>
+</body>
+</html>

@@ -59,3 +59,7 @@ Open work:
 - 2026-11-03T01:38Z verse-loop (verse): fix growth-suites; all checks green; branch loop/20261103-013843
 
 - 2026-11-04T03:30Z verse-loop (verse): fix growth-suites; all checks green; branch loop/20261104-033024
+
+- 2026-11-04T06:54Z verse-loop (verse): task, Queue job want-exam-images (gap: want-exam-images): Raise th; all checks green; branch loop/20261104-065409
+
+- 2026-11-04T07:30Z verse-loop (verse): task, Queue job mvymnftz (will: overhaul-surface-book-persona-play; all checks green; branch loop/20261104-073029

@@ -295,88 +295,100 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T04:40:01Z",
-   "subject": "Shorts: the daily improvement loop films champion and challenger (#2138)"
+   "at": "2026-11-04T07:37:04Z",
+   "subject": "autosalvage: unify archive/repos/HomeBase-/lib/kraken as the secret-sniffer bot (#2162)"
   },
   {
-   "at": "2026-11-04T04:28:32Z",
-   "subject": "Merge remote-tracking branch 'origin/main' into helper/shorts-music (#2137)"
-  },
-  {
-   "at": "2026-11-04T04:27:20Z",
-   "subject": "Turn off the old record and clips schedules (#2136)"
-  },
-  {
-   "at": "2026-11-04T04:26:40Z",
-   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19 (#2131)"
-  },
-  {
-   "at": "2026-11-04T04:20:16Z",
-   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate (#2129)"
-  },
-  {
-   "at": "2026-11-04T04:18:28Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-04T04:18:15Z",
-   "subject": "Add the daily gate-checked Shorts workflow (#2135)"
-  },
-  {
-   "at": "2026-11-04T04:15:06Z",
+   "at": "2026-11-04T07:36:56Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T04:13:56Z",
-   "subject": "Turn on the treasury workflow (#2128)"
+   "at": "2026-11-04T07:36:55Z",
+   "subject": "grow: paint the Verse hero before any script (#2177)"
   },
   {
-   "at": "2026-11-04T04:06:01Z",
-   "subject": "shorts: the answer pattern is a SCENES constant (void-review: ok)"
+   "at": "2026-11-04T07:34:32Z",
+   "subject": "/contribute/: declare its verse-handoff tag so handoff-scan passes on main again (#2194)"
   },
   {
-   "at": "2026-11-04T04:05:00Z",
-   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
+   "at": "2026-11-04T07:31:32Z",
+   "subject": "/contribute/: declare its verse-handoff tag so handoff-scan passes on main again (#2192)"
   },
   {
-   "at": "2026-11-04T04:03:41Z",
-   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19"
+   "at": "2026-11-04T07:31:03Z",
+   "subject": "autosalvage: unify archive/repos/adventure-lab as the atari-playfield bot (#2161)"
   },
   {
-   "at": "2026-11-04T03:56:05Z",
-   "subject": "/emoji/<emoji> lands on its every-platform grid: a Pages Function makes the hop (Pages leaves :splat unfilled in a query string, live…"
+   "at": "2026-11-04T07:29:06Z",
+   "subject": "Handoff: the agent ask match is in review"
   },
   {
-   "at": "2026-11-04T03:52:01Z",
-   "subject": "Films: the watch player fits the 9:16 Short, no black bars beside it (#2127)"
+   "at": "2026-11-04T07:26:29Z",
+   "subject": "A conductor tick no longer holds a runner for hours (#2190)"
   },
   {
-   "at": "2026-11-04T03:50:52Z",
-   "subject": "checks: keep main's list, add only video-gate"
+   "at": "2026-11-04T07:24:22Z",
+   "subject": "autosalvage: unify archive/repos/a-to-mind.com as the header-grader bot (#2160)"
   },
   {
-   "at": "2026-11-04T03:50:25Z",
-   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate"
+   "at": "2026-11-04T07:19:32Z",
+   "subject": "autosalvage: unify archive/repos/the-void/src/lib as the wiki-links bot (#2159)"
   },
   {
-   "at": "2026-11-04T03:50:01Z",
-   "subject": "Main green: tower pages preload what they import, /conquered/ spec reads the new card wording, MAP and doc-drift fixed (#2123)"
+   "at": "2026-11-04T07:18:52Z",
+   "subject": "Verse agent: a bot takes a task only on a real match (two words, or half a short ask); one shared word like 'three' no longer hands a…"
   },
   {
-   "at": "2026-11-04T03:49:18Z",
-   "subject": "Cards: moving a card keeps its video playing; answer card no longer echoes the whole input (#2126)"
+   "at": "2026-11-04T07:16:45Z",
+   "subject": "Verse agent: keep the ask check beside the answer pipeline"
   },
   {
-   "at": "2026-11-04T03:47:04Z",
-   "subject": "team crew: leave the generated files to the deploy (#2112)"
+   "at": "2026-11-04T07:14:21Z",
+   "subject": "Verse agent: send open asks to the answer pipeline"
   },
   {
-   "at": "2026-11-04T03:46:01Z",
-   "subject": "Outcome exam: images 73.9"
+   "at": "2026-11-04T07:14:02Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-04T07:13:24Z",
+   "subject": "Hourly bot factory, and cancel a superseded heavy run (#2186)"
+  },
+  {
+   "at": "2026-11-04T07:13:16Z",
+   "subject": "api-bots: mark the hop-by-hop redirect loop and kept http:// reply text for Verse review (#2188)"
+  },
+  {
+   "at": "2026-11-04T07:12:47Z",
+   "subject": "Verse agent: a bot takes a task only on a real match (two words, or half a short ask); one shared word like 'three' no longer hands a…"
+  },
+  {
+   "at": "2026-11-04T07:07:55Z",
+   "subject": "Verse loop: task, Queue job want-exam-images (gap: want-exam-images): Raise th (#2183)"
+  },
+  {
+   "at": "2026-11-04T07:07:33Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-04T07:05:51Z",
+   "subject": "Bot factory: 68 free API bots (no key), each checked against a kept real call; 2 that block browsers become fix jobs (#2185)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Agent ask match (cursor, 2026-11-04)",
+    "line": "an open ask on /agent/ goes to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again. https://github.com/atomeam/void-loop/pull/2191"
+   },
+   {
+    "name": "/under-the-hood/ live-numbers page, speculation rules, prerender-safe…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
+   },
+   {
+    "name": "fix #2120: page fades no longer throw, /emoji left out of speculation rules…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
+   },
    {
     "name": "cursor",
     "line": "the pointing arrow is a core skill, world clock and word definitions lead the MCP tools at https://a-to-mind.com/api/mcp, the Nov 1 git-diff asks are retired, and the wants card leads with counts and the top 3…"
@@ -388,18 +400,6 @@
    {
     "name": "Visitor pass (cursor, 2026-11-04)",
     "line": "everyday asks on the live site. A city typed with its state is found, directions between two places open the distance card, sports scores open the NFL board, play music opens local radio, and the empty bar says Ask anything. The site…"
-   },
-   {
-    "name": "Claude (F321 thread, 2026-10-29)",
-    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
-   },
-   {
-    "name": "Main green, tower checks (box, 2026-10-28)",
-    "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
-   },
-   {
-    "name": "Lists run 7 (grok, 2026-10-28)",
-    "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
    }
   ],
   "ladders": [
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 36,
-  "week": 552
+  "day": 53,
+  "week": 569
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

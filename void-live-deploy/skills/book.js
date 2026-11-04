@@ -72,5 +72,6 @@ export default {
   examples: ['who wrote pride and prejudice', 'who is the author of dune', 'books by octavia butler', 'book called dune', 'isbn 9780441172719', 'find the book the left hand of darkness', 'books like dune', 'book recommendations like the hobbit'],
   nearMisses: ['what is a book', 'book a table', 'how to write a book', 'map of a library', 'who wrote this song', 'who wrote the declaration of independence'],
   match(lower, text) { return !!bookOf(text); },
-  run
+  async run(text, api) { return await run(text, api); }
 };
+

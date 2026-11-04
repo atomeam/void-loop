@@ -198,4 +198,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-        run: gh workflow run automerge.yml --repo "$REPO" --ref main
+          PR: ${{ inputs.pr }}
+        run: gh workflow run automerge.yml --repo "$REPO" --ref main ${PR:+-f pr=$PR}
