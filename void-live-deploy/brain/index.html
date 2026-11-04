@@ -65,6 +65,10 @@
   #card summary, #saysBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
   #saysBox ul, #didBox ul, #watchBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #saysBox li, #didBox li, #watchBox li { margin: 3px 0; }
   #didBox summary, #watchBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
+  #crewBets, #crewWants { margin: 10px 0; } #crewBets summary, #crewWants summary { cursor: pointer; font-weight: 600; min-height: 36px; }
+  #crewBets ul, #crewWants ul { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 8px; font-size: 14px; }
+  #crewBets .wst, #crewWants .wst { font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid rgba(127,127,127,.4); }
+  #crewBets .wsub, #crewBets .wsrc, #crewWants .wsub, #crewWants .wsrc { display: block; font-size: 12px; opacity: .75; }
   #dreamsBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
   #dreamsBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #dreamsBox li { margin: 6px 0; } #dreamsBox .why, #dreamsBox .src { color: var(--soft); } #dreamsBox .src { display: block; font-size: 12px; }
   #didBox .undo, #watchBox .undo, #dreamsBox .undo { font: inherit; font-size: 12px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; min-height: 30px; margin-left: 6px; cursor: pointer; }
@@ -155,6 +159,7 @@
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/brain/knows.js">
 <link rel="modulepreload" href="/lib/brain-knows.js">
+<link rel="modulepreload" href="/team/wants.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -174,6 +179,8 @@
   <form id="kForm" role="search"><label class="vh" for="kFind">Search what Verse knows</label><input id="kFind" type="search" maxlength="120" autocomplete="off" placeholder="Search: pdf, baggage, convert, weather…"><a class="tb" id="kAsk" href="/">Ask Verse</a></form>
   <div id="kChips" role="toolbar" aria-label="Kinds"></div>
   <p id="kSum" aria-live="polite"></p><p id="kWill"></p><p id="kNote"></p>
+  <details id="crewBets" data-crew-bets open><summary>Its priorities: this week's bets, ranked by impact ÷ effort × confidence</summary><p class="note" data-sum>Reading the ranking…</p><ul data-list></ul></details>
+  <details id="crewWants" data-crew-wants open><summary>Its own wants, live: each cites its evidence and closes only when its number improves</summary><p class="note" data-sum>Reading the queue…</p><ul data-list></ul><p class="note">Filed by Verse's crew from its exam, its Tower, its pages, its missed asks and its sales, as jobs on <a href="/team/">its team board</a>.</p></details>
   <ul id="kList"></ul>
   <button type="button" class="tb" id="kMore" hidden>Show more</button>
 </section>
@@ -212,6 +219,7 @@
   // the page is whole before this runs. Knows (what Verse knows, searchable) is the first view; the simulation, /brain/app.js,
   // /brain/map.js and /brain/dreams.js, loads only on "Watch it think", ?view=watch or ?t= (brain/knows.js)
   import '/brain/knows.js';
+  import '/team/wants.js';
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

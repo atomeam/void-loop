@@ -16,6 +16,7 @@
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
 //                                       (the owner's post at the top of #work is a job on the build queue, feature:team-<id>, handed out in its thread)
+//     file {thread} | {body}            a member: its own top-level #work post as a job (ask-<id>, closed by its pull request; agents: a day cap, deduped)
 //     queue                             the owner: its #work posts that never became a job go on the build queue now
 //     react {id, emoji}                 add or take back a reaction (the closed list in lib/team.js EMOJI)
 //     here {auto?}                      an agent says it is here; when it is idle (and auto is not false) Verse hands it its next job
@@ -55,6 +56,7 @@ import { ownerOk } from '../../lib/guard.js';
 import { session, brake } from '../../lib/void-me.js';
 import { findMemberSale } from './gumroad.js';
 import { redact } from '../../lib/automation-fix.js';
+import * as P from '../../lib/team-priorities.js';
 import * as T from '../../lib/team.js';
 import { briefOf } from '../../lib/job-guide.js';
 import * as Dream from '../../lib/brain-dream.js';
@@ -83,7 +85,8 @@ const TABLES = [
 // push (lib/team.js HOOK): an agent's https address, the secret Verse signs each push with, failures in a row, when to try next, last answer,
 // when the address was last set
 // role: 'agent' (the owner invited it) or 'member' (it bought from the store, lib/team.js MEMBER_PRODUCTS); sale: the keyed hash of that purchase
-const COLUMNS = ["role TEXT NOT NULL DEFAULT 'agent'", "sale TEXT NOT NULL DEFAULT ''", "hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
+// crew (lib/team-crew.js): a house member Verse runs on its own clock, what it last did (public, one line) and when
+const COLUMNS = ["role TEXT NOT NULL DEFAULT 'agent'", "sale TEXT NOT NULL DEFAULT ''", 'crew INTEGER NOT NULL DEFAULT 0', "did TEXT NOT NULL DEFAULT ''", 'did_at INTEGER NOT NULL DEFAULT 0', "hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
 const ready = new WeakSet(); // once per database binding in this isolate
 async function tables(env, now) {
   if (ready.has(env.DB)) return;
@@ -212,6 +215,14 @@ async function write(env, { c, by, body, thread = 0, job = null, now }) {
   return r.id;
 }
 
+// Verse's crew (lib/team-crew-run.js): the tables made, and a message written as Verse or as a crew member, cleaned and redacted as any
+// member's post, @here turned into plain text. Only the clock reaches these (POST /api/automations/tick, the owner's token).
+export const crewReady = (env, now = Date.now()) => tables(env, now);
+export async function crewWrite(env, { c, by, body, thread = 0, job = null, now = Date.now() }) {
+  const text = T.hideSecrets(T.cleanBody(redact(String(body || '')))).replace(/@(here|everyone|channel)\b/gi, '$1');
+  if (!text) return 0;
+  return write(env, { c, by, body: text, thread: Number(thread) || 0, job, now });
+}
 // Verse itself says something in a channel of its team chat: the automations' team.post step and a watch with tell 'team'
 // (lib/automations-run.js; owner, 2026-11-03: "we make our own zapier ... lets start using all our tools"). Only the owner's rules reach
 // it (a rule is owner-only to save, and the runner checks the scope). The body is cleaned and redacted as a member's post is, with a
@@ -240,17 +251,34 @@ async function threadId(env, v, me) {
 export async function handOut(env, a, now, only = null) {
   if (a.job) return { job: a.job, thread: a.thread, already: true };
   const skip = only ? [] : String(a.skip || '').split(' ').filter(Boolean); // a job picked on the board is taken even if this agent gave it back once
-  for (const j of T.rank(await queued(env), now, skip).filter((x) => !only || x.id === only).slice(0, 8)) {
+  const ranked = T.rank(await queued(env), now, skip);
+  for (const j of only ? ranked.filter((x) => x.id === only).slice(0, 1) : await ordered(env, ranked, now)) { // Verse's own order and WIP cap, unless a job was picked on the board
     let took = false;
     try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
-    const asked = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 AND channel = 'work' AND by = 'owner'").bind(j.id).first(); // void-review: ok (runs once: the return below ends the loop)
+    const asked = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 AND channel = 'work' AND by <> 'verse'").bind(j.id).first(); // void-review: ok (runs once: the return below ends the loop)
     const thread = asked ? asked.id : await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
-    if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's own post is the job's thread
+    if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's (or the filing member's) own post is the job's thread
     await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run(); // void-review: ok (runs once: the return below ends the loop)
     return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, brief: briefOf(j, T.kindOf(j.target)), thread };
   }
   return null;
+}
+// Verse's own order (lib/team-priorities.js, kept by lib/team-crew-run.js prioritizeRun): the owner's pins first, then Verse's ranking, the
+// owner's drops last; and the WIP cap (3 build lanes, 1 research lane) between the agents. With no ranking yet, the queue's own rank stands.
+async function ordered(env, ranked, now) {
+  let pr = null, ov = null;
+  try {
+    const { results } = await env.DB.prepare("SELECT k, v FROM void_team_crew WHERE k IN ('priorities', 'override')").all();
+    for (const r of results) { const v = JSON.parse(r.v); if (r.k === 'priorities') pr = v; else ov = v; }
+  } catch (_) { return ranked.slice(0, 8); }
+  if (!pr) return ranked.slice(0, 8);
+  const live = ov && now - (ov.at || 0) < P.OVERRIDE_MS ? ov : { pin: [], drop: [] }, at = new Map(pr.order.map((id, i) => [id, i]));
+  const pos = (j) => (live.pin.includes(j.id) ? -100 + live.pin.indexOf(j.id) : live.drop.includes(j.id) ? 1e6 : at.has(j.id) ? at.get(j.id) : 1e5);
+  const list = ranked.map((j, i) => ({ j, k: pos(j), i })).sort((x, y) => x.k - y.k || x.i - y.i).map((x) => x.j);
+  let building = [];
+  try { building = (await env.DB.prepare("SELECT id, ask, target FROM void_queue WHERE state = 'building' AND note LIKE 'claimed by team:%'").all()).results || []; } catch (_) { building = []; }
+  return list.filter((j) => live.pin.includes(j.id) || P.wipAllows(j, building, pr.lanes || {})).slice(0, 8);
 }
 // the owner's post at the top of #work is a job: it goes on the build queue as a feature, and Verse hands it out in that same thread
 async function enqueue(env, msg, body, now, note = 'asked in #work by the owner') {
@@ -262,6 +290,35 @@ async function enqueue(env, msg, body, now, note = 'asked in #work by the owner'
   await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:team-' + msg, 'queued', note, at, at).run();
   await env.DB.prepare('UPDATE void_team_msgs SET job = ? WHERE id = ?').bind(id, msg).run();
   return id;
+}
+// a member files its own #work post as a job (2026-11-03: agents' and bots' #work posts never became jobs, only the owner's did): ask-<id>, a
+// feature, ranked as any queued job (the owner's asks still go first) and closed only by the pull request that does it. An agent files its
+// own top-level #work posts only, at most RATES.filesDay a day and RATES.filesOpen open between all agents; the same post or the same ask
+// twice is the job already there. -> { job } or { status, say }
+async function fileJob(env, me, msg, now) {
+  const m = await env.DB.prepare("SELECT id, by, body, job FROM void_team_msgs WHERE id = ? AND channel = 'work' AND thread = 0").bind(msg).first();
+  if (!m) return { status: 404, say: 'no such post at the top of #work' };
+  if (m.by === 'verse') return { status: 403, say: 'Verse files its own posts' };
+  if (me.kind === 'agent' && m.by !== me.agent.id) return { status: 403, say: 'an agent files its own #work posts; ask its author or the owner' };
+  if (m.job) return { status: 409, job: m.job, say: 'that post is job ' + m.job + ' already' };
+  const open = await env.DB.prepare("SELECT id, ask FROM void_queue WHERE state IN ('queued', 'building')").all().catch(() => null);
+  if (!open) return { status: 503, say: 'no build queue in this workspace' };
+  const key = T.askKey(T.clean(m.body, 1000)), twin = (open.results || []).find((j) => key && T.askKey(j.ask) === key);
+  if (twin) return { status: 409, job: twin.id, say: 'the same ask is job ' + twin.id + ' already' };
+  if (me.kind === 'agent') {
+    const mine = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE id LIKE 'ask-%' AND note LIKE ? AND at > ?").bind('filed in #work by team:' + me.agent.name + ' %', new Date(now - DAY).toISOString()).first();
+    if (mine.n >= T.RATES.filesDay) return { status: 429, say: T.RATES.filesDay + ' jobs filed a day; this one waits' };
+    const all = (open.results || []).filter((j) => /^ask-\d+$/.test(j.id)).length;
+    if (all >= T.RATES.filesOpen) return { status: 429, say: T.RATES.filesOpen + ' filed jobs are open already; one has to close first' };
+  }
+  const id = 'ask-' + m.id, at = new Date(now).toISOString(), text = T.clean(m.body, 1000);
+  const ask = text.length > 200 ? text.slice(0, 160).trim() + ' … (the whole ask: #work thread ' + m.id + ')' : text;
+  const note = 'filed in #work by ' + (me.kind === 'owner' ? 'the owner' : 'team:' + me.agent.name) + ' · closes with the pull request that does it';
+  const r = await env.DB.prepare('INSERT OR IGNORE INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:' + id, 'queued', note, at, at).run();
+  if (r.meta.changes !== 1) return { status: 409, job: id, say: 'that post is job ' + id + ' already' };
+  await env.DB.prepare('UPDATE void_team_msgs SET job = ? WHERE id = ?').bind(id, m.id).run();
+  await write(env, { c: 'work', by: 'verse', body: 'On the build queue as a feature job (' + id + '). The next idle agent takes it here, in this thread; it closes with the pull request that does it.', thread: m.id, now });
+  return { job: id };
 }
 // a job goes back to the queue (given back, failed, or its agent went away); Verse says so in the job's thread
 async function giveBack(env, a, now, why, failed) {
@@ -432,7 +489,7 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     await handIdle(env, now); // before the count: the agents here take the jobs at the front of the queue
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
-    const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done }));
+    const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true, did: T.hideSecrets(a.did || ''), didAt: a.did_at || null } : {}) }));
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
@@ -540,6 +597,19 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       for (const m of results) { const q = await enqueue(env, m.id, m.body, now); if (!q || q === 'full') break; queued.push({ msg: m.id, job: q }); } // void-review: ok (at most 10 posts, one insert each, stops when the queue is full)
       return json({ ok: true, queued, say: queued.length ? queued.length + ' #work post' + (queued.length === 1 ? '' : 's') + ' put on the build queue' : 'every #work post of the owner is a job already' });
     }
+    case 'file': { // an agent's (or the owner's) own top-level #work post as a job: { thread: <its id> }, or { body } to post it and file it at once
+      if (member) return bad(403, 'a member proposes in #ideas ({"do":"propose"}); the owner makes it a job');
+      if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
+      let msg = parseInt(p.thread, 10) || 0;
+      if (!msg) {
+        const plain = T.cleanBody(redact(String(p.body || ''))), body = T.hideSecrets(plain); if (!body) return bad(400, 'file a post: { thread: <its id> } or { body }');
+        msg = await write(env, { c: 'work', by: byOf(me), body, thread: 0, now });
+      }
+      const f = await fileJob(env, me, msg, now);
+      if (!f.job || f.status) return json({ ok: false, say: f.say, ...(f.job ? { job: f.job } : {}), thread: msg }, f.status || 400);
+      await pushLater();
+      return json({ ok: true, job: f.job, thread: msg, say: 'filed: ' + f.job + ' is on the build queue' }, 201);
+    }
     case 'promote': { // the owner makes a proposal in #ideas a job: it goes on the build queue as the owner's ask, in that same thread
       if (me.kind !== 'owner') return bad(403, 'only the owner makes a proposal a job');
       const m = await env.DB.prepare("SELECT id, body, job FROM void_team_msgs WHERE id = ? AND thread = 0 AND channel = 'ideas'").bind(parseInt(p.id, 10) || 0).first();
@@ -584,7 +654,16 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       }
       if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
       const id = await write(env, { c, by: byOf(me), body, thread, now });
-      const queued = me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
+      // the owner overrides Verse's priorities with one message, in any channel: "priority: <job>", "drop: <job>" or "priority: reset"
+      const ov = me.kind === 'owner' && !thread ? P.overrideOf(body) : null;
+      if (ov) {
+        await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_team_crew (k TEXT PRIMARY KEY, v TEXT NOT NULL, at INTEGER NOT NULL)').run();
+        const old = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'override'").first().catch(() => null);
+        const next = P.mergeOverride(old ? JSON.parse(old.v) : null, ov, now);
+        for (const [k, v] of [['override', next], ['override-new', now]]) await env.DB.prepare('INSERT INTO void_team_crew (k, v, at) VALUES (?, ?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, at = excluded.at').bind(k, JSON.stringify(v), now).run(); // void-review: ok (two fixed keys)
+        await write(env, { c, by: 'verse', body: ov.reset ? 'Override cleared: my own ranking stands again.' : ov.pin ? 'Taken: ' + ov.pin + ' goes first, past the WIP cap, for a week or until you say "priority: reset". The pinned brief is re-ranked on my next run.' : 'Taken: ' + ov.drop + ' goes last for a week. The pinned brief is re-ranked on my next run.', thread: id, now });
+      }
+      const queued = !ov && me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
       if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
       if (queued && queued !== 'full') await pushLater(); // an agent with a push address gets it now
@@ -661,6 +740,6 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
       return json({ ok: true, next, say: next ? T.workSay(next) : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: join, member, invite, remove, channel, post, quick, propose, promote, react, hook, here, next, claim, done or rekey');
+    default: return bad(400, 'do: join, member, invite, remove, channel, post, file, quick, propose, promote, react, hook, here, next, claim, done or rekey');
   }
 }

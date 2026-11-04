@@ -30,7 +30,7 @@ function run(text, api) {
 
 export default {
   name: 'palindrome',
-  examples: ['is racecar a palindrome', 'palindrome check for a man a plan a canal panama', 'check if kayak is a palindrome'],
+  examples: ['palindrome check for a man a plan a canal panama', 'check if kayak is a palindrome'],
   nearMisses: ['what is a palindrome', 'palindrome examples', 'make a palindrome'],
   match(lower, text) { return isPalindromeAsk(text); },
   run,

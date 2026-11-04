@@ -8,7 +8,8 @@ reserve and spend amounts never land here: they stay behind owner-only APIs.
 
 Store sales and tips through Gumroad (each ping recorded in D1 `void_sales`), and Stripe once it is turned on. The allocator
 reads net earnings (after refunds and lost disputes) from the existing owner-only `GET /api/earnings`, in memory only. There
-is no second income ledger, and no money figure is shown on the site.
+is no second income ledger. Since 2026-11-03 the owner made Verse's treasury public: `/treasury/` shows aggregate totals and
+every allocation (never a buyer or a sale), see `docs/treasury.md`.
 
 ## How it is split (lib/reinvest.js, daily via .github/workflows/reinvest.yml)
 

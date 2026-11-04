@@ -11,6 +11,7 @@ import { OWNER_ACCOUNTS, ACCOUNT_ID_RE } from './owner-accounts.js';
 export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
 export const LIMITS = {
+  treasury: { rpm: 30, body: 2000 }, // Verse's treasury (functions/api/treasury.js): public reads, owner-only small JSON actions
   mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   answer: { rpm: 30, body: 20000 },
   // Versus by itself asks Verse's own model here (functions/api/tower-self.js, owner only): up to 24,000 characters of site text and a 4,000-character
@@ -88,6 +89,7 @@ export const LIMITS = {
   weather: { rpm: 30, body: 0 }, // the weather page's forecast for a place (functions/api/weather.js): GET, edge-cached ten minutes, 10 fresh lookups a minute, no model, no KV
   autopilot: { rpm: 20, body: 0 }, // what Verse did on its own (functions/api/autopilot.js): GET, edge-cached ten minutes, reads GitHub and the conductor's record, no model, no write
   status: { rpm: 30, body: 0 }, // Verse's uptime from its own hourly guards (functions/api/status.js): GET, no input, edge-cached a minute, one fixed D1 read, yes/no and times out
+  crew: { rpm: 60, body: 0 }, // Verse's crew, wants and priorities (functions/api/crew.js): GET, no input, edge-cached a minute, a few fixed D1 reads
   repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   filmfind: { rpm: 20, body: 0 }, // film discovery as JSON (functions/api/filmfind.js): GET only, one fixed host (iTunes), at most 10 upstream GETs per call, edge-cached a day, no KV, no model, nothing written

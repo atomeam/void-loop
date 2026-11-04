@@ -247,7 +247,7 @@ test('the want card and the Versus card name the same site: both rank with the t
   assert.equal(will.floors[will.marker - 1].id, card.floors[card.marker - 1].id); assert.equal(towerLine(will), towerLine(card));
   const tgt = files.tg && files.tg.id && card.floors.find((f) => f.id === files.tg.id);
   if (tgt && !tgt.beaten && !tgt.cleared && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
-  assert.equal(towerArgs([], {}).length, 8); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], { tg: {} })[6], null);
+  assert.equal(towerArgs([], {}).length, 9); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], {})[8], null); assert.equal(towerArgs([], { tg: {} })[6], null);
 });
 test('a held site says why in the Versus line, so all aspects ahead and none surpassed explains itself', () => {
   const t = { floors: [{ site: 'heycolor.com', n: 16, m: 16, held: 'not yet better at painting a picture' }], marker: 1, beaten: 0 };
@@ -289,4 +289,23 @@ test('the queue ranks on measured rows only: a loss against the default bar (the
   assert.match(easeLine(away), /1 of them not measured: the site turned the gate away/);
   const j = judgeRows({ id: 'away.test', site: 'away.test', url: 'https://away.test/', extra: [] }, ev['away.test']);
   assert.deepEqual(j.jobs.find((x) => x.aspect === first), { aspect: first, evidence: 'not measured yet: away.test turned the gate away, so only the default bar was scored' });
+});
+test('a site with a feature Verse lacks is never conquered: it stays passed and names what is missing (tools/site-crawl.mjs)', async () => {
+  const { passedLine, missingLine } = await import('../void-live-deploy/lib/tower.js');
+  const f = FLOORS[0], ev = { [f.id]: all(f) }, host = new URL(f.url).hostname.replace(/^www\./, '');
+  assert.equal(tower([], ev).floors.find((x) => x.id === f.id).state, 'beaten');
+  const ft = { sites: { [host]: { pages: 40, templates: 5, features: 12, verse_pages: 6, verse_features: 10, missing: ['Apple Name', 'A table'] } } };
+  const t = tower([], ev, null, null, null, null, null, null, ft), g = t.floors.find((x) => x.id === f.id);
+  assert.equal(g.state, 'passed'); assert.equal(t.beaten, 0); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
+  assert.match(passedLine(g), /missing 2: Apple Name, A table/); assert.equal(missingLine({ missingFeatures: [] }), '');
+  const h = towerHtml(t, (s) => String(s)); assert.match(h, /crawled 40 pages/);
+  // nothing missing: conquered as before
+  const ok = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 40, missing: [] } } }); assert.equal(ok.floors.find((x) => x.id === f.id).state, 'beaten');
+});
+test('the site being taken on is not passed while a feature is missing, and the card says what the crawl found', () => {
+  const f = FLOORS[0], host = new URL(f.url).hostname.replace(/^www\./, ''), ev = { [f.id]: all(f) }; delete ev[f.id][Object.keys(ev[f.id])[0]];
+  const base = tower([], ev).floors.find((x) => x.id === f.id);
+  if (base.state !== 'passed') return; // the gate does not clear it with an aspect left; nothing to check
+  const t = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 9, templates: 2, features: 4, missing: ['Emoji keyboard'] } } }), g = t.floors.find((x) => x.id === f.id);
+  assert.notEqual(g.state, 'passed'); assert.match(towerHtml(t, (s) => String(s)), /Missing 1 feature/);
 });

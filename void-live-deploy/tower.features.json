@@ -1,0 +1,48 @@
+{
+ "about": "Whole-site crawls of the Versus sites (tools/site-crawl.mjs): pages read, page templates, distinct features, and the ones Verse lacks. Generated; do not edit.",
+ "sites": {
+  "emojigraph.org": {
+   "floor": "emoji combos: emojigraph.org",
+   "pages": 57,
+   "templates": 13,
+   "features": 25,
+   "verse_pages": 9,
+   "verse_features": 19,
+   "missing": [
+    "In 24 languages",
+    "A grid (18: Face smiling, Face affection, Face tongue, Face hand, Face neutral skeptical, ",
+    "Articles (a blog)",
+    "A page: Emoji Keyboard ⌨️♥️😂 Online",
+    "A page: Themes",
+    "A page: 🕹️ Concentration Emoji Game"
+   ],
+   "crawled": "2026-11-04"
+  },
+  "onlineconverter.com": {
+   "floor": "onlineconverter.com",
+   "pages": 199,
+   "templates": 13,
+   "features": 36,
+   "verse_pages": 9,
+   "verse_features": 34,
+   "missing": [
+    "A grid (7: Introduction, How To Use, Main Options, Other Options, Remarks, Related Video C",
+    "Calculation Results"
+   ],
+   "crawled": "2026-11-04"
+  },
+  "howsecureismypassword.net": {
+   "floor": "password strength",
+   "pages": 1,
+   "templates": 1,
+   "features": 3,
+   "verse_pages": 5,
+   "verse_features": 1,
+   "missing": [
+    "Translations Menu",
+    "Accessibility Menu"
+   ],
+   "crawled": "2026-11-04"
+  }
+ }
+}

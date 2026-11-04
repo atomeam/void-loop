@@ -95,5 +95,611 @@
  "auto": {
   "scanned": "2026-11-04",
   "queued": []
+ },
+ "crawl": {
+  "sites": {
+   "emojigraph.org": {
+    "floor": "emoji combos: emojigraph.org",
+    "url": "https://emojigraph.org/",
+    "robots": true,
+    "rendered": 0,
+    "sitemaps": 4,
+    "urls_found": 4017,
+    "pages": 57,
+    "fetched": 58,
+    "skipped": {
+     "robots": 0,
+     "failed": 1
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://emojigraph.org/"
+      ],
+      "features": [
+       "section platforms",
+       "section emoji versions",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "sitemap:emoji_categories:/*",
+      "kind": "list",
+      "known": 9,
+      "sampled": [
+       "https://emojigraph.org/smileys-emotion/",
+       "https://emojigraph.org/travel-places/",
+       "https://emojigraph.org/flags/"
+      ],
+      "features": [
+       "grid grid",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "sitemap:blog:/*",
+      "kind": "articles",
+      "known": 1,
+      "sampled": [
+       "https://emojigraph.org/blog/"
+      ],
+      "features": [
+       "content articles",
+       "action copy"
+      ]
+     },
+     {
+      "key": "sitemap:blog:/blog/*",
+      "kind": "articles",
+      "known": 7,
+      "sampled": [
+       "https://emojigraph.org/blog/black-lives-matter-emoji-usage-analysis/",
+       "https://emojigraph.org/blog/elon-musk-emoji/",
+       "https://emojigraph.org/blog/389-updated-emoji-designs-android-12-beta-1/"
+      ],
+      "features": [
+       "content articles",
+       "action copy",
+       "action share",
+       "grid images"
+      ]
+     },
+     {
+      "key": "sitemap:emoji:/*",
+      "kind": "item",
+      "known": 3999,
+      "sampled": [
+       "https://emojigraph.org/grinning-face/",
+       "https://emojigraph.org/woman-swimming-medium-skin-tone/",
+       "https://emojigraph.org/regional-indicator-symbol-letter-z/",
+       "https://emojigraph.org/face-with-tears-of-joy/"
+      ],
+      "features": [
+       "section copy and paste this emoji",
+       "section also called",
+       "section apple name",
+       "section how emoji looks on apple iphone android and other platforms",
+       "grid how emoji looks on apple iphone android and other platforms",
+       "section emoji codes for devs",
+       "section platforms",
+       "section emoji versions",
+       "button copy to clipboard copy",
+       "grid images",
+       "action copy",
+       "content table",
+       "content languages"
+      ]
+     },
+     {
+      "key": "page:/copy-keyboard",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://emojigraph.org/copy-keyboard/"
+      ],
+      "title": "Emoji Keyboard ⌨️♥️😂 Online",
+      "features": [
+       "grid grid",
+       "button copy",
+       "control text box",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "page:/theme",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://emojigraph.org/theme/"
+      ],
+      "title": "Themes",
+      "features": [
+       "section platforms",
+       "section emoji versions",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "page:/concentration-game",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://emojigraph.org/concentration-game/"
+      ],
+      "title": "🕹️ Concentration Emoji Game",
+      "features": [
+       "section platforms",
+       "section versions",
+       "action copy",
+       "action share",
+       "content languages"
+      ]
+     },
+     {
+      "key": "like:/apple",
+      "kind": "item",
+      "known": 18,
+      "sampled": [
+       "https://emojigraph.org/apple/",
+       "https://emojigraph.org/openmoji/",
+       "https://emojigraph.org/emojipedia/"
+      ],
+      "title": "Apple, Google, Facebook, Twitter… (18 pages)",
+      "features": [
+       "section platforms",
+       "section emoji versions",
+       "grid images",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "page:/emojigraph",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://emojigraph.org/emojigraph/"
+      ],
+      "title": "Emojigraph",
+      "features": [
+       "section platforms",
+       "section emoji versions",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "like:/emoji-1.0",
+      "kind": "item",
+      "known": 16,
+      "sampled": [
+       "https://emojigraph.org/emoji-1.0/",
+       "https://emojigraph.org/emoji-13.0/",
+       "https://emojigraph.org/emoji-18.0/"
+      ],
+      "title": "Emoji Version 1.0, Emoji Version 2.0, Emoji Version 3.0, Emoji Version 4.0… (16 pages)",
+      "features": [
+       "section new emojis in v",
+       "section platforms",
+       "section versions",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "path:/theme/*",
+      "kind": "list",
+      "known": 4,
+      "sampled": [
+       "https://emojigraph.org/theme/april-fools-day/",
+       "https://emojigraph.org/theme/australia-day/",
+       "https://emojigraph.org/theme/bastille-day/",
+       "https://emojigraph.org/theme/bicycle-day/"
+      ],
+      "features": [
+       "section platforms",
+       "section emoji versions",
+       "action copy",
+       "content languages"
+      ]
+     },
+     {
+      "key": "search",
+      "kind": "search",
+      "known": 3,
+      "sampled": [
+       "https://emojigraph.org/search/?q=face&searchLang=en",
+       "https://emojigraph.org/search/?q=grin&searchLang=en",
+       "https://emojigraph.org/search/?q=grinning%20face&searchLang=en"
+      ],
+      "features": [
+       "section platforms",
+       "section emoji versions",
+       "action copy"
+      ]
+     }
+    ],
+    "features": [
+     {
+      "key": "section platforms",
+      "name": "Platforms",
+      "kind": "section",
+      "templates": [
+       "home",
+       "sitemap:emoji:/*",
+       "page:/theme",
+       "page:/concentration-game",
+       "like:/apple",
+       "page:/emojigraph",
+       "like:/emoji-1.0",
+       "path:/theme/*",
+       "search"
+      ],
+      "verse": "has",
+      "found": [
+       "platform"
+      ]
+     },
+     {
+      "key": "section emoji versions",
+      "name": "Emoji Versions",
+      "kind": "section",
+      "templates": [
+       "home",
+       "sitemap:emoji:/*",
+       "page:/theme",
+       "like:/apple",
+       "page:/emojigraph",
+       "path:/theme/*",
+       "search"
+      ],
+      "verse": "has",
+      "found": [
+       "emoji",
+       "version"
+      ]
+     },
+     {
+      "key": "action copy",
+      "name": "Copy to clipboard",
+      "kind": "action",
+      "templates": [
+       "home",
+       "sitemap:emoji_categories:/*",
+       "sitemap:blog:/*",
+       "sitemap:blog:/blog/*",
+       "sitemap:emoji:/*",
+       "page:/copy-keyboard",
+       "page:/theme",
+       "page:/concentration-game",
+       "like:/apple",
+       "page:/emojigraph",
+       "like:/emoji-1.0",
+       "path:/theme/*",
+       "search"
+      ],
+      "verse": "has",
+      "found": [
+       "copy"
+      ]
+     },
+     {
+      "key": "content languages",
+      "name": "In 24 languages",
+      "kind": "content",
+      "templates": [
+       "home",
+       "sitemap:emoji_categories:/*",
+       "sitemap:emoji:/*",
+       "page:/copy-keyboard",
+       "page:/theme",
+       "page:/concentration-game",
+       "like:/apple",
+       "page:/emojigraph",
+       "like:/emoji-1.0",
+       "path:/theme/*"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "grid grid",
+      "name": "A grid (18: Face smiling, Face affection, Face tongue, Face hand, Face neutral skeptical, ",
+      "kind": "grid",
+      "templates": [
+       "sitemap:emoji_categories:/*",
+       "page:/copy-keyboard"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "content articles",
+      "name": "Articles (a blog)",
+      "kind": "content",
+      "templates": [
+       "sitemap:blog:/*",
+       "sitemap:blog:/blog/*"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "action share",
+      "name": "Share buttons",
+      "kind": "action",
+      "templates": [
+       "sitemap:blog:/blog/*",
+       "page:/concentration-game"
+      ],
+      "verse": "has",
+      "found": [
+       "share"
+      ]
+     },
+     {
+      "key": "grid images",
+      "name": "A picture grid of the same thing drawn many ways (Elon Musk emoji profile…)",
+      "kind": "grid",
+      "templates": [
+       "sitemap:blog:/blog/*",
+       "sitemap:emoji:/*",
+       "like:/apple"
+      ],
+      "verse": "partial",
+      "found": [
+       "picture",
+       "same"
+      ]
+     },
+     {
+      "key": "section copy and paste this emoji",
+      "name": "Copy and paste this emoji",
+      "kind": "section",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "copy",
+       "paste",
+       "emoji"
+      ]
+     },
+     {
+      "key": "section also called",
+      "name": "Also Called",
+      "kind": "section",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "also",
+       "call"
+      ]
+     },
+     {
+      "key": "section apple name",
+      "name": "Apple Name",
+      "kind": "section",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "apple",
+       "name"
+      ]
+     },
+     {
+      "key": "section how emoji looks on apple iphone android and other platforms",
+      "name": "How emoji looks on Apple Iphone, Android and other platforms",
+      "kind": "section",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "how",
+       "emoji",
+       "look",
+       "apple"
+      ]
+     },
+     {
+      "key": "grid how emoji looks on apple iphone android and other platforms",
+      "name": "How emoji looks on Apple Iphone, Android and other platforms (15: Apple, Google, Facebook,",
+      "kind": "grid",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "how",
+       "emoji",
+       "look",
+       "apple"
+      ]
+     },
+     {
+      "key": "section emoji codes for devs",
+      "name": "emoji codes for devs",
+      "kind": "section",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "emoji",
+       "code",
+       "dev"
+      ]
+     },
+     {
+      "key": "button copy to clipboard copy",
+      "name": "Copy to clipboard Copy",
+      "kind": "button",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "copy"
+      ]
+     },
+     {
+      "key": "content table",
+      "name": "A table",
+      "kind": "content",
+      "templates": [
+       "sitemap:emoji:/*"
+      ],
+      "verse": "has",
+      "found": [
+       "table"
+      ]
+     },
+     {
+      "key": "page emoji keyboard online",
+      "name": "A page: Emoji Keyboard ⌨️♥️😂 Online",
+      "kind": "page",
+      "templates": [
+       "page:/copy-keyboard"
+      ],
+      "verse": "missing",
+      "found": [
+       "emoji"
+      ]
+     },
+     {
+      "key": "button copy",
+      "name": "Copy",
+      "kind": "button",
+      "templates": [
+       "page:/copy-keyboard"
+      ],
+      "verse": "has",
+      "found": [
+       "copy"
+      ]
+     },
+     {
+      "key": "control text box",
+      "name": "A text box (\"Click on Emoji to copy.\")",
+      "kind": "control",
+      "templates": [
+       "page:/copy-keyboard"
+      ],
+      "verse": "has",
+      "found": [
+       "text",
+       "box"
+      ]
+     },
+     {
+      "key": "page themes",
+      "name": "A page: Themes",
+      "kind": "page",
+      "templates": [
+       "page:/theme"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "page concentration emoji game",
+      "name": "A page: 🕹️ Concentration Emoji Game",
+      "kind": "page",
+      "templates": [
+       "page:/concentration-game"
+      ],
+      "verse": "missing",
+      "found": [
+       "emoji"
+      ]
+     },
+     {
+      "key": "section versions",
+      "name": "Versions",
+      "kind": "section",
+      "templates": [
+       "page:/concentration-game",
+       "like:/emoji-1.0"
+      ],
+      "verse": "has",
+      "found": [
+       "version"
+      ]
+     },
+     {
+      "key": "pages like:/apple",
+      "name": "Pages: Apple, Google, Facebook, Twitter… (18 pages)",
+      "kind": "page",
+      "templates": [
+       "like:/apple"
+      ],
+      "verse": "has",
+      "found": [
+       "apple",
+       "google",
+       "facebook",
+       "twitter"
+      ]
+     },
+     {
+      "key": "pages like:/emoji-1.0",
+      "name": "Pages: Emoji Version 1.0, Emoji Version 2.0, Emoji Version 3.0, Emoji Version 4.0… (16 pages)",
+      "kind": "page",
+      "templates": [
+       "like:/emoji-1.0"
+      ],
+      "verse": "has",
+      "found": [
+       "emoji",
+       "version",
+       "1",
+       "0"
+      ]
+     },
+     {
+      "key": "section new emojis in v",
+      "name": "New emojis in v.1.0",
+      "kind": "section",
+      "templates": [
+       "like:/emoji-1.0"
+      ],
+      "verse": "has",
+      "found": [
+       "emoji",
+       "1",
+       "0"
+      ]
+     }
+    ],
+    "verse_page": "/emoji-combos/emoji-dictionary/",
+    "verse_pages": 9,
+    "verse_urls": [
+     "/emoji-combos/emoji-dictionary/",
+     "/emoji-combos/?q=love",
+     "/word-count/",
+     "/base64/",
+     "/emojis/everywhere/?e=%F0%9F%98%80",
+     "/emojis/",
+     "/g/",
+     "/tools/",
+     "/color/"
+    ],
+    "crawled": "2026-11-04"
+   }
+  },
+  "updated": "2026-11-04"
  }
 }
