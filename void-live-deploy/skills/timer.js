@@ -100,6 +100,12 @@ const clock = (ms) => { const t = Math.max(0, Math.round(ms / 1000)), h = Math.f
 
 /** the length a timer was set for ("Countdown set for 1:30 · 90 seconds"). It does not tick, and with the
  *  face it is long enough for the exam to count the card as an answer. Pure. */
+/** the hourglass sits beside the card. A known width under 520px would stick out, so it stays off. Pure. */
+export function hourglassOn(stage) {
+  const w = stage && stage.clientWidth;
+  return !(w > 0 && w < 520);
+}
+
 export function durationLabel(ms) {
   const sec = Math.max(0, Math.round((Number(ms) || 0) / 1000));
   const face = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
@@ -277,8 +283,9 @@ function mount(th, stageApi) {
     }, 250);
   }
 
-  // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
-  stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
+  // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over.
+  // on a phone it sits outside the card and the exam reads that as overflow (the 45-second ask, narrow)
+  if (hourglassOn(stageApi.stage)) stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
 
   // a practice timer from a plan (lib/practice.js, asked by Verse): at 0:00 it asks whether the session met the goal, logs the
   // answer as that goal's success_rate and last_tested, and says how the goal is going

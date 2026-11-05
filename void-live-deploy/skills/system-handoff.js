@@ -1,62 +1,57 @@
 /**
- * system-handoff skill — package a running system or automation into a client handoff
- * that reduces client work: ownership, status, docs, monitors, and what Verse owns.
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "handoff this system: client onboarding automation", "system handoff for the invoice flow"
+ * system-handoff skill — the handoff package for a system Verse is taking on.
+ * Built from the delivery practice already on main (delivery-pack, system-status,
+ * system-blueprint): ownership, docs, and the status ask. "hand off the automation"
+ * and "package the status handoff" are the same package. A client handoff stays with
+ * client-handoff. It does not invent monitors or a green check. Nothing is sent.
  */
 export function isSystemHandoff(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:hand\s*off|handoff)\s+(?:this\s+)?(?:system|automation|flow|the\s+automation)\b/i.test(t)
-    || /^(?:system|automation)\s+handoff\b/i.test(t)
-    || /^(?:package|make|create|generate)\s+(?:the\s+)?(?:status\s+)?handoff\b/i.test(t);
+  return /^(?:system\s+handoff|handoff\s+(?:the|this|a)\s+system|make\s+a\s+system\s+handoff|hand\s*off\s+the\s+automation|package\s+the\s+status\s+handoff)\b/i.test(t);
 }
 
-function extractSystem(text) {
-  const t = String(text || '');
-  const m = t.match(/(?:system|automation|flow|for)\s*[:\-]\s*(.+)/i) || t.match(/\bfor\s+(?:the\s+|my\s+|a\s+)?(.+)/i) || t.match(/[:\-]\s*(.+)/);
-  return m ? m[1].trim() : 'the system';
+export function systemOf(text) {
+  const m = String(text || '').match(/\b(?:for|of|:)\s+(?:the\s+|my\s+|a\s+)?(.+)/i);
+  const s = m ? m[1].trim() : '';
+  return s.length >= 3 ? s.slice(0, 160) : 'the system';
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const system = extractSystem(text);
-  const el = showPage((p) => { p.innerHTML = '<h2>System handoff</h2><div class="sub">building…</div>'; });
-  const pack = [
-    `<h2>System handoff: ${esc(system)}</h2>`,
-    `<p><strong>Ownership:</strong> Verse owns design, build, connect, test, and monitor. Client owns the outcome and any final approvals.</p>`,
-    `<h3>Current status</h3><ul>`,
-    `<li>State: running / ready for handoff</li>`,
-    `<li>Last check: green</li>`,
-    `<li>Monitors: status card + incident log visible to client</li>`,
-    `</ul>`,
-    `<h3>Docs for the client</h3><ul>`,
-    `<li>How it runs: input → Verse automation → outcome</li>`,
-    `<li>What the client does: nothing for the heavy lifting; review the status card</li>`,
-    `<li>What Verse does: keep it running, fix, and report</li>`,
-    `</ul>`,
-    `<h3>Running automations</h3>`,
-    `<p>Confirm-line approvals already in place. Handoff includes the live status and the docs so the client can see it without owning the work.</p>`,
-    `<p class="sub">We own the heavy lifting. Client keeps the outcome.</p>`,
-    `<div class="src">Source: A-to-Mind system handoff</div>`
-  ].join('');
-  el.innerHTML = pack;
+  const name = systemOf(text);
+  showPage((el) => {
+    el.innerHTML = '<h2>System handoff: ' + esc(name) + '</h2>'
+      + '<p>Verse owns the heavy lifting. The client keeps the outcome.</p>'
+      + '<h3>Package</h3><ul>'
+      + '<li>Plan: ask "blueprint this: ' + esc(name) + '"</li>'
+      + '<li>Status: ask "system status for ' + esc(name) + '" (a real check, not a sample)</li>'
+      + '<li>Docs: what runs, what the client owns, what Verse owns</li>'
+      + '<li>Automations: only those already on the confirm line</li>'
+      + '</ul>'
+      + '<p class="sub">No status is invented here. A live check is a separate ask.</p>'
+      + '<div class="src">Source: A-to-Mind system handoff · nothing sent</div>';
+  });
   return 'system-handoff';
 }
 
-export const builtWith = ["delivery-pack", "system-status"];
+export const builtWith = ['delivery-pack', 'system-status'];
 export default {
-  name: "system-handoff",
+  name: 'system-handoff',
   examples: [
-    "handoff this system: client onboarding automation",
-    "system handoff for the invoice flow",
-    "package the status handoff for my CRM sync",
-    "hand off the automation for weekly reports"
+    'system handoff for the onboarding automation',
+    'make a system handoff for invoice reminders',
+    'handoff the system: support ticket router',
+    'handoff this system: client onboarding automation',
+    'package the status handoff for my CRM sync',
+    'hand off the automation for weekly reports',
   ],
   nearMisses: [
-    "delivery pack for my idea",
-    "system status for the site",
-    "clarify this business idea"
+    'client handoff for the onboarding automation',
+    'system status for billing',
+    'what is a system',
+    'delivery pack for my idea',
+    'clarify this business idea',
   ],
-  match(lower) { return isSystemHandoff(lower); },
-  run
+  match(lower, text) { return isSystemHandoff(text || lower); },
+  run,
 };
