@@ -1,13 +1,13 @@
 {
- "at": "2026-11-04T13:00Z",
+ "at": "2026-11-05T13:14Z",
  "source": "verse",
  "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
  "week": {
-  "since": "2026-10-29",
+  "since": "2026-10-30",
   "unique": true,
-  "people": 78,
-  "views": 253,
-  "ours": 18914,
+  "people": 99,
+  "views": 476,
+  "ours": 19471,
   "bots": 2
  },
  "days": [
@@ -85,29 +85,45 @@
   },
   {
    "day": "2026-11-04",
-   "all": 1305,
-   "people": 27,
-   "ours": 1278,
+   "all": 4147,
+   "people": 87,
+   "ours": 4060,
    "bots": 0,
-   "uniquePeople": 23
+   "uniquePeople": 30
+  },
+  {
+   "day": "2026-11-05",
+   "all": 1391,
+   "people": 208,
+   "ours": 1183,
+   "bots": 0,
+   "uniquePeople": 17
   }
  ],
  "pages": [
   {
    "k": "/",
-   "n": 260
+   "n": 329
+  },
+  {
+   "k": "/lab/",
+   "n": 155
   },
   {
    "k": "/team/",
-   "n": 38
+   "n": 47
   },
   {
    "k": "/brain/",
-   "n": 14
+   "n": 17
+  },
+  {
+   "k": "/conquered/",
+   "n": 13
   },
   {
    "k": "/films/",
-   "n": 9
+   "n": 11
   },
   {
    "k": "/news/",
@@ -124,45 +140,41 @@
   {
    "k": "/emojis/",
    "n": 7
-  },
-  {
-   "k": "/chords/",
-   "n": 6
-  },
-  {
-   "k": "/members/",
-   "n": 6
   }
  ],
  "referrers": [
   {
    "k": "google.com",
-   "n": 24
+   "n": 25
   },
   {
    "k": "bing.com",
-   "n": 20
+   "n": 21
   },
   {
    "k": "github.com",
-   "n": 11
+   "n": 13
   }
  ],
  "countries": [
   {
    "k": "US",
-   "n": 413
+   "n": 671
   },
   {
    "k": "BR",
-   "n": 9
+   "n": 10
   },
   {
    "k": "CN",
-   "n": 3
+   "n": 4
   },
   {
    "k": "DE",
+   "n": 2
+  },
+  {
+   "k": "NL",
    "n": 2
   },
   {
@@ -170,5 +182,5 @@
    "n": 2
   }
  ],
- "line": "People this week: 78 (253 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+ "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }
