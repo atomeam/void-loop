@@ -558,6 +558,10 @@
  },
  "commits": [
   {
+   "at": "2026-11-05T09:39:21Z",
+   "subject": "Move the agent follow-ups line to Just finished"
+  },
+  {
    "at": "2026-11-05T09:34:24Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -632,10 +636,6 @@
   {
    "at": "2026-11-05T07:41:58Z",
    "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T07:27:51Z",
-   "subject": "Site test: visitor pass 14/15"
   }
  ],
  "builders": {
@@ -643,6 +643,10 @@
    {
     "name": "Agent follow-ups (cursor, 2026-11-05)",
     "line": "/agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260"
+   },
+   {
+    "name": "Suite reds after #2251 (cursor, 2026-11-05)",
+    "line": "clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it.…"
    },
    {
     "name": "Autosalvage batch (cursor, 2026-11-05)",
@@ -659,10 +663,6 @@
    {
     "name": "Lists run 13 (grok, 2026-11-05)",
     "line": "a bare \"price\" asks which thing, with one tap per kind (a coin, a currency, groceries or gas, a stock, the crypto board, what Verse sells), so the prices exam is 6 of 6 locally; telemetry names every failed check, so the count and the…"
-   },
-   {
-    "name": "Forethinkers life-extension Q6 (Grok Bot, 2026-11-05)",
-    "line": "PCGrimAge baseline-acceleration × semaglutide interaction survives inflammation covariates and leave-one-out, fails bootstrap CI and half-split; MaGE weights and GSE327270 still blocked; NCT07218445 added to watchlist.…"
    }
   ],
   "ladders": [

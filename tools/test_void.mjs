@@ -3007,10 +3007,13 @@ try {
       rings.join() === 'write,walk,sleep' && first.join() === 'write:false,walk:true,sleep:true' && afterReload.join() === first.join() && /1 day streak/.test(label) && !S.errors.length, JSON.stringify({ rings, first, afterReload, label, errors: S.errors }));
     await S.ask('cook pasta: boil 3 s then rest 2 s', 700);
     await S.p.evaluate(() => { window.__osc = 0; window.AudioContext = class { constructor() { this.state = 'running'; this.currentTime = 0; this.destination = {}; } resume() { return Promise.resolve(); } createOscillator() { window.__osc++; return { frequency: {}, connect() {}, start() {}, stop() {} }; } createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {} }; } }; });
-    const idle = await S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent);
+    // the card is recipe-stack, ranked late: after the habit reload above, a bare $eval threw and ended the shard (#2250)
+    await until(() => S.p.$('.recipe-stack'), 8000);
+    const readStack = () => S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent).catch(() => '');
+    const idle = await readStack();
     await new Promise((r) => setTimeout(r, 1200));
-    const stillIdle = await S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent);
-    await S.p.click('.recipe-stack .rs-go');
+    const stillIdle = await readStack();
+    if (await S.p.$('.recipe-stack .rs-go')) await S.p.click('.recipe-stack .rs-go');
     const second = await until(async () => (await S.p.$eval('.recipe-stack', (e) => e.dataset.step).catch(() => '')) === '1', 6000);
     const chimedAtHandover = await S.p.evaluate(() => window.__osc);
     const done = await until(async () => /Done/.test(await S.p.$eval('.recipe-stack .rs-time', (e) => e.textContent).catch(() => '')), 6000);

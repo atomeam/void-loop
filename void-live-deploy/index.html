@@ -2821,7 +2821,10 @@ say('nothing selected to remove');
     }
     // the card never stays on "…" (owner, 2026-10-19: "not loading"): whatever goes wrong while it is drawn, it says so and asks to be asked again
     async function showVoice(said) {
-      const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
+      // .vc-self is on the card before the reflect fetch. The no-clip probe at 1280x800 waited 30s for that class, which used to
+      // arrive only after the fetch (#2250). Inline opacity wins over the arrive animation's first frame, which stays at 0 while the desktop is busy.
+      const el = showPage((p) => { p.classList.add('vc-self'); p.style.animation = 'none'; p.style.opacity = '1'; p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
+      if (el) el.classList.add('on');
       try { await drawVoice(said, el); } catch (_) {
         if (vpageEl === el && !el.querySelector('[data-v-body], [data-v-correct]')) el.innerHTML = '<h2>What I think of myself</h2><p>I could not draw this card just now. Ask again in a moment.</p>';
       }
@@ -6208,6 +6211,35 @@ say('nothing selected to remove');
       return false;
     }
     let askCount = 0; // which ask is the newest: a calc answer given before the skills were in is only handed to a skill while it still is
+    // ephemeral mode (skills/safety-kit.js, the same phrases as lib/safety.js): the snapshot is this tab's, and a reload puts the stage
+    // back. Answered here, before any file the ask would wait on, because after a reload the suite reads within 400 ms (#2250).
+    const EPH_KEY = 'a2m.void.eph.v1';
+    let ephPageOn = false, ephLeaving = false;
+    const ephRestore = () => {
+      try {
+        const snap = JSON.parse(sessionStorage.getItem(EPH_KEY) || 'null'); if (!snap) return;
+        if (snap.state == null) localStorage.removeItem(STATE_KEY); else localStorage.setItem(STATE_KEY, snap.state);
+        if (snap.undo == null) localStorage.removeItem(UNDO_KEY); else localStorage.setItem(UNDO_KEY, snap.undo);
+      } catch (_) {}
+    };
+    const ephHide = () => { ephLeaving = true; ephRestore(); };
+    const ephVis = () => { if (ephLeaving && document.visibilityState === 'hidden') ephRestore(); };
+    const ephShow = () => { ephLeaving = false; };
+    function armPageEph() {
+      if (ephPageOn) return; ephPageOn = true;
+      addEventListener('pagehide', ephHide); document.addEventListener('visibilitychange', ephVis); addEventListener('pageshow', ephShow);
+    }
+    function disarmPageEph() {
+      if (!ephPageOn) return;
+      removeEventListener('pagehide', ephHide); document.removeEventListener('visibilitychange', ephVis); removeEventListener('pageshow', ephShow);
+      ephPageOn = false; ephLeaving = false;
+    }
+    function ephAsk(raw) {
+      const t = String(raw || '').trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, '').toLowerCase();
+      if (/^(?:please\s+)?(?:(?:turn\s+on|start|use|switch\s+to)\s+)?(?:ephemeral|incognito|forget[\s-]?me)\s+(?:mode|session)(?:\s+on)?$|^don.?t\s+(?:save|keep)\s+this\s+session$/.test(t)) return 'on';
+      if (/^(?:please\s+)?(?:turn\s+off|stop|end|leave)\s+(?:the\s+)?(?:ephemeral|incognito|forget[\s-]?me)\s+(?:mode|session)$|^(?:ephemeral|incognito|forget[\s-]?me)\s+(?:mode|session)\s+off$|^(?:save|keep)\s+this\s+session\s+again$/.test(t)) return 'off';
+      return '';
+    }
     async function handle(raw) {
       warmAskLibs();
       const askNo = ++askCount, askAt = Date.now();
@@ -6224,6 +6256,80 @@ say('nothing selected to remove');
         voidLook.backdrop = ''; applyLook(true); say('backdrop off');
         loopLog({ domain: 'void.look', ask: typed, score: 'pass', note: 'look' });
         return;
+      }
+      // "clear the list" and "remove the list" are the page's list, already in memory. After a reload the card is drawn as soon as the
+      // list skill arrives, and the suite asks within 400 ms, while the rest of the index is still loading (#2250).
+      const listLower = typed.toLowerCase();
+      const listClear = /^(?:clear|empty)\s+(?:the\s+)?list\s*[.!]?$/.test(listLower);
+      const listRemove = /^(?:remove|delete|get\s+rid\s+of|hide)\s+(?:the\s+)?list\s*[.!]?$/.test(listLower);
+      if (listClear || listRemove) {
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        let did = false;
+        if (stageKinds.list && typeof stageKinds.list.ask === 'function') {
+          const d = stageKinds.list.ask(listLower, typed, stageApi);
+          did = !!(d && d !== 'no list');
+        } else {
+          const sel = selectedId && things[selectedId];
+          const list = (sel && sel.kind === 'list' && sel) || Object.values(things).find((t) => t && t.kind === 'list');
+          if (list) {
+            if (listRemove) { delete things[list.id]; if (selectedId === list.id) selectedId = null; }
+            else list.items = [];
+            save(); render();
+            did = true;
+          }
+        }
+        if (did) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: listClear ? 'list-cleared' : 'list-removed' }); return; }
+      }
+      // a note asked while the index is still loading (the sticky card is already up): "another sticky note …" is the sticky's own ask (#2250)
+      if (!skillsLoaded && /\b(?:sticky|note)\b/i.test(typed) && stageKinds.sticky && typeof stageKinds.sticky.ask === 'function') {
+        if (!skillsRunning) takeUndoSnapshot();
+        const d = stageKinds.sticky.ask(typed.toLowerCase(), typed, stageApi);
+        if (d && d !== 'no sticky') {
+          if (!quiet) rememberAsk(typed);
+          currentAsk = lastAsk = typed;
+          say('');
+          loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: d });
+          return;
+        }
+      }
+      const eph = ephAsk(typed);
+      if (eph) {
+        if (!quiet) rememberAsk(typed);
+        if (eph === 'on') {
+          try { if (!sessionStorage.getItem(EPH_KEY)) sessionStorage.setItem(EPH_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), undo: localStorage.getItem(UNDO_KEY) })); } catch (_) {}
+          armPageEph();
+          say('ephemeral mode · closing or reloading this tab puts the stage back as it is now');
+        } else { try { sessionStorage.removeItem(EPH_KEY); } catch (_) {} disarmPageEph(); say('ephemeral mode off · this stage is kept again'); }
+        currentAsk = lastAsk = typed;
+        loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:safety-kit' });
+        return;
+      }
+      // the self card is the page's own ask. Waiting out the skill index at 1280 left .vc-self unopened for the whole 30s probe (#2250).
+      if (wantsVoice(typed.toLowerCase())) {
+        if (!quiet) rememberAsk(typed);
+        currentAsk = lastAsk = typed;
+        showVoice(typed.toLowerCase());
+        loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'voice' });
+        return;
+      }
+      // "cook pasta: boil 3 s then rest 2 s" is recipe-stack, ranked late. One import, not a wait for every skill above it (#2250).
+      if (/^(?:please\s+)?(?:cook|make|prepare|prep|bake)\s+\S[^:\n]{0,40}:\s*\S/.test(typed)) {
+        const mod = await Promise.race([import('/skills/recipe-stack.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        if (mod && mod.default && mod.default.stageKinds) Object.assign(stageKinds, mod.default.stageKinds);
+        const askRecipe = mod && (mod.ask || (mod.default && mod.default.stageKinds && mod.default.stageKinds.recipe && mod.default.stageKinds.recipe.ask));
+        if (typeof askRecipe === 'function') {
+          if (!skillsRunning) takeUndoSnapshot();
+          const d = askRecipe(typed.toLowerCase(), typed, stageApi);
+          if (d) {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            say('');
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:recipe-stack' });
+            return;
+          }
+        }
       }
       // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
@@ -6796,6 +6902,7 @@ say('nothing selected to remove');
     function rememberWorld() { try { save(); } catch (_) {} } // save() folds in the places and stamps the time
     document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
     window.addEventListener('pagehide', rememberWorld);
+    try { if (sessionStorage.getItem(EPH_KEY)) armPageEph(); } catch (_) {} // a reload keeps ephemeral mode on before safety-kit.js arrives (#2250)
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Verse'), 400);
     window.addEventListener('resize', () => render());
   </script>
