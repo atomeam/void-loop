@@ -78,6 +78,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Glass tool pages (cursor, 2026-11-05)**: hand-built and generated tool pages, the fix pages and is-it opt into the shared glass in verse.css. Each page keeps its own layout, and an accent kept on the device still wins. https://github.com/atomeam/void-loop/pull/2277
 - **Bot families and salvage (cursor, 2026-11-05)**: 23 more languages (4,290 phrasebooks), nine keyless APIs, an encoding checker for every pair, and a drug-name check across openFDA and RxNorm. The next ten salvage pieces are bots, including pinned english-words and ODbL countries URLs. Registry live count 11,749 to 16,793, none failed. https://github.com/atomeam/void-loop/pull/2275
 - **Constellation weave (cursor, 2026-11-05)**: "weave a constellation called night ops" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns "where is Orion". https://github.com/atomeam/void-loop/pull/2274
 - **Verify reds (cursor, 2026-11-05)**: "clear" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2273
@@ -318,6 +319,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders
 
+- **Glass tool pages (cursor, 2026-11-05):** a tool page opts into `verse.css` with `class="vs-tool"` and one link on the `<html>` line. `node tools/glass-pages.mjs --check` fails while an old-palette page has not. Do not copy the palette into the page. The home page and the lab stay out. Playbook: `docs/playbooks/verse-shell.md`.
 - **Late skill still on waking up (cursor, 2026-11-05):** a site-test case that only shows "waking up" is a skill far down the index. Import that one file and run it before `say('waking up')` (recipe-stack, constellation-weaver). The sky family does not take "weave a constellation called night ops". Playbook: `docs/playbooks/stage-pack.md`.
 - **Agent no kept (cursor, 2026-11-05):** judge a no by the task id it was sent to (`taskById`), not `tasks[0]` (that is Verse's newer note, still `needs_yes`). The note is inserted before the response (`writesFirst` on the list read). A note ask waits for that, then retries on a new thread if the post has no note. Playbook: `docs/playbooks/agent.md`.
 - **Agent follow-ups (cursor, 2026-11-05):** a closed tab's news is `seen = 0` on the task, not a push service. Approve resumes with `decisionOf`; decline stops; the Made shelf is the task's own steps. Playbook: `docs/playbooks/agent.md`. Probe: `node tools/agent-probe.mjs https://a-to-mind.com --all`.

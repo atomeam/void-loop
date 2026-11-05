@@ -2,7 +2,7 @@
 
 **Starts when:** a page people open from the home stage (Team, Bots, Agents, Tower, Films, Treasury) should feel like the same app, or the home chrome (the live line, the command palette, the background wash) needs a change.
 
-**The one file for colour and type** is `void-live-deploy/verse.css`. The home page also keeps the same values inline in `void.html` so the void can paint before that file arrives. Do not invent a second palette.
+**The one file for colour and type** is `void-live-deploy/verse.css`. The home page also keeps the same values inline in `void.html` so the void can paint before that file arrives. Do not invent a second palette. A tool page opts in with `class="vs-tool"` (`node tools/glass-pages.mjs --check`).
 
 **How a page gets it.** `sw.js` `dress` (the same edit as `dressHtml` in `lib/verse-shell.js`) adds `verse.css` and `verse-shell.js` on the way to the browser for `/`, `/team/`, `/bots/`, `/agent/`, `/conquered/`, `/films/` and `/treasury/`. The home page also gets `verse-field.js`. A page that already has the script is left alone, so a later edit of the HTML does not double it. `/tower` redirects to `/conquered/`. The nav is built by `verse-shell.js` when the page has none.
 

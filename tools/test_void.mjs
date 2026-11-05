@@ -66,10 +66,10 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
-// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
+// the files every tool page shares (the visit beacon, the glass stylesheet, and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
 // converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
 // and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
+const SHARED_TOOL_FILES = /^\/(visit\.js|verse\.css|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;

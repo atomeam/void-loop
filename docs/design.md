@@ -18,7 +18,7 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 
 ## Tokens (one file: `void-live-deploy/verse.css`; the home page keeps the same values inline)
 
-The shell (nav, command palette, live line, view transitions) is `verse-shell.js` and `lib/verse-shell.js`. `/tower` opens `/conquered/`. Playbook: `docs/playbooks/verse-shell.md`.
+The shell (nav, command palette, live line, view transitions) is `verse-shell.js` and `lib/verse-shell.js`. `/tower` opens `/conquered/`. Playbook: `docs/playbooks/verse-shell.md`. A tool page opts in with `class="vs-tool"` (`tools/glass-pages.mjs`): the shared rule wins on screen, a light toggle and a kept accent still win.
 
 **Colour.** Background `#050505` (unchanged, it is the void). Ink `--d-ink #f2f4fb`, `--d-ink-2 #c3c8d8`, `--d-ink-3 #8e94a8` (all ≥ 4.5:1 on the card glass). Light colours as rgb triplets so any alpha works: key `--d-key 158 178 255` (cool blue, the only accent), warm `--d-warm 255 170 214`, teal `--d-teal 92 232 205` (rim highlights only, never text).
 
