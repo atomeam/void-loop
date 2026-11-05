@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 85,
- "runsTotal": 246,
+ "runsTotal": 247,
  "kinds": {
   "grow": 69,
   "file": 79,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 44
+  "visitor": 45
  },
  "runs": [
+  {
+   "at": "2026-11-05T07:12:16Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T06:57:03Z",
    "passed": 85,
@@ -314,32 +321,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T21:01:44Z",
-   "passed": 84,
-   "of": 88,
-   "kind": "file",
-   "ms": 331,
-   "note": "fix: \"yo play despacito\" nothing appeared",
-   "failed": [
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "flip this card",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo play despacito",
-     "why": "nothing appeared"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -393,18 +374,18 @@
   },
   {
    "from": "2026-10-08",
-   "runs": 16,
-   "passed": 102,
-   "of": 196,
+   "runs": 22,
+   "passed": 168,
+   "of": 284,
    "broken": 6,
    "brokenOf": 76,
    "brokenPassed": 16
   },
   {
    "from": "2026-10-15",
-   "runs": 175,
-   "passed": 3049,
-   "of": 5614,
+   "runs": 169,
+   "passed": 2983,
+   "of": 5526,
    "broken": 89,
    "brokenOf": 2162,
    "brokenPassed": 6
@@ -417,7 +398,7 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 55,
+   "runs": 56,
    "passed": 864,
    "of": 967,
    "ms": 377

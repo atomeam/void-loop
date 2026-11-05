@@ -2915,5 +2915,23 @@
    ]
   },
   "note": "fix: \"dyslexia friendly font\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T07:12:16Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 630,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 24104 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
