@@ -3768,5 +3768,59 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T18:05:55Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1699,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11030 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T18:16:04Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 388,
+  "kind": "file",
+  "key": "favorite this | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "dyslexia friendly font",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1699,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11030 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"favorite this\" only \"waking up\" appeared, never the answer"
  }
 ]

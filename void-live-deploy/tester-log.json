@@ -1,16 +1,45 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 276,
+ "runsTotal": 278,
  "kinds": {
   "grow": 70,
-  "file": 87,
+  "file": 88,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 65
+  "visitor": 66
  },
  "runs": [
+  {
+   "at": "2026-11-05T18:16:04Z",
+   "passed": 87,
+   "of": 90,
+   "kind": "file",
+   "ms": 388,
+   "note": "fix: \"favorite this\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "dyslexia friendly font",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T18:05:55Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T17:15:33Z",
    "passed": 0,
@@ -290,43 +319,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T11:35:10Z",
-   "passed": 84,
-   "of": 89,
-   "kind": "file",
-   "ms": 318,
-   "note": "fix: \"weave a constellation called night ops\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "dyslexia friendly font",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "weave a constellation called night ops",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T11:25:52Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -380,18 +372,18 @@
   },
   {
    "from": "2026-10-08",
-   "runs": 38,
-   "passed": 401,
-   "of": 549,
+   "runs": 39,
+   "passed": 418,
+   "of": 567,
    "broken": 6,
    "brokenOf": 76,
    "brokenPassed": 16
   },
   {
    "from": "2026-10-15",
-   "runs": 153,
-   "passed": 2750,
-   "of": 5261,
+   "runs": 152,
+   "passed": 2733,
+   "of": 5243,
    "broken": 89,
    "brokenOf": 2162,
    "brokenPassed": 6
@@ -404,9 +396,9 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 85,
-   "passed": 1601,
-   "of": 1772,
+   "runs": 87,
+   "passed": 1688,
+   "of": 1862,
    "ms": 373
   }
  ],
@@ -427,7 +419,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T16:31:22Z",
+  "skill:cartoon": "2026-11-05T18:16:04Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -715,6 +707,9 @@
   "skill:gradient": "2026-11-05T16:03:35Z",
   "skill:hangman": "2026-11-05T16:31:22Z",
   "skill:hear": "2026-11-05T16:31:22Z",
-  "skill:imgfit": "2026-11-05T16:31:22Z"
+  "skill:imgfit": "2026-11-05T16:31:22Z",
+  "skill:is-it": "2026-11-05T18:16:04Z",
+  "skill:kanban-board": "2026-11-05T18:16:04Z",
+  "skill:leet": "2026-11-05T18:16:04Z"
  }
 }
