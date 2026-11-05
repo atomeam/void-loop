@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1160,
+ "counted": 1153,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -735,7 +735,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 31
+   "tests": 30
   },
   {
    "file": "lib/void-seal.js",
@@ -1876,7 +1876,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/calculators.js",
@@ -2789,13 +2789,6 @@
    "tests": 1
   },
   {
-   "file": "lib/inbox-blocks.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -3062,13 +3055,6 @@
    "tests": 1
   },
   {
-   "file": "lib/verse-runs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
@@ -3095,13 +3081,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 4
-  },
-  {
-   "file": "lib/actions-log.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
   },
   {
    "file": "lib/agent-watch.js",
@@ -3255,7 +3234,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/epub-edit.js",
@@ -3525,13 +3504,6 @@
   },
   {
    "file": "lib/random-card.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/range-diff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3847,8 +3819,7 @@
    "imports": [
     "lib/guard.js",
     "lib/automations-run.js",
-    "lib/team-crew-run.js",
-    "lib/verse-runs.js"
+    "lib/team-crew-run.js"
    ],
    "importedBy": []
   },
@@ -4836,10 +4807,6 @@
    "importedBy": [
     "skills/about-skill.js"
    ]
-  },
-  "lib/actions-log.js": {
-   "imports": [],
-   "importedBy": []
   },
   "lib/actions.js": {
    "imports": [],
@@ -8560,15 +8527,6 @@
     "skills/imgfit.js"
    ]
   },
-  "lib/inbox-blocks.js": {
-   "imports": [],
-   "importedBy": [
-    "lib/verse-runs.js"
-   ],
-   "reachedBy": [
-    "functions/api/automations/tick.js"
-   ]
-  },
   "lib/inbox-health.js": {
    "imports": [],
    "importedBy": [
@@ -11234,10 +11192,6 @@
    "imports": [],
    "importedBy": []
   },
-  "lib/range-diff.js": {
-   "imports": [],
-   "importedBy": []
-  },
   "lib/rap-beat.js": {
    "imports": [
     "lib/compose.js",
@@ -13790,14 +13744,6 @@
     "skills/vat.js"
    ]
   },
-  "lib/verse-runs.js": {
-   "imports": [
-    "lib/inbox-blocks.js"
-   ],
-   "importedBy": [
-    "functions/api/automations/tick.js"
-   ]
-  },
   "lib/verse-secrets.js": {
    "imports": [],
    "importedBy": [
@@ -14874,10 +14820,6 @@
    "importedBy": [
     "skills/games.js"
    ]
-  },
-  "skills/client-handoff.js": {
-   "imports": [],
-   "importedBy": []
   },
   "skills/clock.js": {
    "imports": [],
@@ -18173,14 +18115,6 @@
    ]
   },
   "skills/swarm.js": {
-   "imports": [],
-   "importedBy": []
-  },
-  "skills/system-blueprint.js": {
-   "imports": [],
-   "importedBy": []
-  },
-  "skills/system-handoff.js": {
    "imports": [],
    "importedBy": []
   },
