@@ -73,6 +73,8 @@ export default {
     'should i rent or buy',
     'is it better to rent or buy a house',
     'rent vs buy',
+    'rent vs buy in austin tx',
+
     'should i rent or buy a $350k house if my rent is $1800',
     'buying vs renting a home at 6%',
     'rent or buy if i am staying 5 years',
