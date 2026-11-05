@@ -8945,14 +8945,17 @@
    "at": "2026-10-30"
   },
   "penguinrandomhouse.com": {
-   "bytes": 962711,
+   "bytes": 961494,
+   "controls": 428,
    "scripts": 25,
    "styles": 19,
-   "nodes": 1617,
-   "routes": 565,
-   "weight": 1311381,
-   "at": "2026-10-29",
-   "counted": "unrendered"
+   "nodes": 1604,
+   "routes": 566,
+   "htmlControls": 381,
+   "counted": "rendered",
+   "shell": "none",
+   "weight": 1310534,
+   "at": "2026-11-05"
   },
   "penguinrandomhouse.de": {
    "bytes": 1670413,
