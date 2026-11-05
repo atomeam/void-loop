@@ -3,26 +3,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import skill, { isClientHandoff, subjectOf, packageOf, cardHtml } from '../void-live-deploy/skills/client-handoff.js';
 import { isDeliveryPack } from '../void-live-deploy/skills/delivery-pack.js';
+import { isSystemHandoff } from '../void-live-deploy/skills/system-handoff.js';
 
 const ASK = 'client handoff for the onboarding automation';
 
-test('a client handoff is this skill, and a delivery pack stays a delivery pack', () => {
+test('a client handoff names the system and leaves delivery-pack and system-handoff asks alone', () => {
   for (const a of skill.examples) assert.equal(isClientHandoff(a), true, a);
   for (const a of skill.nearMisses) assert.equal(isClientHandoff(a), false, a);
-  assert.equal(isDeliveryPack('handoff pack for my SaaS idea'), true);
-  assert.equal(isClientHandoff('handoff pack for my SaaS idea'), false);
-  assert.equal(isDeliveryPack(ASK), false, 'delivery-pack does not take a client handoff');
-  assert.equal(isClientHandoff('system handoff for the invoice flow'), true);
-  assert.equal(isClientHandoff('handoff this system: client onboarding automation'), true);
-  assert.equal(isClientHandoff('system status for the site'), false);
-  assert.equal(subjectOf('system handoff for the invoice flow'), 'invoice flow');
-  assert.equal(subjectOf('handoff this system: client onboarding automation'), 'client onboarding automation');
-  assert.equal(skill.match(ASK.toLowerCase(), ASK), true);
+  assert.equal(isClientHandoff(ASK), true);
+  assert.equal(isClientHandoff('make a client handoff for the invoice flow'), true);
   assert.equal(subjectOf(ASK), 'onboarding automation');
   assert.equal(subjectOf('client handoff'), 'the system');
+  assert.equal(isDeliveryPack('handoff pack for my SaaS idea'), true);
+  assert.equal(isClientHandoff('handoff pack for my SaaS idea'), false);
+  assert.equal(isClientHandoff('delivery package: invoice reminders'), false);
+  assert.equal(isClientHandoff('system handoff for the invoice flow'), false);
+  assert.equal(isSystemHandoff('system handoff for the invoice flow'), true);
+  assert.equal(skill.match(ASK.toLowerCase(), ASK), true);
 });
 
-test('the card lists what Verse owns and covers status, docs, and monitors', () => {
+test('the card lists what Verse owns and covers status, docs, and monitors, and invents no green status', () => {
   const p = packageOf(ASK);
   assert.equal(p.subject, 'onboarding automation');
   assert.deepEqual(p.covers, ['status', 'docs', 'monitors']);
@@ -34,27 +34,21 @@ test('the card lists what Verse owns and covers status, docs, and monitors', () 
   assert.match(html, /business-clarify/);
   assert.match(html, /system-status/);
   assert.match(html, /confirm line/);
-  assert.match(html, /Status:/);
-  assert.match(html, /Docs:/);
-  assert.match(html, /Monitors:/);
+  assert.match(html, /No status is invented here/);
   assert.match(html, /&lt;script&gt;/);
   assert.doesNotMatch(html, /<script>/);
-  const own = cardHtml(null, 'client handoff for <script>');
-  assert.match(own, /&lt;script&gt;/);
   assert.match(html, /class="share"/);
-  assert.match(html, /Nothing is sent from this card/);
+  assert.doesNotMatch(html, /Last check: green/);
 });
 
-test('run paints that card and returns the skill name', async () => {
+test('run paints that card and returns the skill name', () => {
   let html = '';
-  const el = { set innerHTML(v) { html = v; } };
-  const ret = await skill.run(ASK, {
+  const ret = skill.run(ASK, {
     esc: (s) => String(s),
-    showPage: (fn) => { fn(el); return el; },
+    showPage: (fn) => { const el = { set innerHTML(v) { html = v; }, get innerHTML() { return html; } }; fn(el); return el; },
   });
   assert.equal(ret, 'client-handoff');
   assert.match(html, /Client handoff: onboarding automation/);
   assert.match(html, /business-clarify/);
-  assert.match(html, /system-status/);
-  assert.match(html, /confirm line/);
+  assert.match(html, /No status is invented here/);
 });

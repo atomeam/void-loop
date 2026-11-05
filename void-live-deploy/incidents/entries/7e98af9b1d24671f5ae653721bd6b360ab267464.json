@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-05T15:23:16.226Z",
+ "sha": "7e98af9b1d24671f5ae653721bd6b360ab267464",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42048473819",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it"
+ ],
+ "touched": [
+  "domains/handoff.md",
+  "tools/selfcheck.test.mjs",
+  "void-live-deploy/functions/api/selfcheck.js"
+ ],
+ "shards": [
+  1,
+  2,
+  3
+ ],
+ "passed": [
+  1,
+  3
+ ]
+}

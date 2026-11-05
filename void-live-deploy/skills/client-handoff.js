@@ -1,29 +1,25 @@
 /**
- * client-handoff: a shareable card for one clarified system Verse owns.
- * "client handoff for the onboarding automation", "make a client handoff for the invoice flow".
- * "handoff pack" and "delivery package" stay with delivery-pack (rank 1192). This card names the
- * skills that already do the work: business-clarify, system-status, and confirm-line automations.
- * It covers status, docs, and monitors. Nothing is sent, and nothing is spent.
+ * client-handoff skill — a shareable handoff card for one system Verse owns.
+ * "client handoff for the onboarding automation". The card names what Verse owns and
+ * what the client keeps: business-clarify, system-status, and the confirm line.
+ * "system handoff" stays with system-handoff. "handoff pack" stays with delivery-pack.
+ * It does not invent a green status. Nothing is sent.
  */
 import { isDeliveryPack } from './delivery-pack.js';
-
-// "handoff pack" and "delivery package" stay with delivery-pack. "system status" stays with system-status.
-// "system handoff" and "handoff this system" are the same card (the phrases from helper/system-handoff).
-const START = /^(?:client|business|system)\s+handoff\b|^(?:make|generate|create|package)\s+(?:a\s+)?client\s+handoff\b|^(?:hand\s*off|handoff)\s+(?:(?:this|the)\s+)?(?:system|automation|flow)\b|^(?:package|make|create|generate)\s+(?:the\s+)?status\s+handoff\b/i;
 
 /** a client-handoff ask, and not a delivery pack. Pure. */
 export function isClientHandoff(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   if (!t || isDeliveryPack(t)) return false;
-  return START.test(t);
+  return /^(?:client|business)\s+handoff\b/i.test(t)
+    || /^(?:make|generate|create|package)\s+(?:a\s+)?client\s+handoff\b/i.test(t);
 }
 
 /** the system the ask names, or "the system". Pure. */
 export function subjectOf(text) {
-  const t = String(text || '');
-  const m = t.match(/\b(?:for|of)\s+(?:the\s+|my\s+|a\s+)?(.+)/i) || t.match(/[:-]\s*(.+)/);
-  const name = m ? m[1].trim().replace(/[?!.]+$/, '') : '';
-  return name || 'the system';
+  const m = String(text || '').match(/\b(?:for|of|:)\s+(?:the\s+|my\s+|a\s+)?(.+)/i);
+  const s = m ? m[1].trim().replace(/[?!.]+$/, '') : '';
+  return s.length >= 3 ? s.slice(0, 160) : 'the system';
 }
 
 /** what the card says Verse owns, and the three covers (status, docs, monitors). Pure. */
@@ -48,70 +44,56 @@ export function cardHtml(esc, subject) {
   const p = packageOf(subject);
   const lines = [
     'Client handoff: ' + p.subject,
-    'Verse owns the heavy lifting. The client keeps the outcome.',
+    'Verse owns the running system. The client keeps the outcome.',
     'What Verse owns:',
     ...p.owns.map((x) => '- ' + x),
     'Covers: ' + p.covers.join(', ') + '.',
-    'Status: ask "system status for ' + p.subject + '".',
+    'Status: ask "system status for ' + p.subject + '" (a real check, not a sample).',
     'Docs: how it runs, what the client owns, and what Verse owns.',
     'Monitors: the status line and the incident log.',
-    'Automations stay behind the confirm line. Nothing is sent from this card.',
+    'No status is invented here. Nothing is sent from this card.',
   ];
   return [
     '<h2>Client handoff: ' + e(p.subject) + '</h2>',
-    '<p><strong>Clarified:</strong> Verse owns the heavy lifting for "' + e(p.subject) + '" so the client does less.</p>',
+    '<p><b>Clarified:</b> Verse owns the running system for "' + e(p.subject) + '". The client keeps the outcome.</p>',
     '<h3>What Verse owns</h3><ul>',
     ...p.owns.map((x) => '<li>' + e(x) + '</li>'),
     '</ul>',
-    '<h3>Handoff package for the client</h3><ul>',
+    '<h3>What the client keeps</h3><ul>',
     '<li>Status: ask "system status for ' + e(p.subject) + '" for a live check (system-status)</li>',
     '<li>Docs: how it runs, what the client owns vs what Verse owns</li>',
     '<li>Monitors: the status line and the incident log the client can see</li>',
-    '<li>Automations: already gated by the confirm line</li>',
+    '<li>The outcome and the decision to change it</li>',
     '</ul>',
-    '<p class="sub">We own the heavy lifting. Client keeps the outcome.</p>',
+    '<p class="sub">No status is invented here. A live check is a separate ask.</p>',
     '<pre class="share">' + e(lines.join('\n')) + '</pre>',
+    '<div class="src">Source: A-to-Mind delivery practice · nothing sent</div>',
   ].join('');
 }
 
-const EXAMPLES = [
-  'client handoff for the onboarding automation',
-  'business handoff for weekly status reports',
-  'make a client handoff for the invoice flow',
-  'package a client handoff for the support ticket router',
-  'generate a client handoff for the client portal',
-  'system handoff for the invoice flow',
-  'handoff this system: client onboarding automation',
-  'hand off the automation for weekly reports',
-];
-const NEAR = [
-  'handoff pack for my SaaS idea',
-  'delivery package: invoice reminders that run themselves',
-  'package this idea: automate client onboarding',
-  'what is a handoff',
-  'client list',
-  'package.json',
-  'handoff the baton',
-  'system status for the site',
-  'clarify this business idea',
-];
-
 export default {
   name: 'client-handoff',
-  examples: EXAMPLES,
-  nearMisses: NEAR,
+  examples: [
+    'client handoff for the onboarding automation',
+    'make a client handoff for the invoice flow',
+    'business handoff for weekly status reports',
+    'package a client handoff for the support ticket router',
+    'generate a client handoff for the client portal',
+  ],
+  nearMisses: [
+    'handoff pack for my SaaS idea',
+    'delivery package: invoice reminders',
+    'what is a handoff',
+    'package.json',
+    'system handoff for the invoice flow',
+    'handoff this system: client onboarding automation',
+    'system status for the site',
+  ],
   match(lower, text) { return isClientHandoff(text || lower); },
-  async run(text, api) {
+  run(text, api) {
     const { showPage, esc } = api || {};
-    const html = cardHtml(esc || escapeHtml, text);
-    if (typeof showPage === 'function') {
-      const el = showPage((p) => { p.innerHTML = '<h2>Client handoff</h2><div class="sub">building…</div>'; });
-      if (el) el.innerHTML = html; // void-review: ok (cardHtml escapes the ask before this string is written)
-    }
+    const html = cardHtml(esc, text);
+    if (typeof showPage === 'function') showPage((el) => { el.innerHTML = html; }); // void-review: ok (cardHtml escapes the ask)
     return 'client-handoff';
-  },
-  suite() {
-    const ok = EXAMPLES.every(isClientHandoff) && NEAR.every((a) => !isClientHandoff(a));
-    return { ok, got: ok ? 'match works' : 'match broke' };
   },
 };
