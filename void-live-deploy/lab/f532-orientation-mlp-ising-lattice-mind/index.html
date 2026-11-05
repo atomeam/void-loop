@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#000; }
+#overlay { position:absolute; top:8px; left:8px; background:rgba(0,0,0,.7); padding:8px 12px; border-radius:6px; font-size:13px; max-width:280px; }
+button { margin:2px; padding:4px 8px; background:#333; color:#fff; border:1px solid #555; border-radius:4px; cursor:pointer; }
+button:hover { background:#444; }
+.card { position:absolute; width:90px; height:70px; background:#222; border:2px solid #666; border-radius:8px; padding:6px; font-size:11px; cursor:grab; user-select:none; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+.card:active { cursor:grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-MLP Ising Lattice Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a 2D Ising model lattice (previously unused kernel: Metropolis-Hastings spin flips with nearest-neighbor energy, ferromagnetic coupling, external">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-MLP Ising Lattice Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a 2D Ising model lattice (previously unused kernel: Metropolis-Hastings spin flips with nearest-neighbor energy, ferromagnetic coupling, external">
+<meta property="og:url" content="https://a-to-mind.com/lab/f532-orientation-mlp-ising-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f532-orientation-mlp-ising-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="overlay">
+  <div><strong>Verse Ising Mind</strong></div>
+  <div id="status">Initializing…</div>
+  <button id="oriBtn">Enable Orientation</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="resetBtn">Reset Lattice</button>
+  <button id="fitBtn">Fitness: |M|</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-MLP Ising Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

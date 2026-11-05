@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; right:8px; z-index:10; display:flex; gap:12px; align-items:center; flex-wrap:wrap; background:rgba(0,0,0,.5); padding:8px; border-radius:8px; }
+button { background:#222; color:#fff; border:1px solid #555; padding:6px 10px; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#status { font-size:12px; opacity:.8; }
+svg { width:100vw; height:100vh; display:block; }
+.agent-bar { height:6px; background:#333; width:60px; border-radius:3px; overflow:hidden; }
+.agent-fill { height:100%; transition:width .2s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation k-NN SVG Morph Swarm · Verse lab</title>
+<meta name="description" content="A living SVG path (closed polygonal &quot;body&quot;) is the hybrid embodied form on the Verse canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation k-NN SVG Morph Swarm · Verse lab">
+<meta property="og:description" content="A living SVG path (closed polygonal &quot;body&quot;) is the hybrid embodied form on the Verse canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0492-orientation-knn-svg-morph-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0492-orientation-knn-svg-morph-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <div>F0492 k-NN SVG Morph — tilt or move pointer | R reward dominant | S seal</div>
+  <button id="reward">Reward Dominant</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">init</div>
+  <div id="bars"></div>
+</div>
+<svg id="svg" viewBox="-1.2 -1.2 2.4 2.4">
+  <path id="body" fill="none" stroke="#7af" stroke-width="0.015" />
+  <circle id="center" cx="0" cy="0" r="0.02" fill="#fff" />
+</svg>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation k-NN SVG Morph Swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

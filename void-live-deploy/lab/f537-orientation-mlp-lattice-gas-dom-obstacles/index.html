@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  .card { position: absolute; width: 120px; height: 80px; background: rgba(80,160,255,0.25); border: 2px solid #4af; border-radius: 8px; cursor: grab; user-select: none; display: flex; align-items: center; justify-content: center; font-size: 12px; backdrop-filter: blur(4px); }
+  .card:active { cursor: grabbing; }
+  #ui { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; z-index: 10; }
+  button { margin: 4px; padding: 6px 12px; background: #224; color: #adf; border: 1px solid #46a; border-radius: 4px; cursor: pointer; }
+  button:disabled { opacity: 0.4; }
+  #status { margin-top: 6px; font-variant-numeric: tabular-nums; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-Modulated Lattice Gas DOM Obstacles Mind · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: a discrete lattice-gas automaton (LGA / simplified FHP-style multi-speed streaming + binary collisions) evolved on a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-Modulated Lattice Gas DOM Obstacles Mind · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: a discrete lattice-gas automaton (LGA / simplified FHP-style multi-speed streaming + binary collisions) evolved on a">
+<meta property="og:url" content="https://a-to-mind.com/lab/f537-orientation-mlp-lattice-gas-dom-obstacles/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f537-orientation-mlp-lattice-gas-dom-obstacles/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div>F537 Lattice Gas · Orientation MLP · DOM Obstacles</div>
+  <button id="seal" disabled>Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">init…</div>
+</div>
+<div class="card" id="c1" style="left:20%;top:30%">obstacle A</div>
+<div class="card" id="c2" style="left:55%;top:50%">obstacle B</div>
+<div class="card" id="c3" style="left:35%;top:70%">obstacle C</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-Modulated Lattice Gas DOM Obstacles Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

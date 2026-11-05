@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; top:0; left:0; z-index:1; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #55f; border-radius:4px; cursor:pointer; }
+.host { position:absolute; width:90px; height:70px; background:#133; border:2px solid #4f4; border-radius:8px; color:#fff; font-size:11px; padding:4px; z-index:5; cursor:grab; box-shadow:0 0 8px #0f0; transition:transform 0.1s; }
+.host.I { border-color:#f44; background:#311; box-shadow:0 0 8px #f00; }
+.host.R { border-color:#44f; background:#113; box-shadow:0 0 8px #00f; }
+#status { font-size:12px; margin-top:8px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-MLP SIR Lattice DOM Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a discrete lattice of Susceptible-Infected-Recovered (SIR) epidemic dynamics (previously unused kernel: stochastic contact-process infection and">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-MLP SIR Lattice DOM Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a discrete lattice of Susceptible-Infected-Recovered (SIR) epidemic dynamics (previously unused kernel: stochastic contact-process infection and">
+<meta property="og:url" content="https://a-to-mind.com/lab/f531-orientation-mlp-sir-lattice-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f531-orientation-mlp-sir-lattice-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <h3>F531 SIR Lattice Mind</h3>
+  <button id="orientBtn">Enable Orientation</button>
+  <button id="sealBtn">Seal Genome</button>
+  <button id="resetBtn">Reset</button>
+  <div id="status">Loading...</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-MLP SIR Lattice DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
