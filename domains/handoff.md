@@ -77,6 +77,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Glass stylesheet, not blocking (cursor, 2026-11-05)**: the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen.
 - **Phone polish (cursor, 2026-11-05)**: at 390 px the current nav item stays fully in the bar, /compare/ with no floor lists floors instead of a blank white frame, and a credit's license stays on the screen. Chrome no longer warns about bluetooth on every page. https://github.com/atomeam/void-loop/pull/2276
 - **Glass tool pages (cursor, 2026-11-05)**: hand-built and generated tool pages, the fix pages and is-it opt into the shared glass in verse.css. Each page keeps its own layout, and an accent kept on the device still wins. https://github.com/atomeam/void-loop/pull/2277
 - **Bot families and salvage (cursor, 2026-11-05)**: 23 more languages (4,290 phrasebooks), nine keyless APIs, an encoding checker for every pair, and a drug-name check across openFDA and RxNorm. The next ten salvage pieces are bots, including pinned english-words and ODbL countries URLs. Registry live count 11,749 to 16,793, none failed. https://github.com/atomeam/void-loop/pull/2275

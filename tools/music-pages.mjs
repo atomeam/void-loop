@@ -263,7 +263,7 @@ const hubNav = (cur) => `<nav id="mnav" aria-label="Music tools">${NAV.map(([h, 
 export function pageHtml(key) {
   const p = PAGES[key], dir = p.path;
   return `<!doctype html>
-<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
