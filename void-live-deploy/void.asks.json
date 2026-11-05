@@ -2264,7 +2264,7 @@
   ],
   "totals": {
     "asked": 259,
-    "built": 240,
+    "built": 241,
     "through": "2026-11-05T00:18:00Z",
     "open": [
       {
@@ -2390,11 +2390,6 @@
         "ask": "Implement a clear, useful answer for 'what can you do' for visitors.",
         "at": "2026-11-04T20:54:00Z",
         "kind": "build",
-        "small": false,
-        "times": 1
-      },
-      {
-        "ask": "Fix the timers exam failures by handling duration requests such as 'add one minute'.",
         "small": false,
         "times": 1
       }

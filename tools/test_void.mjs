@@ -11552,6 +11552,35 @@ try {
   // the convert card (asked by Verse, 2026-10-14): "unit converter" puts a converter on the stage that converts both ways,
   // swaps, lists every other unit of the kind, keeps its kind, units and number across a reload, and puts itself away;
   // one-off asks ("5 miles in km") and other converters (currency, pdf, time zone) are not its.
+  // Site tester issues #2222 #2225 #2228: on a loaded runner "yo play despacito", "films by kurosawa pls" and "keep this idea: ... | why: ..."
+  // showed nothing for the tester's 4 s, then the answer: their skills rank 192nd, 182nd and 248th of the index, so a first ask waits for
+  // most of it to load, and the fuzzy wait (up to 2.5 s) came before any word on the page. With the CPU 6x slower and no skill loaded yet
+  // (no idle, no key, no tap before the ask is typed), each ask now says "waking up" within 1.2 s and then gets its own skill's answer.
+  if (want("first ask while the skills load (#2222 #2225 #2228): a word at once, then the right skill")) {
+    const ASKS = [['yo play despacito', /^skill:video-play$/], ['films by kurosawa pls', /^skill:film-metadata$/], ['keep this idea: a stage that remembers | why: it makes coming back feel like home', /^skill:idea-certificate$/]];
+    const rows = [];
+    for (const [a, note] of ASKS) {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+      await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+      const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p);
+      await p.addInitScript(() => { window.requestIdleCallback = () => 0; }); // no idle start: the ask is the first thing that wakes the skills
+      await p.goto(base); await p.waitForSelector('#input');
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+      const loadedAtAsk = await p.evaluate(() => document.documentElement.dataset.skills === 'ready');
+      await p.fill('#input', a); await p.keyboard.press('Enter'); const t0 = Date.now();
+      const first = await until(() => p.evaluate(() => (document.getElementById('whisper').textContent || '').trim() || (document.querySelector('.vpage.on') ? 'page' : '')).catch(() => ''), 1200);
+      const firstMs = first ? Date.now() - t0 : null;
+      const done = await until(() => p.evaluate((q) => { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => x.ask === q).pop(); return l ? String(l.note) : ''; }, a).catch(() => ''), 30000);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      const ms = done ? Date.now() - t0 : null, w = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+      rows.push({ a: a.slice(0, 24), loadedAtAsk, first, firstMs, note: done || null, ms, right: note.test(String(done)), w });
+      await ctx.close();
+    }
+    check('first ask while the skills load (#2222 #2225 #2228): with the CPU 6x slower and no skill loaded yet, "yo play despacito", "films by kurosawa pls" and "keep this idea: ... | why: ..." each say something within 1.2 s of Enter, then are answered by video-play, film-metadata and idea-certificate, and no "waking up" is left behind',
+      rows.every((r) => !r.loadedAtAsk && r.first && r.firstMs != null && r.firstMs <= 1200 && r.right && r.w !== 'waking up'), JSON.stringify(rows));
+  }
+
   if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
     const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
     const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'
