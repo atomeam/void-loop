@@ -62,5 +62,8 @@
 {"name":"Fruityvice","author":"Fruityvice","license":"Free, no key","link":"https://www.fruityvice.com/","used":"/bots/ free API bots: api-fruit-nutrition","api":true},
 {"name":"Frankfurter","author":"lineofflight","license":"MIT","link":"https://github.com/lineofflight/frankfurter","used":"/bots/ currency-pair family (bots/fx-pairs.js); rates are the European Central Bank reference rates"},
 {"name":"Nager.Date","author":"nager","license":"MIT","link":"https://github.com/nager/Nager.Date","used":"/bots/ public-holiday family (bots/holidays.js)"},
-{"name":"Wikidata","author":"Wikimedia contributors","license":"CC0-1.0","link":"https://www.wikidata.org/wiki/Wikidata:Licensing","used":"/bots/ country-facts family (bots/country-facts.js)"}
+{"name":"Wikidata","author":"Wikimedia contributors","license":"CC0-1.0","link":"https://www.wikidata.org/wiki/Wikidata:Licensing","used":"/bots/ country-facts family (bots/country-facts.js)"},
+{"name":"simple-icons","author":"simple-icons","license":"CC0-1.0","link":"https://github.com/simple-icons/simple-icons","used":"/bots/ (simple-icon-url): one pinned SVG URL, the icon file stays on the CDN"},
+{"name":"Tabler Icons","author":"tabler","license":"MIT","link":"https://github.com/tabler/tabler-icons","used":"/bots/ (tabler-icon-url): one pinned SVG URL, the icon file stays on the CDN"},
+{"name":"open-meteo/open-meteo","author":"open-meteo","license":"AGPL-3.0","link":"https://github.com/open-meteo/open-meteo","used":"/bots/ (api-weather-now) calls the weather API as a separate service; the AGPL program is not mixed into Verse"}
 ]
