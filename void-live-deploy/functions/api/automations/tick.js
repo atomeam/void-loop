@@ -5,10 +5,14 @@
 import { ownerOk } from '../../../lib/guard.js';
 import { tick } from '../../../lib/automations-run.js';
 import { crewTick } from '../../../lib/team-crew-run.js';
+import { dueReport } from '../../../lib/verse-runs.js';
 
 export async function onRequestPost({ request, env, waitUntil }) {
   if (!(await ownerOk(request, env))) return new Response('no', { status: 401 });
   const crew = () => crewTick(env).catch(() => null);
   if (typeof waitUntil === 'function') waitUntil(crew());
-  try { return Response.json(await tick(env)); } catch (_) { return new Response('tick error', { status: 500 }); }
+  try {
+    const body = await tick(env);
+    return Response.json({ ...body, verseRuns: dueReport(new Date()) });
+  } catch (_) { return new Response('tick error', { status: 500 }); }
 }

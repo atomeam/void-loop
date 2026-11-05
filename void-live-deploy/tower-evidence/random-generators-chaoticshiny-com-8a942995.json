@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 112,
-   "best": 1066,
-   "evidence": "Verse (/generators/) 112 ms to the load event (median of 3, phone width) vs chaoticshiny.com 1066 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "verse": 169,
+   "best": 379,
+   "evidence": "Verse (/generators/) 169 ms to the load event (median of 3, phone width) vs chaoticshiny.com 379 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/generators/) 3 of 3 loads answered vs chaoticshiny.com 3 of 3 loads answered",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/generators/) 0 px sideways overflow at 390 px vs chaoticshiny.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 2,
    "evidence": "Verse (/generators/) 0 unnamed controls or images vs chaoticshiny.com 2 unnamed controls or images",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/generators/) 1 (1: the page shows itself again with the network cut) vs chaoticshiny.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 0,
    "evidence": "Verse (/generators/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chaoticshiny.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/generators/) 2 of 2 right against the worked-out answer; judged against the standard, not chaoticshiny.com (the site is not asked)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 2
   },
   "design polish": {
    "verdict": "better",
    "verse": 4,
    "best": 89,
-   "evidence": "Verse (/generators/) 4 design defects vs chaoticshiny.com 89 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.01), chaoticshiny.com (0 low-contrast texts, 89 small tap targets, layout shift 0.00)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "evidence": "Verse (/generators/) 4 design defects vs chaoticshiny.com 89 design defects: Verse (0 low-contrast texts, 4 small tap targets, layout shift 0.00), chaoticshiny.com (0 low-contrast texts, 89 small tap targets, layout shift 0.00)",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   },
   "generator catalogue": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/generators/) 1 of 1 shown vs chaoticshiny.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/generators/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 1,
    "part": true
   },
@@ -99,7 +99,7 @@
    "verse": 16,
    "best": 3,
    "evidence": "Verse (/generators/) 16 of 16 things a full answer shows vs chaoticshiny.com 3 of 16 things a full answer shows (Verse lacks: none; site lacks: a count of results, regenerate, copy, a share link, a seed, picture it, works offline, Plain lists, Odds / weights ^, Inline choices {a|b|c}, Ranges {1-10} {a-z}, Smart article {a} and plural {s}, Hierarchical / nested lists)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 16,
    "siteRead": true
   },
@@ -108,7 +108,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/generators/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 2,
    "part": true
   },
@@ -117,7 +117,7 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/generators/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "of": 4,
    "part": true
   },
@@ -126,7 +126,7 @@
    "verse": 8,
    "best": 4.5,
    "evidence": "Verse (/generators/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs chaoticshiny.com 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T15:06:13.562Z",
+   "at": "2026-11-05T15:12:19.070Z",
    "siteRead": true
   }
  }
