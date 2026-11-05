@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 85,
-   "best": 1521,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 85 ms to the load event (median of 3, phone width) vs flashscore.com 1521 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "verse": 109,
+   "best": 1851,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 109 ms to the load event (median of 3, phone width) vs flashscore.com 1851 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs flashscore.com 3 of 3 loads answered",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,15 +22,15 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs flashscore.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "accessibility": {
-   "verdict": "equal-and-better",
+   "verdict": "better",
    "verse": 0,
-   "best": 0,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs flashscore.com 0 unnamed controls or images",
-   "at": "2026-11-05T09:06:25.183Z",
+   "best": 2,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs flashscore.com 2 unnamed controls or images",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs flashscore.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs flashscore.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not flashscore.com (the site is not asked)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "of": 3
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
-   "best": 207,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs flashscore.com 207 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), flashscore.com (83 low-contrast texts, 124 small tap targets, layout shift 0.06)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "best": 192,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs flashscore.com 192 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), flashscore.com (66 low-contrast texts, 126 small tap targets, layout shift 0.08)",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   },
   "live scores": {
@@ -70,7 +70,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "of": 3,
    "part": true
   },
@@ -79,7 +79,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "of": 3,
    "part": true
   },
@@ -88,7 +88,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "of": 3,
    "part": true
   },
@@ -97,16 +97,16 @@
    "verse": 18,
    "best": 9,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 18 of 19 things a full answer shows vs flashscore.com 9 of 19 things a full answer shows (Verse lacks: Start/sit and trade comparator; site lacks: my teams, a share link, the source named, delayed data said, no betting, Formula 1, Live scoreboard, Box scores, Favourites, Start/sit and trade comparator)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "at": "2026-11-05T15:51:17.519Z",
    "of": 19,
    "siteRead": true
   },
   "wider use": {
    "verdict": "better",
    "verse": 8.5,
-   "best": 5,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs flashscore.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T09:06:25.183Z",
+   "best": 5.5,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs flashscore.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-05T15:51:17.519Z",
    "siteRead": true
   }
  }
