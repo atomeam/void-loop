@@ -2,7 +2,7 @@
 // the skill takes before the page. Run: node --test tools/timer.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseDuration, alarmMs, isDurationRequest, wantsCreate, plainTimer, durationLabel, unitlessAmount } from '../void-live-deploy/skills/timer.js';
+import { parseDuration, alarmMs, isDurationRequest, wantsCreate, plainTimer, durationLabel, unitlessAmount, hourglassOn } from '../void-live-deploy/skills/timer.js';
 import timer from '../void-live-deploy/skills/timer.js';
 
 test('timer: lengths in words and numbers, together, and a bare number of minutes', () => {
@@ -56,6 +56,12 @@ test('timer: "timer for 5" asks minutes or seconds instead of starting five minu
   assert.equal(plainTimer('timer for 5'), false);
   assert.equal(timer.match('timer for 5', 'timer for 5'), true);
   assert.equal(timer.match('set a timer for 90 seconds', 'set a timer for 90 seconds'), true);
+});
+
+test('timer: the hourglass stays off a phone so the 45-second card does not stick out', () => {
+  assert.equal(hourglassOn({ clientWidth: 390 }), false);
+  assert.equal(hourglassOn({ clientWidth: 800 }), true);
+  assert.equal(hourglassOn(null), true);
 });
 
 test('timer: "add one minute" grows the timer and the answer names its new length (exam: 90 s + 1 min = 2:30)', async () => {

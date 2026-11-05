@@ -22,6 +22,13 @@ function amt(s, unit) {
 }
 const MONEY = '\\$?\\s*(\\d[\\d,]*(?:\\.\\d+)?)\\s*(k|m|mil|million|thousand|grand|billion)?\\b(?:\\s*(?:dollars|bucks|usd))?';
 const PERIOD = '(?:a|an|per|each|every)\\s+(day|week|fortnight|month|year)';
+// compiled once: match() runs on every ask, and new RegExp inside parse rebuilt these each time (issue #2296)
+const ADD_RE = new RegExp('\\b(?:save|saving|put(?:ting)? away|put aside|set aside|invest(?:ing)?|deposit(?:ing)?|contribut(?:e|ing)|add(?:ing)?|put in)\\s+' + MONEY + '\\s+' + PERIOD);
+const ADD_TAIL_RE = new RegExp(MONEY + '\\s+' + PERIOD + '\\s+(?:in(?:to)?\\s+)?(?:savings|saved|invested|deposits?|contributions?|into (?:savings|an? (?:account|ira|401k|roth|fund|index fund)))');
+const ADD_WITH_RE = new RegExp('\\b(?:with|and)\\s+' + MONEY + '\\s+' + PERIOD);
+const START_RE = new RegExp('\\b(?:start(?:ing)? with|i have|i\'ve got|already (?:have|saved)|with|initial(?:ly)?(?: deposit(?: of)?)?|invest|deposit|put)\\s+' + MONEY + '(?!\\s+(?:a|an|per|each|every)\\s+(?:day|week|fortnight|month|year))(?:\\s+(?:saved|now|today|already|up front|upfront|to start|in savings))?');
+const GOAL_RE = new RegExp('\\b(?:to (?:have|reach|get to|hit|save up|save|build|end up with)|reach|hit|get to|goal of|until i have|for a)\\s+(?:a\\s+)?' + MONEY);
+const HOW_LONG_RE = new RegExp('\\bhow long (?:will it take |would it take |does it take |to |till |until )?(?:me )?(?:to )?(?:save|reach|have|get)\\s+(?:up\\s+)?' + MONEY);
 
 function parse(text) {
   const raw = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -29,12 +36,10 @@ function parse(text) {
   if (/\b(remind|calendar|schedule|mortgage|loan|payoff|pay off|debt|tip|mpg|gas cost|split|calories|steps|sleep|minutes?|hours?)\b/.test(t)) return null;
   const q = { raw, start: 0, add: NaN, per: 'month', years: NaN, rate: NaN, goal: NaN, want: 'grow' };
 
-  let m = t.match(new RegExp('\\b(?:save|saving|put(?:ting)? away|put aside|set aside|invest(?:ing)?|deposit(?:ing)?|contribut(?:e|ing)|add(?:ing)?|put in)\\s+' + MONEY + '\\s+' + PERIOD))
-    || t.match(new RegExp(MONEY + '\\s+' + PERIOD + '\\s+(?:in(?:to)?\\s+)?(?:savings|saved|invested|deposits?|contributions?|into (?:savings|an? (?:account|ira|401k|roth|fund|index fund)))'))
-    || t.match(new RegExp('\\b(?:with|and)\\s+' + MONEY + '\\s+' + PERIOD));
+  let m = t.match(ADD_RE) || t.match(ADD_TAIL_RE) || t.match(ADD_WITH_RE);
   if (m) { q.add = amt(m[1], m[2]); q.per = m[3]; }
 
-  m = t.match(new RegExp('\\b(?:start(?:ing)? with|i have|i\'ve got|already (?:have|saved)|with|initial(?:ly)?(?: deposit(?: of)?)?|invest|deposit|put)\\s+' + MONEY + '(?!\\s+(?:a|an|per|each|every)\\s+(?:day|week|fortnight|month|year))(?:\\s+(?:saved|now|today|already|up front|upfront|to start|in savings))?'));
+  m = t.match(START_RE);
   if (m && !(m[1] && Number.isFinite(q.add) && amt(m[1], m[2]) === q.add && !/start|have|got|initial|already/.test(m[0]))) q.start = amt(m[1], m[2]);
   if (m && /^(?:invest|deposit|put)\b/.test(m[0]) && Number.isFinite(q.add) && amt(m[1], m[2]) === q.add) q.start = 0;
 
@@ -45,8 +50,8 @@ function parse(text) {
   m = t.match(/\b(?:for|over|in|after)\s+(\d{1,2}|a|one|two|three|four|five|six|seven|eight|nine|ten|fifteen|twenty|thirty|forty)\s+(years?|months?)\b/);
   if (m) { const n = WORDS[m[1]] || parseInt(m[1], 10); q.years = /^month/.test(m[2]) ? n / 12 : n; }
 
-  m = t.match(new RegExp('\\b(?:to (?:have|reach|get to|hit|save up|save|build|end up with)|reach|hit|get to|goal of|until i have|for a)\\s+(?:a\\s+)?' + MONEY));
-  if (!m && /\bhow long\b/.test(t)) m = t.match(new RegExp('\\bhow long (?:will it take |would it take |does it take |to |till |until )?(?:me )?(?:to )?(?:save|reach|have|get)\\s+(?:up\\s+)?' + MONEY));
+  m = t.match(GOAL_RE);
+  if (!m && /\bhow long\b/.test(t)) m = t.match(HOW_LONG_RE);
   if (m) q.goal = amt(m[1], m[2]);
 
   const asksHowLong = /\bhow long\b|\bhow many (?:years|months)\b|\bwhen will i (?:have|reach|hit)\b/.test(t);
@@ -61,6 +66,20 @@ function parse(text) {
   if (q.want !== 'monthly' && !(q.add > 0)) return null;
   if (q.want !== 'grow' && !(q.goal > 0)) return null;
   return q;
+}
+// match() and run() both parse the same ask. One result is kept, so the second call does not walk the patterns again.
+let parsedKey = null, parsedVal = undefined;
+function parsed(text) {
+  const key = String(text ?? '');
+  if (key === parsedKey) return parsedVal;
+  parsedKey = key;
+  parsedVal = parse(key);
+  return parsedVal;
+}
+// the coin stacks and the piggy bank pull in the 3D engine. The numbers are already on the card; the picture waits a frame.
+function afterPaint(fn) {
+  if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => { try { fn(); } catch (_) {} });
+  else setTimeout(fn, 0);
 }
 
 // monthly compounding, end-of-month deposits; `monthly` is the deposit converted to a monthly amount
@@ -139,7 +158,7 @@ function render(q, api) {
       const at = page.querySelector('table'); if (at) at.before(slot); else page.appendChild(slot);
       // the 3D piece is this card's picture (as coin.js's coins are): the art plate steps aside, or its 330 px push the piece below the card's fold, where it never draws; if WebGL fails the slot goes and the plate comes back
       slot.insertAdjacentHTML('beforebegin', '<style>.vpage:has(.savings-mini) .vc-art{display:none}</style>'); /* void-review: ok: a fixed style, nothing from the ask */
-      api.stage.miniature(slot, 'savings', { cols }, { key: 'savings-page', place: 'inside', label: '3D coin stacks: what you put in and what growth added' }).catch(() => slot.remove());
+      afterPaint(() => api.stage.miniature(slot, 'savings', { cols }, { key: 'savings-page', place: 'inside', label: '3D coin stacks: what you put in and what growth added' }).catch(() => slot.remove()));
     }
   }
   // a goal: a glass piggy bank fills from where you start to the goal (skills/mini/piggybank.js), silver paid in, gold growth
@@ -156,7 +175,8 @@ function piggyMini(api, page, data) {
   if (!api.stage || !api.stage.miniature) return null;
   const slot = document.createElement('div'); slot.className = 'vmini'; slot.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 168 : 200) + 'px;margin:0 0 6px';
   page.prepend(slot);
-  return api.stage.miniature(slot, 'piggybank', data, { key: 'piggybank:' + Date.now().toString(36), label: '3D glass piggy bank filling toward the goal' }).catch(() => { slot.remove(); return null; });
+  const draw = () => api.stage.miniature(slot, 'piggybank', data, { key: 'piggybank:' + Date.now().toString(36), label: '3D glass piggy bank filling toward the goal' }).catch(() => { slot.remove(); return null; });
+  return typeof requestAnimationFrame === 'function' ? new Promise((res) => requestAnimationFrame(() => res(draw()))) : draw();
 }
 
 const isCalcAsk = (text) => /^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:savings?|compound\s+interest|investment|retirement\s+savings|savings\s+goal)\s+calculator$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
@@ -186,11 +206,11 @@ function runCalc(api) {
 
 async function run(text, api) {
   if (isCalcAsk(text)) return runCalc(api);
-  const q = parse(text);
+  const q = parsed(text);
   return q ? render(q, api) : 'none';
 }
 
-export const _test = { parse, grow, monthsTo, monthlyFor };
+export const _test = { parse, grow, monthsTo, monthlyFor, res: { ADD_RE, START_RE, GOAL_RE } };
 export default {
   name: 'savings',
   examples: [
@@ -208,6 +228,6 @@ export default {
     'save this note',
     'how much is 5 dollars a day for a year'
   ],
-  match(lower, text) { return isCalcAsk(text) || !!parse(text); },
+  match(lower, text) { return isCalcAsk(text) || !!parsed(text); },
   run
 };

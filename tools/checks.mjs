@@ -331,6 +331,7 @@ for (const [name, file] of [
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
+  ['suite-gate', 'suite-gate.test.mjs'],
   ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'], ['studies-api', 'studies-api.test.mjs'],
   ['review-api', 'review-api.test.mjs'], ['review-pr', 'review-pr.test.mjs'],
   ['go', 'go.test.mjs'],
@@ -379,6 +380,7 @@ for (const [name, file] of [
   ['operating-laws', 'operating-laws.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
+  ['savings-load', 'savings-load.test.mjs'], // issue #2296: the million-in-30-years ask stays in the site tester, and the worker prefetches a few pages at a time
   ['fresh-scripts', 'fresh-scripts.test.mjs'], // a deploy reaches a returning browser's scripts on every page: sw.js asks again for each script, visit.js asks again after load where no worker is in control
   ['under-the-hood', 'under-the-hood.test.mjs'], // /under-the-hood/ shows only live numbers with no inline script; speculation rules never touch the API or home; a prerendered page counts once opened
   ['explainers', 'explainers.test.mjs'],
@@ -557,6 +559,12 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['systems-monitor', 'systems-monitor.test.mjs'],
+  ['system-blueprint', 'system-blueprint.test.mjs'],
+  ['client-handoff', 'client-handoff.test.mjs'],
+  ['system-handoff', 'system-handoff.test.mjs'],
+  ['verse-runs', 'verse-runs.test.mjs'],
+  ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],
   ['guide', 'guide.test.mjs'],
   ['web4', 'web4.test.mjs'],

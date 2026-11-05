@@ -85,6 +85,12 @@ export const CHECK_OWNERS = Object.freeze([
   { re: /^self grounding\b/, skill: 'know', files: ['functions/api/answer.js', 'lib/ground.js'] },
   { re: /^semantic validator\b/, family: 'self', owner: 'the semantic validator', files: ['lib/ground.js', 'skills/recipe.js'] },
   { re: /^what you told me\b/, skill: 'memory', files: ['skills/memory.js', 'functions/api/answer.js'] },
+  { re: /^game panel fits\b/, skill: 'chess', files: ['skills/chess.js', 'skills/howto.js'] },
+  { re: /^clear all the notes\b/, skill: 'sticky', files: ['skills/sticky.js'] },
+  { re: /^skills\b/, family: 'self', owner: 'the skill list', files: ['skills/index.json'] },
+  { re: /^tools pack 8\b/, skill: 'safety-kit', files: ['skills/safety-kit.js'] },
+  { re: /^will\b/, skill: 'wants', files: ['lib/will-guard.js', 'functions/api/will.js'] },
+  { re: /^subtitles\b/, skill: 'media-object', files: ['skills/media-object.js', 'lib/media-local.js'] },
 ]);
 /** the CHECK_OWNERS row of a check, or null. Pure. */
 export const ownerOfCheck = (check) => { const t = titleOf(check); return CHECK_OWNERS.find((o) => o.re.test(t)) || null; };
@@ -99,7 +105,7 @@ export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|
 /** how many red suites must share the stall (the "check timeout" signature) before it is escalated as a real incident (asked by Verse: "telemetry
  *  only escalates to an incident if the timeout signature repeats across N samples"): one stalled run is a busy machine; three is a pattern. */
 export const STALL_REPEAT = 3;
-export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
+export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end|suite budget)\b/i.test(String(check || '').trim());
 
 /** an incident's failure signature (asked by Verse: "a 'failure-signature' into the incident-autopsy skill so it can distinguish ... a genuine
  *  system error"): whether its failing checks are new or already failed on earlier commits, from incidents.json alone. kind: 'new' (none of its
