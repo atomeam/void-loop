@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/family-gaps-f90f · the sixteen short family skills earn proven from a real test and an ask each one answers · 2026-11-05 16:20 UTC
 - Cursor cloud agent · helper/selfcheck-edge-f90f · the page-check report is kept in the edge cache, so Verse writes no KV · 2026-11-05 15:55 UTC
 - Cursor cloud agent · helper/range-diff-f90f · the diff between two commits lists the files, the failed jobs at each end, and the assertion lines from the earlier log · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/emojigraph-tower-f90f · emojigraph.org stays a lane page, and that page is kept so it opens again with the network cut · 2026-11-05 15:05 UTC

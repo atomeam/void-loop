@@ -84,11 +84,23 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
 }
 
+/** the one ask this card answers. The extension's panel still puts the card up on its own, with no ask. */
+export function tabAsk(text) {
+  return /^(?:please\s+)?(?:show|open)\s+(?:me\s+)?this tab$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
+
+async function run(text, api) {
+  if (!tabAsk(text)) return 'none';
+  if (api && api.summon) api.summon('tab', { center: true });
+  if (api && api.say) api.say('This tab, in this browser.');
+  return 'tab';
+}
+
 export default {
   name: 'tab',
-  examples: [],
-  nearMisses: [],
-  match() { return false; }, // nothing to ask: the extension's panel puts the card up
-  async run() { return 'none'; },
+  examples: ['show this tab'],
+  nearMisses: ['open a new tab', 'draft a reply'],
+  match(lower, text) { return tabAsk(text || lower); },
+  run,
   stageKinds: { tab: { mount } },
 };

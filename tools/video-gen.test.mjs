@@ -152,6 +152,8 @@ test('the stage card: "animate <words>" is the video card with the words, a pict
   const { clipWords, default: sk } = await import('../void-live-deploy/skills/video-gen.js');
   assert.equal(clipWords('animate a cat chasing yarn'), 'a cat chasing yarn');
   assert.equal(clipWords('Animate waves on a beach!'), 'waves on a beach');
+  assert.equal(clipWords('animate a red balloon rising'), 'a red balloon rising');
+  assert.equal(sk.match('animate a red balloon rising'), true);
   for (const no of ['animate a picture', 'animate my photo', 'animate this image', 'animate', 'play a video of a cat']) assert.equal(sk.match(no.toLowerCase(), no), false, no);
   const { PAGE_OF, pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
   assert.deepEqual(PAGE_OF['video-gen'], ['/video/', 'AI video generator']);
