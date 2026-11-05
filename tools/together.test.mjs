@@ -3,6 +3,10 @@
 // trade, spar, inspect and argue, and says why. Run: node --test tools/together.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import skill, { offersOf, needsOf, choose, togetherAsk, KINDS } from '../void-live-deploy/skills/together.js';
 import { fallbackScript } from '../void-live-deploy/skills/scripts.js';
 
@@ -97,4 +101,75 @@ test('a pair across the stage walks the whole way and then has its full meeting;
   const w2 = { ...world, bounds: { l: 0, r: 8000, t: 0, b: 720 }, others: [far, gone] };
   let steps = 0; for (; steps < 1000 && far.together; steps++) stepFigure(far, 0.05, w2, rng); // the other never moves
   assert.equal(far.together, null, 'it gives up'); assert.ok(steps * 0.05 <= 21, 'within the walk limit: ' + steps * 0.05 + ' s');
+});
+
+// #2272: the site tester read only "waking up". together already owns the phrase. The page has to import that
+// one file before it says waking up, and the case stays in the site tester.
+test('the figures ask is answered before waking up, and the site tester still asks it', () => {
+  const ask = 'what are the figures doing';
+  assert.equal(skill.match(ask.toLowerCase(), ask), true);
+  const said = [];
+  const api = { say: (s) => said.push(s), stage: { things: () => ({}) } };
+  return skill.run(ask, api).then((src) => {
+    assert.equal(src, 'together');
+    assert.match(said.join('\n'), /summon two figures/);
+    const page = readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+    const early = page.indexOf('/skills/together.js');
+    const wake = page.indexOf("say('waking up')");
+    assert.ok(early > 0 && wake > early, 'together is imported before the page says waking up');
+    const suite = JSON.parse(readFileSync(new URL('./site-test.json', import.meta.url), 'utf8'));
+    assert.ok(suite.cases.some((c) => c.ask === ask), 'the site-test case stays');
+  });
+});
+
+// Hold the skill index back. The answer has to come from together.js itself, while data-skills is not ready.
+const CHROME = process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || ['/usr/bin/google-chrome', '/usr/bin/chromium', '/opt/pw-browsers/chromium'].find((p) => existsSync(p));
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
+
+test('what are the figures doing answers while the skill index is still loading', { timeout: 30000 }, async (t) => {
+  if (!CHROME) { t.skip('no Chrome to load the page'); return; }
+  // optional dependency: the pure tests above still run where the browser package is not installed
+  let chromium;
+  try { ({ chromium } = await import('playwright-core')); } catch (_) { t.skip('playwright-core is not installed'); return; }
+  const root = fileURLToPath(new URL('../void-live-deploy/', import.meta.url));
+  const held = new Set();
+  const server = createServer((req, res) => {
+    const path = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
+    if (path.includes('..')) { res.writeHead(400); res.end(); return; }
+    const rel = path === '/' ? '/index.html' : path;
+    const file = join(root, rel);
+    if (!file.startsWith(root) || !existsSync(file) || statSync(file).isDirectory()) { res.writeHead(404); res.end(); return; }
+    if (rel === '/skills/index.json') {
+      const timer = setTimeout(() => { if (res.writableEnded) return; res.writeHead(200, { 'content-type': 'application/json' }); res.end(readFileSync(file)); }, 20000);
+      held.add(timer); res.on('close', () => clearTimeout(timer)); return;
+    }
+    res.writeHead(200, { 'content-type': TYPES[extname(file)] || 'application/octet-stream' });
+    res.end(readFileSync(file));
+  });
+  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  const port = server.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME, headless: true });
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e.message || e)));
+  try {
+    await page.goto('http://127.0.0.1:' + port + '/', { waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.waitForSelector('#input', { timeout: 10000 });
+    await page.fill('#input', 'what are the figures doing');
+    await page.keyboard.press('Enter');
+    const text = await page.waitForFunction(() => {
+      const w = (document.getElementById('whisper') || {}).textContent || '';
+      return /summon two figures|no one to be with|keeps to itself|offers /i.test(w) ? w : false;
+    }, null, { timeout: 4000 }).then((h) => h.jsonValue());
+    const ready = await page.evaluate(() => document.documentElement.dataset.skills || '');
+    assert.notEqual(ready, 'ready', 'the rest of the skills are still loading');
+    assert.match(text, /summon two figures|no one to be with|keeps to itself|offers /);
+    assert.doesNotMatch(text, /waking up/);
+    assert.deepEqual(errors, []);
+  } finally {
+    await browser.close().catch(() => {});
+    for (const timer of held) clearTimeout(timer);
+    if (server.closeAllConnections) server.closeAllConnections();
+    await new Promise((r) => server.close(r));
+  }
 });

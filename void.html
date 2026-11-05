@@ -6385,6 +6385,27 @@ say('nothing selected to remove');
           }
         }
       }
+      // "what are the figures doing" is together. It is 44th, and the page still waits for every skill above it, then for
+      // the whole index, so on a loaded runner the site tester only ever reads "waking up" (#2272). One import, before that
+      // line, the same shape as constellation-weaver. No skill ranked above it takes this phrase.
+      if (/^what (?:are|would|will|might|do|could) (?:they|the figures|those two|these two|the two(?: of them)?|them)\b/i.test(typed.trim())) {
+        const mod = await Promise.race([import('/skills/together.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        const sk = mod && mod.default;
+        if (sk && sk.match && sk.match(typed.toLowerCase(), typed)) {
+          if (!skillsRunning) takeUndoSnapshot();
+          skillsRunning++;
+          let src = 'none';
+          try {
+            src = await sk.run(typed, { showPage, esc, say, reportMiss, loopLog, _pageStill: (el) => vpageEl === el, world: openWorld, summon: summonThing, stage: stageApi, refreshThings: () => render(), keepFresh });
+          } finally { skillsRunning--; }
+          if (src && src !== 'none') {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:together' });
+            return;
+          }
+        }
+      }
       // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
       // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
