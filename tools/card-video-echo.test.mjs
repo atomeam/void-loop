@@ -29,9 +29,13 @@ test('a redraw puts the same playing video element back and keeps it playing fro
   assert.equal(old.played, true, 'it plays on'); assert.equal(old.currentTime, 12.3, 'from the same spot');
 });
 
-test('render() keeps videos across every redraw (the drag start redraws)', () => {
+test('render() keeps videos across every redraw, and a drag does not redraw a card that is playing', () => {
   const r = grab('render');
   assert.match(r, /keepVideosTake\(stage\)[\s\S]*stage\.innerHTML = ''[\s\S]*keepVideosPut\(stage, vids\)/);
+  assert.match(r, /parkNode\(el\)/); // out of the document, innerHTML would start the clip over
+  const b = grab('bindDrag');
+  assert.match(b, /if \(!media\) render\(\)/); // a card with a video is not rebuilt on touch
+  assert.match(b, /holdsMedia/);
 });
 
 test('the answer card never echoes the whole input back', () => {

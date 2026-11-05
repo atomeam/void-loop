@@ -5,7 +5,7 @@ import { NAV, currentNav, commands, filterCommands, speculationRules, dressPath,
 
 function ensureChrome() {
   if (!dressPath(location.pathname) || document.getElementById('verse-nav')) return;
-  // the home page is the word and the input, nothing else (owner, 2026-11-04: "the words do not belong on verse homepage").
+  // the home page is the sky and the ask bar, nothing else (owner, 2026-11-05: no wordmark, no hero, no nav).
   // The pages it used to list are still on ⌘K (commands()), and a page is never left without a way back.
   if (location.pathname === '/') return;
   const header = document.createElement('header');

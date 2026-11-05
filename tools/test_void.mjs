@@ -7446,19 +7446,88 @@ try {
       && stale.video && !stale.review && !stale.asks && /^1 video, newest first\./.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
     await F.ctx.close(); }
 
-  // Verse's startup intro (owner, 2026-10-14: "a super professional brief Verse on startup"): the wordmark shows, typing works under
-  // it from the first frame, it is gone in under 2 s, and a test browser (or a link straight to an answer) never sees it unasked
-  if (want("Verse intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s")) {
-    const I = await fresh(); const p = I.p;
-    await p.goto(base + '?intro=1', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(700);
-    const mid = await p.evaluate(() => { const e = document.getElementById('v01d'); return e && { text: e.innerText.replace(/\s+/g, ''), on: getComputedStyle(e).visibility !== 'hidden', clicks: getComputedStyle(e).pointerEvents }; });
+  // the home is a blank stage (owner, 2026-11-05: the wordmark, the hero and the Install line are gone). A Short and a video
+  // card keep their place when they are touched, dragged or moved: a transform or a redraw was starting the clip over.
+  if (want("blank home and a video keeps its place")) {
+    // a one-second 16×16 silent clip, so the check plays a real file and can see the playhead move
+    const clip = 'GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAQlEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEeTbuMU6uEHFO7a1OsggQP7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiECPQAAAAAAAFlSua8GuAQAAAAAAADjXgQFzxYg4hMjKK782EZyBACK1nIN1bmSIgQCGhVZfVlA4g4EBI+ODhAJiWgDgibCBELqBEJqBAhJUw2f8c3OgY8CAZ8iaRaOHRU5DT0RFUkSHjUxhdmY2MC4xNi4xMDBzc9ZjwItjxYg4hMjKK782EWfIoUWjh0VOQ09ERVJEh5RMYXZjNjAuMzEuMTAyIGxpYnZweGfIoUWjiERVUkFUSU9ORIeTMDA6MDA6MDEuMDAwMDAwMDAwAB9DtnVCaueBAKO9gQAAgPACAJ0BKhAAEAAARwiFhYiFhIgCAgJ1qgP4A/oCDU0YAP79bvP/45k3MMT/jm3/8WE8DijI//FRAKOVgQAoALEBAAEQEAAYABhYL/QACAAAo5WBAFAAsQEAARAQABgAGFgv9AAIAACjlYEAeACxAQABEBAAGAAYWC/0AAgAAKOVgQCgALEBAAEQEAAYABhYL/QACAAAo5WBAMgAsQEAARAQABgAGFgv9AAIAACjlYEA8ACxAQABEBAAGAAYWC/0AAgAAKOVgQEYALEBAAEQEBRgAGFgv9AAIAAAo5WBAUAAsQEAARAQABgAGFgv9AAIAACjlYEBaACxAQABEBAAGAAYWC/0AAgAAKOVgQGQALEBAAEQEAAYABhYL/QACAAAo5WBAbgAsQEAARAQABgAGFgv9AAIAACjlYEB4ACxAQABEBAAGAAYWC/0AAgAAKOVgQIIALEBAAEQEAAYABhYL/QACAAAo5WBAjAAsQEAARAQABgAGFgv9AAIAACjlYECWACxAQABEBAAGAAYWC/0AAgAAKOVgQKAALEBAAEQEAAYABhYL/QACAAAo5WBAqgAsQEAARAQABgAGFgv9AAIAACjlYEC0ACxAQABEBAUYABhYL/QACAAAKOVgQL4ALEBAAEQEAAYABhYL/QACAAAo5WBAyAAsQEAARAQABgAGFgv9AAIAACjlYEDSACxAQABEBAAGAAYWC/0AAgAAKOVgQNwALEBAAEQEAAYABhYL/QACAAAo5WBA5gAsQEAARAQABgAGFgv9AAIAACjlYEDwACxAQABEBAAGAAYWC/0AAgAABxTu2uRu4+zgQC3iveBAfGCAZ/wgQM=';
+    const H = await fresh({ phone: true }); const p = H.p;
+    await p.goto(base + '?intro=1', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(500);
+    const seen = await p.evaluate(() => {
+      const words = [];
+      const walk = (n) => {
+        if (!n) return;
+        if (n.nodeType === 3) {
+          const t = n.textContent.replace(/\s+/g, ' ').trim(); if (!t) return;
+          const host = n.parentElement; if (!host) return;
+          const s = getComputedStyle(host);
+          if (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) === 0) return;
+          const r = host.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return;
+          words.push(t); return;
+        }
+        if (n.nodeType !== 1 || n.tagName === 'SCRIPT' || n.tagName === 'STYLE' || n.tagName === 'NOSCRIPT') return;
+        const s = getComputedStyle(n);
+        if (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) === 0) return;
+        for (const c of n.childNodes) walk(c);
+      };
+      walk(document.body);
+      return { words, ph: document.getElementById('input').placeholder, hero: !!document.getElementById('verse-hero') || !!document.getElementById('v01d') || !!document.querySelector('h1'), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install'), stage: !!document.getElementById('stage'), bar: !!document.getElementById('row') };
+    });
     await p.fill('#input', 'films'); const typed = await p.inputValue('#input');
-    await p.waitForTimeout(1500); const gone = await p.evaluate(() => !document.getElementById('v01d'));
-    await p.goto(base, { waitUntil: 'domcontentloaded' }); const unasked = await p.evaluate(() => !!document.getElementById('v01d'));
-    check('Verse intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s',
-      !!mid && mid.text === 'VERSEA-TO-MIND' && mid.on && mid.clicks === 'none' && typed === 'films' && gone && !unasked
-      && (await p.title()) === 'Verse · A-to-Mind' && !I.errors.length, JSON.stringify({ mid, typed, gone, unasked, errors: I.errors }));
-    await I.ctx.close(); }
+    const letters = (seen.words || []).filter((w) => /[A-Za-z]/.test(w));
+    check('blank home: a phone shows the void and the ask bar, and the only word is the placeholder',
+      seen.ph === 'Ask anything' && seen.stage && seen.bar && !seen.hero && !seen.nav && !seen.install && typed === 'films' && !letters.length
+      && (await p.title()) === 'Verse · A-to-Mind' && !H.errors.length, JSON.stringify({ seen, letters, typed, errors: H.errors }));
+    await H.ctx.close();
+
+    const V = await fresh();
+    await V.ask('make a clock', 900);
+    const dragged = await V.p.evaluate(async (b64) => {
+      const bin = atob(b64), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const card = document.querySelector('.clock'); if (!card) return { err: 'no clock' };
+      const v = document.createElement('video'); v.playsInline = true; v.muted = true; v.src = URL.createObjectURL(new Blob([bytes], { type: 'video/webm' })); card.appendChild(v);
+      await new Promise((res, rej) => { v.onloadeddata = () => res(); v.onerror = () => rej(new Error('clip')); });
+      try { v.currentTime = Math.min(0.15, (v.duration || 0.4) / 2); } catch (_) {}
+      await v.play().catch(() => {});
+      await new Promise((r) => setTimeout(r, 180));
+      const before = v.currentTime;
+      const b = card.getBoundingClientRect();
+      const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+      v.dispatchEvent(ev('pointerdown', b.left + 12, b.top + 36));
+      window.dispatchEvent(ev('pointermove', b.left + 16, b.top + 40));
+      window.dispatchEvent(ev('pointerup', b.left + 16, b.top + 40));
+      const afterCard = document.querySelector('.clock');
+      return { before, after: v.currentTime, paused: v.paused, still: !!(afterCard && afterCard.contains(v) && v.isConnected), transform: afterCard ? afterCard.style.transform : 'gone' };
+    }, clip);
+    check('a video card keeps its place when it is touched, dragged or moved',
+      dragged && !dragged.err && dragged.still && !dragged.paused && dragged.before > 0 && dragged.after + 0.05 >= dragged.before && !dragged.transform && !V.errors.length,
+      JSON.stringify({ dragged, errors: V.errors }));
+    await V.ctx.close();
+
+    const S = await fresh();
+    await S.p.goto(base + 'films/', { waitUntil: 'domcontentloaded' });
+    const film = await S.p.evaluate(async (b64) => {
+      const bin = atob(b64), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const v = document.createElement('video'); v.playsInline = true; v.muted = true; v.controls = true; v.src = URL.createObjectURL(new Blob([bytes], { type: 'video/webm' }));
+      const box = document.createElement('article'); box.className = 'film watchbox'; box.appendChild(v); document.body.appendChild(box);
+      await new Promise((res, rej) => { v.onloadeddata = () => res(); v.onerror = () => rej(new Error('clip')); });
+      try { v.currentTime = Math.min(0.15, (v.duration || 0.4) / 2); } catch (_) {}
+      await v.play().catch(() => {});
+      await new Promise((r) => setTimeout(r, 180));
+      const before = v.currentTime;
+      const b = v.getBoundingClientRect();
+      const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+      box.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      v.dispatchEvent(ev('pointerdown', b.left + 4, b.top + 4));
+      window.dispatchEvent(ev('pointermove', b.left + 8, b.top + 8));
+      window.dispatchEvent(ev('pointerup', b.left + 8, b.top + 8));
+      const tf = getComputedStyle(box).transform;
+      return { before, after: v.currentTime, paused: v.paused, still: box.contains(v), transform: tf };
+    }, clip);
+    check('a Verse Short keeps its place when it is touched, dragged or moved',
+      film && film.still && !film.paused && film.before > 0 && film.after + 0.05 >= film.before && (film.transform === 'none' || film.transform === '') && !S.errors.length,
+      JSON.stringify({ film, errors: S.errors }));
+    await S.ctx.close(); }
 
   // the app (owner, 2026-10-14: "wheres my apps . web mobile?"): "get the app" shows Install where the browser offers it, and it works
   if (want("app skill: get the app shows Install where the browser offers it, and installing says so")) {
