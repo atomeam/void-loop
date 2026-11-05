@@ -3660,5 +3660,95 @@
    ]
   },
   "note": "fix: \"flip this card\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T16:16:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2380,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T16:31:22Z",
+  "passed": 73,
+  "of": 90,
+  "ms": 475,
+  "kind": "file",
+  "key": "play solarquest | load # ms > #",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "load 1213 ms > 1200"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "load 1906 ms > 1200"
+   },
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "can we play despacito",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "what did this video teach? pls",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "yo watch the apollo 11 landing",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2380,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"play solarquest\" load 1213 ms > 1200"
  }
 ]
