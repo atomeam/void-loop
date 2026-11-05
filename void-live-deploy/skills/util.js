@@ -64,7 +64,7 @@ export function utilOf(text) {
   m = t.match(new RegExp('^(?:(?:what(?:\\s+is|\'s)\\s+)?the\\s+)?' + ALGO + '(?:\\s+(?:hash|checksum|digest|sum))?\\s+(?:of|for)\\s+(.{1,2000})$|^(?:hash|checksum)\\s+(?:(?:of|for)\\s+(.{1,2000})|(["“\'‘].{1,2000}["”\'’]))$|^' + ALGO + '(?:\\s+hash)?\\s+(?!(?:vs|versus|or|and|is|meaning|decrypt|decoder|decode|reverse|algorithm|collision|length|example)\\b)(.{1,2000})$', 'i'));
   if (m) { const s = (m[2] ?? m[3] ?? m[4] ?? m[6]).replace(/^["“'‘](.*)["”'’]$/s, '$1'); if (s) return { kind: 'hash', algo: m[1] ? algoOf(m[1]) : m[5] ? algoOf(m[5]) : 'sha256', s }; }
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/); // void-review: ok (m is declared with let at the top of utilOf)
-  if (l.match(/^(?:(?:monthly|weekly|daily|yearly)\s+(?:electric|water|gas|utility)\s+(?:bill|cost|price))|(?:avg\s+for|average\s+for)\s+\d+sqft/)) return { kind: 'estimate' };
+  if (l.match(/^(?:(?:monthly|weekly|daily|yearly)\s+(?:electric|water|gas|utility)\s+(?:bill|cost|price))|(?:avg\s+for|average\s+for)\s+\d+sqft|(?:(?:electric|water|gas|utility)\s+)?bill\s+calc\s+\d+\s*(?:kwh|units|kwh)\s+at\s+\d*\.?\d+$/)) return { kind: 'estimate' };
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
   m = l.match(/^(#[0-9a-f]{6}|#[0-9a-f]{3})$/); // a bare hex code, the way people paste one into a colour site
   if (m) return { kind: 'color', c: m[1] };
