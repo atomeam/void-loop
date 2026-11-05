@@ -286,7 +286,7 @@ jobs:
       supout.textContent = '';
       if (!j.tickets.length) { supsay('No reports yet.'); return; }
       j.tickets.forEach(function (t) {
-        var p = el('p'); p.appendChild(el('strong', null, t.id + ' · ' + (t.status === 'open' ? 'waiting for the owner' : 'answered')));
+        var p = el('p'); p.appendChild(el('strong', null, t.id + ' · ' + (t.status === 'open' ? 'open' : 'answered')));
         p.appendChild(el('div', 'muted', t.what));
         if (t.answer) p.appendChild(el('div', null, 'Answer: ' + t.answer));
         supout.appendChild(p);

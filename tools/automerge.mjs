@@ -14,6 +14,7 @@ import { dirname } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { readiness, resolveMain } from './pr-ready.mjs';
+import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
@@ -132,14 +133,14 @@ for (let p of prs) {
   if (!p || p.state !== 'open' || closed.has(p.number)) continue;
   // every PR from this repository is merged automatically (owner, 2026-10-15: "automerge everything always"): a PR nobody
   // labelled gets the label here, so the rest of the loop (and anyone reading the PR) sees the same thing
-  // an old "waits for owner" label is not a person: the checks decide, so it becomes automerge
-  if ((p.labels || []).some((l) => l.name === 'waits for owner') && !(p.head.repo && p.head.repo.full_name !== repo)) {
+  // the retired confidence label (lib/v01d-fixes.js WAITS) is not a person: the checks decide, so it becomes automerge
+  if ((p.labels || []).some((l) => l.name === WAITS) && !(p.head.repo && p.head.repo.full_name !== repo)) {
     try {
-      run(['api', '-X', 'DELETE', `repos/${repo}/issues/${p.number}/labels/${encodeURIComponent('waits for owner')}`]);
+      run(['api', '-X', 'DELETE', `repos/${repo}/issues/${p.number}/labels/${encodeURIComponent(WAITS)}`]);
       run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] }));
       if (p.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
       console.log(`#${p.number}: was waiting for a person; it merges itself now`);
-    } catch (e) { console.log(`#${p.number}: could not clear waits for owner: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
+    } catch (e) { console.log(`#${p.number}: could not clear the retired label: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
   }
   if (!(p.labels || []).some((l) => l.name === LABEL) && !(p.head.repo && p.head.repo.full_name !== repo)) {
     try { run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] })); console.log(`#${p.number}: labelled ${LABEL} (every PR merges by itself)`); } catch (_) {}

@@ -13,7 +13,14 @@
  * skills/scene3d.js (loaded only then) into the layer's canvas, so a 3D layer stacks, fades, clips and blends with flat ones;
  * "turn the ring 70", the Turn button, or a right or shift drag spins it. Where the browser offers VR, Enter VR puts the layer
  * in a headset in front of you and a controller's trigger paints in the air; leaving brings the strokes back to the card.
+ * A coloured shape ("draw a red circle", "dessine un cercle rouge", "dibuja un círculo rojo"; lib/shape-picture.js) is drawn for you as a
+ * picture card: the shape in SVG, "Paint it" carries it to /paint/ as a PNG (lib/image-handoff.js), "Keep drawing on it" opens this canvas
+ * with it on the first layer, and the stage's one shape (skills/shape.js) gets the same ask, so "make the shape blue" still reaches it.
+ * "make the picture bigger" (or smaller) redraws the card's picture while it is open.
  */
+import { shapeAsk, stageTypeOf, sideOf, svgOf, paintShape, resizeAsk } from '../lib/shape-picture.js';
+import { sendImage, canvasBlob } from '../lib/image-handoff.js';
+
 export const TOOLS = {
   pencil: { size: 3, hardness: 0.85, flow: 0.8, grain: 0.35, jitter: 0.05 },
   charcoal: { size: 16, hardness: 0.3, flow: 0.55, grain: 0.8, jitter: 0.25 },
@@ -224,7 +231,40 @@ function dab(g, x, y, b, color) {
   g.globalAlpha = b.flow; g.fillStyle = grd; g.beginPath(); g.arc(x + jx, y + jy, r, 0, Math.PI * 2); g.fill();
 }
 
+// the picture card for a coloured shape, and the shape it hands to the drawing canvas ("Keep drawing on it")
+let shown = null, seed = null;
+const cardOn = () => !!(shown && shown.el && shown.el.isConnected && shown.el.classList && shown.el.classList.contains('on'));
+function runShape(pic, api, step = 0) {
+  const { showPage, esc } = api, side = sideOf(pic.size, step), name = pic.color + ' ' + pic.shape;
+  const st = api.stage, type = stageTypeOf(pic.shape);
+  let onStage = false;
+  if (step === 0 && type && st && typeof st.kinds === 'function') { // the stage's one shape gets the same ask in English, made the named type
+    const k = st.kinds().shape;
+    if (k && typeof k.ensure === 'function') { const th = k.ensure(st, type); th.shapeType = type; if (typeof st.alterThing === 'function') st.alterThing(th, 'shape', pic.english); st.save(); st.render(); onStage = true; }
+  }
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>A ' + esc(name) + '</h2>' // void-review: ok (the name is from a closed list of colours and shapes)
+      + '<div class="vd-shape" data-shape="' + esc(pic.shape) + '" data-color="' + esc(pic.hex) + '" data-side="' + side + '">' + svgOf(pic, side) + '</div>'
+      + '<p class="sub vd-shape-what">Drawn for you: a ' + esc(name) + ' (' + esc(pic.hex) + '), ' + side + ' by ' + side + ' px.'
+      + (onStage || (step && shown && shown.onStage) ? ' It is on your stage too, so "make the shape blue" or "make it bigger" reach it there.' : '') + ' Say "make the picture bigger" to grow it here.</p>'
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="vd-paint">Paint it in /paint/</button><button type="button" class="vd-more">Keep drawing on it</button><button type="button" class="vd-png">Save as picture</button></div>'
+      + '<div class="vd-shape-said sub" aria-live="polite"></div>';
+  });
+  shown = { el, pic, step, onStage: onStage || !!(step && shown && shown.onStage) };
+  const $ = (s) => el.querySelector(s), said = $('.vd-shape-said');
+  const png = () => { const c = document.createElement('canvas'); c.width = c.height = 600; return paintShape(c.getContext('2d'), pic, 600) ? canvasBlob(c) : Promise.resolve(null); };
+  const file = pic.color + '-' + pic.shape;
+  $('.vd-paint').addEventListener('click', async () => { said.textContent = 'Opening /paint/ with your ' + name + '.'; const ok = await sendImage('/paint/', png, { name: file, fromPage: '/' }); if (!ok) said.textContent = 'This browser would not keep the picture for /paint/; "Save as picture" still works.'; });
+  $('.vd-more').addEventListener('click', () => { seed = pic; if (typeof api.ask === 'function') api.ask('let me draw'); else if (api.stage && typeof api.stage.ask === 'function') api.stage.ask('let me draw'); });
+  $('.vd-png').addEventListener('click', async () => { const b = await png(); if (!b) { said.textContent = 'This browser cannot draw the picture to a file.'; return; } const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = file + '.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); said.textContent = 'Saved as ' + file + '.png.'; });
+  return 'draw';
+}
+
 function run(text, api) {
+  const pic = shapeAsk(text);
+  if (pic) return runShape(pic, api);
+  const grow = resizeAsk(text);
+  if (grow && cardOn()) return runShape(shown.pic, api, shown.step + grow);
   const { showPage, esc } = api;
   const q = drawOf(text) || { brush: null };
   let brushes = mine();
@@ -486,16 +526,17 @@ function run(text, api) {
     hand = learnHand(hand, raw); try { localStorage.setItem(HAND, JSON.stringify(hand)); } catch (_) {} showSteady();
     last = null; commit(); };
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('contextmenu', (e) => { if (A.kind === '3d') e.preventDefault(); });
+  if (seed) { const pic = seed, s0 = Math.min(cv.width, cv.height) * 0.6; seed = null; A.g.save(); A.g.translate((cv.width - s0) / 2, (cv.height - s0) / 2); paintShape(A.g, pic, s0, false); A.g.restore(); compose(); said.textContent = 'Your ' + pic.color + ' ' + pic.shape + ' is on ' + named(A) + '; draw over it.'; }
   show(); showSteady(); showLayers();
   return 'draw';
 }
 
 export default {
   name: 'draw',
-  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush', 'make a 2d sketch of a tree'],
+  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush', 'make a 2d sketch of a tree', 'draw a red circle', 'dessine un cercle rouge', 'draw a blue star'],
   nearMisses: ['draw a cat', 'what is charcoal', 'how do i draw a horse', 'paint my wall', 'make a cube'],
   drawOf, brushFrom,
-  match(lower, text) { return !!drawOf(text || lower); },
+  match(lower, text) { return !!drawOf(text || lower) || !!shapeAsk(text || lower) || (!!resizeAsk(text || lower) && cardOn()); },
   run,
   suite() {
     const c = brushFrom('dry charcoal that catches the paper grain'), i = brushFrom('thick wet ink'), f = brushFrom('faint pencil');
@@ -508,7 +549,8 @@ export default {
       && printModel([{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], indices: [0, 2, 1, 0, 1, 3, 0, 3, 2, 1, 2, 3] }], 't', 50).size.join() === '50,50,50'
       && layerCommand('make it my backdrop', []).op === 'backdrop' && layerCommand('use this drawing as my background', []).op === 'backdrop' && !layerCommand('make the sky my backdrop', ['sky'])
       && layerCommand('new 3d layer for the ring', []).space === true && layerCommand('turn the ring left', ['ring']).deg === -90 && tubeRadius(8, 100) === 0.04
-      && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal');
+      && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal')
+      && shapeAsk('draw a red circle').shape === 'circle' && shapeAsk('dessine un cercle rouge').hex === COLORS.red && !shapeAsk('draw a circle') && !shapeAsk('draw a cat');
     return { ok: !!ok, got: ok ? 'pass' : JSON.stringify({ c, i, f }) };
   }
 };

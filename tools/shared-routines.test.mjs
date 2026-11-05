@@ -36,7 +36,7 @@ test('the asks: "offer my morning as Sam" (a display name is required), "routine
   for (const q of ['offer my condolences', 'share my screen', 'my routines']) assert.ok(!offerAsk(q, { morning: {} }) && !othersAsk(q), q);
 });
 
-test('the route: an offer waits for the owner; only approved ones are shown; only the owner sees or decides what waits', async () => {
+test('the route: an offer is held for approval; only approved ones are shown; only the owner sees or decides what waits', async () => {
   const env = { DB: d1(), READ_TOKEN: TOKEN };
   const o = await call(api.onRequestPost, env, req('POST', { name: 'morning', author: 'Sam', asks: ['weather here', 'my calendar'] }));
   assert.deepEqual([o.status, o.j.state], [202, 'pending']);

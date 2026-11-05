@@ -104,7 +104,7 @@ export const LIMITS = {
   jobs: { rpm: 60, body: 0 }, // GET only: the jobs pages' listings and a search's RSS (functions/api/jobs.js); three fixed upstream addresses, each edge-cached for as long as its terms ask (an hour to a day), nothing taken from the caller but a search read against the cached list
   markets: { rpm: 90, body: 0 }, // the crypto card's price list and the /markets/ page's quotes (functions/api/markets.js): GET, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute in the route itself, no KV
   hook: { rpm: 60, body: 64000 },
-  routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer waits for the owner; the route keeps 5 offers a minute itself
+  routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer is shown once the owner approves it (a safety gate on outside content); the route keeps 5 offers a minute itself
   actions: { rpm: 60, body: 4000 },
   selfcheck: { rpm: 30, body: 60000 }, // Verse's check of its own pages (functions/api/selfcheck.js): public GET of the newest report; only the owner's job POSTs one (80 pages at most)
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js

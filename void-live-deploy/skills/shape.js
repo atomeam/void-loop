@@ -49,6 +49,11 @@ export function alter(th, lower) {
   if (/\b(make\s+(?:it\s+)?a?\s*(?:rect|rectangle|square))\b/.test(lower) && th.shapeType !== 'rect') { th.shapeType = 'rect'; ok = true; }
   if (/\b(make\s+(?:it\s+)?a?\s*circle)\b/.test(lower) && th.shapeType !== 'circle') { th.shapeType = 'circle'; ok = true; }
   if (/\b(make\s+(?:it\s+)?a?\s*line)\b/.test(lower) && th.shapeType !== 'line') { th.shapeType = 'line'; ok = true; }
+  { // "draw a red circle" names its shape: the shape becomes that type (it used to stay the rect it was made as)
+    const named = /^(?:please\s+)?(?:draw|sketch|make|add|create|put)\s+(?:me\s+)?(?:a|an)\s+(?:[a-z]+\s+){0,2}(circle|rect|rectangle|square|line)\b/.exec(lower);
+    const want = named && (named[1] === 'circle' || named[1] === 'line' ? named[1] : 'rect');
+    if (want && th.shapeType !== want) { th.shapeType = want; ok = true; }
+  }
   if (/\bfill(?:ed)?\b/.test(lower)) { th.filled = true; ok = true; }
   if (/\b(unfill|outline|stroke)\b/.test(lower)) { th.filled = false; ok = true; }
   if (/\b(thick|thicker)\b/.test(lower)) { th.strokeWidth = Math.min(8, (th.strokeWidth || 2) + 2); ok = true; }

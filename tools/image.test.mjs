@@ -64,3 +64,20 @@ test('mount: a photo with its src, place, tilt and caption; a failed load says s
   title.textContent = 'My cat'; title.on.input(); assert.equal(th.title, 'My cat'); assert.equal(s.saves, 1);
   th.title = ''; img.onerror(); assert.equal(img.style.display, 'none'); assert.equal(title.textContent, 'Image (failed)'); assert.deepEqual(s.said, ['image failed to load']);
 });
+test('picture cards: Wikimedia links, closed-list subjects, and a bare "image"', async () => {
+  const { wikimediaFile, pictureOf, bareAsk } = await import('../void-live-deploy/skills/image.js');
+  assert.deepEqual(wikimediaFile('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg'), { file: 'FullMoon2010.jpg', wiki: 'commons' });
+  assert.deepEqual(wikimediaFile('https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg'), { file: 'Example.jpg', wiki: 'en' });
+  for (const u of ['https://a.org/x.png', 'https://upload.wikimedia.org/', 'not a url', 'https://commons.wikimedia.org/wiki/File:X.jpg']) assert.equal(wikimediaFile(u), null, u);
+  assert.equal(pictureOf('picture of a cat'), 'cat'); assert.equal(pictureOf('show me a photo of the moon'), 'moon'); assert.equal(pictureOf('pictures of cute cats'), 'cat');
+  // a subject off the closed list is never sent anywhere: no match, the page answers as before
+  for (const t of ['picture of my grandmother', 'draw a picture of a cat', 'make an image of a cat', 'put a photo of the moon on the stage', 'picture of a cat https://a.org/x.png']) assert.equal(pictureOf(t), '', t);
+  for (const t of ['image', 'a picture', 'photo?']) assert.ok(bareAsk(t), t);
+  for (const t of ['image of a cat', 'show this image', 'images are nice']) assert.ok(!bareAsk(t), t);
+});
+test('without a page to show on (the unit stage), a link still only goes on the stage', async () => {
+  const s = stageOf();
+  assert.equal(await sk.run('show this image https://upload.wikimedia.org/wikipedia/commons/a/ab/X.jpg', { stage: s.api }), 'image');
+  assert.equal(Object.values(s.things).length, 1);
+  assert.equal(await sk.run('picture of a cat', { stage: s.api }), 'none');
+});

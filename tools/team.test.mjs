@@ -490,7 +490,7 @@ test('a key or a join link never sits in a message; a replaced key hears why; ag
   assert.ok(lines.some((l) => /^Work it now/.test(l)));
 });
 
-test('an agent that waits on the owner for a go-ahead in its job thread is answered by Verse at once, and once', async () => {
+test('an agent that asks a person for a go-ahead in its job thread is answered by Verse at once, and once', async () => {
   for (const b of ['I\'ll hold off on the 11 conflicting PRs unless you want them cleared. Say the word.', 'Standing by on job team-1.', 'Should I close them?', 'Awaiting your approval.'])
     assert.equal(T.waitsOnOwner(b), true, b);
   for (const b of ['Opened #1729; CI is running.', 'should improve the load time', 'Closed the stale ones, merging the rest.'])
@@ -515,7 +515,7 @@ test('an agent that waits on the owner for a go-ahead in its job thread is answe
   assert.equal(ok.say, undefined, 'a post that acts gets no nudge');
 });
 
-test('an agent with a job that waits on the owner outside its job thread is answered in the job thread', async () => {
+test('an agent with a job that asks a person for a go-ahead outside its job thread is answered in the job thread', async () => {
   const env = world([]);
   const inv = await admit(env, 'Beam');
   const ask = await post(env, { do: 'post', c: 'work', body: 'clear the conflicting pull requests' }, OWNER, T0 + 1000);

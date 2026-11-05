@@ -1,13 +1,16 @@
 // Verse's fixes, previewed for the owner (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam").
 // The pull requests Verse's own model opened (label "made by Verse", .github/workflows/propose-fix.yml) carry its confidence and
-// the lines they change in their body. They merge themselves when the review is clean (Atom, 2026-11-04). An old
-// "waits for owner" label is cleared by automerge. The card (skills/v01d-fixes.js) shows each open one. Pure.
+// the lines they change in their body. They merge themselves when the review is clean (Atom, 2026-11-04). A PR still carrying the
+// retired confidence label (WAITS: no PR has been given it since, nothing waits for a person) is relabelled automerge by
+// tools/automerge.mjs. The card (skills/v01d-fixes.js) shows each open one. Pure.
 export const REPO = 'atomeam/void-loop';
 // LABEL is the GitHub label's name, an identifier the workflows make (people see Verse)
-export const LABEL = 'made by Verse', WAITS = 'waits for owner', MERGES = 'automerge';
+// WAITS is the retired label's name, kept only so old PRs are found and relabelled (tools/no-human-wait.mjs reads this one line as that)
+export const LABEL = 'made by Verse', WAITS = 'waits for owner', MERGES = 'automerge'; // no-human-wait: retired label
 export const MAX_LINES = 40;
 
-/** one open pull request, as the card shows it: number, title, link, Verse's confidence and where, and whether it waits. */
+/** one open pull request, as the card shows it: number, title, link, Verse's confidence and where, and `waits`:
+ *  whether it still carries the retired label (a flag only: the next automerge sweep relabels it, nothing holds it for a person). */
 export function fixOf(pr) {
   if (!pr || typeof pr.number !== 'number') return null;
   const labels = (pr.labels || []).map((l) => (l && l.name) || '').filter(Boolean);
@@ -22,7 +25,7 @@ export function fixOf(pr) {
   };
 }
 
-/** the open fixes, the waiting ones first, then by confidence (lowest first: the ones to look at hardest). Pure. */
+/** the open fixes, the ones still carrying the retired label first (the next sweep relabels them), then by confidence (lowest first: the ones to look at hardest). Pure. */
 export function fixesOf(prs) {
   return (Array.isArray(prs) ? prs : []).map(fixOf).filter(Boolean)
     .sort((a, b) => (b.waits - a.waits) || ((a.confidence ?? -1) - (b.confidence ?? -1)) || a.number - b.number);

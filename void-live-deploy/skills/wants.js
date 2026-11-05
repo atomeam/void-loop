@@ -130,14 +130,17 @@ export function streamsOf(inbox) {
 }
 
 /** What is blocked, with what each waits on: an ask held behind the Versus target (void.asks.json `held`, by /api/reflect), the inbox
- *  line that hold names, and an inbox item that says it waits (self.json `waits`, tools/frontier.mjs waitsOf). [{ text, kind, waits }]. Pure. */
+ *  line that hold names, and an inbox item that says it waits on a thing (self.json `waits`, tools/frontier.mjs waitsOf). A person is never
+ *  a wait (no human in the loop, 2026-11-04): an item an older self.json still marks as waiting on its owner is left off this list, as
+ *  an ordinary open item a run takes, retries, then drops and logs (lib/will-guard.js). [{ text, kind, waits }]. Pure. */
+const PERSON = /^the owner\b/i;
 export function blockedOf(asks, inbox) {
   const beaten = (site) => 'held until ' + site + ' is beaten';
   const out = (asks || []).filter((a) => a.held).map((a) => ({ text: a.text, kind: 'ask', waits: beaten(a.held) }));
   const heldLine = new Map((asks || []).filter((a) => a.held && a.heldFrontier).map((a) => [a.heldFrontier.toLowerCase(), a.held]));
   for (const o of inbox || []) {
     const h = heldLine.get(String(o.text).toLowerCase());
-    if (h) out.push({ text: o.text, kind: 'inbox', waits: beaten(h) }); else if (o.waits) out.push({ text: o.text, kind: 'inbox', waits: 'waits for ' + o.waits });
+    if (h) out.push({ text: o.text, kind: 'inbox', waits: beaten(h) }); else if (o.waits && !PERSON.test(String(o.waits))) out.push({ text: o.text, kind: 'inbox', waits: 'waits for ' + o.waits });
   }
   return out;
 }
@@ -283,7 +286,7 @@ export function cardHtml(m, esc, { more = '' } = {}) {
     + next + changed + blocked
     + block('wants', 'My will', m.wants, (w) => w.because)
     + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : '', a.held ? 'held until ' + a.held + ' is beaten' : ''].filter(Boolean).join(' · '))
-    + block('inbox', 'Growth inbox', m.inbox, (o) => [o.from, o.waits ? 'waits for ' + o.waits : ''].filter(Boolean).join(' · '), streams)
+    + block('inbox', 'Growth inbox', m.inbox, (o) => [o.from, o.waits && !PERSON.test(String(o.waits)) ? 'waits for ' + o.waits : ''].filter(Boolean).join(' · '), streams)
     + (more ? '<p class="wants-more">' + esc(more) + '</p>' : '')
     + '<div class="src">Source: my will and its lap (/api/will' + (m.at ? ', ' + esc(m.at) : '') + '), my asks and what became of them (/api/reflect) and my growth inbox (/self.json from domains/void.frontier.md). My own records, no model. Tap an item to copy it.</div>';
 }
@@ -298,7 +301,7 @@ export function wishlistHtml(list, esc) {
     + (xs.length ? '<ol class="wish-list" style="padding-left:20px;margin:6px 0">' + xs.map((w) => '<li data-rank="' + esc(w.rank) + '" style="margin:0 0 8px;white-space:normal"><b>' + esc(sentence(w.item)) + '</b>'
       + (w.free ? '<div class="wants-sub">Free path: ' + esc(sentence(w.free)) + '</div>' : '') + (w.value ? '<div class="wants-sub">Value: ' + esc(sentence(w.value)) + '</div>' : '') + (w.why ? '<div class="wants-sub">Why this rank: ' + esc(sentence(w.why)) + '</div>' : '') + '</li>').join('') + '</ol>' : '')
     + '<p class="wants-more">What I want built next is a different list: ask <a href="#" data-ask="what do you want built now">what do you want built now</a>.</p>'
-    + '<div class="src">Source: docs/wishlist.md, put into /self.json by tools/self-context.mjs at deploy. Nothing on it is bought or signed up for; spending needs the owner.</div>';
+    + '<div class="src">Source: docs/wishlist.md, put into /self.json by tools/self-context.mjs at deploy. Nothing on it is bought or signed up for; spending goes through the confirm line.</div>';
 }
 const get = async (url) => { try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (_) { return null; } };
 async function copyText(t) {

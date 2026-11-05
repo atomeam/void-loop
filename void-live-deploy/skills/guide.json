@@ -919,7 +919,8 @@
    "line": "One picture on the stage from a url, shown as an instant photo (white frame, a caption in the felt-tip hand under it, its own tilt): \"show this image https://…/cat.png\", \"add an image <url>\", a pasted image url, \"remove the image\"; \"make the image red\" edges it through the page's shared colours",
    "examples": [
     "show this image https://example.org/cat.png",
-    "add an image https://example.org/dog.jpg"
+    "add an image https://example.org/dog.jpg",
+    "picture of a cat"
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
