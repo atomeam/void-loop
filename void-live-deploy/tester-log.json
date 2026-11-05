@@ -1,16 +1,45 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 271,
+ "runsTotal": 273,
  "kinds": {
   "grow": 70,
-  "file": 85,
+  "file": 86,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 62
+  "visitor": 63
  },
  "runs": [
+  {
+   "at": "2026-11-05T16:03:35Z",
+   "passed": 87,
+   "of": 90,
+   "kind": "file",
+   "ms": 379,
+   "note": "fix: \"flip this card\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "https://github.com/atomeam/void-loop/blob/main/README.md",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T15:53:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T15:25:07Z",
    "passed": 0,
@@ -247,71 +276,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T09:32:04Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T09:20:27Z",
-   "passed": 76,
-   "of": 89,
-   "kind": "file",
-   "ms": 402,
-   "note": "fix: \"show the days until a date\" load 1796 ms > 1200",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "yo new automation",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "weather in boston",
-     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "load 1796 ms > 1200"
-    },
-    {
-     "ask": "are you web4",
-     "why": "load 1331 ms > 1200"
-    },
-    {
-     "ask": "test me on that",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "flip this card",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film metadata for ikiru pls",
-     "why": "load 1231 ms > 1200"
-    },
-    {
-     "ask": "yo watch the apollo 11 landing",
-     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "random color",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -365,18 +329,18 @@
   },
   {
    "from": "2026-10-08",
-   "runs": 32,
-   "passed": 314,
-   "of": 444,
+   "runs": 33,
+   "passed": 330,
+   "of": 461,
    "broken": 6,
    "brokenOf": 76,
    "brokenPassed": 16
   },
   {
    "from": "2026-10-15",
-   "runs": 159,
-   "passed": 2837,
-   "of": 5366,
+   "runs": 158,
+   "passed": 2821,
+   "of": 5349,
    "broken": 89,
    "brokenOf": 2162,
    "brokenPassed": 6
@@ -389,9 +353,9 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 80,
-   "passed": 1441,
-   "of": 1592,
+   "runs": 82,
+   "passed": 1528,
+   "of": 1682,
    "ms": 348
   }
  ],
@@ -412,7 +376,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T14:39:39Z",
+  "skill:cartoon": "2026-11-05T16:03:35Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -694,6 +658,9 @@
   "skill:fix-audit": "2026-11-05T13:23:33Z",
   "skill:flights": "2026-11-05T14:39:39Z",
   "skill:formulas": "2026-11-05T14:39:39Z",
-  "skill:gamebox": "2026-11-05T14:39:39Z"
+  "skill:gamebox": "2026-11-05T14:39:39Z",
+  "skill:generators-fill": "2026-11-05T16:03:35Z",
+  "skill:gh-file": "2026-11-05T16:03:35Z",
+  "skill:gradient": "2026-11-05T16:03:35Z"
  }
 }
