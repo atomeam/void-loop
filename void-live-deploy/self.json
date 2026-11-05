@@ -558,6 +558,14 @@
  },
  "commits": [
   {
+   "at": "2026-11-05T06:00:43Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T05:59:14Z",
+   "subject": "fix: first asks show feedback at once and the tester waits for the real answer (#2228 #2225 #2222) (#2241)"
+  },
+  {
    "at": "2026-11-05T05:48:04Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
@@ -572,6 +580,14 @@
   {
    "at": "2026-11-05T05:20:06Z",
    "subject": "Incidents closed: shard(s) 1,2,3,4 passed on db3cc6b3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T05:16:26Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-05T05:16:09Z",
+   "subject": "fix: no owner name, human wait or personal path in live files; the guard catches them (A2M.ops)"
   },
   {
    "at": "2026-11-05T05:10:56Z",
@@ -594,28 +610,12 @@
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-05T04:39:10Z",
-   "subject": "Regenerate docs/PARITY and history timelines: index.html line citations moved, and main's history JSON carried stray CRs (tools/parity.mjs…"
-  },
-  {
    "at": "2026-11-05T04:38:26Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
    "at": "2026-11-05T04:35:06Z",
    "subject": "Images exam 100 and no human in the loop (guard: tools/no-human-wait.mjs) (#2239)"
-  },
-  {
-   "at": "2026-11-05T04:30:42Z",
-   "subject": "Regenerate stale generated files from main: modulepreload for member-keep.js (#2236) on music/news/team/brain/chords, docs/HANDOFF-GAPS.md…"
-  },
-  {
-   "at": "2026-11-05T04:22:39Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-05T04:22:24Z",
-   "subject": "fix: first asks show feedback at once and the tester waits for the real answer (#2228 #2225 #2222)"
   },
   {
    "at": "2026-11-05T04:16:07Z",
@@ -817,8 +817,8 @@
   }
  ],
  "visible": {
-  "day": 8,
-  "week": 416
+  "day": 7,
+  "week": 415
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
