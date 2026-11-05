@@ -3363,14 +3363,14 @@ say('nothing selected to remove');
       ['area', 4046.8564224, 'acres', /^acres?$/], ['area', 10000, 'hectares', /^(?:hectares?|ha)$/], ['area', 2589988.110336, 'square miles', /^(?:sq(?:uare)?\.?\s*(?:miles?|mi)|mi2)$/], ['area', 1e6, 'square km', /^(?:sq(?:uare)?\.?\s*(?:km|kilomet(?:er|re)s?)|km2|km²)$/],
       ['mass', 6.35029318, 'stone', /^(?:stones?|st)$/], ['mass', 0.45359237, 'pounds', /^(?:pounds?|lbs?)$/], ['mass', 1, 'kg', /^(?:kg|kilos?|kilograms?)$/], ['mass', 0.001, 'grams', /^(?:grams?|g)$/], ['mass', 0.028349523, 'ounces', /^(?:ounces?|oz)$/],
       ['speed', 0.44704, 'mph', /^(?:mph|miles?\s+(?:an|per)\s+hour)$/], ['speed', 1 / 3.6, 'km/h', /^(?:km\/?h|kph|kmh|kilomet(?:er|re)s?\s+(?:an|per)\s+hour)$/], ['speed', 1, 'm/s', /^(?:m\/s|meters?\s+per\s+second|metres?\s+per\s+second)$/], ['speed', 0.514444, 'knots', /^(?:knots?|kn|kt)$/],
-      ['data', 1024, 'KB', /^(?:kb|kilobytes?)$/], ['data', 1048576, 'MB', /^(?:mb|megabytes?)$/], ['data', 1073741824, 'GB', /^(?:gb|gigabytes?)$/], ['data', 1099511627776, 'TB', /^(?:tb|terabytes?)$/],
+      ['data', 0.125, 'bits', /^bits?$/], ['data', 1, 'bytes', /^bytes?$/], ['data', 1024, 'KB', /^(?:kb|kilobytes?)$/], ['data', 1048576, 'MB', /^(?:mb|megabytes?)$/], ['data', 1073741824, 'GB', /^(?:gb|gigabytes?)$/], ['data', 1099511627776, 'TB', /^(?:tb|terabytes?)$/],
       ['mass', 907.18474, 'short tons (US)', /^(?:tons?|short\s+tons?|us\s+tons?)$/], ['mass', 1000, 'metric tons', /^(?:metric\s+tons?|tonnes?|t)$/], ['mass', 0.0002, 'carats', /^(?:carats?|ct)$/], ['mass', 0.0311034768, 'troy ounces', /^(?:troy\s+ounces?|ozt)$/],
       ['energy', 1, 'joules', /^(?:joules?|j)$/], ['energy', 1000, 'kJ', /^(?:kj|kilojoules?)$/], ['energy', 3600, 'Wh', /^(?:wh|watt[\s-]hours?)$/], ['energy', 3.6e6, 'kWh', /^(?:kwh|kilowatt[\s-]hours?)$/],
       ['energy', 4184, 'food calories (kcal)', /^(?:calories|calorie|kcal|cal)$/], ['energy', 1055.06, 'BTU', /^(?:btus?)$/],
       ['power', 1, 'watts', /^(?:watts?|w)$/], ['power', 1000, 'kW', /^(?:kw|kilowatts?)$/], ['power', 745.7, 'horsepower', /^(?:horsepower|hp)$/],
       ['pressure', 1000, 'kPa', /^(?:kpa|kilopascals?)$/], ['pressure', 1, 'pascals', /^(?:pa|pascals?)$/], ['pressure', 1e5, 'bar', /^(?:bars?)$/], ['pressure', 6894.757, 'psi', /^(?:psi)$/], ['pressure', 101325, 'atmospheres', /^(?:atm|atmospheres?)$/], ['pressure', 133.322, 'mmHg', /^(?:mmhg|mm\s+hg)$/],
-      ['length', 1, 'meters', /^(?:m|meters?|metres?)$/], ['length', 1000, 'km', /^(?:km|kilomet(?:er|re)s?)$/], ['length', 0.001, 'mm', /^(?:mm|millimet(?:er|re)s?)$/], ['length', 0.01, 'cm', /^(?:cm|centimet(?:er|re)s?)$/], ['length', 0.0254, 'inches', /^(?:in|inch|inches)$/],
-      ['length', 0.3048, 'feet', /^(?:ft|feet|foot)$/], ['length', 0.9144, 'yards', /^(?:yd|yards?)$/], ['length', 1609.344, 'miles', /^(?:mi|miles?)$/], ['length', 1852, 'nautical miles', /^(?:nautical\s+miles?|nmi)$/], ['length', 9.4607e15, 'light years', /^(?:light[\s-]?years?|ly)$/], ['length', 1.495978707e11, 'AU', /^(?:au|astronomical\s+units?)$/],
+      ['length', 1, 'meters', /^(?:m|meters?|metres?|mètres?)$/], ['length', 1000, 'km', /^(?:km|kilomet(?:er|re)s?|kilomètres?)$/], ['length', 0.001, 'mm', /^(?:mm|millimet(?:er|re)s?)$/], ['length', 0.01, 'cm', /^(?:cm|centimet(?:er|re)s?)$/], ['length', 0.0254, 'inches', /^(?:in|inch|inches)$/],
+      ['length', 0.3048, 'feet', /^(?:ft|feet|foot)$/], ['length', 0.9144, 'yards', /^(?:yd|yards?)$/], ['length', 1609.344, 'miles', /^(?:mi|miles?|milles?)$/], ['length', 1852, 'nautical miles', /^(?:nautical\s+miles?|nmi)$/], ['length', 9.4607e15, 'light years', /^(?:light[\s-]?years?|ly)$/], ['length', 1.495978707e11, 'AU', /^(?:au|astronomical\s+units?)$/],
       ['volume', 1, 'ml', /^(?:ml|millilit(?:er|re)s?)$/], ['volume', 1000, 'liters', /^(?:l|lit(?:er|re)s?)$/], ['volume', 29.5735, 'fl oz', /^(?:fl\.?\s*oz|fluid\s+ounces?)$/], ['volume', 473.176, 'pints (US)', /^(?:pints?|pt)$/], ['volume', 946.353, 'quarts (US)', /^(?:quarts?|qt)$/],
       ['volume', 3785.41, 'gallons (US)', /^(?:gallons?|gal)$/], ['volume', 236.588, 'cups (US)', /^(?:cups?)$/], ['volume', 14.7868, 'tablespoons', /^(?:tablespoons?|tbsp|tbs)$/], ['volume', 4.92892, 'teaspoons', /^(?:teaspoons?|tsp)$/], ['volume', 28316.8, 'cubic feet', /^(?:cubic\s+f(?:ee|oo)t|cu\s*ft|ft3|ft³)$/], ['volume', 1e6, 'cubic meters', /^(?:cubic\s+met(?:er|re)s?|m3|m³)$/],
       ['angle', 1, 'degrees', /^(?:degrees?|deg|°)$/], ['angle', 180 / Math.PI, 'radians', /^(?:radians?|rad)$/],
@@ -3405,13 +3405,13 @@ say('nothing selected to remove');
       m = t.match(/^(\d{1,3})\s*(?:!|factorial)$|^(?:the\s+)?factorial\s+of\s+(\d{1,3})$/);
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
       // more units: area, stone, speed, data, mpg <-> L/100 km ("1 acre in square feet", "70 kg in stone", "60 mph in km/h", "half a pound in grams")
-      m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-z][a-z0-9/ .²]*?)\s+(?:in|to|into)\s+([a-z][a-z0-9/ .²]*?)$/);
+      m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-zà-ÿ][a-zà-ÿ0-9/ .²]*?)\s+(?:in|to|into|en)\s+([a-zà-ÿ][a-zà-ÿ0-9/ .²]*?)$/); // 'en': French asks ('5 milles en kilomètres')
       if (m) {
         const a = unitOf(m[2]), b = unitOf(m[3]), x = +m[1];
         if (a && b && a.cat === b.cat && a !== b) {
           const v = a.cat === 'fuel' ? (a.inv === b.inv ? x : 235.214583 / x) : x * a.f / b.f, shown = Math.abs(v) >= 1 ? Math.round(v * 100) / 100 : +v.toPrecision(4); // two decimals, as the everyday converter always gave
           const sci = Math.abs(v) >= 1e9 || (v !== 0 && Math.abs(v) < 1e-4) ? (+v.toExponential(3).split('e')[0]) + ' × 10^' + +v.toExponential(3).split('e')[1] : null;
-          return { value: (sci || shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + (sci ? Math.abs(v) >= 1e9 ? Math.round(v).toLocaleString() : String(v) : shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name + (a.cat === 'data' ? ' (1 GB = 1,024 MB, as computers count)' : '') };
+          return { value: (sci || shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + (sci ? Math.abs(v) >= 1e9 ? Math.round(v).toLocaleString() : String(v) : shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name + (a.cat === 'data' && Math.max(a.f, b.f) >= 1024 ? ' (1 GB = 1,024 MB, as computers count)' : '') };
         }
       }
       // "how many weeks is 100 days", "100 days is how many weeks"

@@ -76,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Lists run 12 (grok, 2026-11-05)**: the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill answers 'how much is a gallon of milk' (eggs, gas, beef, bread, coffee, bananas, chicken, electricity) from the keyless BLS average prices; riddle and textgen are one family (skills/riddle-gen.js, 0 of 4,059 answers changed); the timers ask closed as built in run 10.
 - **Lists run 11 (grok, 2026-11-04)**: main's browser suite green again (the will test pins its own better file, the tower card test allows the new "N passed" count, the Verse bar scrolls sideways before /verse.css loads so phone pages never get wider than the screen); video-play leaves 10 game, podcast and local-file "play" asks to their own skills; emojigraph lane page and the 814032d5 jobs asked again (duplicates); the prices ask twin joins ask-20261104-2101-3.
 - **Lists run 10 (grok, 2026-11-04)**: main's browser suite green again (test server answers _redirects, ask bar contrast, paste test after #2126, business-clarify); time-math and date-calc are one date-math family; timers take "add one minute" and five other languages; prices take "precio del bitcoin"; site-test #2228 (a greeting before "play"); 5 of Verse's asks decided (2 duplicates linked, 1 answered, 1 built, 1 partly built and kept open).
 - **Lists run 9 (grok, 2026-11-04)**: six red checks on main fixed (privacy guard, revert-target, apibot limit, handoff tags on tower-self pages, seo h1, the owner status test after #2210); status and system-status are one status-board family and system-status pings a real address instead of a made-up green; 10 of Verse's asks decided (5 duplicates linked, 3 retired, 2 folded). https://github.com/atomeam/void-loop/pull/2227
@@ -170,6 +171,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- **handoff-e2e's time-page journey fails on main too (lists run 12, 2026-11-05)**: the calendar invite reads "Event in New York, Kyoto, London" instead of the event in Kyoto and London at 3:00 PM; it looks date-dependent (tools/handoff-e2e.mjs).
 - Verse's asks from the everything-app question (2026-10-22, `docs/void-voice.md`): social post cards on the stage (first step shipped: "keep on stage" makes a sticky note); a feed's raw JSON on its card so other agents can read it; keep Workers AI inside its free 10k neurons a day (wishlist #1).
 
 - **Site tester issues to close (lists run 5, 2026-10-22)**: #1114 (three.js as HTML), #1063 (country), #1048 (sport) are fixed by the lists run 5 PR, and #1022, #1024, #1026, #1028 are already handled by the tester's retake rule. Closing them is a ticket change, so it waits for an approved closer; still open to fix: #1029, #1032, #1137, #1152, #1196.
@@ -280,6 +282,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 2026-11-04 run 11 · site tester (label site-test): 3 open (#2228 fixed in run 10, closes when the tester passes it; #2225 and #2222 route to a skill, so the tester's next pass judges them)
 2026-11-04 run 11 · frontier (domains/void.frontier.md): 19 open
 2026-11-04 run 11 · metrics: closed 6 of 7 touched, 0% blocked, duplicate rate 0.43 of open asks, median 0 days queue to built
+2026-11-05 run 12 · V01D asks (void.asks.json): 4 open after this run (images exam, its duplicate, telemetry sync, '100 usd in eur' on the prices exam and its twin); the timers ask closed, units/define/milk built
+2026-11-05 run 12 · handoff Up for grabs: 25 open (unchanged)
+2026-11-05 run 12 · store queue (store.queue.jsonl): 0 open
+2026-11-05 run 12 · wishlist (docs/wishlist.md): 14 rows, unchanged
+2026-11-05 run 12 · convergence (docs/convergence.md): riddle~textgen merged into riddle-gen (64 overlap pairs, one more same-family)
+2026-11-05 run 12 · site tester (label site-test): 4 open (#2238 rumble video search is new; #2228, #2225, #2222 wait on the tester's next pass)
+2026-11-05 run 12 · frontier (domains/void.frontier.md): 19 open
+2026-11-05 run 12 · metrics: closed 5 of 5 touched, 0% blocked, duplicate rate 0.2, median 0 days queue to built
 
 ## Ladders
 

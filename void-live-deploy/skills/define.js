@@ -24,7 +24,9 @@ export function wordOf(text) {
     // "what does it mean to be pragmatic", "dictionary definition of empathy", "use serendipity in a sentence" (the card's example)
     || t.match(/^what\s+does\s+it\s+mean\s+to\s+be\s+(?:an?\s+)?["“]?([a-z][a-z'-]+)["”]?$/i)
     || t.match(/^(?:the\s+)?(?:dictionary|oxford|webster'?s?|merriam[- ]webster)\s+(?:definition|meaning)\s+(?:of|for)\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
-    || t.match(/^(?:use|put)\s+(?:the\s+word\s+)?["“]?([a-z][a-z'-]+)["”]?\s+in\s+a\s+sentence$/i);
+    || t.match(/^(?:use|put)\s+(?:the\s+word\s+)?["“]?([a-z][a-z'-]+)["”]?\s+in\s+a\s+sentence$/i)
+    // the same ask in Spanish, French, German, Italian and Portuguese (exam definitions, lists run 12: "qué significa serendipia")
+    || t.match(/^[¿]?(?:(?:qu[ée]|o\s+que|cosa|che\s+cosa)\s+(?:significa|quiere\s+decir|signifie|veut\s+dire|vuol\s+dire)|significado\s+de|signification\s+de|was\s+bedeutet|was\s+hei(?:ß|ss)t)\s+["“«]?(.+?)["”»]?$/i);
   if (!m) return null;
   const w = m[1].trim();
   if (/^(?:[a-z]{2,6})$/i.test(w) && ABBR_HELD.has(w.toLowerCase())) return null; // texting and office abbreviations are answered by the calculator's table
@@ -107,6 +109,16 @@ async function run(text, api) {
   if (!senses.length && !reached) {
     el.innerHTML = '<h2>' + esc(word) + '</h2><p>The dictionary didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
+  }
+  // a word from another language whose entry is one English word ("serendipia" is Spanish for serendipity): name it, then give that word's meanings
+  const lang = j && !j.en && j[Object.keys(j)[0]] && j[Object.keys(j)[0]][0] && j[Object.keys(j)[0]][0].language;
+  const gloss = lang && senses.length && senses[0].defs.length && /^[a-z][a-z' -]{1,30}$/i.test(senses[0].defs[0]) ? senses[0].defs[0].toLowerCase() : '';
+  if (gloss && gloss !== word.toLowerCase()) {
+    let e = null;
+    try { const r = await (api.fetch || fetch)('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(gloss.replace(/ /g, '_')) + '?redirect=true'); if (r.ok) e = await r.json(); } catch (_) {}
+    if (!api._pageStill(el)) return 'define';
+    const en = ((e && e.en) || []).map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3), ex: '' })).filter((s) => s.defs.length).slice(0, 2);
+    if (en.length) senses = [{ pos: lang + ' ' + (senses[0].pos || '').toLowerCase() + ': in English, “' + gloss + '”', defs: [gloss], ex: '' }].concat(en.map((s) => ({ ...s, pos: gloss + ' · ' + (s.pos || '') })));
   }
   if (!senses.length) {
     el.innerHTML = '<h2>' + esc(word) + '</h2><p>I couldn\'t find “' + esc(word) + '” in the dictionary. Check the spelling, or ask “what is ' + esc(word) + '” for a page about it.</p>';
