@@ -23,19 +23,26 @@ function setSound(on) { try { localStorage.setItem(KEY, on ? 'on' : 'off'); } ca
 function arm() {
   if (armed || typeof document === 'undefined') return;
   armed = true;
-  const start = () => { ready(); document.removeEventListener('pointerdown', start, true); document.removeEventListener('keydown', start, true); };
+  const start = () => { try { ready(); } catch (_) {} document.removeEventListener('pointerdown', start, true); document.removeEventListener('keydown', start, true); };
   document.addEventListener('pointerdown', start, true); document.addEventListener('keydown', start, true);
 }
 function ready() {
   if (!ac) {
     const AC = typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext);
     if (!AC) return null;
-    try { ac = new AC(); } catch (_) { return null; }
-    out = ac.createGain(); out.gain.value = 0.32; out.connect(ac.destination);
-    noise = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
-    const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    // a tap on anything else (a recipe's Start) hits this listener too. A context that cannot build a buffer
+    // (a test stand-in, a browser that refused the graph) stays silent: the throw used to land on the page.
+    try {
+      const ctx = new AC();
+      const rate = ctx.sampleRate || 0;
+      if (typeof ctx.createGain !== 'function' || typeof ctx.createBuffer !== 'function' || !(rate > 0)) return null;
+      const gain = ctx.createGain(); gain.gain.value = 0.32; gain.connect(ctx.destination);
+      const buf = ctx.createBuffer(1, rate, rate);
+      const d = buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      ac = ctx; out = gain; noise = buf;
+    } catch (_) { return null; }
   }
-  if (ac.state === 'suspended') ac.resume().catch(() => {});
+  if (ac.state === 'suspended' && ac.resume) ac.resume().catch(() => {});
   return ac;
 }
 arm();

@@ -77,6 +77,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Glass pages, lighter phone home (cursor, 2026-11-05)**: tools, the news list, the team page and credits share the glass. An empty phone home fetches the ask engine only after a tap, a key, or twelve seconds. https://github.com/atomeam/void-loop/pull/2263
+- **Loop checks start themselves (cursor, 2026-11-05)**: a loop pull request opened with the workflow token no longer sits approval-required. The lap starts the same checks with workflow_dispatch (review, merge gate, deploy's quick checks, collide, and the path-limited ones). Verse's review still decides the merge. https://github.com/atomeam/void-loop/pull/2266
+- **Main reds (cursor, 2026-11-05)**: the recipe handover stays quiet when the audio context cannot build a buffer, "forget this" on a phone closes the chess board and puts the tucked list back, and "put in the page" uses the draft a second read of the same tab would have wiped. https://github.com/atomeam/void-loop/pull/2262
 - **Agent follow-ups (cursor, 2026-11-05)**: /agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260
 - **Suite reds after #2251 (cursor, 2026-11-05)**: clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it. https://github.com/atomeam/void-loop/pull/2259
 - **Autosalvage batch (cursor, 2026-11-05)**: open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257

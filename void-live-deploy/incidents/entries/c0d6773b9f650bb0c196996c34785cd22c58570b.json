@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-05T10:51:22.822Z",
+ "sha": "c0d6773b9f650bb0c196996c34785cd22c58570b",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42010911284",
+ "suite": "browser suite on main",
+ "checks": [
+  "walker: a slow drag lifts the figure and sets it back on the floor where it is let go (about 64 px left), never a speech bubble, still walking and still kept",
+  "suite ran to the end",
+  "game panel fits: at 1280x800, 1280x560 and a 390x800 phone every \"How to play\" step is fully visible or scrolls into view inside the panel, the panel has bottom padding and never meets the ask bar"
+ ],
+ "touched": [
+  "domains/handoff.md",
+  "tools/tab.test.mjs",
+  "void-live-deploy/index.html",
+  "void-live-deploy/skills/sfx.js",
+  "void-live-deploy/skills/tab.js",
+  "void-live-deploy/void.html",
+  "void.html"
+ ],
+ "shards": [
+  3,
+  4
+ ]
+}

@@ -65,3 +65,7 @@ Open work:
 - 2026-11-04T07:30Z verse-loop (verse): task, Queue job mvymnftz (will: overhaul-surface-book-persona-play; all checks green; branch loop/20261104-073029
 
 - 2026-11-04 Grok Bot (box/images-noowner): images exam fixed (red circle drawn and handed to /paint/ and the drawing board; Wikimedia link inline with credit; "picture of a cat" a credited Commons picture): local exam 58.3 -> 100, live was 73.9. No human in the loop: every state that waited for the owner is now an autonomous step or an automated gate (domains/void.frontier.md WebMCP, Paid Verse, value drift, URL fetch, daily cap; MAP, STANDING, RULES, playbook), `tools/frontier.mjs` waitsOf and `skills/wants.js` never show a person as a wait, `tools/automerge.mjs` and the v01d-fixes tests read the retired label from `lib/v01d-fixes.js`, and `tools/no-human-wait.mjs` (run by checks.mjs through its test) fails if the words come back. Kept as safety gates, not waits: the confirm line, payment matching for Cash App orders, approving a shared routine offer.
+
+- 2026-11-05T09:58Z verse-loop (verse): task, Queue job mvop09tv (feature: podchaser-com-d04309ea): build ; all checks green; branch loop/20261105-095831
+
+- 2026-11-05T10:45Z verse-loop (verse): task, Queue job mvop0beq (feature: podchaser-com-c86b8e98): build ; all checks green; branch loop/20261105-104546

@@ -45,9 +45,11 @@ function mount(th, stageApi) {
       + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Verse acts only on a site you allowed, and only after your yes in the panel.</div>';
     const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
     const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
-    ta.value = ext.draft; footLine();
+    ta.value = ext.draft || ''; footLine();
+    const draftText = () => String(ta.value || ext.draft || '').trim(); // a redraw can replace the box after the words were kept
     ta.addEventListener('input', () => { ext.draft = ta.value; });
-    put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = bridge.draftSaid(await bridge.draft(ta.value)); });
+    put.addEventListener('pointerdown', () => { if (ta.value) ext.draft = ta.value; });
+    put.addEventListener('click', async () => { const draft = draftText(); if (!draft) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = bridge.draftSaid(await bridge.draft(draft)); });
     body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
       const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
       if (intent === 'proposal') return bridge.proposalFromTab(tab, said, footLine);
