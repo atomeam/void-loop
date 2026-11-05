@@ -77,6 +77,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Verify reds (cursor, 2026-11-05)**: "clear" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2273
 - **Agent no kept (cursor, 2026-11-05)**: a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271
 - **Autosalvage batch (cursor, 2026-11-05)**: heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is 11,749 live and none failed. https://github.com/atomeam/void-loop/pull/2269
 - **Country capitals (cursor, 2026-11-05)**: Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every country. Registry live count 11,739 to 11,743. https://github.com/atomeam/void-loop/pull/2265
