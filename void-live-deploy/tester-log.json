@@ -1,16 +1,77 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 85,
- "runsTotal": 248,
+ "runsTotal": 250,
  "kinds": {
   "grow": 69,
-  "file": 79,
+  "file": 80,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 46
+  "visitor": 47
  },
  "runs": [
+  {
+   "at": "2026-11-05T08:54:39Z",
+   "passed": 78,
+   "of": 89,
+   "kind": "file",
+   "ms": 318,
+   "note": "fix: \"toss it off the screen\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "closer on the figure",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "turn the questions i missed into a five-minute challenge",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "dyslexia friendly font",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "fly around",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "book reocmmendations like the hobbit",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "Zahnarzt morgen 15 Uhr in den Kalender",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "flip a coin",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T08:41:11Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T07:40:48Z",
    "passed": 0,
@@ -256,71 +317,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T00:02:48Z",
-   "passed": 75,
-   "of": 88,
-   "kind": "file",
-   "ms": 377,
-   "note": "fix: \"update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list\" missing text /News about me/",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-     "why": "missing text /News about me/"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "yo bitcoin price",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "yo film metadata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film metadata for ikiru pls",
-     "why": "load 1921 ms > 1200"
-    },
-    {
-     "ask": "dim the void",
-     "why": "load 1416 ms > 1200"
-    },
-    {
-     "ask": "yo play despacito",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "yo who is the author of dune",
-     "why": "load 1675 ms > 1200"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-04T23:50:45Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -374,18 +370,18 @@
   },
   {
    "from": "2026-10-08",
-   "runs": 24,
-   "passed": 194,
-   "of": 316,
+   "runs": 26,
+   "passed": 223,
+   "of": 348,
    "broken": 6,
    "brokenOf": 76,
    "brokenPassed": 16
   },
   {
    "from": "2026-10-15",
-   "runs": 167,
-   "passed": 2957,
-   "of": 5494,
+   "runs": 165,
+   "passed": 2928,
+   "of": 5462,
    "broken": 89,
    "brokenOf": 2162,
    "brokenPassed": 6
@@ -398,9 +394,9 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 57,
-   "passed": 864,
-   "of": 967,
+   "runs": 59,
+   "passed": 942,
+   "of": 1056,
    "ms": 377
   }
  ],
@@ -414,14 +410,14 @@
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
   "skill:automations": "2026-11-05T00:02:48Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
-  "skill:book": "2026-11-05T06:57:03Z",
+  "skill:book": "2026-11-05T08:54:39Z",
   "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T06:57:03Z",
+  "skill:cartoon": "2026-11-05T08:54:39Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -683,6 +679,8 @@
   "skill:baggage": "2026-11-05T04:13:57Z",
   "skill:baseconv": "2026-11-05T04:13:57Z",
   "skill:boards": "2026-11-05T06:57:03Z",
-  "skill:business-clarify": "2026-11-05T06:57:03Z"
+  "skill:business-clarify": "2026-11-05T06:57:03Z",
+  "skill:calendar-fill": "2026-11-05T08:54:39Z",
+  "skill:coin": "2026-11-05T08:54:39Z"
  }
 }
