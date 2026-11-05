@@ -3,12 +3,14 @@
 // POST { thread, id, decision: yes|no }   -> approve resumes the held task onto the Made shelf; decline stops it. Nothing outside the
 //                                            site is ever done: there is no send, pay or delete executor on this route.
 // POST { thread, seen: [id, ...] }        -> the member has seen those follow-ups (the inbox clears them). Only this thread's rows.
+// POST { thread, proactive: true }        -> Verse may write one note first (a finished job, a due check, or a next step from past asks).
+//                                            Free tier only. A send, pay or delete in that note waits for a yes and nothing is sent.
 // GET ?thread=<id>                        -> the thread, live steps, the Made shelf, the inbox, the daily brief and the model tier.
 // GET ?thread=<id>&task=<id>              -> one task, so a finished one can be reopened from the Made shelf.
 // WHAT A STRANGER COULD MAKE THIS DO: 20 tasks a day per visitor (lib/daily-cap.js), 400 a day in all. A task may ask the free model,
 // its fallback, and one better bot when the first answer does not address the ask. An exact free bot answers with no model call.
 // It can read and mark only its own thread.
-import { tierFor, needsYes, brief, TIERS, inboxOf, decisionOf } from '../../lib/agent-core.js';
+import { tierFor, needsYes, brief, TIERS, inboxOf, decisionOf, planNudge, isNudge, NUDGE_LINE } from '../../lib/agent-core.js';
 import { attemptsFor, answerBrief, addressesAsk } from '../../lib/agent-answer.js';
 import { cap } from '../../lib/daily-cap.js';
 import { ANSWER_FALLBACK } from '../../lib/models.js';
@@ -79,9 +81,25 @@ async function replyFrom(env, db, id, tier, bot, ask) {
   return { text: '', why };
 }
 
-export async function run(env, origin, id, ask) {
+/** one note from Verse on this thread, if one is due. Free tier, no model. Null when there is nothing to say or one was written today. */
+export async function considerNudge(env, thread, now = Date.now()) {
+  if (!env || !env.DB || !okThread(thread)) return null;
+  await table(env.DB);
+  const r = await env.DB.prepare('SELECT id, ask, status, bot, tier, steps, result, created, done, seen FROM void_agent_tasks WHERE thread = ? ORDER BY created DESC LIMIT 50').bind(thread).all();
+  const tasks = (r.results || []).map((t) => ({ ...t, steps: JSON.parse(t.steps || '[]'), seen: Number(t.seen) || 0 }));
+  const plan = planNudge(tasks, now);
+  if (!plan) return null;
+  const id = crypto.randomUUID().replace(/-/g, '').slice(0, 20);
+  const steps = JSON.stringify([{ at: now, line: NUDGE_LINE }, { at: now, line: plan.line }]);
+  const done = plan.status === 'needs_yes' ? null : now;
+  await env.DB.prepare('INSERT INTO void_agent_tasks (id, thread, ask, status, bot, tier, steps, result, created, done, seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(id, thread, String(plan.ask).slice(0, 1000), plan.status, 'verse', 'free', steps, String(plan.result || '').slice(0, 4000), now, done, 0).run();
+  return { id, status: plan.status, kind: plan.kind, tier: 'free' };
+}
+
+export async function run(env, origin, id, ask, thread) {
   const db = env.DB;
   try {
+    if (thread) { try { await considerNudge(env, thread); } catch (_) { /* a note is never required for the task itself */ } }
     await step(db, id, 'Read your task.', { status: 'running' });
     const tier = tierFor(await infraCents(origin));
     await step(db, id, 'Thinking on the ' + tier.name + ' model tier.', { tier: tier.name });
@@ -115,6 +133,7 @@ export async function run(env, origin, id, ask) {
     } else {
       await step(db, id, 'Done. It is on your Made shelf.', { status: 'done', result: text.slice(0, 4000), done: Date.now() });
     }
+    if (thread) { try { await considerNudge(env, thread); } catch (_) {} }
   } catch (e) {
     try { await recordShortfall(env, 'agent', reasonOf(e)); } catch (_) {}
     try { await step(db, id, 'Got stuck: the model did not answer. Try again in a minute.', { status: 'failed', done: Date.now() }); } catch (_) {}
@@ -135,12 +154,17 @@ export async function onRequestGet({ request, env }) {
     if (!task) return json({ ok: false, say: 'no task' }, 404);
     return json({ ok: true, task });
   }
-  return json({ ok: true, tasks, made: tasks.filter((t) => t.status === 'done'), inbox: inboxOf(tasks), brief: brief(tasks), tiers: TIERS.map(({ name, month_cents, why }) => ({ name, month_cents, why })) });
+  return json({ ok: true, tasks, made: tasks.filter((t) => t.status === 'done' && !isNudge(t)), inbox: inboxOf(tasks), brief: brief(tasks), tiers: TIERS.map(({ name, month_cents, why }) => ({ name, month_cents, why })) });
 }
 
 export async function onRequestPost({ request, env, waitUntil }) {
   let b; try { b = await request.json(); } catch (_) { return json({ ok: false, say: 'send JSON' }, 400); }
   if (!okThread(b.thread)) return json({ ok: false, say: 'no thread' }, 400);
+  if (b.proactive === true) {
+    if (!env.DB) return json({ ok: false, say: 'the agent is off' }, 503);
+    const nudge = await considerNudge(env, b.thread);
+    return json({ ok: true, nudge: nudge || null });
+  }
   if (!env.DB || !env.AI) return json({ ok: false, say: 'the agent is off' }, 503);
   await table(env.DB);
   if (b.id && b.decision) {
@@ -164,6 +188,6 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!(await cap(env, 'agent-all', 400)).ok || !(await cap(env, 'agent:' + h, 20)).ok) return json({ ok: false, say: 'that is today\'s free tasks; more come back tomorrow' }, 429);
   const id = crypto.randomUUID().replace(/-/g, '').slice(0, 20);
   await env.DB.prepare('INSERT INTO void_agent_tasks (id, thread, ask, status, steps, created) VALUES (?, ?, ?, ?, ?, ?)').bind(id, b.thread, ask, 'queued', JSON.stringify([{ at: Date.now(), line: 'Got it. Queued.' }]), Date.now()).run();
-  waitUntil(run(env, new URL(request.url).origin, id, ask));
+  waitUntil(run(env, new URL(request.url).origin, id, ask, b.thread));
   return json({ ok: true, id });
 }

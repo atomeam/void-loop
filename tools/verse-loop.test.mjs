@@ -194,9 +194,22 @@ test('a real lap: branch loop/<time>, one TAGTEAM line, a plain push, a PR with 
   const args = readFileSync(join(s.dir, 'gh-args.txt'), 'utf8');
   assert.match(args, /pr create --base main --head loop\/\S+ .*--label automerge\n$/s);
   assert.ok(ghCalls(s).some((c) => c.join(' ') === 'workflow run verify.yml --ref ' + r.branch), 'verify.yml started on the branch');
+  assert.ok(!ghCalls(s).some((c) => c[2] === 'void-review.yml'), 'without VERSE_LOOP_DISPATCH_CHECKS the pull_request runs are left to the token that opened the PR');
   assert.equal(r.verify, 'started');
   assert.ok(!existsSync(join(s.work, '.git', 'verse-loop.lock')), 'lock released');
   assert.equal(sh(s.work, 'status', '--porcelain'), '', 'clean for the next lap');
+});
+
+test('a workflow-token lap starts the pull-request checks, and a page diff starts the critic too', async () => {
+  const s = sandbox();
+  const r = await lap(parseArgs(['--once', '--agent', 'cmd']), { cwd: s.work, env: { ...env(s, 'mkdir -p void-live-deploy && echo card > void-live-deploy/x.js'), VERSE_LOOP_DISPATCH_CHECKS: '1' }, log: quiet });
+  assert.equal(r.outcome, 'shipped', r.why);
+  const calls = ghCalls(s).map((c) => c.join(' '));
+  for (const file of ['void-review.yml', 'merge-gate.yml', 'deploy.yml', 'collide.yml', 'automerge.yml', 'loop-critic.yml']) {
+    assert.ok(calls.some((c) => c === 'workflow run ' + file + ' --ref ' + r.branch + ' -f pr=7'), file + ' started on the branch');
+  }
+  assert.ok(!calls.some((c) => c.includes('workflow-lint.yml')), 'a page diff does not start the workflow linter');
+  assert.ok(!calls.some((c) => c.includes('bench.yml')), 'a page diff does not start the benchmark');
 });
 
 test('the script never force-pushes and holds no key', () => {

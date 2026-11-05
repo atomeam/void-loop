@@ -5,8 +5,14 @@ name: Loop critic
 on:
   pull_request:
     paths: ['void-live-deploy/**', 'void.html']
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number. The loop starts this when a workflow-token pull request leaves the pull_request run unstarted.
+        required: true
+        type: string
 concurrency:
-  group: loop-critic-${{ github.event.pull_request.number }}
+  group: loop-critic-${{ github.event.pull_request.number || inputs.pr }}
   cancel-in-progress: true
 permissions:
   contents: read
@@ -22,13 +28,26 @@ jobs:
         with: { node-version: 22 }
       - id: critic
         shell: bash
-        run: node tools/loop-critic.mjs "origin/${{ github.base_ref }}" | tee critic.txt | tee -a "$GITHUB_STEP_SUMMARY"; exit "${PIPESTATUS[0]}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_REF: ${{ github.base_ref }}
+          PR: ${{ github.event.pull_request.number || inputs.pr }}
+          REPO: ${{ github.repository }}
+        run: |
+          base="$BASE_REF"
+          if [ -z "$base" ]; then
+            case "$PR" in ''|*[!0-9]*) echo "::error::no pull request number"; exit 1 ;; esac
+            base=$(gh api "repos/$REPO/pulls/$PR" --jq .base.ref)
+          fi
+          git fetch -q origin "$base"
+          node tools/loop-critic.mjs "origin/$base" | tee critic.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          exit "${PIPESTATUS[0]}"
       - name: A finding files a fix job
         if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          PR: ${{ github.event.pull_request.number }}
+          PR: ${{ github.event.pull_request.number || inputs.pr }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           why=$(tr '\n' ' ' < critic.txt | head -c 180)

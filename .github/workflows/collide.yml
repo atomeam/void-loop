@@ -5,9 +5,15 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number. The loop starts this when a workflow-token pull request leaves the pull_request run unstarted.
+        required: true
+        type: string
 
 concurrency:
-  group: collide-${{ github.event.pull_request.number }}
+  group: collide-${{ github.event.pull_request.number || inputs.pr }}
   cancel-in-progress: true
 
 permissions:
@@ -26,5 +32,7 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename' | paste -sd, -)
-          node tools/collide.mjs --files "$files" | grep -v "^COLLIDES #${{ github.event.pull_request.number }} \|^shared   #${{ github.event.pull_request.number }} " | tee -a "$GITHUB_STEP_SUMMARY"
+          PR="${{ github.event.pull_request.number || inputs.pr }}"
+          case "$PR" in ''|*[!0-9]*) echo "::error::no pull request number"; exit 1 ;; esac
+          files=$(gh api --paginate "repos/${{ github.repository }}/pulls/${PR}/files" --jq '.[].filename' | paste -sd, -)
+          node tools/collide.mjs --files "$files" | grep -v "^COLLIDES #${PR} \|^shared   #${PR} " | tee -a "$GITHUB_STEP_SUMMARY"

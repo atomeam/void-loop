@@ -189,7 +189,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /Verse-auto-revert: \$sha/);
   assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
   assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
-  assert.match(deploy, /group: \$\{\{ github\.event_name == 'pull_request' && format\('void-deploy-pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'void-deploy-main' \}\}\n\s+cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \}\}/, 'one deploy group per PR and one for main (#2190); only a PR cancels its older run, a started main deploy always lands');
+  assert.match(deploy, /group: \$\{\{ github\.event\.pull_request\.number && format\('void-deploy-pr-\{0\}', github\.event\.pull_request\.number\) \|\| inputs\.pr && format\('void-deploy-pr-\{0\}', inputs\.pr\) \|\| 'void-deploy-main' \}\}\n\s+cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \|\| inputs\.pr != '' \}\}/, 'one deploy group per PR (a pull_request, or a dispatched pr check) and one for main; only a PR check cancels its older run, a started main deploy always lands');
   assert.match(auto, /\['workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'\]/, 'a GITHUB_TOKEN merge starts no push workflow: automerge starts the suite');
 });
 

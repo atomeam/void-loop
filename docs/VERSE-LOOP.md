@@ -59,7 +59,7 @@ node tools/verse-loop.mjs --once [--dry-run] [--agent verse|opencode|aider|cmd] 
 
 `.github/workflows/verse-loop.yml` runs `--once` every hour at :41 and on demand. It is off until you turn it on.
 
-1. Repo secrets (by name; values never go in a file): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (Workers AI, Verse's coder), `VOID_OWNER_TOKEN` (already set for propose-fix: probe jobs), optionally `VERSE_LOOP_TOKEN` (the workflow token is used without it, now that Actions may open PRs), and as fallbacks any of `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` (and `VERSE_LOOP_MODEL` for opencode or aider).
+1. Repo secrets (by name; values never go in a file): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (Workers AI, Verse's coder), `VOID_OWNER_TOKEN` (already set for propose-fix: probe jobs), optionally `VERSE_LOOP_TOKEN` (a fine-grained token or a GitHub App installation token with contents and pull requests; without it the workflow token opens the pull request and `tools/loop-checks.mjs` starts the checks, because a workflow-token pull request leaves `pull_request` runs approval-required), and as fallbacks any of `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` (and `VERSE_LOOP_MODEL` for opencode or aider).
 2. Repo variable `VERSE_LOOP_ENABLED` = `true` (`gh variable set VERSE_LOOP_ENABLED --body true`).
 3. First lap by hand: `gh workflow run verse-loop.yml -f dry=true`, then `gh workflow run verse-loop.yml`.
 
