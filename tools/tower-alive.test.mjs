@@ -1,0 +1,80 @@
+// tools/tower-alive.mjs: rivals that redirect off their own domain, error out or are parked are dropped; fixture redirects served locally
+import test from 'node:test'; import assert from 'node:assert/strict'; import http from 'node:http'; import fs from 'node:fs';
+import { judge, judgeOne, rivalHost, ownHost, fold, isGone, check } from './tower-alive.mjs';
+import { advance } from './tower-target.mjs';
+import { historyOf, fileOf } from './assimilated.mjs';
+
+test('rivalHost and ownHost', () => {
+  assert.equal(rivalHost('emoji combos: emojigraph.org'), 'emojigraph.org');
+  assert.equal(rivalHost('https://www.unitingchurch.org.au/x'), 'unitingchurch.org.au');
+  assert.ok(ownHost('www.onlineconverter.com', 'onlineconverter.com'));
+  assert.ok(!ownHost('controlhosting.net', 'unitingchurch.org.au'));
+  assert.ok(!ownHost('evilonlineconverter.com', 'onlineconverter.com'));
+});
+test('the real case: unitingchurch.org.au 301s to controlhosting.net and http is 500: parked', () => {
+  const j = judge('unitingchurch.org.au', [{ url: 'https://unitingchurch.org.au/', final: 'https://controlhosting.net/', status: 200, text: 'controlhosting.net - Powered by Electricity' }, { url: 'http://unitingchurch.org.au/', error: 'net::ERR_HTTP_RESPONSE_CODE_FAILURE' }]);
+  assert.equal(j.alive, false); assert.equal(j.status, 'parked'); assert.match(j.why, /controlhosting\.net/);
+});
+test('control: emojigraph.org https 200 with http 500 stays alive', () => {
+  const j = judge('emojigraph.org', [{ url: 'https://emojigraph.org/', final: 'https://emojigraph.org/', status: 200, text: 'Emojigraph emoji combos and meanings'.repeat(50) }, { url: 'http://emojigraph.org/', error: 'net::ERR_HTTP_RESPONSE_CODE_FAILURE' }]);
+  assert.equal(j.alive, true);
+});
+test('both addresses erroring is gone; a bot wall (403) is not; a parked page is parked', () => {
+  assert.equal(judge('x.com', [{ url: 'https://x.com/', final: 'https://x.com/', status: 503 }, { url: 'http://x.com/', error: 'refused' }]).status, 'gone');
+  assert.equal(judgeOne('x.com', { url: 'https://x.com/', final: 'https://x.com/', status: 403, text: 'Just a moment' }).ok, true);
+  assert.equal(judge('x.com', [{ url: 'https://x.com/', final: 'https://x.com/', status: 200, text: 'This domain is for sale! Buy this domain' }]).status, 'parked');
+});
+test('fold logs a drop once and takes back a rival that returns', () => {
+  const a = fold({}, [{ rival: 'a.org', alive: false, status: 'parked', why: 'moved' }], 't1');
+  const b = fold(a, [{ rival: 'a.org', alive: false, status: 'parked', why: 'moved' }], 't2');
+  assert.equal(b.log.length, 1); assert.equal(b.gone['a.org'].since, 't1');
+  const c = fold(b, [{ rival: 'a.org', alive: true, why: 'ok' }], 't3');
+  assert.deepEqual(c.gone, {}); assert.equal(c.log.at(-1).status, 'back');
+  assert.ok(isGone('church: www.a.org', a.gone)); assert.ok(!isGone('b.org', a.gone));
+});
+test('a gone target gives way at once and is taken off passed; the next live site takes over', () => {
+  const gone = { 'dead.org': { status: 'parked', why: 'https://dead.org/ ends on controlhosting.net' } };
+  const floors = [{ id: 'dead.org', n: 3, m: 9 }, { id: 'also: dead.org', n: 1 }, { id: 'live.com', n: 1, m: 9 }];
+  const { file, why } = advance({ id: 'dead.org', since: '2026-11-04', passed: [{ id: 'also: dead.org' }, { id: 'old.com' }] }, floors, '2026-11-04', gone);
+  assert.equal(file.id, 'live.com'); assert.match(why, /parked/); assert.deepEqual(file.passed.map((r) => r.id), ['old.com']);
+  assert.ok(file.skipped.some((s) => s.id === 'dead.org'));
+});
+test('a parked site never counts as passed or assimilated', () => {
+  const state = { sites: { 'dead.org': { outcome: 'passed', at: '2026-11-04T00:00:00Z' }, 'live.com': { outcome: 'passed', at: '2026-11-04T00:00:00Z' } } };
+  const before = fileOf(historyOf({ state })).counts, after = fileOf(historyOf({ state, gone: { 'dead.org': { why: 'moved' } } })).counts;
+  assert.equal(after.parked, 1); assert.ok(after.passed < before.passed || after.assimilated < before.assimilated || before.passed + before.assimilated === 0);
+});
+test('the repo drops unitingchurch.org.au as parked', () => {
+  const g = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/tower.gone.json', import.meta.url))).gone;
+  assert.equal(g['unitingchurch.org.au'].status, 'parked');
+  const row = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/assimilated.json', import.meta.url))).sites.find((r) => r.site === 'unitingchurch.org.au');
+  assert.equal(row.outcome, 'parked');
+});
+
+// fixture redirects in a real browser: every *.test host maps to a local server that answers by Host
+const exe = process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome';
+test('browser: server, meta-refresh and script redirects off the domain are caught; the own site passes', { skip: !fs.existsSync(exe) }, async () => {
+  const srv = http.createServer((q, s) => {
+    const h = String(q.headers.host).split(':')[0], to = (u) => { s.writeHead(301, { location: u }); s.end(); }, page = (b, c = 200) => { s.writeHead(c, { 'content-type': 'text/html' }); s.end('<!doctype html><title>t</title><body>' + b + '</body>'); };
+    const park = 'http://parking.test:' + port + '/';
+    if (h === 'parking.test') return page('controlhosting.net - Powered by Electricity');
+    if (h === 'own.test') return page('<h1>Real tool</h1>' + 'useful '.repeat(600));
+    if (h === 'www.own2.test') return page('<h1>Real</h1>' + 'useful '.repeat(600));
+    if (h === 'own2.test') return to('http://www.own2.test:' + port + '/');
+    if (h === 'moved.test') return to(park);
+    if (h === 'meta.test') return page('<meta http-equiv="refresh" content="0;url=' + park + '">wait');
+    if (h === 'js.test') return page('<script>setTimeout(function(){location.href="' + park + '"},300)</script>wait');
+    if (h === 'err.test') return page('boom', 500);
+    page('?', 404);
+  });
+  await new Promise((r) => srv.listen(0, '127.0.0.1', r)); var port = srv.address().port;
+  const { chromium } = await import('playwright-core');
+  const b = await chromium.launch({ executablePath: exe, args: ['--no-sandbox', '--host-resolver-rules=MAP *.test 127.0.0.1'] });
+  try {
+    const at = (h) => ({ urls: ['http://' + h + ':' + port + '/'], settle: 800, timeout: 10000 });
+    for (const h of ['moved.test', 'meta.test', 'js.test']) { const r = await check(b, h, at(h)); assert.equal(r.alive, false, h); assert.equal(r.status, 'parked', h); assert.match(r.final, /parking\.test/, h); }
+    assert.equal((await check(b, 'err.test', at('err.test'))).status, 'gone');
+    assert.equal((await check(b, 'own.test', at('own.test'))).alive, true);
+    assert.equal((await check(b, 'own2.test', at('own2.test'))).alive, true);
+  } finally { await b.close(); srv.close(); }
+});
