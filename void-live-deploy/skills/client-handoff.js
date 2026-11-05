@@ -106,7 +106,7 @@ export default {
     const html = cardHtml(esc || escapeHtml, text);
     if (typeof showPage === 'function') {
       const el = showPage((p) => { p.innerHTML = '<h2>Client handoff</h2><div class="sub">building…</div>'; });
-      if (el) el.innerHTML = html;
+      if (el) el.innerHTML = html; // void-review: ok (cardHtml escapes the ask before this string is written)
     }
     return 'client-handoff';
   },
