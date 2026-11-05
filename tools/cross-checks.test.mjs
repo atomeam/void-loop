@@ -9,9 +9,9 @@ import { familyRows, fixJobs } from './bot-factory.mjs';
 
 const F = families(), C = F.filter((b) => b.cat === 'checks'), get = (id) => F.find((b) => b.id === id);
 
-test('one checker for every unit, base, cipher, format, date, phrasebook, currency, holiday and country bot, plus six two-source API checks', () => {
-  const targets = F.filter((b) => /^(units|number bases|ciphers|data formats|date formats|language pairs|currency pairs|public holidays|country facts)/.test(b.family || ''));
-  assert.equal(C.length, targets.length + 6);
+test('one checker for every unit, base, cipher, format, date, phrasebook, currency, holiday, country and encoding bot, plus seven two-source API checks', () => {
+  const targets = F.filter((b) => /^(units|number bases|ciphers|data formats|date formats|language pairs|currency pairs|public holidays|country facts|text encodings)/.test(b.family || ''));
+  assert.equal(C.length, targets.length + 7);
   assert.equal(new Set(F.map((b) => b.id)).size, F.length, 'ids are unique across every family');
   for (const t of targets) assert.ok(get('check-' + t.id), t.id);
   assert.deepEqual(C.filter((b) => !check(b).ok).map((b) => b.id), []);
