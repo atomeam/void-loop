@@ -176,6 +176,10 @@
  ],
  "commits": [
   {
+   "at": "2026-11-04T17:33:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-04T17:32:33Z",
    "subject": "the harness answers _redirects and the floor gates fail alone"
   },
@@ -250,10 +254,6 @@
   {
    "at": "2026-11-04T15:16:40Z",
    "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T15:10:19Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {

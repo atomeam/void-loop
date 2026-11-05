@@ -1,11 +1,20 @@
 [
   {
-    "id": "page:emojigraph-org",
+    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
     "from": "page",
-    "consumed": "emojigraph.org",
-    "learned": "emojigraph.org assimilated; Verse's page /emoji-combos/emoji-dictionary/",
-    "retain": "emojigraph.org was assimilated by /emoji-combos/emoji-dictionary/",
-    "at": "2026-11-03T23:37:24Z",
+    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
+    "learned": "2026-11-04: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-04) did not work (credits)",
+    "at": "2026-11-04T06:57:52.878Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
+    "from": "page",
+    "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
+    "learned": "2026-11-04: worked; 21 tools listed",
+    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-04) worked",
+    "at": "2026-11-04T00:15:22.355Z",
     "seen": 1
   },
   {
@@ -27,30 +36,21 @@
     "seen": 1
   },
   {
-    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
+    "id": "page:convertunits-com",
     "from": "page",
-    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-03: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-03) did not work (credits)",
-    "at": "2026-11-03T19:46:07.478Z",
+    "consumed": "convertunits.com",
+    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
+    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
+    "at": "2026-11-03T14:21:44Z",
     "seen": 1
   },
   {
-    "id": "page:onlineconverter-com",
+    "id": "page:convertlive-com",
     "from": "page",
-    "consumed": "onlineconverter.com",
-    "learned": "onlineconverter.com surpassed: ahead of it on 12 of 12 aspects, measured head to head; Verse's page /converter/",
-    "retain": "onlineconverter.com was surpassed by /converter/",
-    "at": "2026-11-03T14:54:07Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
-    "from": "page",
-    "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
-    "learned": "2026-11-03: worked; 21 tools listed",
-    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-03) worked",
-    "at": "2026-11-03T02:13:18.682Z",
+    "consumed": "convertlive.com",
+    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
+    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
+    "at": "2026-11-03T14:21:10Z",
     "seen": 1
   },
   {
@@ -60,15 +60,6 @@
     "learned": "communitycollegejobs.com walled: a nearly empty page (44 characters: a redirect stub, or a page that draws itself with no text)",
     "retain": "communitycollegejobs.com was walled",
     "at": "2026-11-01T22:17:46Z",
-    "seen": 1
-  },
-  {
-    "id": "page:ndscalc-ru",
-    "from": "page",
-    "consumed": "ndscalc.ru",
-    "learned": "ndscalc.ru built, then discarded: failed tests",
-    "retain": "ndscalc.ru was built, then discarded",
-    "at": "2026-11-01T16:55:26Z",
     "seen": 1
   },
   {
@@ -108,15 +99,6 @@
     "seen": 1
   },
   {
-    "id": "page:howsecureismypassword-net",
-    "from": "page",
-    "consumed": "howsecureismypassword.net",
-    "learned": "howsecureismypassword.net surpassed: ahead of it on 15 of 15 aspects, measured head to head; a checker is trusted only when nothing leaves the device: the password never goes in a link, the leak list is ask…; Verse's page…",
-    "retain": "howsecureismypassword.net was surpassed by /password-strength/",
-    "at": "2026-10-30T05:33:34Z",
-    "seen": 1
-  },
-  {
     "id": "page:nnamdicenter-org",
     "from": "page",
     "consumed": "nnamdicenter.org",
@@ -153,15 +135,6 @@
     "seen": 1
   },
   {
-    "id": "page:colorzilla-com",
-    "from": "page",
-    "consumed": "colorzilla.com",
-    "learned": "colorzilla.com built, then discarded: failed tests",
-    "retain": "colorzilla.com was built, then discarded",
-    "at": "2026-10-26T22:52:46Z",
-    "seen": 1
-  },
-  {
     "id": "page:supercolorapp-com",
     "from": "page",
     "consumed": "supercolorapp.com",
@@ -174,18 +147,9 @@
     "id": "page:notepad-plus-plus-org",
     "from": "page",
     "consumed": "notepad-plus-plus.org",
-    "learned": "notepad-plus-plus.org assimilated; Verse's page /text-editor/notepad-plus-plus/",
-    "retain": "notepad-plus-plus.org was assimilated by /text-editor/notepad-plus-plus/",
+    "learned": "notepad-plus-plus.org assimilated",
+    "retain": "notepad-plus-plus.org was assimilated",
     "at": "2026-10-26T22:52:20Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertunits-com",
-    "from": "page",
-    "consumed": "convertunits.com",
-    "learned": "convertunits.com surpassed; Verse's page /convert/unit-converter-2/",
-    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
-    "at": "2026-10-26T07:34:33Z",
     "seen": 1
   },
   {
@@ -195,15 +159,6 @@
     "learned": "mycolor.space walled: a nearly empty page (72 characters: a redirect stub, or a page that draws itself with no text)",
     "retain": "mycolor.space was walled",
     "at": "2026-10-26T07:34:10Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertlive-com",
-    "from": "page",
-    "consumed": "convertlive.com",
-    "learned": "convertlive.com surpassed; Verse's page /convert/unit-converter/",
-    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
-    "at": "2026-10-26T07:26:26Z",
     "seen": 1
   },
   {
@@ -225,47 +180,11 @@
     "seen": 1
   },
   {
-    "id": "page:arbeitnow-com",
-    "from": "page",
-    "consumed": "arbeitnow.com",
-    "learned": "arbeitnow.com assimilated; Verse's page /jobs/europe/",
-    "retain": "arbeitnow.com was assimilated by /jobs/europe/",
-    "at": "2026-10-26T06:59:35Z",
-    "seen": 1
-  },
-  {
     "id": "page:himalayas-app",
     "from": "page",
     "consumed": "himalayas.app",
     "learned": "himalayas.app assimilated; Verse's page /jobs/salary/",
     "retain": "himalayas.app was assimilated by /jobs/salary/",
-    "at": "2026-10-26T06:59:35Z",
-    "seen": 1
-  },
-  {
-    "id": "page:jobicy-com",
-    "from": "page",
-    "consumed": "jobicy.com",
-    "learned": "jobicy.com assimilated; Verse's page /jobs/regions/",
-    "retain": "jobicy.com was assimilated by /jobs/regions/",
-    "at": "2026-10-26T06:59:35Z",
-    "seen": 1
-  },
-  {
-    "id": "page:remoteok-com",
-    "from": "page",
-    "consumed": "remoteok.com",
-    "learned": "remoteok.com assimilated; Verse's page /jobs/tags/",
-    "retain": "remoteok.com was assimilated by /jobs/tags/",
-    "at": "2026-10-26T06:59:35Z",
-    "seen": 1
-  },
-  {
-    "id": "page:remotive-com",
-    "from": "page",
-    "consumed": "remotive.com",
-    "learned": "remotive.com assimilated; Verse's page /jobs/categories/",
-    "retain": "remotive.com was assimilated by /jobs/categories/",
     "at": "2026-10-26T06:59:35Z",
     "seen": 1
   },
@@ -279,56 +198,11 @@
     "seen": 1
   },
   {
-    "id": "page:workingnomads-com",
-    "from": "page",
-    "consumed": "workingnomads.com",
-    "learned": "workingnomads.com assimilated; Verse's page /jobs/alerts/",
-    "retain": "workingnomads.com was assimilated by /jobs/alerts/",
-    "at": "2026-10-26T06:59:35Z",
-    "seen": 1
-  },
-  {
     "id": "page:airmilescalculator-com",
     "from": "page",
     "consumed": "airmilescalculator.com",
     "learned": "airmilescalculator.com assimilated; Verse's page /flights/distance/",
     "retain": "airmilescalculator.com was assimilated by /flights/distance/",
-    "at": "2026-10-26T04:56:18Z",
-    "seen": 1
-  },
-  {
-    "id": "page:aruljohn-com",
-    "from": "page",
-    "consumed": "aruljohn.com",
-    "learned": "aruljohn.com assimilated; Verse's page /flights/airports/",
-    "retain": "aruljohn.com was assimilated by /flights/airports/",
-    "at": "2026-10-26T04:56:18Z",
-    "seen": 1
-  },
-  {
-    "id": "page:clock7-com",
-    "from": "page",
-    "consumed": "clock7.com",
-    "learned": "clock7.com assimilated; Verse's page /flights/time/",
-    "retain": "clock7.com was assimilated by /flights/time/",
-    "at": "2026-10-26T04:56:18Z",
-    "seen": 1
-  },
-  {
-    "id": "page:co2-myclimate-org",
-    "from": "page",
-    "consumed": "co2.myclimate.org",
-    "learned": "co2.myclimate.org assimilated; Verse's page /flights/co2/",
-    "retain": "co2.myclimate.org was assimilated by /flights/co2/",
-    "at": "2026-10-26T04:56:18Z",
-    "seen": 1
-  },
-  {
-    "id": "page:flightconnections-com",
-    "from": "page",
-    "consumed": "flightconnections.com",
-    "learned": "flightconnections.com assimilated; Verse's page /flights/routes/",
-    "retain": "flightconnections.com was assimilated by /flights/routes/",
     "at": "2026-10-26T04:56:18Z",
     "seen": 1
   },
@@ -339,105 +213,6 @@
     "learned": "gcmap.com assimilated; Verse's page /flights/map/",
     "retain": "gcmap.com was assimilated by /flights/map/",
     "at": "2026-10-26T04:56:18Z",
-    "seen": 1
-  },
-  {
-    "id": "page:tripwaffle-com",
-    "from": "page",
-    "consumed": "tripwaffle.com",
-    "learned": "tripwaffle.com assimilated; Verse's page /flights/trip/",
-    "retain": "tripwaffle.com was assimilated by /flights/trip/",
-    "at": "2026-10-26T04:56:18Z",
-    "seen": 1
-  },
-  {
-    "id": "page:10015-io",
-    "from": "page",
-    "consumed": "10015.io",
-    "learned": "10015.io assimilated; Verse's page /pdf/organize/",
-    "retain": "10015.io was assimilated by /pdf/organize/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:abacktools-com",
-    "from": "page",
-    "consumed": "abacktools.com",
-    "learned": "abacktools.com assimilated; Verse's page /kanban/quick/",
-    "retain": "abacktools.com was assimilated by /kanban/quick/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:codeshack-io",
-    "from": "page",
-    "consumed": "codeshack.io",
-    "learned": "codeshack.io assimilated; Verse's page /pdf/merge/",
-    "retain": "codeshack.io was assimilated by /pdf/merge/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:jasperbernaers-com",
-    "from": "page",
-    "consumed": "jasperbernaers.com",
-    "learned": "jasperbernaers.com assimilated; Verse's page /kanban/simple/",
-    "retain": "jasperbernaers.com was assimilated by /kanban/simple/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:kanbanflow-com",
-    "from": "page",
-    "consumed": "kanbanflow.com",
-    "learned": "kanbanflow.com assimilated; Verse's page /kanban/flow/",
-    "retain": "kanbanflow.com was assimilated by /kanban/flow/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:pdfcandy-com",
-    "from": "page",
-    "consumed": "pdfcandy.com",
-    "learned": "pdfcandy.com assimilated; Verse's page /pdf/toolbox/",
-    "retain": "pdfcandy.com was assimilated by /pdf/toolbox/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:sejda-com",
-    "from": "page",
-    "consumed": "sejda.com",
-    "learned": "sejda.com assimilated; Verse's page /pdf/editor/",
-    "retain": "sejda.com was assimilated by /pdf/editor/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:smallpdf-com",
-    "from": "page",
-    "consumed": "smallpdf.com",
-    "learned": "smallpdf.com assimilated; Verse's page /pdf/studio/",
-    "retain": "smallpdf.com was assimilated by /pdf/studio/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:tools-pdf24-org",
-    "from": "page",
-    "consumed": "tools.pdf24.org",
-    "learned": "tools.pdf24.org assimilated; Verse's page /pdf/suite/",
-    "retain": "tools.pdf24.org was assimilated by /pdf/suite/",
-    "at": "2026-10-26T03:18:08Z",
-    "seen": 1
-  },
-  {
-    "id": "page:wekan-fi",
-    "from": "page",
-    "consumed": "wekan.fi",
-    "learned": "wekan.fi assimilated; Verse's page /kanban/teams/",
-    "retain": "wekan.fi was assimilated by /kanban/teams/",
-    "at": "2026-10-26T03:18:08Z",
     "seen": 1
   }
 ]
