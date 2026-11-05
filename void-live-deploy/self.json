@@ -576,111 +576,111 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T15:06:34Z",
-   "subject": "Only Verse's worker binds Verse's KV namespace. (#2300)"
+   "at": "2026-11-05T12:41:25Z",
+   "subject": "Verse routes \"rent vs buy in austin tx\" to its rentbuy skill the answer is not checked"
   },
   {
-   "at": "2026-11-05T15:06:18Z",
-   "subject": "Take the generated build outputs back out after merging main."
+   "at": "2026-11-05T12:41:15Z",
+   "subject": "Record that the news section chips scroll on purpose"
   },
   {
-   "at": "2026-11-05T15:06:04Z",
+   "at": "2026-11-05T12:40:43Z",
+   "subject": "Add language pairs, keyless APIs, and the next salvage bots (#2275)"
+  },
+  {
+   "at": "2026-11-05T12:36:08Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-11-05T12:34:49Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo draw a car"
+  },
+  {
+   "at": "2026-11-05T12:34:31Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-05T15:05:56Z",
+   "at": "2026-11-05T12:34:15Z",
+   "subject": "Keep the phone nav, compare, and credits readable"
+  },
+  {
+   "at": "2026-11-05T12:27:10Z",
+   "subject": "A weave ask answers while the other skills are still loading (#2274)"
+  },
+  {
+   "at": "2026-11-05T12:26:02Z",
+   "subject": "Incident: the browser suite failed on 6ca3d789 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T12:24:53Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-05T12:21:09Z",
+   "subject": "Clear the stage before the next ask, and keep a phone panel above the bar (#2250) (#2273)"
+  },
+  {
+   "at": "2026-11-05T12:20:57Z",
    "subject": "Outcome exam: timers 83.3"
   },
   {
-   "at": "2026-11-05T15:05:24Z",
-   "subject": "Take the generated build outputs back out of the empty-home branch."
+   "at": "2026-11-05T12:01:02Z",
+   "subject": "Site test: fix: \"what are the figures doing\" only \"waking up\" appeared,"
   },
   {
-   "at": "2026-11-05T15:03:22Z",
-   "subject": "A timer keeps its set length, and heart, feu, and thank-you emoji answer (#2288)"
+   "at": "2026-11-05T11:59:33Z",
+   "subject": "Incidents closed: shard(s) 3 passed on 19b31783 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-05T14:59:06Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-11-05T11:59:09Z",
+   "subject": "Incident: the browser suite failed on 04a320ee (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-05T14:58:47Z",
-   "subject": "Incident: the browser suite failed on 0def1f65 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T14:58:42Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-11-05T14:58:25Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-11-05T14:57:05Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-11-05T14:52:08Z",
-   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
-  },
-  {
-   "at": "2026-11-05T14:47:44Z",
-   "subject": "The page-check report is kept in the edge cache, not KV. (#2299)"
-  },
-  {
-   "at": "2026-11-05T14:44:51Z",
-   "subject": "A git range reports the files, the failed jobs, and the assertion lines. (#2298)"
-  },
-  {
-   "at": "2026-11-05T14:43:59Z",
-   "subject": "Incidents closed: shard(s) 1,2,4 passed on c4fc1316 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T14:42:04Z",
-   "subject": "Site test: fix: \"how much do i need to save a month to have 1 million i"
-  },
-  {
-   "at": "2026-11-05T14:38:01Z",
-   "subject": "emojigraph.org stays on its own page, and that page opens offline. (#2295)"
-  },
-  {
-   "at": "2026-11-05T14:34:18Z",
-   "subject": "Incident: the browser suite failed on 5b9b0e16 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T14:32:55Z",
-   "subject": "Incident: the browser suite failed on 60ab5e48 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T14:30:41Z",
+   "at": "2026-11-05T11:53:26Z",
    "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T11:43:15Z",
+   "subject": "A no on /agent/ stays declined, and the live probe waits for this deploy (#2271)"
+  },
+  {
+   "at": "2026-11-05T11:39:42Z",
+   "subject": "Verse loop: task, Queue job mvoxkjn0 (feature: amazon-com-00694bb6): build \"Pr (#2268)"
+  },
+  {
+   "at": "2026-11-05T11:37:43Z",
+   "subject": "Incident: the browser suite failed on deb906d7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T11:37:13Z",
+   "subject": "Site test: fix: \"weave a constellation called night ops\" only \"waking u"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Empty home (cursor, 2026-11-05)",
-    "line": "the idle home is the dark void and the ask bar. The VERSE wordmark, the A-TO-MIND line and the \"support Verse: the store\" link are gone. The home stays blank, including ?intro=1, and ?q= still opens an ask.…"
+    "name": "Bot families and salvage (cursor, 2026-11-05)",
+    "line": "23 more languages (4,290 phrasebooks), nine keyless APIs, an encoding checker for every pair, and a drug-name check across openFDA and RxNorm. The next ten salvage pieces are bots, including pinned english-words and ODbL countries URLs.…"
    },
    {
-    "name": "Blank home, videos keep playing (cursor, 2026-11-05)",
-    "line": "the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was.…"
+    "name": "Constellation weave (cursor, 2026-11-05)",
+    "line": "\"weave a constellation called night ops\" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns \"where is Orion\".…"
    },
    {
-    "name": "Phone panel and tray drag (cursor, 2026-11-05)",
-    "line": "a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands.…"
+    "name": "Verify reds (cursor, 2026-11-05)",
+    "line": "\"clear\" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify…"
    },
    {
-    "name": "Timers and emoji exam (cursor, 2026-11-05)",
-    "line": "a timer card keeps the length it was set for (1:30 and 90 stay while it ticks), \"timer for 5\" asks minutes or seconds, the hourglass fits a 320px card, heart / feu / thank you answer with an emoji, and a red circle fills red.…"
+    "name": "Agent no kept (cursor, 2026-11-05)",
+    "line": "a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271"
    },
    {
-    "name": "Verify reds, the next ones (cursor, 2026-11-05)",
-    "line": "\"clear all the notes\" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test…"
+    "name": "Autosalvage batch (cursor, 2026-11-05)",
+    "line": "heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is…"
    },
    {
-    "name": "Glass stylesheet, not blocking (cursor, 2026-11-05)",
-    "line": "the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281"
+    "name": "Country capitals (cursor, 2026-11-05)",
+    "line": "Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every…"
    }
   ],
   "ladders": [
@@ -835,8 +835,8 @@
   }
  ],
  "visible": {
-  "day": 39,
-  "week": 447
+  "day": 28,
+  "week": 436
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -888,8 +888,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-05T13:14Z",
+  "line": "People this week: 78 (253 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-04T13:00Z",
   "source": "verse"
  },
  "tower": {
