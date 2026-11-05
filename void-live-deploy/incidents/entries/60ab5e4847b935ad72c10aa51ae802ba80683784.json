@@ -12,6 +12,8 @@
   "void-live-deploy/lib/voice.js"
  ],
  "passed": [
-  2
+  1,
+  2,
+  4
  ]
 }
