@@ -13,6 +13,8 @@ const HIDDEN = new Set(['rebuild-map']);
 
 export async function onRequestGet({ request, env }) {
   const origin = new URL(request.url).origin;
+  const cacheKey = new Request(origin + '/tools.json');
+  try { if (typeof caches !== 'undefined' && caches.default) { const hit = await caches.default.match(cacheKey); if (hit) return hit; } } catch (_) {}
   const get = async (p) => { const r = await env.ASSETS.fetch(new Request(origin + p)); return r.ok ? r.text() : ''; };
   const tools = CORE.map((t) => ({ ...t }));
   try {
@@ -38,5 +40,7 @@ export async function onRequestGet({ request, env }) {
     mcp: { endpoint: origin + '/api/mcp', transport: 'streamable HTTP, POST JSON-RPC, JSON replies', protocolVersion: PROTOCOL, tools: MCP_TOOLS.map(({ name, title, description, inputSchema, annotations }) => ({ name, title, description, inputSchema, annotations })) },
     tools: tools.map((t) => ({ ...t, try: t.examples.slice(0, 3).map((e) => origin + '/?q=' + encodeURIComponent(e)) })),
   };
-  return new Response(JSON.stringify(out, null, 2), { headers: { 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=300' } });
+  const res = new Response(JSON.stringify(out, null, 2), { headers: { 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=300' } });
+  try { if (typeof caches !== 'undefined' && caches.default) await caches.default.put(cacheKey, res.clone()); } catch (_) {}
+  return res;
 }
