@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 136,
-   "best": 113,
-   "evidence": "Verse (/boards/) 136 ms to the load event (median of 3, phone width) vs wizchan.org 113 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "verse": 113,
+   "best": 168,
+   "evidence": "Verse (/boards/) 113 ms to the load event (median of 3, phone width) vs wizchan.org 168 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/boards/) 3 of 3 loads answered vs wizchan.org 3 of 3 loads answered",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 284,
    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs wizchan.org 284 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 4,
    "evidence": "Verse (/boards/) 0 unnamed controls or images vs wizchan.org 4 unnamed controls or images",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs wizchan.org 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 0,
    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs wizchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,7 +54,7 @@
    "verse": 5,
    "best": 5,
    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not wizchan.org (the site is not asked)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "of": 5
   },
   "design polish": {
@@ -62,7 +62,7 @@
    "verse": 0,
    "best": 4,
    "evidence": "Verse (/boards/) 0 design defects vs wizchan.org 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), wizchan.org (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   },
   "catalog": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 2,
    "best": 1,
    "evidence": "Verse (/boards/) 2 of 2 shown vs wizchan.org 1 of 2 shown (Verse lacks: none; site lacks: replies)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -100,7 +100,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/boards/) 1 of 1 shown vs wizchan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -110,16 +110,16 @@
    "verse": 20,
    "best": 4,
    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs wizchan.org 4 of 20 things a full answer shows (Verse lacks: none; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, a thread watcher, work-safe and 18+ boards, make your own board, Boards by topic, Front page, Board index pages, Catalog, Threads with bump and image limits, Anonymous posting, no accounts)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "at": "2026-11-05T14:57:34.301Z",
    "of": 20,
    "siteRead": true
   },
   "wider use": {
    "verdict": "better",
    "verse": 5.5,
-   "best": 4.5,
-   "evidence": "Verse (/boards/) 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs wizchan.org 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T14:52:05.694Z",
+   "best": 4,
+   "evidence": "Verse (/boards/) 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs wizchan.org 4 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-05T14:57:34.301Z",
    "siteRead": true
   }
  }
