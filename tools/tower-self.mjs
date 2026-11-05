@@ -26,6 +26,7 @@
 import { topicOf } from '../void-live-deploy/lib/tower-topic.js';
 import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { readGone, isGone } from './tower-alive.mjs';
 import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate, barRow } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
@@ -107,10 +108,10 @@ export function easeOf(x, place = null) {
 }
 /** the next sites to read: the frontier easiest first, never a site that is already a floor, a site blocked by its own wall, or one tried lately
  *  (a site no floor covered is tried again after RETRY_DAYS). Pure. */
-export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS } = {}) {
+export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS, gone = readGone() } = {}) {
   const tried = (state && state.sites) || {}, out = [], ranking = rankingOf({ frontier, floors, state });
   for (const x of frontierOf(frontier, floors)) {
-    if (x.blocked || offLimits(x.host, ranking)) continue; // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
+    if (x.blocked || offLimits(x.host, ranking) || isGone(x.host, gone)) continue; // a gone or parked domain (tools/tower-alive.mjs) is never read // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
     const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
     out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness, controls: x.controls, bytes: x.bytes, ease: easeOf(x, out.length + 1) }); if (out.length >= max) break;
