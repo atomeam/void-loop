@@ -111,9 +111,6 @@ jobs:
           if [ "$wake" = 1 ] && [ -n "$num" ]; then
             ghr workflow run automerge.yml --repo "$REPO" --ref main -f pr="$num"
           fi
-          # #2306 is green and waiting: automerge on main never starts the suite because a green review
-          # names no branch. This run's token can start it on main. Drop this line once the run is queued.
-          ghr workflow run suite-gate.yml --repo "$REPO" --ref main -f pr=2306 || true
           file_job() {
             if [ -z "$VOID_OWNER_TOKEN" ]; then echo "job listed, not filed (no VOID_OWNER_TOKEN): $1"; return 0; fi
             code=$(curl -sS -m 20 -o /tmp/helper-job.json -w '%{http_code}' -X POST -H "authorization: Bearer $VOID_OWNER_TOKEN" -H 'content-type: application/json' --data "$1" https://a-to-mind.com/api/queue || echo 000)
