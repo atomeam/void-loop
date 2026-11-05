@@ -3846,5 +3846,23 @@
    ]
   },
   "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T22:16:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1465,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
