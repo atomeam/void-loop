@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T14:30:37.294Z",
+  "at": "2026-11-05T15:05:52.889Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,30 +32,31 @@
       }
     },
     "podcasts": {
-      "score": 84,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of radiolab",
+          "ask": "play the latest episode of this american life",
           "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of the ted radio hour",
+          "ask": "play the latest episode of serial",
           "failed": [
-            "audio"
+            "episode"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of science vs",
+          "ask": "play the latest episode of stuff you should know",
           "failed": [
-            "fast"
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
           "ask": "play the latest episode of crime junkie",
@@ -99,11 +100,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio",
-            "episode"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -163,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -178,9 +177,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -219,7 +219,7 @@
       }
     },
     "recipes": {
-      "score": 96.3,
+      "score": 95.4,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -227,9 +227,10 @@
           "ask": "recipe",
           "failed": [
             "skill",
+            "method",
             "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "receta de guacamole",
@@ -295,7 +296,7 @@
       }
     },
     "sports": {
-      "score": 87,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -336,27 +337,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
           "failed": [
             "board"
           ],
