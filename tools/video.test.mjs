@@ -81,3 +81,12 @@ test('video: keyless YouTube search reads Piped items into embeddable YouTube hi
   const src = readFileSync(new URL('../void-live-deploy/functions/api/video.js', import.meta.url), 'utf8');
   assert.match(src, /env\.YOUTUBE_API_KEY\) return keylessYouTube/); assert.match(src, /!out\.need/); assert.doesNotMatch(src, /duckduckgo\.com\/|env\.\w*KV|gpt-oss/i);
 });
+
+test('video: "play <a game Verse has>" stays with that game, not a video search (Lists run 11 convergence, tools/skill-overlap.mjs)', () => {
+  for (const ask of ['play draughts', 'play baduk', 'play solar quest', 'play texas holdem', 'play scrabble', 'play rps', 'play 3d tic tac toe', 'play hanabi', 'play zorbleflux', 'play the podcast', "play verse's podcast", 'play a local audio file']) {
+    const q = videoAskOf(ask, { late: true });
+    assert.ok(!(q && q.kind === 'play' && !q.video), ask + ' -> ' + JSON.stringify(q));
+  }
+  // real videos still play
+  for (const ask of ['play the moon landing video', 'play lofi hip hop radio', 'play despacito']) assert.ok(videoAskOf(ask, { late: true }), ask);
+});

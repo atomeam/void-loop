@@ -565,6 +565,61 @@
      "issue": 2228
     }
    ]
+  },
+  {
+   "at": "2026-11-05T01:30:00Z",
+   "run": 11,
+   "closed": 6,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.43,
+   "dup_basis": "3 of the 7 open asks at the start were duplicates (emojigraph lane page again, the 814032d5 jobs again, the prices exam twin)",
+   "median_days": 0,
+   "median_basis": "the red checks came from today's merges and each ask closed was asked today",
+   "asks_open_start": 7,
+   "asks_open_end": 5,
+   "note": "green suite first (will, tower, films phone width), then the video-play convergence (10 overlap pairs gone). Store queue 0 open. The images exam, telemetry sync and '100 usd in eur' (rival check) stay open.",
+   "items": [
+    {
+     "what": "will test: pins VOID_BETTER_FILE to a missing file so the live weakest-part boost does not change the plain weights",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "tower card test: allows the ' · N passed' count a passed site adds (6fbae31da)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "films watch page on a phone: the Verse bar's links scroll sideways even before /verse.css loads (verse-shell.js inline style), so the page is never wider than the screen",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "video-play leaves play draughts/baduk/solar quest/texas holdem/scrabble/rps/3d tic tac toe/hanabi/zorbleflux/the podcast/a local audio file to their skills; 10 overlap pairs gone",
+     "list": "convergence stages",
+     "status": "built"
+    },
+    {
+     "what": "ask-20261105-0018-1 emojigraph.org lane page",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-1 (65ac2bbae)"
+    },
+    {
+     "what": "ask-20261105-0018-2 814032d5 failed jobs",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-2 (#2229)"
+    },
+    {
+     "what": "ask-20261105-0018-3 prices exam (ethereum, currency conversion)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-3, still queued for '100 usd in eur'"
+    }
+   ]
   }
  ]
 }

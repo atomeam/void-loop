@@ -20,6 +20,8 @@ function ensureChrome() {
   brand.textContent = 'Verse';
   const links = document.createElement('div');
   links.className = 'vs-links';
+  // the bar scrolls sideways on its own even before /verse.css has loaded, so a phone page never gets wider than the screen
+  links.style.cssText = 'display:flex;flex:1;min-width:0;overflow-x:auto';
   for (const item of NAV) {
     const a = document.createElement('a');
     a.href = item.href;
