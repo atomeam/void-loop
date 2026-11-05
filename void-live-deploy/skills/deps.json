@@ -3234,7 +3234,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/epub-edit.js",

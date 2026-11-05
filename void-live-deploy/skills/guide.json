@@ -70,8 +70,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 0,
+    "experiment": 0,
+    "tested": 1,
     "checked": 2,
     "proven": 26
    },
@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 3,
-    "proven": 43
+    "proven": 44
    },
    "from": 196,
    "to": 243
@@ -3082,8 +3082,8 @@
     "начислить ндс 5000 20%",
     "ндс 22% от 1000"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 157
   },
   {
@@ -3912,14 +3912,15 @@
    "chapter": "words",
    "name": "hear",
    "title": "Hear",
-   "line": "Play a real recording of a named song",
+   "line": "A skill of Verse.",
    "examples": [
     "play bohemian rhapsody by queen",
     "play billie jean by michael jackson",
     "play imagine by john lennon"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. Let the stage be the proof.",
    "glow": 100,
    "n": 204
   },
@@ -4337,7 +4338,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the words and the world are built on it. Let the stage be the proof.",
+   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Let the stage be the proof.",
    "glow": 100,
    "n": 229
   },
@@ -4541,7 +4542,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 4 real asks in the benchmark",
-   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Let the stage be the proof.",
+   "flavor": "Proven 4 times over by those who asked, and kept among the words and the world. Let the stage be the proof.",
    "glow": 100,
    "n": 241
   },

@@ -576,12 +576,72 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T12:41:25Z",
-   "subject": "Verse routes \"rent vs buy in austin tx\" to its rentbuy skill the answer is not checked"
+   "at": "2026-11-05T13:27:51Z",
+   "subject": "Name the verify heal pull request on the handoff"
   },
   {
-   "at": "2026-11-05T12:41:15Z",
-   "subject": "Record that the news section chips scroll on purpose"
+   "at": "2026-11-05T13:27:07Z",
+   "subject": "Point parity rows at the lines the page edit moved"
+  },
+  {
+   "at": "2026-11-05T13:25:38Z",
+   "subject": "Site test: fix: \"closer on the figure\" only \"waking up\" appeared, never"
+  },
+  {
+   "at": "2026-11-05T13:23:42Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T13:21:07Z",
+   "subject": "Fix the verify reds after clear landed early"
+  },
+  {
+   "at": "2026-11-05T13:19:51Z",
+   "subject": "The glass stylesheet does not block the first paint (#2281)"
+  },
+  {
+   "at": "2026-11-05T13:19:27Z",
+   "subject": "prove vat with suite check importing the skill (#2280)"
+  },
+  {
+   "at": "2026-11-05T13:14:38Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
+  },
+  {
+   "at": "2026-11-05T13:11:40Z",
+   "subject": "A figures ask answers while the other skills are still loading (#2279)"
+  },
+  {
+   "at": "2026-11-05T13:00:30Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T12:54:16Z",
+   "subject": "Incidents closed: shard(s) 1,2 passed on bc38bb0c (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T12:53:01Z",
+   "subject": "Incident: the browser suite failed on 47b9a6cc (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T12:51:40Z",
+   "subject": "Move the phone polish to Just finished (#2278)"
+  },
+  {
+   "at": "2026-11-05T12:51:16Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T12:49:26Z",
+   "subject": "Tool pages opt into the shared glass (#2277)"
+  },
+  {
+   "at": "2026-11-05T12:43:29Z",
+   "subject": "Keep the phone nav, compare, and credits readable (#2276)"
+  },
+  {
+   "at": "2026-11-05T12:41:25Z",
+   "subject": "Verse routes \"rent vs buy in austin tx\" to its rentbuy skill the answer is not checked"
   },
   {
    "at": "2026-11-05T12:40:43Z",
@@ -594,93 +654,33 @@
   {
    "at": "2026-11-05T12:34:49Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"yo draw a car"
-  },
-  {
-   "at": "2026-11-05T12:34:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-05T12:34:15Z",
-   "subject": "Keep the phone nav, compare, and credits readable"
-  },
-  {
-   "at": "2026-11-05T12:27:10Z",
-   "subject": "A weave ask answers while the other skills are still loading (#2274)"
-  },
-  {
-   "at": "2026-11-05T12:26:02Z",
-   "subject": "Incident: the browser suite failed on 6ca3d789 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T12:24:53Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-05T12:21:09Z",
-   "subject": "Clear the stage before the next ask, and keep a phone panel above the bar (#2250) (#2273)"
-  },
-  {
-   "at": "2026-11-05T12:20:57Z",
-   "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T12:01:02Z",
-   "subject": "Site test: fix: \"what are the figures doing\" only \"waking up\" appeared,"
-  },
-  {
-   "at": "2026-11-05T11:59:33Z",
-   "subject": "Incidents closed: shard(s) 3 passed on 19b31783 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T11:59:09Z",
-   "subject": "Incident: the browser suite failed on 04a320ee (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T11:53:26Z",
-   "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T11:43:15Z",
-   "subject": "A no on /agent/ stays declined, and the live probe waits for this deploy (#2271)"
-  },
-  {
-   "at": "2026-11-05T11:39:42Z",
-   "subject": "Verse loop: task, Queue job mvoxkjn0 (feature: amazon-com-00694bb6): build \"Pr (#2268)"
-  },
-  {
-   "at": "2026-11-05T11:37:43Z",
-   "subject": "Incident: the browser suite failed on deb906d7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T11:37:13Z",
-   "subject": "Site test: fix: \"weave a constellation called night ops\" only \"waking u"
   }
  ],
  "builders": {
   "finished": [
    {
+    "name": "Verify reds, the next ones (cursor, 2026-11-05)",
+    "line": "\"clear all the notes\" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test…"
+   },
+   {
+    "name": "Glass stylesheet, not blocking (cursor, 2026-11-05)",
+    "line": "the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281"
+   },
+   {
+    "name": "Figures doing (cursor, 2026-11-05)",
+    "line": "\"what are the figures doing\" answers from together before the page says waking up, while the rest of the skills are still loading. Nothing ranked above together takes the phrase. https://github.com/atomeam/void-loop/pull/2279"
+   },
+   {
+    "name": "Phone polish (cursor, 2026-11-05)",
+    "line": "at 390 px the current nav item stays fully in the bar, /compare/ with no floor lists floors instead of a blank white frame, and a credit's license stays on the screen. Chrome no longer warns about bluetooth on every page.…"
+   },
+   {
+    "name": "Glass tool pages (cursor, 2026-11-05)",
+    "line": "hand-built and generated tool pages, the fix pages and is-it opt into the shared glass in verse.css. Each page keeps its own layout, and an accent kept on the device still wins. https://github.com/atomeam/void-loop/pull/2277"
+   },
+   {
     "name": "Bot families and salvage (cursor, 2026-11-05)",
     "line": "23 more languages (4,290 phrasebooks), nine keyless APIs, an encoding checker for every pair, and a drug-name check across openFDA and RxNorm. The next ten salvage pieces are bots, including pinned english-words and ODbL countries URLs.…"
-   },
-   {
-    "name": "Constellation weave (cursor, 2026-11-05)",
-    "line": "\"weave a constellation called night ops\" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns \"where is Orion\".…"
-   },
-   {
-    "name": "Verify reds (cursor, 2026-11-05)",
-    "line": "\"clear\" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify…"
-   },
-   {
-    "name": "Agent no kept (cursor, 2026-11-05)",
-    "line": "a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271"
-   },
-   {
-    "name": "Autosalvage batch (cursor, 2026-11-05)",
-    "line": "heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is…"
-   },
-   {
-    "name": "Country capitals (cursor, 2026-11-05)",
-    "line": "Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every…"
    }
   ],
   "ladders": [
@@ -835,8 +835,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 436
+  "day": 33,
+  "week": 441
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -888,8 +888,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 78 (253 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-04T13:00Z",
+  "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-05T13:14Z",
   "source": "verse"
  },
  "tower": {
