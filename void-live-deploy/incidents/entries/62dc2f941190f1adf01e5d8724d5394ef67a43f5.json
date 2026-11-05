@@ -1,0 +1,25 @@
+{
+ "at": "2026-11-05T09:42:03.379Z",
+ "sha": "62dc2f941190f1adf01e5d8724d5394ef67a43f5",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42000424724",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "tools pack 8: \"ephemeral mode\" forgets what was done in the tab (a reload puts the stage back to how it was), and \"turn off ephemeral mode\" keeps things again",
+  "game panel fits: chess opened with a list on the stage leaves no overlapping boxes among the list, the board, its panel and the ask bar (the list moves aside or waits in the tray, one tap brings it back), at 1280x800 and on a phone; closing the game puts the list back exactly where it was"
+ ],
+ "touched": [
+  "docs/SALVAGE.md",
+  "domains/autosalvage.unified.json",
+  "domains/handoff.md",
+  "tools/salvaged-bots.test.mjs",
+  "void-live-deploy/bots/registry.json",
+  "void-live-deploy/bots/salvaged.js",
+  "void-live-deploy/salvage.json"
+ ],
+ "shards": [
+  2,
+  3,
+  4
+ ]
+}
