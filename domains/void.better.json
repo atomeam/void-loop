@@ -1,17 +1,17 @@
 {
- "at": "2026-11-04T14:53:54.492Z",
- "score": 82,
+ "at": "2026-11-05T14:58:41.608Z",
+ "score": 96,
  "parts": {
   "self": 97,
-  "asks": 55,
-  "friction": 97,
+  "asks": 93,
+  "friction": 99,
   "bench": 99,
-  "probes": 60
+  "probes": 90
  },
  "families": [
   {
    "id": "body",
-   "health": 100
+   "health": 92
   },
   {
    "id": "decide",
@@ -19,7 +19,7 @@
   },
   {
    "id": "games",
-   "health": 96
+   "health": 100
   },
   {
    "id": "life",
@@ -31,7 +31,7 @@
   },
   {
    "id": "numbers",
-   "health": 88
+   "health": 95
   },
   {
    "id": "safety-play",
@@ -43,44 +43,44 @@
   },
   {
    "id": "sky",
-   "health": 100
+   "health": 98
   },
   {
    "id": "stage",
-   "health": 96
-  },
-  {
-   "id": "time",
    "health": 100
   },
   {
+   "id": "time",
+   "health": 95
+  },
+  {
    "id": "words",
-   "health": 91
+   "health": 97
   }
  ],
  "facts": {
-  "week": 231,
+  "week": 182,
   "owner": 6,
-  "askedBuilt": 13,
-  "medianLagDays": 0.8,
-  "open": 7,
-  "oldestOpenDays": 4.1,
-  "skills": 399,
-  "failing": 11,
-  "unsure": 5,
-  "benchScore": 3298,
-  "benchTotal": 3322,
-  "probeFixes": 6
+  "askedBuilt": 20,
+  "medianLagDays": 0.5,
+  "open": 0,
+  "oldestOpenDays": 0,
+  "skills": 400,
+  "failing": 4,
+  "unsure": 4,
+  "benchScore": 3335,
+  "benchTotal": 3353,
+  "probeFixes": 9
  },
  "trend": {
-  "score": 82,
-  "day": 5,
-  "week": 6,
-  "weakest": "asks",
-  "at": "2026-11-04T14:53:54.492Z",
-  "frictionWeek": 28
+  "score": 96,
+  "day": 14,
+  "week": 23,
+  "weakest": "probes",
+  "at": "2026-11-05T14:58:41.608Z",
+  "frictionWeek": 43
  },
- "summary": "better: 82 of 100 (up 5 since yesterday) (up 6 on the week); weakest: asks",
+ "summary": "better: 96 of 100 (up 14 since yesterday) (up 23 on the week); weakest: probes",
  "means": {
   "self": "the share of this week's ledger lines that do not cite the owner (Verse driving its own changes)",
   "asks": "how fast Verse's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
