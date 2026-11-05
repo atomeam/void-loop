@@ -70,8 +70,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "kind": "family",
    "count": {
-    "experiment": 0,
-    "tested": 1,
+    "experiment": 1,
+    "tested": 0,
     "checked": 2,
     "proven": 26
    },
@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 3,
-    "proven": 44
+    "proven": 43
    },
    "from": 196,
    "to": 243
@@ -3082,8 +3082,8 @@
     "начислить ндс 5000 20%",
     "ндс 22% от 1000"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "experiment",
+   "why": "nothing checks it yet",
    "n": 157
   },
   {
@@ -3149,7 +3149,7 @@
     "how much do i need to save a month to have 1 million in 30 years at 7%"
    ],
    "tier": "proven",
-   "why": "a self-test, 9 browser-suite mentions, 13 real asks in the benchmark",
+   "why": "9 browser-suite mentions, 13 real asks in the benchmark",
    "flavor": "Proven 13 times over by those who asked, and kept among the numbers and money. Turn the page when you are done.",
    "glow": 100,
    "n": 161
@@ -3918,9 +3918,8 @@
     "play billie jean by michael jackson",
     "play imagine by john lennon"
    ],
-   "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the words and the world are built on it. Let the stage be the proof.",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
    "glow": 100,
    "n": 204
   },
@@ -4338,7 +4337,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Let the stage be the proof.",
+   "flavor": "Keep this page; the words and the world are built on it. Let the stage be the proof.",
    "glow": 100,
    "n": 229
   },
@@ -4542,7 +4541,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 4 real asks in the benchmark",
-   "flavor": "Proven 4 times over by those who asked, and kept among the words and the world. Let the stage be the proof.",
+   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Let the stage be the proof.",
    "glow": 100,
    "n": 241
   },
