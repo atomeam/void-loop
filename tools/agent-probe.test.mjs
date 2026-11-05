@@ -1,7 +1,7 @@
 // The /agent/ gate retries a dropped connection or a gateway error, never a real answer (Verse engineer, 2026-11-04).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getJson, ASKS, pick, verdict, REFUSES, inboxVerdict, reopenVerdict, approveVerdict } from './agent-probe.mjs';
+import { getJson, ASKS, pick, verdict, REFUSES, inboxVerdict, reopenVerdict, approveVerdict, nudgeVerdict, nudgeRiskVerdict } from './agent-probe.mjs';
 
 const answer = (status, body) => ({ status, json: async () => body });
 const quiet = { pause: 1, say: () => {} };
@@ -72,6 +72,18 @@ test('the inbox stays until it is marked seen, a finished task reopens, and a ye
 test('a refusal is caught however it is worded; help that mentions sorry is not one', () => {
   for (const r of ["I can't help with that.", 'I am unable to assist with this request.', 'As an AI, I cannot do that.', "I'm sorry, but I can't provide that."]) assert.ok(REFUSES.test(r), r);
   assert.ok(!REFUSES.test('Sorry you are locked out! Here is what to do: call a locksmith.'));
+});
+test('a note Verse wrote is grounded, free, and off the Made shelf; a send in it waits', () => {
+  const task = { status: 'done', result: 'dmVyc2Ugd3JvdGUgZmlyc3Q=' };
+  const note = { id: 'n', tier: 'free', status: 'done', ask: 'From what you asked before: base64 verse wrote first', result: 'Finished in the background. dmVyc2Ugd3JvdGUgZmlyc3Q=', steps: [{ line: 'Verse wrote first.' }] };
+  assert.equal(nudgeVerdict(task, note, [{ id: 'job' }]), '');
+  assert.match(nudgeVerdict(task, null, [{}]), /write first/);
+  assert.match(nudgeVerdict(task, { ...note, tier: 'strong' }, [{}]), /free/);
+  assert.match(nudgeVerdict(task, { ...note, status: 'needs_yes' }, [{}]), /waited/);
+  assert.match(nudgeVerdict(task, note, [{ id: 'n' }]), /Made shelf/);
+  const risk = { id: 'r', tier: 'free', status: 'needs_yes', ask: 'I can follow up on this, and I will wait for your yes: Send an email to my landlord saying the tap is fixed.', result: 'Nothing was sent, paid or deleted.', steps: [{ line: 'Verse wrote first.' }, { line: 'Nothing was sent.' }] };
+  assert.equal(nudgeRiskVerdict(risk), '');
+  assert.match(nudgeRiskVerdict({ ...risk, status: 'done' }), /did not wait/);
 });
 test('one ask a run, a different one each hour; --all and --ask choose', () => {
   const seen = new Set(Array.from({ length: ASKS.length }, (_, h) => pick([], h * 36e5)[0].name));
