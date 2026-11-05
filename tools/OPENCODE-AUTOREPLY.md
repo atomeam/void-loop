@@ -10,7 +10,7 @@ Goal: when a share URL arrives, post the brief into that session without manual 
 
 ## Send a role brief
 ```powershell
-cd C:\Users\adamm\a-to-mind-loop
+cd %USERPROFILE%\a-to-mind-loop
 pwsh .\tools\opencode-autoreply.ps1 -ShareUrl https://opncd.ai/share/XXXX -Role Prove -Async
 ```
 Roles: Ship | Polish | Prove | Chooser | Salvage

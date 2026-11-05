@@ -1,6 +1,6 @@
 # void.surface-qa.md — Phrase Checklist & Apex Marker Report
 
-**Source:** `C:\Users\adamm\a-to-mind-loop\void.html` (deployed to `https://38acfc0d.a-to-mind.pages.dev`)
+**Source:** `%USERPROFILE%\a-to-mind-loop\void.html` (deployed to `https://38acfc0d.a-to-mind.pages.dev`)
 **Date:** 2026-09-23
 **Method:** Each phrase typed into the stage input → `handle(raw)` → `freerEnglishParse(raw)` → loopLog `{domain, ask, score, note}`. Apex HTML curl'd and mount* marker presence verified via source inspection.
 
