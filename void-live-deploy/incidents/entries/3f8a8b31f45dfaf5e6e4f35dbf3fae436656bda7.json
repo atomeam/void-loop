@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-05T07:45:58.253Z",
+ "sha": "3f8a8b31f45dfaf5e6e4f35dbf3fae436656bda7",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41986338491",
+ "suite": "browser suite on main",
+ "checks": [
+  "draw backdrop: on an empty canvas it says to draw first; after a stroke \"Make it my backdrop\" puts the picture behind the Verse, kept in the look; it is still there after a reload; \"remove my backdrop\" takes it off",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "domains/forethinkers/experiments/semaglutide-baseline-tertiles-q6.csv",
+  "domains/forethinkers/experiments/semaglutide-baseline-tertiles.csv",
+  "domains/forethinkers/experiments/semaglutide-baseline-tertiles.py",
+  "domains/forethinkers/index.md",
+  "domains/forethinkers/run-log.md",
+  "domains/forethinkers/tracks/life-extension.md",
+  "domains/handoff.md"
+ ],
+ "shards": [
+  2,
+  3
+ ]
+}
