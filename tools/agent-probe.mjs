@@ -111,6 +111,20 @@ export function approveVerdict(before, after) {
   return '';
 }
 
+/** a note ask (Verse writes first) can only be judged once production is serving this deploy. */
+export const asksForLiveNote = (a) => !!(a && (a.nudge || a.nudgeRisk));
+/** the list read says this worker stores a note with the task, not only inside the background run. */
+export const caughtUp = (body) => !!(body && body.writesFirst === true);
+/** the task the decision was sent to. The newest row is often Verse's note, which is still needs_yes. */
+export const taskById = (tasks, id) => (tasks || []).find((x) => x && x.id === id) || null;
+/** '' when the no landed on this task. The words stay the probe's: the no was not kept, and the status it still has. */
+export function declineKept(decision, task) {
+  if (decision && decision.ok && task && task.status === 'declined') return '';
+  return 'the no was not kept (' + (task && task.status) + ')';
+}
+/** '' when a risky follow-up was stored before the response. A worker from the previous deploy omits it. */
+export const noteWithTask = (post) => (post && post.nudge && post.nudge.id ? '' : 'note not with the task');
+
 const newThread = () => 'probe' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
 // A dropped connection is the network, not the agent (Verse engineer on main, 2026-11-04: "fetch failed · other side closed" on one poll
 // a minute after a deploy, while the same probe passed on the next try). A transport error or a gateway 502/503/504 is tried again up to
@@ -129,16 +143,42 @@ export async function getJson(url, opt, { tries = 5, pause = 1500, fetcher = fet
   }
 }
 
+const sleep = (ms) => new Promise((s) => setTimeout(s, ms));
+// A pull request's deploy workflow goes green when its checks pass, before production is serving that commit
+// (Verse engineer run 42015652554: nudge-risk timed out at 95s, and the same ask passed in about 5s once the deploy was live).
+async function waitCaughtUp(base) {
+  const url = base + '/api/agent?thread=probecapability0001';
+  // 48 tries, 5s apart: the engineer starts when the pull request's checks pass, and the production deploy that
+  // follows can still be uploading (run 42015652554 needed about 80s; a deploy itself is a couple of minutes).
+  for (let i = 1; i <= 48; i++) {
+    let j = null;
+    try { j = await getJson(url); } catch (e) { console.log('probe: ' + (e && e.message || e) + ' while waiting for this deploy'); }
+    if (caughtUp(j)) { if (i > 1) console.log('probe: the live agent caught up'); return true; }
+    console.log('probe: the live agent has not caught up, try ' + i);
+    if (i < 48) await sleep(5000);
+  }
+  return false;
+}
+
 /** one ask, start to finish: '' when it passed, else why not (printed with the steps either way). */
 async function one(base, a) {
+  if (asksForLiveNote(a) && !(await waitCaughtUp(base))) { console.log('FAIL ' + a.name + ': the live agent has not caught up'); return 'the live agent has not caught up'; }
   const h = { 'content-type': 'application/json', origin: base };
-  // the task is sent once per thread: when its connection drops, it is sent again on a new thread, so a task that did arrive is never doubled
+  // the task is sent once per thread: when its connection drops, it is sent again on a new thread, so a task that did arrive is never doubled.
+  // a risky note that was not stored with the task is the previous deploy answering: try again, do not poll a thread that will never grow one.
   let thread = newThread(), r;
-  for (let i = 1; ; i++) {
-    try { r = await getJson(base + '/api/agent', { method: 'POST', headers: h, body: JSON.stringify({ thread, ask: a.ask }) }, { tries: 1 }); break; }
-    catch (e) { if (i >= 3 || !(e instanceof TypeError)) throw e; console.log('probe: sending the task failed (' + (e.cause && e.cause.message || e.message) + '), again on a new thread'); thread = newThread(); await new Promise((s) => setTimeout(s, 2000 * i)); }
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let i = 1; ; i++) {
+      try { r = await getJson(base + '/api/agent', { method: 'POST', headers: h, body: JSON.stringify({ thread, ask: a.ask }) }, { tries: 1 }); break; }
+      catch (e) { if (i >= 3 || !(e instanceof TypeError)) throw e; console.log('probe: sending the task failed (' + (e.cause && e.cause.message || e.message) + '), again on a new thread'); thread = newThread(); await sleep(2000 * i); }
+    }
+    if (!r.ok) { console.log('FAIL ' + a.name + ': task refused ' + JSON.stringify(r)); return 'task refused'; }
+    if (!(a.nudgeRisk && noteWithTask(r))) break;
+    if (attempt >= 3) { console.log('FAIL ' + a.name + ': note not with the task'); return 'note not with the task'; }
+    console.log('probe: note not with the task, again on a new thread');
+    thread = newThread();
+    await sleep(8000 * attempt);
   }
-  if (!r.ok) { console.log('FAIL ' + a.name + ': task refused ' + JSON.stringify(r)); return 'task refused'; }
   for (let i = 0; i < 45; i++) {
     await new Promise((s) => setTimeout(s, 2000));
     const j = await getJson(base + '/api/agent?thread=' + thread);
@@ -150,9 +190,9 @@ async function one(base, a) {
       console.log('nudge-risk: ' + note.status + ' on ' + note.tier + ' tier\n  ' + note.ask);
       if (!why) {
         const d = await getJson(base + '/api/agent', { method: 'POST', headers: h, body: JSON.stringify({ thread, id: note.id, decision: 'no' }) }, { tries: 1 });
-        const after = ((await getJson(base + '/api/agent?thread=' + thread)).tasks || []).find((x) => x.id === note.id);
-        if (!d.ok || !after || after.status !== 'declined') why = 'the no was not kept (' + (after && after.status) + ')';
-        else console.log('  declined: ' + after.steps[after.steps.length - 1].line);
+        const after = taskById((await getJson(base + '/api/agent?thread=' + thread)).tasks, note.id);
+        why = declineKept(d, after);
+        if (!why) console.log('  declined: ' + after.steps[after.steps.length - 1].line);
       }
       console.log((why ? 'FAIL ' : 'PASS ') + a.name + (why ? ': ' + why : ''));
       return why;
@@ -162,10 +202,11 @@ async function one(base, a) {
     let why = verdict(a, t, j.made);
     console.log(a.name + ': ' + t.status + ' by ' + t.bot + ' on ' + t.tier + ' tier, ' + t.steps.length + ' steps' + (why ? ' (' + why + ')' : '') + '\n  ask: ' + a.ask + '\n' + t.steps.map((s) => '  - ' + s.line).join('\n') + '\n  ' + String(t.result || '').slice(0, 300).replace(/\n/g, '\n  '));
     if (why) { console.log('FAIL ' + a.name + ': ' + why); return why; }
-    if (a.decline) { // the approval card's no: nothing is sent, and the task says so
+    if (a.decline) { // the approval card's no, on the task it was sent to: Verse's newer note is still needs_yes, and that is not this no
       const d = await getJson(base + '/api/agent', { method: 'POST', headers: h, body: JSON.stringify({ thread, id: r.id, decision: 'no' }) }, { tries: 1 });
-      const after = (await getJson(base + '/api/agent?thread=' + thread)).tasks[0];
-      if (!d.ok || after.status !== 'declined') { console.log('FAIL ' + a.name + ': the no was not kept (' + after.status + ')'); return 'decline not kept'; }
+      const after = taskById((await getJson(base + '/api/agent?thread=' + thread)).tasks, r.id);
+      const whyNo = declineKept(d, after);
+      if (whyNo) { console.log('FAIL ' + a.name + ': ' + whyNo); return 'decline not kept'; }
       console.log('  declined: ' + after.steps[after.steps.length - 1].line);
     }
     if (a.approve) { // the approval card's yes: the task resumes onto the shelf and nothing leaves the site

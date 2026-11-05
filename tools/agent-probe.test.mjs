@@ -1,7 +1,7 @@
 // The /agent/ gate retries a dropped connection or a gateway error, never a real answer (Verse engineer, 2026-11-04).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getJson, ASKS, pick, verdict, REFUSES, inboxVerdict, reopenVerdict, approveVerdict, nudgeVerdict, nudgeRiskVerdict } from './agent-probe.mjs';
+import { getJson, ASKS, pick, verdict, REFUSES, inboxVerdict, reopenVerdict, approveVerdict, nudgeVerdict, nudgeRiskVerdict, asksForLiveNote, caughtUp, taskById, declineKept, noteWithTask } from './agent-probe.mjs';
 
 const answer = (status, body) => ({ status, json: async () => body });
 const quiet = { pause: 1, say: () => {} };
@@ -84,6 +84,20 @@ test('a note Verse wrote is grounded, free, and off the Made shelf; a send in it
   const risk = { id: 'r', tier: 'free', status: 'needs_yes', ask: 'I can follow up on this, and I will wait for your yes: Send an email to my landlord saying the tap is fixed.', result: 'Nothing was sent, paid or deleted.', steps: [{ line: 'Verse wrote first.' }, { line: 'Nothing was sent.' }] };
   assert.equal(nudgeRiskVerdict(risk), '');
   assert.match(nudgeRiskVerdict({ ...risk, status: 'done' }), /did not wait/);
+});
+test('a no is the task it was sent to, and a note ask waits until this deploy is serving', () => {
+  const member = { id: 'm', status: 'declined' };
+  const note = { id: 'n', status: 'needs_yes', steps: [{ line: 'Verse wrote first.' }] };
+  const tasks = [note, member];
+  assert.equal(taskById(tasks, 'm'), member);
+  assert.equal(declineKept({ ok: true, status: 'declined' }, member), '');
+  assert.equal(declineKept({ ok: true, status: 'declined' }, tasks[0]), 'the no was not kept (needs_yes)');
+  assert.equal(noteWithTask({ nudge: { id: 'n' } }), '');
+  assert.equal(noteWithTask({ ok: true, id: 'm' }), 'note not with the task');
+  assert.equal(caughtUp({ writesFirst: true, tasks: [] }), true);
+  assert.equal(caughtUp({ ok: true, tasks: [] }), false);
+  assert.equal(asksForLiveNote(ASKS.find((a) => a.name === 'nudge-risk')), true);
+  assert.equal(asksForLiveNote(ASKS.find((a) => a.name === 'approval')), false);
 });
 test('one ask a run, a different one each hour; --all and --ask choose', () => {
   const seen = new Set(Array.from({ length: ASKS.length }, (_, h) => pick([], h * 36e5)[0].name));

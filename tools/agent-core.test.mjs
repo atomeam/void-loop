@@ -81,7 +81,7 @@ test('Verse writes first from a finished job, a due check, or past asks, and a s
 });
 
 // functions/api/agent.js run(): thinking is off, an empty first reply goes to the second free model, and a dead pair fails with its reason
-import { run as runAgent, textOf, onRequestGet, onRequestPost, considerNudge } from '../void-live-deploy/functions/api/agent.js';
+import { run as runAgent, textOf, onRequestGet, onRequestPost, considerNudge, mayWriteStatus } from '../void-live-deploy/functions/api/agent.js';
 function fakeEnv(replies) {
   const rows = new Map(), calls = [], short = [];
   const DB = { prepare: (sql) => ({ bind: (...v) => ({
@@ -139,8 +139,13 @@ function routeDb(seed) {
       run: async () => {
         if (/^CREATE |^ALTER /.test(sql)) return {};
         if (/^INSERT INTO void_agent_tasks/.test(sql)) {
-          const [id, thread, ask, status, bot, tier, steps, result, created, done, seen] = v;
-          rows.set(id, { id, thread, ask, status, bot, tier, steps, result, created, done, seen });
+          if (v.length === 6) {
+            const [id, thread, ask, status, steps, created] = v;
+            rows.set(id, { id, thread, ask, status, bot: null, tier: null, steps, result: null, created, done: null, seen: 0 });
+          } else {
+            const [id, thread, ask, status, bot, tier, steps, result, created, done, seen] = v;
+            rows.set(id, { id, thread, ask, status, bot, tier, steps, result, created, done, seen });
+          }
           return {};
         }
         if (/^UPDATE void_agent_tasks SET seen = 1 WHERE thread = \? AND id IN \(/.test(sql)) {
@@ -148,7 +153,9 @@ function routeDb(seed) {
           return {};
         }
         if (/^UPDATE void_agent_tasks SET /.test(sql)) {
-          const id = v[v.length - 1], r = { ...(rows.get(id) || { id }) };
+          const id = v[v.length - 1], prev = rows.get(id);
+          if (prev && /status NOT IN \('declined', 'done'\)/.test(sql) && (prev.status === 'declined' || prev.status === 'done')) return {};
+          const r = { ...(prev || { id }) };
           sql.slice(sql.indexOf('SET ') + 4, sql.indexOf(' WHERE')).split(', ').map((c) => c.split(' = ')[0]).forEach((c, i) => { r[c] = v[i]; });
           rows.set(id, r);
           return {};
@@ -156,11 +163,15 @@ function routeDb(seed) {
         return {};
       },
       first: async () => {
-        if (/^SELECT steps FROM/.test(sql)) { const r = rows.get(v[0]); return r ? { steps: r.steps } : { steps: '[]' }; }
+        if (/^SELECT steps\b/.test(sql)) { const r = rows.get(v[0]); return r ? { steps: r.steps, status: r.status } : { steps: '[]' }; }
         if (/^SELECT status, result FROM/.test(sql)) { const r = rows.get(v[0]); return r && r.thread === v[1] ? r : null; }
         return null;
       },
-      all: async () => (/SELECT id, ask, status/.test(sql) ? { results: [...rows.values()].filter((r) => r.thread === v[0]) } : { results: [] }),
+      all: async () => {
+        if (/SELECT id, ask, status/.test(sql)) return { results: [...rows.values()].filter((r) => r.thread === v[0]).sort((a, b) => Number(b.created) - Number(a.created) || String(b.id).localeCompare(String(a.id))) };
+        if (/RETURNING n/.test(sql)) return { results: [{ n: 1 }] };
+        return { results: [] };
+      },
     });
     return { ...api([]), bind: (...v) => api(v) };
   };
@@ -228,4 +239,39 @@ test('Verse writes one free note into the inbox, and a send in that note still w
   const left = await onRequestGet({ request: req('GET', 'https://x/api/agent?thread=' + thread2), env: env2 }).then((r) => r.json());
   assert.equal(left.tasks.find((t) => t.id === 'send1send1send1send1').status, 'queued', 'declining the note does not touch the task');
   assert.equal(left.tasks.find((t) => t.id === risk.nudge.id).status, 'declined');
+  assert.equal(left.writesFirst, true);
+});
+
+test('a background step cannot undo a no, and a risky ask stores its note before the run', async () => {
+  assert.equal(mayWriteStatus('needs_yes', 'declined'), true);
+  assert.equal(mayWriteStatus('declined', 'needs_yes'), false);
+  assert.equal(mayWriteStatus('done', 'running'), false);
+  assert.equal(mayWriteStatus('running', 'needs_yes'), true);
+  const ask = 'Send an email to my landlord saying the kitchen sink is fixed.';
+  const thread = 'probekeepnoaaaaaaaa';
+  const id = 'keptnokkkkkkkkkkkkkk';
+  const env = { DB: routeDb([{ id, thread, ask, status: 'declined', bot: 'verse', tier: 'free', steps: JSON.stringify([{ at: 1, line: 'You said no. Stopped. Nothing was sent, paid or deleted.' }]), result: 'The sink is fixed.', created: 5, done: 6, seen: 1 }]), AI: { run: async () => ({ response: 'The kitchen sink is fixed.' }) } };
+  const prev = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ pots: { infrastructure: 0 }, bots: [] }), { status: 200 });
+  try {
+    await runAgent(env, 'https://x', id, ask, thread);
+    assert.equal(env.DB.rows.get(id).status, 'declined', 'a late run does not put a no back to needs_yes');
+    const thread2 = 'probesyncriskaaaaaaa';
+    const env2 = { DB: routeDb([]), AI: { run: async () => ({ response: 'The kitchen sink is fixed and nothing left the site.' }) }, ASSETS: { fetch: async () => new Response('', { status: 404 }) } };
+    let bg, stored = false;
+    const res = await onRequestPost({
+      request: req('POST', 'https://x/api/agent', { thread: thread2, ask }),
+      env: env2,
+      waitUntil(p) { stored = [...env2.DB.rows.values()].some((row) => String(row.steps || '').includes('Verse wrote first.')); bg = p; },
+    });
+    const body = await res.json();
+    assert.equal(stored, true, 'the note is stored before the background run is handed off');
+    assert.equal(body.nudge && body.nudge.status, 'needs_yes');
+    if (bg) await bg;
+    const decided = await onRequestPost({ request: req('POST', 'https://x/api/agent', { thread: thread2, id: body.id, decision: 'no' }), env: env2, waitUntil() {} }).then((r) => r.json());
+    assert.equal(decided.status, 'declined');
+    const after = await onRequestGet({ request: req('GET', 'https://x/api/agent?thread=' + thread2), env: env2 }).then((r) => r.json());
+    assert.equal(after.tasks.find((t) => t.id === body.id).status, 'declined');
+    assert.equal(after.tasks.find((t) => t.id === body.nudge.id).status, 'needs_yes');
+  } finally { globalThis.fetch = prev; }
 });
