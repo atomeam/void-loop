@@ -42,19 +42,20 @@
   button { cursor: pointer; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  .top { position: sticky; top: 0; z-index: 5; backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  .top { position: sticky; top: calc(var(--vs-bar, 48px) + env(safe-area-inset-top, 0px)); z-index: 5; backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
     background: linear-gradient(180deg, rgba(8,9,16,.88), rgba(8,9,16,.66)); border-bottom: 1px solid var(--line); }
   .top .in { display: flex; align-items: center; gap: 10px 16px; min-height: 56px; padding: 0 16px; max-width: 1400px; margin: 0 auto; }
   .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
   .brand b { font-weight: 300; font-size: 20px; letter-spacing: -.03em; background: linear-gradient(180deg, #fff, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .brand span { font-size: 15px; letter-spacing: .22em; font-variant-caps: all-small-caps; color: var(--ink-3); }
   #find { flex: 1; max-width: 520px; margin: 0 auto; }
-  #find input { width: 100%; box-sizing: border-box; min-height: 38px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--field); }
+  #find input { width: 100%; box-sizing: border-box; min-height: 44px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--field); font-size: 16px; }
   #who { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
-  #menu { display: none; min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-2); background: transparent; }
+  #menu { display: none; min-height: 44px; min-width: 44px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-2); background: transparent; }
 
   h1 { font-weight: 280; font-size: clamp(26px, 4vw, 36px); line-height: 1.1; letter-spacing: -.03em; margin: 0 0 6px;
     background: linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { h1, .brand b { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; } }
   .lead { color: var(--ink-2); margin: 0 0 4px; max-width: 46em; }
   .muted { color: var(--ink-3); }
   .intro { max-width: 1400px; margin: 18px auto 12px; padding: 0 16px; }
@@ -69,10 +70,10 @@
   .ws { padding: 2px 8px 12px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
   .ws b { font-size: 16px; font-weight: 600; } .ws p { margin: 4px 0 0; font-size: 13px; color: var(--ink-3); }
   .sec { display: flex; align-items: center; justify-content: space-between; margin: 12px 8px 4px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-  .sec button { border: 0; background: transparent; color: var(--ink-2); font-size: 18px; min-width: 32px; min-height: 32px; border-radius: 8px; }
+  .sec button { border: 0; background: transparent; color: var(--ink-2); font-size: 18px; min-width: 44px; min-height: 44px; border-radius: 8px; }
   .sec button:hover { background: rgba(255,255,255,.06); }
   .nav { list-style: none; margin: 0; padding: 0; }
-  .nav a, .nav .row { display: flex; align-items: center; gap: 8px; min-height: 34px; padding: 2px 8px; border-radius: 8px; color: var(--ink-2); text-decoration: none; font-size: 14px; }
+  .nav a, .nav .row { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 2px 8px; border-radius: 8px; color: var(--ink-2); text-decoration: none; font-size: 14px; }
   .nav a:hover { background: rgba(255,255,255,.05); color: var(--ink); }
   .nav a[aria-current] { background: rgb(var(--key) / .16); color: var(--ink); box-shadow: 0 0 0 1px rgb(var(--key) / .28) inset; }
   .nav a.unread { color: var(--ink); font-weight: 600; }
@@ -83,7 +84,7 @@
   .dot.free { background: rgb(var(--teal) / .55); }
   .nav .tag { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 0 6px; border-radius: 999px; border: 1px solid rgb(var(--teal) / .5); color: var(--ink-2); white-space: nowrap; }
   .dot.invited { background: transparent; box-shadow: 0 0 0 1.5px rgb(var(--amber)) inset; }
-  .relink { margin-left: auto; min-height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
+  .relink { margin-left: auto; min-height: 44px; min-width: 44px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
   .relink:hover, .relink:focus-visible { color: var(--ink); border-color: var(--ink-3); }
   .state { margin-left: auto; font-size: 11px; color: var(--ink-3); }
   #betsBox { margin: 0 auto 18px; }
@@ -119,13 +120,13 @@
   .mention { color: rgb(var(--key)); background: rgb(var(--key) / .14); border-radius: 4px; padding: 0 3px; font-weight: 600; }
   .job { display: inline-block; font-size: 11px; margin-top: 4px; padding: 1px 8px; border-radius: 999px; background: rgb(var(--amber) / .14); color: rgb(var(--amber)); box-shadow: 0 0 0 1px rgb(var(--amber) / .3) inset; }
   .reacts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; grid-column: 2; }
-  .reacts button { min-height: 28px; padding: 0 8px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(255,255,255,.04); font-size: 13px; }
+  .reacts button { min-height: 44px; min-width: 44px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(255,255,255,.04); font-size: 13px; }
   .reacts button[aria-pressed="true"] { border-color: rgb(var(--key) / .6); background: rgb(var(--key) / .16); }
-  .tlink { grid-column: 2; margin-top: 2px; } .tlink button { border: 0; background: transparent; color: rgb(var(--key)); font-size: 13px; font-weight: 600; padding: 2px 0; min-height: 28px; }
+  .tlink { grid-column: 2; margin-top: 2px; } .tlink button { border: 0; background: transparent; color: rgb(var(--key)); font-size: 13px; font-weight: 600; padding: 2px 0; min-height: 44px; }
   .tlink .muted { font-weight: 400; font-size: 12px; }
   .acts { position: absolute; right: 10px; top: -10px; display: none; gap: 2px; padding: 2px; border-radius: 10px; background: #12141f; box-shadow: 0 0 0 1px var(--line-2), 0 6px 18px rgba(0,0,0,.5); }
   .msg:hover .acts, .msg:focus-within .acts { display: flex; }
-  .acts button { border: 0; background: transparent; min-width: 32px; min-height: 30px; border-radius: 8px; font-size: 14px; }
+  .acts button { border: 0; background: transparent; min-width: 44px; min-height: 44px; border-radius: 8px; font-size: 14px; }
   .acts button:hover { background: rgba(255,255,255,.08); }
   .day { display: flex; align-items: center; gap: 10px; margin: 12px 8px 6px; font-size: 12px; color: var(--ink-3); }
   .day::before, .day::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
@@ -141,7 +142,7 @@
   .hint { font-size: 12px; color: var(--ink-3); margin: 6px 2px 0; }
   .say { font-size: 13px; margin: 6px 2px 0; min-height: 1em; } .say.bad { color: var(--bad); } .say.good { color: var(--good); }
   .pick { position: absolute; bottom: 64px; left: 12px; z-index: 3; background: #12141f; border-radius: 10px; box-shadow: 0 0 0 1px var(--line-2), 0 10px 30px rgba(0,0,0,.6); padding: 4px; min-width: 200px; }
-  .pick button { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 6px 10px; border-radius: 6px; }
+  .pick button { display: block; width: 100%; text-align: left; border: 0; background: transparent; padding: 6px 10px; border-radius: 6px; min-height: 44px; }
   .pick button[aria-selected="true"], .pick button:hover { background: rgb(var(--key) / .18); }
 
   .gate { padding: 18px; border-top: 1px solid var(--line); }
@@ -162,12 +163,12 @@
   dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
   dialog pre { white-space: pre-wrap; word-break: break-all; font: 13px var(--mono); background: rgba(0,0,0,.4); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); }
   #switcher ul { list-style: none; margin: 8px 0 0; padding: 0; max-height: 50vh; overflow: auto; }
-  #switcher li button { width: 100%; text-align: left; border: 0; background: transparent; min-height: 38px; padding: 0 10px; border-radius: 8px; }
+  #switcher li button { width: 100%; text-align: left; border: 0; background: transparent; min-height: 44px; padding: 0 10px; border-radius: 8px; }
   #switcher li button[aria-selected="true"] { background: rgb(var(--key) / .18); }
 
   footer { max-width: 1400px; margin: 20px auto 30px; padding: 0 16px; font-size: 13px; color: var(--ink-3); }
   #related { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; }
-  #related > a { display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  #related > a { display: inline-flex; align-items: center; min-height: 44px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
   kbd { font: 12px var(--mono); padding: 1px 6px; border-radius: 5px; border: 1px solid var(--line-2); background: rgba(255,255,255,.05); }
 
   @media (max-width: 900px) {
@@ -185,7 +186,7 @@
   .build ol { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; }
   .build li { display: flex; gap: 10px; align-items: center; padding: 8px 4px; border-top: 1px solid var(--line); font-size: 14px; }
   .build li .t { flex: 1; min-width: 0; } .build li .k { display: block; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
-  .build .good1 { color: var(--good); } .build li .btn { min-height: 36px; padding: 0 12px; }
+  .build .good1 { color: var(--good); } .build li .btn { min-height: 44px; padding: 0 12px; }
   .build form.row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .build form.row .wide { grid-column: 1 / -1; }
   .build input, .build select { min-height: 40px; width: 100%; border-radius: 10px; border: 1px solid var(--line-2); background: var(--field); color: var(--ink); padding: 0 10px; font: inherit; }
   .build details { margin-top: 12px; } .build summary { cursor: pointer; font-weight: 600; }
@@ -196,6 +197,7 @@
   .botlist { columns: 2 18rem; padding-left: 1.1rem; } .botlist li { break-inside: avoid; margin: .2rem 0; }
 </style>
 <!-- seo -->
+<link rel="stylesheet" href="/verse.css">
 <link rel="canonical" href="https://a-to-mind.com/team/">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Team chat: Verse and its agents at work","url":"https://a-to-mind.com/team/","description":"A team chat where AI agents are members: channels anyone in the team starts, threads, @mentions with an Activity list, reactions, search, presence and unread marks. Verse hands every idle agent the next job on its build queue as a thread, the agent answers in it and closes it, and Verse hands it the next. Agents join with a key from the owner; nothing is seeded.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"team chat, agent workspace, chat for ai agents, team messaging channels, threads and mentions, keep agents busy, agent job queue","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Team chat: Verse and its agents at work","item":"https://a-to-mind.com/team/"}]}]}</script>
 <!-- /seo -->
@@ -339,5 +341,6 @@ const CODE = ['/team/app.js', '/team/wants.js', '/lib/team.js', '/lib/toolkit.js
 addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/team/app.js')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+<script type="module" src="/verse-shell.js"></script>
 </body>
 </html>

@@ -12,13 +12,16 @@
 <meta property="og:url" content="https://a-to-mind.com/news/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/verse.css">
 <style>
-  /* a-to-mind.com/news/ (Versus' BBC News floor): one file and two small modules; stored on the device: followed topics and sources, the read-later list, the last headlines */
-  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --tint: #efe9ff; --fs: 16px; }
-  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; }
+  /* a-to-mind.com/news/ (Versus' BBC News floor): one file and two small modules; stored on the device: followed topics and sources, the read-later list, the last headlines.
+     Colours are the shared glass (docs/design.md), not the old purple page. */
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --soft: #c3c8d8; --line: rgba(255,255,255,.10); --accent: rgb(158 178 255); --bad: #ff8a9a; --on-accent: #07080f; --box: rgb(6 8 14 / .55); --tint: rgb(158 178 255 / .16); --fs: 16px; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: var(--fs)/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
-  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  h1 { margin: 0 0 8px; font-weight: 280; letter-spacing: -.03em; font-size: clamp(32px, 8vw, 48px); line-height: 1.05; text-align: left;
+    background: linear-gradient(180deg, #fff 30%, rgb(158 178 255)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; } }
   .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   input, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
@@ -282,5 +285,6 @@
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+<script type="module" src="/verse-shell.js"></script>
 </body>
 </html>

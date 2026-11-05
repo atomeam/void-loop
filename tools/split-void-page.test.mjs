@@ -103,3 +103,33 @@ test('an ask typed before the main script has run is asked once it has run (live
   go.click(); assert.deepEqual(asked, ['films', 'films'], 'after boot the loader keeps out of the way');
   assert.equal(added.filter((s) => s.src === '/void-boot.js').length, 1);
 });
+
+test('a phone does not fetch the ask engine until a tap, a key, or twelve seconds', () => {
+  const prev = globalThis.matchMedia;
+  globalThis.matchMedia = () => ({ matches: true });
+  try {
+    const html = '<html><body><input id="input"><button id="go"></button>\n  <script>\n    // Private learning log\n    let things = {};\n  </script>\n  <style>\n    /* home polish: x */\n  </style>\n  <script>\n  // ---- The sky: a\n  Object.keys(things);\n  </script>\n  <script>\n  // ---- Presence: b\n  </script>\n  <script>\n  // ---- Synapses: c\n  </script>\n</body></html>';
+    const split = splitHome(html);
+    const loader = split.html.slice(split.html.lastIndexOf('<script>') + 8, split.html.lastIndexOf('</script>'));
+    const added = [], listeners = {};
+    let late = null;
+    const document = {
+      readyState: 'complete',
+      body: { appendChild: (s) => added.push(s) },
+      head: { appendChild() {} },
+      createElement: () => ({}),
+      getElementById: () => ({ value: '', addEventListener() {} }),
+      addEventListener: (t, f) => { (listeners[t] ||= []).push(f); },
+      removeEventListener: (t, f) => { listeners[t] = (listeners[t] || []).filter((x) => x !== f); },
+    };
+    new Function('document', 'window', 'PerformanceObserver', 'requestAnimationFrame', 'setTimeout', 'matchMedia', loader)(document, { addEventListener() {} }, class { constructor() {} observe() {} disconnect() {} }, () => {}, (f, ms) => { late = { f, ms }; }, matchMedia);
+    assert.deepEqual(added.map((s) => s.src), [], 'an empty phone home does not fetch the engine');
+    assert.equal(late.ms, 12000);
+    listeners.pointerdown[0]();
+    assert.deepEqual(added.map((s) => s.src), ['/void-boot.js']);
+    added[0].onload();
+    assert.ok(added.map((s) => s.src).includes('/void-sky.js'), 'the tap brings the sky after the engine has run');
+  } finally {
+    if (prev === undefined) delete globalThis.matchMedia; else globalThis.matchMedia = prev;
+  }
+});
