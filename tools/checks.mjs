@@ -122,6 +122,7 @@ for (const [name, file] of [
   ['rap-piano', 'rap-piano.test.mjs'],
   ['rap-strings', 'rap-strings.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
+  ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],
   ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
@@ -478,6 +479,7 @@ for (const [name, file] of [
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
   ['actions-log', 'actions-log.test.mjs'],
+  ['range-diff', 'range-diff.test.mjs'],
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['list goal', 'list-goal.test.mjs'],
