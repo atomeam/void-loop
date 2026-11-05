@@ -479,6 +479,7 @@ for (const [name, file] of [
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
   ['actions-log', 'actions-log.test.mjs'],
+  ['range-diff', 'range-diff.test.mjs'],
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['list goal', 'list-goal.test.mjs'],
