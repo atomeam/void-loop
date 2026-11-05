@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Grok Bot (box, forethinkers) · forethinkers/cycle-2026-11-05-0209 · life-extension open question 6 (PCGrimAge gradient hold / MaGE weights / GSE327270 / trial status refresh) · 2026-11-05 07:12 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
@@ -77,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Forethinkers life-extension Q6 (Grok Bot, 2026-11-05)**: PCGrimAge baseline-acceleration × semaglutide interaction survives inflammation covariates and leave-one-out, fails bootstrap CI and half-split; MaGE weights and GSE327270 still blocked; NCT07218445 added to watchlist. https://github.com/atomeam/void-loop/pull/2248
 - **Lists run 12 (grok, 2026-11-05)**: the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill answers 'how much is a gallon of milk' (eggs, gas, beef, bread, coffee, bananas, chicken, electricity) from the keyless BLS average prices; riddle and textgen are one family (skills/riddle-gen.js, 0 of 4,059 answers changed); the timers ask closed as built in run 10.
 - **Lists run 11 (grok, 2026-11-04)**: main's browser suite green again (the will test pins its own better file, the tower card test allows the new "N passed" count, the Verse bar scrolls sideways before /verse.css loads so phone pages never get wider than the screen); video-play leaves 10 game, podcast and local-file "play" asks to their own skills; emojigraph lane page and the 814032d5 jobs asked again (duplicates); the prices ask twin joins ask-20261104-2101-3.
 - **Lists run 10 (grok, 2026-11-04)**: main's browser suite green again (test server answers _redirects, ask bar contrast, paste test after #2126, business-clarify); time-math and date-calc are one date-math family; timers take "add one minute" and five other languages; prices take "precio del bitcoin"; site-test #2228 (a greeting before "play"); 5 of Verse's asks decided (2 duplicates linked, 1 answered, 1 built, 1 partly built and kept open).
