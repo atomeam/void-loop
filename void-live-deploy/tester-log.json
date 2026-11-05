@@ -1,16 +1,57 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 85,
- "runsTotal": 258,
+ "runsTotal": 260,
  "kinds": {
   "grow": 69,
-  "file": 82,
+  "file": 83,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 53
+  "visitor": 54
  },
  "runs": [
+  {
+   "at": "2026-11-05T11:58:48Z",
+   "passed": 83,
+   "of": 89,
+   "kind": "file",
+   "ms": 336,
+   "note": "fix: \"what are the figures doing\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "what are the figures doing",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "send it away",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "order food from lovebird in lakeland",
+     "why": "refused: couldn't find"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T11:47:40Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T11:35:10Z",
    "passed": 84,
@@ -276,59 +317,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T04:13:57Z",
-   "passed": 80,
-   "of": 89,
-   "kind": "file",
-   "ms": 406,
-   "note": "fix: \"find a rumble video about bitcoin\" nothing appeared; console: Failed to load resource: the server responded with a status of 500 ()",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 4 < 5"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "find a rumble video about bitcoin",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "what rhymes with orange",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "yo find me a sci-fi film from the 80s",
-     "why": "load 1264 ms > 1200"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "contéstame en español",
-     "why": "console: Failed to load resource: the server responded with a status of 500 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T04:02:56Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 13/15"
   }
  ],
  "weekly": [
@@ -382,18 +370,18 @@
   },
   {
    "from": "2026-10-08",
-   "runs": 29,
-   "passed": 267,
-   "of": 395,
+   "runs": 30,
+   "passed": 282,
+   "of": 411,
    "broken": 6,
    "brokenOf": 76,
    "brokenPassed": 16
   },
   {
    "from": "2026-10-15",
-   "runs": 162,
-   "passed": 2884,
-   "of": 5415,
+   "runs": 161,
+   "passed": 2869,
+   "of": 5399,
    "broken": 89,
    "brokenOf": 2162,
    "brokenPassed": 6
@@ -406,10 +394,10 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 67,
-   "passed": 1102,
-   "of": 1234,
-   "ms": 377
+   "runs": 69,
+   "passed": 1185,
+   "of": 1323,
+   "ms": 348
   }
  ],
  "seen": {
@@ -429,7 +417,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T11:35:10Z",
+  "skill:cartoon": "2026-11-05T11:58:48Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -699,6 +687,9 @@
   "skill:converter": "2026-11-05T09:20:27Z",
   "skill:date-math": "2026-11-05T11:35:10Z",
   "skill:delivery-pack": "2026-11-05T11:35:10Z",
-  "skill:drive-share": "2026-11-05T11:35:10Z"
+  "skill:drive-share": "2026-11-05T11:35:10Z",
+  "skill:eat": "2026-11-05T11:58:48Z",
+  "skill:emoji": "2026-11-05T11:58:48Z",
+  "skill:emoji-combos": "2026-11-05T11:58:48Z"
  }
 }
