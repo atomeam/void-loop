@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseDiscoveryAsk, searchUrls, selectFilms, toFilm, discover, span, MAX_YEARS } from '../void-live-deploy/lib/film-discovery.js';
+import { parseDiscoveryAsk, searchUrls, selectFilms, toFilm, discover, span, MAX_YEARS, MAX_FILMS, WIKIDATA_SPARQL, wikidataDirectorUrl, wikidataFilms } from '../void-live-deploy/lib/film-discovery.js';
 import skill, { filmCard, filmOf } from '../void-live-deploy/skills/film-metadata.js';
 import pick from '../void-live-deploy/skills/movie.js';
 import { LIMITS } from '../void-live-deploy/lib/guard.js';
@@ -102,4 +102,51 @@ test('the card shows the same fields, a Copy as JSON chip, the JSON, and says pl
   assert.ok(!html.includes('<script'));
   const empty = filmCard(await discover('horror films from the 1920s', replay()), esc);
   assert.ok(/list none rather than guess/.test(empty) && !/Copy as JSON/.test(empty) && !/fm-film/.test(empty));
+});
+
+// issue #2225 (2026-11-05): the iTunes Search API now answers every movie search with nothing, so "films by kurosawa pls" listed no film.
+const WD = JSON.parse(readFileSync(new URL('./fixtures/wikidata-kurosawa.json', import.meta.url), 'utf8')); // recorded from query.wikidata.org
+const deadItunes = (log = []) => async (u) => { log.push(u); return u.startsWith(WIKIDATA_SPARQL) ? WD : FX.empty; };
+
+test('#2225: a courtesy word is not part of the director\'s name', () => {
+  assert.deepEqual(parseDiscoveryAsk('films by kurosawa pls'), { kind: 'discover', director: 'kurosawa' });
+  assert.deepEqual(parseDiscoveryAsk('movies by Akira Kurosawa, please!'), { kind: 'discover', director: 'Akira Kurosawa' });
+  assert.deepEqual(parseDiscoveryAsk('film metadata for Ikiru'), { kind: 'title', title: 'Ikiru' });
+});
+
+test('#2225: when iTunes lists none of a director\'s films, Wikidata is asked once and its films are listed, best known, oldest first', async () => {
+  const log = [], res = await discover('films by kurosawa pls', deadItunes(log));
+  assert.equal(log.length, 2); assert.match(log[0], /^https:\/\/itunes\.apple\.com\/search\?/); assert.ok(log[1].startsWith(WIKIDATA_SPARQL));
+  assert.match(decodeURIComponent(log[1]), /mwapi:search "kurosawa"/);
+  assert.equal(res.count, MAX_FILMS); assert.deepEqual(res.sources, ['Wikidata']); assert.equal(res.note, '');
+  const titles = res.films.map((f) => f.title);
+  for (const t of ['Rashomon', 'Ikiru', 'Seven Samurai', 'Ran']) assert.ok(titles.includes(t), t);
+  assert.ok(!titles.includes('Horse') && !titles.includes('Not His Film') && !titles.some((t) => /^Q\d+$/.test(t)), 'the least known, another director\'s film and an unlabelled item are out');
+  const years = res.films.map((f) => f.year); assert.deepEqual(years, [...years].sort((a, b) => a - b));
+  const ikiru = res.films.find((f) => f.title === 'Ikiru');
+  assert.deepEqual(Object.keys(ikiru), ['title', 'year', 'director', 'runtime_min', 'genres', 'plot', 'source']);
+  assert.equal(ikiru.year, 1952); assert.equal(ikiru.director, 'Akira Kurosawa'); assert.equal(ikiru.runtime_min, 143); assert.equal(ikiru.plot, null, 'Wikidata has no plot: null, not made up');
+  assert.equal(ikiru.source.name, 'Wikidata'); assert.match(ikiru.source.url, /^https:\/\/www\.wikidata\.org\/wiki\/Q\d+$/);
+  const html = filmCard(res, esc); assert.ok(html.includes('Ikiru (1952)') && html.includes('Wikidata') && html.includes('Copy as JSON'));
+});
+
+test('#2225: a director in iTunes does not ask Wikidata; a hostile name cannot leave the SPARQL string; both down is "did not answer"', async () => {
+  const log = []; await discover('films by Kurosawa', replay(log)); assert.equal(log.length, 1);
+  const u = decodeURIComponent(wikidataDirectorUrl('Kuro"sawa\\" } ; DELETE <x>'));
+  assert.ok(u.startsWith(WIKIDATA_SPARQL)); assert.match(u, /mwapi:search "[^"\\]*"; mwapi:language/); assert.ok(!/[<>]/.test(u.split('mwapi:search')[1].split(';')[0]));
+  assert.equal(wikidataDirectorUrl('"'), '');
+  assert.deepEqual(wikidataFilms({ results: { bindings: [{ film: { value: 'https://evil.example/x' }, filmLabel: { value: 'X' }, dirLabel: { value: 'Akira Kurosawa' } }] } }, 'Kurosawa'), []);
+  const down = await discover('films by kurosawa pls', async () => { throw new Error('offline'); }); assert.match(down.note, /did not answer/);
+  const wdOnly = await discover('films by kurosawa', async (u) => { if (u.startsWith(WIKIDATA_SPARQL)) return WD; throw new Error('offline'); });
+  assert.equal(wdOnly.count, MAX_FILMS, 'iTunes down but Wikidata up still lists the films');
+});
+
+test('#2225: the route lets the one Wikidata read through and nothing else', async () => {
+  const real = globalThis.fetch, seen = [];
+  globalThis.fetch = async (u) => { seen.push(String(u)); return new Response(JSON.stringify(String(u).startsWith(WIKIDATA_SPARQL) ? WD : FX.empty), { status: 200 }); };
+  try {
+    const r = await route.onRequestGet({ request: new Request('https://a-to-mind.com/api/filmfind?q=' + encodeURIComponent('films by kurosawa pls')) });
+    const j = await r.json(); assert.equal(j.count, MAX_FILMS); assert.deepEqual(j.sources, ['Wikidata']);
+    assert.ok(seen.length === 2 && seen.every((u) => u.startsWith('https://itunes.apple.com/search?') || u.startsWith(WIKIDATA_SPARQL)));
+  } finally { globalThis.fetch = real; }
 });
