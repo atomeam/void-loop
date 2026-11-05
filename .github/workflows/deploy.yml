@@ -170,7 +170,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '3.114.17' # same as the laptop (C:\Users\adamm\a-to-mind.com)
+          wranglerVersion: '3.114.17' # same as the laptop (%USERPROFILE%\a-to-mind.com)
           workingDirectory: void-live-deploy
           command: pages deploy . --project-name=a-to-mind --branch=${{ steps.target.outputs.branch }} --commit-hash=${{ steps.target.outputs.sha }} --commit-dirty=true
 
