@@ -122,6 +122,7 @@ for (const [name, file] of [
   ['rap-piano', 'rap-piano.test.mjs'],
   ['rap-strings', 'rap-strings.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
+  ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],
   ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
@@ -195,6 +196,7 @@ for (const [name, file] of [
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
+  ['kv-namespace', 'kv-namespace.test.mjs'],
   ['dark-pages', 'dark-pages.test.mjs'], // every page stays deep space in a light-mode browser too
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
@@ -477,6 +479,8 @@ for (const [name, file] of [
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
+  ['actions-log', 'actions-log.test.mjs'],
+  ['range-diff', 'range-diff.test.mjs'],
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['list goal', 'list-goal.test.mjs'],

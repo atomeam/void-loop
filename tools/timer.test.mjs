@@ -2,7 +2,8 @@
 // the skill takes before the page. Run: node --test tools/timer.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseDuration, alarmMs, isDurationRequest, wantsCreate, plainTimer } from '../void-live-deploy/skills/timer.js';
+import { parseDuration, alarmMs, isDurationRequest, wantsCreate, plainTimer, durationLabel, unitlessAmount, hourglassOn } from '../void-live-deploy/skills/timer.js';
+import timer from '../void-live-deploy/skills/timer.js';
 
 test('timer: lengths in words and numbers, together, and a bare number of minutes', () => {
   assert.equal(parseDuration('set a timer for 5 minutes'), 300000);
@@ -37,26 +38,30 @@ test('timer: other languages\' timer asks are the English ask (exam: "temporizad
   assert.equal(wantsCreate('dessine un cercle rouge'), false);
 });
 
-test('timer: the exam lengths stay on the timer, and a number with no unit asks which', async () => {
-  const { setLine, unitMissing, ask, wantsFresh, default: skill } = await import('../void-live-deploy/skills/timer.js');
-  assert.equal(wantsFresh('a 2 second timer'), false);
-  assert.equal(wantsFresh('a second timer'), true);
-  assert.equal(wantsFresh('another timer'), true);
-  assert.equal(setLine({ duration: 90000 }), 'set for 1:30 (90 seconds). Counting down from that length.');
-  assert.equal(setLine({ duration: 150000 }), 'set for 2:30 (150 seconds). Counting down from that length.');
-  assert.equal(setLine({ duration: 45000 }), 'set for 0:45 (45 seconds). Counting down from that length.');
-  assert.equal(setLine({ duration: 2000 }), 'set for 0:02 (2 seconds). Counting down from that length.');
-  assert.ok(setLine({ duration: 90000 }).length > 40);
-  assert.equal(unitMissing('timer for 5'), 5);
-  assert.equal(unitMissing('set a timer for 90 seconds'), 0);
-  assert.match(setLine({ askWhich: 5 }), /Which did you mean: 5 minutes or 5 seconds/);
-  for (const a of ['set a timer for 90 seconds', 'set a timer for 45 seconds', 'a 2 second timer', 'add one minute', 'timer for 5', 'temporizador de 3 minutos']) assert.equal(skill.match(a), true, a);
-  const things = {};
-  const api = { things: () => things, selected: () => null, select() {}, save() {}, render() {}, say() {}, stage: { clientWidth: 390, clientHeight: 700 } };
-  assert.equal(ask('timer for 5', 'timer for 5', api), 'timer-which');
-  const t = Object.values(things)[0];
-  assert.equal(t.askWhich, 5); assert.equal(t.running, false);
-  assert.match(setLine(t), /Which did you mean/);
+test('timer: the set length stays in the card text after the countdown ticks (exam tokens)', () => {
+  assert.equal(durationLabel(90000), 'Countdown set for 1:30 · 90 seconds');
+  assert.equal(durationLabel(45000), 'Countdown set for 0:45 · 45 seconds');
+  assert.equal(durationLabel(2000), 'Countdown set for 0:02 · 2 seconds');
+  assert.equal(durationLabel(180000), 'Countdown set for 3:00 · 180 seconds');
+  assert.equal(durationLabel(300000), 'Countdown set for 5:00 · 300 seconds');
+  assert.ok(('1:27\nrunning\n' + durationLabel(90000)).length > 40);
+});
+
+test('timer: "timer for 5" asks minutes or seconds instead of starting five minutes', () => {
+  assert.equal(unitlessAmount('timer for 5'), '5');
+  assert.equal(unitlessAmount('set a timer for five'), 'five');
+  assert.equal(unitlessAmount('set a timer for 90 seconds'), '');
+  assert.equal(unitlessAmount('a 2 second timer'), '');
+  assert.equal(wantsCreate('timer for 5'), false);
+  assert.equal(plainTimer('timer for 5'), false);
+  assert.equal(timer.match('timer for 5', 'timer for 5'), true);
+  assert.equal(timer.match('set a timer for 90 seconds', 'set a timer for 90 seconds'), true);
+});
+
+test('timer: the hourglass stays off a phone so the 45-second card does not stick out', () => {
+  assert.equal(hourglassOn({ clientWidth: 390 }), false);
+  assert.equal(hourglassOn({ clientWidth: 800 }), true);
+  assert.equal(hourglassOn(null), true);
 });
 
 test('timer: "add one minute" grows the timer and the answer names its new length (exam: 90 s + 1 min = 2:30)', async () => {
@@ -72,6 +77,7 @@ test('timer: "add one minute" grows the timer and the answer names its new lengt
   assert.equal(askAction('add one minute', 'add one minute', api), 'timer-add');
   assert.equal(things.t1.duration, 150000);
   assert.match(said, /2:30/); assert.match(said, /150/);
+  assert.match(durationLabel(things.t1.duration), /2:30/); assert.match(durationLabel(things.t1.duration), /150/);
   const none = { things: () => ({}), selected: () => null, save() {}, render() {}, say() {} };
   assert.equal(askAction('add one minute', 'add one minute', none), '');
 });

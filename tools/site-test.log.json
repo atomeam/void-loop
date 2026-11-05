@@ -3486,5 +3486,107 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T14:03:44Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3431,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 17745 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T14:29:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1716,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8728 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T14:39:39Z",
+  "passed": 84,
+  "of": 90,
+  "ms": 373,
+  "kind": "file",
+  "key": "how much do i need to save a month to have 1 million in 30 years at 7% | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
+    "why": "load 1482 ms > 1200"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1716,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8728 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T14:53:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1024,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 27808 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

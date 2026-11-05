@@ -33,7 +33,7 @@
   .chips a, .tags a { display: inline-flex; align-items: center; min-height: 30px; padding: 2px 11px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); text-decoration: none; font-size: 14px; }
   .chips a:hover, .tags a:hover { color: var(--ink); border-color: var(--accent); }
   #count { font-size: 15px; color: var(--soft); margin: 10px 0 6px; }
-  #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+  #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; min-height: 240px; }
   .combo { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .combo pre, #dots { margin: 0; font: 22px/1.25 system-ui, "Segoe UI Emoji", "Apple Color Emoji", sans-serif; white-space: pre; overflow-x: auto; }
   .combo pre.art { font-size: 15px; line-height: 1.05; }
@@ -52,7 +52,7 @@
   #status { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--accent); color: var(--on-accent); padding: 6px 16px; border-radius: 999px; font-weight: 600; font-size: 15px; }
   #status:empty { display: none; }
   #minemsg { font-size: 14px; color: var(--soft); }
-  nav#related { margin-top: 24px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } nav#related a { color: var(--soft); display: inline-flex; min-height: 30px; align-items: center; }
+  nav#related { margin-top: 24px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 48px; } nav#related a { color: var(--soft); display: inline-flex; min-height: 30px; align-items: center; }
   footer { font-size: 13px; color: var(--soft); margin-top: 22px; } footer a { color: inherit; }
 </style>
 <!-- seo -->
@@ -167,7 +167,8 @@
       : q ? (list.length ? list.length + ' combo' + (list.length === 1 ? '' : 's') + ' for ' + q : 'No combos for ' + q + ' yet. Try another word, a tag below, or make your own.')
       : 'A few to start with, of ' + (stats.combos + state.mine.length) + ' combos. Search a tag or tap one.';
   }
-  const setQuery = (q, push = true) => { $('q').value = q; render(); if (push) history.replaceState(null, '', linkOf({ q, c: $('build').value })); };
+  const here = () => (location.pathname.endsWith('/') ? location.pathname : location.pathname + '/');
+  const setQuery = (q, push = true) => { $('q').value = q; render(); if (push) history.replaceState(null, '', linkOf({ q, c: $('build').value }, here())); };
   $('form').addEventListener('submit', (e) => { e.preventDefault(); setQuery($('q').value); });
   $('q').addEventListener('input', () => render());
   document.addEventListener('click', (e) => { const a = e.target.closest('a[data-tag]'); if (!a) return; e.preventDefault(); setQuery(a.dataset.tag); window.scrollTo({ top: 0, behavior: 'smooth' }); });
@@ -184,12 +185,12 @@
   function onBuild() {
     const v = $('build').value, enc = encodeURIComponent(v.slice(0, 2000));
     $('send-count').href = '/word-count/' + (v ? '?t=' + enc : ''); $('send-base64').href = '/base64/' + (v ? '?t=' + enc : '');
-    history.replaceState(null, '', linkOf({ q: $('q').value, c: v }));
+    history.replaceState(null, '', linkOf({ q: $('q').value, c: v }, here()));
   }
   $('build').addEventListener('input', onBuild);
   $('copybuild').addEventListener('click', () => { if ($('build').value) copy($('build').value, 'Copied all'); else say('Collect something first'); });
   $('clearbuild').addEventListener('click', () => { $('build').value = ''; onBuild(); });
-  $('share').addEventListener('click', () => copy(location.origin + linkOf({ q: $('q').value, c: $('build').value }), 'Link copied'));
+  $('share').addEventListener('click', () => copy(location.origin + linkOf({ q: $('q').value, c: $('build').value }, here()), 'Link copied'));
 
   // single emoji
   const ebtn = (e) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = e.c; b.title = e.n; b.setAttribute('aria-label', e.n); b.dataset.c = e.c; return b; };
@@ -241,5 +242,6 @@
   render(); onBuild(); renderEmoji(); renderFancy(); drawDots();
   mountRelated($('related'), '/emoji-combos/');
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // the page opens again with the network cut (sw.js TOOLS)</script>
 </body>
 </html>

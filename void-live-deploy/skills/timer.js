@@ -87,32 +87,38 @@ export function timerEnglish(lower) {
   return s.replace(/\b(timer|countdown)\s+(?:de|von|di|of)\s+/g, '$1 for ').replace(/\b(set\s+(?:a\s+)?(?:timer|countdown))\s+(?:de|de\s+la|para|pour|f[uü]r|per)\s+/g, '$1 for ');
 }
 
-/** "timer for 5" names no unit. The number, or 0 when the ask already says minutes or seconds. Pure. */
-export function unitMissing(lower) {
-  const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' '));
-  const m = /^(?:please\s+)?(?:set\s+)?(?:an?\s+)?(?:timer|countdown)\s+for\s+(\d+(?:\.\d+)?)\s*$/.exec(s);
-  return m ? Number(m[1]) : 0;
-}
-/** the line that stays on the timer while the digits count down, so a reader still sees the length that was asked
- *  ("set for 1:30 (90 seconds)", "set for 2:30 (150 seconds)"). A number with no unit asks which. Pure. */
-export function setLine(th) {
-  if (th && th.askWhich) return 'Which did you mean: ' + th.askWhich + ' minutes or ' + th.askWhich + ' seconds? A number with no unit could be either.';
-  if (!th || !(th.duration > 0)) return '';
-  const sec = Math.round(th.duration / 1000);
-  return 'set for ' + clock(th.duration) + ' (' + sec + ' seconds). Counting down from that length.';
-}
 /** "add one minute", "add 30 seconds to the timer", "plus 2 minutes", "extend it by 5 minutes": the length to add, or 0. Pure. */
 export function addMs(lower) {
   const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, ''));
   const m = /^(?:please\s+)?(?:add|plus|put\s+on|give\s+(?:it|me)|extend\s+(?:it|the\s+(?:timer|countdown))\s+by|another)\s+(?:an?\s+other\s+|another\s+|an?\s+extra\s+|extra\s+)?(.+?)(?:\s+(?:more|extra))?(?:\s+(?:to|on(?:to)?)\s+(?:the\s+|my\s+|it|that)?\s*(?:timer|countdown)?)?(?:\s+please)?$/.exec(s);
-  const bit = m ? m[1].replace(/^another\s+/, 'one ').trim() : '';
-  // "add one minute" is a duration. "add task … 30 min" is a task that mentions a length.
-  if (!m || !isDurationRequest(bit)) return 0;
-  return parseDuration(bit);
+  if (!m || !/(?:hours?|hrs?|minutes?|mins?|seconds?|secs?)\b/.test(m[1])) return 0;
+  return parseDuration(m[1].replace(/^another\s+/, 'one '));
 }
 
 const clock = (ms) => { const t = Math.max(0, Math.round(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60;
   return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(x).padStart(2, '0'); };
+
+/** the length a timer was set for ("Countdown set for 1:30 · 90 seconds"). It does not tick, and with the
+ *  face it is long enough for the exam to count the card as an answer. Pure. */
+/** the hourglass sits beside the card. A known width under 520px would stick out, so it stays off. Pure. */
+export function hourglassOn(stage) {
+  const w = stage && stage.clientWidth;
+  return !(w > 0 && w < 520);
+}
+
+export function durationLabel(ms) {
+  const sec = Math.max(0, Math.round((Number(ms) || 0) / 1000));
+  const face = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+  return 'Countdown set for ' + face + ' · ' + sec + ' seconds';
+}
+
+const BARE_N = '(?:\\d+(?:\\.\\d+)?|one|two|three|four|five|six|seven|eight|nine|ten)';
+/** "timer for 5": a timer with a number and no unit. The amount ("5"), or ''. Pure. */
+export function unitlessAmount(lower) {
+  const s = timerEnglish(String(lower || '').toLowerCase()).trim().replace(/[?.!]+$/, '');
+  const m = new RegExp('^(?:please\\s+)?(?:(?:set|start|make|give\\s+me)\\s+)?(?:me\\s+)?(?:an?\\s+)?(?:new\\s+)?(?:timer|countdown)\\s+for\\s+(' + BARE_N + ')(?:\\s+please)?$').exec(s);
+  return m ? m[1] : '';
+}
 
 /** the length an ask names, in ms: an alarm, "days until …", "1 hour 30 minutes", "half an hour", a bare number of
  *  minutes; 0 when none. */
@@ -158,6 +164,7 @@ export function wantsCreate(lower) {
   lower = timerEnglish(lower);
   const mentionsTimer = /\b(timers?|countdowns?|pomodoros?)\b/.test(lower);
   const duration = parseDuration(lower);
+  if (unitlessAmount(lower)) return false; // "timer for 5" asks minutes or seconds; it does not start five minutes
   if (mentionsTimer && /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
   if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
   if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
@@ -172,8 +179,8 @@ export function wantsCreate(lower) {
 }
 
 /** "another timer", "a new countdown": a second one rather than the picked one. Pure. */
-export const wantsFresh = (lower) => !/\b\d+\s+seconds?\b/.test(lower) && (/\b(add|make|create|put|start|set|give\s+me|new|another)\b[^.]*?\b(a|an|another|new|one\s+more|second)\s+(?:\w+\s+){0,3}?(sticky|stickies|note|timer|countdown)\b/.test(lower)
-  || /\b(another|one\s+more|second|new)\s+(sticky|note|timer|countdown)\b/.test(lower));
+export const wantsFresh = (lower) => /\b(add|make|create|put|start|set|give\s+me|new|another)\b[^.]*?\b(a|an|another|new|one\s+more|second)\s+(?:\w+\s+){0,3}?(sticky|stickies|note|timer|countdown)\b/.test(lower)
+  || /\b(another|one\s+more|second|new)\s+(sticky|note|timer|countdown)\b/.test(lower);
 
 const timers = (stageApi) => Object.values(stageApi.things()).filter((t) => t && t.kind === 'timer');
 const pickedTimer = (stageApi) => { const sel = stageApi.things()[stageApi.selected()]; return sel && sel.kind === 'timer' ? sel : null; };
@@ -221,7 +228,7 @@ export function ensure(stageApi, durationMs = 60000, fresh = false) {
       size: 40, color: '#e8e8e8', duration: durationMs, remaining: durationMs, running: false, startedAt: 0 };
     stageApi.things()[t.id] = t;
   } else {
-    t.duration = durationMs; t.remaining = durationMs; t.running = false; t.startedAt = 0; t.askWhich = 0;
+    t.duration = durationMs; t.remaining = durationMs; t.running = false; t.startedAt = 0;
   }
   stageApi.select(t.id);
   return t;
@@ -253,18 +260,14 @@ function mount(th, stageApi) {
   const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
   const total = th.duration;
   const face = stageApi.timerFace(el);
-  face(remaining, total, th.running ? 'running' : (remaining <= 0 && total > 0 ? 'done' : 'paused'));
-  const set = document.createElement('span');
-  set.className = 'timer-set';
-  set.style.cssText = 'display:block;max-width:220px;font:13px/1.35 system-ui,sans-serif;white-space:normal';
-  set.textContent = setLine(th);
-  el.appendChild(set);
-  el.style.display = 'block';
-  el.style.width = 'max-content';
-  el.style.maxWidth = 'calc(100vw - 32px)';
-  el.style.whiteSpace = 'normal';
-  el.style.boxSizing = 'border-box';
-  el.querySelectorAll('span').forEach((s) => { s.style.display = 'block'; s.style.whiteSpace = 'normal'; });
+  face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
+  // the face also writes the set length; say it on the card too so "add one minute" (2:30, 150) is in the card, not only the whisper
+  if (!el.querySelector('.timer-set')) {
+    const set = document.createElement('span');
+    set.className = 'timer-set';
+    set.textContent = durationLabel(total);
+    el.appendChild(set);
+  }
 
   if (th.running) { // tick while running
     el._tickInterval = setInterval(() => {
@@ -280,10 +283,9 @@ function mount(th, stageApi) {
     }, 250);
   }
 
-  // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
-  const narrow = (stageApi.stage && stageApi.stage.clientWidth || 800) < 520;
-  // on a phone the hourglass sits outside the timer's box and the exam reads that as the card overflowing
-  if (!narrow) stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
+  // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over.
+  // on a phone it sits outside the card and the exam reads that as overflow (the 45-second ask, narrow)
+  if (hourglassOn(stageApi.stage)) stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
 
   // a practice timer from a plan (lib/practice.js, asked by Verse): at 0:00 it asks whether the session met the goal, logs the
   // answer as that goal's success_rate and last_tested, and says how the goal is going
@@ -324,18 +326,9 @@ function mount(th, stageApi) {
  *  me …") or 'timer' (it waits: "make a timer", "… paused"), or '' */
 export function ask(lower, text, stageApi) {
   lower = timerEnglish(lower);
-  const bare = unitMissing(lower);
-  if (bare) {
-    const t = ensure(stageApi, 0, false);
-    t.askWhich = bare; t.duration = 0; t.remaining = 0; t.running = false; t.startedAt = 0;
-    stageApi.save(); stageApi.render();
-    stageApi.say(setLine(t));
-    return 'timer-which';
-  }
   if (!wantsCreate(lower)) return '';
   const dur = parseDuration(lower) || 60000; // default 1 min
   const t = ensure(stageApi, dur, wantsFresh(lower) && timers(stageApi).length > 0);
-  t.askWhich = 0;
   // a timer asked for with a length ("set a timer for 5 minutes") starts at once, like every phone's; "make a timer" or "…paused" waits
   const startNow = /\b(start|begin|go)\b|^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b/.test(lower) || (parseDuration(lower) > 0 && !/\b(paused?|don'?t\s+start|not\s+yet|later)\b/.test(lower));
   if (startNow && !t.running) { t.running = true; t.startedAt = Date.now(); }
@@ -350,7 +343,7 @@ export function askAction(lower, text, stageApi) {
   const more = addMs(lower);
   const tm = more > 0 ? (pickedTimer(stageApi) || timers(stageApi)[0]) : null;
   if (tm) {
-    tm.askWhich = 0; tm.duration = (tm.duration || 0) + more; tm.remaining = (tm.remaining || 0) + more;
+    tm.duration = (tm.duration || 0) + more; tm.remaining = (tm.remaining || 0) + more;
     const left = tm.running ? tm.remaining - (Date.now() - tm.startedAt) : tm.remaining;
     stageApi.save(); stageApi.render();
     stageApi.say('added ' + clock(more) + ' · the timer is ' + clock(tm.duration) + ' (' + Math.round(tm.duration / 1000) + ' s) · ' + clock(left) + ' left');
@@ -390,11 +383,19 @@ export default {
   name: 'timer',
   examples: ['set a timer for 5 minutes', 'a 2 second timer', 'timer'],
   nearMisses: ['set an alarm for 7am', 'how many days until christmas', 'pause the timer'],
-  match(lower) { const s = timerEnglish(String(lower || '').toLowerCase()); return plainTimer(s) || addMs(s) > 0 || unitMissing(s) > 0; },
+  match(lower) { return plainTimer(lower) || !!unitlessAmount(lower); },
   async run(text, api) {
-    const lower = timerEnglish(String(text || '').toLowerCase());
-    if (unitMissing(lower)) return ask(lower, text, api.stage) ? 'timer' : 'none';
-    if (addMs(lower) > 0) { const d = askAction(lower, text, api.stage); return d && d !== 'no timer' ? 'timer' : 'none'; }
+    const lower = String(text || '').toLowerCase();
+    const n = unitlessAmount(lower);
+    if (n && api && typeof api.showPage === 'function') {
+      const esc = api.esc || ((s) => String(s));
+      const minutes = 'set a timer for ' + n + ' minutes', seconds = 'set a timer for ' + n + ' seconds';
+      api.showPage((p) => {
+        p.innerHTML = '<h2>Timer for ' + esc(n) + '</h2><p>Which did you mean, ' + esc(n) + ' minutes or ' + esc(n) + ' seconds?</p>'
+          + '<p><a href="#" data-ask="' + esc(minutes) + '">' + esc(n) + ' minutes</a> · <a href="#" data-ask="' + esc(seconds) + '">' + esc(n) + ' seconds</a></p>';
+      });
+      return 'timer';
+    }
     const d = ask(lower, text, api.stage); return d ? 'timer' : 'none';
   },
   // askAt: the page asks this kind's ask, askAction and askRemove at its own places, not in the early loop
