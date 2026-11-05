@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { NAV, currentNav, latestFeed, proofLine, commands, filterCommands, speculationRules, dressHtml, dressPath } from '../void-live-deploy/lib/verse-shell.js';
+import { NAV, currentNav, latestFeed, proofLine, commands, filterCommands, speculationRules, dressHtml, dressPath, revealScroll } from '../void-live-deploy/lib/verse-shell.js';
 import { contrast } from '../void-live-deploy/lib/empty-state.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -23,6 +23,13 @@ test('the nav names the shell pages, and the current page is the longest match',
   assert.equal(currentNav('/conquered/').label, 'Tower');
   assert.equal(currentNav('/films/').label, 'Films');
   assert.equal(currentNav('/nope'), null);
+});
+
+test('a clipped nav item scrolls fully into the bar, and one already inside stays put', () => {
+  assert.equal(revealScroll({ scrollLeft: 0, clientWidth: 200, itemLeft: 180, itemRight: 260 }), 60);
+  assert.equal(revealScroll({ scrollLeft: 80, clientWidth: 200, itemLeft: -30, itemRight: 40 }), 50);
+  assert.equal(revealScroll({ scrollLeft: 40, clientWidth: 200, itemLeft: 10, itemRight: 90 }), 40);
+  assert.equal(revealScroll(), 0);
 });
 
 test('the live line uses only the numbers it was given', () => {

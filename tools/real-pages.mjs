@@ -101,8 +101,11 @@ export const SPECS = {
     t.ok(/\d/.test(await t.text('#rows')), 'the rows carry scores');
   },
   '/compare/': async (t) => {
-    const hint = await t.waitText('#who', /floor=\S+/, 10000); const id = ((hint.match(/floor=(.+)$/) || [])[1] || '').trim();
-    t.ok(!!id, 'with no floor it says how to name one (' + hint.slice(0, 60) + ')');
+    const hint = await t.waitText('#who', /floor=\S+/, 10000); let id = ((hint.match(/floor=(\S+)/) || [])[1] || '').trim();
+    try { id = decodeURIComponent(id); } catch (_) { /* the hint is already the raw id */ }
+    t.ok(!!id && !/\s/.test(hint.split('floor=')[1] || ''), 'with no floor it names one as a real address (' + hint.slice(0, 80) + ')');
+    t.ok(await t.p.locator('iframe:visible').count() === 0, 'with no floor the blank frame stays hidden');
+    t.ok(await t.p.locator('#pick a[href*="floor="]').count() >= 8, 'floors are listed to open');
     await t.p.goto(t.p.url().split('?')[0] + '?floor=' + encodeURIComponent(id)); const who = await t.waitText('#who', /side by side/, 10000);
     t.ok(/^Verse and \S+, side by side$/.test(who.trim()), 'the floor opens as Verse beside its site: ' + who.slice(0, 60));
     t.ok(/^https?:\/\//.test(await t.p.getAttribute('#so', 'href') || ''), 'the rival site opens from a real link');
@@ -139,6 +142,15 @@ export const SPECS = {
     await t.p.waitForFunction(() => document.querySelectorAll('#c tr').length > 1, null, { timeout: 10000 }).catch(() => {});
     const rows = await t.p.locator('#c tr').allInnerTexts(); t.ok(rows.length > 1, (rows.length - 1) + ' credits listed');
     t.ok(rows.slice(1).every((r) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(r)), 'every credit names its license');
+    await t.p.setViewportSize({ width: 390, height: 844 });
+    const fit = await t.p.evaluate(() => {
+      const td = [...document.querySelectorAll('#c td')].find((e) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(e.textContent));
+      if (!td) return null;
+      const r = td.getBoundingClientRect();
+      return { left: r.left, right: r.right, w: innerWidth, page: document.documentElement.scrollWidth };
+    });
+    t.ok(fit && fit.left >= -1 && fit.right <= fit.w + 1 && fit.page <= fit.w + 1, 'at 390 px the license is on the screen, not past the edge: ' + JSON.stringify(fit));
+    await t.p.setViewportSize({ width: 1200, height: 900 });
     await t.links();
   },
   '/films/': async (t) => {
@@ -523,6 +535,16 @@ SPECS['/agent/'] = async (t) => {
   await t.waitText('#thread', /Resumed/, 8000);
   t.ok(/Nothing was sent or paid/.test(await t.text('#thread')), 'approve resumes and says nothing was sent');
   t.ok(/Hi Bob/.test(await t.text('#made')), 'the approved draft lands on the Made shelf');
+  await t.p.setViewportSize({ width: 390, height: 844 });
+  await t.p.waitForTimeout(200);
+  const nav = await t.p.evaluate(() => {
+    const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
+    if (!bar || !a) return null;
+    const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
+    return { label: a.textContent, left: Math.round(r.left), right: Math.round(r.right), barL: Math.round(b.left), barR: Math.round(b.right) };
+  });
+  t.ok(nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1, 'at 390 px the current nav item is fully in the bar: ' + JSON.stringify(nav));
+  await t.p.setViewportSize({ width: 1200, height: 900 });
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },

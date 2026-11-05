@@ -4,7 +4,7 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss: blob: data:; frame-src https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' chrome-extension: moz-extension:; form-action 'self' https://gumroad.com https://*.gumroad.com https://checkout.stripe.com; upgrade-insecure-requests
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Strict-Transport-Security: max-age=63072000
-  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
   Speculation-Rules: "/speculation-rules.json"
 
 
@@ -28,7 +28,7 @@
 # blocks those sensors, so here, and only here, the page itself may use them. Nothing else in the policy changes.
 /lab/*
   ! Permissions-Policy
-  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(self), gyroscope=(self), magnetometer=(self), browsing-topics=()
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(self), gyroscope=(self), magnetometer=(self), browsing-topics=()
 
 /sw.js
   Cache-Control: no-cache
