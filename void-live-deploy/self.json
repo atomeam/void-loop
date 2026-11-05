@@ -558,8 +558,20 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T05:15:37Z",
-   "subject": "fix: the coder's turns fit the token cap, so laps stop pausing the loop (#2234)"
+   "at": "2026-11-05T05:48:04Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-05T05:41:57Z",
+   "subject": "Outcome exam: units 82.5"
+  },
+  {
+   "at": "2026-11-05T05:41:54Z",
+   "subject": "Lists run 12: units exam (bits, bytes, French units), define in five more languages, grocery prices from BLS, riddle-gen family (#2240)"
+  },
+  {
+   "at": "2026-11-05T05:20:06Z",
+   "subject": "Incidents closed: shard(s) 1,2,3,4 passed on db3cc6b3 (void-live-deploy/incidents.json)"
   },
   {
    "at": "2026-11-05T05:10:56Z",
@@ -582,12 +594,28 @@
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
+   "at": "2026-11-05T04:39:10Z",
+   "subject": "Regenerate docs/PARITY and history timelines: index.html line citations moved, and main's history JSON carried stray CRs (tools/parity.mjs…"
+  },
+  {
    "at": "2026-11-05T04:38:26Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
    "at": "2026-11-05T04:35:06Z",
    "subject": "Images exam 100 and no human in the loop (guard: tools/no-human-wait.mjs) (#2239)"
+  },
+  {
+   "at": "2026-11-05T04:30:42Z",
+   "subject": "Regenerate stale generated files from main: modulepreload for member-keep.js (#2236) on music/news/team/brain/chords, docs/HANDOFF-GAPS.md…"
+  },
+  {
+   "at": "2026-11-05T04:22:39Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-05T04:22:24Z",
+   "subject": "fix: first asks show feedback at once and the tester waits for the real answer (#2228 #2225 #2222)"
   },
   {
    "at": "2026-11-05T04:16:07Z",
@@ -608,38 +636,14 @@
   {
    "at": "2026-11-05T04:01:48Z",
    "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-05T04:00:01Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-05T03:51:34Z",
-   "subject": "Tower liveness guard: drop rivals that are gone, parked or redirect off their domain (unitingchurch.org.au -> controlhosting.net) (#2237)"
-  },
-  {
-   "at": "2026-11-05T03:51:31Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T03:40:17Z",
-   "subject": "Member hand-off carries real context: chord/scale, setlist, news section, brain topic, team channel; /members/ shows it and saves it to…"
-  },
-  {
-   "at": "2026-11-05T03:33:16Z",
-   "subject": "Missed upsells: contextual paid-Verse offer on /team/ /brain/ /news/ /music/ /chords/ (?from=) (#2235)"
-  },
-  {
-   "at": "2026-11-05T03:30:31Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-05T03:05:31Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"who is the au"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists run 12 (grok, 2026-11-05)",
+    "line": "the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill…"
+   },
    {
     "name": "Lists run 11 (grok, 2026-11-04)",
     "line": "main's browser suite green again (the will test pins its own better file, the tower card test allows the new \"N passed\" count, the Verse bar scrolls sideways before /verse.css loads so phone pages never get wider than the screen)…"
@@ -658,10 +662,6 @@
    },
    {
     "name": "/under-the-hood/ live-numbers page, speculation rules, prerender-safe…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
-   },
-   {
-    "name": "fix #2120: page fades no longer throw, /emoji left out of speculation rules…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
    }
   ],
@@ -817,8 +817,8 @@
   }
  ],
  "visible": {
-  "day": 5,
-  "week": 413
+  "day": 8,
+  "week": 416
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

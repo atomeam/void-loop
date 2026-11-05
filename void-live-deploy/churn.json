@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
  "at": "2026-11-05T05:15:42.887Z",
+=======
+ "at": "2026-11-05T05:29:49.727Z",
+>>>>>>> origin/main
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -25,6 +29,7 @@
    "changes": 42
   },
   {
+<<<<<<< HEAD
    "file": "tools/families.mjs",
    "changes": 40
   },
@@ -47,10 +52,50 @@
   {
    "file": "tools/real-pages.mjs",
    "changes": 34
+=======
+   "file": "tools/handoff-e2e.mjs",
+   "changes": 38
+  },
+  {
+   "file": "tools/families.mjs",
+   "changes": 37
+  },
+  {
+   "file": "docs/PARITY/github.md",
+   "changes": 36
+>>>>>>> origin/main
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 36
+  },
+  {
+   "file": "docs/PARITY/lichess.md",
+   "changes": 36
+  },
+  {
+   "file": "tools/real-pages.mjs",
+   "changes": 34
   },
   {
    "file": "domains/handoff.md",
+<<<<<<< HEAD
    "changes": 30
+  },
+  {
+   "file": "void-live-deploy/exam/history.json",
+   "changes": 28
+  },
+  {
+   "file": "void-live-deploy/exam/latest.json",
+   "changes": 28
+  },
+  {
+   "file": "void-live-deploy/lib/toolkit.js",
+   "changes": 28
+=======
+   "changes": 29
+>>>>>>> origin/main
   },
   {
    "file": "void-live-deploy/exam/history.json",
@@ -65,19 +110,18 @@
    "changes": 28
   },
   {
-   "file": "docs/PARITY/google-search.md",
-   "changes": 27
-  },
-  {
    "file": "tools/toolkit.test.mjs",
    "changes": 27
   },
   {
    "file": "void-live-deploy/lib/tower.js",
+<<<<<<< HEAD
    "changes": 26
   },
   {
    "file": "void-live-deploy/skills/verse-brain.js",
+=======
+>>>>>>> origin/main
    "changes": 26
   },
   {
@@ -85,7 +129,11 @@
    "changes": 26
   },
   {
+<<<<<<< HEAD
    "file": "void-live-deploy/fanfic/index.html",
+=======
+   "file": "docs/PARITY/google-search.md",
+>>>>>>> origin/main
    "changes": 25
   },
   {
@@ -93,6 +141,13 @@
    "changes": 25
   },
   {
+<<<<<<< HEAD
+=======
+   "file": "void-live-deploy/skills/verse-brain.js",
+   "changes": 25
+  },
+  {
+>>>>>>> origin/main
    "file": "void-live-deploy/convert/unit-converter/index.html",
    "changes": 24
   },
@@ -101,6 +156,13 @@
    "changes": 24
   },
   {
+<<<<<<< HEAD
+=======
+   "file": "void-live-deploy/fanfic/index.html",
+   "changes": 24
+  },
+  {
+>>>>>>> origin/main
    "file": "void-live-deploy/lib/converter.js",
    "changes": 24
   },
@@ -138,10 +200,13 @@
   },
   {
    "file": "tools/team.test.mjs",
+<<<<<<< HEAD
    "changes": 21
   },
   {
    "file": "void-live-deploy/fanfic/app.js",
+=======
+>>>>>>> origin/main
    "changes": 21
   },
   {
@@ -158,6 +223,13 @@
   },
   {
    "file": "docs/PARITY/README.md",
+<<<<<<< HEAD
+=======
+   "changes": 20
+  },
+  {
+   "file": "void-live-deploy/fanfic/app.js",
+>>>>>>> origin/main
    "changes": 20
   },
   {
@@ -170,11 +242,26 @@
   },
   {
    "file": "tools/grow-self.state.json",
+<<<<<<< HEAD
+=======
+   "changes": 19
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
+>>>>>>> origin/main
    "changes": 19
   },
   {
    "file": "void-live-deploy/lib/brain.js",
-   "changes": 19
+   "changes": 18
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 18
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
+   "changes": 18
   },
   {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
@@ -193,19 +280,11 @@
    "changes": 17
   },
   {
-   "file": "tools/brain.test.mjs",
-   "changes": 16
-  },
-  {
    "file": "void-live-deploy/bots/registry.json",
    "changes": 16
   },
   {
    "file": "void-live-deploy/lib/brain-mind.js",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/lib/brain-organs.js",
    "changes": 16
   },
   {
@@ -225,7 +304,28 @@
    "changes": 15
   },
   {
+<<<<<<< HEAD
+=======
+   "file": "tools/brain.test.mjs",
+   "changes": 15
+  },
+  {
+>>>>>>> origin/main
    "file": "tools/word-math.golden.json",
+   "changes": 15
+  },
+  {
+<<<<<<< HEAD
+   "file": "tools/flakes.json",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/lib/fanfic.js",
+   "changes": 14
+  },
+  {
+=======
+   "file": "void-live-deploy/lib/brain-organs.js",
    "changes": 15
   },
   {
@@ -237,6 +337,7 @@
    "changes": 14
   },
   {
+>>>>>>> origin/main
    "file": "void-live-deploy/lib/team.js",
    "changes": 14
   },

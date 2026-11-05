@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1150,
+ "counted": 1151,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -192,17 +192,17 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 13,
+   "direct": 13,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
    "dependants": 20,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 12,
-   "direct": 12,
-   "dependants": 12,
    "tests": 1
   },
   {
@@ -850,6 +850,13 @@
    "tests": 2
   },
   {
+   "file": "lib/generators.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
@@ -1127,13 +1134,6 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
-   "tests": 2
-  },
-  {
-   "file": "lib/generators.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 4,
    "tests": 2
   },
   {
@@ -8084,7 +8084,8 @@
     "skills/textgen.js"
    ],
    "reachedBy": [
-    "skills/generators-fill.js"
+    "skills/generators-fill.js",
+    "skills/riddle-gen.js"
    ]
   },
   "lib/genre-score.js": {
@@ -12329,6 +12330,7 @@
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
+    "skills/riddle-gen.js",
     "skills/rooms.js",
     "skills/shop.js",
     "skills/stage-out.js",
@@ -17372,9 +17374,19 @@
     "skills/mind-field.js"
    ]
   },
+  "skills/riddle-gen.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/riddle.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
+  },
   "skills/riddle.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/riddle-gen.js"
+   ]
   },
   "skills/rides.js": {
    "imports": [
@@ -18190,7 +18202,8 @@
     "lib/generators.js"
    ],
    "importedBy": [
-    "lib/generators-card.js"
+    "lib/generators-card.js",
+    "skills/riddle-gen.js"
    ]
   },
   "skills/throw-off.js": {

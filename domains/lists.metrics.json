@@ -620,6 +620,49 @@
      "link": "ask-20261104-2101-3, still queued for '100 usd in eur'"
     }
    ]
-  }
- ]
+  },
+    {
+      "at": "2026-11-05T05:40:00Z",
+      "run": 12,
+      "closed": 5,
+      "touched": 5,
+      "pct_blocked": 0,
+      "top_block": "none this run",
+      "dup_rate": 0.2,
+      "dup_basis": "1 of the 5 items was a duplicate (the timers 'add one minute' ask, built in lists run 10 and closed here with a ledger entry)",
+      "median_days": 0,
+      "median_basis": "the exam failures (units, define, prices) and the timers ask were queued 2026-11-04 and built 2026-11-05",
+      "asks_open_start": 5,
+      "asks_open_end": 4,
+      "note": "Exam failures from the site tester and Verse's asks: units (bits, bytes, French units), define in five other languages, grocery prices from the keyless BLS API (the workaround for a paid price feed). Merge: riddle~textgen into riddle-gen. Store queue 0 open. The images exam, telemetry sync and '100 usd in eur' (rival check) stay open.",
+      "items": [
+        {
+          "what": "units exam: bits and bytes, French unit names with 'en', the 1,024 note only for KB and up",
+          "list": "site tester / exams",
+          "status": "built"
+        },
+        {
+          "what": "define: 'qué significa serendipia' and French, German, Italian, Portuguese phrasings show the English word and its meanings",
+          "list": "site tester / exams",
+          "status": "built"
+        },
+        {
+          "what": "prices: 'how much is a gallon of milk' and 8 more groceries from BLS average prices (keyless workaround)",
+          "list": "V01D asks (prices exam)",
+          "status": "built"
+        },
+        {
+          "what": "convergence: riddle and textgen one family, skills/riddle-gen.js, aliases kept, 0 of 4,059 answers changed",
+          "list": "convergence",
+          "status": "built"
+        },
+        {
+          "what": "timers 'add one minute' (ask-20261104-0859-2)",
+          "list": "V01D asks",
+          "status": "duplicate",
+          "link": "lists run 10, tools/timer.test.mjs"
+        }
+      ]
+    }
+  ]
 }

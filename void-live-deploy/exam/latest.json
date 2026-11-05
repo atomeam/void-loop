@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T05:08:54.975Z",
+  "at": "2026-11-05T05:41:54.288Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -44,7 +44,7 @@
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of planet money",
           "failed": [
             "audio"
           ],
@@ -162,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 97.5,
+      "score": 96.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -177,9 +177,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "place"
+            "temp",
+            "close"
           ],
-          "score": 71.4
+          "score": 57.1
         }
       ],
       "holdout": {
