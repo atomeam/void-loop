@@ -73,7 +73,7 @@ function guardRow(g) {
 async function timeOne(p) {
   const t0 = performance.now();
   try {
-    const r = await fetch(p.path, { method: p.method, cache: 'no-store', headers: p.body ? { 'content-type': 'application/json', accept: 'application/json' } : {}, body: p.body, signal: AbortSignal.timeout(8000) });
+    const r = await fetch(p.path, { method: p.method, cache: 'no-store', headers: p.body ? { 'content-type': 'application/json', accept: 'application/json' } : {}, body: p.body, signal: AbortSignal.timeout(p.timeout || 8000) });
     const ms = Math.round(performance.now() - t0), ok = r.ok;
     if (p.body) { const j = await r.json().catch(() => null); return { ms, ok: ok && !!(j && j.result) }; }
     if (p.key) { const j = await r.json().catch(() => null); return { ms, ok: ok && !!(j && j[p.key] != null) }; }

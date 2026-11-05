@@ -7,56 +7,56 @@
    "verse": 3,
    "best": null,
    "evidence": "Verse (/boards/) 3 of 3 loads answered; textboard.org turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 84,
+   "verse": 99,
    "best": 200,
-   "evidence": "Verse (/boards/) 84 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T14:50:40.143Z"
+   "evidence": "Verse (/boards/) 99 ms to the load event (median of 3, phone width) vs the bar (textboard.org unreachable) 200 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "mobile": {
    "verdict": "equal-and-better",
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs the bar (textboard.org unreachable) 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "accessibility": {
    "verdict": "equal-and-better",
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/boards/) 0 unnamed controls or images vs the bar (textboard.org unreachable) 0 unnamed controls or images",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "offline": {
    "verdict": "equal-and-better",
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs the bar (textboard.org unreachable) 1 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "sharing": {
    "verdict": "equal-and-better",
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (textboard.org unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "design polish": {
    "verdict": "equal-and-better",
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/boards/) 0 design defects vs the bar (textboard.org unreachable) 0 design defects",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   },
   "accuracy": {
    "verdict": "equal-and-better",
    "verse": 5,
    "best": 5,
    "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard",
-   "at": "2026-11-04T14:50:40.143Z",
+   "at": "2026-11-05T14:57:23.801Z",
    "of": 5
   },
   "completeness": {
@@ -64,7 +64,7 @@
    "verse": 20,
    "best": 20,
    "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs the bar (textboard.org unreachable) 20 of 20 things a full answer shows (Verse lacks: none)",
-   "at": "2026-11-04T14:50:40.143Z",
+   "at": "2026-11-05T14:57:23.801Z",
    "of": 20
   },
   "catalog": {
@@ -72,7 +72,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-   "at": "2026-11-04T14:50:40.143Z",
+   "at": "2026-11-05T14:57:23.801Z",
    "of": 1,
    "part": true
   },
@@ -81,7 +81,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/boards/) 2 of 2 shown vs the bar (textboard.org unreachable) 2 of 2 shown (Verse lacks: none)",
-   "at": "2026-11-04T14:50:40.143Z",
+   "at": "2026-11-05T14:57:23.801Z",
    "of": 2,
    "part": true
   },
@@ -90,7 +90,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-   "at": "2026-11-04T14:50:40.143Z",
+   "at": "2026-11-05T14:57:23.801Z",
    "of": 1,
    "part": true
   },
@@ -99,7 +99,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/boards/) 1 of 1 shown vs the bar (textboard.org unreachable) 1 of 1 shown (Verse lacks: none)",
-   "at": "2026-11-04T14:50:40.143Z",
+   "at": "2026-11-05T14:57:23.801Z",
    "of": 1,
    "part": true
   },
@@ -108,7 +108,7 @@
    "verse": 5.5,
    "best": 11,
    "evidence": "Verse (/boards/) 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (textboard.org unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T14:50:40.143Z"
+   "at": "2026-11-05T14:57:23.801Z"
   }
  }
 }
