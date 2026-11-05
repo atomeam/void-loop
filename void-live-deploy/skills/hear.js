@@ -5,6 +5,7 @@
  * "play a video of …" stays with video, and a bare "play despacito" stays a video search.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
+// Proven by suite check in tools/hear.test.mjs (least checked, 2026-11-05)
 import { songAskOf, findTrack } from '../lib/hear.js';
 
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

@@ -1,15 +1,203 @@
 {
   "_": "Outside work autosalvage weighs (owner, 2026-11-03: salvage free outside work into Verse, crediting each). license is the SPDX id GitHub reports (node tools/autosalvage/unify.mjs --outside-refresh rewrites it); a source with no license is skipped, never guessed. gap names the Verse gap it would fill.",
   "sources": [
-    { "id": "public-apis/public-apis", "url": "https://github.com/public-apis/public-apis", "author": "public-apis", "license": "MIT", "what": "A collective list of free APIs", "gap": "free-resource router (resources/free.json)", "target": "data" },
-    { "id": "dwyl/english-words", "url": "https://github.com/dwyl/english-words", "author": "dwyl", "license": "Unlicense", "what": "479k English words", "gap": "word games and spell bots", "target": "data" },
-    { "id": "simple-icons/simple-icons", "url": "https://github.com/simple-icons/simple-icons", "author": "simple-icons", "license": "CC0-1.0", "what": "SVG icons for popular brands", "gap": "bot and connector icons", "target": "data" },
-    { "id": "tabler/tabler-icons", "url": "https://github.com/tabler/tabler-icons", "author": "tabler", "license": "MIT", "what": "6200+ free SVG icons", "gap": "bot directory icons", "target": "data" },
-    { "id": "jsdelivr/jsdelivr", "url": "https://github.com/jsdelivr/jsdelivr", "author": "jsdelivr", "license": "MIT", "what": "Free open-source CDN for npm and GitHub", "gap": "free hosting of libraries for bots", "target": "tool" },
-    { "id": "mledoze/countries", "url": "https://github.com/mledoze/countries", "author": "mledoze", "license": "ODbL-1.0", "what": "World countries in JSON", "gap": "country facts bots", "target": "data" },
-    { "id": "unicode-org/cldr-json", "url": "https://github.com/unicode-org/cldr-json", "author": "unicode-org", "license": "NOASSERTION", "what": "Unicode CLDR locale data", "gap": "translation and locale bots", "target": "data" },
-    { "id": "open-meteo/open-meteo", "url": "https://github.com/open-meteo/open-meteo", "author": "open-meteo", "license": "AGPL-3.0", "what": "Free weather forecast API (non-commercial)", "gap": "weather bots", "target": "tool" },
-    { "id": "datasets/country-codes", "url": "https://github.com/datasets/country-codes", "author": "datasets", "license": "", "what": "Country code information", "gap": "country facts bots", "target": "data" },
-    { "id": "dariusk/corpora", "url": "https://github.com/dariusk/corpora", "author": "dariusk", "license": "", "what": "Small corpora of interesting data", "gap": "generator bots", "target": "data" }
+    {
+      "id": "public-apis/public-apis",
+      "url": "https://github.com/public-apis/public-apis",
+      "author": "public-apis",
+      "license": "MIT",
+      "what": "A collective list of free APIs",
+      "gap": "free-resource router (resources/free.json)",
+      "target": "data"
+    },
+    {
+      "id": "dwyl/english-words",
+      "url": "https://github.com/dwyl/english-words",
+      "author": "dwyl",
+      "license": "Unlicense",
+      "what": "479k English words",
+      "gap": "word games and spell bots",
+      "target": "data"
+    },
+    {
+      "id": "simple-icons/simple-icons",
+      "url": "https://github.com/simple-icons/simple-icons",
+      "author": "simple-icons",
+      "license": "CC0-1.0",
+      "what": "SVG icons for popular brands",
+      "gap": "bot and connector icons",
+      "target": "data"
+    },
+    {
+      "id": "tabler/tabler-icons",
+      "url": "https://github.com/tabler/tabler-icons",
+      "author": "tabler",
+      "license": "MIT",
+      "what": "6200+ free SVG icons",
+      "gap": "bot directory icons",
+      "target": "data"
+    },
+    {
+      "id": "jsdelivr/jsdelivr",
+      "url": "https://github.com/jsdelivr/jsdelivr",
+      "author": "jsdelivr",
+      "license": "MIT",
+      "what": "Free open-source CDN for npm and GitHub",
+      "gap": "free hosting of libraries for bots",
+      "target": "tool"
+    },
+    {
+      "id": "mledoze/countries",
+      "url": "https://github.com/mledoze/countries",
+      "author": "mledoze",
+      "license": "ODbL-1.0",
+      "what": "World countries in JSON",
+      "gap": "country facts bots",
+      "target": "data"
+    },
+    {
+      "id": "unicode-org/cldr-json",
+      "url": "https://github.com/unicode-org/cldr-json",
+      "author": "unicode-org",
+      "license": "NOASSERTION",
+      "what": "Unicode CLDR locale data",
+      "gap": "translation and locale bots",
+      "target": "data"
+    },
+    {
+      "id": "open-meteo/open-meteo",
+      "url": "https://github.com/open-meteo/open-meteo",
+      "author": "open-meteo",
+      "license": "AGPL-3.0",
+      "what": "Free weather forecast API (non-commercial)",
+      "gap": "weather bots",
+      "target": "tool"
+    },
+    {
+      "id": "datasets/country-codes",
+      "url": "https://github.com/datasets/country-codes",
+      "author": "datasets",
+      "license": "",
+      "what": "Country code information",
+      "gap": "country facts bots",
+      "target": "data"
+    },
+    {
+      "id": "dariusk/corpora",
+      "url": "https://github.com/dariusk/corpora",
+      "author": "dariusk",
+      "license": "",
+      "what": "Small corpora of interesting data",
+      "gap": "generator bots",
+      "target": "data"
+    },
+    {
+      "id": "lineofflight/frankfurter",
+      "url": "https://github.com/lineofflight/frankfurter",
+      "author": "lineofflight",
+      "license": "MIT",
+      "what": "Exchange rates from the European Central Bank, no key",
+      "gap": "currency pair bots",
+      "target": "data"
+    },
+    {
+      "id": "nager/Nager.Date",
+      "url": "https://github.com/nager/Nager.Date",
+      "author": "nager",
+      "license": "MIT",
+      "what": "Public holidays for 200 countries, no key",
+      "gap": "public holiday bots",
+      "target": "data"
+    },
+    {
+      "id": "wikimedia/wikidata-data",
+      "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "author": "Wikimedia contributors",
+      "license": "CC0-1.0",
+      "what": "Country facts (capital, currency, continent), public domain",
+      "gap": "country fact bots",
+      "target": "data"
+    },
+    {
+      "id": "ideal-postcodes/postcodes.io",
+      "url": "https://github.com/ideal-postcodes/postcodes.io",
+      "author": "ideal-postcodes",
+      "license": "MIT",
+      "what": "UK postcode lookup, no key",
+      "gap": "postcode bots",
+      "target": "data"
+    },
+    {
+      "id": "art-institute-of-chicago/api",
+      "url": "https://api.artic.edu/",
+      "author": "Art Institute of Chicago",
+      "license": "CC0-1.0",
+      "what": "Public-domain artwork records",
+      "gap": "artwork bots",
+      "target": "data"
+    },
+    {
+      "id": "metmuseum/open-access",
+      "url": "https://metmuseum.github.io/",
+      "author": "The Metropolitan Museum of Art",
+      "license": "CC0-1.0",
+      "what": "Public-domain collection records",
+      "gap": "artwork bots",
+      "target": "data"
+    },
+    {
+      "id": "metabrainz/musicbrainz",
+      "url": "https://musicbrainz.org/doc/MusicBrainz_Database",
+      "author": "MetaBrainz",
+      "license": "CC0-1.0",
+      "what": "Music metadata, public domain",
+      "gap": "music bots",
+      "target": "data"
+    },
+    {
+      "id": "jacebrowning/memegen",
+      "url": "https://github.com/jacebrowning/memegen",
+      "author": "jacebrowning",
+      "license": "MIT",
+      "what": "Meme template API, no key",
+      "gap": "meme bots",
+      "target": "tool"
+    },
+    {
+      "id": "worldbank/open-data",
+      "url": "https://data.worldbank.org/",
+      "author": "World Bank",
+      "license": "CC-BY-4.0",
+      "what": "Country and region names",
+      "gap": "country bots",
+      "target": "data"
+    },
+    {
+      "id": "fda/openfda",
+      "url": "https://open.fda.gov/apis/",
+      "author": "U.S. Food and Drug Administration",
+      "license": "CC0-1.0",
+      "what": "Public-domain US government drug labels",
+      "gap": "drug name bots",
+      "target": "data"
+    },
+    {
+      "id": "nlm/rxnorm",
+      "url": "https://lhncbc.nlm.nih.gov/RxNav/",
+      "author": "U.S. National Library of Medicine",
+      "license": "CC0-1.0",
+      "what": "Public-domain US government drug names",
+      "gap": "drug name bots",
+      "target": "data"
+    },
+    {
+      "id": "police-uk/data.police.uk",
+      "url": "https://data.police.uk/docs/",
+      "author": "UK Home Office",
+      "license": "OGL-UK-3.0",
+      "what": "UK police force directory",
+      "gap": "police force bots",
+      "target": "data"
+    }
   ]
 }

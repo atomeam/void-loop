@@ -2028,5 +2028,1565 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T15:29:24Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3254,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14988 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T15:56:44Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2964,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13457 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T16:40:59Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1321,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 18997 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T17:09:02Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2744,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 21536 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T18:52:20Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 825,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T19:33:23Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2382,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T19:43:46Z",
+  "passed": 78,
+  "of": 88,
+  "ms": 384,
+  "kind": "file",
+  "key": "keep this idea: a stage that remembers | why: it makes coming back feel like home | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fly around",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "keep this idea: a stage that remembers | why: it makes coming back feel like hom",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "play a local audio file",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "films by Kurosawa",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo film metadata for ikiru",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo find me a sci-fi film from the 80s",
+    "why": "load 1617 ms > 1200"
+   },
+   {
+    "ask": "find me a sci-fi film from the 80s pls",
+    "why": "nothing appeared"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2382,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T19:56:54Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2527,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T20:24:30Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2057,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T20:34:49Z",
+  "passed": 78,
+  "of": 88,
+  "ms": 335,
+  "kind": "file",
+  "key": "films by kurosawa pls | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "what is 17 times 23",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "play reversi",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "films by kurosawa pls",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "arcade games",
+    "why": "nothing appeared"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2057,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"films by kurosawa pls\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T20:51:37Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1797,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11231 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T21:01:44Z",
+  "passed": 84,
+  "of": 88,
+  "ms": 331,
+  "kind": "file",
+  "key": "yo play despacito | nothing appeared",
+  "failed": [
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "flip this card",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo play despacito",
+    "why": "nothing appeared"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1797,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11231 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"yo play despacito\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T21:14:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3240,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 20748 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T23:50:45Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2151,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T00:02:48Z",
+  "passed": 75,
+  "of": 88,
+  "ms": 377,
+  "kind": "file",
+  "key": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list | missing text /News about me/",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+    "why": "missing text /News about me/"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo bitcoin price",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo film metadata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film metadata for ikiru pls",
+    "why": "load 1921 ms > 1200"
+   },
+   {
+    "ask": "dim the void",
+    "why": "load 1416 ms > 1200"
+   },
+   {
+    "ask": "yo play despacito",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo who is the author of dune",
+    "why": "load 1675 ms > 1200"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2151,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list\" missing text /News about me/"
+ },
+ {
+  "at": "2026-11-05T00:15:09Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1987,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 16232 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T00:26:50Z",
+  "passed": 76,
+  "of": 88,
+  "ms": 431,
+  "kind": "file",
+  "key": "bokos like dune | nothing appeared",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "my actions",
+    "why": "load 1324 ms > 1200"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo automations",
+    "why": "load 1645 ms > 1200"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "bench icon",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "which games do you know",
+    "why": "load 1328 ms > 1200"
+   },
+   {
+    "ask": "send it away",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "films by kurosawa pls",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "contéstame en español",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "can we play despacito",
+    "why": "nothing appeared"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1987,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 16232 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"bokos like dune\" nothing appeared"
+ },
+ {
+  "at": "2026-11-05T00:39:42Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2315,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 22378 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T01:33:04Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 437,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 22090 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T02:28:58Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1609,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 18779 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T02:55:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1745,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12168 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T03:03:39Z",
+  "passed": 86,
+  "of": 88,
+  "ms": 348,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1745,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12168 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"who is the auhtor of dune\" (skill:book)"
+ },
+ {
+  "at": "2026-11-05T03:35:53Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 852,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13030 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T04:02:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 563,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12434 ms"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T04:13:57Z",
+  "passed": 80,
+  "of": 89,
+  "ms": 406,
+  "kind": "file",
+  "key": "find a rumble video about bitcoin | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "find a rumble video about bitcoin",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "what rhymes with orange",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo find me a sci-fi film from the 80s",
+    "why": "load 1264 ms > 1200"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "contéstame en español",
+    "why": "console: Failed to load resource: the server responded with a status of 500 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 563,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12434 ms"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"find a rumble video about bitcoin\" nothing appeared; console: Failed to load resource: the server responded with a status of 500 ()"
+ },
+ {
+  "at": "2026-11-05T04:27:08Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 2930,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 20250 ms"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 8169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T04:55:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1941,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 15318 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T05:45:11Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 608,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14554 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T06:19:18Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2622,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13995 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T06:47:11Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 532,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T06:57:03Z",
+  "passed": 85,
+  "of": 89,
+  "ms": 329,
+  "kind": "file",
+  "key": "dyslexia friendly font | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "dyslexia friendly font",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 532,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"dyslexia friendly font\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T07:12:16Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 630,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 24104 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T07:40:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 956,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 20132 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T08:41:11Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1909,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12205 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T08:54:39Z",
+  "passed": 78,
+  "of": 89,
+  "ms": 318,
+  "kind": "file",
+  "key": "toss it off the screen | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "dyslexia friendly font",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "fly around",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "book reocmmendations like the hobbit",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "Zahnarzt morgen 15 Uhr in den Kalender",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "flip a coin",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1909,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12205 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"toss it off the screen\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T09:06:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 812,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 15860 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T09:20:27Z",
+  "passed": 76,
+  "of": 89,
+  "ms": 402,
+  "kind": "file",
+  "key": "show the days until a date | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "yo new automation",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "load 1796 ms > 1200"
+   },
+   {
+    "ask": "are you web4",
+    "why": "load 1331 ms > 1200"
+   },
+   {
+    "ask": "test me on that",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "flip this card",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film metadata for ikiru pls",
+    "why": "load 1231 ms > 1200"
+   },
+   {
+    "ask": "yo watch the apollo 11 landing",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "random color",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 812,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 15860 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"show the days until a date\" load 1796 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T09:32:04Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 3182,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 14986 ms"
+     ]
+    },
+    {
+     "ask": "convert 5 miles to kilometers",
+     "why": [
+      "slow 9810 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T10:00:13Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2425,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 14242 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T10:29:49Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 3103,
+   "failed": [
+    {
+     "ask": "convert 5 miles to kilometers",
+     "why": [
+      "slow 8019 ms"
+     ]
+    },
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 15104 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T10:58:05Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2787,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14854 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T11:25:52Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1871,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9640 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T11:35:10Z",
+  "passed": 84,
+  "of": 89,
+  "ms": 318,
+  "kind": "file",
+  "key": "weave a constellation called night ops | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "dyslexia friendly font",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "weave a constellation called night ops",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1871,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9640 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"weave a constellation called night ops\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T11:47:40Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2107,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T11:58:48Z",
+  "passed": 83,
+  "of": 89,
+  "ms": 336,
+  "kind": "file",
+  "key": "what are the figures doing | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "what are the figures doing",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "order food from lovebird in lakeland",
+    "why": "refused: couldn't find"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2107,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"what are the figures doing\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T12:21:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2096,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T12:32:47Z",
+  "passed": 87,
+  "of": 89,
+  "ms": 284,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2096,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"yo draw a cartoon cat\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-05T12:45:18Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3092,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 11453 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T13:12:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2317,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17758 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T13:23:33Z",
+  "passed": 85,
+  "of": 90,
+  "ms": 281,
+  "kind": "file",
+  "key": "closer on the figure | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "fly around",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2317,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17758 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"closer on the figure\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T13:36:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3262,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T14:03:44Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3431,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 17745 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T14:29:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1716,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8728 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T14:39:39Z",
+  "passed": 84,
+  "of": 90,
+  "ms": 373,
+  "kind": "file",
+  "key": "how much do i need to save a month to have 1 million in 30 years at 7% | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
+    "why": "load 1482 ms > 1200"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1716,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8728 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T14:53:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1024,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 27808 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

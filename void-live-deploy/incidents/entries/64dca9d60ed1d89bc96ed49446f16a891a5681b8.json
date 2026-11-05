@@ -1,0 +1,27 @@
+{
+ "at": "2026-11-05T07:19:27.013Z",
+ "sha": "64dca9d60ed1d89bc96ed49446f16a891a5681b8",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41982251002",
+ "suite": "browser suite on main",
+ "checks": [
+  "draw backdrop: on an empty canvas it says to draw first; after a stroke \"Make it my backdrop\" puts the picture behind the Verse, kept in the look; it is still there after a reload; \"remove my backdrop\" takes it off"
+ ],
+ "touched": [
+  ".github/workflows/verify.yml",
+  ".github/workflows/watchdog.yml",
+  "tools/revert-target.test.mjs",
+  "tools/video.test.mjs",
+  "void-live-deploy/lib/video.js",
+  "void-live-deploy/skills/video.js"
+ ],
+ "shards": [
+  2
+ ],
+ "passed": [
+  2
+ ],
+ "closedAt": "2026-11-05T08:10:04.716Z",
+ "closedBy": "b838484248373ff02f19dfdfb8f73538110bd8de",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41987076505",
+ "minutes": 51
+}

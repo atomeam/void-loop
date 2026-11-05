@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -82,8 +82,11 @@
 <script src="/visit.js" defer></script>
 
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/music/app.js">
+<link rel="modulepreload" href="/lib/member-keep.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
 <link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<link rel="modulepreload" href="/music/app.js">
 <link rel="modulepreload" href="/lib/toolkit.js">
 <link rel="modulepreload" href="/lib/tool-sites.js">
 <link rel="modulepreload" href="/lib/flight-sites.js">
@@ -92,8 +95,6 @@
 <link rel="modulepreload" href="/lib/converter-ask.js">
 <link rel="modulepreload" href="/lib/brain-ask.js">
 <link rel="modulepreload" href="/lib/local-ask.js">
-<link rel="modulepreload" href="/lib/music-ui.js">
-<link rel="modulepreload" href="/lib/music-de.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -119,6 +120,8 @@
     <p class="note" id="recChords">In C major: I (C) goes to IV, V or vi; V (G) goes to I, vi or IV.</p>
     <p class="note" id="recScales">Scales to improvise over C: C major, C major pentatonic, C mixolydian.</p>
   </section>
+<p id="member-offer" class="tk-row"><span class="tk-label">Your own Verse</span> <a href="/members/?from=music">Members keep setlists and the catalogue in their own Verse, with private skills</a></p>
+<script type="module">import { wireOffer } from '/lib/member-keep.js'; import { setlist, setlistLink } from '/lib/music-ui.js'; wireOffer('music', () => { const l = setlist(); return { setlist: l, go: l.length ? setlistLink(l).replace(location.origin, '').replace('/metronome/', '/music/') : '/music/' }; });</script>
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/metronome/">Metronome</a> <a href="/piano/">Piano</a> <a href="/tuner/">Tuner</a> <a href="/bpm/">BPM counter</a> <a href="/chords/">Chords and scales</a> <a href="/rap/">Verse raps</a> <a href="/tools/">All tools</a><!-- /related --></nav> <!-- void-review: ok (BPM here is the words of the link "BPM counter" in HTML, not a name in code) -->
   <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
   <p class="note" id="share" style="text-align:center"><button type="button" id="shareBtn">Share this page</button></p>

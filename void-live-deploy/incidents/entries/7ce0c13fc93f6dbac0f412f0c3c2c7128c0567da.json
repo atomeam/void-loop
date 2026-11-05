@@ -1,0 +1,29 @@
+{
+ "at": "2026-11-05T07:07:30.018Z",
+ "sha": "7ce0c13fc93f6dbac0f412f0c3c2c7128c0567da",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41979426111",
+ "suite": "browser suite on main",
+ "checks": [
+  "draw backdrop: on an empty canvas it says to draw first; after a stroke \"Make it my backdrop\" puts the picture behind the Verse, kept in the look; it is still there after a reload; \"remove my backdrop\" takes it off"
+ ],
+ "touched": [
+  "domains/void.agents.log.md",
+  "growth/entries/20261105T061541Z-claude-d96696c2.json",
+  "tools/film-discovery.test.mjs",
+  "tools/fixtures/wikidata-kurosawa.json",
+  "void-live-deploy/functions/api/filmfind.js",
+  "void-live-deploy/lib/film-discovery.js",
+  "void-live-deploy/self.json",
+  "void-live-deploy/skills/film-metadata.js"
+ ],
+ "shards": [
+  4
+ ],
+ "passed": [
+  4
+ ],
+ "closedAt": "2026-11-05T07:19:27.112Z",
+ "closedBy": "64dca9d60ed1d89bc96ed49446f16a891a5681b8",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41982251002",
+ "minutes": 12
+}

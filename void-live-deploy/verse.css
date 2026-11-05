@@ -184,3 +184,20 @@ body.vs-stand { margin: 0; min-height: 100vh; background: var(--bg); color: var(
   #verse-field, .vs-chrome { backdrop-filter: none; -webkit-backdrop-filter: none; }
   .vs-page h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
 }
+
+/* class="vs-tool" (tools/glass-pages.mjs): beats a page's :root. An inline accent and data-theme=light still win. Screen only, so print stays paper. */
+@media screen {
+  html.vs-tool:root:not([data-theme=light]) {
+    color-scheme: dark; --bg: #050505; --ink: var(--d-ink); --soft: var(--d-ink-2); --muted: var(--d-ink-3); --quiet: var(--d-ink-3);
+    --line: rgba(255, 255, 255, .12); --accent: rgb(var(--d-key)); --on-accent: #07080f; --bad: #ff8a9a; --good: #5ee0b5; --ok: #5ee0b5; --warn: #ffd27a;
+    --box: rgb(8 10 18 / .78); --card: rgb(16 18 32 / .86); --tint: rgb(var(--d-key) / .16); --hi: rgb(var(--d-key) / .16); --glow: rgb(var(--d-key));
+  }
+  html.vs-tool:not([data-theme=light]), html.vs-tool:not([data-theme=light]) body {
+    background: radial-gradient(ellipse 90% 55% at 50% -18%, rgb(var(--d-key) / .18), transparent 52%), #050505; color: var(--d-ink);
+  }
+  html.vs-tool:not([data-theme=light]) :is(button, a):is(.go, .primary, .buy), html.vs-tool:not([data-theme=light]) button:is(.main, .eq) { color: var(--on-accent); }
+}
+@media screen and (forced-colors: active) {
+  html.vs-tool:not([data-theme=light]),
+  html.vs-tool:not([data-theme=light]) body { background: Canvas; color: CanvasText; }
+}

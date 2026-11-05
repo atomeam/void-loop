@@ -29,8 +29,17 @@ const SHAPE = /^(?:[a-z]+\s+){0,2}(?:circle|line|square|triangle|rectangle|rect|
 const NOT_A_SUBJECT = /^(?:cards?|line chart|chart|graph|map|diagram|breath|blank|conclusion|straws?|number|canvas|brush|layer|arrow|me|something|anything|with|on|in|into|using|from|for)\b|^(?:cartoons?|toons?)$/;
 const LEAD = /^(?:please\s+)?(?:can you\s+)?(?:cartoon version of |cartoon of |(?:draw|make|give|show|create|render|generate)\s+(?:me\s+)?(?:a |an )?(?:cartoon|toon|2d toon|low poly|\w+ style)\s+(?:version\s+)?(?:of\s+)?|style like (?:a |an )?|draw (?:me )?(?:a |an )?(?:toon )?(?:picture of |drawing of )?|(?:a )?(?:\w+\s+)?cartoon (?!network|series|show|character)(?:version of )?)(.+)$/;
 
+// an identity probe asks for Verse's own picture, never a cartoon of the word "yourself" (Verse's ask, 2026-11-01, asked 6 times: "identity-based
+// probes trigger self-portraits instead of being treated as questions"; live 2026-11-05 "draw yourself" drew "Cartoon Yourself" and "what do you
+// look like" got a paragraph). One kept subject, so the forge paints Verse's portrait once and everyone sees the same one.
+export const SELF_SUBJECT = 'verse self-portrait';
+const SELF = /^(?:please\s+)?(?:can you\s+)?(?:(?:draw|paint|sketch|show|make|render|generate|create)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:(?:picture|drawing|painting|portrait|image|cartoon|sketch)\s+of\s+)?(?:yourself|you|verse|void)|(?:draw|paint|show|make)\s+(?:me\s+)?(?:a\s+|your\s+)?self[\s-]?portrait|(?:your\s+|a\s+)?self[\s-]?portrait|what\s+do(?:es)?\s+(?:you|verse|void)\s+look\s+like|how\s+do\s+you\s+look|show\s+(?:me\s+)?(?:your|ur)\s+face|(?:let\s+me\s+)?see\s+(?:yourself|you)|show\s+yourself|what\s+(?:you|verse)\s+looks?\s+like)(?:\s+(?:please|for me|now))?$/;
+/** true for an ask for Verse's own picture ("draw yourself", "what do you look like", "self portrait"). Pure. */
+export const selfPortraitAsk = (text) => SELF.test(CLEAN(text));
+
 /** the subject of a cartoon ask, or null when the ask is not one. Pure. */
 export function cartoonOf(text) {
+  if (selfPortraitAsk(text)) return { subject: SELF_SUBJECT, self: true };
   const m = CLEAN(text).match(LEAD);
   if (!m) return null;
   const subject = m[1].replace(/^(?:a|an|the|my|your|some)\s+/, '').replace(/^hard subject$/, 'shipwreck').replace(/\s+(?:please|for me)$/, '').trim();
@@ -42,6 +51,7 @@ export function cartoonOf(text) {
 export function cartoonTake(subject) {
   const key = String(subject || '').toLowerCase().trim();
   const last = key.split(' ').pop();
+  if (key === SELF_SUBJECT) return { tone: 'cartoon', subject: key, name: "Verse's self-portrait", line: 'This is me as I picture myself: a violet light on a dark stage.', emoji: '🌌', published: false, ok: true };
   return { tone: 'cartoon', subject: key, name: 'Cartoon ' + key, line: TAKES[key] || '', emoji: EMOJI[key] || EMOJI[last] || EMOJI[last.replace(/s$/, '')] || '', published: false, ok: !!key };
 }
 
@@ -99,7 +109,7 @@ function mount(th, stageApi) {
   const status = document.createElement('div');
   status.className = 'cartoon-status';
   status.style.cssText = 'margin-top:6px;font-size:12px;color:#5b5446';
-  status.textContent = 'Painting a cartoon ' + (th.subject || '') + ' now.';
+  status.textContent = th.subject === SELF_SUBJECT ? 'Painting my self-portrait now.' : 'Painting a cartoon ' + (th.subject || '') + ' now.';
   const again = document.createElement('button');
   again.type = 'button'; again.textContent = 'Paint it'; again.hidden = true;
   again.style.cssText = 'margin-top:6px;font:inherit;font-size:12px;border:2px solid #1d1d1d;border-radius:999px;background:#fff;color:#1d1d1d;-webkit-text-fill-color:#1d1d1d;opacity:1;padding:3px 12px;cursor:pointer;font-weight:700';
@@ -136,14 +146,14 @@ async function run(text, api) {
   if (!hit) return 'none';
   const take = cartoonTake(hit.subject);
   if (api.summon) api.summon('cartoon', { subject: take.subject, name: take.name, line: take.line, emoji: take.emoji, fresh: true, x: 48, y: 72 });
-  if (api.say) api.say('Drawing a cartoon ' + take.subject + '.');
+  if (api.say) api.say(hit.self ? 'Here is how I picture myself.' : 'Drawing a cartoon ' + take.subject + '.');
   return 'cartoon';
 }
 
 export default {
   name: 'cartoon',
-  examples: ['draw a cartoon cat', 'cartoon version of a dog', 'make a cartoon of a dragon', 'draw a toon cat', 'cartoon version of a plague', 'draw me a robot', 'make a 2d toon dog', 'create a toon style bird', 'funny cartoon dog', 'render a cartoon dragon', 'render a low poly dog', 'style like mickey mouse', 'generate a toon style dog'],
-  nearMisses: ['what is a cartoon', 'cartoon network', 'make a clock', 'draw a red square', 'let me draw', 'draw a card'],
+  examples: ['draw a cartoon cat', 'cartoon version of a dog', 'make a cartoon of a dragon', 'draw a toon cat', 'cartoon version of a plague', 'draw me a robot', 'make a 2d toon dog', 'create a toon style bird', 'funny cartoon dog', 'render a cartoon dragon', 'render a low poly dog', 'style like mickey mouse', 'generate a toon style dog', 'draw yourself', 'what do you look like', 'paint a self portrait'],
+  nearMisses: ['what is a cartoon', 'cartoon network', 'make a clock', 'draw a red square', 'let me draw', 'draw a card', 'who are you', 'what are you'],
   cartoonOf,
   cartoonTake,
   plateLine,

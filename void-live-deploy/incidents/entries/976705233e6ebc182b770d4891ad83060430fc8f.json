@@ -1,0 +1,36 @@
+{
+ "at": "2026-11-05T04:52:30.777Z",
+ "sha": "976705233e6ebc182b770d4891ad83060430fc8f",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41965112155",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end"
+ ],
+ "touched": [
+  "void-live-deploy/lab/catalog.json",
+  "void-live-deploy/lab/f0486-spectral-vortex-policy-mind/app.js",
+  "void-live-deploy/lab/f0486-spectral-vortex-policy-mind/index.html",
+  "void-live-deploy/lab/f0487-webgpu-lenia-policy-portal-mind/app.js",
+  "void-live-deploy/lab/f0487-webgpu-lenia-policy-portal-mind/index.html",
+  "void-live-deploy/lab/f0488-orientation-rnn-latticegas-obstacle-mind/app.js",
+  "void-live-deploy/lab/f0488-orientation-rnn-latticegas-obstacle-mind/index.html",
+  "void-live-deploy/lab/f0489-orientation-mlp-ising-domain-mind/app.js",
+  "void-live-deploy/lab/f0489-orientation-mlp-ising-domain-mind/index.html",
+  "void-live-deploy/lab/f0490-physarum-policy-portal-mind/app.js",
+  "void-live-deploy/lab/f0490-physarum-policy-portal-mind/index.html",
+  "void-live-deploy/lab/f0491-webrtc-causal-portal-swarm/app.js",
+  "void-live-deploy/lab/f0491-webrtc-causal-portal-swarm/index.html",
+  "void-live-deploy/lab/f0492-orientation-knn-svg-morph-swarm/app.js",
+  "void-live-deploy/lab/f0492-orientation-knn-svg-morph-swarm/index.html"
+ ],
+ "shards": [
+  4
+ ],
+ "passed": [
+  4
+ ],
+ "closedAt": "2026-11-05T05:20:05.710Z",
+ "closedBy": "db3cc6b3de9e36766470fdd09ece1f4cd4cc0d13",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41968716268",
+ "minutes": 28
+}

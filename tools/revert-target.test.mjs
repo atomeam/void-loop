@@ -174,10 +174,12 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /^  python-tests:\n    runs-on:/m, 'the fast tests are their own job (2026-10-10)');
   assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
   assert.deepEqual(verify.match(/^\s+needs:.*$/gm).map((x) => x.trim()), ['needs: browser-suite'], 'only the incident job waits (for every shard, so a red head writes one incident)');
-  // a group per head (2026-10-30): a shared group kept only the newest pending run, so the heads between were never verified and a red suite could not name its commit
-  assert.match(verify, /group: void-verify-fast-\$\{\{ github\.sha \}\}[^\n]*\n\s+cancel-in-progress: false/, 'the fast tests run on every head, never cancelled');
-  assert.match(verify, /group: void-verify-\$\{\{ matrix\.shard \}\}-\$\{\{ github\.sha \}\}[^\n]*\n\s+cancel-in-progress: false/, 'every shard of the suite runs on every head, never cancelled (shards since 2026-10-16, a group per head since 2026-10-30)');
-  assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3, 4\]/, 'the suite runs as four shards (three until 2026-10-29, when shard 1 outgrew the budget)'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/4/, 'each job gets its shard');
+  // a group per branch (#2190, 2026-11-04): a group per head queued a suite per commit; now the run that has a runner always finishes
+  // (never cancelled) and a newer push of the branch replaces only the waiting run, which does the same checks on a newer head
+  assert.match(verify, /group: void-verify-fast-\$\{\{ github\.ref \}\}[^\n]*\n\s+cancel-in-progress: false/, 'the fast tests: one group per branch, a started run never cancelled');
+  assert.match(verify, /group: void-verify-\$\{\{ matrix\.shard \}\}-\$\{\{ github\.ref \}\}[^\n]*\n\s+cancel-in-progress: false/, 'every shard of the suite: one group per shard and branch, a started run never cancelled (shards since 2026-10-16, per branch since #2190)');
+  assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3, 4, 5\]/, 'the suite runs as five shards (three until 2026-10-29, four until 2026-11-05, when shard 2 outgrew the budget)'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/5/, 'each job gets its shard of five');
+  assert.match(verify, /browser-suite \(\\\(\[1-5\]\\\)\)/, 'the incident job reads every one of the five shards');
   assert.ok(isSuiteJob('browser-suite') && isSuiteJob('browser-suite (2)') && isSuiteJob('verify-main') && !isSuiteJob('python-tests') && !isSuiteJob('browser-suite-x'), 'a shard job counts as the suite job');
   assert.match(verify, /part: fast/); assert.match(verify, /part: suite/);
   assert.match(verify, /::error title=python-tests failed::/, 'a red fast test says so and reverts nothing');
@@ -187,7 +189,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /Verse-auto-revert: \$sha/);
   assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
   assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
-  assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| format\('run-\{0\}', github\.run_id\) \}\}/, 'deploys run side by side, each in its own group');
+  assert.match(deploy, /group: \$\{\{ github\.event\.pull_request\.number && format\('void-deploy-pr-\{0\}', github\.event\.pull_request\.number\) \|\| inputs\.pr && format\('void-deploy-pr-\{0\}', inputs\.pr\) \|\| 'void-deploy-main' \}\}\n\s+cancel-in-progress: \$\{\{ github\.event_name == 'pull_request' \|\| inputs\.pr != '' \}\}/, 'one deploy group per PR (a pull_request, or a dispatched pr check) and one for main; only a PR check cancels its older run, a started main deploy always lands');
   assert.match(auto, /\['workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'\]/, 'a GITHUB_TOKEN merge starts no push workflow: automerge starts the suite');
 });
 

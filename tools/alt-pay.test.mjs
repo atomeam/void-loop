@@ -1,5 +1,5 @@
 // Special items (lib/alt-pay.js + /api/store/special/*): Cash App and USDC-on-Base rails. Never unlock on the buyer's word:
-// Cash App waits for the owner; crypto unlocks only on a confirmed on-chain transfer of the exact order amount, once per tx.
+// Cash App is matched on the owner's order queue (a payment check); crypto unlocks only on a confirmed on-chain transfer of the exact order amount, once per tx.
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { railsOf, specialRails, memoUnits, usdcUnits, usdcText, verifyUsdcTx, USDC_BASE, TRANSFER_TOPIC } from '../void-live-deploy/lib/alt-pay.js';

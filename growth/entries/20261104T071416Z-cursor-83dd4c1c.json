@@ -1,1 +1,0 @@
-{"at":"2026-11-04T07:14:16Z","by":"cursor","kind":"fix","what":"Open asks on the agent go to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again on a better bot."}

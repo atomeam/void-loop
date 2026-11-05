@@ -161,6 +161,7 @@ let tour = null; // the walkthrough on screen: { steps, i, made, bar }
 // text and buttons): lib/placement.js dockPanel puts it above the ask bar when nothing is open, beside the open card when there is room,
 // docked at the top or between the card and the ask bar, and when there is no free space it becomes a modal layer over a dimmed stage
 // (focus kept inside, Esc closes, aria-modal). It is re-placed as the card lands, grows or the window changes.
+let grabbing = false; // a tray chip is in hand: the panel stays put, so the gesture is not cancelled by a re-place
 const rectOf = (e) => { const r = e && e.getBoundingClientRect ? e.getBoundingClientRect() : null; return r && r.width > 0 && r.height > 0 ? { x: r.left, y: r.top, w: r.width, h: r.height } : null; };
 function avoidRects() {
   const out = [], pg = document.querySelector('.vpage.on'); if (pg) out.push(rectOf(pg));
@@ -168,7 +169,7 @@ function avoidRects() {
   return out.filter(Boolean);
 }
 function place(el) {
-  if (!el || !el.isConnected) return;
+  if (!el || !el.isConnected || grabbing) return;
   const d = document.getElementById('dock'), dr = d && d.getBoundingClientRect();
   const floor = dr && dr.height ? dr.top : innerHeight - 72;
   const heightAt = (w) => { el.style.width = w + 'px'; el.style.maxHeight = 'none'; return el.offsetHeight; };
@@ -288,7 +289,9 @@ async function step(stageApi) {
     const tray = document.createElement('span');
     tray.className = 'showcase-tray';
     // the panel's own footer row (owner, 2026-10-18: not a separate row piled between the panel and the ask bar)
-    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0);border-top:1px solid rgba(255,255,255,.08);padding-top:6px';
+    // sticky at the bottom of a panel that has to scroll: the grab chips stay in view, so a drag hits them
+    // instead of whatever sits under a clipped row (the ask bar, the scrim)
+    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0);border-top:1px solid rgba(255,255,255,.08);padding-top:6px;position:sticky;bottom:0;z-index:1;background:rgba(20,22,30,.96)';
     tray.append(document.createTextNode('grab one onto the stage:'));
     for (const it of items) tray.append(chip(stageApi, it));
     el.append(tray);
@@ -299,6 +302,7 @@ async function step(stageApi) {
   await stageApi.ask(s.ask, { quiet: true }); // a preview: not saved as the person's own ask
   if (!tour || tour.steps[tour.i] !== s) return;
   tour.made.ids = Object.keys(stageApi.things()).filter((id) => !before.has(id));
+  if (tour.dropAt && placeDrop(stageApi, tour.dropAt)) document.body.dataset.showcaseDropped = String(tour.i); // before the proof wait, so a drop is where the pointer let go
   place(el); // clear of what the step just put up
   // the preview has to show the thing it names (owner, 2026-10-16: "the preview is supposed to actually preview what it says"):
   // a moment for the card to land, then proof: a new thing on the stage, a new card, or the page's own log saying a skill
@@ -319,46 +323,62 @@ async function step(stageApi) {
 // a tap (no drag) runs it in place. Pointer events, so mouse, pen and touch all grab it.
 function chip(stageApi, it) {
   const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
-  let from = null, ghost = null;
-  b.addEventListener('pointerdown', (e) => { if (e.button) return; from = { x: e.clientX, y: e.clientY }; try { b.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
-  b.addEventListener('pointermove', (e) => {
-    if (!from) return;
+  let from = null, ghost = null, pid = null;
+  // the move and the lift are heard on the window, the same way a stage card is dragged (bindDrag in void.html).
+  // the panel does not re-place while a chip is held, and the chip does not capture the pointer: capture cancelled
+  // the gesture when a loaded runner moved the panel, so the ghost never appeared (#2250).
+  const move = (e) => {
+    if (!from || e.pointerId !== pid) return;
     if (!ghost && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6) {
       ghost = b.cloneNode(true); ghost.removeAttribute('data-showcase-grab'); ghost.className = 'showcase-ghost';
       ghost.style.cssText += ';position:fixed;z-index:70;pointer-events:none;opacity:.9;transform:translate(-50%,-50%) rotate(-3deg);box-shadow:0 8px 20px rgba(0,0,0,.45)';
       document.body.appendChild(ghost);
     }
     if (ghost) { ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px'; }
-  });
-  const up = (e, cancel) => {
-    if (!from) return; const dragged = !!ghost; from = null; if (ghost) { ghost.remove(); ghost = null; }
-    if (cancel) return;
+  };
+  const up = (e) => {
+    if (!from || e.pointerId !== pid) return;
+    const dragged = !!ghost; from = null; pid = null; grabbing = false; if (ghost) { ghost.remove(); ghost = null; }
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    if (e.type === 'pointercancel') return;
     const bar = document.getElementById('showcase-bar'), r = bar && bar.getBoundingClientRect();
     const onBar = r && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
     if (dragged && onBar) return; // let go back on the bar: nothing happens
     jump(stageApi, it.j, dragged ? { x: e.clientX, y: e.clientY } : null);
   };
-  b.addEventListener('pointerup', (e) => up(e, false));
-  b.addEventListener('pointercancel', (e) => up(e, true));
+  b.addEventListener('pointerdown', (e) => {
+    if (e.button) return;
+    from = { x: e.clientX, y: e.clientY }; pid = e.pointerId; grabbing = true;
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+    // no setPointerCapture: capturing the chip cancels the gesture when the panel re-places under load, so the ghost
+    // never shows and the drop never lands (#2250, still red on verify). The window hears the move either way.
+    e.preventDefault();
+  });
   b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(stageApi, it.j, null); } });
   return b;
 }
 
 // run step j now (what the current step put up goes, as with Next); dropped at a point, its new things move there
-async function jump(stageApi, j, at) {
-  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
-  clear(stageApi); tour.i = j;
-  const s = tour.steps[j];
-  await step(stageApi);
-  if (!at || !tour || tour.steps[tour.i] !== s || !tour.made || !tour.made.ids.length) return;
+function placeDrop(stageApi, at) {
+  if (!at || !tour || !tour.made || !tour.made.ids.length) return false;
   const st = stageApi.stage, rect = st && st.getBoundingClientRect ? st.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight };
   const things = stageApi.things(), first = things[tour.made.ids[0]];
   const d = dropDelta(first, at.x - rect.left, at.y - rect.top, rect.width, rect.height);
-  if (!d) return;
-  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
+  if (!d) return false;
+  // pinned: the person dropped it here, so the stage layout does not slide a fresh thing away
+  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.pinned = true; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
   stageApi.save(); stageApi.render();
-  if (tour) tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) };
-  document.body.dataset.showcaseDropped = String(j);
+  return true;
+}
+async function jump(stageApi, j, at) {
+  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
+  clear(stageApi); tour.i = j; tour.dropAt = at || null;
+  const s = tour.steps[j];
+  await step(stageApi);
+  if (!at || !tour || tour.steps[tour.i] !== s) return;
+  if (placeDrop(stageApi, at)) { tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) }; document.body.dataset.showcaseDropped = String(j); }
+  tour.dropAt = null;
 }
 
 // what the page logs when an ask fell through to the encyclopedia or a generic answer, or missed (tools/claims-verify.mjs FALLBACK)

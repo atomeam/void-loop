@@ -61,7 +61,7 @@ const PRICE_JS = `<script>
 
 function head(title, desc, path, ld) {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

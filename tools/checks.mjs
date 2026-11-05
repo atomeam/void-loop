@@ -56,7 +56,7 @@ const ONLY_WHEN = {
   // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
   'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
   // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
-  'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy))|handoff/,
+  'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy|shape-picture)|skills\/(?:draw|image|shape)\.js)|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
 const readText = (f) => { try { return readFileSync(resolve(here, '..', f), 'utf8'); } catch (_) { return ''; } }; // a deleted file is no title
@@ -122,6 +122,7 @@ for (const [name, file] of [
   ['rap-piano', 'rap-piano.test.mjs'],
   ['rap-strings', 'rap-strings.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
+  ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],
   ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
@@ -162,7 +163,7 @@ for (const [name, file] of [
   ['list-starters-family', 'list-starters-family.test.mjs'],
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
-  ['shop-family', 'shop-family.test.mjs'],
+  ['shop-family', 'shop-family.test.mjs'], ['status-family', 'status-family.test.mjs'], ['date-math-family', 'date-math-family.test.mjs'],
   ['mail-handoff', 'mail-handoff.test.mjs'],
   ['value-drift', 'value-drift.test.mjs'], ['friendly-openers', 'friendly-openers.test.mjs'],
   ['rooms-family', 'rooms-family.test.mjs'],
@@ -195,6 +196,7 @@ for (const [name, file] of [
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
+  ['kv-namespace', 'kv-namespace.test.mjs'],
   ['dark-pages', 'dark-pages.test.mjs'], // every page stays deep space in a light-mode browser too
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
@@ -477,6 +479,8 @@ for (const [name, file] of [
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
+  ['actions-log', 'actions-log.test.mjs'],
+  ['range-diff', 'range-diff.test.mjs'],
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['list goal', 'list-goal.test.mjs'],
@@ -533,6 +537,7 @@ for (const [name, file] of [
   ['agent-probe', 'agent-probe.test.mjs'],
   ['agent-watch', 'agent-watch.test.mjs'],
   ['verse-shell', 'verse-shell.test.mjs'],
+  ['glass-pages', 'glass-pages.test.mjs'],
   ['split-void-page', 'split-void-page.test.mjs'],
   ['moved-check', 'moved-check.test.mjs'],
   ['inbox-health', 'inbox-health.test.mjs'],
@@ -548,6 +553,12 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['systems-monitor', 'systems-monitor.test.mjs'],
+  ['system-blueprint', 'system-blueprint.test.mjs'],
+  ['client-handoff', 'client-handoff.test.mjs'],
+  ['system-handoff', 'system-handoff.test.mjs'],
+  ['verse-runs', 'verse-runs.test.mjs'],
+  ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],
   ['guide', 'guide.test.mjs'],
   ['web4', 'web4.test.mjs'],
@@ -643,12 +654,22 @@ for (const [name, file] of [
   ['formula engine', 'formula-engine.test.mjs'],
   ['formula library', 'formulas.test.mjs'],
   ['shape skill', 'shape-skill.test.mjs'],
+  ['image skill', 'image.test.mjs'],
+  ['shape picture', 'shape-picture.test.mjs'],
+  ['no human in the loop', 'no-human-wait.test.mjs'],
   ['battleship skill', 'battleship-skill.test.mjs'],
   ['parody data', 'parody-data.test.mjs'],
   ['music-de', 'music-de.test.mjs'],
   ['inline-scripts', 'inline-scripts.test.mjs'],
+  ['bot factory', 'bot-factory.test.mjs'],
+  ['open-data bots', 'open-data.test.mjs'],
+  ['cross checks', 'cross-checks.test.mjs'],
+  ['answer free', 'answer-free.test.mjs'],
 ]) {
-  addScript(name, file);
+  // the load-bench test spawns the real bench, which needs the installed packages (bench.mjs imports playwright-core): with
+  // VOID_SKIP_BENCH it runs from a worktree without node_modules (merge-gate.mjs), so it sits out with the bench check above
+  if (name === 'bench-load' && process.env.VOID_SKIP_BENCH) add(name, async () => [true, 'skipped: the bench family needs installed packages, not a gate worktree (bench.yml covers a harness change)'], false, file);
+  else addScript(name, file);
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
 // a dash turned into three box-drawing letters, lines doubled, a const declared twice, and CI died before running a single test).

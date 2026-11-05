@@ -61,6 +61,7 @@ test('the draft box and "put in the page"', async () => {
   c.ta.value = 'hello'; await c.ta.fire('input'); assert.equal(c.ext.draft, 'hello', 'typing keeps the draft across redraws');
   c.ta.value = '   '; await put.fire('click'); assert.equal(c.said.textContent, 'write the draft first'); assert.deepEqual(c.calls.drafts, []);
   c.ta.value = 'Dear team'; await put.fire('click'); assert.deepEqual(c.calls.drafts, ['Dear team']); assert.equal(c.said.textContent, 'put: ok');
+  c.ta.value = ''; c.ext.draft = 'kept across the redraw'; await put.fire('click'); assert.deepEqual(c.calls.drafts, ['Dear team', 'kept across the redraw']);
 });
 test('draft for me: what goes to Verse, the draft that comes back, and the reply for a box becomes a proposed fill', async () => {
   const sent = []; let answer = { status: 200, j: { draft: 'Hi\nthere\nall', model: 'rules', masked: true, cut: true } };

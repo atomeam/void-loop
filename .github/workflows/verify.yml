@@ -87,6 +87,8 @@ jobs:
   # slow check, outgrew three runners; the budget stays. Each job runs the sections whose heading hashes to its shard
   # (tools/test_void.mjs --shard i/n, tools/shard.mjs), every section in exactly one of them (86 / 112 / 96 / 118 sections; the
   # shared-page section, the longest, is in the second), each job its own verdict; the revert reads them all (tools/revert-target.mjs isSuiteJob).
+  # Five since 2026-11-05 (#2220): shard 2 (113 sections) ran past the 1,680 s budget at 1,683 s on 1ccb3a33 (run 41975643053) and
+  # on run 41962324404; the budget stays, the work spreads (84 / 73 / 88 / 67 / 103 sections, `--list --shard i/5`).
   # Off a branch (2026-11-03): the loop starts this on every loop/* branch it pushes, and four 25-minute shards there bought nothing the
   # suite on main does not (main is tested after the merge and reverts what breaks it); 18 laps on 2-3 November ran 72 shards, all red
   # because main was. A branch gets the fast tests; `full: true` asks for the suite on a branch by hand.
@@ -97,7 +99,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5]
     concurrency:
       group: void-verify-${{ matrix.shard }}-${{ github.ref }} # one group per shard on this branch: a newer push replaces the waiting shard
       cancel-in-progress: false
@@ -125,14 +127,14 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Test what shipped (shard ${{ matrix.shard }} of 4 of the full suite)
+      - name: Test what shipped (shard ${{ matrix.shard }} of 5 of the full suite)
         id: test
         if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/4
+          shard: ${{ matrix.shard }}/5
 
       # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
       # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)
@@ -292,7 +294,7 @@ jobs:
           git diff --name-only "$tested~1" "$tested" | grep -qv '^void-live-deploy/incidents' || { echo "only the incident record changed: not tested, not recorded"; exit 0; }
           # the shards of this run that passed and that failed ("1,3"); a cancelled shard is neither
           jobs=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" --jq '.jobs[] | "\(.name)|\(.conclusion)"' || true)
-          shards() { echo "$jobs" | sed -n "s/^browser-suite (\([1-4]\))|$1\$/\1/p" | sort -n | paste -sd, -; }
+          shards() { echo "$jobs" | sed -n "s/^browser-suite (\([1-5]\))|$1\$/\1/p" | sort -n | paste -sd, -; }
           passed=$(shards success); failed=$(shards failure)
           echo "shards passed: ${passed:-none}; failed: ${failed:-none}"
           [ -z "$passed$failed" ] && { echo "no shard finished: nothing to record"; exit 0; }

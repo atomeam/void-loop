@@ -4,6 +4,8 @@
 # brain on the free model stack (Workers AI first) fixes the first red check or takes the top of the queue; a probe miss goes to
 # tools/propose-fix.mjs, retried twice under the confidence bar, then dropped and logged. Only a change with no new red after the
 # checks is committed to loop/<time>, pushed (never forced), opened as a PR labelled automerge, and verify.yml is started on it.
+# A pull request opened with the workflow token leaves every pull_request run approval-required (GitHub, 2026-06-11). When
+# VERSE_LOOP_TOKEN is unset the lap starts those same checks with workflow_dispatch (tools/loop-checks.mjs), which runs at once.
 # Three laps in a row that fail or do not merge pause the loop for 6 hours (issue 'Verse loop paused'); it resumes by itself.
 # On unless domains/verse-loop.pause exists in the repository or the repo variable VERSE_LOOP_ENABLED is 'false' (the kill switches: a commit, never
 # a chore; a dry run goes through a paused loop). The conductor (tools/conductor.mjs) also starts a lap hourly when the coder has no queue job, so
@@ -111,6 +113,8 @@ jobs:
           DRY: ${{ inputs.dry && '--dry-run' || '' }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          # unset token: the pull request's author is github-actions[bot], and its pull_request runs do not start on their own
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}

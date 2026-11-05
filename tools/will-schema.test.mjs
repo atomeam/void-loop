@@ -88,7 +88,7 @@ test('a brief never names a core file, a local path, or nothing at all', () => {
   assert.equal(outOfScope(['void-live-deploy/index.html'])[0].why, 'core: a builder does not change it');
   assert.equal(outOfScope(['.github/workflows/will.yml'])[0].why, 'core: a builder does not change it');
   assert.equal(outOfScope(['AGENTS.md'])[0].why, 'core: a builder does not change it');
-  assert.equal(outOfScope(['C:\\Users\\adam\\notes.md'])[0].why, 'not a plain relative path');
+  assert.equal(outOfScope(['C:\\Users\\you\\notes.md'])[0].why, 'not a plain relative path');
   assert.equal(outOfScope(['../outside.md'])[0].why, 'not a plain relative path');
   assert.equal(outOfScope([''])[0].why, 'empty');
   assert.ok(CORE.includes('docs/RULES.md'), 'the rules themselves are core');

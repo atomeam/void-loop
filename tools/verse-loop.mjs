@@ -19,6 +19,7 @@ import { resolve, join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
+import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -29,6 +30,9 @@ export const AGENTS = ['verse', 'opencode', 'aider', 'cmd'];
 export const DEFAULT_CHECKS = [
   { name: 'guard-source', cmd: 'node tools/guard-source.mjs', timeoutMin: 5 },
   { name: 'growth-suites', cmd: 'node tools/growth-suites.mjs', timeoutMin: 15 },
+  // a new /api file that is not in openapi.json fails here, before the pull request opens. automerge's safety-check
+  // holds that pull request after every dispatched check is green (#2268), and self-heal never sees it: it is not a red check.
+  { name: 'openapi', cmd: 'node tools/openapi-check.mjs', timeoutMin: 2 },
 ];
 
 /** Parse argv into options. Pure. */
@@ -437,6 +441,19 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       report.verify = w.code ? 'not started: ' + w.out.trim().slice(0, 200) : 'started';
       step('verify.yml on ' + branch + ': ' + report.verify);
     };
+    // A pull request this lap opened with the workflow token (VERSE_LOOP_TOKEN unset) leaves every pull_request run
+    // approval-required, with no jobs. workflow_dispatch runs anyway, so the same checks are started here. A lap that
+    // holds VERSE_LOOP_TOKEN opens the pull request as that token and the pull_request runs start on their own.
+    const startPrChecks = (branch, prRef) => {
+      if (env.VERSE_LOOP_DISPATCH_CHECKS !== '1') return;
+      const pr = prNumber(prRef);
+      if (!pr) { step('pull-request checks not started: no pull request number'); return; }
+      const files = git('diff', '--name-only', 'origin/' + opts.base + '...HEAD').out.split('\n').filter(Boolean);
+      for (const c of checksFor(files)) {
+        const w = gh(...ghArgs(c, { pr, ref: branch }));
+        step(c.file + ' on ' + branch + ': ' + (w.code ? 'not started: ' + w.out.trim().slice(0, 160) : 'started'));
+      }
+    };
 
     // self-heal first: an open loop/* PR with a failed check is fixed on its own branch, and the lap does nothing else
     const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup,createdAt', '--limit', '100') || [];
@@ -468,6 +485,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       if (p.code) return done('error', 'push failed: ' + p.out.trim());
       step('pushed the fix to ' + sick.branch);
       verify(sick.branch);
+      startPrChecks(sick.branch, sick.url || sick.number);
       git('checkout', '-q', '--detach', 'origin/' + opts.base);
       return done('healed', g.v.why, { branch: sick.branch, pr: sick.url, title });
     }
@@ -574,6 +592,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     if (pr.code) { git('checkout', '-q', '--detach', 'origin/' + opts.base); return done('pushed', 'pushed ' + branch + ' but the PR was not opened: ' + pr.out.trim()); }
     report.pr = pr.out.trim().split('\n').pop();
     step('PR ' + report.pr);
+    startPrChecks(branch, report.pr);
     // the older open PRs for the same task are replaced by this one (it starts from the newest main): closed, their branches deleted
     const gone = twins(open, title, now).filter((t) => t.url !== report.pr);
     for (const t of gone) {

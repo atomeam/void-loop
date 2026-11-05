@@ -18,6 +18,7 @@
 //   node tools/tower-gate.mjs --merge <slice files>   folds the slices into tower.evidence.json, a newer row over an older one only
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, LANE_PAGES, aspectsOf, tower , hostOf, noShotOf, noRivalOf, noRivalUrl, frontierOf, frontierPage } from '../void-live-deploy/lib/tower.js';
+import { isGone } from './tower-alive.mjs';
 import { wallOf } from '../void-live-deploy/lib/tower-controls.js';
 import { probeFor as probeOf, withFeatureFacts, score, scoreOf, SPUN, TIMED, FLIPPED, clockReadings } from './tower-probes.mjs';
 // a floor's probe as the gate uses it: with the features its features file says Verse has added to completeness (domains/features/, tools/feature-scan.mjs)
@@ -402,6 +403,8 @@ async function measureFloor(f, data) {
   const versePage = probe && probe.verse ? probe.verse : f.page, siteUrl = siteOf(f, probe);
   // a site whose robots.txt asks robots to stay away (noRival, owner 2026-10-28) is never opened: no loads, no icon, no wider-use look
   const noRival = noRivalOf(f);
+  // a rival whose domain is gone or parked (tools/tower-alive.mjs, tower.gone.json) is neither measured nor counted
+  if (isGone(f.url || f.site || f.id)) throw new Error((hostOf(f.url) || f.id) + ' is gone/parked (tower.gone.json): skipped');
   const v = await measure(b, versePage ? new URL(versePage, VERSE).href : VERSE + '?q=' + encodeURIComponent(f.ask), slug + '-verse', versePage ? null : f.ask, probe), s = noRival ? { reliability: 0, notOpened: true } : await measure(b, siteUrl, slug + '-site', null, probe, { noShot: noShotOf(f) });
   // the site's icon, kept beside its screenshot and named in the evidence file's icons map (a sweep slice keeps the file but not the map entry: the next fight run restores it)
   // a rival page that is a bot wall or a sign-in wall (owner's standards, 2026-10-28: Amazon read as "0 of 23" behind one) was never read: the

@@ -5,8 +5,12 @@
 // sources, two dictionaries). Give it "input => answer" to check a claim, or just the input to check the bot's own answer.
 // Checks per checker: it agrees with the real bot on real inputs, it catches a planted wrong answer, and its road skips the bot.
 import { book } from './lang-pairs.js';
+import { CODECS } from './encodings.js';
 import { APIS, read, askAt } from './api-bots.js';
 import KEPT from './api-fixtures.js';
+import { HOLIDAYS } from './open-data.js';
+import { capitalRoad } from './country-facts.js';
+import { samePlace } from './country-names.js';
 const num = (s) => parseFloat(String(s).replace(/,/g, '')), close = (a, b, tol = 1e-6) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
 const bump = (s) => String(s).replace(/-?\d+(\.\d+)?(e[+-]?\d+)?/i, (n) => String(+n * 1.01 + 1));
 const alts = (s) => String(s).split(/\s*\/\s*|,\s*/).map((x) => x.trim().toLowerCase());
@@ -51,6 +55,39 @@ export function crossChecks(all) {
     const [, a, z] = b.id.match(/^phrase-(\w+)-to-(\w+)$/), m = ['en', 'es', 'fr'].find((x) => x !== a && x !== z);
     out.push(checker(b, [by.get('phrase-' + a + '-to-' + m), by.get('phrase-' + m + '-to-' + z)], { same: (c, v) => alts(c).some((x) => alts(v).includes(x)), wrong: () => book(z).words['day:tuesday'], samples: ['day:monday', 'month:7', 'country:JP'].map((k) => book(a).words[k]), family: 'language pairs' }));
   }
+  const fx = fam('currency pairs');
+  if (fx.length) {
+    const codes = [...new Set(fx.map((b) => b.id.slice(3).split('-to-')[0]))];
+    for (const b of fx) {
+      const [, a, z] = b.id.match(/^fx-([a-z]{3})-to-([a-z]{3})$/);
+      const mid = codes.find((c) => c !== a && c !== z);
+      out.push(checker(b, [by.get('fx-' + a + '-to-' + mid), by.get('fx-' + mid + '-to-' + z)], { ...numeric, samples: ['1', '7.5', '1234'], family: 'currency pairs' }));
+    }
+  }
+  // a second reading of the kept holiday list: the date is split into numbers, not matched as one string
+  const holidayRoad = (code, input) => {
+    const m = String(input).match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return 'send a date like 2026-07-04';
+    const days = ((HOLIDAYS.countries || {})[code] || {}).days || [];
+    for (const [d, name] of days) { const [yy, mm, dd] = d.split('-').map(Number); if (yy === +m[1] && mm === +m[2] && dd === +m[3]) return name; }
+    return 'not a public holiday';
+  };
+  for (const b of fam('public holidays')) {
+    const code = b.id.slice('holiday-'.length).toUpperCase();
+    const days = (((HOLIDAYS.countries || {})[code] || {}).days || []).map(([d]) => d);
+    const samples = [...days.slice(0, 2), '2026-02-02', '2026-03-03'].slice(0, 3);
+    out.push(checker(b, [{ id: 'holiday-index-' + code.toLowerCase(), run: (s) => holidayRoad(code, s) }, { id: 'as-is', run: (s) => s }], { same: (c, v) => c === v, wrong: (c) => (c === 'not a public holiday' ? 'Fake Day' : 'not a public holiday'), samples, family: 'public holidays' }));
+  }
+  for (const b of fam('country facts')) {
+    const code = b.id.slice('country-'.length).toUpperCase();
+    out.push(checker(b, [{ id: 'capital-list-' + code.toLowerCase(), run: () => capitalRoad(code) }, { id: 'as-is', run: (s) => s }], { same: (c, v) => String(c).split(', ').some((x) => samePlace(x, v)), wrong: () => 'Not A Real Capital', samples: ['capital', 'facts', 'the capital'], family: 'country facts' }));
+  }
+  for (const b of fam('text encodings')) {
+    const [, a, z] = b.id.match(/^([a-z0-9]+)-to-([a-z0-9]+)$/);
+    const m = ['hex', 'base64', 'text'].find((x) => x !== a && x !== z);
+    const samples = ['Hello, Verse!', 'café', 'a+b/c'].map((t) => CODECS[a].to(t));
+    out.push(checker(b, [by.get(a + '-to-' + m), by.get(m + '-to-' + z)], { same: (c, v) => c === v, wrong: (c) => c + 'x', samples, family: 'text encodings' }));
+  }
   return [...out, ...apiChecks()];
 }
 // two free APIs against each other: the kept real replies must agree, and a planted wrong value must be caught
@@ -62,6 +99,7 @@ const PAIRS = [
   { id: 'ip-two-sources', job: 'Checks an IP address\'s country in ipapi.co against country.is', a: 'ip-locate', b: 'ip-country', fa: (j) => j.country, fb: (j) => j.country, same: (x, y) => x === y, sample: '8.8.8.8' },
   { id: 'define-two-dictionaries', job: 'Checks a word\'s part of speech in the Free Dictionary against Wiktionary', a: 'define-word', b: 'wiktionary-define', fa: (j) => j[0].meanings[0].partOfSpeech.toLowerCase(), fb: (j) => j.en[0].partOfSpeech.toLowerCase(), same: (x, y) => x === y, sample: 'serendipity' },
   { id: 'town-two-sources', job: 'Checks the National Weather Service\'s nearest town against Open-Meteo\'s place name', a: 'nws-point', b: 'place-finder', fa: (j) => j.properties.relativeLocation.properties.city, fb: (j) => j.results[0].name, same: (x, y) => x === y, sample: '28.04, -81.95', qb: () => 'Lakeland' },
+  { id: 'drug-two-sources', job: 'Checks the generic name openFDA lists for Tylenol against RxNorm\'s name for RxCUI 161', a: 'drug-label', b: 'drug-rxcui', fa: (j) => j.results[0].openfda.generic_name[0].toLowerCase(), fb: (j) => j.properties.name.toLowerCase(), same: (x, y) => x === y, sample: 'tylenol', qb: () => '161' },
 ];
 const plant = (v) => (Array.isArray(v) ? v.map((x) => x + 1) : typeof v === 'number' ? v * 1.1 : 'not-' + v);
 function apiChecks() {

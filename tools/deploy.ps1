@@ -6,7 +6,7 @@ $loop = Split-Path $PSScriptRoot -Parent
 $site = Join-Path $loop "void-live-deploy"
 Copy-Item "$loop\void.html" "$site\index.html" -Force
 Copy-Item "$loop\void.html" "$site\void.html" -Force
-Copy-Item "$loop\void.html" "C:\Users\adamm\a-to-mind.com\index.html" -Force
+Copy-Item "$loop\void.html" "$env:USERPROFILE\a-to-mind.com\index.html" -Force
 if (Test-Path "$loop\tools\test_void.mjs") {
   Push-Location $loop; node tools\test_void.mjs; $ok = $LASTEXITCODE; Pop-Location
   if ($ok -ne 0) { Write-Host "tests failed, not deploying"; exit 1 }
@@ -23,7 +23,7 @@ function Retry([string]$what, [scriptblock]$step) {
 }
 Push-Location $site
 $deployed = Retry 'wrangler deploy' {
-  $script:out = & "C:\Users\adamm\a-to-mind.com\node_modules\.bin\wrangler.cmd" pages deploy . --project-name=a-to-mind --commit-dirty=true 2>&1 | Select-Object -Last 1
+  $script:out = & "$env:USERPROFILE\a-to-mind.com\node_modules\.bin\wrangler.cmd" pages deploy . --project-name=a-to-mind --commit-dirty=true 2>&1 | Select-Object -Last 1
   Write-Host "$script:out"
   "$script:out" -match 'Deployment complete'
 }

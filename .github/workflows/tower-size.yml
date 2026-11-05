@@ -46,7 +46,7 @@ jobs:
           npx playwright-core install --with-deps chromium
           echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
       - name: Tests
-        run: node --test tools/tower-size.test.mjs tools/tower-target.test.mjs
+        run: node --test tools/tower-size.test.mjs tools/tower-target.test.mjs tools/tower-alive.test.mjs
       - name: Weigh the sites
         env:
           MAX: ${{ inputs.max || '120' }}
@@ -55,13 +55,15 @@ jobs:
           case "$MAX" in ''|*[!0-9]*) MAX=120 ;; esac
           case "$ONLY" in *[!a-z0-9.,-]*) echo "only takes hosts: $ONLY"; exit 1 ;; esac
           if [ -n "$ONLY" ]; then node tools/tower-size.mjs --only "$ONLY" --minutes 35; else node tools/tower-size.mjs --max "$MAX" --minutes 35; fi
+          # liveness guard: a target or lane rival that is gone, parked or moved off its domain is dropped before the target is set
+          CHROME_PATH="$VOID_TEST_BROWSER" node tools/tower-alive.mjs || echo '::warning::liveness check did not finish'
           node tools/tower-target.mjs
       - name: Commit the weights
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add void-live-deploy/tower.size.json void-live-deploy/tower.target.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git add void-live-deploy/tower.size.json void-live-deploy/tower.target.json void-live-deploy/tower.gone.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -q -m "Tower size: how heavy each Versus site really is"
           for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true

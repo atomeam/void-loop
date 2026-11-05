@@ -51,13 +51,16 @@ test('the real frontier parses: open items each with a source, and the cleanup s
   assert.ok(stepsLeft(t).every((s) => s.n >= 1 && s.title));
 });
 
-test('waitsOf: an open item that needs or waits for the owner, or names what it needs in brackets; a part that waits is not the item', () => {
-  assert.equal(waitsOf('WebMCP origin trial', 'the code is live; set the token. Needs the owner.'), 'the owner');
-  assert.equal(waitsOf('Pit crew: the crew chief (waits for the owner)', 'a scheduled starter'), 'the owner');
+test('waitsOf: an item that names a thing it needs in brackets waits on it; a person is never a wait (no human in the loop)', () => {
+  assert.equal(waitsOf('WebMCP origin trial', 'the code is live; set the token. Needs the owner.'), '', 'a person is not a wait'); // no-human-wait: old words
+  assert.equal(waitsOf('Pit crew: the crew chief (waits for the owner)', 'a scheduled starter'), '', 'a person in brackets is not a wait either'); // no-human-wait: old words
+  assert.equal(waitsOf('Value drift', 'tracks prices (needs the owner\'s go-ahead)'), '', 'nor the owner\'s say-so'); // no-human-wait: old words
   assert.equal(waitsOf('Fix any automation', 'Next: a page per error people paste (needs the miss board).'), 'the miss board');
-  assert.equal(waitsOf('Absorb every repo', 'Being built now. Waits on the owner: live two-person play.'), '', 'a list of parts that wait is not the item waiting');
+  assert.equal(waitsOf('Absorb every repo', 'Being built now. Waits on the owner: live two-person play.'), '', 'a list of parts that wait is not the item waiting'); // no-human-wait: old words
   assert.equal(waitsOf('Flaky check', 'the check waits for the card to settle before it clicks'), '');
   assert.equal(waitsOf('The best code reviewer', 'a finding needs code from another file'), '');
-  const o = openItems(addOpen(sample, { title: 'Paid thing', why: 'What is left needs the owner: one real purchase.', from: 'test' }));
-  assert.equal(o[2].waits, 'the owner'); assert.equal('waits' in o[0], false);
+  const o = openItems(addOpen(sample, { title: 'Paid thing', why: 'What is left needs the owner: one real purchase.', from: 'test' })); // no-human-wait: old words
+  assert.equal('waits' in o[2], false, 'an item that names its owner is an ordinary open item a run takes'); assert.equal('waits' in o[0], false);
+  const p = openItems(addOpen(sample, { title: 'Error pages', why: 'Next: a page per error people paste (needs the miss board).', from: 'test' }));
+  assert.equal(p[2].waits, 'the miss board');
 });

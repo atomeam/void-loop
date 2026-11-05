@@ -284,6 +284,24 @@ export const JOURNEYS = {
     await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
     await check('the paint page cut the kept picture into a new colouring sheet');
   },
+  'ask for a red circle, paint it as a colouring sheet, and keep drawing on it': async (p, check) => {
+    const home = async () => { await p.goto(ORIGIN + '/', { waitUntil: 'load' }); await p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 });
+      await p.fill('#input', 'draw a red circle'); await p.keyboard.press('Enter'); await p.waitForSelector('.vpage.on .vd-shape svg path', { timeout: 15000 }); };
+    await home();
+    const fill = await p.locator('.vpage.on .vd-shape svg path').getAttribute('fill'), stage = await p.evaluate(() => { const t = document.querySelector('.thing.shape'); return t ? !!t.querySelector('.shape-circle') : false; });
+    if (fill !== '#d6402f') throw new Error('the picture is filled ' + fill + ', not red');
+    if (!stage) throw new Error('the stage has no circle for "make the shape blue" to reach');
+    await check('the card drew a red circle (SVG) and put a circle on the stage');
+    await Promise.all([p.waitForURL(/\/paint\//), p.locator('.vpage.on .vd-paint').click()]);
+    await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
+    if (new URL(p.url()).searchParams.has('img')) throw new Error('the paint page kept ?img=handoff in its address');
+    await check('the paint page cut the red circle into a colouring sheet: ' + JSON.stringify((await p.evaluate(() => (document.body.innerText.match(/Your photo is now a colouring sheet[^\n]*/) || [''])[0])).slice(0, 80)));
+    await home(); await p.locator('.vpage.on .vd-more').click();
+    await p.waitForSelector('.vpage.on .vdraw canvas', { timeout: 15000 });
+    const px = await p.evaluate(() => { const c = document.querySelector('.vpage.on .vdraw canvas'), d = c.getContext('2d').getImageData(c.width / 2, c.height / 2, 1, 1).data; return [d[0], d[1], d[2]]; });
+    if (!(px[0] > 180 && px[1] < 110 && px[2] < 110)) throw new Error('the drawing canvas opened without the red circle under the pen (centre is rgb ' + px.join(',') + ')');
+    await check('the drawing canvas opened with the red circle on its first layer (centre rgb ' + px.join(',') + ')');
+  },
   "send a gradient to the photo tools as a picture, and take a painting's colours as a gradient": async (p, check) => {
     await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the gradient page opened');
     const before = new URL(p.url()).hash;
@@ -473,7 +491,7 @@ async function run() {
   const b = await chromium.launch({ executablePath: process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
   let failed = 0;
   for (const [name, steps] of Object.entries(JOURNEYS)) {
-    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' }), p = await ctx.newPage(), errors = [], said = [];
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', timezoneId: 'UTC', locale: 'en-US' }), p = await ctx.newPage(), errors = [], said = [];
     p.on('pageerror', (e) => errors.push(String(e.message || e)));
     await ctx.route('**/*', serve);
     const check = async (what) => {

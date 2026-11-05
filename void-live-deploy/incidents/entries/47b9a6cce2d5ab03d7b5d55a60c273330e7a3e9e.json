@@ -1,0 +1,38 @@
+{
+ "at": "2026-11-05T12:53:01.582Z",
+ "sha": "47b9a6cce2d5ab03d7b5d55a60c273330e7a3e9e",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42026403534",
+ "suite": "browser suite on main",
+ "checks": [
+  "stage pack f spectators: \"open the stage to spectators\" shows a ?spectate= link that carries the stage's things as words; opened in another tab it draws a read-only spectator layer with those things over that tab's own Verse and writes nothing to its saved stage; \"leave\" closes the layer and drops the parameter; \"close the stage\" closes it here",
+  "clear all the notes",
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "docs/PARITY/apple-podcasts.md",
+  "docs/PARITY/castbox.fm.md",
+  "docs/PARITY/lichess.md",
+  "docs/PARITY/listennotes.com.md",
+  "docs/PARITY/player.fm.md",
+  "docs/PARITY/podbean.com.md",
+  "docs/PARITY/podcastindex.org.md",
+  "docs/PARITY/podchaser.com.md",
+  "domains/handoff.md",
+  "tools/test_void.mjs",
+  "void-live-deploy/index.html",
+  "void-live-deploy/lib/guard.js",
+  "void-live-deploy/podcasts/index.html",
+  "void-live-deploy/skills/side-card.js",
+  "void-live-deploy/skills/walker.js"
+ ],
+ "shards": [
+  1
+ ],
+ "passed": [
+  1
+ ],
+ "closedAt": "2026-11-05T12:54:16.559Z",
+ "closedBy": "bc38bb0c8e8a24f6faa783754fb3faee42b32d00",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42027251685",
+ "minutes": 1
+}

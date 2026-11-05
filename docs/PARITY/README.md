@@ -48,7 +48,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 6 | /photos/ | Memories and highlights | missing | Google Photos |
 | 6 | /music/ | Podcasts and audiobooks | missing | Spotify |
 | 6 | /jobs/ | Post a job | missing | LinkedIn Jobs |
-| 6 | /music/ | Search artists, songs and albums | missing | Spotify |
 | 6 | /jobs/ | See who you know at a company | missing | LinkedIn Jobs |
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
 | 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, stockanalysis.com, barchart.com, investing.com, tradingview.com |
@@ -124,3 +123,4 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
+| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |

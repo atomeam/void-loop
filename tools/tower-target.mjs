@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readGone, isGone } from './tower-alive.mjs';
 import { tower } from '../void-live-deploy/lib/tower.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), SITE = path.join(ROOT, 'void-live-deploy'), OUT = path.join(SITE, 'tower.target.json');
@@ -33,7 +34,7 @@ export function stallCheck(old, floors, today, days = HOLD_DAYS) {
  *  script). Pure. */
 export const backgroundOf = (f, today) => (f.open || f.left || []).filter((a) => !(f.lost || []).includes(a)).map((a) => ({ id: f.id, aspect: a, since: today, job: /^journey/.test(a) ? 'script the journey with steps and negative controls' : a === 'accuracy' ? 'write the question and work out its answer (tools/tower-probes.mjs truth)' : a === 'completeness' ? 'list what the best sites in the category show (tools/tower-probes.mjs facts)' : 'measure it in tools/tower-gate.mjs' }));
 /** one run: the old target file and the floors (tower() with the passed list) to the new file. Pure. */
-export function advance(old, floors, today) {
+export function advance(old, floors, today, gone = {}) {
   const passed = (old.passed || []).slice(), background = (old.background || []).slice(), skipped = (old.skipped || []).slice(-20);
   const by = new Map(floors.map((f) => [f.id, f])), cur = old.id ? by.get(old.id) : null;
   let why = '';
@@ -42,11 +43,14 @@ export function advance(old, floors, today) {
     for (const r of backgroundOf(cur, today)) if (!background.some((b) => b.id === r.id && b.aspect === r.aspect)) background.push(r);
     why = 'passed ' + cur.id + ' (' + cur.n + '/' + cur.m + ', conquering in background)';
   }
+  // a target whose domain is gone or parked (tools/tower-alive.mjs) gives way at once, logged, and never counts as passed
+  if (!why && old.id && isGone(old.id, gone)) { const g = gone[Object.keys(gone).find((h) => isGone(old.id, { [h]: 1 }))]; skipped.push({ id: old.id, at: today, why: old.id + ' is ' + g.status + ': ' + g.why }); why = skipped[skipped.length - 1].why; }
+  for (let i = passed.length - 1; i >= 0; i--) if (isGone(passed[i].id, gone)) passed.splice(i, 1);
   const st = old.id && !why ? stallCheck(old, floors, today) : { stalled: false };
   if (st.stalled) { skipped.push({ id: old.id, at: today, why: st.why }); why = st.why; }
   const away = new Set([...skipped.map((x) => x.id), ...passed.map((r) => r.id)]);
   const keep = old.id && !why && cur && !cur.beaten && !cur.cleared && !cur.held;
-  const next = keep ? old.id : (floors.find((f) => !f.beaten && !f.cleared && !f.held && !away.has(f.id) && f.state !== 'passed') || {}).id || null;
+  const next = keep ? old.id : (floors.find((f) => !f.beaten && !f.cleared && !f.held && !away.has(f.id) && !isGone(f.id, gone) && f.state !== 'passed') || {}).id || null;
   const nf = by.get(next) || {};
   const about = 'The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse\'s own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than ' + HOLD_DAYS + ' day (tools/tower-target.mjs).';
   const base = { about, id: next, since: next === old.id ? old.since || today : today, n: next === old.id && st.n !== undefined ? st.n : nf.n || 0, progressAt: next === old.id ? st.progressAt || old.progressAt || today : today };
@@ -56,7 +60,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const old = rd('tower.target.json') || {}, ev = rd('tower.evidence.json') || {};
   const ids = (old.passed || []).map((r) => r.id);
   const unlocked = tower((rd('lap.items.json') || {}).onlySite || [], ev.floors || {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json'), null, ids, rd('tower.features.json'));
-  const today = new Date().toISOString().slice(0, 10), { file, why } = advance(old, unlocked.floors, today);
+  const today = new Date().toISOString().slice(0, 10), { file, why } = advance(old, unlocked.floors, today, readGone());
   if (why) console.log(why);
   if (JSON.stringify(file) !== JSON.stringify(old)) fs.writeFileSync(OUT, JSON.stringify(file, null, 1) + '\n');
   console.log('target: ' + (file.id || 'none') + (file.id === old.id ? ' (kept)' : ' (new)'));

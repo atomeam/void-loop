@@ -127,7 +127,7 @@ export async function onRequest(ctx) {
         .bind(id, rail, 'pending:' + id, await emailHash(signingKey(env), b.email), p.id, p.cents, 'awaiting', new Date().toISOString(), '').run();
       return J({ ok: true, order: id, code: orderCode(id), status: 'awaiting', ...instructions(rail, p, o, env) });
     }
-    if (path === 'special/confirm' && m === 'POST') { // the buyer's reference; crypto is checked on chain, Cash App waits for the owner
+    if (path === 'special/confirm' && m === 'POST') { // the buyer's reference; crypto is checked on chain, Cash App is matched on the owner's order queue (a payment check, not a build wait)
       const b = await request.json().catch(() => ({})), D = await db(env), code = String(b.code || '').trim().toUpperCase();
       if (!D || !/^[A-Z0-9]{8}$/.test(code) || !b.email) return J({ ok: false, error: 'give the email and 8-letter order code' }, 400);
       const rows = (await D.prepare("SELECT * FROM store_orders WHERE email_hash=? AND provider IN ('cashapp','usdc-base') ORDER BY created DESC LIMIT 50").bind(await emailHash(signingKey(env), b.email)).all()).results || [];

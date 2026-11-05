@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body { margin:0; background:#0b0b14; color:#e8e8ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; cursor:crosshair; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(10,10,30,0.75); padding:14px; border-radius:10px; max-width:340px; font-size:13px; backdrop-filter:blur(4px); }
+button { margin:4px 4px 0 0; padding:7px 12px; background:#223355; color:#aef; border:1px solid #446; border-radius:6px; cursor:pointer; }
+button:hover { background:#334466; }
+#status { font-size:11px; color:#8cf; margin-top:8px; min-height:1.2em; }
+.portal { position:absolute; pointer-events:none; padding:8px 12px; background:rgba(30,40,80,0.6); border:1px solid #68f; border-radius:8px; font-size:12px; color:#def; transform-origin:center; transition:transform 0.1s linear, filter 0.2s; will-change:transform,left,top; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU-ready PSO Pointer-Attractor DOM Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a population of particles performing classic Particle Swarm Optimization (PSO) on a continuous fitness landscape whose sole attractor is the live">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU-ready PSO Pointer-Attractor DOM Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a population of particles performing classic Particle Swarm Optimization (PSO) on a continuous fitness landscape whose sole attractor is the live">
+<meta property="og:url" content="https://a-to-mind.com/lab/f523-webgpu-pso-pointer-attractor-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f523-webgpu-pso-pointer-attractor-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <strong>Verse F523</strong> PSO Pointer-Attractor DOM Mind<br>
+  Move pointer (or tilt) to attract the swarm. Portals ride the leaders.
+  <div>
+    <button id="seal">Seal Best Genome</button>
+    <button id="reset">Reset Swarm</button>
+  </div>
+  <div id="status">Initializing…</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU-ready PSO Pointer-Attractor DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

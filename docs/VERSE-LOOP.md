@@ -7,7 +7,7 @@
 1. It takes a lock (`.git/verse-loop.lock`). If the loop is paused (the back-off, below) it stops here. It settles PRs earlier laps opened (merged or closed), skips if the tree has local changes, and fetches.
    - **Self-heal first:** if an open `loop/*` PR has a failed check, the lap reads the failure log (`gh run view --log-failed`), checks out that branch, has the brain fix it, gates it like any lap, pushes a plain fast-forward to the same branch and starts `verify.yml` there. That is the whole lap: no new branch, no new PR. A branch gets 3 heal tries; after that it counts toward the back-off.
    - Otherwise it detaches at `origin/main`.
-2. It runs the fast checks (`tools/verse-loop.checks.json`: `guard-source.mjs`, `growth-suites.mjs`; add lines to add checks).
+2. It runs the fast checks (`tools/verse-loop.checks.json`: `guard-source.mjs`, `growth-suites.mjs`, `openapi-check.mjs`; add lines to add checks). A new `/api` route has to be in `openapi.json` (or named, with a reason, as Verse's own) before the lap commits it.
 3. It picks **one** item:
    - something is red: the brain fixes the **first red check**, never by weakening a test. With the default `verse` brain that is Verse's own coding agent, `tools/verse-coder.mjs` (below).
    - all green, `verse`, and `VOID_OWNER_TOKEN` set with no `--task`: the oldest open `probe:` job, through `tools/propose-fix.mjs` and its four gates. When there is none (exit 3), the same lap goes on to `docs/NEXT.md` with `verse-coder`.
@@ -59,7 +59,7 @@ node tools/verse-loop.mjs --once [--dry-run] [--agent verse|opencode|aider|cmd] 
 
 `.github/workflows/verse-loop.yml` runs `--once` every hour at :41 and on demand. It is off until you turn it on.
 
-1. Repo secrets (by name; values never go in a file): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (Workers AI, Verse's coder), `VOID_OWNER_TOKEN` (already set for propose-fix: probe jobs), optionally `VERSE_LOOP_TOKEN` (the workflow token is used without it, now that Actions may open PRs), and as fallbacks any of `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` (and `VERSE_LOOP_MODEL` for opencode or aider).
+1. Repo secrets (by name; values never go in a file): `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (Workers AI, Verse's coder), `VOID_OWNER_TOKEN` (already set for propose-fix: probe jobs), optionally `VERSE_LOOP_TOKEN` (a fine-grained token or a GitHub App installation token with contents and pull requests; without it the workflow token opens the pull request and `tools/loop-checks.mjs` starts the checks, because a workflow-token pull request leaves `pull_request` runs approval-required), and as fallbacks any of `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`, `CEREBRAS_API_KEY` (and `VERSE_LOOP_MODEL` for opencode or aider).
 2. Repo variable `VERSE_LOOP_ENABLED` = `true` (`gh variable set VERSE_LOOP_ENABLED --body true`).
 3. First lap by hand: `gh workflow run verse-loop.yml -f dry=true`, then `gh workflow run verse-loop.yml`.
 

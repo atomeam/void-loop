@@ -120,6 +120,222 @@
       "into": "/bots/ (permissions-policy-check)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "outside:lineofflight/frankfurter": {
+      "target": "data",
+      "into": "/bots/ (currency pairs)",
+      "test": "tools/open-data.test.mjs",
+      "pr": null
+    },
+    "outside:nager/Nager.Date": {
+      "target": "data",
+      "into": "/bots/ (public holidays)",
+      "test": "tools/open-data.test.mjs",
+      "pr": null
+    },
+    "outside:wikimedia/wikidata-data": {
+      "target": "data",
+      "into": "/bots/ (country facts)",
+      "test": "tools/open-data.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/041-attested-open-graph-cards": {
+      "target": "bot",
+      "into": "/bots/ (og-card-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/044-attested-referrer-policy": {
+      "target": "bot",
+      "into": "/bots/ (referrer-policy-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/045-attested-strict-transport-security": {
+      "target": "bot",
+      "into": "/bots/ (hsts-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/046-attested-cross-origin-isolation": {
+      "target": "bot",
+      "into": "/bots/ (isolation-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/042-attested-subresource-integrity": {
+      "target": "bot",
+      "into": "/bots/ (sri-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/037-attested-api-catalog": {
+      "target": "bot",
+      "into": "/bots/ (api-catalog-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:jsdelivr/jsdelivr": {
+      "target": "tool",
+      "into": "/bots/ (jsdelivr-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/047-attested-heading-permalinks": {
+      "target": "bot",
+      "into": "/bots/ (permalink-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/007-attested-status-page": {
+      "target": "bot",
+      "into": "/bots/ (status-seal-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/043-attested-subprocessors": {
+      "target": "bot",
+      "into": "/bots/ (subprocessors-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/057-local-weak-signal-ledger": {
+      "target": "bot",
+      "into": "/bots/ (weak-signal-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:simple-icons/simple-icons": {
+      "target": "data",
+      "into": "/bots/ (simple-icon-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:tabler/tabler-icons": {
+      "target": "data",
+      "into": "/bots/ (tabler-icon-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:open-meteo/open-meteo": {
+      "target": "tool",
+      "into": "/bots/ (api-weather-now)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "archive/script_0.js": {
+      "target": "bot",
+      "into": "/bots/ (void-look)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:dwyl/english-words": {
+      "target": "data",
+      "into": "/bots/ (english-words-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:mledoze/countries": {
+      "target": "data",
+      "into": "/bots/ (countries-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/034-attested-atom-feed": {
+      "target": "bot",
+      "into": "/bots/ (atom-feed-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/035-attested-gpc-well-known": {
+      "target": "bot",
+      "into": "/bots/ (gpc-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/036-attested-tdm-reservation": {
+      "target": "bot",
+      "into": "/bots/ (tdm-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/ALPHA/apps/frontend": {
+      "target": "bot",
+      "into": "/bots/ (provider-status)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/051-attested-redirect-catalog": {
+      "target": "bot",
+      "into": "/bots/ (redirect-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/033-attested-humans-txt": {
+      "target": "bot",
+      "into": "/bots/ (humans-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/094-local-gap-not-handoff": {
+      "target": "bot",
+      "into": "/bots/ (gap-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:ideal-postcodes/postcodes.io": {
+      "target": "data",
+      "into": "/bots/ (api-uk-postcode)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:art-institute-of-chicago/api": {
+      "target": "data",
+      "into": "/bots/ (api-artic-artwork)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:metmuseum/open-access": {
+      "target": "data",
+      "into": "/bots/ (api-met-object)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:metabrainz/musicbrainz": {
+      "target": "data",
+      "into": "/bots/ (api-musicbrainz-artist)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:jacebrowning/memegen": {
+      "target": "tool",
+      "into": "/bots/ (api-meme-template)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:worldbank/open-data": {
+      "target": "data",
+      "into": "/bots/ (api-world-country)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:fda/openfda": {
+      "target": "data",
+      "into": "/bots/ (api-drug-label)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:nlm/rxnorm": {
+      "target": "data",
+      "into": "/bots/ (api-drug-rxcui)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:police-uk/data.police.uk": {
+      "target": "data",
+      "into": "/bots/ (api-uk-police)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
     }
   }
 }

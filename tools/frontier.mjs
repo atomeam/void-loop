@@ -9,15 +9,15 @@ export const OPEN_HEADER = '**Folded in from the old lists';
 export const TARGETS_HEADER = '**After the cleanup';
 const plain = (s) => String(s || '').replace(/\*\*|`/g, '').replace(/\s+/g, ' ').trim();
 
-/** what an open item waits on, from its own words: "the owner" when it says it needs or waits for the owner ("Needs the owner.",
- *  "(waits for the owner)", "waits for the owner to decide"), or a thing it names in brackets ("(needs the miss board)"); '' when
- *  it waits on nothing. "Waits on the owner:" opens a list of parts that wait while the rest goes on, so it is not read as the item's own
- *  wait. Pure. */
+/** what an open item waits on, from its own words: a thing it names in brackets ("(needs the miss board)"); '' when it waits on
+ *  nothing. A person is never a wait (owner rule: no human in the loop, 2026-10-28 and 2026-11-04): an item whose words still name
+ *  its owner as the thing it waits on is read as an ordinary open item, which a run takes like any other; when that run cannot finish
+ *  it, it is retried, then dropped and logged (lib/will-guard.js). tools/no-human-wait.mjs keeps those words out of the plan. Pure. */
+export const PERSON = /^the (?:owner|owner's [a-z -]+)$/i;
 export function waitsOf(title, why) {
   const t = plain(title + ' ' + why);
-  if (/\b(?:needs|waits for|waiting for) the owner\b/i.test(t)) return 'the owner';
-  const m = /\((?:needs|waits for|waiting for) (the [a-z][a-z -]{2,40})\)/i.exec(t);
-  return m ? m[1].trim() : '';
+  const m = /\((?:needs|waits for|waiting for) (the [a-z][a-z' -]{2,40})\)/i.exec(t);
+  return m && !PERSON.test(m[1].trim()) ? m[1].trim() : '';
 }
 
 /** the open items: [{ title, why, from, waits? }] from the bullets under OPEN_HEADER, up to the first blank line; `waits` only when the

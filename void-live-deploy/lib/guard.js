@@ -14,6 +14,7 @@ export const LIMITS = {
   treasury: { rpm: 30, body: 2000 }, // Verse's treasury (functions/api/treasury.js): public reads, owner-only small JSON actions
   mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   a2a: { rpm: 30, body: 8000 }, // Verse as an A2A agent (functions/api/a2a.js): one text message in, ask_void's answer out
+  apibot: { rpm: 60, body: 0 }, // GET only: the free API bots' relay (functions/api/apibot.js): an API id from a closed list and one input in, that API's reply out; 30 cache misses a minute per connection in the route, good answers edge-cached ten minutes
   free: { rpm: 30, body: 0 }, // the free-resource registry and its quota status (functions/api/free.js): GET only
   answer: { rpm: 30, body: 20000 },
   agent: { rpm: 90, body: 4000 }, // Verse's agent (functions/api/agent.js): the page polls the live feed every 2 s; a task is up to 1,000 characters, 20 a day per visitor in the route
@@ -49,6 +50,7 @@ export const LIMITS = {
   approval: { rpm: 60, body: 8000 },
   will: { rpm: 60, body: 64000 },
   catalog: { rpm: 60, body: 1000 },
+  productsearch: { rpm: 30, body: 0 }, // GET only: a query in, matching catalog products out (functions/api/productsearch.js)
   passkey: { rpm: 60, body: 20000 },
   mine: { rpm: 120, body: 900200 },
   publish: { rpm: 20, body: 40000 }, // a paid Verse's public page (/@name)
@@ -103,7 +105,7 @@ export const LIMITS = {
   jobs: { rpm: 60, body: 0 }, // GET only: the jobs pages' listings and a search's RSS (functions/api/jobs.js); three fixed upstream addresses, each edge-cached for as long as its terms ask (an hour to a day), nothing taken from the caller but a search read against the cached list
   markets: { rpm: 90, body: 0 }, // the crypto card's price list and the /markets/ page's quotes (functions/api/markets.js): GET, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute in the route itself, no KV
   hook: { rpm: 60, body: 64000 },
-  routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer waits for the owner; the route keeps 5 offers a minute itself
+  routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer is shown once the owner approves it (a safety gate on outside content); the route keeps 5 offers a minute itself
   actions: { rpm: 60, body: 4000 },
   selfcheck: { rpm: 30, body: 60000 }, // Verse's check of its own pages (functions/api/selfcheck.js): public GET of the newest report; only the owner's job POSTs one (80 pages at most)
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js

@@ -1,0 +1,36 @@
+{
+ "at": "2026-11-05T06:11:59.366Z",
+ "sha": "1ccb3a33c38275b972ad60d3b52a1991d0d52c84",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41975643053",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite budget: the whole suite ran past 1680 s"
+ ],
+ "touched": [
+  "docs/HANDOFF-GAPS.md",
+  "docs/MAP.md",
+  "docs/PARITY/README.md",
+  "docs/PARITY/aljazeera.com.md",
+  "docs/PARITY/bbc-news.md",
+  "docs/PARITY/channelnewsasia.com.md",
+  "docs/PARITY/dw.com.md",
+  "docs/PARITY/euronews.com.md",
+  "docs/PARITY/france24.com.md",
+  "docs/PARITY/npr.org.md",
+  "docs/PARITY/rnz.co.nz.md",
+  "docs/PARITY/spotify.md",
+  "docs/PARITY/theguardian.com.md",
+  "docs/PARITY/thelocal.com.md",
+  "docs/convergence.md"
+ ],
+ "shards": [
+  2
+ ],
+ "passed": [
+  2
+ ],
+ "closedAt": "2026-11-05T06:40:28.012Z",
+ "closedBy": "0881855043b1728bfeb509d04a10bd626215d243",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41978075942",
+ "minutes": 28
+}

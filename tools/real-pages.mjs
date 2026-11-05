@@ -6,6 +6,7 @@
 // must come with its test. Writes are off: any non-GET call to the site's own /api is answered 503 by the test, except the few that only
 // compute (translate, answer, the free rules-only code review). --list only checks that every route has a spec.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
+import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
@@ -100,8 +101,11 @@ export const SPECS = {
     t.ok(/\d/.test(await t.text('#rows')), 'the rows carry scores');
   },
   '/compare/': async (t) => {
-    const hint = await t.waitText('#who', /floor=\S+/, 10000); const id = ((hint.match(/floor=(.+)$/) || [])[1] || '').trim();
-    t.ok(!!id, 'with no floor it says how to name one (' + hint.slice(0, 60) + ')');
+    const hint = await t.waitText('#who', /floor=\S+/, 10000); let id = ((hint.match(/floor=(\S+)/) || [])[1] || '').trim();
+    try { id = decodeURIComponent(id); } catch (_) { /* the hint is already the raw id */ }
+    t.ok(!!id && !/\s/.test(hint.split('floor=')[1] || ''), 'with no floor it names one as a real address (' + hint.slice(0, 80) + ')');
+    t.ok(await t.p.locator('iframe:visible').count() === 0, 'with no floor the blank frame stays hidden');
+    t.ok(await t.p.locator('#pick a[href*="floor="]').count() >= 8, 'floors are listed to open');
     await t.p.goto(t.p.url().split('?')[0] + '?floor=' + encodeURIComponent(id)); const who = await t.waitText('#who', /side by side/, 10000);
     t.ok(/^Verse and \S+, side by side$/.test(who.trim()), 'the floor opens as Verse beside its site: ' + who.slice(0, 60));
     t.ok(/^https?:\/\//.test(await t.p.getAttribute('#so', 'href') || ''), 'the rival site opens from a real link');
@@ -138,6 +142,15 @@ export const SPECS = {
     await t.p.waitForFunction(() => document.querySelectorAll('#c tr').length > 1, null, { timeout: 10000 }).catch(() => {});
     const rows = await t.p.locator('#c tr').allInnerTexts(); t.ok(rows.length > 1, (rows.length - 1) + ' credits listed');
     t.ok(rows.slice(1).every((r) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(r)), 'every credit names its license');
+    await t.p.setViewportSize({ width: 390, height: 844 });
+    const fit = await t.p.evaluate(() => {
+      const td = [...document.querySelectorAll('#c td')].find((e) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(e.textContent));
+      if (!td) return null;
+      const r = td.getBoundingClientRect();
+      return { left: r.left, right: r.right, w: innerWidth, page: document.documentElement.scrollWidth };
+    });
+    t.ok(fit && fit.left >= -1 && fit.right <= fit.w + 1 && fit.page <= fit.w + 1, 'at 390 px the license is on the screen, not past the edge: ' + JSON.stringify(fit));
+    await t.p.setViewportSize({ width: 1200, height: 900 });
     await t.links();
   },
   '/films/': async (t) => {
@@ -484,14 +497,54 @@ const AGENT_FIX = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, r
   tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
     { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
 AGENT_FIX.made = [AGENT_FIX.tasks[1]];
+for (const task of AGENT_FIX.tasks) task.seen = 0;
+AGENT_FIX.inbox = inboxOf(AGENT_FIX.tasks);
 SPECS['/agent/'] = async (t) => {
-  await t.p.route((u) => u.pathname === '/api/agent', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AGENT_FIX) }));
+  const state = JSON.parse(JSON.stringify(AGENT_FIX));
+  let gate = Promise.resolve();
+  await t.p.route((u) => u.pathname === '/api/agent', async (r) => {
+    const run = gate.then(async () => {
+      if (r.request().method() === 'POST') {
+        let b = {}; try { b = JSON.parse(r.request().postData() || '{}'); } catch (_) {}
+        state.tasks = applyAgent(state.tasks, b);
+        state.made = state.tasks.filter((x) => x.status === 'done');
+        state.inbox = inboxOf(state.tasks);
+        const wait = state.tasks.filter((x) => x.status === 'needs_yes').length;
+        state.brief = { ...state.brief, waiting: wait, made: state.made.length, text: 'Made ' + state.made.length + ' thing' + (state.made.length === 1 ? '' : 's') + ' in the last day.' + (wait ? ' ' + wait + ' waiting on your yes.' : '') };
+      }
+    });
+    gate = run.catch(() => {});
+    await run;
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, ...state }) });
+  });
   await t.p.reload(); await t.waitText('#brief', /Daily brief/, 10000);
   t.ok(/1 waiting on your yes/.test(await t.text('#brief')), 'the daily brief counts what waits');
   t.ok(/Done\. It is on your Made shelf/.test(await t.text('#thread')), 'the live feed lists the steps');
   t.ok((await t.p.locator('#thread button[data-d="yes"]').count()) === 1, 'the send waits on an approval card');
+  t.ok(/Approve/.test(await t.text('#thread')) && /Decline/.test(await t.text('#thread')), 'approve and decline are labelled');
   t.ok(/Forsyth Park/.test(await t.text('#made')), 'finished work is on the Made shelf');
+  await t.p.locator('#made summary').click();
+  t.ok(/Done\. It is on your Made shelf/.test(await t.text('#made')), 'the Made shelf reopens the steps');
+  t.ok(await t.p.locator('#made details').evaluate((e) => e.open), 'a tap on the Made shelf reopens the step stream');
+  t.ok(/Verse finished a task/.test(await t.text('#inbox')), 'the inbox lists what finished while the tab was closed');
+  t.ok(/Verse needs your yes/.test(await t.text('#inbox')), 'the inbox lists what needs a yes');
   t.ok(/^\(1\) /.test(await t.p.title()), 'the tab title counts what waits for a yes, so a tab in the background shows it: ' + (await t.p.title()));
+  await t.click('#inbox button[data-open="a1"]');
+  t.ok(await t.p.locator('#made-a1 details').evaluate((e) => e.open), 'an inbox entry reopens that task on the Made shelf');
+  await t.click('#thread button[data-d="yes"]');
+  await t.waitText('#thread', /Resumed/, 8000);
+  t.ok(/Nothing was sent or paid/.test(await t.text('#thread')), 'approve resumes and says nothing was sent');
+  t.ok(/Hi Bob/.test(await t.text('#made')), 'the approved draft lands on the Made shelf');
+  await t.p.setViewportSize({ width: 390, height: 844 });
+  await t.p.waitForTimeout(200);
+  const nav = await t.p.evaluate(() => {
+    const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
+    if (!bar || !a) return null;
+    const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
+    return { label: a.textContent, left: Math.round(r.left), right: Math.round(r.right), barL: Math.round(b.left), barR: Math.round(b.right) };
+  });
+  t.ok(nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1, 'at 390 px the current nav item is fully in the bar: ' + JSON.stringify(nav));
+  await t.p.setViewportSize({ width: 1200, height: 900 });
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },

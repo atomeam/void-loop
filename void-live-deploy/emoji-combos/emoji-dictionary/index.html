@@ -1,6 +1,6 @@
 <!doctype html>
 <!-- written by tools/tower-self.mjs from lib/self-sites.js and its family page; edit the row, not this file -->
-<html lang="en">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -36,7 +36,7 @@
   .chips a, .tags a { display: inline-flex; align-items: center; min-height: 30px; padding: 2px 11px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); text-decoration: none; font-size: 14px; }
   .chips a:hover, .tags a:hover { color: var(--ink); border-color: var(--accent); }
   #count { font-size: 15px; color: var(--soft); margin: 10px 0 6px; }
-  #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+  #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; min-height: 240px; }
   .combo { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .combo pre, #dots { margin: 0; font: 22px/1.25 system-ui, "Segoe UI Emoji", "Apple Color Emoji", sans-serif; white-space: pre; overflow-x: auto; }
   .combo pre.art { font-size: 15px; line-height: 1.05; }
@@ -55,7 +55,7 @@
   #status { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--accent); color: var(--on-accent); padding: 6px 16px; border-radius: 999px; font-weight: 600; font-size: 15px; }
   #status:empty { display: none; }
   #minemsg { font-size: 14px; color: var(--soft); }
-  nav#related { margin-top: 24px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } nav#related a { color: var(--soft); display: inline-flex; min-height: 30px; align-items: center; }
+  nav#related { margin-top: 24px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 48px; } nav#related a { color: var(--soft); display: inline-flex; min-height: 30px; align-items: center; }
   footer { font-size: 13px; color: var(--soft); margin-top: 22px; } footer a { color: inherit; }
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
@@ -73,6 +73,10 @@
 <link rel="modulepreload" href="/lib/brain-ask.js">
 <link rel="modulepreload" href="/lib/local-ask.js">
 <!-- /modulepreload -->
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/emoji-combos/emoji-dictionary/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Emoji combos to copy","url":"https://a-to-mind.com/emoji-combos/emoji-dictionary/","description":"Search emoji combos, kaomoji and text art by tag and copy them. Collect several into one, make fancy text, turn a picture into dot art, and keep combos of your own on this device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"smiling face with hearts emoji, emoji categories, copy and paste heart emoji, emoji combos, emoji combinations, kaomoji","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Emoji combos to copy","item":"https://a-to-mind.com/emoji-combos/emoji-dictionary/"}]}]}</script>
+<!-- /seo -->
 </head>
 <body>
 <main>
@@ -123,7 +127,7 @@
   <div class="box" style="margin-top:8px"><input id="mine-tags" type="text" autocomplete="off" aria-label="Tags for your combo, separated by commas" placeholder="Tags, separated by commas"><button type="button" class="go" id="addmine">Add</button></div>
   <div id="minemsg" role="status"></div>
 
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emojis/">Emoji counts</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emoji-combos/">Emoji combos</a> <a href="/emojis/">Emoji counts</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer id="about"></footer>
 </main>
 <div id="status" role="status" aria-live="polite"></div>
@@ -164,7 +168,8 @@
       : q ? (list.length ? list.length + ' combo' + (list.length === 1 ? '' : 's') + ' for ' + q : 'No combos for ' + q + ' yet. Try another word, a tag below, or make your own.')
       : 'A few to start with, of ' + (stats.combos + state.mine.length) + ' combos. Search a tag or tap one.';
   }
-  const setQuery = (q, push = true) => { $('q').value = q; render(); if (push) history.replaceState(null, '', linkOf({ q, c: $('build').value })); };
+  const here = () => (location.pathname.endsWith('/') ? location.pathname : location.pathname + '/');
+  const setQuery = (q, push = true) => { $('q').value = q; render(); if (push) history.replaceState(null, '', linkOf({ q, c: $('build').value }, here())); };
   $('form').addEventListener('submit', (e) => { e.preventDefault(); setQuery($('q').value); });
   $('q').addEventListener('input', () => render());
   document.addEventListener('click', (e) => { const a = e.target.closest('a[data-tag]'); if (!a) return; e.preventDefault(); setQuery(a.dataset.tag); window.scrollTo({ top: 0, behavior: 'smooth' }); });
@@ -181,12 +186,12 @@
   function onBuild() {
     const v = $('build').value, enc = encodeURIComponent(v.slice(0, 2000));
     $('send-count').href = '/word-count/' + (v ? '?t=' + enc : ''); $('send-base64').href = '/base64/' + (v ? '?t=' + enc : '');
-    history.replaceState(null, '', linkOf({ q: $('q').value, c: v }));
+    history.replaceState(null, '', linkOf({ q: $('q').value, c: v }, here()));
   }
   $('build').addEventListener('input', onBuild);
   $('copybuild').addEventListener('click', () => { if ($('build').value) copy($('build').value, 'Copied all'); else say('Collect something first'); });
   $('clearbuild').addEventListener('click', () => { $('build').value = ''; onBuild(); });
-  $('share').addEventListener('click', () => copy(location.origin + linkOf({ q: $('q').value, c: $('build').value }), 'Link copied'));
+  $('share').addEventListener('click', () => copy(location.origin + linkOf({ q: $('q').value, c: $('build').value }, here()), 'Link copied'));
 
   // single emoji
   const ebtn = (e) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = e.c; b.title = e.n; b.setAttribute('aria-label', e.n); b.dataset.c = e.c; return b; };
@@ -238,5 +243,6 @@
   render(); onBuild(); renderEmoji(); renderFancy(); drawDots();
   mountRelated($('related'), '/emoji-combos/');
 </script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // the dictionary opens again with the network cut (sw.js TOOLS)</script>
 </body>
 </html>

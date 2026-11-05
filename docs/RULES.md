@@ -75,7 +75,7 @@ From the owner's message: "Verse is encouraged to try every legal way to make mo
 ## Earnings go back in (owner, 2026-10-11)
 "and he money it earns can be put right back into it to be able to make bigger amounts". What Verse earns is its budget for growing (`/api/earnings`, `STANDING.md`). How much it may reinvest without asking is the owner's to set; until the owner fills in the blanks below, each spend waits for a yes on the confirm line. **Proposed standing limit (not in force; the owner picks X and Y):**
 1. **Earned only, two caps.** Spend only from cleared net earnings (after fees and refunds), at most X% of last month's and at most $Y a month, whichever is lower. Nothing earned, nothing spent.
-2. **An allowlist of metered things that stop when the money does:** Cloudflare capacity (Workers AI, D1, R2, KV), metered model credits for paid jobs, builder runs once last month's earnings cover their cost. Never a new subscription, a domain, or anything that renews by itself; those always wait for the owner.
+2. **An allowlist of metered things that stop when the money does:** Cloudflare capacity (Workers AI, D1, R2, KV), metered model credits for paid jobs, builder runs once last month's earnings cover their cost. Never a new subscription, a domain, or anything that renews by itself; those are never started by Verse (the confirm line refuses them).
 3. **A receipt for every spend:** what it cost, which sales paid for it, what it unlocked, what it should earn back, and next cycle whether it did; one that did not pay for itself is dropped.
 
 ## Things fit the screen (owner, 2026-10-11)
@@ -128,8 +128,8 @@ The owner's vision and the money rule stay in `STANDING.md`; these sections (whe
 - **Live cards (2026-10-09, asked by Verse):** `skills/live.js` keeps a card current while it is up (weather every 15 min, news 30, tech news 10): visible tab and online only, a failed refresh keeps the last good card and backs off, a line under the card says when it updated and how often, with pause. A new card with a source goes live with `keepLive(api, el, { every, refresh })` and a `refresh` that redraws in place. Tests: `tools/live.test.mjs`.
 - **Draft from this tab (2026-10-10, the Verse extension):** on the extension's tab card (Alt+Shift+V, `extension/`, #248), "draft for me: reply · summary · notes · rewrite (sends it to Verse)" posts the title, address and selection to `/api/answer` `mode: 'draft'` once (`lib/draft.js`: intents, caps, host-and-path only, `redact`, a rules draft with no model; `functions/api/answer.js` `draftAnswer`, no cache, no D1 row), the draft lands in the card's box for "put in the page" or copy, and the card's footer says what left. Tests: `tools/draft.test.mjs`, the draft checks in `tools/test_extension.mjs`.
 - **Verse's own automations (2026-10-09):** "when this happens, do that" rules Verse runs itself, so no outside service's cap stops one halfway. `lib/automations.js` (what a rule may do: webhook, a schedule (every 15 minutes to a week; `.github/workflows/void-tick.yml` calls the owner-only `/api/automations/tick` every 15 minutes, a no-op until the repo secret `VOID_OWNER_TOKEN` is set) or Run now; note, build-queue job, GitHub comment, GitHub pull request with files, POST to a public https address; GitHub only in `AUTOMATION_REPOS`, branches only under `void/`, never workflow files), `lib/automations-run.js` (D1 rules and run log, GitHub REST with `GITHUB_TOKEN`), owner API `/api/automations`, webhooks `/api/hook/<id>` with a per-rule secret; the card is "my automations". GitHub steps need the owner to set `GITHUB_TOKEN` (fine-grained: contents, pull requests, issues) in the Pages project.
-- Live Verse source: `C:\\Users\\adamm\\a-to-mind-loop\\void.html` → Cloudflare Pages project `a-to-mind` → https://a-to-mind.com
-- Deploy copy: `void-live-deploy\\` (copy `void.html` to `index.html` and `void.html` there). Also sync `C:\\Users\\adamm\\a-to-mind.com\\index.html`.
+- Live Verse source: `%USERPROFILE%\\a-to-mind-loop\\void.html` → Cloudflare Pages project `a-to-mind` → https://a-to-mind.com
+- Deploy copy: `void-live-deploy\\` (copy `void.html` to `index.html` and `void.html` there). Also sync `%USERPROFILE%\\a-to-mind.com\\index.html`.
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
 - After deploy, confirm the live page still contains: `mountClock`, `mountSticky`, `mountNotepad`, `mountLink`, `mountImage`, `mountList`, `mountCalc`, `mountTimer`, `mountCounter`, `mountShape` (plus any new mount).
 - **The whole account, mapped (2026-10-06):** `docs/MAP.md`: what is live, what is built but not merged, what is only a plan, and how every repo relates to Verse.
@@ -141,9 +141,9 @@ The owner's vision and the money rule stay in `STANDING.md`; these sections (whe
 - The Forethinkers (A-to-Mind's research): `domains\\forethinkers\\THINK-TANK-BRIEF.md`; node map `convergence.md`; runner `domains\\forethinkers\\think-tank.mjs` (tests: `node --test domains/forethinkers/think-tank.test.mjs`). A cycle picks one node and fans only into the tracks it names; `.github/workflows/think-tank.yml` runs on even New York hours, dry-run by default. The build path starts at `domains\\forethinkers\\figures-first.md`.
 - Live-site QA notes: `domains\\void.surface-qa.md`
 - Company catalog: `domains\\A2M.ops.md`
-- `C:\\Users\\adamm\\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\\void.html`.
-- Bridge Worker config: `C:\\Users\\adamm\\projects\\aether\\apps\\bridge\\wrangler.toml` (Worker name `a2m-bridge`).
-- AutoSalvage: `C:\\Users\\adamm\\P2\\recovery\\autosalvage` (`python discover.py`).
+- `%USERPROFILE%\\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\\void.html`.
+- Bridge Worker config: `%USERPROFILE%\\projects\\aether\\apps\\bridge\\wrangler.toml` (Worker name `a2m-bridge`).
+- AutoSalvage: `%USERPROFILE%\\P2\\recovery\\autosalvage` (`python discover.py`).
 
 ### Windows notes
 PowerShell: `Select-String`, `curl.exe`, `Copy-Item -Force`. The console mangles UTF-8, so edit files through Python. Venture/ops files use CRLF; new log lines LF.

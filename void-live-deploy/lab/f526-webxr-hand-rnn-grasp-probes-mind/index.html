@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg: #0a0a12; --fg: #e0e0ff; --accent: #6cf; --grasp: #f6c; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#status { position: fixed; top: 8px; left: 8px; right: 8px; z-index: 100; background: rgba(0,0,0,.7); padding: 8px 12px; border-radius: 8px; font-size: 12px; pointer-events: none; }
+#controls { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; gap: 8px; }
+button { background: #222; color: var(--fg); border: 1px solid #444; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+button:hover { background: #333; }
+button.primary { background: var(--accent); color: #000; border: none; }
+#canvas { position: relative; width: 100%; height: 100vh; }
+.probe { position: absolute; width: 80px; height: 60px; background: rgba(20,20,40,.85); border: 2px solid var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; user-select: none; cursor: grab; transition: box-shadow .2s, transform .1s; will-change: transform; }
+.probe.grasping { border-color: var(--grasp); box-shadow: 0 0 20px var(--grasp); cursor: grabbing; }
+.probe .label { pointer-events: none; text-align: center; }
+.hand { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,100,200,.4); border: 2px solid var(--grasp); pointer-events: none; z-index: 50; display: none; }
+.hand.active { display: block; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand RNN Grasp Probes Mind · Verse lab</title>
+<meta name="description" content="Novel combination: true WebXR hand tracking (immersive-ar or vr session with hand-tracking feature, progressive fallback to pointer &quot;virtual hand&quot;) as the sole">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand RNN Grasp Probes Mind · Verse lab">
+<meta property="og:description" content="Novel combination: true WebXR hand tracking (immersive-ar or vr session with hand-tracking feature, progressive fallback to pointer &quot;virtual hand&quot;) as the sole">
+<meta property="og:url" content="https://a-to-mind.com/lab/f526-webxr-hand-rnn-grasp-probes-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f526-webxr-hand-rnn-grasp-probes-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">Initializing Verse probes…</div>
+<div id="canvas">
+  <div class="hand" id="hand"></div>
+</div>
+<div id="controls">
+  <button id="sealBtn" class="primary">Seal Best Genome</button>
+  <button id="xrBtn">Enter WebXR Hand</button>
+  <button id="resetBtn">Reset Population</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand RNN Grasp Probes Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

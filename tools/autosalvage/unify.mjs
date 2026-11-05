@@ -25,7 +25,7 @@ const ls = (d) => { try { return readdirSync(resolve(root, d)).filter((n) => !n.
 const isDir = (p) => { try { return statSync(resolve(root, p)).isDirectory(); } catch (_) { return false; } };
 
 // licenses Verse may reuse with credit; GPL family only isolated (a separate service, never mixed into Verse's code)
-export const PERMISSIVE = ['MIT', 'Apache-2.0', 'BSD-2-Clause', 'BSD-3-Clause', 'ISC', 'CC0-1.0', 'Unlicense', 'CC-BY-4.0', 'CC-BY-3.0', '0BSD', 'Zlib', 'PDDL-1.0', 'ODC-By-1.0', 'Python-2.0'];
+export const PERMISSIVE = ['MIT', 'Apache-2.0', 'BSD-2-Clause', 'BSD-3-Clause', 'ISC', 'CC0-1.0', 'Unlicense', 'CC-BY-4.0', 'CC-BY-3.0', '0BSD', 'Zlib', 'PDDL-1.0', 'ODC-By-1.0', 'Python-2.0', 'OGL-UK-3.0'];
 export const SHARE_ALIKE = ['GPL-2.0', 'GPL-3.0', 'AGPL-3.0', 'LGPL-2.1', 'LGPL-3.0', 'MPL-2.0', 'ODbL-1.0', 'CC-BY-SA-4.0', 'EPL-2.0'];
 /** what Verse may do with an outside license. Pure. */
 export function licenseVerdict(spdx) {

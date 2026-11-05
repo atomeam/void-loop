@@ -143,12 +143,38 @@ export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '
 // an ask that names a site (onlineconverter.com) is built only by evidence that names that site: the owner's review (2026-10-30) found
 // "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" marked built by a ledger line about sycophanthex.com whose builder
 // had asked "a LANE_PAGES entry for any new tower" in nearly the same words. Pure.
-const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site)\b/gi;
-export const sitesIn = (ask, evidence) => { const e = String(evidence || '').toLowerCase(); return (String(ask || '').match(SITE) || []).every((d) => e.includes(d.toLowerCase())); };
+const sitesOf = (t) => String(t || '').match(/\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site)\b/gi) || [];
+export const sitesIn = (ask, evidence) => { const e = String(evidence || '').toLowerCase(); return sitesOf(ask).every((d) => e.includes(d.toLowerCase())); };
+/** how well one ledger line names this ask. 100 when `asked` is the ask. Else sites, commit ids and long words only that line can carry. Pure. */
+function lineScore(entry, ask) {
+  const w = String(ask || '').trim();
+  if (!w || !entry) return 0;
+  const asked = String(entry.asked || '');
+  if (asked && (asked.toLowerCase() === w.toLowerCase() || sameAsk(w, asked))) return 100;
+  const blob = (String(entry.what || '') + ' ' + String(entry.show || '') + ' ' + asked).toLowerCase();
+  let s = 0;
+  for (const q of String(entry.what || '').matchAll(/"([^"]{6,80})"/g)) if (w.toLowerCase().includes(q[1].toLowerCase())) s += 12;
+  for (const d of sitesOf(w)) if (blob.includes(d.toLowerCase())) s += 10;
+  for (const h of w.toLowerCase().match(/\b[0-9a-f]{7,40}\b/g) || []) if (blob.includes(h)) s += 8;
+  const have = new Set(wordsOf(blob));
+  for (const t of wordsOf(w)) if (t.length >= 6 && have.has(t)) s += 1;
+  return s;
+}
+/** the ledger line that belongs to this ask. One line at that time is that line (a link names it by time). Several lines
+ *  written in the same second stay separate: the one that names the ask. A neighbour's line is never borrowed, so one
+ *  sentence cannot be what was built for three different asks (the self card showed one lists-run line three times). Pure. */
+export function lineFor(lines, ask) {
+  const list = (lines || []).filter((x) => x && typeof x.what === 'string');
+  if (!list.length) return null;
+  if (list.length === 1) return list[0];
+  const scored = list.map((x) => ({ x, s: lineScore(x, ask) })).sort((a, b) => b.s - a.s);
+  return scored[0].s > 0 && scored[0].s > scored[1].s ? scored[0].x : null;
+}
+const linesAt = (L, at) => L.filter((e) => e.at === at);
 export function followThrough(entries, ledger, links = []) {
   const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
   const byId = new Map(); for (const x of L) if (x.asked) byId.set(String(x.asked), x);
-  for (const k of Array.isArray(links) ? links : []) { const x = k && L.find((e) => e.at === k.ledgerAt); if (x && k.ask && !byId.has(k.ask)) byId.set(String(k.ask), x); }
+  for (const k of Array.isArray(links) ? links : []) { const x = k && lineFor(linesAt(L, k.ledgerAt), k.ask || k.words || ''); if (x && k.ask && !byId.has(k.ask)) byId.set(String(k.ask), x); }
   const groups = [];
   const flat = []; for (const e of entries || []) for (const [i, a] of (e.asks || []).entries()) if (a && a.ask) flat.push({ id: askId(e.at, i), ask: a.ask, at: e.at });
   flat.sort((a, b) => String(a.at).localeCompare(String(b.at))); // oldest first: a group keeps the words it was first asked in
@@ -164,7 +190,7 @@ export function followThrough(entries, ledger, links = []) {
   // A ledger `asked` is the builder naming the ask, so its words count as evidence; a link's words are only the ask copied back
   // (tools/asks-link.mjs links by shared words), so a site the ask names must be in the ledger line itself (2026-10-30: the
   // onlineconverter.com ask showed a sycophanthex.com line as what was built).
-  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt), proof: '' })).filter((k) => k.x);
+  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: lineFor(linesAt(L, k.ledgerAt), k.words), proof: '' })).filter((k) => k.x);
   for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e, proof: String(e.asked) });
   const built = [], open = [];
   for (const g of groups) {
@@ -181,16 +207,22 @@ export function followThrough(entries, ledger, links = []) {
  *  entry's time) and each ledger line that names an ask in words. Never a guess: a row needs a ledger entry at its time. One
  *  entry that answers two wordings of one ask counts once. f: followThrough's result. Pure. */
 export function builtAsks(f, ledger, links = []) {
-  const byAt = new Map(); for (const x of Array.isArray(ledger) ? ledger : []) if (x && typeof x.what === 'string' && x.at) byAt.set(String(x.at), x);
+  const all = (Array.isArray(ledger) ? ledger : []).filter((x) => x && typeof x.what === 'string' && x.at);
+  const byAt = new Map();
+  for (const x of all) { const k = String(x.at), list = byAt.get(k); if (list) list.push(x); else byAt.set(k, [x]); }
   const rows = [];
-  const add = (ask, at, times = 1) => {
-    const x = byAt.get(String(at || '')), w = String(ask || '').trim();
+  const add = (ask, at, times = 1, whatHint = '') => {
+    const list = byAt.get(String(at || '')) || [];
+    const hinted = whatHint ? list.filter((x) => x.what === whatHint) : [];
+    const x = hinted.length === 1 ? hinted[0] : lineFor(list, ask), w = String(ask || '').trim();
     if (!x || !w || rows.some((r) => r.at === x.at && (r.ask.toLowerCase() === w.toLowerCase() || sameAsk(r.ask, w)))) return;
+    // one ledger sentence is one row: a shared timestamp used to paint the last line onto every ask written that second
+    if (rows.some((r) => r.what === x.what && r.at === x.at)) return;
     rows.push({ ask: w, at: x.at, ref: x.ref || null, what: String(x.what), times: +times || 1, depth: depthOf(x.kind) });
   };
-  for (const g of (f && Array.isArray(f.built) ? f.built : [])) add(g.ask, g.builtAt, g.times);
+  for (const g of (f && Array.isArray(f.built) ? f.built : [])) add(g.ask, g.builtAt, g.times, g.what);
   for (const k of Array.isArray(links) ? links : []) if (k && typeof k.words === 'string') add(k.words, k.ledgerAt);
-  for (const x of byAt.values()) if (x.asked && !/^ask-\d/.test(String(x.asked))) add(String(x.asked), x.at);
+  for (const x of all) if (x.asked && !/^ask-\d/.test(String(x.asked))) add(String(x.asked), x.at, 1, x.what);
   return rows.sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
 /** The one record of Verse's asks, for the self card, the wants card and its own facts alike, so its counts agree with each other

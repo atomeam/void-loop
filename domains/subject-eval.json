@@ -1,5 +1,5 @@
 {
- "at": "2026-11-04T13:22:59.822Z",
+ "at": "2026-11-05T13:35:00.099Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -327,7 +327,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [],
     "answer": "Zeus is the supreme deity of the Greek pantheon. He is a sky and thunder god in ancient Gr"
    },
@@ -688,7 +688,7 @@
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature",
+   "kind": "Creature · Show",
    "title": "Blue whale",
    "theme": "specimen",
    "photo": true,
@@ -820,7 +820,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "Bread is a baked food product made from water, flour, and often yeast. It is a staple food"
+    "answer": "Bread was central to the formation of early human societies. From the Fertile Crescent, wh"
    },
    "redirect": "none"
   },

@@ -49,6 +49,11 @@ export function alter(th, lower) {
   if (/\b(make\s+(?:it\s+)?a?\s*(?:rect|rectangle|square))\b/.test(lower) && th.shapeType !== 'rect') { th.shapeType = 'rect'; ok = true; }
   if (/\b(make\s+(?:it\s+)?a?\s*circle)\b/.test(lower) && th.shapeType !== 'circle') { th.shapeType = 'circle'; ok = true; }
   if (/\b(make\s+(?:it\s+)?a?\s*line)\b/.test(lower) && th.shapeType !== 'line') { th.shapeType = 'line'; ok = true; }
+  { // "draw a red circle" names its shape: the shape becomes that type (it used to stay the rect it was made as)
+    const named = /^(?:please\s+)?(?:draw|sketch|make|add|create|put)\s+(?:me\s+)?(?:a|an)\s+(?:[a-z]+\s+){0,2}(circle|rect|rectangle|square|line)\b/.exec(lower);
+    const want = named && (named[1] === 'circle' || named[1] === 'line' ? named[1] : 'rect');
+    if (want && th.shapeType !== want) { th.shapeType = want; ok = true; }
+  }
   if (/\bfill(?:ed)?\b/.test(lower)) { th.filled = true; ok = true; }
   if (/\b(unfill|outline|stroke)\b/.test(lower)) { th.filled = false; ok = true; }
   if (/\b(thick|thicker)\b/.test(lower)) { th.strokeWidth = Math.min(8, (th.strokeWidth || 2) + 2); ok = true; }
@@ -57,6 +62,12 @@ export function alter(th, lower) {
 }
 
 const shapeOf = (stageApi) => Object.values(stageApi.things()).find((t) => t && t.kind === 'shape') || null;
+
+/** a circle that was given a colour paints as a solid disc of that colour. A plain circle stays the living ring. Pure. */
+export function circlePaint(th) {
+  if (!th || (th.shapeType || 'rect') !== 'circle' || !th.color) return null;
+  return { borderColor: th.color, background: th.color, opacity: '1' };
+}
 
 /** the one shape, put up in the middle of the stage when there is none (a rect unless told); it becomes the picked thing */
 export function ensure(stageApi, shapeType = 'rect') {
@@ -97,15 +108,23 @@ function mount(th, stageApi) {
   if (th.color) inner.style.borderColor = th.color;
   el.appendChild(inner);
   if (shapeType === 'circle') {
-    // a circle is alive (skills/void-ring.js): a breathing WebGL ring with a dark feathered hole that takes in what you
-    // type; a tap makes it ripple. No box, no label. Where WebGL can't run, the CSS ring stays, softened.
-    inner.style.borderColor = 'rgba(232,236,255,0.55)';
-    inner.style.boxShadow = '0 0 18px rgba(200,210,255,0.18), inset 0 0 22px rgba(0,0,0,0.9)';
-    import('./void-ring.js').then((m) => {
-      const c = m.ringCanvas(th.id, th.color || '#e8ecff'); if (!c || !el.isConnected) return;
-      el.style.overflow = 'visible'; el.appendChild(c); inner.style.opacity = '0';
-      if (!el._ringTap) { el._ringTap = true; el.addEventListener('pointerdown', () => m.pulse()); }
-    }).catch(() => {});
+    const paint = circlePaint(th);
+    if (paint) { // "draw a red circle": a filled disc in that colour, not the pale living ring
+      inner.style.borderColor = paint.borderColor;
+      inner.style.background = paint.background;
+      inner.style.opacity = paint.opacity;
+      inner.style.boxShadow = 'none';
+    } else {
+      // a circle is alive (skills/void-ring.js): a breathing WebGL ring with a dark feathered hole that takes in what you
+      // type; a tap makes it ripple. No box, no label. Where WebGL can't run, the CSS ring stays, softened.
+      inner.style.borderColor = 'rgba(232,236,255,0.55)';
+      inner.style.boxShadow = '0 0 18px rgba(200,210,255,0.18), inset 0 0 22px rgba(0,0,0,0.9)';
+      import('./void-ring.js').then((m) => {
+        const c = m.ringCanvas(th.id, th.color || '#e8ecff'); if (!c || !el.isConnected) return;
+        el.style.overflow = 'visible'; el.appendChild(c); inner.style.opacity = '0';
+        if (!el._ringTap) { el._ringTap = true; el.addEventListener('pointerdown', () => m.pulse()); }
+      }).catch(() => {});
+    }
   } else {
     const label = document.createElement('div');
     label.className = 'shape-label';

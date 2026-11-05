@@ -8,8 +8,8 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE } from './verse-coder.mjs';
-import { scanDiff } from './verse-loop.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE } from './verse-coder.mjs';
+import { scanDiff, buildPrompt } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
@@ -59,6 +59,16 @@ test('it refuses to weaken a test: fewer assertions, a skip, a deleted test; the
   assert.deepEqual(weakening(ADD_TEST, ADD_TEST.replace('add(1, 0), 1);', 'add(1, 0), 1);\n  assert.equal(add(0, 0), 0);')), [], 'a stronger test is fine');
   assert.deepEqual(weakening(ADD_TEST, null), ['deletes the test']);
   assert.ok(checkScripts([{ cmd: 'node tools/guard-source.mjs && python3 ./ci/x.py' }]).has('ci/x.py'), 'a check\'s own script is guarded like a test');
+});
+
+test('a workflow is read like any file, so a repair of a red loop can see what it runs, and is never written (#2252)', async () => {
+  const s = repo();
+  const r = await run(s, [call('read', { path: '.github/workflows/ci.yml' }), call('replace', { path: '.github/workflows/ci.yml', old: 'on: push', new: 'on: [push]' }), call('finish')]);
+  assert.doesNotMatch(r.log[0].result, /refused/); assert.match(r.log[0].result, /on: push/);
+  assert.match(r.log[1].result, /refused: \.github\/workflows\/ci\.yml is a workflow/);
+  assert.equal(readFileSync(join(s.work, '.github/workflows/ci.yml'), 'utf8'), 'on: push\n');
+  assert.equal(pathRefusal('.github/workflows/ci.yml', s.work), '');
+  assert.match(pathRefusal('.github/actions/x/action.yml', s.work, { write: true }), /is a workflow: never/);
 });
 
 test('it refuses a path outside the repo, .env, workflows, secrets and its own guards; nothing is written there', async () => {
@@ -113,6 +123,22 @@ test('each turn sends the task and the newest results whole, and older results c
   const s = repo(); writeFileSync(join(s.work, 'src/big.mjs'), Array.from({ length: 400 }, (_, i) => '// line ' + i + ' ' + 'y'.repeat(30)).join('\n'));
   const r = await runCoder({ root: s.work, prompt: 'x', checks: CHECKS, model: async () => ({ text: call('read', { path: 'src/big.mjs' }) }), limits: { turns: 30, tokens: 250000 } });
   assert.ok(r.turns >= 20, 'turns before the token cap: ' + r.turns + ' (' + r.tokens + ' tokens)');
+});
+
+test('a lap with its whole brief, reading big files every turn and counting a token as 3 characters, lasts the 30 turns (#2234)', async () => {
+  // three laps in a row stopped at the token cap after 20 to 28 turns of reading: the 11,000-character brief and two 16,000-character reads rode along every turn
+  const prompt = buildPrompt({ task: { kind: 'next', n: 1, text: 'Make the tower lane pages answer.' }, tagteam: readFileSync('docs/TAGTEAM.md', 'utf8'), gates: readFileSync('docs/GATE-STANDARDS.md', 'utf8') });
+  assert.ok(prompt.length > 8000, 'the real brief is long: ' + prompt.length);
+  const s = repo();
+  for (const f of ['a', 'b', 'c']) writeFileSync(join(s.work, 'src/' + f + '.mjs'), Array.from({ length: 900 }, (_, i) => '  const line' + i + ' = ' + JSON.stringify('z'.repeat(80)) + ';').join('\n'));
+  let i = 0;
+  const model = async (msgs) => { i++; return { text: call('read', { path: 'src/' + 'abc'[i % 3] + '.mjs', from: 1 + (i * 37) % 400 }), tokens: Math.ceil(msgs.reduce((n, x) => n + x.content.length, 0) / 3) + 60 }; };
+  const r = await runCoder({ root: s.work, prompt, checks: CHECKS, model, limits: { turns: LIMITS.turns, tokens: LIMITS.tokens } });
+  assert.equal(r.outcome, 'turn-cap', 'it ran out of tokens after ' + r.turns + ' turns (' + r.tokens + ' tokens)');
+  const w = windowOf([{ role: 'system', content: 's' }, { role: 'user', content: prompt }, ...Array.from({ length: 4 }, () => [{ role: 'assistant', content: 'n'.repeat(9000) }, { role: 'user', content: 'r' }]).flat()]);
+  assert.ok(w[1].content.startsWith(prompt.slice(0, WINDOW.task)) && w[1].content.length < WINDOW.task + 200 && /Make the tower lane pages answer/.test(w[1].content), 'past the first turns the task stays, the reference notes go');
+  assert.match(w[2].content, /characters cut from an older turn of yours/, 'an old long edit of its own is cut too');
+  assert.equal(windowOf([{ role: 'system', content: 's' }, { role: 'user', content: prompt }, { role: 'assistant', content: 'a' }, { role: 'user', content: 'r' }])[1].content, prompt, 'the first turns get the whole brief');
 });
 
 test('past 40% of the budget each result says how much is gone and, with no edit yet, that the next answer is an edit; at a cap a change checked green is kept', async () => {

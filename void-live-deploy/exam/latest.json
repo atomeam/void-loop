@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T15:27:52.374Z",
+  "at": "2026-11-05T15:05:52.889Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -37,19 +37,18 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of radiolab",
+          "ask": "play the latest episode of this american life",
           "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of hardcore history",
+          "ask": "play the latest episode of serial",
           "failed": [
-            "show",
             "episode"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of stuff you should know",
@@ -101,19 +100,20 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "audio",
             "episode"
           ],
-          "score": 57.1
+          "score": 28.6
         }
       ],
       "holdout": {
@@ -162,23 +162,25 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -217,7 +219,7 @@
       }
     },
     "recipes": {
-      "score": 96.3,
+      "score": 95.4,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -225,9 +227,10 @@
           "ask": "recipe",
           "failed": [
             "skill",
+            "method",
             "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "receta de guacamole",
@@ -293,10 +296,59 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "la liga scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -381,18 +433,10 @@
       ]
     },
     "units": {
-      "score": 82.5,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "1 byte in bits",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
         {
           "ask": "convert 2",
           "failed": [
@@ -400,13 +444,6 @@
             "rival"
           ],
           "score": 60
-        },
-        {
-          "ask": "5 milles en kilomètres",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
         }
       ]
     },
@@ -439,7 +476,7 @@
       ]
     },
     "timers": {
-      "score": 80,
+      "score": 83.3,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -465,13 +502,6 @@
           "score": 80
         },
         {
-          "ask": "temporizador de 3 minutos",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
           "ask": "set a timer for 45 seconds",
           "failed": [
             "mobile",
@@ -482,88 +512,19 @@
       ]
     },
     "images": {
-      "score": 73.9,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "draw a red circle",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
-          "failed": [
-            "rival"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "picture of a cat",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "image",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "dessine un cercle rouge",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "make the picture bigger",
-          "failed": [
-            "skill",
-            "mobile"
-          ],
-          "score": 60
-        }
-      ]
+      "fails": []
     },
     "prices": {
-      "score": 83.3,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "price",
-          "failed": [
-            "fast",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "precio del bitcoin",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "how much is a gallon of milk",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     },
     "definitions": {
-      "score": 83.3,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -576,14 +537,6 @@
         },
         {
           "ask": "define zorbleflux",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "qué significa serendipia",
           "failed": [
             "skill",
             "rival"
@@ -614,7 +567,7 @@
     }
   },
   "lowest": {
-    "domain": "images",
-    "score": 73.9
+    "domain": "timers",
+    "score": 83.3
   }
 }

@@ -1,0 +1,30 @@
+{
+ "at": "2026-11-05T12:26:02.453Z",
+ "sha": "6ca3d789357e632abdc5f55d14703763d674ee87",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42021252704",
+ "suite": "browser suite on main",
+ "checks": [
+  "walker: after a reload the figure is back on the floor with the same picture (no ask needed); \"stop walking\" removes it and clears the record",
+  "suite ran to the end",
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "docs/playbooks/agent.md",
+  "domains/handoff.md",
+  "tools/agent-core.test.mjs",
+  "tools/agent-probe.mjs",
+  "tools/agent-probe.test.mjs",
+  "void-live-deploy/functions/api/agent.js"
+ ],
+ "shards": [
+  3
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-05T12:53:01.671Z",
+ "closedBy": "47b9a6cce2d5ab03d7b5d55a60c273330e7a3e9e",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42026403534",
+ "minutes": 27
+}

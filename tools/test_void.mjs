@@ -11,17 +11,28 @@ import nodeOs from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
+import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
+import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
+// the plain-path rules of _redirects (Cloudflare Pages' file): from, to, status. Splats and placeholders are left to the real host.
+const REDIRECTS = new Map();
+try { for (const line of fs.readFileSync(path.join(root, '_redirects'), 'utf8').split('\n')) { const [from, to, st] = line.trim().split(/\s+/); if (from && to && from.startsWith('/') && !/[*:]/.test(from)) REDIRECTS.set(from, { to, status: +st || 302 }); } } catch (_) {}
 const server = http.createServer((req, res) => {
   // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
+  const to = pageRedirects.get(p.replace(/\/+$/, ''));
+  if (to) { const s = new URL(req.url, 'http://x').search; const at = to.includes('?') ? '&' + s.slice(1) : s; res.writeHead(301, { location: to + at }); return res.end(); }
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { // as Pages does: a missing path gets the root 404.html, still a 404
+    // as Pages does: an old address in _redirects (a plain path, no splat) answers with its redirect, the query kept (#2100 combined
+    // pages into modes and 301'd /flip/, /wheel/, /gradient/, /base-converter/ ...; serving them a 404 here left four checks red on main)
+    const to = REDIRECTS.get(p);
+    if (to) { const q = new URL(req.url, 'http://x').search; res.writeHead(to.status, { location: to.to.includes('?') || !q ? to.to : to.to.replace(/(#|$)/, q + '$1') }); return res.end(); }
     const nf = path.join(root, '404.html');
     if (!fs.existsSync(nf)) { res.writeHead(404); return res.end(); }
     res.writeHead(404, { 'content-type': 'text/html' }); return fs.createReadStream(nf).pipe(res);
@@ -30,6 +41,12 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(f).pipe(res);
 }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
+// Pages follows _redirects (a floor's own name never 404s); the harness server follows the same file, so a block that opens
+// /flip/ or /random-user/ lands on the floor page exactly as it does on a-to-mind.com — the gate blocks 404'd here otherwise
+const pageRedirects = new Map((() => { try {
+  const lines = fs.readFileSync(path.join(root, '_redirects'), 'utf8').split('\n');
+  return lines.map((l) => l.match(/^(\S+)\s+(\S+)\s+301\s*$/)).filter((m) => m && !m[1].startsWith('#')).map((m) => [m[1].replace(/\/+$/, ''), m[2]]);
+} catch (_) { return []; } })());
 
 const EXP_N = (() => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')).families.reduce((n, f) => n + (f.skills || []).filter((x) => x.tier === 'experiment').length, 0); } catch (_) { return 1; } })();
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
@@ -49,10 +66,10 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
-// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
+// the files every tool page shares (the visit beacon, the glass stylesheet, and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
 // converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
 // and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
+const SHARED_TOOL_FILES = /^\/(visit\.js|verse\.css|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
@@ -751,9 +768,14 @@ try {
     const { PROBES, factsFromFile } = await import('./tower-probes.mjs');
     const ff = JSON.parse(fs.readFileSync(new URL('../domains/features/coin-flip.json', import.meta.url), 'utf8'));
     const F = await fresh({ base: base + 'flip/' });
-    await F.p.waitForSelector('.coin-again', { timeout: 10000 });
-    for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
-    const text = await F.p.evaluate(() => document.body.innerText);
+    // a slow runner keeps the gate's fainted wait from ending the run at "suite ran to the end" (2026-11-04, .coin-again timed out on shard 3):
+    // a page that never settles fails this floor's own check below, with the probe list it did read
+    let text = '';
+    try {
+      await F.p.waitForSelector('.coin-again', { timeout: 15000 }); // the sibling floor gates wait 15 s, not 10
+      for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
+      text = await F.p.evaluate(() => document.body.innerText);
+    } catch (_) {}
     const facts = [...PROBES['coin flip'].facts, ...factsFromFile(ff)];
     const missing = facts.filter(([name, fn]) => { let ok = false; try { ok = typeof fn === 'function' ? !!fn(text) : fn.test(text); } catch (_) {} return !ok; }).map(([name]) => name); // a probe fact is a regex, a feature fact a function — the gate reads both
     check('coin: /flip/ shows all 7 things a full answer shows — the flip counter named, the tap and the result said in words (the gate\'s own rule, the 3 the tower sat at 4 of 7 on)',
@@ -1524,7 +1546,7 @@ try {
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
     // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
     check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && (v.head || '').replace(/ · \d+ passed/, '') === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site /* a passed site (6fbae31da) adds its own ' · N passed' count from the served record */
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
@@ -1549,6 +1571,40 @@ try {
     check('tower: Google Flights names Verse\'s page /flights/ beside its site and side by side (390 px, no sideways scroll), every entry names its page, and /compare/?floor=travel frames /flights/ beside Google Flights',
       /Google Flights ↗/.test(v.links || '') && /Verse's page \/flights\//.test(v.links || '') && /side by side/.test(v.links || '') && v.page === '/flights/' && v.every && v.wide && cmp.src === '/flights/' && /Google Flights/.test(cmp.who || '') && !P.errors.length,
       JSON.stringify({ v, cmp, errors: P.errors }));
+    await P.ctx.close();
+  }
+  if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
+    const P = await fresh({ phone: true });
+    await P.p.goto(base + 'agent/');
+    const nav = await until(() => P.p.evaluate(() => {
+      const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
+      if (!bar || !a || a.textContent !== 'Agents') return null;
+      const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
+      return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
+    }), 8000);
+    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
+      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    await P.p.goto(base + 'compare/');
+    const cmp = await until(() => P.p.evaluate(() => {
+      const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
+      if (picks < 8) return null;
+      return {
+        who: (document.getElementById('who') || {}).textContent || '',
+        frames: [...document.querySelectorAll('iframe')].filter((f) => f.getClientRects().length && getComputedStyle(f).display !== 'none').length,
+        picks,
+      };
+    }), 8000);
+    check('phone polish: /compare/ with no floor names a real address, lists floors, and shows no blank frame',
+      cmp && /floor=\S+/.test(cmp.who) && !/\s/.test((cmp.who.split('floor=')[1] || '')) && cmp.frames === 0 && cmp.picks >= 8, JSON.stringify(cmp));
+    await P.p.goto(base + 'credits/');
+    const cred = await until(() => P.p.evaluate(() => {
+      const td = [...document.querySelectorAll('#c td')].find((e) => /MIT|Apache|Unlicense|CC0|ODbL/.test(e.textContent));
+      if (!td) return null;
+      const r = td.getBoundingClientRect();
+      return { t: td.textContent.slice(0, 40), left: r.left, right: r.right, w: innerWidth, page: document.documentElement.scrollWidth };
+    }), 8000);
+    check('phone polish: a credit\'s license is on the 390 px screen',
+      cred && cred.left >= -1 && cred.right <= cred.w + 1 && cred.page <= cred.w + 1, JSON.stringify(cred));
     await P.ctx.close();
   }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
@@ -2886,20 +2942,21 @@ try {
   // Verse's own build (asked by Verse five times; the owner chose 2026-10-13 that it opens by itself for the owner only): the newest
   // checks and deploy on main from GitHub's public API. A failed run opens the status card for the owner; a green build, or a
   // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
+  // 2026-11-04 (owner, #2210: "the home page is the sky and the ask bar"): the card no longer opens by itself, for the owner either; a red build
+  // is one ask away and shows the failed run, linked. Visitors and a green build keep the blank stage.
   if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
     const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy|mcp-live)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
-    // the filled card, not its "checking…" placeholder (the sources are pinged in parallel; under load that takes a few seconds)
-    const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (/own build|Outside sources/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
-    const O = await fresh({ content: gh('failure', true) });
-    const red = await cardOf(O);
+    const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.page(); if (/own build · something on main failed/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
+    const O = await fresh({ content: gh('failure', true) }); await O.p.waitForTimeout(3000); const unasked = await O.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
+    await O.ask('void status', 400); const red = await cardOf(O);
     const link = await O.p.$eval('.vpage a[href*="/actions/runs/7"]', (a) => a.href).catch(() => null);
     const G = await fresh({ content: gh('success', true) }); await G.p.waitForTimeout(3000); const green = await G.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
     const V = await fresh({ content: gh('failure', false) }); await V.p.waitForTimeout(3000); const visitor = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
-    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Verse’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
-    check("the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking shows Verse's own build",
-      /Verse status/.test(red) && /Verse’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
-        && !green && !visitor && /Verse’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
-      JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
+    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Verse status/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
+    check("the owner's status card stays shut until asked (blank home, 2026-11-04); asked, a red build shows the failed run linked; a green build or a visitor sees nothing until they ask",
+      !unasked && /Verse status/.test(red) && /Verse’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
+        && !green && !visitor && /Verse status/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
+      JSON.stringify({ unasked: unasked.slice(0, 80), red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
   // tools pack 10 (owner, 2026-10-18): list and table transforms and starter templates, played the way a person asks for them
   if (want("tools pack 10: list ticks, nesting and numbering, new lists from a list, a data table that sums, sorts and exports, and starter templates")) { const S = await fresh();
@@ -2984,10 +3041,13 @@ try {
       rings.join() === 'write,walk,sleep' && first.join() === 'write:false,walk:true,sleep:true' && afterReload.join() === first.join() && /1 day streak/.test(label) && !S.errors.length, JSON.stringify({ rings, first, afterReload, label, errors: S.errors }));
     await S.ask('cook pasta: boil 3 s then rest 2 s', 700);
     await S.p.evaluate(() => { window.__osc = 0; window.AudioContext = class { constructor() { this.state = 'running'; this.currentTime = 0; this.destination = {}; } resume() { return Promise.resolve(); } createOscillator() { window.__osc++; return { frequency: {}, connect() {}, start() {}, stop() {} }; } createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {} }; } }; });
-    const idle = await S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent);
+    // the card is recipe-stack, ranked late: after the habit reload above, a bare $eval threw and ended the shard (#2250)
+    await until(() => S.p.$('.recipe-stack'), 8000);
+    const readStack = () => S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent).catch(() => '');
+    const idle = await readStack();
     await new Promise((r) => setTimeout(r, 1200));
-    const stillIdle = await S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent);
-    await S.p.click('.recipe-stack .rs-go');
+    const stillIdle = await readStack();
+    if (await S.p.$('.recipe-stack .rs-go')) await S.p.click('.recipe-stack .rs-go');
     const second = await until(async () => (await S.p.$eval('.recipe-stack', (e) => e.dataset.step).catch(() => '')) === '1', 6000);
     const chimedAtHandover = await S.p.evaluate(() => window.__osc);
     const done = await until(async () => /Done/.test(await S.p.$eval('.recipe-stack .rs-time', (e) => e.textContent).catch(() => '')), 6000);
@@ -3341,12 +3401,13 @@ try {
     // 183 redact selection
     await S.ask('clear', 500);
     await S.ask('sticky note my code is hunter2 ok', 600);
-    await S.p.evaluate(() => { const w = document.createTreeWalker(document.querySelector('#stage .thing.sticky'), 4); let n; while ((n = w.nextNode())) { const i = n.nodeValue.indexOf('hunter2'); if (i >= 0) { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 7); const s = getSelection(); s.removeAllRanges(); s.addRange(r); return; } } });
+    await until(() => S.p.$('#stage .thing.sticky'), 4000);
+    await S.p.evaluate(() => { const root = document.querySelector('#stage .thing.sticky'); if (!root) return; const w = document.createTreeWalker(root, 4); let n; while ((n = w.nextNode())) { const i = n.nodeValue.indexOf('hunter2'); if (i >= 0) { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 7); const s = getSelection(); s.removeAllRanges(); s.addRange(r); return; } } });
     await S.p.waitForTimeout(200);
     await S.ask('redact selection', 500);
-    const red = await S.p.evaluate(() => ({ spans: document.querySelectorAll('.sf-redact').length, text: document.querySelector('#stage .thing.sticky').innerText }));
+    const red = await S.p.evaluate(() => { const e = document.querySelector('#stage .thing.sticky'); return { spans: document.querySelectorAll('.sf-redact').length, text: e ? e.innerText : '' }; });
     await S.ask('unredact', 400);
-    const unred = await S.p.$eval('#stage .thing.sticky', (e) => e.innerText);
+    const unred = await S.p.$eval('#stage .thing.sticky', (e) => e.innerText).catch(() => '');
     check('tools pack 8: "redact selection" blacks out the text you selected (the words are gone from the page text, the line keeps its shape) and "unredact" brings them back', red.spans >= 1 && !/hunter2/.test(red.text) && /my code is/.test(red.text) && /hunter2/.test(unred) && !S.errors.length, JSON.stringify({ red, unred, errors: S.errors }));
     // 184 panic
     await S.ask('panic', 400);
@@ -3797,13 +3858,13 @@ try {
     await P.p.keyboard.press('Enter');
     const card = await until(async () => { const t = await P.page(); return /Likely cause/.test(t) && t; }, 8000) || await P.page();
     const r = await P.p.evaluate(() => { const el = document.querySelector('.vpage.on'); const sum = el && el.querySelector('.vpaste summary');
-      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
+      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, glimpse: el && el.querySelector('.vpaste div') ? el.querySelector('.vpaste div').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
     await P.p.click('.vpage.on > .vread'); const reading = await P.p.evaluate(() => ({ said: window.__said.join(' '), pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
     await P.p.click('.vpage.on > .vread'); const stopped = await P.p.evaluate(() => ({ cancels: window.__cancels, pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
     const d = (sent && sent.details) || '';
-    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card\'s button reads the whole card aloud and stops when tapped again',
+    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out, a one-line glimpse, never the whole paste echoed back), and the card\'s button reads the whole card aloud and stops when tapped again',
       !!sent && sent.mode === 'fix' && bytes <= 20000 && d.startsWith(first) && /ECONNREFUSED 10\.0\.0\.5:5432/.test(d) && /characters from the middle left out/.test(d)
-      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === log.length && r.button
+      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === 0 && r.glimpse > 0 && r.glimpse <= 91 && r.button
       && /Likely cause: Postgres refuses the connection/.test(reading.said) && /Start the database/.test(reading.said) && !/Worked out by/.test(reading.said) && reading.pressed === 'true'
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
@@ -5318,7 +5379,7 @@ try {
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const body = (c) => "Verse's own model proposed this change. Why, in Verse's words: the matcher only knew ride words. Verse's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
     const prs = [{ number: 900, title: 'Verse fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by Verse' }, { name: 'automerge' }] },
-      { number: 901, title: 'Verse fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by Verse' }, { name: 'waits for owner' }] },
+      { number: 901, title: 'Verse fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by Verse' }, { name: RETIRED_LABEL }] },
       { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
     const approvals = [];
     await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));
@@ -6846,7 +6907,7 @@ try {
       first.length === 1 && first[0].length === 16 && every(first[0]) && /Very strong · strength 104\.6 bits of entropy · \d+ trillion years to crack/.test(strength) && /Remember|remember/.test(text) && /offline/.test(text)
       && many.length === 3 && many.every((w) => w.length === 24 && every(w) && !/[il1LoO0I]/.test(w) && new Set(w).size === 24) && copies.length === 3 && copies.every((c) => c === 'Copy this password')
       && phrase.length === 3 && phrase.every((w) => /^(?:[A-Z][a-z]{2,6}-){3}[A-Z][a-z]{2,6}\d$/.test(w)) && /Fair · strength 45 bits/.test(bits)
-      && checker.pw === handed[0] && !/#/.test(checker.url) && /\/password-strength\/$/.test(checker.url) && checker.stayed && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
+      && checker.pw === handed[0] && !/#/.test(checker.url) && /\/password(?:-strength|\/strength)\/$/.test(checker.url) && checker.stayed && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
       JSON.stringify({ first, strength, many, copies, phrase, bits, checker, handed, wide, unnamed, errors: Z.errors }));
     await Z.ctx.close();
   }
@@ -6928,9 +6989,14 @@ try {
     await Z.ctx.close();
   }
   if (want("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password")) {
-    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat'); await Z.p.waitForSelector('#cards .card b');
-    const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
-    const p1 = await read(); await Z.p.click('#next'); const p2 = await read(), url = Z.p.url();
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat');
+    // a slow runner leaves the read without a page: the findings stay empty and this floor's own check below fails them (2026-11-04, '#cards .card b' timed out on shard 4 and ended the run at "suite ran to the end")
+    let p1 = [], p2 = [], url = Z.p.url();
+    try {
+      await Z.p.waitForSelector('#cards .card b');
+      const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
+      p1 = await read(); await Z.p.click('#next'); p2 = await read(); url = Z.p.url();
+    } catch (_) {}
     check("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
       p1.length === 5 && p1.every((p) => ['TR', 'NL'].includes(p.nat) && /^[A-Z0-9]{10,12}$/.test(p.password)) && p2[0].name !== p1[0].name && /page=2/.test(url) && /password=upper%2Cnumber%2C10-12/.test(url) && !Z.errors.length,
       JSON.stringify({ p1, p2: p2.slice(0, 1), url, errors: Z.errors }));
@@ -7380,19 +7446,88 @@ try {
       && stale.video && !stale.review && !stale.asks && /^1 video, newest first\./.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
     await F.ctx.close(); }
 
-  // Verse's startup intro (owner, 2026-10-14: "a super professional brief Verse on startup"): the wordmark shows, typing works under
-  // it from the first frame, it is gone in under 2 s, and a test browser (or a link straight to an answer) never sees it unasked
-  if (want("Verse intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s")) {
-    const I = await fresh(); const p = I.p;
-    await p.goto(base + '?intro=1', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(700);
-    const mid = await p.evaluate(() => { const e = document.getElementById('v01d'); return e && { text: e.innerText.replace(/\s+/g, ''), on: getComputedStyle(e).visibility !== 'hidden', clicks: getComputedStyle(e).pointerEvents }; });
+  // the home is a blank stage (owner, 2026-11-05: the wordmark, the hero and the Install line are gone). A Short and a video
+  // card keep their place when they are touched, dragged or moved: a transform or a redraw was starting the clip over.
+  if (want("blank home and a video keeps its place")) {
+    // a one-second 16×16 silent clip, so the check plays a real file and can see the playhead move
+    const clip = 'GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAQlEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEeTbuMU6uEHFO7a1OsggQP7AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiECPQAAAAAAAFlSua8GuAQAAAAAAADjXgQFzxYg4hMjKK782EZyBACK1nIN1bmSIgQCGhVZfVlA4g4EBI+ODhAJiWgDgibCBELqBEJqBAhJUw2f8c3OgY8CAZ8iaRaOHRU5DT0RFUkSHjUxhdmY2MC4xNi4xMDBzc9ZjwItjxYg4hMjKK782EWfIoUWjh0VOQ09ERVJEh5RMYXZjNjAuMzEuMTAyIGxpYnZweGfIoUWjiERVUkFUSU9ORIeTMDA6MDA6MDEuMDAwMDAwMDAwAB9DtnVCaueBAKO9gQAAgPACAJ0BKhAAEAAARwiFhYiFhIgCAgJ1qgP4A/oCDU0YAP79bvP/45k3MMT/jm3/8WE8DijI//FRAKOVgQAoALEBAAEQEAAYABhYL/QACAAAo5WBAFAAsQEAARAQABgAGFgv9AAIAACjlYEAeACxAQABEBAAGAAYWC/0AAgAAKOVgQCgALEBAAEQEAAYABhYL/QACAAAo5WBAMgAsQEAARAQABgAGFgv9AAIAACjlYEA8ACxAQABEBAAGAAYWC/0AAgAAKOVgQEYALEBAAEQEBRgAGFgv9AAIAAAo5WBAUAAsQEAARAQABgAGFgv9AAIAACjlYEBaACxAQABEBAAGAAYWC/0AAgAAKOVgQGQALEBAAEQEAAYABhYL/QACAAAo5WBAbgAsQEAARAQABgAGFgv9AAIAACjlYEB4ACxAQABEBAAGAAYWC/0AAgAAKOVgQIIALEBAAEQEAAYABhYL/QACAAAo5WBAjAAsQEAARAQABgAGFgv9AAIAACjlYECWACxAQABEBAAGAAYWC/0AAgAAKOVgQKAALEBAAEQEAAYABhYL/QACAAAo5WBAqgAsQEAARAQABgAGFgv9AAIAACjlYEC0ACxAQABEBAUYABhYL/QACAAAKOVgQL4ALEBAAEQEAAYABhYL/QACAAAo5WBAyAAsQEAARAQABgAGFgv9AAIAACjlYEDSACxAQABEBAAGAAYWC/0AAgAAKOVgQNwALEBAAEQEAAYABhYL/QACAAAo5WBA5gAsQEAARAQABgAGFgv9AAIAACjlYEDwACxAQABEBAAGAAYWC/0AAgAABxTu2uRu4+zgQC3iveBAfGCAZ/wgQM=';
+    const H = await fresh({ phone: true }); const p = H.p;
+    await p.goto(base + '?intro=1', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(500);
+    const seen = await p.evaluate(() => {
+      const words = [];
+      const walk = (n) => {
+        if (!n) return;
+        if (n.nodeType === 3) {
+          const t = n.textContent.replace(/\s+/g, ' ').trim(); if (!t) return;
+          const host = n.parentElement; if (!host) return;
+          const s = getComputedStyle(host);
+          if (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) === 0) return;
+          const r = host.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return;
+          words.push(t); return;
+        }
+        if (n.nodeType !== 1 || n.tagName === 'SCRIPT' || n.tagName === 'STYLE' || n.tagName === 'NOSCRIPT') return;
+        const s = getComputedStyle(n);
+        if (s.display === 'none' || s.visibility === 'hidden' || Number(s.opacity) === 0) return;
+        for (const c of n.childNodes) walk(c);
+      };
+      walk(document.body);
+      return { words, ph: document.getElementById('input').placeholder, hero: !!document.getElementById('verse-hero') || !!document.getElementById('v01d') || (() => { const h = document.querySelector('h1'), r = h && h.getBoundingClientRect(); return !!(r && (r.width >= 2 || r.height >= 2)); })(), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install'), stage: !!document.getElementById('stage'), bar: !!document.getElementById('row') };
+    });
     await p.fill('#input', 'films'); const typed = await p.inputValue('#input');
-    await p.waitForTimeout(1500); const gone = await p.evaluate(() => !document.getElementById('v01d'));
-    await p.goto(base, { waitUntil: 'domcontentloaded' }); const unasked = await p.evaluate(() => !!document.getElementById('v01d'));
-    check('Verse intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s',
-      !!mid && mid.text === 'VERSEA-TO-MIND' && mid.on && mid.clicks === 'none' && typed === 'films' && gone && !unasked
-      && (await p.title()) === 'Verse · A-to-Mind' && !I.errors.length, JSON.stringify({ mid, typed, gone, unasked, errors: I.errors }));
-    await I.ctx.close(); }
+    const letters = (seen.words || []).filter((w) => /[A-Za-z]/.test(w));
+    check('blank home: a phone shows the void and the ask bar, and the only word is the placeholder',
+      seen.ph === 'Ask anything' && seen.stage && seen.bar && !seen.hero && !seen.nav && !seen.install && typed === 'films' && !letters.length
+      && (await p.title()) === 'Verse · A-to-Mind' && !H.errors.length, JSON.stringify({ seen, letters, typed, errors: H.errors }));
+    await H.ctx.close();
+
+    const V = await fresh();
+    await V.ask('make a clock', 900);
+    const dragged = await V.p.evaluate(async (b64) => {
+      const bin = atob(b64), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const card = document.querySelector('.clock'); if (!card) return { err: 'no clock' };
+      const v = document.createElement('video'); v.playsInline = true; v.muted = true; v.src = URL.createObjectURL(new Blob([bytes], { type: 'video/webm' })); card.appendChild(v);
+      await new Promise((res, rej) => { v.onloadeddata = () => res(); v.onerror = () => rej(new Error('clip')); });
+      try { v.currentTime = Math.min(0.15, (v.duration || 0.4) / 2); } catch (_) {}
+      await v.play().catch(() => {});
+      await new Promise((r) => setTimeout(r, 180));
+      const before = v.currentTime;
+      const b = card.getBoundingClientRect();
+      const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+      v.dispatchEvent(ev('pointerdown', b.left + 12, b.top + 36));
+      window.dispatchEvent(ev('pointermove', b.left + 16, b.top + 40));
+      window.dispatchEvent(ev('pointerup', b.left + 16, b.top + 40));
+      const afterCard = document.querySelector('.clock');
+      return { before, after: v.currentTime, paused: v.paused, still: !!(afterCard && afterCard.contains(v) && v.isConnected), transform: afterCard ? afterCard.style.transform : 'gone' };
+    }, clip);
+    check('a video card keeps its place when it is touched, dragged or moved',
+      dragged && !dragged.err && dragged.still && !dragged.paused && dragged.before > 0 && dragged.after + 0.05 >= dragged.before && !dragged.transform && !V.errors.length,
+      JSON.stringify({ dragged, errors: V.errors }));
+    await V.ctx.close();
+
+    const S = await fresh();
+    await S.p.goto(base + 'films/', { waitUntil: 'domcontentloaded' });
+    const film = await S.p.evaluate(async (b64) => {
+      const bin = atob(b64), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const v = document.createElement('video'); v.playsInline = true; v.muted = true; v.controls = true; v.src = URL.createObjectURL(new Blob([bytes], { type: 'video/webm' }));
+      const box = document.createElement('article'); box.className = 'film watchbox'; box.appendChild(v); document.body.appendChild(box);
+      await new Promise((res, rej) => { v.onloadeddata = () => res(); v.onerror = () => rej(new Error('clip')); });
+      try { v.currentTime = Math.min(0.15, (v.duration || 0.4) / 2); } catch (_) {}
+      await v.play().catch(() => {});
+      await new Promise((r) => setTimeout(r, 180));
+      const before = v.currentTime;
+      const b = v.getBoundingClientRect();
+      const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+      box.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      v.dispatchEvent(ev('pointerdown', b.left + 4, b.top + 4));
+      window.dispatchEvent(ev('pointermove', b.left + 8, b.top + 8));
+      window.dispatchEvent(ev('pointerup', b.left + 8, b.top + 8));
+      const tf = getComputedStyle(box).transform;
+      return { before, after: v.currentTime, paused: v.paused, still: box.contains(v), transform: tf };
+    }, clip);
+    check('a Verse Short keeps its place when it is touched, dragged or moved',
+      film && film.still && !film.paused && film.before > 0 && film.after + 0.05 >= film.before && (film.transform === 'none' || film.transform === '') && !S.errors.length,
+      JSON.stringify({ film, errors: S.errors }));
+    await S.ctx.close(); }
 
   // the app (owner, 2026-10-14: "wheres my apps . web mobile?"): "get the app" shows Install where the browser offers it, and it works
   if (want("app skill: get the app shows Install where the browser offers it, and installing says so")) {
@@ -8837,7 +8972,7 @@ try {
   if (want("will: Verse's own outputs become its input")) { const repo = path.resolve(root, '..');
     const af = path.join(nodeOs.tmpdir(), 'void-asks-' + process.pid + '.json');
     fs.writeFileSync(af, JSON.stringify([{ ask: 'Add a friction indicator to the growth card.', times: 5, small: true }, { ask: 'Learn backgammon.', times: 20 }, { ask: 'hi', times: 9 }]));
-    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '' }, timeout: 120000 });
+    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '', VOID_BETTER_FILE: af + '.no-better' }, timeout: 120000 }); // plain weights: no better row, no weakest-part boost (tools/will.py better_boost)
     fs.rmSync(af, { force: true });
     let c = []; try { const j = JSON.parse(r.stdout); c = Array.isArray(j) ? j : j.candidates || []; } catch (_) {}
     const fr = c.find((x) => x.title === 'Add a friction indicator to the growth card'), bg = c.find((x) => x.title === 'Learn backgammon');
@@ -9188,6 +9323,27 @@ try {
     await D.ctx.close();
   }
 
+  // A skill still loading when the ask's wait runs out (#2246: on a loaded runner "dyslexia friendly font" showed only "waking up", and the
+  // switch never came on: the accessibility skill sits far down the index and was passed over at the deadline, then nothing took the ask).
+  // Its module answers 10 s late here: the switch still comes on once it is in, as it does when the skills load in time.
+  if (want("Late skills: an ask whose skill is still loading when the wait runs out is answered once it arrives")) {
+    const D = await fresh();
+    await D.p.evaluate(async () => { for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); }); // so the route below sees the module
+    await D.p.route(/\/skills\/accessibility-modes\.js(\?|$)/, async (r) => { await new Promise((res) => setTimeout(res, 10000)); r.continue().catch(() => {}); });
+    const cdp = await D.ctx.newCDPSession(D.p); await cdp.send('Network.enable'); await cdp.send('Network.setCacheDisabled', { cacheDisabled: true }); // and not from the memory cache
+    await D.p.reload({ waitUntil: 'domcontentloaded' }); await D.p.waitForSelector('#input'); await D.p.waitForTimeout(300);
+    const lines = []; await D.p.exposeFunction('__said', (t) => lines.push(t)).catch(() => {});
+    await D.p.evaluate(() => { const w = document.getElementById('whisper'); new MutationObserver(() => { if (w.textContent) window.__said(w.textContent); }).observe(w, { childList: true, characterData: true, subtree: true }); });
+    const t0 = Date.now(); await D.p.fill('#input', 'dyslexia friendly font'); await D.p.keyboard.press('Enter');
+    const on = await D.p.waitForFunction(() => document.documentElement.classList.contains('a11y-dyslexia'), null, { timeout: 20000 }).then(() => true).catch(() => false);
+    const ms = Date.now() - t0, saved = await D.p.evaluate(() => localStorage.getItem('a2m.void.a11y.v1') || '');
+    await D.p.waitForTimeout(300);
+    check('late skills: "dyslexia friendly font" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so',
+      on && ms >= 6000 && /dyslexia/.test(saved) && lines.some((l) => /Dyslexia-friendly font on/.test(l)) && !D.errors.length,
+      JSON.stringify({ on, ms, saved, lines: lines.slice(-6), errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Make it my backdrop (2026-10-13, frontier 25 step 3: drawings dress your own Verse): a drawing goes behind the Verse, stays
   // after a reload (kept in the look, which the passkey syncs), and "remove my backdrop" takes it off; an empty canvas says so
   if (want("Draw: make it my backdrop puts the drawing behind your Verse and keeps it")) {
@@ -9201,8 +9357,14 @@ try {
     for (let i = 1; i <= 20; i++) await D.p.mouse.move(box[0] + box[2] * (0.2 + i * 0.03), box[1] + box[3] * (0.5 + Math.sin(i / 3) * 0.2));
     await D.p.mouse.up(); await D.p.waitForTimeout(80);
     await D.p.click('.vpage.on .vd-backdrop'); const made = await said(); const now = await backdrop();
+    // the skills come in slowly after the reload, as on a busy runner or a slow phone (the index that lists them answers 4 s late): "remove my backdrop" is the page's own ask and still
+    // answers at once, without waiting for them (#2220: a CI run read the backdrop still on 500 ms after the ask)
+    await D.p.evaluate(async () => { for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); }); // so the route below sees the index
+    await D.p.route(/\/skills\/index\.json(\?|$)/, async (r) => { await new Promise((res) => setTimeout(res, 4000)); r.continue().catch(() => {}); });
     await D.p.reload(); await D.p.waitForTimeout(800); const afterReload = await backdrop();
-    await D.ask('remove my backdrop', 500); const removed = await backdrop();
+    // typed straight in and read 500 ms later (D.ask would wait for the answer however late it comes, which hid this)
+    await D.p.fill('#input', 'remove my backdrop'); await D.p.keyboard.press('Enter'); await D.p.waitForTimeout(500); const removed = await backdrop();
+    await D.p.unroute(/\/skills\/index\.json(\?|$)/);
     check('draw backdrop: on an empty canvas it says to draw first; after a stroke "Make it my backdrop" puts the picture behind the Verse, kept in the look; it is still there after a reload; "remove my backdrop" takes it off',
       /Draw something first/.test(empty) && /now your Verse's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
         && afterReload.on && /data:image/.test(afterReload.img) && !removed.on && removed.kept === 0 && !D.errors.length,
@@ -11525,6 +11687,35 @@ try {
   // the convert card (asked by Verse, 2026-10-14): "unit converter" puts a converter on the stage that converts both ways,
   // swaps, lists every other unit of the kind, keeps its kind, units and number across a reload, and puts itself away;
   // one-off asks ("5 miles in km") and other converters (currency, pdf, time zone) are not its.
+  // Site tester issues #2222 #2225 #2228: on a loaded runner "yo play despacito", "films by kurosawa pls" and "keep this idea: ... | why: ..."
+  // showed nothing for the tester's 4 s, then the answer: their skills rank 192nd, 182nd and 248th of the index, so a first ask waits for
+  // most of it to load, and the fuzzy wait (up to 2.5 s) came before any word on the page. With the CPU 6x slower and no skill loaded yet
+  // (no idle, no key, no tap before the ask is typed), each ask now says "waking up" within 1.2 s and then gets its own skill's answer.
+  if (want("first ask while the skills load (#2222 #2225 #2228): a word at once, then the right skill")) {
+    const ASKS = [['yo play despacito', /^skill:video-play$/], ['films by kurosawa pls', /^skill:film-metadata$/], ['keep this idea: a stage that remembers | why: it makes coming back feel like home', /^skill:idea-certificate$/]];
+    const rows = [];
+    for (const [a, note] of ASKS) {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+      await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+      const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p);
+      await p.addInitScript(() => { window.requestIdleCallback = () => 0; }); // no idle start: the ask is the first thing that wakes the skills
+      await p.goto(base); await p.waitForSelector('#input');
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+      const loadedAtAsk = await p.evaluate(() => document.documentElement.dataset.skills === 'ready');
+      await p.fill('#input', a); await p.keyboard.press('Enter'); const t0 = Date.now();
+      const first = await until(() => p.evaluate(() => (document.getElementById('whisper').textContent || '').trim() || (document.querySelector('.vpage.on') ? 'page' : '')).catch(() => ''), 1200);
+      const firstMs = first ? Date.now() - t0 : null;
+      const done = await until(() => p.evaluate((q) => { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => x.ask === q).pop(); return l ? String(l.note) : ''; }, a).catch(() => ''), 30000);
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      const ms = done ? Date.now() - t0 : null, w = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+      rows.push({ a: a.slice(0, 24), loadedAtAsk, first, firstMs, note: done || null, ms, right: note.test(String(done)), w });
+      await ctx.close();
+    }
+    check('first ask while the skills load (#2222 #2225 #2228): with the CPU 6x slower and no skill loaded yet, "yo play despacito", "films by kurosawa pls" and "keep this idea: ... | why: ..." each say something within 1.2 s of Enter, then are answered by video-play, film-metadata and idea-certificate, and no "waking up" is left behind',
+      rows.every((r) => !r.loadedAtAsk && r.first && r.firstMs != null && r.firstMs <= 1200 && r.right && r.w !== 'waking up'), JSON.stringify(rows));
+  }
+
   if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
     const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
     const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'
@@ -12148,6 +12339,30 @@ try {
       !!card && /Business idea clarified/.test(card) && /The idea/.test(card) && /Problem it solves/.test(card) && /Systems to design/.test(card) && /Automations that take over/.test(card) && /Handoff/.test(card) && /Next delivery step/.test(card) && /turns customer emails/.test(card) && !B.errors.length,
       JSON.stringify({ card: (card || '').slice(0, 400), errors: B.errors }));
     await B.ctx.close(); }
+  if (want("agent inbox: approve resumes and the Made shelf reopens the steps")) { const A = await fresh();
+    const state = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, running: 0, text: 'Made 1 thing in the last day. 1 waiting on your yes.' },
+      tiers: [{ name: 'free', month_cents: 0 }, { name: 'strong', month_cents: 500 }],
+      tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', seen: 0, steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
+        { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', seen: 0, steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
+    state.made = state.tasks.filter((t) => t.status === 'done'); state.inbox = inboxOf(state.tasks);
+    let gate = Promise.resolve();
+    await A.p.route((u) => new URL(u).pathname === '/api/agent', async (r) => {
+      const run = gate.then(async () => { if (r.request().method() === 'POST') { let b = {}; try { b = JSON.parse(r.request().postData() || '{}'); } catch (_) {} state.tasks = applyAgent(state.tasks, b); state.made = state.tasks.filter((t) => t.status === 'done'); state.inbox = inboxOf(state.tasks); } });
+      gate = run.catch(() => {}); await run;
+      return r.fulfill(json({ ok: true, ...state }));
+    });
+    await A.p.goto(base + 'agent/'); await A.p.waitForSelector('#inbox button', { timeout: 10000 });
+    const inbox = await A.p.locator('#inbox').innerText();
+    await A.p.locator('#made summary').click();
+    const made0 = await A.p.locator('#made').innerText();
+    const open = await A.p.locator('#made details').evaluate((e) => e.open);
+    await A.p.locator('#thread button[data-d="yes"]').click();
+    await A.p.waitForFunction(() => /Resumed/.test((document.querySelector('#thread') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
+    const thread = await A.p.locator('#thread').innerText(), shelf = await A.p.locator('#made').innerText();
+    check('agent inbox: a closed tab comes back to the inbox, approve resumes without sending, and the Made shelf reopens the steps',
+      /Verse finished a task/.test(inbox) && /Verse needs your yes/.test(inbox) && /Done\. It is on your Made shelf/.test(made0) && open && /Resumed/.test(thread) && /Nothing was sent or paid/.test(thread) && /Hi Bob/.test(shelf) && /Forsyth Park/.test(shelf) && !A.errors.length,
+      JSON.stringify({ inbox: inbox.slice(0, 160), thread: thread.slice(0, 200), shelf: shelf.slice(0, 200), open, errors: A.errors }));
+    await A.ctx.close(); }
   if (want("connected: every floor page links to at least four sibling Verse tools")) {
     const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
     const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);

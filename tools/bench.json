@@ -6416,6 +6416,8 @@
   {"ask": "three drafts of we are late with the report", "want": "skill:draft-triad"},
   {"ask": "pick something to listen to with me", "want": "skill:media-pick"},
   {"ask": "pick a song", "want": "skill:media-pick"},
+  {"ask": "play a song", "want": "skill:media-pick"},
+  {"ask": "play some music", "want": "skill:media-pick"},
   {"ask": "pick something to watch", "want": "skill:media-pick"},
   {"ask": "what network is the office on", "want": "skill:show"},
   {"ask": "when did breaking bad end", "want": "skill:show"},

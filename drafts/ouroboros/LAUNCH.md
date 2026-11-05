@@ -7,7 +7,7 @@
 - `drafts/ouroboros/landing.html`: the page. Its buy link is a placeholder on purpose.
 
 ## Before launch (owner steps; money stays behind the owner key)
-1. **Run it on the Victus first.** `python tools/ouroboros.py run --root C:\Users\adamm --out D:\ouroboros-report`. Windows is untested: locked files, junctions, long paths. Do not sell it until this ran clean on a real Windows machine, and send the output so the digests can be checked on real projects.
+1. **Run it on the Victus first.** `python tools/ouroboros.py run --root %USERPROFILE% --out D:\ouroboros-report`. Windows is untested: locked files, junctions, long paths. Do not sell it until this ran clean on a real Windows machine, and send the output so the digests can be checked on real projects.
 2. **Build the download:** `python tools/build_ouroboros_pack.py` then upload `dist/ouroboros-<version>.zip`.
 3. **Create the Gumroad product** (the repo already uses Gumroad) and set the price. A one-time price fits a local tool. The price is yours to set; no market data was gathered for this, so ask a few developers what they would pay before fixing it.
 4. **Put the real product URL into `landing.html`** (replace `BUY_URL_HERE`), copy it to `void-live-deploy/ouroboros/index.html`, add `/ouroboros/` to `sitemap.xml`.

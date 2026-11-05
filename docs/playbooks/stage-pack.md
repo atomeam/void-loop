@@ -18,6 +18,20 @@ An owner brief that names several playful things for the stage at once, each in 
 ## How to tell it worked
 `node --test tools/stage-pack-f.test.mjs` green; the browser section green; `VOID_SKIP_BENCH=1 node tools/checks.mjs` green; `node tools/ask.mjs "<a near miss>"` shows `by:` someone else or nothing, never the new skill.
 
+## A late skill the site tester only saw as "waking up"
+
+What starts it: `tools/site-test.mjs` files an issue whose reason is `only "waking up" appeared`, and the skill's `match` already accepts the ask.
+
+The skill sits far down `skills/index.json`. The page waits for every skill ranked above it, then for the whole index, and the tester stops first. The sky family (`skills/constellation.js` inside `skills/time.js`) is a different skill: confirm it returns no match for the weave phrase before changing either one.
+
+What worked (#2270, the same shape as recipe-stack in `void.html`): before `say('waking up')`, import that one skill file and run it. Keep the case in `tools/site-test.json`.
+
+How to tell it worked: `node --test tools/stage-pack-d.test.mjs`. The weave answers while `/skills/index.json` is held back, and `data-skills` is not `ready`.
+
+The same door for "what are the figures doing" (#2272): `skills/together.js` already matches it (44th in the index; nothing above it does). Import that file before `say('waking up')`. `node --test tools/together.test.mjs` holds the index back and still reads the answer. Do not lengthen the site-test wait, and do not take the case out of `tools/site-test.json`.
+
+The same door for "closer on the figure" (#2282): `skills/zoom-figure.js` already matches it (162nd of 342; nothing else does). Import that file before `say('waking up')`. `node --test tools/zoom-figure.test.mjs` holds the index back and still reads "no figure here". Do not lengthen the site-test wait, and do not take the case out of `tools/site-test.json`.
+
 ## Mistakes made
 - A crowd that "rises" cannot be measured by mean y when the particles wrap at the top: measure mean vertical speed instead.
 - `moodOf(null, now)` with `now = Date.now()` read as "idle for ages" and spelt the word at once; the mount records a `start` event so the word comes after ten quiet seconds.

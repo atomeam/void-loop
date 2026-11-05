@@ -32,6 +32,20 @@ export function currentNav(path, nav = NAV) {
   return best;
 }
 
+/**
+ * How far a horizontal bar should scroll so an item sits fully inside it.
+ * itemLeft and itemRight are distances from the bar's visible left edge (negative when the item starts off to the left).
+ */
+export function revealScroll({ scrollLeft = 0, clientWidth = 0, itemLeft = 0, itemRight = 0 } = {}) {
+  const left = Number(scrollLeft) || 0;
+  const width = Number(clientWidth) || 0;
+  const start = Number(itemLeft) || 0;
+  const end = Number(itemRight) || 0;
+  if (start < 0) return Math.max(0, left + start);
+  if (end > width) return Math.max(0, left + (end - width));
+  return left;
+}
+
 /** the crew member who last said what they did. */
 export function latestFeed(crew) {
   let best = null;

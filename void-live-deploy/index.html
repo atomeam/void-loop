@@ -80,6 +80,7 @@
       position: fixed; inset: 0 0 72px 0;
       overflow: hidden;
     }
+    /* home cards: stage things and answer pages, fetched with the first ask */
     .thing {
       position: absolute;
       user-select: none;
@@ -214,6 +215,12 @@
       gap: 8px;
     }
     .timer .timer-ring { width: 0.9em; height: 0.9em; flex: none; }
+    .timer-set { font-size: 0.32em; color: var(--muted); letter-spacing: 0; white-space: nowrap; }
+    /* a phone: the hourglass sits in the card. Beside it, the absolute miniature makes scrollWidth wider than the card (the exam's 320px check). */
+    @media (max-width: 420px) {
+      .timer { flex-wrap: wrap; }
+      .timer .void-mini { position: relative !important; left: auto !important; right: auto !important; top: auto !important; width: 88px !important; height: 64px !important; max-width: 100%; }
+    }
     .timer.timer-done > span:first-of-type { animation: timer-flash 1s steps(2, jump-none) infinite; }
     @keyframes timer-flash { 0% { opacity: 1; } 100% { opacity: 0.25; } }
     @media (prefers-reduced-motion: reduce) { .timer.timer-done > span:first-of-type { animation: none; } }
@@ -575,6 +582,7 @@
     html { background: var(--void-bg, var(--sky-bg, #050505)); transition: background-color 1.5s ease; }
     html, body { background-color: transparent; }
     html { background-color: var(--void-bg, var(--sky-bg, #050505)); }
+    /* home stage: the empty void, in the first stylesheet */
     #void-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background: radial-gradient(circle at 50% 45%, var(--void-glow, var(--sky-glow, #0b0b10)), transparent 70%);
       opacity: 0; transition: opacity 1.5s ease; }
@@ -1158,37 +1166,22 @@
     *,*::before,*::after{box-sizing:border-box}
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
-    /* no hero words on the home page (owner, 2026-11-04: "supposed to be blank"): the sky and the ask bar, nothing else */
-    #away-note{opacity:0} /* the away line keeps its place and its state, it just is not shown */
-    #v01d{position:fixed;inset:0;z-index:2147483000;display:grid;place-content:center;background:#050505;color:#f4f2ff;font:200 clamp(48px,13vw,112px)/1 ui-sans-serif,system-ui,sans-serif}
+    /* the home is the void and the ask bar (owner, 2026-11-05): no wordmark, no heading, no Install line */
+    #away-note,#v01d,#verse-install{display:none !important} /* the away line keeps its state; it is not shown. The intro wordmark stays in the stylesheet and is not painted. */
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
-    #row{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:center;min-height:52px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 10px 8px 18px;background:rgba(16,18,28,.72)}
+    #row{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:center;min-height:52px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 10px 8px 18px;background:rgba(16,18,28,.86)}
     @media (max-width:480px){#dock{padding:10px 10px calc(14px + env(safe-area-inset-bottom,0px))} #row{padding:6px 8px 6px 14px;max-width:none}}
     @media (max-width:700px){#dock{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}}
     #input{flex:1;min-width:0;min-height:44px;border:0;outline:0;background:transparent;color:#f2f4fb;font:16px/1.3 ui-sans-serif,system-ui,sans-serif}
-    #input::placeholder{color:#8b90a6}
-    #go,#verse-install{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit}
-    #verse-install{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:7;padding:0 16px}
-    #verse-install[hidden]{display:none}
+    #input::placeholder{color:#b4b9cb} /* 4.5:1 or better on the bar even over a white backdrop (the empty-state check) */
+    #go{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit}
     #void-anchor{position:fixed;right:12px;bottom:12px;z-index:6;width:28px;height:28px;display:grid;place-items:center;color:#d7d2ff;opacity:.12}
     #void-anchor svg{width:16px;height:16px;display:block}
     @media (max-width:700px){#void-anchor{right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));opacity:.22}}
   </style>
 </head>
 <body>
-  <div id="v01d" aria-hidden="true"><div class="v01d-mark"><svg class="v01d-o" viewBox="0 0 200 60" preserveAspectRatio="none"><ellipse cx="100" cy="30" rx="96" ry="26" /></svg><span>V</span><span>E</span><span>R</span><span>S</span><span>E</span></div><div class="v01d-line"></div><div class="v01d-by">A-TO-MIND</div></div>
-  <script>
-    // Verse's intro: once a visit; not for a link straight to an answer (?q=), a published page (/@name), reduced motion, or a test
-    // browser (navigator.webdriver) unless it asks with ?intro=1
-    (function () {
-      var e = document.getElementById('v01d'), q = location.search, skip = false;
-      try { skip = !!sessionStorage.getItem('a2m.void.intro.v1'); sessionStorage.setItem('a2m.void.intro.v1', '1'); } catch (_) {}
-      if (!/[?&]intro=1/.test(q) && (skip || /[?&]q=/.test(q) || /^\/@/.test(location.pathname) || navigator.webdriver || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches))) { e.remove(); return; }
-      setTimeout(function () { e.remove(); }, 1900);
-    })();
-  </script>
-  <button id="verse-install" type="button" hidden>Install</button>
   <noscript><main style="max-width:640px;margin:20vh auto;padding:0 16px;color:#cfcfcf;font:15px/1.5 system-ui,sans-serif">
     <p style="font-weight:400">Verse</p>
     <p>Verse by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
@@ -1319,8 +1312,12 @@
     // a learning card (the quiz: an `ephemeral` stage kind) is never saved or synced unless the visitor kept that one card
     // (domains/void.learning.md; the same rule as persistable() in skills/quiz-rules.js, tested in tools/learning.test.mjs)
     function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
+    // a link with ?spectate= is someone else's snapshot. The viewer's own stage is drawn under it and must not be
+    // rearranged or saved: layout on this page would move a clock clear of a card the owner still has open and
+    // write that place into this device (#2250, stage pack f).
+    function spectating() { try { return /[?&]spectate=/.test(location.search); } catch (_) { return false; } }
     function save() {
-      if (PAGE) return;
+      if (PAGE || spectating()) return;
       try { if (figures3d && figures3d.keepPlaces) figures3d.keepPlaces(things); } catch (_) {} // where each figure stands is kept whenever the scene is saved (figures3d.js), not only when the tab hides
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
       try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
@@ -1354,21 +1351,44 @@
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
     }
     let sayCount = 0;
+    function fitOpenPanels() {
+      // the whisper sits in the ask dock, so a new line lifts the dock over a game panel that was fitted a moment earlier
+      // (phone Go: the panel ended 5px inside the dock until the next frame). Fit again in this same turn, before anything reads the layout.
+      for (const c of stage.querySelectorAll(':scope > .side-card')) if (typeof c.fitPanel === 'function') c.fitPanel();
+    }
     function say(msg) {
       whisper.textContent = msg || '';
       const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
-      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) { whisper.textContent = ''; fitOpenPanels(); } }, 3500);
+      fitOpenPanels();
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
     }
 
+    // a card that is playing something: a <video>, an <audio>, or an embedded player. A CSS transform on that card, or
+    // taking it out of the document, restarts the player (owner, 2026-11-05: touching, dragging or moving a Short or a video card).
+    function holdsMedia(el) { return !!(el && el.querySelector && el.querySelector('video, audio, iframe')); }
+    // park a node in the document, off to the side, still displayed (display:none would pause it). innerHTML = '' on the stage
+    // would drop it out of the document and the browser starts the clip over.
+    function parkNode(node) {
+      try {
+        if (!node || !node.parentNode || !document.body) return;
+        let park = document.getElementById('void-media-park');
+        if (!park) {
+          park = document.createElement('div'); park.id = 'void-media-park'; park.setAttribute('aria-hidden', 'true');
+          park.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none';
+          document.body.appendChild(park);
+        }
+        park.appendChild(node);
+      } catch (_) {}
+    }
     // keepVideosTake/keepVideosPut: every <video> on a card is remembered by its card id and src before a redraw; the redrawn card's matching
     // <video> is swapped for the old element (same buffer, same spot), and one that was playing plays on (taking it out of the page paused it)
     function keepVideosTake(root) {
       const out = [];
       for (const v of root.querySelectorAll('[data-id] video')) {
-        const card = v.closest('[data-id]'); const src = v.currentSrc || v.getAttribute('src') || '';
+        const card = v.closest('[data-id]'); const src = v.currentSrc || v.getAttribute('src') || v.src || '';
         if (card && src) out.push({ id: card.dataset.id, src, v, playing: !v.paused && !v.ended, t: v.currentTime });
       }
       return out;
@@ -1376,21 +1396,32 @@
     function keepVideosPut(root, vids) {
       for (const k of vids) {
         const card = root.querySelector('[data-id="' + CSS.escape(k.id) + '"]'); if (!card) continue;
-        const fresh = [...card.querySelectorAll('video')].find((n) => n !== k.v && (n.getAttribute('src') || n.currentSrc || '') === (k.v.getAttribute('src') || k.src));
-        if (fresh) fresh.replaceWith(k.v); else if (!card.contains(k.v)) continue;
-        try { if (Math.abs(k.v.currentTime - k.t) > 0.5) k.v.currentTime = k.t; } catch (_) {}
+        const fresh = [...card.querySelectorAll('video')].find((n) => n !== k.v && (n.getAttribute('src') || n.currentSrc || n.src || '') === (k.v.getAttribute('src') || k.src));
+        if (fresh) fresh.replaceWith(k.v);
+        else if (!card.contains(k.v)) { const box = card.querySelector('.vd-player, .mv-player') || card; box.appendChild(k.v); }
+        try { if (Math.abs((k.v.currentTime || 0) - k.t) > 0.25) k.v.currentTime = k.t; } catch (_) {}
         if (k.playing && k.v.paused) { try { const p = k.v.play(); if (p && p.catch) p.catch(() => {}); } catch (_) {} }
       }
     }
+    // a native drag of a video reloads it. The card's own drag (bindDrag) moves the card; the video is not a drag source.
+    document.addEventListener('dragstart', (e) => {
+      const m = e.target && e.target.closest && e.target.closest('video, audio, iframe');
+      if (!m) return;
+      e.preventDefault();
+      try { m.draggable = false; } catch (_) {}
+    }, true);
     function render() {
       // a live card (a field mind: the memory orbs, Swarm, Verse Brain) keeps running across a redraw instead of starting over
       // (asked 2026-10-29: a new card restarted every mind on the stage): it says when it can stay as it is (el._liveKeep,
-      // lib/live-cards.js), and the same element goes back where its thing stands
+      // lib/live-cards.js), and the same element goes back where its thing stands. A card that is playing a video stays too:
+      // rebuilding it starts the clip over.
       const live = new Map();
-      for (const el of stage.querySelectorAll(':scope > [data-id]')) { try { const th = things[el.dataset.id]; if (th && el._liveKeep && el._liveKeep(th)) live.set(th.id, el); } catch (_) {} }
-      stage.querySelectorAll('.clock').forEach((el) => clearInterval(el._timer));
-      stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
+      for (const el of stage.querySelectorAll(':scope > [data-id]')) { try { const th = things[el.dataset.id]; if (th && ((el._liveKeep && el._liveKeep(th)) || holdsMedia(el))) live.set(th.id, el); } catch (_) {} }
+      stage.querySelectorAll('.clock').forEach((el) => { if (!live.has(el.dataset.id)) clearInterval(el._timer); });
+      stage.querySelectorAll('.timer').forEach((el) => { if (!live.has(el.dataset.id)) clearInterval(el._tickInterval); });
       const vids = keepVideosTake(stage); // a playing video rides through the redraw as the same element (owner, 2026-11-03: moving a card restarted its video)
+      for (const el of live.values()) parkNode(el);
+      for (const k of vids) if (!k.v.closest('#void-media-park')) parkNode(k.v);
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         const kept = live.get(th.id);
@@ -1417,6 +1448,7 @@ Object.values(things).forEach((th) => {
       const pg = vpageEl && vpageEl.classList.contains('on') ? vpageEl.getBoundingClientRect() : null;
       const floor = stage.getBoundingClientRect().bottom - 8;
       for (const el of stage.querySelectorAll(':scope > [data-id]')) {
+        if (holdsMedia(el)) { el.style.translate = ''; el.style.transform = ''; continue; } // a translate here restarts the video
         const had = el._aside || [0, 0], r0 = el.getBoundingClientRect();
         // where it is drawn now, mid-glide included (the computed translate, not the target in _aside): measured against the
         // target while it was still gliding, a second look put it back under the card
@@ -1539,6 +1571,7 @@ Object.values(things).forEach((th) => {
     }
     if (PAGE) addEventListener('resize', () => requestAnimationFrame(() => layoutStage()));
     function layoutStage() {
+      if (spectating()) return; // the overlay is not this device's stage; do not move its things or save them
       if (PAGE) { if (!document.documentElement.classList.contains('dragging')) flowPage(); return; }
       if (!placement || document.documentElement.classList.contains('dragging')) return;
       const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
@@ -1598,19 +1631,22 @@ Object.values(things).forEach((th) => {
         const label = String(th.name || th.kind || 'card').replace(/^\w/, (c) => c.toUpperCase()).slice(0, 24);
         b.textContent = label + ' \u21A9'; b.setAttribute('aria-label', 'Bring back ' + label);
         b.style.cssText = 'font:inherit;font-size:12px;color:var(--ink,#eee);background:rgba(20,22,30,.92);border:1px solid var(--card-line,rgba(255,255,255,.16));border-radius:999px;padding:5px 12px;cursor:pointer;backdrop-filter:blur(6px)';
-        b.addEventListener('click', () => untuckThing(th.id));
+        b.addEventListener('pointerdown', (e) => e.stopPropagation()); // the card underneath (shown again by this tap) must not take the gesture
+        b.addEventListener('click', (e) => { e.stopPropagation(); untuckThing(th.id); });
         tray.appendChild(b);
       }
       tray.hidden = !tray.childElementCount;
     }
     function untuckThing(id) { // one tap: it comes back, on the nearest clear spot to where it was, and stays there while this game is open
       const th = things[id]; if (!th || !th.tucked) return;
+      const was = selectedId; // bringing it back does not make it the thing "forget this" closes; the game stays picked
       th.tucked = false; th.restored = true;
       const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
       if (el) {
         el.style.display = '';
         if (panelFit && placement) { const o = otherRects(id), p = placement.freeSpot({ w: el.offsetWidth, h: el.offsetHeight }, o, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) }, { x: th.x, y: th.y }); th.x = p.x; th.y = p.y; placeThing(th); }
       }
+      if (was && was !== id && things[was]) selectedId = was;
       tuckApply(); save(); requestAnimationFrame(() => layoutStage());
     }
     // where a thing stands, not where an entrance animation draws it this frame (a board that lands scaled read 130 px off): the
@@ -1764,15 +1800,18 @@ Object.values(things).forEach((th) => {
       else if (m.type === 'void-ext:tab' && m.tab && typeof m.tab === 'object') {
         ext.on = true; document.body.classList.add('in-ext-panel');
         const t = m.tab, s = (v, n) => String(v == null ? '' : v).slice(0, n);
-        ext.tab = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
+        const next = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
           field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null,
           // the context check's counts (extension/page.js, lib/context-check.js): numbers only, nothing of the page's words
           content: t.content && typeof t.content === 'object' ? Object.fromEntries(['text', 'images', 'rows', 'cells'].map((k) => [k, Math.max(0, Math.floor(+t.content[k]) || 0)])) : null };
+        const prev = ext.tab;
+        const sameTab = prev && prev.url === next.url && prev.title === next.title && prev.selection === next.selection && JSON.stringify(prev.field || null) === JSON.stringify(next.field || null);
+        ext.tab = next;
         let th = Object.values(things).find((x) => x.kind === 'tab');
         if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
           th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;
         }
-        ext.draft = ''; ext.sent = '';
+        if (!sameTab) { ext.draft = ''; ext.sent = ''; } // the same read arriving twice must not throw away a draft just typed
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
       } else if ((m.type === 'void-ext:drafted' || m.type === 'void-ext:threaded') && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
@@ -1890,12 +1929,16 @@ Object.values(things).forEach((th) => {
         let cur = null, vx = 0, vy = 0, lastX = e.clientX, lastY = e.clientY, lastT = performance.now();
         const begin = () => {
           selectedId = th.id;
-          if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; } // to the front (render order = z-order)
+          const media = holdsMedia(el);
+          if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; if (media && el.isConnected) stage.appendChild(el); } // to the front (render order = z-order)
           document.documentElement.classList.add('dragging');
           if (editable) { try { getSelection().removeAllRanges(); if (document.activeElement) document.activeElement.blur(); } catch (_) {} }
-          render();
-          cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
-          cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
+          // a card with a video stays the same element. render() empties the stage and mounts the card again, and that
+          // starts the clip over (owner, 2026-11-05). A transform on the card does the same, so a playing card is not tilted.
+          if (!media) render();
+          cur = (media && el.isConnected ? el : stage.querySelector('[data-id="' + CSS.escape(th.id) + '"]')) || el;
+          if (media) { cur.style.transform = ''; for (const m of cur.querySelectorAll('video, audio, iframe')) { try { m.draggable = false; } catch (_) {} } }
+          else cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
           // grouped things (skills/group.js) ride along with the one in the hand
           mates = th.group ? Object.values(things).filter((t) => t !== th && t.group === th.group && t.kind !== 'figure' && !t.locked)
             .map((t) => ({ t, ox: t.x, oy: t.y, el: stage.querySelector('[data-id="' + CSS.escape(t.id) + '"]') })) : [];
@@ -1954,7 +1997,7 @@ Object.values(things).forEach((th) => {
             tvx *= fr; tvy += 0.0016 * dt; spin += tvx * dt * 0.4; // a real toss: carried by its own speed, gravity pulls it down
             px += tvx * dt; py += tvy * dt;
             cur.style.left = px + 'px'; cur.style.top = py + 'px';
-            cur.style.transform = 'rotate(' + spin + 'deg)';
+            cur.style.transform = holdsMedia(cur) ? '' : 'rotate(' + spin + 'deg)';
             const gone = px + w < 0 || py + h < 0 || px > stage.clientWidth || py > stage.clientHeight;
             if (!gone) { requestAnimationFrame(step); return; }
             try { if (sk && sk.thrown) sk.thrown(th, stageApi); } catch (_) {}
@@ -1993,12 +2036,19 @@ Object.values(things).forEach((th) => {
       const timeSpan = document.createElement('span');
       const label = document.createElement('span');
       label.className = 'timer-label';
+      // the length it was set for, in m:ss and total seconds. The countdown above ticks (1:30 becomes 1:27); this line does not,
+      // so a reader a moment later still sees 1:30 and 90. Quiet, and in the card's text.
+      const setSpan = document.createElement('span');
+      setSpan.className = 'timer-set';
       el.appendChild(ring);
       el.appendChild(timeSpan);
       el.appendChild(label);
+      el.appendChild(setSpan);
       return (remaining, total, word) => {
         const p = total > 0 ? remaining / total : 0;
         timeSpan.textContent = Math.floor(remaining / 60000) + ':' + String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0');
+        const setSec = Math.max(0, Math.round((+total || 0) / 1000));
+        setSpan.textContent = 'Countdown set for ' + Math.floor(setSec / 60) + ':' + String(setSec % 60).padStart(2, '0') + ' · ' + setSec + ' seconds';
         label.textContent = word;
         fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
         fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
@@ -2025,6 +2075,10 @@ Object.values(things).forEach((th) => {
       return true;
     }
 function wantsClearStage(lower) {
+      // "clear all the notes" (and the other kind batches) is not the whole stage. The unanchored
+      // "clear all" used to match that ask and wipe the timers with the notes (#2250, after the
+      // early clear). A kind named after "all" stays with the batch remove.
+      if (/\b(?:clear|reset|wipe)\s+all\b(?:\s+the)?\s+(?:notes?|stick(?:y|ies)|timers?|countdowns?|clocks?|lists?|checklists?|shapes?|circles?|squares?|lines?|counters?|notepads?|images?|pictures?|photos?|links?|cards?|maps?|calculators?|calcs?)\b/.test(lower)) return false;
       return /^(clear|clear\s+(everything|all|stage|the\s+stage)|reset\s+(everything|all|stage)|wipe|start\s+over)\s*[.!]?\s*$/.test(lower)
         || /\b(clear|reset)\s+(everything|all|the\s+stage|stage)\b/.test(lower)
         || /\bwipe\s+(everything|all|the\s+stage)\b/.test(lower);
@@ -2458,7 +2512,7 @@ say('nothing selected to remove');
     // card's correction log (lib/corrections.js). The self card keeps its own Talk to me and Correct me.
     function ownerKey() { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } } // hoisted: no TDZ
     var replyLib = null; // var, not let: a card can open before this line has run, and keepTell then waits for the import below
-    import('/lib/card-reply.js').then((m) => { replyLib = m; if (vpageEl) keepTell(vpageEl); }).catch(() => {});
+    function replyReady() { if (replyLib) return Promise.resolve(replyLib); return replyReady.p || (replyReady.p = import('/lib/card-reply.js').then((m) => { replyLib = m; if (vpageEl) keepTell(vpageEl); return m; }).catch(() => null)); }
     function keepTell(el) {
       if (!el || !replyLib) return;
       const card = () => { const title = ((el.querySelector('h2') || {}).textContent || '').trim(); return { ask: el._ask || '', title, said: cardWords(el).replace(title, '').trim(), routed: routeOfCard(el), family: replyLib.familyOfNote(noteOfCard(el)) }; };
@@ -2556,6 +2610,7 @@ say('nothing selected to remove');
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
     }
     function showPage(build) {
+      warmAskLibs();
       closePage();
       const el = document.createElement('div');
       el.className = 'vpage';
@@ -2817,7 +2872,10 @@ say('nothing selected to remove');
     }
     // the card never stays on "…" (owner, 2026-10-19: "not loading"): whatever goes wrong while it is drawn, it says so and asks to be asked again
     async function showVoice(said) {
-      const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
+      // .vc-self is on the card before the reflect fetch. The no-clip probe at 1280x800 waited 30s for that class, which used to
+      // arrive only after the fetch (#2250). Inline opacity wins over the arrive animation's first frame, which stays at 0 while the desktop is busy.
+      const el = showPage((p) => { p.classList.add('vc-self'); p.style.animation = 'none'; p.style.opacity = '1'; p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
+      if (el) el.classList.add('on');
       try { await drawVoice(said, el); } catch (_) {
         if (vpageEl === el && !el.querySelector('[data-v-body], [data-v-correct]')) el.innerHTML = '<h2>What I think of myself</h2><p>I could not draw this card just now. Ask again in a moment.</p>';
       }
@@ -3186,16 +3244,18 @@ say('nothing selected to remove');
     let agentRuns = 0; // > 0 while a visiting agent's WebMCP call is being answered: a miss then is tagged, so Verse's learning can tell
     // Every "I cannot" carries what is missing (lib/refusal.js, asked by Verse): the page shows one line under the answer,
     // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
-    const refusalReady = import('/lib/refusal.js').catch(() => null);
+    // an import that starts the first time it is called, so an empty home does not download it
+    function lazyImport(load) { let p = null; return () => p || (p = load()); }
+    const refusalReady = lazyImport(() => import('/lib/refusal.js').catch(() => null));
     // Verse keeps secrets and turns every negative ask positive (lib/keeper.js, the same rule /api/answer runs first): asked on the page too,
     // before any local skill, so an env/key/prompt/other-visitor/harmful/mean ask gets the kind answer, never a skill's guess
-    const keeperReady = import('/lib/keeper.js').catch(() => null);
+    const keeperReady = lazyImport(() => import('/lib/keeper.js').catch(() => null));
     const refusals = []; window.voidRefusals = refusals;
     // A near miss becomes a visible proposal (lib/near-miss.js; asked by Verse twice, 2026-10-14: "Create a visual 'near-miss' skill
     // proposal when a user ask fails to map to an existing skill."): when /api/answer had nothing and the router's closest skill scored
     // near its bar, the "I don't know this yet" card adds "Did you mean <that skill's first example>?" as a data-ask link. Nothing new
     // is sent or stored: the answer route already knew the nearest skill.
-    const nearMissReady = import('/lib/near-miss.js').catch(() => null);
+    const nearMissReady = lazyImport(() => import('/lib/near-miss.js').catch(() => null));
     let lastNear = null; // { ask, near } from the last /api/answer reply that carried a near miss
     // a browser driven by automation (navigator.webdriver: the claims check, the site tester, a bench) says so: its misses are our own
     // replays, never people (owner, 2026-10-19: "deep ocean floor, asked 72 times" in the will was tools/claims-verify.mjs typing a ledger try ask)
@@ -3204,14 +3264,14 @@ say('nothing selected to remove');
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : navigator.webdriver ? { origin: 'robot' } : {}) }), keepalive: true }).catch(() => {});
       } catch (_) {}
       const pg = vpageEl;
-      return refusalReady.then((m) => {
+        return refusalReady().then((m) => {
         if (!m) return null;
         const r = m.refusalOf(ask, fallback);
         refusals.push(r); if (refusals.length > 20) refusals.shift();
         window.dispatchEvent(new CustomEvent('void-refusal', { detail: r }));
         if (pg && pg === vpageEl && /^(knowledge|lookup|skill|calc)$/.test(r.kind) && !pg.querySelector('.refusal')) {
           const d = document.createElement('div'); d.className = 'src refusal'; d.textContent = m.refusalLine(r); pg.appendChild(d);
-          if (lastNear && lastNear.ask === ask) nearMissReady.then((nm) => { const pr = nm && nm.proposalOf(lastNear.near); if (pr && pg === vpageEl && !pg.querySelector('.near-miss')) pg.insertAdjacentHTML('beforeend', nm.proposalHtml(esc, pr)); }).catch(() => {});
+          if (lastNear && lastNear.ask === ask) nearMissReady().then((nm) => { const pr = nm && nm.proposalOf(lastNear.near); if (pr && pg === vpageEl && !pg.querySelector('.near-miss')) pg.insertAdjacentHTML('beforeend', nm.proposalHtml(esc, pr)); }).catch(() => {});
         }
         return r;
       }).catch(() => null);
@@ -3362,14 +3422,14 @@ say('nothing selected to remove');
       ['area', 4046.8564224, 'acres', /^acres?$/], ['area', 10000, 'hectares', /^(?:hectares?|ha)$/], ['area', 2589988.110336, 'square miles', /^(?:sq(?:uare)?\.?\s*(?:miles?|mi)|mi2)$/], ['area', 1e6, 'square km', /^(?:sq(?:uare)?\.?\s*(?:km|kilomet(?:er|re)s?)|km2|km²)$/],
       ['mass', 6.35029318, 'stone', /^(?:stones?|st)$/], ['mass', 0.45359237, 'pounds', /^(?:pounds?|lbs?)$/], ['mass', 1, 'kg', /^(?:kg|kilos?|kilograms?)$/], ['mass', 0.001, 'grams', /^(?:grams?|g)$/], ['mass', 0.028349523, 'ounces', /^(?:ounces?|oz)$/],
       ['speed', 0.44704, 'mph', /^(?:mph|miles?\s+(?:an|per)\s+hour)$/], ['speed', 1 / 3.6, 'km/h', /^(?:km\/?h|kph|kmh|kilomet(?:er|re)s?\s+(?:an|per)\s+hour)$/], ['speed', 1, 'm/s', /^(?:m\/s|meters?\s+per\s+second|metres?\s+per\s+second)$/], ['speed', 0.514444, 'knots', /^(?:knots?|kn|kt)$/],
-      ['data', 1024, 'KB', /^(?:kb|kilobytes?)$/], ['data', 1048576, 'MB', /^(?:mb|megabytes?)$/], ['data', 1073741824, 'GB', /^(?:gb|gigabytes?)$/], ['data', 1099511627776, 'TB', /^(?:tb|terabytes?)$/],
+      ['data', 0.125, 'bits', /^bits?$/], ['data', 1, 'bytes', /^bytes?$/], ['data', 1024, 'KB', /^(?:kb|kilobytes?)$/], ['data', 1048576, 'MB', /^(?:mb|megabytes?)$/], ['data', 1073741824, 'GB', /^(?:gb|gigabytes?)$/], ['data', 1099511627776, 'TB', /^(?:tb|terabytes?)$/],
       ['mass', 907.18474, 'short tons (US)', /^(?:tons?|short\s+tons?|us\s+tons?)$/], ['mass', 1000, 'metric tons', /^(?:metric\s+tons?|tonnes?|t)$/], ['mass', 0.0002, 'carats', /^(?:carats?|ct)$/], ['mass', 0.0311034768, 'troy ounces', /^(?:troy\s+ounces?|ozt)$/],
       ['energy', 1, 'joules', /^(?:joules?|j)$/], ['energy', 1000, 'kJ', /^(?:kj|kilojoules?)$/], ['energy', 3600, 'Wh', /^(?:wh|watt[\s-]hours?)$/], ['energy', 3.6e6, 'kWh', /^(?:kwh|kilowatt[\s-]hours?)$/],
       ['energy', 4184, 'food calories (kcal)', /^(?:calories|calorie|kcal|cal)$/], ['energy', 1055.06, 'BTU', /^(?:btus?)$/],
       ['power', 1, 'watts', /^(?:watts?|w)$/], ['power', 1000, 'kW', /^(?:kw|kilowatts?)$/], ['power', 745.7, 'horsepower', /^(?:horsepower|hp)$/],
       ['pressure', 1000, 'kPa', /^(?:kpa|kilopascals?)$/], ['pressure', 1, 'pascals', /^(?:pa|pascals?)$/], ['pressure', 1e5, 'bar', /^(?:bars?)$/], ['pressure', 6894.757, 'psi', /^(?:psi)$/], ['pressure', 101325, 'atmospheres', /^(?:atm|atmospheres?)$/], ['pressure', 133.322, 'mmHg', /^(?:mmhg|mm\s+hg)$/],
-      ['length', 1, 'meters', /^(?:m|meters?|metres?)$/], ['length', 1000, 'km', /^(?:km|kilomet(?:er|re)s?)$/], ['length', 0.001, 'mm', /^(?:mm|millimet(?:er|re)s?)$/], ['length', 0.01, 'cm', /^(?:cm|centimet(?:er|re)s?)$/], ['length', 0.0254, 'inches', /^(?:in|inch|inches)$/],
-      ['length', 0.3048, 'feet', /^(?:ft|feet|foot)$/], ['length', 0.9144, 'yards', /^(?:yd|yards?)$/], ['length', 1609.344, 'miles', /^(?:mi|miles?)$/], ['length', 1852, 'nautical miles', /^(?:nautical\s+miles?|nmi)$/], ['length', 9.4607e15, 'light years', /^(?:light[\s-]?years?|ly)$/], ['length', 1.495978707e11, 'AU', /^(?:au|astronomical\s+units?)$/],
+      ['length', 1, 'meters', /^(?:m|meters?|metres?|mètres?)$/], ['length', 1000, 'km', /^(?:km|kilomet(?:er|re)s?|kilomètres?)$/], ['length', 0.001, 'mm', /^(?:mm|millimet(?:er|re)s?)$/], ['length', 0.01, 'cm', /^(?:cm|centimet(?:er|re)s?)$/], ['length', 0.0254, 'inches', /^(?:in|inch|inches)$/],
+      ['length', 0.3048, 'feet', /^(?:ft|feet|foot)$/], ['length', 0.9144, 'yards', /^(?:yd|yards?)$/], ['length', 1609.344, 'miles', /^(?:mi|miles?|milles?)$/], ['length', 1852, 'nautical miles', /^(?:nautical\s+miles?|nmi)$/], ['length', 9.4607e15, 'light years', /^(?:light[\s-]?years?|ly)$/], ['length', 1.495978707e11, 'AU', /^(?:au|astronomical\s+units?)$/],
       ['volume', 1, 'ml', /^(?:ml|millilit(?:er|re)s?)$/], ['volume', 1000, 'liters', /^(?:l|lit(?:er|re)s?)$/], ['volume', 29.5735, 'fl oz', /^(?:fl\.?\s*oz|fluid\s+ounces?)$/], ['volume', 473.176, 'pints (US)', /^(?:pints?|pt)$/], ['volume', 946.353, 'quarts (US)', /^(?:quarts?|qt)$/],
       ['volume', 3785.41, 'gallons (US)', /^(?:gallons?|gal)$/], ['volume', 236.588, 'cups (US)', /^(?:cups?)$/], ['volume', 14.7868, 'tablespoons', /^(?:tablespoons?|tbsp|tbs)$/], ['volume', 4.92892, 'teaspoons', /^(?:teaspoons?|tsp)$/], ['volume', 28316.8, 'cubic feet', /^(?:cubic\s+f(?:ee|oo)t|cu\s*ft|ft3|ft³)$/], ['volume', 1e6, 'cubic meters', /^(?:cubic\s+met(?:er|re)s?|m3|m³)$/],
       ['angle', 1, 'degrees', /^(?:degrees?|deg|°)$/], ['angle', 180 / Math.PI, 'radians', /^(?:radians?|rad)$/],
@@ -3404,13 +3464,13 @@ say('nothing selected to remove');
       m = t.match(/^(\d{1,3})\s*(?:!|factorial)$|^(?:the\s+)?factorial\s+of\s+(\d{1,3})$/);
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
       // more units: area, stone, speed, data, mpg <-> L/100 km ("1 acre in square feet", "70 kg in stone", "60 mph in km/h", "half a pound in grams")
-      m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-z][a-z0-9/ .²]*?)\s+(?:in|to|into)\s+([a-z][a-z0-9/ .²]*?)$/);
+      m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-zà-ÿ][a-zà-ÿ0-9/ .²]*?)\s+(?:in|to|into|en)\s+([a-zà-ÿ][a-zà-ÿ0-9/ .²]*?)$/); // 'en': French asks ('5 milles en kilomètres')
       if (m) {
         const a = unitOf(m[2]), b = unitOf(m[3]), x = +m[1];
         if (a && b && a.cat === b.cat && a !== b) {
           const v = a.cat === 'fuel' ? (a.inv === b.inv ? x : 235.214583 / x) : x * a.f / b.f, shown = Math.abs(v) >= 1 ? Math.round(v * 100) / 100 : +v.toPrecision(4); // two decimals, as the everyday converter always gave
           const sci = Math.abs(v) >= 1e9 || (v !== 0 && Math.abs(v) < 1e-4) ? (+v.toExponential(3).split('e')[0]) + ' × 10^' + +v.toExponential(3).split('e')[1] : null;
-          return { value: (sci || shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + (sci ? Math.abs(v) >= 1e9 ? Math.round(v).toLocaleString() : String(v) : shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name + (a.cat === 'data' ? ' (1 GB = 1,024 MB, as computers count)' : '') };
+          return { value: (sci || shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + (sci ? Math.abs(v) >= 1e9 ? Math.round(v).toLocaleString() : String(v) : shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name + (a.cat === 'data' && Math.max(a.f, b.f) >= 1024 ? ' (1 GB = 1,024 MB, as computers count)' : '') };
         }
       }
       // "how many weeks is 100 days", "100 days is how many weeks"
@@ -4575,6 +4635,7 @@ say('nothing selected to remove');
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
     window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); skyView(); });
+    const MY_BACKDROP_OFF = /^(?:remove|clear|take off|no|hide)\s+my\s+(?:backdrop|background\s+drawing|drawing\s+backdrop)\s*[.!]?$/;
     function handleLookAsk(lower) {
       if (/^(this is mine|open my (?:verse|void)|my (?:verse|void))\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
       const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+(?:verse|void)\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+(?:verse|void)|no\s+effects)\s*[.!]?$/;
@@ -4645,6 +4706,10 @@ say('nothing selected to remove');
         const skill = mod && mod.default, slot = skillSlots[i];
         if (skill && skill.name && skill.match && skill.run) slot.skill = skill; else missing.push(index[i]);
         if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds); // a skill that answers early may put its kind on the stage
+        if (skill && typeof skill.decorate === 'function' && !stageDecorators.includes(skill.decorate)) stageDecorators.push(skill.decorate);
+        // a kept card is drawn when its own skill arrives, not after the whole index (a phone starts the files 12 s late;
+        // the cat card's "Let it walk" was still missing when the suite clicked it, #2250)
+        if (skill && skill.stageKinds && Object.values(things).some((t) => t && skill.stageKinds[t.kind] && !stage.querySelector(':scope > [data-id="' + CSS.escape(String(t.id)) + '"]'))) render();
         slot.done = true; slot.set(slot.skill);
       };
       // a live card (the Versus ladder reads data that changes every few minutes) is fetched under a key that turns over every 5 minutes, so a browser or
@@ -4660,7 +4725,7 @@ say('nothing selected to remove');
         learnedSkills.push(skill);
         if (skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
         if (skill.world && typeof skill.world.mount === 'function') worlds[skill.name] = skill.world;
-        if (typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
+        if (typeof skill.decorate === 'function' && !stageDecorators.includes(skill.decorate)) stageDecorators.push(skill.decorate);
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
       // silent hole: that ask just never gets answered by a skill.
@@ -4700,13 +4765,20 @@ say('nothing selected to remove');
         if (started) return; started = true;
         removeEventListener('pointerdown', start, true);
         removeEventListener('keydown', start, true);
+        removeEventListener('focusin', startOnAsk, true);
+        removeEventListener('input', startOnAsk, true);
         loadLearnedSkills().finally(() => { skillsLoaded = true; document.documentElement.dataset.skills = 'ready'; resolve(); });
       };
+      // the ask box taking focus or a first letter starts them too: a person (or a paste) can fill the box without a key or a tap reaching
+      // the page first, and every moment before Enter is loading time the first ask would otherwise wait for (issues #2222 #2225 #2228)
+      const startOnAsk = (e) => { const t = e && e.target; if (t && t.id === 'input') start(); };
       const phone = window.matchMedia && matchMedia('(pointer: coarse)').matches;
       if (/[?&](?:q|ask)=/.test(location.search)) start();
       else {
         addEventListener('pointerdown', start, true);
         addEventListener('keydown', start, true);
+        addEventListener('focusin', startOnAsk, true);
+        addEventListener('input', startOnAsk, true);
         if (phone) setTimeout(start, 12000);
         else (window.requestIdleCallback || ((fn) => setTimeout(fn, 1)))(start, { timeout: 1500 });
       }
@@ -4843,10 +4915,10 @@ say('nothing selected to remove');
     // a first ask on a slow link waits at most this long for skills still loading: the fuzzy layer's vocabulary below, and the routing of
     // an ask the page's own calc can answer (handle: watchdog #110, 309 skills no longer all arrive inside the bench's 4 s window)
     const FIRST_ASK_WAIT = 2500;
-    let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = import('/lib/fuzzy.js').then((m) => { fuzzy = m; }).catch(() => {});
+    let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = lazyImport(() => import('/lib/fuzzy.js').then((m) => { fuzzy = m; return m; }).catch(() => null));
     async function fuzzyFix(t) {
-      if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t)) return t;
-      if (!fuzzy) await fuzzyReady;
+      if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t) || MY_BACKDROP_OFF.test(t.toLowerCase().trim())) return t; // the page's own ask, word for word (#2220)
+      if (!fuzzy) await fuzzyReady();
       if (!fuzzy) return t;
       // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most
       // 2.5 s, and only while a typed word can still be a slip: once the loaded skills know every word correct() could change
@@ -4897,8 +4969,8 @@ say('nothing selected to remove');
     // share-libs: tools/preload.mjs /lib/card-share.js
     const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js'];
     for (const p of SHARE_LIB_GRAPH.slice(1)) import(p).catch(() => null);
-    const shareReady = import('/lib/card-share.js').catch(() => null);
-    const pasteReady = import('/lib/paste-kind.js').catch(() => null); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)
+    const shareReady = lazyImport(() => import('/lib/card-share.js').catch(() => null));
+    const pasteReady = lazyImport(() => import('/lib/paste-kind.js').catch(() => null)); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)
     // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
     function showSharedCard(sc) {
       currentAsk = sc.t;
@@ -4911,15 +4983,28 @@ say('nothing selected to remove');
       return el;
     }
     // a shared card link (#vc=..., the share button in lib/card-share.js) opens that card on arrival
-    if (/[#&]vc=/.test(location.hash)) shareReady.then((sh) => { const sc = sh && sh.fromHash(location.hash); if (sc) showSharedCard(sc); }).catch(() => {});
+    if (/[#&]vc=/.test(location.hash)) shareReady().then((sh) => { const sc = sh && sh.fromHash(location.hash); if (sc) showSharedCard(sc); }).catch(() => {});
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
-    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
-      // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
-      // page's own files on a first visit (issues #1022, #1028: a slow first load); a card opened before then is framed again when they arrive
-      // how long that idle wait lasted is kept as a measure ('card-stats-idle') the site tester reads (asked by Verse: flag a wait over 500 ms)
-      const stats = () => { try { performance.measure('card-stats-idle', 'card-stats-wait'); } catch (_) {} return m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); };
-      const idle = () => { try { performance.mark('card-stats-wait'); } catch (_) {} return window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600); };
-      if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true }); }).catch(() => {});
+    function ensureCardFrame() {
+      if (cardLib) return Promise.resolve(cardLib);
+      if (ensureCardFrame.p) return ensureCardFrame.p;
+      // the frame and its stats (guide.json, families.json, deps.json) wait for a card, so an empty home does not fetch them
+      ensureCardFrame.p = import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
+        const stats = () => { try { performance.measure('card-stats-idle', 'card-stats-wait'); } catch (_) {} return m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); };
+        const idle = () => { try { performance.mark('card-stats-wait'); } catch (_) {} return window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600); };
+        if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+        return m;
+      }).catch(() => null);
+      return ensureCardFrame.p;
+    }
+    function ensureCardCss() {
+      if (ensureCardCss.p) return ensureCardCss.p;
+      const inline = [...document.querySelectorAll('style')].some((s) => s.textContent && s.textContent.includes('home cards:'));
+      if (inline || document.getElementById('void-cards-css')) return ensureCardCss.p = Promise.resolve();
+      return ensureCardCss.p = new Promise((resolve) => { const l = document.createElement('link'); l.id = 'void-cards-css'; l.rel = 'stylesheet'; l.href = '/void-cards.css'; l.onload = l.onerror = () => resolve(); document.head.appendChild(l); });
+    }
+    // a key, a tap on the bar, or the ask itself. Focus does not: the bar focuses itself on a desktop.
+    function warmAskLibs() { if (warmAskLibs.done) return; warmAskLibs.done = true; ensureCardCss(); ensureCardFrame(); replyReady(); fuzzyReady(); shareReady(); pasteReady(); refusalReady(); keeperReady(); nearMissReady(); }
     let ratingsP = null;
     function ratingNote(who, el) {
       ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
@@ -5068,6 +5153,9 @@ say('nothing selected to remove');
       if (lastKeptId && things[lastKeptId]) return things[lastKeptId];
       const all = Object.values(things); return all[all.length - 1] || null;
     }
+    function openGame() { // a board with its own card, the thing "forget this" closes while that card has pushed others aside
+      return Object.values(things).find((t) => t && isGameThing(t, stage.querySelector(':scope > .thing[data-id="' + CSS.escape(t.id) + '"]'))) || null;
+    }
     function handleMetaAsk(text, lower) {
       // "remove blank lines: <pasted text>" is a text tool (skills/text-tools.js), not the stage's lines: an ask with a colon or a pasted line break is left to the skills
       if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower) && !/[:⏎\n]/.test(lower)
@@ -5089,7 +5177,12 @@ say('nothing selected to remove');
       if (nm) { const th = targetThing(); if (!th && /^my\s/i.test(nm[1])) return false; /* nothing to name: "call this my morning" is a routine (skills/routine.js) */ if (!th) { say('nothing to name'); return true; } th.name = nm[1]; if ('title' in th && th.kind !== 'kept' && th.kind !== 'link') th.title = nm[1]; save(); render(); say('named'); return true; }
       if (/^(forget this|forget that|forget it|clear this|clear that|take this off|take that off|remove this|remove that)\s*[.!]?$/.test(lower)) {
         if (vpageEl) { closePage(); return true; }
-        const th = targetThing(); if (!th) { say('nothing here'); return true; }
+        let th = targetThing();
+        // a list the game tucked (or the chip just brought back) is not the close: on a phone that tap can leave the list
+        // picked, and "forget this" then removed the list and left the board. Close the game; the card returns to its spot.
+        const game = openGame();
+        if (game && th && th !== game && (th.prior || th.tucked || th.restored)) th = game;
+        if (!th) { say('nothing here'); return true; }
         delete things[th.id]; if (selectedId === th.id) selectedId = null; if (lastKeptId === th.id) lastKeptId = null; save(); render(); say('gone'); return true;
       }
       if (/^(again|same again|do that again|do it again|again please|one more time|refresh( it| this)?)\s*[.!]?$/.test(lower)) {
@@ -5636,12 +5729,14 @@ say('nothing selected to remove');
     const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|verse|a-to-mind)(?: cost)?)$/; // the name is Verse (owner, 2026-10-14)
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
-      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
-      const svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)
-      if (!svc) return;
+      let svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)
+      if (!svc) {
+        try { const m = await import('/skills/services.js'); svc = m.default || m; } catch (_) { return; } // a price question owes the services card even before the skill index arrives
+      }
+      if (!svc || typeof svc.run !== 'function') return;
       try {
         const src = await svc.run(text, { showPage, esc, say: () => {}, _pageStill: (el) => vpageEl === el });
-        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
+        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + (svc.name || 'services') });
       } catch (_) {}
     }
     // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Verse's own answer (or fix). Never on self/menu/identity asks; at most one line.
@@ -6175,12 +6270,213 @@ say('nothing selected to remove');
       return false;
     }
     let askCount = 0; // which ask is the newest: a calc answer given before the skills were in is only handed to a skill while it still is
+    // ephemeral mode (skills/safety-kit.js, the same phrases as lib/safety.js): the snapshot is this tab's, and a reload puts the stage
+    // back. Answered here, before any file the ask would wait on, because after a reload the suite reads within 400 ms (#2250).
+    const EPH_KEY = 'a2m.void.eph.v1';
+    let ephPageOn = false, ephLeaving = false;
+    const ephRestore = () => {
+      try {
+        const snap = JSON.parse(sessionStorage.getItem(EPH_KEY) || 'null'); if (!snap) return;
+        if (snap.state == null) localStorage.removeItem(STATE_KEY); else localStorage.setItem(STATE_KEY, snap.state);
+        if (snap.undo == null) localStorage.removeItem(UNDO_KEY); else localStorage.setItem(UNDO_KEY, snap.undo);
+      } catch (_) {}
+    };
+    const ephHide = () => { ephLeaving = true; ephRestore(); };
+    const ephVis = () => { if (ephLeaving && document.visibilityState === 'hidden') ephRestore(); };
+    const ephShow = () => { ephLeaving = false; };
+    function armPageEph() {
+      if (ephPageOn) return; ephPageOn = true;
+      addEventListener('pagehide', ephHide); document.addEventListener('visibilitychange', ephVis); addEventListener('pageshow', ephShow);
+    }
+    function disarmPageEph() {
+      if (!ephPageOn) return;
+      removeEventListener('pagehide', ephHide); document.removeEventListener('visibilitychange', ephVis); removeEventListener('pageshow', ephShow);
+      ephPageOn = false; ephLeaving = false;
+    }
+    function ephAsk(raw) {
+      const t = String(raw || '').trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, '').toLowerCase();
+      if (/^(?:please\s+)?(?:(?:turn\s+on|start|use|switch\s+to)\s+)?(?:ephemeral|incognito|forget[\s-]?me)\s+(?:mode|session)(?:\s+on)?$|^don.?t\s+(?:save|keep)\s+this\s+session$/.test(t)) return 'on';
+      if (/^(?:please\s+)?(?:turn\s+off|stop|end|leave)\s+(?:the\s+)?(?:ephemeral|incognito|forget[\s-]?me)\s+(?:mode|session)$|^(?:ephemeral|incognito|forget[\s-]?me)\s+(?:mode|session)\s+off$|^(?:save|keep)\s+this\s+session\s+again$/.test(t)) return 'off';
+      return '';
+    }
     async function handle(raw) {
+      warmAskLibs();
       const askNo = ++askCount, askAt = Date.now();
       const typed = (raw || '').trim();
       const quiet = quietAsk; quietAsk = false; // read once: an ask this one starts is the person's again
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
+      // "remove my backdrop" is answered here, before any await: fuzzy, the keeper and the share parser all wait on files, and with the
+      // skills index slow those waits outran the 500 ms the suite reads (#2220, #2250). The same phrase is still matched later for a corrected ask.
+      if (MY_BACKDROP_OFF.test(typed.toLowerCase())) {
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        voidLook.backdrop = ''; applyLook(true); say('backdrop off');
+        loopLog({ domain: 'void.look', ask: typed, score: 'pass', note: 'look' });
+        return;
+      }
+      // "clear the list" and "remove the list" are the page's list, already in memory. After a reload the card is drawn as soon as the
+      // list skill arrives, and the suite asks within 400 ms, while the rest of the index is still loading (#2250).
+      const listLower = typed.toLowerCase();
+      const listClear = /^(?:clear|empty)\s+(?:the\s+)?list\s*[.!]?$/.test(listLower);
+      const listRemove = /^(?:remove|delete|get\s+rid\s+of|hide)\s+(?:the\s+)?list\s*[.!]?$/.test(listLower);
+      if (listClear || listRemove) {
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        let did = false;
+        if (stageKinds.list && typeof stageKinds.list.ask === 'function') {
+          const d = stageKinds.list.ask(listLower, typed, stageApi);
+          did = !!(d && d !== 'no list');
+        } else {
+          const sel = selectedId && things[selectedId];
+          const list = (sel && sel.kind === 'list' && sel) || Object.values(things).find((t) => t && t.kind === 'list');
+          if (list) {
+            if (listRemove) { delete things[list.id]; if (selectedId === list.id) selectedId = null; }
+            else list.items = [];
+            save(); render();
+            did = true;
+          }
+        }
+        if (did) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: listClear ? 'list-cleared' : 'list-removed' }); return; }
+      }
+      // "clear" is the whole stage, already in memory. After a reload the suite asks within a few hundred ms, while the
+      // rest of the index is still loading, and a whispered "waking up" let the test move on. The clear then landed late
+      // and wiped the sticky the next ask had just put up, so the redact check's tree walker had no node (#2250).
+      if (wantsClearStage(typed.toLowerCase())) {
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        const n = Object.keys(things).length;
+        if (!massOk(n, 'things from the stage')) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'kept' }); return; }
+        things = {};
+        selectedId = null;
+        save(); render();
+        try { document.dispatchEvent(new CustomEvent('void:stage-cleared')); } catch (_) {} // the walking cartoon lives outside the record (skills/walker.js)
+        say('');
+        loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'cleared' });
+        return;
+      }
+      // a note asked while the index is still loading (the sticky card is already up): "another sticky note …" is the sticky's own ask (#2250)
+      if (!skillsLoaded && /\b(?:sticky|note)\b/i.test(typed) && stageKinds.sticky && typeof stageKinds.sticky.ask === 'function') {
+        if (!skillsRunning) takeUndoSnapshot();
+        const d = stageKinds.sticky.ask(typed.toLowerCase(), typed, stageApi);
+        if (d && d !== 'no sticky') {
+          if (!quiet) rememberAsk(typed);
+          currentAsk = lastAsk = typed;
+          say('');
+          loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: d });
+          return;
+        }
+      }
+      const eph = ephAsk(typed);
+      if (eph) {
+        if (!quiet) rememberAsk(typed);
+        if (eph === 'on') {
+          try { if (!sessionStorage.getItem(EPH_KEY)) sessionStorage.setItem(EPH_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), undo: localStorage.getItem(UNDO_KEY) })); } catch (_) {}
+          armPageEph();
+          say('ephemeral mode · closing or reloading this tab puts the stage back as it is now');
+        } else { try { sessionStorage.removeItem(EPH_KEY); } catch (_) {} disarmPageEph(); say('ephemeral mode off · this stage is kept again'); }
+        currentAsk = lastAsk = typed;
+        loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:safety-kit' });
+        return;
+      }
+      // the self card is the page's own ask. Waiting out the skill index at 1280 left .vc-self unopened for the whole 30s probe (#2250).
+      if (wantsVoice(typed.toLowerCase())) {
+        if (!quiet) rememberAsk(typed);
+        currentAsk = lastAsk = typed;
+        showVoice(typed.toLowerCase());
+        loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'voice' });
+        return;
+      }
+      // "cook pasta: boil 3 s then rest 2 s" is recipe-stack, ranked late. One import, not a wait for every skill above it (#2250).
+      if (/^(?:please\s+)?(?:cook|make|prepare|prep|bake)\s+\S[^:\n]{0,40}:\s*\S/.test(typed)) {
+        const mod = await Promise.race([import('/skills/recipe-stack.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        if (mod && mod.default && mod.default.stageKinds) Object.assign(stageKinds, mod.default.stageKinds);
+        const askRecipe = mod && (mod.ask || (mod.default && mod.default.stageKinds && mod.default.stageKinds.recipe && mod.default.stageKinds.recipe.ask));
+        if (typeof askRecipe === 'function') {
+          if (!skillsRunning) takeUndoSnapshot();
+          const d = askRecipe(typed.toLowerCase(), typed, stageApi);
+          if (d) {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            say('');
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:recipe-stack' });
+            return;
+          }
+        }
+      }
+      // "weave a constellation called night ops" is constellation-weaver, far down the index. The sky facts
+      // (skills/constellation.js, inside the time family) do not take this phrase. One import, before the waking-up
+      // wait, so the answer shows while the rest of the skills are still loading (#2270; the same shape as recipe-stack).
+      if (/^(?:please\s+)?(?:weave|knit|stitch)\s+/i.test(typed) && /\bconstellation\b/i.test(typed)) {
+        const mod = await Promise.race([import('/skills/constellation-weaver.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        const sk = mod && mod.default;
+        if (sk && sk.match && sk.match(typed.toLowerCase(), typed)) {
+          if (sk.stageKinds) Object.assign(stageKinds, sk.stageKinds);
+          if (typeof sk.decorate === 'function' && !stageDecorators.includes(sk.decorate)) stageDecorators.push(sk.decorate);
+          if (!skillsRunning) takeUndoSnapshot();
+          skillsRunning++;
+          let src = 'none';
+          try {
+            src = await sk.run(typed, { showPage, esc, say, reportMiss, loopLog, _pageStill: (el) => vpageEl === el, world: openWorld, summon: summonThing, stage: stageApi, refreshThings: () => render(), keepFresh });
+          } finally { skillsRunning--; }
+          if (src && src !== 'none') {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:constellation-weaver' });
+            return;
+          }
+        }
+      }
+      // "what are the figures doing" is together. It is 44th, and the page still waits for every skill above it, then for
+      // the whole index, so on a loaded runner the site tester only ever reads "waking up" (#2272). One import, before that
+      // line, the same shape as constellation-weaver. No skill ranked above it takes this phrase.
+      if (/^what (?:are|would|will|might|do|could) (?:they|the figures|those two|these two|the two(?: of them)?|them)\b/i.test(typed.trim())) {
+        const mod = await Promise.race([import('/skills/together.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        const sk = mod && mod.default;
+        if (sk && sk.match && sk.match(typed.toLowerCase(), typed)) {
+          if (!skillsRunning) takeUndoSnapshot();
+          skillsRunning++;
+          let src = 'none';
+          try {
+            src = await sk.run(typed, { showPage, esc, say, reportMiss, loopLog, _pageStill: (el) => vpageEl === el, world: openWorld, summon: summonThing, stage: stageApi, refreshThings: () => render(), keepFresh });
+          } finally { skillsRunning--; }
+          if (src && src !== 'none') {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:together' });
+            return;
+          }
+        }
+      }
+      // "closer on the figure" is zoom-figure, 162nd of 342. Nothing ranked above it takes the phrase. The page still
+      // waits for every skill above the match, then for the whole index, so on a loaded runner the site tester only
+      // ever reads "waking up" (#2282). One import, before that line, the same shape as together.
+      if (/^(?:please\s+)?(?:closer on the figure|zoom out on the figure|zoom in(?: on the figure)?|spin the (?:3d )?model)\s*[.!?]*$/i.test(String(typed || '').trim())) {
+        const mod = await Promise.race([import('/skills/zoom-figure.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        const sk = mod && mod.default;
+        if (sk && sk.match && sk.match(typed.toLowerCase(), typed)) {
+          if (!skillsRunning) takeUndoSnapshot();
+          skillsRunning++;
+          let src = 'none';
+          try {
+            src = await sk.run(typed, { showPage, esc, say, reportMiss, loopLog, _pageStill: (el) => vpageEl === el, world: openWorld, summon: summonThing, stage: stageApi, refreshThings: () => render(), keepFresh });
+          } finally { skillsRunning--; }
+          if (src && src !== 'none') {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:zoom-figure' });
+            return;
+          }
+        }
+      }
+      // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
+      // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
+      // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
+      if (!skillsLoaded && !quiet && !whisper.textContent) say('waking up');
+      await ensureCardCss();
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
       const alias = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()); // a taught wording runs as the ask it means
@@ -6192,7 +6488,7 @@ say('nothing selected to remove');
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} ownerLinkNow(); say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
-      { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
+      { const K = await keeperReady(); const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
       // a typed question about a secret, token or key name is answered from the names Verse's code reads (lib/note-ask.js secretAsk), never looked up:
       // "what is the Modal secret called?" went to Wikipedia, which suggested "model secret called" and showed a fashion model (live, 2026-10-30)
       if (/\b(?:secrets?|tokens?|keys?|credentials?|variables?)\b/i.test(typed) && typed.length <= 160) {
@@ -6200,12 +6496,12 @@ say('nothing selected to remove');
         if (facts.length) { currentAsk = typed; showPage((p) => { p.innerHTML = '<h2>' + esc(typed.replace(/[?.!\s]+$/, '')) + '</h2>' + facts.map((f) => '<p>' + esc(f) + '</p>').join('') + '<div class="src">from Verse\u2019s own code (lib/verse-secrets.js), names only, never a value</div>'; }); say(''); loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'secret names' }); return; }
       }
       // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
-      const pk = await pasteReady, paste = pk ? pk.pasteKind(typed) : null;
+      const pk = await pasteReady(), paste = pk ? pk.pasteKind(typed) : null;
       { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words
         if (lp && Date.now() < lp.until && !paste && pk && pk.sumsItUp(typed)) { currentAsk = lp.text; showAnswer(lp.text).then((src) => { if (src === 'none') reportMiss('[paste]', lookedUp()); }); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste summed up' }); return; } }
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js).
       // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
-      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
+      { const sh = await shareReady(); const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
       if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
@@ -6229,6 +6525,9 @@ say('nothing selected to remove');
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
+      // "remove my backdrop" is the page's own ask (lib/backdrop.js: the backdrop skill takes only "the backdrop" and the bare forms), so it never
+      // waits for the skills to load: right after a reload on a slow phone it took the backdrop off only seconds later (#2220)
+      if (MY_BACKDROP_OFF.test(lower0)) { if (!skillsRunning) takeUndoSnapshot(); currentAsk = lastAsk = text; voidLook.backdrop = ''; applyLook(true); say('backdrop off'); loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (await handleGrownAsk(text, lower0)) return;
       // a send, booking or spend the owner's key now covers is never "the same page": without the key, "send an email to jo@x.com saying hi"
       // opens the mail card (skills/rides.js, lists run 7); the same ask after "unlock" is for the confirm line (plan item 7), not that card
@@ -6241,7 +6540,9 @@ say('nothing selected to remove');
       { const k = howToThing(lower0); if (k) { currentAsk = text; showSelfPage(false, k); say('here'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'how-to ' + k }); return; } }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
-      if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
+      const whichPrice = /^(?:the |a )?(?:price|cost|costs|how much|price check|price of)$/.test(lower0.trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); // a bare "price" names no thing: the markets skill asks which (lists run 13); "prices"/"pricing" stay Verse's own
+      if (whichPrice) { /* falls through to the skills */ }
+      else if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
       else if (await handlePaidAsk(lower0)) return;
       { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
@@ -6260,6 +6561,10 @@ say('nothing selected to remove');
       const calcEarly = calcable && !skillsLoaded; // routed before every skill was in: one ranked above the calc may still take this ask
       if (whisper.textContent === 'waking up') say('');
       if (ranSkill) return;
+      // skills still loading when the wait ran out (#2246: "dyslexia friendly font" on a loaded runner showed "waking up" and then nothing, its skill
+      // far down the index was passed over at the deadline): the page answers as it can now, and once every skill is in, one that takes this ask
+      // answers it, as it would have on a faster load, if no newer ask came (the calc case below does the same for its card)
+      if (!skillsLoaded && !calcable) skillsReady.then(async () => { if (askNo !== askCount) return; const sk = await firstSkill(lower0, text, Date.now()); if (sk && askNo === askCount) await runLearnedSkills(text, lower0); }).catch(() => {});
       // a paste no skill took that asks for nothing: one line that asks what the person wants, and nothing guessed (no stock answer, no article)
       if (paste && paste.kind === 'unclear') { lastPaste = { text, until: Date.now() + 600000 }; say(paste.line); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste unclear' }); return; }
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
@@ -6308,12 +6613,10 @@ say('nothing selected to remove');
     const earlyAsks = [], queueAsk = (e) => { const t = e && e.detail && e.detail.text; if (t && earlyAsks.length < 24) earlyAsks.push({ text: t, at: Date.now() }); };
     document.addEventListener('void:ask', queueAsk);
     let brainHost = null;
-    (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(() => {
-      import('/lib/brain-host.js').then((m) => {
-        brainHost = m.ensureHost({ early: earlyAsks.splice(0), self: fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null) });
-        document.removeEventListener('void:ask', queueAsk);
-      }).catch(() => { document.removeEventListener('void:ask', queueAsk); });
-    }, { timeout: 4000 });
+    const startBrain = () => { if (startBrain.done) return; startBrain.done = true; import('/lib/brain-host.js').then((m) => { brainHost = m.ensureHost({ early: earlyAsks.splice(0), self: fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null) }); document.removeEventListener('void:ask', queueAsk); }).catch(() => document.removeEventListener('void:ask', queueAsk)); };
+    // a phone does not download the brain while the stage is empty: a tap, a key, or twelve seconds still starts it. A desktop may idle.
+    if ((() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })()) { const armBrain = () => { removeEventListener('pointerdown', armBrain, true); removeEventListener('keydown', armBrain, true); startBrain(); }; addEventListener('pointerdown', armBrain, true); addEventListener('keydown', armBrain, true); setTimeout(startBrain, 12000); }
+    else (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(startBrain, { timeout: 4000 });
     const brainRank = (h) => { try { return brainHost ? brainHost.rank(h) : 0; } catch (_) { return 0; } };
     function allHints() {
       const out = CORE_HINTS.slice();
@@ -6382,9 +6685,9 @@ say('nothing selected to remove');
       input.value = ''; drawHints(); handle(h); input.focus();
     }
     hintsEl.addEventListener('mousedown', (e) => { const d = e.target.closest('[data-i]'); if (d) { e.preventDefault(); takeHint(hintList[+d.dataset.i]); } });
-    input.addEventListener('input', drawHints);
+    input.addEventListener('input', () => { warmAskLibs(); drawHints(); });
     input.addEventListener('blur', () => setTimeout(() => { hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; }, 120));
-    input.addEventListener('pointerdown', () => { askBoxTouched = true; drawHints(); });
+    input.addEventListener('pointerdown', () => { askBoxTouched = true; warmAskLibs(); drawHints(); });
     input.addEventListener('focus', () => { if (askBoxTouched) drawHints(); });
     document.addEventListener('keydown', (e) => {
       const typing = /^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
@@ -6392,6 +6695,7 @@ say('nothing selected to remove');
       if (e.key === '/' && !typing) { e.preventDefault(); input.focus(); }
     });
 
+    go.addEventListener('pointerdown', warmAskLibs);
     go.addEventListener('click', () => { handle(input.value); input.value = ''; drawHints(); input.focus(); });
     input.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' && hintList.length) { e.preventDefault(); hintSel = (hintSel + 1) % hintList.length; markHint(); return; }
@@ -6407,7 +6711,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q') || sp0.get('ask'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
+      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
@@ -6739,6 +7043,7 @@ say('nothing selected to remove');
     function rememberWorld() { try { save(); } catch (_) {} } // save() folds in the places and stamps the time
     document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
     window.addEventListener('pagehide', rememberWorld);
+    try { if (sessionStorage.getItem(EPH_KEY)) armPageEph(); } catch (_) {} // a reload keeps ephemeral mode on before safety-kit.js arrives (#2250)
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Verse'), 400);
     window.addEventListener('resize', () => render());
   </script>
@@ -7033,7 +7338,7 @@ say('nothing selected to remove');
   })();
   </script>
   <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
-<script src="/visit.js" defer></script><!-- who visits: a count per page load, no cookie (functions/api/visit.js) -->
+<script src="/visit.js" defer></script><!-- who visits: a count per page load, no cookie (functions/api/visit.js) --><h1 style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0">Verse</h1>
 </body>
 </html>
 

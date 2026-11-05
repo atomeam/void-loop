@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; background: #111; cursor: crosshair; }
+  #overlay { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.7); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+  button { margin: 4px; padding: 6px 12px; background: #2a2a4a; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  .card { position: absolute; width: 90px; height: 70px; background: #222; border: 2px solid #4af; border-radius: 6px; padding: 6px; font-size: 11px; user-select: none; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,.5); transition: transform .2s, background .3s; }
+  .card:active { cursor: grabbing; }
+  #status { margin-top: 8px; font-size: 12px; color: #aaa; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Lenia MLP Kernel Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a continuous Lenia cellular automaton (smooth floating-point field evolved by radial kernel convolution + Gaussian growth.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Lenia MLP Kernel Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a continuous Lenia cellular automaton (smooth floating-point field evolved by radial kernel convolution + Gaussian growth.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f533-webgpu-lenia-mlp-kernel-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f533-webgpu-lenia-mlp-kernel-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas" width="512" height="512"></canvas>
+<div id="overlay">
+  <strong>F533 Lenia MLP Mind</strong><br>
+  Continuous field · orientation-driven μ/σ<br>
+  <button id="orient">Enable Orientation</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Field</button>
+  <div id="status">μ: — σ: — activity: —</div>
+  <small>Drag probes to seed. Hold device to morph growth.</small>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Lenia MLP Kernel Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

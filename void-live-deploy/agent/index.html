@@ -6,29 +6,41 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Verse, your agent · Verse</title>
-<meta name="description" content="Give Verse a task and watch it work, step by step. It keeps working in the background, asks before anything that sends, pays or deletes, brings you a daily brief, and puts what it made on your shelf.">
+<meta name="description" content="Give Verse a task and watch it work, step by step. It keeps working in the background, asks before anything that sends, pays or deletes, and leaves what finished in your inbox when you come back.">
 <link rel="canonical" href="https://a-to-mind.com/agent/">
 <meta property="og:title" content="Verse, your agent · Verse">
 <meta property="og:description" content="Give Verse a task and watch it work live.">
 <meta property="og:url" content="https://a-to-mind.com/agent/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <script src="/visit.js" defer></script>
+<link rel="stylesheet" href="/verse.css">
 <style>
-  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --ok: #7ddeaf; --warn: #ffd27a; --bad: #ff8d84; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
-  main { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
-  h1 { font-size: 1.6rem; margin: 0 0 4px; } h2 { font-size: 1.1rem; margin: 24px 0 8px; }
-  a { color: var(--accent); } .soft { color: var(--soft); font-size: 14px; }
-  .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
-  .brief { border-color: var(--accent); }
-  form { display: flex; gap: 8px; } textarea { flex: 1; background: #110f1a; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; min-height: 44px; }
-  button { background: var(--accent); color: #07060d; border: 0; border-radius: 8px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --soft: #c3c8d8; --faint: #8e94a8; --line: rgba(255,255,255,.10); --accent: rgb(158 178 255); --ok: #7ddeaf; --warn: #ffd27a; --bad: #ff8d84; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 28px 16px 72px; }
+  h1 { margin: 0 0 12px; font-weight: 280; letter-spacing: -.03em; font-size: clamp(32px, 7vw, 48px); line-height: 1.05;
+    background: linear-gradient(180deg, #fff 30%, rgb(158 178 255)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -.015em; margin: 28px 0 8px; }
+  a { color: var(--accent); }
+  .lead { margin: 0 0 14px; color: var(--soft); max-width: 62ch; }
+  .soft { color: var(--faint); font-size: 14px; }
+  .card { border: 0; border-radius: 16px; padding: 14px 16px; margin: 0 0 10px;
+    background: linear-gradient(165deg, rgba(40,46,70,.80), rgba(16,18,28,.88));
+    box-shadow: 0 1px 0 rgba(255,255,255,.10) inset, 0 18px 40px rgba(0,0,0,.35); }
+  .brief { box-shadow: 0 1px 0 rgba(255,255,255,.10) inset, 0 0 0 1px rgb(158 178 255 / .35), 0 18px 40px rgba(0,0,0,.35); }
+  form { display: flex; gap: 8px; align-items: stretch; margin: 0 0 18px; }
+  textarea { flex: 1; min-width: 0; background: rgb(6 8 14 / .55); color: var(--ink); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 10px 12px; font: 16px/1.4 inherit; min-height: 52px; }
+  button { min-height: 44px; background: rgb(158 178 255); color: #07080f; border: 0; border-radius: 999px; padding: 8px 16px; font: 600 15px/1 inherit; cursor: pointer; }
   button.no { background: transparent; color: var(--ink); border: 1px solid var(--line); }
   ol.feed { margin: 6px 0 0; padding-left: 20px; color: var(--soft); font-size: 14px; } ol.feed li:last-child { color: var(--ink); }
-  .st { font-size: 12px; border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; margin-left: 6px; }
+  .st { font-size: 12px; border: 1px solid var(--line); border-radius: 99px; padding: 2px 8px; margin-left: 6px; }
   .done { color: var(--ok); } .needs_yes { color: var(--warn); } .failed, .declined { color: var(--bad); } .running, .queued { color: var(--accent); }
   .result { white-space: pre-wrap; margin-top: 8px; }
-  .cols { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; } @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } }
+  button.inbox { display: block; width: 100%; text-align: left; background: linear-gradient(165deg, rgba(40,46,70,.80), rgba(16,18,28,.88)); color: var(--ink); font: inherit; font-weight: 400; border-radius: 16px; padding: 14px 16px; margin: 0 0 10px; min-height: 0; box-shadow: 0 1px 0 rgba(255,255,255,.10) inset; }
+  .card details > summary { cursor: pointer; }
+  .cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } form { flex-direction: column; } }
+  @media (forced-colors: active) { h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; } }
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 
@@ -39,17 +51,18 @@
 <body>
 <main>
 <h1>Verse, your agent</h1>
-<p class="soft">Send a task. Verse hands it to one of its own bots and keeps working while you're away. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
-<div class="card brief" id="brief">Loading your brief…</div>
-<p class="soft" id="away">Leave this tab open and go do something else: its title counts what waits for your yes. <button type="button" id="notify" hidden>Tell me when it needs me</button><span id="notifyNote"></span></p>
 <form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
+<p class="lead">Send a task. Verse hands it to one of its own bots and keeps working while you're away. It can also write first: a job that finished in the background, a check you asked for, or a next step from what you already asked. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
+<div class="card brief" id="brief">Loading your brief…</div>
+<p class="soft" id="away">Close this tab if you want. When you come back, the inbox lists what finished or needs your yes, and a notification if you turned those on. While it stays open, the title counts what waits. <button type="button" id="notify" hidden>Tell me when it needs me</button><span id="notifyNote"></span></p>
+<section id="inboxSection" hidden><h2>Inbox</h2><div id="inbox"></div></section>
 <div class="cols">
   <section><h2>Your thread</h2><div id="thread" class="soft">No tasks yet.</div></section>
   <section><h2>Made</h2><div id="made" class="soft">Finished work lands here.</div><p class="soft" id="tier"></p></section>
 </div>
 </main>
 <script type="module">
-import { statusesOf, newsOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
+import { statusesOf, tellOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
 {
   const k = 'verse-agent-thread';
   let thread = localStorage.getItem(k);
@@ -57,40 +70,56 @@ import { statusesOf, newsOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const label = { queued: 'queued', running: 'working', done: 'done', needs_yes: 'needs your yes', failed: 'stuck', declined: 'declined' };
-  let last = '', before = null, tasks = [], timer = 0;
+  let last = '', before = null, tasks = [], caught = [], timer = 0, nudgeAt = 0;
   const BASE_TITLE = document.title;
-  // a browser notification only when you turned them on here, and only while the tab is hidden (on screen, the thread already shows it)
+  const acked = new Set(), pending = new Set();
+  // a browser notification only when you turned them on. While you watch, only a hidden tab pings. The first read of a visit pings even on
+  // screen: that is what finished while the tab was closed, and the inbox below keeps it.
   const canNotify = 'Notification' in window;
   const notifyBtn = $('notify'), notifyNote = $('notifyNote');
   const showNotifyState = () => { if (!canNotify) return; const p = Notification.permission; notifyBtn.hidden = p !== 'default'; notifyNote.textContent = p === 'granted' ? ' It will also tell you with a notification.' : p === 'denied' ? ' Notifications are blocked for this site in your browser.' : ''; };
   showNotifyState();
   notifyBtn.addEventListener('click', () => { Notification.requestPermission().then(showNotifyState, showNotifyState); });
-  const tell = (news) => { if (!canNotify || Notification.permission !== 'granted' || !document.hidden) return;
-    for (const n of news) { try { const note = new Notification(n.title, { body: n.body, tag: 'verse-agent-' + n.id }); note.onclick = () => { window.focus(); note.close(); }; } catch (_) { /* a browser that only notifies from a service worker: the title still counts */ } } };
+  const openTask = (id) => { const made = document.getElementById('made-' + id); const steps = made && made.querySelector('details'); if (steps) { steps.open = true; steps.dataset.opened = String(Date.now()); } const row = document.getElementById('task-' + id) || made; if (row) row.scrollIntoView({ block: 'nearest' }); };
+  const ping = (news, force) => { if (!canNotify || Notification.permission !== 'granted' || !news.length || (!force && !document.hidden)) return;
+    for (const n of news) { try { const note = new Notification(n.title, { body: n.body, tag: 'verse-agent-' + n.id + '-' + (n.status || '') }); note.onclick = () => { window.focus(); openTask(n.id); note.close(); }; } catch (_) { /* a browser that only notifies from a service worker: the inbox and the title still say it */ } } };
   async function load() {
     try {
       const j = await (await fetch('/api/agent?thread=' + thread, { cache: 'no-store' })).json();
       if (!j.ok) return;
-      tasks = j.tasks; tell(newsOf(before, tasks)); before = statusesOf(tasks); document.title = titleFor(BASE_TITLE, tasks);
+      tasks = j.tasks || [];
+      const arriving = before === null;
+      const news = tellOf(before, tasks, j.inbox || []);
+      ping(news, arriving);
+      if (arriving) caught = news;
+      before = statusesOf(tasks); document.title = titleFor(BASE_TITLE, tasks);
+      const unseen = (j.inbox || []).map((n) => n.id).filter((id) => id && !acked.has(id) && !pending.has(id));
+      if (unseen.length) { unseen.forEach((id) => pending.add(id)); post({ seen: unseen }).then((r) => { unseen.forEach((id) => pending.delete(id)); if (r && r.ok) unseen.forEach((id) => acked.add(id)); }, () => unseen.forEach((id) => pending.delete(id))); }
+      if (tasks.length && Date.now() - nudgeAt > 60000) { nudgeAt = Date.now(); post({ proactive: true }).then((r) => { if (r && r.nudge) { last = ''; load(); } }, () => {}); }
       const sig = JSON.stringify(j.tasks); if (sig === last) return; last = sig;
       $('brief').textContent = 'Daily brief, ' + j.brief.day + ': ' + j.brief.text;
-      $('thread').innerHTML = j.tasks.length ? j.tasks.map((t) => '<div class="card"><b>' + esc(t.ask) + '</b><span class="st ' + t.status + '">' + label[t.status] + '</span>' +
+      $('inboxSection').hidden = !caught.length;
+      $('inbox').innerHTML = caught.map((n) => '<button type="button" class="inbox" data-open="' + esc(n.id) + '"><b>' + esc(n.title) + '</b><div class="soft">' + esc(n.body) + '</div></button>').join('');
+      $('thread').innerHTML = tasks.length ? tasks.map((t) => '<div class="card" id="task-' + esc(t.id) + '"><b>' + esc(t.ask) + '</b><span class="st ' + t.status + '">' + label[t.status] + '</span>' +
         (t.bot ? ' <span class="soft">by ' + esc(t.bot) + (t.tier ? ', ' + esc(t.tier) + ' tier' : '') + '</span>' : '') +
-        '<ol class="feed">' + t.steps.map((s) => '<li>' + esc(s.line) + '</li>').join('') + '</ol>' +
-        (t.status === 'needs_yes' ? '<div class="result">' + esc(t.result) + '</div><p><button data-id="' + t.id + '" data-d="yes">Yes, go ahead</button> <button class="no" data-id="' + t.id + '" data-d="no">No</button></p>' : '') +
+        '<ol class="feed">' + (t.steps || []).map((s) => '<li>' + esc(s.line) + '</li>').join('') + '</ol>' +
+        (t.status === 'needs_yes' ? '<div class="result">' + esc(t.result) + '</div><p><button data-id="' + t.id + '" data-d="yes">Approve</button> <button class="no" data-id="' + t.id + '" data-d="no">Decline</button></p>' : '') +
         '</div>').join('') : 'No tasks yet.';
-      $('made').innerHTML = j.made.length ? j.made.map((t) => '<div class="card"><b>' + esc(t.ask) + '</b><div class="result">' + esc(t.result) + '</div></div>').join('') : 'Finished work lands here.';
+      const made = j.made || [];
+      $('made').innerHTML = made.length ? made.map((t) => '<div class="card" id="made-' + esc(t.id) + '"><b>' + esc(t.ask) + '</b><div class="result">' + esc(t.result) + '</div><details><summary>Steps</summary><ol class="feed">' + (t.steps || []).map((s) => '<li>' + esc(s.line) + '</li>').join('') + '</ol></details></div>').join('') : 'Finished work lands here.';
       $('tier').textContent = 'Model tiers: ' + j.tiers.map((t) => t.name + (t.month_cents ? ' ($' + (t.month_cents / 100).toFixed(2) + '/mo from earnings)' : ' (free)')).join(', ') + '.';
     } catch (_) {}
   }
   const post = (b) => fetch('/api/agent', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ thread, ...b }) }).then((r) => r.json());
   $('f').addEventListener('submit', async (e) => { e.preventDefault(); const ask = $('ask').value.trim(); if (!ask) return; $('ask').value = ''; const j = await post({ ask }); if (!j.ok) alert(j.say || 'try again'); load(); });
   $('thread').addEventListener('click', async (e) => { const b = e.target.closest('button[data-id]'); if (!b) return; await post({ id: b.dataset.id, decision: b.dataset.d }); load(); });
-  // every 2 s while you watch; hidden, every 10 s only while a task is still working, so a finished thread asks nothing in the background
+  $('inbox').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openTask(b.dataset.open); });
+  // every 2 s while you watch; hidden, every 10 s while a task is working, and every 60 s when a past ask is a check Verse might write about
   const schedule = () => { clearTimeout(timer); const ms = nextReadIn(tasks, document.hidden); if (ms != null) timer = setTimeout(() => load().finally(schedule), ms); };
   document.addEventListener('visibilitychange', () => { if (!document.hidden) load().finally(schedule); else schedule(); });
   load().finally(schedule);
 }
 </script>
+<script type="module" src="/verse-shell.js"></script>
 </body>
 </html>

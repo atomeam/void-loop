@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.agent { position:absolute; width:72px; height:72px; border:2px solid #4af; border-radius:12px; background:rgba(20,30,60,0.7); display:flex; align-items:center; justify-content:center; font-size:11px; text-align:center; cursor:pointer; transition:box-shadow 0.2s, transform 0.1s; user-select:none; }
+.agent.high { box-shadow:0 0 18px #4af; }
+#hud { position:fixed; top:8px; left:8px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:12px; z-index:10; max-width:280px; }
+button { margin:2px; padding:4px 8px; background:#224; color:#adf; border:1px solid #4af; border-radius:4px; cursor:pointer; }
+#status { margin-top:4px; opacity:0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceOrientation Decision-Tree DOM Agents Mind · Verse lab</title>
+<meta name="description" content="Novel combination: DeviceOrientation (tilt as causal environmental signal, pointer velocity fallback) drives a population of local tiny decision trees (non-neural">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceOrientation Decision-Tree DOM Agents Mind · Verse lab">
+<meta property="og:description" content="Novel combination: DeviceOrientation (tilt as causal environmental signal, pointer velocity fallback) drives a population of local tiny decision trees (non-neural">
+<meta property="og:url" content="https://a-to-mind.com/lab/f528-deviceorientation-decision-tree-dom-agents-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f528-deviceorientation-decision-tree-dom-agents-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <button id="perm">Enable Orientation</button>
+  <button id="seal">Seal Best</button>
+  <button id="reset">Reset Trees</button>
+  <div id="status">Tilt or move pointer. Decision-tree agents compete.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceOrientation Decision-Tree DOM Agents Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -157,3 +157,13 @@ test('a coder with no free model calls left is not started (no run spent on "no 
   const base = { exists: true, busy: false, started: false, paused: false, lastRunMs: NOW - 2 * H, now: NOW };
   assert.equal(lapDue({ ...base, noModel: true }), false, 'no lap either');
 });
+
+test('a repair of a loop that is green again is set aside, not handed to the coder; a loop still red keeps its repair (#2252)', () => {
+  const green = plan({ jobs: [job('h1', 'heal:propose-fix.yml', { note: 'tries 1 · no-change' })], wf: all(), now: NOW });
+  assert.deepEqual(green.start, []);
+  assert.equal(green.setAside.length, 1); assert.equal(green.setAside[0].id, 'h1'); assert.match(green.setAside[0].note, /^tries 1 · propose-fix\.yml is green again/);
+  const red = plan({ jobs: [job('h1', 'heal:propose-fix.yml')], wf: all({ 'propose-fix.yml': { fails: 3, url: 'u3', last: NOW - H } }), now: NOW });
+  assert.deepEqual(red.start.map((s) => s.id), ['h1']); assert.equal(red.setAside.length, 0);
+  const unwatched = plan({ jobs: [job('h2', 'heal:will.yml')], wf: all(), now: NOW });
+  assert.equal(unwatched.setAside.length, 0, 'a loop the conductor does not watch is not judged green');
+});

@@ -1,5 +1,233 @@
 [
  {
+  "slug": "f537-orientation-mlp-lattice-gas-dom-obstacles",
+  "num": 537,
+  "title": "Orientation-Modulated Lattice Gas DOM Obstacles Mind",
+  "blurb": "Novel combination for The Verse canvas: a discrete lattice-gas automaton (LGA / simplified FHP-style multi-speed streaming + binary collisions) evolved on a",
+  "status": "works",
+  "source": "F537-orientation-mlp-lattice-gas-dom-obstacles",
+  "hash": "498413f9338d"
+ },
+ {
+  "slug": "f536-webgpu-quantum-walk-residual-oracle-mind",
+  "num": 536,
+  "title": "WebGPU Quantum-Inspired Residual Walk Oracle Mind",
+  "blurb": "A novel combination never previously attempted in the Verse frontier: discrete-time quantum-walk inspired agents simulated on WebGPU compute, steered by a pure",
+  "status": "works",
+  "source": "F536-webgpu-quantum-walk-residual-oracle-mind",
+  "hash": "1e5b1cf267fd"
+ },
+ {
+  "slug": "f535-webgpu-electrostatic-orientation-mlp-probes-mind",
+  "num": 535,
+  "title": "WebGPU Electrostatic N-Body + Orientation-Causal MLP DOM Probes Mind",
+  "blurb": "Novel combination: a particle system under pure electrostatic (Coulomb) forces simulated in a WebGPU compute shader (previously unused kernel — not attention, not",
+  "status": "works",
+  "source": "F535-webgpu-electrostatic-orientation-mlp-probes-mind",
+  "hash": "7a630539f745"
+ },
+ {
+  "slug": "f534-webgpu-attention-particle-policy-dom-morph",
+  "num": 534,
+  "title": "WebGPU Attention Particle Swarm + Local Policy DOM Morpher Mind",
+  "blurb": "Novel combination: a particle swarm simulated with soft attention mechanics (each particle attends to a global mean plus local neighbors via distance-weighted",
+  "status": "works",
+  "source": "F534-webgpu-attention-particle-policy-dom-morph",
+  "hash": "1d5ea5204aa1"
+ },
+ {
+  "slug": "f533-webgpu-lenia-mlp-kernel-mind",
+  "num": 533,
+  "title": "WebGPU Lenia MLP Kernel Mind",
+  "blurb": "Novel combination: a continuous Lenia cellular automaton (smooth floating-point field evolved by radial kernel convolution + Gaussian growth.",
+  "status": "works",
+  "source": "F533-webgpu-lenia-mlp-kernel-mind",
+  "hash": "b9190f5c8b8a"
+ },
+ {
+  "slug": "f532-orientation-mlp-ising-lattice-mind",
+  "num": 532,
+  "title": "Orientation-MLP Ising Lattice Mind",
+  "blurb": "Novel combination: a 2D Ising model lattice (previously unused kernel: Metropolis-Hastings spin flips with nearest-neighbor energy, ferromagnetic coupling, external",
+  "status": "works",
+  "source": "F532-orientation-mlp-ising-lattice-mind",
+  "hash": "bd40d191c14c"
+ },
+ {
+  "slug": "f531-orientation-mlp-sir-lattice-dom-mind",
+  "num": 531,
+  "title": "Orientation-MLP SIR Lattice DOM Mind",
+  "blurb": "Novel combination: a discrete lattice of Susceptible-Infected-Recovered (SIR) epidemic dynamics (previously unused kernel: stochastic contact-process infection and",
+  "status": "works",
+  "source": "F531-orientation-mlp-sir-lattice-dom-mind",
+  "hash": "6f6ecae6d877"
+ },
+ {
+  "slug": "f530-webrtc-reservoir-genome-competition-mind",
+  "num": 530,
+  "title": "WebRTC Reservoir Genome Competition Mind",
+  "blurb": "Novel combination: a population of absolute-positioned Verse DOM agent cards controlled by local Echo State Networks (reservoir computing: fixed sparse random",
+  "status": "works",
+  "source": "F530-webrtc-reservoir-genome-competition-mind",
+  "hash": "5a78cf5a47f2"
+ },
+ {
+  "slug": "f529-webaudio-harmonic-dom-resonators-mind",
+  "num": 529,
+  "title": "WebAudio Harmonic DOM Resonators Mind",
+  "blurb": "Novel combination: Absolute-positioned Verse DOM cards function as independent WebAudio oscillators and biquad filters.",
+  "status": "works",
+  "source": "F529-webaudio-harmonic-dom-resonators-mind",
+  "hash": "daa00516969a"
+ },
+ {
+  "slug": "f528-deviceorientation-decision-tree-dom-agents-mind",
+  "num": 528,
+  "title": "DeviceOrientation Decision-Tree DOM Agents Mind",
+  "blurb": "Novel combination: DeviceOrientation (tilt as causal environmental signal, pointer velocity fallback) drives a population of local tiny decision trees (non-neural",
+  "status": "works",
+  "source": "F528-deviceorientation-decision-tree-dom-agents-mind",
+  "hash": "dcf16e66e303"
+ },
+ {
+  "slug": "f527-webgpu-attention-card-weaver-mind",
+  "num": 527,
+  "title": "WebGPU Attention Card Weaver Mind",
+  "blurb": "Novel combination: a small population of absolute-positioned Verse DOM cards treated as tokens in a multi-head self-attention mechanism whose core matrix multiplies",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F527-webgpu-attention-card-weaver-mind",
+  "hash": "771b5014fcbb"
+ },
+ {
+  "slug": "f526-webxr-hand-rnn-grasp-probes-mind",
+  "num": 526,
+  "title": "WebXR Hand RNN Grasp Probes Mind",
+  "blurb": "Novel combination: true WebXR hand tracking (immersive-ar or vr session with hand-tracking feature, progressive fallback to pointer \"virtual hand\") as the sole",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F526-webxr-hand-rnn-grasp-probes-mind",
+  "hash": "7fe5b65a05ea"
+ },
+ {
+  "slug": "f525-accel-rnn-verse-probes-mind",
+  "num": 525,
+  "title": "Accelerometer RNN Verse Probes Mind",
+  "blurb": "Novel combination: DeviceMotion (accelerometer + rotation rate) as the sole causal driver for a population of local tiny RNNs.",
+  "status": "works",
+  "source": "F525-accel-rnn-verse-probes-mind",
+  "hash": "bbb773808a54"
+ },
+ {
+  "slug": "f524-webgpu-langtons-ant-mlp-genome-mind",
+  "num": 524,
+  "title": "WebGPU-ready Langton's Ant MLP Genome Mind",
+  "blurb": "Novel combination: a population of Langton's ants (simple Turing-like cellular agents) whose turn rules are encoded as tiny local MLPs (or compact rule genomes).",
+  "status": "works",
+  "source": "F524-webgpu-langtons-ant-mlp-genome-mind",
+  "hash": "d5ac91ea87e1"
+ },
+ {
+  "slug": "f523-speech-causal-rnn-absorb-dom-agents-mind",
+  "num": 523,
+  "title": "Speech Causal RNN Absorb DOM Agents Mind",
+  "blurb": "Novel hybrid embodiment where live speech (Web Speech API) or typed keywords serve as the sole discrete causal input to a population of local tiny RNNs (one per",
+  "status": "works",
+  "source": "F523-speech-causal-rnn-absorb-dom-agents-mind",
+  "hash": "881b4966b976"
+ },
+ {
+  "slug": "f523-webgpu-pso-pointer-attractor-dom-mind",
+  "num": 523,
+  "title": "WebGPU-ready PSO Pointer-Attractor DOM Mind",
+  "blurb": "Novel combination: a population of particles performing classic Particle Swarm Optimization (PSO) on a continuous fitness landscape whose sole attractor is the live",
+  "status": "works",
+  "source": "F523-webgpu-pso-pointer-attractor-dom-mind",
+  "hash": "006e25bb39bb"
+ },
+ {
+  "slug": "f522-deviceorientation-causal-genome-dom-agents-mind",
+  "num": 522,
+  "title": "DeviceOrientation Causal Genome DOM Agents Mind",
+  "blurb": "Novel hybrid embodiment where DeviceOrientationEvent deltas serve as the sole causal input to a population of local tiny MLPs (one per agent).",
+  "status": "works",
+  "source": "F522-deviceorientation-causal-genome-dom-agents-mind",
+  "hash": "0491ee64410a"
+ },
+ {
+  "slug": "f521-webgpu-embedding-diffusion-cascade-mind",
+  "num": 521,
+  "title": "WebGPU Embedding Diffusion Cascade Mind",
+  "blurb": "Novel WebGPU compute kernel for a parallel embedding-field diffusion on a 2D lattice. Each cell holds a small float embedding vector (dim=4).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F521-webgpu-embedding-diffusion-cascade-mind",
+  "hash": "9a8ce168bf85"
+ },
+ {
+  "slug": "f520-webgpu-ca-rule-policy-dom-mind",
+  "num": 520,
+  "title": "webgpu-ca-rule-policy-dom-mind",
+  "blurb": "A WebGPU compute (Canvas2D fallback) multi-state cellular automaton lattice whose transition rules are not fixed but continuously mutated by a population of local",
+  "status": "works",
+  "source": "F520-webgpu-ca-rule-policy-dom-mind",
+  "hash": "32d8e291aa2d"
+ },
+ {
+  "slug": "f520-webgpu-sandpile-criticality-mind",
+  "num": 520,
+  "title": "WebGPU Sandpile Self-Organized Criticality Mind",
+  "blurb": "Novel WebGPU compute kernel implementing a parallelized Abelian sandpile automaton (self-organized criticality). Local grains are added via pointer.",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F520-webgpu-sandpile-criticality-mind",
+  "hash": "14a928859704"
+ },
+ {
+  "slug": "f519-webgpu-vectorfield-policy-dom-mind",
+  "num": 519,
+  "title": "webgpu-vectorfield-policy-dom-mind",
+  "blurb": "Slug: webgpu-vectorfield-policy-dom-mind",
+  "status": "works",
+  "source": "F519-webgpu-vectorfield-policy-dom-mind",
+  "hash": "cb99fb26db9f"
+ },
+ {
+  "slug": "f518-broadcast-channel-genome-competition-mind",
+  "num": 518,
+  "title": "BroadcastChannel Sealed Genome Competition Mind",
+  "blurb": "DeviceOrientation (or pointer velocity fallback) drives a population of local tiny MLPs that control a Canvas2D particle field (each agent owns a subset of",
+  "status": "works",
+  "source": "F518-broadcast-channel-genome-competition-mind",
+  "hash": "88ca2443c6bb"
+ },
+ {
+  "slug": "f518-webgpu-wave-membrane-rnn-pin-dom-mind",
+  "num": 518,
+  "title": "webgpu-wave-membrane-rnn-pin-dom-mind",
+  "blurb": "Slug: webgpu-wave-membrane-rnn-pin-dom-mind",
+  "status": "works",
+  "source": "F518-webgpu-wave-membrane-rnn-pin-dom-mind",
+  "hash": "5719cc43a15c"
+ },
+ {
+  "slug": "f517-webgpu-gray-scott-mic-spectral-dom-garden-mind",
+  "num": 517,
+  "title": "webgpu-gray-scott-mic-spectral-dom-garden-mind",
+  "blurb": "Slug: webgpu-gray-scott-mic-spectral-dom-garden-mind",
+  "status": "works",
+  "source": "F517-webgpu-gray-scott-mic-spectral-dom-garden-mind",
+  "hash": "5c12b4acd2e1"
+ },
+ {
   "slug": "f516-webmidi-local-rnn-spatial-score-mind",
   "num": 516,
   "title": "webmidi-local-rnn-spatial-score-mind",
@@ -257,6 +485,15 @@
   "hash": "0dad02fee62c"
  },
  {
+  "slug": "f0492-orientation-knn-svg-morph-swarm",
+  "num": 492,
+  "title": "Orientation k-NN SVG Morph Swarm",
+  "blurb": "A living SVG path (closed polygonal \"body\") is the hybrid embodied form on the Verse canvas.",
+  "status": "works",
+  "source": "F0492-orientation-knn-svg-morph-swarm",
+  "hash": "24e2f6266d5f"
+ },
+ {
   "slug": "f492-webxr-hand-constraint-mlp-mind",
   "num": 492,
   "title": "webxr-hand-constraint-mlp-mind",
@@ -269,6 +506,15 @@
   "hash": "b267dadf8c06"
  },
  {
+  "slug": "f0491-webrtc-causal-portal-swarm",
+  "num": 491,
+  "title": "WebRTC Causal Portal Swarm",
+  "blurb": "Living DOM portals are autonomous agents in a 2D physics swarm on the page.",
+  "status": "works",
+  "source": "F0491-webrtc-causal-portal-swarm",
+  "hash": "5b78e58d3b60"
+ },
+ {
   "slug": "f491-persistent-broadcast-sealed-genome-dom-swarm-mind",
   "num": 491,
   "title": "persistent-broadcast-sealed-genome-dom-swarm-mind",
@@ -276,6 +522,15 @@
   "status": "works",
   "source": "F491-persistent-broadcast-sealed-genome-dom-swarm-mind",
   "hash": "abb78982f00f"
+ },
+ {
+  "slug": "f0490-physarum-policy-portal-mind",
+  "num": 490,
+  "title": "Physarum Policy Portal Mind",
+  "blurb": "A continuous agent-based Physarum (slime mold) simulation on a 2D trail field (Canvas2D, with optional WebGPU path for diffusion).",
+  "status": "works",
+  "source": "F0490-physarum-policy-portal-mind",
+  "hash": "169d9968db15"
  },
  {
   "slug": "f490-causal-bayesian-lattice-verse-mind",
@@ -287,6 +542,15 @@
   "hash": "c45a3a0ddd1a"
  },
  {
+  "slug": "f0489-orientation-mlp-ising-domain-mind",
+  "num": 489,
+  "title": "Orientation-MLP Ising Domain Mind",
+  "blurb": "A discrete 2D Ising spin lattice (binary ±1 spins on a grid, thermal Metropolis dynamics) simulated in pure JS (Canvas2D).",
+  "status": "works",
+  "source": "F0489-orientation-mlp-ising-domain-mind",
+  "hash": "d51831aa9c2d"
+ },
+ {
   "slug": "f489-mic-spectral-reservoir-css3d-crystal-mind",
   "num": 489,
   "title": "Mic Spectral Echo-State Reservoir CSS3D Crystal Mind",
@@ -294,6 +558,15 @@
   "status": "works",
   "source": "F489-mic-spectral-reservoir-css3d-crystal-mind",
   "hash": "7c0eb5097c6b"
+ },
+ {
+  "slug": "f0488-orientation-rnn-latticegas-obstacle-mind",
+  "num": 488,
+  "title": "Orientation-RNN Lattice-Gas Obstacle Mind",
+  "blurb": "A discrete lattice-gas automaton (FHP-style particle collision fluid on a square grid with streaming + collision rules) simulated in pure JS (Canvas2D.",
+  "status": "works",
+  "source": "F0488-orientation-rnn-latticegas-obstacle-mind",
+  "hash": "f4c363937a90"
  },
  {
   "slug": "f488-orient-reservoir-dom-auction-mind",
@@ -305,6 +578,15 @@
   "hash": "e4e9e240ba7b"
  },
  {
+  "slug": "f0487-webgpu-lenia-policy-portal-mind",
+  "num": 487,
+  "title": "WebGPU Lenia-Policy Portal Mind",
+  "blurb": "A continuous Lenia cellular automaton (multi-kernel growth field) running primarily in a WebGPU compute shader (Canvas2D fallback).",
+  "status": "works",
+  "source": "F0487-webgpu-lenia-policy-portal-mind",
+  "hash": "62a5d57f83f0"
+ },
+ {
   "slug": "f487-webgpu-attention-cluster-dom-mind",
   "num": 487,
   "title": "Local Attention Particle Swarm with Spatial Cluster DOM Projection Mind",
@@ -312,6 +594,15 @@
   "status": "works",
   "source": "F487-webgpu-attention-cluster-dom-mind",
   "hash": "3ca4ad938c50"
+ },
+ {
+  "slug": "f0486-spectral-vortex-policy-mind",
+  "num": 486,
+  "title": "Spectral Vortex Policy Mind",
+  "blurb": "Microphone (or synthetic oscillator fallback) spectral features (centroid, flux, energy) drive a local tiny policy MLP whose outputs set parameters of a WebGPU",
+  "status": "works",
+  "source": "F0486-spectral-vortex-policy-mind",
+  "hash": "e89497cad061"
  },
  {
   "slug": "f486-orient-rnn-dom-physical-auction-mind",

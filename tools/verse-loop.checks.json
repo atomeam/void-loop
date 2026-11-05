@@ -1,5 +1,6 @@
 [
   { "name": "guard-source", "cmd": "node tools/guard-source.mjs", "timeoutMin": 5 },
   { "name": "growth-suites", "cmd": "node tools/growth-suites.mjs", "timeoutMin": 15 },
+  { "name": "openapi", "cmd": "node tools/openapi-check.mjs", "timeoutMin": 2 },
   { "name": "lane-pages", "cmd": "node --test tools/lane-pages.test.mjs", "timeoutMin": 5 }
 ]

@@ -21,7 +21,7 @@ test('one row per site, at its furthest outcome, with the ease it was picked by 
   assert.deepEqual(by['easy.example'].ease, { score: 42, place: 1, why: '12 controls, 80 KB' });
   assert.equal(by['pw.example'].learned, 'nothing leaves the device');
   const f = fileOf(rows);
-  assert.deepEqual(f.counts, { sites: 5, surpassed: 2, passed: 0, assimilated: 1, current: 0, tried: 2 });
+  assert.deepEqual(f.counts, { sites: 5, surpassed: 2, passed: 0, assimilated: 1, current: 0, parked: 0, tried: 2 });
   assert.equal(f.target, null);
 });
 

@@ -42,7 +42,7 @@ export function fringeHtml(esc, led) {
       + (r.behavior ? '<div style="font-size:13px;margin-top:4px">' + esc(r.behavior) + '</div>' : '')
       + (r.findings.length ? '<ul class="fs-findings" style="margin:4px 0 0;padding-left:18px;font-size:13px">' + r.findings.slice(0, 5).map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
         : '<div class="sub fs-none" style="font-size:12px;margin-top:4px">no research notes yet: its runs recorded sources only</div>')
-      + (r.failures.length ? '<div class="sub" style="font-size:12px;margin-top:4px">What failed: ' + esc(r.failures.slice(0, 3).join('; ')) + '</div>' : '')
+      + (r.failures.length ? '<div class="sub" style="font-size:12px;margin-top:4px">What failed: ' + esc(r.failures.slice(0, 3).join('; ') + (r.failures.length > 3 ? '; and ' + (r.failures.length - 3) + ' more' : '')) + '</div>' : '')
       + '<div class="fs-link" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12px">'
       + (r.near.length ? '<span class="sub">built toward</span> ' + r.near.map(chip).join(' ') : '')
       + (r.skills.length ? ' <span class="sub">grew into</span> ' + r.skills.map((s) => '<span data-skill="' + esc(s) + '" style="display:inline-block;padding:2px 8px;border-radius:999px;background:rgb(var(--d-key, 158 178 255) / .25);font-size:12px;color:var(--d-ink,#f2f4fb)">' + esc(s) + '</span>').join(' ')

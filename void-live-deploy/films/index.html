@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,6 +27,8 @@
     #films { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
     .film { background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.45); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
     .film:hover { transform: translateY(-3px); border-color: rgba(255,61,127,.35); box-shadow: 0 26px 70px rgba(122,92,255,.25); }
+    /* a transform on the card that holds a playing Short restarts it (owner, 2026-11-05: a touch, a drag or a move). The lift stays on a card with no video. */
+    .film:has(video), .film:has(video):hover { transform: none; }
     .film video { width: 100%; aspect-ratio: 9 / 16; background: #000; display: block; }
     .film .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
     .film h2 { font-size: 17px; margin: 0; line-height: 1.3; }
@@ -102,6 +104,8 @@
   const UPLOAD = 'https://www.youtube.com/upload', KEY = 'a2m.void.filmkey';
   const VERDICTS = { post: 'Post it', fix: 'Needs work', skip: 'Skip it' };
   const $ = (t, attrs = {}, kids = []) => { const e = document.createElement(t); for (const [k, v] of Object.entries(attrs)) k === 'text' ? (e.textContent = v) : e.setAttribute(k, v); for (const c of kids) e.append(c); return e; };
+  // dragging a Short is the browser's native drag, which reloads the file from the start
+  document.addEventListener('dragstart', (e) => { const v = e.target && e.target.closest && e.target.closest('video'); if (v) { e.preventDefault(); v.draggable = false; } }, true);
   const copyBtn = (label, text) => {
     const b = $('button', { class: 'btn', type: 'button', text: label });
     b.addEventListener('click', async () => {
@@ -196,7 +200,7 @@
       const v = new URLSearchParams(location.search).get('v'), cur = films.find((f) => f.id === v);
       const when = (f) => new Date(f.at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
       const card = (f) => $('a', { class: 'film thumb', href: '?v=' + encodeURIComponent(f.id), 'data-id': f.id }, [
-        $('video', { src: f.src + '#t=0.5', muted: '', playsinline: '', preload: 'metadata', 'aria-hidden': 'true' }),
+        $('video', { src: f.src + '#t=0.5', muted: '', playsinline: '', preload: 'metadata', draggable: 'false', 'aria-hidden': 'true' }),
         $('div', { class: 'body' }, [$('h2', { text: f.title }), $('div', { class: 'when', text: vlabel(f.id) + ' · ' + when(f) })])]);
       if (cur) {
         document.title = cur.title + ' · Verse Tube';
@@ -212,7 +216,7 @@
           $('div', { class: 'kick', text: 'Upload it to your own channel' }), shareBox(cur)];
         if (j.member) kids.push(reviewBox(cur, j.owner));
         watch.replaceChildren($('a', { class: 'home', href: './', text: '← All videos' }),
-          $('article', { class: 'film watchbox', 'data-id': cur.id }, [$('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata' }), $('div', { class: 'body' }, kids)]),
+          $('article', { class: 'film watchbox', 'data-id': cur.id }, [$('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata', draggable: 'false' }), $('div', { class: 'body' }, kids)]),
           $('h3', { class: 'kick', text: 'Up next' }));
         status.textContent = '';
         for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(card(f));

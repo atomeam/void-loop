@@ -443,6 +443,321 @@
      "reason": "green foundation first: a skill merge changes behavior while main is red"
     }
    ]
+  },
+  {
+   "at": "2026-11-04T21:30:00Z",
+   "run": 9,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.47,
+   "dup_basis": "7 of the 15 open asks at the start were duplicates of shipped work or of another open ask (ndscalc x2, identity probes, video-gen/baggage tests, the 814032d5 jobs, images exam, telemetry)",
+   "median_days": 0.5,
+   "median_basis": "the six red checks came from today's merges (0 days); asks closed were 0 to 4 days old",
+   "asks_open_start": 15,
+   "asks_open_end": 5,
+   "note": "red checks first, then the status family merge and the asks triage. Store queue 0 open. tower-gate #9 needs a browser and is CI-only on this box.",
+   "items": [
+    {
+     "what": "privacy guard: a sales e-mail address in a public track note became a pointer to the vendor's contact page",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "revert-target test 14 follows #2190's verify.yml concurrency (per-ref groups, no cancel; deploy cancels only on PRs)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "defences -> apibot: the guard's limits table gets the GET-only apibot row (60 a minute, no body)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "handoff tags: tower-self variant pages now carry the base page's verse-handoff tag (generator fixed, four pages regenerated, two legacy entries dropped)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "seo audit: the blank home keeps a visually hidden h1; the currency-converter row gets a whole name and its own description",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "the owner's status card test follows #2210 (blank home: the card opens when asked, the red build shows linked)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "status and system-status are one family (status-board); system-status pings a real address instead of a made-up green",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "Verse's asks: 10 decided (5 duplicates of shipped work linked, 3 retired as answered or superseded, 2 folded into an open twin)",
+     "list": "V01D asks",
+     "status": "built"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-04T23:43:00Z",
+   "run": 10,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.63,
+   "dup_basis": "5 of the 8 open asks at the start were duplicates of shipped work or of another ask (emojigraph lane page, 'what can you do', the 814032d5 jobs again, images exam twin, telemetry twin)",
+   "median_days": 0,
+   "median_basis": "the red suite came from today's merges and every ask closed was asked today (0 days)",
+   "asks_open_start": 8,
+   "asks_open_end": 4,
+   "note": "green suite first, then the date-math family merge, two exam asks (timers, prices) and site-test #2228. Store queue 0 open. The images exam and '100 usd in eur' (rival check) stay open.",
+   "items": [
+    {
+     "what": "main's browser suite green again: the test server answers _redirects (301'd mode pages incl. /password-strength/), the home ask bar reads 4.5:1, the paste card test follows #2126, business-clarify carries the idea itself",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "time-math and date-calc are one family (date-math, rank 0025); aliases kept, tools/date-math-family.test.mjs, 0 routes moved over 6054 asks",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "timers exam: 'add one minute' / 'add 30 seconds to the timer' grow a running timer; timer asks in Spanish, French, German, Italian, Portuguese",
+     "list": "V01D asks",
+     "status": "built",
+     "ask": "ask-20261104-0859-2"
+    },
+    {
+     "what": "prices exam: 'precio del bitcoin' and other-language price asks name the coin; '100 usd in eur' still fails the rival check, so the ask stays queued",
+     "list": "V01D asks",
+     "status": "built",
+     "ask": "ask-20261104-2101-3"
+    },
+    {
+     "what": "814032d5 failed jobs: python-tests + browser-suite (1)(2)(3) in Verse verify 41264790432; python-tests failed at tools/verse-loop.test.mjs:151 (coder key message regex), green on main now",
+     "list": "V01D asks",
+     "status": "built",
+     "ask": "ask-20261104-2101-2"
+    },
+    {
+     "what": "emojigraph.org lane page",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "ask": "ask-20261104-2101-1",
+     "link": "65ac2bbae"
+    },
+    {
+     "what": "a clear answer to 'what can you do'",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "ask": "ask-20261104-2054-3",
+     "link": "lib/router.js self route (menu book), tools/bench.json"
+    },
+    {
+     "what": "site-test #2228 'yo play despacito': the video ask reader drops a leading yo/hey/ok, pls/plz and 'can we'/'let's'; regression in tools/words-family.test.mjs",
+     "list": "site tester (label site-test)",
+     "status": "built",
+     "issue": 2228
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T01:30:00Z",
+   "run": 11,
+   "closed": 6,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.43,
+   "dup_basis": "3 of the 7 open asks at the start were duplicates (emojigraph lane page again, the 814032d5 jobs again, the prices exam twin)",
+   "median_days": 0,
+   "median_basis": "the red checks came from today's merges and each ask closed was asked today",
+   "asks_open_start": 7,
+   "asks_open_end": 5,
+   "note": "green suite first (will, tower, films phone width), then the video-play convergence (10 overlap pairs gone). Store queue 0 open. The images exam, telemetry sync and '100 usd in eur' (rival check) stay open.",
+   "items": [
+    {
+     "what": "will test: pins VOID_BETTER_FILE to a missing file so the live weakest-part boost does not change the plain weights",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "tower card test: allows the ' · N passed' count a passed site adds (6fbae31da)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "films watch page on a phone: the Verse bar's links scroll sideways even before /verse.css loads (verse-shell.js inline style), so the page is never wider than the screen",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "video-play leaves play draughts/baduk/solar quest/texas holdem/scrabble/rps/3d tic tac toe/hanabi/zorbleflux/the podcast/a local audio file to their skills; 10 overlap pairs gone",
+     "list": "convergence stages",
+     "status": "built"
+    },
+    {
+     "what": "ask-20261105-0018-1 emojigraph.org lane page",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-1 (65ac2bbae)"
+    },
+    {
+     "what": "ask-20261105-0018-2 814032d5 failed jobs",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-2 (#2229)"
+    },
+    {
+     "what": "ask-20261105-0018-3 prices exam (ethereum, currency conversion)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-3, still queued for '100 usd in eur'"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T05:40:00Z",
+   "run": 12,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.2,
+   "dup_basis": "1 of the 5 items was a duplicate (the timers 'add one minute' ask, built in lists run 10 and closed here with a ledger entry)",
+   "median_days": 0,
+   "median_basis": "the exam failures (units, define, prices) and the timers ask were queued 2026-11-04 and built 2026-11-05",
+   "asks_open_start": 5,
+   "asks_open_end": 4,
+   "note": "Exam failures from the site tester and Verse's asks: units (bits, bytes, French units), define in five other languages, grocery prices from the keyless BLS API (the workaround for a paid price feed). Merge: riddle~textgen into riddle-gen. Store queue 0 open. The images exam, telemetry sync and '100 usd in eur' (rival check) stay open.",
+   "items": [
+    {
+     "what": "units exam: bits and bytes, French unit names with 'en', the 1,024 note only for KB and up",
+     "list": "site tester / exams",
+     "status": "built"
+    },
+    {
+     "what": "define: 'qué significa serendipia' and French, German, Italian, Portuguese phrasings show the English word and its meanings",
+     "list": "site tester / exams",
+     "status": "built"
+    },
+    {
+     "what": "prices: 'how much is a gallon of milk' and 8 more groceries from BLS average prices (keyless workaround)",
+     "list": "V01D asks (prices exam)",
+     "status": "built"
+    },
+    {
+     "what": "convergence: riddle and textgen one family, skills/riddle-gen.js, aliases kept, 0 of 4,059 answers changed",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "timers 'add one minute' (ask-20261104-0859-2)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "lists run 10, tools/timer.test.mjs"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T08:45:00Z",
+   "run": 13,
+   "closed": 14,
+   "touched": 14,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.57,
+   "dup_basis": "8 of the 14 items were twins of an earlier ask (images x2 more, telemetry, prices, the self-portrait router ask, emojigraph.org, 814032d5, 'what can you do'); one build or an earlier answer closed each",
+   "median_days": 1,
+   "median_basis": "days from queued to built over the 14 items: 0 x6, 1 x5, 2, 4, 5; median 1 (the self-portrait asks were queued 2026-10-31 and 2026-11-01, the rest 2026-11-03 to 2026-11-05)",
+   "asks_open_start": 4,
+   "asks_open_end": 8,
+   "note": "Verse's dated asks all closed: the prices exam (a bare 'price' gets a which-one card), telemetry sync (every failed check named), the self-portrait router ask, and the images exam (already 100 live). handoff-e2e is UTC-pinned. Merge: place~skycard into where-is. 11 older undated asks stay open; none blocked. Verse's 2026-11-05 07:30 UTC asks (emojigraph.org, 814032d5, images) closed as duplicates, and 'what can you do' got its ledger close; 8 undated asks stay on the current list.",
+   "items": [
+    {
+     "what": "prices: a bare 'price' asks which thing with a tap per kind; '100 usd in eur' matches Frankfurter (ask-20261104-2101-3)",
+     "list": "V01D asks (prices exam)",
+     "status": "built"
+    },
+    {
+     "what": "prices twin (ask-20261105-0018-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-3"
+    },
+    {
+     "what": "telemetry: the failed count and the failed names always agree past three (ask-20261103-2357-3)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "telemetry twin (ask-20261104-0746-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261103-2357-3"
+    },
+    {
+     "what": "images exam passes 6 of 6 at 100, live and local (ask-20261104-2017-1)",
+     "list": "V01D asks (images exam)",
+     "status": "built"
+    },
+    {
+     "what": "images twin (ask-20261104-1659-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2017-1"
+    },
+    {
+     "what": "self-portrait: 'draw yourself' and 'what do you look like' put Verse's self-portrait on the stage (skills/cartoon.js, tools/cartoon-self.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "self-portrait twin ('Fix the self-skill router to recognize identity-based probes')",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "the self-portrait router ask, this run"
+    },
+    {
+     "what": "handoff-e2e time-page journey: the suite pins UTC and en-US, 19 of 19 pass",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "convergence: sky-card and place one family, skills/where-is.js, aliases kept (tools/where-is-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "emojigraph.org lane page (ask-20261105-0730-1)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-1"
+    },
+    {
+     "what": "814032d5 failed jobs (ask-20261105-0730-2)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-2"
+    },
+    {
+     "what": "images exam (ask-20261105-0730-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2017-1"
+    },
+    {
+     "what": "'what can you do' (ask-20261104-2054-3), ledger close",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "lists run 10"
+    }
+   ]
   }
  ]
 }

@@ -1,17 +1,18 @@
 <!doctype html>
 <!-- written by tools/tower-self.mjs from lib/self-sites.js and its family page; edit the row, not this file -->
-<html lang="en">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Markets: stock, ETF, index, currency and crypto quotes with  · Verse</title>
-<meta name="twitter:description" content="Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.">
-<meta name="twitter:title" content="Markets: stock, ETF, index, currency and crypto quotes with  · Verse">
-<meta name="description" content="Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.">
+<title>Currency converter: live exchange rates, plus stock, ETF and crypto quotes · Verse</title>
+<meta name="verse-handoff" content="in: text; out: numbers, table">
+<meta name="twitter:description" content="Convert between currencies at the live rate: type a pair such as EUR/USD, see the price, the day's change and a 1D to Max chart, and keep pairs on a watchlist on your device. Stocks, ETFs and crypto quote here too. No ads, no account.">
+<meta name="twitter:title" content="Currency converter: live exchange rates, plus stock, ETF and crypto quotes · Verse">
+<meta name="description" content="Convert between currencies at the live rate: type a pair such as EUR/USD, see the price, the day's change and a 1D to Max chart, and keep pairs on a watchlist on your device. Stocks, ETFs and crypto quote here too. No ads, no account.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
-<meta property="og:title" content="Markets: stock, ETF, index, currency and crypto quotes with  · Verse">
-<meta property="og:description" content="Look up a stock, ETF, index, currency pair or coin by symbol or name: price, change, day range, 52 weeks, volume, a 1D to Max chart you can hover, a watchlist on your device, compare two symbols, top movers. No ads, no account.">
+<meta property="og:title" content="Currency converter: live exchange rates, plus stock, ETF and crypto quotes · Verse">
+<meta property="og:description" content="Convert between currencies at the live rate: type a pair such as EUR/USD, see the price, the day's change and a 1D to Max chart, and keep pairs on a watchlist on your device. Stocks, ETFs and crypto quote here too. No ads, no account.">
 <meta property="og:url" content="https://a-to-mind.com/markets/currency-converter/">
 <meta property="og:image" content="https://a-to-mind.com/og/markets.png">
 <meta property="og:image:width" content="1200">
@@ -78,6 +79,10 @@
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/markets/currency-converter/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Currency converter: live exchange rates, plus stock, ETF and crypto quotes","url":"https://a-to-mind.com/markets/currency-converter/","description":"Convert between currencies at the live rate: type a pair such as EUR/USD, see the price, the day's change and a 1D to Max chart, and keep pairs on a watchlist on your device. Stocks, ETFs and crypto quote here too. No ads, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"stock price, stock quote, stock chart, aapl stock price, bitcoin price chart, eur usd exchange rate chart","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Currency converter: live exchange rates, plus stock, ETF and crypto quotes","item":"https://a-to-mind.com/markets/currency-converter/"}]}]}</script>
+<!-- /seo -->
 </head>
 <body>
 <main>
@@ -159,7 +164,7 @@
   <div class="two" id="movers"><div><div class="empty" style="margin-bottom:4px">Up</div><ul class="list" id="mvUp"></ul></div><div><div class="empty" style="margin-bottom:4px">Down</div><ul class="list" id="mvDown"></ul></div></div>
   <p class="note" id="mvNote">Among twelve large US stocks, over the last session.</p>
 
-    <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/calculator/">Calculator</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+    <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/markets/">Markets</a> <a href="/convert/">Unit converter</a> <a href="/calculator/">Calculator</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 
   <p class="srcs" id="srcs">Prices come from free public sources and may be delayed: Stooq (shares, ETFs, indices), CoinGecko (crypto), the ECB’s daily reference rates through <a href="https://frankfurter.dev/" rel="noopener">frankfurter.dev</a> (currencies); Yahoo Finance’s public chart feed fills in only when another source is down. There are no company financials, news, options or portfolios here, and nothing here trades. Not financial advice.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>

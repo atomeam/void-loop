@@ -14,27 +14,36 @@
 <meta property="og:url" content="https://a-to-mind.com/credits/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/verse.css">
 <style>
-  :root { color-scheme: dark; }
-  html, body { margin: 0; background: #07060b; color: #ecebf5; font: 15px/1.45 system-ui, -apple-system, sans-serif; }
-  main { max-width: 1000px; margin: 0 auto; padding: 18px 12px 40px; }
-  h1 { font-size: 22px; margin: 0 0 4px; } a { color: #a9a4ff; }
-  .n { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; } .n div { background: #14121d; border-radius: 8px; padding: 8px 12px; }
-  .n b { display: block; font-size: 20px; } table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  td, th { text-align: left; padding: 5px 6px; border-bottom: 1px solid #221f2e; vertical-align: top; } .muted { color: #9a97ab; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+  @media (max-width: 700px) {
+    #c, #c tbody, #c tr, #c td { display: block; width: auto; }
+    #c thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    #c tr { padding: 8px 0; }
+    #c td { border: 0; padding: 2px 0; }
+    #c td::before { content: attr(data-label); display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--d-ink-3); }
+  }
+  th { color: var(--d-ink-3); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+  .muted { color: var(--d-ink-3); }
+  a:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
 </style>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
 </head>
-<body>
-<main>
+<body class="vs-stand">
+<main class="vs-page">
 <h1>Credits</h1>
 <p class="muted">Verse builds on free outside work. Each source is listed with its author, license and link; a source with no clear license is never used. Share-alike sources are only used isolated, under their own license. Generated from <a href="/salvage/">salvage</a>.</p>
-<table id="c"><tr><th>Source</th><th>Author</th><th>License</th><th>Used in</th></tr></table>
+<table id="c"><thead><tr><th>Source</th><th>Author</th><th>License</th><th>Used in</th></tr></thead><tbody></tbody></table>
 </main>
 <script>
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 fetch('/salvage.json', { cache: 'no-store' }).then((r) => r.json()).then((s) => {
-  document.getElementById('c').innerHTML += s.credits.map((c) => '<tr><td><a href="' + esc(c.link) + '" rel="noopener">' + esc(c.name) + '</a></td><td>' + esc(c.author) + '</td><td>' + esc(c.license) + (c.isolated ? ' (isolated)' : '') + '</td><td>' + (c.used ? esc(c.used) : '<span class="muted">queued</span>') + '</td></tr>').join('');
+  document.querySelector('#c tbody').innerHTML = s.credits.map((c) => '<tr><td data-label="Source"><a href="' + esc(c.link) + '" rel="noopener">' + esc(c.name) + '</a></td><td data-label="Author">' + esc(c.author) + '</td><td data-label="License">' + esc(c.license) + (c.isolated ? ' (isolated)' : '') + '</td><td data-label="Used in">' + (c.used ? esc(c.used) : '<span class="muted">queued</span>') + '</td></tr>').join('');
 });
 </script>
+<script type="module" src="/verse-shell.js"></script>
 </body>
 </html>

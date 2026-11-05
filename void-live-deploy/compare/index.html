@@ -8,17 +8,21 @@
 <link rel="canonical" href="https://a-to-mind.com/compare/">
 <meta property="og:title" content="Side by side"><meta property="og:description" content="Verse's page beside the site it is up against."><meta property="og:image" content="https://a-to-mind.com/og.png"><meta property="og:url" content="https://a-to-mind.com/compare/"><meta name="twitter:card" content="summary_large_image">
 <style>
-  :root{color-scheme:dark}html,body{margin:0;height:100%;background:#07070b;color:#eee;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}body{display:flex;flex-direction:column}
-  header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 12px;border-bottom:1px solid #2a2a36;background:#0d0d14}
-  header a{color:#d8b45a}header .st{opacity:.85}header .st b{color:#9df09d}header .st i{color:#f0b35a;font-style:normal}
+  :root{color-scheme:dark}html,body{margin:0;height:100%;background:#050505;color:#f2f4fb;font:16px/1.45 ui-sans-serif,system-ui,sans-serif}body{display:flex;flex-direction:column}
+  header{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;min-height:48px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.08);background:rgb(5 5 5 / .9)}
+  header a{color:rgb(158 178 255);min-height:44px;display:inline-flex;align-items:center}header .st{color:#c3c8d8}header .st b{color:#7ddeaf}header .st i{color:#ffd27a;font-style:normal}
   main{display:grid;grid-template-columns:1fr 1fr;flex:1;min-height:0}
-  #vs{border-bottom:1px solid #2a2a36;background:#0d0d14;padding:0 10px 6px;max-height:46vh;overflow:auto}#vs summary{cursor:pointer;padding:6px 0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#aaa}#vs .tw{max-width:560px}
+  #vs{border-bottom:1px solid rgba(255,255,255,.08);background:#0b0c12;padding:0 16px 8px;max-height:46vh;overflow:auto}#vs summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#8e94a8}#vs .tw{max-width:560px}
   h2 .av-face,h2 .av-verse{width:26px;height:26px;vertical-align:middle;margin-right:6px}
-  section{display:flex;flex-direction:column;min-width:0}section h2{margin:0;padding:5px 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#aaa;border-bottom:1px solid #2a2a36;display:flex;justify-content:space-between;gap:8px}
-  iframe{flex:1;border:0;width:100%;background:#fff}
-  .shot{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px;text-align:center}.shot img{width:min(100%,390px);border:1px solid #2a2a36;border-radius:8px}
-  .cap{margin:0;font-size:12px;color:#aaa}button{font:inherit;padding:8px 14px;border-radius:999px;border:1px solid #d8b45a;background:transparent;color:#eee;cursor:pointer}
-  @media (max-width:700px){main{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+  section{display:flex;flex-direction:column;min-width:0}section h2{margin:0;padding:8px 16px;min-height:44px;box-sizing:border-box;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#8e94a8;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;gap:8px}
+  iframe{flex:1;border:0;width:100%;background:#0b0c12}
+  body.no-floor main{display:none}
+  #pick{padding:16px 16px 48px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+  #pick p{flex-basis:100%;margin:0 0 8px;color:#c3c8d8}
+  #pick a{min-height:44px;display:inline-flex;align-items:center;padding:0 14px;border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#f2f4fb;text-decoration:none}
+  .shot{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;text-align:center}.shot img{width:min(100%,390px);border:1px solid rgba(255,255,255,.10);border-radius:12px}
+  .cap{margin:0;font-size:13px;color:#8e94a8;max-width:42ch}button{font:inherit;min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid rgb(158 178 255 / .55);background:transparent;color:#f2f4fb;cursor:pointer}
+  @media (max-width:700px){main{grid-template-columns:1fr;grid-template-rows:1fr 1fr}header{font-size:15px}}
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
@@ -40,7 +44,7 @@
 </head>
 <body>
 <header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span> <a href="/conquered/" style="margin-left:auto">Versus</a></header>
-<details id="vs" open hidden><summary id="vsum">The matchup</summary><div id="vsin"></div></details>
+<details id="vs" hidden><summary id="vsum">The matchup</summary><div id="vsin"></div></details>
 <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Side by side: Verse and the site it is up against</h1>
 <main>
   <section><h2><span id="vn">Verse</span><a id="vo" href="/" target="_blank" rel="noopener">open</a></h2><iframe id="vf" title="Verse's page" src="about:blank"></iframe></section>
@@ -54,7 +58,18 @@
   const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const q = new URLSearchParams(location.search), id = (q.get('floor') || '').toLowerCase(), f = FLOORS.find((x) => x.id === id || x.aka === id) || null;
   const $ = (i) => document.getElementById(i);
-  if (!f) { $('who').textContent = 'Side by side: say which floor, /compare/?floor=' + (FLOORS[0] && FLOORS[0].id); }
+  if (!f) {
+    const id = FLOORS[0] && FLOORS[0].id;
+    $('who').textContent = 'Side by side: say which floor, /compare/?floor=' + (id ? encodeURIComponent(id) : '');
+    document.body.classList.add('no-floor');
+    const pick = document.createElement('nav');
+    pick.id = 'pick';
+    pick.setAttribute('aria-label', 'Floors');
+    const shown = FLOORS.filter((x) => x && x.page).slice(0, 24);
+    pick.innerHTML = '<p>Pick a floor. Each one opens Verse beside the site it is measured against.</p>'
+      + shown.map((x) => '<a href="/compare/?floor=' + encodeURIComponent(x.id) + '">' + esc(x.site) + '</a>').join('');
+    document.body.append(pick);
+  }
   else {
     const vp = f.page || ('/?q=' + encodeURIComponent(f.ask || '')), site = f.url;
     document.title = 'Side by side: Verse and ' + f.site; $('who').textContent = 'Verse and ' + f.site + ', side by side';

@@ -72,6 +72,10 @@ test('the page is its family\'s page with its own title, preview words, headline
   assert.match(h, /og:url" content="https:\/\/a-to-mind\.com\/color\/hex-names\/"/); assert.match(h, /<h1>Colour names<\/h1>\n  <p class="intro">Find a name\.<\/p>/);
   assert.ok(!h.includes('old intro') && !h.includes('<!-- seo -->') && !h.includes('<!-- asks -->')); assert.match(h, /og:title/);
   assert.equal(variantHtml(h, row), h, 'written again it is the same page');
+  // a base on the legacy hand-off list has no tag; its variant carries the family's (handoff-scan: new pages ship with one), once
+  const tagged = variantHtml(base, row, 'in: color; out: color');
+  assert.match(tagged, /<meta name="verse-handoff" content="in: color; out: color">/); assert.equal(variantHtml(tagged, row, 'in: color; out: color'), tagged);
+  assert.equal((variantHtml(tagged, row, 'in: text; out: text').match(/verse-handoff/g) || []).length, 1, 'a tag already there is kept, never doubled');
   const sw = "const TOOLS = ['/a/', '/b/'];\nconst X = 1;";
   assert.equal(swWith(sw, '/c/'), "const TOOLS = ['/a/', '/b/', '/c/'];\nconst X = 1;"); assert.equal(swWith(swWith(sw, '/c/'), '/c/'), swWith(sw, '/c/'));
   assert.match(fs.readFileSync(path.join(root, 'void-live-deploy/sw.js'), 'utf8'), /const TOOLS = \[[^\]]*\];/, 'sw.js still holds its offline list on one line');

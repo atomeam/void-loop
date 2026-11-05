@@ -285,6 +285,12 @@
     },
     {
       "ask": "yo what language does the word kindergarten come from"
+    },
+    {
+      "ask": "who is the auhtor of dune"
+    },
+    {
+      "ask": "yo draw a cartoon cat"
     }
   ],
   "candidates": [],
