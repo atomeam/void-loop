@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1153,
+ "counted": 1152,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1007,7 +1007,7 @@
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 4
   },
   {
@@ -1032,18 +1032,18 @@
    "tests": 5
   },
   {
-   "file": "lib/store-db.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 32,
-   "tests": 3
-  },
-  {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
    "dependants": 32,
    "tests": 0
+  },
+  {
+   "file": "lib/store-db.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 31,
+   "tests": 3
   },
   {
    "file": "lib/store.js",
@@ -2337,14 +2337,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 94,
+   "dependants": 93,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 93,
+   "dependants": 92,
    "tests": 34
   },
   {
@@ -3885,9 +3885,7 @@
     "lib/gumroad.js",
     "lib/store-db.js"
    ],
-   "importedBy": [
-    "functions/api/productsearch.js"
-   ]
+   "importedBy": []
   },
   "functions/api/clip.js": {
    "imports": [
@@ -4308,12 +4306,6 @@
    "imports": [
     "lib/guard.js",
     "lib/probe-log.js"
-   ],
-   "importedBy": []
-  },
-  "functions/api/productsearch.js": {
-   "imports": [
-    "functions/api/catalog.js"
    ],
    "importedBy": []
   },
@@ -8218,7 +8210,6 @@
     "functions/api/mine.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
-    "functions/api/productsearch.js",
     "functions/api/publish.js",
     "functions/api/rapvoice.js",
     "functions/api/recipes.js",
@@ -8331,7 +8322,6 @@
     "functions/api/mcp.js",
     "functions/api/members.js",
     "functions/api/miss.js",
-    "functions/api/productsearch.js",
     "functions/api/review.js",
     "functions/api/support.js",
     "functions/api/team.js",
@@ -10297,7 +10287,6 @@
     "functions/api/podcasts.js",
     "functions/api/probe-asks.js",
     "functions/api/probe-log.js",
-    "functions/api/productsearch.js",
     "functions/api/propose-fix.js",
     "functions/api/publish.js",
     "functions/api/queue.js",
@@ -12885,7 +12874,6 @@
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
     "functions/api/members.js",
-    "functions/api/productsearch.js",
     "functions/api/review.js",
     "functions/api/support.js",
     "functions/api/team.js",
