@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1148,
+ "counted": 1150,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1151,6 +1151,13 @@
    "tests": 3
   },
   {
+   "file": "lib/image-handoff.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/list-goal.js",
    "skills": 2,
    "direct": 1,
@@ -1338,6 +1345,13 @@
    "direct": 1,
    "dependants": 29,
    "tests": 1
+  },
+  {
+   "file": "lib/free-pics.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 28,
+   "tests": 2
   },
   {
    "file": "lib/plan.js",
@@ -1785,7 +1799,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 4
   },
   {
    "file": "lib/vat.js",
@@ -2166,6 +2180,13 @@
    "tests": 1
   },
   {
+   "file": "lib/shape-picture.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/similar-index.js",
    "skills": 1,
    "direct": 1,
@@ -2429,7 +2450,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 29,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/memory-scope.js",
@@ -2507,13 +2528,6 @@
    "direct": 0,
    "dependants": 27,
    "tests": 1
-  },
-  {
-   "file": "lib/free-pics.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 27,
-   "tests": 2
   },
   {
    "file": "lib/markets-record.js",
@@ -2916,13 +2930,6 @@
   },
   {
    "file": "lib/honest.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/image-handoff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3364,6 +3371,13 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/member-keep.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7929,7 +7943,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/daily-art.js"
+    "functions/api/daily-art.js",
+    "skills/image.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -8487,7 +8502,9 @@
   "lib/image-handoff.js": {
    "imports": [],
    "importedBy": [
-    "lib/pdf-ui.js"
+    "lib/pdf-ui.js",
+    "skills/draw.js",
+    "skills/image.js"
    ]
   },
   "lib/imgfit.js": {
@@ -9377,6 +9394,10 @@
     "skills/calendar-fill.js",
     "skills/dates.js"
    ]
+  },
+  "lib/member-keep.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/members.js": {
    "imports": [
@@ -12072,6 +12093,12 @@
    "imports": [],
    "importedBy": [
     "skills/service-health.js"
+   ]
+  },
+  "lib/shape-picture.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/draw.js"
    ]
   },
   "lib/share-client.js": {
@@ -15149,6 +15176,8 @@
   },
   "skills/draw.js": {
    "imports": [
+    "lib/shape-picture.js",
+    "lib/image-handoff.js",
     "skills/scene3d.js",
     "skills/forge-rules.js"
    ],
@@ -15967,7 +15996,10 @@
    "importedBy": []
   },
   "skills/image.js": {
-   "imports": [],
+   "imports": [
+    "lib/free-pics.js",
+    "lib/image-handoff.js"
+   ],
    "importedBy": []
   },
   "skills/imgfit.js": {
