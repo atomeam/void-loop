@@ -1213,3 +1213,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-05T12:50:00Z | cursor | grow | Language pairs grew from 1,806 to 4,290, nine keyless APIs joined the free wrappers, every text encoding now has an independent checker, and the next ten salvage pieces are bots. The registry is 16,793 live and none failed.
 2026-11-05T13:00:23Z | cursor | fix | what are the figures doing answers from together while the other skills are still loading, instead of staying on waking up
 2026-11-05T12:06:51Z | cursor | fix | weave a constellation called night ops answers from constellation-weaver while the other skills are still loading, instead of staying on waking up
+2026-11-05T14:15:43Z | cursor | fix | The empty home is the void and the ask bar: the wordmark, the A-TO-MIND line and the support Verse store link are gone from the first paint

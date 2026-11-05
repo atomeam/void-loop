@@ -44,7 +44,7 @@ const AFTER = [
   '  function startBoot(){ if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", frame); else frame(); }',
   '  var coarse = false; try { coarse = matchMedia("(pointer: coarse)").matches; } catch (e) {}',
   '  if (coarse) {',
-  // an empty phone home is the word and the ask bar. The ask engine, the sky and the shell start on a tap, a key, or twelve seconds,
+  // an empty phone home is the void and the ask bar. The ask engine, the sky and the shell start on a tap, a key, or twelve seconds,
   // the same wait as the skill modules. Enter on the bar still starts the engine at once (keep above).
   '    var once = function () { document.removeEventListener("pointerdown", once, true); document.removeEventListener("keydown", once, true); startBoot(); decor(); };',
   '    document.addEventListener("pointerdown", once, true);',
