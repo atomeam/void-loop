@@ -1,4 +1,5 @@
 import test from 'node:test';
+import vatSkill from '../void-live-deploy/skills/vat.js';
 import assert from 'node:assert/strict';
 import { compute, parseAmount, parseRate, round2, stateFromQuery, queryFromState, workingOf } from '../void-live-deploy/lib/vat.js';
 import { vatAskOf, vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
@@ -62,4 +63,10 @@ test('working display is generated for both modes', () => {
   const added = compute({ amount: 1000, rate: 20, mode: 'add' });
   const steps2 = workingOf(added, 'en');
   assert.ok(steps2.length >= 2);
+});
+
+test("vat skill is registered and matches VAT asks", () => {
+  assert.equal(vatSkill.name, "vat");
+  assert.ok(vatSkill.match("remove vat from 100", "remove vat from 100"));
+  assert.ok(vatSkill.examples.length > 0);
 });
