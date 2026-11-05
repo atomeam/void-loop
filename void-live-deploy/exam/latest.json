@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T11:23:03.262Z",
+  "at": "2026-11-05T11:53:22.638Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -155,7 +155,7 @@
       }
     },
     "weather": {
-      "score": 97.4,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -170,9 +170,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 85.7
+          "score": 66.7
         }
       ],
       "holdout": {
