@@ -161,6 +161,7 @@ let tour = null; // the walkthrough on screen: { steps, i, made, bar }
 // text and buttons): lib/placement.js dockPanel puts it above the ask bar when nothing is open, beside the open card when there is room,
 // docked at the top or between the card and the ask bar, and when there is no free space it becomes a modal layer over a dimmed stage
 // (focus kept inside, Esc closes, aria-modal). It is re-placed as the card lands, grows or the window changes.
+let grabbing = false; // a tray chip is in hand: the panel stays put, so the gesture is not cancelled by a re-place
 const rectOf = (e) => { const r = e && e.getBoundingClientRect ? e.getBoundingClientRect() : null; return r && r.width > 0 && r.height > 0 ? { x: r.left, y: r.top, w: r.width, h: r.height } : null; };
 function avoidRects() {
   const out = [], pg = document.querySelector('.vpage.on'); if (pg) out.push(rectOf(pg));
@@ -168,7 +169,7 @@ function avoidRects() {
   return out.filter(Boolean);
 }
 function place(el) {
-  if (!el || !el.isConnected) return;
+  if (!el || !el.isConnected || grabbing) return;
   const d = document.getElementById('dock'), dr = d && d.getBoundingClientRect();
   const floor = dr && dr.height ? dr.top : innerHeight - 72;
   const heightAt = (w) => { el.style.width = w + 'px'; el.style.maxHeight = 'none'; return el.offsetHeight; };
@@ -323,8 +324,8 @@ function chip(stageApi, it) {
   const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
   let from = null, ghost = null, pid = null;
   // the move and the lift are heard on the window, the same way a stage card is dragged (bindDrag in void.html).
-  // pointer capture on the chip alone drops the gesture when the panel re-places under a loaded runner: the ghost
-  // never appears and nothing is dropped (#2250).
+  // the panel does not re-place while a chip is held, and the chip does not capture the pointer: capture cancelled
+  // the gesture when a loaded runner moved the panel, so the ghost never appeared (#2250).
   const move = (e) => {
     if (!from || e.pointerId !== pid) return;
     if (!ghost && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6) {
@@ -336,7 +337,7 @@ function chip(stageApi, it) {
   };
   const up = (e) => {
     if (!from || e.pointerId !== pid) return;
-    const dragged = !!ghost; from = null; pid = null; if (ghost) { ghost.remove(); ghost = null; }
+    const dragged = !!ghost; from = null; pid = null; grabbing = false; if (ghost) { ghost.remove(); ghost = null; }
     window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
     if (e.type === 'pointercancel') return;
     const bar = document.getElementById('showcase-bar'), r = bar && bar.getBoundingClientRect();
@@ -346,10 +347,11 @@ function chip(stageApi, it) {
   };
   b.addEventListener('pointerdown', (e) => {
     if (e.button) return;
-    from = { x: e.clientX, y: e.clientY }; pid = e.pointerId;
+    from = { x: e.clientX, y: e.clientY }; pid = e.pointerId; grabbing = true;
     window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
     window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
-    try { b.setPointerCapture(e.pointerId); } catch (_) {}
+    // no setPointerCapture: capturing the chip cancels the gesture when the panel re-places under load, so the ghost
+    // never shows and the drop never lands (#2250, still red on verify). The window hears the move either way.
     e.preventDefault();
   });
   b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(stageApi, it.j, null); } });

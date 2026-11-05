@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/actions-log-f90f · failed GitHub Actions job names and the failing step's log, for any commit, with the count equal to the names · 2026-11-05 14:20 UTC
+- Cursor cloud agent · helper/ledger-lines-once-f90f · the self card shows each built ask's own ledger line: lines that share a timestamp no longer collapse to the last one · 2026-11-05 13:50 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
@@ -78,6 +80,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Just finished
 
 - **Blank home, videos keep playing (cursor, 2026-11-05)**: the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was. https://github.com/atomeam/void-loop/pull/2291
+- **Phone panel and tray drag (cursor, 2026-11-05)**: a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands. https://github.com/atomeam/void-loop/pull/2289
 - **Verify reds, the next ones (cursor, 2026-11-05)**: "clear all the notes" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2283
 - **Glass stylesheet, not blocking (cursor, 2026-11-05)**: the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281
 - **Figures doing (cursor, 2026-11-05)**: "what are the figures doing" answers from together before the page says waking up, while the rest of the skills are still loading. Nothing ranked above together takes the phrase. https://github.com/atomeam/void-loop/pull/2279

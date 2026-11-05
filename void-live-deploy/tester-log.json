@@ -1,16 +1,30 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 265,
+ "runsTotal": 267,
  "kinds": {
   "grow": 70,
   "file": 84,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 57
+  "visitor": 59
  },
  "runs": [
+  {
+   "at": "2026-11-05T14:03:44Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T13:36:28Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T13:23:33Z",
    "passed": 85,
@@ -318,39 +332,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T07:12:16Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T06:57:03Z",
-   "passed": 85,
-   "of": 89,
-   "kind": "file",
-   "ms": 329,
-   "note": "fix: \"dyslexia friendly font\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "dyslexia friendly font",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -428,7 +409,7 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 74,
+   "runs": 76,
    "passed": 1357,
    "of": 1502,
    "ms": 336

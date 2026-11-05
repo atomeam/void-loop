@@ -1345,10 +1345,16 @@
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
     }
     let sayCount = 0;
+    function fitOpenPanels() {
+      // the whisper sits in the ask dock, so a new line lifts the dock over a game panel that was fitted a moment earlier
+      // (phone Go: the panel ended 5px inside the dock until the next frame). Fit again in this same turn, before anything reads the layout.
+      for (const c of stage.querySelectorAll(':scope > .side-card')) if (typeof c.fitPanel === 'function') c.fitPanel();
+    }
     function say(msg) {
       whisper.textContent = msg || '';
       const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
-      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) { whisper.textContent = ''; fitOpenPanels(); } }, 3500);
+      fitOpenPanels();
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
