@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T12:39:36.098Z",
+ "updated": "2026-11-05T12:53:07.272Z",
  "last24h": {
-  "ticks": 40,
-  "started": 70,
+  "ticks": 41,
+  "started": 71,
   "requeued": 0,
   "setAside": 3,
   "probes": 6,
@@ -11,6 +11,14 @@
  },
  "broken": [],
  "held": [
+  {
+   "id": "mvbl52gd",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mvu167w7",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
   {
    "id": "mvoxkk1v",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
@@ -82,14 +90,6 @@
   {
    "id": "mvpkt0sa",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvpkt1c5",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvpkt1u7",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   }
  ],
  "coder": {
@@ -144,7 +144,8 @@
   "mw3ctmmx": 1793876240861,
   "mw3gsh8s": 1793878987968,
   "mw3gsply": 1793881477163,
-  "mw3gsqet": 1793882376098
+  "mw3gsqet": 1793882376098,
+  "mw3gsr6j": 1793883187272
  },
  "visitorAt": "2026-11-05T12:32:47Z",
  "visitorFiled": [
@@ -1366,6 +1367,30 @@
     "void-tick.yml"
    ],
    "held": 189,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T12:53:07.272Z",
+   "open": 196,
+   "started": [
+    {
+     "id": "mw3gsr6j",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 191,
    "warnings": 0
   }
  ]
