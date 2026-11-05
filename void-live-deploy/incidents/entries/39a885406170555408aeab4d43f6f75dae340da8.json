@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-05T13:31:48.568Z",
+ "sha": "39a885406170555408aeab4d43f6f75dae340da8",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42030718669",
+ "suite": "browser suite on main",
+ "checks": [
+  "subtitles: an .srt chosen on a video card becomes a WebVTT track on the video (times with dots, the header) and the card says subtitles are on",
+  "clear all the notes",
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "domains/handoff.md"
+ ],
+ "shards": [
+  1,
+  4
+ ]
+}
