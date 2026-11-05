@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · cursor/agent-followups-af4f · /agent/ asks before a send and then resumes or stops, the Made shelf reopens the steps, and a finished task stays in the inbox after the tab is closed · 2026-11-05 09:30 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
@@ -305,6 +306,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders
 
+- **Agent follow-ups (cursor, 2026-11-05):** a closed tab's news is `seen = 0` on the task, not a push service. Approve resumes with `decisionOf`; decline stops; the Made shelf is the task's own steps. Playbook: `docs/playbooks/agent.md`. Probe: `node tools/agent-probe.mjs https://a-to-mind.com --all`.
 - **Visible progress (cursor, 2026-11-03):** `lib/visible.js` ranks a visitor-facing fix above laps, gates, incident logs and regenerated files. The wants card shows how many page and skill commits shipped today and this week. Playbook: `docs/playbooks/visible-progress.md`.
 - 2026-11-01 (OpenHands): run the free OpenHands agent stack on a local model, no cloud key. `pip install -U openhands-sdk openhands-tools` (one command: a matched set), then `LLM(model="openai/qwen3:4b", base_url="http://127.0.0.1:11434/v1", api_key="local-llm")`; install Ollama with the pip `zstandard` module (no `zstd` on the box) and `sudo cp` its `bin`/`lib`. Two traps: `python -m openhands.core.main` is gone, and a thinking model needs `/no_think` plus enough `max_tokens` or it emits no tool call. Full steps: `docs/playbooks/openhands.md`.
 - 2026-10-28 (Grok Bot): the box lost its Node 22 links in /usr/local/bin, so every lists run from 10-22 to 10-28 died at startup. Fix: `sudo ln -sf ~/.local/node22/bin/{node,npm,npx,corepack} /usr/local/bin/` then `npm ci`; check `node -v` first when a routine fails instantly.

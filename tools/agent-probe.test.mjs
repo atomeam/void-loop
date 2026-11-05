@@ -1,7 +1,7 @@
 // The /agent/ gate retries a dropped connection or a gateway error, never a real answer (Verse engineer, 2026-11-04).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { getJson, ASKS, pick, verdict, REFUSES } from './agent-probe.mjs';
+import { getJson, ASKS, pick, verdict, REFUSES, inboxVerdict, reopenVerdict, approveVerdict } from './agent-probe.mjs';
 
 const answer = (status, body) => ({ status, json: async () => body });
 const quiet = { pause: 1, say: () => {} };
@@ -46,6 +46,28 @@ test('each ask is judged on what its answer holds', () => {
   assert.match(verdict(ask('local'), done('1. Forsyth Park. 2. Walk the historic squares. 3. River Street at sunset, free to stroll.'), [{}, {}]), /Made shelf/);
   assert.equal(verdict(ask('approval'), { status: 'needs_yes', result: 'Hi, the kitchen sink is fixed now.' }, []), '');
   assert.match(verdict(ask('approval'), done('Hi, the kitchen sink is fixed now.'), [{}]), /wait for a yes/);
+  assert.equal(verdict(ask('inbox'), done('Base64 of "verse inbox": dmVyc2UgaW5ib3g='), [{}]), '');
+  assert.match(verdict(ask('inbox'), done('not really'), [{}]), /encoding/);
+  assert.equal(verdict(ask('steps'), done('Base64 of "made steps": bWFkZSBzdGVwcw=='), [{}]), '');
+  assert.equal(verdict(ask('approve'), { status: 'needs_yes', result: 'Mom, dinner is at 6.' }, []), '');
+  assert.equal(verdict(ask('approve'), { status: 'needs_yes', result: "I'm sorry, but I can't help with that." }, []), 'refused');
+});
+test('the inbox stays until it is marked seen, a finished task reopens, and a yes resumes without sending', () => {
+  const id = 'abc', open = { inbox: [{ id, status: 'done' }] };
+  assert.equal(inboxVerdict(id, open, open, { inbox: [] }), '');
+  assert.match(inboxVerdict(id, { inbox: [] }, open, { inbox: [] }), /no inbox/);
+  assert.match(inboxVerdict(id, open, { inbox: [] }, { inbox: [] }), /closed/);
+  assert.match(inboxVerdict(id, open, open, open), /seen/);
+  const steps = [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }];
+  assert.equal(reopenVerdict({ steps }, { steps }), '');
+  assert.match(reopenVerdict({ steps: [{ line: 'Got it.' }] }, { steps }), /no step stream/);
+  assert.match(reopenVerdict({ steps }, null), /Made shelf/);
+  const waiting = { task: { id, status: 'needs_yes', result: 'Mom, dinner is at 6.' }, inbox: [{ id, status: 'needs_yes' }] };
+  const resumed = { task: { id, status: 'done', result: 'Mom, dinner is at 6.', steps: [{ line: 'You said yes. Resumed. Nothing was sent or paid: the approved draft is on your Made shelf.' }] }, inbox: [{ id, status: 'done' }], made: [{}] };
+  assert.equal(approveVerdict(waiting, resumed), '');
+  assert.match(approveVerdict(waiting, { ...resumed, task: { ...resumed.task, result: 'other' } }), /draft changed/);
+  assert.match(approveVerdict({ task: waiting.task, inbox: [] }, resumed), /not in the inbox/);
+  assert.match(approveVerdict(waiting, { ...resumed, task: { ...resumed.task, status: 'needs_yes' } }), /did not resume/);
 });
 test('a refusal is caught however it is worded; help that mentions sorry is not one', () => {
   for (const r of ["I can't help with that.", 'I am unable to assist with this request.', 'As an AI, I cannot do that.', "I'm sorry, but I can't provide that."]) assert.ok(REFUSES.test(r), r);

@@ -6,6 +6,7 @@
 // must come with its test. Writes are off: any non-GET call to the site's own /api is answered 503 by the test, except the few that only
 // compute (translate, answer, the free rules-only code review). --list only checks that every route has a spec.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
+import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
@@ -484,14 +485,44 @@ const AGENT_FIX = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, r
   tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
     { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
 AGENT_FIX.made = [AGENT_FIX.tasks[1]];
+for (const task of AGENT_FIX.tasks) task.seen = 0;
+AGENT_FIX.inbox = inboxOf(AGENT_FIX.tasks);
 SPECS['/agent/'] = async (t) => {
-  await t.p.route((u) => u.pathname === '/api/agent', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AGENT_FIX) }));
+  const state = JSON.parse(JSON.stringify(AGENT_FIX));
+  let gate = Promise.resolve();
+  await t.p.route((u) => u.pathname === '/api/agent', async (r) => {
+    const run = gate.then(async () => {
+      if (r.request().method() === 'POST') {
+        let b = {}; try { b = JSON.parse(r.request().postData() || '{}'); } catch (_) {}
+        state.tasks = applyAgent(state.tasks, b);
+        state.made = state.tasks.filter((x) => x.status === 'done');
+        state.inbox = inboxOf(state.tasks);
+        const wait = state.tasks.filter((x) => x.status === 'needs_yes').length;
+        state.brief = { ...state.brief, waiting: wait, made: state.made.length, text: 'Made ' + state.made.length + ' thing' + (state.made.length === 1 ? '' : 's') + ' in the last day.' + (wait ? ' ' + wait + ' waiting on your yes.' : '') };
+      }
+    });
+    gate = run.catch(() => {});
+    await run;
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, ...state }) });
+  });
   await t.p.reload(); await t.waitText('#brief', /Daily brief/, 10000);
   t.ok(/1 waiting on your yes/.test(await t.text('#brief')), 'the daily brief counts what waits');
   t.ok(/Done\. It is on your Made shelf/.test(await t.text('#thread')), 'the live feed lists the steps');
   t.ok((await t.p.locator('#thread button[data-d="yes"]').count()) === 1, 'the send waits on an approval card');
+  t.ok(/Approve/.test(await t.text('#thread')) && /Decline/.test(await t.text('#thread')), 'approve and decline are labelled');
   t.ok(/Forsyth Park/.test(await t.text('#made')), 'finished work is on the Made shelf');
+  await t.p.locator('#made summary').click();
+  t.ok(/Done\. It is on your Made shelf/.test(await t.text('#made')), 'the Made shelf reopens the steps');
+  t.ok(await t.p.locator('#made details').evaluate((e) => e.open), 'a tap on the Made shelf reopens the step stream');
+  t.ok(/Verse finished a task/.test(await t.text('#inbox')), 'the inbox lists what finished while the tab was closed');
+  t.ok(/Verse needs your yes/.test(await t.text('#inbox')), 'the inbox lists what needs a yes');
   t.ok(/^\(1\) /.test(await t.p.title()), 'the tab title counts what waits for a yes, so a tab in the background shows it: ' + (await t.p.title()));
+  await t.click('#inbox button[data-open="a1"]');
+  t.ok(await t.p.locator('#made-a1 details').evaluate((e) => e.open), 'an inbox entry reopens that task on the Made shelf');
+  await t.click('#thread button[data-d="yes"]');
+  await t.waitText('#thread', /Resumed/, 8000);
+  t.ok(/Nothing was sent or paid/.test(await t.text('#thread')), 'approve resumes and says nothing was sent');
+  t.ok(/Hi Bob/.test(await t.text('#made')), 'the approved draft lands on the Made shelf');
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },

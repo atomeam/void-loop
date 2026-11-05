@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
+import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -12231,6 +12232,30 @@ try {
       !!card && /Business idea clarified/.test(card) && /The idea/.test(card) && /Problem it solves/.test(card) && /Systems to design/.test(card) && /Automations that take over/.test(card) && /Handoff/.test(card) && /Next delivery step/.test(card) && /turns customer emails/.test(card) && !B.errors.length,
       JSON.stringify({ card: (card || '').slice(0, 400), errors: B.errors }));
     await B.ctx.close(); }
+  if (want("agent inbox: approve resumes and the Made shelf reopens the steps")) { const A = await fresh();
+    const state = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, running: 0, text: 'Made 1 thing in the last day. 1 waiting on your yes.' },
+      tiers: [{ name: 'free', month_cents: 0 }, { name: 'strong', month_cents: 500 }],
+      tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', seen: 0, steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
+        { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', seen: 0, steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
+    state.made = state.tasks.filter((t) => t.status === 'done'); state.inbox = inboxOf(state.tasks);
+    let gate = Promise.resolve();
+    await A.p.route((u) => new URL(u).pathname === '/api/agent', async (r) => {
+      const run = gate.then(async () => { if (r.request().method() === 'POST') { let b = {}; try { b = JSON.parse(r.request().postData() || '{}'); } catch (_) {} state.tasks = applyAgent(state.tasks, b); state.made = state.tasks.filter((t) => t.status === 'done'); state.inbox = inboxOf(state.tasks); } });
+      gate = run.catch(() => {}); await run;
+      return r.fulfill(json({ ok: true, ...state }));
+    });
+    await A.p.goto(base + 'agent/'); await A.p.waitForSelector('#inbox button', { timeout: 10000 });
+    const inbox = await A.p.locator('#inbox').innerText();
+    await A.p.locator('#made summary').click();
+    const made0 = await A.p.locator('#made').innerText();
+    const open = await A.p.locator('#made details').evaluate((e) => e.open);
+    await A.p.locator('#thread button[data-d="yes"]').click();
+    await A.p.waitForFunction(() => /Resumed/.test((document.querySelector('#thread') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
+    const thread = await A.p.locator('#thread').innerText(), shelf = await A.p.locator('#made').innerText();
+    check('agent inbox: a closed tab comes back to the inbox, approve resumes without sending, and the Made shelf reopens the steps',
+      /Verse finished a task/.test(inbox) && /Verse needs your yes/.test(inbox) && /Done\. It is on your Made shelf/.test(made0) && open && /Resumed/.test(thread) && /Nothing was sent or paid/.test(thread) && /Hi Bob/.test(shelf) && /Forsyth Park/.test(shelf) && !A.errors.length,
+      JSON.stringify({ inbox: inbox.slice(0, 160), thread: thread.slice(0, 200), shelf: shelf.slice(0, 200), open, errors: A.errors }));
+    await A.ctx.close(); }
   if (want("connected: every floor page links to at least four sibling Verse tools")) {
     const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
     const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);
