@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T13:58:49.758Z",
+  "at": "2026-11-05T15:05:52.889Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,7 +32,7 @@
       }
     },
     "podcasts": {
-      "score": 92.1,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -51,11 +51,44 @@
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of freakonomics radio",
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the moth",
           "failed": [
             "audio"
           ],
-          "score": 85.7
+          "score": 83.3
+        },
+        {
+          "ask": "play the latest episode of npr news now",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play the podcast",
@@ -186,7 +219,7 @@
       }
     },
     "recipes": {
-      "score": 96.3,
+      "score": 95.4,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -194,9 +227,10 @@
           "ask": "recipe",
           "failed": [
             "skill",
+            "method",
             "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "receta de guacamole",
@@ -262,7 +296,7 @@
       }
     },
     "sports": {
-      "score": 87.9,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -303,20 +337,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
           "failed": [
             "board"
           ],

@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { shapeAsk, stageTypeOf, sideOf, pathOf, svgOf, resizeAsk, HEX, SHAPES } from '../void-live-deploy/lib/shape-picture.js';
 import draw from '../void-live-deploy/skills/draw.js';
-import shape, { alter } from '../void-live-deploy/skills/shape.js';
+import shape, { alter, circlePaint } from '../void-live-deploy/skills/shape.js';
 import cartoon from '../void-live-deploy/skills/cartoon.js';
 
 test('a coloured shape, in three languages, reads to the same picture', () => {
@@ -34,6 +34,8 @@ test('the draw skill takes coloured shapes; plain ones stay the shape skill\'s a
 test('a shape asked for by name becomes that shape (it used to stay the rect it was made as)', () => {
   const th = { shapeType: 'rect', width: 80, height: 80 };
   assert.equal(alter(th, 'draw a red circle'), true); assert.equal(th.shapeType, 'circle');
+  assert.equal(circlePaint({ shapeType: 'circle' }), null);
+  assert.deepEqual(circlePaint({ shapeType: 'circle', color: '#d6402f' }), { borderColor: '#d6402f', background: '#d6402f', opacity: '1' });
   assert.equal(alter(th, 'draw a square'), true); assert.equal(th.shapeType, 'rect');
   assert.equal(alter(th, 'make it bigger'), true); assert.equal(th.shapeType, 'rect');
 });

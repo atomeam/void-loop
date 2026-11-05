@@ -50,13 +50,19 @@ function paint(reloadPlayer) {
   const v = S.current, can = v ? CAN[v.platform] || {} : {};
   const box = el.querySelector('.vd-player');
   if (reloadPlayer || !box.querySelector('iframe') !== !v) {
-    box.innerHTML = '';
-    if (v && src()) { frame = document.createElement('iframe'); frame.className = 'vd-frame'; frame.src = src(); frame.title = label(v);
-      frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write'; frame.allowFullscreen = true; frame.referrerPolicy = 'strict-origin-when-cross-origin';
-      frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:10px;background:#000';
-      frame.addEventListener('load', () => { if (v.platform === 'youtube') post({ event: 'listening', id: 'void' }); if (v.platform === 'vimeo') post({ method: 'addEventListener', value: 'timeupdate' }); });
-      box.appendChild(frame); }
-    else { frame = null; box.innerHTML = '<div class="vd-empty" style="position:absolute;inset:0;display:grid;place-items:center;opacity:.7;text-align:center;padding:12px">' + (v ? 'That video needs its link looked up · try pasting it again' : 'Search above, or paste a link from YouTube, Rumble, Vimeo, Dailymotion, the Archive, PeerTube, Odysee or Twitch') + '</div>'; }
+    const next = v && src();
+    const existing = box.querySelector('iframe');
+    // the same player is already showing this address: replacing the iframe starts the clip over
+    if (existing && next && (existing.getAttribute('src') || '') === next) { frame = existing; }
+    else {
+      box.innerHTML = '';
+      if (next) { frame = document.createElement('iframe'); frame.className = 'vd-frame'; frame.src = next; frame.title = label(v);
+        frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write'; frame.allowFullscreen = true; frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:10px;background:#000';
+        frame.addEventListener('load', () => { if (v.platform === 'youtube') post({ event: 'listening', id: 'void' }); if (v.platform === 'vimeo') post({ method: 'addEventListener', value: 'timeupdate' }); });
+        box.appendChild(frame); }
+      else { frame = null; box.innerHTML = '<div class="vd-empty" style="position:absolute;inset:0;display:grid;place-items:center;opacity:.7;text-align:center;padding:12px">' + (v ? 'That video needs its link looked up · try pasting it again' : 'Search above, or paste a link from YouTube, Rumble, Vimeo, Dailymotion, the Archive, PeerTube, Odysee or Twitch') + '</div>'; }
+    }
   }
   el.querySelector('.vd-now').innerHTML = v ? '<b>' + esc(label(v)) + '</b>' + (v.channel ? ' · ' + esc(v.channel) : '') + (v.seconds ? ' · ' + clockOf(v.seconds) : '') + ' · <a href="' + esc(watchUrl(v)) + '" target="_blank" rel="noopener">open on ' + esc(PLATFORMS[v.platform].label) + ' ↗</a>' : '';
   el.querySelectorAll('.vd-plat').forEach((b) => { b.setAttribute('aria-pressed', String(b.dataset.p === S.platform)); b.style.opacity = b.dataset.p === S.platform ? '1' : '.55'; });
