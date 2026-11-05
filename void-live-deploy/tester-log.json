@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 85,
- "runsTotal": 241,
+ "runsTotal": 242,
  "kinds": {
   "grow": 69,
   "file": 78,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 40
+  "visitor": 41
  },
  "runs": [
+  {
+   "at": "2026-11-05T04:55:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T04:27:08Z",
    "passed": 0,
@@ -357,56 +364,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T19:43:46Z",
-   "passed": 78,
-   "of": 88,
-   "kind": "file",
-   "ms": 384,
-   "note": "fix: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" nothing appeared",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fly around",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "keep this idea: a stage that remembers | why: it makes coming back feel like hom",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "play a local audio file",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "films by Kurosawa",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "yo film metadata for ikiru",
-     "why": "nothing appeared"
-    },
-    {
-     "ask": "yo find me a sci-fi film from the 80s",
-     "why": "load 1617 ms > 1200"
-    },
-    {
-     "ask": "find me a sci-fi film from the 80s pls",
-     "why": "nothing appeared"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -481,7 +438,7 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 50,
+   "runs": 51,
    "passed": 779,
    "of": 878,
    "ms": 384
