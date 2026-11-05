@@ -13,22 +13,32 @@
 <meta property="og:url" content="https://a-to-mind.com/agent/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <script src="/visit.js" defer></script>
+<link rel="stylesheet" href="/verse.css">
 <style>
-  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --ok: #7ddeaf; --warn: #ffd27a; --bad: #ff8d84; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
-  main { max-width: 920px; margin: 0 auto; padding: 24px 16px 64px; }
-  h1 { font-size: 1.6rem; margin: 0 0 4px; } h2 { font-size: 1.1rem; margin: 24px 0 8px; }
-  a { color: var(--accent); } .soft { color: var(--soft); font-size: 14px; }
-  .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
-  .brief { border-color: var(--accent); }
-  form { display: flex; gap: 8px; } textarea { flex: 1; background: #110f1a; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; min-height: 44px; }
-  button { background: var(--accent); color: #07060d; border: 0; border-radius: 8px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --soft: #c3c8d8; --faint: #8e94a8; --line: rgba(255,255,255,.10); --accent: rgb(158 178 255); --ok: #7ddeaf; --warn: #ffd27a; --bad: #ff8d84; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 28px 16px 72px; }
+  h1 { margin: 0 0 12px; font-weight: 280; letter-spacing: -.03em; font-size: clamp(32px, 7vw, 48px); line-height: 1.05;
+    background: linear-gradient(180deg, #fff 30%, rgb(158 178 255)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -.015em; margin: 28px 0 8px; }
+  a { color: var(--accent); }
+  .lead { margin: 0 0 14px; color: var(--soft); max-width: 62ch; }
+  .soft { color: var(--faint); font-size: 14px; }
+  .card { border: 0; border-radius: 16px; padding: 14px 16px; margin: 0 0 10px;
+    background: linear-gradient(165deg, rgba(40,46,70,.80), rgba(16,18,28,.88));
+    box-shadow: 0 1px 0 rgba(255,255,255,.10) inset, 0 18px 40px rgba(0,0,0,.35); }
+  .brief { box-shadow: 0 1px 0 rgba(255,255,255,.10) inset, 0 0 0 1px rgb(158 178 255 / .35), 0 18px 40px rgba(0,0,0,.35); }
+  form { display: flex; gap: 8px; align-items: stretch; margin: 0 0 18px; }
+  textarea { flex: 1; min-width: 0; background: rgb(6 8 14 / .55); color: var(--ink); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 10px 12px; font: 16px/1.4 inherit; min-height: 52px; }
+  button { min-height: 44px; background: rgb(158 178 255); color: #07080f; border: 0; border-radius: 999px; padding: 8px 16px; font: 600 15px/1 inherit; cursor: pointer; }
   button.no { background: transparent; color: var(--ink); border: 1px solid var(--line); }
   ol.feed { margin: 6px 0 0; padding-left: 20px; color: var(--soft); font-size: 14px; } ol.feed li:last-child { color: var(--ink); }
-  .st { font-size: 12px; border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; margin-left: 6px; }
+  .st { font-size: 12px; border: 1px solid var(--line); border-radius: 99px; padding: 2px 8px; margin-left: 6px; }
   .done { color: var(--ok); } .needs_yes { color: var(--warn); } .failed, .declined { color: var(--bad); } .running, .queued { color: var(--accent); }
   .result { white-space: pre-wrap; margin-top: 8px; }
-  .cols { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; } @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } }
+  .cols { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } form { flex-direction: column; } }
+  @media (forced-colors: active) { h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; } }
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 
@@ -39,10 +49,10 @@
 <body>
 <main>
 <h1>Verse, your agent</h1>
-<p class="soft">Send a task. Verse hands it to one of its own bots and keeps working while you're away. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
+<form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
+<p class="lead">Send a task. Verse hands it to one of its own bots and keeps working while you're away. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
 <div class="card brief" id="brief">Loading your brief…</div>
 <p class="soft" id="away">Leave this tab open and go do something else: its title counts what waits for your yes. <button type="button" id="notify" hidden>Tell me when it needs me</button><span id="notifyNote"></span></p>
-<form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
 <div class="cols">
   <section><h2>Your thread</h2><div id="thread" class="soft">No tasks yet.</div></section>
   <section><h2>Made</h2><div id="made" class="soft">Finished work lands here.</div><p class="soft" id="tier"></p></section>
@@ -92,5 +102,6 @@ import { statusesOf, newsOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
   load().finally(schedule);
 }
 </script>
+<script type="module" src="/verse-shell.js"></script>
 </body>
 </html>
