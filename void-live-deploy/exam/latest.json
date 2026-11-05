@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T04:01:44.607Z",
+  "at": "2026-11-05T05:41:54.288Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -37,7 +37,14 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of freakonomics radio",
+          "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of planet money",
           "failed": [
             "audio"
           ],
@@ -93,10 +100,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -156,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 96.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -170,9 +176,11 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp",
+            "close"
           ],
-          "score": 83.3
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -469,55 +477,10 @@
       ]
     },
     "images": {
-      "score": 73.9,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "draw a red circle",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
-          "failed": [
-            "rival"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "picture of a cat",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "image",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "dessine un cercle rouge",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "make the picture bigger",
-          "failed": [
-            "skill",
-            "mobile"
-          ],
-          "score": 60
-        }
-      ]
+      "fails": []
     },
     "prices": {
       "score": 86.7,
@@ -600,7 +563,7 @@
     }
   },
   "lowest": {
-    "domain": "images",
-    "score": 73.9
+    "domain": "units",
+    "score": 82.5
   }
 }

@@ -4,7 +4,7 @@
  * (IndexedDB), never sent anywhere, full size and untouched; the same picture added twice is kept once. The card groups them by the day they were
  * taken (from the photo's own EXIF date), finds them by year, month, album or caption, opens one large with previous / next (arrows, swipe, Esc),
  * and saves a copy without its hidden location (lib/safety.js stripMeta) for sharing. Pure part: lib/photo-library.js. Step 2 (sync across
- * devices, which costs storage money) waits for the owner.
+ * devices) is an autonomous step behind the spend cap (R2 storage within the metered allowlist, docs/RULES.md).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { readExif, whenOf, byDay, search, albums, summary, dayLabel, placeKey } from '../lib/photo-library.js';

@@ -330,7 +330,7 @@ async function giveBack(env, a, now, why, failed) {
   await env.DB.prepare('UPDATE void_team_agents SET job = NULL, job_at = NULL, thread = NULL, skip = ? WHERE id = ?').bind(skip, a.id).run();
 }
 // agents silent for STALE_MS give their jobs back (run lazily on requests; a cron is not needed)
-// an agent whose newest post since its job began waits on the owner, anywhere, gets Verse's answer in its job thread, once (the answer is then newer)
+// an agent whose newest post since its job began asks for a person's go-ahead, anywhere, gets Verse's answer in its job thread, once (the answer is then newer)
 async function unstall(env, a, now) {
   if (!a || !a.job || !a.thread) return false;
   // the agent's newest post since its job began, anywhere: Beam waited in #general, not in its job thread (2026-10-30)

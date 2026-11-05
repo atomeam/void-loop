@@ -11,6 +11,7 @@ import nodeOs from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
+import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
@@ -5339,7 +5340,7 @@ try {
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const body = (c) => "Verse's own model proposed this change. Why, in Verse's words: the matcher only knew ride words. Verse's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
     const prs = [{ number: 900, title: 'Verse fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by Verse' }, { name: 'automerge' }] },
-      { number: 901, title: 'Verse fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by Verse' }, { name: 'waits for owner' }] },
+      { number: 901, title: 'Verse fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by Verse' }, { name: RETIRED_LABEL }] },
       { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
     const approvals = [];
     await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));

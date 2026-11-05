@@ -12,13 +12,13 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Stream millions of songs | Listening | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:105 `tion class="pane" aria-label="Playlists">` |
-| Playlists | Library | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:105 `tion class="pane" aria-label="Playlists">` |
-| Recommendations | Find | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:103 `rds and tunings, and practice recommendations. No account.</p>` |
+| Stream millions of songs | Listening | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:104 `tion class="pane" aria-label="Playlists">` |
+| Playlists | Library | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:104 `tion class="pane" aria-label="Playlists">` |
+| Recommendations | Find | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:102 `rds and tunings, and practice recommendations. No account.</p>` |
 | Search artists, songs and albums | Find | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/lib/member-keep.js:11 `const q = new URLSearchParams(loc.search // ''), h = new URLSearchParams(String(loc.hash` |
 | Podcasts and audiobooks | Listening | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
 | Lyrics | Listening | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
-| Play on other devices | Devices | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:103 `music tools that run on your device: a metronome, a piano, a tuner, a BPM counter and a c` |
+| Play on other devices | Devices | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:102 `music tools that run on your device: a metronome, a piano, a tuner, a BPM counter and a c` |
 | Follow friends and share | Sharing | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
 | A yearly listening summary | Find | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
 | Download for offline | Listening | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |

@@ -283,8 +283,7 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5",
-   "waits": "the owner"
+   "from": "tools.json, navigator.modelContext feature-detected"
   },
   {
    "state": "open",
@@ -303,8 +302,7 @@
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12",
-   "waits": "the owner"
+   "from": "void.plan.md Next #12"
   },
   {
    "state": "open",
@@ -560,8 +558,36 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T04:22:24Z",
-   "subject": "fix: first asks show feedback at once and the tester waits for the real answer (#2228 #2225 #2222)"
+   "at": "2026-11-05T05:20:06Z",
+   "subject": "Incidents closed: shard(s) 1,2,3,4 passed on db3cc6b3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T05:10:56Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T05:08:58Z",
+   "subject": "Outcome exam: units 82.5"
+  },
+  {
+   "at": "2026-11-05T04:52:31Z",
+   "subject": "Incident: the browser suite failed on 97670523 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T04:43:14Z",
+   "subject": "Site test: visitor pass 13/15"
+  },
+  {
+   "at": "2026-11-05T04:41:17Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-05T04:38:26Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-05T04:35:06Z",
+   "subject": "Images exam 100 and no human in the loop (guard: tools/no-human-wait.mjs) (#2239)"
   },
   {
    "at": "2026-11-05T04:16:07Z",
@@ -610,34 +636,6 @@
   {
    "at": "2026-11-05T03:05:31Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"who is the au"
-  },
-  {
-   "at": "2026-11-05T02:58:57Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-05T02:56:42Z",
-   "subject": "Incident: the browser suite failed on 08f36f34 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T02:44:32Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T02:32:51Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,unit converter: convertlive.com,unit converter: convertunits.com,finance: getconverter.org…"
-  },
-  {
-   "at": "2026-11-05T02:25:49Z",
-   "subject": "Lists run 11: green suite (will, tower, phone nav width), video-play leaves game asks to their skills, three asks decided"
-  },
-  {
-   "at": "2026-11-05T02:02:46Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-05T01:58:10Z",
-   "subject": "Incident: the browser suite failed on ef3222cc (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

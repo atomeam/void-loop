@@ -22,7 +22,7 @@ const INBOX = [
   ['Tasks that keep running after you leave, with an approve card', 'void.assimilate.md row 3', 'core'],
   ['One owner page: board, agent log and live checks', 'void.assimilate.md row 9', 'platform'],
   ['Everything built before becomes a skill', 'void.plan.md Next #8', 'platform'],
-  ['Pit crew: the crew chief (waits for the owner)', 'owner, 2026-10-11, pit crew plan', 'platform'],
+  ['Pit crew: the crew chief (waits for the owner)', 'owner, 2026-10-11, pit crew plan', 'platform'], // no-human-wait: old words (an old title, never a wait)
   ['The growth inbox, deeper', 'asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…', 'reliability'],
   ['Two signposts left out until they can be true', 'claude, 2026-10-15, with the useful 404 and security.txt', 'growth'],
   ['The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…', 'claude 2026-10-18', 'reliability'],
@@ -66,22 +66,23 @@ test('the definitions render under each heading, in plain words that match what 
   assert.equal((cardHtml(cardModel({}), esc).match(/data-def="/g) || []).length, 3);
 });
 
-test('blocked: a held ask with its reason, the inbox line its hold names, and an inbox item that says what it waits for', () => {
+test('blocked: a held ask with its reason, the inbox line its hold names, and an inbox item that waits on a thing; a person is never a wait', () => {
   const asks = [{ ask: 'Integrate the join link with the growth skill', at: '2026-10-17T12:33:00Z', kind: 'build' }, { ask: 'Create a utility to check the watertightness of STL print files in the browser', at: '2026-10-28T22:29:00Z', kind: 'daily', small: true, held: 'sycophanthex.com' },
     { ask: 'Absorb every repository on the account into the core code', at: '2026-10-28T22:29:00Z', kind: 'daily', held: 'sycophanthex.com', heldFrontier: 'Absorb and connect every repo' }];
-  const self = { open: open.map((o) => (/^(?:WebMCP|Paid Verse)/.test(o.ask) ? { ...o, waits: 'the owner' } : o)) };
+  // an older self.json may still mark WebMCP as waiting on its owner: that is not shown as blocked (no human in the loop)
+  const self = { open: open.map((o) => (/^WebMCP/.test(o.ask) ? { ...o, waits: 'the owner' } : /^Paid Verse/.test(o.ask) ? { ...o, waits: 'the miss board' } : o)) };
   const m = cardModel({ will: { wants: [] }, reflect: { asks }, self });
   assert.deepEqual(m.blocked, [
     { text: 'Create a utility to check the watertightness of STL print files in the browser', kind: 'ask', waits: 'held until sycophanthex.com is beaten' },
     { text: 'Absorb every repository on the account into the core code', kind: 'ask', waits: 'held until sycophanthex.com is beaten' },
     { text: 'Absorb and connect every repo', kind: 'inbox', waits: 'held until sycophanthex.com is beaten' },
-    { text: 'WebMCP origin trial', kind: 'inbox', waits: 'waits for the owner' },
-    { text: 'Paid Verse', kind: 'inbox', waits: 'waits for the owner' },
+    { text: 'Paid Verse', kind: 'inbox', waits: 'waits for the miss board' },
   ]);
   const html = cardHtml(m, esc);
-  assert.ok(html.includes('<h3 class="wants-h">Blocked (5)</h3>'));
+  assert.ok(html.includes('<h3 class="wants-h">Blocked (4)</h3>'));
   assert.ok(html.includes('<li data-kind="ask"><span class="wants-tag">Ask</span>Create a utility to check the watertightness of STL print files in the browser<small>held until sycophanthex.com is beaten</small></li>'));
-  assert.ok(html.includes('>WebMCP origin trial<small data-share-short="(void.plan.md Now #5 · waits for the owner)">'), 'the inbox chip says what it waits for too, so a saved card keeps it');
+  assert.ok(html.includes('>Paid Verse<small data-share-short="(void.plan.md Next #12 · waits for the miss board)">'), 'the inbox chip says what it waits for too, so a saved card keeps it');
+  assert.ok(!html.includes('#5 · waits for'), 'a person is never shown as a wait, even from an older self.json');
   assert.deepEqual(blockedOf([{ text: 'a' }], [{ text: 'b' }]), []);
   assert.ok(cardHtml(cardModel({ will: { wants: [] }, reflect: { asks: [] }, self: { open: [] } }), esc).includes('Blocked (0)</h3><p class="wants-def">Nothing is held or waiting.</p>'));
 });

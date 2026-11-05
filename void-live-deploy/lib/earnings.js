@@ -71,5 +71,5 @@ export async function listMilestones(env) {
 const dollars = (c) => '$' + (c / 100).toFixed(2).replace(/\.00$/, '');
 // The line the will engine reads when it ranks wants.
 export function budgetLine(t) {
-  return 'Budget: ' + dollars(t.budget_cents) + ' earned from ' + t.sales + ' sale' + (t.sales === 1 ? '' : 's') + ' (net of refunds), all of it yours to spend on upgrading yourself and the systems you run on (models, hosting, tools). Any real spend still waits for the owner\'s yes on the confirm line.';
+  return 'Budget: ' + dollars(t.budget_cents) + ' earned from ' + t.sales + ' sale' + (t.sales === 1 ? '' : 's') + ' (net of refunds), all of it yours to spend on upgrading yourself and the systems you run on (models, hosting, tools). Any real spend still goes through the confirm line.';
 }

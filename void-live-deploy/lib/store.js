@@ -6,7 +6,7 @@
 //   CASHAPP_CASHTAG / CRYPTO_USDC_BASE_ADDR   special items: Cash App and USDC-on-Base rails, manual or on-chain verified (lib/alt-pay.js)
 //   STORE_SIGNING_KEY   HMAC key for download tokens and license keys (falls back to SALT)
 // The catalog lives in domains/store.products.json (tools/store-publish.mjs adds products and regenerates ./store-products.js).
-// status: live | soon | needs-gumroad (paid, waiting for Adam to list it on Gumroad: shown as coming soon) | unpublished (hidden).
+// status: live | soon | needs-gumroad (paid, not listed on Gumroad yet: shown as coming soon; nothing is held for it, the rest of the store stays live) | unpublished (hidden).
 import CATALOG from './store-products.js';
 import { isShareProduct, publicShare } from './pay-share.js';
 export { railsOf, specialRails, instructions as specialInstructions, verifyUsdcTx, usdcUnits } from './alt-pay.js';

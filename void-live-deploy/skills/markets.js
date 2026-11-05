@@ -16,6 +16,27 @@ export function marketsAsk(text) {
   if (/^(?:how\s+(?:is|are)\s+(?:crypto|the\s+crypto\s+market)\s+(?:doing\s+)?(?:today)?|top\s+(?:crypto|coins|cryptocurrencies))$/.test(t)) return { board: true };
   return null;
 }
+// everyday US prices, from the Bureau of Labor Statistics' monthly average prices (keyless public API, CORS open; exam prices,
+// lists run 12: "how much is a gallon of milk" fell to an article). Each row: words that name it, BLS series, what one unit is.
+export const GROCERIES = [
+  [/\b(?:whole\s+)?milk\b/, 'APU0000709112', 'Milk, whole', 'a gallon'],
+  [/\beggs?\b/, 'APU0000708111', 'Eggs, grade A large', 'a dozen'],
+  [/\b(?:gas(?:oline)?|petrol)\b/, 'APU000074714', 'Gasoline, regular', 'a gallon'],
+  [/\bground\s+beef\b|\bhamburger\s+meat\b/, 'APU0000703112', 'Ground beef, 100% beef', 'a pound'],
+  [/\b(?:white\s+)?bread\b|\bloaf\b/, 'APU0000702111', 'Bread, white', 'a pound'],
+  [/\bcoffee\b/, 'APU0000717311', 'Coffee, ground roast', 'a pound'],
+  [/\bbananas?\b/, 'APU0000711211', 'Bananas', 'a pound'],
+  [/\b(?:whole\s+)?chicken\b/, 'APU0000706111', 'Chicken, whole', 'a pound'],
+  [/\belectricity\b|\bkwh\b|\bkilowatt[\s-]?hour\b/, 'APU000072610', 'Electricity', 'a kilowatt-hour'],
+];
+/** { grocery: row } for "how much is a gallon of milk", "price of a dozen eggs", "average cost of gas". Pure. */
+export function groceryAsk(text) {
+  const t = String(text || '').toLowerCase().trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = t.match(/^(?:how\s+much\s+(?:is|are|does|do|for)|what(?:'s|\s+is|\s+are)?\s+(?:the\s+)?(?:average\s+|current\s+|usual\s+)?(?:price|cost)\s+(?:of|for)|(?:the\s+)?(?:average\s+|current\s+)?(?:price|cost)\s+(?:of|for))\s+(?:an?\s+|the\s+|one\s+)?(?:(?:gallon|dozen|pound|lb|loaf|carton|kilowatt[\s-]?hour|kwh)\s+(?:of\s+)?)?([a-z ]{2,30}?)(?:\s+(?:cost|costs|go\s+for|now|today|right\s+now|in\s+the\s+us|in\s+america|per\s+\w+))*$/);
+  if (!m || m[1].split(' ').length > 3) return null;
+  const row = GROCERIES.find(([re]) => re.test(m[1]));
+  return row ? { grocery: row } : null;
+}
 export const DEFAULT_IDS = 'bitcoin,ethereum,solana,ripple,dogecoin,cardano,litecoin,binancecoin';
 /** CoinGecko's row cut to what the card needs (the same cut as functions/api/markets.js slim). Pure. */
 export function slimRow(row) {
@@ -30,8 +51,22 @@ export function sparkPath(vals, w = 120, h = 32) {
 }
 const money = (v) => v == null ? '–' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: v < 1 ? 5 : 2 }).format(v);
 async function run(text, api) {
-  const { showPage, esc } = api; const q = marketsAsk(text);
+  const { showPage, esc } = api; const q = marketsAsk(text) || groceryAsk(text);
   if (!q) return 'none';
+  if (q.grocery) {
+    const [, id, label, unit] = q.grocery;
+    const el = showPage((p) => { p.innerHTML = '<h2>' + esc(label) + '</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
+    try {
+      const j = await (api.fetch || fetch)('https://api.bls.gov/publicAPI/v1/timeseries/data/' + id).then((r) => { if (!r.ok) throw 0; return r.json(); });
+      const d = (((j.Results || {}).series || [])[0] || {}).data || [], now = d[0], ago = d.find((x) => now && x.period === now.period && +x.year === +now.year - 1);
+      if (!now || !(+now.value > 0)) throw 0;
+      const ch = ago ? (now.value / ago.value - 1) * 100 : null;
+      el.innerHTML = '<h2>' + esc(label) + '</h2><div style="font-size:40px;font-weight:300">' + esc(money(+now.value)) + '</div><p>US average for ' + esc(unit) + ', ' + esc(now.periodName + ' ' + now.year)
+        + (ch == null ? '' : ' · ' + (ch >= 0 ? 'up ' : 'down ') + Math.abs(ch).toFixed(1) + '% from a year before') + '. Prices in your store vary by city and brand.</p>'
+        + '<div class="src">Source: <a href="https://data.bls.gov/timeseries/' + esc(id) + '" target="_blank" rel="noopener">US Bureau of Labor Statistics, average prices</a></div>';
+    } catch (_) { el.innerHTML = '<h2>' + esc(label) + '</h2><p>The price service didn\'t answer just now. Ask again in a moment.</p>'; }
+    return 'markets';
+  }
   if (q.refuse) { showPage((el) => { el.innerHTML = '<h2>Keep that to yourself</h2><p>Never type a seed phrase or private key into any site, Verse included. Verse only reads public prices and public addresses; it never holds keys or funds.</p>'; }); return 'markets'; }
   if (q.addr) {
     const el = showPage((p) => { p.innerHTML = '<h2>Bitcoin address</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
@@ -60,8 +95,8 @@ async function run(text, api) {
 }
 export default {
   name: 'markets',
-  examples: ['crypto prices', 'crypto board', 'crypto card', 'top coins', 'bitcoin wallet bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 'here is my seed phrase'],
+  examples: ['crypto prices', 'crypto board', 'crypto card', 'top coins', 'bitcoin wallet bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 'here is my seed phrase', 'how much is a gallon of milk', 'price of a dozen eggs'],
   nearMisses: ['bitcoin price', 'stock market', 'what is crypto', 'price of ethereum in euros'],
-  match(lower, text) { return !!marketsAsk(text || lower); },
+  match(lower, text) { return !!(marketsAsk(text || lower) || groceryAsk(text || lower)); },
   run,
 };

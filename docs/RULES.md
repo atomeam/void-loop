@@ -75,7 +75,7 @@ From the owner's message: "Verse is encouraged to try every legal way to make mo
 ## Earnings go back in (owner, 2026-10-11)
 "and he money it earns can be put right back into it to be able to make bigger amounts". What Verse earns is its budget for growing (`/api/earnings`, `STANDING.md`). How much it may reinvest without asking is the owner's to set; until the owner fills in the blanks below, each spend waits for a yes on the confirm line. **Proposed standing limit (not in force; the owner picks X and Y):**
 1. **Earned only, two caps.** Spend only from cleared net earnings (after fees and refunds), at most X% of last month's and at most $Y a month, whichever is lower. Nothing earned, nothing spent.
-2. **An allowlist of metered things that stop when the money does:** Cloudflare capacity (Workers AI, D1, R2, KV), metered model credits for paid jobs, builder runs once last month's earnings cover their cost. Never a new subscription, a domain, or anything that renews by itself; those always wait for the owner.
+2. **An allowlist of metered things that stop when the money does:** Cloudflare capacity (Workers AI, D1, R2, KV), metered model credits for paid jobs, builder runs once last month's earnings cover their cost. Never a new subscription, a domain, or anything that renews by itself; those are never started by Verse (the confirm line refuses them).
 3. **A receipt for every spend:** what it cost, which sales paid for it, what it unlocked, what it should earn back, and next cycle whether it did; one that did not pay for itself is dropped.
 
 ## Things fit the screen (owner, 2026-10-11)
