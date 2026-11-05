@@ -1322,8 +1322,12 @@
     // a learning card (the quiz: an `ephemeral` stage kind) is never saved or synced unless the visitor kept that one card
     // (domains/void.learning.md; the same rule as persistable() in skills/quiz-rules.js, tested in tools/learning.test.mjs)
     function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
+    // a link with ?spectate= is someone else's snapshot. The viewer's own stage is drawn under it and must not be
+    // rearranged or saved: layout on this page would move a clock clear of a card the owner still has open and
+    // write that place into this device (#2250, stage pack f).
+    function spectating() { try { return /[?&]spectate=/.test(location.search); } catch (_) { return false; } }
     function save() {
-      if (PAGE) return;
+      if (PAGE || spectating()) return;
       try { if (figures3d && figures3d.keepPlaces) figures3d.keepPlaces(things); } catch (_) {} // where each figure stands is kept whenever the scene is saved (figures3d.js), not only when the tab hides
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
       try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
@@ -1542,6 +1546,7 @@ Object.values(things).forEach((th) => {
     }
     if (PAGE) addEventListener('resize', () => requestAnimationFrame(() => layoutStage()));
     function layoutStage() {
+      if (spectating()) return; // the overlay is not this device's stage; do not move its things or save them
       if (PAGE) { if (!document.documentElement.classList.contains('dragging')) flowPage(); return; }
       if (!placement || document.documentElement.classList.contains('dragging')) return;
       const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
@@ -2034,6 +2039,10 @@ Object.values(things).forEach((th) => {
       return true;
     }
 function wantsClearStage(lower) {
+      // "clear all the notes" (and the other kind batches) is not the whole stage. The unanchored
+      // "clear all" used to match that ask and wipe the timers with the notes (#2250, after the
+      // early clear). A kind named after "all" stays with the batch remove.
+      if (/\b(?:clear|reset|wipe)\s+all\b(?:\s+the)?\s+(?:notes?|stick(?:y|ies)|timers?|countdowns?|clocks?|lists?|checklists?|shapes?|circles?|squares?|lines?|counters?|notepads?|images?|pictures?|photos?|links?|cards?|maps?|calculators?|calcs?)\b/.test(lower)) return false;
       return /^(clear|clear\s+(everything|all|stage|the\s+stage)|reset\s+(everything|all|stage)|wipe|start\s+over)\s*[.!]?\s*$/.test(lower)
         || /\b(clear|reset)\s+(everything|all|the\s+stage|stage)\b/.test(lower)
         || /\bwipe\s+(everything|all|the\s+stage)\b/.test(lower);

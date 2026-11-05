@@ -288,7 +288,9 @@ async function step(stageApi) {
     const tray = document.createElement('span');
     tray.className = 'showcase-tray';
     // the panel's own footer row (owner, 2026-10-18: not a separate row piled between the panel and the ask bar)
-    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0);border-top:1px solid rgba(255,255,255,.08);padding-top:6px';
+    // sticky at the bottom of a panel that has to scroll: the grab chips stay in view, so a drag hits them
+    // instead of whatever sits under a clipped row (the ask bar, the scrim)
+    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0);border-top:1px solid rgba(255,255,255,.08);padding-top:6px;position:sticky;bottom:0;z-index:1;background:rgba(20,22,30,.96)';
     tray.append(document.createTextNode('grab one onto the stage:'));
     for (const it of items) tray.append(chip(stageApi, it));
     el.append(tray);
@@ -319,27 +321,37 @@ async function step(stageApi) {
 // a tap (no drag) runs it in place. Pointer events, so mouse, pen and touch all grab it.
 function chip(stageApi, it) {
   const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
-  let from = null, ghost = null;
-  b.addEventListener('pointerdown', (e) => { if (e.button) return; from = { x: e.clientX, y: e.clientY }; try { b.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
-  b.addEventListener('pointermove', (e) => {
-    if (!from) return;
+  let from = null, ghost = null, pid = null;
+  // the move and the lift are heard on the window, the same way a stage card is dragged (bindDrag in void.html).
+  // pointer capture on the chip alone drops the gesture when the panel re-places under a loaded runner: the ghost
+  // never appears and nothing is dropped (#2250).
+  const move = (e) => {
+    if (!from || e.pointerId !== pid) return;
     if (!ghost && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6) {
       ghost = b.cloneNode(true); ghost.removeAttribute('data-showcase-grab'); ghost.className = 'showcase-ghost';
       ghost.style.cssText += ';position:fixed;z-index:70;pointer-events:none;opacity:.9;transform:translate(-50%,-50%) rotate(-3deg);box-shadow:0 8px 20px rgba(0,0,0,.45)';
       document.body.appendChild(ghost);
     }
     if (ghost) { ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px'; }
-  });
-  const up = (e, cancel) => {
-    if (!from) return; const dragged = !!ghost; from = null; if (ghost) { ghost.remove(); ghost = null; }
-    if (cancel) return;
+  };
+  const up = (e) => {
+    if (!from || e.pointerId !== pid) return;
+    const dragged = !!ghost; from = null; pid = null; if (ghost) { ghost.remove(); ghost = null; }
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    if (e.type === 'pointercancel') return;
     const bar = document.getElementById('showcase-bar'), r = bar && bar.getBoundingClientRect();
     const onBar = r && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
     if (dragged && onBar) return; // let go back on the bar: nothing happens
     jump(stageApi, it.j, dragged ? { x: e.clientX, y: e.clientY } : null);
   };
-  b.addEventListener('pointerup', (e) => up(e, false));
-  b.addEventListener('pointercancel', (e) => up(e, true));
+  b.addEventListener('pointerdown', (e) => {
+    if (e.button) return;
+    from = { x: e.clientX, y: e.clientY }; pid = e.pointerId;
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+    try { b.setPointerCapture(e.pointerId); } catch (_) {}
+    e.preventDefault();
+  });
   b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(stageApi, it.j, null); } });
   return b;
 }
