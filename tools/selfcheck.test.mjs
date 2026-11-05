@@ -49,14 +49,17 @@ test('the API keeps only a report: unknown kinds and odd paths are dropped, a no
   assert.deepEqual(c.pages.map((p) => p.path), ['/a/']); assert.deepEqual(c.pages[0].problems.map((p) => p.kind), ['link']); assert.ok(c.pages[0].problems[0].why.length <= 160);
   assert.deepEqual(c.kinds, { link: 1 });
 });
-test('the route: anyone reads the newest report; only the owner writes one', async () => {
-  const kv = new Map(), env = { READ_TOKEN: 'secret-scan: ok-owner', MISSES: { get: async (k, t) => (kv.has(k) ? (t === 'json' ? JSON.parse(kv.get(k)) : kv.get(k)) : null), put: async (k, v) => kv.set(k, v) } };
+test('the route: anyone reads the newest report; only the owner writes one, and the copy is the edge cache', async () => {
+  const store = new Map();
+  globalThis.caches = { default: { match: async (u) => (store.has(u) ? new Response(store.get(u), { headers: { 'content-type': 'application/json' } }) : undefined), put: async (u, res) => { store.set(String(u), await res.text()); } } };
+  const env = { READ_TOKEN: 'secret-scan: ok-owner' };
   assert.equal((await (await onRequestGet({ env })).json()).report, null);
   const rep = reportOf([{ path: '/a/', problems: [{ kind: 'status', why: 'answers 500' }] }], { at: '2026-10-30T04:00:00Z' });
   const post = (auth) => onRequestPost({ env, request: new Request('https://a-to-mind.com/api/selfcheck', { method: 'POST', headers: auth ? { authorization: 'Bearer ' + auth } : {}, body: JSON.stringify({ report: rep }) }) });
-  assert.equal((await post('')).status, 401); assert.equal((await post('wrong')).status, 401); assert.ok(!kv.has(KEY));
+  assert.equal((await post('')).status, 401); assert.equal((await post('wrong')).status, 401); assert.equal(store.has(KEY), false);
   const ok = await post('secret-scan: ok-owner'); assert.equal(ok.status, 200); assert.equal((await ok.json()).broken, 1);
   assert.equal((await (await onRequestGet({ env })).json()).report.pages[0].path, '/a/');
+  delete globalThis.caches;
 });
 test('the card section: says when and how it was checked, links each page, escapes, and says so before the first run', () => {
   const r = reportOf([{ path: '/a/', problems: [{ kind: 'script', why: '<b>boom</b>' }] }, { path: '/b/', problems: [] }], { at: '2026-10-30T04:00:00Z', sha: 'abc1234def', how: 'opened in headless Chrome after the deploy' });

@@ -1,16 +1,57 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 267,
+ "runsTotal": 269,
  "kinds": {
   "grow": 70,
-  "file": 84,
+  "file": 85,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 59
+  "visitor": 60
  },
  "runs": [
+  {
+   "at": "2026-11-05T14:39:39Z",
+   "passed": 84,
+   "of": 90,
+   "kind": "file",
+   "ms": 373,
+   "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
+     "why": "load 1482 ms > 1200"
+    },
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "closer on the figure",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T14:29:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T14:03:44Z",
    "passed": 0,
@@ -318,20 +359,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-05T08:41:11Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T07:40:48Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -409,10 +436,10 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 76,
-   "passed": 1357,
-   "of": 1502,
-   "ms": 336
+   "runs": 78,
+   "passed": 1441,
+   "of": 1592,
+   "ms": 348
   }
  ],
  "seen": {
@@ -432,7 +459,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T13:23:33Z",
+  "skill:cartoon": "2026-11-05T14:39:39Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -711,6 +738,9 @@
   "skill:fanfic": "2026-11-05T12:32:47Z",
   "skill:fantasy": "2026-11-05T13:23:33Z",
   "skill:file-sorter": "2026-11-05T13:23:33Z",
-  "skill:fix-audit": "2026-11-05T13:23:33Z"
+  "skill:fix-audit": "2026-11-05T13:23:33Z",
+  "skill:flights": "2026-11-05T14:39:39Z",
+  "skill:formulas": "2026-11-05T14:39:39Z",
+  "skill:gamebox": "2026-11-05T14:39:39Z"
  }
 }

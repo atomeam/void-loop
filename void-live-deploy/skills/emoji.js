@@ -12,10 +12,22 @@ export function isEmoji(text) {
 }
 
 const clean = (text) => String(text || '').trim().replace(/[?!.]+$/, '');
-/** the wall's emoji named in "emoji <name>" or "<name> emoji" (its exact name in lib/emoji.js), or null. Pure. */
-export function namedEmoji(text) {
+// a short name or a phrase people actually say, to the wall's exact name. "emoji keyboard" is not here, so it stays a miss.
+const ALIAS = {
+  heart: 'red heart', feu: 'fire', fuego: 'fire',
+  'thank you': 'folded hands', thanks: 'folded hands', 'thank-you': 'folded hands',
+};
+/** the words after "emoji" or before "emoji", with a leading "for" dropped ("emoji for thank you"). '' when it is not that shape. Pure. */
+export function emojiPhrase(text) {
   const m = /^(?:the\s+)?emoji\s+([a-z][a-z' -]{1,40})$/i.exec(clean(text)) || /^(?:the\s+)?([a-z][a-z' -]{1,40}?)\s+emoji$/i.exec(clean(text));
-  return m ? EMOJI.find((e) => e.n === m[1].trim().toLowerCase()) || null : null;
+  return m ? m[1].trim().toLowerCase().replace(/^for\s+/, '') : '';
+}
+/** the wall's emoji named in "emoji <name>", "<name> emoji", or "emoji for <phrase>", or null. Pure. */
+export function namedEmoji(text) {
+  const phrase = emojiPhrase(text);
+  if (!phrase) return null;
+  const name = ALIAS[phrase] || phrase;
+  return EMOJI.find((e) => e.n === name) || null;
 }
 export const isCounts = (text) => /^(?:the\s+)?(?:emoji\s+(?:counts?|tracker|leaderboard)|most\s+copied\s+emojis?|top\s+emojis?)$/i.test(clean(text));
 // how one emoji looks everywhere (owner, 2026-11-03: a rival's grid of one emoji on Apple, Google, Samsung, Microsoft and more: "stuff like this is
@@ -66,8 +78,13 @@ function run(text, api) {
   if (want) return runLooks(want, api);
   const named = namedEmoji(text);
   if (named) {
+    const phrase = emojiPhrase(text);
+    // "heart" is several emoji. Show the red heart, and say which, so a bare "heart emoji" is a heart and not an article about Unicode.
+    const which = phrase === 'heart'
+      ? '<p>Which did you mean? The red heart is the one above. <a href="#" data-ask="heart eyes emoji">Heart eyes</a> is the face.</p>'
+      : '';
     showPage((p) => {
-      p.innerHTML = '<h2>' + esc(named.n) + '</h2><p style="font-size:64px;text-align:center;margin:8px 0">' + esc(named.c) + '</p><div class="sub">' + esc(cp(named.c)) + ' · copy it from the wall to count it</div>'; // void-review: ok (every value escaped)
+      p.innerHTML = '<h2>' + esc(named.n) + '</h2><p style="font-size:64px;text-align:center;margin:8px 0">' + esc(named.c) + '</p>' + which + '<div class="sub">' + esc(cp(named.c)) + ' · copy it from the wall to count it</div>'; // void-review: ok (which is fixed text; every value escaped)
     });
     return 'emoji';
   }
@@ -94,13 +111,15 @@ function run(text, api) {
 
 export default {
   name: 'emoji',
-  examples: ['random emoji', 'give me an emoji', 'another emoji', '3 emojis', 'emoji fire', 'rocket emoji', 'emoji counts', 'grinning emoji on all phones', 'how does the fire emoji look on iphone and android'],
-  nearMisses: ['what is an emoji', 'emoji keyboard', 'send emoji', 'emoji for fire', 'games on all phones', 'how does it look on iphone'],
+  examples: ['random emoji', 'give me an emoji', 'another emoji', '3 emojis', 'emoji fire', 'rocket emoji', 'heart emoji', 'emoji feu', 'emoji for thank you', 'emoji counts', 'grinning emoji on all phones', 'how does the fire emoji look on iphone and android'],
+  nearMisses: ['what is an emoji', 'emoji keyboard', 'send emoji', 'emoji for my keyboard', 'games on all phones', 'how does it look on iphone'],
   match(lower, text) { return isEmoji(text) || !!namedEmoji(text) || isCounts(text) || !!looksOf(text); },
   run,
   suite() {
     const ok = isEmoji('random emoji') && isEmoji('3 emojis') && !isEmoji('what is an emoji') && namedEmoji('emoji fire').c === '🔥'
-      && !namedEmoji('emoji keyboard') && isCounts('emoji counts') && looksOf('grinning emoji on all phones') === 'grinning'
+      && namedEmoji('heart emoji').c === '❤️' && namedEmoji('emoji feu').c === '🔥' && namedEmoji('emoji for thank you').c === '🙏'
+      && namedEmoji('emoji for fire').c === '🔥' && !namedEmoji('emoji keyboard') && !namedEmoji('emoji for my keyboard')
+      && isCounts('emoji counts') && looksOf('grinning emoji on all phones') === 'grinning'
       && looksOf('how does the fire emoji look on iphone and android') === 'fire' && looksOf('😀 on every platform') === '😀' && !looksOf('games on all phones');
     return { ok, got: 'match works' };
   }

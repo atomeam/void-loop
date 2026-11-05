@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T13:58:49.758Z",
+  "at": "2026-11-05T14:30:37.294Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,30 +32,62 @@
       }
     },
     "podcasts": {
-      "score": 92.1,
+      "score": 84,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
+          "ask": "play the latest episode of radiolab",
           "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "fast"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
             "episode"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
-          "ask": "play the latest episode of freakonomics radio",
+          "ask": "play the latest episode of the moth",
           "failed": [
             "audio"
           ],
-          "score": 85.7
+          "score": 83.3
+        },
+        {
+          "ask": "play the latest episode of npr news now",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play the podcast",
@@ -67,9 +99,11 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -129,7 +163,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -144,10 +178,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -262,7 +295,7 @@
       }
     },
     "sports": {
-      "score": 87.9,
+      "score": 87,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -310,6 +343,13 @@
         },
         {
           "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
