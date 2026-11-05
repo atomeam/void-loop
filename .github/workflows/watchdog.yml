@@ -75,17 +75,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Browser suite (shard ${{ matrix.shard }} of 4 of the full suite)
+      - name: Browser suite (shard ${{ matrix.shard }} of 5 of the full suite)
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/4
+          shard: ${{ matrix.shard }}/5
 
   bench:
     needs: moved

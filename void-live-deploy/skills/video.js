@@ -9,7 +9,7 @@
  * so the creator keeps the ads and the views. Search goes through /api/video (edge-cached, no KV, no model). The queue, the
  * recently-watched list and the player settings live in this browser's localStorage only; a play writes nothing to the server.
  */
-import { PLATFORMS, OPEN_SEARCH, CAN, parseVideoUrl, embedUrl, watchUrl, videoAskOf, clockOf } from '../lib/video.js';
+import { PLATFORMS, OPEN_SEARCH, SEARCHABLE, CAN, parseVideoUrl, embedUrl, watchUrl, videoAskOf, clockOf } from '../lib/video.js';
 
 const KEY = 'a2m.void.video.v1';
 const blank = () => ({ current: null, queue: [], recent: [], platform: 'youtube', rate: 1, captions: false, results: [], query: '', note: '', searchUrl: '', tab: 'results' });
@@ -79,6 +79,13 @@ async function search(query, platform, api, { autoplay = false, quiet = false } 
   let j = null; try { j = await fetch('/api/video?p=' + S.platform + '&q=' + encodeURIComponent(query)).then((r) => r.json()); } catch (_) {}
   if (j && j.ok && !j.hits.length && j.need && !platform) { // no YouTube key on this server: the free platforms answer instead
     const yt = j.searchUrl; for (const p of OPEN_SEARCH) { let k = null; try { k = await fetch('/api/video?p=' + p + '&q=' + encodeURIComponent(query)).then((r) => r.json()); } catch (_) {} if (k && k.ok && k.hits.length) { j = Object.assign(k, { note: 'YouTube search is not switched on yet, so these are from ' + PLATFORMS[p].label + ' · paste any YouTube link to play it here', searchUrl: yt }); S.platform = p; break; } }
+  }
+  if (j && j.ok && !j.hits.length && !SEARCHABLE.includes(S.platform)) { // Rumble, Vimeo, Twitch have no public search (#2238: "find a rumble
+    // video about bitcoin" showed an empty card): the same words go to the platforms that do have one, and the asked platform's own search stays linked
+    const asked = S.platform, own = j.searchUrl || PLATFORMS[asked].search(query);
+    const all = await Promise.all(SEARCHABLE.map((p) => fetch('/api/video?p=' + p + '&q=' + encodeURIComponent(query)).then((r) => r.json()).catch(() => null))); // asked at once, the first in SEARCHABLE's order with hits wins
+    const i = all.findIndex((k) => k && k.ok && k.hits && k.hits.length);
+    if (i >= 0) j = Object.assign(all[i], { note: PLATFORMS[asked].label + ' has no public search, so these are from ' + PLATFORMS[SEARCHABLE[i]].label + ' · paste any ' + PLATFORMS[asked].label + ' link to play it here', searchUrl: own });
   }
   S.results = (j && j.ok && j.hits) || []; S.note = j ? j.note || (S.results.length ? '' : 'nothing on ' + PLATFORMS[S.platform].label + ' for that') : 'the search did not answer'; S.searchUrl = (j && j.searchUrl) || PLATFORMS[S.platform].search(query);
   if (S.results.length && j.searchUrl && !j.note) S.searchUrl = '';
@@ -173,9 +180,10 @@ export async function runAsk(q, api) {
   }
   if (q.video) { const v = await resolve(q.video); play(v, null, api); api.say('playing ' + label(v) + ' · official ' + PLATFORMS[v.platform].label + ' player'); return 'video'; }
   const hits = await search(q.query, q.platform, api, { autoplay: q.kind === 'play' });
-  api.say(hits.length ? (q.kind === 'play' ? 'playing ' + label(hits[0]) + ' · more below' : hits.length + ' videos from ' + PLATFORMS[S.platform].label + ' · tap one to play') : S.note || 'no videos turned up');
+  api.say(hits.length ? (q.kind === 'play' ? 'playing ' + label(hits[0]) + ' · more below' : hits.length + ' videos from ' + PLATFORMS[hits[0].platform in PLATFORMS ? hits[0].platform : S.platform].label + (hits[0].platform !== S.platform ? ' (' + PLATFORMS[S.platform].label + ' has no public search)' : '') + ' · tap one to play') : S.note || 'no videos turned up');
   return 'video';
 }
+export { search }; // tools/video.test.mjs drives it with a stub fetch
 async function run(text, api) { const q = videoAskOf(text, { hasCard: hasCard() }); return q ? runAsk(q, api) : 'none'; }
 
 export default {
