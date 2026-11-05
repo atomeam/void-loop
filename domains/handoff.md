@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/agent-followups-af4f · /agent/ asks before a send and then resumes or stops, the Made shelf reopens the steps, and a finished task stays in the inbox after the tab is closed · 2026-11-05 09:30 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
@@ -77,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Agent follow-ups (cursor, 2026-11-05)**: /agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260
 - **Autosalvage batch (cursor, 2026-11-05)**: open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257
 - **Open-data bot families (cursor, 2026-11-05)**: ECB currency pairs, 2026 public holidays and Wikidata country facts, each checked against a real call. Registry live count 9,186 to 11,732. Antigua and Equatorial Guinea stay failed as fix jobs. https://github.com/atomeam/void-loop/pull/2256
 - **Empty home, lighter (cursor, 2026-11-05)**: an empty phone home fetches about 40 files and 320 KB instead of 95 and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and /compare/ share one type, glass and 44 px targets, with the task or the search above the fold. https://github.com/atomeam/void-loop/pull/2254

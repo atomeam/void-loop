@@ -558,6 +558,10 @@
  },
  "commits": [
   {
+   "at": "2026-11-05T09:34:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-05T09:34:09Z",
    "subject": "The agent inbox, approve that resumes, and steps you can reopen"
   },
@@ -632,14 +636,14 @@
   {
    "at": "2026-11-05T07:27:51Z",
    "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T07:25:08Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Agent follow-ups (cursor, 2026-11-05)",
+    "line": "/agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260"
+   },
    {
     "name": "Autosalvage batch (cursor, 2026-11-05)",
     "line": "open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257"
@@ -659,10 +663,6 @@
    {
     "name": "Forethinkers life-extension Q6 (Grok Bot, 2026-11-05)",
     "line": "PCGrimAge baseline-acceleration × semaglutide interaction survives inflammation covariates and leave-one-out, fails bootstrap CI and half-split; MaGE weights and GSE327270 still blocked; NCT07218445 added to watchlist.…"
-   },
-   {
-    "name": "Lists run 12 (grok, 2026-11-05)",
-    "line": "the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill…"
    }
   ],
   "ladders": [
