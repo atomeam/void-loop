@@ -99,7 +99,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     concurrency:
       group: void-verify-${{ matrix.shard }}-${{ github.ref }} # one group per shard on this branch: a newer push replaces the waiting shard
       cancel-in-progress: false
@@ -127,14 +127,14 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Test what shipped (shard ${{ matrix.shard }} of 5 of the full suite)
+      - name: Test what shipped (shard ${{ matrix.shard }} of 8 of the full suite)
         id: test
         if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/5
+          shard: ${{ matrix.shard }}/8
 
       # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
       # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)
@@ -295,7 +295,7 @@ jobs:
           git diff --name-only "$tested~1" "$tested" | grep -qv '^void-live-deploy/incidents' || { echo "only the incident record changed: not tested, not recorded"; exit 0; }
           # the shards of this run that passed and that failed ("1,3"); a cancelled shard is neither
           jobs=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" --jq '.jobs[] | "\(.name)|\(.conclusion)"' || true)
-          shards() { echo "$jobs" | sed -n "s/^browser-suite (\([1-5]\))|$1\$/\1/p" | sort -n | paste -sd, -; }
+          shards() { echo "$jobs" | sed -n "s/^browser-suite (\([1-8]\))|$1\$/\1/p" | sort -n | paste -sd, -; }
           passed=$(shards success); failed=$(shards failure)
           echo "shards passed: ${passed:-none}; failed: ${failed:-none}"
           [ -z "$passed$failed" ] && { echo "no shard finished: nothing to record"; exit 0; }

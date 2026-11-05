@@ -59,7 +59,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -72,12 +72,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch -q origin "${{ needs.prepare.outputs.main }}"
           git merge --no-edit "${{ needs.prepare.outputs.main }}"
-      - name: The full browser suite, shard ${{ matrix.shard }} of 5
+      - name: The full browser suite, shard ${{ matrix.shard }} of 8
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/5
+          shard: ${{ matrix.shard }}/8
 
   report:
     needs: [prepare, suite]
