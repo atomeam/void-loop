@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T02:13:36.429Z",
+ "updated": "2026-11-05T02:29:24.880Z",
  "last24h": {
   "ticks": 73,
-  "started": 91,
+  "started": 92,
   "requeued": 0,
   "setAside": 0,
   "probes": 11,
@@ -19,11 +19,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 10,
    "cap": 90
   },
   "day": {
-   "used": 37,
+   "used": 47,
    "cap": 360
   },
   "room": true,
@@ -33,7 +33,6 @@
   "mvbl52gd": 1793842419318,
   "mva30i2e": 1793825520355,
   "mva30j4u": 1793826854202,
-  "mw1gmxd0": 1793758837548,
   "mw1gmy25": 1793759455683,
   "mw1iyb9x": 1793761311175,
   "mw1iyc5s": 1793761930754,
@@ -84,7 +83,9 @@
   "mveb8svc": 1793843198405,
   "mw2u6o67": 1793843198405,
   "mvfu4evy": 1793844816429,
-  "mw2u6oyx": 1793844816429
+  "mw2u6oyx": 1793844816429,
+  "mvpuq9g6": 1793845764880,
+  "mw2u6pxi": 1793845764880
  },
  "visitorAt": "2026-11-05T01:33:04Z",
  "visitorFiled": [
@@ -170,34 +171,6 @@
   "gap:want-exam-units"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T02:20:37.548Z",
-   "open": 138,
-   "started": [
-    {
-     "id": "mvo2aeng",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 94
-    },
-    {
-     "id": "mw1gmxd0",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 8,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T02:30:55.683Z",
    "open": 137,
@@ -1923,6 +1896,42 @@
    "healed": [],
    "probe": false,
    "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 1,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T02:29:24.880Z",
+   "open": 187,
+   "started": [
+    {
+     "id": "mvvk3l3f",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 95
+    },
+    {
+     "id": "mvpuq9g6",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 78
+    },
+    {
+     "id": "mw2u6pxi",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
    "will": false,
    "lap": false,
    "revived": [
