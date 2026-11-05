@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T03:54:31.957Z",
+ "updated": "2026-11-05T04:09:41.487Z",
  "last24h": {
   "ticks": 66,
-  "started": 83,
+  "started": 85,
   "requeued": 0,
   "setAside": 0,
   "probes": 10,
@@ -33,7 +33,6 @@
   "mvbl52gd": 1793842419318,
   "mva30i2e": 1793849788965,
   "mva30j4u": 1793850871957,
-  "mw1laqj6": 1793765032561,
   "mw1lar5d": 1793765649136,
   "mw1lartz": 1793766268060,
   "mw1lasfo": 1793766886988,
@@ -81,7 +80,9 @@
   "mvpuq9g6": 1793845764880,
   "mw2u6pxi": 1793845764880,
   "mvpuqaee": 1793849788965,
-  "mvpuqb4r": 1793850871957
+  "mvpuqb4r": 1793850871957,
+  "mvvjzso8": 1793851781487,
+  "mw2zw9is": 1793851781487
  },
  "visitorAt": "2026-11-05T03:35:53Z",
  "visitorFiled": [
@@ -167,28 +168,6 @@
   "probe:stock-price-aapl"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T04:03:52.561Z",
-   "open": 151,
-   "started": [
-    {
-     "id": "mw1laqj6",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 8,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T04:14:09.136Z",
    "open": 153,
@@ -1759,6 +1738,42 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 1,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T04:09:41.487Z",
+   "open": 189,
+   "started": [
+    {
+     "id": "mvvk3ljc",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 95
+    },
+    {
+     "id": "mvvjzso8",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 70
+    },
+    {
+     "id": "mw2zw9is",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
     }
    ],
    "requeued": 0,
