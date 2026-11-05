@@ -29,14 +29,15 @@ export function walkOf(text) {
 const CSS = '.walker-root{position:absolute;inset:0;pointer-events:none;z-index:0}' // its bottom is lifted by however far the ask bar (#dock) overlaps the stage, so the floor is the visible floor
   + '.walker-floor{position:absolute;left:0;right:0;bottom:' + FLOOR + 'px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14) 15%,rgba(255,255,255,.14) 85%,transparent)}'
   + '.walker-shadow{position:absolute;bottom:' + (FLOOR - 5) + 'px;width:' + Math.round(SPRITE * 0.72) + 'px;height:12px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.9),rgba(0,0,0,.45) 55%,transparent 75%);filter:blur(2px);transform-origin:center}'
-  + '.walker{position:absolute;bottom:' + FLOOR + 'px;width:' + SPRITE + 'px;height:' + SPRITE + 'px;padding:0;margin:0;border:0;background:none;cursor:pointer;pointer-events:auto;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 6px 4px rgba(0,0,0,.35));touch-action:none}' // none: a finger on the figure lifts it (a drag or a throw), never a scroll of the page
+  + '.walker{position:absolute;bottom:' + FLOOR + 'px;width:' + SPRITE + 'px;height:' + SPRITE + 'px;padding:0;margin:0;border:0;background:none;cursor:pointer;pointer-events:auto;display:flex;align-items:flex-end;justify-content:center;touch-action:none}' // none: a finger on the figure lifts it (a drag or a throw), never a scroll of the page
   + '.walker:focus-visible{outline:2px solid rgba(170,190,255,.85);outline-offset:4px;border-radius:12px}'
+  + '.walker img,.walker .walker-emoji{filter:drop-shadow(0 6px 4px rgba(0,0,0,.35))}' // on the picture, not the button: a transform on the button (the left-facing flip, or the lift) makes the button's box include the shadow, and a slow drop then reads about 14px under the floor
   + '.walker img{width:' + SPRITE + 'px;height:' + SPRITE + 'px;object-fit:contain;display:block;pointer-events:none}'
   + '.walker .walker-emoji{font-size:' + Math.round(SPRITE * 0.8) + 'px;line-height:1;pointer-events:none}'
   + '.walker-bubble{position:absolute;--tail:50%;width:max-content;max-width:min(260px,calc(100vw - 32px));padding:8px 12px;border-radius:14px;background:#fffdf4;color:#1d1d1d;border:2px solid #1d1d1d;font:13px/1.35 system-ui,sans-serif;text-align:left;box-shadow:3px 3px 0 #1d1d1d;pointer-events:none}'
   + '.walker-bubble::after{content:"";position:absolute;left:var(--tail);bottom:-9px;width:12px;height:12px;background:#fffdf4;border-right:2px solid #1d1d1d;border-bottom:2px solid #1d1d1d;transform:translateX(-50%) rotate(45deg)}'
   + '.walker-bubble[hidden]{display:none}'
-  + '.walker.walker-left{transform:scaleX(-1)}';
+  + '.walker.walker-left img,.walker.walker-left .walker-emoji{transform:scaleX(-1)}'; // the picture flips; the button itself stays untransformed so its box stays the 96px sprite
 
 let live = null; // { root, el, shadow, bubble, state, raf, lastT, rec, said }
 let facts = null, factsP = null;
@@ -143,7 +144,6 @@ function grab(e) {
   if (!me || !st || me.flying || e.button > 0) return;
   const x0 = e.clientX, y0 = e.clientY;
   let held = false, dx = 0, dy = 0, vx = 0, vy = 0, lx = x0, ly = y0, lt = performance.now();
-  const mirror = () => (me.state.dir < 0 ? ' scaleX(-1)' : '');
   const move = (ev) => {
     if (live !== me) return;
     if (!held) {
@@ -154,7 +154,7 @@ function grab(e) {
     dx = ev.clientX - x0; dy = ev.clientY - y0;
     const now = performance.now(), dt = Math.max(16, now - lt); // a real frame's worth: synthetic near-zero gaps never read as a flick
     vx = (ev.clientX - lx) / dt; vy = (ev.clientY - ly) / dt; lx = ev.clientX; ly = ev.clientY; lt = now;
-    me.el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(-6deg)' + mirror(); // lifted in the hand
+    me.el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(-6deg)'; // lifted in the hand; the picture's own flip stays on the image, so the button's box is only this translate
   };
   const up = () => {
     window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
@@ -178,7 +178,7 @@ function grab(e) {
       if (!me.root.isConnected) return;
       const dt = Math.min(32, t - prev); prev = t;
       f = fly(f, dt, fr);
-      me.el.style.transform = 'translate(' + f.x + 'px,' + f.y + 'px) rotate(' + f.spin + 'deg)' + mirror();
+      me.el.style.transform = 'translate(' + f.x + 'px,' + f.y + 'px) rotate(' + f.spin + 'deg)';
       const s = st.getBoundingClientRect(), b = me.el.getBoundingClientRect();
       if (b.right < s.left || b.bottom < s.top || b.left > s.right || b.top > s.bottom) { drop(me); return; }
       me.flyRaf = requestAnimationFrame(stepFly);

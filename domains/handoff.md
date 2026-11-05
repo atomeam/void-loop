@@ -78,6 +78,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Constellation weave (cursor, 2026-11-05)**: "weave a constellation called night ops" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns "where is Orion". https://github.com/atomeam/void-loop/pull/2274
+- **Verify reds (cursor, 2026-11-05)**: "clear" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2273
 - **Agent no kept (cursor, 2026-11-05)**: a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271
 - **Autosalvage batch (cursor, 2026-11-05)**: heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is 11,749 live and none failed. https://github.com/atomeam/void-loop/pull/2269
 - **Country capitals (cursor, 2026-11-05)**: Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every country. Registry live count 11,739 to 11,743. https://github.com/atomeam/void-loop/pull/2265
@@ -315,6 +317,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders
 
+- **Late skill still on waking up (cursor, 2026-11-05):** a site-test case that only shows "waking up" is a skill far down the index. Import that one file and run it before `say('waking up')` (recipe-stack, constellation-weaver). The sky family does not take "weave a constellation called night ops". Playbook: `docs/playbooks/stage-pack.md`.
 - **Agent no kept (cursor, 2026-11-05):** judge a no by the task id it was sent to (`taskById`), not `tasks[0]` (that is Verse's newer note, still `needs_yes`). The note is inserted before the response (`writesFirst` on the list read). A note ask waits for that, then retries on a new thread if the post has no note. Playbook: `docs/playbooks/agent.md`.
 - **Agent follow-ups (cursor, 2026-11-05):** a closed tab's news is `seen = 0` on the task, not a push service. Approve resumes with `decisionOf`; decline stops; the Made shelf is the task's own steps. Playbook: `docs/playbooks/agent.md`. Probe: `node tools/agent-probe.mjs https://a-to-mind.com --all`.
 - **Visible progress (cursor, 2026-11-03):** `lib/visible.js` ranks a visitor-facing fix above laps, gates, incident logs and regenerated files. The wants card shows how many page and skill commits shipped today and this week. Playbook: `docs/playbooks/visible-progress.md`.

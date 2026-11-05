@@ -4,7 +4,8 @@
  * "summon night ops" brings a woven constellation back: it flashes the one on the stage, or weaves it again from the things it was made of
  * that are still there. Asked by the owner, 2026-10-18 (stage pack D). Client-side only: nothing is sent anywhere. The recipe (name and the
  * ids it joined) is kept on this device (a2m.void.weaves.v1); nothing appears until asked.
- * Not the real sky: "what is a constellation", "where is Orion" stay with skills/constellation.js.
+ * Not the real sky: "what is a constellation", "where is Orion" stay with skills/constellation.js (the time family).
+ * The page imports this file on a weave ask before it says "waking up", so the reply shows while the rest of the index is still loading (#2270).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { refOf, pick } from './label.js';
@@ -118,7 +119,7 @@ async function run(text, api) {
   const st = api.stage, things = st.things(), key = clean(ask.name);
   if (ask.op === 'weave') {
     const stars = starsOf(things, ask.refs, st.selected());
-    if (stars.length < 2) { api.say(ask.refs ? 'I could not find both of those on the stage' : 'a constellation needs at least two things on the stage'); return 'constellation-weaver'; }
+    if (stars.length < 2) { api.say(ask.refs ? 'I could not find both of those on the stage' : 'a constellation called ' + ask.name + ' needs at least two things on the stage'); return 'constellation-weaver'; }
     Object.values(things).filter((t) => t && t.kind === 'weave' && clean(t.name) === key).forEach((t) => { delete things[t.id]; });
     const id = 'weave' + Date.now().toString(36), th = weaveThing(id, ask.name, stars);
     things[id] = th; saved[key] = { name: ask.name, ids: th.ids }; writeWeaves(saved);

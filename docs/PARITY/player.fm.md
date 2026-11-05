@@ -12,13 +12,13 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Search podcasts and episodes | Find | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:92 `el class="vh" for="q" id="qL">Search podcasts, or paste an RSS link</label>` |
-| Top charts and categories | Find | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:94 `on type="button" id="homeBtn">Top podcasts</button></div>` |
-| Play episodes | Listening | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:116 `" class="go" aria-label="Play">Play</button><button type="button" id="fwd" aria-label="For` |
-| Playback speed and skip buttons | Listening | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:294 `= await srcFor(e); au.defaultPlaybackRate = S.speed; au.playbackRate = S.speed; au.datase` |
-| Follow shows and get new episodes | Library | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:98 `false" aria-controls="folPane">Following</button>` |
-| A queue of what to play next | Library | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:118 `ton type="button" id="pQueue">Add to queue</button><button type="button" id="pDl">Download` |
-| Download for offline listening | Library | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:118 `<button type="button" id="pDl">Download</button><button type="button" id="pShare">Share</b` |
-| Import and export subscriptions (OPML) | Library | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:104 `ton type="button" id="opmlIn">Import OPML</button><input type="file" id="opmlFile" accept=` |
+| Search podcasts and episodes | Find | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:91 `el class="vh" for="q" id="qL">Search podcasts, or paste an RSS link</label>` |
+| Top charts and categories | Find | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:93 `on type="button" id="homeBtn">Top podcasts</button></div>` |
+| Play episodes | Listening | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:115 `" class="go" aria-label="Play">Play</button><button type="button" id="fwd" aria-label="For` |
+| Playback speed and skip buttons | Listening | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:293 `= await srcFor(e); au.defaultPlaybackRate = S.speed; au.playbackRate = S.speed; au.datase` |
+| Follow shows and get new episodes | Library | have | every site of this kind offers it | void-live-deploy/podcasts/index.html:97 `false" aria-controls="folPane">Following</button>` |
+| A queue of what to play next | Library | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:117 `ton type="button" id="pQueue">Add to queue</button><button type="button" id="pDl">Download` |
+| Download for offline listening | Library | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:117 `<button type="button" id="pDl">Download</button><button type="button" id="pShare">Share</b` |
+| Import and export subscriptions (OPML) | Library | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:103 `ton type="button" id="opmlIn">Import OPML</button><input type="file" id="opmlFile" accept=` |
 | A sleep timer | Listening | have | studied by hand: player.fm offers this (https://player.fm/) | void-live-deploy/podcasts/index.html:88 `ink. Play with speed, skip, a sleep timer, chapters and a queue; follow shows, save episod` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://player.fm/ | not compared yet |

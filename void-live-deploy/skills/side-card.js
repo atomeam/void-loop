@@ -54,15 +54,21 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
     const content = card.scrollHeight + (card.offsetHeight - card.clientHeight); // everything it holds, borders included
     card.style.maxHeight = had;
     const r = fitPanel({ top, content: Math.min(content, Math.max(120, floor - 12 - top)), floor });
-    if (card.style.maxHeight !== r.maxHeight + 'px') card.style.maxHeight = r.maxHeight + 'px';
-    card.style.overflowY = 'auto';
     if (Math.abs(r.top - top) > 1 && !(th.scale < 1)) { card.style.top = r.top + 'px'; th.card = { x: parseFloat(card.style.left) || 0, y: r.top }; stageApi.save && stageApi.save(); }
+    // end on the border box the ask bar actually meets. A max-height that is a few pixels short still crosses #dock
+    // (phone 390x800: the Go card ended 5px inside the dock, so steps 3 and 4 scrolled into the bar, #2250).
+    let maxH = r.maxHeight;
+    card.style.maxHeight = maxH + 'px';
+    card.style.overflowY = 'auto';
+    const limit = dockTop() - 12, bottom = card.getBoundingClientRect().bottom;
+    if (bottom > limit + 0.5) maxH = Math.max(60, Math.floor((card.offsetHeight || maxH) - (bottom - limit)));
+    if (card.style.maxHeight !== maxH + 'px') card.style.maxHeight = maxH + 'px';
     const more = card.scrollHeight > card.clientHeight + 1;
     card.classList.toggle('scrolls', more); card.classList.toggle('at-end', !more || card.scrollTop + card.clientHeight >= card.scrollHeight - 2);
   };
   card.addEventListener('scroll', () => card.classList.toggle('at-end', card.scrollTop + card.clientHeight >= card.scrollHeight - 2), { passive: true });
-  if (typeof ResizeObserver === 'function') { const ro = new ResizeObserver(() => fit()); ro.observe(card); const d = document.getElementById('dock'); if (d) ro.observe(d); }
-  if (typeof addEventListener === 'function') { addEventListener('resize', fit); if (window.visualViewport) window.visualViewport.addEventListener('resize', fit); }
+  if (typeof ResizeObserver === 'function') { const ro = new ResizeObserver(() => fit()); ro.observe(card); const d = document.getElementById('dock'); if (d) { ro.observe(d); if (typeof MutationObserver === 'function') new MutationObserver(() => fit()).observe(d, { attributes: true, attributeFilter: ['style'] }); } } // a transform lifts the bar without resizing it (the keyboard inset); a size observer never hears that
+  if (typeof addEventListener === 'function') { addEventListener('resize', fit); if (window.visualViewport) { window.visualViewport.addEventListener('resize', fit); window.visualViewport.addEventListener('scroll', fit); } }
   card.style.cursor = 'grab';
   card.addEventListener('pointerdown', (e) => {
     if (e.button > 0 || (e.target && e.target.closest && e.target.closest('button,input,select,a'))) return;
