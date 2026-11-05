@@ -29,14 +29,24 @@ async function table(db) {
   return ready;
 }
 
+/** a background step may set `next` only while the task is not already declined or resumed. A no or a yes always may. Pure. */
+export function mayWriteStatus(current, next) {
+  if (!next || next === 'declined' || next === 'done') return true;
+  return current !== 'declined' && current !== 'done';
+}
+
 async function step(db, id, line, patch = {}) {
   // a new facing status is unseen again, so a closed tab hears the change and not the one it already saw
   if (patch.status && patch.seen === undefined && FACING.has(patch.status)) patch = { ...patch, seen: 0 };
-  const row = await db.prepare('SELECT steps FROM void_agent_tasks WHERE id = ?').bind(id).first();
+  const row = await db.prepare('SELECT steps, status FROM void_agent_tasks WHERE id = ?').bind(id).first();
+  if (patch.status && !mayWriteStatus(row && row.status, patch.status)) return;
   const steps = JSON.parse((row && row.steps) || '[]'); steps.push({ at: Date.now(), line });
   const sets = ['steps = ?'], vals = [JSON.stringify(steps)];
   for (const [k, v] of Object.entries(patch)) { sets.push(k + ' = ?'); vals.push(v); }
-  await db.prepare('UPDATE void_agent_tasks SET ' + sets.join(', ') + ' WHERE id = ?').bind(...vals, id).run(); // void-review: ok (column names are this file's fixed keys; every value is bound)
+  // always, not only when the row we just read was already declined: the run can have read the steps before the no
+  // landed and write after it. The WHERE is what keeps the no (mayWriteStatus). A yes or a no itself is not guarded.
+  const where = patch.status && patch.status !== 'declined' && patch.status !== 'done' ? " AND status NOT IN ('declined', 'done')" : '';
+  await db.prepare('UPDATE void_agent_tasks SET ' + sets.join(', ') + ' WHERE id = ?' + where).bind(...vals, id).run(); // void-review: ok (column names are this file's fixed keys; the status guard is a fixed literal; every value is bound)
 }
 
 async function bots(origin, env) {
@@ -154,7 +164,7 @@ export async function onRequestGet({ request, env }) {
     if (!task) return json({ ok: false, say: 'no task' }, 404);
     return json({ ok: true, task });
   }
-  return json({ ok: true, tasks, made: tasks.filter((t) => t.status === 'done' && !isNudge(t)), inbox: inboxOf(tasks), brief: brief(tasks), tiers: TIERS.map(({ name, month_cents, why }) => ({ name, month_cents, why })) });
+  return json({ ok: true, writesFirst: true, tasks, made: tasks.filter((t) => t.status === 'done' && !isNudge(t)), inbox: inboxOf(tasks), brief: brief(tasks), tiers: TIERS.map(({ name, month_cents, why }) => ({ name, month_cents, why })) });
 }
 
 export async function onRequestPost({ request, env, waitUntil }) {
@@ -188,6 +198,11 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!(await cap(env, 'agent-all', 400)).ok || !(await cap(env, 'agent:' + h, 20)).ok) return json({ ok: false, say: 'that is today\'s free tasks; more come back tomorrow' }, 429);
   const id = crypto.randomUUID().replace(/-/g, '').slice(0, 20);
   await env.DB.prepare('INSERT INTO void_agent_tasks (id, thread, ask, status, steps, created) VALUES (?, ?, ?, ?, ?, ?)').bind(id, b.thread, ask, 'queued', JSON.stringify([{ at: Date.now(), line: 'Got it. Queued.' }]), Date.now()).run();
-  waitUntil(run(env, new URL(request.url).origin, id, ask, b.thread));
-  return json({ ok: true, id });
+  // the note is stored before the response, not only inside waitUntil. A deploy can drop the background run (Verse engineer
+  // 2026-11-05: nudge-risk timed out for 95s while production was still the previous deploy, then the same ask passed in 5s).
+  let nudge = null;
+  try { nudge = await considerNudge(env, b.thread); } catch (_) { /* a note is never required for the task itself */ }
+  const go = run(env, new URL(request.url).origin, id, ask, b.thread);
+  if (typeof waitUntil === 'function') waitUntil(go); else go.catch(() => {});
+  return json({ ok: true, id, nudge: nudge || null });
 }
