@@ -76,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Main reds (cursor, 2026-11-05)**: the recipe handover stays quiet when the audio context cannot build a buffer, "forget this" on a phone closes the chess board and puts the tucked list back, and "put in the page" uses the draft a second read of the same tab would have wiped.
 - **Agent follow-ups (cursor, 2026-11-05)**: /agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260
 - **Suite reds after #2251 (cursor, 2026-11-05)**: clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it. https://github.com/atomeam/void-loop/pull/2259
 - **Autosalvage batch (cursor, 2026-11-05)**: open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257

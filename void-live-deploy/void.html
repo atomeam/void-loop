@@ -1601,19 +1601,22 @@ Object.values(things).forEach((th) => {
         const label = String(th.name || th.kind || 'card').replace(/^\w/, (c) => c.toUpperCase()).slice(0, 24);
         b.textContent = label + ' \u21A9'; b.setAttribute('aria-label', 'Bring back ' + label);
         b.style.cssText = 'font:inherit;font-size:12px;color:var(--ink,#eee);background:rgba(20,22,30,.92);border:1px solid var(--card-line,rgba(255,255,255,.16));border-radius:999px;padding:5px 12px;cursor:pointer;backdrop-filter:blur(6px)';
-        b.addEventListener('click', () => untuckThing(th.id));
+        b.addEventListener('pointerdown', (e) => e.stopPropagation()); // the card underneath (shown again by this tap) must not take the gesture
+        b.addEventListener('click', (e) => { e.stopPropagation(); untuckThing(th.id); });
         tray.appendChild(b);
       }
       tray.hidden = !tray.childElementCount;
     }
     function untuckThing(id) { // one tap: it comes back, on the nearest clear spot to where it was, and stays there while this game is open
       const th = things[id]; if (!th || !th.tucked) return;
+      const was = selectedId; // bringing it back does not make it the thing "forget this" closes; the game stays picked
       th.tucked = false; th.restored = true;
       const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
       if (el) {
         el.style.display = '';
         if (panelFit && placement) { const o = otherRects(id), p = placement.freeSpot({ w: el.offsetWidth, h: el.offsetHeight }, o, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) }, { x: th.x, y: th.y }); th.x = p.x; th.y = p.y; placeThing(th); }
       }
+      if (was && was !== id && things[was]) selectedId = was;
       tuckApply(); save(); requestAnimationFrame(() => layoutStage());
     }
     // where a thing stands, not where an entrance animation draws it this frame (a board that lands scaled read 130 px off): the
@@ -1767,15 +1770,18 @@ Object.values(things).forEach((th) => {
       else if (m.type === 'void-ext:tab' && m.tab && typeof m.tab === 'object') {
         ext.on = true; document.body.classList.add('in-ext-panel');
         const t = m.tab, s = (v, n) => String(v == null ? '' : v).slice(0, n);
-        ext.tab = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
+        const next = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
           field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null,
           // the context check's counts (extension/page.js, lib/context-check.js): numbers only, nothing of the page's words
           content: t.content && typeof t.content === 'object' ? Object.fromEntries(['text', 'images', 'rows', 'cells'].map((k) => [k, Math.max(0, Math.floor(+t.content[k]) || 0)])) : null };
+        const prev = ext.tab;
+        const sameTab = prev && prev.url === next.url && prev.title === next.title && prev.selection === next.selection && JSON.stringify(prev.field || null) === JSON.stringify(next.field || null);
+        ext.tab = next;
         let th = Object.values(things).find((x) => x.kind === 'tab');
         if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
           th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;
         }
-        ext.draft = ''; ext.sent = '';
+        if (!sameTab) { ext.draft = ''; ext.sent = ''; } // the same read arriving twice must not throw away a draft just typed
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
       } else if ((m.type === 'void-ext:drafted' || m.type === 'void-ext:threaded') && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
@@ -5102,6 +5108,9 @@ say('nothing selected to remove');
       if (lastKeptId && things[lastKeptId]) return things[lastKeptId];
       const all = Object.values(things); return all[all.length - 1] || null;
     }
+    function openGame() { // a board with its own card, the thing "forget this" closes while that card has pushed others aside
+      return Object.values(things).find((t) => t && isGameThing(t, stage.querySelector(':scope > .thing[data-id="' + CSS.escape(t.id) + '"]'))) || null;
+    }
     function handleMetaAsk(text, lower) {
       // "remove blank lines: <pasted text>" is a text tool (skills/text-tools.js), not the stage's lines: an ask with a colon or a pasted line break is left to the skills
       if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower) && !/[:⏎\n]/.test(lower)
@@ -5123,7 +5132,12 @@ say('nothing selected to remove');
       if (nm) { const th = targetThing(); if (!th && /^my\s/i.test(nm[1])) return false; /* nothing to name: "call this my morning" is a routine (skills/routine.js) */ if (!th) { say('nothing to name'); return true; } th.name = nm[1]; if ('title' in th && th.kind !== 'kept' && th.kind !== 'link') th.title = nm[1]; save(); render(); say('named'); return true; }
       if (/^(forget this|forget that|forget it|clear this|clear that|take this off|take that off|remove this|remove that)\s*[.!]?$/.test(lower)) {
         if (vpageEl) { closePage(); return true; }
-        const th = targetThing(); if (!th) { say('nothing here'); return true; }
+        let th = targetThing();
+        // a list the game tucked (or the chip just brought back) is not the close: on a phone that tap can leave the list
+        // picked, and "forget this" then removed the list and left the board. Close the game; the card returns to its spot.
+        const game = openGame();
+        if (game && th && th !== game && (th.prior || th.tucked || th.restored)) th = game;
+        if (!th) { say('nothing here'); return true; }
         delete things[th.id]; if (selectedId === th.id) selectedId = null; if (lastKeptId === th.id) lastKeptId = null; save(); render(); say('gone'); return true;
       }
       if (/^(again|same again|do that again|do it again|again please|one more time|refresh( it| this)?)\s*[.!]?$/.test(lower)) {
