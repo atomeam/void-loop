@@ -2842,7 +2842,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/approval-gate.js",
@@ -4962,6 +4962,8 @@
    "imports": [
     "bots/kit.js",
     "bots/families.js",
+    "bots/fx-pairs.js",
+    "bots/holidays.js",
     "lib/free-router.js"
    ],
    "importedBy": [
