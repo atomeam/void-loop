@@ -5,6 +5,7 @@
 // synapse canvas, the command palette and the WebGL wash are fetched only after the largest paint, or after four seconds,
 // and never before the main script has run (they read its globals).
 // The ask engine stays one file: its parts share one scope. Skill modules start on a key, a tap, or an idle callback.
+// The card stylesheet (void-cards.css) is not in the HTML. The page asks for it with the first ask. The empty stage does not.
 //   node tools/split-void-page.mjs            rewrite the served copies and write the files
 //   node tools/split-void-page.mjs --dry      print the sizes only
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -35,7 +36,9 @@ const AFTER = [
   '    if (decorDone) return; decorDone = true;',
   '    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/verse.css"; document.head.appendChild(l);',
   '    add("/void-sky.js"); add("/void-presence.js"); add("/void-synapses.js");',
-  '    add("/verse-shell.js", "module"); add("/verse-field.js", "module");',
+  '    add("/verse-shell.js", "module");',
+  '    var coarse = false; try { coarse = matchMedia("(pointer: coarse)").matches; } catch (e) {}',
+  '    if (!coarse) add("/verse-field.js", "module");',
   '  }',
   '  function frame(){ requestAnimationFrame(function(){ requestAnimationFrame(boot); }); }',
   '  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", frame); else frame();',
@@ -72,6 +75,13 @@ export function splitHome(html) {
     if (!inner.endsWith('\n')) inner += '\n';
     files[block.file] = inner;
     out = out.slice(0, s) + block.tag + out.slice(e + block.end.length);
+  }
+  const css = files['void-home.css'] || '';
+  const cardAt = css.indexOf('/* home cards:');
+  const stageAt = css.indexOf('/* home stage:');
+  if (cardAt >= 0 && stageAt > cardAt) {
+    files['void-cards.css'] = css.slice(cardAt, stageAt);
+    files['void-home.css'] = css.slice(0, cardAt) + css.slice(stageAt);
   }
   if (!out.includes('void-boot.js')) out = out.replace('</body>', AFTER + '\n</body>');
   return { html: out, files };

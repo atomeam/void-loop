@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1151,
+ "counted": 1152,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -31,17 +31,17 @@
    "tests": 8
   },
   {
+   "file": "lib/load-later.js",
+   "skills": 28,
+   "direct": 23,
+   "dependants": 38,
+   "tests": 1
+  },
+  {
    "file": "lib/placement.js",
    "skills": 28,
    "direct": 1,
    "dependants": 31,
-   "tests": 1
-  },
-  {
-   "file": "lib/load-later.js",
-   "skills": 27,
-   "direct": 23,
-   "dependants": 37,
    "tests": 1
   },
   {
@@ -171,32 +171,32 @@
    "tests": 4
   },
   {
+   "file": "lib/sky-math.js",
+   "skills": 14,
+   "direct": 2,
+   "dependants": 26,
+   "tests": 1
+  },
+  {
+   "file": "lib/where.js",
+   "skills": 14,
+   "direct": 11,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/skill-family.js",
+   "skills": 14,
+   "direct": 14,
+   "dependants": 14,
+   "tests": 1
+  },
+  {
    "file": "lib/qr.js",
    "skills": 13,
    "direct": 3,
    "dependants": 28,
    "tests": 3
-  },
-  {
-   "file": "lib/sky-math.js",
-   "skills": 13,
-   "direct": 2,
-   "dependants": 25,
-   "tests": 1
-  },
-  {
-   "file": "lib/where.js",
-   "skills": 13,
-   "direct": 11,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 13,
-   "direct": 13,
-   "dependants": 13,
-   "tests": 1
   },
   {
    "file": "lib/self-sites.js",
@@ -9112,7 +9112,8 @@
     "skills/games.js",
     "skills/rebuild-map.js",
     "skills/sky-card.js",
-    "skills/time.js"
+    "skills/time.js",
+    "skills/where-is.js"
    ]
   },
   "lib/local-ask.js": {
@@ -12336,7 +12337,8 @@
     "skills/stage-out.js",
     "skills/status-board.js",
     "skills/tilt-arena.js",
-    "skills/time.js"
+    "skills/time.js",
+    "skills/where-is.js"
    ]
   },
   "lib/skill-use.js": {
@@ -12374,7 +12376,8 @@
     "skills/sky-world.js",
     "skills/sky.js",
     "skills/suntimes.js",
-    "skills/time.js"
+    "skills/time.js",
+    "skills/where-is.js"
    ]
   },
   "lib/skyask.js": {
@@ -14260,7 +14263,8 @@
     "lib/mcp.js",
     "lib/team-mcp.js",
     "skills/country.js",
-    "skills/time.js"
+    "skills/time.js",
+    "skills/where-is.js"
    ]
   },
   "lib/wiki-look.js": {
@@ -15154,7 +15158,8 @@
     "functions/tools.json.js",
     "lib/a2a.js",
     "lib/mcp.js",
-    "lib/team-mcp.js"
+    "lib/team-mcp.js",
+    "skills/where-is.js"
    ]
   },
   "skills/doodle-mind.js": {
@@ -16854,6 +16859,9 @@
    "importedBy": [
     "skills/sky-card.js",
     "skills/time.js"
+   ],
+   "reachedBy": [
+    "skills/where-is.js"
    ]
   },
   "skills/note-tools.js": {
@@ -17070,7 +17078,9 @@
     "lib/where.js",
     "skills/distance.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/where-is.js"
+   ]
   },
   "skills/plan-stability.js": {
    "imports": [
@@ -17707,6 +17717,9 @@
    ],
    "importedBy": [
     "skills/sky-card.js"
+   ],
+   "reachedBy": [
+    "skills/where-is.js"
    ]
   },
   "skills/sky-card.js": {
@@ -17714,7 +17727,9 @@
     "skills/sky-card-rules.js",
     "skills/night-sky.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/where-is.js"
+   ]
   },
   "skills/sky-rules.js": {
    "imports": [],
@@ -18565,6 +18580,14 @@
    "imports": [
     "lib/wheel.js",
     "lib/card-mini.js"
+   ],
+   "importedBy": []
+  },
+  "skills/where-is.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/sky-card.js",
+    "skills/place.js"
    ],
    "importedBy": []
   },

@@ -16,7 +16,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Cursor cloud agent · cursor/autosalvage-attested-batch-db93 · the next autosalvage batch: open-graph, referrer, HSTS, isolation, SRI and api-catalog drafts, plus a jsDelivr URL bot · 2026-11-05 09:10 UTC
-- Cursor cloud agent · cursor/open-data-bot-families-db93 · three bot families (ECB currency pairs, Nager.Date public holidays, Wikidata country facts) plus independent checks, each live only after a real call · https://github.com/atomeam/void-loop/pull/2256 · 2026-11-05 08:40 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
@@ -78,6 +77,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Open-data bot families (cursor, 2026-11-05)**: ECB currency pairs, 2026 public holidays and Wikidata country facts, each checked against a real call. Registry live count 9,186 to 11,732. Antigua and Equatorial Guinea stay failed as fix jobs. https://github.com/atomeam/void-loop/pull/2256
+- **Empty home, lighter (cursor, 2026-11-05)**: an empty phone home fetches about 40 files and 320 KB instead of 95 and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and /compare/ share one type, glass and 44 px targets, with the task or the search above the fold. https://github.com/atomeam/void-loop/pull/2254
+- **Lists run 13 (grok, 2026-11-05)**: a bare "price" asks which thing, with one tap per kind (a coin, a currency, groceries or gas, a stock, the crypto board, what Verse sells), so the prices exam is 6 of 6 locally; telemetry names every failed check, so the count and the names agree past three; "draw yourself" and "what do you look like" put Verse's self-portrait on the stage; handoff-e2e pins UTC and en-US, so its time-page journey passes on any machine (19 of 19); sky-card and place are one where-is family (skills/where-is.js).
 - **Forethinkers life-extension Q6 (Grok Bot, 2026-11-05)**: PCGrimAge baseline-acceleration × semaglutide interaction survives inflammation covariates and leave-one-out, fails bootstrap CI and half-split; MaGE weights and GSE327270 still blocked; NCT07218445 added to watchlist. https://github.com/atomeam/void-loop/pull/2248
 - **Lists run 12 (grok, 2026-11-05)**: the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill answers 'how much is a gallon of milk' (eggs, gas, beef, bread, coffee, bananas, chicken, electricity) from the keyless BLS average prices; riddle and textgen are one family (skills/riddle-gen.js, 0 of 4,059 answers changed); the timers ask closed as built in run 10.
 - **Lists run 11 (grok, 2026-11-04)**: main's browser suite green again (the will test pins its own better file, the tower card test allows the new "N passed" count, the Verse bar scrolls sideways before /verse.css loads so phone pages never get wider than the screen); video-play leaves 10 game, podcast and local-file "play" asks to their own skills; emojigraph lane page and the 814032d5 jobs asked again (duplicates); the prices ask twin joins ask-20261104-2101-3.
@@ -174,7 +176,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
-- **handoff-e2e's time-page journey fails on main too (lists run 12, 2026-11-05)**: the calendar invite reads "Event in New York, Kyoto, London" instead of the event in Kyoto and London at 3:00 PM; it looks date-dependent (tools/handoff-e2e.mjs).
 - Verse's asks from the everything-app question (2026-10-22, `docs/void-voice.md`): social post cards on the stage (first step shipped: "keep on stage" makes a sticky note); a feed's raw JSON on its card so other agents can read it; keep Workers AI inside its free 10k neurons a day (wishlist #1).
 
 - **Site tester issues to close (lists run 5, 2026-10-22)**: #1114 (three.js as HTML), #1063 (country), #1048 (sport) are fixed by the lists run 5 PR, and #1022, #1024, #1026, #1028 are already handled by the tester's retake rule. Closing them is a ticket change, so it waits for an approved closer; still open to fix: #1029, #1032, #1137, #1152, #1196.
@@ -293,6 +294,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 2026-11-05 run 12 · site tester (label site-test): 4 open (#2238 rumble video search is new; #2228, #2225, #2222 wait on the tester's next pass)
 2026-11-05 run 12 · frontier (domains/void.frontier.md): 19 open
 2026-11-05 run 12 · metrics: closed 5 of 5 touched, 0% blocked, duplicate rate 0.2, median 0 days queue to built
+2026-11-05 run 13 · V01D asks (void.asks.json): 0 dated asks open (was 4): images, telemetry sync, prices and the self-portrait router ask built, their twins and the 07:30 UTC asks (emojigraph.org, 814032d5, images) closed as duplicates; 8 undated asks stay (absorb every repo, onlineconverter.com and ndscalc.ru aspects, the git-diff probes, video-gen and baggage checks)
+2026-11-05 run 13 · handoff Up for grabs: 25 open (handoff-e2e's time-page journey fixed and removed)
+2026-11-05 run 13 · store queue (store.queue.jsonl): 0 open
+2026-11-05 run 13 · wishlist (docs/wishlist.md): 14 rows, unchanged
+2026-11-05 run 13 · convergence (docs/convergence.md): place~skycard merged into where-is (54 merge candidates left, 11 same-family)
+2026-11-05 run 13 · site tester (label site-test): 1 open (#2250 main red, claimed by PR #2251; #2238, #2228, #2225, #2222 closed since run 12)
+2026-11-05 run 13 · frontier (domains/void.frontier.md): 19 open, unchanged
+2026-11-05 run 13 · metrics: closed 14 of 14 touched, 0% blocked, duplicate rate 0.57, median 1 day queue to built
 
 ## Ladders
 

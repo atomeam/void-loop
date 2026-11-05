@@ -621,48 +621,143 @@
     }
    ]
   },
+  {
+   "at": "2026-11-05T05:40:00Z",
+   "run": 12,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.2,
+   "dup_basis": "1 of the 5 items was a duplicate (the timers 'add one minute' ask, built in lists run 10 and closed here with a ledger entry)",
+   "median_days": 0,
+   "median_basis": "the exam failures (units, define, prices) and the timers ask were queued 2026-11-04 and built 2026-11-05",
+   "asks_open_start": 5,
+   "asks_open_end": 4,
+   "note": "Exam failures from the site tester and Verse's asks: units (bits, bytes, French units), define in five other languages, grocery prices from the keyless BLS API (the workaround for a paid price feed). Merge: riddle~textgen into riddle-gen. Store queue 0 open. The images exam, telemetry sync and '100 usd in eur' (rival check) stay open.",
+   "items": [
     {
-      "at": "2026-11-05T05:40:00Z",
-      "run": 12,
-      "closed": 5,
-      "touched": 5,
-      "pct_blocked": 0,
-      "top_block": "none this run",
-      "dup_rate": 0.2,
-      "dup_basis": "1 of the 5 items was a duplicate (the timers 'add one minute' ask, built in lists run 10 and closed here with a ledger entry)",
-      "median_days": 0,
-      "median_basis": "the exam failures (units, define, prices) and the timers ask were queued 2026-11-04 and built 2026-11-05",
-      "asks_open_start": 5,
-      "asks_open_end": 4,
-      "note": "Exam failures from the site tester and Verse's asks: units (bits, bytes, French units), define in five other languages, grocery prices from the keyless BLS API (the workaround for a paid price feed). Merge: riddle~textgen into riddle-gen. Store queue 0 open. The images exam, telemetry sync and '100 usd in eur' (rival check) stay open.",
-      "items": [
-        {
-          "what": "units exam: bits and bytes, French unit names with 'en', the 1,024 note only for KB and up",
-          "list": "site tester / exams",
-          "status": "built"
-        },
-        {
-          "what": "define: 'qué significa serendipia' and French, German, Italian, Portuguese phrasings show the English word and its meanings",
-          "list": "site tester / exams",
-          "status": "built"
-        },
-        {
-          "what": "prices: 'how much is a gallon of milk' and 8 more groceries from BLS average prices (keyless workaround)",
-          "list": "V01D asks (prices exam)",
-          "status": "built"
-        },
-        {
-          "what": "convergence: riddle and textgen one family, skills/riddle-gen.js, aliases kept, 0 of 4,059 answers changed",
-          "list": "convergence",
-          "status": "built"
-        },
-        {
-          "what": "timers 'add one minute' (ask-20261104-0859-2)",
-          "list": "V01D asks",
-          "status": "duplicate",
-          "link": "lists run 10, tools/timer.test.mjs"
-        }
-      ]
+     "what": "units exam: bits and bytes, French unit names with 'en', the 1,024 note only for KB and up",
+     "list": "site tester / exams",
+     "status": "built"
+    },
+    {
+     "what": "define: 'qué significa serendipia' and French, German, Italian, Portuguese phrasings show the English word and its meanings",
+     "list": "site tester / exams",
+     "status": "built"
+    },
+    {
+     "what": "prices: 'how much is a gallon of milk' and 8 more groceries from BLS average prices (keyless workaround)",
+     "list": "V01D asks (prices exam)",
+     "status": "built"
+    },
+    {
+     "what": "convergence: riddle and textgen one family, skills/riddle-gen.js, aliases kept, 0 of 4,059 answers changed",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "timers 'add one minute' (ask-20261104-0859-2)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "lists run 10, tools/timer.test.mjs"
     }
-  ]
+   ]
+  },
+  {
+   "at": "2026-11-05T08:45:00Z",
+   "run": 13,
+   "closed": 14,
+   "touched": 14,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.57,
+   "dup_basis": "8 of the 14 items were twins of an earlier ask (images x2 more, telemetry, prices, the self-portrait router ask, emojigraph.org, 814032d5, 'what can you do'); one build or an earlier answer closed each",
+   "median_days": 1,
+   "median_basis": "days from queued to built over the 14 items: 0 x6, 1 x5, 2, 4, 5; median 1 (the self-portrait asks were queued 2026-10-31 and 2026-11-01, the rest 2026-11-03 to 2026-11-05)",
+   "asks_open_start": 4,
+   "asks_open_end": 8,
+   "note": "Verse's dated asks all closed: the prices exam (a bare 'price' gets a which-one card), telemetry sync (every failed check named), the self-portrait router ask, and the images exam (already 100 live). handoff-e2e is UTC-pinned. Merge: place~skycard into where-is. 11 older undated asks stay open; none blocked. Verse's 2026-11-05 07:30 UTC asks (emojigraph.org, 814032d5, images) closed as duplicates, and 'what can you do' got its ledger close; 8 undated asks stay on the current list.",
+   "items": [
+    {
+     "what": "prices: a bare 'price' asks which thing with a tap per kind; '100 usd in eur' matches Frankfurter (ask-20261104-2101-3)",
+     "list": "V01D asks (prices exam)",
+     "status": "built"
+    },
+    {
+     "what": "prices twin (ask-20261105-0018-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-3"
+    },
+    {
+     "what": "telemetry: the failed count and the failed names always agree past three (ask-20261103-2357-3)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "telemetry twin (ask-20261104-0746-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261103-2357-3"
+    },
+    {
+     "what": "images exam passes 6 of 6 at 100, live and local (ask-20261104-2017-1)",
+     "list": "V01D asks (images exam)",
+     "status": "built"
+    },
+    {
+     "what": "images twin (ask-20261104-1659-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2017-1"
+    },
+    {
+     "what": "self-portrait: 'draw yourself' and 'what do you look like' put Verse's self-portrait on the stage (skills/cartoon.js, tools/cartoon-self.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "self-portrait twin ('Fix the self-skill router to recognize identity-based probes')",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "the self-portrait router ask, this run"
+    },
+    {
+     "what": "handoff-e2e time-page journey: the suite pins UTC and en-US, 19 of 19 pass",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "convergence: sky-card and place one family, skills/where-is.js, aliases kept (tools/where-is-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "emojigraph.org lane page (ask-20261105-0730-1)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-1"
+    },
+    {
+     "what": "814032d5 failed jobs (ask-20261105-0730-2)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2101-2"
+    },
+    {
+     "what": "images exam (ask-20261105-0730-3)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261104-2017-1"
+    },
+    {
+     "what": "'what can you do' (ask-20261104-2054-3), ledger close",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "lists run 10"
+    }
+   ]
+  }
+ ]
 }

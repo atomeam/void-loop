@@ -301,7 +301,7 @@
  "similar": "\"what's similar to X\": for any skill that was combined into a family (Mind Field, dates, games, time, languages and the rest)",
  "skill-eclipse": "\"eclipse media skills until friday\", \"eclipse money skills for an hour\", \"lift the eclipse\"",
  "sky": "\"sky\", \"the night sky\", \"what's in the sky tonight\": the stage becomes the real sky overhead and a card sits on top of it with a definition",
- "sky-card": "\"where is Jupiter\", \"is Venus up\", \"can I see Mars tonight\", \"where is the moon\" put one card on the stage for that thing in the sky: a short definition",
+ "skycard": "A skill of Verse.",
  "sleep": "Bedtime and wake-up times by sleep cycles, plus how much sleep each age needs",
  "snake": "Verse Snake against Verse: \"snake\", \"play snake\", \"void snake\", \"snake game\"",
  "snippet": "A short Python function the ask names, written on the card",

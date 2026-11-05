@@ -177,6 +177,12 @@ export function plan({ jobs = [], wf = {}, handed = {}, now, exam }) {
   const first = (j) => FIRST[kindOf(j.target)] || 0;
   const queued = jobs.filter((j) => j.state === 'queued').sort((a, b) => first(b) - first(a) || score(b, now, exam) - score(a, now, exam) || ms(a.at) - ms(b.at));
   for (const j of queued) {
+    // a repair of a loop that is green again (its newest finished run passed) has nothing left to repair: it is set aside, not handed to
+    // the coder, where it spent a lap reaching the turn cap and the third such lap paused the Verse loop for 6 hours (#2252)
+    if (kindOf(j.target) === 'heal') {
+      const f = String(j.target).slice(5), h = wf[f];
+      if (h && h.exists && !h.fails && h.last) { out.setAside.push({ id: j.id, note: withTries(j.note, triesOf(j.note), f + ' is green again: nothing left to repair') }); continue; }
+    }
     const r = routeOf(j);
     if (!r) { out.held.push({ id: j.id, why: 'no executor for ' + kindOf(j.target) }); continue; }
     if (triesOf(j.note) >= MAX_TRIES) { out.setAside.push({ id: j.id, note: withTries(j.note, triesOf(j.note), 'set aside after ' + MAX_TRIES + ' tries') }); continue; }

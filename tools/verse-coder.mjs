@@ -143,7 +143,9 @@ export function pathRefusal(p, root, { write = false } = {}) {
   if (/(^|\/)\.git(\/|$)/.test(r)) return r + ' is git\'s own';
   if (/(^|\/)node_modules(\/|$)/.test(r)) return r + ' is installed code';
   if (/(^|\/)\.env(?!\.example$)(\.|$)/i.test(r) || /(^|\/)\.dev\.vars/i.test(r)) return r + ' holds secrets: never';
-  if (/^\.github\/(workflows|actions)\//.test(r)) return r + ' is a workflow: never';
+  // a workflow is read like any file (a repair of a red loop starts from what it runs: #2252, where a lap spent its 30 turns asking to read
+  // .github/workflows/propose-fix.yml), and never written
+  if (write && /^\.github\/(workflows|actions)\//.test(r)) return r + ' is a workflow: never';
   if (/(^|\/)(secrets?|credentials?)(\/|\.|$)/i.test(r) || /\.(pem|key|p12|pfx|keystore|jks)$/i.test(r) || /(^|\/)id_(rsa|ed25519|ecdsa|dsa)/.test(r)) return r + ' looks like a secret: never';
   if (write && SELF.includes(r)) return r + ' is one of the loop\'s own guards: never';
   return '';
@@ -309,7 +311,7 @@ Answer every turn with exactly one JSON object and nothing else (an edit may put
 {"tool":"check","name":"<check>"}                    run one check; or {"tool":"check","test":"path/to/x.test.mjs"} for one node test file
 {"tool":"finish","summary":"what changed and why"}   when the task is done
 Checks you can run: ${checks.map((c) => c.name).join(', ') || '(none)'}.${target ? '\nThe red check to make green: ' + target + '.' : ''}
-Rules: fix the code, never the test: an edit that removes assertions or test cases, skips a test or exits early is refused. Never touch .env files, workflows, secrets or anything outside the repo. On a big file, use region or outline, then patch or split a small range: do not read the file from the top. Keep changes small and in the style around them. Read before you edit, and run the check before you finish. Verse's review runs on your diff when you finish, and a bug or risk it finds sends you back.`;
+Rules: fix the code, never the test: an edit that removes assertions or test cases, skips a test or exits early is refused. Never touch .env files, secrets or anything outside the repo; a workflow can be read, never edited. On a big file, use region or outline, then patch or split a small range: do not read the file from the top. Keep changes small and in the style around them. Read before you edit, and run the check before you finish. Verse's review runs on your diff when you finish, and a bug or risk it finds sends you back.`;
 
 /**
  * One run. model(messages) -> { text, tokens? } | { error }. Returns { outcome, why, turns, tokens, files, log }.
