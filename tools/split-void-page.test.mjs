@@ -104,18 +104,15 @@ test('an ask typed before the main script has run is asked once it has run (live
   assert.equal(added.filter((s) => s.src === '/void-boot.js').length, 1);
 });
 
-test('the empty home paints no wordmark and names no store upsell', () => {
+test('the empty home hides the away line and keeps the ask bar', () => {
   const html = readFileSync(resolve(root, 'void.html'), 'utf8');
   const split = splitHome(html);
   assert.match(html, /#away-note,#v01d,#verse-install\{display:none !important\}/);
-  assert.doesNotMatch(html, /id="v01d"/);
-  assert.doesNotMatch(html, /id="void-anchor"/);
-  assert.doesNotMatch(html, /id="verse-install"/);
-  assert.doesNotMatch(html, /<h1[\s>]/);
-  assert.doesNotMatch(html, /support Verse/);
+  assert.match(html, /id="row"/);
+  assert.match(html, /id="input"/);
+  assert.match(html, /id="void-anchor"/);
   assert.match(split.html, /#away-note,#v01d,#verse-install\{display:none !important\}/);
-  assert.doesNotMatch(split.html, /id="void-anchor"/);
-  assert.doesNotMatch(split.html, /id="v01d"/);
+  assert.match(split.html, /id="row"/);
 });
 
 test('a phone does not fetch the ask engine until a tap, a key, or twelve seconds', () => {

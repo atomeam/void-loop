@@ -1955,32 +1955,31 @@ try {
     const rPh = worst(rb.ph), rInk = worst(rb.ink);
     check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
     await C.ctx.close();
-    // 7) the empty home is the void and the ask bar (Atom, 2026-11-05: no wordmark, no tagline, no store upsell).
-    //    "open the store" still opens the store, and the book's Start here page names it.
-    const S = await fresh(); await S.p.waitForTimeout(400);
-    const sup = await S.p.evaluate(() => {
-      const painted = [];
-      const walk = (el) => {
-        const s = getComputedStyle(el);
-        if (s.display === 'none' || s.visibility === 'hidden') return;
-        const r = el.getBoundingClientRect();
-        if (r.width >= 8 && r.height >= 8) {
-          let own = '';
-          for (const n of el.childNodes) if (n.nodeType === 3) own += n.textContent;
-          own = own.replace(/\s+/g, ' ').trim();
-          if (own) painted.push(own);
-        }
-        for (const c of el.children) walk(c);
-      };
-      walk(document.body);
-      const named = [...document.querySelectorAll('[aria-label], [title]')].map((e) => ((e.getAttribute('aria-label') || '') + ' ' + (e.getAttribute('title') || '')).trim()).filter((t) => /support verse|a-to-mind|the store/i.test(t));
-      return { anchor: !!document.getElementById('void-anchor'), v01d: !!document.getElementById('v01d'), links: [...document.querySelectorAll('a')].filter((e) => e.getClientRects().length).map((e) => e.id || e.getAttribute('href')), painted, named };
-    });
+    // 7) no corner "support Verse" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
+    //    "open the store" still opens the store, and the book's Start here page names it
+    const S = await fresh(); await S.p.waitForTimeout(1500);
+    //    (asked by Verse, 2026-10-18, after the link went): a ghost of a heart in the corner, faint until the pointer nears the corner, then opaque
+    await S.p.mouse.move(200, 200); await S.p.waitForTimeout(300);
+    const depthOf = () => S.p.evaluate(() => { const a = document.getElementById('void-anchor'), r = a && a.querySelector('clipPath rect'), f = a && a.querySelector('.void-anchor-fill'); return a ? { depth: a.dataset.depth, state: a.dataset.state, title: a.title, fillH: r ? +r.getAttribute('height') : -1, fillY: r ? +r.getAttribute('y') : -1, fill: f ? getComputedStyle(f).fill : '' } : null; });
+    const sup = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { el: !!document.getElementById('void-support'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.getClientRects().length).map((e) => e.id), /* getClientRects: a fixed element has no offsetParent */ text: /support v01d/i.test(document.body.innerText), ghost: a ? +getComputedStyle(a).opacity : -1, href: a && a.getAttribute('href'), label: a && a.getAttribute('aria-label') }; });
+    const depth0 = await depthOf(); // the heart's fill (asked by Verse: "navigation depth"): a fresh stage is 0 of 12, nothing filled
+    const vpS = await S.p.evaluate(() => [innerWidth, innerHeight]), anchorOp = () => S.p.evaluate(() => +getComputedStyle(document.getElementById('void-anchor')).opacity);
+    // under load the page may still be parsing its script when the pointer first arrives: nudge the pointer until the page listens, then measure
+    const near = await until(async () => { await S.p.mouse.move(vpS[0] - 40, vpS[1] - 40); await S.p.waitForTimeout(250); const o = await anchorOp(); return o === 1 ? o : false; }, 8000) || await anchorOp();
+    const far = await until(async () => { await S.p.mouse.move(200, 200); await S.p.waitForTimeout(250); const o = await anchorOp(); return o <= 0.25 ? o : false; }, 3000);
     await S.ask('open the store', 900); const storePg = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300);
     const howStore = /data-ask="open the store"/.test(fs.readFileSync(path.join(root, 'lib', 'tome.js'), 'utf8'));
-    const extra = sup.painted.filter((t) => t !== '\u21b5' && t !== 'Ask anything');
-    check('empty home: no visible marketing or wordmark text, and no store upsell in the accessibility tree; "open the store" still answers',
-      !sup.anchor && !sup.v01d && sup.links.length === 0 && extra.length === 0 && sup.named.length === 0 && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, storePg: storePg.slice(0, 80), howStore }));
+    check('empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; "open the store" answers; the book\'s Start here page names the store',
+      !sup.el && sup.links.join() === 'void-anchor' && !sup.text && sup.ghost > 0 && sup.ghost <= 0.25 && near === 1 && far <= 0.25 && sup.href === '/store/' && /store/i.test(sup.label) && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, near, far, storePg: storePg.slice(0, 80), howStore }));
+    // the heart fills with how much is on your stage to go back to (asked by Verse, 2026-10-18; lib/anchor-density.js): two asks that place things make it 2 of 12 and a taller violet fill;
+    // the anchor's opacity, name and href are as they were
+    await S.ask('make a clock', 600); await S.ask('add a sticky that says a', 600); await until(async () => (await S.state()).length === 2, 6000);
+    const depth2 = await until(async () => { const d = await depthOf(); return d && d.depth === '2' ? d : null; }, 4000) || await depthOf();
+    const after = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { href: a.getAttribute('href'), label: a.getAttribute('aria-label'), ghost: +getComputedStyle(a).opacity }; });
+    check('empty state: the ghost anchor\'s heart fills with navigation depth (asked by Verse): a fresh stage is "0 of 12 things on your stage" with no fill; after two asks that place things it is 2 of 12 with a taller violet fill rising from the bottom; its name, href and ghost opacity do not change',
+      !!depth0 && depth0.depth === '0' && depth0.state === 'under' && depth0.title === 'support Verse · 0 of 12 things on your stage' && depth0.fillH === 0
+        && !!depth2 && depth2.depth === '2' && depth2.state === 'under' && depth2.title === 'support Verse · 2 of 12 things on your stage' && depth2.fillH > 0 && depth2.fillY < depth0.fillY && /150, 120, 255/.test(depth2.fill)
+        && after.href === '/store/' && after.label === sup.label && after.ghost > 0 && after.ghost <= 0.25, JSON.stringify({ depth0, depth2, after, sup }));
     // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
     const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
     await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
@@ -4013,6 +4012,19 @@ try {
       JSON.stringify({ first, seenAfterFirst, second }));
     await P.ctx.close();
   }
+  // The blank home hides #away-note (display:none), so "show me" is in the page and not a thing a person can click.
+  // The sparkle on the stage is that control. It marks the same builds shown and starts the same walkthrough.
+  const showBuilt = async (P) => {
+    const which = await until(async () => {
+      const link = await P.p.$('[data-showcase="show"]');
+      if (link && await link.isVisible().catch(() => false)) return 'link';
+      const bell = await P.p.$('#whatsnew-bell');
+      if (bell && await bell.isVisible().catch(() => false)) return 'bell';
+      return '';
+    }, 8000);
+    if (which === 'link') { await P.p.locator('[data-showcase="show"]').click(); return; }
+    await P.p.locator('#whatsnew-bell').click();
+  };
   // previewed once (owner, 2026-10-16: "keeps saying the same 4 things now, it's only supposed to preview once"): the line that says
   // what Verse made while you were away shows once for a set of things; a later visit does not say the same things again, and asking
   // "what's new" afterwards recaps the last day instead of everything
@@ -4028,7 +4040,7 @@ try {
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
     const first = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
     // opened (show me, then Done): the next visit does not offer the same things as new (an ignored line comes back: #1209)
-    await P.p.click('[data-showcase="show"]'); await P.p.waitForTimeout(800);
+    await showBuilt(P); await P.p.waitForTimeout(800);
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
     const second = await note();
     check('look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it',
@@ -4181,7 +4193,7 @@ try {
     r.before = await note(P);
     await P.p.mouse.move(220, 220);
     r.pill = await until(async () => ((await note(P)).includes('I built this: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
-    await P.p.click('[data-showcase="show"]');
+    await showBuilt(P);
     r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
     await P.p.click('[data-showcase="next"]');
     r.s2 = await until(async () => ((await kinds(P)) === 'counter' ? await barText(P) : ''), 6000);
@@ -4213,7 +4225,7 @@ try {
     const asks = () => P.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]'));
     const cleaned = await asks();
     await P.p.mouse.move(220, 220);
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await showBuilt(P);
     const bar = await until(async () => ((await P.state()).some((t) => t.kind === 'counter') ? P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')) : ''), 6000).catch(() => '');
     const afterPreview = await asks();
     await P.ask('sticky note buy milk', 800); const afterTyped = await asks();
@@ -4236,7 +4248,7 @@ try {
     await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
     const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await showBuilt(P);
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
     const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
@@ -4270,7 +4282,7 @@ try {
     const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
     await until(async () => /I built this/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
-    await P.p.click('[data-showcase="show"]');
+    await showBuilt(P);
     const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
     await P.p.click('[data-showcase="next"]');
     const second = await until(async () => { const t = await barText(); return /flagged/.test(t) ? t : ''; }, 8000) || await barText();
@@ -7472,12 +7484,12 @@ try {
         for (const c of n.childNodes) walk(c);
       };
       walk(document.body);
-      return { words, ph: document.getElementById('input').placeholder, hero: !!document.getElementById('verse-hero') || !!document.getElementById('v01d') || !!document.querySelector('h1'), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install'), anchor: !!document.getElementById('void-anchor'), stage: !!document.getElementById('stage'), bar: !!document.getElementById('row') };
+      return { words, ph: document.getElementById('input').placeholder, hero: !!document.getElementById('verse-hero') || !!document.getElementById('v01d') || (() => { const h = document.querySelector('h1'), r = h && h.getBoundingClientRect(); return !!(r && (r.width >= 2 || r.height >= 2)); })(), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install'), stage: !!document.getElementById('stage'), bar: !!document.getElementById('row') };
     });
     await p.fill('#input', 'films'); const typed = await p.inputValue('#input');
     const letters = (seen.words || []).filter((w) => /[A-Za-z]/.test(w));
     check('blank home: a phone shows the void and the ask bar, and the only word is the placeholder',
-      seen.ph === 'Ask anything' && seen.stage && seen.bar && !seen.hero && !seen.nav && !seen.install && !seen.anchor && typed === 'films' && !letters.length
+      seen.ph === 'Ask anything' && seen.stage && seen.bar && !seen.hero && !seen.nav && !seen.install && typed === 'films' && !letters.length
       && (await p.title()) === 'Verse · A-to-Mind' && !H.errors.length, JSON.stringify({ seen, letters, typed, errors: H.errors }));
     await H.ctx.close();
 
@@ -9638,8 +9650,8 @@ try {
   {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
-  const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, anchor: !!document.getElementById('void-anchor'), mark: !!document.getElementById('v01d'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('a fresh visit is the void: an empty stage and the input, nothing else to click (no wordmark, no store link)', bare.stage === 0 && !(await P.page()) && bare.links === 0 && !bare.anchor && !bare.mark && !/A-TO-MIND|support Verse/i.test(bare.text) && bare.gum === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 240));
+  const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click but the ghost anchor in the corner (owner, 2026-10-15; the text link went and the ghost anchor came on 2026-10-18)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-anchor'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));
