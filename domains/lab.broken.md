@@ -3,6 +3,7 @@
 Each line is a job for the free coder: the lab draft imported, opened in headless Chromium and failed, so it is NOT published at /lab/ (the catalog marks it broken).
 Fix the draft in the lab repo or in a copy, then run `node tools/lab-sync.mjs --drafts <drafts dir> --only <slug>`; a draft that now runs is published and leaves this list.
 
+- f560-webgpu-esrn-spatial-ui-morph-mind | draft: drafts/F560-webgpu-esrn-spatial-ui-morph-mind/index.html | error: pageerror: Cannot read properties of null (reading '0') | try: the script reads an element or value that is not there: check the element ids and the order the script runs in
 - f515-webgpu-mlp-auction-dom-mind | draft: drafts/F515-webgpu-mlp-auction-dom-mind/index.html | error: pageerror: Cannot read properties of undefined (reading '0') | try: the script reads an element or value that is not there: check the element ids and the order the script runs in
 - f508-webgpu-spectral-resonance-dom-mind | draft: drafts/F508-webgpu-spectral-resonance-dom-mind/index.html | error: pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found. | try: IndexedDB store missing: create it in onupgradeneeded or bump the database version
 - f420-rd-attention-kernel | draft: drafts/F420-rd-attention-kernel/index.html | error: truncated file: a <script> never closes, so the page ends mid-code | try: open it in a browser, read the console, fix the first error
