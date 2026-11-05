@@ -3570,5 +3570,23 @@
    ]
   },
   "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T14:53:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1024,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 27808 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
