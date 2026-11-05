@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-05T10:23:36.198Z",
+ "sha": "837d03e9d8c4e952a9fc606ff0fdd13ee7e70d8b",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42005030773",
+ "suite": "browser suite on main",
+ "checks": [
+  "recipe stack: it waits for a tap, then the second step starts by itself after the first (a soft two-note chime only once the tap has happened) and the card ends on Done",
+  "game panel fits: chess opened with a list on the stage leaves no overlapping boxes among the list, the board, its panel and the ask bar (the list moves aside or waits in the tray, one tap brings it back), at 1280x800 and on a phone; closing the game puts the list back exactly where it was"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "docs/PARITY/github.md",
+  "docs/PARITY/hugging-face.md",
+  "docs/PARITY/lichess.md",
+  "docs/playbooks/README.md",
+  "docs/playbooks/agent.md",
+  "domains/handoff.md",
+  "domains/void.agents.log.md",
+  "growth/entries/20261105T093407Z-cursor-23824930.json",
+  "tools/agent-core.test.mjs",
+  "tools/agent-probe.mjs",
+  "tools/agent-probe.test.mjs",
+  "tools/agent-watch.test.mjs",
+  "tools/real-pages.mjs",
+  "tools/test_void.mjs"
+ ],
+ "shards": [
+  2,
+  4
+ ]
+}
