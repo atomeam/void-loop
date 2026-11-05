@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T13:56:51.683Z",
+ "updated": "2026-11-05T14:16:55.780Z",
  "last24h": {
-  "ticks": 44,
-  "started": 73,
+  "ticks": 45,
+  "started": 74,
   "requeued": 0,
   "setAside": 3,
   "probes": 7,
@@ -147,7 +147,8 @@
   "mw3gsqet": 1793882376098,
   "mw3gsr6j": 1793883187272,
   "mw3j1x4f": 1793884547212,
-  "mw3j1xx2": 1793885597516
+  "mw3j1xx2": 1793885597516,
+  "mw3m1pk3": 1793888215780
  },
  "visitorAt": "2026-11-05T13:36:28Z",
  "visitorFiled": [
@@ -1451,6 +1452,30 @@
    "setAside": 0,
    "healed": [],
    "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 191,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T14:16:55.780Z",
+   "open": 197,
+   "started": [
+    {
+     "id": "mw3m1pk3",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
    "grow": false,
    "will": false,
    "lap": false,
