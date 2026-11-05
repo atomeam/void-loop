@@ -390,6 +390,7 @@ for (const [name, file] of [
   ['rps', 'rps.test.mjs'],
   ['palindrome', 'palindrome.test.mjs'],
   ['riddle', 'riddle.test.mjs'],
+  ['family-asks', 'family-asks.test.mjs'],
   ['sky-card', 'sky-card.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
