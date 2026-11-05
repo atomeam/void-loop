@@ -1107,6 +1107,101 @@
     "place": 8,
     "why": "not sized yet, hardness 88, Tranco 158748"
    }
+  },
+  "sipcalculator.in": {
+   "at": "2026-11-05T18:13:42Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "SIP Calculator - Calculate returns for SIP investment",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5.1,
+    "place": 1,
+    "why": "not sized yet, hardness 89, Tranco 218725"
+   }
+  },
+  "colordrop.io": {
+   "at": "2026-11-05T18:13:46Z",
+   "outcome": "covered",
+   "page": "/color/",
+   "topic": "colour codes",
+   "title": "Color Palettes with Hex Codes - ColorDrop",
+   "why": "its job is colour codes, which /color/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5,
+    "place": 2,
+    "why": "not sized yet, hardness 90, Tranco 482468"
+   }
+  },
+  "colourlab.ai": {
+   "at": "2026-11-05T18:13:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional software service for AI-driven color grading in film and video production. Verse does not have any tools for video editing, color)",
+   "title": "The intelligence behind the image — Colourlab",
+   "ease": {
+    "score": 5,
+    "place": 3,
+    "why": "not sized yet, hardness 90, Tranco 431000"
+   }
+  },
+  "heritageunits.com": {
+   "at": "2026-11-05T18:13:55Z",
+   "outcome": "walled",
+   "why": "a sign-in wall",
+   "ease": {
+    "score": 5,
+    "place": 4,
+    "why": "not sized yet, hardness 91, Tranco 482020"
+   }
+  },
+  "cube.community": {
+   "at": "2026-11-05T18:14:02Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a non-profit community organization that hosts VR rhythm game tournaments, archives videos, and offers project hosting services. Verse has no)",
+   "title": "Cube Community",
+   "ease": {
+    "score": 5,
+    "place": 5,
+    "why": "not sized yet, hardness 91, Tranco 439487"
+   }
+  },
+  "doublecounter.gg": {
+   "at": "2026-11-05T18:14:07Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Double Counter — Discord Security Bot · Block Alts, VPNs & Raids",
+   "ease": {
+    "score": 5,
+    "place": 6,
+    "why": "not sized yet, hardness 91, Tranco 76312"
+   }
+  },
+  "colorscheme.ru": {
+   "at": "2026-11-05T18:14:24Z",
+   "outcome": "built",
+   "family": "colour",
+   "id": "colour: colorscheme.ru",
+   "page": "/color/colour-picker-tool/?c=ff5733",
+   "ease": {
+    "score": 4.9,
+    "place": 7,
+    "why": "not sized yet, hardness 92, Tranco 342989"
+   },
+   "words": "the family page's own (the model's were refused: names colorscheme; names colorscheme; says what the page does not do (generate, harmonious, explore, relationships, visu)"
+  },
+  "base64.guru": {
+   "at": "2026-11-05T18:14:26Z",
+   "outcome": "covered",
+   "page": "/base64/",
+   "topic": "base64",
+   "title": "Base64",
+   "why": "its job is base64, which /base64/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.9,
+    "place": 8,
+    "why": "not sized yet, hardness 92, Tranco 294125"
+   }
   }
  },
  "runs": [
