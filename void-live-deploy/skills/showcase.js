@@ -301,6 +301,7 @@ async function step(stageApi) {
   await stageApi.ask(s.ask, { quiet: true }); // a preview: not saved as the person's own ask
   if (!tour || tour.steps[tour.i] !== s) return;
   tour.made.ids = Object.keys(stageApi.things()).filter((id) => !before.has(id));
+  if (tour.dropAt && placeDrop(stageApi, tour.dropAt)) document.body.dataset.showcaseDropped = String(tour.i); // before the proof wait, so a drop is where the pointer let go
   place(el); // clear of what the step just put up
   // the preview has to show the thing it names (owner, 2026-10-16: "the preview is supposed to actually preview what it says"):
   // a moment for the card to land, then proof: a new thing on the stage, a new card, or the page's own log saying a skill
@@ -357,20 +358,25 @@ function chip(stageApi, it) {
 }
 
 // run step j now (what the current step put up goes, as with Next); dropped at a point, its new things move there
-async function jump(stageApi, j, at) {
-  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
-  clear(stageApi); tour.i = j;
-  const s = tour.steps[j];
-  await step(stageApi);
-  if (!at || !tour || tour.steps[tour.i] !== s || !tour.made || !tour.made.ids.length) return;
+function placeDrop(stageApi, at) {
+  if (!at || !tour || !tour.made || !tour.made.ids.length) return false;
   const st = stageApi.stage, rect = st && st.getBoundingClientRect ? st.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight };
   const things = stageApi.things(), first = things[tour.made.ids[0]];
   const d = dropDelta(first, at.x - rect.left, at.y - rect.top, rect.width, rect.height);
-  if (!d) return;
-  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
+  if (!d) return false;
+  // pinned: the person dropped it here, so the stage layout does not slide a fresh thing away
+  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.pinned = true; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
   stageApi.save(); stageApi.render();
-  if (tour) tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) };
-  document.body.dataset.showcaseDropped = String(j);
+  return true;
+}
+async function jump(stageApi, j, at) {
+  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
+  clear(stageApi); tour.i = j; tour.dropAt = at || null;
+  const s = tour.steps[j];
+  await step(stageApi);
+  if (!at || !tour || tour.steps[tour.i] !== s) return;
+  if (placeDrop(stageApi, at)) { tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) }; document.body.dataset.showcaseDropped = String(j); }
+  tour.dropAt = null;
 }
 
 // what the page logs when an ask fell through to the encyclopedia or a generic answer, or missed (tools/claims-verify.mjs FALLBACK)
