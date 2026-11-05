@@ -1,1 +1,0 @@
-{"at":"2026-11-05T10:37:52Z","by":"cursor","kind":"fix","what":"A loop pull request opened with the workflow token gets its checks started by workflow_dispatch, the same jobs, and Verse's review still decides the merge."}

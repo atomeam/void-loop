@@ -1,1 +1,0 @@
-{"at":"2026-11-05T05:16:07Z","by":"claude","kind":"fix","what":"no owner name or personal home folder in live files: domains/A2M.ops.md says the owner and builds on its own, Windows paths use %USERPROFILE%, and the no-human-wait guard catches a wait by first name and a personal path like C:\\Users\\<name>"}
