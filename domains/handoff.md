@@ -76,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Suite reds after #2251 (cursor, 2026-11-05)**: clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it. https://github.com/atomeam/void-loop/pull/2259
 - **Autosalvage batch (cursor, 2026-11-05)**: open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257
 - **Open-data bot families (cursor, 2026-11-05)**: ECB currency pairs, 2026 public holidays and Wikidata country facts, each checked against a real call. Registry live count 9,186 to 11,732. Antigua and Equatorial Guinea stay failed as fix jobs. https://github.com/atomeam/void-loop/pull/2256
 - **Empty home, lighter (cursor, 2026-11-05)**: an empty phone home fetches about 40 files and 320 KB instead of 95 and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and /compare/ share one type, glass and 44 px targets, with the task or the search above the fold. https://github.com/atomeam/void-loop/pull/2254
