@@ -383,6 +383,27 @@ export default {
     ]
    }
   ],
+  "riddle-gen": [
+   {
+    "name": "riddle",
+    "examples": [
+     "riddle",
+     "tell me a riddle",
+     "give me a riddle",
+     "another riddle",
+     "tell me a riddle about time"
+    ]
+   },
+   {
+    "name": "textgen",
+    "examples": [
+     "fantasy name generator",
+     "band name generator",
+     "random generators",
+     "give me a story prompt"
+    ]
+   }
+  ],
   "rooms": [
    {
     "name": "room",

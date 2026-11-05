@@ -7,7 +7,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 - Live scan: 2026-10-28, HTTP 200, page title "Spotify – Web Player"
 - History: [docs/HISTORY/spotify.md](../HISTORY/spotify.md)
 
-**Match: 36%**: 4 have, 0 partial, 6 missing, 1 unreviewed, of 11 features.
+**Match: 45%**: 5 have, 0 partial, 5 missing, 1 unreviewed, of 11 features.
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
@@ -15,7 +15,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Stream millions of songs | Listening | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:104 `tion class="pane" aria-label="Playlists">` |
 | Playlists | Library | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:104 `tion class="pane" aria-label="Playlists">` |
 | Recommendations | Find | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:102 `rds and tunings, and practice recommendations. No account.</p>` |
-| Search artists, songs and albums | Find | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
+| Search artists, songs and albums | Find | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/lib/member-keep.js:11 `const q = new URLSearchParams(loc.search // ''), h = new URLSearchParams(String(loc.hash` |
 | Podcasts and audiobooks | Listening | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
 | Lyrics | Listening | missing | studied by hand: Spotify offers this (https://open.spotify.com/) | no sign of it in the source of /music/ |
 | Play on other devices | Devices | have | studied by hand: Spotify offers this (https://open.spotify.com/) | void-live-deploy/music/index.html:102 `music tools that run on your device: a metronome, a piano, a tuner, a BPM counter and a c` |

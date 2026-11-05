@@ -8493,7 +8493,7 @@
     "country",
     "grades",
     "distance",
-    "riddle",
+    "riddle-gen",
     "compliment",
     "stage-organize",
     "joke",
@@ -8714,7 +8714,6 @@
     "walker",
     "backdrop",
     "toolkit",
-    "textgen",
     "boards",
     "sums",
     "snippet",
@@ -9259,8 +9258,8 @@
     },
     {
      "rank": 84,
-     "name": "riddle",
-     "catches": "riddle"
+     "name": "riddle-gen",
+     "catches": "most skills can be combined"
     },
     {
      "rank": 85,
@@ -10588,43 +10587,43 @@
    "rules": [
     {
      "rank": 305,
-     "name": "textgen",
-     "catches": "fantasy name generator"
-    },
-    {
-     "rank": 306,
      "name": "boards",
      "catches": "image boards"
     },
     {
-     "rank": 307,
+     "rank": 306,
      "name": "sums",
      "catches": "if 3 apples cost 2.40 how much do 7 cost"
     },
     {
-     "rank": 308,
+     "rank": 307,
      "name": "snippet",
      "catches": "write a python function factorial of n"
     },
     {
-     "rank": 309,
+     "rank": 308,
      "name": "music-tools",
      "catches": "metronome 120 bpm"
     },
     {
-     "rank": 310,
+     "rank": 309,
      "name": "pdf-tools",
      "catches": "merge pdf"
     },
     {
-     "rank": 311,
+     "rank": 310,
      "name": "converter",
      "catches": "mp4 to mp3"
     },
     {
-     "rank": 312,
+     "rank": 311,
      "name": "kanban-board",
      "catches": "kanban board"
+    },
+    {
+     "rank": 312,
+     "name": "flights",
+     "catches": "flights to lisbon"
     }
    ],
    "n": 508
@@ -10636,43 +10635,43 @@
    "rules": [
     {
      "rank": 313,
-     "name": "flights",
-     "catches": "flights to lisbon"
-    },
-    {
-     "rank": 314,
      "name": "formulas",
      "catches": "pipe surface area calculator"
     },
     {
-     "rank": 315,
+     "rank": 314,
      "name": "lorem",
      "catches": "lorem"
     },
     {
-     "rank": 316,
+     "rank": 315,
      "name": "ascii",
      "catches": "ascii for hello"
     },
     {
-     "rank": 317,
+     "rank": 316,
      "name": "leet",
      "catches": "leet hello"
     },
     {
-     "rank": 318,
+     "rank": 317,
      "name": "advice",
      "catches": "give me advice"
     },
     {
-     "rank": 319,
+     "rank": 318,
      "name": "palette",
      "catches": "random palette"
     },
     {
-     "rank": 320,
+     "rank": 319,
      "name": "fanfic",
      "catches": "fan fiction"
+    },
+    {
+     "rank": 320,
+     "name": "proverb",
+     "catches": "tell me a proverb"
     }
    ],
    "n": 509
@@ -10684,43 +10683,43 @@
    "rules": [
     {
      "rank": 321,
-     "name": "proverb",
-     "catches": "tell me a proverb"
-    },
-    {
-     "rank": 322,
      "name": "magic8",
      "catches": "magic 8 ball"
     },
     {
-     "rank": 323,
+     "rank": 322,
      "name": "color",
      "catches": "random color"
     },
     {
-     "rank": 324,
+     "rank": 323,
      "name": "morse",
      "catches": "morse code hello"
     },
     {
-     "rank": 325,
+     "rank": 324,
      "name": "sprite-sheet",
      "catches": "clean up a sprite sheet"
     },
     {
-     "rank": 326,
+     "rank": 325,
      "name": "yesno",
      "catches": "yes or no"
     },
     {
-     "rank": 327,
+     "rank": 326,
      "name": "password",
      "catches": "random password"
     },
     {
-     "rank": 328,
+     "rank": 327,
      "name": "random",
      "catches": "d20"
+    },
+    {
+     "rank": 328,
+     "name": "uuid",
+     "catches": "random uuid"
     }
    ],
    "n": 510
@@ -10732,43 +10731,43 @@
    "rules": [
     {
      "rank": 329,
-     "name": "uuid",
-     "catches": "random uuid"
-    },
-    {
-     "rank": 330,
      "name": "shuffle",
      "catches": "shuffle these: apple banana cherry"
     },
     {
-     "rank": 331,
+     "rank": 330,
      "name": "team-chat",
      "catches": "team chat"
     },
     {
-     "rank": 332,
+     "rank": 331,
      "name": "emoji",
      "catches": "random emoji"
     },
     {
-     "rank": 333,
+     "rank": 332,
      "name": "hangman",
      "catches": "hangman"
     },
     {
-     "rank": 334,
+     "rank": 333,
      "name": "stopwatch",
      "catches": "stopwatch"
     },
     {
-     "rank": 335,
+     "rank": 334,
      "name": "wordladder",
      "catches": "word ladder from cat to dog"
     },
     {
-     "rank": 336,
+     "rank": 335,
      "name": "podcast-search",
      "catches": "podcasts about history"
+    },
+    {
+     "rank": 336,
+     "name": "emoji-combos",
+     "catches": "cat emoji combos"
     }
    ],
    "n": 511
@@ -10776,45 +10775,40 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCXXXVII–CCCXLIV",
+   "title": "Rules CCCXXXVII–CCCXLIII",
    "rules": [
     {
      "rank": 337,
-     "name": "emoji-combos",
-     "catches": "cat emoji combos"
-    },
-    {
-     "rank": 338,
      "name": "studios",
      "catches": "cpan testers"
     },
     {
-     "rank": 339,
+     "rank": 338,
      "name": "local-stations",
      "catches": "local radio"
     },
     {
-     "rank": 340,
+     "rank": 339,
      "name": "palindrome",
      "catches": "palindrome check for a man a plan a canal panama"
     },
     {
-     "rank": 341,
+     "rank": 340,
      "name": "open-tool",
      "catches": "word counter"
     },
     {
-     "rank": 342,
+     "rank": 341,
      "name": "baggage",
      "catches": "how much luggage weight allowed"
     },
     {
-     "rank": 343,
+     "rank": 342,
      "name": "rentbuy",
      "catches": "should i rent or buy"
     },
     {
-     "rank": 344,
+     "rank": 343,
      "name": "business-clarify",
      "catches": "clarify this business idea: a tool that turns customer emails into running autom"
     }

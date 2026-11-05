@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1148,
+ "counted": 1151,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -192,17 +192,17 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 13,
+   "direct": 13,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
    "dependants": 20,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 12,
-   "direct": 12,
-   "dependants": 12,
    "tests": 1
   },
   {
@@ -850,6 +850,13 @@
    "tests": 2
   },
   {
+   "file": "lib/generators.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
@@ -1130,13 +1137,6 @@
    "tests": 2
   },
   {
-   "file": "lib/generators.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 2
-  },
-  {
    "file": "lib/podcasts.js",
    "skills": 2,
    "direct": 2,
@@ -1149,6 +1149,13 @@
    "direct": 1,
    "dependants": 3,
    "tests": 3
+  },
+  {
+   "file": "lib/image-handoff.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/list-goal.js",
@@ -1338,6 +1345,13 @@
    "direct": 1,
    "dependants": 29,
    "tests": 1
+  },
+  {
+   "file": "lib/free-pics.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 28,
+   "tests": 2
   },
   {
    "file": "lib/plan.js",
@@ -1785,7 +1799,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 4
   },
   {
    "file": "lib/vat.js",
@@ -2166,6 +2180,13 @@
    "tests": 1
   },
   {
+   "file": "lib/shape-picture.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/similar-index.js",
    "skills": 1,
    "direct": 1,
@@ -2429,7 +2450,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 29,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/memory-scope.js",
@@ -2507,13 +2528,6 @@
    "direct": 0,
    "dependants": 27,
    "tests": 1
-  },
-  {
-   "file": "lib/free-pics.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 27,
-   "tests": 2
   },
   {
    "file": "lib/markets-record.js",
@@ -2916,13 +2930,6 @@
   },
   {
    "file": "lib/honest.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/image-handoff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3364,6 +3371,13 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/member-keep.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7929,7 +7943,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/daily-art.js"
+    "functions/api/daily-art.js",
+    "skills/image.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -8069,7 +8084,8 @@
     "skills/textgen.js"
    ],
    "reachedBy": [
-    "skills/generators-fill.js"
+    "skills/generators-fill.js",
+    "skills/riddle-gen.js"
    ]
   },
   "lib/genre-score.js": {
@@ -8487,7 +8503,9 @@
   "lib/image-handoff.js": {
    "imports": [],
    "importedBy": [
-    "lib/pdf-ui.js"
+    "lib/pdf-ui.js",
+    "skills/draw.js",
+    "skills/image.js"
    ]
   },
   "lib/imgfit.js": {
@@ -9377,6 +9395,10 @@
     "skills/calendar-fill.js",
     "skills/dates.js"
    ]
+  },
+  "lib/member-keep.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/members.js": {
    "imports": [
@@ -12074,6 +12096,12 @@
     "skills/service-health.js"
    ]
   },
+  "lib/shape-picture.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/draw.js"
+   ]
+  },
   "lib/share-client.js": {
    "imports": [
     "lib/share.js"
@@ -12302,6 +12330,7 @@
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
+    "skills/riddle-gen.js",
     "skills/rooms.js",
     "skills/shop.js",
     "skills/stage-out.js",
@@ -15149,6 +15178,8 @@
   },
   "skills/draw.js": {
    "imports": [
+    "lib/shape-picture.js",
+    "lib/image-handoff.js",
     "skills/scene3d.js",
     "skills/forge-rules.js"
    ],
@@ -15967,7 +15998,10 @@
    "importedBy": []
   },
   "skills/image.js": {
-   "imports": [],
+   "imports": [
+    "lib/free-pics.js",
+    "lib/image-handoff.js"
+   ],
    "importedBy": []
   },
   "skills/imgfit.js": {
@@ -17340,9 +17374,19 @@
     "skills/mind-field.js"
    ]
   },
+  "skills/riddle-gen.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/riddle.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
+  },
   "skills/riddle.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/riddle-gen.js"
+   ]
   },
   "skills/rides.js": {
    "imports": [
@@ -18158,7 +18202,8 @@
     "lib/generators.js"
    ],
    "importedBy": [
-    "lib/generators-card.js"
+    "lib/generators-card.js",
+    "skills/riddle-gen.js"
    ]
   },
   "skills/throw-off.js": {

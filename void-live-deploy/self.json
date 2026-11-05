@@ -283,8 +283,7 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5",
-   "waits": "the owner"
+   "from": "tools.json, navigator.modelContext feature-detected"
   },
   {
    "state": "open",
@@ -303,8 +302,7 @@
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12",
-   "waits": "the owner"
+   "from": "void.plan.md Next #12"
   },
   {
    "state": "open",
@@ -551,90 +549,101 @@
    "last": "2026-10-07"
   }
  ],
+ "building": {
+  "at": "2026-10-18T08:58:46Z",
+  "date": "2026-10-15",
+  "by": "claude",
+  "item": "Verse values anything from a photo",
+  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
+ },
  "commits": [
   {
-   "at": "2026-11-05T02:02:46Z",
-   "subject": "Outcome exam: images 73.9"
+   "at": "2026-11-05T05:20:06Z",
+   "subject": "Incidents closed: shard(s) 1,2,3,4 passed on db3cc6b3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-05T01:58:10Z",
-   "subject": "Incident: the browser suite failed on ef3222cc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T01:49:05Z",
+   "at": "2026-11-05T05:10:56Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-05T01:34:03Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-05T05:08:58Z",
+   "subject": "Outcome exam: units 82.5"
   },
   {
-   "at": "2026-11-05T01:33:17Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
+   "at": "2026-11-05T04:52:31Z",
+   "subject": "Incident: the browser suite failed on 97670523 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-05T01:30:50Z",
-   "subject": "forethinkers: printing Q7, printed planetaries close the arm on torque and heat; 16 CFR 1500.53 torque test makes a slip clutch Q8 + arm…"
+   "at": "2026-11-05T04:43:14Z",
+   "subject": "Site test: visitor pass 13/15"
   },
   {
-   "at": "2026-11-05T00:55:13Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T00:52:09Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-05T00:28:52Z",
-   "subject": "Site test: fix: \"bokos like dune\" nothing appeared"
-  },
-  {
-   "at": "2026-11-05T00:20:33Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-05T00:18:30Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-05T00:04:23Z",
-   "subject": "Site test: fix: \"update for you: a new routine now runs every 3 hours f"
-  },
-  {
-   "at": "2026-11-05T00:00:26Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-11-04T23:58:23Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next (the target)"
-  },
-  {
-   "at": "2026-11-04T23:55:48Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 6 no-family, 1 gone, 1 covered); next (the target)"
-  },
-  {
-   "at": "2026-11-04T23:55:44Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-11-04T23:55:08Z",
+   "at": "2026-11-05T04:41:17Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T23:48:15Z",
-   "subject": "Lists run 10: green suite, date-math family, timers + prices exams, site-test #2228 (#2229)"
-  },
-  {
-   "at": "2026-11-04T21:35:00Z",
+   "at": "2026-11-05T04:38:26Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-04T21:30:22Z",
+   "at": "2026-11-05T04:35:06Z",
+   "subject": "Images exam 100 and no human in the loop (guard: tools/no-human-wait.mjs) (#2239)"
+  },
+  {
+   "at": "2026-11-05T04:16:07Z",
+   "subject": "Site test: fix: \"find a rumble video about bitcoin\" nothing appeared; c"
+  },
+  {
+   "at": "2026-11-05T04:09:54Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-05T04:06:20Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-05T04:03:58Z",
+   "subject": "Incident: the browser suite failed on 4f632217 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T04:01:48Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-05T04:00:01Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-05T03:51:34Z",
+   "subject": "Tower liveness guard: drop rivals that are gone, parked or redirect off their domain (unitingchurch.org.au -> controlhosting.net) (#2237)"
+  },
+  {
+   "at": "2026-11-05T03:51:31Z",
    "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T03:40:17Z",
+   "subject": "Member hand-off carries real context: chord/scale, setlist, news section, brain topic, team channel; /members/ shows it and saves it to…"
+  },
+  {
+   "at": "2026-11-05T03:33:16Z",
+   "subject": "Missed upsells: contextual paid-Verse offer on /team/ /brain/ /news/ /music/ /chords/ (?from=) (#2235)"
+  },
+  {
+   "at": "2026-11-05T03:30:31Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-05T03:05:31Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"who is the au"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists run 11 (grok, 2026-11-04)",
+    "line": "main's browser suite green again (the will test pins its own better file, the tower card test allows the new \"N passed\" count, the Verse bar scrolls sideways before /verse.css loads so phone pages never get wider than the screen)…"
+   },
    {
     "name": "Lists run 10 (grok, 2026-11-04)",
     "line": "main's browser suite green again (test server answers _redirects, ask bar contrast, paste test after #2126, business-clarify); time-math and date-calc are one date-math family; timers take \"add one minute\" and five other languages; prices…"
@@ -654,10 +663,6 @@
    {
     "name": "fix #2120: page fades no longer throw, /emoji left out of speculation rules…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
-   },
-   {
-    "name": "cursor",
-    "line": "the pointing arrow is a core skill, world clock and word definitions lead the MCP tools at https://a-to-mind.com/api/mcp, the Nov 1 git-diff asks are retired, and the wants card leads with counts and the top 3…"
    }
   ],
   "ladders": [
@@ -812,8 +817,8 @@
   }
  ],
  "visible": {
-  "day": 0,
-  "week": 406
+  "day": 5,
+  "week": 413
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
