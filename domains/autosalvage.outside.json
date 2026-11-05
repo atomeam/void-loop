@@ -117,6 +117,87 @@
       "what": "Country facts (capital, currency, continent), public domain",
       "gap": "country fact bots",
       "target": "data"
+    },
+    {
+      "id": "ideal-postcodes/postcodes.io",
+      "url": "https://github.com/ideal-postcodes/postcodes.io",
+      "author": "ideal-postcodes",
+      "license": "MIT",
+      "what": "UK postcode lookup, no key",
+      "gap": "postcode bots",
+      "target": "data"
+    },
+    {
+      "id": "art-institute-of-chicago/api",
+      "url": "https://api.artic.edu/",
+      "author": "Art Institute of Chicago",
+      "license": "CC0-1.0",
+      "what": "Public-domain artwork records",
+      "gap": "artwork bots",
+      "target": "data"
+    },
+    {
+      "id": "metmuseum/open-access",
+      "url": "https://metmuseum.github.io/",
+      "author": "The Metropolitan Museum of Art",
+      "license": "CC0-1.0",
+      "what": "Public-domain collection records",
+      "gap": "artwork bots",
+      "target": "data"
+    },
+    {
+      "id": "metabrainz/musicbrainz",
+      "url": "https://musicbrainz.org/doc/MusicBrainz_Database",
+      "author": "MetaBrainz",
+      "license": "CC0-1.0",
+      "what": "Music metadata, public domain",
+      "gap": "music bots",
+      "target": "data"
+    },
+    {
+      "id": "jacebrowning/memegen",
+      "url": "https://github.com/jacebrowning/memegen",
+      "author": "jacebrowning",
+      "license": "MIT",
+      "what": "Meme template API, no key",
+      "gap": "meme bots",
+      "target": "tool"
+    },
+    {
+      "id": "worldbank/open-data",
+      "url": "https://data.worldbank.org/",
+      "author": "World Bank",
+      "license": "CC-BY-4.0",
+      "what": "Country and region names",
+      "gap": "country bots",
+      "target": "data"
+    },
+    {
+      "id": "fda/openfda",
+      "url": "https://open.fda.gov/apis/",
+      "author": "U.S. Food and Drug Administration",
+      "license": "CC0-1.0",
+      "what": "Public-domain US government drug labels",
+      "gap": "drug name bots",
+      "target": "data"
+    },
+    {
+      "id": "nlm/rxnorm",
+      "url": "https://lhncbc.nlm.nih.gov/RxNav/",
+      "author": "U.S. National Library of Medicine",
+      "license": "CC0-1.0",
+      "what": "Public-domain US government drug names",
+      "gap": "drug name bots",
+      "target": "data"
+    },
+    {
+      "id": "police-uk/data.police.uk",
+      "url": "https://data.police.uk/docs/",
+      "author": "UK Home Office",
+      "license": "OGL-UK-3.0",
+      "what": "UK police force directory",
+      "gap": "police force bots",
+      "target": "data"
     }
   ]
 }
