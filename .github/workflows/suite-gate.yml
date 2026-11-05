@@ -1,0 +1,111 @@
+# The full browser suite on the merge of one pull request with current main, before automerge lands it
+# (Atom: no pull request merges unless it is green on top of current main). One run at a time. Nothing
+# is skipped: the same five shards verify.yml runs on main. A red result is a check on the pull request's
+# head; automerge does not merge it and does not queue it again until main or the head moves.
+name: Suite on main
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: The pull request to test, merged with current main
+        required: true
+        type: string
+
+concurrency:
+  group: void-suite-gate
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: read
+  actions: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.meta.outputs.sha }}
+      main: ${{ steps.meta.outputs.main }}
+      ref: ${{ steps.meta.outputs.ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: The pull request and the main it will merge
+        id: meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr }}
+        run: |
+          set -euo pipefail
+          json=$(gh api "repos/${{ github.repository }}/pulls/$PR")
+          sha=$(printf '%s' "$json" | jq -r .head.sha)
+          ref=$(printf '%s' "$json" | jq -r .head.ref)
+          git fetch -q origin "$ref" main
+          main=$(git rev-parse origin/main)
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "main=$main" >> "$GITHUB_OUTPUT"
+          echo "### #$PR $sha on top of $main" >> "$GITHUB_STEP_SUMMARY"
+
+  suite:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+          fetch-depth: 0
+      - name: Merge current main (the tree the suite judges)
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin "${{ needs.prepare.outputs.main }}"
+          git merge --no-edit "${{ needs.prepare.outputs.main }}"
+      - name: The full browser suite, shard ${{ matrix.shard }} of 8
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: suite
+          shard: ${{ matrix.shard }}/8
+
+  report:
+    needs: [prepare, suite]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Record the suite on the pull request head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ needs.prepare.outputs.sha }}
+          MAIN: ${{ needs.prepare.outputs.main }}
+          RESULT: ${{ needs.suite.result }}
+        run: |
+          set -euo pipefail
+          if [ "$RESULT" = "success" ]; then conclusion=success; summary="The full browser suite passed on the merge with main $MAIN. Nothing was skipped."; else conclusion=failure; summary="The full browser suite did not pass on the merge with main $MAIN ($RESULT). This pull request does not merge."; fi
+          gh api --method POST "repos/${{ github.repository }}/check-runs" \
+            -f name=suite-on-main \
+            -f head_sha="$SHA" \
+            -f status=completed \
+            -f conclusion="$conclusion" \
+            -f "output[title]=main:$MAIN" \
+            -f "output[summary]=$summary"
+          echo "### suite-on-main $conclusion for main:$MAIN" >> "$GITHUB_STEP_SUMMARY"
+      - name: Wake automerge for this pull request
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr }}
+        run: gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main -f pr="$PR"

@@ -1,8 +1,9 @@
 // Merge on GitHub's side, so no session has to sit and watch a PR (.github/workflows/automerge.yml runs this on every CI
 // finish, every review and every answer to one). It looks at each open PR from this repository (every one is labelled "automerge" by this script; owner 2026-10-15: "automerge everything always"; or the one PR given),
-// asks tools/pr-ready.mjs whether it is ready, and merges the ready ones. A merge made with the workflow's own token does
+// asks tools/pr-ready.mjs whether Verse's review is clean, then tools/suite-gate.mjs: one pull request, and only after the
+// full browser suite passed on that pull request merged with current main (suite-gate.yml). A merge made with the workflow's own token does
 // not start the push-to-main workflows, so it starts both itself: the deploy (deploy.yml, after_merge=true: it deploys at
-// once) and the full suite on that head (verify.yml, which reverts what broke it if it fails). A PR GitHub reports dirty (it conflicts with main)
+// once) and the full suite on that head (verify.yml, which reverts what broke it and files a heal job). A PR GitHub reports dirty (it conflicts with main)
 // gets no pull_request runs at all, so the bot merges main into it first (resolveMain in pr-ready.mjs: tools/merge-main.mjs from
 // main's checkout, the merge commit pushed to the branch, never forced, Verse's review dispatched on the new head); a conflict
 // outside the append-only records comes back as one comment on the PR naming the files.
@@ -18,6 +19,7 @@ import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
+import { choose, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
 // The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
@@ -126,6 +128,7 @@ for (const row of superseded(prs)) {
   } catch (e) { console.log('#' + row.number + ': could not close the superseded pull request: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
 let merged = 0;
+const ready = [];
 const closed = new Set(superseded(prs).map((r) => r.number));
 for (let p of prs) {
   if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
@@ -146,6 +149,11 @@ for (let p of prs) {
     try { run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] })); console.log(`#${p.number}: labelled ${LABEL} (every PR merges by itself)`); } catch (_) {}
   }
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
+  // GitHub's own auto-merge would land the pull request on whatever main is now, without the suite. The bot merges, one at a time, after the suite.
+  if (p.auto_merge && p.node_id) {
+    try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); console.log(`#${p.number}: GitHub auto-merge disarmed until the suite passes on current main`); }
+    catch (e) { console.log(`#${p.number}: could not disarm auto-merge: ${String(e.stderr || e.message || e).slice(0, 120)}`); }
+  }
   // behind main, and the update is clean: GitHub merges main in. A conflict comes back as dirty and is settled below.
   if (p.mergeable_state === 'behind') {
     try { run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/update-branch`, '-f', `expected_head_sha=${p.head.sha}`]); console.log(`#${p.number}: brought up to date with main`); }
@@ -189,24 +197,49 @@ for (let p of prs) {
   const sc = safety(ex, gh, { repo, pr: p.number, sha: r.sha });
   console.log(`#${p.number}: safety-check ${sc.state} (${sc.why})`);
   if (sc.state === 'fail') continue;
-  try {
-    if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-    // Arm GitHub's own auto-merge (squash) so a green pull request does not sit with autoMergeRequest null.
-    // When the arm takes, GitHub merges as soon as its required checks pass; the PUT below is the same merge if the arm cannot.
-    let armed = false;
-    if (eligible(p, repo) && p.node_id && !p.auto_merge) {
-      try {
-        const q = 'mutation($id:ID!){enablePullRequestAutoMerge(input:{pullRequestId:$id,mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt mergeMethod}}}}';
-        const out = run(['api', 'graphql', '-f', 'query=' + q, '-f', 'id=' + p.node_id]);
-        armed = /enabledAt/.test(out);
-        console.log(`#${p.number}: auto-merge armed (squash)` + (armed ? '' : ' (no confirmation)'));
-      } catch (e) { console.log(`#${p.number}: auto-merge not armed: ${String(e.stderr || e.message || e).slice(0, 240)}`); }
-    }
-    if (armed) continue;
-    const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-    if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
-  } catch (e) { console.log(`#${p.number}: merge refused: ${String(e.stderr || e.message).slice(0, 300)}`); }
+  ready.push({ number: p.number, review: 'merge', p, r });
 }
+// One pull request, and only after the full suite passed on top of current main (tools/suite-gate.mjs).
+if (ready.length && !limited) {
+  let mainSha = '', running = false;
+  try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  try {
+    const runs = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'suite-gate.yml', '--limit', '8', '--json', 'status,conclusion']));
+    running = (Array.isArray(runs) ? runs : []).some((x) => ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(x.status));
+  } catch (e) { console.log('could not read the suite queue: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  const rows = [];
+  for (const row of ready) {
+    let suite = null, drift = null;
+    try {
+      const runs = (gh(`repos/${repo}/commits/${row.r.sha}/check-runs?per_page=100`).check_runs || []).filter((c) => c.name === CHECK);
+      suite = runs.sort((a, b) => b.id - a.id)[0] || null;
+    } catch (_) {}
+    const tested = recordedMain(suite);
+    if (tested && mainSha && !samePrefix(tested, mainSha)) {
+      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT', tested + '..' + mainSha])); } catch (_) { drift = null; }
+    }
+    rows.push({ ...row, suite, drift });
+  }
+  const choice = choose(rows, mainSha, running);
+  const pick = choice.pr;
+  console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
+  if (choice.action === 'queue' && pick && pick.r && pick.r.branch) {
+    try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', pick.r.branch, '-f', `pr=${pick.number}`]); console.log(`#${pick.number}: full suite started on top of ${String(mainSha).slice(0, 7)}`); }
+    catch (e) { console.log(`#${pick.number}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
+  }
+  if (choice.action === 'merge' && pick) {
+    const p = pick.p, r = pick.r;
+    try {
+      if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
+      if (eligible(p, repo) && p.auto_merge) {
+        try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
+      }
+      const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
+      if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p); }
+    } catch (e) { console.log(`#${p.number}: merge refused: ${String(e.stderr || e.message).slice(0, 300)}`); }
+  }
+}
+function samePrefix(a, b) { const x = String(a).toLowerCase(), y = String(b).toLowerCase(); return x === y || x.startsWith(y) || y.startsWith(x); }
 if (merged) {
   try { run(['workflow', 'run', 'deploy.yml', '--repo', repo, '--ref', 'main', '-f', 'after_merge=true']); console.log('deploy of main started'); }
   catch (e) { console.log('::warning::merged, but could not start the deploy: ' + String(e.stderr || e.message).slice(0, 300)); }
