@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 269,
+ "runsTotal": 270,
  "kinds": {
   "grow": 70,
   "file": 85,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 60
+  "visitor": 61
  },
  "runs": [
+  {
+   "at": "2026-11-05T14:53:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T14:39:39Z",
    "passed": 84,
@@ -305,60 +312,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T08:54:39Z",
-   "passed": 78,
-   "of": 89,
-   "kind": "file",
-   "ms": 318,
-   "note": "fix: \"toss it off the screen\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 1 < 5"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "turn the questions i missed into a five-minute challenge",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "dyslexia friendly font",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "fly around",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "book reocmmendations like the hobbit",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "Zahnarzt morgen 15 Uhr in den Kalender",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "flip a coin",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -436,7 +389,7 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 78,
+   "runs": 79,
    "passed": 1441,
    "of": 1592,
    "ms": 348
