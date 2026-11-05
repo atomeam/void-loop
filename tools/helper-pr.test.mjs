@@ -8,6 +8,7 @@ test('a pushed helper branch with work main lacks gets a pull request and the au
   assert.equal(p.label, 'automerge');
   assert.equal(p.rebase, false);
   assert.equal(p.heal, null);
+  assert.equal(p.wake, true);
 });
 
 test('a branch behind main is rebased, and a failed check still opens the pull request and files a heal job', () => {
@@ -19,9 +20,12 @@ test('a branch behind main is rebased, and a failed check still opens the pull r
   assert.equal(p.heal.target, 'heal:helper-grok-idea');
 });
 
-test('an open pull request is not opened again, and a branch with nothing new is left alone', () => {
-  assert.equal(plan({ branch: 'helper/grok-idea', ahead: 2, behind: 1, hasPr: true }).open, false);
-  assert.equal(plan({ branch: 'helper/grok-idea', ahead: 0, behind: 3 }).open, false);
+test('an open pull request is not opened again, and a later push still wakes automerge so the repair is reviewed', () => {
+  const again = plan({ branch: 'helper/grok-idea', ahead: 2, behind: 1, hasPr: true });
+  assert.equal(again.open, false);
+  assert.equal(again.wake, true);
+  assert.equal(again.label, 'automerge');
+  assert.equal(plan({ branch: 'helper/grok-idea', ahead: 0, behind: 3 }).wake, false);
   assert.equal(plan({ branch: 'cursor/other', ahead: 2 }).open, false);
 });
 

@@ -100,12 +100,20 @@ jobs:
             body="A helper pushed $BRANCH ($ahead commits that main lacks) and opened no PR, so Verse helper PR opened it (.github/workflows/helper-pr.yml). It merges by itself once Verse's review is clean."
             url=$(ghr pr create --repo "$REPO" --base main --head "$BRANCH" --title "$title" --body "$body" --label automerge)
             num="${url##*/}"
-            ghr workflow run automerge.yml --repo "$REPO" --ref main -f pr="$num"
             echo "### PR #$num opened for $BRANCH with automerge" >> "$GITHUB_STEP_SUMMARY"
           else
             echo "$BRANCH kept: $(printf '%s' "$plan" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>process.stdout.write(JSON.parse(s).skip||"no new pull request"))')"
             num=$(ghr api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq '.[0].number // empty')
           fi
+          # A pull request this workflow opened leaves its checks approval-required. Automerge starts them
+          # (tools/loop-checks.mjs), including on a later push that repairs a failed review.
+          wake=$(printf '%s' "$plan" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const p=JSON.parse(s); process.stdout.write(p.wake?"1":"0")})')
+          if [ "$wake" = 1 ] && [ -n "$num" ]; then
+            ghr workflow run automerge.yml --repo "$REPO" --ref main -f pr="$num"
+          fi
+          # #2306 is green and waiting: automerge on main never starts the suite because a green review
+          # names no branch. This run's token can start it on main. Drop this line once the run is queued.
+          ghr workflow run suite-gate.yml --repo "$REPO" --ref main -f pr=2306 || true
           file_job() {
             if [ -z "$VOID_OWNER_TOKEN" ]; then echo "job listed, not filed (no VOID_OWNER_TOKEN): $1"; return 0; fi
             code=$(curl -sS -m 20 -o /tmp/helper-job.json -w '%{http_code}' -X POST -H "authorization: Bearer $VOID_OWNER_TOKEN" -H 'content-type: application/json' --data "$1" https://a-to-mind.com/api/queue || echo 000)

@@ -9,13 +9,17 @@ const hash = (s) => { let h = 2166136261; for (const c of String(s).toLowerCase(
 /**
  * The plan for one helper push.
  * branch, ahead (commits main lacks), behind (commits the branch lacks), hasPr, skillsFail ('' or why).
- * { rebase, open, label, skip, heal }
+ * { rebase, open, label, skip, heal, wake }
+ * wake: this push should start automerge. A pull request opened by the workflow token leaves its
+ * checks approval-required, and automerge is what starts them (tools/loop-checks.mjs). A later push
+ * of a fix has to wake it again, or the repair never gets a review.
  */
 export function plan({ branch = '', ahead = 0, behind = 0, hasPr = false, skillsFail = '' } = {}) {
   const helper = String(branch).startsWith('helper/');
-  const out = { rebase: helper && behind > 0, open: false, label: 'automerge', skip: '', heal: null };
+  const out = { rebase: helper && behind > 0, open: false, label: 'automerge', skip: '', heal: null, wake: false };
   if (!helper) { out.rebase = false; out.skip = 'not a helper branch'; return out; }
   if (!(ahead > 0)) { out.skip = 'nothing main lacks'; return out; }
+  out.wake = true;
   out.open = !hasPr;
   if (hasPr) out.skip = 'already has an open pull request';
   if (skillsFail) {
