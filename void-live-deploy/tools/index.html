@@ -7,20 +7,38 @@
 <meta name="description" content="Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.">
 <link rel="canonical" href="https://a-to-mind.com/tools/">
 <meta property="og:title" content="Every Verse tool, one kit"><meta property="og:description" content="Every tool Verse has built, tied together: one accent colour, one palette, each hands what it has to the next."><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/verse.css">
 <style>
-  :root{--bg:#0b0b12;--ink:#f1f1f6;--soft:#a9a9b8;--line:#2a2a38;--accent:#6d4aff}html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-  main{max-width:860px;margin:0 auto;padding:20px 16px 40px}h1{font-size:28px;margin:8px 0 2px}.lead{color:var(--soft);margin:0 0 18px}
-  section{margin:14px 0}h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin:0 0 6px}ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
-  li{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}li a{color:var(--ink);font-weight:600;text-decoration:none;min-height:40px;display:flex;align-items:center}li a:hover{color:var(--accent)}li span{color:var(--soft);font-size:14px}
-  .tie{border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--soft);font-size:14px;margin:18px 0}.tie a{color:var(--ink)}footer{color:var(--soft);font-size:13px;margin-top:20px}footer a{color:var(--ink)}
-  :root { color-scheme: dark; } /* deep space in every colour scheme (owner, 2026-10-29: never a stark-white page) */
-  .bench{display:none;gap:10px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));margin:0 0 18px}.bench.on{display:grid}
-  .pane{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;min-height:420px;resize:vertical}
-  .pane header{display:flex;align-items:center;gap:8px;padding:4px 8px;border-bottom:1px solid var(--line);font-size:13px}.pane header b{flex:1;font-weight:600}.pane header a,.pane header button{font:inherit;font-size:12px;color:var(--soft);background:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;min-height:32px;cursor:pointer;text-decoration:none}
-  .pane iframe{flex:1;border:0;width:100%;background:#fff}li button{font:inherit;font-size:13px;align-self:flex-start;margin-top:4px;color:var(--ink);background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;min-height:34px;cursor:pointer}li button:hover{border-color:var(--accent)}
-  .how{color:var(--soft);font-size:14px;margin:0 0 12px}
-  [hidden]{display:none!important}.find{margin:0 0 14px}.find input{font:inherit;width:100%;box-sizing:border-box;background:#14141f;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-height:46px}.find input:focus{outline:2px solid var(--accent);outline-offset:1px}
-  .none{color:var(--soft);font-size:15px}.none a{color:var(--ink)}
+  /* the kit, on the shared glass (docs/design.md). The search stays above the fold. */
+  body { margin: 0; background: var(--bg); color: var(--d-ink); }
+  main { max-width: 880px; }
+  section { margin: 18px 0; }
+  h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--d-ink-3); margin: 0 0 8px; font-weight: 600; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  li { position: relative; border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; background: var(--d-glass); box-shadow: var(--d-lift); }
+  li a { color: var(--d-ink); font-weight: 600; text-decoration: none; min-height: 44px; display: flex; align-items: center; }
+  li a:hover { color: rgb(var(--d-key)); }
+  li span { color: var(--d-ink-2); font-size: 14px; }
+  .tie { border-radius: 16px; padding: 14px 16px; color: var(--d-ink-2); font-size: 14px; margin: 18px 0; background: var(--d-glass); box-shadow: var(--d-lift); }
+  .tie a { color: rgb(var(--d-key)); }
+  footer { color: var(--d-ink-3); font-size: 13px; margin-top: 20px; }
+  footer a { color: rgb(var(--d-key)); }
+  .bench { display: none; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); margin: 0 0 18px; }
+  .bench.on { display: grid; }
+  .pane { border-radius: 16px; overflow: hidden; background: rgb(6 8 14 / .72); display: flex; flex-direction: column; min-height: 420px; resize: vertical; box-shadow: var(--d-lift); }
+  .pane header { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+  .pane header b { flex: 1; font-weight: 600; }
+  .pane header a, .pane header button { font: inherit; font-size: 13px; color: var(--d-ink); background: transparent; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 0 12px; min-height: 44px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+  .pane iframe { flex: 1; border: 0; width: 100%; background: #fff; }
+  li button { font: inherit; font-size: 14px; align-self: flex-start; margin-top: 6px; color: var(--d-ink); background: rgb(var(--d-key) / .16); border: 1px solid rgb(var(--d-key) / .35); border-radius: 999px; padding: 0 14px; min-height: 44px; cursor: pointer; }
+  .how { color: var(--d-ink-2); font-size: 15px; margin: 0 0 12px; }
+  [hidden] { display: none !important; }
+  .find { margin: 0 0 14px; }
+  .find input { font: inherit; width: 100%; box-sizing: border-box; background: rgb(6 8 14 / .55); color: var(--d-ink); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 0 16px; min-height: 44px; font-size: 16px; }
+  .find input:focus { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
+  .none { color: var(--d-ink-2); font-size: 15px; }
+  .none a { color: rgb(var(--d-key)); }
+  a:focus-visible, button:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
 </style>
 <!-- seo -->
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Every Verse tool","url":"https://a-to-mind.com/tools/","description":"Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"free online tools, online utilities, web tools without ads, tools that work offline, converter and generator tools","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Every Verse tool","item":"https://a-to-mind.com/tools/"}]}]}</script>
@@ -28,8 +46,8 @@
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
 </head>
-<body>
-<main>
+<body class="vs-stand">
+<main class="vs-page">
   <h1>Every Verse tool</h1>
   <p class="lead">One kit: each tool is a page of its own, and they hand what they have to each other. Free, private, and each opens offline after one visit.</p>
   <p class="how">Use several at once: <b>Open here</b> puts a tool on this page beside the others (as many as you like, each its own working page); the set is kept in this page's address, so a link to it opens the same bench.</p>
@@ -81,5 +99,6 @@
   for (const p of (new URLSearchParams(location.search).get('open') || '').split(',').map((x) => x.trim()).filter(Boolean)) { const q = '/' + p.replace(/^\//, '').replace(/\/$/, ''); add(names[q + '/'] ? q + '/' : q); }
   addEventListener("load", () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/tools/', [], { card: () => benchAsk(m.CARD_ASK) })).catch(() => {}); });</script>
 <script>if ("serviceWorker" in navigator) addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });</script>
+<script type="module" src="/verse-shell.js"></script>
 </body>
 </html>
