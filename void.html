@@ -6293,7 +6293,9 @@ say('nothing selected to remove');
       { const k = howToThing(lower0); if (k) { currentAsk = text; showSelfPage(false, k); say('here'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'how-to ' + k }); return; } }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
-      if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
+      const whichPrice = /^(?:the |a )?(?:price|cost|costs|how much|price check|price of)$/.test(lower0.trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); // a bare "price" names no thing: the markets skill asks which (lists run 13); "prices"/"pricing" stay Verse's own
+      if (whichPrice) { /* falls through to the skills */ }
+      else if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
       else if (await handlePaidAsk(lower0)) return;
       { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;

@@ -112,3 +112,12 @@ test('while main\'s head still runs, the newest finished suite says how main sta
   const head = await liveLines({ shas: ['69119ee0'] }, fake);
   assert.ok(!/past result/.test(head[head.length - 1].text), 'main\'s own head is never a past result');
 });
+
+test('checks: the failed count and the failed names always agree, past three (lists run 13, ask-20261103-2357-3)', () => {
+  const run = (name, conclusion) => ({ name, status: 'completed', conclusion, started_at: '2026-11-04T00:00:00Z' });
+  const c = checksOf({ check_runs: [run('python-tests', 'failure'), run('browser-suite (1)', 'failure'), run('browser-suite (2)', 'failure'), run('browser-suite (3)', 'timed_out'), run('deploy', 'success')] });
+  assert.equal(c.failed.length, 4);
+  const named = /\((.*)\)/.exec(c.text)[1].split(', ');
+  assert.match(c.text, /4 failed/);
+  assert.deepEqual(named, c.failed);
+});
