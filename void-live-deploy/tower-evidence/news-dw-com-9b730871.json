@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 126,
-   "best": 268,
-   "evidence": "Verse (/news/?sec=world) 126 ms to the load event (median of 3, phone width) vs dw.com 268 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "verse": 146,
+   "best": 311,
+   "evidence": "Verse (/news/?sec=world) 146 ms to the load event (median of 3, phone width) vs dw.com 311 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs dw.com 3 of 3 loads answered",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs dw.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs dw.com 0 unnamed controls or images",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs dw.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 2,
    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs dw.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not dw.com (the site is not asked)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "of": 3
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
    "best": 43,
-   "evidence": "Verse (/news/?sec=world) 0 design defects vs dw.com 43 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), dw.com (6 low-contrast texts, 37 small tap targets, layout shift 0.02)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "evidence": "Verse (/news/?sec=world) 0 design defects vs dw.com 43 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), dw.com (6 low-contrast texts, 37 small tap targets, layout shift 0.03)",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   },
   "breadth of sources": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs dw.com 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs dw.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 2,
    "best": 1,
    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs dw.com 1 of 2 shown (Verse lacks: none; site lacks: my news)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -100,7 +100,7 @@
    "verse": 23,
    "best": 1,
    "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs dw.com 1 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, world, business, technology, science, sport, culture, regions, search, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "of": 23,
    "siteRead": true
   },
@@ -109,7 +109,7 @@
    "verse": 7.5,
    "best": 2,
    "evidence": "Verse (/news/?sec=world) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs dw.com 2 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T14:57:58.516Z",
+   "at": "2026-11-05T15:04:21.737Z",
    "siteRead": true
   }
  }

@@ -554,6 +554,8 @@ for (const [name, file] of [
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
   ['ai-gateway', 'ai-gateway.test.mjs'],
+  ['verse-runs', 'verse-runs.test.mjs'],
+  ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],
   ['guide', 'guide.test.mjs'],
   ['web4', 'web4.test.mjs'],
