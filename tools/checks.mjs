@@ -378,6 +378,7 @@ for (const [name, file] of [
   ['operating-laws', 'operating-laws.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
+  ['savings-load', 'savings-load.test.mjs'], // issue #2296: the million-in-30-years ask stays in the site tester, and the worker prefetches a few pages at a time
   ['fresh-scripts', 'fresh-scripts.test.mjs'], // a deploy reaches a returning browser's scripts on every page: sw.js asks again for each script, visit.js asks again after load where no worker is in control
   ['under-the-hood', 'under-the-hood.test.mjs'], // /under-the-hood/ shows only live numbers with no inline script; speculation rules never touch the API or home; a prerendered page counts once opened
   ['explainers', 'explainers.test.mjs'],
