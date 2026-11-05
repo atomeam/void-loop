@@ -14,9 +14,9 @@
  "bench_at": "2026-11-04",
  "totals": {
   "experiment": 1,
-  "tested": 2,
+  "tested": 3,
   "checked": 12,
-  "proven": 385
+  "proven": 384
  },
  "families": [
   {
@@ -952,9 +952,9 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
-    "proven": 20
+    "proven": 19
    },
    "skills": [
     {
@@ -1067,12 +1067,13 @@
      "success_rate": 1
     },
     {
-     "name": "sky-card",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "name": "skycard",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-11-04",
-     "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "last_tested_by": "the benchmark",
+     "success_rate": 1,
+     "streak": 16
     },
     {
      "name": "suntimes",

@@ -383,6 +383,23 @@ export default {
     ]
    }
   ],
+  "where-is": [
+   {
+    "name": "skycard",
+    "examples": []
+   },
+   {
+    "name": "place",
+    "examples": [
+     "map of Lisbon",
+     "where is Kyoto",
+     "streets around Penn Station",
+     "Paris map",
+     "show Tokyo on a map",
+     "how do I get to Kyoto"
+    ]
+   }
+  ],
   "riddle-gen": [
    {
     "name": "riddle",

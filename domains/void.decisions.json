@@ -293,12 +293,12 @@
       "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-2, answered: the four failed jobs at 814032d5 were python-tests and browser-suite shards; python-tests is green on main since"
     },
     "ask-20261104-1659-3": {
-      "decision": "queued",
-      "why": "lists run 9 (2026-11-04): duplicate of ask-20261104-2017-1 (the images exam); one build answers both"
+      "decision": "built",
+      "why": "lists run 9 (2026-11-04): duplicate of ask-20261104-2017-1 (the images exam); lists run 13 (2026-11-05): that exam passes 6 of 6 at 100"
     },
     "ask-20261104-0746-3": {
-      "decision": "queued",
-      "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-3 (telemetry counts and names in sync); one build answers both"
+      "decision": "built",
+      "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-3; lists run 13 (2026-11-05): built, the failed count and names always agree (tools/telemetry-live.test.mjs)"
     },
     "ask-20261104-2101-1": {
       "decision": "built",
@@ -310,8 +310,8 @@
       "why": "lists run 10 (2026-11-04): the timer skill takes \"add one minute\" / \"add 30 seconds to the timer\" / \"extend it by 5 minutes\" (duration and time left both grow) and timer asks in Spanish, French, German, Italian and Portuguese (\"pon un temporizador de cinco minutos\"); tools/timer.test.mjs"
     },
     "ask-20261104-2101-3": {
-      "decision": "queued",
-      "why": "lists run 10 (2026-11-04): \"precio del bitcoin\" and other-language price asks now name the coin (crypto.js priceEnglish, tools/crypto.test.mjs) and \"how much is ethereum\" passes live; \"100 usd in eur\" still fails only the rival check, so the ask stays open for that"
+      "decision": "built",
+      "why": "lists run 13 (2026-11-05): the prices exam passes 6 of 6 at 100 locally: a bare 'price' gets a which-one card with a tap per kind (skills/markets.js), '100 usd in eur' matches Frankfurter (tools/markets-groceries.test.mjs)"
     },
     "ask-20261104-2101-2": {
       "decision": "built",
@@ -330,8 +330,28 @@
       "why": "lists run 11 (2026-11-04): duplicate of ask-20261104-2101-2, answered in lists run 10: 814032d5 is the merge of #2039; its failed jobs were python-tests and browser-suite (1), (2) and (3), and python-tests failed in tools/verse-loop.test.mjs:151, which passes on main now"
     },
     "ask-20261105-0018-3": {
-      "decision": "queued",
-      "why": "lists run 11 (2026-11-04): duplicate of ask-20261104-2101-3 (the prices exam): \"how much is ethereum\" passes live; \"100 usd in eur\" still fails only the rival check; one build answers both; lists run 12 (2026-11-05): \"how much is a gallon of milk\" now answers from the BLS average prices in the markets skill (tools/markets-groceries.test.mjs), so only the rival check on \"100 usd in eur\" keeps it open"
+      "decision": "built",
+      "why": "lists run 11 (2026-11-04): duplicate of ask-20261104-2101-3 (the prices exam); lists run 13 (2026-11-05): built, ethereum and currency asks pass"
+    },
+    "ask-20261104-2017-1": {
+      "decision": "built",
+      "why": "lists run 13 (2026-11-05): the images exam passes 6 of 6 at 100, live and local"
+    },
+    "ask-20261103-2357-3": {
+      "decision": "built",
+      "why": "lists run 13 (2026-11-05): telemetry names every failed check, so the count and the names agree past three (lib/telemetry-live.js, tools/telemetry-live.test.mjs)"
+    },
+    "ask-20261105-0730-1": {
+      "decision": "built",
+      "why": "lists run 13 (2026-11-05): duplicate of ask-20261104-2101-1: emojigraph.org is already a lane page (lib/self-sites.js) and the tower card names it as the site being taken on"
+    },
+    "ask-20261105-0730-2": {
+      "decision": "built",
+      "why": "lists run 13 (2026-11-05): duplicate of ask-20261104-2101-2, answered in lists run 10: 814032d5 is the merge of #2039; its failed jobs were python-tests and browser-suite (1), (2) and (3), and python-tests failed in tools/verse-loop.test.mjs:151, which passes on main now"
+    },
+    "ask-20261105-0730-3": {
+      "decision": "built",
+      "why": "lists run 13 (2026-11-05): duplicate of ask-20261104-2017-1: the images exam passes 6 of 6 at 100, live and local"
     }
   },
   "ask-20261013-1850-1": {

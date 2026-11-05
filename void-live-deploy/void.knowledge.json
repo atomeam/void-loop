@@ -1,5 +1,14 @@
 [
   {
+    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
+    "from": "page",
+    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
+    "learned": "2026-11-05: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-05) did not work (credits)",
+    "at": "2026-11-05T07:18:45.902Z",
+    "seen": 1
+  },
+  {
     "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
     "from": "page",
     "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
@@ -33,15 +42,6 @@
     "learned": "2026-11-04: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
     "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-04) worked",
     "at": "2026-11-04T20:48:43.333Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
-    "from": "page",
-    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-04: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-04) did not work (credits)",
-    "at": "2026-11-04T19:59:21.237Z",
     "seen": 1
   },
   {

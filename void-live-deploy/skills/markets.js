@@ -37,6 +37,22 @@ export function groceryAsk(text) {
   const row = GROCERIES.find(([re]) => re.test(m[1]));
   return row ? { grocery: row } : null;
 }
+// a bare "price" / "prices" / "how much" names no thing; the card asks which kind, with one tap per kind (exam prices,
+// lists run 13: the bare ask fell through to the home page and failed answered, fast and rival)
+export const WHICH_PRICE = /^(?:the\s+|a\s+)?(?:price|cost|costs|how\s+much|price\s+check|price\s+of)$/; // "prices" and "pricing" stay Verse's own price list (skills/services.js, the store)
+export const PRICE_KINDS = [
+  ['a coin', 'bitcoin price'],
+  ['a currency', '100 usd in eur'],
+  ['groceries or gas', 'how much is a gallon of milk'],
+  ['a stock', 'apple stock price'],
+  ['the crypto board', 'crypto prices'],
+  ['what Verse sells', 'prices'],
+];
+/** { which: true } for a price ask that names nothing. Pure. */
+export function whichPriceAsk(text) {
+  const t = String(text || '').toLowerCase().trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return WHICH_PRICE.test(t) ? { which: true } : null;
+}
 export const DEFAULT_IDS = 'bitcoin,ethereum,solana,ripple,dogecoin,cardano,litecoin,binancecoin';
 /** CoinGecko's row cut to what the card needs (the same cut as functions/api/markets.js slim). Pure. */
 export function slimRow(row) {
@@ -51,8 +67,14 @@ export function sparkPath(vals, w = 120, h = 32) {
 }
 const money = (v) => v == null ? '–' : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: v < 1 ? 5 : 2 }).format(v);
 async function run(text, api) {
-  const { showPage, esc } = api; const q = marketsAsk(text) || groceryAsk(text);
+  const { showPage, esc } = api; const q = marketsAsk(text) || groceryAsk(text) || whichPriceAsk(text);
   if (!q) return 'none';
+  if (q.which) {
+    showPage((p) => { p.innerHTML = '<h2>Price of which thing?</h2><p>A price can mean several things. Which one do you mean?</p><ul>'
+      + PRICE_KINDS.map(([k, ask]) => '<li><a href="#" data-ask="' + esc(ask) + '"><b>' + esc(k) + '</b></a> <span style="color:#9a9a9a">e.g. ' + esc(ask) + '</span></li>').join('')
+      + '</ul><p class="g-sub">Or type the thing: "price of a dozen eggs", "50 gbp to usd", "ethereum price".</p>'; });
+    return 'markets';
+  }
   if (q.grocery) {
     const [, id, label, unit] = q.grocery;
     const el = showPage((p) => { p.innerHTML = '<h2>' + esc(label) + '</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
@@ -95,8 +117,8 @@ async function run(text, api) {
 }
 export default {
   name: 'markets',
-  examples: ['crypto prices', 'crypto board', 'crypto card', 'top coins', 'bitcoin wallet bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 'here is my seed phrase', 'how much is a gallon of milk', 'price of a dozen eggs'],
+  examples: ['crypto prices', 'crypto board', 'crypto card', 'top coins', 'bitcoin wallet bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', 'here is my seed phrase', 'how much is a gallon of milk', 'price of a dozen eggs', 'price'],
   nearMisses: ['bitcoin price', 'stock market', 'what is crypto', 'price of ethereum in euros'],
-  match(lower, text) { return !!(marketsAsk(text || lower) || groceryAsk(text || lower)); },
+  match(lower, text) { return !!(marketsAsk(text || lower) || groceryAsk(text || lower) || whichPriceAsk(text || lower)); },
   run,
 };
