@@ -1,1 +1,0 @@
-{"at":"2026-11-05T04:21:59Z","by":"claude","kind":"fix","what":"a first ask typed before the skills load says waking up at once and starts loading them on focus; the site tester waits for the real answer and never counts a working line as one","try":"keep this idea: a stage that remembers | why: it makes coming back feel like home"}

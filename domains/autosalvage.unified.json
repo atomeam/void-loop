@@ -180,6 +180,48 @@
       "into": "/bots/ (jsdelivr-url)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/047-attested-heading-permalinks": {
+      "target": "bot",
+      "into": "/bots/ (permalink-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/007-attested-status-page": {
+      "target": "bot",
+      "into": "/bots/ (status-seal-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/043-attested-subprocessors": {
+      "target": "bot",
+      "into": "/bots/ (subprocessors-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/057-local-weak-signal-ledger": {
+      "target": "bot",
+      "into": "/bots/ (weak-signal-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:simple-icons/simple-icons": {
+      "target": "data",
+      "into": "/bots/ (simple-icon-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:tabler/tabler-icons": {
+      "target": "data",
+      "into": "/bots/ (tabler-icon-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:open-meteo/open-meteo": {
+      "target": "tool",
+      "into": "/bots/ (api-weather-now)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
     }
   }
 }

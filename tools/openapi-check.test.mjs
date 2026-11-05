@@ -1,6 +1,7 @@
 // tools/openapi-check.mjs: the spec and the routes stay in step, and nothing internal slips into either side unnoticed.
 import assert from 'node:assert/strict';
 import { check, routeOf, methodsOf, INTERNAL } from './openapi-check.mjs';
+import { matchingProducts } from '../void-live-deploy/functions/api/productsearch.js';
 
 const FN = new URL('../void-live-deploy/functions/', import.meta.url).pathname;
 assert.equal(routeOf(FN + 'api/hook/[id].js'), '/api/hook/{id}');
@@ -29,4 +30,10 @@ const statics = new Set(['/skills/families.json']);
 assert.deepEqual(check({ spec: { paths: { ...spec.paths, '/skills/families.json': { get: { operationId: 'skillHealth' } } } }, routes, catalog, statics }), []);
 assert.match(check({ spec: { paths: { ...spec.paths, '/skills/families.json': { post: { operationId: 'x' } } } }, routes, catalog, statics }).join('\n'), /no onRequestPost/);
 assert.match(check({ spec: { paths: { ...spec.paths, '/nowhere.json': { get: { operationId: 'n' } } } }, routes, catalog, statics }).join('\n'), /no function serves \/nowhere\.json/);
+const products = [{ name: 'Code Review', slug: 'code-review' }, { name: 'Maps', slug: 'maps' }];
+assert.deepEqual(matchingProducts(products, ''), []);
+assert.deepEqual(matchingProducts(products, '   '), []);
+assert.deepEqual(matchingProducts(products, 'REVIEW').map((p) => p.slug), ['code-review']);
+assert.deepEqual(matchingProducts(products, 'code-review').map((p) => p.slug), ['code-review']);
+assert.equal(matchingProducts([{ name: 'Only' }, { slug: 'only-slug' }, null], 'only').length, 2);
 console.log('openapi-check: ok');

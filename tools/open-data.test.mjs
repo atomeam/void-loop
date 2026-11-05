@@ -7,13 +7,35 @@ import { readFileSync } from 'node:fs';
 import { FX } from '../void-live-deploy/bots/open-data.js';
 import { fxPairs, crossRate } from '../void-live-deploy/bots/fx-pairs.js';
 import { holidayBots, holidayOn } from '../void-live-deploy/bots/holidays.js';
-import { countryFacts } from '../void-live-deploy/bots/country-facts.js';
+import { countryFacts, capitalLine, countryRow } from '../void-live-deploy/bots/country-facts.js';
+import { placeName, settleCapitals, samePlace } from '../void-live-deploy/bots/country-names.js';
 import { check } from '../void-live-deploy/bots/families.js';
 import { familyRows, fixJobs } from './bot-factory.mjs';
 
 const UA = { origin: 'https://a-to-mind.com', 'user-agent': 'Verse bot factory (https://a-to-mind.com/bots/)' };
 
-test('currency, holiday and country families pass, except the two Wikidata gaps, which become fix jobs', () => {
+test('a missing English label takes the Wikipedia sitelink, and a dated hand-over names both capitals', () => {
+  assert.deepEqual(placeName('', "St. John's, Antigua and Barbuda"), { name: "St. John's", via: 'enwiki' });
+  assert.equal(placeName('Paris', 'Paris, France').name, 'Paris');
+  assert.equal(placeName('', 'Washington, D.C.').name, 'Washington, D.C.');
+  assert.equal(samePlace("St. John's", "Saint John's"), true);
+  assert.equal(samePlace('Stanley', 'Saint Anley'), false);
+  const ag = settleCapitals([{ en: '', wiki: "St. John's, Antigua and Barbuda", rank: 'NormalRank' }]);
+  assert.deepEqual(ag.capitals, ["St. John's"]);
+  assert.deepEqual(ag.fallback, ["St. John's"]);
+  const gq = settleCapitals([
+    { en: 'Ciudad de la Paz', rank: 'PreferredRank', start: '2026-01-03T00:00:00Z' },
+    { en: 'Malabo', rank: 'NormalRank', start: '1968-10-12T00:00:00Z', end: '2026-01-03T00:00:00Z' },
+  ]);
+  assert.deepEqual(gq.capitals, ['Ciudad de la Paz']);
+  assert.deepEqual(gq.ended, [{ name: 'Malabo', until: '2026-01-03' }]);
+  assert.equal(capitalLine({ capitals: gq.capitals, ended: gq.ended }), 'Ciudad de la Paz (since 2026-01-03; Malabo until 2026-01-03)');
+  const fr = settleCapitals([{ en: 'Paris', rank: 'PreferredRank' }, { en: 'London', rank: 'DeprecatedRank', end: '1436-01-01' }]);
+  assert.deepEqual(fr.capitals, ['Paris']);
+  assert.deepEqual(fr.ended, []);
+});
+
+test('currency, holiday and country families pass, including Antigua and Equatorial Guinea', () => {
   const fx = fxPairs(), hol = holidayBots(), geo = countryFacts();
   assert.equal(fx.length, 30 * 29);
   assert.equal(hol.length, 204);
@@ -21,19 +43,21 @@ test('currency, holiday and country families pass, except the two Wikidata gaps,
   assert.equal(new Set([...fx, ...hol, ...geo].map((b) => b.id)).size, fx.length + hol.length + geo.length);
   assert.deepEqual(fx.filter((b) => !check(b).ok).map((b) => b.id), []);
   assert.deepEqual(hol.filter((b) => !check(b).ok).map((b) => b.id), []);
-  assert.deepEqual(geo.filter((b) => !check(b).ok).map((b) => b.id).sort(), ['country-ag', 'country-gq']);
+  assert.deepEqual(geo.filter((b) => !check(b).ok).map((b) => b.id).sort(), []);
+  assert.equal(geo.find((b) => b.id === 'country-ag').run('capital'), "St. John's");
+  assert.deepEqual(countryRow('AG').fallback, ["St. John's"]);
+  assert.equal(geo.find((b) => b.id === 'country-gq').run('capital'), 'Ciudad de la Paz (since 2026-01-03; Malabo until 2026-01-03)');
   assert.equal(fx.find((b) => b.id === 'fx-eur-to-usd').run('1'), (+crossRate('EUR', 'USD').toPrecision(10)) + ' USD');
   assert.ok(crossRate('EUR', 'USD') > 0.5 && crossRate('EUR', 'USD') < 2.5);
   assert.equal(holidayOn('US', '2026-12-25'), 'Christmas Day');
   assert.equal(holidayOn('US', '2026-07-03'), 'Independence Day');
   assert.equal(holidayOn('FR', '2026-07-14'), 'Bastille Day');
-  assert.equal(geo.find((b) => b.id === 'country-fr').run('capital'), 'Paris');
+  assert.equal(geo.find((b) => b.id === 'country-fr').run('capital'), 'Paris (since 1789-10-05; Versailles until 1789-10-05)');
+  assert.equal(samePlace(geo.find((b) => b.id === 'country-fr').run('capital'), 'Paris'), true);
   assert.equal(geo.find((b) => b.id === 'country-us').run('capital'), 'Washington, D.C.');
   assert.match(geo.find((b) => b.id === 'country-fr').run('currency'), /euro/i);
   assert.equal(geo.find((b) => b.id === 'country-jp').run('continent'), 'Asia');
-  const jobs = fixJobs([], familyRows(geo));
-  assert.deepEqual(jobs.map((j) => j.target).sort(), ['bot:country-ag', 'bot:country-gq']);
-  for (const j of jobs) assert.match(j.ask, /known capital|has a capital/);
+  assert.deepEqual(fixJobs([], familyRows(geo)), []);
   const credits = JSON.parse(readFileSync(new URL('../void-live-deploy/bots/credits.json', import.meta.url), 'utf8'));
   for (const name of ['Frankfurter', 'Nager.Date', 'Wikidata']) assert.ok(credits.some((c) => c.name === name), name);
 });
