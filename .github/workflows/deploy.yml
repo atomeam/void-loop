@@ -25,6 +25,10 @@ on:
         description: Started by automerge.yml right after it merged a PR (deploys like a push to main)
         type: boolean
         default: false
+      pr:
+        description: Pull request number. The loop starts this when a workflow-token pull request leaves the pull_request run unstarted. Same quick checks as a pull request, and it never deploys.
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -41,8 +45,8 @@ jobs:
     # Main used to give every deploy its own group (the run id), so a burst of merges queued one per head (2026-11-04).
     # On a pull request the new push cancels the older run, because that run's checks are the same work on an older head.
     concurrency:
-      group: ${{ github.event_name == 'pull_request' && format('void-deploy-pr-{0}', github.event.pull_request.number) || 'void-deploy-main' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.event.pull_request.number && format('void-deploy-pr-{0}', github.event.pull_request.number) || inputs.pr && format('void-deploy-pr-{0}', inputs.pr) || 'void-deploy-main' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' || inputs.pr != '' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
@@ -65,8 +69,13 @@ jobs:
           # the full suite before the deploy only on a plain manual run; a PR and main get the quick checks (every head of
           # main gets the full suite in verify.yml)
           suite=false
-          [ "$EVENT" = "workflow_dispatch" ] && suite=true
-          if [ "$EVENT" = "pull_request" ]; then
+          prcheck="${{ inputs.pr }}"
+          case "$prcheck" in
+            ""|*[!0-9]*) prcheck="" ;;
+          esac
+          # a plain manual run is the full suite, then the deploy. A named pull request is the quick checks only.
+          if [ "$EVENT" = "workflow_dispatch" ] && [ -z "$prcheck" ]; then suite=true; fi
+          if [ "$EVENT" = "pull_request" ] || [ -n "$prcheck" ]; then
             # no preview deploys (owner, 2026-10-15: "cloudflare is not unlimited Verse should spend its actions on growth and not
             # so much on testing old thing"): a PR merges in minutes and main deploys right after, so a preview was a Cloudflare
             # deploy nobody opened. A PR gets the quick checks; main gets the deploy.
@@ -151,7 +160,7 @@ jobs:
       # group. What serializing protected is that an older run never lands after a newer one, so just before the upload a run asks whether a
       # newer main head already has a deploy queued or running; if it does, this one stops (that run deploys a superset of it).
       - name: A newer deploy is on its way (stop this one)
-        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && github.event_name != 'pull_request'
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && github.event_name != 'pull_request' && inputs.pr == ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -164,8 +173,8 @@ jobs:
 
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy
-        # a PR gets no preview (above): only main deploys
-        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
+        # a PR gets no preview (above): only main deploys. inputs.pr is a pull-request check started by hand and never an upload.
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && inputs.pr == ''
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -306,12 +315,12 @@ jobs:
   # test member on an in-memory D1 claims a receipt (Already joined), reloads, and sends an idea; nothing reaches Gumroad or
   # a-to-mind.com. Its own job, so a red here fails "Verse deploy" and tools/pr-ready.mjs holds the merge.
   members-paid:
-    if: github.event_name != 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch' || inputs.pr != ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.event_name == 'pull_request' && format('void-members-paid-pr-{0}', github.event.pull_request.number) || 'void-members-paid-main' }}
-      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+      group: ${{ github.event.pull_request.number && format('void-members-paid-pr-{0}', github.event.pull_request.number) || inputs.pr && format('void-members-paid-pr-{0}', inputs.pr) || 'void-members-paid-main' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' || inputs.pr != '' }}
     steps:
       # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no
       # tools/members-paid.e2e.mjs at its head, and the merge result is the code that reaches main anyway.
@@ -339,11 +348,11 @@ jobs:
   # played in a real browser on a PR that changes one of those pages or the hand-off code (2026-10-30: until now nothing in CI ran them,
   # so a broken hand-off only showed when a person used it). Its own job, like members-paid: a red here fails "Verse deploy" and holds the merge.
   handoffs:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || inputs.pr != ''
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: void-handoffs-pr-${{ github.event.pull_request.number }}
+      group: void-handoffs-pr-${{ github.event.pull_request.number || inputs.pr }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4

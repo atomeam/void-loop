@@ -1204,3 +1204,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-05T08:55:00Z | cursor | grow | An empty phone home fetches about 40 files and 320 KB instead of 95 files and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and /compare/ share one type scale, glass cards and 44 px targets, with the task or the search above the fold.
 2026-11-05T09:34:07Z | cursor | grow | The agent keeps an inbox after you leave, Approve resumes a risky task onto the Made shelf, and the shelf reopens the steps
 2026-11-05T09:49:10Z | verse | build | Versus: took on no site (also read: 5 no-family, 2 covered, 1 gone); next  (the target)
+2026-11-05T10:37:52Z | cursor | fix | A loop pull request opened with the workflow token gets its checks started by workflow_dispatch, the same jobs, and Verse's review still decides the merge.

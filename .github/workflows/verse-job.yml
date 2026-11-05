@@ -99,6 +99,7 @@ jobs:
           VERSE_LOOP_AGENT: verse
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
