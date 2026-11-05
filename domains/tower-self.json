@@ -1204,6 +1204,100 @@
     "place": 8,
     "why": "not sized yet, hardness 92, Tranco 294125"
    }
+  },
+  "tm.community": {
+   "at": "2026-11-05T23:49:12Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is for a specific meditation technique and its official app, which is a branded service/organization. Verse does not have a page for meditation)",
+   "title": "The official mobile app for Transcendental Meditation",
+   "ease": {
+    "score": 4.9,
+    "place": 1,
+    "why": "not sized yet, hardness 93, Tranco 475627"
+   }
+  },
+  "diffusionbee.com": {
+   "at": "2026-11-05T23:49:16Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a software download page for a local AI art application. Verse does not have a page for software downloads or a dedicated AI image generation)",
+   "title": "DiffusionBee - Stable Diffusion App for AI Art",
+   "ease": {
+    "score": 4.9,
+    "place": 2,
+    "why": "not sized yet, hardness 93, Tranco 464589"
+   }
+  },
+  "ti84calc.com": {
+   "at": "2026-11-05T23:49:34Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "TI 84 Calculator Online - Free Graphing Calculator Simulator",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.9,
+    "place": 3,
+    "why": "not sized yet, hardness 93, Tranco 410433"
+   }
+  },
+  "color-register.org": {
+   "at": "2026-11-05T23:49:36Z",
+   "outcome": "covered",
+   "page": "/color/",
+   "topic": "colour codes",
+   "title": "The Official Register of Color Names – Name a Digital Color",
+   "why": "its job is colour codes, which /color/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.9,
+    "place": 4,
+    "why": "not sized yet, hardness 93, Tranco 136492"
+   }
+  },
+  "zcashcommunity.com": {
+   "at": "2026-11-05T23:49:44Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a community hub and information portal for a specific cryptocurrency. Verse provides general-purpose tools (finance, news, calculators, etc.))",
+   "title": "Homepage - Zcash Community",
+   "ease": {
+    "score": 4.8,
+    "place": 5,
+    "why": "not sized yet, hardness 94, Tranco 352210"
+   }
+  },
+  "suncommunitynews.com": {
+   "at": "2026-11-05T23:50:07Z",
+   "outcome": "built",
+   "family": "news",
+   "id": "news: suncommunitynews.com",
+   "page": "/news/global-headlines/?sec=world",
+   "ease": {
+    "score": 4.7,
+    "place": 6,
+    "why": "not sized yet, hardness 96, Tranco 70651"
+   },
+   "words": "the family page's own (the model's were refused: says what the page does not do (informed, organized, breaking, around, aggregates))"
+  },
+  "united-kiosk.de": {
+   "at": "2026-11-05T23:50:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a digital newsstand and magazine subscription shop. While Verse has a 'news' page, that page is a curated aggregator of headlines from specific)",
+   "title": "Weil Vielfalt mehr ist als Meinung | United Kiosk",
+   "ease": {
+    "score": 4.7,
+    "place": 7,
+    "why": "not sized yet, hardness 97, Tranco 316209"
+   }
+  },
+  "graphjson.com": {
+   "at": "2026-11-05T23:50:26Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "GraphJSON - Event analytics without the analytics stack",
+   "ease": {
+    "score": 4.7,
+    "place": 8,
+    "why": "not sized yet, hardness 97, Tranco 304708"
+   }
   }
  },
  "runs": [
