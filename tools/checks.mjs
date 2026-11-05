@@ -556,6 +556,7 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['helper-pr', 'helper-pr.test.mjs'],
   ['systems-monitor', 'systems-monitor.test.mjs'],
   ['system-blueprint', 'system-blueprint.test.mjs'],
   ['client-handoff', 'client-handoff.test.mjs'],

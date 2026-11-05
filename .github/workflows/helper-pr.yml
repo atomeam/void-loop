@@ -3,9 +3,10 @@
 # This opens it: ready, not a draft, labelled automerge, so Verse automerge (automerge.yml) merges it once Verse's review is clean.
 # A PR opened with this run's token starts no pull_request workflows, so it then starts the automerge run, which starts the review
 # on the head (as it does for a head the bot pushed). A branch with an open PR, or with nothing that main lacks, is left alone.
-# A branch whose skills fail tools/skills-check.mjs gets no PR either (2026-10-30: helpers pushed reverse, sort, coin flip, palindrome,
-# timer and stopwatch skills Verse already has, or an index listing skill files the branch lacks; each PR failed the review and sat
-# open). The branch is kept, and the run's summary says why, so a helper can fix the skill and push again.
+# A branch behind main is rebased onto main and pushed with --force-with-lease (that helper branch only).
+# A skill check or a rebase that fails still opens the PR and files a heal job (tools/helper-pr.mjs), so the idea is
+# repaired by the conductor instead of being left with no pull request (2026-10-30). A Growth inbox item block in the
+# commits or the pull request body becomes a build job. A private block does not.
 name: Verse helper PR
 
 on:
@@ -17,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write # rebase a helper branch that is behind main, and push that branch only
   pull-requests: write # open the PR and label it
   actions: write # start Verse automerge on the new PR
 
@@ -37,6 +38,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           # The repository's GITHUB_TOKEN quota is shared by every workflow (2026-11-04: it ran out and this job failed on every push
           # with "API rate limit exceeded for installation"). A rate limit here is a wait, not a failure: wait for the reset (read from
@@ -51,10 +53,22 @@ jobs:
             done
             printf '%s\n' "$out" >&2; return 1
           }
-          ahead=$(git rev-list --count "origin/main..origin/$BRANCH")
-          if [ "$ahead" -eq 0 ]; then echo "nothing main lacks on $BRANCH"; exit 0; fi
+          git fetch -q origin main
+          git config user.name "Verse helper"
+          git config user.email "helper@users.noreply.github.com"
+          behind=$(git rev-list --count "HEAD..origin/main")
+          FAIL=""
+          if [ "$behind" -gt 0 ]; then
+            if git rebase origin/main; then
+              git push --force-with-lease origin "HEAD:$BRANCH"
+            else
+              git rebase --abort || true
+              FAIL="rebase onto main conflicted"
+              echo "rebase of $BRANCH onto main conflicted; a heal job will repair it" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+          ahead=$(git rev-list --count "origin/main..HEAD")
           open=$(ghr api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq 'length')
-          if [ "$open" -gt 0 ]; then echo "$BRANCH already has an open PR"; exit 0; fi
           git checkout -q --detach "origin/$BRANCH"
           if git diff --name-only origin/main...HEAD | grep -q '^void-live-deploy/skills/'; then
             # check the branch as it would land, merged with main: a skill or tool page main gained since the branch started counts (2026-10-30:
@@ -71,18 +85,34 @@ jobs:
             # main's index plus the names the branch adds, then a skill listed by hand gets its order file and the index is rebuilt from skills/order
             node -e 'const fs = require("fs"), p = "void-live-deploy/skills/index.json", a = JSON.parse(fs.readFileSync(p, "utf8")); for (const n of JSON.parse(fs.readFileSync(process.argv[1], "utf8"))) if (!a.includes(n)) a.push(n); fs.writeFileSync(p, JSON.stringify(a))' "$RUNNER_TEMP/branch-index.json"
             node tools/skills-index.mjs --adopt >/dev/null 2>&1 || true
-            if ! node tools/skills-index.mjs --write > skills-check.txt 2>&1; then
-              { echo "### No PR for $BRANCH: tools/skills-index.mjs fails on it merged with main"; echo '```'; grep -v '^    at ' skills-check.txt | tail -5; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-              cat skills-check.txt; exit 0
-            fi
-            if ! node tools/skills-check.mjs > skills-check.txt 2>&1; then
-              { echo "### No PR for $BRANCH: its skills fail tools/skills-check.mjs"; echo '```'; tail -20 skills-check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
-              cat skills-check.txt; exit 0
+            if ! node tools/skills-index.mjs --write > skills-check.txt 2>&1 || ! node tools/skills-check.mjs >> skills-check.txt 2>&1; then
+              FAIL="${FAIL:+$FAIL; }skills check failed"
+              { echo "### $BRANCH: the skill check failed. The pull request still opens and a heal job repairs it."; echo '```'; tail -20 skills-check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+              cat skills-check.txt
             fi
           fi
-          title=$(git log -1 --format=%s "origin/$BRANCH")
-          body="A helper pushed $BRANCH ($ahead commits that main lacks) and opened no PR, so Verse helper PR opened it (.github/workflows/helper-pr.yml). It merges by itself once Verse's review is clean."
-          url=$(ghr pr create --repo "$REPO" --base main --head "$BRANCH" --title "$title" --body "$body" --label automerge)
-          num="${url##*/}" # gh pr create prints the new PR's URL
-          ghr workflow run automerge.yml --repo "$REPO" --ref main -f pr="$num"
-          echo "### PR opened for $BRANCH" >> "$GITHUB_STEP_SUMMARY"
+          plan=$(node tools/helper-pr.mjs --plan --branch "$BRANCH" --ahead "$ahead" --behind "$behind" --pr "$([ "$open" -gt 0 ] && echo 1 || echo 0)" --fail "$FAIL")
+          echo "$plan"
+          open_it=$(printf '%s' "$plan" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const p=JSON.parse(s); process.stdout.write(p.open?"1":"0")})')
+          num=""
+          if [ "$open_it" = 1 ]; then
+            title=$(git log -1 --format=%s "origin/$BRANCH")
+            body="A helper pushed $BRANCH ($ahead commits that main lacks) and opened no PR, so Verse helper PR opened it (.github/workflows/helper-pr.yml). It merges by itself once Verse's review is clean."
+            url=$(ghr pr create --repo "$REPO" --base main --head "$BRANCH" --title "$title" --body "$body" --label automerge)
+            num="${url##*/}"
+            ghr workflow run automerge.yml --repo "$REPO" --ref main -f pr="$num"
+            echo "### PR #$num opened for $BRANCH with automerge" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "$BRANCH kept: $(printf '%s' "$plan" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>process.stdout.write(JSON.parse(s).skip||"no new pull request"))')"
+            num=$(ghr api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq '.[0].number // empty')
+          fi
+          file_job() {
+            if [ -z "$VOID_OWNER_TOKEN" ]; then echo "job listed, not filed (no VOID_OWNER_TOKEN): $1"; return 0; fi
+            code=$(curl -sS -m 20 -o /tmp/helper-job.json -w '%{http_code}' -X POST -H "authorization: Bearer $VOID_OWNER_TOKEN" -H 'content-type: application/json' --data "$1" https://a-to-mind.com/api/queue || echo 000)
+            echo "queue $code $1"
+          }
+          heal=$(printf '%s' "$plan" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const h=JSON.parse(s).heal; if(h) process.stdout.write(JSON.stringify(h))})')
+          if [ -n "$heal" ]; then file_job "$heal"; fi
+          note=$(git diff origin/main...HEAD; git log origin/main..HEAD --format=%B)
+          if [ -n "$num" ]; then note="$note"$'\n'"$(ghr pr view "$num" --repo "$REPO" --json body --jq .body)"; fi
+          printf '%s' "$note" | node tools/helper-pr.mjs --inbox | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{for (const j of JSON.parse(s||"[]")) console.log(JSON.stringify(j))})' | while read -r job; do file_job "$job"; done
