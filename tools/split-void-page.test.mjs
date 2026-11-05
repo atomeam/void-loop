@@ -107,29 +107,15 @@ test('an ask typed before the main script has run is asked once it has run (live
 test('the empty home paints no wordmark and names no store upsell', () => {
   const html = readFileSync(resolve(root, 'void.html'), 'utf8');
   const split = splitHome(html);
-  assert.match(html, /#v01d\{display:none\}/);
+  assert.match(html, /#away-note,#v01d,#verse-install\{display:none !important\}/);
+  assert.doesNotMatch(html, /id="v01d"/);
   assert.doesNotMatch(html, /id="void-anchor"/);
+  assert.doesNotMatch(html, /id="verse-install"/);
+  assert.doesNotMatch(html, /<h1[\s>]/);
   assert.doesNotMatch(html, /support Verse/);
-  assert.match(split.html, /#v01d\{display:none\}/);
+  assert.match(split.html, /#away-note,#v01d,#verse-install\{display:none !important\}/);
   assert.doesNotMatch(split.html, /id="void-anchor"/);
-  const iife = html.slice(html.indexOf('(function () {\n      var e = document.getElementById(\'v01d\')'), html.indexOf('})();', html.indexOf('var e = document.getElementById(\'v01d\')')) + 5);
-  const run = (search) => {
-    const removed = [];
-    const e = { style: {}, remove() { removed.push(1); } };
-    let later;
-    new Function('document', 'location', 'setTimeout', iife)(
-      { getElementById: (id) => (id === 'v01d' ? e : null) },
-      { search },
-      (fn) => { later = fn; });
-    return { removed: removed.length, display: e.style.display, clicks: e.style.pointerEvents, later: typeof later };
-  };
-  assert.deepEqual(run(''), { removed: 1, display: undefined, clicks: undefined, later: 'undefined' });
-  assert.deepEqual(run('?q=make+a+clock'), { removed: 1, display: undefined, clicks: undefined, later: 'undefined' });
-  const intro = run('?intro=1');
-  assert.equal(intro.removed, 0);
-  assert.equal(intro.display, 'grid');
-  assert.equal(intro.clicks, 'none');
-  assert.equal(intro.later, 'function');
+  assert.doesNotMatch(split.html, /id="v01d"/);
 });
 
 test('a phone does not fetch the ask engine until a tap, a key, or twelve seconds', () => {

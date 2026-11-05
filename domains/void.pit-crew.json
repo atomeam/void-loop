@@ -1,13 +1,7 @@
 {
-  "at": "2026-11-04T14:53:54.569Z",
+  "at": "2026-11-05T14:58:41.677Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [
-    {
-      "id": "ask-20261103-2357-3",
-      "ask": "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized.",
-      "target": "voice:ask-20261103-2357-3"
-    }
-  ],
+  "selected": [],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }

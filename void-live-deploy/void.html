@@ -1159,10 +1159,8 @@
     *,*::before,*::after{box-sizing:border-box}
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
-    /* no hero words on the home page (owner, 2026-11-04: "supposed to be blank"; Atom, 2026-11-05: the void and the ask bar).
-       The wordmark stays out of the first paint. ?intro=1 shows it from the script below. */
-    #away-note{opacity:0} /* the away line keeps its place and its state, it just is not shown */
-    #v01d{display:none}
+    /* the home is the void and the ask bar (owner, 2026-11-05): no wordmark, no heading, no Install line, no store heart */
+    #away-note,#v01d,#verse-install{display:none !important} /* the away line keeps its state; it is not shown. Nothing here paints words. */
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
     #row{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:center;min-height:52px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 10px 8px 18px;background:rgba(16,18,28,.86)}
@@ -1170,26 +1168,10 @@
     @media (max-width:700px){#dock{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}}
     #input{flex:1;min-width:0;min-height:44px;border:0;outline:0;background:transparent;color:#f2f4fb;font:16px/1.3 ui-sans-serif,system-ui,sans-serif}
     #input::placeholder{color:#b4b9cb} /* 4.5:1 or better on the bar even over a white backdrop (the empty-state check) */
-    #go,#verse-install{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit}
-    #verse-install{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:7;padding:0 16px}
-    #verse-install[hidden]{display:none}
+    #go{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit}
   </style>
 </head>
 <body>
-  <h1 style="position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0">Verse</h1><!-- for screen readers and search: the home stays the sky and the ask bar, no hero words (owner, 2026-11-04) -->
-  <div id="v01d" aria-hidden="true"><div class="v01d-mark"><svg class="v01d-o" viewBox="0 0 200 60" preserveAspectRatio="none"><ellipse cx="100" cy="30" rx="96" ry="26" /></svg><span>V</span><span>E</span><span>R</span><span>S</span><span>E</span></div><div class="v01d-line"></div><div class="v01d-by">A-TO-MIND</div></div>
-  <script>
-    // The empty home is the void and the ask bar (Atom, 2026-11-05: no wordmark on the first paint).
-    // ?intro=1 still plays the old startup intro. Every other visit, including ?q= and /@name, drops it at once.
-    (function () {
-      var e = document.getElementById('v01d'); if (!e) return;
-      if (!/[?&]intro=1/.test(location.search)) { e.remove(); return; }
-      e.style.display = 'grid';
-      e.style.pointerEvents = 'none';
-      setTimeout(function () { e.remove(); }, 1900);
-    })();
-  </script>
-  <button id="verse-install" type="button" hidden>Install</button>
   <noscript><main style="max-width:640px;margin:20vh auto;padding:0 16px;color:#cfcfcf;font:15px/1.5 system-ui,sans-serif">
     <p style="font-weight:400">Verse</p>
     <p>Verse by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
@@ -1358,21 +1340,44 @@
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
     }
     let sayCount = 0;
+    function fitOpenPanels() {
+      // the whisper sits in the ask dock, so a new line lifts the dock over a game panel that was fitted a moment earlier
+      // (phone Go: the panel ended 5px inside the dock until the next frame). Fit again in this same turn, before anything reads the layout.
+      for (const c of stage.querySelectorAll(':scope > .side-card')) if (typeof c.fitPanel === 'function') c.fitPanel();
+    }
     function say(msg) {
       whisper.textContent = msg || '';
       const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
-      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) { whisper.textContent = ''; fitOpenPanels(); } }, 3500);
+      fitOpenPanels();
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
     }
 
+    // a card that is playing something: a <video>, an <audio>, or an embedded player. A CSS transform on that card, or
+    // taking it out of the document, restarts the player (owner, 2026-11-05: touching, dragging or moving a Short or a video card).
+    function holdsMedia(el) { return !!(el && el.querySelector && el.querySelector('video, audio, iframe')); }
+    // park a node in the document, off to the side, still displayed (display:none would pause it). innerHTML = '' on the stage
+    // would drop it out of the document and the browser starts the clip over.
+    function parkNode(node) {
+      try {
+        if (!node || !node.parentNode || !document.body) return;
+        let park = document.getElementById('void-media-park');
+        if (!park) {
+          park = document.createElement('div'); park.id = 'void-media-park'; park.setAttribute('aria-hidden', 'true');
+          park.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none';
+          document.body.appendChild(park);
+        }
+        park.appendChild(node);
+      } catch (_) {}
+    }
     // keepVideosTake/keepVideosPut: every <video> on a card is remembered by its card id and src before a redraw; the redrawn card's matching
     // <video> is swapped for the old element (same buffer, same spot), and one that was playing plays on (taking it out of the page paused it)
     function keepVideosTake(root) {
       const out = [];
       for (const v of root.querySelectorAll('[data-id] video')) {
-        const card = v.closest('[data-id]'); const src = v.currentSrc || v.getAttribute('src') || '';
+        const card = v.closest('[data-id]'); const src = v.currentSrc || v.getAttribute('src') || v.src || '';
         if (card && src) out.push({ id: card.dataset.id, src, v, playing: !v.paused && !v.ended, t: v.currentTime });
       }
       return out;
@@ -1380,21 +1385,32 @@
     function keepVideosPut(root, vids) {
       for (const k of vids) {
         const card = root.querySelector('[data-id="' + CSS.escape(k.id) + '"]'); if (!card) continue;
-        const fresh = [...card.querySelectorAll('video')].find((n) => n !== k.v && (n.getAttribute('src') || n.currentSrc || '') === (k.v.getAttribute('src') || k.src));
-        if (fresh) fresh.replaceWith(k.v); else if (!card.contains(k.v)) continue;
-        try { if (Math.abs(k.v.currentTime - k.t) > 0.5) k.v.currentTime = k.t; } catch (_) {}
+        const fresh = [...card.querySelectorAll('video')].find((n) => n !== k.v && (n.getAttribute('src') || n.currentSrc || n.src || '') === (k.v.getAttribute('src') || k.src));
+        if (fresh) fresh.replaceWith(k.v);
+        else if (!card.contains(k.v)) { const box = card.querySelector('.vd-player, .mv-player') || card; box.appendChild(k.v); }
+        try { if (Math.abs((k.v.currentTime || 0) - k.t) > 0.25) k.v.currentTime = k.t; } catch (_) {}
         if (k.playing && k.v.paused) { try { const p = k.v.play(); if (p && p.catch) p.catch(() => {}); } catch (_) {} }
       }
     }
+    // a native drag of a video reloads it. The card's own drag (bindDrag) moves the card; the video is not a drag source.
+    document.addEventListener('dragstart', (e) => {
+      const m = e.target && e.target.closest && e.target.closest('video, audio, iframe');
+      if (!m) return;
+      e.preventDefault();
+      try { m.draggable = false; } catch (_) {}
+    }, true);
     function render() {
       // a live card (a field mind: the memory orbs, Swarm, Verse Brain) keeps running across a redraw instead of starting over
       // (asked 2026-10-29: a new card restarted every mind on the stage): it says when it can stay as it is (el._liveKeep,
-      // lib/live-cards.js), and the same element goes back where its thing stands
+      // lib/live-cards.js), and the same element goes back where its thing stands. A card that is playing a video stays too:
+      // rebuilding it starts the clip over.
       const live = new Map();
-      for (const el of stage.querySelectorAll(':scope > [data-id]')) { try { const th = things[el.dataset.id]; if (th && el._liveKeep && el._liveKeep(th)) live.set(th.id, el); } catch (_) {} }
-      stage.querySelectorAll('.clock').forEach((el) => clearInterval(el._timer));
-      stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
+      for (const el of stage.querySelectorAll(':scope > [data-id]')) { try { const th = things[el.dataset.id]; if (th && ((el._liveKeep && el._liveKeep(th)) || holdsMedia(el))) live.set(th.id, el); } catch (_) {} }
+      stage.querySelectorAll('.clock').forEach((el) => { if (!live.has(el.dataset.id)) clearInterval(el._timer); });
+      stage.querySelectorAll('.timer').forEach((el) => { if (!live.has(el.dataset.id)) clearInterval(el._tickInterval); });
       const vids = keepVideosTake(stage); // a playing video rides through the redraw as the same element (owner, 2026-11-03: moving a card restarted its video)
+      for (const el of live.values()) parkNode(el);
+      for (const k of vids) if (!k.v.closest('#void-media-park')) parkNode(k.v);
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         const kept = live.get(th.id);
@@ -1421,6 +1437,7 @@ Object.values(things).forEach((th) => {
       const pg = vpageEl && vpageEl.classList.contains('on') ? vpageEl.getBoundingClientRect() : null;
       const floor = stage.getBoundingClientRect().bottom - 8;
       for (const el of stage.querySelectorAll(':scope > [data-id]')) {
+        if (holdsMedia(el)) { el.style.translate = ''; el.style.transform = ''; continue; } // a translate here restarts the video
         const had = el._aside || [0, 0], r0 = el.getBoundingClientRect();
         // where it is drawn now, mid-glide included (the computed translate, not the target in _aside): measured against the
         // target while it was still gliding, a second look put it back under the card
@@ -1901,12 +1918,16 @@ Object.values(things).forEach((th) => {
         let cur = null, vx = 0, vy = 0, lastX = e.clientX, lastY = e.clientY, lastT = performance.now();
         const begin = () => {
           selectedId = th.id;
-          if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; } // to the front (render order = z-order)
+          const media = holdsMedia(el);
+          if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; if (media && el.isConnected) stage.appendChild(el); } // to the front (render order = z-order)
           document.documentElement.classList.add('dragging');
           if (editable) { try { getSelection().removeAllRanges(); if (document.activeElement) document.activeElement.blur(); } catch (_) {} }
-          render();
-          cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
-          cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
+          // a card with a video stays the same element. render() empties the stage and mounts the card again, and that
+          // starts the clip over (owner, 2026-11-05). A transform on the card does the same, so a playing card is not tilted.
+          if (!media) render();
+          cur = (media && el.isConnected ? el : stage.querySelector('[data-id="' + CSS.escape(th.id) + '"]')) || el;
+          if (media) { cur.style.transform = ''; for (const m of cur.querySelectorAll('video, audio, iframe')) { try { m.draggable = false; } catch (_) {} } }
+          else cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
           // grouped things (skills/group.js) ride along with the one in the hand
           mates = th.group ? Object.values(things).filter((t) => t !== th && t.group === th.group && t.kind !== 'figure' && !t.locked)
             .map((t) => ({ t, ox: t.x, oy: t.y, el: stage.querySelector('[data-id="' + CSS.escape(t.id) + '"]') })) : [];
@@ -1965,7 +1986,7 @@ Object.values(things).forEach((th) => {
             tvx *= fr; tvy += 0.0016 * dt; spin += tvx * dt * 0.4; // a real toss: carried by its own speed, gravity pulls it down
             px += tvx * dt; py += tvy * dt;
             cur.style.left = px + 'px'; cur.style.top = py + 'px';
-            cur.style.transform = 'rotate(' + spin + 'deg)';
+            cur.style.transform = holdsMedia(cur) ? '' : 'rotate(' + spin + 'deg)';
             const gone = px + w < 0 || py + h < 0 || px > stage.clientWidth || py > stage.clientHeight;
             if (!gone) { requestAnimationFrame(step); return; }
             try { if (sk && sk.thrown) sk.thrown(th, stageApi); } catch (_) {}

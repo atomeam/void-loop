@@ -657,7 +657,8 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       const F = phone ? await fresh({ phone: true }) : await fresh();
       await F.p.setViewportSize(size);
       await F.ask(game, 600);
-      const f = await until(async () => { const x = await panelFacts(F); return x.panel && x.n >= 3 ? x : false; }, 30000) || await panelFacts(F);
+      // wait until the panel has settled above the ask bar. A whisper lifts the dock as the game opens; the page fits the panel in that same turn.
+      const f = await until(async () => { const x = await panelFacts(F); return x.panel && x.n >= 4 && x.allSeen && !x.barHit && x.padBottom >= 12 ? x : false; }, 30000) || await panelFacts(F);
       out.push({ label, ok: f.panel && f.n >= 4 && f.allSeen && !f.barHit && f.padBottom >= 12 && !F.errors.length, f: { ...f, e: F.errors } });
       await F.ctx.close();
     }
