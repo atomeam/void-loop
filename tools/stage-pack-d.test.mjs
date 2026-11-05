@@ -2,7 +2,13 @@
 // each leaves its near misses alone. Run: node --test tools/stage-pack-d.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { extname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import weaver, { weaveAsk, starsOf, chainOf, weaveThing, readWeaves, WEAVES_KEY } from '../void-live-deploy/skills/constellation-weaver.js';
+import { constAsk } from '../void-live-deploy/skills/constellation.js';
+import time from '../void-live-deploy/skills/time.js';
 import forge, { forgeAsk, pairOf, ideaOf, keptCardOf } from '../void-live-deploy/skills/forge-table.js';
 import ritual, { ritualAsk, lineFor, moonLine, nightCard, mayPlay, NIGHT_CSS, LINES } from '../void-live-deploy/skills/night-ritual.js';
 import archive, { archiveAsk, archiveItems, stepIndex, stripHtml, slideHtml } from '../void-live-deploy/skills/archive-of-one.js';
@@ -20,6 +26,32 @@ test('weaver: the weave and summon asks parse; the real sky and loose summons ar
   assert.deepEqual(weaveAsk('summon night ops', ['Night Ops']), { op: 'summon', name: 'night ops' });
   for (const t of ['what is a constellation', 'where is orion', 'which constellations are up tonight', 'summon a sprite', 'weave a basket', 'summon', 'weave a constellation called <b>x</b>']) assert.equal(m(weaver, t), false, t);
   for (const e of weaver.examples) assert.equal(m(weaver, e), true, e);
+});
+
+test('weaver wins "weave a constellation called night ops" over the sky, and the page answers before waking up', () => {
+  const ask = 'weave a constellation called night ops';
+  assert.equal(constAsk(ask), null, 'sky facts do not take a weave');
+  assert.equal(time.match(ask.toLowerCase(), ask), false, 'the time family does not take a weave');
+  assert.equal(time.part('where is orion', 'where is Orion'), 'constellation', 'a sky ask still reaches the sky skill');
+  assert.equal(m(weaver, ask), true);
+  assert.deepEqual(weaveAsk(ask), { op: 'weave', name: 'night ops', refs: null });
+  for (const e of weaver.examples) assert.equal(constAsk(e), null, e);
+  const page = readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  const early = page.indexOf('/skills/constellation-weaver.js');
+  const wake = page.indexOf("say('waking up')");
+  assert.ok(early > 0 && wake > early, 'the weave skill is imported before the page says waking up');
+});
+
+test('weaver: an empty stage names the constellation, and two things weave it', async () => {
+  const said = [];
+  const empty = { say: (s) => said.push(s), stage: { things: () => ({}), selected: () => null, save() {}, render() {}, select() {} } };
+  assert.equal(await weaver.run('weave a constellation called night ops', empty), 'constellation-weaver');
+  assert.match(said.join('\n'), /constellation called night ops needs at least two/);
+  const stage = { a: { id: 'a', kind: 'timer', x: 10, y: 10 }, b: { id: 'b', kind: 'sticky', x: 80, y: 40 } };
+  const full = { say: (s) => said.push(s), stage: { things: () => stage, selected: () => null, save() {}, render() {}, select() {} } };
+  assert.equal(await weaver.run('weave a constellation called night ops', full), 'constellation-weaver');
+  assert.equal(Object.values(stage).filter((t) => t.kind === 'weave' && t.name === 'night ops').length, 1);
+  assert.match(said.join('\n'), /woven: night ops/);
 });
 
 test('weaver: the stars, the chain of lines and the saved stage object', () => {
@@ -85,4 +117,56 @@ test('archive: the walk ask, what is gathered, stepping, and escaping', () => {
   assert.deepEqual([stepIndex(0, 3, -1), stepIndex(0, 3, 1), stepIndex(2, 3, 1), stepIndex(1, 3, -1), stepIndex(0, 0, 1)], [0, 1, 2, 0, 0]);
   const h = slideHtml(esc, { label: 'kept card', title: '<script>x</script>', text: 'a & b\n"q"' }, 0, 4);
   assert.ok(!/<script>/.test(h) && /&lt;script&gt;/.test(h) && /&amp;/.test(h) && /1 of 4/.test(h));
+});
+
+// #2270: the site tester read only "waking up" because constellation-weaver is far down the index. Hold the index
+// back and the weave ask must still answer from its own file.
+const CHROME = process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || ['/usr/bin/google-chrome', '/usr/bin/chromium', '/opt/pw-browsers/chromium'].find((p) => existsSync(p));
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
+
+test('weaver: "weave a constellation called night ops" answers while the skill index is still loading', { timeout: 30000 }, async (t) => {
+  if (!CHROME) { t.skip('no Chrome to load the page'); return; }
+  let chromium;
+  try { ({ chromium } = await import('playwright-core')); } catch (_) { t.skip('playwright-core is not installed'); return; }
+  const root = fileURLToPath(new URL('../void-live-deploy/', import.meta.url));
+  const held = new Set();
+  const server = createServer((req, res) => {
+    const path = decodeURIComponent(new URL(req.url, 'http://127.0.0.1').pathname);
+    if (path.includes('..')) { res.writeHead(400); res.end(); return; }
+    const rel = path === '/' ? '/index.html' : path;
+    const file = join(root, rel);
+    if (!file.startsWith(root) || !existsSync(file) || statSync(file).isDirectory()) { res.writeHead(404); res.end(); return; }
+    if (rel === '/skills/index.json') {
+      const timer = setTimeout(() => { if (res.writableEnded) return; res.writeHead(200, { 'content-type': 'application/json' }); res.end(readFileSync(file)); }, 20000);
+      held.add(timer); res.on('close', () => clearTimeout(timer)); return;
+    }
+    res.writeHead(200, { 'content-type': TYPES[extname(file)] || 'application/octet-stream' });
+    res.end(readFileSync(file));
+  });
+  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  const port = server.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME, headless: true });
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e.message || e)));
+  try {
+    await page.goto('http://127.0.0.1:' + port + '/', { waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.waitForSelector('#input', { timeout: 10000 });
+    await page.fill('#input', 'weave a constellation called night ops');
+    await page.keyboard.press('Enter');
+    const text = await page.waitForFunction(() => {
+      const w = (document.getElementById('whisper') || {}).textContent || '';
+      return /night ops|woven/i.test(w) ? w : false;
+    }, null, { timeout: 4000 }).then((h) => h.jsonValue());
+    const ready = await page.evaluate(() => document.documentElement.dataset.skills || '');
+    assert.notEqual(ready, 'ready', 'the rest of the skills are still loading');
+    assert.match(text, /night ops/);
+    assert.doesNotMatch(text, /waking up/);
+    assert.deepEqual(errors, []);
+  } finally {
+    await browser.close().catch(() => {});
+    for (const timer of held) clearTimeout(timer);
+    if (server.closeAllConnections) server.closeAllConnections();
+    await new Promise((r) => server.close(r));
+  }
 });
