@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/autosalvage-next-de4d · the next ranked salvage batch: heading permalinks, status seal, subprocessors, weak-signal ledger, and pinned simple-icons and Tabler URLs, credited where the license allows · 2026-11-05 11:10 UTC
 - Cursor cloud agent · cursor/page-look-5e9b · tools, credits, team and the news list on the shared glass; a phone's empty home waits to fetch the ask engine until a tap · 2026-11-05 10:40 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
@@ -78,6 +77,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Autosalvage batch (cursor, 2026-11-05)**: heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. Registry live count 11,739 to 11,745. https://github.com/atomeam/void-loop/pull/2269
 - **Main reds (cursor, 2026-11-05)**: the recipe handover stays quiet when the audio context cannot build a buffer, "forget this" on a phone closes the chess board and puts the tucked list back, and "put in the page" uses the draft a second read of the same tab would have wiped. https://github.com/atomeam/void-loop/pull/2262
 - **Agent follow-ups (cursor, 2026-11-05)**: /agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260
 - **Suite reds after #2251 (cursor, 2026-11-05)**: clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it. https://github.com/atomeam/void-loop/pull/2259
