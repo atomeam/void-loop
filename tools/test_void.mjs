@@ -21,6 +21,8 @@ try { for (const line of fs.readFileSync(path.join(root, '_redirects'), 'utf8').
 const server = http.createServer((req, res) => {
   // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
+  const to = pageRedirects.get(p.replace(/\/+$/, ''));
+  if (to) { const s = new URL(req.url, 'http://x').search; const at = to.includes('?') ? '&' + s.slice(1) : s; res.writeHead(301, { location: to + at }); return res.end(); }
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
@@ -37,6 +39,12 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(f).pipe(res);
 }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
+// Pages follows _redirects (a floor's own name never 404s); the harness server follows the same file, so a block that opens
+// /flip/ or /random-user/ lands on the floor page exactly as it does on a-to-mind.com — the gate blocks 404'd here otherwise
+const pageRedirects = new Map((() => { try {
+  const lines = fs.readFileSync(path.join(root, '_redirects'), 'utf8').split('\n');
+  return lines.map((l) => l.match(/^(\S+)\s+(\S+)\s+301\s*$/)).filter((m) => m && !m[1].startsWith('#')).map((m) => [m[1].replace(/\/+$/, ''), m[2]]);
+} catch (_) { return []; } })());
 
 const EXP_N = (() => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')).families.reduce((n, f) => n + (f.skills || []).filter((x) => x.tier === 'experiment').length, 0); } catch (_) { return 1; } })();
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
@@ -758,9 +766,14 @@ try {
     const { PROBES, factsFromFile } = await import('./tower-probes.mjs');
     const ff = JSON.parse(fs.readFileSync(new URL('../domains/features/coin-flip.json', import.meta.url), 'utf8'));
     const F = await fresh({ base: base + 'flip/' });
-    await F.p.waitForSelector('.coin-again', { timeout: 10000 });
-    for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
-    const text = await F.p.evaluate(() => document.body.innerText);
+    // a slow runner keeps the gate's fainted wait from ending the run at "suite ran to the end" (2026-11-04, .coin-again timed out on shard 3):
+    // a page that never settles fails this floor's own check below, with the probe list it did read
+    let text = '';
+    try {
+      await F.p.waitForSelector('.coin-again', { timeout: 15000 }); // the sibling floor gates wait 15 s, not 10
+      for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
+      text = await F.p.evaluate(() => document.body.innerText);
+    } catch (_) {}
     const facts = [...PROBES['coin flip'].facts, ...factsFromFile(ff)];
     const missing = facts.filter(([name, fn]) => { let ok = false; try { ok = typeof fn === 'function' ? !!fn(text) : fn.test(text); } catch (_) {} return !ok; }).map(([name]) => name); // a probe fact is a regex, a feature fact a function — the gate reads both
     check('coin: /flip/ shows all 7 things a full answer shows — the flip counter named, the tap and the result said in words (the gate\'s own rule, the 3 the tower sat at 4 of 7 on)',
@@ -6936,9 +6949,14 @@ try {
     await Z.ctx.close();
   }
   if (want("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password")) {
-    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat'); await Z.p.waitForSelector('#cards .card b');
-    const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
-    const p1 = await read(); await Z.p.click('#next'); const p2 = await read(), url = Z.p.url();
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat');
+    // a slow runner leaves the read without a page: the findings stay empty and this floor's own check below fails them (2026-11-04, '#cards .card b' timed out on shard 4 and ended the run at "suite ran to the end")
+    let p1 = [], p2 = [], url = Z.p.url();
+    try {
+      await Z.p.waitForSelector('#cards .card b');
+      const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
+      p1 = await read(); await Z.p.click('#next'); p2 = await read(); url = Z.p.url();
+    } catch (_) {}
     check("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
       p1.length === 5 && p1.every((p) => ['TR', 'NL'].includes(p.nat) && /^[A-Z0-9]{10,12}$/.test(p.password)) && p2[0].name !== p1[0].name && /page=2/.test(url) && /password=upper%2Cnumber%2C10-12/.test(url) && !Z.errors.length,
       JSON.stringify({ p1, p2: p2.slice(0, 1), url, errors: Z.errors }));
