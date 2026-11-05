@@ -46,6 +46,8 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
 test('squash merge waits for the suite, GitHub auto-merge stays off, and the hourly run remains', () => {
   // #2309 stopped arming GitHub auto-merge: that lands on whatever main is now, before the suite.
   // The bot squash-merges itself once the suite is green, and disarms auto-merge if it is still on.
+  // suite-gate.yml lives on main and checks the pull request out itself. Dispatching it on the
+  // pull request branch never starts, so a green review used to leave the pull request sitting open.
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
   assert.match(yml, /pull-requests: write/, 'file .github/workflows/automerge.yml keeps pull-requests: write');
@@ -55,6 +57,7 @@ test('squash merge waits for the suite, GitHub auto-merge stays off, and the hou
   assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges after the suite');
   assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
   assert.doesNotMatch(src, /enablePullRequestAutoMerge/, 'file tools/automerge.mjs must not arm GitHub auto-merge');
+  assert.match(src, /workflow', 'run', 'suite-gate\.yml', '--repo', repo, '--ref', 'main'/, 'file tools/automerge.mjs starts the suite from main');
 });
 
 test('a merge-policy failure names the rule and the file, branch or label', () => {
