@@ -3193,5 +3193,23 @@
    ]
   },
   "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T10:58:05Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2787,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14854 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
