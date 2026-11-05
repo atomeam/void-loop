@@ -129,3 +129,56 @@ test("permissions-policy-check", () => {
   assert.equal(b.run("Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), display-capture=(), fullscreen=(self), autoplay=(), clipboard-read=(), bluetooth=()"), "10 set · allowed: fullscreen=(self)");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("og-card-check", () => {
+  const b = bot("og-card-check"); assert.ok(b && BOT("og-card-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("<h1>Verse</h1>"), "no Open Graph tags · omit them until a human seals a catalog");
+  assert.equal(b.run('<h1>Verse</h1>\n<meta property="og:title" content="Verse">\n<meta property="og:url" content="https://a-to-mind.com/bots/">\n<meta property="og:image" content="https://a-to-mind.com/og.png">'), "passes · title matches the h1 and the image is first-party");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("referrer-policy-check", () => {
+  const b = bot("referrer-policy-check"); assert.ok(b && BOT("referrer-policy-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · absent until a human seals one token");
+  assert.equal(b.run("no-referrer"), "candidate · no-referrer");
+  assert.equal(b.run("unsafe-url"), "fails · unsafe-url is denied");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("hsts-check", () => {
+  const b = bot("hsts-check"); assert.ok(b && BOT("hsts-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("max-age=300"), "candidate · max-age=300");
+  assert.equal(b.run(""), "unpublished · a 404 must not send this header");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("isolation-check", () => {
+  const b = bot("isolation-check"); assert.ok(b && BOT("isolation-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · COOP, COEP and CORP stay absent until a seal");
+  assert.match(b.run("Cross-Origin-Resource-Policy: same-origin"), /CORP same-origin is denied/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("sri-check", () => {
+  const b = bot("sri-check"); assert.ok(b && BOT("sri-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run('<script src="/vendor/app.js" integrity="sha384-abcdefghijklmnopqrstuvwx"></script>'), "first-party · sha384");
+  assert.match(b.run('<script src="/vendor/app.js" integrity="sha256-abcdefghijklmnopqrstuvwx"></script>'), /sha384 or sha512/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("api-catalog-check", () => {
+  const b = bot("api-catalog-check"); assert.ok(b && BOT("api-catalog-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("404"), "unpublished · no /.well-known/api-catalog until a human seals the linkset");
+  assert.equal(b.run('{"linkset":[]}'), "empty linkset · a candidate only, not a published catalog");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("jsdelivr-url", async () => {
+  const b = bot("jsdelivr-url"); assert.ok(b && BOT("jsdelivr-url"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("@scope/pkg 2.0.1"), "https://cdn.jsdelivr.net/npm/@scope/pkg@2.0.1");
+  assert.equal(b.run("left-pad latest"), "send a package and a version, like left-pad 1.3.0");
+  assert.equal(b.credit.license, "MIT");
+  assert.ok(lineage(b), 'lineage is real');
+  const r = await fetch(b.run("left-pad 1.3.0"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
+  assert.equal(r.status, 200, "the pinned jsDelivr URL answers");
+});
