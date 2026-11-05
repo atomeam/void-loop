@@ -88,6 +88,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Savings load (cursor, 2026-11-05)**: "how much do i need to save a month to have 1 million in 30 years at 7%" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once. https://github.com/atomeam/void-loop/pull/2311
 - **Closer on the figure (cursor, 2026-11-05)**: "closer on the figure" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292
 - **Blank home, videos keep playing (cursor, 2026-11-05)**: the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was. https://github.com/atomeam/void-loop/pull/2291
 - **Phone panel and tray drag (cursor, 2026-11-05)**: a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands. https://github.com/atomeam/void-loop/pull/2289

@@ -31,6 +31,15 @@ const pageCode = (p) => /^\/paint\/(?:app\.js|templates\/[a-z-]+\.json)$/.test(p
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
+// A few pages at a time, not every kept page at once. The site tester loads the home three at a time and times the
+// load event (1200 ms, tools/site-test.json). Install used to open all of TOOLS and LATER together (about 120
+// fetches). Three testers doing that filled the link, and "how much do i need to save a month to have 1 million
+// in 30 years at 7%" measured 1482 ms on the faster of two loads (issue #2296). The worker still activates only
+// after every page is kept, so the offline gate (it waits on serviceWorker.ready) still sees them.
+const PREFETCH_AT_ONCE = 8;
+async function keepBatched(c, urls) {
+  for (let i = 0; i < urls.length; i += PREFETCH_AT_ONCE) await Promise.all(urls.slice(i, i + PREFETCH_AT_ONCE).map((t) => keepTool(c, t)));
+}
 // the files a kept page fetches that are neither its HTML nor a modulepreload: /paint/ asks for its paintings by fetch and /emojis/
 // imports the closed list directly, so neither arrives through keepWhole — and a page that shows itself but cannot draw is offline 0
 // (the gate's own reading: paint measured 0 against an ideal of 1 until these were kept)
@@ -48,7 +57,11 @@ const CACHE_SCORES = 'void-scores-v1';
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(KEPT.map((t) => keepTool(c, t)))).then(() => Promise.all(EXTRA.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(async (c) => {
+    await c.addAll(SHELL).catch(() => {});
+    await keepBatched(c, KEPT);
+    await keepBatched(c, EXTRA);
+  }).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D && k !== CACHE_SCORES).map((k) => caches.delete(k)))).then(() => self.clients.claim())
