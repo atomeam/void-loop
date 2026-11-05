@@ -77,6 +77,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Verify reds, the next ones (cursor, 2026-11-05)**: "clear all the notes" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2283
 - **Glass stylesheet, not blocking (cursor, 2026-11-05)**: the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281
 - **Figures doing (cursor, 2026-11-05)**: "what are the figures doing" answers from together before the page says waking up, while the rest of the skills are still loading. Nothing ranked above together takes the phrase. https://github.com/atomeam/void-loop/pull/2279
 - **Phone polish (cursor, 2026-11-05)**: at 390 px the current nav item stays fully in the bar, /compare/ with no floor lists floors instead of a blank white frame, and a credit's license stays on the screen. Chrome no longer warns about bluetooth on every page. https://github.com/atomeam/void-loop/pull/2276
