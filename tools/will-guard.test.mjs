@@ -47,7 +47,7 @@ test('the note says how many wants waited and why; the window is 14 days back fr
 test('the will never shows a local path, and a want a live skill answers is dropped (2026-10-19: an old writer put back zorbleflux and a private folder)', async () => {
   const { noPaths, coveredByName, WILL_SCHEMA } = await import('../void-live-deploy/lib/will-guard.js');
   assert.equal(noPaths('Aether / a2m dispatcher + bridge (projects\\aether: apps\\back did this: ran multi-step jobs'), 'Aether / a2m dispatcher + bridge did this: ran multi-step jobs');
-  assert.equal(noPaths('see C:\\Users\\adam\\x.txt for it'), 'see for it');
+  assert.equal(noPaths('see C:\\Users\\you\\x.txt for it'), 'see for it');
   assert.equal(noPaths('kept in /home/user/notes.md today'), 'kept in today');
   assert.equal(noPaths('a plain sentence, with a comma (and parens).'), 'a plain sentence, with a comma (and parens).');
   const names = new Set(['zorbleflux', 'null-sweep']);
