@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 84,
- "runsTotal": 232,
+ "runsTotal": 233,
  "kinds": {
   "grow": 68,
   "file": 77,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 33
+  "visitor": 34
  },
  "runs": [
+  {
+   "at": "2026-11-05T00:39:42Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T00:26:50Z",
    "passed": 76,
@@ -350,32 +357,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T09:44:49Z",
-   "passed": 83,
-   "of": 87,
-   "kind": "grow",
-   "ms": 320,
-   "note": "new ground passed, kept as a regression case: \"yo what language does the word kindergarten come from\" (skill:define)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "book recommendations like the hobbit",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -450,7 +431,7 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 41,
+   "runs": 42,
    "passed": 613,
    "of": 701,
    "ms": 384

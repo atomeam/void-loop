@@ -2556,5 +2556,23 @@
    ]
   },
   "note": "fix: \"bokos like dune\" nothing appeared"
+ },
+ {
+  "at": "2026-11-05T00:39:42Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2315,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 22378 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
