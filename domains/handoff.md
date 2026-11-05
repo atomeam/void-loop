@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/verify-panel-tray-9979 · a phone Go panel stays above the ask bar after the whisper, and a walkthrough tray chip still drops when the panel would move · 2026-11-05 14:20 UTC
 - Cursor cloud agent · helper/ledger-lines-once-f90f · the self card shows each built ask's own ledger line: lines that share a timestamp no longer collapse to the last one · 2026-11-05 13:50 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
