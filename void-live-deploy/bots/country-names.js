@@ -10,14 +10,75 @@ const PREFIXES = ['plurinational state of ', 'democratic peoples republic of ', 
 export function flatPlace(s) {
   return String(s || '').toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[^a-z]/g, '');
 }
-/** two place names for the same city (Washington and Washington, D.C.; South Tarawa and Tarawa; Yaren District and Yaren) */
+/** "St. John's" and "Saint John's" are one city. "Stanley" does not become "Saint Anley": the abbreviation is St before a space or a capital. */
+export function saintKey(s) {
+  return flatPlace(String(s || '').replace(/\bSt\.?(?=\s|[A-Z])/g, 'Saint'));
+}
+/** the place name, without a trailing note such as "(since 2026-01-03; Malabo until 2026-01-03)" */
+export function placeHead(s) {
+  return String(s || '').replace(/\s*\([^)]*\)\s*$/g, '').trim();
+}
+/** two place names for the same city (Washington and Washington, D.C.; South Tarawa and Tarawa; Yaren District and Yaren; St. John's and Saint John's) */
 export function samePlace(a, b) {
-  const x = flatPlace(a), y = flatPlace(b);
+  const x = saintKey(placeHead(a)), y = saintKey(placeHead(b));
   if (!x || !y) return false;
   if (x === y || (y.length >= 6 && x.startsWith(y)) || (x.length >= 6 && y.startsWith(x))) return true;
   const bare = (s) => s.replace(/^(north|south|east|west|greater|new|old)/, '').replace(/(district|city|municipality|town)$/, '');
   const p = bare(x), q = bare(y);
   return p.length >= 5 && q.length >= 5 && (p === q || p === y || q === x);
+}
+/**
+ * The English name of a Wikidata capital. The English label wins. When the item has none (Antigua's St. John's, Q36262,
+ * has an English Wikipedia sitelink and no English label), the sitelink title is the name, with a trailing country
+ * disambiguation cut off. "Washington, D.C." stays whole: the tail is short and has no space. Pure.
+ */
+export function placeName(en, wiki) {
+  const label = en && !/^Q\d+$/.test(en) ? String(en).trim() : '';
+  if (label) return { name: label, via: 'label' };
+  const title = String(wiki || '').replace(/_/g, ' ').trim();
+  if (title.length < 2) return null;
+  const cut = title.indexOf(',');
+  if (cut > 1) {
+    const rest = title.slice(cut + 1).trim();
+    if (rest.length > 8 || /\s/.test(rest)) return { name: title.slice(0, cut).trim(), via: 'enwiki' };
+  }
+  return { name: title, via: 'enwiki' };
+}
+/**
+ * Truthy capitals, the way wdt:P36 does it (preferred rank when any preferred statement exists, otherwise normal;
+ * deprecated never counts), plus a succession note when a current capital's start date is another statement's end
+ * date. Names that had to come from the English Wikipedia sitelink are listed in fallback. Pure.
+ */
+export function settleCapitals(statements) {
+  const named = [];
+  for (const s of statements || []) {
+    const p = placeName(s.en, s.wiki);
+    if (!p || p.name.length < 2) continue;
+    named.push({ name: p.name, via: p.via, rank: s.rank || 'NormalRank', start: String(s.start || '').slice(0, 10), end: String(s.end || '').slice(0, 10) });
+  }
+  const score = (r) => (r === 'PreferredRank' ? 2 : r === 'NormalRank' ? 1 : 0);
+  const by = new Map();
+  for (const s of named) {
+    if (s.rank === 'DeprecatedRank') continue;
+    const prev = by.get(s.name);
+    if (!prev || score(s.rank) > score(prev.rank)) by.set(s.name, s);
+  }
+  const active = [...by.values()];
+  const preferred = active.filter((s) => s.rank === 'PreferredRank');
+  const current = preferred.length ? preferred : active.filter((s) => s.rank === 'NormalRank');
+  const currentNames = new Set(current.map((s) => s.name));
+  const starts = new Set(current.map((s) => s.start).filter(Boolean));
+  const ended = [];
+  for (const s of named) {
+    if (currentNames.has(s.name) || !s.end || !starts.has(s.end)) continue;
+    if (!ended.some((e) => e.name === s.name && e.until === s.end)) ended.push({ name: s.name, until: s.end });
+  }
+  ended.sort((a, b) => a.name.localeCompare(b.name) || a.until.localeCompare(b.until));
+  return {
+    capitals: [...currentNames].sort((a, b) => a.localeCompare(b)),
+    ended,
+    fallback: current.filter((s) => s.via === 'enwiki').map((s) => s.name).sort((a, b) => a.localeCompare(b)),
+  };
 }
 /** the currency noun, so "US dollar" and "United States dollar" meet, and "euro" does not meet "CFP franc" */
 export function moneyNoun(s) {
