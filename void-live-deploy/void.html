@@ -6278,6 +6278,10 @@ say('nothing selected to remove');
       const calcEarly = calcable && !skillsLoaded; // routed before every skill was in: one ranked above the calc may still take this ask
       if (whisper.textContent === 'waking up') say('');
       if (ranSkill) return;
+      // skills still loading when the wait ran out (#2246: "dyslexia friendly font" on a loaded runner showed "waking up" and then nothing, its skill
+      // far down the index was passed over at the deadline): the page answers as it can now, and once every skill is in, one that takes this ask
+      // answers it, as it would have on a faster load, if no newer ask came (the calc case below does the same for its card)
+      if (!skillsLoaded && !calcable) skillsReady.then(async () => { if (askNo !== askCount) return; const sk = await firstSkill(lower0, text, Date.now()); if (sk && askNo === askCount) await runLearnedSkills(text, lower0); }).catch(() => {});
       // a paste no skill took that asks for nothing: one line that asks what the person wants, and nothing guessed (no stock answer, no article)
       if (paste && paste.kind === 'unclear') { lastPaste = { text, until: Date.now() + 600000 }; say(paste.line); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste unclear' }); return; }
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }

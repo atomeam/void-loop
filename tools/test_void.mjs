@@ -9215,6 +9215,27 @@ try {
     await D.ctx.close();
   }
 
+  // A skill still loading when the ask's wait runs out (#2246: on a loaded runner "dyslexia friendly font" showed only "waking up", and the
+  // switch never came on: the accessibility skill sits far down the index and was passed over at the deadline, then nothing took the ask).
+  // Its module answers 10 s late here: the switch still comes on once it is in, as it does when the skills load in time.
+  if (want("Late skills: an ask whose skill is still loading when the wait runs out is answered once it arrives")) {
+    const D = await fresh();
+    await D.p.evaluate(async () => { for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); }); // so the route below sees the module
+    await D.p.route(/\/skills\/accessibility-modes\.js(\?|$)/, async (r) => { await new Promise((res) => setTimeout(res, 10000)); r.continue().catch(() => {}); });
+    const cdp = await D.ctx.newCDPSession(D.p); await cdp.send('Network.enable'); await cdp.send('Network.setCacheDisabled', { cacheDisabled: true }); // and not from the memory cache
+    await D.p.reload({ waitUntil: 'domcontentloaded' }); await D.p.waitForSelector('#input'); await D.p.waitForTimeout(300);
+    const lines = []; await D.p.exposeFunction('__said', (t) => lines.push(t)).catch(() => {});
+    await D.p.evaluate(() => { const w = document.getElementById('whisper'); new MutationObserver(() => { if (w.textContent) window.__said(w.textContent); }).observe(w, { childList: true, characterData: true, subtree: true }); });
+    const t0 = Date.now(); await D.p.fill('#input', 'dyslexia friendly font'); await D.p.keyboard.press('Enter');
+    const on = await D.p.waitForFunction(() => document.documentElement.classList.contains('a11y-dyslexia'), null, { timeout: 20000 }).then(() => true).catch(() => false);
+    const ms = Date.now() - t0, saved = await D.p.evaluate(() => localStorage.getItem('a2m.void.a11y.v1') || '');
+    await D.p.waitForTimeout(300);
+    check('late skills: "dyslexia friendly font" asked while its skill is still loading (10 s late) turns the dyslexia font on once the skill is in, and says so',
+      on && ms >= 6000 && /dyslexia/.test(saved) && lines.some((l) => /Dyslexia-friendly font on/.test(l)) && !D.errors.length,
+      JSON.stringify({ on, ms, saved, lines: lines.slice(-6), errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Make it my backdrop (2026-10-13, frontier 25 step 3: drawings dress your own Verse): a drawing goes behind the Verse, stays
   // after a reload (kept in the look, which the passkey syncs), and "remove my backdrop" takes it off; an empty canvas says so
   if (want("Draw: make it my backdrop puts the drawing behind your Verse and keeps it")) {
