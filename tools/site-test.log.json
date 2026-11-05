@@ -2767,5 +2767,29 @@
    ]
   },
   "note": "fix: \"find a rumble video about bitcoin\" nothing appeared; console: Failed to load resource: the server responded with a status of 500 ()"
+ },
+ {
+  "at": "2026-11-05T04:27:08Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 2930,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 20250 ms"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 8169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
  }
 ]
