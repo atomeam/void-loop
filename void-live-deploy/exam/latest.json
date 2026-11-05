@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T05:41:54.288Z",
+  "at": "2026-11-05T06:14:33.507Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,24 +32,10 @@
       }
     },
     "podcasts": {
-      "score": 84.8,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -162,7 +148,7 @@
       }
     },
     "weather": {
-      "score": 96.7,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -177,10 +163,9 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -383,18 +368,10 @@
       ]
     },
     "units": {
-      "score": 82.5,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "1 byte in bits",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
         {
           "ask": "convert 2",
           "failed": [
@@ -402,13 +379,6 @@
             "rival"
           ],
           "score": 60
-        },
-        {
-          "ask": "5 milles en kilomètres",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
         }
       ]
     },
@@ -483,7 +453,7 @@
       "fails": []
     },
     "prices": {
-      "score": 86.7,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -501,18 +471,11 @@
             "rival"
           ],
           "score": 60
-        },
-        {
-          "ask": "how much is a gallon of milk",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
         }
       ]
     },
     "definitions": {
-      "score": 83.3,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -525,14 +488,6 @@
         },
         {
           "ask": "define zorbleflux",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "qué significa serendipia",
           "failed": [
             "skill",
             "rival"
@@ -563,7 +518,7 @@
     }
   },
   "lowest": {
-    "domain": "units",
-    "score": 82.5
+    "domain": "timers",
+    "score": 83.3
   }
 }
