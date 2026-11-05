@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T01:33:39.318Z",
+ "updated": "2026-11-05T01:46:38.405Z",
  "last24h": {
   "ticks": 75,
-  "started": 90,
+  "started": 93,
   "requeued": 0,
   "setAside": 0,
   "probes": 12,
@@ -19,11 +19,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 21,
    "cap": 90
   },
   "day": {
-   "used": 0,
+   "used": 21,
    "cap": 360
   },
   "room": true,
@@ -81,7 +81,10 @@
   "mw2m8vwh": 1793828077407,
   "mw2m8x9s": 1793836301990,
   "mveb8rsi": 1793842419318,
-  "mw2m8xzi": 1793842419318
+  "mw2m8xzi": 1793842419318,
+  "mvu167w7": 1793843198405,
+  "mveb8svc": 1793843198405,
+  "mw2u6o67": 1793843198405
  },
  "visitorAt": "2026-11-05T00:39:42Z",
  "visitorFiled": [
@@ -167,28 +170,6 @@
   "probe:convert-55-f-to-c"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T01:39:22.949Z",
-   "open": 134,
-   "started": [
-    {
-     "id": "mvo2aeng",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 94
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 8,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T01:49:41.138Z",
    "open": 135,
@@ -1932,6 +1913,48 @@
     },
     {
      "id": "mw2m8xzi",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 1,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T01:46:38.405Z",
+   "open": 189,
+   "started": [
+    {
+     "id": "mvvoodfj",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 60
+    },
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 102
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mw2u6o67",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
