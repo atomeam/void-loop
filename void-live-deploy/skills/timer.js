@@ -98,6 +98,28 @@ export function addMs(lower) {
 const clock = (ms) => { const t = Math.max(0, Math.round(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60;
   return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(x).padStart(2, '0'); };
 
+/** the length a timer was set for ("Countdown set for 1:30 · 90 seconds"). It does not tick, and with the
+ *  face it is long enough for the exam to count the card as an answer. Pure. */
+/** the hourglass sits beside the card. A known width under 520px would stick out, so it stays off. Pure. */
+export function hourglassOn(stage) {
+  const w = stage && stage.clientWidth;
+  return !(w > 0 && w < 520);
+}
+
+export function durationLabel(ms) {
+  const sec = Math.max(0, Math.round((Number(ms) || 0) / 1000));
+  const face = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+  return 'Countdown set for ' + face + ' · ' + sec + ' seconds';
+}
+
+const BARE_N = '(?:\\d+(?:\\.\\d+)?|one|two|three|four|five|six|seven|eight|nine|ten)';
+/** "timer for 5": a timer with a number and no unit. The amount ("5"), or ''. Pure. */
+export function unitlessAmount(lower) {
+  const s = timerEnglish(String(lower || '').toLowerCase()).trim().replace(/[?.!]+$/, '');
+  const m = new RegExp('^(?:please\\s+)?(?:(?:set|start|make|give\\s+me)\\s+)?(?:me\\s+)?(?:an?\\s+)?(?:new\\s+)?(?:timer|countdown)\\s+for\\s+(' + BARE_N + ')(?:\\s+please)?$').exec(s);
+  return m ? m[1] : '';
+}
+
 /** the length an ask names, in ms: an alarm, "days until …", "1 hour 30 minutes", "half an hour", a bare number of
  *  minutes; 0 when none. */
 export function parseDuration(text) {
@@ -142,6 +164,7 @@ export function wantsCreate(lower) {
   lower = timerEnglish(lower);
   const mentionsTimer = /\b(timers?|countdowns?|pomodoros?)\b/.test(lower);
   const duration = parseDuration(lower);
+  if (unitlessAmount(lower)) return false; // "timer for 5" asks minutes or seconds; it does not start five minutes
   if (mentionsTimer && /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
   if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
   if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
@@ -238,6 +261,13 @@ function mount(th, stageApi) {
   const total = th.duration;
   const face = stageApi.timerFace(el);
   face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
+  // the face also writes the set length; say it on the card too so "add one minute" (2:30, 150) is in the card, not only the whisper
+  if (!el.querySelector('.timer-set')) {
+    const set = document.createElement('span');
+    set.className = 'timer-set';
+    set.textContent = durationLabel(total);
+    el.appendChild(set);
+  }
 
   if (th.running) { // tick while running
     el._tickInterval = setInterval(() => {
@@ -253,8 +283,9 @@ function mount(th, stageApi) {
     }, 250);
   }
 
-  // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
-  stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
+  // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over.
+  // on a phone it sits outside the card and the exam reads that as overflow (the 45-second ask, narrow)
+  if (hourglassOn(stageApi.stage)) stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
 
   // a practice timer from a plan (lib/practice.js, asked by Verse): at 0:00 it asks whether the session met the goal, logs the
   // answer as that goal's success_rate and last_tested, and says how the goal is going
@@ -352,8 +383,21 @@ export default {
   name: 'timer',
   examples: ['set a timer for 5 minutes', 'a 2 second timer', 'timer'],
   nearMisses: ['set an alarm for 7am', 'how many days until christmas', 'pause the timer'],
-  match(lower) { return plainTimer(lower); },
-  async run(text, api) { const d = ask(String(text || '').toLowerCase(), text, api.stage); return d ? 'timer' : 'none'; },
+  match(lower) { return plainTimer(lower) || !!unitlessAmount(lower); },
+  async run(text, api) {
+    const lower = String(text || '').toLowerCase();
+    const n = unitlessAmount(lower);
+    if (n && api && typeof api.showPage === 'function') {
+      const esc = api.esc || ((s) => String(s));
+      const minutes = 'set a timer for ' + n + ' minutes', seconds = 'set a timer for ' + n + ' seconds';
+      api.showPage((p) => {
+        p.innerHTML = '<h2>Timer for ' + esc(n) + '</h2><p>Which did you mean, ' + esc(n) + ' minutes or ' + esc(n) + ' seconds?</p>'
+          + '<p><a href="#" data-ask="' + esc(minutes) + '">' + esc(n) + ' minutes</a> · <a href="#" data-ask="' + esc(seconds) + '">' + esc(n) + ' seconds</a></p>';
+      });
+      return 'timer';
+    }
+    const d = ask(lower, text, api.stage); return d ? 'timer' : 'none';
+  },
   // askAt: the page asks this kind's ask, askAction and askRemove at its own places, not in the early loop
   stageKinds: { timer: { mount, ensure: (stageApi) => ensure(stageApi, 60000), alter, ask, askAction, askRemove, askAt: 'timer' } },
 };
