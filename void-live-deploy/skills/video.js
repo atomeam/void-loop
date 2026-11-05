@@ -83,7 +83,9 @@ async function search(query, platform, api, { autoplay = false, quiet = false } 
   if (j && j.ok && !j.hits.length && !SEARCHABLE.includes(S.platform)) { // Rumble, Vimeo, Twitch have no public search (#2238: "find a rumble
     // video about bitcoin" showed an empty card): the same words go to the platforms that do have one, and the asked platform's own search stays linked
     const asked = S.platform, own = j.searchUrl || PLATFORMS[asked].search(query);
-    for (const p of SEARCHABLE) { let k = null; try { k = await fetch('/api/video?p=' + p + '&q=' + encodeURIComponent(query)).then((r) => r.json()); } catch (_) {} if (k && k.ok && k.hits && k.hits.length) { j = Object.assign(k, { note: PLATFORMS[asked].label + ' has no public search, so these are from ' + PLATFORMS[p].label + ' · paste any ' + PLATFORMS[asked].label + ' link to play it here', searchUrl: own }); break; } }
+    const all = await Promise.all(SEARCHABLE.map((p) => fetch('/api/video?p=' + p + '&q=' + encodeURIComponent(query)).then((r) => r.json()).catch(() => null))); // asked at once, the first in SEARCHABLE's order with hits wins
+    const i = all.findIndex((k) => k && k.ok && k.hits && k.hits.length);
+    if (i >= 0) j = Object.assign(all[i], { note: PLATFORMS[asked].label + ' has no public search, so these are from ' + PLATFORMS[SEARCHABLE[i]].label + ' · paste any ' + PLATFORMS[asked].label + ' link to play it here', searchUrl: own });
   }
   S.results = (j && j.ok && j.hits) || []; S.note = j ? j.note || (S.results.length ? '' : 'nothing on ' + PLATFORMS[S.platform].label + ' for that') : 'the search did not answer'; S.searchUrl = (j && j.searchUrl) || PLATFORMS[S.platform].search(query);
   if (S.results.length && j.searchUrl && !j.note) S.searchUrl = '';
