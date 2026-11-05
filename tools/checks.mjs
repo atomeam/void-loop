@@ -553,6 +553,7 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['systems-monitor', 'systems-monitor.test.mjs'],
   ['verse-runs', 'verse-runs.test.mjs'],
   ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],

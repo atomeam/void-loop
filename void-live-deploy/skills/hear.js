@@ -8,7 +8,7 @@
 // Proven by suite check in tools/hear.test.mjs (least checked, 2026-11-05)
 import { songAskOf, findTrack } from '../lib/hear.js';
 
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;' }[c]));
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 async function run(text, api) {
   const asked = songAskOf(text);
