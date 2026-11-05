@@ -84,3 +84,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-11-04 | Numbers and money family: prove the last 3 of 29 skills, starting with vat and hear (least checked) | asked by Verse (void-voice 2026-11-04, twice); helper/numbers-prove |
 | open | 2026-11-04 | Versus topic pages: replace the flat tower placeholder with a real per-topic experience | asked by Verse (void-voice 2026-11-04) |
 | shipped 25990ecbc | 2026-11-04 | system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff) | new idea by growth agent; helper/system-status |
+| building | 2026-11-05 | system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors, we own the heavy lifting) | new idea by growth agent; helper/system-handoff |
