@@ -216,6 +216,7 @@ for (const [name, file] of [
   ['appraise', 'appraise.test.mjs'],
   ['launch-fixes', 'launch-fixes.test.mjs'],
   ['price-lock', 'price-lock.test.mjs'],
+  ['price-question', 'price-question.test.mjs'],
   ['reinvest', 'reinvest.test.mjs'],
   ['treasury', 'treasury.test.mjs'],
   ['store', 'store.test.mjs'],

@@ -5670,8 +5670,8 @@ say('nothing selected to remove');
     const PAID_LEAD = "(?:please\\s+)?(?:(?:i\\s+(?:want|need|would\\s+like)|i'?d\\s+like|can\\s+i|could\\s+i|how\\s+(?:do|can)\\s+i|let\\s+me|give\\s+me|get\\s+me)(?:\\s+to)?(?:\\s+(?:have|get))?\\s+)?";
     const PAID_CORE = [
       "upgrade(?: me| my (?:verse|void)| (?:verse|void)| my account| my plan)?(?: to (?:paid|pro|premium)(?: (?:verse|void))?)?",
-      "(?:the |your )?(?:pricing|prices?|plans?|price list)",
-      "what (?:does|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|verse|paid (?:verse|void)|more)",
+      "(?:show (?:me )?(?:the |your )?|the |your )?(?:pricing|prices?|plans?|price list)",
+      "what (?:does|do) (?:void|verse|it|you|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|verse|it|you|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|verse|paid (?:verse|void)|more)",
       "pay(?: for (?:void|paid (?:verse|void)|more|it|the paid (?:version|tier|plan)))?(?: you)?",
       "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: (?:verse|void))?|monthly|the paid (?:version|tier|plan))",
       "subscribe|(?:a |my )?subscription|go pro|(?:void|verse) (?:pro|plus|premium|monthly|yearly|annual)|paid (?:verse|void)|premium|(?:a |the )?paid (?:tier|plan|version)",
@@ -5726,7 +5726,10 @@ say('nothing selected to remove');
     // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
     // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
     // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
-    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|verse|a-to-mind)(?: cost)?)$/; // the name is Verse (owner, 2026-10-14)
+    // The membership line and the services card (skills/services.js servicesOf) must agree on what a price question is: a cost ask
+    // gets both. This pattern is the page's half; tools/price-question.test.mjs pins it against servicesOf so the two cannot drift
+    // apart again (2026-10-25: "how much does Verse cost?" said the line and opened no card). The name is Verse (owner, 2026-10-14).
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|you|a-to-mind) cost|how much (?:is|does|do) (?:void|verse|you|a-to-mind)(?: cost)?)$/;
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
       let svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)

@@ -9649,8 +9649,10 @@ try {
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|MultiVerse|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
-  // A price question is different: the membership sentence stays first, and the services card opens under it.
-  const priceAsks = ['pricing', 'how much does Verse cost?'];
+  // A price question is different: the membership sentence stays first, and the services card opens under it. The list
+  // spans both halves' patterns (pricing words, "what do you cost", "how much does Verse cost", "show me your pricing"):
+  // the 2026-10-14/10-25 flake was one of these matching the line's pattern but not the card's, after the V01D -> Verse rename.
+  const priceAsks = ['pricing', 'how much does Verse cost?', 'what do you cost', 'show me your pricing'];
   const priceGot = [];
   for (const a of priceAsks) {
     await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
@@ -9660,7 +9662,7 @@ try {
     await P.ask('close');
   }
   check('paid: signed out, a price question says the membership line AND opens the services card under it',
-    priceGot[0] === OUT_LINE && priceGot[1] === true && priceGot[2] === OUT_LINE && priceGot[3] === true,
+    priceGot.length === priceAsks.length * 2 && priceGot.every((v, i) => (i % 2 === 0 ? v === OUT_LINE : v === true)),
     JSON.stringify(priceGot).slice(0, 400));
   // Asks a product covers: Verse's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
