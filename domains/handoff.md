@@ -15,6 +15,10 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
+- Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
+- Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
+- Cursor cloud agent · helper/timer-durations-f90f · a timer keeps the length it was set for (90 seconds, add one minute, 45 seconds) and a bare "timer for 5" asks which unit · 2026-11-05 14:05 UTC
 - Cursor cloud agent · helper/kv-namespace-f90f · only Verse's wrangler binds Verse's KV namespace · 2026-11-05 16:05 UTC
 - Cursor cloud agent · helper/selfcheck-edge-f90f · the page-check report is kept in the edge cache, so Verse writes no KV · 2026-11-05 15:55 UTC
 - Cursor cloud agent · helper/range-diff-f90f · the diff between two commits lists the files, the failed jobs at each end, and the assertion lines from the earlier log · 2026-11-05 15:40 UTC
@@ -84,6 +88,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Savings load (cursor, 2026-11-05)**: "how much do i need to save a month to have 1 million in 30 years at 7%" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once. https://github.com/atomeam/void-loop/pull/2311
+- **Closer on the figure (cursor, 2026-11-05)**: "closer on the figure" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292
 - **Empty home (cursor, 2026-11-05)**: the idle home is the dark void and the ask bar. The VERSE wordmark, the A-TO-MIND line and the "support Verse: the store" link are gone. The home stays blank, including `?intro=1`, and `?q=` still opens an ask. https://github.com/atomeam/void-loop/pull/2293
 - **Blank home, videos keep playing (cursor, 2026-11-05)**: the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was. https://github.com/atomeam/void-loop/pull/2291
 - **Phone panel and tray drag (cursor, 2026-11-05)**: a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands. https://github.com/atomeam/void-loop/pull/2289

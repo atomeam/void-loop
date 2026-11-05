@@ -140,7 +140,7 @@ test('the suite\'s own stalls and end-of-run flags are counted apart, never unma
     { at: '2026-10-17T09:00:00Z', sha: 'aaaaaaa1', suite: 's', checks: ['check timeout: no check finished within 300 s', 'clock: "set it" fails', 'suite ran to the end'] },
     { at: '2026-10-17T08:00:00Z', sha: 'bbbbbbb2', suite: 's', checks: ['check timeout: no check finished within 300 s'] },
   ] };
-  assert.ok(isSuiteMeta('check timeout: no check finished within 300 s') && isSuiteMeta('suite ran to the end') && !isSuiteMeta('clock: check timeout') && !isSuiteMeta(''));
+  assert.ok(isSuiteMeta('check timeout: no check finished within 300 s') && isSuiteMeta('suite ran to the end') && isSuiteMeta('suite budget: the whole suite ran past 1680 s') && !isSuiteMeta('clock: check timeout') && !isSuiteMeta(''));
   const a = autopsy(J, FAM, GUIDE);
   assert.deepEqual(a.suite, { timeouts: 2, ended: 1, incidents: 2, stalled: 2, threshold: 3, escalated: false }); assert.equal(a.failing, 1); assert.deepEqual(a.unmapped, []);
   assert.equal(a.recent[0].checks.filter((c) => c.meta).length, 2);
@@ -218,4 +218,11 @@ test('every CHECK_OWNERS row names a real skill or family and files that exist',
     for (const f of o.files) assert.ok(existsSync(new URL('../void-live-deploy/' + f, import.meta.url)), f);
   }
   assert.equal(ownerOfCheck('router: x').owner, 'the router'); assert.equal(ownerOfCheck('routers of the world: x'), null); assert.equal(ownerOfCheck(''), null);
+  assert.equal(ownerOfCheck('game panel fits: at 1280x800').skill, 'chess');
+  assert.equal(ownerOfCheck('clear all the notes').skill, 'sticky');
+  assert.equal(ownerOfCheck('skills: every skill in index.json gets its own examples and none of its near misses (390 skills)').family, 'self');
+  assert.equal(ownerOfCheck('tools pack 8: "ephemeral mode" forgets').skill, 'safety-kit');
+  assert.equal(ownerOfCheck('will: one set-aside job does not stop a want').skill, 'wants');
+  assert.equal(ownerOfCheck("will: Verse's own outputs become its input: an ask from its reflections").skill, 'wants');
+  assert.equal(ownerOfCheck('subtitles: an .srt chosen on a video card').skill, 'media-object');
 });

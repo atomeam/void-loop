@@ -1214,4 +1214,5 @@ Format: `ISO | slug | role | event | note`
 2026-11-05T13:00:23Z | cursor | fix | what are the figures doing answers from together while the other skills are still loading, instead of staying on waking up
 2026-11-05T12:06:51Z | cursor | fix | weave a constellation called night ops answers from constellation-weaver while the other skills are still loading, instead of staying on waking up
 2026-11-05T14:15:43Z | cursor | fix | The empty home is the void and the ask bar: the wordmark, the A-TO-MIND line and the support Verse store link are gone from the first paint
+2026-11-05T14:04:54Z | cursor | fix | closer on the figure answers from zoom-figure while the other skills are still loading, instead of staying on waking up
 2026-11-05T14:10:00Z | cursor | fix | The home page is the void and the ask bar: no wordmark, no heading, no Install line. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was.
