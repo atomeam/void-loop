@@ -1111,14 +1111,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-26T07:10:56Z",
-   "line": "Versus: took on no site (also read: 2 gone, 1 not-judged); next heycolor.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-26T07:18:05Z",
    "line": "Versus: took on no site (also read: 5 not-judged, 3 no-family); next heycolor.com",
    "built": 0,
@@ -1459,6 +1451,15 @@
    "pages_per_day": 0,
    "reads_next": "coreldrawdesign.com",
    "noop": true
+  },
+  {
+   "at": "2026-11-05T09:49:10Z",
+   "line": "Versus: took on no site (also read: 5 no-family, 2 covered, 1 gone); next  (the target)",
+   "built": 0,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "sipcalculator.in"
   }
  ]
 }
