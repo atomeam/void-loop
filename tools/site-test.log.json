@@ -3606,5 +3606,59 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T15:53:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2015,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9529 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T16:03:35Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 379,
+  "kind": "file",
+  "key": "flip this card | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "flip this card",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "https://github.com/atomeam/void-loop/blob/main/README.md",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2015,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9529 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"flip this card\" only \"waking up\" appeared, never the answer"
  }
 ]
