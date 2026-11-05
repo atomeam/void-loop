@@ -375,6 +375,12 @@
    "date": "",
    "ask": "Clarify business ideas into system plans",
    "from": "growth, 2026-11-03"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "a country whose capital item has neither an English label nor an English Wikipedia sitelink still fails and stays a fix job",
+   "from": "cursor 2026-11-05"
   }
  ],
  "games": [
@@ -558,16 +564,64 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T09:39:21Z",
-   "subject": "Move the agent follow-ups line to Just finished"
+   "at": "2026-11-05T10:41:27Z",
+   "subject": "Country capital bots name St. John's and Ciudad de la Paz"
   },
   {
-   "at": "2026-11-05T09:34:24Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-05T10:28:36Z",
+   "subject": "Verse loop: task, Queue job mvop09tv (feature: podchaser-com-d04309ea): build (#2261)"
   },
   {
-   "at": "2026-11-05T09:34:09Z",
-   "subject": "The agent inbox, approve that resumes, and steps you can reopen"
+   "at": "2026-11-05T10:27:49Z",
+   "subject": "fix: recipe chime, phone chess restore, and put-in-the-page draft (#2262)"
+  },
+  {
+   "at": "2026-11-05T10:23:36Z",
+   "subject": "Incident: the browser suite failed on 837d03e9 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T10:18:19Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T10:15:49Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T10:02:10Z",
+   "subject": "Incident: the browser suite failed on 2cb2e124 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T09:51:45Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next (the target)"
+  },
+  {
+   "at": "2026-11-05T09:49:10Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 no-family, 2 covered, 1 gone); next (the target)"
+  },
+  {
+   "at": "2026-11-05T09:49:02Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-11-05T09:47:45Z",
+   "subject": "Site test: visitor pass 13/15"
+  },
+  {
+   "at": "2026-11-05T09:45:35Z",
+   "subject": "The agent inbox, approve that resumes, and steps you can reopen (#2260)"
+  },
+  {
+   "at": "2026-11-05T09:42:40Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T09:42:03Z",
+   "subject": "Incident: the browser suite failed on 62dc2f94 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T09:35:00Z",
+   "subject": "Answer list clear, ephemeral off, and the self card before skills finish loading (#2250) (#2259)"
   },
   {
    "at": "2026-11-05T09:21:57Z",
@@ -588,58 +642,14 @@
   {
    "at": "2026-11-05T09:07:25Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-05T09:07:11Z",
-   "subject": "Incident: the browser suite failed on 1386b00d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T09:04:37Z",
-   "subject": "Add currency, holiday and country bot families (#2256)"
-  },
-  {
-   "at": "2026-11-05T09:03:24Z",
-   "subject": "Keep the empty home light and line the open pages up (#2254)"
-  },
-  {
-   "at": "2026-11-05T09:02:05Z",
-   "subject": "Verse loop: set aside repairs of loops that are green again; let the coder read workflows (#2252) (#2255)"
-  },
-  {
-   "at": "2026-11-05T08:59:40Z",
-   "subject": "Lists run 13: 14 items closed, sky card + street map into where-is (#2253)"
-  },
-  {
-   "at": "2026-11-05T08:55:30Z",
-   "subject": "Site test: fix: \"toss it off the screen\" only \"waking up\" appeared, nev"
-  },
-  {
-   "at": "2026-11-05T08:39:48Z",
-   "subject": "Clear the backdrop, restore the cartoon walk button, and refit chapter pages (#2220, #2250) (#2251)"
-  },
-  {
-   "at": "2026-11-05T08:35:37Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-05T08:10:05Z",
-   "subject": "Incident: the browser suite failed on b8384842 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T07:55:49Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T07:45:58Z",
-   "subject": "Incident: the browser suite failed on 3f8a8b31 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T07:41:58Z",
-   "subject": "Outcome exam: timers 83.3"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Main reds (cursor, 2026-11-05)",
+    "line": "the recipe handover stays quiet when the audio context cannot build a buffer, \"forget this\" on a phone closes the chess board and puts the tucked list back, and \"put in the page\" uses the draft a second read of the same tab would have…"
+   },
    {
     "name": "Agent follow-ups (cursor, 2026-11-05)",
     "line": "/agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260"
@@ -659,10 +669,6 @@
    {
     "name": "Empty home, lighter (cursor, 2026-11-05)",
     "line": "an empty phone home fetches about 40 files and 320 KB instead of 95 and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and…"
-   },
-   {
-    "name": "Lists run 13 (grok, 2026-11-05)",
-    "line": "a bare \"price\" asks which thing, with one tap per kind (a coin, a currency, groceries or gas, a stock, the crypto board, what Verse sells), so the prices exam is 6 of 6 locally; telemetry names every failed check, so the count and the…"
    }
   ],
   "ladders": [
@@ -817,8 +823,8 @@
   }
  ],
  "visible": {
-  "day": 16,
-  "week": 424
+  "day": 21,
+  "week": 429
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
