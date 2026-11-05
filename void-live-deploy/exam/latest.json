@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T00:20:29.615Z",
+  "at": "2026-11-05T00:52:06.210Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,10 +32,24 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of hidden brain",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -513,17 +527,10 @@
       ]
     },
     "prices": {
-      "score": 86.7,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "100 usd in eur",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
         {
           "ask": "price",
           "failed": [
