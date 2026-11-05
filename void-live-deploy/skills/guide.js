@@ -145,11 +145,14 @@ function mount(book, api, startAt, text) {
   const fitSheet = (sec, again) => {
     const f = sec && sec.querySelector(':scope > .tome-fit'); if (!f) return;
     f.style.zoom = ''; const floor = () => sec.getBoundingClientRect().bottom - parseFloat(getComputedStyle(sec).paddingBottom);
-    const over = () => f.getBoundingClientRect().bottom > floor() + 0.5;
-    if (!over()) return;
-    let lo = 0.3, hi = 1; for (let i = 0; i < 9; i++) { const z = (lo + hi) / 2; f.style.zoom = z; if (over()) hi = z; else lo = z; }
-    f.style.zoom = Math.max(0.3, lo - 0.01); // a hair of room, so a late reflow never pushes the last line over
-    if (!again) setTimeout(() => { if (sec.isConnected && over()) fitSheet(sec, true); }, 300); // art and faces that land late: measured again
+    const over = () => f.getBoundingClientRect().bottom > floor() + 0.5 || sec.scrollHeight > sec.clientHeight + 1;
+    if (over()) {
+      let lo = 0.3, hi = 1; for (let i = 0; i < 9; i++) { const z = (lo + hi) / 2; f.style.zoom = z; if (over()) hi = z; else lo = z; }
+      f.style.zoom = Math.max(0.3, lo - 0.01); // a hair of room, so a late reflow never pushes the last line over
+    }
+    // a chapter opener's glyph row wraps once the sheet has its real width (page 115 at 820x600 fit by a pixel, then
+    // grew a row and scrolled). The retry used to run only when the first look was already over, so that page never came back (#2250).
+    if (!again) setTimeout(() => { if (sec.isConnected && sec.querySelector(':scope > .tome-fit') === f) fitSheet(sec, true); }, 120);
   };
   const shown = () => (onePage() ? [cur] : pagesOfSpread(spreadOf(cur), total));
   const lay = (ns) => { // the two sheets (one on a phone) and the stacks beside them

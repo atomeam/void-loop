@@ -4652,6 +4652,10 @@ say('nothing selected to remove');
         const skill = mod && mod.default, slot = skillSlots[i];
         if (skill && skill.name && skill.match && skill.run) slot.skill = skill; else missing.push(index[i]);
         if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds); // a skill that answers early may put its kind on the stage
+        if (skill && typeof skill.decorate === 'function' && !stageDecorators.includes(skill.decorate)) stageDecorators.push(skill.decorate);
+        // a kept card is drawn when its own skill arrives, not after the whole index (a phone starts the files 12 s late;
+        // the cat card's "Let it walk" was still missing when the suite clicked it, #2250)
+        if (skill && skill.stageKinds && Object.values(things).some((t) => t && skill.stageKinds[t.kind] && !stage.querySelector(':scope > [data-id="' + CSS.escape(String(t.id)) + '"]'))) render();
         slot.done = true; slot.set(slot.skill);
       };
       // a live card (the Versus ladder reads data that changes every few minutes) is fetched under a key that turns over every 5 minutes, so a browser or
@@ -4667,7 +4671,7 @@ say('nothing selected to remove');
         learnedSkills.push(skill);
         if (skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
         if (skill.world && typeof skill.world.mount === 'function') worlds[skill.name] = skill.world;
-        if (typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
+        if (typeof skill.decorate === 'function' && !stageDecorators.includes(skill.decorate)) stageDecorators.push(skill.decorate);
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
       // silent hole: that ask just never gets answered by a skill.
@@ -6211,6 +6215,16 @@ say('nothing selected to remove');
       const quiet = quietAsk; quietAsk = false; // read once: an ask this one starts is the person's again
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
+      // "remove my backdrop" is answered here, before any await: fuzzy, the keeper and the share parser all wait on files, and with the
+      // skills index slow those waits outran the 500 ms the suite reads (#2220, #2250). The same phrase is still matched later for a corrected ask.
+      if (MY_BACKDROP_OFF.test(typed.toLowerCase())) {
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        voidLook.backdrop = ''; applyLook(true); say('backdrop off');
+        loopLog({ domain: 'void.look', ask: typed, score: 'pass', note: 'look' });
+        return;
+      }
       // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
       // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
