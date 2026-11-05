@@ -13,5 +13,12 @@
  ],
  "shards": [
   3
- ]
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-05T11:16:36.271Z",
+ "closedBy": "87febfd194da531c9197b77525f5f8a13a9eccb4",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42013368910",
+ "minutes": 12
 }
