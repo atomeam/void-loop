@@ -1277,7 +1277,7 @@
    },
    "words": "the family page's own (the model's were refused: says what the page does not do (informed, organized, breaking, around, aggregates))",
    "rows": "13/15",
-   "gated": "2026-11-05T23:54:26Z"
+   "gated": "2026-11-05T23:58:16Z"
   },
   "united-kiosk.de": {
    "at": "2026-11-05T23:50:14Z",
@@ -1303,14 +1303,6 @@
   }
  },
  "runs": [
-  {
-   "at": "2026-10-26T07:42:05Z",
-   "line": "Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten; next heycolor.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
   {
    "at": "2026-10-26T16:56:18Z",
    "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com",
@@ -1654,6 +1646,15 @@
    "at": "2026-11-05T23:54:27Z",
    "line": "Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows (also read: 5 no-family, 2 covered); next  (the target)",
    "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "uniteforliteracy.com"
+  },
+  {
+   "at": "2026-11-05T23:58:16Z",
+   "line": "Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows; next  (the target)",
+   "built": 0,
    "queued": 0,
    "fixed": [],
    "pages_per_day": 2,
