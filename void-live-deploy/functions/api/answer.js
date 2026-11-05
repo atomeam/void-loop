@@ -19,6 +19,7 @@ import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf, basisOf } from
 import { guardAnswer, heldBack } from '../../lib/patch-guard.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models, ANSWER_FALLBACK } from '../../lib/models.js';
+import { runFree } from '../../lib/ai-gateway.js';
 import { keeperOf, scrubOut } from '../../lib/keeper.js';
 import { redactPersonal } from '../../lib/privacy.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
@@ -155,7 +156,7 @@ async function fixAnswer(request, env, body) {
   let held = '';
   if (on) {
     try {
-      const r = await env.AI.run(MODEL, {
+      const r = await runFree(env, MODEL, {
         messages: [
           { role: 'system', content: FIX_SYSTEM },
           { role: 'user', content: 'What they said: ' + ask + (platform ? '\nPlatform (guessed): ' + platform : '') + (details ? '\n\nWhat they pasted (as is):\n' + details : '\n\n(nothing pasted yet)') },
@@ -189,7 +190,7 @@ async function reviewAnswer(request, env, body) {
   if (await rateLimited(request, env)) return Response.json({ answer: null, findings, lang: res.lang, note: 'slow down' }, { status: 429 });
   if (modelsOn(env)) {
     try {
-      const r = await env.AI.run(MODEL, {
+      const r = await runFree(env, MODEL, {
         messages: [
           { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE },
           { role: 'user', content: 'What they asked: ' + ask + '\nLanguage (guessed): ' + res.lang + (body.diff ? '\nThis is a pull request diff: review the added lines (+), using the rest as context.' : '') + '\n\nQuick checks found:\n' + (body.diff ? String(body.found || 'nothing').slice(0, 3000) : findingsText(res)) + '\n\nThe code (as pasted, keys masked):\n```\n' + code + '\n```' },
@@ -216,7 +217,7 @@ async function takeAnswer(request, env, body) {
   try { const hit = await caches.default.match(cacheReq); if (hit) return Response.json({ take: await hit.text(), cached: true }); } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ take: null, note: 'slow down' }, { status: 429 });
   try {
-    const r = await env.AI.run(MODEL, {
+    const r = await runFree(env, MODEL, {
       messages: [{ role: 'system', content: TAKE_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: 'Subject: ' + title + (desc ? ' (' + desc + ')' : '') + '\n\nSummary:\n' + extract }],
       max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
     });
@@ -238,7 +239,7 @@ async function characterAnswer(request, env, body) {
   if (!modelsOn(env)) return Response.json({ reply: null, note: 'models off', say: say('off') });
   if (await rateLimited(request, env)) return Response.json({ reply: null, note: 'slow down', say: say('slow') }, { status: 429 });
   try {
-    const r = await env.AI.run(MODEL, { messages: p.messages.map((m) => ({ ...m, content: m.role === 'system' ? m.content + ' ' + INJECTION_RULE : redact(m.content) })), max_tokens: 320, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const r = await runFree(env, MODEL, { messages: p.messages.map((m) => ({ ...m, content: m.role === 'system' ? m.content + ' ' + INJECTION_RULE : redact(m.content) })), max_tokens: 320, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
     const reply = cleanReply(scrubOut(redact(noThink(pick(r))), env), p.name);
     return reply ? Response.json({ reply }) : Response.json({ reply: null, note: 'empty', say: say('busy') });
   } catch (e) { await recordShortfall(env, 'character', reasonOf(e)); return Response.json({ reply: null, note: 'model busy', say: say('busy') }); }
@@ -258,7 +259,7 @@ async function storyAnswer(request, env, body) {
   if (!modelsOn(env)) return Response.json({ text: null, note: 'models off', say: say('off') });
   if (await rateLimited(request, env)) return Response.json({ text: null, note: 'slow down', say: say('slow') }, { status: 429 });
   try {
-    const r = await env.AI.run(MODEL, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: ai ? 160 : Math.min(900, p.words * 2 + 80), chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const r = await runFree(env, MODEL, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: ai ? 160 : Math.min(900, p.words * 2 + 80), chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
     const text = cleanText(scrubOut(redact(noThink(pick(r))), env), ai ? AI_TEXT_MAX : PART_MAX);
     if (!text) return Response.json({ text: null, note: 'empty', say: say('busy') });
     if (cacheReq) { try { await caches.default.put(cacheReq, new Response(text, { headers: { 'cache-control': 'max-age=604800' } })); } catch (_) {} }
@@ -282,7 +283,7 @@ async function rapAnswer(request, env, body) {
   if (await rateLimited(request, env)) return Response.json({ rap: null, note: 'slow down', say: RAP_SAYS.slow }, { status: 429 });
   if (!(await dayCap(env, 'rap', RAP_PER_DAY)).ok) return Response.json({ rap: null, note: 'full', say: RAP_SAYS.full });
   try {
-    const r = await env.AI.run(MODEL, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: 900, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const r = await runFree(env, MODEL, { messages: p.messages.map((m) => (m.role === 'system' ? { ...m, content: m.content + ' ' + INJECTION_RULE } : { ...m, content: redact(m.content) })), max_tokens: 900, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
     const rap = cleanRap(parseRap(scrubOut(redact(noThink(pick(r))), env)));
     if (!rap) return Response.json({ rap: null, note: 'empty', say: RAP_SAYS.busy });
     try { await caches.default.put(cacheReq, new Response(JSON.stringify(rap), { headers: { 'content-type': 'application/json', 'cache-control': 'max-age=604800' } })); } catch (_) {}
@@ -310,7 +311,7 @@ async function reportAnswer(request, env, body) {
   if (!(await capAll(env, [['news-report:h' + at.slice(0, 13), REPORT_PER_HOUR], ['news-report', REPORT_PER_DAY]])).ok) return plainOut('busy: the hour\'s write-ups are used');
   let out;
   try {
-    const r = await env.AI.run(MODEL, { messages: [{ role: 'system', content: REPORT_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: redact('Draft:\n' + p.draft + '\n\nSource text:\n' + p.source) }], max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const r = await runFree(env, MODEL, { messages: [{ role: 'system', content: REPORT_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: redact('Draft:\n' + p.draft + '\n\nSource text:\n' + p.source) }], max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
     const polished = scrubOut(redact(noThink(pick(r))), env), v = settleReport(polished, p.draft, p.source, p.names);
     out = { ...base, text: v.text, polished: v.polished, why: v.why };
   } catch (e) { await recordShortfall(env, 'report', reasonOf(e)); return plainOut('model busy'); }
@@ -321,7 +322,7 @@ async function reportAnswer(request, env, body) {
 // "Verse reports" (lib/report-run.js): a plain draft from the price data, polished by the same free model under a site-wide hourly allowance, kept only when
 // the polish adds no number, symbol, cause or advice. Without a model, or past the allowance, the draft is the report.
 async function marketReport(request, env, body) {
-  const model = modelsOn(env) ? async (messages, max_tokens) => { const r = await env.AI.run(MODEL, { messages, max_tokens, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }); return scrubOut(redact(noThink(pick(r))), env); } : null;
+  const model = modelsOn(env) ? async (messages, max_tokens) => { const r = await runFree(env, MODEL, { messages, max_tokens, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }); return scrubOut(redact(noThink(pick(r))), env); } : null;
   const cache = typeof caches !== 'undefined' ? caches.default : null;
   return marketReportRun(request, env, body, { markets: { quoteBody, batch, fetchFn: fetch }, rateLimited, model, cap: (pairs) => capAll(env, pairs), store: env.DB ? d1Store(env.DB) : null, cache });
 }
@@ -337,7 +338,7 @@ async function draftAnswer(request, env, body) {
   const on = modelsOn(env);
   if (on) {
     try {
-      const r = await env.AI.run(MODEL, {
+      const r = await runFree(env, MODEL, {
         messages: [{ role: 'system', content: DRAFT_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: draftPrompt(p) }],
         max_tokens: 900, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
@@ -359,7 +360,7 @@ async function proposalAnswer(request, env, body) {
   const on = modelsOn(env);
   if (on) {
     try {
-      const r = await env.AI.run(MODEL, {
+      const r = await runFree(env, MODEL, {
         messages: [{ role: 'system', content: PROPOSAL_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: proposalPrompt(p) }],
         max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
@@ -385,7 +386,7 @@ async function planAnswer(request, env, body) {
     // and the second (a skill to learn?): yes opens the checklist with finding a teacher or a course
     const learning = clefOn(env) ? clefYesNo(env, goal, LEARN_ASK) : Promise.resolve(null);
     try {
-      const r = await env.AI.run(MODEL, {
+      const r = await runFree(env, MODEL, {
         messages: [{ role: 'system', content: PLAN_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: planPrompt(goal) }],
         max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
@@ -514,7 +515,7 @@ async function pageAnswer(request, env, ask, pg) {
     { role: 'user', content: `Question: ${ask}\n\nThe page:\n${parts.join('\n\n')}` },
   ];
   try {
-    const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
+    const r = await runFree(env, MODEL, { messages, ...ANSWER_RUN });
     const answer = dropLimits(scrubOut(redact(noThink(pick(r))), env)); // no line about the model's own limits (lib/note-ask.js)
     if (!answer) throw new Error('empty');
     return Response.json({ answer, sources: [], at: new Date().toISOString(), page: true });
@@ -623,7 +624,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   }, () => logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra })));
   if (!answer) {
     try {
-      const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
+      const r = await runFree(env, MODEL, { messages, ...ANSWER_RUN });
       answer = scrubOut(redact(String(pick(r)).trim()), env);
       model = MODEL;
       if (!answer) throw new Error('empty');
@@ -634,7 +635,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       const alt = await freeLlm(messages, { env, registry: await loadRegistry(env, request.url) }).catch(() => null);
       if (alt) { const a2 = scrubOut(redact(noThink(String(alt.answer).trim())), env); if (a2) { answer = a2; model = alt.source; outcome += '; default busy, ' + alt.source; } }
       // the second free try: the other free model (lib/models.js ANSWER_FALLBACK), before anything paid or the open web
-      if (!answer) try { const r = await within(env.AI.run(ANSWER_FALLBACK, { messages, ...ANSWER_RUN }), STRONG_TIMEOUT_MS); const second = scrubOut(redact(String(pick(r)).trim()), env); if (second) { answer = second; model = ANSWER_FALLBACK; outcome += '; default busy, second free model'; } } catch (_) { /* both free models out: on to paid, then the web */ }
+      if (!answer) try { const r = await within(runFree(env, ANSWER_FALLBACK, { messages, ...ANSWER_RUN }), STRONG_TIMEOUT_MS); const second = scrubOut(redact(String(pick(r)).trim()), env); if (second) { answer = second; model = ANSWER_FALLBACK; outcome += '; default busy, second free model'; } } catch (_) { /* both free models out: on to paid, then the web */ }
       const access = answer ? null : await paidAccess(env);
       const paid = answer ? answer : access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
@@ -653,7 +654,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // a note with nothing left is read back from its own words, any other ask with nothing left is no answer
   if (talksLimits(answer) && dropLimits(answer).length < 80) {
     try {
-      const r = await within(env.AI.run(MODEL, { messages: [{ role: 'system', content: messages[0].content + ' ' + NO_LIMITS_RULE }, messages[1]], ...ANSWER_RUN }), STRONG_TIMEOUT_MS);
+      const r = await within(runFree(env, MODEL, { messages: [{ role: 'system', content: messages[0].content + ' ' + NO_LIMITS_RULE }, messages[1]], ...ANSWER_RUN }), STRONG_TIMEOUT_MS);
       const again = scrubOut(redact(noThink(String(pick(r)).trim())), env);
       if (again && !talksLimits(again)) { answer = again; model = MODEL; outcome += '; limits line, asked again'; }
     } catch (_) { /* the cut below still runs */ }
