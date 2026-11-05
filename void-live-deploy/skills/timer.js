@@ -105,8 +105,10 @@ export function setLine(th) {
 export function addMs(lower) {
   const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, ''));
   const m = /^(?:please\s+)?(?:add|plus|put\s+on|give\s+(?:it|me)|extend\s+(?:it|the\s+(?:timer|countdown))\s+by|another)\s+(?:an?\s+other\s+|another\s+|an?\s+extra\s+|extra\s+)?(.+?)(?:\s+(?:more|extra))?(?:\s+(?:to|on(?:to)?)\s+(?:the\s+|my\s+|it|that)?\s*(?:timer|countdown)?)?(?:\s+please)?$/.exec(s);
-  if (!m || !/(?:hours?|hrs?|minutes?|mins?|seconds?|secs?)\b/.test(m[1])) return 0;
-  return parseDuration(m[1].replace(/^another\s+/, 'one '));
+  const bit = m ? m[1].replace(/^another\s+/, 'one ').trim() : '';
+  // "add one minute" is a duration. "add task … 30 min" is a task that mentions a length.
+  if (!m || !isDurationRequest(bit)) return 0;
+  return parseDuration(bit);
 }
 
 const clock = (ms) => { const t = Math.max(0, Math.round(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60;
