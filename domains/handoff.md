@@ -78,6 +78,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Agent no kept (cursor, 2026-11-05)**: a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271
+- **Autosalvage batch (cursor, 2026-11-05)**: heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is 11,749 live and none failed. https://github.com/atomeam/void-loop/pull/2269
 - **Country capitals (cursor, 2026-11-05)**: Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every country. Registry live count 11,739 to 11,743. https://github.com/atomeam/void-loop/pull/2265
 - **Glass pages, lighter phone home (cursor, 2026-11-05)**: tools, the news list, the team page and credits share the glass. An empty phone home fetches the ask engine only after a tap, a key, or twelve seconds. https://github.com/atomeam/void-loop/pull/2263
 - **Loop checks start themselves (cursor, 2026-11-05)**: a loop pull request opened with the workflow token no longer sits approval-required. The lap starts the same checks with workflow_dispatch (review, merge gate, deploy's quick checks, collide, and the path-limited ones). Verse's review still decides the merge. https://github.com/atomeam/void-loop/pull/2266
@@ -313,6 +315,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders
 
+- **Agent no kept (cursor, 2026-11-05):** judge a no by the task id it was sent to (`taskById`), not `tasks[0]` (that is Verse's newer note, still `needs_yes`). The note is inserted before the response (`writesFirst` on the list read). A note ask waits for that, then retries on a new thread if the post has no note. Playbook: `docs/playbooks/agent.md`.
 - **Agent follow-ups (cursor, 2026-11-05):** a closed tab's news is `seen = 0` on the task, not a push service. Approve resumes with `decisionOf`; decline stops; the Made shelf is the task's own steps. Playbook: `docs/playbooks/agent.md`. Probe: `node tools/agent-probe.mjs https://a-to-mind.com --all`.
 - **Visible progress (cursor, 2026-11-03):** `lib/visible.js` ranks a visitor-facing fix above laps, gates, incident logs and regenerated files. The wants card shows how many page and skill commits shipped today and this week. Playbook: `docs/playbooks/visible-progress.md`.
 - 2026-11-01 (OpenHands): run the free OpenHands agent stack on a local model, no cloud key. `pip install -U openhands-sdk openhands-tools` (one command: a matched set), then `LLM(model="openai/qwen3:4b", base_url="http://127.0.0.1:11434/v1", api_key="local-llm")`; install Ollama with the pip `zstandard` module (no `zstd` on the box) and `sudo cp` its `bin`/`lib`. Two traps: `python -m openhands.core.main` is gone, and a thinking model needs `/no_think` plus enough `max_tokens` or it emits no tool call. Full steps: `docs/playbooks/openhands.md`.

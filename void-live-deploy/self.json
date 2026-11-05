@@ -379,6 +379,12 @@
   {
    "state": "open",
    "date": "",
+   "ask": "archive/script_0.js and the English word list are still the top of the salvage queue",
+   "from": "cursor 2026-11-05"
+  },
+  {
+   "state": "open",
+   "date": "",
    "ask": "a country whose capital item has neither an English label nor an English Wikipedia sitelink still fails and stays a fix job",
    "from": "cursor 2026-11-05"
   }
@@ -564,8 +570,68 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T10:41:27Z",
-   "subject": "Country capital bots name St. John's and Ciudad de la Paz"
+   "at": "2026-11-05T11:22:40Z",
+   "subject": "Note the salvage batch on the handoff"
+  },
+  {
+   "at": "2026-11-05T11:16:36Z",
+   "subject": "Incident: the browser suite failed on 87febfd1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T11:15:27Z",
+   "subject": "Restore canonical tags the SEO check requires, and keep the team stylesheet"
+  },
+  {
+   "at": "2026-11-05T11:13:29Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T11:08:11Z",
+   "subject": "Refresh parity line numbers after the page merge"
+  },
+  {
+   "at": "2026-11-05T11:04:45Z",
+   "subject": "Incident: the browser suite failed on 66ff43d5 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T11:01:36Z",
+   "subject": "Give the credits page the same page-fade rule as every other page"
+  },
+  {
+   "at": "2026-11-05T11:01:31Z",
+   "subject": "Let Verse write first on /agent/, still waiting for a yes before a send. (#2267)"
+  },
+  {
+   "at": "2026-11-05T10:55:39Z",
+   "subject": "Verse loop: task, Queue job mvop0beq (feature: podchaser-com-c86b8e98): build (#2264)"
+  },
+  {
+   "at": "2026-11-05T10:53:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-05T10:53:52Z",
+   "subject": "Start a loop pull request's checks without an approval click (#2266)"
+  },
+  {
+   "at": "2026-11-05T10:53:38Z",
+   "subject": "Salvage the next ranked bots and credit the icon sets"
+  },
+  {
+   "at": "2026-11-05T10:51:23Z",
+   "subject": "Incident: the browser suite failed on c0d6773b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T10:48:49Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T10:45:34Z",
+   "subject": "Site test: visitor pass 13/15"
+  },
+  {
+   "at": "2026-11-05T10:45:32Z",
+   "subject": "Bring tools, news, team and credits onto the glass, and keep an empty phone home lighter. (#2263)"
   },
   {
    "at": "2026-11-05T10:28:36Z",
@@ -582,70 +648,26 @@
   {
    "at": "2026-11-05T10:18:19Z",
    "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T10:15:49Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T10:02:10Z",
-   "subject": "Incident: the browser suite failed on 2cb2e124 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T09:51:45Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next (the target)"
-  },
-  {
-   "at": "2026-11-05T09:49:10Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 no-family, 2 covered, 1 gone); next (the target)"
-  },
-  {
-   "at": "2026-11-05T09:49:02Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-11-05T09:47:45Z",
-   "subject": "Site test: visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T09:45:35Z",
-   "subject": "The agent inbox, approve that resumes, and steps you can reopen (#2260)"
-  },
-  {
-   "at": "2026-11-05T09:42:40Z",
-   "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T09:42:03Z",
-   "subject": "Incident: the browser suite failed on 62dc2f94 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T09:35:00Z",
-   "subject": "Answer list clear, ephemeral off, and the self card before skills finish loading (#2250) (#2259)"
-  },
-  {
-   "at": "2026-11-05T09:21:57Z",
-   "subject": "Move the shipped bot work to Just finished (#2258)"
-  },
-  {
-   "at": "2026-11-05T09:21:04Z",
-   "subject": "Site test: fix: \"show the days until a date\" load 1796 ms > 1200"
-  },
-  {
-   "at": "2026-11-05T09:18:20Z",
-   "subject": "Verse fixes its util skill: learn to handle \"electricity bill calc 400kwh at 0.12\""
-  },
-  {
-   "at": "2026-11-05T09:12:02Z",
-   "subject": "Migrate the next autosalvage batch into bots (#2257)"
-  },
-  {
-   "at": "2026-11-05T09:07:25Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Autosalvage batch (cursor, 2026-11-05)",
+    "line": "heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service.…"
+   },
+   {
+    "name": "Country capitals (cursor, 2026-11-05)",
+    "line": "Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every…"
+   },
+   {
+    "name": "Glass pages, lighter phone home (cursor, 2026-11-05)",
+    "line": "tools, the news list, the team page and credits share the glass. An empty phone home fetches the ask engine only after a tap, a key, or twelve seconds. https://github.com/atomeam/void-loop/pull/2263"
+   },
+   {
+    "name": "Loop checks start themselves (cursor, 2026-11-05)",
+    "line": "a loop pull request opened with the workflow token no longer sits approval-required. The lap starts the same checks with workflow_dispatch (review, merge gate, deploy's quick checks, collide, and the path-limited ones). Verse's review…"
+   },
    {
     "name": "Main reds (cursor, 2026-11-05)",
     "line": "the recipe handover stays quiet when the audio context cannot build a buffer, \"forget this\" on a phone closes the chess board and puts the tucked list back, and \"put in the page\" uses the draft a second read of the same tab would have…"
@@ -653,22 +675,6 @@
    {
     "name": "Agent follow-ups (cursor, 2026-11-05)",
     "line": "/agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260"
-   },
-   {
-    "name": "Suite reds after #2251 (cursor, 2026-11-05)",
-    "line": "clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it.…"
-   },
-   {
-    "name": "Autosalvage batch (cursor, 2026-11-05)",
-    "line": "open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257"
-   },
-   {
-    "name": "Open-data bot families (cursor, 2026-11-05)",
-    "line": "ECB currency pairs, 2026 public holidays and Wikidata country facts, each checked against a real call. Registry live count 9,186 to 11,732. Antigua and Equatorial Guinea stay failed as fix jobs.…"
-   },
-   {
-    "name": "Empty home, lighter (cursor, 2026-11-05)",
-    "line": "an empty phone home fetches about 40 files and 320 KB instead of 95 and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and…"
    }
   ],
   "ladders": [
@@ -823,8 +829,8 @@
   }
  ],
  "visible": {
-  "day": 21,
-  "week": 429
+  "day": 25,
+  "week": 433
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

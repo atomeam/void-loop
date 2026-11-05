@@ -69,3 +69,5 @@ Open work:
 - 2026-11-05T09:58Z verse-loop (verse): task, Queue job mvop09tv (feature: podchaser-com-d04309ea): build ; all checks green; branch loop/20261105-095831
 
 - 2026-11-05T10:45Z verse-loop (verse): task, Queue job mvop0beq (feature: podchaser-com-c86b8e98): build ; all checks green; branch loop/20261105-104546
+
+- 2026-11-05T11:02Z verse-loop (verse): task, Queue job mvoxkjn0 (feature: amazon-com-00694bb6): build "Pr; all checks green; branch loop/20261105-110234

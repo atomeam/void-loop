@@ -182,3 +182,51 @@ test("jsdelivr-url", async () => {
   const r = await fetch(b.run("left-pad 1.3.0"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
   assert.equal(r.status, 200, "the pinned jsDelivr URL answers");
 });
+test("permalink-check", () => {
+  const b = bot("permalink-check"); assert.ok(b && BOT("permalink-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · no heading ids until a human seals a catalog");
+  assert.match(b.run("<h2 id=\"capital-cities\">Capital cities</h2>"), /slugified from the heading/);
+  assert.match(b.run('<h2 id="capitals"><a href="#capitals">Capital cities</a></h2>'), /inside the heading/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("status-seal-check", () => {
+  const b = bot("status-seal-check"); assert.ok(b && BOT("status-seal-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · no status page until a human seals a snapshot");
+  assert.match(b.run("All Systems Operational"), /not All Systems Operational/);
+  assert.match(b.run("stage: operational · 99.98%"), /no invented uptime/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("subprocessors-check", () => {
+  const b = bot("subprocessors-check"); assert.ok(b && BOT("subprocessors-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · no /subprocessors until a human seals a catalog");
+  assert.match(b.run("Cloudflare, Inc. | serves the site · SOC 2"), /no certification badge/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("weak-signal-check", () => {
+  const b = bot("weak-signal-check"); assert.ok(b && BOT("weak-signal-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("a faint note | the feed changed |"), "unattested · watched needs a disconfirm path, and nothing is sent");
+  assert.match(b.run("a clue | early warning of a storm | look again"), /no early-warning badge/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("simple-icon-url", async () => {
+  const b = bot("simple-icon-url"); assert.ok(b && BOT("simple-icon-url"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("GitHub 16.36.0"), "send a slug and a version, like github 16.36.0");
+  assert.equal(b.credit.license, "CC0-1.0");
+  assert.ok(lineage(b), 'lineage is real');
+  const r = await fetch(b.run("github 16.36.0"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
+  assert.equal(r.status, 200, "the pinned simple-icons URL answers");
+});
+test("tabler-icon-url", async () => {
+  const b = bot("tabler-icon-url"); assert.ok(b && BOT("tabler-icon-url"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("home 3.50.0"), "send a style, a slug and a version, like outline home 3.50.0");
+  assert.equal(b.credit.license, "MIT");
+  assert.ok(lineage(b), 'lineage is real');
+  const r = await fetch(b.run("outline home 3.50.0"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
+  assert.equal(r.status, 200, "the pinned Tabler icon URL answers");
+});
