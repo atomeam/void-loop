@@ -1188,7 +1188,9 @@
     "place": 7,
     "why": "not sized yet, hardness 92, Tranco 342989"
    },
-   "words": "the family page's own (the model's were refused: names colorscheme; names colorscheme; says what the page does not do (generate, harmonious, explore, relationships, visu)"
+   "words": "the family page's own (the model's were refused: names colorscheme; names colorscheme; says what the page does not do (generate, harmonious, explore, relationships, visu)",
+   "rows": "12/15",
+   "gated": "2026-11-05T18:18:30Z"
   },
   "base64.guru": {
    "at": "2026-11-05T18:14:26Z",
@@ -1205,14 +1207,6 @@
   }
  },
  "runs": [
-  {
-   "at": "2026-10-26T07:21:40Z",
-   "line": "Versus: took on no site (also read: 4 not-judged); next heycolor.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
   {
    "at": "2026-10-26T07:29:37Z",
    "line": "Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com",
@@ -1557,6 +1551,15 @@
    "pages_per_day": 0,
    "reads_next": "sipcalculator.in",
    "noop": true
+  },
+  {
+   "at": "2026-11-05T18:18:36Z",
+   "line": "Versus: took on colorscheme.ru (colour, /color/colour-picker-tool/?c=ff5733), surpassed 12 of 15 rows (also read: 3 covered, 3 no-family, 1 walled); next  (the target)",
+   "built": 1,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "tm.community"
   }
  ]
 }
