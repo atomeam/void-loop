@@ -3,23 +3,18 @@
 
 import { getCatalog } from './catalog.js';
 
-export async function onRequest(context) {
-  const { searchParams } = new URL(context.request.url);
-  const query = searchParams.get('q')?.toLowerCase().trim();
+/** Products whose name or slug contains the query. An empty query matches none. Pure. */
+export function matchingProducts(products, query) {
+  const q = String(query || '').toLowerCase().trim();
+  if (!q) return [];
+  return (products || []).filter((p) => String(p && p.name || '').toLowerCase().includes(q) || String(p && p.slug || '').toLowerCase().includes(q));
+}
 
-  if (!query) {
-    return new Response(JSON.stringify({ ok: true, products: [] }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
+export async function onRequestGet(context) {
+  const query = new URL(context.request.url).searchParams.get('q');
+  if (!String(query || '').trim()) {
+    return new Response(JSON.stringify({ ok: true, products: [] }), { headers: { 'Content-Type': 'application/json' } });
   }
-
   const { products } = await getCatalog(context);
-  const matches = products.filter(p => 
-    p.name.toLowerCase().includes(query) || 
-    p.slug.toLowerCase().includes(query)
-  );
-
-  return new Response(JSON.stringify({ ok: true, products: matches }), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+  return new Response(JSON.stringify({ ok: true, products: matchingProducts(products, query) }), { headers: { 'Content-Type': 'application/json' } });
 }

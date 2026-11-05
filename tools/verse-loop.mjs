@@ -30,6 +30,9 @@ export const AGENTS = ['verse', 'opencode', 'aider', 'cmd'];
 export const DEFAULT_CHECKS = [
   { name: 'guard-source', cmd: 'node tools/guard-source.mjs', timeoutMin: 5 },
   { name: 'growth-suites', cmd: 'node tools/growth-suites.mjs', timeoutMin: 15 },
+  // a new /api file that is not in openapi.json fails here, before the pull request opens. automerge's safety-check
+  // holds that pull request after every dispatched check is green (#2268), and self-heal never sees it: it is not a red check.
+  { name: 'openapi', cmd: 'node tools/openapi-check.mjs', timeoutMin: 2 },
 ];
 
 /** Parse argv into options. Pure. */

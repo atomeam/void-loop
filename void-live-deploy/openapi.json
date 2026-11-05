@@ -250,6 +250,24 @@
           "429": { "$ref": "#/components/responses/SlowDown" }
         }
       }
+    },
+    "/api/productsearch": {
+      "get": {
+        "tags": ["discovery"],
+        "operationId": "searchProducts",
+        "summary": "Search what A-to-Mind sells, by name or slug",
+        "description": "The same catalog as /api/catalog. `q` is matched against the product name and slug. An empty `q` returns no products.",
+        "parameters": [
+          { "name": "q", "in": "query", "required": false, "schema": { "type": "string" }, "description": "Words from the product name or slug." }
+        ],
+        "responses": {
+          "200": {
+            "description": "The matches. Each product uses the catalog's fields.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProductSearch" } } }
+          },
+          "429": { "$ref": "#/components/responses/SlowDown" }
+        }
+      }
     }
   },
   "components": {
@@ -491,6 +509,28 @@
           },
           "refreshed": { "type": ["string", "null"], "description": "When the saved catalog was last read from the store." },
           "source": { "enum": ["store", "live", "none"] }
+        }
+      },
+      "ProductSearch": {
+        "type": "object",
+        "required": ["ok", "products"],
+        "properties": {
+          "ok": { "const": true },
+          "products": {
+            "type": "array",
+            "description": "The same product fields as /api/catalog.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": { "type": "string" },
+                "name": { "type": "string" },
+                "price_cents": { "type": ["integer", "null"] },
+                "currency": { "type": "string" },
+                "url": { "type": "string" },
+                "available": { "type": "boolean" }
+              }
+            }
+          }
         }
       }
     }

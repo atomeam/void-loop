@@ -11,7 +11,8 @@ import { ensureStoreTables, loadCatalog, refreshCatalog, isStale } from '../../l
 
 const out = (body, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'public, max-age=300' } });
 
-export async function onRequestGet({ env, waitUntil }) {
+// The public catalog list. /api/catalog and /api/productsearch both read this, so a search cannot drift from the list.
+export async function getCatalog({ env, waitUntil }) {
   let products = [], refreshed = null, db = true;
   try { await ensureStoreTables(env); ({ products, refreshed } = await loadCatalog(env)); } catch (_) { db = false; }
   if (db && isStale(refreshed)) {
@@ -21,7 +22,12 @@ export async function onRequestGet({ env, waitUntil }) {
   }
   let source = products.length ? 'store' : 'none';
   if (!db && !products.length) { const live = await fetchStore(env.GUMROAD_FETCH || fetch).catch(() => null); if (live) { products = live.map((p) => ({ ...p, available: !p.unpublished })); source = 'live'; } }
-  return out({ products: products.map(publicProduct), refreshed, source });
+  return { products: products.map(publicProduct), refreshed, source };
+}
+
+export async function onRequestGet(ctx) {
+  const { products, refreshed, source } = await getCatalog(ctx);
+  return out({ products, refreshed, source });
 }
 
 export async function onRequestPost({ request, env }) {
