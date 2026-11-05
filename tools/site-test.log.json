@@ -3127,5 +3127,29 @@
    ]
   },
   "note": "fix: \"show the days until a date\" load 1796 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T09:32:04Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 3182,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 14986 ms"
+     ]
+    },
+    {
+     "ask": "convert 5 miles to kilometers",
+     "why": [
+      "slow 9810 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
  }
 ]
