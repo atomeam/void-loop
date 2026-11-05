@@ -1361,10 +1361,14 @@
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
     }
     let sayCount = 0;
+    function refitGamePanels() { // the ask line under the bar grows the dock; a panel fitted a moment earlier would end inside it (#2250)
+      for (const c of stage.querySelectorAll(':scope > .side-card')) if (typeof c.fitPanel === 'function') c.fitPanel();
+    }
     function say(msg) {
       whisper.textContent = msg || '';
       const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
-      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) { whisper.textContent = ''; refitGamePanels(); } }, 3500);
+      refitGamePanels(); // same turn as the text: the suite reads the panel before the next frame's resize observer (#2250)
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
@@ -6414,6 +6418,22 @@ say('nothing selected to remove');
             return;
           }
         }
+      }
+      // a sum the page's own calculator already answers ("5 dollars a day for a year", a GPA, compound interest).
+      // The fuzzy vocabulary wait and the walk through every skill file above a match ran past 4 s on a slow link
+      // while the lanes were still loading the index (watchdog #110, verify run 42036332040: 4022 ms, note calc).
+      // Loan payment is not this path: it waits for the loan skill. A skill that also takes the ask replaces the card once the lanes finish.
+      if (!skillsLoaded && wantsCalc(typed.toLowerCase())) {
+        const lowerNow = typed.toLowerCase();
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        showCalc(typed).then((src) => { if (src === 'none') reportMiss(typed, 'calc'); });
+        loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'calc' });
+        say('');
+        const calcEl = vpageEl, askNoEarly = askNo;
+        skillsReady.then(() => { if (askNoEarly === askCount && vpageEl === calcEl) return runLearnedSkills(typed, lowerNow); }).catch(() => {});
+        return;
       }
       // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
