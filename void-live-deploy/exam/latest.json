@@ -1,21 +1,14 @@
 {
-  "at": "2026-11-05T16:17:21.764Z",
+  "at": "2026-11-05T16:51:34.341Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 97.7,
+      "score": 98.5,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play a video about cooking pasta",
-          "failed": [
-            "topic"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the trailer",
           "failed": [
@@ -39,35 +32,12 @@
       }
     },
     "podcasts": {
-      "score": 80.8,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "fast"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of radiolab",
-          "failed": [
-            "fast",
-            "audio",
-            "episode"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play the latest episode of the daily",
-          "failed": [
-            "fast"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of stuff you should know",
           "failed": [
             "audio",
             "episode"
@@ -116,11 +86,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio",
-            "episode"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -313,17 +281,10 @@
       }
     },
     "sports": {
-      "score": 87,
+      "score": 90.7,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "mlb scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "premier league scores",
           "failed": [
@@ -354,27 +315,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -576,6 +516,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 80.8
+    "score": 86.4
   }
 }
