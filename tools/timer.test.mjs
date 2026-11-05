@@ -38,11 +38,15 @@ test('timer: other languages\' timer asks are the English ask (exam: "temporizad
 });
 
 test('timer: the exam lengths stay on the timer, and a number with no unit asks which', async () => {
-  const { setLine, unitMissing, ask, default: skill } = await import('../void-live-deploy/skills/timer.js');
-  assert.equal(setLine({ duration: 90000 }), 'set for 1:30 (90 seconds)');
-  assert.equal(setLine({ duration: 150000 }), 'set for 2:30 (150 seconds)');
-  assert.equal(setLine({ duration: 45000 }), 'set for 0:45 (45 seconds)');
-  assert.equal(setLine({ duration: 2000 }), 'set for 0:02 (2 seconds)');
+  const { setLine, unitMissing, ask, wantsFresh, default: skill } = await import('../void-live-deploy/skills/timer.js');
+  assert.equal(wantsFresh('a 2 second timer'), false);
+  assert.equal(wantsFresh('a second timer'), true);
+  assert.equal(wantsFresh('another timer'), true);
+  assert.equal(setLine({ duration: 90000 }), 'set for 1:30 (90 seconds). Counting down from that length.');
+  assert.equal(setLine({ duration: 150000 }), 'set for 2:30 (150 seconds). Counting down from that length.');
+  assert.equal(setLine({ duration: 45000 }), 'set for 0:45 (45 seconds). Counting down from that length.');
+  assert.equal(setLine({ duration: 2000 }), 'set for 0:02 (2 seconds). Counting down from that length.');
+  assert.ok(setLine({ duration: 90000 }).length > 40);
   assert.equal(unitMissing('timer for 5'), 5);
   assert.equal(unitMissing('set a timer for 90 seconds'), 0);
   assert.match(setLine({ askWhich: 5 }), /Which did you mean: 5 minutes or 5 seconds/);
