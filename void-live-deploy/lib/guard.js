@@ -50,6 +50,7 @@ export const LIMITS = {
   approval: { rpm: 60, body: 8000 },
   will: { rpm: 60, body: 64000 },
   catalog: { rpm: 60, body: 1000 },
+  productsearch: { rpm: 30, body: 0 }, // GET only: a query in, matching catalog products out (functions/api/productsearch.js)
   passkey: { rpm: 60, body: 20000 },
   mine: { rpm: 120, body: 900200 },
   publish: { rpm: 20, body: 40000 }, // a paid Verse's public page (/@name)

@@ -3367,12 +3367,13 @@ try {
     // 183 redact selection
     await S.ask('clear', 500);
     await S.ask('sticky note my code is hunter2 ok', 600);
-    await S.p.evaluate(() => { const w = document.createTreeWalker(document.querySelector('#stage .thing.sticky'), 4); let n; while ((n = w.nextNode())) { const i = n.nodeValue.indexOf('hunter2'); if (i >= 0) { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 7); const s = getSelection(); s.removeAllRanges(); s.addRange(r); return; } } });
+    await until(() => S.p.$('#stage .thing.sticky'), 4000);
+    await S.p.evaluate(() => { const root = document.querySelector('#stage .thing.sticky'); if (!root) return; const w = document.createTreeWalker(root, 4); let n; while ((n = w.nextNode())) { const i = n.nodeValue.indexOf('hunter2'); if (i >= 0) { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 7); const s = getSelection(); s.removeAllRanges(); s.addRange(r); return; } } });
     await S.p.waitForTimeout(200);
     await S.ask('redact selection', 500);
-    const red = await S.p.evaluate(() => ({ spans: document.querySelectorAll('.sf-redact').length, text: document.querySelector('#stage .thing.sticky').innerText }));
+    const red = await S.p.evaluate(() => { const e = document.querySelector('#stage .thing.sticky'); return { spans: document.querySelectorAll('.sf-redact').length, text: e ? e.innerText : '' }; });
     await S.ask('unredact', 400);
-    const unred = await S.p.$eval('#stage .thing.sticky', (e) => e.innerText);
+    const unred = await S.p.$eval('#stage .thing.sticky', (e) => e.innerText).catch(() => '');
     check('tools pack 8: "redact selection" blacks out the text you selected (the words are gone from the page text, the line keeps its shape) and "unredact" brings them back', red.spans >= 1 && !/hunter2/.test(red.text) && /my code is/.test(red.text) && /hunter2/.test(unred) && !S.errors.length, JSON.stringify({ red, unred, errors: S.errors }));
     // 184 panic
     await S.ask('panic', 400);

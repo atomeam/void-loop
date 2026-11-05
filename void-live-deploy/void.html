@@ -6296,6 +6296,23 @@ say('nothing selected to remove');
         }
         if (did) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: listClear ? 'list-cleared' : 'list-removed' }); return; }
       }
+      // "clear" is the whole stage, already in memory. After a reload the suite asks within a few hundred ms, while the
+      // rest of the index is still loading, and a whispered "waking up" let the test move on. The clear then landed late
+      // and wiped the sticky the next ask had just put up, so the redact check's tree walker had no node (#2250).
+      if (wantsClearStage(typed.toLowerCase())) {
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        const n = Object.keys(things).length;
+        if (!massOk(n, 'things from the stage')) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'kept' }); return; }
+        things = {};
+        selectedId = null;
+        save(); render();
+        try { document.dispatchEvent(new CustomEvent('void:stage-cleared')); } catch (_) {} // the walking cartoon lives outside the record (skills/walker.js)
+        say('');
+        loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'cleared' });
+        return;
+      }
       // a note asked while the index is still loading (the sticky card is already up): "another sticky note …" is the sticky's own ask (#2250)
       if (!skillsLoaded && /\b(?:sticky|note)\b/i.test(typed) && stageKinds.sticky && typeof stageKinds.sticky.ask === 'function') {
         if (!skillsRunning) takeUndoSnapshot();
