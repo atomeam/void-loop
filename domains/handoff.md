@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · cursor/suite-gate-ff12 · a pull request merges only after the full suite passes on top of current main, one at a time · 2026-11-05 15:25 UTC
 - Cursor cloud agent · helper/timer-durations-f90f · a timer keeps the length it was set for (90 seconds, add one minute, 45 seconds) and a bare "timer for 5" asks which unit · 2026-11-05 14:05 UTC
 - Cursor cloud agent · helper/kv-namespace-f90f · only Verse's wrangler binds Verse's KV namespace · 2026-11-05 16:05 UTC
 - Cursor cloud agent · helper/selfcheck-edge-f90f · the page-check report is kept in the edge cache, so Verse writes no KV · 2026-11-05 15:55 UTC

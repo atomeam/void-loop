@@ -255,6 +255,7 @@ jobs:
           node tools/grow.mjs retire "Taken back off the site: \"$subject\" ($sha) failed the browser suite on main ($why)." --by void-verify --ref "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" && git add void-live-deploy/void.growth.json || true
           git commit -q -m "Revert \"$subject\"" -m "It shipped and the browser suite failed on main (job browser-suite in Verse verify, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Verse-auto-revert: $sha"
           git push origin main
+          node tools/suite-gate.mjs queue "$sha" "$why" || echo "::warning title=Fix job not filed::the revert is on main; the heal job was not queued"
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
           echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
