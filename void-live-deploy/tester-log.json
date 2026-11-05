@@ -1,16 +1,41 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 84,
- "runsTotal": 235,
+ "cases": 85,
+ "runsTotal": 237,
  "kinds": {
-  "grow": 68,
+  "grow": 69,
   "file": 77,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 36
+  "visitor": 37
  },
  "runs": [
+  {
+   "at": "2026-11-05T03:03:39Z",
+   "passed": 86,
+   "of": 88,
+   "kind": "grow",
+   "ms": 348,
+   "note": "new ground passed, kept as a regression case: \"who is the auhtor of dune\" (skill:book)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 3 < 5"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-05T02:55:35Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T02:28:58Z",
    "passed": 0,
@@ -343,20 +368,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T15:56:44Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T15:29:24Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -431,10 +442,10 @@
   },
   {
    "from": "2026-10-29",
-   "runs": 44,
-   "passed": 613,
-   "of": 701,
-   "ms": 384
+   "runs": 46,
+   "passed": 699,
+   "of": 789,
+   "ms": 377
   }
  ],
  "seen": {
@@ -447,14 +458,14 @@
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
   "skill:automations": "2026-11-05T00:02:48Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
-  "skill:book": "2026-11-05T00:26:50Z",
+  "skill:book": "2026-11-05T03:03:39Z",
   "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T00:26:50Z",
+  "skill:cartoon": "2026-11-05T03:03:39Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -710,6 +721,8 @@
   "skill:list-starters": "2026-10-22T01:56:37Z",
   "skill:memory-preview": "2026-10-22T01:56:37Z",
   "skill:stage-out": "2026-10-22T01:56:37Z",
-  "skill:advice": "2026-11-05T00:26:50Z"
+  "skill:advice": "2026-11-05T00:26:50Z",
+  "skill:ascii": "2026-11-05T03:03:39Z",
+  "skill:backdrop": "2026-11-05T03:03:39Z"
  }
 }

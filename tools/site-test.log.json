@@ -2610,5 +2610,54 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T02:55:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1745,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12168 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T03:03:39Z",
+  "passed": 86,
+  "of": 88,
+  "ms": 348,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1745,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12168 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"who is the auhtor of dune\" (skill:book)"
  }
 ]
