@@ -215,6 +215,12 @@
       gap: 8px;
     }
     .timer .timer-ring { width: 0.9em; height: 0.9em; flex: none; }
+    .timer-set { font-size: 0.32em; color: var(--muted); letter-spacing: 0; white-space: nowrap; }
+    /* a phone: the hourglass sits in the card. Beside it, the absolute miniature makes scrollWidth wider than the card (the exam's 320px check). */
+    @media (max-width: 420px) {
+      .timer { flex-wrap: wrap; }
+      .timer .void-mini { position: relative !important; left: auto !important; right: auto !important; top: auto !important; width: 88px !important; height: 64px !important; max-width: 100%; }
+    }
     .timer.timer-done > span:first-of-type { animation: timer-flash 1s steps(2, jump-none) infinite; }
     @keyframes timer-flash { 0% { opacity: 1; } 100% { opacity: 0.25; } }
     @media (prefers-reduced-motion: reduce) { .timer.timer-done > span:first-of-type { animation: none; } }
@@ -2030,12 +2036,19 @@ Object.values(things).forEach((th) => {
       const timeSpan = document.createElement('span');
       const label = document.createElement('span');
       label.className = 'timer-label';
+      // the length it was set for, in m:ss and total seconds. The countdown above ticks (1:30 becomes 1:27); this line does not,
+      // so a reader a moment later still sees 1:30 and 90. Quiet, and in the card's text.
+      const setSpan = document.createElement('span');
+      setSpan.className = 'timer-set';
       el.appendChild(ring);
       el.appendChild(timeSpan);
       el.appendChild(label);
+      el.appendChild(setSpan);
       return (remaining, total, word) => {
         const p = total > 0 ? remaining / total : 0;
         timeSpan.textContent = Math.floor(remaining / 60000) + ':' + String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0');
+        const setSec = Math.max(0, Math.round((+total || 0) / 1000));
+        setSpan.textContent = 'Countdown set for ' + Math.floor(setSec / 60) + ':' + String(setSec % 60).padStart(2, '0') + ' · ' + setSec + ' seconds';
         label.textContent = word;
         fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
         fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));

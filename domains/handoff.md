@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/selfcheck-edge-f90f · the page-check report is kept in the edge cache, so Verse writes no KV · 2026-11-05 15:55 UTC
+- Cursor cloud agent · helper/range-diff-f90f · the diff between two commits lists the files, the failed jobs at each end, and the assertion lines from the earlier log · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/emojigraph-tower-f90f · emojigraph.org stays a lane page, and that page is kept so it opens again with the network cut · 2026-11-05 15:05 UTC
 - Cursor cloud agent · helper/health-pulse-f90f · a dropped walkthrough step stays where it was dropped; the spectator link check already passes · 2026-11-05 14:22 UTC
 - Cursor cloud agent · helper/actions-log-f90f · failed GitHub Actions job names and the failing step's log, for any commit, with the count equal to the names · 2026-11-05 14:20 UTC
@@ -84,6 +86,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - **Verify reds, the sum and the tray chip (cursor, 2026-11-05)**: a sum the page already knows answers before the skill lanes; a walkthrough chip is placed once the new thing is on the stage, so the drag does not measure it and then watch the bar jump. #2250 stays open until Verse verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2301
 - **Blank home, videos keep playing (cursor, 2026-11-05)**: the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was. https://github.com/atomeam/void-loop/pull/2291
 - **Phone panel and tray drag (cursor, 2026-11-05)**: a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands. https://github.com/atomeam/void-loop/pull/2289
+- **Timers and emoji exam (cursor, 2026-11-05)**: a timer card keeps the length it was set for (1:30 and 90 stay while it ticks), "timer for 5" asks minutes or seconds, the hourglass fits a 320px card, heart / feu / thank you answer with an emoji, and a red circle fills red. https://github.com/atomeam/void-loop/pull/2288
 - **Verify reds, the next ones (cursor, 2026-11-05)**: "clear all the notes" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2283
 - **Glass stylesheet, not blocking (cursor, 2026-11-05)**: the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281
 - **Figures doing (cursor, 2026-11-05)**: "what are the figures doing" answers from together before the page says waking up, while the rest of the skills are still loading. Nothing ranked above together takes the phrase. https://github.com/atomeam/void-loop/pull/2279

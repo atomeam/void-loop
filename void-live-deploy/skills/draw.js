@@ -240,7 +240,13 @@ function runShape(pic, api, step = 0) {
   let onStage = false;
   if (step === 0 && type && st && typeof st.kinds === 'function') { // the stage's one shape gets the same ask in English, made the named type
     const k = st.kinds().shape;
-    if (k && typeof k.ensure === 'function') { const th = k.ensure(st, type); th.shapeType = type; if (typeof st.alterThing === 'function') st.alterThing(th, 'shape', pic.english); st.save(); st.render(); onStage = true; }
+    if (k && typeof k.ensure === 'function') {
+      const th = k.ensure(st, type); th.shapeType = type; th.color = pic.hex; th.filled = true;
+      if (typeof st.alterThing === 'function') st.alterThing(th, 'shape', pic.english); // a named colour becomes the stage's own red, and the circle fills with it
+      if (!th.color) th.color = pic.hex;
+      th.filled = true;
+      st.save(); st.render(); onStage = true;
+    }
   }
   const el = showPage((p) => {
     p.innerHTML = '<h2>A ' + esc(name) + '</h2>' // void-review: ok (the name is from a closed list of colours and shapes)
