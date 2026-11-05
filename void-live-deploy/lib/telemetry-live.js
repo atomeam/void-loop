@@ -17,7 +17,8 @@ export function prLine(pr) {
   return { text: '#' + pr.number + ' ' + state + ': ' + clip(pr.title, 70), ok: !!pr.merged_at, open: pr.state === 'open' };
 }
 
-/** how a commit's checks ended, from the check-runs API: { text, failed: [names], pending }. Pure. */
+/** how a commit's checks ended, from the check-runs API: { text, failed: [names], pending }. The count and the names always agree: every failed
+ *  check is named (Verse's ask, 2026-11-04: "4 failed" named only 3 of 814032d5's four failed jobs). Pure. */
 export function checksOf(runs) {
   const list = runs && Array.isArray(runs.check_runs) ? runs.check_runs : [];
   const latest = new Map(); for (const r of list) { const k = r.name; if (!latest.has(k) || String(r.started_at) > String(latest.get(k).started_at)) latest.set(k, r); }
@@ -25,7 +26,7 @@ export function checksOf(runs) {
   const failed = all.filter((r) => r.status === 'completed' && /^(?:failure|timed_out)$/.test(r.conclusion)).map((r) => r.name);
   const pending = all.filter((r) => r.status !== 'completed').map((r) => r.name);
   const passed = all.filter((r) => r.status === 'completed' && r.conclusion === 'success').length;
-  const text = !all.length ? 'no checks reported' : passed + ' passed' + (failed.length ? ' · ' + failed.length + ' failed (' + failed.slice(0, 3).join(', ') + ')' : '') + (pending.length ? ' · ' + pending.length + ' still running' : '');
+  const text = !all.length ? 'no checks reported' : passed + ' passed' + (failed.length ? ' · ' + failed.length + ' failed (' + failed.join(', ') + ')' : '') + (pending.length ? ' · ' + pending.length + ' still running' : '');
   return { text, failed, pending, total: all.length };
 }
 /** true when every check passed, false when one failed, null while some still run or none ran (the card marks it neither way). Pure. */

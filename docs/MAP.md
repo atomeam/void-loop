@@ -216,6 +216,7 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 - **Business clarify (`skills/business-clarify.js`):** "clarify this business idea" turns a vague idea into a system plan (the idea, the problem, the systems, the automations, the handoff, the next step) that stays on the stage. The earlier `idea-clarify.js` draft stays off the routing order.
 - **Riddle (`skills/riddle.js`):** "tell me a riddle" and "another riddle" give a riddle, and the answer when asked again.
 - **Riddles and generators (`skills/riddle-gen.js`, lists run 12):** one family of `riddle` and `textgen`; both names still answer, and `tools/riddle-gen-family.test.mjs` keeps every route the same.
+- **Where is it (`skills/where-is.js`, lists run 13):** one family of the sky card (`skycard`, "where is jupiter") and the street map (`place`, "where is lisbon"); both names still answer, and `tools/where-is-family.test.mjs` keeps every route the same.
 - **Rock paper scissors (`skills/rps.js`):** "play rps" and "rock paper scissors" play one round on a card.
 - **Delivery pack (`skills/delivery-pack.js`):** "package this idea: …" and "handoff pack" turn a business idea into a structured handoff.
 - **Watch ideas (`tools/watch-ideas.mjs`):** retired 2026-11-03: prints none (idea lists are no longer the output); `--legacy` still lists.

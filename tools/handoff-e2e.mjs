@@ -491,7 +491,7 @@ async function run() {
   const b = await chromium.launch({ executablePath: process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
   let failed = 0;
   for (const [name, steps] of Object.entries(JOURNEYS)) {
-    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' }), p = await ctx.newPage(), errors = [], said = [];
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', timezoneId: 'UTC', locale: 'en-US' }), p = await ctx.newPage(), errors = [], said = [];
     p.on('pageerror', (e) => errors.push(String(e.message || e)));
     await ctx.route('**/*', serve);
     const check = async (what) => {
