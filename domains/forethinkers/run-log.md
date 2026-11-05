@@ -2,6 +2,17 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-11-05 02:09 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md` and `run-log.md`. No earlier `forethinkers/*` remote branch or open think-tank PR to fold. Picked life-extension: least recently advanced (2026-10-21 20:13); living figures and printing were advanced 2026-11-04; planet 2026-10-28. Open question 6 was the track's own next step.
+
+- Pressed Q6 on the public Source Data: PCGrimAge baseline-acceleration × semaglutide interaction −0.56 (t = −2.48) survives HsCRP/sCD163/BMI/sex (t = −2.89) and leave-one-out; placebo RTM is weak (t = −1.03); bootstrap 95% CI crosses zero and a half-split does not reproduce. Full 84 still unlinkable (67 linked). Artifacts: `experiments/semaglutide-baseline-tertiles.py` extended; `semaglutide-baseline-tertiles-q6.csv` added.
+- Re-checked Q5 blockers: MaGE coefficient CSVs still absent from GitHub (last push 2026-09-28; medRxiv still v1, not peer-reviewed); GSE327270 still 2 samples (series update 2026-09-25 left the count unchanged).
+- Registry refresh (ClinicalTrials.gov API v2, 2026-11-05): prior six NCTs unchanged in status; NCT07270120 still not recruiting. New: NCT07218445 (tirzepatide, co-primary senescence markers + biological age) and NCT06975111 (PhenoAge/GrimAge primary; multi-intervention). No new burden-selected senolytic.
+- Peer-reviewed follow-up: Corley et al., npj Aging 21 Apr 2026 (SLIM LIVER), no group-mean PCGrimAge slowing on open-label 1.0 mg semaglutide (n = 41).
+- Next open question 7: pre-specified baseline-acceleration × treatment interaction in a prospective GLP-1 DNAm-age trial.
+- Verse card idea (growth board frozen): add NCT07218445 to the trial-watch card when it next refreshes.
+
 ## 2026-10-21 14:07 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, `run-log.md` and the frontier. No earlier `forethinkers/*` branch or open think-tank PR was left to fold in. Printing was the least recently advanced track (2026-10-07), and its open question 6 was closest to an answer because the paper's full text is now readable.

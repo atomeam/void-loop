@@ -8,3 +8,6 @@ PCPhenoAge,high,13,9,-3.42,-0.33,-3.09
 OMICmAge,low,9,14,0.48,3.28,-2.8
 OMICmAge,mid,13,9,0.45,1.35,-0.89
 OMICmAge,high,14,8,-0.75,0.83,-1.58
+SystemsAge,low,13,10,0.85,5.27,-4.42
+SystemsAge,mid,11,11,2.23,3.34,-1.11
+SystemsAge,high,12,10,-4.03,0.57,-4.6

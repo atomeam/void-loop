@@ -1,0 +1,5 @@
+clock,n_linked,interaction,se,t,boot_lo,boot_hi,placebo_acc_slope,placebo_acc_t,adj_interaction,adj_t,loo_min,loo_max,loo_all_same_sign
+PCGrimAge,67,-0.5578,0.2245,-2.48,-1.0619,0.1486,-0.1758,-1.03,-0.6436,-2.89,-0.7508,-0.2572,True
+PCPhenoAge,67,0.0254,0.2162,0.12,-0.4581,0.4546,-0.4573,-3.55,-0.014,-0.07,-0.0836,0.1205,False
+OMICmAge,67,0.2515,0.2183,1.15,-0.2536,0.6627,-0.4334,-2.98,0.1911,0.88,0.0909,0.3385,True
+SystemsAge,67,-0.2055,0.1933,-1.06,-0.5798,0.3429,-0.2455,-2.16,-0.3053,-1.63,-0.2755,0.0205,False
