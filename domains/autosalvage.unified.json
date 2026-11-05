@@ -138,6 +138,48 @@
       "into": "/bots/ (country facts)",
       "test": "tools/open-data.test.mjs",
       "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/041-attested-open-graph-cards": {
+      "target": "bot",
+      "into": "/bots/ (og-card-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/044-attested-referrer-policy": {
+      "target": "bot",
+      "into": "/bots/ (referrer-policy-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/045-attested-strict-transport-security": {
+      "target": "bot",
+      "into": "/bots/ (hsts-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/046-attested-cross-origin-isolation": {
+      "target": "bot",
+      "into": "/bots/ (isolation-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/042-attested-subresource-integrity": {
+      "target": "bot",
+      "into": "/bots/ (sri-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/037-attested-api-catalog": {
+      "target": "bot",
+      "into": "/bots/ (api-catalog-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:jsdelivr/jsdelivr": {
+      "target": "tool",
+      "into": "/bots/ (jsdelivr-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

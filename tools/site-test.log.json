@@ -3037,5 +3037,95 @@
    ]
   },
   "note": "fix: \"toss it off the screen\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T09:06:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 812,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 15860 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T09:20:27Z",
+  "passed": 76,
+  "of": 89,
+  "ms": 402,
+  "kind": "file",
+  "key": "show the days until a date | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "yo new automation",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "load 1796 ms > 1200"
+   },
+   {
+    "ask": "are you web4",
+    "why": "load 1331 ms > 1200"
+   },
+   {
+    "ask": "test me on that",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "flip this card",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "fimls by kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "film metadata for ikiru pls",
+    "why": "load 1231 ms > 1200"
+   },
+   {
+    "ask": "yo watch the apollo 11 landing",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "random color",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 812,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 15860 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"show the days until a date\" load 1796 ms > 1200"
  }
 ]
