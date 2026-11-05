@@ -1,0 +1,101 @@
+{
+ "attempt": "live",
+ "occasion": 5,
+ "at": "2026-11-04T20:32:11.465Z",
+ "family": "sky",
+ "skill": "baggage",
+ "service": "the airline pages the baggage card cites (aa.com, britishairways.com)",
+ "ask": "are the baggage card's figures still on the airlines' own pages",
+ "pages": [
+  {
+   "name": "American: checked bags",
+   "url": "https://www.aa.com/web/i18n/travel-info/baggage/checked-baggage-policy.html",
+   "status": 403,
+   "ms": 96
+  },
+  {
+   "name": "American: heavy bags",
+   "url": "https://www.aa.com/web/i18n/travel-info/baggage/oversize-and-overweight-baggage.html",
+   "status": 403,
+   "ms": 29
+  },
+  {
+   "name": "American: carry-on bags",
+   "url": "https://www.aa.com/web/i18n/travel-info/baggage/carry-on-baggage.html",
+   "status": 403,
+   "ms": 35
+  },
+  {
+   "name": "British Airways: baggage",
+   "url": "https://www.britishairways.com/content/information/baggage-essentials",
+   "status": 200,
+   "ms": 394
+  }
+ ],
+ "checks": [
+  {
+   "row": "Checked bag, economy",
+   "source": "American: checked bags",
+   "figure": "50 lbs / 23 kgs",
+   "found": false
+  },
+  {
+   "row": "Checked bag, economy",
+   "source": "British Airways: baggage",
+   "figure": "23kg (50lb)",
+   "found": true
+  },
+  {
+   "row": "Checked bag, business or first",
+   "source": "American: checked bags",
+   "figure": "70 lbs / 32 kgs",
+   "found": false
+  },
+  {
+   "row": "Checked bag, business or first",
+   "source": "British Airways: baggage",
+   "figure": "32kg (70lb)",
+   "found": true
+  },
+  {
+   "row": "Heaviest bag American takes",
+   "source": "American: heavy bags",
+   "figure": "100 lbs / 45 kgs",
+   "found": false
+  },
+  {
+   "row": "Heaviest bag American takes",
+   "source": "American: heavy bags",
+   "figure": "over 53 lbs / 24 kgs to 70 lbs / 32 kgs",
+   "found": false
+  },
+  {
+   "row": "Checked bag size",
+   "source": "American: checked bags",
+   "figure": "62 in / 158 cm",
+   "found": false
+  },
+  {
+   "row": "Carry-on size",
+   "source": "American: carry-on bags",
+   "figure": "22 x 14 x 9 inches (56 x 36 x 23 cm)",
+   "found": false
+  },
+  {
+   "row": "Carry-on size",
+   "source": "British Airways: baggage",
+   "figure": "56 x 45 x 25cm",
+   "found": true
+  },
+  {
+   "row": "Personal item size",
+   "source": "American: carry-on bags",
+   "figure": "18 x 14 x 8 inches (45 x 35 x 20 cm)",
+   "found": false
+  }
+ ],
+ "found": 3,
+ "of": 10,
+ "ok": false,
+ "error": "American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: carry-on bags: HTTP 403; not found: 50 lbs / 23 kgs (American: checked bags), 70 lbs / 32 kgs (American: checked bags), 100 lbs / 45 kgs (American: heavy bags), over 53 lbs / 24 kgs to 70 lbs / 32 kgs (American: heavy bags), 62 in / 158 cm (American: checked bags), 22 x 14 x 9 inches (56 x 36 x 23 cm) (American: carry-on bags), 18 x 14 x 8 inches (45 x 35 x 20 cm) (American: carry-on bags)"
+}

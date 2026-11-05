@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T17:27:05.514Z",
+  "at": "2026-11-05T03:30:27.775Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,16 +32,56 @@
       }
     },
     "podcasts": {
-      "score": 93.7,
+      "score": 85.6,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of hidden brain",
+          "ask": "play the latest episode of this american life",
           "failed": [
             "audio"
           ],
           "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the moth",
+          "failed": [
+            "audio"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "play the latest episode of npr news now",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play the podcast",
@@ -393,7 +433,7 @@
       ]
     },
     "timers": {
-      "score": 73.3,
+      "score": 83.3,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -417,15 +457,6 @@
             "rival"
           ],
           "score": 80
-        },
-        {
-          "ask": "temporizador de 3 minutos",
-          "failed": [
-            "answered",
-            "skill",
-            "fast"
-          ],
-          "score": 40
         },
         {
           "ask": "set a timer for 45 seconds",
@@ -489,7 +520,7 @@
       ]
     },
     "prices": {
-      "score": 83.3,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -497,14 +528,6 @@
           "ask": "price",
           "failed": [
             "fast",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "precio del bitcoin",
-          "failed": [
-            "skill",
             "rival"
           ],
           "score": 60
@@ -570,7 +593,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 73.3
+    "domain": "images",
+    "score": 73.9
   }
 }

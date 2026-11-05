@@ -165,6 +165,22 @@ Verse is the front door. Blank until asked; then anything can be summoned: an ex
 - **claim:**
 - **claim_until:**
 
+### Next [think-tank] — figure arm drive card: motor, gearbox, clutch
+- **What:** an ask such as "how does a toy arm move", "figure arm motor" or "arm drive" opens a card that draws the drive chain left to right (printed motor, printed planetary gearbox, slip clutch, 120 mm arm) with one dated number under each part. Printed gears at tiny sizes: a 64:1 micro-printed planetary drives a 13 x 13 mm, 0.77 g climbing robot (IEEE RA-L, Aug 2026, https://doi.org/10.1109/lra.2026.3703263) and a printed 5.6 mm, 0.17 g, 1:139 planetary runs at 44 rad/s (ROBOMECH 2024, https://doi.org/10.1299/jsmermd.2024.1p1-q01). The arm needs 1.5 N mm, about 0.06 N mm at the motor through 48:1 (labelled derived). The clutch line: toys take a 4 in-lbf grip torque, about 452 N mm (16 CFR 1500.53(e), https://www.ecfr.gov/current/title-16/chapter-II/subchapter-C/part-1500/section-1500.53), so the arm slips instead of stripping gears. Ends with "Next: print and cycle-test the clutch." Original wording only.
+- **Why:** Forethinkers answered printing open question 7 (2026-11-04 20:11 ET, `domains/forethinkers/tracks/printing-working-machines.md`). Verse can show makers why a figure arm is a four-part chain and which safety number sets the last part.
+- **Reuse:** the dated-source card layout of the printed-motor card (skills/printedmotor.js); link both ways with the printed-motor and AI-toy cost cards as the body of the same figure.
+- **Done when:** each example ask opens the card with the four parts, three dated sources and the "Next" line visible; a browser test checks it renders offline; tests stay green.
+- **claim:**
+- **claim_until:**
+
+### Next [think-tank] — what's inside an AI toy: the cost card
+- **What:** an ask such as "what's inside an ai toy", "how much does an ai toy cost to make" or "ai plush bom" opens a card in three short parts, each line with its source and date. Inside a ¥99 cloud-minded AI plush: a chip under $1, a 4G module about $2, an AI license about ¥10, battery, speaker and stuffing ¥30 to 40, under ¥80 in all (Leiphone, 16 Jun 2026, https://www.leiphone.com/category/chips/NZxwhQZCCQGDF8Gi.html). What families report: returns around 30 to 40%, play falling off in week three, and 7 of 15 toys below a 75% voice-success line in a three-province consumer test (TMTPost, 20 Oct 2026, https://www.tmtpost.com/8173178.html). What a mind on board costs: memory leads, with DDR4 8Gb at a $26.00 contract average in late September 2026 (TrendForce, https://www.trendforce.com/price/dram/dram_contract), so a mind that fits in 1 GB is the target. Ends with "Next: measure a whole toy voice mind in 1 GB." Original wording only; no brand names of the plush products on the card face beyond the cited sources.
+- **Why:** Forethinkers located the price gap for a sellable thinking figure (2026-11-04 14:15 ET, `domains/forethinkers/tracks/living-figures.md`, open question 6). Verse can show visitors and toy makers the real cost structure, with sources, and why a figure that remembers its kid and needs no Wi-Fi setup answers the week-three problem.
+- **Reuse:** the dated-source card layout from the printed-motor and coral cards (skills/printedmotor.js, skills/coral.js); link to the printed-motor card as the body half of the same figure.
+- **Done when:** each example ask opens the card with the three sources dated and the "Next" line visible; a browser test checks it renders offline; tests stay green.
+- **claim:**
+- **claim_until:**
+
 ### Next [think-tank] — senolytic MASH trial card
 - **What:** a summonable explainer card for the phase-2 intermittent dasatinib + quercetin trial in fibrotic MASH: primary fibrosis endpoint 47% vs 7% placebo, MASH resolution 53% vs 7%, Nature Metabolism 1 Oct 2026 and NCT05506488 dated, authors' hypothesis-generating caveat shown. Neighbouring context links to PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic aging (Nature Communications 19 May 2026). No cure claim; original wording only.
 - **Why:** Forethinkers established (2026-10-03 10:08 ET) the first human RCT histology signal for senolytics in MASH, so Verse can hand a visitor a truthful disease-cure research card that separates proven endpoints from longevity marketing.

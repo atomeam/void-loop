@@ -1,38 +1,47 @@
 [
   {
-    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
-    "from": "page",
-    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-04: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-04) did not work (credits)",
-    "at": "2026-11-04T06:57:52.878Z",
-    "seen": 1
-  },
-  {
     "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
     "from": "page",
     "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
-    "learned": "2026-11-04: worked; 21 tools listed",
-    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-04) worked",
-    "at": "2026-11-04T00:15:22.355Z",
+    "learned": "2026-11-05: worked; 21 tools listed",
+    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-05) worked",
+    "at": "2026-11-05T00:00:17.276Z",
     "seen": 1
   },
   {
-    "id": "page:live-check-rides-osrm-public-demo-router-router-",
+    "id": "page:ofont-ru",
     "from": "page",
-    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
-    "learned": "2026-11-03: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
-    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-03) worked",
-    "at": "2026-11-03T20:30:35.783Z",
+    "consumed": "ofont.ru",
+    "learned": "ofont.ru could not be read: did not load (page.goto: Timeout 20000ms exceeded.)",
+    "retain": "ofont.ru was could not be read",
+    "at": "2026-11-04T23:54:52Z",
     "seen": 1
   },
   {
     "id": "page:live-check-baggage-the-airline-pages-the-baggage",
     "from": "page",
     "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
-    "learned": "2026-11-03: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
-    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-03) did not work",
-    "at": "2026-11-03T20:17:10.697Z",
+    "learned": "2026-11-04: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
+    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-04) did not work",
+    "at": "2026-11-04T20:50:13.093Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-rides-osrm-public-demo-router-router-",
+    "from": "page",
+    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
+    "learned": "2026-11-04: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
+    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-04) worked",
+    "at": "2026-11-04T20:48:43.333Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
+    "from": "page",
+    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
+    "learned": "2026-11-04: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-04) did not work (credits)",
+    "at": "2026-11-04T19:59:21.237Z",
     "seen": 1
   },
   {

@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-04T03:25:17.110Z",
+ "as_of": "2026-11-04T19:50:28.375Z",
  "rules": "Legitimate sources only, each cited. A value is a number its source publishes (a prize pool, a bounty, a program credit) and is not a forecast; null means unknown. Anything that needs Atom's identity, a login or a card is ready to claim; Verse claims nothing in anyone's name.",
  "probes": {
   "devpost": "read",
@@ -380,12 +380,12 @@
    "status": "ready to claim",
    "needs": "Atom lists them as the seller",
    "next_step": "Atom checks it (Atom lists them as the seller); Verse never signs in or applies in his name.",
-   "reached_status": 200
+   "reached_status": 403
   },
   {
    "id": "devpost:31024",
    "category": "hackathon prizes",
-   "title": "Meta VR Start Developer Competition 2026 (Sep 24 - Nov 18, 2026, 15 days left)",
+   "title": "Meta VR Start Developer Competition 2026 (Sep 24 - Nov 18, 2026, 14 days left)",
    "source": "https://start-developer-competition-26.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 100000000,
@@ -424,7 +424,7 @@
   {
    "id": "devpost:31302",
    "category": "hackathon prizes",
-   "title": "PayPal AI Hackathon (Oct 01 - Nov 12, 2026, 9 days left)",
+   "title": "PayPal AI Hackathon (Oct 01 - Nov 12, 2026, 8 days left)",
    "source": "https://paypalaihackathon.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 6750000,
@@ -463,7 +463,7 @@
   {
    "id": "devpost:31552",
    "category": "hackathon prizes",
-   "title": "UGREEN Hackathon 2026 on AI NAS (Oct 22 - Nov 16, 2026, 12 days left)",
+   "title": "UGREEN Hackathon 2026 on AI NAS (Oct 22 - Nov 16, 2026, 11 days left)",
    "source": "https://ugreenhackathon.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 4600000,
@@ -474,14 +474,14 @@
    "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
   },
   {
-   "id": "devpost:30789",
+   "id": "devpost:31489",
    "category": "hackathon prizes",
-   "title": "Arbiter Hacks V1 (Oct 20 - Dec 21, 2026, about 2 months left)",
-   "source": "https://arbiter-hacks-v1.devpost.com/",
+   "title": "EthnoHack (Nov 02 - 08, 2026, 4 days left)",
+   "source": "https://ethnohack2026.devpost.com/",
    "value_cents": null,
-   "prize_pool_cents": 780000,
-   "value_note": "prize pool $7,800 shared by the winners; not an estimate of what Verse would win",
-   "fit": "themes: Beginner Friendly, Machine Learning/AI, Open Ended",
+   "prize_pool_cents": null,
+   "value_note": "prize pool €8,000 shared by the winners; not an estimate of what Verse would win",
+   "fit": "themes: Databases, Health, Machine Learning/AI",
    "status": "ready to claim",
    "needs": "Atom registers and submits as the entrant (Devpost account)",
    "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
@@ -513,7 +513,7 @@
   {
    "id": "upsell:/team/",
    "category": "missed upsells",
-   "title": "People open /team/ (29 views in 7 days) and it offers nothing to buy",
+   "title": "People open /team/ (43 views in 7 days) and it offers nothing to buy",
    "source": "https://a-to-mind.com/team/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",
@@ -525,7 +525,7 @@
   {
    "id": "upsell:/brain/",
    "category": "missed upsells",
-   "title": "People open /brain/ (13 views in 7 days) and it offers nothing to buy",
+   "title": "People open /brain/ (14 views in 7 days) and it offers nothing to buy",
    "source": "https://a-to-mind.com/brain/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",

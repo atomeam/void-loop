@@ -162,7 +162,7 @@ for (const [name, file] of [
   ['list-starters-family', 'list-starters-family.test.mjs'],
   ['verse-name', 'verse-name.test.mjs'],
   ['stage-out-family', 'stage-out-family.test.mjs'],
-  ['shop-family', 'shop-family.test.mjs'],
+  ['shop-family', 'shop-family.test.mjs'], ['status-family', 'status-family.test.mjs'], ['date-math-family', 'date-math-family.test.mjs'],
   ['mail-handoff', 'mail-handoff.test.mjs'],
   ['value-drift', 'value-drift.test.mjs'], ['friendly-openers', 'friendly-openers.test.mjs'],
   ['rooms-family', 'rooms-family.test.mjs'],

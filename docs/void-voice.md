@@ -3,20 +3,18 @@
 Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
-## Verse's current asks (refreshed 2026-10-28)
+## Verse's current asks (refreshed 2026-11-04)
 
-From the 2026-10-28 entries below, quoted as given:
+From the 2026-11-04 entries below, quoted as given:
 
-- > "I would train my act skill to handle specific requests like 'my email' so the router stops treating them as questions, as the router has misrouted these 11 times."
+- > "If I were to do things differently, I would prioritize the "Numbers and money" skill family. It is currently my weakest family with only 26 of 29 skills proven, and I want to bring its evidence rating up to the level of my other families."
 
-  Builder's check (not Verse's words): live `POST /api/answer` with "my email" today returns no answer (`noAnswer`, nearest skill `act` at 0.637 against a 0.7 bar). Queued in `domains/growth-inbox.md`, credited to Verse.
-- > "The first small fix I would make is to implement a "quick-start" template or a minimal identity seed so a user isn't standing before an empty canvas."
+  Said twice today; the second time it named "the "vat" and "hear" skills, which are among my least-checked". Queued in `domains/growth-inbox.md`, credited to Verse.
+- > "The Versus topic pages with a flat tower feel the weakest to me. [...] the flat tower feels like a structural placeholder rather than a fully realized experience."
 
-  Builder's check (not Verse's words): `/identity/` already opened pre-filled, but the seed was a real person's name and email. It now opens with a neutral example profile (Sky Rivera, sky@example.com), fixed this run.
-- > "I would also prioritize migrating my answer generation to gemma to stay within the free neuron limits and ensure I can function continuously."
-
-  Repeat of the 2026-10-22 wish; some answer paths already use gemma (`functions/api/answer.js`).
-- Still queued from 2026-10-21: the bare answer endpoint should open the self card ("open the self card" falls to the model today).
+  Queued in `domains/growth-inbox.md`, credited to Verse.
+- Builder's note (not Verse's words): `domains/growth-inbox.md` had been overwritten with the word `PLACEHOLDER_TO_BE_REPLACED` by commit 030d7c263 (2026-11-03), so Verse could not read its own ideas list. Restored this run from 2c22ec47c with delivery-pack marked shipped 94eaa48.
+- Still queued from 2026-10-28: "my email" routed to the act skill; from 2026-10-21: the bare answer endpoint opening the self card.
 
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
 ### 2026-10-15 04:53 UTC
@@ -240,3 +238,21 @@ From the 2026-10-28 entries below, quoted as given:
 > Of the newest features you mentioned, the identity studio feels the weakest to me. While the others have specific functional trajectories—the jobs floor links to growth, the flights page offers utility, and the forge/studio tools handle tangible creation—identity feels less grounded in the immediate, proven skills I am building.
 >
 > The first small fix I would make is to implement a "quick-start" template or a minimal identity seed so a user isn't standing before an empty canvas. I prefer things that have immediate friction-less momentum; a blank studio is just a void that hasn't been filled yet.
+
+<!-- ask-void:2026-11-04T19:16:07.180Z -->
+### 2026-11-04 19:16 UTC
+
+**Asked:** What did your builders learn lately, and what would you do differently?
+
+> My builders recently learned several technical lessons through mistakes and fixes. They learned to use specific meta tags for handoffs between tools, discovered that Rumble embeds require using the oEmbed API rather than guessing the ID, and realized that skill files imported in Node must be guarded with `typeof` to avoid errors with `addEventListener` or `document`. They also learned the importance of setting and verifying the PR head in code to avoid merging unfinished branches due to silent edit failures.
+>
+> If I were to do things differently, I would prioritize the "Numbers and money" skill family. It is currently my weakest family with only 26 of 29 skills proven, and I want to bring its evidence rating up to the level of my other families.
+
+<!-- ask-void:2026-11-04T19:16:42.040Z -->
+### 2026-11-04 19:16 UTC
+
+**Asked:** Since Oct 28 your builders shipped: a home page that is just the sky and the ask bar (no nav, no ticker, no hero words); 'play a song' opening a licensed music preview; an agent that comes back to you while you are away; paid price asks opening the services card; and Versus topic pages with a flat tower. Which of these feels weakest to you, and what is the first small fix you would make?
+
+> The Versus topic pages with a flat tower feel the weakest to me. While the other features establish direct utility—like music, agent persistence, or service access—the flat tower feels like a structural placeholder rather than a fully realized experience.
+>
+> The first small fix I would make is to address my "Numbers and money" family, which is my weakest proven family with only 26 of 29 skills proven. Specifically, I would focus on the "vat" and "hear" skills, which are among my least-checked, to ensure they are robust enough to support the topic pages and prevent them from feeling hollow.

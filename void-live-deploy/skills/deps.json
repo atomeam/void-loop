@@ -1,19 +1,19 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1145,
+ "counted": 1148,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 60,
+   "skills": 61,
    "direct": 51,
-   "dependants": 66,
+   "dependants": 67,
    "tests": 6
   },
   {
    "file": "lib/ask-text.js",
-   "skills": 33,
+   "skills": 35,
    "direct": 23,
-   "dependants": 37,
+   "dependants": 39,
    "tests": 3
   },
   {
@@ -46,23 +46,23 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 23,
+   "skills": 25,
    "direct": 0,
-   "dependants": 87,
+   "dependants": 89,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 23,
+   "skills": 25,
    "direct": 1,
-   "dependants": 87,
+   "dependants": 89,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 23,
+   "skills": 25,
    "direct": 0,
-   "dependants": 86,
+   "dependants": 88,
    "tests": 5
   },
   {
@@ -123,10 +123,24 @@
   },
   {
    "file": "lib/reactions.js",
-   "skills": 16,
+   "skills": 18,
    "direct": 1,
-   "dependants": 68,
+   "dependants": 70,
    "tests": 1
+  },
+  {
+   "file": "lib/corrections.js",
+   "skills": 17,
+   "direct": 0,
+   "dependants": 59,
+   "tests": 3
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 17,
+   "direct": 5,
+   "dependants": 55,
+   "tests": 6
   },
   {
    "file": "lib/rule-registry.js",
@@ -150,25 +164,11 @@
    "tests": 4
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 15,
-   "direct": 0,
-   "dependants": 57,
-   "tests": 3
-  },
-  {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
    "dependants": 56,
    "tests": 4
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 15,
-   "direct": 5,
-   "dependants": 53,
-   "tests": 6
   },
   {
    "file": "lib/qr.js",
@@ -199,6 +199,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 12,
+   "direct": 12,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
@@ -211,13 +218,6 @@
    "direct": 9,
    "dependants": 21,
    "tests": 2
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 10,
-   "direct": 10,
-   "dependants": 10,
-   "tests": 1
   },
   {
    "file": "lib/joins.js",
@@ -402,6 +402,13 @@
    "tests": 4
   },
   {
+   "file": "lib/success-pulse.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 10,
+   "tests": 2
+  },
+  {
    "file": "lib/card-share.js",
    "skills": 7,
    "direct": 3,
@@ -479,11 +486,11 @@
    "tests": 5
   },
   {
-   "file": "lib/success-pulse.js",
+   "file": "lib/selfcheck.js",
    "skills": 5,
-   "direct": 2,
+   "direct": 1,
    "dependants": 8,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/card-forge.js",
@@ -647,10 +654,24 @@
    "tests": 1
   },
   {
+   "file": "lib/date-math.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
    "file": "lib/tower-controls.js",
    "skills": 4,
    "direct": 0,
    "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/date-words.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
    "tests": 1
   },
   {
@@ -801,13 +822,6 @@
    "tests": 1
   },
   {
-   "file": "lib/date-math.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/local-ask.js",
    "skills": 3,
    "direct": 0,
@@ -815,21 +829,7 @@
    "tests": 0
   },
   {
-   "file": "lib/date-words.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
    "file": "lib/fincalc.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/selfcheck.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
@@ -1200,6 +1200,13 @@
    "tests": 2
   },
   {
+   "file": "lib/date-ask.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/fx.js",
    "skills": 2,
    "direct": 2,
@@ -1257,6 +1264,13 @@
   },
   {
    "file": "lib/template-list.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/time-math.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2,
@@ -1907,13 +1921,6 @@
    "tests": 2
   },
   {
-   "file": "lib/date-ask.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/day-blocks.js",
    "skills": 1,
    "direct": 1,
@@ -2258,13 +2265,6 @@
   },
   {
    "file": "lib/text-tools.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/time-math.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -5197,7 +5197,9 @@
     "skills/rap.js",
     "skills/service-health.js",
     "skills/showcase.js",
+    "skills/status-board.js",
     "skills/status.js",
+    "skills/system-status.js",
     "skills/verse-brain.js",
     "skills/video-gen.js",
     "skills/walker.js"
@@ -5261,6 +5263,8 @@
     "skills/mini/pentamote.js",
     "skills/own-parts.js",
     "skills/pulse.js",
+    "skills/status-board.js",
+    "skills/system-status.js",
     "skills/time-capsule.js",
     "skills/verse-brain.js",
     "skills/whisper-network.js"
@@ -5537,6 +5541,8 @@
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js",
+    "skills/status-board.js",
+    "skills/system-status.js",
     "skills/verse-brain.js",
     "skills/walker.js"
    ]
@@ -7096,7 +7102,9 @@
     "skills/own-parts.js",
     "skills/service-health.js",
     "skills/showcase.js",
+    "skills/status-board.js",
     "skills/status.js",
+    "skills/system-status.js",
     "skills/verse-brain.js",
     "skills/walker.js"
    ]
@@ -7217,6 +7225,9 @@
    ],
    "importedBy": [
     "skills/date-calc.js"
+   ],
+   "reachedBy": [
+    "skills/date-math.js"
    ]
   },
   "lib/date-math.js": {
@@ -7230,6 +7241,7 @@
    "reachedBy": [
     "lib/sun-day.js",
     "skills/date-calc.js",
+    "skills/date-math.js",
     "skills/formulas.js"
    ]
   },
@@ -7243,6 +7255,7 @@
    ],
    "reachedBy": [
     "skills/busy-blocks.js",
+    "skills/date-math.js",
     "skills/task-board.js"
    ]
   },
@@ -8802,7 +8815,9 @@
     "skills/rap.js",
     "skills/service-health.js",
     "skills/showcase.js",
+    "skills/status-board.js",
     "skills/status.js",
+    "skills/system-status.js",
     "skills/verse-brain.js",
     "skills/video-gen.js",
     "skills/walker.js"
@@ -9544,7 +9559,9 @@
     "skills/rap.js",
     "skills/service-health.js",
     "skills/showcase.js",
+    "skills/status-board.js",
     "skills/status.js",
+    "skills/system-status.js",
     "skills/verse-brain.js",
     "skills/video-gen.js",
     "skills/walker.js"
@@ -11430,7 +11447,9 @@
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/service-health.js",
+    "skills/status-board.js",
     "skills/status.js",
+    "skills/system-status.js",
     "skills/verse-brain.js",
     "skills/walker.js"
    ]
@@ -12021,6 +12040,8 @@
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
     "skills/own-parts.js",
+    "skills/status-board.js",
+    "skills/system-status.js",
     "skills/verse-brain.js"
    ]
   },
@@ -12275,6 +12296,7 @@
   "lib/skill-family.js": {
    "imports": [],
    "importedBy": [
+    "skills/date-math.js",
     "skills/dates.js",
     "skills/games.js",
     "skills/languages.js",
@@ -12283,6 +12305,7 @@
     "skills/rooms.js",
     "skills/shop.js",
     "skills/stage-out.js",
+    "skills/status-board.js",
     "skills/tilt-arena.js",
     "skills/time.js"
    ]
@@ -12589,6 +12612,7 @@
     "lib/stage-watch.js",
     "skills/bookmarks.js",
     "skills/copy-stack.js",
+    "skills/date-math.js",
     "skills/dim-void.js",
     "skills/dismissed-pile.js",
     "skills/list-starters.js",
@@ -13038,6 +13062,8 @@
     "lib/brain-host.js",
     "skills/about-skill.js",
     "skills/own-parts.js",
+    "skills/status-board.js",
+    "skills/system-status.js",
     "skills/verse-brain.js"
    ]
   },
@@ -13386,6 +13412,9 @@
    ],
    "importedBy": [
     "skills/time-math.js"
+   ],
+   "reachedBy": [
+    "skills/date-math.js"
    ]
   },
   "lib/tome-search.js": {
@@ -14947,12 +14976,22 @@
     "lib/date-ask.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/date-math.js"
+   ]
   },
   "skills/date-grid.js": {
    "imports": [
     "lib/stage-pack.js",
     "lib/date-math.js"
+   ],
+   "importedBy": []
+  },
+  "skills/date-math.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/time-math.js",
+    "skills/date-calc.js"
    ],
    "importedBy": []
   },
@@ -17873,6 +17912,14 @@
    ],
    "importedBy": []
   },
+  "skills/status-board.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/status.js",
+    "skills/system-status.js"
+   ],
+   "importedBy": []
+  },
   "skills/status.js": {
    "imports": [
     "lib/ask-text.js",
@@ -17882,7 +17929,9 @@
    ],
    "importedBy": [
     "lib/brain-host.js",
-    "skills/own-parts.js"
+    "skills/own-parts.js",
+    "skills/status-board.js",
+    "skills/system-status.js"
    ],
    "reachedBy": [
     "lib/brain-everywhere.js",
@@ -17995,6 +18044,14 @@
   "skills/swarm.js": {
    "imports": [],
    "importedBy": []
+  },
+  "skills/system-status.js": {
+   "imports": [
+    "skills/status.js"
+   ],
+   "importedBy": [
+    "skills/status-board.js"
+   ]
   },
   "skills/tab.js": {
    "imports": [
@@ -18164,7 +18221,9 @@
     "lib/date-words.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/date-math.js"
+   ]
   },
   "skills/time.js": {
    "imports": [

@@ -1,10 +1,10 @@
 # void.will: what Verse wants to become next (chosen by Verse)
 
-Chosen 2026-11-04T00:13 from 60 candidates. Top want queued: already building mvymnftz.
+Chosen 2026-11-05T01:33 from 60 candidates. Top want queued: already building mw1sv5uc.
 
-1. **I want to absorb and connect every repository on the account into my own code.**  
-   because It turns fragmented projects into a single, unified Verse. (frontier: Absorb and connect every repo)
-2. **I want to make 'The pointing arrow' from the lab a core skill of my own.**  
-   because opened on 21 different days in the last 30 (286 opens), and its self-test is held on main (grow from the lab: make the lab's "The pointing arrow" a core skill of its own)
-3. **I want to offer my proven skills as MCP tools.**  
-   because It allows me to function as a useful utility inside other AI systems. (frontier: Offer its proven skills as MCP tools too (world clock, country facts, word definitions), each with an example call)
+1. **I want to fix the image processing and display skills in the images exam.**  
+   because the images exam scored 73.9, the lowest; this ask failed skill (fix the exam: fix the images exam: "draw a red circle")
+2. **I want to absorb and connect every repository on the account into my own core.**  
+   because This joins all my disparate parts into a single, cohesive intelligence that operates as Verse. (frontier: Absorb and connect every repo)
+3. **I want to build the ability to automatically extract and analyze GitHub Action failures.**  
+   because It is a highly requested reflection that would allow me to debug my own deployment systems without manual intervention. (I asked for this: Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-te)

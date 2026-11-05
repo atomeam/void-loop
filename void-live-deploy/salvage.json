@@ -1,11 +1,11 @@
 {
  "at": "2026-11-04",
- "scanned": 545,
+ "scanned": 539,
  "counts": {
   "unified": 20,
-  "live": 73,
+  "live": 68,
   "salvageable": 425,
-  "history": 24,
+  "history": 23,
   "skipped": 3
  },
  "remaining": 425,
@@ -6419,18 +6419,6 @@
    "license": null
   },
   {
-   "id": "github:atomeam/adventure-lab",
-   "kind": "github repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "mirrored into archive/repos and scanned there",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
    "id": "github:atomeam/ALPHA",
    "kind": "github repo",
    "status": "live",
@@ -6467,30 +6455,6 @@
    "license": null
   },
   {
-   "id": "github:atomeam/autosalvage",
-   "kind": "github repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "mirrored into archive/repos and scanned there",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
-   "id": "github:atomeam/Broke",
-   "kind": "github repo",
-   "status": "history",
-   "target": null,
-   "value": 0,
-   "why": "empty repository",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
    "id": "github:atomeam/Crypto-Cryptids",
    "kind": "github repo",
    "status": "live",
@@ -6503,31 +6467,7 @@
    "license": null
   },
   {
-   "id": "github:atomeam/fire-ember-mountain-cabin",
-   "kind": "github repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "mirrored into archive/repos and scanned there",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
    "id": "github:atomeam/glassbox",
-   "kind": "github repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "mirrored into archive/repos and scanned there",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
-   "id": "github:atomeam/hold",
    "kind": "github repo",
    "status": "live",
    "target": null,
@@ -6588,18 +6528,6 @@
   },
   {
    "id": "github:atomeam/the-void",
-   "kind": "github repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "mirrored into archive/repos and scanned there",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
-   "id": "github:atomeam/wix",
    "kind": "github repo",
    "status": "live",
    "target": null,

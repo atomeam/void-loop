@@ -11,10 +11,10 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-04",
- "bench_at": "2026-10-30",
+ "bench_at": "2026-11-04",
  "totals": {
   "experiment": 1,
-  "tested": 1,
+  "tested": 2,
   "checked": 12,
   "proven": 385
  },
@@ -604,12 +604,9 @@
      "name": "coin",
      "tier": "proven",
      "why": "a self-test, 12 browser-suite mentions, 2 real asks in the benchmark",
-     "failing": [
-      "coin toss"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.5,
+     "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 10
     },
@@ -1191,9 +1188,12 @@
      "name": "stopwatch",
      "tier": "proven",
      "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+     "failing": [
+      "stopwatch"
+     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "its tests",
-     "success_rate": 1,
+     "success_rate": 0.667,
      "streak": 1
     },
     {
@@ -1374,13 +1374,13 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "failing": [
-      "1 cup of sugar in grams",
-      "how long to pay off 100 at 200 a month at 20%",
-      "egg timer"
+      "what is 5 factorial",
+      "what is 100 factorial",
+      "what is 10 factorial"
      ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.996,
+     "success_rate": 0.994,
      "streak": 16
     },
     {
@@ -1405,12 +1405,9 @@
      "name": "loan",
      "tier": "proven",
      "why": "a self-test, 5 browser-suite mentions, 16 real asks in the benchmark",
-     "failing": [
-      "how long to pay off 100 at 200 a month at 20%"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.938,
+     "success_rate": 1,
      "streak": 16
     },
     {
@@ -1475,14 +1472,9 @@
      "name": "stocks",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "failing": [
-      "apple stock price",
-      "what is tesla's stock price",
-      "how is the s&p 500 today"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0,
+     "success_rate": 1,
      "streak": 5
     },
     {
@@ -1703,9 +1695,13 @@
      "name": "recipe",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark",
+     "failing": [
+      "chicken recipes",
+      "chicken curry recipe"
+     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "streak": 16
     },
     {
@@ -2097,9 +2093,12 @@
      "name": "joke",
      "tier": "proven",
      "why": "a self-test, 10 real asks in the benchmark",
+     "failing": [
+      "tell me a riddle"
+     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.9,
      "streak": 16,
      "source": {
       "sites": [
@@ -2136,14 +2135,9 @@
      "name": "quote",
      "tier": "proven",
      "why": "a self-test, 7 real asks in the benchmark",
-     "failing": [
-      "inspirational quote",
-      "random quote",
-      "tell me a quote"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0,
+     "success_rate": 1,
      "streak": 11,
      "source": {
       "sites": [
@@ -2181,14 +2175,9 @@
      "name": "proverb",
      "tier": "proven",
      "why": "a self-test, 4 real asks in the benchmark",
-     "failing": [
-      "tell me a proverb",
-      "random proverb",
-      "give me a proverb"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0,
+     "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 6,
      "source": {
@@ -2255,12 +2244,9 @@
      "name": "book",
      "tier": "proven",
      "why": "a self-test, 7 real asks in the benchmark",
-     "failing": [
-      "who wrote hamlet"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.857,
+     "success_rate": 1,
      "streak": 16,
      "source": {
       "sites": [
@@ -2545,7 +2531,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 20 live findings, 2026-11-03",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 21 live findings, 2026-11-04",
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2644,12 +2630,9 @@
      "name": "sticky",
      "tier": "proven",
      "why": "a self-test, 15 browser-suite mentions, 4 real asks in the benchmark",
-     "failing": [
-      "take a note: buy batteries"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.75,
+     "success_rate": 1,
      "streak": 16
     },
     {
@@ -2674,12 +2657,9 @@
      "name": "notes-fill",
      "tier": "proven",
      "why": "a self-test, 5 real asks in the benchmark",
-     "failing": [
-      "take a note: buy batteries"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.8,
+     "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 8
     },
@@ -2726,12 +2706,9 @@
      "name": "notepad",
      "tier": "proven",
      "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
-     "failing": [
-      "take a note: buy batteries"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.8,
+     "success_rate": 1,
      "streak": 16
     },
     {
@@ -3020,12 +2997,9 @@
      "name": "echo-disagrees",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "failing": [
-      "what would the echo say should i learn to code"
-     ],
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.667,
+     "success_rate": 1,
      "promoted": "2026-10-30",
      "streak": 15
     },
@@ -3572,7 +3546,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 2,
     "proven": 49
    },
@@ -3740,6 +3714,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 16
+    },
+    {
+     "name": "system-status",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-04",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "incident",

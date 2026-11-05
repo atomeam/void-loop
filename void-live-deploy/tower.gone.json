@@ -1,0 +1,20 @@
+{
+ "about": "Rivals the tower skips because their site is gone, parked or moved to another domain (tools/tower-alive.mjs). Re-checked on every run.",
+ "gone": {
+  "unitingchurch.org.au": {
+   "status": "parked",
+   "since": "2026-11-05T03:43:40.099Z",
+   "checked": "2026-11-05T03:43:40.099Z",
+   "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au",
+   "final": "https://controlhosting.net/"
+  }
+ },
+ "log": [
+  {
+   "at": "2026-11-05T03:43:40.099Z",
+   "rival": "unitingchurch.org.au",
+   "status": "parked",
+   "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au"
+  }
+ ]
+}

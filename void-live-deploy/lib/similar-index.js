@@ -166,6 +166,30 @@ export default {
     "examples": []
    }
   ],
+  "date-math": [
+   {
+    "name": "time-math",
+    "examples": [
+     "how long is a meeting from 9:30 to 11:15",
+     "meeting at 9:30 for 45 minutes",
+     "meeting length calculator",
+     "what week number is it",
+     "week number of oct 25",
+     "age calculator"
+    ]
+   },
+   {
+    "name": "date-calc",
+    "examples": [
+     "30 days after 2026-03-01",
+     "10 business days from today",
+     "what date is next friday",
+     "end of this quarter",
+     "format 2026-10-03 as us",
+     "every 10 days from 2026-10-01 for 4 times"
+    ]
+   }
+  ],
   "time": [
    {
     "name": "timer",
@@ -459,6 +483,23 @@ export default {
      "countdown to christmas",
      "how many sleeps until christmas"
     ]
+   }
+  ],
+  "status-board": [
+   {
+    "name": "status",
+    "examples": [
+     "void status",
+     "system status",
+     "is void working",
+     "status",
+     "health check",
+     "are the sources up"
+    ]
+   },
+   {
+    "name": "system-status",
+    "examples": []
    }
   ],
   "shop": [

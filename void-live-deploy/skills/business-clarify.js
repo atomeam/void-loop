@@ -31,7 +31,8 @@ function suggestAutomations(text) {
 }
 
 function structure(text) {
-  const t = String(text || '').trim();
+  // the ask's own command words are not the idea ("clarify this business idea: a tool that ..." -> "a tool that ...")
+  const t = String(text || '').trim().replace(/^(?:please\s+)?(?:clarify|structure|turn|make)\s+(?:this|my|the|a)?\s*(?:business\s+)?idea(?:\s+(?:into\s+)?a\s+system\s+plan)?(?:\s+for\s+verse[^:]*)?\s*[:,-]\s*/i, '').trim() || String(text || '').trim();
   if (!t) return { idea: '', problem: '', systems: '', automations: '', handoff: '', next: '' };
   const sentences = t.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
   const idea = sentences[0] || t.slice(0, 160);
@@ -54,7 +55,7 @@ function mount(api, data) {
   for (const k of FIELDS) {
     const lab = document.createElement('div'); lab.style.cssText = 'margin-top:10px; font-size:12px; opacity:.7'; lab.textContent = LABELS[k];
     const ta = document.createElement('textarea'); ta.style.cssText = 'width:100%; min-height:48px; margin-top:4px; font:inherit; background:rgba(255,255,255,.06); color:inherit; border:1px solid rgba(255,255,255,.16); border-radius:8px; padding:6px;';
-    ta.value = data[k] || '';
+    ta.defaultValue = data[k] || ''; // the text is the textarea's own content too, so a copy of the card (and its textContent) carries it
     el.append(lab, ta);
   }
   const note = document.createElement('div'); note.style.cssText = 'margin-top:8px; font-size:11px; opacity:.6'; note.textContent = 'Edit in place · copy for the client · Verse owns the heavy lifting from here.';

@@ -1,6 +1,7 @@
 // /members/ (functions/api/members.js, lib/members.js): what paid Verse gives, the idea form for members, their ideas and the wall.
 // The perks come from lib/members.js itself, so the page reads right even when the API is out; the tier comes from the server only.
 import { perks as perksOf, LIVE, BUY } from '/lib/members.js';
+import { parseKeep, recordOf, PENDING } from '/lib/member-keep.js';
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 const PILOT = new URLSearchParams(location.search).has('pilot'); // the pre-launch pilot (functions/api/members.js)
@@ -30,6 +31,18 @@ showPerks(perksOf(LIVE));
 if (me && me.userId) $('buy').href = buyLink(BUY);
 else { $('buy').href = '/?q=' + encodeURIComponent('remember me'); $('buy').removeAttribute('target'); $('buy').firstChild.textContent = 'Sign in to join MultiVerse'; }
 
+// the page that sent the visitor here (/chords/, /music/, /news/, /brain/, /team/) says what they would keep (lib/member-keep.js)
+let keeping = parseKeep(location.search);
+try { if (keeping) localStorage.setItem(PENDING, JSON.stringify(keeping)); else keeping = parseKeep(new URLSearchParams(JSON.parse(localStorage.getItem(PENDING) || 'null') || {}).toString()); } catch (_) { /* this visit only */ }
+if (keeping) { $('keeping').hidden = false; $('keepwhat').textContent = keeping.keep; $('keepfrom').textContent = 'from ' + keeping.go; $('keepgo').href = keeping.go; }
+// once this Verse is a paid member, the held item goes into its memory (functions/api/memory.js, the member's own scope), then off the device
+async function saveKept() {
+  if (!keeping) return;
+  let r = null; try { r = await fetch('/api/memory', { method: 'POST', headers: auth(), body: JSON.stringify({ records: [recordOf(keeping)] }) }); } catch (_) { r = null; }
+  if (r && r.ok) { $('keepsay').textContent = 'Saved into your Verse. Ask Verse for it any time.'; try { localStorage.removeItem(PENDING); } catch (_) {} keeping = null; }
+  else $('keepsay').textContent = 'Verse could not save it yet; it stays on this device and saves when you come back.';
+}
+
 async function load() {
   let j = null;
   try { j = await (await fetch('/api/members', { headers: auth(), cache: 'no-store' })).json(); } catch (_) { j = null; }
@@ -37,6 +50,7 @@ async function load() {
   if (me && me.userId) $('how').textContent = 'You are signed in, so joining unlocks this Verse. After you pay, come back to this tab.';
   const paid = j && j.signedIn && j.tier === 'paid';
   $('claim').hidden = !(j && j.signedIn && !paid); // a purchase that did not carry this Verse's id is linked with the receipt
+  if (paid) saveKept();
   if (paid) { $('buy').hidden = true; $('how').textContent = 'You are a member. Thank you for building Verse.'; }
   const open = j && (j.live || PILOT);
   $('lab').hidden = !(paid && open);

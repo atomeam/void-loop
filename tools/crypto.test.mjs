@@ -63,3 +63,11 @@ test('run: a coin the service has no price for, a dead service, a page left, an 
   await withFetch({ solana: { usd: 150 } }, async () => { const api = apiOf(false); assert.equal(await crypto.run('solana price', api), 'crypto'); assert.ok(!api.pages[0].innerHTML.includes('150')); });
   await withFetch({}, async (urls) => { const api = apiOf(); assert.equal(await crypto.run('who invented bitcoin', api), 'none'); assert.equal(urls.length, 0); assert.equal(api.pages.length, 0); });
 });
+
+test('crypto: other languages\' price asks find the coin (exam: "precio del bitcoin")', async () => {
+  const { coinOf } = await import('../void-live-deploy/skills/crypto.js');
+  for (const a of ['precio del bitcoin', '¿cuánto vale el bitcoin?', 'prix du bitcoin', 'bitcoin preis']) assert.equal((coinOf(a) || {}).id, 'bitcoin', a);
+  assert.equal((coinOf('preis von ethereum') || {}).id, 'ethereum');
+  assert.equal(coinOf('precio del pan'), null);
+  assert.equal((coinOf('bitcoin price') || {}).id, 'bitcoin');
+});

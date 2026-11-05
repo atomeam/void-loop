@@ -321,6 +321,8 @@
 <dialog id="switcher" aria-label="Jump to a channel or agent"><div class="glass"><h3>Jump to</h3><label class="sr" for="swq">Channel or agent</label><input id="swq" autocomplete="off" placeholder="Channel or agent"><ul id="swl" role="listbox"></ul></div></dialog>
 
 <footer>
+<p id="member-offer" class="tk-row"><span class="tk-label">Your own Verse</span> <a href="/members/?from=team">Members get their own private Verse for the team: private skills and more model answers for every channel</a></p>
+<script type="module">import { wireOffer } from '/lib/member-keep.js'; wireOffer('team');</script>
 <nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>Ctrl</kbd>+<kbd>K</kbd> jump to a channel or agent · <kbd>/</kbd> search · <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> the channel above or below · <kbd>Esc</kbd> close the thread</p></details>
   <p id="brainSay" hidden></p>

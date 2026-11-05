@@ -17,8 +17,15 @@ const CODES = 'aed ars aud bdt bhd bmd brl cad chf clp cny czk dkk eur gbp gel h
 const vsOf = (w) => (!w ? 'usd' : VS[w] || (CODES.includes(w) ? w : null));
 /** the Markets page for a CoinGecko id ('/markets/?s=BTC'), or '' for a coin the page does not list. Pure. */
 export function pageOfCoin(id) { const sym = Object.keys(LISTED).find((s) => LISTED[s][0] === id); return sym ? '/markets/?s=' + sym : ''; }
+// other languages' price asks, said the English way ("precio del bitcoin", "prix du bitcoin", "preis von ethereum"). Pure.
+export function priceEnglish(t) {
+  return String(t || '').replace(/^[¿¡]+/, '')
+    .replace(/^(?:(?:cu[aá]l\s+es\s+|quel\s+est\s+|qual\s+[eé]\s+|wie\s+(?:hoch\s+)?ist\s+|was\s+ist\s+)?(?:el\s+|le\s+|o\s+|il\s+|der\s+)?(?:precio|prix|pre[cç]o|prezzo|preis|kurs|cotizaci[oó]n|cours|cota[cç][aã]o)\s+(?:actual\s+|actuel\s+|atual\s+|attuale\s+|aktuelle?r?\s+)?(?:del?|du|des|de\s+la|do|da|della|dello|di|von|vom|f[uü]r)\s+(?:l[ae]?\s+|el\s+|l')?)/, 'price of ')
+    .replace(/^(?:cu[aá]nto\s+(?:vale|cuesta)|combien\s+(?:vaut|co[uû]te)|quanto\s+(?:vale|custa|costa)|wie\s+viel\s+(?:kostet|ist))\s+(?:(?:el|un|le|un|o|um|il|der|ein)\s+)?/, 'how much is ')
+    .replace(/^([a-z]{2,10})\s+(?:preis|precio|prix|pre[cç]o|prezzo|kurs)$/, '$1 price');
+}
 export function coinOf(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const t = priceEnglish(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   const m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?(?:(?:current\s+)?price\s+of\s+|how\s+much\s+is\s+(?:one\s+|a\s+|1\s+)?)?([a-z]{2,10})(?:\s+(?:price|worth|value|now|today))*(?:\s+in\s+([a-z]{3,7}))?$/);
   // "what is 1 bitcoin in dollars", "2 eth in euros"
   const n = !m && t.match(/^(?:what(?:'s| is)\s+|how\s+much\s+is\s+)?(?:one|a|\d+(?:\.\d+)?)\s+([a-z]{2,10})\s+in\s+([a-z]{3,8})$/);

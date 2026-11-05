@@ -27,6 +27,13 @@ export function sumOf(text) {
     const value = Math.round(Number(m[3]) / Number(m[1]) * Number(m[2]) * 100) / 100;
     return { kind: 'sum', value, line: m[3] + ' × (' + m[2] + ' / ' + m[1] + ') = ' + value };
   }
+  m = t.match(/^\d+(?:\s*[+\-]\s*\d+)+$/);
+  if (m) {
+    const parts = t.split(/[+\-]/).map(n => Number(n.trim()));
+    const op = t.includes('-') ? '-' : '+';
+    const value = op === '+' ? parts.reduce((a, b) => a + b, 0) : parts.reduce((a, b) => a - b, 0);
+    return { kind: 'sum', value, line: t };
+  }
   return null;
 }
 
@@ -48,7 +55,7 @@ function run(text, api) {
 
 export default {
   name: 'sums',
-  examples: ['if 3 apples cost 2.40 how much do 7 cost', 'a train travels 120 km in 2 hours what is its speed'],
+  examples: ['if 3 apples cost 2.40 how much do 7 cost', 'a train travels 120 km in 2 hours what is its speed', '400 + 562 + 129'],
   nearMisses: ['what is 15% of 80', 'add vat to 100', 'how much is bitcoin', 'recipe for apple pie'],
   match(lower, text) { return !!sumOf(text || lower); },
   run,

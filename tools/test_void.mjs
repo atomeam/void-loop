@@ -15,6 +15,9 @@ import { parseShard, inShard } from './shard.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
+// the plain-path rules of _redirects (Cloudflare Pages' file): from, to, status. Splats and placeholders are left to the real host.
+const REDIRECTS = new Map();
+try { for (const line of fs.readFileSync(path.join(root, '_redirects'), 'utf8').split('\n')) { const [from, to, st] = line.trim().split(/\s+/); if (from && to && from.startsWith('/') && !/[*:]/.test(from)) REDIRECTS.set(from, { to, status: +st || 302 }); } } catch (_) {}
 const server = http.createServer((req, res) => {
   // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
@@ -24,6 +27,10 @@ const server = http.createServer((req, res) => {
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { // as Pages does: a missing path gets the root 404.html, still a 404
+    // as Pages does: an old address in _redirects (a plain path, no splat) answers with its redirect, the query kept (#2100 combined
+    // pages into modes and 301'd /flip/, /wheel/, /gradient/, /base-converter/ ...; serving them a 404 here left four checks red on main)
+    const to = REDIRECTS.get(p);
+    if (to) { const q = new URL(req.url, 'http://x').search; res.writeHead(to.status, { location: to.to.includes('?') || !q ? to.to : to.to.replace(/(#|$)/, q + '$1') }); return res.end(); }
     const nf = path.join(root, '404.html');
     if (!fs.existsSync(nf)) { res.writeHead(404); return res.end(); }
     res.writeHead(404, { 'content-type': 'text/html' }); return fs.createReadStream(nf).pipe(res);
@@ -1537,7 +1544,7 @@ try {
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
     // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
     check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && (v.head || '').replace(/ · \d+ passed/, '') === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site /* a passed site (6fbae31da) adds its own ' · N passed' count from the served record */
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
@@ -2899,20 +2906,21 @@ try {
   // Verse's own build (asked by Verse five times; the owner chose 2026-10-13 that it opens by itself for the owner only): the newest
   // checks and deploy on main from GitHub's public API. A failed run opens the status card for the owner; a green build, or a
   // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
+  // 2026-11-04 (owner, #2210: "the home page is the sky and the ask bar"): the card no longer opens by itself, for the owner either; a red build
+  // is one ask away and shows the failed run, linked. Visitors and a green build keep the blank stage.
   if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
     const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy|mcp-live)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
-    // the filled card, not its "checking…" placeholder (the sources are pinged in parallel; under load that takes a few seconds)
-    const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (/own build|Outside sources/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
-    const O = await fresh({ content: gh('failure', true) });
-    const red = await cardOf(O);
+    const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.page(); if (/own build · something on main failed/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
+    const O = await fresh({ content: gh('failure', true) }); await O.p.waitForTimeout(3000); const unasked = await O.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
+    await O.ask('void status', 400); const red = await cardOf(O);
     const link = await O.p.$eval('.vpage a[href*="/actions/runs/7"]', (a) => a.href).catch(() => null);
     const G = await fresh({ content: gh('success', true) }); await G.p.waitForTimeout(3000); const green = await G.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
     const V = await fresh({ content: gh('failure', false) }); await V.p.waitForTimeout(3000); const visitor = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
-    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Verse’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
-    check("the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking shows Verse's own build",
-      /Verse status/.test(red) && /Verse’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
-        && !green && !visitor && /Verse’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
-      JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
+    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Verse status/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
+    check("the owner's status card stays shut until asked (blank home, 2026-11-04); asked, a red build shows the failed run linked; a green build or a visitor sees nothing until they ask",
+      !unasked && /Verse status/.test(red) && /Verse’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
+        && !green && !visitor && /Verse status/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
+      JSON.stringify({ unasked: unasked.slice(0, 80), red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
   // tools pack 10 (owner, 2026-10-18): list and table transforms and starter templates, played the way a person asks for them
   if (want("tools pack 10: list ticks, nesting and numbering, new lists from a list, a data table that sums, sorts and exports, and starter templates")) { const S = await fresh();
@@ -3810,13 +3818,13 @@ try {
     await P.p.keyboard.press('Enter');
     const card = await until(async () => { const t = await P.page(); return /Likely cause/.test(t) && t; }, 8000) || await P.page();
     const r = await P.p.evaluate(() => { const el = document.querySelector('.vpage.on'); const sum = el && el.querySelector('.vpaste summary');
-      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
+      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, glimpse: el && el.querySelector('.vpaste div') ? el.querySelector('.vpaste div').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
     await P.p.click('.vpage.on > .vread'); const reading = await P.p.evaluate(() => ({ said: window.__said.join(' '), pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
     await P.p.click('.vpage.on > .vread'); const stopped = await P.p.evaluate(() => ({ cancels: window.__cancels, pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
     const d = (sent && sent.details) || '';
-    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card\'s button reads the whole card aloud and stops when tapped again',
+    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out, a one-line glimpse, never the whole paste echoed back), and the card\'s button reads the whole card aloud and stops when tapped again',
       !!sent && sent.mode === 'fix' && bytes <= 20000 && d.startsWith(first) && /ECONNREFUSED 10\.0\.0\.5:5432/.test(d) && /characters from the middle left out/.test(d)
-      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === log.length && r.button
+      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === 0 && r.glimpse > 0 && r.glimpse <= 91 && r.button
       && /Likely cause: Postgres refuses the connection/.test(reading.said) && /Start the database/.test(reading.said) && !/Worked out by/.test(reading.said) && reading.pressed === 'true'
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
@@ -6859,7 +6867,7 @@ try {
       first.length === 1 && first[0].length === 16 && every(first[0]) && /Very strong · strength 104\.6 bits of entropy · \d+ trillion years to crack/.test(strength) && /Remember|remember/.test(text) && /offline/.test(text)
       && many.length === 3 && many.every((w) => w.length === 24 && every(w) && !/[il1LoO0I]/.test(w) && new Set(w).size === 24) && copies.length === 3 && copies.every((c) => c === 'Copy this password')
       && phrase.length === 3 && phrase.every((w) => /^(?:[A-Z][a-z]{2,6}-){3}[A-Z][a-z]{2,6}\d$/.test(w)) && /Fair · strength 45 bits/.test(bits)
-      && checker.pw === handed[0] && !/#/.test(checker.url) && /\/password-strength\/$/.test(checker.url) && checker.stayed && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
+      && checker.pw === handed[0] && !/#/.test(checker.url) && /\/password(?:-strength|\/strength)\/$/.test(checker.url) && checker.stayed && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
       JSON.stringify({ first, strength, many, copies, phrase, bits, checker, handed, wide, unnamed, errors: Z.errors }));
     await Z.ctx.close();
   }
@@ -8855,7 +8863,7 @@ try {
   if (want("will: Verse's own outputs become its input")) { const repo = path.resolve(root, '..');
     const af = path.join(nodeOs.tmpdir(), 'void-asks-' + process.pid + '.json');
     fs.writeFileSync(af, JSON.stringify([{ ask: 'Add a friction indicator to the growth card.', times: 5, small: true }, { ask: 'Learn backgammon.', times: 20 }, { ask: 'hi', times: 9 }]));
-    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '' }, timeout: 120000 });
+    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '', VOID_BETTER_FILE: af + '.no-better' }, timeout: 120000 }); // plain weights: no better row, no weakest-part boost (tools/will.py better_boost)
     fs.rmSync(af, { force: true });
     let c = []; try { const j = JSON.parse(r.stdout); c = Array.isArray(j) ? j : j.candidates || []; } catch (_) {}
     const fr = c.find((x) => x.title === 'Add a friction indicator to the growth card'), bg = c.find((x) => x.title === 'Learn backgammon');
