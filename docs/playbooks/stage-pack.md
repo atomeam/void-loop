@@ -28,6 +28,8 @@ What worked (#2270, the same shape as recipe-stack in `void.html`): before `say(
 
 How to tell it worked: `node --test tools/stage-pack-d.test.mjs`. The weave answers while `/skills/index.json` is held back, and `data-skills` is not `ready`.
 
+The same door for "what are the figures doing" (#2272): `skills/together.js` already matches it (44th in the index; nothing above it does). Import that file before `say('waking up')`. `node --test tools/together.test.mjs` holds the index back and still reads the answer. Do not lengthen the site-test wait, and do not take the case out of `tools/site-test.json`.
+
 ## Mistakes made
 - A crowd that "rises" cannot be measured by mean y when the particles wrap at the top: measure mean vertical speed instead.
 - `moodOf(null, now)` with `now = Date.now()` read as "idle for ages" and spelt the word at once; the mount records a `start` event so the word comes after ten quiet seconds.

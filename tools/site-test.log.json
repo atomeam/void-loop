@@ -3388,5 +3388,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"yo draw a cartoon cat\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-05T12:45:18Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3092,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 11453 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

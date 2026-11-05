@@ -16,12 +16,12 @@ test('ink and text on the accent clear WCAG AA; white on the key blue does not',
 
 test('stamp opts a page in once, and every old-palette page has it', () => {
   const once = stamp('<html lang="en"><style>:root{--accent:#a58bff}</style></html>');
-  assert.match(once, /class="vs-tool"><link rel="stylesheet" href="\/verse\.css">/);
+  assert.match(once, /class="vs-tool"><link rel="stylesheet" href="\/verse\.css" media="screen">/);
   assert.match(once, /#a58bff/);
   assert.equal(stamp(once), once);
   assert.equal(stamp('<html><link rel="stylesheet" href="/verse.css"></html>'), '<html><link rel="stylesheet" href="/verse.css"></html>');
   assert.deepEqual(gaps(), []);
   assert.match(read('void-live-deploy/verse.css'), /html\.vs-tool:root:not\(\[data-theme=light\]\)/);
   assert.doesNotMatch(read('void-live-deploy/index.html'), /vs-tool/);
-  assert.match(read('void-live-deploy/functions/is-it/[what].js'), /class="vs-tool"><link rel="stylesheet" href="\/verse\.css">/);
+  assert.match(read('void-live-deploy/functions/is-it/[what].js'), /class="vs-tool"><link rel="stylesheet" href="\/verse\.css" media="screen">/);
 });

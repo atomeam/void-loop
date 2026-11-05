@@ -1,3 +1,4 @@
+// Proven by suite check in tools/vat.test.mjs (numbers family, 2026-11-05)
 import { vatAskOf, vatStateOf } from '../lib/vat-ask.js';
 import { compute, money, rateText } from '../lib/vat.js';
 

@@ -36,7 +36,7 @@ export function countdown(a) {
 }
 export function page(slug, a, w, zone, origin = 'https://a-to-mind.com') {
   const url = origin + '/is-it/' + slug, said = w.word + ': ' + a.note;
-  return '<!doctype html><html lang="' + esc(w.lang) + '" class="vs-tool"><link rel="stylesheet" href="/verse.css"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+  return '<!doctype html><html lang="' + esc(w.lang) + '" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<title>Is it ' + esc(a.what) + '? Holiday &amp; event countdown</title><link rel="alternate" type="application/rss+xml" href="/is-it/' + esc(slug) + '.rss"><link rel="modulepreload" href="/skills/is-it.js">'
     + '<meta name="description" content="' + esc(said) + '"><meta property="og:type" content="website"><meta property="og:site_name" content="Verse"><meta property="og:title" content="Is it ' + esc(a.what) + '? ' + esc(w.word) + '">'
     + '<meta property="og:description" content="' + esc(said) + '"><meta property="og:url" content="' + esc(url) + '"><meta property="og:image" content="' + esc(origin) + '/og.png"><meta name="twitter:card" content="summary_large_image">'

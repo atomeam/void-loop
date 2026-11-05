@@ -15,7 +15,7 @@ export function stamp(html) {
     let a = attrs || '';
     if (/class\s*=\s*"/.test(a)) a = a.replace(/class\s*=\s*"([^"]*)"/, 'class="$1 vs-tool"');
     else a += ' class="vs-tool"';
-    return '<html' + a + '><link rel="stylesheet" href="/verse.css">';
+    return '<html' + a + '><link rel="stylesheet" href="/verse.css" media="screen">';
   });
 }
 

@@ -93,7 +93,7 @@ export function pageOf(row, kind) {
     ? 'Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.'
     : 'Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.';
   return `<!doctype html>
-<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css">
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
