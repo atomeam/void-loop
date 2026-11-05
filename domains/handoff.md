@@ -80,6 +80,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Blank home, videos keep playing (cursor, 2026-11-05)**: the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was. https://github.com/atomeam/void-loop/pull/2291
 - **Phone panel and tray drag (cursor, 2026-11-05)**: a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands. https://github.com/atomeam/void-loop/pull/2289
 - **Verify reds, the next ones (cursor, 2026-11-05)**: "clear all the notes" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2283
 - **Glass stylesheet, not blocking (cursor, 2026-11-05)**: the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281
