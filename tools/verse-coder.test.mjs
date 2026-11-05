@@ -61,6 +61,16 @@ test('it refuses to weaken a test: fewer assertions, a skip, a deleted test; the
   assert.ok(checkScripts([{ cmd: 'node tools/guard-source.mjs && python3 ./ci/x.py' }]).has('ci/x.py'), 'a check\'s own script is guarded like a test');
 });
 
+test('a workflow is read like any file, so a repair of a red loop can see what it runs, and is never written (#2252)', async () => {
+  const s = repo();
+  const r = await run(s, [call('read', { path: '.github/workflows/ci.yml' }), call('replace', { path: '.github/workflows/ci.yml', old: 'on: push', new: 'on: [push]' }), call('finish')]);
+  assert.doesNotMatch(r.log[0].result, /refused/); assert.match(r.log[0].result, /on: push/);
+  assert.match(r.log[1].result, /refused: \.github\/workflows\/ci\.yml is a workflow/);
+  assert.equal(readFileSync(join(s.work, '.github/workflows/ci.yml'), 'utf8'), 'on: push\n');
+  assert.equal(pathRefusal('.github/workflows/ci.yml', s.work), '');
+  assert.match(pathRefusal('.github/actions/x/action.yml', s.work, { write: true }), /is a workflow: never/);
+});
+
 test('it refuses a path outside the repo, .env, workflows, secrets and its own guards; nothing is written there', async () => {
   const s = repo();
   const out = '--- /dev/null\n+++ b/../outside.txt\n@@ -0,0 +1 @@\n+escaped\n';
