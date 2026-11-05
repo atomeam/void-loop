@@ -7,7 +7,11 @@ test('ideaOf reads common leads', () => {
   assert.equal(ideaOf('blueprint this: late invoice follow-ups'), 'late invoice follow-ups');
   assert.equal(ideaOf('turn this into a system: new lead intake'), 'new lead intake');
   assert.equal(ideaOf('idea to system: sync CRM to sheet'), 'sync CRM to sheet');
+  assert.equal(ideaOf('system blueprint for weekly ops metrics without copy-paste'), 'weekly ops metrics without copy-paste');
+  assert.equal(ideaOf('system plan for: automate client onboarding'), 'automate client onboarding');
+  assert.equal(ideaOf('sketch the system for: automate invoices'), 'automate invoices');
   assert.equal(ideaOf('what is a blueprint'), null);
+  assert.equal(ideaOf('blueprint of the human body'), null);
   assert.equal(ideaOf('short'), null);
 });
 

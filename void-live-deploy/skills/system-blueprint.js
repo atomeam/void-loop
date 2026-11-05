@@ -2,21 +2,35 @@
  * system-blueprint skill — map an inbound business idea into a structured system plan
  * (A-to-Mind: facilitate ideas and take over the heavy lifting).
  * "blueprint this: late invoice follow-ups" / "turn this into a system: ..." / "idea to system: ..."
+ * also the asks from the idea-to-system and system-sketch drafts: "system plan for: ...",
+ * "sketch the system for: ...", "system design for ...". A "blueprint of" that is not a system
+ * ("blueprint of the human body") is not one.
  * becomes a card: outcome, likely friction, ordered build steps, next actions, open questions.
  * No model call; the planner is fixed templates by idea shape so the same sentence always
  * yields the same structure. Nothing is sent. Empty surface stays empty until someone asks.
  */
 
-const LEAD = String.raw`(?:(?:please\s+)?(?:blueprint|map|structure|scope)\s+(?:this|that|my|the)?\s*(?:idea|system|workflow|process|automation)?\s*[:\-]?\s*|turn\s+(?:this|that|it)\s+into\s+a\s+system\s*[:\-]?\s*|idea\s+to\s+system\s*[:\-]?\s*|(?:make|build|design)\s+(?:me\s+)?(?:a\s+)?(?:system\s+)?blueprint\s+(?:for|of)\s+)`;
-const ASK_RE = new RegExp('^' + LEAD + '(.{8,280})$', 'i');
+// Each lead keeps the idea in group 1. "blueprint of the human body" matches none of them.
+const LEADS = [
+  /^(?:please\s+)?(?:blueprint|map|structure|scope)\s+(?:this|that|my)\s*(?:idea|system|workflow|process|automation)?\s*[:\-]?\s*(.{8,280})$/i,
+  /^(?:please\s+)?system\s+blueprint\s+for\s+(.{8,280})$/i,
+  /^turn\s+(?:this|that|it)\s+into\s+a\s+system\s*[:\-]?\s*(.{8,280})$/i,
+  /^idea\s+to\s+system\s*[:\-]?\s*(.{8,280})$/i,
+  /^(?:make|build|design|generate|create)\s+(?:me\s+)?(?:a\s+)?(?:system\s+)?(?:blueprint|plan)\s+(?:for|of|:)\s*(.{8,280})$/i,
+  /^(?:sketch|outline)\s+(?:the\s+)?system\s+(?:for|of|:)\s*(.{8,280})$/i,
+  /^system\s+(?:plan|sketch|design)\s+(?:for|of|:)\s*(.{8,280})$/i,
+];
 
 /** Strip lead-in; return the raw idea text or null. Pure. */
 export function ideaOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = ASK_RE.exec(t);
-  if (!m) return null;
-  const idea = m[1].replace(/^(?:to\s+|for\s+)/i, '').trim();
-  return idea.length >= 8 ? idea : null;
+  for (const re of LEADS) {
+    const m = re.exec(t);
+    if (!m) continue;
+    const idea = m[1].replace(/^(?:to\s+|for\s+|:\s*)/i, '').trim();
+    if (idea.length >= 8) return idea;
+  }
+  return null;
 }
 
 const SHAPES = [
@@ -126,6 +140,9 @@ export default {
     'idea to system: sync closed deals from CRM to the finance sheet',
     'map this idea: slack alert when a support ticket sits over 24 hours',
     'system blueprint for weekly ops metrics without copy-paste',
+    'system plan for: automate client onboarding',
+    'sketch the system for: automate invoices',
+    'system design for the client portal',
   ],
   nearMisses: [
     'what is a blueprint',
