@@ -533,6 +533,7 @@ for (const [name, file] of [
   ['agent-probe', 'agent-probe.test.mjs'],
   ['agent-watch', 'agent-watch.test.mjs'],
   ['verse-shell', 'verse-shell.test.mjs'],
+  ['glass-pages', 'glass-pages.test.mjs'],
   ['split-void-page', 'split-void-page.test.mjs'],
   ['moved-check', 'moved-check.test.mjs'],
   ['inbox-health', 'inbox-health.test.mjs'],
