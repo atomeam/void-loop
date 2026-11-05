@@ -75,7 +75,7 @@ ok(b.out.state === 'pushed' && b.out.sha === 'feedbead1234', 'dirty and resolvab
 ok(b.has('git', 'worktree', 'add', '--detach', 'origin/helper/x'), 'the branch is checked out detached in its own worktree');
 ok(b.has('node', '/main/tools/merge-main.mjs'), "merge-main.mjs runs from main's tools, not the branch's");
 ok(b.has('git', 'push', 'origin', 'HEAD:refs/heads/helper/x') && !b.calls.some((c) => c[0] === 'git' && c[1] === 'push' && c.some((x) => /^(-f|--force|--force-with-lease)/.test(x))), 'the merge commit is pushed to the branch, never forced');
-ok(b.has('gh', 'workflow', 'run', 'void-review.yml', '--ref', 'helper/x', 'pr=7'), "Verse's review is started on the new head (a token push starts no run)");
+ok(b.has('node', '/main/tools/loop-checks.mjs', '--pr', '7', '--ref', 'helper/x', '--from', 'resolve'), 'the pull-request checks are started on the new head (a token push leaves them approval-required)');
 ok(!b.has('gh', 'api', '-X', 'POST'), 'no comment when it resolved');
 ok(b.calls.filter((c) => c[0] === 'git' && c[1] === 'worktree' && c[2] === 'remove').length >= 1, 'the worktree is removed afterwards');
 b = bot({ mergeMain: conflict });
