@@ -14,7 +14,7 @@ const NEWS = {
 export const statusesOf = (tasks) => Object.fromEntries((tasks || []).map((t) => [t.id, t.status]));
 
 /** what changed since `before` (statusesOf the last read) that a person should hear: a task that was working and now waits for a yes,
- * finished or got stuck. The first read (before = null) is never news: those happened while the page was closed, and the brief says them. */
+ * finished or got stuck. The first read (before = null) is not a change. What happened while the tab was closed is the server inbox, and tellOf says it. */
 export function newsOf(before, tasks) {
   if (!before) return [];
   const out = [];
@@ -25,6 +25,13 @@ export function newsOf(before, tasks) {
     out.push({ id: t.id, status: t.status, title: n.title, body: n.lead + String(t.ask || '').slice(0, 120) });
   }
   return out;
+}
+
+/** what to tell the member on this read. The first read is the inbox the server kept while the tab was closed (a notification and an inbox
+ * entry even after the tab was shut). Later reads are only a change out of working, so a yes you just gave is not announced twice. */
+export function tellOf(before, tasks, inbox) {
+  if (!before) return (inbox || []).filter((n) => n && n.id && n.title).map((n) => ({ id: n.id, status: n.status, title: n.title, body: String(n.body || '') }));
+  return newsOf(before, tasks);
 }
 
 /** how many tasks wait for a yes */

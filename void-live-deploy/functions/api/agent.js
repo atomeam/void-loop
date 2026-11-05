@@ -1,11 +1,14 @@
 // /api/agent: Verse's agent (lib/agent-core.js). One ongoing thread per visitor (a random id their browser keeps).
 // POST { thread, ask }                    -> a task; it runs in the background (waitUntil) and writes each step to D1 as it goes.
-// POST { thread, id, decision: yes|no }   -> the approval card's answer. Nothing outside the site is ever done: a yes on a send/pay/delete
-//                                            records the yes and Verse says the service isn't connected yet (functions/api/approval.js keeps real executors, owner only).
-// GET ?thread=<id>                        -> the thread, live steps, the Made shelf, the daily brief and the model tier.
+// POST { thread, id, decision: yes|no }   -> approve resumes the held task onto the Made shelf; decline stops it. Nothing outside the
+//                                            site is ever done: there is no send, pay or delete executor on this route.
+// POST { thread, seen: [id, ...] }        -> the member has seen those follow-ups (the inbox clears them). Only this thread's rows.
+// GET ?thread=<id>                        -> the thread, live steps, the Made shelf, the inbox, the daily brief and the model tier.
+// GET ?thread=<id>&task=<id>              -> one task, so a finished one can be reopened from the Made shelf.
 // WHAT A STRANGER COULD MAKE THIS DO: 20 tasks a day per visitor (lib/daily-cap.js), 400 a day in all. A task may ask the free model,
-// its fallback, and one better bot when the first answer does not address the ask. It can read only its own thread.
-import { tierFor, needsYes, brief, TIERS } from '../../lib/agent-core.js';
+// its fallback, and one better bot when the first answer does not address the ask. An exact free bot answers with no model call.
+// It can read and mark only its own thread.
+import { tierFor, needsYes, brief, TIERS, inboxOf, decisionOf } from '../../lib/agent-core.js';
 import { attemptsFor, answerBrief, addressesAsk } from '../../lib/agent-answer.js';
 import { cap } from '../../lib/daily-cap.js';
 import { ANSWER_FALLBACK } from '../../lib/models.js';
@@ -13,12 +16,20 @@ import { reasonOf, recordShortfall } from '../../lib/shortfall.js';
 import { planOf, routeFree, loadRegistry } from '../../lib/answer-free.js';
 
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
-const TABLE = 'CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER)';
+const TABLE = 'CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER, seen INTEGER NOT NULL DEFAULT 0)';
+const SEEN = 'ALTER TABLE void_agent_tasks ADD COLUMN seen INTEGER NOT NULL DEFAULT 0';
+const FACING = new Set(['needs_yes', 'done', 'failed']);
 const okThread = (t) => /^[a-z0-9]{16,40}$/.test(String(t || ''));
+const okId = (id) => /^[a-z0-9]{8,40}$/.test(String(id || ''));
 let ready = null;
-const table = (db) => (ready ||= db.prepare(TABLE).run().catch((e) => { ready = null; throw e; }));
+async function table(db) {
+  if (!ready) ready = (async () => { await db.prepare(TABLE).run(); try { await db.prepare(SEEN).run(); } catch (_) { /* the column is already there */ } })().catch((e) => { ready = null; throw e; });
+  return ready;
+}
 
 async function step(db, id, line, patch = {}) {
+  // a new facing status is unseen again, so a closed tab hears the change and not the one it already saw
+  if (patch.status && patch.seen === undefined && FACING.has(patch.status)) patch = { ...patch, seen: 0 };
   const row = await db.prepare('SELECT steps FROM void_agent_tasks WHERE id = ?').bind(id).first();
   const steps = JSON.parse((row && row.steps) || '[]'); steps.push({ at: Date.now(), line });
   const sets = ['steps = ?'], vals = [JSON.stringify(steps)];
@@ -74,8 +85,17 @@ export async function run(env, origin, id, ask) {
     await step(db, id, 'Read your task.', { status: 'running' });
     const tier = tierFor(await infraCents(origin));
     await step(db, id, 'Thinking on the ' + tier.name + ' model tier.', { tier: tier.name });
-    const tries = attemptsFor(ask, await bots(origin, env));
     let text = '', why = 'empty', missed = false;
+    // an exact free bot (base64, a unit, a prime) answers with no model call. Anything else still goes to the free model below.
+    if (planOf(ask).kind === 'bot') {
+      const piped = await pipelineAnswer(env, origin, ask);
+      if (addressesAsk(ask, piped)) {
+        text = piped;
+        await step(db, id, 'Handed it to the answer pipeline.', { bot: 'verse' });
+        await step(db, id, 'Checked the result (' + piped.split(/\s+/).length + ' words). It addresses the ask.');
+      }
+    }
+    const tries = text ? [] : attemptsFor(ask, await bots(origin, env));
     for (const bot of tries) {
       if (bot.repair && !missed) break; // the previous try was empty, not a wrong answer: the same models will not do better
       await step(db, id, 'Handed it to ' + bot.name + (bot.repair ? ' again, to answer the task.' : '.'), { bot: bot.name });
@@ -106,9 +126,16 @@ export async function onRequestGet({ request, env }) {
   if (!okThread(thread)) return json({ ok: false, say: 'no thread' }, 400);
   if (!env.DB) return json({ ok: false, say: 'storage is off' }, 503);
   await table(env.DB);
-  const r = await env.DB.prepare('SELECT id, ask, status, bot, tier, steps, result, created, done FROM void_agent_tasks WHERE thread = ? ORDER BY created DESC LIMIT 50').bind(thread).all();
-  const tasks = (r.results || []).map((t) => ({ ...t, steps: JSON.parse(t.steps || '[]') }));
-  return json({ ok: true, tasks, made: tasks.filter((t) => t.status === 'done'), brief: brief(tasks), tiers: TIERS.map(({ name, month_cents, why }) => ({ name, month_cents, why })) });
+  const r = await env.DB.prepare('SELECT id, ask, status, bot, tier, steps, result, created, done, seen FROM void_agent_tasks WHERE thread = ? ORDER BY created DESC LIMIT 50').bind(thread).all();
+  const tasks = (r.results || []).map((t) => ({ ...t, steps: JSON.parse(t.steps || '[]'), seen: Number(t.seen) || 0 }));
+  const taskId = new URL(request.url).searchParams.get('task');
+  if (taskId) {
+    if (!okId(taskId)) return json({ ok: false, say: 'no task' }, 400);
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task) return json({ ok: false, say: 'no task' }, 404);
+    return json({ ok: true, task });
+  }
+  return json({ ok: true, tasks, made: tasks.filter((t) => t.status === 'done'), inbox: inboxOf(tasks), brief: brief(tasks), tiers: TIERS.map(({ name, month_cents, why }) => ({ name, month_cents, why })) });
 }
 
 export async function onRequestPost({ request, env, waitUntil }) {
@@ -117,11 +144,18 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!env.DB || !env.AI) return json({ ok: false, say: 'the agent is off' }, 503);
   await table(env.DB);
   if (b.id && b.decision) {
-    const yes = b.decision === 'yes';
-    const t = await env.DB.prepare('SELECT status FROM void_agent_tasks WHERE id = ? AND thread = ?').bind(String(b.id), b.thread).first();
-    if (!t || t.status !== 'needs_yes') return json({ ok: false, say: 'nothing waiting' }, 409);
-    await step(env.DB, String(b.id), yes ? 'You said yes. The draft is on your Made shelf; sending it for you needs that service connected, which is coming.' : 'You said no. Nothing was done.', { status: yes ? 'done' : 'declined', done: Date.now() });
-    return json({ ok: true });
+    const t = await env.DB.prepare('SELECT status, result FROM void_agent_tasks WHERE id = ? AND thread = ?').bind(String(b.id), b.thread).first();
+    const d = decisionOf(b.decision, t);
+    if (!d.ok) return json({ ok: false, say: d.say }, d.say === 'yes or no' ? 400 : 409);
+    await step(env.DB, String(b.id), d.line, { status: d.status, seen: d.seen, done: Date.now() });
+    return json({ ok: true, status: d.status });
+  }
+  if (Array.isArray(b.seen)) {
+    const ids = [...new Set(b.seen.map((x) => String(x || '')).filter(okId))].slice(0, 20);
+    if (!ids.length) return json({ ok: false, say: 'nothing to mark' }, 400);
+    const qs = ids.map(() => '?').join(', ');
+    await env.DB.prepare('UPDATE void_agent_tasks SET seen = 1 WHERE thread = ? AND id IN (' + qs + ')').bind(b.thread, ...ids).run(); // void-review: ok (one ? per id, every value is bound, and the WHERE thread is this caller's own)
+    return json({ ok: true, seen: ids.length });
   }
   const ask = String(b.ask || '').trim().slice(0, 1000);
   if (ask.length < 3) return json({ ok: false, say: 'tell me the task' }, 400);

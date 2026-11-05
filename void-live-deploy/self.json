@@ -558,8 +558,56 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T08:58:45Z",
-   "subject": "Lists run 13: 14 items closed, sky card + street map into where-is"
+   "at": "2026-11-05T09:39:21Z",
+   "subject": "Move the agent follow-ups line to Just finished"
+  },
+  {
+   "at": "2026-11-05T09:34:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-05T09:34:09Z",
+   "subject": "The agent inbox, approve that resumes, and steps you can reopen"
+  },
+  {
+   "at": "2026-11-05T09:21:57Z",
+   "subject": "Move the shipped bot work to Just finished (#2258)"
+  },
+  {
+   "at": "2026-11-05T09:21:04Z",
+   "subject": "Site test: fix: \"show the days until a date\" load 1796 ms > 1200"
+  },
+  {
+   "at": "2026-11-05T09:18:20Z",
+   "subject": "Verse fixes its util skill: learn to handle \"electricity bill calc 400kwh at 0.12\""
+  },
+  {
+   "at": "2026-11-05T09:12:02Z",
+   "subject": "Migrate the next autosalvage batch into bots (#2257)"
+  },
+  {
+   "at": "2026-11-05T09:07:25Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-05T09:07:11Z",
+   "subject": "Incident: the browser suite failed on 1386b00d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T09:04:37Z",
+   "subject": "Add currency, holiday and country bot families (#2256)"
+  },
+  {
+   "at": "2026-11-05T09:03:24Z",
+   "subject": "Keep the empty home light and line the open pages up (#2254)"
+  },
+  {
+   "at": "2026-11-05T09:02:05Z",
+   "subject": "Verse loop: set aside repairs of loops that are green again; let the coder read workflows (#2252) (#2255)"
+  },
+  {
+   "at": "2026-11-05T08:59:40Z",
+   "subject": "Lists run 13: 14 items closed, sky card + street map into where-is (#2253)"
   },
   {
    "at": "2026-11-05T08:55:30Z",
@@ -588,81 +636,33 @@
   {
    "at": "2026-11-05T07:41:58Z",
    "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T07:27:51Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T07:25:08Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-05T07:24:55Z",
-   "subject": "Answer an ask once its late skill arrives, instead of leaving only 'waking up' (#2246) (#2249)"
-  },
-  {
-   "at": "2026-11-05T07:19:27Z",
-   "subject": "Incident: the browser suite failed on 64dca9d6 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T07:19:11Z",
-   "subject": "Remove my backdrop answers at once, even while the skills are still loading (#2220) (#2247)"
-  },
-  {
-   "at": "2026-11-05T07:18:46Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-11-05T07:18:41Z",
-   "subject": "Forethinkers: life-extension Q6 — GrimAge gradient vs chance (#2248)"
-  },
-  {
-   "at": "2026-11-05T07:12:15Z",
-   "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T07:07:30Z",
-   "subject": "Incident: the browser suite failed on 7ce0c13f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T06:59:14Z",
-   "subject": "Site test: fix: \"dyslexia friendly font\" only \"waking up\" appeared, nev"
-  },
-  {
-   "at": "2026-11-05T06:47:20Z",
-   "subject": "Outcome exam: podcasts 83.2"
-  },
-  {
-   "at": "2026-11-05T06:42:39Z",
-   "subject": "Rumble/Vimeo/Twitch video asks list real videos; browser suite on five shards (#2238, #2220) (#2245)"
   }
  ],
  "builders": {
   "finished": [
    {
+    "name": "Agent follow-ups (cursor, 2026-11-05)",
+    "line": "/agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260"
+   },
+   {
+    "name": "Suite reds after #2251 (cursor, 2026-11-05)",
+    "line": "clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it.…"
+   },
+   {
+    "name": "Autosalvage batch (cursor, 2026-11-05)",
+    "line": "open-graph, referrer, HSTS, isolation, subresource integrity and API-catalog drafts are bots, and jsDelivr (MIT) pins a package URL. Registry live count 11,732 to 11,739. https://github.com/atomeam/void-loop/pull/2257"
+   },
+   {
+    "name": "Open-data bot families (cursor, 2026-11-05)",
+    "line": "ECB currency pairs, 2026 public holidays and Wikidata country facts, each checked against a real call. Registry live count 9,186 to 11,732. Antigua and Equatorial Guinea stay failed as fix jobs.…"
+   },
+   {
+    "name": "Empty home, lighter (cursor, 2026-11-05)",
+    "line": "an empty phone home fetches about 40 files and 320 KB instead of 95 and 705 KB. Card styles, the card frame and its stat files wait for the first ask, and on a phone the brain and the WebGL wash wait for a tap. /agent/, /bots/ and…"
+   },
+   {
     "name": "Lists run 13 (grok, 2026-11-05)",
     "line": "a bare \"price\" asks which thing, with one tap per kind (a coin, a currency, groceries or gas, a stock, the crypto board, what Verse sells), so the prices exam is 6 of 6 locally; telemetry names every failed check, so the count and the…"
-   },
-   {
-    "name": "Forethinkers life-extension Q6 (Grok Bot, 2026-11-05)",
-    "line": "PCGrimAge baseline-acceleration × semaglutide interaction survives inflammation covariates and leave-one-out, fails bootstrap CI and half-split; MaGE weights and GSE327270 still blocked; NCT07218445 added to watchlist.…"
-   },
-   {
-    "name": "Lists run 12 (grok, 2026-11-05)",
-    "line": "the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill…"
-   },
-   {
-    "name": "Lists run 11 (grok, 2026-11-04)",
-    "line": "main's browser suite green again (the will test pins its own better file, the tower card test allows the new \"N passed\" count, the Verse bar scrolls sideways before /verse.css loads so phone pages never get wider than the screen)…"
-   },
-   {
-    "name": "Lists run 10 (grok, 2026-11-04)",
-    "line": "main's browser suite green again (test server answers _redirects, ask bar contrast, paste test after #2126, business-clarify); time-math and date-calc are one date-math family; timers take \"add one minute\" and five other languages; prices…"
-   },
-   {
-    "name": "Lists run 9 (grok, 2026-11-04)",
-    "line": "six red checks on main fixed (privacy guard, revert-target, apibot limit, handoff tags on tower-self pages, seo h1, the owner status test after #2210); status and system-status are one status-board family and system-status pings a real…"
    }
   ],
   "ladders": [
@@ -817,8 +817,8 @@
   }
  ],
  "visible": {
-  "day": 13,
-  "week": 421
+  "day": 16,
+  "week": 424
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

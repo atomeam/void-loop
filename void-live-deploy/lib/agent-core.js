@@ -51,6 +51,43 @@ export function pickBot(ask, bots) {
   return real ? { name: String(best.name || best.id), description: String(best.description || best.job || '').slice(0, 160) } : { name: 'verse', description: 'Verse itself' };
 }
 
+const FACING = new Set(['needs_yes', 'done', 'failed']);
+const FACING_LINE = {
+  needs_yes: { title: 'Verse needs your yes', lead: 'Waiting on you: ' },
+  done: { title: 'Verse finished a task', lead: 'On your Made shelf: ' },
+  failed: { title: 'Verse got stuck', lead: 'Try again: ' },
+};
+/** tasks a member should hear about even if the tab was closed: finished, stuck, or waiting on a yes, and not yet marked seen.
+ * A decline is their own answer, so it is not a follow-up. Newest first, twenty at most. */
+export function inboxOf(tasks) {
+  return (tasks || []).filter((t) => FACING.has(t.status) && !Number(t.seen)).map((t) => {
+    const n = FACING_LINE[t.status];
+    return { id: t.id, status: t.status, ask: String(t.ask || '').slice(0, 160), title: n.title, body: n.lead + String(t.ask || '').slice(0, 120), at: Number(t.done || t.created) || 0 };
+  }).sort((a, b) => b.at - a.at || String(a.id).localeCompare(String(b.id))).slice(0, 20);
+}
+
+/** what a yes or a no does to a task that is waiting. A yes resumes: the draft stays and lands on the Made shelf, and nothing is
+ * sent, paid or deleted (this route has no outside executor). A no stops. Anything else, or a task that is not waiting, does nothing. */
+export function decisionOf(decision, task) {
+  if (!task || task.status !== 'needs_yes') return { ok: false, say: 'nothing waiting' };
+  if (decision === 'no') return { ok: true, status: 'declined', seen: 1, line: 'You said no. Stopped. Nothing was sent, paid or deleted.' };
+  if (decision === 'yes') return { ok: true, status: 'done', seen: 0, line: 'You said yes. Resumed. Nothing was sent or paid: the approved draft is on your Made shelf.' };
+  return { ok: false, say: 'yes or no' };
+}
+
+/** apply a decision or a seen list to a copy of the thread, the same words and statuses as the route. Pure. */
+export function applyAgent(tasks, body) {
+  const out = (tasks || []).map((t) => ({ ...t, steps: (t.steps || []).map((s) => ({ ...s })) }));
+  const b = body || {};
+  if (b.decision === 'yes' || b.decision === 'no') {
+    const t = out.find((x) => x.id === b.id);
+    const d = decisionOf(b.decision, t);
+    if (d.ok && t) { t.status = d.status; t.seen = d.seen; t.done = Date.now(); t.steps.push({ at: Date.now(), line: d.line }); }
+  }
+  if (Array.isArray(b.seen)) { const ids = new Set(b.seen); for (const t of out) if (ids.has(t.id)) t.seen = 1; }
+  return out;
+}
+
 /** the daily brief for one thread: what got made, what waits on a yes, what is still running. */
 export function brief(tasks, now = Date.now()) {
   const day = (tasks || []).filter((t) => now - Number(t.created) < 864e5);
