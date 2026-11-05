@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/kv-namespace-f90f · only Verse's wrangler binds Verse's KV namespace · 2026-11-05 16:05 UTC
 - Cursor cloud agent · helper/selfcheck-edge-f90f · the page-check report is kept in the edge cache, so Verse writes no KV · 2026-11-05 15:55 UTC
 - Cursor cloud agent · helper/range-diff-f90f · the diff between two commits lists the files, the failed jobs at each end, and the assertion lines from the earlier log · 2026-11-05 15:40 UTC
