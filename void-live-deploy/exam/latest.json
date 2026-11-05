@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T12:20:54.154Z",
+  "at": "2026-11-05T12:51:13.246Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -148,16 +148,17 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
@@ -280,10 +281,80 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 87,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "la liga scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
