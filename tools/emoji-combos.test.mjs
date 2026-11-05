@@ -76,3 +76,16 @@ test('the stage card answers asks for combos and leaves the emoji skill its asks
   for (const ask of skill.nearMisses) assert.equal(comboAsk(ask), null, ask);
   assert.equal(skill.suite().ok, true);
 });
+
+test('a named emoji resolves heart, feu and thank you, and leaves keyboard alone', async () => {
+  const { namedEmoji, default: emoji } = await import('../void-live-deploy/skills/emoji.js');
+  assert.equal(namedEmoji('heart emoji').c, '❤️');
+  assert.equal(namedEmoji('emoji feu').c, '🔥');
+  assert.equal(namedEmoji('emoji for thank you').c, '🙏');
+  assert.equal(namedEmoji('emoji for fire').n, 'fire');
+  assert.equal(namedEmoji('emoji keyboard'), null);
+  assert.equal(namedEmoji('emoji for my keyboard'), null);
+  assert.equal(emoji.match('heart emoji', 'heart emoji'), true);
+  assert.equal(emoji.match('emoji keyboard', 'emoji keyboard'), false);
+  assert.equal(emoji.suite().ok, true);
+});
