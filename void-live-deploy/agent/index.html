@@ -52,7 +52,7 @@
 <main>
 <h1>Verse, your agent</h1>
 <form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
-<p class="lead">Send a task. Verse hands it to one of its own bots and keeps working while you're away. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
+<p class="lead">Send a task. Verse hands it to one of its own bots and keeps working while you're away. It can also write first: a job that finished in the background, a check you asked for, or a next step from what you already asked. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
 <div class="card brief" id="brief">Loading your brief…</div>
 <p class="soft" id="away">Close this tab if you want. When you come back, the inbox lists what finished or needs your yes, and a notification if you turned those on. While it stays open, the title counts what waits. <button type="button" id="notify" hidden>Tell me when it needs me</button><span id="notifyNote"></span></p>
 <section id="inboxSection" hidden><h2>Inbox</h2><div id="inbox"></div></section>
@@ -70,7 +70,7 @@ import { statusesOf, tellOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const label = { queued: 'queued', running: 'working', done: 'done', needs_yes: 'needs your yes', failed: 'stuck', declined: 'declined' };
-  let last = '', before = null, tasks = [], caught = [], timer = 0;
+  let last = '', before = null, tasks = [], caught = [], timer = 0, nudgeAt = 0;
   const BASE_TITLE = document.title;
   const acked = new Set(), pending = new Set();
   // a browser notification only when you turned them on. While you watch, only a hidden tab pings. The first read of a visit pings even on
@@ -95,6 +95,7 @@ import { statusesOf, tellOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
       before = statusesOf(tasks); document.title = titleFor(BASE_TITLE, tasks);
       const unseen = (j.inbox || []).map((n) => n.id).filter((id) => id && !acked.has(id) && !pending.has(id));
       if (unseen.length) { unseen.forEach((id) => pending.add(id)); post({ seen: unseen }).then((r) => { unseen.forEach((id) => pending.delete(id)); if (r && r.ok) unseen.forEach((id) => acked.add(id)); }, () => unseen.forEach((id) => pending.delete(id))); }
+      if (tasks.length && Date.now() - nudgeAt > 60000) { nudgeAt = Date.now(); post({ proactive: true }).then((r) => { if (r && r.nudge) { last = ''; load(); } }, () => {}); }
       const sig = JSON.stringify(j.tasks); if (sig === last) return; last = sig;
       $('brief').textContent = 'Daily brief, ' + j.brief.day + ': ' + j.brief.text;
       $('inboxSection').hidden = !caught.length;
@@ -113,7 +114,7 @@ import { statusesOf, tellOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
   $('f').addEventListener('submit', async (e) => { e.preventDefault(); const ask = $('ask').value.trim(); if (!ask) return; $('ask').value = ''; const j = await post({ ask }); if (!j.ok) alert(j.say || 'try again'); load(); });
   $('thread').addEventListener('click', async (e) => { const b = e.target.closest('button[data-id]'); if (!b) return; await post({ id: b.dataset.id, decision: b.dataset.d }); load(); });
   $('inbox').addEventListener('click', (e) => { const b = e.target.closest('[data-open]'); if (b) openTask(b.dataset.open); });
-  // every 2 s while you watch; hidden, every 10 s only while a task is still working, so a finished thread asks nothing in the background
+  // every 2 s while you watch; hidden, every 10 s while a task is working, and every 60 s when a past ask is a check Verse might write about
   const schedule = () => { clearTimeout(timer); const ms = nextReadIn(tasks, document.hidden); if (ms != null) timer = setTimeout(() => load().finally(schedule), ms); };
   document.addEventListener('visibilitychange', () => { if (!document.hidden) load().finally(schedule); else schedule(); });
   load().finally(schedule);
