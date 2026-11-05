@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T09:03:16.869Z",
+ "updated": "2026-11-05T09:15:24.805Z",
  "last24h": {
-  "ticks": 45,
-  "started": 63,
+  "ticks": 44,
+  "started": 64,
   "requeued": 0,
   "setAside": 3,
   "probes": 7,
@@ -47,11 +47,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 17,
    "cap": 90
   },
   "day": {
-   "used": 178,
+   "used": 195,
    "cap": 360
   },
   "room": true,
@@ -61,7 +61,6 @@
   "mvbl52gd": 1793867710327,
   "mva30i2e": 1793849788965,
   "mva30j4u": 1793850871957,
-  "mw1uoaya": 1793783030973,
   "mw1wvv8q": 1793784888772,
   "mw1wvvpq": 1793786133618,
   "mw1wvw6b": 1793786755342,
@@ -98,7 +97,8 @@
   "mw323tdz": 1793859638732,
   "mw36nqlw": 1793863321331,
   "mw36nr87": 1793867710327,
-  "mw36nrus": 1793869396869
+  "mw36nrus": 1793869396869,
+  "mw36nsgp": 1793870124805
  },
  "visitorAt": "2026-11-05T08:54:39Z",
  "visitorFiled": [
@@ -184,43 +184,6 @@
   "review:2248"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T09:03:50.973Z",
-   "open": 165,
-   "started": [
-    {
-     "id": "mw1uoaya",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 162,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T09:14:09.145Z",
-   "open": 164,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": true,
-   "revived": [],
-   "held": 162,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T09:24:28.464Z",
    "open": 164,
@@ -1348,6 +1311,36 @@
    "healed": [],
    "probe": false,
    "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 8,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T09:15:24.805Z",
+   "open": 187,
+   "started": [
+    {
+     "id": "mvvk3mdz",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 96
+    },
+    {
+     "id": "mw36nsgp",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
    "will": false,
    "lap": false,
    "revived": [
