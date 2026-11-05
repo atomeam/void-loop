@@ -24,10 +24,11 @@ test('the title counts what waits for a yes', () => {
   assert.equal(titleFor('Verse, your agent · Verse', [T('a', 'needs_yes')]), '(1) Verse, your agent · Verse');
   assert.equal(titleFor('Verse, your agent · Verse', [T('a', 'done')]), 'Verse, your agent · Verse');
 });
-test('a hidden tab reads only while a task is still working', () => {
+test('a hidden tab reads only while a task is still working, or slowly when a check was asked', () => {
   assert.equal(nextReadIn([T('a', 'done')], false), 2000);
   assert.equal(nextReadIn([T('a', 'running')], true), 10000);
   assert.equal(nextReadIn([T('a', 'done'), T('b', 'needs_yes')], true), null);
+  assert.equal(nextReadIn([T('a', 'done', 'check the savannah parks')], true), 60000);
 });
 test('the first read of a visit is the inbox kept while the tab was closed; a later read is only a change', () => {
   const inbox = [{ id: 'a', status: 'done', title: 'Verse finished a task', body: 'On your Made shelf: base64 verse inbox' }];
@@ -48,4 +49,5 @@ test('the page uses it: the title, a notification only when turned on, the inbox
   assert.match(html, />Decline</);
   assert.match(html, /<details><summary>Steps<\/summary>/);
   assert.match(html, /data-open/);
+  assert.match(html, /proactive: true/);
 });

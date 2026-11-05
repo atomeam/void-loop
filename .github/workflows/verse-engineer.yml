@@ -22,6 +22,7 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  actions: write # start the pull-request checks on the nightly note (a workflow-token pull request leaves them unstarted)
 
 jobs:
   live:
@@ -61,6 +62,7 @@ jobs:
       - name: One stuck pull request
         env:
           GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -96,9 +98,14 @@ jobs:
           git diff --cached --quiet || git commit -m "Verse loop: doctor #$num"
           git push origin HEAD
           echo "updated #$num; did not close it"
+          if [ "$VERSE_LOOP_DISPATCH_CHECKS" = "1" ]; then
+            git show origin/main:tools/loop-checks.mjs > "$RUNNER_TEMP/loop-checks.mjs"
+            node "$RUNNER_TEMP/loop-checks.mjs" --pr "$num" --ref "$ref" || true
+          fi
       - name: Nightly note
         env:
           GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          VERSE_LOOP_DISPATCH_CHECKS: ${{ secrets.VERSE_LOOP_TOKEN == '' && '1' || '0' }}
         run: |
           set -euo pipefail
           gh api --paginate 'repos/{owner}/{repo}/pulls?state=closed&per_page=100' --jq '.[] | select(.merged_at != null) | {number, title, merged_at, ref: .head.ref, login: .user.login}' > pulls.ndjson || true
@@ -117,3 +124,8 @@ jobs:
           git commit -m "Verse loop: nightly"
           git push -u origin loop/nightly
           gh pr create --base main --head loop/nightly --title "Verse loop: nightly" --label automerge --body "The nightly note: the loop's share of merged pulls, and the next pick. Asked by the owner: measure it." || true
+          if [ "$VERSE_LOOP_DISPATCH_CHECKS" = "1" ]; then
+            git show origin/main:tools/loop-checks.mjs > "$RUNNER_TEMP/loop-checks.mjs"
+            files=$(git diff --name-only origin/main...HEAD | paste -sd, -)
+            node "$RUNNER_TEMP/loop-checks.mjs" --ref loop/nightly --files "$files" || true
+          fi

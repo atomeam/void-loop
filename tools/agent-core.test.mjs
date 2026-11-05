@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { tierFor, needsYes, pickBot, brief, inboxOf, decisionOf } from '../void-live-deploy/lib/agent-core.js';
+import { tierFor, needsYes, pickBot, brief, inboxOf, decisionOf, planNudge, isNudge, NUDGE_LINE } from '../void-live-deploy/lib/agent-core.js';
 test('tier is free until a realized month is in the pot', () => { assert.equal(tierFor(0).name, 'free'); assert.equal(tierFor(499).name, 'free'); assert.equal(tierFor(500).name, 'strong'); });
 test('sends, pays and deletes wait for a yes', () => { assert.ok(needsYes('send an email to Bob')); assert.ok(needsYes('pay the bill')); assert.ok(!needsYes('plan a trip to Savannah')); });
 // the verb as an order waits for a yes; the same word as a noun, a how-to question or a draft does not (2026-11-04: "encode the text hello
@@ -48,9 +48,40 @@ test('a yes resumes onto the shelf and a no stops, and neither sends', () => {
   assert.ok(needsYes('Send an email to my mom saying dinner is at 6.'));
 });
 test('reads the bot factory registry', () => { assert.equal(pickBot('count the words in this', [{ id: 'word-counter', cat: 'writing', job: 'Counts words', status: 'live' }, { id: 'x', job: 'words words', status: 'failed' }]).name, 'word-counter'); });
+const row = (id, ask, status, extra = {}) => ({ id, ask, status, created: extra.created || 1, done: extra.done || 0, result: extra.result || '', steps: extra.steps || [], tier: extra.tier });
+test('Verse writes first from a finished job, a due check, or past asks, and a send waits', () => {
+  const now = 10_000_000;
+  assert.equal(planNudge([], now), null);
+  const done = row('a', 'base64 verse wrote first', 'done', { created: now - 1000, done: now - 500, result: 'dmVyc2Ugd3JvdGUgZmlyc3Q=' });
+  const note = planNudge([done], now);
+  assert.equal(note.kind, 'finished');
+  assert.equal(note.status, 'done');
+  assert.match(note.ask, /verse wrote first/);
+  assert.match(note.result, /dmVyc2Ugd3JvdGUgZmlyc3Q=/);
+  assert.equal(planNudge([done, { ...note, id: 'n', created: now - 10, steps: [{ line: NUDGE_LINE }] }], now), null, 'one note a day');
+  const send = planNudge([row('s', 'Send an email to my landlord saying the tap is fixed.', 'queued', { created: now - 5 })], now);
+  assert.equal(send.status, 'needs_yes');
+  assert.match(send.result, /Nothing was sent/);
+  assert.match(send.ask, /landlord/);
+  const check = planNudge([row('c', 'check the savannah parks', 'done', { created: now - 8 * 3600e3, done: now - 7 * 3600e3, result: 'Forsyth Park is free' })], now);
+  assert.equal(check.kind, 'check');
+  assert.match(check.result, /Forsyth Park/);
+  assert.equal(check.status, 'done');
+  const fresh = planNudge([row('c2', 'check the savannah parks', 'done', { created: now - 1000, done: now - 500, result: 'Forsyth' })], now);
+  assert.equal(fresh.kind, 'finished', 'a check that just finished is the finished note, not another check');
+  const older = row('o', 'list free things in Savannah', 'done', { created: now - 5 * 3600e3, done: now - 4 * 3600e3, result: 'the squares' });
+  const newer = row('n2', 'a one-day walk there', 'done', { created: now - 2 * 3600e3, done: now - 2 * 3600e3, result: 'river street' });
+  const suggest = planNudge([older, newer], now);
+  assert.equal(suggest.kind, 'suggest');
+  assert.match(suggest.ask, /Savannah/);
+  assert.match(suggest.ask, /one-day walk/);
+  assert.equal(suggest.status, 'done');
+  assert.equal(isNudge({ steps: [{ line: NUDGE_LINE }] }), true);
+  assert.equal(isNudge(done), false);
+});
 
 // functions/api/agent.js run(): thinking is off, an empty first reply goes to the second free model, and a dead pair fails with its reason
-import { run as runAgent, textOf, onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/agent.js';
+import { run as runAgent, textOf, onRequestGet, onRequestPost, considerNudge } from '../void-live-deploy/functions/api/agent.js';
 function fakeEnv(replies) {
   const rows = new Map(), calls = [], short = [];
   const DB = { prepare: (sql) => ({ bind: (...v) => ({
@@ -107,6 +138,11 @@ function routeDb(seed) {
     const api = (v) => ({
       run: async () => {
         if (/^CREATE |^ALTER /.test(sql)) return {};
+        if (/^INSERT INTO void_agent_tasks/.test(sql)) {
+          const [id, thread, ask, status, bot, tier, steps, result, created, done, seen] = v;
+          rows.set(id, { id, thread, ask, status, bot, tier, steps, result, created, done, seen });
+          return {};
+        }
         if (/^UPDATE void_agent_tasks SET seen = 1 WHERE thread = \? AND id IN \(/.test(sql)) {
           for (const id of v.slice(1)) { const r = rows.get(id); if (r && r.thread === v[0]) r.seen = 1; }
           return {};
@@ -165,4 +201,31 @@ test('approve resumes onto the shelf, decline stops, the inbox stays until seen,
   assert.ok(!j.inbox.some((i) => i.id === yesId));
   const again = await read();
   assert.ok(!again.inbox.some((i) => i.id === yesId), 'a second read, as a reopened tab, stays clear once it was seen');
+});
+
+test('Verse writes one free note into the inbox, and a send in that note still waits', async () => {
+  assert.equal(await considerNudge({ DB: routeDb([]) }, 'short'), null);
+  const thread = 'probenudgeaaaaaaaaaa';
+  const env = { DB: routeDb([{ id: 'job1job1job1job1job1', thread, ask: 'base64 verse wrote first', status: 'done', bot: 'verse', tier: 'free', steps: JSON.stringify([{ at: 1, line: 'Done. It is on your Made shelf.' }]), result: 'dmVyc2Ugd3JvdGUgZmlyc3Q=', created: 10, done: 20, seen: 1 }]) };
+  const post = (body, db = env) => onRequestPost({ request: req('POST', 'https://x/api/agent', body), env: db, waitUntil() {} }).then((r) => r.json());
+  const read = () => onRequestGet({ request: req('GET', 'https://x/api/agent?thread=' + thread), env }).then((r) => r.json());
+  const made = await post({ thread, proactive: true });
+  assert.equal(made.nudge.tier, 'free');
+  assert.equal(made.nudge.status, 'done');
+  const j = await read();
+  const note = j.tasks.find((t) => t.steps.some((s) => s.line === 'Verse wrote first.'));
+  assert.match(note.ask, /verse wrote first/);
+  assert.match(note.result, /Finished in the background/);
+  assert.deepEqual(j.made.map((t) => t.id), ['job1job1job1job1job1']);
+  assert.ok(j.inbox.some((i) => i.id === note.id && i.status === 'done'));
+  assert.equal((await post({ thread, proactive: true })).nudge, null);
+  const thread2 = 'probenudgeriskaaaaaa';
+  const env2 = { DB: routeDb([{ id: 'send1send1send1send1', thread: thread2, ask: 'Send an email to my landlord saying the tap is fixed.', status: 'queued', steps: JSON.stringify([{ at: 1, line: 'Got it. Queued.' }]), result: '', created: 10, done: null, seen: 0 }]), AI: {} };
+  const risk = await post({ thread: thread2, proactive: true }, env2);
+  assert.equal(risk.nudge.status, 'needs_yes');
+  const no = await post({ thread: thread2, id: risk.nudge.id, decision: 'no' }, env2);
+  assert.equal(no.status, 'declined');
+  const left = await onRequestGet({ request: req('GET', 'https://x/api/agent?thread=' + thread2), env: env2 }).then((r) => r.json());
+  assert.equal(left.tasks.find((t) => t.id === 'send1send1send1send1').status, 'queued', 'declining the note does not touch the task');
+  assert.equal(left.tasks.find((t) => t.id === risk.nudge.id).status, 'declined');
 });

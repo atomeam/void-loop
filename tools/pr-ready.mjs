@@ -52,9 +52,9 @@ export function readiness(gh, repo, pr) {
 // tools is main's tools folder: merge-main.mjs is always run from main's checkout, never from the branch (a PR cannot make the bot
 // run its own copy). The branch is checked out detached in its own worktree, main merged with tools/merge-main.mjs (the
 // append-only records settle by keeping both sides), and the merge commit pushed to the branch: never a force-push, so a branch
-// that moved in the meantime refuses the push and the next wake tries again. A push made with the workflow's token starts no
-// pull_request run, so Verse's review is dispatched on the new head by hand (void-review.yml workflow_dispatch, input pr); its
-// finish wakes automerge.yml, which then merges the PR. A conflict outside the append-only files comes back as one comment on
+// that moved in the meantime refuses the push and the next wake tries again. A push made with the workflow's token leaves the
+// new head's pull_request runs approval-required, so tools/loop-checks.mjs starts the same checks; Verse's review
+// wakes automerge.yml, which then merges the PR. A conflict outside the append-only files comes back as one comment on
 // the PR naming the files (the same comment is never posted twice), and the bot tries again whenever main moves.
 export const CONFLICT_MARK = '<!-- void-automerge: conflict -->', ACTIONS_BOT = 'github-actions[bot]';
 export function conflictNote(files) {
@@ -85,7 +85,8 @@ export function resolveMain(run, gh, { repo, pr, branch, tools, dir }) {
     }
     const sha = git(['rev-parse', 'HEAD'], dir).trim();
     git(['push', 'origin', `HEAD:refs/heads/${branch}`], dir);
-    run('gh', ['workflow', 'run', 'void-review.yml', '--repo', repo, '--ref', branch, '-f', `pr=${pr}`]);
+    // a push made with the workflow token leaves the new head's pull_request runs approval-required; start the same checks
+    run('node', [tools + '/loop-checks.mjs', '--pr', String(pr), '--ref', branch, '--repo', repo, '--from', 'resolve']);
     return { state: 'pushed', sha };
   } catch (e) { return { state: 'failed', why: String(e.stderr || e.message).slice(0, 300) }; }
   finally { drop(); }

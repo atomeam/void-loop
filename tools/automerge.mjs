@@ -165,8 +165,11 @@ for (let p of prs) {
     continue;
   }
   if (r.state === 'wait' && r.noReview && r.branch) {
-    try { run(['workflow', 'run', 'void-review.yml', '--repo', repo, '--ref', r.branch, '-f', `pr=${p.number}`]); console.log(`#${p.number}: no review had started on ${r.sha.slice(0, 7)}; Verse's review dispatched`); }
-    catch (e) { console.log(`#${p.number}: could not start Verse's review: ${String(e.stderr || e.message).slice(0, 200)}`); }
+    // opened with the workflow token: the pull_request runs exist and do not start. Start the same checks (not automerge: this is that sweep).
+    try {
+      ex(process.execPath, [here + '/loop-checks.mjs', '--pr', String(p.number), '--ref', r.branch, '--repo', repo, '--from', 'automerge']);
+      console.log(`#${p.number}: no review had started on ${r.sha.slice(0, 7)}; the pull-request checks were started`);
+    } catch (e) { console.log(`#${p.number}: could not start the pull-request checks: ${String(e.stderr || e.message).slice(0, 200)}`); }
     continue;
   }
   if (r.state === 'stop') noteStuck(p, r.why);
