@@ -16,7 +16,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Cursor cloud agent · helper/actions-log-f90f · failed GitHub Actions job names and the failing step's log, for any commit, with the count equal to the names · 2026-11-05 14:20 UTC
-- Cursor cloud agent · helper/empty-surface-5009 · the empty home is the void and the ask bar: no wordmark, tagline or store line on the first paint · 2026-11-05 14:10 UTC
 - Cursor cloud agent · helper/ledger-lines-once-f90f · the self card shows each built ask's own ledger line: lines that share a timestamp no longer collapse to the last one · 2026-11-05 13:50 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
@@ -80,6 +79,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Empty home (cursor, 2026-11-05)**: the idle home is the dark void and the ask bar. The VERSE wordmark, the A-TO-MIND line and the "support Verse: the store" link are gone. `?intro=1` still plays the old wordmark, and `?q=` still opens an ask. https://github.com/atomeam/void-loop/pull/2293
 - **Verify reds, the next ones (cursor, 2026-11-05)**: "clear all the notes" removes the notes and leaves the timers; opening a spectator link does not write this device's stage; a walkthrough tray chip still drags when the panel moves. #2250 stays open until Verse verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2283
 - **Glass stylesheet, not blocking (cursor, 2026-11-05)**: the tool-page link to verse.css is media=screen, so /converter/ still has nothing blocking the first paint and the glass still applies on screen. https://github.com/atomeam/void-loop/pull/2281
 - **Figures doing (cursor, 2026-11-05)**: "what are the figures doing" answers from together before the page says waking up, while the rest of the skills are still loading. Nothing ranked above together takes the phrase. https://github.com/atomeam/void-loop/pull/2279
