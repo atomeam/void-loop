@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T18:39:58.452Z",
+ "updated": "2026-11-05T22:25:34.172Z",
  "last24h": {
-  "ticks": 46,
-  "started": 75,
+  "ticks": 41,
+  "started": 71,
   "requeued": 0,
   "setAside": 3,
-  "probes": 7,
+  "probes": 6,
   "errors": 0
  },
  "broken": [],
@@ -14,6 +14,10 @@
   {
    "id": "mvbl52gd",
    "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mvop0asl",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
    "id": "mvu167w7",
@@ -86,10 +90,6 @@
   {
    "id": "mvwl3d38",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvpkt0sa",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   }
  ],
  "coder": {
@@ -107,11 +107,8 @@
  },
  "handed": {
   "mvbl52gd": 1793867710327,
-  "mva30i2e": 1793893102239,
+  "mva30i2e": 1793917534172,
   "mva30j4u": 1793897333540,
-  "mw2ck6u8": 1793820015290,
-  "mw2ck7mq": 1793820809602,
-  "mw2m8vwh": 1793828077407,
   "mw2m8x9s": 1793836301990,
   "mveb8rsi": 1793867710327,
   "mw2m8xzi": 1793842419318,
@@ -151,227 +148,90 @@
   "mw3p9uze": 1793902700155,
   "mw3p9w56": 1793903998452
  },
- "visitorAt": "2026-11-05T18:16:04Z",
+ "visitorAt": "2026-11-05T18:51:53Z",
  "visitorFiled": [
-  "flake:voice-verse-says-what-it-thinks-of",
-  "flake:voice-the-reflection-card-shows-wh",
-  "versus:nameunit.com",
-  "feature:amazon-com-10408b2b",
-  "feature:amazon-com-292bb8bb",
-  "versus:heycolor.com",
-  "versus:yunite.xyz",
-  "versus:hexonet.net",
-  "feature:justflipacoin-com-c1be037d",
-  "feature:base64encode-org-80e5908f",
-  "feature:companiesmarketcap-c-b38ba761",
-  "gap:se-221848",
-  "miss:preview-my-memory",
-  "miss:show-the-reasoning-behind-your-wan",
-  "miss:tester-log",
-  "versus:c-united.co.jp",
-  "versus:hexdb.io",
-  "versus:speedtest.org",
-  "versus:unitedworx.com",
-  "versus:wheelockweb.net",
-  "feature:emojitracker-com-78b6be34",
-  "feature:random-org-dac2f8d3",
-  "feature:random-org-99750ba1",
-  "versus:diffuse.tools",
-  "versus:drawspace.com",
-  "versus:hexo.io",
-  "versus:ajsonline.org",
-  "versus:facemojikeyboard.com",
-  "versus:greenwichcommunitydirectory.org.u",
-  "versus:unitedbrands.wine",
-  "versus:vtuner.com",
-  "versus:racetimer.se",
-  "versus:zoopicker.com",
-  "versus:convertytmp3.org",
-  "versus:communitydns.net",
-  "versus:speedtest.ru",
-  "versus:unit.no",
-  "versus:syncsketch.dev",
-  "versus:hexen.ai",
-  "versus:fakemailgenerator.com",
-  "versus:opentimestamps.org",
-  "versus:sketch.io",
-  "versus:gmgcolor.com",
-  "flake:will-one-set-aside-job-does-not-st",
-  "versus:koanruler.com",
-  "versus:speedchecker.com",
-  "versus:drawnames.com",
-  "versus:illicitencounters.com",
-  "versus:speedcheckerapi.com",
-  "versus:fasterwheeler.com",
-  "feature:heycolor-com-a5daa3cb",
-  "feature:heycolor-com-d11a6f08",
-  "feature:convertunits-com-491b824a",
-  "gap:se-358423",
-  "visit:what-can-you-do",
-  "visit:capital-of-france",
-  "review:2114",
-  "review:2116",
-  "versus:want-tower-assistant",
-  "review:2139",
-  "review:2162",
-  "review:2163",
-  "review:2164",
-  "review:2165",
-  "review:2169",
-  "review:2178",
-  "review:2185",
-  "versus:unitingchurch.org.au",
-  "versus:hexler.net",
-  "versus:deadlinkchecker.com",
-  "versus:testandcalc.com",
-  "versus:portchecker.co",
-  "versus:custompricecalculator.com",
-  "visit:convert-100-usd-to-eur",
-  "gap:want-exam-emoji",
-  "review:2245",
-  "probe:uber-cost-15-miles-in-nyc",
-  "probe:how-much-450-plus-15-tip",
-  "probe:s-p-500-today",
-  "review:2313"
+  "versus:besslerwheel.com",
+  "versus:freefonts.co",
+  "feature:calculator-net-f655db8f",
+  "feature:convertlive-com-e9d52132",
+  "feature:convertlive-com-f78edf99",
+  "versus:colorjigsaw.com",
+  "store-gap:receipt",
+  "flake:the-book-asked-by-verse-show-the-r",
+  "versus:kingdraw.com",
+  "miss:routines-from-others",
+  "versus:getconverter.org:wider use",
+  "versus:getconverter.org:journey: do the ",
+  "versus:getconverter.org:journey: share t",
+  "versus:randomarea.com",
+  "versus:email-checker.net",
+  "versus:copyemojio.com",
+  "route:dates-sky-tonight-nyc",
+  "versus:kingdraw.cn",
+  "review:2105",
+  "review:2109",
+  "review:2112",
+  "review:2120",
+  "visit:what-time-is-it",
+  "review:2126",
+  "review:2128",
+  "review:2130",
+  "review:2125",
+  "review:2129",
+  "review:2131",
+  "review:2132",
+  "review:2148",
+  "review:2147",
+  "feature:want-revenue-2026-11",
+  "feature:want-idea-298bf37d16",
+  "will:overhaul-surface-games-persona-playtest-",
+  "tv:agricultural-market-tracker",
+  "versus:want-tower-team-chat",
+  "review:2216",
+  "versus:agechecker.net",
+  "review:2221",
+  "flake:suite-ran-to-the-end",
+  "flake:tower-the-target-tower-target-json",
+  "flake:empty-state-over-a-pure-white-back",
+  "flake:the-owner-s-status-card-opens-by-i",
+  "review:2223",
+  "flake:defences-every-api-route-has-an-ex",
+  "flake:suite-budget-the-whole-suite-ran-p",
+  "versus:bestfonts.pro",
+  "versus:speedtest.sg",
+  "versus:speedtest.com.sg",
+  "versus:jsonline.com",
+  "review:2247",
+  "review:2248",
+  "versus:coreldrawdesign.com",
+  "versus:coloradoan.com",
+  "versus:uphex.com",
+  "versus:timer365.com",
+  "versus:loanwisecalculatoreasy.com",
+  "versus:drawio.com",
+  "visit:convert-5-miles-to-kilometers",
+  "bot:check-country-ag",
+  "bot:country-ag",
+  "bot:check-country-gq",
+  "bot:country-gq",
+  "review:2303",
+  "review:2304",
+  "review:2305",
+  "review:2319",
+  "versus:colorscheme.ru:speed",
+  "versus:colorscheme.ru:journey: do the ma",
+  "versus:colorscheme.ru:journey: share the",
+  "versus:sipcalculator.in",
+  "versus:colordrop.io",
+  "versus:colourlab.ai",
+  "gap:want-exam-maps",
+  "review:2325",
+  "probe:how-do-i-use-the-guide-for-this",
+  "probe:what-are-my-lacks",
+  "probe:audit-this-repo",
+  "probe:show-me-the-memory-graph"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T19:20:15.290Z",
-   "open": 176,
-   "started": [
-    {
-     "id": "mw2ck6u8",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": true,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 171,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T19:33:29.602Z",
-   "open": 175,
-   "started": [
-    {
-     "id": "mw2ck7mq",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 172,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T20:18:32.402Z",
-   "open": 181,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 179,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T20:52:00.355Z",
-   "open": 181,
-   "started": [
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 179,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T21:14:14.202Z",
-   "open": 181,
-   "started": [
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "will": false,
-   "lap": true,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 179,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T21:34:37.407Z",
-   "open": 185,
-   "started": [
-    {
-     "id": "mw2m8vwh",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 179,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T23:51:41.990Z",
    "open": 183,
@@ -1508,6 +1368,30 @@
     "void-tick.yml"
    ],
    "held": 200,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T22:25:34.172Z",
+   "open": 209,
+   "started": [
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 202,
    "warnings": 0
   }
  ]
