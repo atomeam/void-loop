@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-05T09:07:11.352Z",
+ "sha": "1386b00d01b4addb2abd7c50ff2fa4bbad246e7a",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41996212755",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "tools pack 8: \"ephemeral mode\" forgets what was done in the tab (a reload puts the stage back to how it was), and \"turn off ephemeral mode\" keeps things again",
+  "list card: seeds from \"a shopping list with eggs, milk and bread\", \"add X to the list\", \"add milk\" again adds nothing, \"check off\" ticks and \"mark X as done\" toggles back, \"remove X from the list\" (and an unknown item changes nothing), \"list: a, b\" adds to the open list, the card's own box adds, its tick box ticks and its x removes, the title is typed in place, \"make the list red\" edges it, all of it comes back after a reload, then \"clear the list\" empties it, \"remove the list\" takes it away and a bare \"make a list\" makes a new empty one"
+ ],
+ "touched": [
+  "docs/PARITY/github.md",
+  "docs/PARITY/hugging-face.md",
+  "docs/PARITY/lichess.md",
+  "void-live-deploy/index.html",
+  "void-live-deploy/skills/guide.js",
+  "void-live-deploy/void.html",
+  "void.html"
+ ],
+ "shards": [
+  2,
+  3
+ ]
+}
