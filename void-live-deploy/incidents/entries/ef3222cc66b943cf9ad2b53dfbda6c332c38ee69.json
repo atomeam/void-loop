@@ -1,0 +1,25 @@
+{
+ "at": "2026-11-05T01:58:09.682Z",
+ "sha": "ef3222cc66b943cf9ad2b53dfbda6c332c38ee69",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41949031762",
+ "suite": "browser suite on main",
+ "checks": [
+  "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+  "films page: anyone watches, a member reviews, the owner gets the YouTube steps",
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
+  "will: Verse's own outputs become its input: an ask from its reflections is a want with how often it asked; asked more weighs more, capped at 40; a two-letter ask is not a want"
+ ],
+ "touched": [
+  "domains/forethinkers/experiments/3mf-fuse-test.mjs",
+  "domains/forethinkers/experiments/orca-flatten-profile.mjs",
+  "domains/forethinkers/index.md",
+  "domains/forethinkers/run-log.md",
+  "domains/forethinkers/tracks/living-figures.md",
+  "domains/forethinkers/tracks/printing-working-machines.md",
+  "domains/void.growth.md"
+ ],
+ "shards": [
+  3,
+  4
+ ]
+}
