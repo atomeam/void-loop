@@ -1531,7 +1531,7 @@ try {
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
     // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
     check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && (v.head || '').replace(/ · \d+ passed/, '') === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site /* a passed site (6fbae31da) adds its own ' · N passed' count from the served record */
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
@@ -8845,7 +8845,7 @@ try {
   if (want("will: Verse's own outputs become its input")) { const repo = path.resolve(root, '..');
     const af = path.join(nodeOs.tmpdir(), 'void-asks-' + process.pid + '.json');
     fs.writeFileSync(af, JSON.stringify([{ ask: 'Add a friction indicator to the growth card.', times: 5, small: true }, { ask: 'Learn backgammon.', times: 20 }, { ask: 'hi', times: 9 }]));
-    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '' }, timeout: 120000 });
+    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '', VOID_BETTER_FILE: af + '.no-better' }, timeout: 120000 }); // plain weights: no better row, no weakest-part boost (tools/will.py better_boost)
     fs.rmSync(af, { force: true });
     let c = []; try { const j = JSON.parse(r.stdout); c = Array.isArray(j) ? j : j.candidates || []; } catch (_) {}
     const fr = c.find((x) => x.title === 'Add a friction indicator to the growth card'), bg = c.find((x) => x.title === 'Learn backgammon');

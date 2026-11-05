@@ -34,9 +34,9 @@ _Read from /api/reflect on 2026-11-05. Asks a growth-ledger entry answers (its `
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261105-0018-1` queued, not decided yet
-- `ask-20261105-0018-2` queued, not decided yet
-- `ask-20261105-0018-3` queued, not decided yet
+- `ask-20261105-0018-1` built: lists run 11 (2026-11-04): duplicate of ask-20261104-2101-1: emojigraph.org is already a lane page through lib/self-sites.js (65ac2bbae), and the tower card names it as the site being taken on
+- `ask-20261105-0018-2` built: lists run 11 (2026-11-04): duplicate of ask-20261104-2101-2, answered in lists run 10: 814032d5 is the merge of #2039; its failed jobs were python-tests and browser-suite (1), (2) and (3), and python-tests failed in tools/verse-loop.test.mjs:151, which passes on main now
+- `ask-20261105-0018-3` queued: lists run 11 (2026-11-04): duplicate of ask-20261104-2101-3 (the prices exam): "how much is ethereum" passes live; "100 usd in eur" still fails only the rival check; one build answers both
 - `ask-20261104-2054-3` built: lists run 10 (2026-11-04): duplicate: "what can you do" routes to the self route (lib/router.js) and opens the menu book of what Verse can do; it is a bench ask (tools/bench.json, want self) and covered by the browser suite
 - `ask-20261104-2017-1` queued, not decided yet
 - `ask-20261104-1659-3` queued: lists run 9 (2026-11-04): duplicate of ask-20261104-2017-1 (the images exam); one build answers both

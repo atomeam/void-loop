@@ -258,6 +258,12 @@
    "date": "2026-11-03",
    "ask": "delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations, we own…",
    "from": "new idea by growth agent; helper/delivery-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-04",
+   "ask": "system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff)",
+   "from": "new idea by growth agent; helper/system-status"
   }
  ],
  "open": [
@@ -530,7 +536,7 @@
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-10-21"
+   "last": "2026-11-04"
   },
   {
    "name": "Life extension and disease cures",
@@ -554,88 +560,96 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T20:17:37Z",
-   "subject": "Spotter: 3 check(s) healed with no revert after 3921a32e5d817022d053f4b18eef77046fb5192d (tools/flakes.json)"
+   "at": "2026-11-05T02:02:46Z",
+   "subject": "Outcome exam: images 73.9"
   },
   {
-   "at": "2026-11-04T20:15:08Z",
-   "subject": "Fix system-status match for status of the ... examples (#2223)"
+   "at": "2026-11-05T01:58:10Z",
+   "subject": "Incident: the browser suite failed on ef3222cc (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T20:12:23Z",
+   "at": "2026-11-05T01:49:05Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T20:03:55Z",
-   "subject": "Outcome exam: prices 73.3"
-  },
-  {
-   "at": "2026-11-04T19:59:21Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-11-04T19:50:37Z",
-   "subject": "treasury: found money and the weekly review"
-  },
-  {
-   "at": "2026-11-04T19:49:23Z",
-   "subject": "Spotter: 4 check(s) healed with no revert after 3921a32e5d817022d053f4b18eef77046fb5192d (tools/flakes.json)"
-  },
-  {
-   "at": "2026-11-04T19:45:57Z",
-   "subject": "Site test: fix: \"keep this idea: a stage that remembers | why: it makes"
-  },
-  {
-   "at": "2026-11-04T19:36:54Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-04T19:31:19Z",
-   "subject": "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md (#2219)"
-  },
-  {
-   "at": "2026-11-04T19:29:55Z",
-   "subject": "forethinkers: living figures Q6, the price gap is memory (cloud-toy BOM, 2026 DRAM prices, 1 GB mind target) + cost card board row (#2221)"
-  },
-  {
-   "at": "2026-11-04T19:22:54Z",
-   "subject": "Verse routes \"400 562 129\" to its sums skill the answer is not checked"
-  },
-  {
-   "at": "2026-11-04T19:17:10Z",
-   "subject": "Verse's voice 2026-11-04: two answers logged, asks refreshed; restore growth-inbox (overwritten with a placeholder in 030d7c263)"
-  },
-  {
-   "at": "2026-11-04T19:07:41Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T18:52:13Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-11-04T18:17:29Z",
+   "at": "2026-11-05T01:34:03Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-04T18:15:51Z",
+   "at": "2026-11-05T01:33:17Z",
+   "subject": "Verse's will: today's three wants (domains/void.will.md)"
+  },
+  {
+   "at": "2026-11-05T01:30:50Z",
+   "subject": "forethinkers: printing Q7, printed planetaries close the arm on torque and heat; 16 CFR 1500.53 torque test makes a slip clutch Q8 + arm…"
+  },
+  {
+   "at": "2026-11-05T00:55:13Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T00:52:09Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-05T00:28:52Z",
+   "subject": "Site test: fix: \"bokos like dune\" nothing appeared"
+  },
+  {
+   "at": "2026-11-05T00:20:33Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-05T00:18:30Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-11-05T00:04:23Z",
+   "subject": "Site test: fix: \"update for you: a new routine now runs every 3 hours f"
+  },
+  {
+   "at": "2026-11-05T00:00:26Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-11-04T23:58:23Z",
    "subject": "Tower gate: Versus by itself, Versus: took on no site; next (the target)"
   },
   {
-   "at": "2026-11-04T18:13:17Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 5 no-family, 3 covered); next (the target)"
+   "at": "2026-11-04T23:55:48Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 6 no-family, 1 gone, 1 covered); next (the target)"
   },
   {
-   "at": "2026-11-04T18:13:14Z",
+   "at": "2026-11-04T23:55:44Z",
    "subject": "Versus by itself: no page built, the sites read recorded"
   },
   {
-   "at": "2026-11-04T18:11:19Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+   "at": "2026-11-04T23:55:08Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-04T23:48:15Z",
+   "subject": "Lists run 10: green suite, date-math family, timers + prices exams, site-test #2228 (#2229)"
+  },
+  {
+   "at": "2026-11-04T21:35:00Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-04T21:30:22Z",
+   "subject": "Site test: visitor pass 14/15"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists run 10 (grok, 2026-11-04)",
+    "line": "main's browser suite green again (test server answers _redirects, ask bar contrast, paste test after #2126, business-clarify); time-math and date-calc are one date-math family; timers take \"add one minute\" and five other languages; prices…"
+   },
+   {
+    "name": "Lists run 9 (grok, 2026-11-04)",
+    "line": "six red checks on main fixed (privacy guard, revert-target, apibot limit, handoff tags on tower-self pages, seo h1, the owner status test after #2210); status and system-status are one status-board family and system-status pings a real…"
+   },
    {
     "name": "Agent ask match (cursor, 2026-11-04)",
     "line": "an open ask on /agent/ goes to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again. https://github.com/atomeam/void-loop/pull/2191"
@@ -651,14 +665,6 @@
    {
     "name": "cursor",
     "line": "the pointing arrow is a core skill, world clock and word definitions lead the MCP tools at https://a-to-mind.com/api/mcp, the Nov 1 git-diff asks are retired, and the wants card leads with counts and the top 3…"
-   },
-   {
-    "name": "cursor",
-    "line": "Drive share, a skill built by calling the calculator and the unit converter (helper/skills-from-skills). The builder searches existing skills, calls them through the MCP run, and skills/lineage.json counts skills built with skills. The…"
-   },
-   {
-    "name": "Visitor pass (cursor, 2026-11-04)",
-    "line": "everyday asks on the live site. A city typed with its state is found, directions between two places open the distance card, sports scores open the NFL board, play music opens local radio, and the empty bar says Ask anything. The site…"
    }
   ],
   "ladders": [
@@ -813,8 +819,8 @@
   }
  ],
  "visible": {
-  "day": 71,
-  "week": 587
+  "day": 0,
+  "week": 406
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

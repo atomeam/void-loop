@@ -1,68 +1,68 @@
 {
- "at": "2026-11-04T20:33:52.715Z",
+ "at": "2026-11-05T02:24:55.383Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "domains/conductor.json",
-   "changes": 160
+   "changes": 162
   },
   {
    "file": "docs/HANDOFF-GAPS.md",
-   "changes": 57
-  },
-  {
-   "file": "domains/growth-inbox.md",
-   "changes": 54
+   "changes": 56
   },
   {
    "file": "tools/bench.json",
-   "changes": 52
+   "changes": 51
   },
   {
-   "file": "domains/handoff.md",
-   "changes": 50
-  },
-  {
-   "file": "tools/families.mjs",
-   "changes": 43
+   "file": "domains/growth-inbox.md",
+   "changes": 48
   },
   {
    "file": "domains/tower-self.json",
    "changes": 42
   },
   {
-   "file": "tools/real-pages.mjs",
-   "changes": 41
-  },
-  {
-   "file": "tools/handoff-e2e.mjs",
-   "changes": 38
-  },
-  {
-   "file": "void-live-deploy/lib/tower.js",
-   "changes": 38
+   "file": "tools/families.mjs",
+   "changes": 42
   },
   {
    "file": "docs/PARITY/github.md",
-   "changes": 37
+   "changes": 38
   },
   {
    "file": "docs/PARITY/hugging-face.md",
-   "changes": 37
+   "changes": 38
   },
   {
    "file": "docs/PARITY/lichess.md",
+   "changes": 38
+  },
+  {
+   "file": "tools/handoff-e2e.mjs",
    "changes": 37
   },
   {
-   "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 31
+   "file": "tools/real-pages.mjs",
+   "changes": 36
   },
   {
-   "file": "void-live-deploy/tools/index.html",
-   "changes": 28
+   "file": "domains/handoff.md",
+   "changes": 32
+  },
+  {
+   "file": "void-live-deploy/lib/tower.js",
+   "changes": 32
+  },
+  {
+   "file": "void-live-deploy/lib/toolkit.js",
+   "changes": 29
+  },
+  {
+   "file": "docs/PARITY/google-search.md",
+   "changes": 27
   },
   {
    "file": "tools/toolkit.test.mjs",
@@ -73,35 +73,27 @@
    "changes": 27
   },
   {
-   "file": "docs/PARITY/google-search.md",
-   "changes": 26
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 26
-  },
-  {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 26
-  },
-  {
    "file": "void-live-deploy/skills/verse-brain.js",
    "changes": 26
   },
   {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 25
-  },
-  {
-   "file": "void-live-deploy/sw.js",
-   "changes": 25
-  },
-  {
-   "file": "docs/TAGTEAM.md",
-   "changes": 24
+   "file": "void-live-deploy/tools/index.html",
+   "changes": 26
   },
   {
    "file": "void-live-deploy/converter/app.js",
+   "changes": 24
+  },
+  {
+   "file": "void-live-deploy/exam/history.json",
+   "changes": 24
+  },
+  {
+   "file": "void-live-deploy/exam/latest.json",
+   "changes": 24
+  },
+  {
+   "file": "void-live-deploy/lib/card-frame.js",
    "changes": 24
   },
   {
@@ -109,7 +101,7 @@
    "changes": 24
   },
   {
-   "file": "void-live-deploy/lib/seo.js",
+   "file": "void-live-deploy/lib/guard.js",
    "changes": 24
   },
   {
@@ -129,15 +121,11 @@
    "changes": 23
   },
   {
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 23
+  },
+  {
    "file": "void-live-deploy/fanfic/app.js",
-   "changes": 23
-  },
-  {
-   "file": "void-live-deploy/lib/guard.js",
-   "changes": 23
-  },
-  {
-   "file": "void-live-deploy/skills/tower.js",
    "changes": 23
   },
   {
@@ -145,15 +133,15 @@
    "changes": 22
   },
   {
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 22
+  },
+  {
    "file": "docs/PARITY/README.md",
    "changes": 21
   },
   {
-   "file": "tools/card-cycle.json",
-   "changes": 21
-  },
-  {
-   "file": "tools/grow-self.state.json",
+   "file": "docs/TAGTEAM.md",
    "changes": 21
   },
   {
@@ -161,7 +149,31 @@
    "changes": 21
   },
   {
+   "file": "void-live-deploy/lib/seo.js",
+   "changes": 21
+  },
+  {
+   "file": "void-live-deploy/sw.js",
+   "changes": 21
+  },
+  {
+   "file": "tools/card-cycle.json",
+   "changes": 20
+  },
+  {
+   "file": "tools/grow-self.state.json",
+   "changes": 20
+  },
+  {
    "file": "tools/team.test.mjs",
+   "changes": 20
+  },
+  {
+   "file": "void-live-deploy/markets/currency-converter/index.html",
+   "changes": 20
+  },
+  {
+   "file": "void-live-deploy/skills/tower.js",
    "changes": 20
   },
   {
@@ -171,18 +183,6 @@
   {
    "file": "void-live-deploy/lib/brain.js",
    "changes": 19
-  },
-  {
-   "file": "void-live-deploy/exam/history.json",
-   "changes": 18
-  },
-  {
-   "file": "void-live-deploy/exam/latest.json",
-   "changes": 18
-  },
-  {
-   "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 18
   },
   {
    "file": "void-live-deploy/converter/index.html",
@@ -213,6 +213,10 @@
    "changes": 16
   },
   {
+   "file": "docs/PARITY/gmail.md",
+   "changes": 15
+  },
+  {
    "file": "docs/PARITY/onlineconverter.com.md",
    "changes": 15
   },
@@ -225,24 +229,24 @@
    "changes": 15
   },
   {
-   "file": "tools/tower.test.mjs",
+   "file": "tools/word-math.golden.json",
    "changes": 15
   },
   {
-   "file": "tools/word-math.golden.json",
+   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
    "changes": 15
   },
   {
    "file": "void-live-deploy/void.asks.json",
    "changes": 15
-  },
-  {
-   "file": "docs/PARITY/gmail.md",
-   "changes": 14
-  },
-  {
-   "file": "tools/tower-probes.mjs",
-   "changes": 14
   },
   {
    "file": "void-live-deploy/salvage.json",
@@ -261,11 +265,11 @@
    "changes": 13
   },
   {
-   "file": "tools/parity-catalog.mjs",
+   "file": "tools/tower-size.test.mjs",
    "changes": 13
   },
   {
-   "file": "tools/tower-size.test.mjs",
+   "file": "tools/tower.test.mjs",
    "changes": 13
   },
   {
@@ -278,18 +282,6 @@
   },
   {
    "file": "void-live-deploy/lib/team.js",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
    "changes": 13
   }
  ]
