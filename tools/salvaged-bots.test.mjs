@@ -1,6 +1,7 @@
 // The salvaged bots (void-live-deploy/bots/salvaged.js): each passes its probe and a second real case, and its lineage is a real piece.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
 import { SALVAGED } from '../void-live-deploy/bots/salvaged.js';
 import { BOT, probe } from '../void-live-deploy/bots/kit.js';
@@ -229,4 +230,82 @@ test("tabler-icon-url", async () => {
   assert.ok(lineage(b), 'lineage is real');
   const r = await fetch(b.run("outline home 3.50.0"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
   assert.equal(r.status, 200, "the pinned Tabler icon URL answers");
+});
+test("void-look", () => {
+  const b = bot("void-look"); assert.ok(b && BOT("void-look"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("scale 1.3: bigger text"), "bg #050505 · glow #0b0b10 · stars off · scale 1.4");
+  assert.equal(b.run("paint it red"), 'not a void look: try "my void deep blue", "add stars" or "bigger text"');
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("provider-status", () => {
+  const b = bot("provider-status"); assert.ok(b && BOT("provider-status"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("available-local"), "local-ready");
+  assert.match(b.run("online"), /unknown status/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("atom-feed-check", () => {
+  const b = bot("atom-feed-check"); assert.ok(b && BOT("atom-feed-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · no /feed.atom until a human seals at least one attested entry");
+  assert.match(b.run('<rss><channel></channel></rss>'), /RSS and JSON Feed stay 404/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("gpc-check", () => {
+  const b = bot("gpc-check"); assert.ok(b && BOT("gpc-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("404"), "unpublished · a missing support resource means support is unknown");
+  assert.match(b.run('{"gpc": false}'), /gpc false is a claim/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("tdm-check", () => {
+  const b = bot("tdm-check"); assert.ok(b && BOT("tdm-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.match(b.run('{"tdm-reservation": 0}'), /tdm-reservation 0 is denied/);
+  assert.match(b.run('Content-Signal: ai-train=no'), /different names/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("redirect-check", () => {
+  const b = bot("redirect-check"); assert.ok(b && BOT("redirect-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · no redirects until a human seals emit");
+  assert.match(b.run("/blog/* https://a-to-mind.com/blog/:splat 301"), /splat and placeholder are denied/);
+  assert.match(b.run("/retired https://a-to-mind.com/ 301"), /not folded onto/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("humans-check", () => {
+  const b = bot("humans-check"); assert.ok(b && BOT("humans-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run(""), "unpublished · no /humans.txt until a human seals named people who actually exist");
+  assert.match(b.run("Chef: A-to-Mind Bot"), /invented names are denied/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("gap-check", () => {
+  const b = bot("gap-check"); assert.ok(b && BOT("gap-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.match(b.run("open | marked | retraction | 0.5"), /both lanes must be marked/);
+  const line = b.run("marked | marked | no-shared-artifact | 0.25 | please handoff this").split(" · ")[1];
+  assert.equal(createHash("sha256").update(line).digest("hex"), "a1e257ea964aef2a968eb49f7196c2d57f257987c2da0981364a5ff9c4fe770a");
+  assert.ok(!line.includes("please handoff"), "the handoff sentence is not in the line");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("english-words-url", async () => {
+  const b = bot("english-words-url"); assert.ok(b && BOT("english-words-url"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("words"), "https://cdn.jsdelivr.net/gh/dwyl/english-words@20f5cc9b3f0ccc8ce45d814c532b7c2031bba31c/words.txt");
+  assert.match(b.run("../words"), /send alpha or words/);
+  assert.equal(b.credit.license, "Unlicense");
+  assert.ok(lineage(b), 'lineage is real');
+  const r = await fetch(b.run("alpha"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
+  assert.equal(r.status, 200, "the pinned word-list URL answers");
+});
+test("countries-url", async () => {
+  const b = bot("countries-url"); assert.ok(b && BOT("countries-url"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.match(b.run("master"), /pinned release 4\.1\.1/);
+  assert.equal(b.credit.license, "ODbL-1.0");
+  assert.ok(lineage(b), 'lineage is real');
+  const r = await fetch(b.run("v4.1.1"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
+  assert.equal(r.status, 200, "the pinned countries URL answers");
 });

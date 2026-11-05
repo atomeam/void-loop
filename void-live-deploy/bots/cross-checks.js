@@ -5,6 +5,7 @@
 // sources, two dictionaries). Give it "input => answer" to check a claim, or just the input to check the bot's own answer.
 // Checks per checker: it agrees with the real bot on real inputs, it catches a planted wrong answer, and its road skips the bot.
 import { book } from './lang-pairs.js';
+import { CODECS } from './encodings.js';
 import { APIS, read, askAt } from './api-bots.js';
 import KEPT from './api-fixtures.js';
 import { HOLIDAYS } from './open-data.js';
@@ -81,6 +82,12 @@ export function crossChecks(all) {
     const code = b.id.slice('country-'.length).toUpperCase();
     out.push(checker(b, [{ id: 'capital-list-' + code.toLowerCase(), run: () => capitalRoad(code) }, { id: 'as-is', run: (s) => s }], { same: (c, v) => String(c).split(', ').some((x) => samePlace(x, v)), wrong: () => 'Not A Real Capital', samples: ['capital', 'facts', 'the capital'], family: 'country facts' }));
   }
+  for (const b of fam('text encodings')) {
+    const [, a, z] = b.id.match(/^([a-z0-9]+)-to-([a-z0-9]+)$/);
+    const m = ['hex', 'base64', 'text'].find((x) => x !== a && x !== z);
+    const samples = ['Hello, Verse!', 'café', 'a+b/c'].map((t) => CODECS[a].to(t));
+    out.push(checker(b, [by.get(a + '-to-' + m), by.get(m + '-to-' + z)], { same: (c, v) => c === v, wrong: (c) => c + 'x', samples, family: 'text encodings' }));
+  }
   return [...out, ...apiChecks()];
 }
 // two free APIs against each other: the kept real replies must agree, and a planted wrong value must be caught
@@ -92,6 +99,7 @@ const PAIRS = [
   { id: 'ip-two-sources', job: 'Checks an IP address\'s country in ipapi.co against country.is', a: 'ip-locate', b: 'ip-country', fa: (j) => j.country, fb: (j) => j.country, same: (x, y) => x === y, sample: '8.8.8.8' },
   { id: 'define-two-dictionaries', job: 'Checks a word\'s part of speech in the Free Dictionary against Wiktionary', a: 'define-word', b: 'wiktionary-define', fa: (j) => j[0].meanings[0].partOfSpeech.toLowerCase(), fb: (j) => j.en[0].partOfSpeech.toLowerCase(), same: (x, y) => x === y, sample: 'serendipity' },
   { id: 'town-two-sources', job: 'Checks the National Weather Service\'s nearest town against Open-Meteo\'s place name', a: 'nws-point', b: 'place-finder', fa: (j) => j.properties.relativeLocation.properties.city, fb: (j) => j.results[0].name, same: (x, y) => x === y, sample: '28.04, -81.95', qb: () => 'Lakeland' },
+  { id: 'drug-two-sources', job: 'Checks the generic name openFDA lists for Tylenol against RxNorm\'s name for RxCUI 161', a: 'drug-label', b: 'drug-rxcui', fa: (j) => j.results[0].openfda.generic_name[0].toLowerCase(), fb: (j) => j.properties.name.toLowerCase(), same: (x, y) => x === y, sample: 'tylenol', qb: () => '161' },
 ];
 const plant = (v) => (Array.isArray(v) ? v.map((x) => x + 1) : typeof v === 'number' ? v * 1.1 : 'not-' + v);
 function apiChecks() {

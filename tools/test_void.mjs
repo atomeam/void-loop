@@ -1573,6 +1573,40 @@ try {
       JSON.stringify({ v, cmp, errors: P.errors }));
     await P.ctx.close();
   }
+  if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
+    const P = await fresh({ phone: true });
+    await P.p.goto(base + 'agent/');
+    const nav = await until(() => P.p.evaluate(() => {
+      const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
+      if (!bar || !a || a.textContent !== 'Agents') return null;
+      const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
+      return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
+    }), 8000);
+    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
+      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    await P.p.goto(base + 'compare/');
+    const cmp = await until(() => P.p.evaluate(() => {
+      const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
+      if (picks < 8) return null;
+      return {
+        who: (document.getElementById('who') || {}).textContent || '',
+        frames: [...document.querySelectorAll('iframe')].filter((f) => f.getClientRects().length && getComputedStyle(f).display !== 'none').length,
+        picks,
+      };
+    }), 8000);
+    check('phone polish: /compare/ with no floor names a real address, lists floors, and shows no blank frame',
+      cmp && /floor=\S+/.test(cmp.who) && !/\s/.test((cmp.who.split('floor=')[1] || '')) && cmp.frames === 0 && cmp.picks >= 8, JSON.stringify(cmp));
+    await P.p.goto(base + 'credits/');
+    const cred = await until(() => P.p.evaluate(() => {
+      const td = [...document.querySelectorAll('#c td')].find((e) => /MIT|Apache|Unlicense|CC0|ODbL/.test(e.textContent));
+      if (!td) return null;
+      const r = td.getBoundingClientRect();
+      return { t: td.textContent.slice(0, 40), left: r.left, right: r.right, w: innerWidth, page: document.documentElement.scrollWidth };
+    }), 8000);
+    check('phone polish: a credit\'s license is on the 390 px screen',
+      cred && cred.left >= -1 && cred.right <= cred.w + 1 && cred.page <= cred.w + 1, JSON.stringify(cred));
+    await P.ctx.close();
+  }
   // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;

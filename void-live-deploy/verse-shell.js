@@ -1,7 +1,7 @@
 // The app shell on every Verse page that links it: the nav's current page, the command palette (Ctrl+K or ⌘K),
 // speculation-rules prefetch, and a short haptic tick on a tap. The home page draws no chrome at all (owner, 2026-11-04).
 // Team keeps its own Ctrl+K (the channel jump). Drawing is here; the wording is lib/verse-shell.js.
-import { NAV, currentNav, commands, filterCommands, speculationRules, dressPath } from '/lib/verse-shell.js';
+import { NAV, currentNav, commands, filterCommands, speculationRules, dressPath, revealScroll } from '/lib/verse-shell.js';
 
 function ensureChrome() {
   if (!dressPath(location.pathname) || document.getElementById('verse-nav')) return;
@@ -46,10 +46,15 @@ const reduce = () => { try { return matchMedia('(prefers-reduced-motion: reduce)
 
 function markCurrent() {
   const cur = currentNav(location.pathname);
+  let current = null;
   for (const a of document.querySelectorAll('#verse-nav .vs-links a')) {
-    if (cur && a.getAttribute('href') === cur.href) a.setAttribute('aria-current', 'page');
+    if (cur && a.getAttribute('href') === cur.href) { a.setAttribute('aria-current', 'page'); current = a; }
     else a.removeAttribute('aria-current');
   }
+  const bar = document.querySelector('#verse-nav .vs-links');
+  if (!current || !bar) return;
+  const box = bar.getBoundingClientRect(), r = current.getBoundingClientRect();
+  bar.scrollLeft = revealScroll({ scrollLeft: bar.scrollLeft, clientWidth: bar.clientWidth, itemLeft: r.left - box.left, itemRight: r.right - box.left });
 }
 
 function tick() {
@@ -148,6 +153,9 @@ function onKey(e) {
 
 ensureChrome();
 markCurrent();
+addEventListener('resize', markCurrent);
+addEventListener('load', markCurrent);
+requestAnimationFrame(markCurrent);
 armSpeculation();
 document.addEventListener('keydown', onKey, true);
 document.addEventListener('pointerdown', (e) => {

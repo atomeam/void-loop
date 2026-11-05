@@ -3339,5 +3339,54 @@
    ]
   },
   "note": "fix: \"what are the figures doing\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T12:21:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2096,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T12:32:47Z",
+  "passed": 87,
+  "of": 89,
+  "ms": 284,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2096,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"yo draw a cartoon cat\" (skill:cartoon)"
  }
 ]

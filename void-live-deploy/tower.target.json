@@ -1,9 +1,9 @@
 {
  "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "emoji combos: emojigraph.org",
- "since": "2026-11-04",
- "n": 11,
- "progressAt": "2026-11-04",
+ "id": "prizes",
+ "since": "2026-11-05",
+ "n": 12,
+ "progressAt": "2026-11-05",
  "passed": [
   {
    "id": "ndscalc.ru",
@@ -30,8 +30,15 @@
    "job": "script the journey with steps and negative controls"
   }
  ],
+ "skipped": [
+  {
+   "id": "emoji combos: emojigraph.org",
+   "at": "2026-11-05",
+   "why": "emoji combos: emojigraph.org held the Tower since 2026-11-04 (1 day, limit 1) at 11 of 15 aspects ahead, so it gives way and keeps being measured in the background"
+  }
+ ],
  "last": {
-  "at": "2026-11-04",
-  "why": "passed ndscalc.ru (10/12, conquering in background)"
+  "at": "2026-11-05",
+  "why": "emoji combos: emojigraph.org held the Tower since 2026-11-04 (1 day, limit 1) at 11 of 15 aspects ahead, so it gives way and keeps being measured in the background"
  }
 }

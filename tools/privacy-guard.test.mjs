@@ -30,6 +30,8 @@ test('headers: strict CSP, HSTS, Referrer-Policy, Permissions-Policy', () => {
   assert.match(h['Strict-Transport-Security'], /max-age=\d{8}/);
   assert.equal(h['Referrer-Policy'], 'no-referrer');
   assert.match(h['Permissions-Policy'], /camera=\(\)/);
+  // Chrome logs "Unrecognized feature: 'bluetooth'" for that token, on every page. The feature is not one it applies.
+  assert.doesNotMatch(h['Permissions-Policy'], /(?:^|,\s*)bluetooth=/);
 });
 test('secret-scan has a history mode', () => assert.match(readFileSync(at('tools/secret-scan.mjs'), 'utf8'), /--history/));
 

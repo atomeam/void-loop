@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · cursor/phone-polish-db26 · phone and desktop polish: the current nav item stays fully in the bar at 390 px, /compare/ with no floor lists floors instead of a blank white frame, a credit's license is on the screen, and the permissions policy drops the bluetooth token Chrome does not recognise · 2026-11-05 12:40 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
@@ -78,6 +79,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Just finished
 
 - **Glass tool pages (cursor, 2026-11-05)**: hand-built and generated tool pages, the fix pages and is-it opt into the shared glass in verse.css. Each page keeps its own layout, and an accent kept on the device still wins. https://github.com/atomeam/void-loop/pull/2277
+- **Bot families and salvage (cursor, 2026-11-05)**: 23 more languages (4,290 phrasebooks), nine keyless APIs, an encoding checker for every pair, and a drug-name check across openFDA and RxNorm. The next ten salvage pieces are bots, including pinned english-words and ODbL countries URLs. Registry live count 11,749 to 16,793, none failed. https://github.com/atomeam/void-loop/pull/2275
 - **Constellation weave (cursor, 2026-11-05)**: "weave a constellation called night ops" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns "where is Orion". https://github.com/atomeam/void-loop/pull/2274
 - **Verify reds (cursor, 2026-11-05)**: "clear" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2273
 - **Agent no kept (cursor, 2026-11-05)**: a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271
