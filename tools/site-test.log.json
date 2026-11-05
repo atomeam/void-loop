@@ -3750,5 +3750,23 @@
    ]
   },
   "note": "fix: \"play solarquest\" load 1213 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T17:15:33Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1868,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17432 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
