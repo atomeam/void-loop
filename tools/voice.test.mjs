@@ -2,7 +2,7 @@ import test from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts, followThrough, followFacts } from '../void-live-deploy/lib/voice.js';
+import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts, followThrough, followFacts, builtAsks, lineFor } from '../void-live-deploy/lib/voice.js';
 import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import * as reflect from '../void-live-deploy/functions/api/reflect.js';
 import { writeLog, entryBlock, openAsks, asksInLog } from './reflect.mjs';
@@ -250,6 +250,35 @@ test('a ledger asked field in free text (not ask-…) matches rewordings the sam
   const f = followThrough(entries, ledger, []);
   assert.equal(f.built.length, 1);
   assert.equal(f.built[0].builtAt, '2026-10-13T15:51:15Z');
+});
+
+test('ledger lines that share a timestamp stay on their own asks: one sentence is not what was built for three asks', () => {
+  const at = '2026-11-05T08:45:00Z';
+  const ledger = [
+    { at, kind: 'build', what: 'emojigraph.org is a lane page on the tower', asked: 'ask-20261105-0730-1' },
+    { at, kind: 'build', what: '814032d5 failed jobs were python-tests and the browser suite', asked: 'ask-20261105-0730-2' },
+    { at, kind: 'build', what: 'lists run 13: closes the ask built in lists run 10: "what can you do" opens the menu book', asked: 'ask-20261104-2054-3' },
+  ];
+  const emoji = 'Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.';
+  const jobs = 'Open the GitHub Actions tab for commit 814032d5 and extract the failed job names from the logs.';
+  const menu = 'Implement a clear, useful answer for "what can you do" for visitors.';
+  const entries = [{ at: '2026-11-05T09:00:00Z', asks: [{ ask: emoji }, { ask: jobs }] }];
+  const links = [
+    { words: emoji, ledgerAt: at },
+    { words: jobs, ledgerAt: at },
+    { words: menu, ask: 'ask-20261104-2054-3', ledgerAt: at },
+  ];
+  assert.equal(lineFor(ledger, emoji).asked, 'ask-20261105-0730-1');
+  assert.equal(lineFor(ledger, jobs).asked, 'ask-20261105-0730-2');
+  assert.equal(lineFor(ledger, 'ask-20261104-2054-3').what.includes('what can you do'), true);
+  const f = followThrough(entries, ledger, links);
+  assert.equal(f.built.find((g) => /emojigraph/.test(g.ask)).what, ledger[0].what);
+  assert.equal(f.built.find((g) => /814032d5/.test(g.ask)).what, ledger[1].what);
+  const recent = builtAsks(f, ledger, links);
+  const closes = recent.filter((r) => r.what.includes('closes the ask built in lists run 10'));
+  assert.equal(closes.length, 1, JSON.stringify(recent.map((r) => r.what)));
+  assert.ok(recent.some((r) => r.what === ledger[0].what && /emojigraph/.test(r.ask)));
+  assert.ok(recent.some((r) => r.what === ledger[1].what && /814032d5/.test(r.ask)));
 });
 
 test('a link may name an ask by its words (not synced to the voice log yet): it and its rewordings count as built, nothing else does', () => {

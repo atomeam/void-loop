@@ -3468,5 +3468,23 @@
    ]
   },
   "note": "fix: \"closer on the figure\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T13:36:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3262,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
