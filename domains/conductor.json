@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T14:50:06.315Z",
+ "updated": "2026-11-05T15:07:18.166Z",
  "last24h": {
   "ticks": 46,
   "started": 75,
@@ -150,7 +150,8 @@
   "mw3j1xx2": 1793885597516,
   "mw3m1pk3": 1793888215780,
   "mw3m1q88": 1793889106683,
-  "mw3m1qvj": 1793890206315
+  "mw3m1qvj": 1793890206315,
+  "mw3m1rj1": 1793891238166
  },
  "visitorAt": "2026-11-05T14:39:39Z",
  "visitorFiled": [
@@ -236,30 +237,6 @@
   "review:2245"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T14:57:30.585Z",
-   "open": 176,
-   "started": [
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 170,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T15:08:51.467Z",
    "open": 176,
@@ -1493,6 +1470,30 @@
    "started": [
     {
      "id": "mw3m1qvj",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 191,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T15:07:18.166Z",
+   "open": 194,
+   "started": [
+    {
+     "id": "mw3m1rj1",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
