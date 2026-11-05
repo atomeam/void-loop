@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/constellation-weave-wake-f875 · "weave a constellation called night ops" answers from constellation-weaver while the rest of the skills are still loading, instead of staying on waking up (#2270) · 2026-11-05 12:10 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
@@ -314,6 +315,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders
 
+- **Late skill still on waking up (cursor, 2026-11-05):** a site-test case that only shows "waking up" is a skill far down the index. Import that one file and run it before `say('waking up')` (recipe-stack, constellation-weaver). The sky family does not take "weave a constellation called night ops". Playbook: `docs/playbooks/stage-pack.md`.
 - **Agent no kept (cursor, 2026-11-05):** judge a no by the task id it was sent to (`taskById`), not `tasks[0]` (that is Verse's newer note, still `needs_yes`). The note is inserted before the response (`writesFirst` on the list read). A note ask waits for that, then retries on a new thread if the post has no note. Playbook: `docs/playbooks/agent.md`.
 - **Agent follow-ups (cursor, 2026-11-05):** a closed tab's news is `seen = 0` on the task, not a push service. Approve resumes with `decisionOf`; decline stops; the Made shelf is the task's own steps. Playbook: `docs/playbooks/agent.md`. Probe: `node tools/agent-probe.mjs https://a-to-mind.com --all`.
 - **Visible progress (cursor, 2026-11-03):** `lib/visible.js` ranks a visitor-facing fix above laps, gates, incident logs and regenerated files. The wants card shows how many page and skill commits shipped today and this week. Playbook: `docs/playbooks/visible-progress.md`.
