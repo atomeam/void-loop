@@ -90,3 +90,25 @@ test('video: "play <a game Verse has>" stays with that game, not a video search 
   // real videos still play
   for (const ask of ['play the moon landing video', 'play lofi hip hop radio', 'play despacito']) assert.ok(videoAskOf(ask, { late: true }), ask);
 });
+
+test('video: "find a rumble video about bitcoin" lists videos (#2238): Rumble has no public search, so the same words go to a platform that has one and Rumble\'s own search stays linked', async () => {
+  const store = {}; const realLS = globalThis.localStorage, realFetch = globalThis.fetch;
+  globalThis.localStorage = { getItem: (k) => store[k] || null, setItem: (k, v) => { store[k] = String(v); } };
+  const asked = [];
+  globalThis.fetch = async (u) => { asked.push(u); const p = new URL(u, 'https://a-to-mind.com').searchParams.get('p');
+    const body = p === 'rumble' ? { ok: true, platform: 'rumble', hits: [], searchUrl: 'https://rumble.com/search/video?q=bitcoin', note: 'Rumble has no public search API; open its search, then paste any video link here to play it in Verse' }
+      : p === 'youtube' ? { ok: true, platform: 'youtube', hits: [{ platform: 'youtube', id: 'diCMMynLp9I', title: 'Bitcoin explained', channel: 'Sci', seconds: 600 }], searchUrl: 'https://www.youtube.com/results?search_query=bitcoin' }
+      : { ok: true, platform: p, hits: [] };
+    return { json: async () => body }; };
+  try {
+    const { search } = await import('../void-live-deploy/skills/video.js');
+    const hits = await search('bitcoin', 'rumble', null);
+    assert.equal(hits.length, 1); assert.equal(hits[0].platform, 'youtube'); assert.equal(hits[0].id, 'diCMMynLp9I');
+    assert.ok(asked[0].includes('p=rumble') && asked.some((u) => u.includes('p=youtube')), asked.join(' '));
+    const kept = JSON.parse(store['a2m.void.video.v1']);
+    assert.equal(kept.platform, 'rumble'); assert.equal(kept.searchUrl, 'https://rumble.com/search/video?q=bitcoin');
+    assert.match(kept.note, /^Rumble has no public search, so these are from YouTube/);
+    // a platform that can search is never swapped for another
+    asked.length = 0; const none = await search('zzqx', 'dailymotion', null); assert.equal(none.length, 0); assert.ok(asked.every((u) => u.includes('p=dailymotion')));
+  } finally { globalThis.fetch = realFetch; globalThis.localStorage = realLS; }
+});

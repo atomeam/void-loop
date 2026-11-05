@@ -15,6 +15,7 @@ export const PLATFORMS = {
 };
 // which platforms the route can search without anyone's key (public, documented APIs); YouTube needs YOUTUBE_API_KEY
 export const OPEN_SEARCH = ['dailymotion', 'archive', 'peertube', 'odysee'];
+export const SEARCHABLE = ['youtube'].concat(OPEN_SEARCH); // the platforms /api/video can search, in the order a stand-in search tries them
 
 /** "2:30", "1:02:03", "90", "90s", "2m30s", "1h2m3s" -> seconds, or null. Pure. */
 export function secondsOf(s) {
