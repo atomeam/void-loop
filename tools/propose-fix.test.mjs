@@ -9,6 +9,7 @@ import os from 'node:os';
 import { confidenceOf, FIX_SYSTEM, MAX_EDITS, MAX_TRIED, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits, evidenceOf, whereOf, settleNote } from '../void-live-deploy/lib/propose-fix.js';
 import { models } from '../void-live-deploy/lib/models.js';
 import * as route from '../void-live-deploy/functions/api/propose-fix.js';
+import { HUMAN_WAIT } from './no-human-wait.mjs';
 import { pickJob, regressionAsks, noteFor, STEPS, letsGo, answers, titleFor, collisionLines, landing, letGoJob, SETTLE_TRIES } from './propose-fix.mjs';
 
 const OWNER = 'owner-test-key-123456';
@@ -158,7 +159,7 @@ test('the confidence gate (Atom, 2026-11-04): confidence is written down, and ev
   const gate = (c) => { let out = ''; const log = console.log; console.log = (x) => { out = x; }; try { new Function('process', m[1])({ argv: ['node', c] }); } finally { console.log = log; } return out; };
   assert.equal(gate('0.8'), 'automerge'); assert.equal(gate('0.93'), 'automerge'); assert.equal(gate('0.79'), 'automerge'); assert.equal(gate('none given'), 'automerge'); assert.equal(gate(''), 'automerge');
   // no pull request can be opened from Actions here (2026-10-19): a passing fix goes onto main. Confidence does not hold it.
-  assert.match(wf, /git push -q origin HEAD:main/); assert.doesNotMatch(wf, /waits for owner/); assert.doesNotMatch(wf, /gh pr create/);
+  assert.match(wf, /git push -q origin HEAD:main/); assert.doesNotMatch(wf, HUMAN_WAIT); assert.doesNotMatch(wf, /gh pr create/);
 });
 
 test('the workflow installs packages before its checks (the Claude brain test imports the SDK; the daily fix run failed at this step until 2026-10-16)', async () => {

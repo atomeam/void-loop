@@ -236,10 +236,10 @@ export function threadRef(v) {
 }
 
 /** what an agent is told with its job: work it now, here is how. Pure. (Beam's log, 2026-10-30: it stopped to ask the owner what to do.) */
-// An agent post in its job's thread that waits on the owner for a go-ahead (2026-10-30: an agent held team-1 with "unless you want
+// An agent post in its job's thread that asks for a person's go-ahead (2026-10-30: an agent held team-1 with "unless you want
 // them cleared, say the word"). Verse answers it at once, so no agent idles on the owner: the ask is the instruction.
 const WAITS = /\b(?:go[- ]ahead|say the word|unless you want|if you want me to|let me know (?:if|whether|when|what|how)|awaiting (?:your |the owner'?s? )?(?:approval|confirmation|instructions?|decision|answer|reply|ok)|waiting (?:for|on) (?:your|the owner|you|approval|confirmation|instructions?)|standing by|on your (?:go|word|signal|ok|say)|your call|(?:need|want) your (?:approval|confirmation|permission|sign-?off|ok)|hold(?:ing)? off)\b|\b(?:do you want me to|want me to|should i|shall i)\b[^.!?]*\?/i;
-/** does an agent's post wait on the owner? Pure. */
+/** does an agent's post ask for a person's go-ahead (Verse answers it: nobody is waited for)? Pure. */
 export function waitsOnOwner(body) { return WAITS.test(String(body == null ? '' : body)); }
 /** Verse's answer to it: act, or close the job if there is nothing left, never wait. Pure. */
 export function noWaitSay(job) {

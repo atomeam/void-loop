@@ -1,9 +1,10 @@
 // Verse's fixes for the owner (lib/v01d-fixes.js, skills/v01d-fixes.js, functions/api/v01d-fixes.js): the open pull requests Verse
-// opened, read from their labels and body; an old "waits for owner" label sorts first. automerge clears it; the card does not ask a person to approve.
+// opened, read from their labels and body; a PR with the retired confidence label (WAITS) sorts first. automerge relabels it; the card does not ask a person to approve.
 // Run: node --test tools/v01d-fixes.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fixOf, fixesOf, diffLines, MAX_LINES } from '../void-live-deploy/lib/v01d-fixes.js';
+import { fixOf, fixesOf, diffLines, MAX_LINES, WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
+import { HUMAN_WAIT } from './no-human-wait.mjs';
 import * as route from '../void-live-deploy/functions/api/v01d-fixes.js';
 import skill from '../void-live-deploy/skills/v01d-fixes.js';
 
@@ -12,12 +13,12 @@ const body = (c, where = 'void-live-deploy/skills/rides.js lines 42, 57') => "Ve
 const pr = (n, c, labels) => ({ number: n, title: 'Verse fixes its rides skill: learn to handle "x"', html_url: 'https://github.com/atomeam/void-loop/pull/' + n, body: body(c), labels: labels.map((name) => ({ name })) });
 
 test('a fix is read from its pull request: confidence, where, why, and whether it waits; only Verse\'s own count', () => {
-  const f = fixOf(pr(901, '0.62', ['made by Verse', 'waits for owner']));
+  const f = fixOf(pr(901, '0.62', ['made by Verse', WAITS]));
   assert.deepEqual(f, { number: 901, title: 'Verse fixes its rides skill: learn to handle "x"', url: 'https://github.com/atomeam/void-loop/pull/901', confidence: 0.62, where: 'void-live-deploy/skills/rides.js lines 42, 57', why: 'the matcher only knew ride words', risk: null, riskWhy: '', draft: false, waits: true, merges: false });
-  assert.equal(fixOf(pr(902, 'none given', ['made by Verse', 'waits for owner'])).confidence, null);
+  assert.equal(fixOf(pr(902, 'none given', ['made by Verse', WAITS])).confidence, null);
   assert.equal(fixOf(pr(903, '0.9', ['automerge'])), null, 'not made by Verse');
   assert.equal(fixOf({ ...pr(904, '0.9', ['made by Verse']), html_url: 'https://evil.example/x' }).url, 'https://github.com/atomeam/void-loop/pull/904');
-  const list = fixesOf([pr(10, '0.95', ['made by Verse', 'automerge']), pr(11, '0.7', ['made by Verse', 'waits for owner']), pr(12, '0.4', ['made by Verse', 'waits for owner']), pr(13, '0.99', ['other'])]);
+  const list = fixesOf([pr(10, '0.95', ['made by Verse', 'automerge']), pr(11, '0.7', ['made by Verse', WAITS]), pr(12, '0.4', ['made by Verse', WAITS]), pr(13, '0.99', ['other'])]);
   assert.deepEqual(list.map((f) => f.number), [12, 11, 10], 'waiting first, least sure first');
 });
 
@@ -44,7 +45,7 @@ test('approve: owner only, needs a pull request number, a GitHub key, and a pull
   const calls = [], real = globalThis.fetch;
   const fake = (labels, state = 'open') => async (u, o = {}) => { calls.push([o.method || 'GET', String(u).replace('https://api.github.com', ''), o.body || '']); return /\/pulls\/\d+$/.test(u) ? Response.json({ state, labels: labels.map((name) => ({ name })) }) : new Response('{}', { status: 200 }); };
   try {
-    globalThis.fetch = fake(['made by Verse', 'waits for owner']);
+    globalThis.fetch = fake(['made by Verse', WAITS]);
     const ok = await route.onRequestPost({ request: req({ pr: 901, op: 'approve' }), env: { READ_TOKEN: TOKEN, GITHUB_TOKEN: 'gh-test' } });
     assert.equal(ok.status, 200);
     assert.deepEqual(calls.map((c) => c.slice(0, 2)), [['GET', '/repos/atomeam/void-loop/pulls/901'], ['POST', '/repos/atomeam/void-loop/issues/901/labels'], ['DELETE', '/repos/atomeam/void-loop/issues/901/labels/waits%20for%20owner']]);
@@ -71,7 +72,7 @@ test('risk level: lists are low, several or long pattern edits medium, a structu
   assert.equal(riskOf([{ find: 'export default {', replace: 'export default { a: 1,' }]).level, 'high');
 });
 test('the card reads the risk and the draft state from the pull request', () => {
-  const p = { ...pr(950, '0.5', ['made by Verse', 'waits for owner']), draft: true, body: body('0.5') + ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Model: m.' };
+  const p = { ...pr(950, '0.5', ['made by Verse', WAITS]), draft: true, body: body('0.5') + ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Model: m.' };
   const f = fixOf(p); assert.equal(f.risk, 'high'); assert.match(f.riskWhy, /structural line/); assert.equal(f.draft, true);
   const q = fixOf(pr(951, '0.9', ['made by Verse', 'automerge'])); assert.equal(q.risk, null); assert.equal(q.draft, false);
 });
@@ -80,5 +81,5 @@ test('the workflow puts a passing fix on main whatever the confidence, and says 
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   assert.match(wf, /Risk: \$RISK\./); assert.match(wf, /risk=\$\(node -p/);
   assert.match(wf, /console\.log\("automerge"\)/); assert.match(wf, /git push -q origin HEAD:main/); assert.match(wf, /branch="v01d\/fix-/);
-  assert.doesNotMatch(wf, /waits for owner/); assert.doesNotMatch(wf, /gh pr create/);
+  assert.doesNotMatch(wf, HUMAN_WAIT); assert.doesNotMatch(wf, /gh pr create/);
 });
