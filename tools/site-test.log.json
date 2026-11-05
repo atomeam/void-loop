@@ -2845,5 +2845,75 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T06:47:11Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 532,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T06:57:03Z",
+  "passed": 85,
+  "of": 89,
+  "ms": 329,
+  "kind": "file",
+  "key": "dyslexia friendly font | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "dyslexia friendly font",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 532,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"dyslexia friendly font\" only \"waking up\" appeared, never the answer"
  }
 ]
