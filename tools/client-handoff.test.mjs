@@ -12,6 +12,11 @@ test('a client handoff is this skill, and a delivery pack stays a delivery pack'
   assert.equal(isDeliveryPack('handoff pack for my SaaS idea'), true);
   assert.equal(isClientHandoff('handoff pack for my SaaS idea'), false);
   assert.equal(isDeliveryPack(ASK), false, 'delivery-pack does not take a client handoff');
+  assert.equal(isClientHandoff('system handoff for the invoice flow'), true);
+  assert.equal(isClientHandoff('handoff this system: client onboarding automation'), true);
+  assert.equal(isClientHandoff('system status for the site'), false);
+  assert.equal(subjectOf('system handoff for the invoice flow'), 'invoice flow');
+  assert.equal(subjectOf('handoff this system: client onboarding automation'), 'client onboarding automation');
   assert.equal(skill.match(ASK.toLowerCase(), ASK), true);
   assert.equal(subjectOf(ASK), 'onboarding automation');
   assert.equal(subjectOf('client handoff'), 'the system');

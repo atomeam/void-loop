@@ -7,7 +7,9 @@
  */
 import { isDeliveryPack } from './delivery-pack.js';
 
-const START = /^(?:client|business)\s+handoff\b|^(?:make|generate|create|package)\s+(?:a\s+)?client\s+handoff\b/i;
+// "handoff pack" and "delivery package" stay with delivery-pack. "system status" stays with system-status.
+// "system handoff" and "handoff this system" are the same card (the phrases from helper/system-handoff).
+const START = /^(?:client|business|system)\s+handoff\b|^(?:make|generate|create|package)\s+(?:a\s+)?client\s+handoff\b|^(?:hand\s*off|handoff)\s+(?:(?:this|the)\s+)?(?:system|automation|flow)\b|^(?:package|make|create|generate)\s+(?:the\s+)?status\s+handoff\b/i;
 
 /** a client-handoff ask, and not a delivery pack. Pure. */
 export function isClientHandoff(text) {
@@ -78,6 +80,9 @@ const EXAMPLES = [
   'make a client handoff for the invoice flow',
   'package a client handoff for the support ticket router',
   'generate a client handoff for the client portal',
+  'system handoff for the invoice flow',
+  'handoff this system: client onboarding automation',
+  'hand off the automation for weekly reports',
 ];
 const NEAR = [
   'handoff pack for my SaaS idea',
@@ -87,6 +92,8 @@ const NEAR = [
   'client list',
   'package.json',
   'handoff the baton',
+  'system status for the site',
+  'clarify this business idea',
 ];
 
 export default {
