@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T12:51:13.246Z",
+  "at": "2026-11-05T13:23:38.018Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,10 +32,24 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of hidden brain",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -148,25 +162,40 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "weather",
+          "ask": "whats teh weather in london",
           "failed": [
-            "temp",
-            "rival"
+            "fast",
+            "temp"
           ],
           "score": 66.7
         },
         {
-          "ask": "météo à lyon",
+          "ask": "wheather in new york",
           "failed": [
-            "skill",
+            "answered",
+            "fast",
             "temp"
           ],
-          "score": 66.7
+          "score": 50
+        },
+        {
+          "ask": "weather",
+          "failed": [
+            "rival"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "météo à lyon",
+          "failed": [
+            "skill"
+          ],
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -281,80 +310,10 @@
       }
     },
     "sports": {
-      "score": 87,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "mlb scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "premier league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "serie a scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "la liga scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "scores",
           "failed": [
