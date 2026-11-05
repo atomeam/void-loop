@@ -16,6 +16,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Cursor cloud agent · helper/ai-gateway-free-79be · free-model calls go through an AI Gateway alias only when the model is on the free allowance · 2026-11-05 15:30 UTC
+- Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/timer-durations-f90f · a timer keeps the length it was set for (90 seconds, add one minute, 45 seconds) and a bare "timer for 5" asks which unit · 2026-11-05 14:05 UTC
 - Cursor cloud agent · helper/kv-namespace-f90f · only Verse's wrangler binds Verse's KV namespace · 2026-11-05 16:05 UTC
