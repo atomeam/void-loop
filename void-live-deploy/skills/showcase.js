@@ -156,7 +156,7 @@ async function verifiedSet() {
 }
 
 let tour = null; // the walkthrough on screen: { steps, i, made, bar }
-let grabbing = false; // a chip is in the hand: the bar must not re-place under it
+let grabbing = false; // a tray chip is in hand: the panel stays put, so a re-place cannot cancel the gesture
 
 // the panel never covers an open card, the step's things or the ask bar (owner, 2026-10-18: it opened over the dragon card, hiding its
 // text and buttons): lib/placement.js dockPanel puts it above the ask bar when nothing is open, beside the open card when there is room,
@@ -317,6 +317,8 @@ async function step(stageApi) {
   if (!tour || tour.steps[tour.i] !== s) return;
   if (!parked) place(el); // the thing never touched the stage: place once now. A second place after the mutation is what moved the chip off the pointer (#2250)
   tour.made.ids = Object.keys(stageApi.things()).filter((id) => !before.has(id));
+  if (tour.dropAt && placeDrop(stageApi, tour.dropAt)) document.body.dataset.showcaseDropped = String(tour.i); // before the proof wait, so a drop is where the pointer let go
+  if (!parked) place(el); // already parked beside the thing; placing again here is what moved the chip off the pointer (#2250)
   // the preview has to show the thing it names (owner, 2026-10-16: "the preview is supposed to actually preview what it says"):
   // a moment for the card to land, then proof: a new thing on the stage, a new card, or the page's own log saying a skill
   // answered (not the encyclopedia, not a miss). Without proof the line says so, and the ask goes to the miss board as a
@@ -337,9 +339,8 @@ async function step(stageApi) {
 function chip(stageApi, it) {
   const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
   let from = null, ghost = null, pid = null;
-  // heard on the window in the capture phase, not by setPointerCapture on the chip. Capture is dropped when the
-  // bar re-places (the chip's node goes or its scroll parent reflows) and the browser then cancels the pointer:
-  // the ghost never appears and nothing is dropped (#2250, still red after the window listeners kept the capture).
+  // heard on the window, not by setPointerCapture on the chip. Capture cancelled the gesture when the panel
+  // re-placed under load, so the ghost never appeared (#2250). The window hears the move either way.
   const move = (e) => {
     if (!from || e.pointerId !== pid) return;
     if (!ghost && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6) {
@@ -351,7 +352,7 @@ function chip(stageApi, it) {
   };
   const up = (e) => {
     if (!from || e.pointerId !== pid) return;
-    if (e.type === 'pointercancel') { // the lift still arrives as pointerup; a cancel must not throw the drop away. If it never does, let the bar place again.
+    if (e.type === 'pointercancel') { // the lift still arrives as pointerup. If it never does, let the bar place again.
       const id = e.pointerId;
       setTimeout(() => { if (!from || pid !== id) return; from = null; pid = null; grabbing = false; if (ghost) { ghost.remove(); ghost = null; } window.removeEventListener('pointermove', move, true); window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true); }, 500);
       return;
@@ -368,6 +369,7 @@ function chip(stageApi, it) {
     from = { x: e.clientX, y: e.clientY }; pid = e.pointerId; grabbing = true;
     window.removeEventListener('pointermove', move, true); window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true);
     window.addEventListener('pointermove', move, true); window.addEventListener('pointerup', up, true); window.addEventListener('pointercancel', up, true);
+    // no setPointerCapture: capturing the chip cancels the gesture when the panel re-places under load (#2250)
     e.preventDefault();
     e.stopPropagation();
   });
@@ -376,20 +378,25 @@ function chip(stageApi, it) {
 }
 
 // run step j now (what the current step put up goes, as with Next); dropped at a point, its new things move there
-async function jump(stageApi, j, at) {
-  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
-  clear(stageApi); tour.i = j;
-  const s = tour.steps[j];
-  await step(stageApi);
-  if (!at || !tour || tour.steps[tour.i] !== s || !tour.made || !tour.made.ids.length) return;
+function placeDrop(stageApi, at) {
+  if (!at || !tour || !tour.made || !tour.made.ids.length) return false;
   const st = stageApi.stage, rect = st && st.getBoundingClientRect ? st.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight };
   const things = stageApi.things(), first = things[tour.made.ids[0]];
   const d = dropDelta(first, at.x - rect.left, at.y - rect.top, rect.width, rect.height);
-  if (!d) return;
-  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
+  if (!d) return false;
+  // pinned: the person dropped it here, so the stage layout does not slide a fresh thing away
+  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.pinned = true; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
   stageApi.save(); stageApi.render();
-  if (tour) tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) };
-  document.body.dataset.showcaseDropped = String(j);
+  return true;
+}
+async function jump(stageApi, j, at) {
+  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
+  clear(stageApi); tour.i = j; tour.dropAt = at || null;
+  const s = tour.steps[j];
+  await step(stageApi);
+  if (!at || !tour || tour.steps[tour.i] !== s) return;
+  if (placeDrop(stageApi, at)) { tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) }; document.body.dataset.showcaseDropped = String(j); }
+  tour.dropAt = null;
 }
 
 // what the page logs when an ask fell through to the encyclopedia or a generic answer, or missed (tools/claims-verify.mjs FALLBACK)

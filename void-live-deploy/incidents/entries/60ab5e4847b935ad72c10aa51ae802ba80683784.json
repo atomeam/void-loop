@@ -1,0 +1,17 @@
+{
+ "at": "2026-11-05T14:32:54.984Z",
+ "sha": "60ab5e4847b935ad72c10aa51ae802ba80683784",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42039803889",
+ "suite": "browser suite on main",
+ "checks": [
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "domains/handoff.md",
+  "tools/voice.test.mjs",
+  "void-live-deploy/lib/voice.js"
+ ],
+ "passed": [
+  2
+ ]
+}
