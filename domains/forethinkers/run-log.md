@@ -198,3 +198,9 @@ Picked planet restoration (least recently advanced, 2026-10-14 20:14). Searched 
 ## 2026-11-04 14:15 ET cycle: living figures, open question 6
 
 Picked living figures (least recently advanced with printing, 2026-10-21 14:07; question 6 had only price anchors). Found the cloud-minded AI plush BOM (under ¥80 for a ¥99 toy; Leiphone 16 Jun 2026, TMTPost 20 Oct 2026) and the 2026 DRAM prices (TrendForce: DDR4 8Gb contract $26.00 late Sep, spot $46.25 on 4 Nov). Derived that the 4 GB on today's AX630C kits costs about $104 at contract by itself, so the next experiment measures whether the full voice stack fits 1 GB. Corrected the kit-price-as-ceiling note. Added a growth-board row (thinking-toy cost card). No earlier forethinkers branches or open PRs to fold in.
+
+## 2026-11-04 20:11 ET cycle: printing, open question 7
+
+Picked printing (least recently advanced, 2026-10-21 14:07). Found printed micro planetaries that already carry figure-scale torque (Mashimo lab, IEEE RA-L Aug 2026; Endo and Fujikawa, ROBOMECH 2024), derived that a 15 mm printed stator behind 48:1 needs about 0.33 A, and found the binding limit in 16 CFR 1500.53(e): a 4 in-lbf grip torque, about 300 times the arm's working torque. Next is open question 8, a printed slip clutch at the arm root. The fused-body slice test is committed as `experiments/3mf-fuse-test.mjs` and waits for slicer libraries on the box.
+
+[think-tank] Summon the arm-drive card: motor, printed gearbox, slip clutch, arm, each with its dated source.
