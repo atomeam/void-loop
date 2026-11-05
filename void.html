@@ -4576,6 +4576,7 @@ say('nothing selected to remove');
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
     window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); skyView(); });
+    const MY_BACKDROP_OFF = /^(?:remove|clear|take off|no|hide)\s+my\s+(?:backdrop|background\s+drawing|drawing\s+backdrop)\s*[.!]?$/;
     function handleLookAsk(lower) {
       if (/^(this is mine|open my (?:verse|void)|my (?:verse|void))\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
       const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+(?:verse|void)\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+(?:verse|void)|no\s+effects)\s*[.!]?$/;
@@ -4853,7 +4854,7 @@ say('nothing selected to remove');
     const FIRST_ASK_WAIT = 2500;
     let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = import('/lib/fuzzy.js').then((m) => { fuzzy = m; }).catch(() => {});
     async function fuzzyFix(t) {
-      if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t)) return t;
+      if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t) || MY_BACKDROP_OFF.test(t.toLowerCase().trim())) return t; // the page's own ask, word for word (#2220)
       if (!fuzzy) await fuzzyReady;
       if (!fuzzy) return t;
       // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most
@@ -6243,6 +6244,9 @@ say('nothing selected to remove');
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
+      // "remove my backdrop" is the page's own ask (lib/backdrop.js: the backdrop skill takes only "the backdrop" and the bare forms), so it never
+      // waits for the skills to load: right after a reload on a slow phone it took the backdrop off only seconds later (#2220)
+      if (MY_BACKDROP_OFF.test(lower0)) { if (!skillsRunning) takeUndoSnapshot(); currentAsk = lastAsk = text; voidLook.backdrop = ''; applyLook(true); say('backdrop off'); loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (await handleGrownAsk(text, lower0)) return;
       // a send, booking or spend the owner's key now covers is never "the same page": without the key, "send an email to jo@x.com saying hi"
       // opens the mail card (skills/rides.js, lists run 7); the same ask after "unlock" is for the confirm line (plan item 7), not that card
