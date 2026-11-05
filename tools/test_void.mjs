@@ -7502,6 +7502,29 @@ try {
     check('a video card keeps its place when it is touched, dragged or moved',
       dragged && !dragged.err && dragged.still && !dragged.paused && dragged.before > 0 && dragged.after + 0.05 >= dragged.before && !dragged.transform && !V.errors.length,
       JSON.stringify({ dragged, errors: V.errors }));
+    await V.p.waitForFunction(() => window.__cardCoast && window.__verseThings, null, { timeout: 4000 }).catch(() => {});
+    const flung = await V.p.evaluate(async () => {
+      const card = document.querySelector('.clock'), v = card && card.querySelector('video');
+      if (!card || !v) return { err: 'no video' };
+      const bag = window.__verseThings && window.__verseThings(), th = bag && bag[card.dataset.id];
+      if (th) { th.x = 40; th.y = 280; } card.style.left = '40px'; card.style.top = '280px';
+      const before = v.currentTime;
+      const ev = (type, cx, cy, pt) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 3, isPrimary: true, button: 0, pointerType: pt });
+      card.dispatchEvent(ev('pointerdown', 60, 300, 'mouse'));
+      for (let i = 1; i <= 4; i++) window.dispatchEvent(ev('pointermove', 60, 300 - i * 12, 'mouse'));
+      window.dispatchEvent(ev('pointerup', 60, 252, 'mouse'));
+      const live = () => document.querySelector('.clock');
+      const atUp = live() ? live().getBoundingClientRect().top : -1;
+      await new Promise((r) => setTimeout(r, 160));
+      const mid = live() ? live().getBoundingClientRect().top : -1;
+      await new Promise((r) => setTimeout(r, 1000));
+      const endEl = live(), end = endEl && endEl.getBoundingClientRect(), v2 = endEl && endEl.querySelector('video');
+      return { before, after: v2 && v2.currentTime, paused: v2 ? v2.paused : true, still: !!(v2 && endEl.contains(v2)), transform: endEl ? endEl.style.transform : 'gone', atUp, mid, on: !!(end && end.top >= -1 && end.bottom <= innerHeight) };
+    });
+    check('a flick sends a video card sliding and the clip keeps its place',
+      flung && !flung.err && flung.still && flung.before > 0 && flung.after > flung.before && !flung.transform
+      && flung.atUp > 40 && flung.mid <= flung.atUp && flung.on && !V.errors.length,
+      JSON.stringify({ flung, errors: V.errors }));
     await V.ctx.close();
 
     const S = await fresh();
@@ -7528,6 +7551,69 @@ try {
       film && film.still && !film.paused && film.before > 0 && film.after + 0.05 >= film.before && (film.transform === 'none' || film.transform === '') && !S.errors.length,
       JSON.stringify({ film, errors: S.errors }));
     await S.ctx.close(); }
+
+  // a flick slides a card, asking again keeps the earlier cards, and six or more sit above the ask bar
+  if (want("throw a card and keep every card open, on a desk and a phone")) {
+    const named = (p) => p.evaluate(() => {
+      const cards = [...document.querySelectorAll('#stage > .thing, .vpage')].map((el) => (el.innerText || '').replace(/\s+/g, ' ').trim());
+      return { n: cards.length, timer: cards.some((t) => /timer|5:00|countdown/i.test(t)), cat: cards.some((t) => /cat/i.test(t)), weather: cards.some((t) => /Tokyo|°/.test(t)) };
+    });
+    const lay = (p) => p.evaluate(() => {
+      const row = document.getElementById('row').getBoundingClientRect();
+      const rects = [...document.querySelectorAll('.vpage, #stage > .thing')].filter((el) => getComputedStyle(el).display !== 'none' && Number(getComputedStyle(el).opacity) !== 0).map((el) => el.getBoundingClientRect()).filter((r) => r.width > 2 && r.height > 2);
+      let overlap = 0, off = 0, bar = 0;
+      rects.forEach((a, i) => {
+        if (a.left < -1 || a.top < -1 || a.right > innerWidth + 1 || a.bottom > row.top + 1) off++;
+        if (Math.min(a.right, row.right) - Math.max(a.left, row.left) > 2 && Math.min(a.bottom, row.bottom) - Math.max(a.top, row.top) > 2) bar++;
+        rects.slice(i + 1).forEach((b) => { if (Math.min(a.right, b.right) - Math.max(a.left, b.left) > 2 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 2) overlap++; });
+      });
+      return { n: rects.length, overlap, off, bar };
+    });
+    for (const [w, phone, pt] of [[1280, false, 'mouse'], [390, true, 'touch']]) {
+      const P = phone ? await fresh({ phone: true }) : await fresh();
+      await P.p.setViewportSize({ width: w, height: 800 });
+      const home = await P.p.evaluate(() => { const h = document.querySelector('h1'), r = h && h.getBoundingClientRect(); return { ph: document.getElementById('input').placeholder, hero: !!(r && (r.width >= 2 || r.height >= 2)), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install') }; });
+      check('blank home at ' + w + ': the void and the ask bar', home.ph === 'Ask anything' && !home.hero && !home.nav && !home.install, JSON.stringify(home));
+      await P.ask('timer 5 min', 800); await P.ask('draw a cat', 1200); await P.ask('weather in Tokyo', 1200); await P.p.waitForTimeout(600);
+      const three = await named(P.p);
+      check('three asks at ' + w + ' (' + pt + ') leave the timer, the cat and the weather open together', three.n >= 3 && three.timer && three.cat && three.weather && !P.errors.length, JSON.stringify(three));
+      await P.ctx.close();
+      const Q = phone ? await fresh({ phone: true }) : await fresh();
+      await Q.p.setViewportSize({ width: w, height: 800 });
+      await Q.ask('timer 5 min and draw a cat and weather in Tokyo', 2500); await Q.p.waitForTimeout(700);
+      const one = await named(Q.p);
+      check('one ask that names three things at ' + w + ' opens all three cards', one.n >= 3 && one.timer && one.cat && one.weather && !Q.errors.length, JSON.stringify(one));
+      await Q.ctx.close();
+      const R = phone ? await fresh({ phone: true }) : await fresh();
+      await R.p.setViewportSize({ width: w, height: 800 });
+      await R.p.waitForFunction(() => window.__cardCoast, null, { timeout: 4000 }).catch(() => {});
+      await R.ask('make a clock', 700);
+      const tossed = await R.p.evaluate(async (pt) => {
+        const card0 = document.querySelector('.clock'); if (!card0) return { err: 'no clock' };
+        const bag = window.__verseThings && window.__verseThings(), th = bag && bag[card0.dataset.id];
+        if (th) { th.x = 40; th.y = 280; } card0.style.left = '40px'; card0.style.top = '280px';
+        const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 8, isPrimary: true, button: 0, pointerType: pt });
+        card0.dispatchEvent(ev('pointerdown', 60, 300));
+        for (let i = 1; i <= 4; i++) window.dispatchEvent(ev('pointermove', 60, 300 - i * 12));
+        window.dispatchEvent(ev('pointerup', 60, 252));
+        const live = () => document.querySelector('.clock');
+        const atUp = live() ? live().getBoundingClientRect().top : -1;
+        await new Promise((r) => setTimeout(r, 160));
+        const mid = live() ? live().getBoundingClientRect().top : -1;
+        await new Promise((r) => setTimeout(r, 1100));
+        const end = live() && live().getBoundingClientRect(), row = document.getElementById('row').getBoundingClientRect();
+        return { atUp, mid, end: end && Math.round(end.top), on: !!(end && end.left >= -1 && end.top >= -1 && end.right <= innerWidth + 1 && end.bottom <= row.top + 1) };
+      }, pt);
+      check('a ' + pt + ' flick at ' + w + ' sends the clock sliding with inertia and it finishes on the stage',
+        tossed && !tossed.err && tossed.atUp > 40 && tossed.mid <= tossed.atUp && tossed.end < tossed.atUp - 40 && tossed.on && !R.errors.length, JSON.stringify(tossed));
+      for (const ask of ['make a clock', 'make a 5 minute timer', 'make a 2 minute timer', 'sticky note alpha', 'another note that says beta', 'add a list with milk']) await R.ask(ask, 700);
+      await R.p.waitForTimeout(1500);
+      const crowd = await lay(R.p);
+      check('six cards at ' + w + ' sit on the stage without covering each other or the ask bar or leaving the screen',
+        crowd.n >= 6 && crowd.overlap === 0 && crowd.off === 0 && crowd.bar === 0 && !R.errors.length, JSON.stringify(crowd));
+      await R.ctx.close();
+    }
+  }
 
   // the app (owner, 2026-10-14: "wheres my apps . web mobile?"): "get the app" shows Install where the browser offers it, and it works
   if (want("app skill: get the app shows Install where the browser offers it, and installing says so")) {

@@ -1179,6 +1179,13 @@
     #void-anchor{position:fixed;right:12px;bottom:12px;z-index:6;width:28px;height:28px;display:grid;place-items:center;color:#d7d2ff;opacity:.12}
     #void-anchor svg{width:16px;height:16px;display:block}
     @media (max-width:700px){#void-anchor{right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));opacity:.22}}
+    .vpage.kept,.vpage.placed{opacity:1;filter:none;z-index:40}
+    .vpage.kept:not(:has(video,audio,iframe)),.vpage.placed:not(:has(video,audio,iframe)),.vpage.on.placed:not(:has(video,audio,iframe)){transform:none}
+    .thing,.vpage{touch-action:none}
+    .thing :is(input,textarea,select,a,button),.vpage :is(input,textarea,select,a,button){touch-action:manipulation}
+    .vpage.placed,.vpage.kept,.thing.card-glide{transition:left .32s cubic-bezier(.2,.7,.2,1),top .32s cubic-bezier(.2,.7,.2,1)}
+    .vpage.tossing,.thing.tossing{transition:none !important}
+    @media (prefers-reduced-motion:reduce){.vpage.placed,.vpage.kept,.thing.card-glide{transition:none}}
   </style>
 </head>
 <body>
@@ -1544,7 +1551,7 @@ Object.values(things).forEach((th) => {
     stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
       for (const e of entries) {
-        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
+        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id] || e.target.dataset.tidy) continue; // a card the crowd layout just sized is not a card that grew
         const w = e.target.offsetWidth, h = e.target.offsetHeight, was = cardSize.get(id);
         if (was && (h > was.h + 4 || w > was.w + 4)) grownIds.add(id);
         cardSize.set(id, { w, h });
@@ -1965,6 +1972,13 @@ Object.values(things).forEach((th) => {
           if (!cur) return;
           const w = cur.offsetWidth || 40, h = cur.offsetHeight || 40;
           const verdict = releaseToss({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: stage.clientHeight });
+          const speed = Math.hypot(vx, vy);
+          if (!verdict.gone && speed >= 0.62 && window.__cardCoast) { // a real flick that is not already a hard toss: slide, and leave only if the slide runs off
+            const room = Math.max(80, Math.min(stage.clientHeight, dockSpace() - stage.getBoundingClientRect().top));
+            const land = window.__cardCoast({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: room });
+            if (land.off) verdict.gone = true;
+            else if (window.__glideCard && (Math.abs(land.x - th.x) > 3 || Math.abs(land.y - th.y) > 3)) { window.__glideCard(cur, th, land); return; }
+          }
           if (!verdict.gone) { // a slow drop sets it back down
             th.x = Math.max(0, th.x); th.y = Math.max(0, th.y);
             cur.style.transform = '';
@@ -2611,13 +2625,19 @@ say('nothing selected to remove');
     }
     function showPage(build) {
       warmAskLibs();
-      closePage();
+      const prev = vpageEl;
+      if (prev && prev.isConnected) { // a new card keeps the ones already open (they used to be replaced)
+        prev.classList.remove('on'); prev.classList.add('kept');
+        try { trailKeep(prev); } catch (_) {}
+        if (worldCur && worldCur.card === prev) closeWorld();
+      }
       const el = document.createElement('div');
       el.className = 'vpage';
       build(el);
       el.setAttribute('role', 'region');
       document.body.appendChild(el);
       vpageEl = el;
+      try { document.dispatchEvent(new CustomEvent('void:cards')); } catch (_) {}
       srAnnounce(el);
       el._ask = currentAsk; el._at = Date.now();
       // a line with data-ask on any page (a menu row, a choice between two Springfields) runs that ask
@@ -6476,6 +6496,10 @@ say('nothing selected to remove');
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
       // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
       if (!skillsLoaded && !quiet && !whisper.textContent) say('waking up');
+      if (!handle._parts && /\sand\s/i.test(typed)) { // "timer 5 min and draw a cat and weather" opens each card
+        let parts = null; try { parts = (await import('/lib/card-tidy.js')).splitAsks(typed); } catch (_) { parts = null; }
+        if (parts) { handle._parts = 1; try { for (const p of parts) await handle(p); } finally { handle._parts = 0; } return; }
+      }
       await ensureCardCss();
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
@@ -7046,6 +7070,13 @@ say('nothing selected to remove');
     try { if (sessionStorage.getItem(EPH_KEY)) armPageEph(); } catch (_) {} // a reload keeps ephemeral mode on before safety-kit.js arrives (#2250)
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Verse'), 400);
     window.addEventListener('resize', () => render());
+    import('/lib/card-stage.js').then((m) => m.boot({
+      things: () => things,
+      save: () => { try { save(); } catch (_) {} },
+      page: () => vpageEl,
+      setPage: (el) => { vpageEl = el; },
+    })).catch(() => {});
+    window.__verseThings = () => things;
   </script>
   <script>
   // ---- The sky: the empty stage follows the real sun (skills/sky-rules.js; frontier #21). No network call, no permission: the place is
