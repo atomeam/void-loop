@@ -1,7 +1,9 @@
 // Country-fact bots, one per sovereign state Wikidata lists (CC0). tools/open-data.mjs keeps one real SPARQL read.
 // The capital is checked against the built-in list in skills/country.js, which does not come from that read: when the
-// list names a capital, Wikidata's capitals have to include it. Currency is Wikidata's, narrowed to that list when
-// Wikidata also has it (France lists the euro and the CFP franc; the bot says euro).
+// list names a capital, Wikidata's truthy capitals have to include it. A missing English label is filled from the
+// capital's English Wikipedia sitelink (still Wikidata). A capital that replaced another on a shared date is said
+// with both dates. Currency is Wikidata's, narrowed to that list when Wikidata also has it (France lists the euro
+// and the CFP franc; the bot says euro).
 import { COUNTRIES } from './open-data.js';
 import { capitalFor, shownCurrencies, samePlace } from './country-names.js';
 
@@ -17,15 +19,24 @@ export function capitalRoad(code) {
   const known = capitalFor(row.name);
   return known ? known.capital : (row.capitals || []).slice().sort((a, b) => a.localeCompare(b))[0] || '';
 }
+/** what the bot says for a capital: the truthy names, and a dated succession when Wikidata records one (Ciudad de la Paz since 2026-01-03; Malabo until then). Pure. */
+export function capitalLine(row) {
+  const caps = (row && row.capitals || []).slice().sort((a, b) => a.localeCompare(b));
+  if (!caps.length) return 'none';
+  const ended = (row.ended || []).filter((e) => e && e.name && e.until);
+  if (!ended.length) return caps.join(', ');
+  const since = ended.map((e) => e.until).sort()[0];
+  return caps.join(', ') + ' (since ' + since + '; ' + ended.map((e) => e.name + ' until ' + e.until).join('; ') + ')';
+}
 function answer(row, s) {
   const t = String(s || '').toLowerCase();
-  const caps = (row.capitals || []).slice().sort((a, b) => a.localeCompare(b));
+  const caps = capitalLine(row);
   const cur = shownCurrencies(row.name, row.currencies || []);
   const cont = (row.continents || []).slice().sort((a, b) => a.localeCompare(b)).join(', ');
   if (/currenc|money/.test(t)) return cur.join(', ') || 'none';
   if (/continent/.test(t)) return cont || 'none';
-  if (/capital/.test(t) || !t || t === 'facts') return caps.join(', ') || 'none';
-  return row.name + ' · capital ' + (caps.join(', ') || 'none') + ' · currency ' + (cur.join(', ') || 'none') + ' · continent ' + (cont || 'none');
+  if (/capital/.test(t) || !t || t === 'facts') return caps;
+  return row.name + ' · capital ' + caps + ' · currency ' + (cur.join(', ') || 'none') + ' · continent ' + (cont || 'none');
 }
 
 export function countryFacts() {

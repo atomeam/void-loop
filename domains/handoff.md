@@ -78,6 +78,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Country capitals (cursor, 2026-11-05)**: Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every country. Registry live count 11,739 to 11,743. https://github.com/atomeam/void-loop/pull/2265
 - **Glass pages, lighter phone home (cursor, 2026-11-05)**: tools, the news list, the team page and credits share the glass. An empty phone home fetches the ask engine only after a tap, a key, or twelve seconds. https://github.com/atomeam/void-loop/pull/2263
 - **Loop checks start themselves (cursor, 2026-11-05)**: a loop pull request opened with the workflow token no longer sits approval-required. The lap starts the same checks with workflow_dispatch (review, merge gate, deploy's quick checks, collide, and the path-limited ones). Verse's review still decides the merge. https://github.com/atomeam/void-loop/pull/2266
 - **Main reds (cursor, 2026-11-05)**: the recipe handover stays quiet when the audio context cannot build a buffer, "forget this" on a phone closes the chess board and puts the tucked list back, and "put in the page" uses the draft a second read of the same tab would have wiped. https://github.com/atomeam/void-loop/pull/2262
