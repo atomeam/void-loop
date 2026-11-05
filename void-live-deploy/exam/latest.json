@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T18:49:01.256Z",
+  "at": "2026-11-05T19:18:24.428Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,10 +32,24 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of serial",
+          "failed": [
+            "episode"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -148,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 97.4,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -163,9 +177,11 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp",
+            "close"
           ],
-          "score": 85.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -280,7 +296,7 @@
       }
     },
     "sports": {
-      "score": 89.8,
+      "score": 88.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -321,6 +337,13 @@
         },
         {
           "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -522,6 +545,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 86.4
+    "score": 84.8
   }
 }
