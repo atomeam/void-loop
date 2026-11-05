@@ -21,3 +21,4 @@ The push. The plan is `tools/helper-pr.mjs` (`plan`, `inboxJobs`).
 ## Mistakes
 
 Leaving with exit 0 and no pull request when the skill check failed dropped the idea (2026-10-30). The check still runs. The failure is now the heal job's reason.
+
