@@ -570,32 +570,68 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T11:22:40Z",
-   "subject": "Note the salvage batch on the handoff"
+   "at": "2026-11-05T12:07:01Z",
+   "subject": "A weave ask answers while the other skills are still loading"
+  },
+  {
+   "at": "2026-11-05T12:01:02Z",
+   "subject": "Site test: fix: \"what are the figures doing\" only \"waking up\" appeared,"
+  },
+  {
+   "at": "2026-11-05T11:59:33Z",
+   "subject": "Incidents closed: shard(s) 3 passed on 19b31783 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T11:59:09Z",
+   "subject": "Incident: the browser suite failed on 04a320ee (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T11:53:26Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T11:43:15Z",
+   "subject": "A no on /agent/ stays declined, and the live probe waits for this deploy (#2271)"
+  },
+  {
+   "at": "2026-11-05T11:39:42Z",
+   "subject": "Verse loop: task, Queue job mvoxkjn0 (feature: amazon-com-00694bb6): build \"Pr (#2268)"
+  },
+  {
+   "at": "2026-11-05T11:37:43Z",
+   "subject": "Incident: the browser suite failed on deb906d7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T11:37:13Z",
+   "subject": "Site test: fix: \"weave a constellation called night ops\" only \"waking u"
+  },
+  {
+   "at": "2026-11-05T11:29:50Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-05T11:29:18Z",
+   "subject": "Salvage the next ranked bots and credit the icon sets (#2269)"
+  },
+  {
+   "at": "2026-11-05T11:26:29Z",
+   "subject": "Country capital bots name St. John's and Ciudad de la Paz (#2265)"
+  },
+  {
+   "at": "2026-11-05T11:23:06Z",
+   "subject": "Outcome exam: timers 83.3"
   },
   {
    "at": "2026-11-05T11:16:36Z",
    "subject": "Incident: the browser suite failed on 87febfd1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-05T11:15:27Z",
-   "subject": "Restore canonical tags the SEO check requires, and keep the team stylesheet"
-  },
-  {
    "at": "2026-11-05T11:13:29Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-05T11:08:11Z",
-   "subject": "Refresh parity line numbers after the page merge"
-  },
-  {
    "at": "2026-11-05T11:04:45Z",
    "subject": "Incident: the browser suite failed on 66ff43d5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T11:01:36Z",
-   "subject": "Give the credits page the same page-fade rule as every other page"
   },
   {
    "at": "2026-11-05T11:01:31Z",
@@ -606,55 +642,23 @@
    "subject": "Verse loop: task, Queue job mvop0beq (feature: podchaser-com-c86b8e98): build (#2264)"
   },
   {
-   "at": "2026-11-05T10:53:54Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-11-05T10:53:52Z",
    "subject": "Start a loop pull request's checks without an approval click (#2266)"
   },
   {
-   "at": "2026-11-05T10:53:38Z",
-   "subject": "Salvage the next ranked bots and credit the icon sets"
-  },
-  {
    "at": "2026-11-05T10:51:23Z",
    "subject": "Incident: the browser suite failed on c0d6773b (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T10:48:49Z",
-   "subject": "Outcome exam: timers 83.3"
-  },
-  {
-   "at": "2026-11-05T10:45:34Z",
-   "subject": "Site test: visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T10:45:32Z",
-   "subject": "Bring tools, news, team and credits onto the glass, and keep an empty phone home lighter. (#2263)"
-  },
-  {
-   "at": "2026-11-05T10:28:36Z",
-   "subject": "Verse loop: task, Queue job mvop09tv (feature: podchaser-com-d04309ea): build (#2261)"
-  },
-  {
-   "at": "2026-11-05T10:27:49Z",
-   "subject": "fix: recipe chime, phone chess restore, and put-in-the-page draft (#2262)"
-  },
-  {
-   "at": "2026-11-05T10:23:36Z",
-   "subject": "Incident: the browser suite failed on 837d03e9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T10:18:19Z",
-   "subject": "Outcome exam: timers 83.3"
   }
  ],
  "builders": {
   "finished": [
    {
+    "name": "Agent no kept (cursor, 2026-11-05)",
+    "line": "a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271"
+   },
+   {
     "name": "Autosalvage batch (cursor, 2026-11-05)",
-    "line": "heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service.…"
+    "line": "heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is…"
    },
    {
     "name": "Country capitals (cursor, 2026-11-05)",
@@ -671,10 +675,6 @@
    {
     "name": "Main reds (cursor, 2026-11-05)",
     "line": "the recipe handover stays quiet when the audio context cannot build a buffer, \"forget this\" on a phone closes the chess board and puts the tucked list back, and \"put in the page\" uses the draft a second read of the same tab would have…"
-   },
-   {
-    "name": "Agent follow-ups (cursor, 2026-11-05)",
-    "line": "/agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260"
    }
   ],
   "ladders": [
