@@ -87,6 +87,20 @@ export function timerEnglish(lower) {
   return s.replace(/\b(timer|countdown)\s+(?:de|von|di|of)\s+/g, '$1 for ').replace(/\b(set\s+(?:a\s+)?(?:timer|countdown))\s+(?:de|de\s+la|para|pour|f[uü]r|per)\s+/g, '$1 for ');
 }
 
+/** "timer for 5" names no unit. The number, or 0 when the ask already says minutes or seconds. Pure. */
+export function unitMissing(lower) {
+  const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' '));
+  const m = /^(?:please\s+)?(?:set\s+)?(?:an?\s+)?(?:timer|countdown)\s+for\s+(\d+(?:\.\d+)?)\s*$/.exec(s);
+  return m ? Number(m[1]) : 0;
+}
+/** the line that stays on the timer while the digits count down, so a reader still sees the length that was asked
+ *  ("set for 1:30 (90 seconds)", "set for 2:30 (150 seconds)"). A number with no unit asks which. Pure. */
+export function setLine(th) {
+  if (th && th.askWhich) return 'Which did you mean: ' + th.askWhich + ' minutes or ' + th.askWhich + ' seconds? A number with no unit could be either.';
+  if (!th || !(th.duration > 0)) return '';
+  const sec = Math.round(th.duration / 1000);
+  return 'set for ' + clock(th.duration) + ' (' + sec + ' seconds)';
+}
 /** "add one minute", "add 30 seconds to the timer", "plus 2 minutes", "extend it by 5 minutes": the length to add, or 0. Pure. */
 export function addMs(lower) {
   const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, ''));
@@ -237,7 +251,14 @@ function mount(th, stageApi) {
   const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
   const total = th.duration;
   const face = stageApi.timerFace(el);
-  face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
+  face(remaining, total, th.running ? 'running' : (remaining <= 0 && total > 0 ? 'done' : 'paused'));
+  const set = document.createElement('span');
+  set.className = 'timer-set';
+  set.style.cssText = 'display:block;max-width:220px;font:13px/1.35 system-ui,sans-serif;white-space:normal';
+  set.textContent = setLine(th);
+  el.appendChild(set);
+  el.style.maxWidth = 'min(260px, calc(100vw - 24px))';
+  el.style.overflow = 'hidden';
 
   if (th.running) { // tick while running
     el._tickInterval = setInterval(() => {
@@ -254,7 +275,8 @@ function mount(th, stageApi) {
   }
 
   // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
-  stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
+  const narrow = (stageApi.stage && stageApi.stage.clientWidth || 800) < 520;
+  stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: narrow ? 'inside' : 'beside', width: narrow ? 72 : 120, height: narrow ? 96 : 160, label: '3D hourglass' }).catch(() => {});
 
   // a practice timer from a plan (lib/practice.js, asked by Verse): at 0:00 it asks whether the session met the goal, logs the
   // answer as that goal's success_rate and last_tested, and says how the goal is going
@@ -295,6 +317,14 @@ function mount(th, stageApi) {
  *  me …") or 'timer' (it waits: "make a timer", "… paused"), or '' */
 export function ask(lower, text, stageApi) {
   lower = timerEnglish(lower);
+  const bare = unitMissing(lower);
+  if (bare) {
+    const t = ensure(stageApi, 0, false);
+    t.askWhich = bare; t.duration = 0; t.remaining = 0; t.running = false; t.startedAt = 0;
+    stageApi.save(); stageApi.render();
+    stageApi.say(setLine(t));
+    return 'timer-which';
+  }
   if (!wantsCreate(lower)) return '';
   const dur = parseDuration(lower) || 60000; // default 1 min
   const t = ensure(stageApi, dur, wantsFresh(lower) && timers(stageApi).length > 0);
@@ -352,8 +382,13 @@ export default {
   name: 'timer',
   examples: ['set a timer for 5 minutes', 'a 2 second timer', 'timer'],
   nearMisses: ['set an alarm for 7am', 'how many days until christmas', 'pause the timer'],
-  match(lower) { return plainTimer(lower); },
-  async run(text, api) { const d = ask(String(text || '').toLowerCase(), text, api.stage); return d ? 'timer' : 'none'; },
+  match(lower) { const s = timerEnglish(String(lower || '').toLowerCase()); return plainTimer(s) || addMs(s) > 0 || unitMissing(s) > 0; },
+  async run(text, api) {
+    const lower = timerEnglish(String(text || '').toLowerCase());
+    if (unitMissing(lower)) return ask(lower, text, api.stage) ? 'timer' : 'none';
+    if (addMs(lower) > 0) { const d = askAction(lower, text, api.stage); return d && d !== 'no timer' ? 'timer' : 'none'; }
+    const d = ask(lower, text, api.stage); return d ? 'timer' : 'none';
+  },
   // askAt: the page asks this kind's ask, askAction and askRemove at its own places, not in the early loop
   stageKinds: { timer: { mount, ensure: (stageApi) => ensure(stageApi, 60000), alter, ask, askAction, askRemove, askAt: 'timer' } },
 };

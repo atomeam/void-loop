@@ -37,6 +37,24 @@ test('timer: other languages\' timer asks are the English ask (exam: "temporizad
   assert.equal(wantsCreate('dessine un cercle rouge'), false);
 });
 
+test('timer: the exam lengths stay on the timer, and a number with no unit asks which', async () => {
+  const { setLine, unitMissing, ask, default: skill } = await import('../void-live-deploy/skills/timer.js');
+  assert.equal(setLine({ duration: 90000 }), 'set for 1:30 (90 seconds)');
+  assert.equal(setLine({ duration: 150000 }), 'set for 2:30 (150 seconds)');
+  assert.equal(setLine({ duration: 45000 }), 'set for 0:45 (45 seconds)');
+  assert.equal(setLine({ duration: 2000 }), 'set for 0:02 (2 seconds)');
+  assert.equal(unitMissing('timer for 5'), 5);
+  assert.equal(unitMissing('set a timer for 90 seconds'), 0);
+  assert.match(setLine({ askWhich: 5 }), /Which did you mean: 5 minutes or 5 seconds/);
+  for (const a of ['set a timer for 90 seconds', 'set a timer for 45 seconds', 'a 2 second timer', 'add one minute', 'timer for 5', 'temporizador de 3 minutos']) assert.equal(skill.match(a), true, a);
+  const things = {};
+  const api = { things: () => things, selected: () => null, select() {}, save() {}, render() {}, say() {}, stage: { clientWidth: 390, clientHeight: 700 } };
+  assert.equal(ask('timer for 5', 'timer for 5', api), 'timer-which');
+  const t = Object.values(things)[0];
+  assert.equal(t.askWhich, 5); assert.equal(t.running, false);
+  assert.match(setLine(t), /Which did you mean/);
+});
+
 test('timer: "add one minute" grows the timer and the answer names its new length (exam: 90 s + 1 min = 2:30)', async () => {
   const { addMs, askAction } = await import('../void-live-deploy/skills/timer.js');
   assert.equal(addMs('add one minute'), 60000);
