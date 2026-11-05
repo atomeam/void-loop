@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/capital-facts-fix-de4d · the four failed country bots (Antigua and Barbuda, Equatorial Guinea, and their checkers) pass from the Wikidata statements themselves: a missing English label uses the English Wikipedia sitelink, and a dated capital hand-over is said with both dates · 2026-11-05 10:40 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
@@ -77,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Country capitals (cursor, 2026-11-05)**: Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every country. Registry live count 11,739 to 11,743. https://github.com/atomeam/void-loop/pull/2265
 - **Main reds (cursor, 2026-11-05)**: the recipe handover stays quiet when the audio context cannot build a buffer, "forget this" on a phone closes the chess board and puts the tucked list back, and "put in the page" uses the draft a second read of the same tab would have wiped. https://github.com/atomeam/void-loop/pull/2262
 - **Agent follow-ups (cursor, 2026-11-05)**: /agent/ keeps an inbox after the tab is closed, Approve resumes a risky draft onto the Made shelf and sends nothing, Decline stops, and the shelf reopens the steps. https://github.com/atomeam/void-loop/pull/2260
 - **Suite reds after #2251 (cursor, 2026-11-05)**: clear and remove the list, turn ephemeral mode off, and add another sticky before the skill index finishes; a cook-with-steps ask loads the recipe stack on its own; the self card is open before the reflect fetch so 1280×800 sees it. https://github.com/atomeam/void-loop/pull/2259
