@@ -477,6 +477,7 @@ for (const [name, file] of [
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
+  ['actions-log', 'actions-log.test.mjs'],
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['list goal', 'list-goal.test.mjs'],
