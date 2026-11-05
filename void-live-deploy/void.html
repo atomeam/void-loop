@@ -6467,6 +6467,27 @@ say('nothing selected to remove');
         skillsReady.then(() => { if (askNoEarly === askCount && vpageEl === calcEl) return runLearnedSkills(typed, lowerNow); }).catch(() => {});
         return;
       }
+      // "closer on the figure" is zoom-figure, 162nd of 342. Nothing ranked above it takes the phrase. The page still
+      // waits for every skill above the match, then for the whole index, so on a loaded runner the site tester only
+      // ever reads "waking up" (#2282). One import, before that line, the same shape as together.
+      if (/^(?:please\s+)?(?:closer on the figure|zoom out on the figure|zoom in(?: on the figure)?|spin the (?:3d )?model)\s*[.!?]*$/i.test(String(typed || '').trim())) {
+        const mod = await Promise.race([import('/skills/zoom-figure.js').catch(() => null), new Promise((r) => setTimeout(() => r(null), 5000))]);
+        const sk = mod && mod.default;
+        if (sk && sk.match && sk.match(typed.toLowerCase(), typed)) {
+          if (!skillsRunning) takeUndoSnapshot();
+          skillsRunning++;
+          let src = 'none';
+          try {
+            src = await sk.run(typed, { showPage, esc, say, reportMiss, loopLog, _pageStill: (el) => vpageEl === el, world: openWorld, summon: summonThing, stage: stageApi, refreshThings: () => render(), keepFresh });
+          } finally { skillsRunning--; }
+          if (src && src !== 'none') {
+            if (!quiet) rememberAsk(typed);
+            currentAsk = lastAsk = typed;
+            loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'skill:zoom-figure' });
+            return;
+          }
+        }
+      }
       // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
       // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
