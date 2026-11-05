@@ -224,7 +224,9 @@ if (ready.length && !limited) {
   const pick = choice.pr;
   console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
   if (choice.action === 'queue' && pick && pick.r && pick.r.branch) {
-    try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', pick.r.branch, '-f', `pr=${pick.number}`]); console.log(`#${pick.number}: full suite started on top of ${String(mainSha).slice(0, 7)}`); }
+    // suite-gate.yml lives on main and checks the pull request out itself. A branch opened before that
+    // workflow existed has no copy of it, so dispatching on the pull request branch never starts.
+    try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${pick.number}`]); console.log(`#${pick.number}: full suite started on top of ${String(mainSha).slice(0, 7)}`); }
     catch (e) { console.log(`#${pick.number}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
   }
   if (choice.action === 'merge' && pick) {
