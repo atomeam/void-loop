@@ -1,0 +1,553 @@
+{
+ "head": {
+  "vars": [
+   "film",
+   "filmLabel",
+   "dirLabel",
+   "year",
+   "mins",
+   "genre",
+   "links"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q2637288"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Those Who Make Tomorrow"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1946"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "82"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "14"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q3548172"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Horse"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1940"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "129"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "7"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q189540"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Seven Samurai"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1954"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "207"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "74"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q135465"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Rashomon"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1950"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "88"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "63"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q948023"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Dersu Uzala"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1975"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "141"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "54"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q565231"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Ran"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1985"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "160"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "52"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q20475"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Yojimbo"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1961"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "110"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "50"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q152105"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Ikiru"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1952"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "143"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "46"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q257818"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Throne of Blood"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1957"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "105"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "44"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q39946"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "The Hidden Fortress"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1958"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "139"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "41"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q854990"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Kagemusha"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1980"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "179"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "39"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q678972"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Stray Dog"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1949"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "122"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "37"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q418809"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Dreams"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1990"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "119"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "36"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q244878"
+    },
+    "filmLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "High and Low"
+    },
+    "dirLabel": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    },
+    "year": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "1963"
+    },
+    "mins": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+     "type": "literal",
+     "value": "143"
+    },
+    "genre": {
+     "xml:lang": "en",
+     "type": "literal",
+     "value": "drama film"
+    },
+    "links": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+     "type": "literal",
+     "value": "35"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q999999991"
+    },
+    "filmLabel": {
+     "type": "literal",
+     "value": "Q999999991"
+    },
+    "dirLabel": {
+     "type": "literal",
+     "value": "Akira Kurosawa"
+    }
+   },
+   {
+    "film": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q999999992"
+    },
+    "filmLabel": {
+     "type": "literal",
+     "value": "Not His Film"
+    },
+    "dirLabel": {
+     "type": "literal",
+     "value": "Someone Else"
+    },
+    "year": {
+     "type": "literal",
+     "value": "1950"
+    }
+   }
+  ]
+ }
+}

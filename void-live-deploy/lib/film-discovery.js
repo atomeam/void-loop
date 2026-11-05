@@ -1,6 +1,6 @@
 // Film discovery as data (asked by Void, frontier "Film discovery as a structured skill returning JSON film metadata"):
 // "find me a sci-fi film from the 80s", "films by Kurosawa", "film metadata for Ikiru" -> a list of films as plain JSON.
-// Only the iTunes Search API is read (the source lib/movies.js and skills/film-metadata.js already used). A field the source does not
+// The iTunes Search API is read first (the source lib/movies.js and skills/film-metadata.js already used), and Wikidata for a director it does not list. A field the source does not
 // return is null, never a guess; nothing found is said plainly (count 0 and a note), never filled in from memory. Pure apart from the
 // injected getJson, so tests replay recorded answers (tools/film-discovery.test.mjs, tools/fixtures/itunes-*.json).
 import { cleanTitle, cleanYear, onHost } from './movies.js';
@@ -45,7 +45,8 @@ const TOPIC = re('^(?:find|discover|search)(?:\\s+me)?\\s+(?:films?|movies?)\\s+
  * A bare "find me a film" / "pick a movie" is null: that is the movie skill's pick, not a discovery.
  */
 export function parseDiscoveryAsk(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  // a courtesy word at the end is not part of the name: "films by kurosawa pls" asks for Kurosawa (issue #2225)
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/(?:[ ,]+(?:pls|plz|please|thanks|thank you|thx|ty))+$/i, '').replace(/[?!.,]+$/, '');
   if (!t || t.length > 160) return null;
   let m;
   for (const r of TITLE) if ((m = t.match(r))) { const title = cleanTitle(m[1]); return title ? { kind: 'title', title } : null; }
@@ -102,6 +103,41 @@ export function selectFilms(results, q) {
   return out.slice(0, MAX_FILMS);
 }
 
+// Wikidata, the second source for a director ask (issue #2225, 2026-11-05: the iTunes Search API now answers every movie search with no
+// results, from a cloud address and from anywhere else, so "films by kurosawa" listed nothing). lib/movies.js already reads Wikidata's keyless
+// SPARQL endpoint for a single title; here one query finds the people named like the director who work as film directors (Q2526255) and
+// their films (instance of film, Q11424, directed by them, P57), with the year, the runtime and one genre. Nothing is guessed: a film with no
+// English label is left out, and the director's name is checked on the data the same way the iTunes results are.
+export const WIKIDATA_SOURCE = 'Wikidata', WIKIDATA_SPARQL = 'https://query.wikidata.org/sparql?format=json&query=';
+/** the SPARQL for a director's films. The name goes through cleanTitle and loses any quote or backslash, so it cannot end the literal. Pure. */
+export function wikidataDirectorUrl(director) {
+  const d = cleanTitle(director).replace(/["\\]/g, '').slice(0, 80);
+  if (norm(d).length < 3) return '';
+  const sparql = 'SELECT ?film ?filmLabel ?dirLabel (MIN(YEAR(?d)) AS ?year) (MAX(?dur) AS ?mins) (SAMPLE(?gl) AS ?genre) (MAX(?sl) AS ?links) WHERE {'
+    + ' SERVICE wikibase:mwapi { bd:serviceParam wikibase:endpoint "www.wikidata.org"; wikibase:api "EntitySearch"; mwapi:search "' + d + '"; mwapi:language "en". ?dir wikibase:apiOutputItem mwapi:item. }' // void-review: ok (SPARQL literal of a cleanTitle value with quotes and backslashes removed)
+    + ' ?dir wdt:P106 wd:Q2526255. ?film wdt:P57 ?dir; wdt:P31 wd:Q11424. OPTIONAL { ?film wikibase:sitelinks ?sl }'
+    + ' OPTIONAL { ?film wdt:P577 ?d } OPTIONAL { ?film wdt:P2047 ?dur } OPTIONAL { ?film wdt:P136 ?g. ?g rdfs:label ?gl. FILTER(LANG(?gl) = "en") }'
+    + ' SERVICE wikibase:label { bd:serviceParam wikibase:language "en". ?film rdfs:label ?filmLabel. ?dir rdfs:label ?dirLabel. }'
+    + ' } GROUP BY ?film ?filmLabel ?dirLabel ORDER BY ?year LIMIT 100';
+  return WIKIDATA_SPARQL + encodeURIComponent(sparql);
+}
+/** Wikidata's answer -> the director's films as JSON: the MAX_FILMS best known (the most Wikipedia editions write about them), shown oldest
+ * first, so Seven Samurai is not cut for a 1940 film he co-wrote; every field it lacks is null. Pure. */
+export function wikidataFilms(json, director) {
+  const v = (b, k) => (b && b[k] && typeof b[k].value === 'string' ? b[k].value : '');
+  const seen = new Set(), out = [];
+  for (const b of (json && json.results && Array.isArray(json.results.bindings) ? json.results.bindings : [])) {
+    const id = (v(b, 'film').match(/\/entity\/(Q\d{1,12})$/) || [])[1], title = one(v(b, 'filmLabel')), who = one(v(b, 'dirLabel'));
+    if (!id || !title || /^Q\d+$/.test(title) || !who || !wantsDirector({ artistName: who }, director)) continue;
+    const year = cleanYear(v(b, 'year')), mins = Math.round(Number(v(b, 'mins'))), g = one(v(b, 'genre')), k = norm(title) + '|' + (year || '');
+    if (seen.has(k)) continue; seen.add(k);
+    out.push({ links: Number(v(b, 'links')) || 0, title, year, director: who, runtime_min: mins > 0 && mins < 1000 ? mins : null, genres: g ? [g] : [], plot: null,
+      source: { name: WIKIDATA_SOURCE, url: 'https://www.wikidata.org/wiki/' + id } });
+  }
+  const best = out.sort((a, b) => b.links - a.links || a.title.localeCompare(b.title)).slice(0, MAX_FILMS).map(({ links, ...f }) => f);
+  return best.sort((a, b) => (a.year || 9999) - (b.year || 9999) || a.title.localeCompare(b.title));
+}
+
 const sayAsk = (q) => (q.kind === 'title' ? q.title : q.kind === 'topic' ? 'films about ' + q.topic
   : [q.genre && q.genre.toLowerCase(), 'films', q.director && 'by ' + q.director, q.from && (q.to && q.to !== q.from ? 'from ' + q.from + ' to ' + q.to : 'from ' + q.from)].filter(Boolean).join(' '));
 /**
@@ -114,8 +150,15 @@ export async function discover(text, getJson) {
   const urls = searchUrls(q);
   if (!urls.length) return { ask: sayAsk(q), count: 0, films: [], sources: [], note: 'Say a genre, a director or a year as well, so there is something to look up.' };
   const answers = await Promise.all(urls.map((u) => Promise.resolve().then(() => getJson(u)).then((j) => (j && Array.isArray(j.results) ? j.results : null)).catch(() => null)));
-  if (answers.every((a) => a === null)) return { ask: sayAsk(q), count: 0, films: [], sources: [], note: 'The film source did not answer just now, so nothing is listed. Ask again in a moment.' };
-  const films = selectFilms(answers.flat().filter(Boolean), q).map(toFilm);
-  return { ask: sayAsk(q), count: films.length, films, sources: films.length ? [SOURCE] : [],
+  const down = answers.every((a) => a === null);
+  let films = down ? [] : selectFilms(answers.flat().filter(Boolean), q).map(toFilm), source = SOURCE, second = null;
+  // a director iTunes did not list (or iTunes did not answer): Wikidata is asked once (issue #2225)
+  if (!films.length && q.director && wikidataDirectorUrl(q.director)) {
+    second = await Promise.resolve().then(() => getJson(wikidataDirectorUrl(q.director))).catch(() => null);
+    const more = second ? wikidataFilms(second, q.director) : [];
+    if (more.length) { films = more; source = WIKIDATA_SOURCE; }
+  }
+  if (down && !second) return { ask: sayAsk(q), count: 0, films: [], sources: [], note: 'The film source did not answer just now, so nothing is listed. Ask again in a moment.' };
+  return { ask: sayAsk(q), count: films.length, films, sources: films.length ? [source] : [],
     note: films.length ? '' : 'The film source I check has no film matching this, so I list none rather than guess.' };
 }

@@ -1,0 +1,1 @@
+{"at":"2026-11-05T06:15:41Z","by":"claude","kind":"fix","what":"a director ask lists films again: when the iTunes Search API lists none of a director's films (it now answers every movie search with nothing), Wikidata is asked once and its best-known films are listed, oldest first; a courtesy word like pls is not part of the name"}

@@ -1,7 +1,7 @@
 /**
  * film-metadata skill — film discovery returns structured JSON film metadata (asked by Void, frontier: "Film discovery as a structured skill
  * returning JSON film metadata"). "find me a sci-fi film from the 80s", "films by Kurosawa", "film metadata for Ikiru", "find films about space".
- * The ask goes to GET /api/filmfind (lib/film-discovery.js, the iTunes Search API only); the card shows each film's title, year, director,
+ * The ask goes to GET /api/filmfind (lib/film-discovery.js: the iTunes Search API, and Wikidata for a director iTunes does not list, issue #2225); the card shows each film's title, year, director,
  * runtime, genres, one-line plot and its source, and a "Copy as JSON" chip puts the same list on the clipboard. A field the source does not
  * give is left out of the card and null in the JSON; when nothing is found the card says so and lists no film.
  */
