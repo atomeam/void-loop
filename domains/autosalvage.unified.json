@@ -222,6 +222,120 @@
       "into": "/bots/ (api-weather-now)",
       "test": "tools/api-bots.test.mjs",
       "pr": null
+    },
+    "archive/script_0.js": {
+      "target": "bot",
+      "into": "/bots/ (void-look)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:dwyl/english-words": {
+      "target": "data",
+      "into": "/bots/ (english-words-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:mledoze/countries": {
+      "target": "data",
+      "into": "/bots/ (countries-url)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/034-attested-atom-feed": {
+      "target": "bot",
+      "into": "/bots/ (atom-feed-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/035-attested-gpc-well-known": {
+      "target": "bot",
+      "into": "/bots/ (gpc-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/036-attested-tdm-reservation": {
+      "target": "bot",
+      "into": "/bots/ (tdm-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/ALPHA/apps/frontend": {
+      "target": "bot",
+      "into": "/bots/ (provider-status)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/051-attested-redirect-catalog": {
+      "target": "bot",
+      "into": "/bots/ (redirect-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/033-attested-humans-txt": {
+      "target": "bot",
+      "into": "/bots/ (humans-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/094-local-gap-not-handoff": {
+      "target": "bot",
+      "into": "/bots/ (gap-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "outside:ideal-postcodes/postcodes.io": {
+      "target": "data",
+      "into": "/bots/ (api-uk-postcode)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:art-institute-of-chicago/api": {
+      "target": "data",
+      "into": "/bots/ (api-artic-artwork)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:metmuseum/open-access": {
+      "target": "data",
+      "into": "/bots/ (api-met-object)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:metabrainz/musicbrainz": {
+      "target": "data",
+      "into": "/bots/ (api-musicbrainz-artist)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:jacebrowning/memegen": {
+      "target": "tool",
+      "into": "/bots/ (api-meme-template)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:worldbank/open-data": {
+      "target": "data",
+      "into": "/bots/ (api-world-country)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:fda/openfda": {
+      "target": "data",
+      "into": "/bots/ (api-drug-label)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:nlm/rxnorm": {
+      "target": "data",
+      "into": "/bots/ (api-drug-rxcui)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
+    },
+    "outside:police-uk/data.police.uk": {
+      "target": "data",
+      "into": "/bots/ (api-uk-police)",
+      "test": "tools/api-bots.test.mjs",
+      "pr": null
     }
   }
 }

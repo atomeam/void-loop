@@ -1,5 +1,13 @@
 [
 {"name":"Unicode CLDR (through the browser's Intl data)","author":"Unicode, Inc.","license":"Unicode License v3","link":"https://cldr.unicode.org/","used":"/bots/ language-pair phrasebooks (bots/lang-pairs.js)"},
+{"name":"Frankfurter","author":"lineofflight","license":"MIT","link":"https://github.com/lineofflight/frankfurter","used":"/bots/ currency-pair family (bots/fx-pairs.js); rates are the European Central Bank reference rates"},
+{"name":"Nager.Date","author":"nager","license":"MIT","link":"https://github.com/nager/Nager.Date","used":"/bots/ public-holiday family (bots/holidays.js)"},
+{"name":"Wikidata","author":"Wikimedia contributors","license":"CC0-1.0","link":"https://www.wikidata.org/wiki/Wikidata:Licensing","used":"/bots/ country-facts family (bots/country-facts.js)"},
+{"name":"english-words","author":"dwyl","license":"Unlicense","link":"https://github.com/dwyl/english-words","used":"/bots/ (english-words-url): the word list stays on the CDN at one pinned commit"},
+{"name":"mledoze/countries","author":"mledoze","license":"ODbL-1.0","link":"https://github.com/mledoze/countries","used":"/bots/ (countries-url): the ODbL file stays on the CDN at one pinned release"},
+{"name":"simple-icons","author":"simple-icons","license":"CC0-1.0","link":"https://github.com/simple-icons/simple-icons","used":"/bots/ (simple-icon-url): one pinned SVG URL, the icon file stays on the CDN"},
+{"name":"Tabler Icons","author":"tabler","license":"MIT","link":"https://github.com/tabler/tabler-icons","used":"/bots/ (tabler-icon-url): one pinned SVG URL, the icon file stays on the CDN"},
+{"name":"open-meteo/open-meteo","author":"open-meteo","license":"AGPL-3.0","link":"https://github.com/open-meteo/open-meteo","used":"/bots/ (api-weather-now) calls the weather API as a separate service; the AGPL program is not mixed into Verse"},
 {"name":"public-apis/public-apis","author":"public-apis contributors","license":"MIT","link":"https://github.com/public-apis/public-apis","used":"where Verse found most of its free API bots","api":true},
 {"name":"Open-Meteo","author":"Open-Meteo","license":"CC BY 4.0","link":"https://open-meteo.com/","used":"/bots/ free API bots: api-weather-now","api":true},
 {"name":"Open-Meteo Geocoding","author":"Open-Meteo Geocoding","license":"CC BY 4.0 (GeoNames)","link":"https://open-meteo.com/en/docs/geocoding-api","used":"/bots/ free API bots: api-place-finder","api":true},
@@ -60,10 +68,13 @@
 {"name":"ISRO API","author":"ISRO API","license":"Free, no key (MIT code)","link":"https://isro.vercel.app/","used":"/bots/ free API bots: api-isro-craft","api":true},
 {"name":"xkcd JSON","author":"xkcd JSON","license":"CC BY-NC 2.5","link":"https://xkcd.com/json.html","used":"/bots/ free API bots: api-xkcd","api":true},
 {"name":"Fruityvice","author":"Fruityvice","license":"Free, no key","link":"https://www.fruityvice.com/","used":"/bots/ free API bots: api-fruit-nutrition","api":true},
-{"name":"Frankfurter","author":"lineofflight","license":"MIT","link":"https://github.com/lineofflight/frankfurter","used":"/bots/ currency-pair family (bots/fx-pairs.js); rates are the European Central Bank reference rates"},
-{"name":"Nager.Date","author":"nager","license":"MIT","link":"https://github.com/nager/Nager.Date","used":"/bots/ public-holiday family (bots/holidays.js)"},
-{"name":"Wikidata","author":"Wikimedia contributors","license":"CC0-1.0","link":"https://www.wikidata.org/wiki/Wikidata:Licensing","used":"/bots/ country-facts family (bots/country-facts.js)"},
-{"name":"simple-icons","author":"simple-icons","license":"CC0-1.0","link":"https://github.com/simple-icons/simple-icons","used":"/bots/ (simple-icon-url): one pinned SVG URL, the icon file stays on the CDN"},
-{"name":"Tabler Icons","author":"tabler","license":"MIT","link":"https://github.com/tabler/tabler-icons","used":"/bots/ (tabler-icon-url): one pinned SVG URL, the icon file stays on the CDN"},
-{"name":"open-meteo/open-meteo","author":"open-meteo","license":"AGPL-3.0","link":"https://github.com/open-meteo/open-meteo","used":"/bots/ (api-weather-now) calls the weather API as a separate service; the AGPL program is not mixed into Verse"}
+{"name":"postcodes.io","author":"postcodes.io","license":"MIT","link":"https://postcodes.io/","used":"/bots/ free API bots: api-uk-postcode","api":true},
+{"name":"Art Institute of Chicago API","author":"Art Institute of Chicago API","license":"CC0-1.0","link":"https://api.artic.edu/","used":"/bots/ free API bots: api-artic-artwork","api":true},
+{"name":"The Met Collection API","author":"The Met Collection API","license":"CC0-1.0","link":"https://metmuseum.github.io/","used":"/bots/ free API bots: api-met-object","api":true},
+{"name":"MusicBrainz","author":"MusicBrainz","license":"CC0-1.0","link":"https://musicbrainz.org/doc/MusicBrainz_Database","used":"/bots/ free API bots: api-musicbrainz-artist","api":true},
+{"name":"memegen","author":"memegen","license":"MIT","link":"https://github.com/jacebrowning/memegen","used":"/bots/ free API bots: api-meme-template","api":true},
+{"name":"World Bank Open Data","author":"World Bank Open Data","license":"CC-BY-4.0","link":"https://data.worldbank.org/","used":"/bots/ free API bots: api-world-country","api":true},
+{"name":"openFDA","author":"openFDA","license":"CC0-1.0","link":"https://open.fda.gov/apis/","used":"/bots/ free API bots: api-drug-label","api":true},
+{"name":"RxNorm","author":"RxNorm","license":"CC0-1.0","link":"https://lhncbc.nlm.nih.gov/RxNav/","used":"/bots/ free API bots: api-drug-rxcui","api":true},
+{"name":"data.police.uk","author":"data.police.uk","license":"OGL-UK-3.0","link":"https://data.police.uk/docs/","used":"/bots/ free API bots: api-uk-police","api":true}
 ]
