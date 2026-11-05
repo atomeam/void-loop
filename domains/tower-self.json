@@ -1016,6 +1016,97 @@
     "place": 8,
     "why": "not sized yet, hardness 85, Tranco 198688"
    }
+  },
+  "coreldrawdesign.com": {
+   "at": "2026-11-05T09:47:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a resource hub for graphic design assets like CDR files, vectors, and templates, as well as design tutorials. Verse does not have a page)",
+   "title": "Home - CorelDraw Design (Download Free CDR, Vector, Stock Images, Tutorials, Tip",
+   "ease": {
+    "score": 5.3,
+    "place": 1,
+    "why": "not sized yet, hardness 85, Tranco 192094"
+   }
+  },
+  "coloradoan.com": {
+   "at": "2026-11-05T09:48:22Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a local news outlet. Verse has a 'news' page, but it is limited to specific global sources like the BBC and Guardian, whereas this website is a)",
+   "title": "The Coloradoan | Fort Collins news, community, entertainment, and classifieds. S",
+   "ease": {
+    "score": 5.3,
+    "place": 2,
+    "why": "not sized yet, hardness 85, Tranco 50211"
+   }
+  },
+  "uphex.com": {
+   "at": "2026-11-05T09:48:30Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a B2B service for marketing agencies to deploy proven Facebook ad campaigns for local niches. Verse does not have a page for marketing agency)",
+   "title": "UpHex — Proven Facebook Ads for Every Client, Built in Minutes",
+   "ease": {
+    "score": 5.2,
+    "place": 3,
+    "why": "not sized yet, hardness 87, Tranco 365294"
+   }
+  },
+  "timer365.com": {
+   "at": "2026-11-05T09:48:31Z",
+   "outcome": "covered",
+   "page": "/stopwatch/",
+   "topic": "stopwatch and timer",
+   "title": "Online Countdown Timer - Timer365",
+   "why": "its job is stopwatch and timer, which /stopwatch/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5.2,
+    "place": 4,
+    "why": "not sized yet, hardness 87, Tranco 221328"
+   }
+  },
+  "loanwisecalculatoreasy.com": {
+   "at": "2026-11-05T09:48:34Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "Everyday Utilities | Mobile apps for what matters",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5.2,
+    "place": 5,
+    "why": "not sized yet, hardness 87, Tranco 213650"
+   }
+  },
+  "drawio.com": {
+   "at": "2026-11-05T09:48:44Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Security-first diagramming for teams | draw.io",
+   "ease": {
+    "score": 5.2,
+    "place": 6,
+    "why": "not sized yet, hardness 87, Tranco 46779"
+   }
+  },
+  "dentally.com": {
+   "at": "2026-11-05T09:48:55Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provided is for a professional dental practice management software service. Verse is a collection of individual utility tools (calculators)",
+   "title": "Dentally: Dental Software",
+   "ease": {
+    "score": 5.1,
+    "place": 7,
+    "why": "not sized yet, hardness 88, Tranco 303542"
+   }
+  },
+  "hexcolorpicker.io": {
+   "at": "2026-11-05T09:48:57Z",
+   "outcome": "gone",
+   "why": "answered 403",
+   "ease": {
+    "score": 5.1,
+    "place": 8,
+    "why": "not sized yet, hardness 88, Tranco 158748"
+   }
   }
  },
  "runs": [

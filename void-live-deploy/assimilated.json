@@ -10,15 +10,183 @@
   }
  },
  "counts": {
-  "sites": 279,
+  "sites": 287,
   "surpassed": 2,
   "passed": 143,
-  "assimilated": 12,
+  "assimilated": 14,
   "current": 1,
   "parked": 1,
-  "tried": 120
+  "tried": 126
  },
  "sites": [
+  {
+   "site": "hexcolorpicker.io",
+   "url": "https://hexcolorpicker.io/",
+   "status": "could not be read",
+   "outcome": "gone",
+   "at": "2026-11-05T09:48:57Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "answered 403",
+   "learned": "",
+   "ease": {
+    "score": 5.1,
+    "place": 8,
+    "why": "not sized yet, hardness 88, Tranco 158748"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "dentally.com",
+   "url": "https://dentally.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-05T09:48:55Z",
+   "page": "",
+   "lane": "",
+   "took": "Dentally: Dental Software",
+   "why": "no floor does its job (The website provided is for a professional dental practice management software service. Verse is a collection of individual utility tools (calculators)",
+   "learned": "",
+   "ease": {
+    "score": 5.1,
+    "place": 7,
+    "why": "not sized yet, hardness 88, Tranco 303542"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "drawio.com",
+   "url": "https://drawio.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-05T09:48:44Z",
+   "page": "",
+   "lane": "",
+   "took": "Security-first diagramming for teams | draw.io",
+   "why": "no floor does its job (none)",
+   "learned": "",
+   "ease": {
+    "score": 5.2,
+    "place": 6,
+    "why": "not sized yet, hardness 87, Tranco 46779"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "loanwisecalculatoreasy.com",
+   "url": "https://loanwisecalculatoreasy.com/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-05T09:48:34Z",
+   "page": "/calculators/",
+   "lane": "",
+   "took": "Everyday Utilities | Mobile apps for what matters",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.2,
+    "place": 5,
+    "why": "not sized yet, hardness 87, Tranco 213650"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "timer365.com",
+   "url": "https://timer365.com/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-05T09:48:31Z",
+   "page": "/stopwatch/",
+   "lane": "",
+   "took": "Online Countdown Timer - Timer365",
+   "why": "its job is stopwatch and timer, which /stopwatch/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.2,
+    "place": 4,
+    "why": "not sized yet, hardness 87, Tranco 221328"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "uphex.com",
+   "url": "https://uphex.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-05T09:48:30Z",
+   "page": "",
+   "lane": "",
+   "took": "UpHex — Proven Facebook Ads for Every Client, Built in Minutes",
+   "why": "no floor does its job (The website is a B2B service for marketing agencies to deploy proven Facebook ad campaigns for local niches. Verse does not have a page for marketing agency)",
+   "learned": "",
+   "ease": {
+    "score": 5.2,
+    "place": 3,
+    "why": "not sized yet, hardness 87, Tranco 365294"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "coloradoan.com",
+   "url": "https://coloradoan.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-05T09:48:22Z",
+   "page": "",
+   "lane": "",
+   "took": "The Coloradoan | Fort Collins news, community, entertainment, and classifieds. S",
+   "why": "no floor does its job (The website is a local news outlet. Verse has a 'news' page, but it is limited to specific global sources like the BBC and Guardian, whereas this website is a)",
+   "learned": "",
+   "ease": {
+    "score": 5.3,
+    "place": 2,
+    "why": "not sized yet, hardness 85, Tranco 50211"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "coreldrawdesign.com",
+   "url": "https://coreldrawdesign.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-05T09:47:42Z",
+   "page": "",
+   "lane": "",
+   "took": "Home - CorelDraw Design (Download Free CDR, Vector, Stock Images, Tutorials, Tip",
+   "why": "no floor does its job (The website is a resource hub for graphic design assets like CDR files, vectors, and templates, as well as design tutorials. Verse does not have a page)",
+   "learned": "",
+   "ease": {
+    "score": 5.3,
+    "place": 1,
+    "why": "not sized yet, hardness 85, Tranco 192094"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
   {
    "site": "realtimerental.com",
    "url": "https://realtimerental.com/",
