@@ -3406,5 +3406,67 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T13:12:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2317,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17758 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T13:23:33Z",
+  "passed": 85,
+  "of": 90,
+  "ms": 281,
+  "kind": "file",
+  "key": "closer on the figure | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "fly around",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2317,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17758 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"closer on the figure\" only \"waking up\" appeared, never the answer"
  }
 ]
