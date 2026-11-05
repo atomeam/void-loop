@@ -28,6 +28,9 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 export const LIMITS = { turns: 30, tokens: 250000, out: 6000, finishTries: 3 };
 /** a file longer than this is not sent from line 1: the model gets an outline and asks for a region (void.html is about 690 KB). */
 export const HUGE = 400;
+/** one read: this many lines from `from`, and at most this many characters (a read was 300 lines and 16,000 characters, which with two
+ *  whole fresh results made each late turn cost about 15,000 tokens). */
+export const READ = Object.freeze({ lines: 150, chars: 6000 });
 export const EXIT = { done: 0, nothing: 3, 'no-model': 4, 'turn-cap': 5, 'token-cap': 5, 'model-down': 6, error: 1 };
 
 // ---- the free model stack ----
@@ -197,15 +200,25 @@ export const keyless = (env = process.env) => Object.fromEntries(Object.entries(
 const git = (root, args, opts = {}) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, ...opts });
 const readOr = (p) => { try { return readFileSync(p, 'utf8'); } catch (_) { return null; } };
 
-export const WINDOW = Object.freeze({ messages: 24, fresh: 4, keep: 600 });
+export const WINDOW = Object.freeze({ messages: 20, fresh: 4, keep: 600, task: 6000, taskTurns: 2 });
 /** what the model gets each turn: the system and the task, then the last WINDOW.messages turns, with each tool result older than the
  *  newest WINDOW.fresh messages cut to WINDOW.keep characters. Every turn sends the whole window again, so full old reads made the
- *  count grow with the square of the turns: a 250000-token run stopped near turn 12 of 30 with nothing shipped; now the newest 2 results stay whole. Pure. */
+ *  count grow with the square of the turns: a 250000-token run stopped near turn 12 of 30 with nothing shipped; now the newest WINDOW.fresh / 2 results stay whole.
+ *  The task goes whole for the first WINDOW.taskTurns turns; after that a task longer than WINDOW.task characters keeps its head (the task
+ *  itself comes first in a lap's brief, then the reference notes, docs/GATE-STANDARDS.md and docs/TAGTEAM.md) and the rest is cut, and
+ *  an older turn of the model's own that is long (a whole new file as an edit) is cut like an old result. A lap's brief is about 11,000
+ *  characters and was sent whole every turn: three laps in a row stopped at the token cap after 20 to 28 turns of reading (2026-11-05,
+ *  issue 2234). Pure. */
 export function windowOf(messages) {
   const m = Array.isArray(messages) ? messages : [];
   const rest = m.length > WINDOW.messages + 2 ? m.slice(-WINDOW.messages) : m.slice(2);
-  return [...m.slice(0, 2), ...rest.map((x, i) => (x.role === 'user' && i < rest.length - WINDOW.fresh && x.content.length > WINDOW.keep
-    ? { role: 'user', content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older result; read it again if you need it]' } : x))];
+  const turns = m.filter((x) => x && x.role === 'assistant').length;
+  const task = m[1] && turns > WINDOW.taskTurns && m[1].content.length > WINDOW.task
+    ? { ...m[1], content: m[1].content.slice(0, WINDOW.task) + '\n[... ' + (m[1].content.length - WINDOW.task) + ' characters of reference notes cut after the first turns; the task is above]' } : m[1];
+  return [...m.slice(0, 1), ...(m.length > 1 ? [task] : []), ...rest.map((x, i) => (i < rest.length - WINDOW.fresh && x.content.length > WINDOW.keep
+    ? x.role === 'user' ? { role: 'user', content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older result; read it again if you need it]' }
+      : x.content.length > 4 * WINDOW.keep ? { role: x.role, content: x.content.slice(0, WINDOW.keep) + '\n[... ' + (x.content.length - WINDOW.keep) + ' characters cut from an older turn of yours]' } : x
+    : x))];
 }
 
 export const BUDGET = Object.freeze({ warn: 0.4, last: 0.8 });
@@ -356,8 +369,8 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
         const o = outlineOf(text);
         return o.lines + ' lines, ' + o.chars + ' characters. Too big to read from the top: use region with a pattern, or read with from and to.\n' + o.marks.join('\n');
       }
-      const a = Math.max(1, +from || 1), b = Math.min(ls.length, to == null ? a + 299 : +to);
-      return head(ls.slice(a - 1, b).map((l, i) => (a + i) + '\t' + l).join('\n'), 16000) + (b < ls.length ? '\n[' + ls.length + ' lines; read on with "from":' + (b + 1) + ']' : '');
+      const a = Math.max(1, +from || 1), b = Math.min(ls.length, to == null ? a + READ.lines - 1 : +to);
+      return head(ls.slice(a - 1, b).map((l, i) => (a + i) + '\t' + l).join('\n'), READ.chars) + (b < ls.length ? '\n[' + ls.length + ' lines; read on with "from":' + (b + 1) + ']' : '');
     },
     region({ path, pattern }) {
       const why = pathRefusal(path, root); if (why) return 'refused: ' + why;

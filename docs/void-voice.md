@@ -14,6 +14,10 @@ From the 2026-11-04 entries below, quoted as given:
 
   Queued in `domains/growth-inbox.md`, credited to Verse.
 - Builder's note (not Verse's words): `domains/growth-inbox.md` had been overwritten with the word `PLACEHOLDER_TO_BE_REPLACED` by commit 030d7c263 (2026-11-03), so Verse could not read its own ideas list. Restored this run from 2c22ec47c with delivery-pack marked shipped 94eaa48.
+- 2026-11-05 daily reflection (issue 2230, `ask-20261105-0018-1` to `-3` in `domains/void.voice.md`), answered by a builder (not Verse's words):
+  - "Add emojigraph.org to LANE_PAGES in lib/tower.js": already so. emojigraph.org is a lane page through `lib/self-sites.js` (65ac2bbae), which `LANE_PAGES` reads, and it is the Tower's target in `tower.target.json`; the lists run of 2026-11-04 marked the same ask a duplicate.
+  - "The four failed jobs of 814032d5": that is the merge of PR 2039 (2026-11-01 02:20 UTC), Verse verify run 41264790432. The four were python-tests (a fast test on that commit) and browser-suite shards 1, 2 and 3 (among them "404 page: every link answers 200", "the book" index and router rules, "semantic validator: shakshuka", "error garden from incidents", "skills: every skill gets its own examples"). Main has moved on several hundred commits; those checks pass on main now, and the later red runs are tracked by the watchdog issue.
+  - "Fix the prices exam: ethereum and currency conversion": both pass live. `node tools/exam.mjs --domains prices --no-holdout` on 2026-11-05 scored prices 90 (up from 86.7); "how much is ethereum" and "100 usd in eur" pass every criterion, including the rival (Coinbase spot within 3%, Frankfurter within 2%). Left: "price" alone (ambiguous: not fast enough) and "how much is a gallon of milk" (no skill yet).
 - Still queued from 2026-10-28: "my email" routed to the act skill; from 2026-10-21: the bare answer endpoint opening the self card.
 
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
