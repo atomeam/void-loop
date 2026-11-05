@@ -7471,7 +7471,7 @@ try {
         for (const c of n.childNodes) walk(c);
       };
       walk(document.body);
-      return { words, ph: document.getElementById('input').placeholder, hero: !!document.getElementById('verse-hero') || !!document.getElementById('v01d') || !!document.querySelector('h1'), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install'), stage: !!document.getElementById('stage'), bar: !!document.getElementById('row') };
+      return { words, ph: document.getElementById('input').placeholder, hero: !!document.getElementById('verse-hero') || !!document.getElementById('v01d') || (() => { const h = document.querySelector('h1'), r = h && h.getBoundingClientRect(); return !!(r && (r.width >= 2 || r.height >= 2)); })(), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install'), stage: !!document.getElementById('stage'), bar: !!document.getElementById('row') };
     });
     await p.fill('#input', 'films'); const typed = await p.inputValue('#input');
     const letters = (seen.words || []).filter((w) => /[A-Za-z]/.test(w));
