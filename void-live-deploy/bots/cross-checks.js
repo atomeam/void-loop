@@ -7,6 +7,9 @@
 import { book } from './lang-pairs.js';
 import { APIS, read, askAt } from './api-bots.js';
 import KEPT from './api-fixtures.js';
+import { HOLIDAYS } from './open-data.js';
+import { capitalRoad } from './country-facts.js';
+import { samePlace } from './country-names.js';
 const num = (s) => parseFloat(String(s).replace(/,/g, '')), close = (a, b, tol = 1e-6) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
 const bump = (s) => String(s).replace(/-?\d+(\.\d+)?(e[+-]?\d+)?/i, (n) => String(+n * 1.01 + 1));
 const alts = (s) => String(s).split(/\s*\/\s*|,\s*/).map((x) => x.trim().toLowerCase());
@@ -50,6 +53,33 @@ export function crossChecks(all) {
   for (const b of fam('language pairs')) {
     const [, a, z] = b.id.match(/^phrase-(\w+)-to-(\w+)$/), m = ['en', 'es', 'fr'].find((x) => x !== a && x !== z);
     out.push(checker(b, [by.get('phrase-' + a + '-to-' + m), by.get('phrase-' + m + '-to-' + z)], { same: (c, v) => alts(c).some((x) => alts(v).includes(x)), wrong: () => book(z).words['day:tuesday'], samples: ['day:monday', 'month:7', 'country:JP'].map((k) => book(a).words[k]), family: 'language pairs' }));
+  }
+  const fx = fam('currency pairs');
+  if (fx.length) {
+    const codes = [...new Set(fx.map((b) => b.id.slice(3).split('-to-')[0]))];
+    for (const b of fx) {
+      const [, a, z] = b.id.match(/^fx-([a-z]{3})-to-([a-z]{3})$/);
+      const mid = codes.find((c) => c !== a && c !== z);
+      out.push(checker(b, [by.get('fx-' + a + '-to-' + mid), by.get('fx-' + mid + '-to-' + z)], { ...numeric, samples: ['1', '7.5', '1234'], family: 'currency pairs' }));
+    }
+  }
+  // a second reading of the kept holiday list: the date is split into numbers, not matched as one string
+  const holidayRoad = (code, input) => {
+    const m = String(input).match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return 'send a date like 2026-07-04';
+    const days = ((HOLIDAYS.countries || {})[code] || {}).days || [];
+    for (const [d, name] of days) { const [yy, mm, dd] = d.split('-').map(Number); if (yy === +m[1] && mm === +m[2] && dd === +m[3]) return name; }
+    return 'not a public holiday';
+  };
+  for (const b of fam('public holidays')) {
+    const code = b.id.slice('holiday-'.length).toUpperCase();
+    const days = (((HOLIDAYS.countries || {})[code] || {}).days || []).map(([d]) => d);
+    const samples = [...days.slice(0, 2), '2026-02-02', '2026-03-03'].slice(0, 3);
+    out.push(checker(b, [{ id: 'holiday-index-' + code.toLowerCase(), run: (s) => holidayRoad(code, s) }, { id: 'as-is', run: (s) => s }], { same: (c, v) => c === v, wrong: (c) => (c === 'not a public holiday' ? 'Fake Day' : 'not a public holiday'), samples, family: 'public holidays' }));
+  }
+  for (const b of fam('country facts')) {
+    const code = b.id.slice('country-'.length).toUpperCase();
+    out.push(checker(b, [{ id: 'capital-list-' + code.toLowerCase(), run: () => capitalRoad(code) }, { id: 'as-is', run: (s) => s }], { same: (c, v) => String(c).split(', ').some((x) => samePlace(x, v)), wrong: () => 'Not A Real Capital', samples: ['capital', 'facts', 'the capital'], family: 'country facts' }));
   }
   return [...out, ...apiChecks()];
 }

@@ -1,8 +1,8 @@
 {
- "at": "2026-11-04",
- "scanned": 539,
+ "at": "2026-11-05",
+ "scanned": 542,
  "counts": {
-  "unified": 20,
+  "unified": 23,
   "live": 68,
   "salvageable": 425,
   "history": 23,
@@ -187,6 +187,30 @@
    "link": "https://github.com/open-meteo/open-meteo",
    "used": null,
    "isolated": true
+  },
+  {
+   "name": "lineofflight/frankfurter",
+   "author": "lineofflight",
+   "license": "MIT",
+   "link": "https://github.com/lineofflight/frankfurter",
+   "used": "/bots/ (currency pairs)",
+   "isolated": false
+  },
+  {
+   "name": "nager/Nager.Date",
+   "author": "nager",
+   "license": "MIT",
+   "link": "https://github.com/nager/Nager.Date",
+   "used": "/bots/ (public holidays)",
+   "isolated": false
+  },
+  {
+   "name": "wikimedia/wikidata-data",
+   "author": "Wikimedia contributors",
+   "license": "CC0-1.0",
+   "link": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+   "used": "/bots/ (country facts)",
+   "isolated": false
   }
  ],
  "pieces": [
@@ -6657,6 +6681,42 @@
    "test": null,
    "pr": null,
    "license": null
+  },
+  {
+   "id": "outside:lineofflight/frankfurter",
+   "kind": "outside",
+   "status": "unified",
+   "target": "data",
+   "value": 31,
+   "why": "Exchange rates from the European Central Bank, no key",
+   "into": "/bots/ (currency pairs)",
+   "test": "tools/open-data.test.mjs",
+   "pr": null,
+   "license": "MIT"
+  },
+  {
+   "id": "outside:nager/Nager.Date",
+   "kind": "outside",
+   "status": "unified",
+   "target": "data",
+   "value": 31,
+   "why": "Public holidays for 200 countries, no key",
+   "into": "/bots/ (public holidays)",
+   "test": "tools/open-data.test.mjs",
+   "pr": null,
+   "license": "MIT"
+  },
+  {
+   "id": "outside:wikimedia/wikidata-data",
+   "kind": "outside",
+   "status": "unified",
+   "target": "data",
+   "value": 31,
+   "why": "Country facts (capital, currency, continent), public domain",
+   "into": "/bots/ (country facts)",
+   "test": "tools/open-data.test.mjs",
+   "pr": null,
+   "license": "CC0-1.0"
   }
  ]
 }
