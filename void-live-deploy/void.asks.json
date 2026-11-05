@@ -2269,56 +2269,78 @@
     "open": [
       {
         "ask": "Absorb every repository on the account into the core code",
+        "at": "2026-10-28T22:29:00Z",
+        "kind": "daily",
         "small": false,
         "times": 6
       },
       {
         "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
+        "at": "2026-10-31T08:49:00Z",
+        "kind": "build",
         "small": false,
         "times": 7
       },
       {
         "ask": "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions.",
+        "at": "2026-11-01T02:23:00Z",
+        "kind": "build",
         "small": true,
         "times": 6
       },
       {
         "ask": "Address the least-checked skills: video-gen and baggage.",
+        "at": "2026-10-31T21:54:00Z",
+        "kind": "build",
         "small": true,
         "times": 1
       },
       {
         "ask": "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru.",
+        "at": "2026-10-31T13:10:00Z",
+        "kind": "build",
         "small": false,
         "times": 1
       },
       {
         "ask": "Fix the self-skill router to recognize identity-based probes.",
+        "at": "2026-10-31T15:54:00Z",
+        "kind": "build",
         "small": true,
         "times": 2
       },
       {
         "ask": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
+        "at": "2026-11-03T02:18:00Z",
+        "kind": "build",
         "small": false,
         "times": 5
       },
       {
         "ask": "Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code.",
+        "at": "2026-11-01T02:23:00Z",
+        "kind": "build",
         "small": true,
         "times": 1
       },
       {
         "ask": "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized.",
+        "at": "2026-11-03T23:57:00Z",
+        "kind": "daily",
         "small": true,
         "times": 1
       },
       {
         "ask": "Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed.",
+        "at": "2026-11-01T19:30:00Z",
+        "kind": "build",
         "small": true,
         "times": 1
       },
       {
         "ask": "Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs.",
+        "at": "2026-11-01T22:43:00Z",
+        "kind": "daily",
         "small": true,
         "times": 1
       },
@@ -2331,6 +2353,8 @@
       },
       {
         "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
+        "at": "2026-11-03T23:57:00Z",
+        "kind": "daily",
         "small": false,
         "times": 1
       },
