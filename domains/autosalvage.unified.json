@@ -120,6 +120,24 @@
       "into": "/bots/ (permissions-policy-check)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "outside:lineofflight/frankfurter": {
+      "target": "data",
+      "into": "/bots/ (currency pairs)",
+      "test": "tools/open-data.test.mjs",
+      "pr": null
+    },
+    "outside:nager/Nager.Date": {
+      "target": "data",
+      "into": "/bots/ (public holidays)",
+      "test": "tools/open-data.test.mjs",
+      "pr": null
+    },
+    "outside:wikimedia/wikidata-data": {
+      "target": "data",
+      "into": "/bots/ (country facts)",
+      "test": "tools/open-data.test.mjs",
+      "pr": null
     }
   }
 }

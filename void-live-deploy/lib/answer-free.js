@@ -14,6 +14,8 @@
 //   const alt  = await freeLlm(messages, { env, registry })   -> null or { answer, source, tried }
 import { BOTS, BOT, probe } from '../bots/kit.js';
 import { families, check } from '../bots/families.js';
+import { fxCode } from '../bots/fx-pairs.js';
+import { holidayCode } from '../bots/holidays.js';
 import { runJob } from './free-router.js';
 
 // research asks, in order: OpenAlex on Atom's free key, OpenAlex keyless (a tiny daily budget), then Crossref (keyless, generous)
@@ -56,6 +58,8 @@ export function planOf(ask) {
   };
   if ((m = t.match(new RegExp('^(?:convert |what is |what\'s |whats |how much is |how many is )?' + NUM + ' ?((?:degrees? )?[a-z°/][a-z°/ -]{0,24}?) (?:to|in|into|as|in terms of) ((?:degrees? )?[a-z°/][a-z°/ -]{0,24}?)$')))) { const p = conv(num(m[1]), m[2], m[3]); if (p) return p; }
   if ((m = t.match(new RegExp('^how many ([a-z°/][a-z°/ -]{0,24}?) (?:are |is )?(?:there )?in (?:a |an |one )?' + NUM + '? ?([a-z°/][a-z°/ -]{0,24}?)$')))) { const p = conv(m[2] ? num(m[2]) : 1, m[3], m[1]); if (p) return p; }
+  // currency, after units so "10 pounds to kg" stays a weight: "100 usd to eur", "50 pounds to euros"
+  if ((m = t.match(new RegExp('^(?:convert |what is |what\'s )?' + NUM + ' ([a-z]{2,12}) (?:to|in|into) ([a-z]{2,12})$')))) { const a = fxCode(m[2]), b = fxCode(m[3]); if (a && b && a !== b) return { kind: 'bot', bot: 'fx-' + a + '-to-' + b, input: String(num(m[1])), say: num(m[1]) + ' ' + a.toUpperCase() + ' = ' }; }
   // number bases: "255 in binary", "convert 1010 from binary to decimal"
   if ((m = t.match(/^(?:convert |what is |what's )?(\d{1,15}) (?:in|to|into) (binary|bin|octal|oct|hex|hexadecimal|base 2|base 8|base 16|base 36)$/))) return { kind: 'bot', bot: 'base10-to-base' + BASES[m[2]], input: m[1], say: m[1] + ' in ' + m[2] + ' = ' };
   if ((m = t.match(/^(?:convert )?([0-9a-f]{1,15}) from (binary|octal|hex|hexadecimal|decimal) (?:to|into) (binary|octal|hex|hexadecimal|decimal)$/)) && BASES[m[2]] !== BASES[m[3]] && [...m[1]].every((c) => parseInt(c, 36) < BASES[m[2]])) return { kind: 'bot', bot: 'base' + BASES[m[2]] + '-to-base' + BASES[m[3]], input: m[1], say: m[1] + ' (' + m[2] + ') in ' + m[3] + ' = ' };
@@ -66,6 +70,7 @@ export function planOf(ask) {
   if ((m = t.match(/^(?:what (?:does|is) )?(?:an? )?(?:http )?(?:status )?(?:code )?(\d{3})(?: http)?(?: status)?(?: code)?(?: error)?(?: mean)?$/)) && /\b(?:http|status)\b/.test(t)) return { kind: 'bot', bot: 'status-code', input: m[1], say: 'HTTP ' + m[1] + ': ', unless: 'unknown code' };
   if ((m = t.match(/^(?:convert |what (?:date|time) is )?(?:unix |epoch )?(?:time ?stamp|timestamp|epoch|unix time) (\d{9,11})(?: to (?:a )?(?:date|utc))?$/))) return { kind: 'bot', bot: 'unix-time', input: m[1], say: 'Unix time ' + m[1] + ' is ' };
   if ((m = t.match(/^(?:how many )?days (?:between|from) (\d{4}-\d\d-\d\d) (?:and|to|until) (\d{4}-\d\d-\d\d)$/))) return { kind: 'bot', bot: 'days-between', input: m[1] + ' to ' + m[2], say: 'From ' + m[1] + ' to ' + m[2] + ': ' };
+  if ((m = t.match(/^is (\d{4}-\d\d-\d\d) (?:a )?(?:public |bank )?holiday(?: in| for) ([a-z][a-z .'-]{1,40})$/))) { const code = holidayCode(m[2]); if (code) return { kind: 'bot', bot: 'holiday-' + code, input: m[1], say: m[1] + ' in ' + code.toUpperCase() + ': ' }; }
   if ((m = a.match(/^base64(?: encode)? ["“]?(.{1,100}?)["”]?$/i)) && !/^decode\b/i.test(m[1])) return { kind: 'bot', bot: 'base64-bot', input: m[1], say: 'Base64 of "' + m[1] + '": ' };
   if ((m = t.match(/^(?:convert )?(#[0-9a-f]{6}|#[0-9a-f]{3}) (?:to|in|as) rgb$/))) return { kind: 'bot', bot: 'hex-color', input: m[1], say: m[1] + ' = ' };
   // research: a scholarly ask goes to OpenAlex, the open catalog of papers (keyless, resources/free.json 'openalex')

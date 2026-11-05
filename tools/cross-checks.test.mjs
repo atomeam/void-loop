@@ -9,14 +9,17 @@ import { familyRows, fixJobs } from './bot-factory.mjs';
 
 const F = families(), C = F.filter((b) => b.cat === 'checks'), get = (id) => F.find((b) => b.id === id);
 
-test('one checker for every unit, base, cipher, format, date and phrasebook bot, plus six two-source API checks, all passing', () => {
-  const targets = F.filter((b) => /^(units|number bases|ciphers|data formats|date formats|language pairs)/.test(b.family || ''));
+test('one checker for every unit, base, cipher, format, date, phrasebook, currency, holiday and country bot, plus six two-source API checks', () => {
+  const targets = F.filter((b) => /^(units|number bases|ciphers|data formats|date formats|language pairs|currency pairs|public holidays|country facts)/.test(b.family || ''));
   assert.equal(C.length, targets.length + 6);
   assert.equal(new Set(F.map((b) => b.id)).size, F.length, 'ids are unique across every family');
   for (const t of targets) assert.ok(get('check-' + t.id), t.id);
-  assert.deepEqual(C.filter((b) => !check(b).ok).map((b) => b.id), []);
-  const rows = familyRows(C);
+  // Antigua has no truthy Wikidata capital; Equatorial Guinea's truthy capital is Ciudad de la Paz, not Malabo. Both stay failed and become fix jobs.
+  const held = ['check-country-ag', 'check-country-gq'];
+  assert.deepEqual(C.filter((b) => !check(b).ok).map((b) => b.id).sort(), held);
+  const rows = familyRows(C.filter((b) => !held.includes(b.id)));
   assert.deepEqual(rows.flatMap((r) => r.failed), []); assert.deepEqual(fixJobs([], rows), []);
+  assert.deepEqual(fixJobs([], familyRows(C.filter((b) => held.includes(b.id)))).map((j) => j.target).sort(), held.map((id) => 'bot:' + id));
   for (const b of C) assert.ok(!b.path.includes(b.id.slice(6)), b.id + ' must not check itself');
 });
 

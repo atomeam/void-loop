@@ -650,6 +650,10 @@ for (const [name, file] of [
   ['parody data', 'parody-data.test.mjs'],
   ['music-de', 'music-de.test.mjs'],
   ['inline-scripts', 'inline-scripts.test.mjs'],
+  ['bot factory', 'bot-factory.test.mjs'],
+  ['open-data bots', 'open-data.test.mjs'],
+  ['cross checks', 'cross-checks.test.mjs'],
+  ['answer free', 'answer-free.test.mjs'],
 ]) {
   // the load-bench test spawns the real bench, which needs the installed packages (bench.mjs imports playwright-core): with
   // VOID_SKIP_BENCH it runs from a worktree without node_modules (merge-gate.mjs), so it sits out with the bench check above

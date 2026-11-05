@@ -5,6 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { planOf, runBot, routeFree, freeLlm, openalexAnswer, ADAPTERS, RESEARCH } from '../void-live-deploy/lib/answer-free.js';
+import { fxPairs } from '../void-live-deploy/bots/fx-pairs.js';
 import { onRequestPost } from '../void-live-deploy/functions/api/answer.js';
 
 const registryText = readFileSync(new URL('../void-live-deploy/resources/free.json', import.meta.url), 'utf8');
@@ -25,6 +26,8 @@ test('answer-free: each kind of question is planned to the right free resource',
     ['255 in binary', 'bot', 'base10-to-base2'], ['convert ff from hex to decimal', 'bot', 'base16-to-base10'], ['is 97 prime?', 'bot', 'prime-checker'], ['2026 in roman numerals', 'bot', 'roman-numerals'],
     ['what percent is 45 of 60', 'bot', 'percent-bot'], ['what does http 429 mean', 'bot', 'status-code'], ['unix timestamp 1700000000', 'bot', 'unix-time'],
     ['days between 2026-11-04 and 2026-12-25', 'bot', 'days-between'], ['#ff8800 to rgb', 'bot', 'hex-color'],
+    ['10 usd to eur', 'bot', 'fx-usd-to-eur'], ['50 euros to pounds', 'bot', 'fx-eur-to-gbp'], ['10 pounds to kg', 'bot', 'lb-to-kg'],
+    ['is 2026-12-25 a holiday in the united states', 'bot', 'holiday-us'],
     ['papers on sea level rise', 'api', null], ['find recent research on CRISPR off-target effects', 'api', null],
     ['who wrote hamlet', 'llm', null], ['what is 404', 'llm', null], ['write me a python script that renames files', 'llm', null], ['3 bananas to apples', 'llm', null], ['x'.repeat(200) + ' 3 miles to km', 'llm', null],
   ];
@@ -33,8 +36,11 @@ test('answer-free: each kind of question is planned to the right free resource',
 
 test('answer-free: bots answer correctly, only through their live gate, and a bad input falls through to the model', () => {
   const want = { '3 miles to km': '3 mi = 4.828032 km', 'convert 100 F to C': '100 °F = 37.77777778 °C', 'is 97 prime': '97 is prime', 'what percent is 45 of 60': '45 is 75% of 60',
-    '255 in binary': '255 in binary = 11111111', 'what does http 429 mean': 'HTTP 429: Too many requests: slow down', '#ff8800 to rgb': '#ff8800 = rgb(255, 136, 0)', 'days between 2026-11-04 and 2026-12-25': 'From 2026-11-04 to 2026-12-25: 51 days' };
+    '255 in binary': '255 in binary = 11111111', 'what does http 429 mean': 'HTTP 429: Too many requests: slow down', '#ff8800 to rgb': '#ff8800 = rgb(255, 136, 0)', 'days between 2026-11-04 and 2026-12-25': 'From 2026-11-04 to 2026-12-25: 51 days',
+    'is 2026-12-25 a holiday in the united states': '2026-12-25 in US: Christmas Day', 'is 2026-07-03 a holiday in us': '2026-07-03 in US: Independence Day' };
   for (const [ask, answer] of Object.entries(want)) assert.equal(runBot(planOf(ask)).answer, answer, ask);
+  const usd = fxPairs().find((b) => b.id === 'fx-usd-to-eur');
+  assert.equal(runBot(planOf('10 usd to eur')).answer, '10 USD = ' + usd.run('10'));
   assert.equal(runBot(planOf('what does http 418 mean')), null, 'a code the bot does not know: the model answers');
   assert.equal(runBot({ kind: 'bot', bot: 'no-such-bot', input: '1' }), null);
   assert.equal(runBot(planOf('who wrote hamlet')), null);

@@ -59,5 +59,8 @@
 {"name":"SWAPI","author":"SWAPI","license":"Free, no key (BSD code)","link":"https://swapi.dev/","used":"/bots/ free API bots: api-star-wars","api":true},
 {"name":"ISRO API","author":"ISRO API","license":"Free, no key (MIT code)","link":"https://isro.vercel.app/","used":"/bots/ free API bots: api-isro-craft","api":true},
 {"name":"xkcd JSON","author":"xkcd JSON","license":"CC BY-NC 2.5","link":"https://xkcd.com/json.html","used":"/bots/ free API bots: api-xkcd","api":true},
-{"name":"Fruityvice","author":"Fruityvice","license":"Free, no key","link":"https://www.fruityvice.com/","used":"/bots/ free API bots: api-fruit-nutrition","api":true}
+{"name":"Fruityvice","author":"Fruityvice","license":"Free, no key","link":"https://www.fruityvice.com/","used":"/bots/ free API bots: api-fruit-nutrition","api":true},
+{"name":"Frankfurter","author":"lineofflight","license":"MIT","link":"https://github.com/lineofflight/frankfurter","used":"/bots/ currency-pair family (bots/fx-pairs.js); rates are the European Central Bank reference rates"},
+{"name":"Nager.Date","author":"nager","license":"MIT","link":"https://github.com/nager/Nager.Date","used":"/bots/ public-holiday family (bots/holidays.js)"},
+{"name":"Wikidata","author":"Wikimedia contributors","license":"CC0-1.0","link":"https://www.wikidata.org/wiki/Wikidata:Licensing","used":"/bots/ country-facts family (bots/country-facts.js)"}
 ]
