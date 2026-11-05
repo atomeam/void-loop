@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · helper/constellation-weave-wake-f875 · "weave a constellation called night ops" answers from constellation-weaver while the rest of the skills are still loading, instead of staying on waking up (#2270) · 2026-11-05 12:10 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the served home paints its hero from HTML and CSS; the ask engine, sky and WebGL wait, and skill modules wait for a tap on a phone · 2026-11-04 07:05 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
@@ -78,6 +77,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Constellation weave (cursor, 2026-11-05)**: "weave a constellation called night ops" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns "where is Orion". https://github.com/atomeam/void-loop/pull/2274
 - **Verify reds (cursor, 2026-11-05)**: "clear" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify and the site test are green on main. https://github.com/atomeam/void-loop/pull/2273
 - **Agent no kept (cursor, 2026-11-05)**: a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271
 - **Autosalvage batch (cursor, 2026-11-05)**: heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is 11,749 live and none failed. https://github.com/atomeam/void-loop/pull/2269
