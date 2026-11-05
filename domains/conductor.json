@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T06:02:44.209Z",
+ "updated": "2026-11-05T06:20:38.732Z",
  "last24h": {
-  "ticks": 57,
-  "started": 77,
+  "ticks": 56,
+  "started": 76,
   "requeued": 0,
   "setAside": 0,
-  "probes": 9,
+  "probes": 8,
   "errors": 0
  },
  "broken": [],
@@ -33,7 +33,6 @@
   "mvbl52gd": 1793842419318,
   "mva30i2e": 1793849788965,
   "mva30j4u": 1793850871957,
-  "mw1pvisk": 1793773114810,
   "mw1pvjia": 1793774975103,
   "mw1pvk0r": 1793775594731,
   "mw1pvkje": 1793776213427,
@@ -78,7 +77,8 @@
   "mw2zw9is": 1793851781487,
   "mw2zwa5x": 1793853487895,
   "mw2zwapj": 1793857503611,
-  "mw2zwb9l": 1793858564209
+  "mw2zwb9l": 1793858564209,
+  "mw323tdz": 1793859638732
  },
  "visitorAt": "2026-11-05T05:45:11Z",
  "visitorFiled": [
@@ -164,56 +164,6 @@
   "gap:want-exam-definitions"
  ],
  "ticks": [
-  {
-   "at": "2026-11-04T06:08:15.910Z",
-   "open": 165,
-   "started": [
-    {
-     "id": "want-exam-images",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 175
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 8,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-04T06:18:34.810Z",
-   "open": 169,
-   "started": [
-    {
-     "id": "want-exam-images",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 175
-    },
-    {
-     "id": "mw1pvisk",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 8,
-   "warnings": 0
-  },
   {
    "at": "2026-11-04T06:28:54.864Z",
    "open": 168,
@@ -1583,6 +1533,36 @@
     },
     {
      "id": "mw2zwb9l",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 1,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-05T06:20:38.732Z",
+   "open": 187,
+   "started": [
+    {
+     "id": "mvxr11da",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 58
+    },
+    {
+     "id": "mw323tdz",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
