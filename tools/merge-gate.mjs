@@ -1,6 +1,8 @@
 // Test the pull request as it will be after main is merged in (owner, 2026-11-04: the code is perfect
 // going in). A conflict in a build output is regenerated; any other conflict fails and names the files.
 // The fast checks then run on that tree. The full suite still runs on main after the merge.
+// A merge-policy failure names the rule and the file, branch or label that broke it. The check used to
+// print only "FAIL merge-policy" and a duration (2026-11-05, #2315).
 //   node tools/merge-gate.mjs
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync } from 'node:fs';
@@ -15,6 +17,55 @@ const build = new Set(BUILD_OUTPUTS);
 /** true when every conflicted path is a file the deploy rewrites. Pure. */
 export function onlyBuildConflicts(files) {
   return files.length > 0 && files.every((f) => build.has(f));
+}
+
+// an assertion that names no file still belongs to the source it was written against
+const POLICY_FILE = [
+  [/enablePullRequestAutoMerge|mergeMethod:SQUASH|merge_method=squash|disablePullRequestAutoMerge|update-branch/, 'file tools/automerge.mjs'],
+  [/pull-requests: write|17 \\?\* \\?\*|STUCK:/, 'file .github/workflows/automerge.yml'],
+];
+
+/** the first line of a node:test error, without the source dump that follows "Input:". Pure. */
+function policyError(block) {
+  const quoted = String(block || '').match(/\n  error: '([^'\n]*)'/);
+  if (quoted) return quoted[1];
+  const multi = String(block || '').match(/\n  error: \|-\n([\s\S]*?)\n  [A-Za-z]/);
+  if (!multi) return '';
+  const line = multi[1].split('\n').map((l) => l.replace(/^ {4}/, '')).join('\n').split(/\n\s*\n/)[0].split('\n')[0].trim();
+  return line.replace(/\s*Input:\s*$/, '').trim();
+}
+
+/** the file, branch or label a failure is about. The earliest one the message names wins. Pure. */
+function policyOffender(msg) {
+  const text = String(msg || '');
+  const marks = [];
+  const take = (re, kind) => { const m = re.exec(text); if (m) marks.push({ at: m.index, text: kind + ' ' + m[1].replace(/[.,;:)]+$/, '') }); };
+  take(/\bfile\s+(\S+)/, 'file');
+  take(/\bbranch\s+(\S+)/, 'branch');
+  take(/\blabel\s+["']?([A-Za-z0-9][\w.-]*)/, 'label');
+  take(/((?:tools|void-live-deploy|\.github)\/[\w./-]+\.\w+)/, 'file');
+  take(/\b((?:helper|loop|lab|cursor)\/[\w./-]+)\b/, 'branch');
+  if (marks.length) return marks.sort((a, b) => a.at - b.at)[0].text;
+  for (const [re, who] of POLICY_FILE) if (re.test(text)) return who;
+  return '';
+}
+
+/**
+ * One line per failed merge-policy test. The rule is the test's name. The offender is the file, branch
+ * or label the failure names (a bare auto-merge assertion is tools/automerge.mjs). `tap` is what
+ * `node --test tools/merge-policy.test.mjs` prints. Pure.
+ */
+export function explainPolicyFailure(tap) {
+  const out = [];
+  for (const block of String(tap || '').split(/\n(?=not ok \d+ - )/)) {
+    const head = block.match(/^not ok \d+ - (.+)$/m);
+    if (!head) continue;
+    const rule = head[1].trim();
+    const why = policyError(block);
+    const who = policyOffender(why);
+    out.push('merge-policy rule "' + rule + '" violated' + (who ? ' by ' + who : '') + (why ? ': ' + why : ''));
+  }
+  return out;
 }
 
 function git(args, cwd) {
@@ -67,9 +118,20 @@ function main() {
     git(['reset', '--hard', 'HEAD'], dir);
     git(['clean', '-fd'], dir);
     const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
-      cwd: dir, encoding: 'utf8', stdio: 'inherit',
+      cwd: dir, encoding: 'utf8', maxBuffer: 20e6,
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
     });
+    if (checks.stdout) process.stdout.write(checks.stdout);
+    if (checks.stderr) process.stderr.write(checks.stderr);
+    if (checks.error) console.error('merge-gate: ' + checks.error.message);
+    const report = String(checks.stdout || '') + String(checks.stderr || '');
+    // the check keeps two lines. The test's own output names the rule, and that output was thrown away (2026-11-05, #2315).
+    if ((checks.status ?? 1) !== 0 && /FAIL\s+merge-policy\b/.test(report)) {
+      const again = spawnSync(process.execPath, ['--test', resolve(dir, 'tools/merge-policy.test.mjs')], { cwd: dir, encoding: 'utf8', maxBuffer: 20e6 });
+      const lines = explainPolicyFailure(String(again.stdout || '') + '\n' + String(again.stderr || ''));
+      if (lines.length) for (const line of lines) console.error('merge-gate: ' + line);
+      else console.error('merge-gate: merge-policy failed and named no rule');
+    }
     process.exit(checks.status ?? 1);
   } finally { rm(); }
 }

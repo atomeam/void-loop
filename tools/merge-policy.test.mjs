@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { eligible, superseded, stuckDecision, isBot } from './merge-policy.mjs';
+import { explainPolicyFailure } from './merge-gate.mjs';
 
 const pr = (over) => ({ number: 1, state: 'open', user: { login: 'atomeam' }, head: { ref: 'helper/x', repo: { full_name: 'atomeam/void-loop' } }, labels: [], created_at: '2026-11-03T00:00:00Z', ...over });
 
@@ -42,13 +43,59 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
   assert.equal(stuckDecision(pr({ created_at: '2026-11-04T10:00:00Z' }), [], now).action, 'young');
 });
 
-test('the automerge workflow arms squash auto-merge and keeps the hourly run', () => {
+test('squash merge waits for the suite, GitHub auto-merge stays off, and the hourly run remains', () => {
+  // #2309 stopped arming GitHub auto-merge: that lands on whatever main is now, before the suite.
+  // The bot squash-merges itself once the suite is green, and disarms auto-merge if it is still on.
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
-  assert.match(yml, /pull-requests: write/);
-  assert.match(yml, /17 \* \* \* \*/);
-  assert.match(yml, /STUCK:/);
-  assert.match(src, /enablePullRequestAutoMerge/);
-  assert.match(src, /mergeMethod:SQUASH/);
-  assert.match(src, /update-branch/);
+  assert.match(yml, /pull-requests: write/, 'file .github/workflows/automerge.yml keeps pull-requests: write');
+  assert.match(yml, /17 \* \* \* \*/, 'file .github/workflows/automerge.yml keeps the hourly run');
+  assert.match(yml, /STUCK:/, 'file .github/workflows/automerge.yml keeps the stuck sweep');
+  assert.match(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs disarms GitHub auto-merge until the suite is green');
+  assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges after the suite');
+  assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
+  assert.doesNotMatch(src, /enablePullRequestAutoMerge/, 'file tools/automerge.mjs must not arm GitHub auto-merge');
+});
+
+test('a merge-policy failure names the rule and the file, branch or label', () => {
+  // the #2315 log: the assertion had no message, so the gate printed "FAIL merge-policy" and a duration
+  const hidden = [
+    'TAP version 13',
+    '# Subtest: the automerge workflow arms squash auto-merge and keeps the hourly run',
+    'not ok 1 - the automerge workflow arms squash auto-merge and keeps the hourly run',
+    '  ---',
+    '  duration_ms: 2.239531',
+    '  type: \'test\'',
+    '  location: \'/tmp/tools/merge-policy.test.mjs:51:1\'',
+    '  failureType: \'testCodeFailure\'',
+    '  error: |-',
+    '    The input did not match the regular expression /enablePullRequestAutoMerge/. Input:',
+    '',
+    '    \'// the whole of tools/automerge.mjs, which also says label automerge and branch helper/x\\n\' +',
+    '',
+    '  code: \'ERR_ASSERTION\'',
+    '  name: \'AssertionError\'',
+    '  operator: \'match\'',
+    '  ...',
+    'not ok 2 - a cursor branch with no label does not qualify',
+    '  ---',
+    '  error: \'branch cursor/suite-start-branch-79be has no automerge label\'',
+    '  code: \'ERR_ASSERTION\'',
+    '  ...',
+    'not ok 3 - the label is missing',
+    '  ---',
+    '  error: \'label automerge is not on this pull request\'',
+    '  code: \'ERR_ASSERTION\'',
+    '  ...',
+    '# fail 3',
+  ].join('\n');
+  assert.deepEqual(explainPolicyFailure(hidden), [
+    'merge-policy rule "the automerge workflow arms squash auto-merge and keeps the hourly run" violated by file tools/automerge.mjs: The input did not match the regular expression /enablePullRequestAutoMerge/.',
+    'merge-policy rule "a cursor branch with no label does not qualify" violated by branch cursor/suite-start-branch-79be: branch cursor/suite-start-branch-79be has no automerge label',
+    'merge-policy rule "the label is missing" violated by label automerge: label automerge is not on this pull request',
+  ]);
+  assert.deepEqual(explainPolicyFailure('TAP version 13\nok 1 - a labelled pull request qualifies\n# fail 0\n'), []);
+  const gate = readFileSync(new URL('./merge-gate.mjs', import.meta.url), 'utf8');
+  assert.match(gate, /explainPolicyFailure/);
+  assert.match(gate, /FAIL\\s\+merge-policy/);
 });
