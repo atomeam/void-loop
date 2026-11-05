@@ -46,6 +46,11 @@ test('the real home page paints the blank stage from HTML and keeps each script 
   assert.match(split.html, /add\("\/void-boot\.js"\)/);
   assert.equal(split.files['void-boot.js'].includes('const LOOP_KEY'), true);
   assert.equal(split.files['void-boot.js'].includes('or idle'), true);
+  assert.match(split.files['void-cards.css'], /home cards:/);
+  assert.match(split.files['void-home.css'], /home stage:/);
+  assert.doesNotMatch(split.files['void-home.css'], /home cards:/);
+  assert.match(split.files['void-boot.js'], /void-cards\.css/);
+  assert.doesNotMatch(split.html, /void-cards\.css/);
   assert.equal(split.files['void-sky.js'].includes('sky-rules.js'), true);
   const dir = mkdtempSync(join(tmpdir(), 'void-split-'));
   for (const [name, body] of Object.entries(split.files)) {

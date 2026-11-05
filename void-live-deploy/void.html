@@ -80,6 +80,7 @@
       position: fixed; inset: 0 0 72px 0;
       overflow: hidden;
     }
+    /* home cards: stage things and answer pages, fetched with the first ask */
     .thing {
       position: absolute;
       user-select: none;
@@ -575,6 +576,7 @@
     html { background: var(--void-bg, var(--sky-bg, #050505)); transition: background-color 1.5s ease; }
     html, body { background-color: transparent; }
     html { background-color: var(--void-bg, var(--sky-bg, #050505)); }
+    /* home stage: the empty void, in the first stylesheet */
     #void-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background: radial-gradient(circle at 50% 45%, var(--void-glow, var(--sky-glow, #0b0b10)), transparent 70%);
       opacity: 0; transition: opacity 1.5s ease; }
@@ -1160,7 +1162,7 @@
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
     /* no hero words on the home page (owner, 2026-11-04: "supposed to be blank"): the sky and the ask bar, nothing else */
     #away-note{opacity:0} /* the away line keeps its place and its state, it just is not shown */
-    #v01d{position:fixed;inset:0;z-index:2147483000;display:grid;place-content:center;background:#050505;color:#f4f2ff;font:200 clamp(48px,13vw,112px)/1 ui-sans-serif,system-ui,sans-serif}
+    #v01d{position:fixed;inset:0;z-index:2147483000;display:grid;place-content:center;justify-items:center;background:#050505;color:#f4f2ff;font:200 clamp(48px,13vw,112px)/1 ui-sans-serif,system-ui,sans-serif}
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
     #row{max-width:720px;margin:0 auto;display:flex;gap:8px;align-items:center;min-height:52px;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 10px 8px 18px;background:rgba(16,18,28,.86)}
@@ -2459,7 +2461,7 @@ say('nothing selected to remove');
     // card's correction log (lib/corrections.js). The self card keeps its own Talk to me and Correct me.
     function ownerKey() { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } } // hoisted: no TDZ
     var replyLib = null; // var, not let: a card can open before this line has run, and keepTell then waits for the import below
-    import('/lib/card-reply.js').then((m) => { replyLib = m; if (vpageEl) keepTell(vpageEl); }).catch(() => {});
+    function replyReady() { if (replyLib) return Promise.resolve(replyLib); return replyReady.p || (replyReady.p = import('/lib/card-reply.js').then((m) => { replyLib = m; if (vpageEl) keepTell(vpageEl); return m; }).catch(() => null)); }
     function keepTell(el) {
       if (!el || !replyLib) return;
       const card = () => { const title = ((el.querySelector('h2') || {}).textContent || '').trim(); return { ask: el._ask || '', title, said: cardWords(el).replace(title, '').trim(), routed: routeOfCard(el), family: replyLib.familyOfNote(noteOfCard(el)) }; };
@@ -2557,6 +2559,7 @@ say('nothing selected to remove');
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
     }
     function showPage(build) {
+      warmAskLibs();
       closePage();
       const el = document.createElement('div');
       el.className = 'vpage';
@@ -3187,16 +3190,18 @@ say('nothing selected to remove');
     let agentRuns = 0; // > 0 while a visiting agent's WebMCP call is being answered: a miss then is tagged, so Verse's learning can tell
     // Every "I cannot" carries what is missing (lib/refusal.js, asked by Verse): the page shows one line under the answer,
     // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
-    const refusalReady = import('/lib/refusal.js').catch(() => null);
+    // an import that starts the first time it is called, so an empty home does not download it
+    function lazyImport(load) { let p = null; return () => p || (p = load()); }
+    const refusalReady = lazyImport(() => import('/lib/refusal.js').catch(() => null));
     // Verse keeps secrets and turns every negative ask positive (lib/keeper.js, the same rule /api/answer runs first): asked on the page too,
     // before any local skill, so an env/key/prompt/other-visitor/harmful/mean ask gets the kind answer, never a skill's guess
-    const keeperReady = import('/lib/keeper.js').catch(() => null);
+    const keeperReady = lazyImport(() => import('/lib/keeper.js').catch(() => null));
     const refusals = []; window.voidRefusals = refusals;
     // A near miss becomes a visible proposal (lib/near-miss.js; asked by Verse twice, 2026-10-14: "Create a visual 'near-miss' skill
     // proposal when a user ask fails to map to an existing skill."): when /api/answer had nothing and the router's closest skill scored
     // near its bar, the "I don't know this yet" card adds "Did you mean <that skill's first example>?" as a data-ask link. Nothing new
     // is sent or stored: the answer route already knew the nearest skill.
-    const nearMissReady = import('/lib/near-miss.js').catch(() => null);
+    const nearMissReady = lazyImport(() => import('/lib/near-miss.js').catch(() => null));
     let lastNear = null; // { ask, near } from the last /api/answer reply that carried a near miss
     // a browser driven by automation (navigator.webdriver: the claims check, the site tester, a bench) says so: its misses are our own
     // replays, never people (owner, 2026-10-19: "deep ocean floor, asked 72 times" in the will was tools/claims-verify.mjs typing a ledger try ask)
@@ -3205,14 +3210,14 @@ say('nothing selected to remove');
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : navigator.webdriver ? { origin: 'robot' } : {}) }), keepalive: true }).catch(() => {});
       } catch (_) {}
       const pg = vpageEl;
-      return refusalReady.then((m) => {
+        return refusalReady().then((m) => {
         if (!m) return null;
         const r = m.refusalOf(ask, fallback);
         refusals.push(r); if (refusals.length > 20) refusals.shift();
         window.dispatchEvent(new CustomEvent('void-refusal', { detail: r }));
         if (pg && pg === vpageEl && /^(knowledge|lookup|skill|calc)$/.test(r.kind) && !pg.querySelector('.refusal')) {
           const d = document.createElement('div'); d.className = 'src refusal'; d.textContent = m.refusalLine(r); pg.appendChild(d);
-          if (lastNear && lastNear.ask === ask) nearMissReady.then((nm) => { const pr = nm && nm.proposalOf(lastNear.near); if (pr && pg === vpageEl && !pg.querySelector('.near-miss')) pg.insertAdjacentHTML('beforeend', nm.proposalHtml(esc, pr)); }).catch(() => {});
+          if (lastNear && lastNear.ask === ask) nearMissReady().then((nm) => { const pr = nm && nm.proposalOf(lastNear.near); if (pr && pg === vpageEl && !pg.querySelector('.near-miss')) pg.insertAdjacentHTML('beforeend', nm.proposalHtml(esc, pr)); }).catch(() => {});
         }
         return r;
       }).catch(() => null);
@@ -4856,10 +4861,10 @@ say('nothing selected to remove');
     // a first ask on a slow link waits at most this long for skills still loading: the fuzzy layer's vocabulary below, and the routing of
     // an ask the page's own calc can answer (handle: watchdog #110, 309 skills no longer all arrive inside the bench's 4 s window)
     const FIRST_ASK_WAIT = 2500;
-    let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = import('/lib/fuzzy.js').then((m) => { fuzzy = m; }).catch(() => {});
+    let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = lazyImport(() => import('/lib/fuzzy.js').then((m) => { fuzzy = m; return m; }).catch(() => null));
     async function fuzzyFix(t) {
       if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t) || MY_BACKDROP_OFF.test(t.toLowerCase().trim())) return t; // the page's own ask, word for word (#2220)
-      if (!fuzzy) await fuzzyReady;
+      if (!fuzzy) await fuzzyReady();
       if (!fuzzy) return t;
       // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most
       // 2.5 s, and only while a typed word can still be a slip: once the loaded skills know every word correct() could change
@@ -4910,8 +4915,8 @@ say('nothing selected to remove');
     // share-libs: tools/preload.mjs /lib/card-share.js
     const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js'];
     for (const p of SHARE_LIB_GRAPH.slice(1)) import(p).catch(() => null);
-    const shareReady = import('/lib/card-share.js').catch(() => null);
-    const pasteReady = import('/lib/paste-kind.js').catch(() => null); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)
+    const shareReady = lazyImport(() => import('/lib/card-share.js').catch(() => null));
+    const pasteReady = lazyImport(() => import('/lib/paste-kind.js').catch(() => null)); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)
     // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
     function showSharedCard(sc) {
       currentAsk = sc.t;
@@ -4924,15 +4929,28 @@ say('nothing selected to remove');
       return el;
     }
     // a shared card link (#vc=..., the share button in lib/card-share.js) opens that card on arrival
-    if (/[#&]vc=/.test(location.hash)) shareReady.then((sh) => { const sc = sh && sh.fromHash(location.hash); if (sc) showSharedCard(sc); }).catch(() => {});
+    if (/[#&]vc=/.test(location.hash)) shareReady().then((sh) => { const sc = sh && sh.fromHash(location.hash); if (sc) showSharedCard(sc); }).catch(() => {});
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
-    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
-      // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
-      // page's own files on a first visit (issues #1022, #1028: a slow first load); a card opened before then is framed again when they arrive
-      // how long that idle wait lasted is kept as a measure ('card-stats-idle') the site tester reads (asked by Verse: flag a wait over 500 ms)
-      const stats = () => { try { performance.measure('card-stats-idle', 'card-stats-wait'); } catch (_) {} return m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); };
-      const idle = () => { try { performance.mark('card-stats-wait'); } catch (_) {} return window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600); };
-      if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true }); }).catch(() => {});
+    function ensureCardFrame() {
+      if (cardLib) return Promise.resolve(cardLib);
+      if (ensureCardFrame.p) return ensureCardFrame.p;
+      // the frame and its stats (guide.json, families.json, deps.json) wait for a card, so an empty home does not fetch them
+      ensureCardFrame.p = import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
+        const stats = () => { try { performance.measure('card-stats-idle', 'card-stats-wait'); } catch (_) {} return m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); };
+        const idle = () => { try { performance.mark('card-stats-wait'); } catch (_) {} return window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600); };
+        if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true });
+        return m;
+      }).catch(() => null);
+      return ensureCardFrame.p;
+    }
+    function ensureCardCss() {
+      if (ensureCardCss.p) return ensureCardCss.p;
+      const inline = [...document.querySelectorAll('style')].some((s) => s.textContent && s.textContent.includes('home cards:'));
+      if (inline || document.getElementById('void-cards-css')) return ensureCardCss.p = Promise.resolve();
+      return ensureCardCss.p = new Promise((resolve) => { const l = document.createElement('link'); l.id = 'void-cards-css'; l.rel = 'stylesheet'; l.href = '/void-cards.css'; l.onload = l.onerror = () => resolve(); document.head.appendChild(l); });
+    }
+    // a key, a tap on the bar, or the ask itself. Focus does not: the bar focuses itself on a desktop.
+    function warmAskLibs() { if (warmAskLibs.done) return; warmAskLibs.done = true; ensureCardCss(); ensureCardFrame(); replyReady(); fuzzyReady(); shareReady(); pasteReady(); refusalReady(); keeperReady(); nearMissReady(); }
     let ratingsP = null;
     function ratingNote(who, el) {
       ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
@@ -6191,6 +6209,7 @@ say('nothing selected to remove');
     }
     let askCount = 0; // which ask is the newest: a calc answer given before the skills were in is only handed to a skill while it still is
     async function handle(raw) {
+      warmAskLibs();
       const askNo = ++askCount, askAt = Date.now();
       const typed = (raw || '').trim();
       const quiet = quietAsk; quietAsk = false; // read once: an ask this one starts is the person's again
@@ -6210,6 +6229,7 @@ say('nothing selected to remove');
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
       // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
       if (!skillsLoaded && !quiet && !whisper.textContent) say('waking up');
+      await ensureCardCss();
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
       const alias = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()); // a taught wording runs as the ask it means
@@ -6221,7 +6241,7 @@ say('nothing selected to remove');
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} ownerLinkNow(); say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
-      { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
+      { const K = await keeperReady(); const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
       // a typed question about a secret, token or key name is answered from the names Verse's code reads (lib/note-ask.js secretAsk), never looked up:
       // "what is the Modal secret called?" went to Wikipedia, which suggested "model secret called" and showed a fashion model (live, 2026-10-30)
       if (/\b(?:secrets?|tokens?|keys?|credentials?|variables?)\b/i.test(typed) && typed.length <= 160) {
@@ -6229,12 +6249,12 @@ say('nothing selected to remove');
         if (facts.length) { currentAsk = typed; showPage((p) => { p.innerHTML = '<h2>' + esc(typed.replace(/[?.!\s]+$/, '')) + '</h2>' + facts.map((f) => '<p>' + esc(f) + '</p>').join('') + '<div class="src">from Verse\u2019s own code (lib/verse-secrets.js), names only, never a value</div>'; }); say(''); loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'secret names' }); return; }
       }
       // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
-      const pk = await pasteReady, paste = pk ? pk.pasteKind(typed) : null;
+      const pk = await pasteReady(), paste = pk ? pk.pasteKind(typed) : null;
       { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words
         if (lp && Date.now() < lp.until && !paste && pk && pk.sumsItUp(typed)) { currentAsk = lp.text; showAnswer(lp.text).then((src) => { if (src === 'none') reportMiss('[paste]', lookedUp()); }); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste summed up' }); return; } }
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js).
       // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
-      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
+      { const sh = await shareReady(); const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
       if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
@@ -6346,12 +6366,10 @@ say('nothing selected to remove');
     const earlyAsks = [], queueAsk = (e) => { const t = e && e.detail && e.detail.text; if (t && earlyAsks.length < 24) earlyAsks.push({ text: t, at: Date.now() }); };
     document.addEventListener('void:ask', queueAsk);
     let brainHost = null;
-    (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(() => {
-      import('/lib/brain-host.js').then((m) => {
-        brainHost = m.ensureHost({ early: earlyAsks.splice(0), self: fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null) });
-        document.removeEventListener('void:ask', queueAsk);
-      }).catch(() => { document.removeEventListener('void:ask', queueAsk); });
-    }, { timeout: 4000 });
+    const startBrain = () => { if (startBrain.done) return; startBrain.done = true; import('/lib/brain-host.js').then((m) => { brainHost = m.ensureHost({ early: earlyAsks.splice(0), self: fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null) }); document.removeEventListener('void:ask', queueAsk); }).catch(() => document.removeEventListener('void:ask', queueAsk)); };
+    // a phone does not download the brain while the stage is empty: a tap, a key, or twelve seconds still starts it. A desktop may idle.
+    if ((() => { try { return matchMedia('(pointer: coarse)').matches; } catch (_) { return false; } })()) { const armBrain = () => { removeEventListener('pointerdown', armBrain, true); removeEventListener('keydown', armBrain, true); startBrain(); }; addEventListener('pointerdown', armBrain, true); addEventListener('keydown', armBrain, true); setTimeout(startBrain, 12000); }
+    else (window.requestIdleCallback || ((f) => setTimeout(f, 1200)))(startBrain, { timeout: 4000 });
     const brainRank = (h) => { try { return brainHost ? brainHost.rank(h) : 0; } catch (_) { return 0; } };
     function allHints() {
       const out = CORE_HINTS.slice();
@@ -6420,9 +6438,9 @@ say('nothing selected to remove');
       input.value = ''; drawHints(); handle(h); input.focus();
     }
     hintsEl.addEventListener('mousedown', (e) => { const d = e.target.closest('[data-i]'); if (d) { e.preventDefault(); takeHint(hintList[+d.dataset.i]); } });
-    input.addEventListener('input', drawHints);
+    input.addEventListener('input', () => { warmAskLibs(); drawHints(); });
     input.addEventListener('blur', () => setTimeout(() => { hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; }, 120));
-    input.addEventListener('pointerdown', () => { askBoxTouched = true; drawHints(); });
+    input.addEventListener('pointerdown', () => { askBoxTouched = true; warmAskLibs(); drawHints(); });
     input.addEventListener('focus', () => { if (askBoxTouched) drawHints(); });
     document.addEventListener('keydown', (e) => {
       const typing = /^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
@@ -6430,6 +6448,7 @@ say('nothing selected to remove');
       if (e.key === '/' && !typing) { e.preventDefault(); input.focus(); }
     });
 
+    go.addEventListener('pointerdown', warmAskLibs);
     go.addEventListener('click', () => { handle(input.value); input.value = ''; drawHints(); input.focus(); });
     input.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' && hintList.length) { e.preventDefault(); hintSel = (hintSel + 1) % hintList.length; markHint(); return; }
@@ -6445,7 +6464,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q') || sp0.get('ask'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
+      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
