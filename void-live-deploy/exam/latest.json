@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T00:52:06.210Z",
+  "at": "2026-11-05T02:02:43.280Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,24 +32,10 @@
       }
     },
     "podcasts": {
-      "score": 84.8,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of hidden brain",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -162,7 +148,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 97.5,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -177,9 +163,9 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "place"
           ],
-          "score": 66.7
+          "score": 71.4
         }
       ],
       "holdout": {
@@ -527,10 +513,17 @@
       ]
     },
     "prices": {
-      "score": 90,
+      "score": 86.7,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "100 usd in eur",
+          "failed": [
+            "rival"
+          ],
+          "score": 80
+        },
         {
           "ask": "price",
           "failed": [
