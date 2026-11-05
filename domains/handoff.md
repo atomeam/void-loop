@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/ndscalc-lane-f90f · ndscalc.ru is a lane page on the calculator's VAT mode, worked out on the device, with 20% and 22% and the sum in words · 2026-11-05 14:40 UTC
 - Cursor cloud agent · helper/actions-log-f90f · failed GitHub Actions job names and the failing step's log, for any commit, with the count equal to the names · 2026-11-05 14:20 UTC
 - Cursor cloud agent · helper/ledger-lines-once-f90f · the self card shows each built ask's own ledger line: lines that share a timestamp no longer collapse to the last one · 2026-11-05 13:50 UTC
 - Cursor cloud agent · cursor/agent-nudge-5e9b · /agent/ writes first: a finished job, a scheduled check, or a next step from past asks, through the inbox, and a send still waits for a yes · 2026-11-05 10:55 UTC
