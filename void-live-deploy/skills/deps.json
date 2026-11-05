@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1153,
+ "counted": 1155,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -735,7 +735,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 30
+   "tests": 31
   },
   {
    "file": "lib/void-seal.js",
@@ -3083,6 +3083,13 @@
    "tests": 4
   },
   {
+   "file": "lib/actions-log.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/agent-watch.js",
    "skills": 0,
    "direct": 0,
@@ -3234,7 +3241,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/epub-edit.js",
@@ -3504,6 +3511,13 @@
   },
   {
    "file": "lib/random-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/range-diff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4807,6 +4821,10 @@
    "importedBy": [
     "skills/about-skill.js"
    ]
+  },
+  "lib/actions-log.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/actions.js": {
    "imports": [],
@@ -11189,6 +11207,10 @@
    ]
   },
   "lib/random-card.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/range-diff.js": {
    "imports": [],
    "importedBy": []
   },
