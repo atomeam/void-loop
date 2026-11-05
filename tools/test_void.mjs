@@ -642,7 +642,7 @@ try {
     const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
     await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(r.request().method() === 'POST' ? { state: 'art', key: 'cartoon cat', img: PNG } : { state: 'none' }) }));
     await P.ask('draw a cartoon cat', 1500);
-    await until(() => P.p.$('.cartoon-card[data-subject="cat"] .cartoon-walk'), 8000);
+    await until(() => P.p.$('.cartoon-card[data-subject="cat"] .cartoon-pic img'), 8000);
     await P.p.$eval('.cartoon-card[data-subject="cat"] .cartoon-walk', (b) => b.click());
     // the visible floor is the ask bar's top edge (on a phone the dock stands taller than the 72 px the stage leaves it): the figure stands 24 px above it, never behind it
     const read = () => P.p.evaluate(() => { const st = document.getElementById('stage'), w = document.querySelector('#stage .walker'); if (!w) return null; const r = w.getBoundingClientRect(), s = st.getBoundingClientRect(), d = document.getElementById('dock').getBoundingClientRect(), floorY = Math.min(s.bottom, d.top);
@@ -9362,10 +9362,8 @@ try {
     await D.p.evaluate(async () => { for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister(); }); // so the route below sees the index
     await D.p.route(/\/skills\/index\.json(\?|$)/, async (r) => { await new Promise((res) => setTimeout(res, 4000)); r.continue().catch(() => {}); });
     await D.p.reload(); await D.p.waitForTimeout(800); const afterReload = await backdrop();
-    // typed straight in, then wait until the backdrop is actually off (a fixed 500 ms read it still on, #2250)
-    await D.p.fill('#input', 'remove my backdrop'); await D.p.keyboard.press('Enter');
-    await until(async () => { const b = await backdrop(); return b && !b.on && b.kept === 0; }, 8000);
-    const removed = await backdrop();
+    // typed straight in and read 500 ms later (D.ask would wait for the answer however late it comes, which hid this)
+    await D.p.fill('#input', 'remove my backdrop'); await D.p.keyboard.press('Enter'); await D.p.waitForTimeout(500); const removed = await backdrop();
     await D.p.unroute(/\/skills\/index\.json(\?|$)/);
     check('draw backdrop: on an empty canvas it says to draw first; after a stroke "Make it my backdrop" puts the picture behind the Verse, kept in the look; it is still there after a reload; "remove my backdrop" takes it off',
       /Draw something first/.test(empty) && /now your Verse's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
