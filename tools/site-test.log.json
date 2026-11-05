@@ -2677,5 +2677,95 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T04:02:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 563,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12434 ms"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T04:13:57Z",
+  "passed": 80,
+  "of": 89,
+  "ms": 406,
+  "kind": "file",
+  "key": "find a rumble video about bitcoin | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "find a rumble video about bitcoin",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "what rhymes with orange",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo find me a sci-fi film from the 80s",
+    "why": "load 1264 ms > 1200"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "contéstame en español",
+    "why": "console: Failed to load resource: the server responded with a status of 500 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 563,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12434 ms"
+     ]
+    },
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"find a rumble video about bitcoin\" nothing appeared; console: Failed to load resource: the server responded with a status of 500 ()"
  }
 ]
