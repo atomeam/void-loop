@@ -1205,3 +1205,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-05T09:34:07Z | cursor | grow | The agent keeps an inbox after you leave, Approve resumes a risky task onto the Made shelf, and the shelf reopens the steps
 2026-11-05T09:49:10Z | verse | build | Versus: took on no site (also read: 5 no-family, 2 covered, 1 gone); next  (the target)
 2026-11-05T10:37:52Z | cursor | fix | A loop pull request opened with the workflow token gets its checks started by workflow_dispatch, the same jobs, and Verse's review still decides the merge.
+2026-11-05T10:50:00Z | cursor | grow | Tools, the news list, the team page and credits share the glass. An empty phone home fetches 4 files and 24 KB (it was 38 and 320 KB) until a tap, a key or twelve seconds starts the ask engine. Lighthouse mobile stays at performance 100 and accessibility 100.

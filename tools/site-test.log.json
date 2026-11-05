@@ -3169,5 +3169,29 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T10:29:49Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 3103,
+   "failed": [
+    {
+     "ask": "convert 5 miles to kilometers",
+     "why": [
+      "slow 8019 ms"
+     ]
+    },
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 15104 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
  }
 ]
