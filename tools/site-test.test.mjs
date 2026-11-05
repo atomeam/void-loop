@@ -53,6 +53,14 @@ t('a card-stats idle wait over the limit is flagged, never failed (asked by Vers
   const before = 'Verse\n↵\ntype anything\nsupport Verse', after = 'Verse\n↵\nthe void is empty · summon something first\nsupport Verse';
   assert.match(changedText(before, after), /void is empty/); assert.equal(judge({ ask: 'bring it to the front' }, { text: changedText(before, after) }).ok, true);
   assert.equal(changedText(before, before), ''); assert.equal(changedText('a', 'a then more'), ' then more'); });
+// issues #2222 #2225 #2228: on a loaded runner the first ask showed nothing for 4 s, then the answer; the page now says "waking up" at once,
+// and that line alone is never an answer: only the real card or text passes
+{ const { placeholderOnly } = await import('./site-test.mjs');
+  t('a working line alone is not an answer', () => { for (const a of ['yo play despacito', 'films by kurosawa pls', 'keep this idea: a stage that remembers | why: it makes coming back feel like home']) {
+    assert.match(judge({ ask: a }, { text: 'waking up' }).why[0], /only "waking up" appeared/); assert.match(judge({ ask: a }, { text: ' thinking… \n' }).why[0], /only/);
+    assert.equal(judge({ ask: a }, { text: 'waking up', newThings: 1 }).ok, true, 'a new card on the stage is the answer');
+    assert.equal(judge({ ask: a }, { text: 'waking up\nDespacito · Luis Fonsi' }).ok, true); assert.match(judge({ ask: a }, { text: '' }).why[0], /nothing appeared/); } });
+  t('placeholderOnly reads every line', () => { assert.equal(placeholderOnly('waking up\n…'), true); assert.equal(placeholderOnly('waking up\nfilms by Akira Kurosawa'), false); assert.equal(placeholderOnly(''), false); }); }
 console.log('site-test: ' + n + ' checks passed');
 
 // failedOf names the asks that failed and the first reason each, at most 12 (owner, 2026-10-19: the tester card only counted them)

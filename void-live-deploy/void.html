@@ -4701,13 +4701,20 @@ say('nothing selected to remove');
         if (started) return; started = true;
         removeEventListener('pointerdown', start, true);
         removeEventListener('keydown', start, true);
+        removeEventListener('focusin', startOnAsk, true);
+        removeEventListener('input', startOnAsk, true);
         loadLearnedSkills().finally(() => { skillsLoaded = true; document.documentElement.dataset.skills = 'ready'; resolve(); });
       };
+      // the ask box taking focus or a first letter starts them too: a person (or a paste) can fill the box without a key or a tap reaching
+      // the page first, and every moment before Enter is loading time the first ask would otherwise wait for (issues #2222 #2225 #2228)
+      const startOnAsk = (e) => { const t = e && e.target; if (t && t.id === 'input') start(); };
       const phone = window.matchMedia && matchMedia('(pointer: coarse)').matches;
       if (/[?&](?:q|ask)=/.test(location.search)) start();
       else {
         addEventListener('pointerdown', start, true);
         addEventListener('keydown', start, true);
+        addEventListener('focusin', startOnAsk, true);
+        addEventListener('input', startOnAsk, true);
         if (phone) setTimeout(start, 12000);
         else (window.requestIdleCallback || ((fn) => setTimeout(fn, 1)))(start, { timeout: 1500 });
       }
@@ -6184,6 +6191,10 @@ say('nothing selected to remove');
       const quiet = quietAsk; quietAsk = false; // read once: an ask this one starts is the person's again
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
+      // a first ask while the skills are still loading says so at once (site tester, issues #2222 #2225 #2228): the fuzzy wait below and the
+      // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
+      // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
+      if (!skillsLoaded && !quiet && !whisper.textContent) say('waking up');
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
       const alias = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()); // a taught wording runs as the ask it means

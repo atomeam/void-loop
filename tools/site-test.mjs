@@ -27,11 +27,17 @@ export const REFUSAL = /don.t know this yet|couldn.t find|isn.t connected|someth
  *  (owner, 2026-10-19: the card said "64 of 74" every run and nobody could tell which ten). The suite's own asks only, never a visitor's. Pure. */
 export const failedOf = (results) => (results || []).filter((r) => r && !r.ok).slice(0, 12).map((r) => ({ ask: String(r.ask || '').slice(0, 80), why: String((r.why || [])[0] || '').slice(0, 120) }));
 export const STEP_KINDS = ['goto', 'click', 'fill', 'wait', 'expect', 'shot'];
+// a line Verse says while it works is not an answer (the same lines tools/visitor-pass.mjs USEFUL refuses): a case that shows only one
+// of these fails, and the runner keeps reading until the answer replaces it (issues #2222 #2225 #2228: the first ask on a loaded runner)
+export const PLACEHOLDER = /^\s*(?:…|\.\.\.|thinking…?|waking up|opening the book…?|looking…?)\s*$/i;
+export const placeholderOnly = (text) => { const lines = String(text || '').split('\n').map((l) => l.trim()).filter(Boolean); return lines.length > 0 && lines.every((l) => PLACEHOLDER.test(l)); };
+export const ANSWER_GRACE_MS = 8000;
 
 /** One case's verdict from what the page showed. Pure. r: { text, newThings, errors, fps, loadMs }. */
 export function judge(c, r, limits = {}) {
   const why = [], ex = c.expect || {};
   if (!String(r.text || '').trim() && !r.newThings && !(ex.selector && r.selector)) why.push('nothing appeared');
+  else if (placeholderOnly(r.text) && !r.newThings && !(ex.selector && r.selector)) why.push('only "' + String(r.text).trim().split('\n')[0] + '" appeared, never the answer');
   if (/^\s*\S.{0,200}\n?\s*thinking…\s*$/s.test(r.text || '') && !ex.modelOk) why.push('no skill caught it (it went to the model, which the tester never calls)');
   if (REFUSAL.test(r.text || '') && !ex.refusalOk) why.push('refused: ' + (String(r.text).match(REFUSAL) || [''])[0]);
   if (ex.text && !new RegExp(ex.text, 'i').test(r.text || '')) why.push('missing text /' + ex.text + '/');
@@ -193,8 +199,15 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     await p.fill('#input', c.ask); await p.keyboard.press('Enter');
     // a hint ("the void is empty · summon something first") is said for 3.5 s, so the page is read early as well as at the end
     const SOON = 1200; await p.waitForTimeout(SOON); const early = await p.evaluate(() => document.body.innerText); await p.waitForTimeout(Math.max(0, (c.waitMs || 4000) - SOON));
-    const seen = await p.evaluate(([b, sel]) => ({ newThings: document.querySelectorAll('.thing').length - b.n, text: document.body.innerText, selector: sel ? !!document.querySelector(sel) : true }), [before, (c.expect || {}).selector]);
-    seen.text = [changedText(before.t, early), changedText(before.t, seen.text)].filter((x) => x.trim()).join('\n').slice(0, 1500);
+    const look = () => p.evaluate(([b, sel]) => ({ newThings: document.querySelectorAll('.thing').length - b.n, text: document.body.innerText, selector: sel ? !!document.querySelector(sel) : true }), [before, (c.expect || {}).selector]);
+    let seen = await look(), late = changedText(before.t, seen.text);
+    // Verse said it is working ("waking up": the skills that answer were still loading on a loaded runner) and nothing else came yet: the
+    // answer is waited for, up to ANSWER_GRACE_MS more. Only the answer passes (judge fails a placeholder), so this never lets a miss through
+    if (!seen.newThings && (placeholderOnly(changedText(before.t, early)) || placeholderOnly(late))) {
+      for (const until = Date.now() + ANSWER_GRACE_MS; Date.now() < until;) { await p.waitForTimeout(500); seen = await look(); late = changedText(before.t, seen.text); if (seen.newThings || (late.trim() && !placeholderOnly(late))) break; }
+    }
+    const earlyT = changedText(before.t, early);
+    seen.text = [placeholderOnly(earlyT) && late.trim() && !placeholderOnly(late) ? '' : earlyT, late].filter((x) => x.trim()).join('\n').slice(0, 1500);
     let fps = c.fps ? await fpsOf(p) : undefined;
     // the same for frames: under the floor, a second sample after a breath, and the better one counts (issues #1024, #1026: 1 and 2 fps once)
     if (c.fps && suite.limits && suite.limits.fpsMin && fps < suite.limits.fpsMin) { await p.waitForTimeout(1500); fps = Math.max(fps, await fpsOf(p)); }

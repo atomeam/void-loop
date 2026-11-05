@@ -1197,3 +1197,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-04T09:47:51Z | verse | build | Versus: took on no site (also read: 6 no-family, 2 covered); next  (the target)
 2026-11-04T18:13:17Z | verse | build | Versus: took on no site (also read: 5 no-family, 3 covered); next  (the target)
 2026-11-04T23:55:48Z | verse | build | Versus: took on no site (also read: 6 no-family, 1 gone, 1 covered); next  (the target)
+2026-11-05T04:21:59Z | claude | fix | a first ask typed before the skills load says waking up at once and starts loading them on focus; the site tester waits for the real answer and never counts a working line as one
