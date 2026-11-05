@@ -538,7 +538,7 @@
   },
   {
    "name": "Life extension and disease cures",
-   "last": "2026-10-21"
+   "last": "2026-11-05"
   },
   {
    "name": "Planet restoration",
@@ -558,88 +558,92 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T06:15:44Z",
-   "subject": "fix: films by kurosawa pls lists Kurosawa's films again, from Wikidata when iTunes has none (#2225)"
+   "at": "2026-11-05T08:59:16Z",
+   "subject": "fix: parity line numbers follow the home page, and the keeper test accepts the lazy import"
   },
   {
-   "at": "2026-11-05T06:14:36Z",
-   "subject": "Outcome exam: timers 83.3"
+   "at": "2026-11-05T08:55:30Z",
+   "subject": "Site test: fix: \"toss it off the screen\" only \"waking up\" appeared, nev"
   },
   {
-   "at": "2026-11-05T06:11:59Z",
-   "subject": "Incident: the browser suite failed on 1ccb3a33 (void-live-deploy/incidents.json)"
+   "at": "2026-11-05T08:46:57Z",
+   "subject": "Leave the generated self card and sitemap for the deploy"
   },
   {
-   "at": "2026-11-05T06:05:13Z",
-   "subject": "fix: the coder's turns fit the token cap, so laps stop pausing the loop (#2234) (#2243)"
+   "at": "2026-11-05T08:45:33Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-05T06:03:39Z",
-   "subject": "fix: no owner name, human wait or personal path in live files; the guard catches them (A2M.ops) (#2242)"
+   "at": "2026-11-05T08:45:04Z",
+   "subject": "grow: keep the empty home light and line up the pages people open"
   },
   {
-   "at": "2026-11-05T06:00:43Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-11-05T08:39:48Z",
+   "subject": "Clear the backdrop, restore the cartoon walk button, and refit chapter pages (#2220, #2250) (#2251)"
   },
   {
-   "at": "2026-11-05T05:59:14Z",
-   "subject": "fix: first asks show feedback at once and the tester waits for the real answer (#2228 #2225 #2222) (#2241)"
-  },
-  {
-   "at": "2026-11-05T05:48:04Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-05T05:41:57Z",
-   "subject": "Outcome exam: units 82.5"
-  },
-  {
-   "at": "2026-11-05T05:41:54Z",
-   "subject": "Lists run 12: units exam (bits, bytes, French units), define in five more languages, grocery prices from BLS, riddle-gen family (#2240)"
-  },
-  {
-   "at": "2026-11-05T05:20:06Z",
-   "subject": "Incidents closed: shard(s) 1,2,3,4 passed on db3cc6b3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T05:10:56Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T05:08:58Z",
-   "subject": "Outcome exam: units 82.5"
-  },
-  {
-   "at": "2026-11-05T04:52:31Z",
-   "subject": "Incident: the browser suite failed on 97670523 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-05T04:43:14Z",
-   "subject": "Site test: visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T04:41:17Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-05T04:38:26Z",
+   "at": "2026-11-05T08:35:37Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-05T04:35:06Z",
-   "subject": "Images exam 100 and no human in the loop (guard: tools/no-human-wait.mjs) (#2239)"
+   "at": "2026-11-05T08:10:05Z",
+   "subject": "Incident: the browser suite failed on b8384842 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-05T04:16:07Z",
-   "subject": "Site test: fix: \"find a rumble video about bitcoin\" nothing appeared; c"
+   "at": "2026-11-05T07:55:49Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-05T04:09:54Z",
+   "at": "2026-11-05T07:45:58Z",
+   "subject": "Incident: the browser suite failed on 3f8a8b31 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T07:41:58Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T07:27:51Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T07:25:08Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-05T07:24:55Z",
+   "subject": "Answer an ask once its late skill arrives, instead of leaving only 'waking up' (#2246) (#2249)"
+  },
+  {
+   "at": "2026-11-05T07:19:27Z",
+   "subject": "Incident: the browser suite failed on 64dca9d6 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-05T07:19:11Z",
+   "subject": "Remove my backdrop answers at once, even while the skills are still loading (#2220) (#2247)"
+  },
+  {
+   "at": "2026-11-05T07:18:46Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-11-05T07:18:41Z",
+   "subject": "Forethinkers: life-extension Q6 — GrimAge gradient vs chance (#2248)"
+  },
+  {
+   "at": "2026-11-05T07:12:15Z",
+   "subject": "Outcome exam: timers 83.3"
+  },
+  {
+   "at": "2026-11-05T07:07:30Z",
+   "subject": "Incident: the browser suite failed on 7ce0c13f (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Forethinkers life-extension Q6 (Grok Bot, 2026-11-05)",
+    "line": "PCGrimAge baseline-acceleration × semaglutide interaction survives inflammation covariates and leave-one-out, fails bootstrap CI and half-split; MaGE weights and GSE327270 still blocked; NCT07218445 added to watchlist.…"
+   },
    {
     "name": "Lists run 12 (grok, 2026-11-05)",
     "line": "the units exam converts bits and bytes and French units ('5 milles en kilomètres'), the dictionary answers 'qué significa serendipia' and its French, German, Italian and Portuguese twins with the English meaning, and the markets skill…"
@@ -659,10 +663,6 @@
    {
     "name": "Agent ask match (cursor, 2026-11-04)",
     "line": "an open ask on /agent/ goes to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again. https://github.com/atomeam/void-loop/pull/2191"
-   },
-   {
-    "name": "/under-the-hood/ live-numbers page, speculation rules, prerender-safe…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
    }
   ],
   "ladders": [
@@ -817,8 +817,8 @@
   }
  ],
  "visible": {
-  "day": 8,
-  "week": 416
+  "day": 13,
+  "week": 421
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
