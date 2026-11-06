@@ -277,7 +277,9 @@ async function readCard(page, ask) {
       const hit = [...log].reverse().find((e) => e && e.domain === 'void.page');
       note = hit ? String(hit.note || '') : '';
     } catch (_) {}
-    const audio = document.querySelector('audio[src]'), video = document.querySelector('video[src]'), frame = document.querySelector('iframe[src]');
+    // the media is the answer card's own: a card restored on the stage from an earlier ask (it sits before the answer in the page) is not this answer
+    const audio = card.querySelector('audio[src]'), video = card.querySelector('video[src]'), frame = card.querySelector('iframe[src]');
+    if (audio) audio.dataset.examAudio = '1';
     return {
       text: (card.innerText || '').slice(0, 4000),
       note,
@@ -292,7 +294,7 @@ async function readCard(page, ask) {
   });
   if (obs.audio) {
     const played = await page.evaluate(async () => {
-      const a = document.querySelector('audio'); if (!a) return null;
+      const a = document.querySelector('audio[data-exam-audio]'); if (!a) return null;
       a.muted = true;
       try { await a.play(); } catch (e) { return { currentTime: a.currentTime || 0 }; }
       await new Promise((r) => setTimeout(r, 1200));
@@ -305,6 +307,14 @@ async function readCard(page, ask) {
   if (obs.frame) Object.assign(obs.frame, await headOf(obs.frame.src));
   obs.ms = Date.now() - t0;
   return obs;
+}
+
+/** one line on the audio the exam read, for a failed audio or episode check: host, the file name, the status, the type and how far it played. Pure. */
+export function mediaLine(a) {
+  if (!a) return 'no audio element on the answer card';
+  let where = String(a.src || '').slice(0, 200);
+  try { const u = new URL(a.src); where = u.host + ' .../' + (u.pathname.split('/').pop() || '').slice(0, 80); } catch (_) {}
+  return where + ' · status ' + (a.status || 0) + ' · ' + (a.type || 'no type') + ' · played ' + Number(a.currentTime || 0).toFixed(1) + ' s';
 }
 
 function publishRow(domain, ask, judged, holdout) {
@@ -350,6 +360,7 @@ export async function runExam({ against = 'live', domains = DOMAINS, holdout = t
         if (cdp) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => {});
         const truth = await truthFor(d, a, obs);
         const judged = judge(d, obs, truth);
+        if (judged.failed.includes('audio') || judged.failed.includes('episode')) process.stdout.write('  media: ' + mediaLine(obs.audio) + '\n');
         rows[d].push({ ...publishRow(d, { ...a, ms: obs.ms, note: obs.note }, judged, a.holdout), holdout: !!a.holdout });
       }
     }

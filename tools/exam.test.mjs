@@ -135,3 +135,14 @@ test('every public calculator ask has a number the engine itself would show', ()
   }
   for (const a of pub.songs) if (!a.ambiguous) assert.ok(songAskOf(a.ask), a.ask);
 });
+
+test('the exam reads the answer card\'s own audio, and says why a media check failed', async () => {
+  const src = readFileSync(new URL('./exam.mjs', import.meta.url), 'utf8');
+  assert.match(src, /card\.querySelector\('audio\[src\]'\)/, 'media is read from the answer card, not the first audio on the page');
+  assert.doesNotMatch(src, /document\.querySelector\('audio\[src\]'\)/);
+  assert.match(src, /document\.querySelector\('audio\[data-exam-audio\]'\)/, 'the exam plays the same element it read');
+  const { mediaLine } = await import('./exam.mjs');
+  assert.equal(mediaLine(null), 'no audio element on the answer card');
+  assert.equal(mediaLine({ src: 'https://cdn.example.com/a/b/ep42.mp3?x=1', status: 206, type: 'audio/mpeg', currentTime: 1.04 }), 'cdn.example.com .../ep42.mp3 · status 206 · audio/mpeg · played 1.0 s');
+  assert.equal(mediaLine({ src: '/podcast/x.mp3' }), '/podcast/x.mp3 · status 0 · no type · played 0.0 s');
+});
