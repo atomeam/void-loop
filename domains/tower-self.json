@@ -1388,14 +1388,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-26T16:58:53Z",
-   "line": "Versus: took on no site; next supercolorapp.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
    "at": "2026-10-26T22:52:52Z",
    "line": "Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io",
    "built": 0,
@@ -1744,6 +1736,16 @@
    "fixed": [],
    "pages_per_day": 2,
    "reads_next": "bttrack.com"
+  },
+  {
+   "at": "2026-11-06T09:49:35Z",
+   "line": "Versus: took on no site; next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com",
+   "noop": true
   }
  ]
 }
