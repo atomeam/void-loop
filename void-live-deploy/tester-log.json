@@ -1,16 +1,45 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 280,
+ "runsTotal": 282,
  "kinds": {
   "grow": 70,
-  "file": 88,
+  "file": 89,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 68
+  "visitor": 69
  },
  "runs": [
+  {
+   "at": "2026-11-06T00:26:03Z",
+   "passed": 87,
+   "of": 90,
+   "kind": "file",
+   "ms": 382,
+   "note": "fix: \"yo new automation\" load 1309 ms > 1200",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "yo new automation",
+     "why": "load 1309 ms > 1200"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T00:16:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T22:16:47Z",
    "passed": 0,
@@ -267,112 +296,87 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T12:32:47Z",
-   "passed": 87,
-   "of": 89,
-   "kind": "grow",
-   "ms": 284,
-   "note": "new ground passed, kept as a regression case: \"yo draw a cartoon cat\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T12:21:56Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-13",
+   "from": "2026-08-14",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-20",
+   "from": "2026-08-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-27",
+   "from": "2026-08-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-03",
+   "from": "2026-09-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-10",
+   "from": "2026-09-11",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-17",
+   "from": "2026-09-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-24",
+   "from": "2026-09-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-01",
+   "from": "2026-10-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-08",
-   "runs": 47,
+   "from": "2026-10-09",
+   "runs": 49,
    "passed": 424,
-   "of": 719,
-   "broken": 14,
-   "brokenOf": 228,
+   "of": 761,
+   "broken": 16,
+   "brokenOf": 270,
    "brokenPassed": 22
   },
   {
-   "from": "2026-10-15",
-   "runs": 144,
+   "from": "2026-10-16",
+   "runs": 142,
    "passed": 2727,
-   "of": 5091,
-   "broken": 81,
-   "brokenOf": 2010,
+   "of": 5049,
+   "broken": 79,
+   "brokenOf": 1968,
    "brokenPassed": 0
   },
   {
-   "from": "2026-10-22",
+   "from": "2026-10-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-29",
-   "runs": 89,
-   "passed": 1688,
-   "of": 1862,
-   "ms": 373
+   "from": "2026-10-30",
+   "runs": 91,
+   "passed": 1775,
+   "of": 1952,
+   "ms": 377
   }
  ],
  "seen": {
@@ -392,7 +396,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T18:16:04Z",
+  "skill:cartoon": "2026-11-06T00:26:03Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -683,6 +687,9 @@
   "skill:imgfit": "2026-11-05T16:31:22Z",
   "skill:is-it": "2026-11-05T18:16:04Z",
   "skill:kanban-board": "2026-11-05T18:16:04Z",
-  "skill:leet": "2026-11-05T18:16:04Z"
+  "skill:leet": "2026-11-05T18:16:04Z",
+  "skill:local-stations": "2026-11-06T00:26:03Z",
+  "skill:lorem": "2026-11-06T00:26:03Z",
+  "skill:magic8": "2026-11-06T00:26:03Z"
  }
 }

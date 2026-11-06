@@ -3864,5 +3864,59 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T00:16:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2007,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10502 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T00:26:03Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 382,
+  "kind": "file",
+  "key": "yo new automation | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "yo new automation",
+    "why": "load 1309 ms > 1200"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2007,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10502 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"yo new automation\" load 1309 ms > 1200"
  }
 ]
