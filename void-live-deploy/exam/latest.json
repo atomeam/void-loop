@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T03:38:49.388Z",
+  "at": "2026-11-06T04:10:42.558Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,10 +32,17 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 85.6,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of radiolab",
+          "failed": [
+            "fast"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -314,14 +321,14 @@
           "score": 83.3
         },
         {
-          "ask": "yankees score",
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
           "score": 83.3
         },
         {
-          "ask": "how did the chiefs do",
+          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -523,6 +530,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 86.4
+    "score": 85.6
   }
 }

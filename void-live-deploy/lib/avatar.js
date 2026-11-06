@@ -4,8 +4,8 @@
 //                                    by a hash of the seed (the site's host), so the same site always has the same face. Never the site's logo,
 //                                    favicon, brand colour or brand mark (lib/tower.js: a site is named in plain text only; nothing implies
 //                                    affiliation): the tones come from one fixed cartoon palette, the shapes from fixed sets.
-//   verseFace({ size })              Verse's own mark, the atom galaxy of its card art (lib/void-seal.js): a blazing nucleus with three tilted
-//                                    orbits in violet, electric blue and gold, each with its star cluster, and a small friendly face in the core.
+//   verseFace({ size })              Verse's own mark, the same as its app icon (icon.svg, 2026-10-30): a V of two strokes in the accent's light
+//                                    on a deep tile, one star at its open end.
 // Both are role="img" with a label. Pure: strings in, a string out, no DOM.
 
 /** FNV-1a 32-bit of a string. Pure. */
@@ -71,25 +71,13 @@ export function faceSvg(seed, { size = 64, facing = 'right', label = '' } = {}) 
     + (facing === 'left' ? '<g transform="translate(100 0) scale(-1 1)">' + body + '</g>' : body) + '</svg>';
 }
 
-// the three orbits of the atom galaxy (lib/void-seal.js: violet, electric blue, gold), each tilted its own way, with its star cluster
-const ORBITS = [[275, 12, 0.72], [205, 70, 0.22], [44, -52, 0.5]];
-const pt = (deg, phase) => { const t = phase * Math.PI * 2, a = (deg * Math.PI) / 180, x = Math.cos(t) * 41, y = Math.sin(t) * 13; return [50 + x * Math.cos(a) - y * Math.sin(a), 50 + x * Math.sin(a) + y * Math.cos(a)]; };
-/** Verse's avatar: its atom-galaxy mark with a small friendly face in the nucleus. Pure. */
+/** Verse's avatar: its mark, the app icon. Pure. */
 export function verseFace({ size = 64, label = 'Verse' } = {}) {
   const s = Math.max(8, Math.round(+size) || 64);
-  let dust = ''; for (let i = 0; i < 26; i++) { const a = i * 2.399, r = 18 + ((i * 7919) % 27); dust += '<circle cx="' + (50 + Math.cos(a) * r).toFixed(1) + '" cy="' + (50 + Math.sin(a) * r).toFixed(1) + '" r="' + (i % 5 ? 0.7 : 1.1) + '" fill="#fff" opacity="' + (0.35 + (i % 4) * 0.15) + '"/>'; }
-  const orbits = ORBITS.map(([hue, deg, ph]) => { const c = 'hsl(' + hue + ' 90% 66%)', [ex, ey] = pt(deg, ph);
-    return '<ellipse cx="50" cy="50" rx="41" ry="13" transform="rotate(' + deg + ' 50 50)" fill="none" stroke="' + c + '" stroke-width="6" opacity=".5" filter="url(#vfa-b)"/>'
-      + '<ellipse cx="50" cy="50" rx="41" ry="13" transform="rotate(' + deg + ' 50 50)" fill="none" stroke="' + c + '" stroke-width="2.4"/>'
-      + '<circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="4.5" fill="' + c + '" opacity=".6" filter="url(#vfa-b)"/><circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="2.4" fill="#fff"/>'; }).join('');
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="' + s + '" height="' + s + '" role="img" aria-label="' + esc(label) + '" class="av-verse">'
-    + '<defs><radialGradient id="vfa-n"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#ffe08a"/><stop offset="1" stop-color="#ff9a3d" stop-opacity="0"/></radialGradient>'
-    + '<radialGradient id="vfa-g"><stop offset="0" stop-color="#2a1a4a"/><stop offset="1" stop-color="#07060d"/></radialGradient>'
-    + '<filter id="vfa-b" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter></defs>'
-    + '<circle cx="50" cy="50" r="48" fill="url(#vfa-g)" stroke="#5a4a8a" stroke-width="2"/>' + dust + orbits
-    + '<circle cx="50" cy="50" r="19" fill="url(#vfa-n)" opacity=".85"/><circle cx="50" cy="50" r="11" fill="#fff6d6" stroke="#ffd36a" stroke-width="1.5"/>'
-    // the face in the core: two bright eyes with a glint, confident brows, a small smile
-    + '<ellipse cx="45.5" cy="48" rx="2.1" ry="2.6" fill="#3a1f6a"/><ellipse cx="54.5" cy="48" rx="2.1" ry="2.6" fill="#3a1f6a"/><circle cx="46.2" cy="47.2" r=".7" fill="#fff"/><circle cx="55.2" cy="47.2" r=".7" fill="#fff"/>'
-    + '<path d="M42.5 44.2Q45.5 43 48 44.6M52 44.6Q54.5 43 57.5 44.2" fill="none" stroke="#3a1f6a" stroke-width="1.2" stroke-linecap="round"/>'
-    + '<path d="M45 53Q50 57.5 55 53" fill="none" stroke="#3a1f6a" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    + '<defs><linearGradient id="vfa-s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141726"/><stop offset="1" stop-color="#050505"/></linearGradient>'
+    + '<linearGradient id="vfa-v" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f2f4fb"/><stop offset="1" stop-color="#9eb2ff"/></linearGradient></defs>'
+    + '<rect width="100" height="100" rx="23" fill="url(#vfa-s)"/><rect x=".5" y=".5" width="99" height="99" rx="22.5" fill="none" stroke="#fff" stroke-opacity=".09"/>'
+    + '<path d="M30 34.4 50 69.5 70 34.4" fill="none" stroke="url(#vfa-v)" stroke-width="9.4" stroke-linecap="round" stroke-linejoin="round"/>'
+    + '<path d="M75 18c.6 3.3 1.6 4.3 4.9 4.9-3.3.6-4.3 1.6-4.9 4.9-.6-3.3-1.6-4.3-4.9-4.9 3.3-.6 4.3-1.6 4.9-4.9z" fill="#fff"/></svg>';
 }
