@@ -6,7 +6,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, pauseIssueClosed, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
 
 const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
@@ -33,7 +33,8 @@ function sandbox({ red = [], groomed = true, gh: fixtures = {} } = {}) {
   const gh = join(dir, 'gh.cjs');
   writeFileSync(join(dir, 'gh.json'), JSON.stringify(fixtures));
   writeFileSync(gh, `#!${process.execPath}
-const fs = require('fs'), d = ${JSON.stringify(dir)}, a = process.argv.slice(2), k = a.slice(0, 2).join(' ');
+const fs = require('fs'), d = ${JSON.stringify(dir)}, a = process.argv.slice(2), k0 = a.slice(0, 2).join(' ');
+const k = k0 === 'issue list' && a.includes('closed') ? 'issue list closed' : k0; // the closed list answers apart, or '[]'
 fs.appendFileSync(d + '/gh-calls.jsonl', JSON.stringify(a) + '\\n');
 const fx = JSON.parse(fs.readFileSync(d + '/gh.json', 'utf8'));
 if (k === 'pr create') { fs.writeFileSync(d + '/gh-args.txt', a.join(' ') + '\\n'); console.log('https://github.com/example/repo/pull/7'); }
@@ -363,6 +364,16 @@ test('the back-off: three failures pause for 6 hours, a merged PR resets the str
   assert.equal(pauseState({ state: streak, now: t0 + 600e3, changedAt: t0 - 7200e3 }).paused, true, 'a change before the first failure does not');
   assert.equal(pauseState({ state: streak, now: t0 + 600e3 }).paused, true, 'no change: the 6 hours hold');
   assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 3600e3, changedAt: t0 + 60e3 }).resume, true, 'a fresh runner measures from the issue');
+  // the issue is the switch: closing it ends the pause the saved state still holds (#2438, 2026-11-06)
+  assert.deepEqual(pauseState({ state: { pausedAt: t0 }, now: t0 + 3600e3, closed: true }), { paused: false, resume: true, until: t0 + 6 * 3600e3, closed: true }, 'a closed issue ends the saved pause');
+  assert.equal(pauseState({ state: { pausedAt: t0 }, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 3600e3, closed: true }).paused, true, 'an open issue still holds it');
+  assert.equal(pauseState({ state: {}, now: t0 + 3600e3, closed: true }).resume, false, 'no saved pause: nothing to end');
+  const closedOne = (at) => [{ number: 9, title: PAUSE_TITLE, createdAt: new Date(at).toISOString() }];
+  assert.equal(pauseIssueClosed(closedOne(t0 + 2000), t0), true, 'the issue opened at the pause, closed');
+  assert.equal(pauseIssueClosed(closedOne(t0 - 10 * 60e3), t0), true, 'a few minutes of clock skew still match');
+  assert.equal(pauseIssueClosed(closedOne(t0 - 3 * 3600e3), t0), false, 'an earlier pause\'s closed issue does not count');
+  assert.equal(pauseIssueClosed([{ title: 'Verse loop paused again', createdAt: new Date(t0).toISOString() }], t0), false, 'only the exact title');
+  assert.equal(pauseIssueClosed(null, t0), false, 'gh failed: the pause holds');
   assert.ok(LOOP_CODE.includes('tools/verse-coder.mjs') && LOOP_CODE.includes('tools/verse-loop.mjs') && LOOP_CODE.includes('void-live-deploy/lib/patch-guard.js'));
 });
 
@@ -385,6 +396,24 @@ test('a lap: a commit to the loop\'s own code after the failures began ends the 
   assert.ok(close, 'the loop closes its own issue'); assert.match(close[4], /Resumed early: the loop's own code changed on main after these failures began/);
   const st = loadState(statePath);
   assert.deepEqual([st.pausedAt, st.last.length], [null, 0]);
+});
+
+test('a lap: the pause\'s issue closed while the saved state still says paused: the lap resumes and clears the state (#2438)', async () => {
+  const t0 = Date.now();
+  const s = sandbox({ gh: { 'issue list': [], 'issue list closed': [{ number: 2438, title: PAUSE_TITLE, createdAt: new Date(t0 + 1000).toISOString() }] } });
+  const statePath = join(s.work, '.git', 'verse-loop.state.json');
+  writeFileSync(statePath, JSON.stringify({ fails: 3, prs: [], pausedAt: t0, last: [{ outcome: 'no-change', why: 'turn cap', at: t0 + 60e3 }] }));
+  const r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo built > built.txt'), log: quiet, now: t0 + 3 * 3600e3 });
+  assert.equal(r.outcome, 'shipped', r.why);
+  assert.ok(r.steps.some((x) => /the pause's issue was closed; resuming/.test(x)), r.steps.join(' | '));
+  assert.ok(!ghCalls(s).some((c) => c[0] === 'issue' && c[1] === 'close'), 'nothing to close: it is closed already');
+  assert.equal(loadState(statePath).pausedAt, null);
+  // an older pause's closed issue does not end this one
+  const o = sandbox({ gh: { 'issue list': [], 'issue list closed': [{ number: 2386, title: PAUSE_TITLE, createdAt: new Date(t0 - 9 * 3600e3).toISOString() }] } });
+  const op = join(o.work, '.git', 'verse-loop.state.json');
+  writeFileSync(op, JSON.stringify({ fails: 3, prs: [], pausedAt: t0, last: [{ outcome: 'no-change', why: 'turn cap', at: t0 + 60e3 }] }));
+  const ro = await lap(parseArgs(['--agent', 'cmd']), { cwd: o.work, env: env(o, 'echo ran > ran.txt'), log: quiet, now: t0 + 3 * 3600e3 });
+  assert.equal(ro.outcome, 'paused'); assert.ok(!existsSync(join(o.work, 'ran.txt')));
 });
 
 test('a lap: the third failure in a row pauses and opens the issue; laps skip while paused; after 6 hours it resumes and closes the issue itself', async () => {
@@ -497,4 +526,13 @@ test('one open PR per task: a lap that would repeat a fresh open loop PR spends 
   const st = loadState(join(s2.work, '.git', 'verse-loop.state.json'));
   assert.deepEqual(st.prs, ['https://github.com/example/repo/pull/7']);
   assert.equal(st.fails, 0);
+});
+
+test('the lap step writes nothing into the checkout before the lap reads git status', () => {
+  // a lap with local changes skips; the 19:39 lap on 2026-11-06 skipped on its own "tee lap.txt"
+  const wf = readFileSync(new URL('../.github/workflows/verse-loop.yml', import.meta.url), 'utf8');
+  const line = wf.split('\n').find((l) => /^\s*node tools\/verse-loop\.mjs --once/.test(l));
+  assert.ok(line, 'the workflow runs a lap');
+  const outs = [...line.matchAll(/(?:\btee\s+(?:-a\s+)?|>>?\s*)("?)([^\s"|;&]+)\1/g)].map((m) => m[2]);
+  for (const o of outs) assert.match(o, /^\$\{?(RUNNER_TEMP|GITHUB_STEP_SUMMARY|GITHUB_OUTPUT)\b|^\/dev\//, 'the lap writes ' + o + ' into the checkout');
 });

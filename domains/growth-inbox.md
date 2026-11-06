@@ -85,3 +85,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-11-04 | Versus topic pages: replace the flat tower placeholder with a real per-topic experience | asked by Verse (void-voice 2026-11-04) |
 | shipped 25990ecbc | 2026-11-04 | system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff) | new idea by growth agent; helper/system-status |
 | shipped d93f7ca | 2026-11-06 | heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less | new idea by growth agent; helper/heavy-lift-map |
+| building | 2026-11-06 | monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not watch dashboards | new idea by growth agent; helper/monitor-pack |

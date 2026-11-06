@@ -231,6 +231,9 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'wheelroot.com': '/learn-to-draw/',
   // onlineconverter.com (106 file and unit tools, each an upload to its server) is assimilated by /converter/, the same 106 tools listed with what Verse does on the device (domains/targets/onlineconverter.json)
   'onlineconverter.com': '/converter/',
+  // dalyfeds.com ("H5 Center", a game portal page with three ad scripts) is taken on by /starboard/, a live benchmark of both sites and Verse's own weather, news,
+  // games and tools on one tracker-free page (domains/targets/dalyfeds.json)
+  'dalyfeds.com': '/starboard/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores

@@ -1,13 +1,21 @@
-# Verse's Shorts, remade (owner, 2026-11-03: "verses videos are bad, its not framed properly the music is bad and they are meaningless
-# to most people even me"). tools/shorts.mjs films the live a-to-mind.com answering an everyday question at full 1080x1920, then
-# tools/video-gate.mjs measures it (no bars, legible captions, real footage, loudness, hook). Only a pass goes on /films/ (listed)
-# and, when the repo variable YT_UPLOAD is 1, to Verse's channel. A fail is kept as the run's artifact and posted nowhere.
+# Verse's Shorts: every kind of video, about what people watch today. tools/trends.mjs reads three free trend sources (Google Trends,
+# Wikipedia's most-read, Hacker News), tools/topic-gate.mjs refuses small everyday sums, harm, adult topics and any topic made in the
+# last 30 days, and tools/shorts-loop.mjs plans three films in three formats (news parody, trailer, explainer, POV skit, countdown,
+# nature documentary, product review, lyric video), the least recently made first, the best-scoring kept in. tools/film-studio.mjs films
+# each at 1080x1920 with a Piper voice, then tools/video-gate.mjs measures it (no bars, legible captions, footage, loudness, hook,
+# topic). Only a pass goes on /films/ (listed) and, when the repo variable YT_UPLOAD is 1, to Verse's channel. tools/film-cleanup.mjs
+# takes off the list any listed film whose words are a refused topic, and counts every film stored. A dry run posts nothing.
 name: Verse shorts
 
 on:
   schedule:
     - cron: '23 15 * * *' # daily, about 10 AM ET (GitHub drops many schedule events here; the conductor starts it once 15:00 UTC has passed with no run today: tools/conductor-core.mjs DAILY)
   workflow_dispatch:
+    inputs:
+      dry:
+        description: 'Film and gate only: post nothing, unlist nothing, keep no log'
+        type: boolean
+        default: false
 
 permissions:
   contents: write # the loop log domains/shorts.loop.json, pushed to main
@@ -20,7 +28,7 @@ concurrency:
 jobs:
   shorts:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,18 +41,46 @@ jobs:
           npx playwright-core install --with-deps chromium
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
           echo "CHROME=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
-      - name: Judge yesterday's trials, plan today's (tools/shorts-loop.mjs)
+      - name: Piper voice
+        run: |
+          timeout 300 pip install --quiet piper-tts || echo "::warning title=No Piper::the films get espeak-ng or music only"
+          sudo apt-get install -y -qq espeak-ng >/dev/null || true
+      - name: Cache the voice
+        id: voice
+        uses: actions/cache@v4
+        with:
+          path: ~/piper-voices
+          key: piper-voices-lessac-ryan-medium-v1
+      - name: Download the voice
+        if: steps.voice.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/piper-voices && cd ~/piper-voices
+          for v in lessac ryan; do for ext in onnx onnx.json; do
+            curl -fsSL -o "en_US-$v-medium.$ext" "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/$v/medium/en_US-$v-medium.$ext" || true
+          done; done
+      - name: What people watch today (tools/trends.mjs)
+        run: |
+          node tools/trends.mjs > trends.json
+          jq -r '"trend topics: \(.topics|length), failed: \(.failed|join("; "))"' trends.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Judge the last films, plan three new ones (tools/shorts-loop.mjs)
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
-        run: node tools/shorts-loop.mjs judge | tee -a "$GITHUB_STEP_SUMMARY"; node tools/shorts-loop.mjs plan > trial.json; cat trial.json >> "$GITHUB_STEP_SUMMARY"
-      - name: Film, render and gate the champion and the challenger
-        continue-on-error: true
         run: |
-          for side in champion challenger; do
-            node -e "const t=require('./trial.json')[process.argv[1]];import('./tools/shorts.mjs').then(async m=>{const s=m.SCENES.find(x=>x.id===t.scene);const r=await m.render(s,'media/shorts',{voice:false,variant:t,filmId:t.film});console.log((r.gate.pass?'GATE PASS ':'GATE FAIL ')+t.film)})" $side | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/shorts-loop.mjs judge | tee -a "$GITHUB_STEP_SUMMARY"
+          s=0; node tools/shorts-loop.mjs plan --trends trends.json > trial.json 2> plan.txt || s=$?; cat plan.txt | tee -a "$GITHUB_STEP_SUMMARY"; exit $s
+      - name: Film, render and gate the three films (tools/film-studio.mjs)
+        continue-on-error: true
+        env:
+          PIPER: python -m piper
+          PIPER_VOICE: /home/runner/piper-voices/en_US-lessac-medium.onnx
+        run: |
+          [ -f "$PIPER_VOICE" ] || unset PIPER_VOICE
+          for i in 0 1 2; do
+            node tools/film-studio.mjs render --trial trial.json --i "$i" --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           done
           for m in media/shorts/*.json; do node tools/shorts-loop.mjs record "$m"; done
-      - name: Put each passed Short on /films/
+      - name: Put each passed film on /films/
+        if: ${{ !inputs.dry }}
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
@@ -54,8 +90,13 @@ jobs:
             id="$(jq -r .filmId "$m")"
             node tools/film-post.mjs "${m%.json}.mp4" "$m" --id "$id" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           done
+      - name: Take refused topics off the list, count every film (tools/film-cleanup.mjs)
+        continue-on-error: true
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/film-cleanup.mjs ${{ inputs.dry && '--dry' || '' }} 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Upload passed Shorts to Verse's YouTube channel
-        if: vars.YT_UPLOAD == '1'
+        if: vars.YT_UPLOAD == '1' && !inputs.dry
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
@@ -75,14 +116,14 @@ jobs:
         run: |
           n=$(ls media/shorts/*.mp4 2>/dev/null | wc -l)
           echo "films made today: $n" | tee -a "$GITHUB_STEP_SUMMARY"
-          [ "$n" -gt 0 ] || { echo "::error title=No film made::the champion and the challenger both failed before a film existed (see the Film step)"; exit 1; }
+          [ "$n" -gt 0 ] || { echo "::error title=No film made::all three films failed before a film existed (see the Film step)"; exit 1; }
       # 2026-11-06: the log went to helper/shorts-loop-<day> with the Actions token, which starts no workflow, so no pull request was
       # ever opened and domains/shorts.loop.json on main stayed empty since #2138. Each day planned the same first trial from an empty
       # log and judged nothing, so the films could not improve. A second run on the same day was refused outright (the branch existed)
       # and printed "no change". The log now goes straight to main (only this job writes it, one run at a time), and the deploy is
       # started so /films/ and /progress/ read it.
       - name: Keep the loop log on main
-        if: always()
+        if: always() && !inputs.dry
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
