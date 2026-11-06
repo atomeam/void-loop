@@ -76,6 +76,19 @@ export function backNote(note, why, failed) {
 
 /** presence: invited (its join link not used yet), away (switched off, or no word for AWAY_MS and no address that answers), busy (holds a
  *  job), or idle. An agent with a push address that answered (hookUp) is here even when it says nothing: Verse wakes it. */
+// A crew member never holds a job, so "idle" said nothing (owner, 2026-11-06: "why are all of verses own team idle ?"). Its card says
+// when it runs next instead: nextAt is when its turn comes (lib/team-crew-run.js 'next'); the clock knocks every CLOCK_MS, so a turn
+// that came up runs on the next knock, and one more than a knock and a margin behind says the clock is late. Pure.
+export const CLOCK_MS = 15 * 60e3;
+const span = (m) => (m < 60 ? m + ' min' : m < 1440 ? Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) + ' min' : '') : Math.round(m / 1440) + ' d');
+export function crewNext(nextAt, now = Date.now()) {
+  if (!(typeof nextAt === 'number' && Number.isFinite(nextAt) && nextAt > 0)) return 'runs on the next clock knock';
+  const m = Math.round((nextAt - now) / 60e3);
+  if (m >= 1) return 'next run in ' + span(m);
+  if (now - nextAt <= CLOCK_MS + 5 * 60e3) return 'next run due now';
+  return 'next run late by ' + span(Math.round((now - nextAt) / 60e3)) + ' (the clock missed)';
+}
+
 export function presence(a, now) {
   if (a && !a.off && !a.key) return 'invited';
   if (!a || a.off || !(now - (a.seen || 0) < (a.crew ? CREW_AWAY_MS : AWAY_MS) || hookUp(a))) return 'away';
@@ -299,14 +312,18 @@ export const memberJoinedSay = (name) => 'Welcome, ' + name + '. You are a membe
 export const GOOD_FIRST = Object.freeze(['versus', 'gap', 'novelty']);
 const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Outdo a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
 /** a queued job as the public board shows it. The owner's own #work asks keep their words in the members-only chat. Pure. */
-export function boardRow(job, now) {
+export function boardRow(job, now, sc = null) {
   const k = kindOf(job.target), mine = ownerAsk(job);
   const title = mine ? 'An ask from the owner (members read it in #work)' : clean(hideSecrets(String(job.ask || '').replace(/\s*Answer in this thread[\s\S]*$/, '')), 160);
-  return { id: job.id, kind: k, label: KIND_WORD[k] || k, title, good: GOOD_FIRST.includes(k), owner: mine, waiting: Math.max(0, Math.floor((now - msOf(job.at)) / 864e5)) };
+  return { id: job.id, kind: k, label: KIND_WORD[k] || k, title, good: GOOD_FIRST.includes(k), owner: mine, waiting: Math.max(0, Math.floor((now - msOf(job.at)) / 864e5)),
+    ...(sc ? { leverage: sc[0], why: mine ? 'ranked by Verse' : clean(hideSecrets(sc[1]), 160) } : {}) };
 }
-/** the board, best first, good first tasks on top, at most `max`. Pure. */
-export function board(jobs, now, max = 40) {
-  return rank(jobs, now).map((j) => boardRow(j, now)).sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
+/** the board, best first, good first tasks on top, at most `max`. scores: Verse's leverage { id: [score, why] } (lib/team-priorities.js
+ *  scoresOf); with them the highest leverage comes first and busywork (a score under 0.2) stays off the board. Pure. */
+export function board(jobs, now, max = 40, scores = null) {
+  const rows = rank(jobs, now).map((j) => boardRow(j, now, scores ? scores[j.id] : null));
+  if (scores) return rows.filter((r) => !(r.leverage != null && /^busywork/.test(r.why || ''))).sort((a, b) => (b.leverage ?? -1) - (a.leverage ?? -1) || Number(b.good) - Number(a.good)).slice(0, max);
+  return rows.sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
 }
 /** an owner's one-line post from the site: "idea: ..." goes to #ideas, anything else ("job: ..." or plain words) to #work (a job). Pure. */
 export function quickPost(text) {

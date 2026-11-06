@@ -535,14 +535,18 @@
    "at": "2026-10-30"
   },
   "anycolorid.com": {
-   "bytes": 1452689,
+   "bytes": 1494254,
+   "controls": 15,
    "scripts": 11,
    "styles": 3,
-   "nodes": 63,
+   "nodes": 61,
    "routes": 3,
-   "weight": 1476819,
-   "at": "2026-10-29",
-   "counted": "unrendered"
+   "htmlControls": 5,
+   "counted": "rendered",
+   "text": 285,
+   "shell": "none",
+   "weight": 1518364,
+   "at": "2026-11-06"
   },
   "apnews.com": {
    "refused": true,
@@ -6726,7 +6730,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 15,
+   "bytes": 12,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6735,19 +6739,23 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 14,
-   "weight": 15,
+   "text": 11,
+   "weight": 12,
    "at": "2026-11-06"
   },
   "icloud.com": {
    "bytes": 3791879,
+   "controls": 9,
    "scripts": 8,
    "styles": 2,
    "nodes": 93,
    "routes": 41,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 878,
+   "shell": "none",
    "weight": 3829309,
-   "at": "2026-10-29",
-   "counted": "unrendered"
+   "at": "2026-11-06"
   },
   "id5-sync.com": {
    "bytes": 12,
@@ -8174,14 +8182,18 @@
    "at": "2026-10-30"
   },
   "metronomeonline.com": {
-   "bytes": 670582,
+   "bytes": 741464,
+   "controls": 78,
    "scripts": 9,
    "styles": 4,
    "nodes": 68,
    "routes": 137,
-   "weight": 757762,
-   "at": "2026-10-29",
-   "counted": "unrendered"
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3882,
+   "shell": "none",
+   "weight": 828644,
+   "at": "2026-11-06"
   },
   "millwallcommunity.org.uk": {
    "bytes": 2940387,
@@ -13662,6 +13674,20 @@
   "vividnewscommunity.nl": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "vivoglobal.com": {
+   "bytes": 2252,
+   "controls": 5,
+   "scripts": 0,
+   "styles": 1,
+   "nodes": 23,
+   "routes": 0,
+   "htmlControls": 5,
+   "counted": "rendered",
+   "text": 85,
+   "shell": "none",
+   "weight": 2482,
+   "at": "2026-11-06"
   },
   "vtuner.com": {
    "bytes": 65115,

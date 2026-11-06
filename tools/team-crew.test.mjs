@@ -157,3 +157,24 @@ test('the owner removes a crew member and it stays removed; a crew member is nev
   assert.ok(rows(env, 'SELECT job FROM void_team_agents').every((a) => a.job === null), 'no crew member holds a queue job');
   assert.equal(await API.handIdle(env, T0 + 7 * 3600e3), 0);
 });
+
+test('a crew card says when the member runs next, not a bare idle (owner, 2026-11-06: "why are all of verses own team idle ?")', async () => {
+  const M = 60e3;
+  assert.equal(T.crewNext(T0 + 12 * M, T0), 'next run in 12 min');
+  assert.equal(T.crewNext(T0 + 179 * M, T0), 'next run in 2 h 59 min');
+  assert.equal(T.crewNext(T0 + 120 * M, T0), 'next run in 2 h');
+  assert.equal(T.crewNext(T0 - 5 * M, T0), 'next run due now', 'its turn came: the next knock runs it');
+  assert.equal(T.crewNext(T0 - 130 * M, T0), 'next run late by 2 h 10 min (the clock missed)', 'a missed clock says so');
+  assert.equal(T.crewNext(null, T0), 'runs on the next clock knock', 'before the first run');
+  // the workspace and /api/crew carry each member's turn
+  const env = world();
+  await crewTick(env, T0);
+  const ags = rows(env, 'SELECT * FROM void_team_agents');
+  const turns = await API.crewTurns(env, ags);
+  const scout = C.CREW.find((b) => b.slug === 'tower-scout'), watch = C.CREW.find((b) => b.slug === 'status-watch');
+  assert.equal(turns[scout.id], T0 + scout.every * M - M);
+  assert.equal(turns[watch.id], T0 + watch.every * M - M);
+  const view = await crewView(env, T0 + M);
+  assert.equal(view.crew.find((c) => c.name === 'StatusWatch').next, T0 + watch.every * M - M);
+  assert.match(T.crewNext(view.crew.find((c) => c.name === 'TowerScout').next, T0 + M), /^next run in 3 h 58 min$/);
+});

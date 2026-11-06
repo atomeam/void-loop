@@ -52,7 +52,8 @@ test('the automerge workflow merges with a squash after the suite gate, and keep
   assert.match(yml, /STUCK:/);
   assert.match(src, /disablePullRequestAutoMerge/);
   assert.match(src, /merge_method=squash/);
-  assert.match(src, /choose\(rows, mainSha, running\)/);
+  assert.match(src, /chooseChecked\(rows, mainSha, running, safetyOk\)/, 'the suite gate chooses, and the safety-check runs on its batch');
+  assert.match(src, /const safetyOk = [^]*?safety\(ex, gh,/);
   assert.match(src, /update-branch/);
 });
 
