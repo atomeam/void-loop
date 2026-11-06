@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
     "proven": 59
    },
@@ -198,6 +198,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 17
+    },
+    {
+     "name": "image-gen",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests"
     },
     {
      "name": "video-gen",

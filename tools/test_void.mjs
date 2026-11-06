@@ -5901,7 +5901,7 @@ try {
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
     check('verse brain: "show me your brain" opens one card (no figure), its twenty-six organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 25 && a.rows === 25 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 26 && a.rows === 26 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }

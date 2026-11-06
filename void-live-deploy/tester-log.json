@@ -1,16 +1,95 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 294,
+ "runsTotal": 298,
  "kinds": {
   "grow": 70,
-  "file": 92,
+  "file": 93,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 78
+  "visitor": 81
  },
  "runs": [
+  {
+   "at": "2026-11-06T08:07:14Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T07:40:29Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T07:29:39Z",
+   "passed": 78,
+   "of": 90,
+   "kind": "file",
+   "ms": 406,
+   "note": "fix: \"bokos like dune\" only \"waking up\" appeared, never the answer; console: Failed to load resource: the server responded with a status of 404 ()",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 0 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "yo automations",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo films by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what did this video teach? pls",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "yo what language does the word kindergarten come from",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "yo draw a cartoon cat",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "word counter",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "random palette",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "palindrome check for a man a plan a canal panama",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T07:14:42Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T06:48:24Z",
    "passed": 0,
@@ -214,100 +293,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T18:16:04Z",
-   "passed": 87,
-   "of": 90,
-   "kind": "file",
-   "ms": 388,
-   "note": "fix: \"favorite this\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "dyslexia friendly font",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T18:05:55Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T17:15:33Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T16:31:22Z",
-   "passed": 73,
-   "of": 90,
-   "kind": "file",
-   "ms": 475,
-   "note": "fix: \"play solarquest\" load 1213 ms > 1200",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "load 1213 ms > 1200"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "load 1906 ms > 1200"
-    },
-    {
-     "ask": "turn the questions i missed into a five-minute challenge",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "can we play despacito",
-     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
-    },
-    {
-     "ask": "what did this video teach? pls",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "yo watch the apollo 11 landing",
-     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -361,20 +346,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 65,
+   "runs": 71,
    "passed": 424,
-   "of": 1151,
-   "broken": 32,
-   "brokenOf": 660,
+   "of": 1301,
+   "broken": 38,
+   "brokenOf": 810,
    "brokenPassed": 22
   },
   {
    "from": "2026-10-16",
-   "runs": 126,
+   "runs": 120,
    "passed": 2727,
-   "of": 4659,
-   "broken": 63,
-   "brokenOf": 1578,
+   "of": 4509,
+   "broken": 57,
+   "brokenOf": 1428,
    "brokenPassed": 0
   },
   {
@@ -385,10 +370,10 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 103,
-   "passed": 2028,
-   "of": 2222,
-   "ms": 377
+   "runs": 107,
+   "passed": 2106,
+   "of": 2312,
+   "ms": 379
   }
  ],
  "seen": {
@@ -408,7 +393,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T06:12:58Z",
+  "skill:cartoon": "2026-11-06T07:29:39Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -711,6 +696,9 @@
   "skill:my-device": "2026-11-06T04:49:27Z",
   "skill:groups": "2026-11-06T06:12:58Z",
   "skill:noise": "2026-11-06T06:12:58Z",
-  "skill:notes-fill": "2026-11-06T06:12:58Z"
+  "skill:notes-fill": "2026-11-06T06:12:58Z",
+  "skill:open-tool": "2026-11-06T07:29:39Z",
+  "skill:palette": "2026-11-06T07:29:39Z",
+  "skill:palindrome": "2026-11-06T07:29:39Z"
  }
 }

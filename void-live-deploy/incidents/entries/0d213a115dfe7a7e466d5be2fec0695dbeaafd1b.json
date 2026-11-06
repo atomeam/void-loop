@@ -1,0 +1,38 @@
+{
+ "at": "2026-11-06T08:25:36.848Z",
+ "sha": "0d213a115dfe7a7e466d5be2fec0695dbeaafd1b",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42184801438",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: the open card picked up a conquered site on its own and said so (\"calculator.net is surpassed\"), with a fresh \"updated\" time",
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
+  "tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice",
+  "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+  "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+  "self card never repeats: \"since i last looked\" opens the self card (not the model) with the newest builds first; opened again it leads with \"Since you last looked\" (the counts that moved, the new build) and none of the sentences read before; open, it redraws by itself with the next round",
+  "Verse card art: an answer whose summary has no lead image looks up the article's own photo (a concert, not its logo) and shows it in the art box (owner's K-pop card, 2026-10-17)",
+  "tower: Google Flights names Verse's page /flights/ beside its site and side by side (390 px, no sideways scroll), every entry names its page, and /compare/?floor=travel frames /flights/ beside Google Flights",
+  "list card: seeds from \"a shopping list with eggs, milk and bread\", \"add X to the list\", \"add milk\" again adds nothing, \"check off\" ticks and \"mark X as done\" toggles back, \"remove X from the list\" (and an unknown item changes nothing), \"list: a, b\" adds to the open list, the card's own box adds, its tick box ticks and its x removes, the title is typed in place, \"make the list red\" edges it, all of it comes back after a reload, then \"clear the list\" empties it, \"remove the list\" takes it away and a bare \"make a list\" makes a new empty one"
+ ],
+ "touched": [
+  ".github/workflows/easiest-sites.yml",
+  ".github/workflows/tower-gate.yml",
+  "tools/assimilated.mjs",
+  "tools/easiest-sites.mjs",
+  "tools/ip-page.test.mjs",
+  "tools/lane-pages.test.mjs",
+  "tools/tower-probes.mjs",
+  "tools/tower-size.mjs",
+  "tools/tower-size.test.mjs",
+  "tools/tower-target.mjs",
+  "tools/tower.test.mjs",
+  "void-live-deploy/_routes.json",
+  "void-live-deploy/assimilated.json",
+  "void-live-deploy/functions/ip/index.js",
+  "void-live-deploy/lib/tower-weight.js"
+ ],
+ "shards": [
+  1,
+  4
+ ]
+}
