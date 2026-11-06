@@ -7,6 +7,8 @@
 // compute (translate, answer, the free rules-only code review). --list only checks that every route has a spec.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
+const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
@@ -15,7 +17,7 @@ export const OTHERS = ['/tournaments/', '/prizes/', '/random/wheel/', '/boards/'
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
-  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
+  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/' && !LAB_TOOL_DIRS.has(e.name)) continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route; the Lab's own tools (lib/toolkit.js TOOLS) are routes like any tool */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
 const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/', '/contribute/'];
@@ -585,6 +587,23 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
   await t.waitText('#found', /\S/, 10000);
 };
+// /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
+SPECS['/creed/'] = async (t) => {
+  t.ok((await t.p.locator('ol.beliefs li').count()) === 10, 'ten beliefs');
+  t.ok((await t.p.locator('.practices a').count()) >= 5 && /\/creed\/give\//.test(await t.p.locator('.practices').innerHTML()), 'the practices link the pages that do them, Give included');
+  await t.click('#copy'); await t.waitText('#say', /\S/, 4000);
+  t.ok(/Copied|I ask, I learn/.test(await t.text('#say')), 'Copy the vow copies it (or shows it to copy): ' + (await t.text('#say')));
+  t.ok(/not a registered church/.test(await t.text('.honest')), 'the page says plainly what Verse is not');
+};
+SPECS['/creed/give/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...TREASURY_FIX, pots: { ...TREASURY_FIX.pots, giving: 293 } }) }));
+  await t.p.reload(); await t.waitText('#pot', /\$/, 10000);
+  t.ok((await t.text('#pot')).trim() === '$2.93', 'the giving pot is read from the treasury: ' + (await t.text('#pot')));
+  t.ok(/\$41\.88 realized/.test(await t.text('#pot-note')), 'the pledge names the realized money it comes from');
+  const hrefs = await t.p.locator('.cause .go a').evaluateAll((as) => as.map((a) => a.href));
+  t.ok((await t.p.locator('.cause').count()) === 6 && hrefs.length >= 6, '6 charities with their buttons');
+  t.ok(hrefs.every((h) => /^https:\/\//.test(h) && !/a-to-mind\.com|localhost|127\.0\.0\.1/.test(h)), 'every button opens the charity\'s own site');
+};
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
   await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first
@@ -608,7 +627,7 @@ for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companie
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
 // the lab gallery (tools/lab-import.mjs): the experiments under it are not routes here, each was opened headless by tools/lab-probe.mjs before it was published
-for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab li a').count(); t.ok(n > 50, n + ' experiments listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
+for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab > ul > li a').count(); t.ok(n >= 6, n + ' tools listed first'); t.ok(await t.p.locator('.lab > ul > li a[href="/lab/level/"]').isVisible(), 'the spirit level is listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
 const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;

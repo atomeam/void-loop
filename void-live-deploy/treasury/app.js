@@ -24,19 +24,31 @@
         + (Array.isArray(w.services) && w.services.length ? '<p class="note">What agents can pay for, each call ' + esc(w.services[0].price_usdc) + ' USDC, charged only when the work is done (<a href="/api/x402">catalog</a>):</p><ul class="sells">'
           + w.services.map((s) => { const b = (u.by_service || {})[s.id] || { calls: 0, cents: 0 }; return '<li><code>' + esc(s.path) + '</code> ' + esc(s.description) + ' <b>' + esc(b.calls) + ' paid call' + (b.calls === 1 ? '' : 's') + ', ' + usd(b.cents) + '</b></li>'; }).join('') + '</ul>' : '')
       : '<p class="note">' + esc(w.note || 'No wallet yet.') + '</p>';
-    const pots = [['owner', "Atom's cut"], ['reserve', 'Reserve'], ...['infrastructure', 'tools', 'growth', 'bounties'].map((k) => [k, names[k] || k])];
+    const pots = [['owner', "Atom's cut"], ['giving', 'Giving'], ['reserve', 'Reserve'], ...['infrastructure', 'tools', 'growth', 'bounties'].map((k) => [k, names[k] || k])];
     $('pots').innerHTML = pots.map(([k, n]) => '<div class="card"><b>' + usd(t.pots[k]) + '</b><span>' + esc(n) + (t.weights[k] != null ? ' · ' + pct(t.weights[k]) + ' of reinvestment' : '') + '</span></div>').join('');
     const p = t.policy;
     $('policy').innerHTML = '<p><b>Atom\'s cut: ' + pct(p.owner_cut.share) + ' of every realized dollar, paid first.</b></p><p class="why">' + esc(p.owner_cut.why) + '</p>'
+      + (p.giving ? '<p><b>Giving: ' + pct(p.giving.share) + ' of what is left after Atom\'s cut, for <a href="/creed/give/">the causes Verse gives to</a>.</b></p><p class="why">' + esc(p.giving.why) + '</p>' : '')
       + '<p><b>Reserve: ' + pct(p.reserve.share) + ' of what is left, until it holds ' + usd(p.reserve.target_cents) + '; then ' + pct(p.reserve.share_after_target) + '.</b></p><p class="why">' + esc(p.reserve.why) + '</p>'
       + '<p><b>Reinvestment, by expected return:</b> ' + Object.entries(t.weights).map(([k, w]) => esc(names[k] || k) + ' ' + pct(w)).join(', ') + '.</p><p class="why">' + esc(p.buckets.why) + '</p>'
       + '<p class="why"><b>Spending.</b> ' + esc(p.spending.rule) + '</p><p class="why"><b>Review.</b> ' + esc(p.review.why) + '</p>'
       + '<details><summary>Policy history (version ' + esc(p.version) + ', decided by ' + esc(p.decided_by) + ')</summary><ul>' + p.history.map((h) => '<li>' + esc(h.at) + ': ' + esc(h.change) + ' <span class="note">' + esc(h.why) + '</span></li>').join('') + '</ul></details>';
-    $('entries').innerHTML = t.entries.length ? t.entries.slice().reverse().map((e) => '<tr><td class="num">' + day(e.at) + '</td><td>' + esc(names[e.bucket] || (e.bucket === 'owner' ? "Atom's cut" : e.bucket)) + '</td><td class="num">' + (e.kind === 'spend' || e.kind === 'paid' ? '-' : '') + usd(e.cents) + '</td><td>' + esc(e.purpose) + (e.needs ? '<div class="note">Needs: ' + esc(e.needs) + '</div>' : '') + '</td><td>' + esc(e.expected || '') + '</td><td>' + esc(e.actual || (e.kind === 'spend' ? 'not measured yet' : '')) + '</td><td>' + tag(e.status) + '</td></tr>').join('')
+    $('entries').innerHTML = t.entries.length ? t.entries.slice().reverse().map((e) => '<tr><td class="num">' + day(e.at) + '</td><td>' + esc(names[e.bucket] || (e.bucket === 'owner' ? "Atom's cut" : e.bucket)) + '</td><td class="num">' + (e.kind === 'spend' || e.kind === 'paid' || e.kind === 'given' ? '-' : '') + usd(e.cents) + '</td><td>' + esc(e.purpose) + (e.needs ? '<div class="note">Needs: ' + esc(e.needs) + '</div>' : '') + '</td><td>' + esc(e.expected || '') + '</td><td>' + esc(e.actual || (e.kind === 'spend' ? 'not measured yet' : '')) + '</td><td>' + tag(e.status) + '</td></tr>').join('')
       : '<tr><td colspan="7" class="note">No allocations yet. The first one happens the moment a real sale is realized.</td></tr>';
     $('reviews').innerHTML = t.reviews.length ? t.reviews.slice().reverse().slice(0, 6).map((r) => '<p><b>' + day(r.at) + '</b>: ' + esc(r.reason) + ' New weights: ' + Object.entries(r.weights).map(([k, w]) => esc(names[k] || k) + ' ' + pct(w)).join(', ') + '.</p>').join('')
       : '<p class="note">The first weekly review runs on Monday. With no spends measured yet, it keeps the weights on the ROI ranking and learns nothing.</p>';
   }).catch(() => { $('when').textContent = 'The ledger did not load. Try again in a minute.'; $('balance').textContent = ''; });
+
+  // what the wallet has received, read from the chain by the daily scan (tools/wallet-watch.mjs): the record when the live read gets no answer
+  fetch('/treasury/wallet.json').then((r) => (r.ok ? r.json() : null)).then((v) => {
+    if (!v || !v.address || !v.as_of) return; // not read from the chain yet
+    const rows = (v.incoming || []).slice(0, 10);
+    $('received').innerHTML = '<div class="grid"><div class="card"><b>' + (v.balance_cents == null ? 'not read' : usd(v.balance_cents)) + '</b><span>USDC on Base, read from the chain ' + esc(day(v.as_of)) + '</span></div>'
+      + '<div class="card"><b>' + esc(v.transfers_in || 0) + '</b><span>USDC transfers in, ' + usd(v.received_cents || 0) + ' received in all</span></div></div>'
+      + (rows.length ? '<table><tbody>' + rows.map((x) => '<tr><td class="num">block ' + esc(x.block) + '</td><td><a href="' + esc(safeUrl('https://basescan.org/tx/' + x.tx)) + '" rel="noopener"><code>' + esc(x.tx.slice(0, 12)) + '…</code></a> from <code>' + esc(x.from.slice(0, 8)) + '…</code></td><td class="num">' + usd(Number(BigInt(x.units) / 10000n)) + '</td></tr>').join('') + '</tbody></table>'
+        : '<p class="note">No USDC has reached the wallet yet. Every transfer in, from a paid call, a bounty paid out or anyone else, shows here with its transaction.</p>')
+      + (v.gap ? '<p class="note">' + esc(v.gap) + '</p>' : '');
+  }).catch(() => {});
 
   fetch('/treasury/found.json').then((r) => r.json()).then((f) => {
     const groups = {};

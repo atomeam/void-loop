@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; z-index:1; }
+#ui { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; border-radius:6px; font-size:12px; }
+#ui button { margin:2px; }
+.card {
+  position:absolute; width:130px; height:80px; background:rgba(30,40,60,0.85);
+  border:1px solid #4af; border-radius:8px; padding:8px; font-size:11px;
+  z-index:5; transition: transform 0.15s, filter 0.2s, left 0.1s, top 0.1s;
+  user-select:none; pointer-events:none;
+}
+.card h4 { margin:0 0 4px 0; color:#8cf; }
+.card .state { font-size:10px; color:#aaa; }
+#status { position:absolute; bottom:10px; left:10px; z-index:10; font-size:11px; color:#aaa; }
+#video { display:none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Camera-Flow MLP Spatial Mind · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: Opt-in getUserMedia camera provides a live low-resolution luminance field. Simple frame-differencing estimates optical flow.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Camera-Flow MLP Spatial Mind · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: Opt-in getUserMedia camera provides a live low-resolution luminance field. Simple frame-differencing estimates optical flow.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f541-webgpu-camera-flow-mlp-spatial-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f541-webgpu-camera-flow-mlp-spatial-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<video id="video" autoplay playsinline muted></video>
+<div id="ui">
+  <button id="cam">Enable Camera</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <span id="fitness">fitness: --</span>
+</div>
+<div id="status">Camera-Flow MLP Spatial · grant camera or move pointer</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Camera-Flow MLP Spatial Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

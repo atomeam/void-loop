@@ -39,3 +39,12 @@ test('a shape asked for by name becomes that shape (it used to stay the rect it 
   assert.equal(alter(th, 'draw a square'), true); assert.equal(th.shapeType, 'rect');
   assert.equal(alter(th, 'make it bigger'), true); assert.equal(th.shapeType, 'rect');
 });
+test('a coloured shape in German reads to the same picture, and the draw skill takes it', () => {
+  for (const t of ['zeichne einen roten kreis', 'Zeichne einen roten Kreis.', 'zeichne mir einen roten Kreis', 'bitte zeichne einen roten kreis', 'male einen roten kreis'])
+    assert.deepEqual(shapeAsk(t) && [shapeAsk(t).shape, shapeAsk(t).color, shapeAsk(t).english], ['circle', 'red', 'draw a red circle'], t);
+  assert.deepEqual([shapeAsk('zeichne ein blaues Quadrat').shape, shapeAsk('zeichne ein blaues Quadrat').color], ['square', 'blue']);
+  assert.equal(shapeAsk('male einen großen grünen Stern').size, 'big'); assert.equal(shapeAsk('zeichne ein kleines rotes Herz').size, 'small');
+  assert.equal(shapeAsk('zeichne ein orangenes Rechteck').shape, 'rectangle'); assert.equal(shapeAsk('zeichne einen weißen Kreis').color, 'white');
+  for (const t of ['zeichne einen kreis', 'zeichne eine katze', 'zeichne einen roten', 'was ist ein roter kreis']) assert.equal(shapeAsk(t), null, t);
+  assert.ok(draw.match('zeichne einen roten kreis', 'zeichne einen roten Kreis')); assert.ok(!cartoon.match('zeichne einen roten kreis', 'zeichne einen roten kreis'));
+});

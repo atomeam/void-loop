@@ -175,3 +175,19 @@ test('gatewayOf: the default gateway, or the one AI_GATEWAY names', () => {
   assert.deepEqual(gatewayOf(undefined), { gateway: { id: 'default' } });
   assert.deepEqual(gatewayOf({ AI_GATEWAY: 'verse' }), { gateway: { id: 'verse' } });
 });
+
+test('the stage card\'s own self-test (asked by Verse: "Address the least-checked skills: video-gen and baggage"): what Verse controls while the model has no credits, never a made clip', async () => {
+  const { suite, cardHtml, hrefOf, default: sk } = await import('../void-live-deploy/skills/video-gen.js');
+  assert.deepEqual(suite(), { ok: true, got: '' });
+  assert.equal(sk.suite, suite, 'tools/skills-check.mjs runs it every day');
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const h = cardHtml('a paper boat drifting on a pond', esc);
+  assert.match(h, /<h2>Animate: a paper boat drifting on a pond<\/h2>/); assert.match(h, /href="\/video\/\?prompt=a%20paper%20boat%20drifting%20on%20a%20pond"/);
+  assert.equal(hrefOf('rock & roll'), '/video/?prompt=rock%20%26%20roll');
+  // the request suite() checks is the one the route really sends: the public clip of the card's words reaches the model in that shape
+  const { env, calls } = world('ok'); await get(env); await get(env);
+  await post(env, { prompt: 'a paper boat drifting on a pond', seconds: 5, shape: 'portrait' });
+  const sent = calls.at(-1).input;
+  assert.equal(sent.duration, 5); assert.equal(sent.aspect_ratio, '9:16'); assert.equal(sent.draft, true); assert.equal(sent.resolution, '720p'); assert.equal(sent.disable_safety_filter, false);
+  assert.equal(calls[0].input.duration, 1, 'the self-check clip is one second');
+});

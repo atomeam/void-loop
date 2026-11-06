@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T05:48:15Z",
-   "subject": "Outcome exam: timers 86.7"
-  },
-  {
-   "at": "2026-11-06T05:48:06Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T05:42:22Z",
-   "subject": "Gaps batch 4: phonetic alphabet, invisible characters, final exam grade, SQL formatter and XML to JSON in the page (#2377)"
-  },
-  {
-   "at": "2026-11-06T05:41:42Z",
-   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches (#2378)"
-  },
-  {
-   "at": "2026-11-06T05:41:17Z",
-   "subject": "The 3D note shows once, so it never hides the next answer (#2379)"
-  },
-  {
-   "at": "2026-11-06T05:40:57Z",
-   "subject": "Agents pay Verse over MCP, the review Action pays per review, and the listings and grant drafts are ready (#2380)"
-  },
-  {
-   "at": "2026-11-06T05:31:45Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:28:56Z",
-   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
-  },
-  {
-   "at": "2026-11-06T05:26:32Z",
-   "subject": "Page copies: void.html takes the deploy copies' change from #2369"
-  },
-  {
-   "at": "2026-11-06T05:24:21Z",
-   "subject": "Incident: the browser suite failed on 42ad9480 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T05:24:11Z",
-   "subject": "Tower gate: wheel,tournaments measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:22:02Z",
-   "subject": "A replace that misses shows the nearest lines (#2330) (#2372)"
-  },
-  {
-   "at": "2026-11-06T05:21:03Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:20:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T05:19:15Z",
-   "subject": "Brain step: faster smell and synapse pass, same state to the bit"
-  },
-  {
-   "at": "2026-11-06T05:18:19Z",
+   "at": "2026-11-06T16:08:18Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T05:17:34Z",
+   "at": "2026-11-06T16:06:16Z",
+   "subject": "Failed jobs read: run 42244869099 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-06T16:06:06Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T16:05:43Z",
+   "subject": "Main green: list groceries fills the open list, no-list removes answer at once, list card types over the seeded title (#2426)"
+  },
+  {
+   "at": "2026-11-06T16:05:26Z",
+   "subject": "Incident: the browser suite failed on 923ce150 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T16:05:13Z",
+   "subject": "Automerge sweep: safety-check on the chosen batch only, so the sweep reaches the suite gate (#2425)"
+  },
+  {
+   "at": "2026-11-06T16:03:51Z",
+   "subject": "Lab: 475 experiments live at /lab/, 23 waiting for a fix (#2441)"
+  },
+  {
+   "at": "2026-11-06T16:01:42Z",
+   "subject": "Film card: link the Internet Archive only as a checked free film that plays here (#2442)"
+  },
+  {
+   "at": "2026-11-06T16:01:01Z",
+   "subject": "Team jobs: one piece of work to one seat, the highest leverage first, no busywork (#2443)"
+  },
+  {
+   "at": "2026-11-06T15:59:50Z",
+   "subject": "Lab skill: \"verse lab\" opens the lab, and the book (the menu) lists it (#2445)"
+  },
+  {
+   "at": "2026-11-06T15:59:03Z",
+   "subject": "Daily film: the take folder is absolute, so ffmpeg finds the frames (#2446)"
+  },
+  {
+   "at": "2026-11-06T15:52:41Z",
+   "subject": "Site test: fix: \"films by Kurosawa\" load 1510 ms > 1200"
+  },
+  {
+   "at": "2026-11-06T15:44:05Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T15:41:39Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-06T15:38:18Z",
+   "subject": "Outcome exam: podcasts 86.4"
+  },
+  {
+   "at": "2026-11-06T15:38:02Z",
+   "subject": "Verse runs its own day: the clock keeps going, the daily film and podcast start themselves, the crew says when it runs next (#2440)"
+  },
+  {
+   "at": "2026-11-06T15:37:44Z",
+   "subject": "Failed jobs read: run 42240559933 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-06T15:37:24Z",
+   "subject": "Incident: the browser suite failed on b8b7e8ad (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T15:26:58Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T05:17:17Z",
-   "subject": "\"add one minute\" adds time to the timer, not a list item (#2326) (#2369)"
-  },
-  {
-   "at": "2026-11-06T05:17:06Z",
-   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
-  },
-  {
-   "at": "2026-11-06T05:16:56Z",
-   "subject": "Verse code review paid with PayPal, and the PayPal AI Hackathon entry pack (#2370)"
+   "at": "2026-11-06T15:23:12Z",
+   "subject": "Failed jobs read: run 42240108371 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 23,
-  "week": 174
+  "day": 47,
+  "week": 198
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -894,19 +894,20 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-05T13:14Z",
+  "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-06T12:58Z",
   "source": "verse"
  },
  "tower": {
-  "target": "wheelofgold.com",
-  "since": "2026-11-05",
+  "target": "id5-sync.com",
+  "since": "2026-11-06",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1269
+  "total": 1301
  }
 }

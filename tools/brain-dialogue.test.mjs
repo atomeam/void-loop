@@ -69,7 +69,7 @@ test('an owner key is never kept, the log is capped, and a wrong record restores
 
 test('it is an organ of the brain: a recalled ask lights its ideas again, it is kept on the device, and the self holds counts only', () => {
   const b = B.createBrain(7);
-  assert.ok(B.ORGAN_IDS.includes('dialogue') && B.ORGAN_IDS.length === 25);
+  assert.ok(B.ORGAN_IDS.includes('dialogue') && B.ORGAN_IDS.length === 29);
   B.ask(b, 'tell me about dragons'); Dl.heard(b.dialogue, 'tell me about dragons', T0); Dl.answered(b.dialogue, 'tell me about dragons', 'Dragons are creatures of myth.', T0 + 1000);
   for (let t = 0; t < 600; t++) B.stepBrain(b, { x: 0.5, y: 0.5, over: false });
   assert.equal(b.runs.dialogue, 0, 'with no recalled ask it rests and takes no run from the others');

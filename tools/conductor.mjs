@@ -7,9 +7,11 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { plan, probeDue, growDue, willDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
+import { plan, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
+import { queueBlueprints } from './watch-build.mjs'; // every blueprint Verse wrote becomes a tv: build job, a few an hour
 import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
+import { pauseState, PAUSE_TITLE, LOOP_CODE } from './verse-loop.mjs'; // the coder's own back-off rule, so the conductor and the loop agree
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
 const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
@@ -17,7 +19,7 @@ const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
 export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-self.yml', 'tower-gate.yml', 'deploy.yml',
-  'grow-self.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml'])];
+  'grow-self.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
 const warn = (m) => { warnings.push(m); console.log('::warning title=Conductor::' + m); };
@@ -37,6 +39,21 @@ function runsOf(wf) {
 }
 function todayOf(wf, day) {
   try { return JSON.parse(gh('api', `repos/${REPO}/actions/workflows/${wf}/runs?created=>=${day}&per_page=1`)).total_count || 0; } catch (_) { return 0; }
+}
+/** the coder's back-off as words (why and until when), or null when it is not paused. Reads the open 'Verse loop paused' issue and
+ *  the newest commit to the loop's own code, as tools/verse-loop.mjs does: a fix to that code after the pause began resumes it. */
+export function loopBackoff(now, read = gh) {
+  let issue = null;
+  try { issue = (JSON.parse(read('issue', 'list', '--repo', REPO, '--state', 'open', '--search', `"${PAUSE_TITLE}" in:title`, '--json', 'number,title,createdAt')) || []).find((i) => i.title === PAUSE_TITLE) || null; }
+  catch (_) { return null; } // unreadable: started as before (the run itself still honours the pause)
+  if (!issue) return null;
+  let changedAt = 0;
+  for (const f of LOOP_CODE) {
+    try { const c = JSON.parse(read('api', `repos/${REPO}/commits?sha=main&path=${encodeURIComponent(f)}&per_page=1`))[0]; changedAt = Math.max(changedAt, Date.parse(c && c.commit && c.commit.committer && c.commit.committer.date) || 0); }
+    catch (_) { /* one unreadable file: the others still count */ }
+  }
+  const p = pauseState({ issue, now, changedAt: changedAt || null });
+  return p.paused ? `the coder's back-off, #${issue.number}, until ${new Date(p.until).toISOString().slice(11, 16)} UTC` : null;
 }
 function start(wf, input, id) {
   const a = ['workflow', 'run', wf, '--repo', REPO, '--ref', 'main'];
@@ -70,8 +87,13 @@ async function tick() {
   }
   for (const r of Object.values(ROUTES)) if (wf[r.wf] && wf[r.wf].exists && !('counted' in wf[r.wf])) { wf[r.wf].today = todayOf(r.wf, day); wf[r.wf].counted = true; }
   // the kill switch is a file in the repository the clock checks out each tick (domains/verse-loop.pause): while it exists the coder takes no job
-  const paused = fs.existsSync('domains/verse-loop.pause');
-  for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].paused = paused;
+  // and the coder's own back-off (tools/verse-loop.mjs: three laps that failed or did not merge pause it 6 hours, said in an open
+  // 'Verse loop paused' issue). Before 2026-11-06 the conductor did not read it: it claimed a job for the coder every tick, the run
+  // answered "paused" in two seconds after a checkout, npm ci and a Chromium install, the job went back, and the tick counted it as
+  // started (83 "started" in a day while the coder landed nothing).
+  const backoff = loopBackoff(now);
+  const paused = fs.existsSync('domains/verse-loop.pause') || !!backoff;
+  for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) { wf[f].paused = paused; if (backoff) wf[f].pausedWhy = backoff; }
   // the coder's free model budget (GET /api/coder: counts only). Full: the coder is not started until room comes back; unknown: started as before
   const budget = await coderBudget();
   if (budget && budget.room === false) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = { until: budget.until };
@@ -99,6 +121,16 @@ async function tick() {
       state.visitorAt = last.at; state.visitorFiled = [...seen].slice(-80);
     }
   } catch (e) { if (!/ENOENT/.test(String(e && e.code || e.message))) warn('visitor: ' + String(e.message || e).slice(0, 80)); }
+  // open site-test issues the hourly recheck has not closed (tools/site-test-close.mjs): each becomes one fix job, once, after a 2-hour
+  // grace in which a flake closes itself. The recheck closes the issue once the fix is live (owner, 2026-11-06: "clear the issues").
+  try {
+    const open = JSON.parse(gh('api', `repos/${REPO}/issues?labels=site-test&state=open&per_page=50`));
+    const seen = new Set((state.issuesFiled || []).concat(jobs.map((j) => j.target)));
+    if (!DRY) for (const job of issueJobsOf(open, [...seen], now)) {
+      if (await act('issue ' + job.target, async () => (await queue('POST', { ask: job.ask, target: job.target })).status === 200)) seen.add(job.target);
+    }
+    state.issuesFiled = [...seen].filter((t) => /^issue:/.test(t)).slice(-80);
+  } catch (e) { warn('site-test issues: ' + String(e.message || e).slice(0, 80)); }
   for (const s of p.start) {
     const ok = await act('start ' + s.id, async () => {
       const job = jobs.find((x) => x.id === s.id) || {};
@@ -142,21 +174,35 @@ async function tick() {
   // the site's own clock (void-tick.yml, a chain like this one) is started again when no run of it is going or waiting
   const siteClock = runsOf('void-tick.yml');
   if (siteClock && !siteClock.some((x) => BUSY.has(x.status)) && await act('void-tick', async () => { start('void-tick.yml'); return true; })) done.revived = ['void-tick.yml'];
-  return finish({ ...state, handed }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
+  // the daily jobs (the film, the podcast) once their hour has come, and a full automerge sweep every hour: GitHub drops their crons
+  done.daily = [];
+  for (const d of DAILY) {
+    const w = wf[d.wf] || {};
+    if (dailyDue({ exists: w.exists, busy: w.busy, lastRunMs: w.last, now, hourUtc: d.hourUtc }) && await act(d.wf, async () => { start(d.wf); return true; })) done.daily.push(d.wf);
+  }
+  let sweptAt = state.sweptAt || 0;
+  if (sweepDue({ sweptMs: sweptAt, now }) && await act('automerge sweep', async () => { start('automerge.yml'); return true; })) { done.sweep = true; if (!DRY) sweptAt = now; }
+  // every blueprint not built yet goes on the queue, a few an hour, best first (tools/watch-build.mjs queueBlueprints keeps the pace)
+  let blueprintsAt = state.blueprintsAt || 0;
+  if (blueprintsDue({ queuedMs: blueprintsAt, now }) && !DRY) {
+    try { const out = await queueBlueprints(); done.blueprints = out.queued; for (const l of out.said) console.log('blueprints: ' + l); blueprintsAt = now; }
+    catch (e) { warn('blueprints: ' + String(e.message || e).slice(0, 120)); }
+  }
+  return finish({ ...state, handed, sweptAt, blueprintsAt }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
 }
 
 function finish(state, now, t) {
   const at = new Date(now).toISOString();
-  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], held: t.held.length, warnings: warnings.length }
+  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], daily: t.done.daily || [], sweep: !!t.done.sweep, blueprints: (t.done.blueprints || []).length, held: t.held.length, warnings: warnings.length }
     : { at, error: warnings[0] || 'no plan', warnings: warnings.length };
   const ticks = [...(state.ticks || []), tick].filter((x) => now - Date.parse(x.at) < 24 * 3600000).slice(-200);
   const day = { ticks: ticks.length, started: ticks.reduce((n, x) => n + ((x.started || []).length), 0), requeued: ticks.reduce((n, x) => n + (x.requeued || 0), 0),
     setAside: ticks.reduce((n, x) => n + (x.setAside || 0), 0), probes: ticks.filter((x) => x.probe).length, errors: ticks.filter((x) => x.error).length };
   const broken = t ? Object.entries(t.wf).filter(([, s]) => s.exists && s.fails >= 3).map(([f, s]) => ({ wf: f, fails: s.fails, url: s.url })) : (state.broken || []);
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
-    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
+    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, sweptAt: state.sweptAt || 0, blueprintsAt: state.blueprintsAt || 0, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
-  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}` : 'no plan: ' + (warnings[0] || ''),
+  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}; blueprints queued ${(t.done.blueprints || []).join(', ') || 'none'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',
     `last 24 h: ${day.started} started, ${day.requeued} put back, ${day.setAside} set aside, ${day.probes} probe runs, ${day.errors} ticks without a plan`].filter(Boolean);
   console.log(lines.join('\n'));

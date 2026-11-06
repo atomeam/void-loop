@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0c10; --fg: #e0e6f0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100%; height: 100%; }
+  .agent {
+    position: absolute; width: 120px; height: 80px; border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: grab; user-select: none; box-shadow: 0 4px 20px rgba(0,0,0,.4);
+    transition: transform .08s linear, filter .2s; will-change: transform, left, top;
+    border: 2px solid rgba(255,255,255,.3); font-size: 12px; text-align: center; padding: 6px;
+  }
+  .agent:active { cursor: grabbing; }
+  .agent .id { font-weight: 700; font-size: 14px; }
+  .agent .fit { opacity: .7; font-size: 10px; }
+  #hud {
+    position: fixed; top: 12px; left: 12px; background: rgba(10,12,16,.75); backdrop-filter: blur(8px);
+    padding: 10px 14px; border-radius: 10px; font-size: 13px; z-index: 100; max-width: 280px;
+  }
+  button, #seal, #load {
+    margin-top: 6px; padding: 6px 12px; background: #1a2233; color: #fff; border: 1px solid #445;
+    border-radius: 6px; cursor: pointer; font-size: 12px;
+  }
+  button:hover { background: #2a3344; }
+  #status { margin-top: 4px; opacity: .8; font-size: 11px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Intersection-Sealed DOM Swarm Mind · Verse lab</title>
+<meta name="description" content="Pure-DOM multi-agent swarm of living cards. Each agent is an absolute-positioned HTML element whose visual style and motion parameters are governed by a sealed">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Intersection-Sealed DOM Swarm Mind · Verse lab">
+<meta property="og:description" content="Pure-DOM multi-agent swarm of living cards. Each agent is an absolute-positioned HTML element whose visual style and motion parameters are governed by a sealed">
+<meta property="og:url" content="https://a-to-mind.com/lab/f586-intersection-sealed-dom-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f586-intersection-sealed-dom-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <div><strong>F586 DOM Swarm</strong> — Verse</div>
+  <div id="status">Tilt device or move mouse. Drag agents. Overlaps transfer genomes.</div>
+  <button id="seal">Seal Swarm</button>
+  <button id="load">Load Sealed</button>
+  <div id="info"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Intersection-Sealed DOM Swarm Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

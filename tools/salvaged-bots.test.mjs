@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { SALVAGED } from '../void-live-deploy/bots/salvaged.js';
+import { SALVAGED, sha256hex } from '../void-live-deploy/bots/salvaged.js';
 import { BOT, probe } from '../void-live-deploy/bots/kit.js';
 const bot = (id) => SALVAGED.find((b) => b.id === id);
 const lineage = (b) => b.from.every((f) => existsSync(new URL('../' + f, import.meta.url)));
@@ -308,4 +308,98 @@ test("countries-url", async () => {
   assert.ok(lineage(b), 'lineage is real');
   const r = await fetch(b.run("v4.1.1"), { method: "HEAD", signal: AbortSignal.timeout(20000) });
   assert.equal(r.status, 200, "the pinned countries URL answers");
+});
+// absorbed 2026-11-06 ("Absorb every repository on the account into the core code"): glassbox, the Wix site's backend, and the next ten drafts
+test("sha256hex matches node:crypto, and copy-receipt reproduces draft 005's published digest", () => {
+  for (const t of ['', 'abc', 'hello world', 'x'.repeat(55), 'x'.repeat(56), 'x'.repeat(64), 'é漢字🙂'.repeat(30), 'y'.repeat(1000)]) assert.equal(sha256hex(t), createHash('sha256').update(t).digest('hex'), 'length ' + t.length);
+});
+test("glassbox-claim", () => {
+  const b = bot("glassbox-claim"); assert.ok(b && BOT("glassbox-claim"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("market_signal: Prices fell. Then rose."), "not a candidate · one falsifiable sentence per claim, found 2");
+  assert.equal(b.run('{"id":"bad","kind":"monetization","text":"Gumroad pays out weekly.","status":"PROVEN"}'), "not a candidate · id must look like mem-2026-11-06T14-short-slug · status must be UNVERIFIED (only a human merge proves a claim)");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("glassbox-promote", () => {
+  const b = bot("glassbox-promote"); assert.ok(b && BOT("glassbox-promote"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run('{"target":"github:atomeam/glassbox","promote":false,"claims":[{"id":"mem-a"},{"id":"mem-b"},{"id":"mem-a"}]}'), "on a human merge: 2 claims become PROVEN (mem-a, mem-b) · skipped, already listed: mem-a · each is re-hashed and the surface ledger re-rendered");
+  assert.equal(b.run('{"target":"github:x/y","promote":false,"claims":[]}'), "refused: target must be github:atomeam/glassbox");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("velo-endpoint", () => {
+  const b = bot("velo-endpoint"); assert.ok(b && BOT("velo-endpoint"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.match(b.run("get_health"), /^GET \/_functions\/health · anyone can call it/);
+  assert.match(b.run("hello"), /^name a Velo HTTP function/);
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("external-link-check", () => {
+  const b = bot("external-link-check"); assert.ok(b && BOT("external-link-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run('<a href="https://gov.uk" target="_blank" rel="noopener noreferrer">GOV.UK (opens in a new tab)</a>'), "passes · new tab, warned in the visible text");
+  assert.equal(b.run('<a href="x" rel="opener">x</a>'), "fails · rel=opener is denied");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("breadcrumb-check", () => {
+  const b = bot("breadcrumb-check"); assert.ok(b && BOT("breadcrumb-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("Docs /docs/ > Guides /docs/guides/ > Install"), 'passes · 3 crumbs · current: Install (a span with aria-current="page", not a link)');
+  assert.equal(b.run("Docs > Guides /g/ > Install"), "fails · crumb 1 (Docs) needs an href: an ancestor is a link");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("canonical-check", () => {
+  const b = bot("canonical-check"); assert.ok(b && BOT("canonical-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("https://a-to-mind.com/tools/ https://a-to-mind.com/tools/"), "passes · self-referential: https://a-to-mind.com/tools/");
+  assert.equal(b.run("https://a-to-mind.com/?q=cats https://a-to-mind.com/"), "fails · an ask URL (?q=) gets no canonical");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("copy-receipt", () => {
+  const b = bot("copy-receipt"); assert.ok(b && BOT("copy-receipt"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("hello | " + "0".repeat(64)), "5 bytes UTF-8 · sha256 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824 · mismatch: published 000000000000, this text 2cf24dba5fb0 (not copied)");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("voice-plan", () => {
+  const b = bot("voice-plan"); assert.ok(b && BOT("voice-plan"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.match(b.run("draft the release notes from the changelog"), /^plan#notes · Release notes draft/);
+  assert.equal(b.run("pricing changelog"), "unmatched · no model call and no invented steps (plans: census, pricing, notes)", 'a tie is unmatched');
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("run-graph-check", () => {
+  const b = bot("run-graph-check"); assert.ok(b && BOT("run-graph-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("nodes: a, b, c | edges: a>b, b>c"), "passes · 3 nodes at z 0 to 2 · 2 edges, all forward · depth is event order, not a layout");
+  assert.equal(b.run("nodes: a, b, c | edges: a>b, b>x"), "fails · edge b>x names no listed node");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("same-bin", () => {
+  const b = bot("same-bin"); assert.ok(b && BOT("same-bin"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("09:12 09:20"), "separate-bins at 15 min · width-sensitive: 5 separate, 15 separate, 60 shared · 3 min from a bin edge · arrow denied: a shared bin is not a cause");
+  assert.equal(b.run("09:12 at 7"), "bin width is 5, 15 or 60 minutes");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("recall-gap", () => {
+  const b = bot("recall-gap"); assert.ok(b && BOT("recall-gap"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("a b | b a"), "no gap: the two recalls agree · agreement is not a shared-reality seal");
+  assert.equal(b.run("one"), "send two recalls: recall A | recall B");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("answer-block-check", () => {
+  const b = bot("answer-block-check"); assert.ok(b && BOT("answer-block-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("definition | What is A-to-Mind? | A-to-Mind is a partnership table for resumable AI workflows."), "quoteable · definition · stands alone, names A-to-Mind");
+  assert.equal(b.run("policy | Does it run? | Yes, 40% more citations."), "not quoteable · no invented lift");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("run-replay", () => {
+  const b = bot("run-replay"); assert.ok(b && BOT("run-replay"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("plan, artifact.write 10"), "fails · artifact.write ran as a step: a write holds for a human seal");
+  assert.equal(b.run("plan"), "1 event · 0 steps, 0 tok, 0¢ ledger fact · writes: none · replay only, nothing runs");
+  assert.ok(lineage(b), 'lineage is real');
 });

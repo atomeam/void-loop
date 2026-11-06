@@ -15,7 +15,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { sitesIn } from '../void-live-deploy/lib/voice.js';
+import { sitesIn, askId } from '../void-live-deploy/lib/voice.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ASKS = resolve(root, 'void-live-deploy/void.asks.json'), LEDGER = resolve(root, 'void-live-deploy/void.growth.json'), VOICE = resolve(root, 'domains/void.voice.md');
@@ -25,11 +25,20 @@ const STEM = (w) => w.replace(/(ings?|ies|ied|ed|es|s|ly|ally|ation|ations|ment|
 /** the meaningful words of a text, stemmed. Pure. */
 export const words = (t) => [...new Set(norm(t).split(' ').filter((w) => w.length > 2 && !STOP.has(w)).map(STEM).filter(Boolean))];
 
-/** every ask in the voice log, oldest first, deduplicated by its words: [{ ask, small, id? }]. Pure. */
+/** every ask in the voice log, oldest first, deduplicated by its words: [{ ask, small, id?, ids }]. ids are every id the words were asked
+ *  under: each "Asks:" line's place under its "### YYYY-MM-DD HH:MM UTC" heading (lib/voice.js askId, the id a ledger line names with
+ *  --asked), and the id the current-asks list prints. A ledger line that names one of them answers the ask (owner's card, 2026-11-06: three
+ *  images exam asks built by id stayed open in the totals, because only the current list carried ids). Pure. */
 export function asksOf(md) {
-  const out = [], seen = new Set();
-  const push = (ask, small, id) => { const k = norm(ask); if (!k || seen.has(k)) return; seen.add(k); out.push({ ask, small: !!small, ...(id ? { id } : {}) }); };
-  for (const m of String(md || '').matchAll(/^Asks: (.*)$/gm)) for (const q of m[1].matchAll(/"([^"]{12,})"(\s*\(small\))?/g)) push(q[1], q[2]);
+  const out = [], byKey = new Map();
+  const push = (ask, small, id, more) => { const k = norm(ask); if (!k) return; let a = byKey.get(k);
+    if (!a) { a = { ask, small: !!small, ...(id ? { id } : {}), ids: [] }; byKey.set(k, a); out.push(a); } else if (small) a.small = true;
+    for (const x of [id, more]) if (x && !a.ids.includes(x)) a.ids.push(x); };
+  let at = '';
+  for (const line of String(md || '').split('\n')) {
+    const h = /^### (\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC/.exec(line); if (h) { at = h[1] + 'T' + h[2] + ':00Z'; continue; }
+    if (/^Asks: /.test(line)) { let i = 0; for (const q of line.matchAll(/"([^"]*)"(\s*\(small\))?/g)) { if (q[1].length >= 12) push(q[1], q[2], '', at ? askId(at, i) : ''); i++; } }
+  }
   for (const m of String(md || '').matchAll(/^- (.+?)( \*\(small\)\*)? \((?:daily|after a build), \d{4}-\d\d-\d\d\)(?: `(ask-[0-9-]+)`)?$/gm)) push(m[1], m[2], m[3]);
   return out;
 }
@@ -48,7 +57,7 @@ export function lastAsked(md) {
 export function openAsks(asks, ledger, links) {
   const done = new Set((ledger || []).filter((e) => e && e.asked).map((e) => norm(e.asked)));
   for (const k of links || []) if (k && (k.words || k.ask) && (ledger || []).some((e) => e && e.at === k.ledgerAt)) done.add(norm(k.words || k.ask));
-  return asks.filter((a) => !done.has(norm(a.ask)) && !(a.id && done.has(norm(a.id))));
+  return asks.filter((a) => !done.has(norm(a.ask)) && !(a.id && done.has(norm(a.id))) && !(a.ids || []).some((id) => done.has(norm(id))));
 }
 /** the ledger entry an ask most likely names, by shared rare words: { entry, score, shared } or null. Pure. */
 export function matchOf(ask, ledger, idf) {
@@ -98,8 +107,9 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   console.log(ruled + ' linked by the curated rules; ' + open.length + ' open asks after them, ' + rows.filter((r) => r.m && r.m.score >= BAR).length + ' at or over the bar ' + BAR + ', ' + rows.filter((r) => !r.m || r.m.score < BAR).length + ' still to build');
   // all-time totals for the self card (owner, 2026-10-19: it said "24 of 71" one hour and "22 of 66" the next, because it counted only the
   // 60 reflections kept online): every ask in the voice log, reworded ones folded as the card folds them, and how many of those are built
-  const { sameAsk } = await import('../void-live-deploy/lib/self-blocks.js');
-  const groups = []; for (const a of asks) { const g = groups.find((x) => sameAsk(x[0].ask, a.ask)); if (g) g.push(a); else groups.push([a]); }
+  // one ask said twice (the card's sameAsk, or dupAsk: numbers changed, the same named target) is one group, counted once
+  const { sameOrDup } = await import('../void-live-deploy/lib/ask-same.js');
+  const groups = []; for (const a of asks) { const g = groups.find((x) => sameOrDup(x[0].ask, a.ask)); if (g) g.push(a); else groups.push([a]); }
   const stillOpen = new Set(openAsks(asks, ledger, links).map((a) => norm(a.ask)));
   // through: the newest reflection in the log; asks made online after it are counted on top by /api/reflect
   const through = [...readFileSync(VOICE, 'utf8').matchAll(/^### (\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC/gm)].map((m) => m[1] + 'T' + m[2] + ':00Z').sort().pop() || '';
@@ -108,7 +118,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   const seen = lastAsked(readFileSync(VOICE, 'utf8'));
   const openGroups = groups.filter((g) => !g.some((a) => !stillOpen.has(norm(a.ask))));
   const openNow = openGroups.map((g) => { const at = g.map((a) => seen.get(norm(a.ask))).filter(Boolean).sort((x, y) => String(y.at).localeCompare(String(x.at)))[0] || {};
-    return { ask: g[0].ask, ...(at.at ? { at: at.at, kind: at.kind } : {}), small: g.some((a) => a.small), times: g.length }; });
+    // the ids it was asked under go with it, so /api/reflect finds a ledger line that names one even after its reflection left the window
+    return { ask: g[0].ask, ...(at.at ? { at: at.at, kind: at.kind } : {}), small: g.some((a) => a.small), times: g.length, ids: [...new Set(g.flatMap((a) => a.ids || []))].slice(-12) }; });
   const totals = { asked: groups.length, built: groups.length - openGroups.length, through, open: openNow };
   console.log('all time: ' + totals.built + ' of ' + totals.asked + ' asks built');
   if (argv.includes('--write')) { asksJson.totals = totals; asksJson.links = links; writeFileSync(ASKS, JSON.stringify(asksJson, null, 2) + '\n'); console.log('wrote ' + added + ' links to void.asks.json'); }
