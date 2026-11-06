@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T09:46:23.829Z",
+  "at": "2026-11-06T10:13:14.133Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -39,19 +39,18 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
+          "ask": "play the latest episode of serial",
           "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of hardcore history",
+          "ask": "play the latest episode of planet money",
           "failed": [
-            "show",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of stuff you should know",
@@ -96,9 +95,10 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
           "ask": "pon el último episodio de radiolab",
