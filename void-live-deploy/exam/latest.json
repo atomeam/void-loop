@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T05:48:11.845Z",
+  "at": "2026-11-06T06:15:52.504Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,25 +34,64 @@
       }
     },
     "podcasts": {
-      "score": 92.7,
+      "score": 85.6,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "play the latest episode of hardcore history",
+          "failed": [
+            "show",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
           "ask": "play the latest episode of the moth",
           "failed": [
-            "fast"
+            "audio"
           ],
           "score": 83.3
         },
         {
-          "ask": "play the episode before that",
+          "ask": "play the latest episode of npr news now",
           "failed": [
-            "skill",
             "audio",
             "episode"
           ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
           "score": 57.1
+        },
+        {
+          "ask": "play the episode before that",
+          "failed": [
+            "skill"
+          ],
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -112,17 +151,16 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
@@ -141,20 +179,10 @@
       }
     },
     "directions": {
-      "score": 93.7,
+      "score": 97.4,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "directions to times square",
-          "failed": [
-            "answered",
-            "fast",
-            "place",
-            "route"
-          ],
-          "score": 33.3
-        },
         {
           "ask": "directions to springfield",
           "failed": [
@@ -255,73 +283,18 @@
       }
     },
     "sports": {
-      "score": 88.9,
+      "score": 95.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mlb scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
           "ask": "scores",
           "failed": [
             "skill",
-            "board"
+            "board",
+            "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "resultado del real madrid",
@@ -419,33 +392,10 @@
       ]
     },
     "timers": {
-      "score": 86.7,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "set a timer for 90 seconds",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "add one minute",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "set a timer for 45 seconds",
-          "failed": [
-            "mobile",
-            "rival"
-          ],
-          "score": 60
-        }
-      ]
+      "fails": []
     },
     "images": {
       "score": 100,
@@ -495,7 +445,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 86.7
+    "domain": "podcasts",
+    "score": 85.6
   }
 }
