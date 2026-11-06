@@ -237,6 +237,7 @@ for (const [name, file] of [
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
+  ['site-test-close', 'site-test-close.test.mjs'], // the site tester closes its own items: a recheck that passes on the live site closes the issue, one that still fails is queued once
   ['exam', 'exam.test.mjs'],
   ['hear', 'hear.test.mjs'],
   ['visitor-pass', 'visitor-pass.test.mjs'],
@@ -386,6 +387,7 @@ for (const [name, file] of [
   ['brain-strokes', 'brain-strokes.test.mjs'], // the Hopfield drafts' associative memory: from the first half of a visitor's stroke it recalls the rest far closer than carrying it on and than the drafts' rule when strokes repeat, loses and stays quiet when they never do, runs in the brain, is kept
   ['brain-rules', 'brain-rules.test.mjs'], // the decision-tree drafts' tree: it guesses the way of the visitor's next stroke far more often than the best rule without a tree when the way hangs on where the last stroke ended, matches the table of what follows what on a fixed cycle, stays quiet on strokes that go any way, runs in the brain, is kept
   ['brain-reflex', 'brain-reflex.test.mjs'], // the tiny MLP drafts' network: it learns by backprop through the bodies it pushes to follow the pointer, closer than the best of 18 springs on a slow walk and under a tilt, about even on jumps, quiet on a circle where a spring wins, runs in the brain, is kept
+  ['brain-skew', 'brain-skew.test.mjs'], // site-test #2387: an organ whose state an older brain does not hold (a deploy serves /lib/ files from two builds for a minute) rests and runs nothing, never throws
   ['brain-dialogue', 'brain-dialogue.test.mjs'], // the conversation orb: a repeat says when it was asked and what Verse said, a follow-up names the ask it follows, kept on the device, counts only in the self // the NCA drafts' cellular automaton: its tuned rule holds where the focus was and lets it go, beats the drafts' rule and random search, runs in the brain, is kept
   ['brain-dream', 'brain-dream.test.mjs'], // the brain's dreams: each fix, job and idea comes from something it read or holds, names it, is posted once by Verse, owner only, inside its limits
   ['brain-everywhere', 'brain-everywhere.test.mjs'], // the brain on every page: /visit.js loads lib/brain-everywhere.js, so a page reads and writes the one brain of the browser, keeps writes when none runs, and starts one only with the lock
