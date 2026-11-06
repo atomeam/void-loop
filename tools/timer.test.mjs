@@ -84,3 +84,39 @@ test('timer: "add one minute" grows the timer and the answer names its new lengt
   const none = { things: () => ({}), selected: () => null, save() {}, render() {}, say() {} };
   assert.equal(askAction('add one minute', 'add one minute', none), '');
 });
+
+test('timer: lengths said with halves and two parts (asked by Verse: "set a timer for 90 seconds" and increments)', async () => {
+  const { plainHalves } = await import('../void-live-deploy/skills/timer.js');
+  for (const [a, ms] of [['set a timer for 90 seconds', 90000], ['timer 90 sec', 90000], ['1 minute 30 seconds', 90000], ['1 minute and 30 seconds', 90000],
+    ['a timer for 2 and a half minutes', 150000], ['two and a half minutes', 150000], ['set a timer for a minute and a half', 90000],
+    ['set a timer for an hour and a half', 5400000], ['half a minute timer', 30000], ['set a timer for 1½ minutes', 90000], ['half an hour', 1800000]]) {
+    assert.equal(parseDuration(a), ms, a);
+    assert.equal(wantsCreate(a), true, a);
+  }
+  assert.ok(isDurationRequest('1 minute and 30 seconds') && isDurationRequest('two and a half minutes'));
+  assert.equal(plainHalves('make a list'), 'make a list');
+  assert.equal(durationLabel(parseDuration('a timer for 2 and a half minutes')), 'Countdown set for 2:30 · 150 seconds');
+});
+
+test('timer: "add 30 seconds" and "add a minute" grow the timer there, and never reset it to that length', async () => {
+  const { addMs, askAction, ask } = await import('../void-live-deploy/skills/timer.js');
+  for (const [a, ms] of [['add 30 seconds', 30000], ['add a minute', 60000], ['add 30 seconds to the timer', 30000], ['add a minute and a half', 90000],
+    ['30 more seconds', 30000], ['give it 2 more minutes', 120000], ['add another 30 seconds', 30000]]) {
+    assert.equal(addMs(a), ms, a);
+    assert.equal(wantsCreate(a), false, a + ' is not a new timer');
+  }
+  assert.equal(addMs('add a 30 second timer'), 0, 'a new timer, not an increment');
+  assert.equal(wantsCreate('add a 30 second timer'), true);
+  const things = { t1: { id: 't1', kind: 'timer', duration: 90000, remaining: 90000, running: false, startedAt: 0 } };
+  let picked = 't1', said = '';
+  const api = { stage: { clientWidth: 800, clientHeight: 600 }, things: () => things, selected: () => picked, select(id) { picked = id; }, save() {}, render() {}, say(s) { said = s; } };
+  assert.equal(ask('add 30 seconds to the timer', 'add 30 seconds to the timer', api), '', 'the create hook leaves it alone');
+  assert.equal(askAction('add 30 seconds to the timer', 'add 30 seconds to the timer', api), 'timer-add');
+  assert.equal(things.t1.duration, 120000);
+  assert.equal(askAction('add a minute', 'add a minute', api), 'timer-add');
+  assert.equal(things.t1.duration, 180000);
+  assert.match(said, /3:00/);
+  const empty = { things: () => ({}), selected: () => null, select() {}, save() {}, render() {}, say(s) { said = s; } };
+  assert.equal(askAction('add 30 seconds to the timer', 'add 30 seconds to the timer', empty), 'no timer');
+  assert.match(said, /set a timer for 30 seconds/);
+});

@@ -70,3 +70,14 @@ test("vat skill is registered and matches VAT asks", () => {
   assert.ok(vatSkill.match("remove vat from 100", "remove vat from 100"));
   assert.ok(vatSkill.examples.length > 0);
 });
+
+test('the rate said first in English is worked out on the card: "add 20% vat to 80", "remove 20% vat from 240", "total with 20% vat on 150"', () => {
+  assert.deepEqual(vatStateOf('add 20% vat to 80'), { amount: 80, rate: 20, mode: 'add' });
+  assert.deepEqual(vatStateOf('remove 20% vat from 240'), { amount: 240, rate: 20, mode: 'extract' });
+  assert.deepEqual(vatStateOf('total with 20% vat on 150'), { amount: 150, rate: 20, mode: 'add' });
+  assert.equal(compute(vatStateOf('remove 20% vat from 240')).net, 200);
+  assert.equal(compute(vatStateOf('total with 20% vat on 150')).gross, 180);
+  for (const a of ['add 20% vat to 80', 'remove 20% vat from 240', 'total with 20% vat on 150']) assert.equal(vatSkill.match(a, a), true, a);
+  assert.equal(vatStateOf('22% of 1000'), null);
+  assert.deepEqual(vatStateOf('remove vat from 100'), { amount: 100, rate: 22, mode: 'extract' }, 'the asks without a rate keep the default');
+});

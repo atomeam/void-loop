@@ -18,6 +18,11 @@ export function vatStateOf(text) {
     [/^(?:ндс|vat)\s+(\d{1,3}(?:[.,]\d+)?)\s*%\s*(?:от|из|с|of|on|from)\s+(.+)$/i, 'extract'],
     [/^(?:выделить|вычленить|извлечь|выдели|вычти)\s+(?:ндс\s+)?(?:из\s+)?(.+)$/i, 'extract'],
     [/^(?:начислить|начисли|добавить|добавь)\s+(?:ндс\s+)?(?:на\s+|к\s+)?(.+)$/i, 'add'],
+    // the rate first, in English: "add 20% vat to 80", "remove 20% vat from 240", "total with 20% vat on 150" (the skill's own example, which
+    // routed here and showed no sum until 2026-11-06)
+    [/^(?:please\s+)?(?:remove|extract|take|deduct|subtract)\s+(\d{1,3}(?:[.,]\d+)?)\s*%\s*vat\s+(?:from|of|out of)\s+(.+)$/i, 'extract'],
+    [/^(?:please\s+)?(?:add|plus|include|put)\s+(\d{1,3}(?:[.,]\d+)?)\s*%\s*vat\s+(?:to|on|into)\s+(.+)$/i, 'add'],
+    [/^(?:(?:what\s+is\s+|what's\s+)?(?:the\s+)?total\s+with\s+)(\d{1,3}(?:[.,]\d+)?)\s*%\s*vat\s+(?:on|added\s+to)\s+(.+)$/i, 'add'],
     [/^(?:please\s+)?(?:remove|extract|take|deduct|subtract)\s+(?:the\s+)?vat\s+(?:from|of|out of)\s+(.+)$/i, 'extract'],
     [/^(?:please\s+)?(?:add|plus|include|put)\s+(?:the\s+)?vat\s+(?:to|on|into)\s+(.+)$/i, 'add'],
     [/^(?:please\s+)?(?:remove|extract|strip)\s+(.+?)\s+(?:minus|without|ex)[\s-]*vat$/i, 'extract'],

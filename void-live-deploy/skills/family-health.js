@@ -10,6 +10,8 @@
  * known to Verse: no usage, no popular or unused (the owner's rule: no behaviour tracking). Asked by Verse twice ("a 'last-used' timestamp for every
  * skill ... to identify which parts of my skills are becoming dead weight"): each skill's last-used day is shown for THIS DEVICE only, read from
  * this browser's own storage (lib/skill-use.js, written when a skill answers: a day, never a word of any ask); nothing is sent or counted anywhere.
+ * "which skills can be promoted to proven" (asked by Verse) opens its second card: every checked and tested skill, weakest family first, with
+ * the evidence it has and what it lacks (families.json `needs`, lib/proof-gap.js).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { readUsed, usedWords, deadWeight } from '../lib/skill-use.js';
@@ -41,6 +43,28 @@ const WHEN = new RegExp('^(?:(?:show|open|give|list)(?:\\s+me)?\\s+)?(?:the\\s+|
   + '|^how\\s+(?:healthy|well[\\s-]tested)\\s+(?:are|is)\\s+(?:your|(?:verse|void)\'?s|(?:verse|v01d)\'?s)\\s+skill\\s+families$', 'i');
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
 export const asksHealth = (t) => WHEN.test(norm(t));
+
+// "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status" (asked by Verse, twice, with 17 and 6, then 16
+// and 5): every checked and tested skill, weakest family first, with the evidence it has and what it lacks to be proven, read from
+// families.json on every ask (its `needs` is written beside the rating on every build: lib/proof-gap.js), so the numbers are never typed in
+const PROMOTE = [/\bpromot(?:e|ed|able|ion)\b[^.]*\bproven\b/, /\bproven\b[^.]*\bpromot(?:e|ed|able|ion)\b/, /\b(?:checked|tested)\s+(?:and|or|&)\s+(?:checked|tested)\s+skills\b/,
+  /\bunproven\s+skills\b/, /\bskills?\b[^.]*\b(?:lacks?|needs?|missing)\b[^.]*\bto\s+be\s+proven\b/, /^(?:list\s+(?:the\s+|your\s+)?)?promotable\s+skills$/];
+/** the ask is for the skills that are not proven yet and what each lacks. Pure. */
+export const asksPromote = (t) => { const l = norm(t); return /\bskills?\b/.test(l) && PROMOTE.some((re) => re.test(l)); };
+
+/** the list's card body below its title, from lib/proof-gap.js promotable(families.json). Pure. */
+export function promoteHtml(esc, P) {
+  if (!P || !P.families) return '<p>The skill families could not be read just now. Ask again in a moment.</p>';
+  if (!P.families.length) return '<p>Every skill is proven: nothing is waiting.</p>';
+  const n = (k, w) => P[k] + ' ' + w + (P[k] === 1 ? '' : 's');
+  return '<div class="sub fh-promote-lead" data-checked="' + P.checked + '" data-tested="' + P.tested + '" style="font-size:13px;margin:2px 0 10px">' + esc(P.checked + ' checked and ' + P.tested + ' tested skills' + (P.experiment ? ', and ' + n('experiment', 'experiment') : '') + ', weakest family first. A rating moves only when the evidence it needs is in the repo.') + '</div>'
+    + P.families.map((f) => '<div class="fh-family" data-family="' + esc(f.id) + '" style="margin:10px 0 0"><div class="vh" style="display:flex;justify-content:space-between;gap:8px"><b style="font-weight:600">' + esc(f.name) + '</b><span class="sub" style="font-size:12px;font-variant-numeric:tabular-nums">' + f.proven + ' of ' + f.total + ' proven</span></div>'
+      + '<ul class="fh-skills" style="list-style:none;margin:4px 0 0;padding:0">' + f.skills.map((x) => '<li data-skill="' + esc(x.name) + '" data-tier="' + esc(x.tier) + '" style="padding:5px 0;border-top:1px solid rgba(255,255,255,.05)">'
+        + '<b style="font-weight:600">' + esc(x.name) + '</b> <span class="fh-tier" style="color:var(--d-ink-2,#c3c8d8)">' + esc(x.tier) + '</span>'
+        + '<br><span class="fh-why" style="font-size:13px;color:var(--d-ink-3,#8e94a8)">has ' + esc(x.why) + (x.smoke ? '; its daily test failed: ' + esc(x.smoke) : '') + '</span>'
+        + (x.needs ? '<br><span class="fh-needs" style="font-size:13px">needs ' + esc(x.needs) + '</span>' : '') + '</li>').join('') + '</ul></div>').join('')
+    + '<div class="src">Source: skills/families.json, written from the repo by tools/families.mjs on every deploy; what each lacks by lib/proof-gap.js</div>';
+}
 
 /** the card's numbers from families.json: totals and one row per family, in the file's order. Pure. */
 export function healthRows(fam) {
@@ -174,7 +198,21 @@ export function healthHtml(esc, fam, used = null, now = Date.now(), better = nul
     + '<div class="src">Source: skills/families.json, written from the repo by tools/families.mjs</div>';
 }
 
+async function runPromote(api) {
+  const { showPage, esc, _pageStill } = api;
+  const head = '<h2>What each skill lacks to be proven</h2>';
+  const el = showPage((p) => { p.innerHTML = head + '<div class="sub">reading the families\u2026</div>'; }); // void-review: ok (head is a constant heading; nothing from a user)
+  let fam = null;
+  try { const r = await fetch(FAMILIES_URL, { cache: 'no-cache' }); fam = r.ok ? await r.json() : null; } catch (_) { fam = null; }
+  if (!el || (_pageStill && !_pageStill(el))) return 'family-health';
+  let P = null; try { P = fam ? (await import('../lib/proof-gap.js')).promotable(fam) : null; } catch (_) { P = null; }
+  if (_pageStill && !_pageStill(el)) return 'family-health';
+  el.innerHTML = head + promoteHtml(esc, P);
+  return 'family-health';
+}
+
 async function run(text, api) {
+  if (asksPromote(text)) return runPromote(api);
   const { showPage, esc, _pageStill } = api;
   const head = '<h2>How healthy my skills are</h2>';
   const el = showPage((p) => { p.innerHTML = head + '<div class="sub">reading the families…</div>'; }); // void-review: ok (head is a constant heading; nothing from a user)
@@ -214,17 +252,21 @@ export function suite() {
       return sh.includes('class="sub fh-sources" data-read="1"') && sh.includes('Source reliability: &lt;1&gt;') && sh.includes('data-next="live"') && sh.includes('source 2 of 3: x.org &lt;b&gt;') && !sh.includes('<b>') && (sh.match(/class="fh-source"/g) || []).length === 1 && !h.includes('fh-source'); })()
     && h.includes('data-fh-filter="proven" aria-pressed="false">Proven · 1<') && h.includes('data-fh-filter="experiment" aria-pressed="false">Experiment · 1<') && h.includes('data-fh-filter="all" aria-pressed="true">All · 4<')
     && h.includes('data-skill="e" data-tier="experiment"') && matchCount(H.rows[0], 'proven') === 1 && matchCount(H.rows[1], 'proven') === 0 && matchCount(H.rows[0], 'all') === 3
-    && asksHealth('Show me your skill families?') && asksHealth('how healthy are your skills') && asksHealth('family health') && !asksHealth('family tree') && !asksHealth('healthy family meals');
+    && asksHealth('Show me your skill families?') && asksHealth('how healthy are your skills') && asksHealth('family health') && !asksHealth('family tree') && !asksHealth('healthy family meals')
+    && asksPromote('Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status') && asksPromote('which skills can be promoted to proven') && !asksPromote('promote my post') && !asksPromote('tested skills for a resume')
+    && (() => { const P = { checked: 1, tested: 0, experiment: 0, families: [{ id: 'n', name: 'N <i>', proven: 2, total: 3, skills: [{ name: 'q', tier: 'checked', why: 'a self-test, 2 real asks in the benchmark', needs: '1 more real ask <b>' }] }] }, ph = promoteHtml(esc, P);
+      return ph.includes('data-checked="1"') && ph.includes('needs 1 more real ask &lt;b&gt;') && ph.includes('N &lt;i&gt;') && !ph.includes('<b>1') && promoteHtml(esc, null).includes('could not be read') && promoteHtml(esc, { families: [] }).includes('Every skill is proven'); })();
   return { ok, got: ok ? '' : JSON.stringify(H) };
 }
 
 export default {
   name: 'family-health',
   examples: ['show me your skill families', 'family health', 'how healthy are your skills', 'skill families', 'skill family health', 'show me the skill families',
-    "void's skill families", 'how well tested are your skills', 'evidence ratings', 'skill health'],
+    "void's skill families", 'how well tested are your skills', 'evidence ratings', 'skill health',
+    'which skills can be promoted to proven', 'list the checked and tested skills', 'Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status'],
   nearMisses: ['family tree', 'healthy family meals', 'how healthy is my family', 'family health insurance plans', 'my skills', 'skills for a resume',
-    'how healthy is coffee', 'health'],
+    'how healthy is coffee', 'health', 'promote my post', 'tested skills for a resume', 'proven ways to learn new skills'],
   suite,
-  match(lower, text) { return asksHealth(text || lower); },
+  match(lower, text) { return asksHealth(text || lower) || asksPromote(text || lower); },
   run,
 };

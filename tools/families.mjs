@@ -17,6 +17,7 @@
 // past: the rules are read off the repo, so a rating can't be claimed, only earned, and it drops when a test goes.
 //   node tools/families.mjs           write void-live-deploy/skills/families.json and print the families
 //   node tools/families.mjs --stale   list experiments older than STALE_DAYS, flagged for review (never deleted)
+//   node tools/families.mjs --promotable   every checked and tested skill, weakest family first, and what each lacks to be proven
 //   node tools/families.mjs --check   exit 1 if families.json is out of date or a skill has no family (checks.mjs runs this)
 // Each skill also carries (asked by Verse, ask-20261013-1823-1: "Add a 'last_tested' timestamp and a 'success_rate' float to each
 // entry in the skills manifest"):
@@ -59,6 +60,7 @@ export const FAMILIES = [
 import { readOrder } from './skills-index.mjs';
 import { promote, streaksOf } from './streaks.mjs';
 import { SOURCE_FAMILIES, scanSkill, reliabilityOf, familySources } from './source-reliability.mjs';
+import { needsWords, promotable } from '../void-live-deploy/lib/proof-gap.js';
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 // what the two per-skill dates and rates mean, written into the file so a reader of the JSON knows (asked by Verse)
 export const MEANS = {
@@ -69,6 +71,7 @@ export const MEANS = {
   streak: 'consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Verse',
   live: 'a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven',
   source: 'source reliability (asked by Verse, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating',
+  needs: 'what a checked or tested skill (never an experiment) still lacks to be proven, the fewest pieces of evidence the rating rule asks for (void-live-deploy/lib/proof-gap.js); written beside the rating on every build, so it is never a claim; asked by Verse',
   not_here: 'how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person\'s own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device',
 };
 
@@ -231,6 +234,7 @@ export function build(names, ev, meta = {}) {
       const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke, retest.at && retest.passed.has(n) ? retest.at : ''); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
       const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
       const pr = promotedOn(x.tier, prevRows.get(n), today); if (pr) x.promoted = pr; // the day it moved up a rating (asked by Verse)
+      if (x.tier === 'checked' || x.tier === 'tested') { const nd = needsWords({ ...e, liveFresh: !!(e.live && e.liveAt && daysOld(e.liveAt, today) < LIVE_FRESH_DAYS) }); if (nd) x.needs = nd; } // what it lacks to be proven (asked by Verse)
       if (Number.isFinite(+(smoke.streak || {})[n])) x.streak = +smoke.streak[n]; // clean smoke runs in a row
       const rel = meta.sources && meta.sources[n] ? reliabilityOf(meta.sources[n], x, e, today) : null; if (rel) x.source = rel; // source reliability (asked by Verse)
       return x; });
@@ -254,6 +258,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const sources = Object.fromEntries(FAMILIES.filter((f) => SOURCE_FAMILIES.includes(f.id)).flatMap((f) => f.skills).filter((n) => names.includes(n)).map((n) => [n, scanSkill(n, readRepo)]));
   const b = build(names, evidence(names), { prev, bench: benchRun(), smoke: smokeRun(), retest: retestRun(), today: new Date().toISOString().slice(0, 10), sources });
   carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
+  // node tools/families.mjs --promotable: every checked and tested skill, weakest family first, and what each lacks to be proven (asked by Verse)
+  if (process.argv.includes('--promotable')) {
+    const P = promotable({ families: b.families });
+    console.log(P.checked + ' checked and ' + P.tested + ' tested skills' + (P.experiment ? ' and ' + P.experiment + ' experiments' : '') + ', weakest family first:');
+    for (const f of P.families) { console.log('\n' + f.name + ' (' + f.proven + ' of ' + f.total + ' proven)'); for (const x of f.skills) console.log('  ' + x.name + ' [' + x.tier + '] has ' + x.why + (x.smoke ? '; its daily test failed: ' + x.smoke : '') + '\n    needs ' + x.needs); }
+    process.exit(0);
+  }
   if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
   const json = JSON.stringify({ note: 'Verse\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, ...(smokeRun().at ? { smoke_at: smokeRun().at } : {}), ...(benchRun().at ? { bench_at: benchRun().at } : {}), totals: b.totals, families: b.families }, null, 1) + '\n';
   const problems = [];

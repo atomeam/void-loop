@@ -7114,5 +7114,17 @@
   {"ask": "multiplication quiz", "want": "skill:math-quiz"},
   {"ask": "white noise", "want": "skill:noise"},
   {"ask": "pink noise for 30 minutes", "want": "skill:noise"},
-  {"ask": "brown noise", "want": "skill:noise"}
+  {"ask": "brown noise", "want": "skill:noise"},
+  {"ask": "add 20% vat to 80", "want": "skill:vat"},
+  {"ask": "remove 20% vat from 240", "want": "skill:vat"},
+  {"ask": "total with 20% vat on 150", "want": "skill:vat"},
+  {"ask": "share a 100 km trip that cost 50 dollars 5 ways", "want": "skill:drive-share"},
+  {"ask": "what browser am i using", "want": "skill:my-device"},
+  {"ask": "what os am i using", "want": "skill:my-device"},
+  {"ask": "rain sounds for sleep", "want": "skill:noise"},
+  {"ask": "reaction time test", "want": "skill:speed-tests"},
+  {"ask": "click speed test", "want": "skill:speed-tests"},
+  {"ask": "aim trainer", "want": "skill:speed-tests"},
+  {"ask": "addition quiz", "want": "skill:math-quiz"},
+  {"ask": "if 6 eggs cost 1.80 how much do 10 cost", "want": "skill:sums"}
 ]
