@@ -622,6 +622,7 @@ for (const [name, file] of [
   ['repo-look', 'repo-look.test.mjs'],
   ['event-date', 'event-date.test.mjs'],
   ['paste-rule', 'paste-rule.test.mjs'],
+  ['read-aloud-redraw', 'read-aloud-redraw.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
   ['rally', 'rally.test.mjs'],
   ['forge-duel', 'forge-duel.test.mjs'],
