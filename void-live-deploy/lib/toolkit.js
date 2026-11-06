@@ -30,7 +30,7 @@ export const TOOLS = Object.freeze({
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
 // pages /tools/ lists that TOOLS does not (no "Use with" row reaches them yet): the Tools page and its stage card list them both, from here
-export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/assimilated/', 'Every site Versus assimilated'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
+export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/assimilated/', 'Every site Versus assimilated'], ['/lore/', 'Web Lore: every site Verse has met'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
   ['/books/', 'Bookshelf'], ['/films/', 'Holovids'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'],
   ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments'], ['/autopilot/', 'Autopilot: what Verse did on its own'], ['/progress/', 'What Verse can actually do']].map(Object.freeze));
 /** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, without /tools/ itself. Pure. */
