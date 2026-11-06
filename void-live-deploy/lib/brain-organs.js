@@ -23,6 +23,7 @@ import { trace } from './brain-trace.js';
 import { strokes } from './brain-strokes.js';
 import { rules } from './brain-rules.js';
 import { reflex } from './brain-reflex.js';
+import { growth } from './brain-growth.js';
 import { dialogue } from './brain-dialogue.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
 
@@ -440,7 +441,7 @@ const arena = {
   }
 };
 
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, strokes, rules, reflex, dialogue, will, arena];
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, strokes, rules, reflex, growth, dialogue, will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };
