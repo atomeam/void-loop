@@ -588,6 +588,62 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T18:59:15Z",
+   "subject": "Self card: asks naming different sites stay apart; folded built rows copy as Built and their day (#2430)"
+  },
+  {
+   "at": "2026-11-06T18:58:41Z",
+   "subject": "Absorb glassbox, the Wix backend and the next ten drafts into Verse as bots (#2431)"
+  },
+  {
+   "at": "2026-11-06T18:58:04Z",
+   "subject": "Main green: skill index, families, generated pages, MAP, overlap allowance and header budget current again (#2448)"
+  },
+  {
+   "at": "2026-11-06T18:56:57Z",
+   "subject": "Films reach past 60, and the films loop log and podcast reach main and the site on their own (#2450)"
+  },
+  {
+   "at": "2026-11-06T18:56:48Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T18:56:08Z",
+   "subject": "Tower card: site history under the target; Versus page reads the crawls and settled non-sites (#2461)"
+  },
+  {
+   "at": "2026-11-06T18:55:37Z",
+   "subject": "Suite gate: a red batch splits even when main moved (#2463)"
+  },
+  {
+   "at": "2026-11-06T18:55:09Z",
+   "subject": "Verse's crew and coder: podcasts in one ask, bets read whole, one build per TV idea, no runs burned while the coder is paused (#2464)"
+  },
+  {
+   "at": "2026-11-06T18:53:46Z",
+   "subject": "Failed jobs read: run 42270835929 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-06T18:52:56Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-06T18:50:49Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T18:45:44Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"funny cartoon"
+  },
+  {
+   "at": "2026-11-06T18:44:43Z",
+   "subject": "Claude/project thread rkur4a (#2462)"
+  },
+  {
+   "at": "2026-11-06T18:43:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T18:41:16Z",
    "subject": "Local TV: a blueprint opened on stage keeps the show playing in a card beside it (#2451)"
   },
@@ -610,62 +666,6 @@
   {
    "at": "2026-11-06T18:34:33Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T18:33:13Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-06T18:29:19Z",
-   "subject": "Verse Brain organ 29: Curves, a Kolmogorov-Arnold network of spline curves (#2456)"
-  },
-  {
-   "at": "2026-11-06T18:28:55Z",
-   "subject": "Tower: settle non-site endpoints like id5-sync.com by itself and move on (#2458)"
-  },
-  {
-   "at": "2026-11-06T18:28:23Z",
-   "subject": "Failed jobs read: run 42267088787 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T18:28:17Z",
-   "subject": "Keep the answer card above the home ask bar: load void-cards.css before void-home.css (#2459)"
-  },
-  {
-   "at": "2026-11-06T18:27:55Z",
-   "subject": "Incident: the browser suite failed on 389a92ee (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T18:27:16Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-11-06T18:27:09Z",
-   "subject": "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md (#2460)"
-  },
-  {
-   "at": "2026-11-06T18:20:30Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T18:12:16Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T18:02:32Z",
-   "subject": "Suite gate: a check main already fails no longer holds a batch; the merge sweep runs twice an hour on Verse's clock (#2457)"
-  },
-  {
-   "at": "2026-11-06T17:46:57Z",
-   "subject": "Outcome exam: podcasts 88.8"
-  },
-  {
-   "at": "2026-11-06T17:43:53Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T17:43:01Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next id5-sync.com (the target)"
   }
  ],
  "builders": {
@@ -847,8 +847,8 @@
   }
  ],
  "visible": {
-  "day": 59,
-  "week": 210
+  "day": 62,
+  "week": 213
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
