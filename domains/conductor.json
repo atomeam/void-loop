@@ -1,16 +1,28 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T20:07:24.542Z",
+ "updated": "2026-11-06T20:18:44.373Z",
  "last24h": {
-  "ticks": 57,
+  "ticks": 58,
   "started": 98,
   "requeued": 0,
   "setAside": 0,
-  "probes": 9,
+  "probes": 10,
   "errors": 0
  },
  "broken": [],
  "held": [
+  {
+   "id": "mw4p9cye",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "mw4gkvdn",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "want-exam-translate",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
   {
    "id": "mvbl52gd",
    "why": "store-gap.yml reached its 6 runs today"
@@ -20,66 +32,78 @@
    "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r1rz",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r2hk",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r36z",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r3w1",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvp4ahwz",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw1ee0lk",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw1g8ei3",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
+   "id": "mw1kno2c",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
+   "id": "mvwl3b1c",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
+   "id": "mvwl3biu",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
+   "id": "mvwl3bx7",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
+   "id": "mvwl3cbp",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "mvwl3cpy",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "mvwl3d38",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "mvpkt0sa",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 12,
    "cap": 90
   },
   "day": {
-   "used": 349,
+   "used": 360,
    "cap": 360
   },
-  "room": true,
-  "until": null
+  "room": false,
+  "until": "2026-11-07T00:00:00.000Z"
  },
  "handed": {
   "mvbl52gd": 1793968312020,
@@ -1886,6 +1910,26 @@
    "sweep": false,
    "blueprints": 0,
    "held": 14,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T20:18:44.373Z",
+   "open": 246,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 242,
    "warnings": 1
   }
  ]
