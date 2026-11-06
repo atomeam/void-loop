@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-05T20:02:23.303Z",
+ "as_of": "2026-11-06T06:26:04.741Z",
  "rules": "Legitimate sources only, each cited. A value is a number its source publishes (a prize pool, a bounty, a program credit) and is not a forecast; null means unknown. Anything that needs Atom's identity, a login or a card is ready to claim; Verse claims nothing in anyone's name.",
  "probes": {
   "devpost": "read",
@@ -10,9 +10,9 @@
  },
  "counts": {
   "places": 28,
-  "live_finds": 13,
+  "live_finds": 15,
   "ready_to_claim": 36,
-  "verse_does_it": 3,
+  "verse_does_it": 5,
   "not_eligible": 1,
   "not_reached": 1
  },
@@ -474,14 +474,14 @@
    "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
   },
   {
-   "id": "devpost:31489",
+   "id": "devpost:31820",
    "category": "hackathon prizes",
-   "title": "EthnoHack (Nov 02 - 08, 2026, 3 days left)",
-   "source": "https://ethnohack2026.devpost.com/",
+   "title": "HackTheFashion Global'26 (Nov 06 - 25, 2026, 19 days left)",
+   "source": "https://hackthefashion-global26.devpost.com/",
    "value_cents": null,
-   "prize_pool_cents": null,
-   "value_note": "prize pool €8,000 shared by the winners; not an estimate of what Verse would win",
-   "fit": "themes: Databases, Health, Machine Learning/AI",
+   "prize_pool_cents": 4500000,
+   "value_note": "prize pool $45,000 shared by the winners; not an estimate of what Verse would win",
+   "fit": "themes: AR/VR, Beginner Friendly, Machine Learning/AI",
    "status": "ready to claim",
    "needs": "Atom registers and submits as the entrant (Devpost account)",
    "next_step": "Pick it if a Verse feature already matches the theme; build the entry; Atom submits."
@@ -535,10 +535,34 @@
    "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
   },
   {
-   "id": "upsell:/members/",
+   "id": "upsell:/bots/",
    "category": "missed upsells",
-   "title": "People open /members/ (6 views in 7 days) and it offers nothing to buy",
-   "source": "https://a-to-mind.com/members/",
+   "title": "People open /bots/ (4 views in 7 days) and it offers nothing to buy",
+   "source": "https://a-to-mind.com/bots/",
+   "value_cents": null,
+   "value_note": "unknown until it converts: traffic is still small",
+   "fit": "Verse's own public visit counts (/api/visit)",
+   "status": "Verse does it",
+   "needs": null,
+   "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
+  },
+  {
+   "id": "upsell:/emoji-combos/",
+   "category": "missed upsells",
+   "title": "People open /emoji-combos/ (4 views in 7 days) and it offers nothing to buy",
+   "source": "https://a-to-mind.com/emoji-combos/",
+   "value_cents": null,
+   "value_note": "unknown until it converts: traffic is still small",
+   "fit": "Verse's own public visit counts (/api/visit)",
+   "status": "Verse does it",
+   "needs": null,
+   "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
+  },
+  {
+   "id": "upsell:/progress/",
+   "category": "missed upsells",
+   "title": "People open /progress/ (4 views in 7 days) and it offers nothing to buy",
+   "source": "https://a-to-mind.com/progress/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",
    "fit": "Verse's own public visit counts (/api/visit)",
