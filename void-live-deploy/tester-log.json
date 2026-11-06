@@ -1,16 +1,45 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 88,
+ "cases": 89,
  "runsTotal": 300,
  "kinds": {
-  "file": 91,
-  "teach": 7,
-  "grow": 70,
+  "teach": 6,
+  "file": 90,
+  "grow": 71,
   "tighten": 7,
   "none": 40,
-  "visitor": 85
+  "visitor": 86
  },
  "runs": [
+  {
+   "at": "2026-11-06T10:20:14Z",
+   "passed": 89,
+   "of": 92,
+   "kind": "grow",
+   "ms": 397,
+   "note": "new ground passed, kept as a regression case: \"yo make a 2d toon dog\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T10:08:42Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-06T09:56:21Z",
    "passed": 89,
@@ -286,20 +315,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T04:12:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T03:36:56Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -353,9 +368,9 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 69,
-   "passed": 382,
-   "of": 1319,
+   "runs": 67,
+   "passed": 364,
+   "of": 1295,
    "broken": 41,
    "brokenOf": 885,
    "brokenPassed": 22
@@ -377,10 +392,10 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 114,
-   "passed": 2367,
-   "of": 2585,
-   "ms": 377
+   "runs": 116,
+   "passed": 2456,
+   "of": 2677,
+   "ms": 379
   }
  ],
  "seen": {
@@ -400,7 +415,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T09:56:21Z",
+  "skill:cartoon": "2026-11-06T10:20:14Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -715,6 +730,9 @@
   "skill:podcast-search": "2026-11-06T09:29:54Z",
   "skill:pointing-arrow": "2026-11-06T09:56:21Z",
   "skill:proverb": "2026-11-06T09:56:21Z",
-  "skill:pwcheck": "2026-11-06T09:56:21Z"
+  "skill:pwcheck": "2026-11-06T09:56:21Z",
+  "skill:quote": "2026-11-06T10:20:14Z",
+  "skill:rally": "2026-11-06T10:20:14Z",
+  "skill:random": "2026-11-06T10:20:14Z"
  }
 }

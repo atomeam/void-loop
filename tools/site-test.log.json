@@ -1,21 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:31:10Z",
-  "passed": 11,
-  "of": 12,
-  "kind": "file",
-  "key": "what did this video teach? | nothing appeared",
-  "note": "fix: \"what did this video teach?\" nothing appeared"
- },
- {
-  "at": "2026-10-15T06:34:08Z",
-  "passed": 7,
-  "of": 12,
-  "kind": "teach",
-  "key": "teach | yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
-  "note": "teach V01D \"yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
- },
- {
   "at": "2026-10-15T06:36:52Z",
   "passed": 2,
   "of": 12,
@@ -4484,5 +4468,44 @@
    ]
   },
   "note": "fix: \"turn the questions i missed into a five-minute challenge\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-06T10:08:42Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1726,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-06T10:20:14Z",
+  "passed": 89,
+  "of": 92,
+  "ms": 397,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1726,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"yo make a 2d toon dog\" (skill:cartoon)"
  }
 ]
