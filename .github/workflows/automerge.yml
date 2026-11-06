@@ -10,7 +10,7 @@ name: Verse automerge
 
 on:
   workflow_run:
-    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate"]
+    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate", "Suite on main"] # a suite gate result merges the green PR or queues the next (2026-11-06)
     types: [completed]
   pull_request_review:
     types: [submitted]
@@ -43,6 +43,7 @@ permissions:
   pull-requests: write # mark a draft ready; the one conflict comment; arm auto-merge
   checks: read
   actions: write # start the deploy of main after a merge; start Verse's review on a head the bot pushed
+  issues: write # the stall alarm: one merge-stall issue when no pull request merged for 2 hours (tools/merge-stall.mjs)
 
 jobs:
   automerge:

@@ -221,6 +221,7 @@ for (const [name, file] of [
   ['store', 'store.test.mjs'],
   ['pay-share', 'pay-share.test.mjs'],
   ['alt-pay', 'alt-pay.test.mjs'],
+  ['x402', 'x402.test.mjs'],
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
@@ -332,6 +333,7 @@ for (const [name, file] of [
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
   ['suite-gate', 'suite-gate.test.mjs'],
+  ['merge-stall', 'merge-stall.test.mjs'], // no merge for 2 hours while a green pull request waits: one issue names the stuck step
   ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'], ['studies-api', 'studies-api.test.mjs'],
   ['review-api', 'review-api.test.mjs'], ['review-pr', 'review-pr.test.mjs'],
   ['go', 'go.test.mjs'],
@@ -462,6 +464,7 @@ for (const [name, file] of [
   ['rides-live', 'rides-live.test.mjs'],
   ['baggage-live', 'baggage-live.test.mjs'],
   ['video-gen-live', 'video-gen-live.test.mjs'],
+  ['image-gen-live', 'image-gen-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
   ['print-file', 'print-file.test.mjs'],

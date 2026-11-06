@@ -66,6 +66,7 @@ export const LIMITS = {
   'film-views': { rpm: 60, body: 0 }, // Verse Tube view counts (functions/api/film-views.js): one D1 upsert per view, no KV
   'film-review': { rpm: 30, body: 4000 }, // a paying member's or the owner's verdict on a film and a note of up to 1,000 characters (functions/api/film-review.js)
   support: { rpm: 10, body: 6000 }, // the support desk (functions/api/support.js): paying users only, a report of up to 2,000 characters
+  x402: { rpm: 30, body: 70000 }, // Verse's pay-per-call API for agents (functions/api/x402/): the same review body, paid in USDC over x402 (lib/x402.js)
   review: { rpm: 60, body: 70000 }, // Verse's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   studies: { rpm: 20, body: 0 }, // owner-only, read only: the study panel lists Verse's studies (functions/api/studies.js)
   reflect: { rpm: 30, body: 2000 }, // Verse's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
@@ -101,6 +102,7 @@ export const LIMITS = {
   holidays: { rpm: 30, body: 0 }, // the next public holidays in one country (functions/api/holidays.js): GET only, two letters in, one fixed host (Nager.Date), edge-cached six hours, no KV, no model
   movies: { rpm: 30, body: 0 }, // real movies (functions/api/movies.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   local: { rpm: 30, body: 0 }, // the local TV and radio page (functions/api/local.js): GET, a place in or a point in, Radio Browser and Open-Meteo's geocoder at fixed hosts, edge-cached, 20 fresh lookups a minute, no model, no KV
+  ip: { rpm: 30, body: 0 }, // the connection's own public address (functions/api/ip.js): GET, no input, never cached
   where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
   jobs: { rpm: 60, body: 0 }, // GET only: the jobs pages' listings and a search's RSS (functions/api/jobs.js); three fixed upstream addresses, each edge-cached for as long as its terms ask (an hour to a day), nothing taken from the caller but a search read against the cached list
   markets: { rpm: 90, body: 0 }, // the crypto card's price list and the /markets/ page's quotes (functions/api/markets.js): GET, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute in the route itself, no KV

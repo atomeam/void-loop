@@ -1,10 +1,11 @@
 /**
  * color skill — a random color or a small palette, pure client-side
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "random color", "color palette", "give me a color".
+ * "random color", "color palette", "give me a color". 2026-11-06 (docs/GAPS.md): "generate a random color" fell to an article, so
+ * generate, pick, make, get, choose and show in front of "random color" or "color palette" are the same ask.
  */
 export function isColor(text) {
-  return /^(?:please\s+)?(?:(?:a\s+|another\s+|random\s+|give\s+me\s+(?:a\s+|another\s+)?)?(?:color|colour)(?:\s+palette)?|palette|random\s+hex)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:generate|pick|make|get|choose|show)\s+(?:me\s+)?(?:an?\s+|another\s+)?(?=random\s|colou?r\s+palette))?(?:(?:a\s+|another\s+|random\s+|give\s+me\s+(?:a\s+|another\s+)?(?:random\s+)?)?(?:color|colour)(?:\s+palette)?(?:\s+generator)?|palette|random\s+hex(?:\s+colou?r)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function hex() {
@@ -25,8 +26,8 @@ function run(text, api) {
 
 export default {
   name: 'color',
-  examples: ['random color', 'color palette', 'give me a color', 'a colour'],
-  nearMisses: ['what color is the sky', 'color theory', 'paint a color'],
+  examples: ['random color', 'color palette', 'give me a color', 'a colour', 'generate a random color', 'random color generator'],
+  nearMisses: ['what color is the sky', 'color theory', 'paint a color', 'random color meaning', 'pick a color for my room'],
   match(lower, text) { return isColor(text); },
   run,
   suite() {
