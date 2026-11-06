@@ -19,7 +19,7 @@ export const SAY_MAX = 320;
 export const SITE = 'https://a-to-mind.com';
 export const REPO = 'https://github.com/atomeam/void-loop';
 
-const one = (s, n = 200) => { const t = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim(); return t.length <= n ? t : t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
+const one = (s, n = 200) => { const t = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim(); return t.length <= n ? t : t.slice(0, n).replace(/\s+\S*$/, ''); }; // cut at a word, no ellipsis: these are the model's inputs
 const msOf = (at) => (typeof at === 'number' ? at : Date.parse(at || ''));
 const isoOf = (at) => { const t = msOf(at); return Number.isFinite(t) ? new Date(t).toISOString() : null; };
 const ago = (at, now) => { const t = msOf(at); if (!Number.isFinite(t)) return ''; const m = Math.max(0, Math.round((now - t) / 60000)); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 48 * 60 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; };
