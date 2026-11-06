@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T04:31:58.551Z",
+ "updated": "2026-11-06T04:44:49.677Z",
  "last24h": {
   "ticks": 43,
   "started": 74,
@@ -57,7 +57,6 @@
   "mvpuqaee": 1793933006938,
   "mvpuqb4r": 1793935659114,
   "mvvjzso8": 1793937026908,
-  "mw2zwa5x": 1793853487895,
   "mw2zwapj": 1793857503611,
   "mw2zwb9l": 1793858564209,
   "mw323tdz": 1793859638732,
@@ -87,7 +86,8 @@
   "mw4c2qeu": 1793933006938,
   "mw4c2r3n": 1793935659114,
   "mw4c2rt3": 1793937026908,
-  "mw4c2sha": 1793938302227
+  "mw4c2sha": 1793938302227,
+  "mw4hbd4w": 1793940289677
  },
  "visitorAt": "2026-11-06T04:12:19Z",
  "visitorFiled": [
@@ -173,36 +173,6 @@
   "heal:helper-helper-pr-live-79be"
  ],
  "ticks": [
-  {
-   "at": "2026-11-05T04:38:07.895Z",
-   "open": 188,
-   "started": [
-    {
-     "id": "mvvk3ljc",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 95
-    },
-    {
-     "id": "mw2zwa5x",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 1,
-   "warnings": 0
-  },
   {
    "at": "2026-11-05T05:45:03.611Z",
    "open": 189,
@@ -1381,6 +1351,36 @@
    "healed": [],
    "probe": true,
    "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 5,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T04:44:49.677Z",
+   "open": 215,
+   "started": [
+    {
+     "id": "mw4gkvdn",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mw4hbd4w",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
    "will": false,
    "lap": false,
    "revived": [
