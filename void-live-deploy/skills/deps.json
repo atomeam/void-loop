@@ -46,21 +46,21 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 25,
+   "skills": 26,
    "direct": 0,
    "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 25,
+   "skills": 26,
    "direct": 1,
    "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 25,
+   "skills": 26,
    "direct": 0,
    "dependants": 90,
    "tests": 5
@@ -1081,6 +1081,13 @@
    "tests": 2
   },
   {
+   "file": "lib/image-gen.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 3
+  },
+  {
    "file": "lib/cook-flow.js",
    "skills": 2,
    "direct": 1,
@@ -1277,6 +1284,13 @@
    "tests": 2
   },
   {
+   "file": "lib/shape-picture.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/template-list.js",
    "skills": 2,
    "direct": 1,
@@ -1387,13 +1401,6 @@
    "direct": 0,
    "dependants": 18,
    "tests": 6
-  },
-  {
-   "file": "lib/image-gen.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 11,
-   "tests": 3
   },
   {
    "file": "lib/writing-aids.js",
@@ -2216,13 +2223,6 @@
   },
   {
    "file": "lib/service-health.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/shape-picture.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -5485,6 +5485,7 @@
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
+    "skills/image-gen.js",
     "skills/incident-autopsy.js",
     "skills/merge.js",
     "skills/merges.js",
@@ -9007,7 +9008,8 @@
     "functions/api/image.js",
     "functions/api/studio.js",
     "lib/daily-photo.js",
-    "lib/video-gen.js"
+    "lib/video-gen.js",
+    "skills/image-gen.js"
    ],
    "reachedBy": [
     "functions/api/card-art.js",
@@ -9353,6 +9355,7 @@
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
+    "skills/image-gen.js",
     "skills/incident-autopsy.js",
     "skills/merge.js",
     "skills/merges.js",
@@ -10115,6 +10118,7 @@
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
+    "skills/image-gen.js",
     "skills/incident-autopsy.js",
     "skills/merges.js",
     "skills/mini/growthtree.js",
@@ -12685,7 +12689,8 @@
   "lib/shape-picture.js": {
    "imports": [],
    "importedBy": [
-    "skills/draw.js"
+    "skills/draw.js",
+    "skills/image-gen.js"
    ]
   },
   "lib/share-client.js": {
@@ -16735,6 +16740,13 @@
   },
   "skills/idea-clarify.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/image-gen.js": {
+   "imports": [
+    "lib/image-gen.js",
+    "lib/shape-picture.js"
+   ],
    "importedBy": []
   },
   "skills/image.js": {
