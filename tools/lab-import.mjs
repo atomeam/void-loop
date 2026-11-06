@@ -71,6 +71,13 @@ export function metaOf(dir, html, specMd) {
 
 /** the rename (AGENTS.md: "Everything a person reads says Verse"): the old name as a word, capital letter only (the lowercase void is the dark stage), in text a person reads. Pure. */
 export const rename = (text) => String(text).replace(/\b(?:Void|V01D)\b/g, 'Verse');
+/** code with every empty catch (`catch (e) {}`, `catch {}`, one holding only a comment) logging what it caught with console.debug, under the
+ * experiment's slug: only a catch right after a try block's closing brace, so the word in a string stays. The drafts swallow errors around optional browser features (BroadcastChannel, storage, sensors), and Verse's review blocks
+ * an empty catch, so each nightly sync PR stopped at the gate. The page behaves the same: debug output shows only when a person opens the console. Pure. */
+export function quietCatches(code, slug = 'lab') {
+  const tag = JSON.stringify('lab ' + slug + ':');
+  return String(code).replace(/(\}\s*)catch\s*(?:\(\s*([A-Za-z_$][\w$]*)\s*\))?\s*\{\s*(?:\/\*[^*]*\*\/\s*)?\}/g, (all, before, v) => before + 'catch (' + (v || 'e') + ') { console.debug(' + tag + ', ' + (v || 'e') + '); }');
+}
 /** html with the old name changed in its text nodes only: never in tags, attributes, scripts, styles or comments (an id or a CSS selector must keep matching). Pure. */
 export function renameMarkup(html) {
   return String(html).replace(/(<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>|<!--[\s\S]*?-->)|>([^<]+)</g, (all, block, text) => (block ? all : '>' + rename(text) + '<'));
@@ -98,7 +105,7 @@ export function unfinished(html) {
 
 /** the draft as a page of Verse: scripts external, head and footer wrapped around it. Pure. meta is metaOf(); needs is needsOf(). */
 export function convertPage(html, meta, needs = needsOf(html)) {
-  const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: rename(x.code) }));
+  const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: quietCatches(rename(x.code), meta.slug) }));
   let h = renameMarkup(ext.html);
   const url = SITE + '/lab/' + meta.slug + '/', title = meta.title + ' · Verse lab';
   if (!/<html\b/i.test(h)) h = '<html lang="en">' + h + '</html>';

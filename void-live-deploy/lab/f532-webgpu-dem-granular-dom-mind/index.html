@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#status { position:absolute; top:8px; left:8px; background:rgba(0,0,0,.7); padding:8px; border-radius:6px; font-size:12px; z-index:10; max-width:280px; }
+.box { position:absolute; width:80px; height:60px; background:rgba(80,160,255,.4); border:2px solid #4af; border-radius:8px; cursor:grab; z-index:5; user-select:none; display:flex; align-items:center; justify-content:center; font-size:11px; }
+.box:active { cursor:grabbing; }
+button { margin:2px; padding:4px 8px; background:#222; color:#eee; border:1px solid #555; border-radius:4px; }
+#controls { position:absolute; bottom:8px; left:8px; z-index:10; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU DEM Granular DOM Collision Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a WebGPU compute-shader Discrete Element Method (DEM) granular simulation (previously unused kernel: free particles with pairwise contact">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU DEM Granular DOM Collision Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a WebGPU compute-shader Discrete Element Method (DEM) granular simulation (previously unused kernel: free particles with pairwise contact">
+<meta property="og:url" content="https://a-to-mind.com/lab/f532-webgpu-dem-granular-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f532-webgpu-dem-granular-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="status">F532 DEM Granular Mind<br>WebGPU: checking...<br>Particles: 0<br>Fitness: —</div>
+<div id="controls">
+<button id="orient">Start Orientation</button>
+<button id="seal">Seal Genome</button>
+<button id="reset">Reset Piles</button>
+<button id="cohesion">Toggle Cohesion</button>
+</div>
+<div class="box" id="b1" style="left:20%; top:30%;">Scoop A</div>
+<div class="box" id="b2" style="left:50%; top:50%;">Wall B</div>
+<div class="box" id="b3" style="left:70%; top:25%;">Scoop C</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU DEM Granular DOM Collision Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
