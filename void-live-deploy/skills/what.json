@@ -157,6 +157,7 @@
  "hunting-question": "\"a question I'm avoiding: <q>\" registers a question once",
  "idea-certificate": "\"keep this idea: <idea> | why: <one sentence> | parent: <ask> | rejected: <a>",
  "image": "One picture on the stage from a url, shown as an instant photo (white frame, a caption in the felt-tip hand under it, its own tilt)",
+ "image-gen": "\"generate a picture of a lighthouse\", \"make an image of a sunset\", \"create a watercolour painting of a fox\", \"ai art of a castle\", \"sketch a house\"",
  "imgfit": "\"resize a photo to 3.5 x 2.5 cm under 50 kb\", \"compress my image to 100kb\", \"image resizer\"",
  "incident": "Write an incident brief, the blameless way",
  "incident-autopsy": "\"incident autopsy\", \"which skill family is unhealthy\"",

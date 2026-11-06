@@ -1,16 +1,81 @@
 {
  "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "prizes",
- "since": "2026-11-05",
+ "id": "photos: squoosh.app",
+ "since": "2026-11-06",
  "n": 12,
- "progressAt": "2026-11-05",
+ "progressAt": "2026-11-06",
+ "season": {
+  "start": "2026-11-06",
+  "why": "owner, 2026-11-06: \"clear and reset your damn verse screens\"; every op had been a giant page. From here a site is passed only in its turn, smallest first (fewest controls on its home page, then the lighter page)."
+ },
+ "archived": [
+  {
+   "at": "2026-11-06",
+   "why": "the tower was cleared: every fight on it had been a giant page; these passes are kept here and the screen fills again smallest first",
+   "target": "prizes",
+   "passed": [
+    {
+     "id": "ndscalc.ru",
+     "at": "2026-11-04",
+     "n": 10,
+     "m": 12,
+     "open": [
+      "journey: do the main job and see the result",
+      "journey: share the result and reopen it from the link"
+     ]
+    }
+   ],
+   "skipped": [
+    {
+     "id": "emoji combos: emojigraph.org",
+     "at": "2026-11-05",
+     "why": "emoji combos: emojigraph.org held the Tower since 2026-11-04 (1 day, limit 1) at 11 of 15 aspects ahead, so it gives way and keeps being measured in the background"
+    }
+   ]
+  }
+ ],
  "passed": [
   {
+   "id": "image boards: 2chan.net",
+   "at": "2026-11-06",
+   "n": 13,
+   "m": 16,
+   "open": [
+    "journey: do the main job and see the result",
+    "journey: share the result and reopen it from the link"
+   ]
+  },
+  {
+   "id": "password strength",
+   "at": "2026-11-06",
+   "n": 15,
+   "m": 15,
+   "open": []
+  },
+  {
    "id": "ndscalc.ru",
-   "at": "2026-11-04",
+   "at": "2026-11-06",
    "n": 10,
    "m": 12,
    "open": [
+    "journey: do the main job and see the result",
+    "journey: share the result and reopen it from the link"
+   ]
+  },
+  {
+   "id": "emoji combos",
+   "at": "2026-11-06",
+   "n": 15,
+   "m": 15,
+   "open": []
+  },
+  {
+   "id": "my ip",
+   "at": "2026-11-06",
+   "n": 8,
+   "m": 13,
+   "open": [
+    "plain text for scripts",
     "journey: do the main job and see the result",
     "journey: share the result and reopen it from the link"
    ]
@@ -18,27 +83,50 @@
  ],
  "background": [
   {
+   "id": "image boards: 2chan.net",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-06",
+   "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "image boards: 2chan.net",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-06",
+   "job": "script the journey with steps and negative controls"
+  },
+  {
    "id": "ndscalc.ru",
    "aspect": "journey: do the main job and see the result",
-   "since": "2026-11-04",
+   "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
   },
   {
    "id": "ndscalc.ru",
    "aspect": "journey: share the result and reopen it from the link",
-   "since": "2026-11-04",
+   "since": "2026-11-06",
+   "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "my ip",
+   "aspect": "plain text for scripts",
+   "since": "2026-11-06",
+   "job": "measure it in tools/tower-gate.mjs"
+  },
+  {
+   "id": "my ip",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-06",
+   "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "my ip",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
   }
  ],
- "skipped": [
-  {
-   "id": "emoji combos: emojigraph.org",
-   "at": "2026-11-05",
-   "why": "emoji combos: emojigraph.org held the Tower since 2026-11-04 (1 day, limit 1) at 11 of 15 aspects ahead, so it gives way and keeps being measured in the background"
-  }
- ],
  "last": {
-  "at": "2026-11-05",
-  "why": "emoji combos: emojigraph.org held the Tower since 2026-11-04 (1 day, limit 1) at 11 of 15 aspects ahead, so it gives way and keeps being measured in the background"
+  "at": "2026-11-06",
+  "why": "passed my ip (8/13, conquering in background)"
  }
 }
