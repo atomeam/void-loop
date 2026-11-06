@@ -39,6 +39,7 @@ export function smell(g, x, y) {
 }
 
 const FIRED = new Int32Array(NI); // scratch: the input neurons that fired this millisecond
+const MP = new Float64Array(NM), MF = new Float64Array(NM); // scratch: 0.8 * each motor neuron's post trace, and whether it fired
 /** one millisecond of the eye: sense, spike, learn, turn, move. g is the act layer. */
 export function stepMs(S, g) {
   const { W, v, u, pre, post, elig, fired, r } = S;
@@ -60,11 +61,17 @@ export function stepMs(S, g) {
   S.x = (S.x + SPEED * Math.cos(S.h) + 1) % 1; S.y = (S.y + SPEED * Math.sin(S.h) + 1) % 1;
   const s = smell(g, S.x, S.y); S.dopa = (s - S.last) * RK; S.last = s; S.seen = s; S.base = S.base * 0.9995 + 0.0005 * S.dopa;
   const d = S.learn ? (S.dopa - S.base) * LR : 0;
-  for (let i = 0; i < NI; i++) { // the same sums as one loop with both ifs, split so an input that did not fire skips its test
-    const row = i * NM, p = pre[i], fi = fired[i];
-    for (let j = 0; j < NM; j++) {
-      const k = row + j; let c = elig[k] * 0.995; if (fired[NI + j]) c += p; if (fi) c -= 0.8 * post[j]; elig[k] = c;
-      if (d) { const x = W[k] + d * elig[k]; W[k] = x < 0 ? 0 : x > WMAX ? WMAX : x; }
+  // per motor neuron, once a millisecond instead of once per synapse. Adding MF[j] * p (p or +0) and subtracting MP[j] or nothing gives the
+  // same numbers as the two ifs: x + 0 is x for every trace these sums can make (none is -0, as every one starts at +0 and adds finite terms)
+  for (let j = 0; j < NM; j++) { MP[j] = 0.8 * post[j]; MF[j] = fired[NI + j]; }
+  for (let i = 0; i < NI; i++) { // the weight reads its trace as the float32 just stored (Math.fround), as a second pass would
+    const row = i * NM, p = pre[i];
+    if (fired[i]) {
+      if (d) for (let j = 0; j < NM; j++) { const k = row + j, e = Math.fround(elig[k] * 0.995 + MF[j] * p - MP[j]); elig[k] = e; const x = W[k] + d * e; W[k] = x < 0 ? 0 : x > WMAX ? WMAX : x; }
+      else for (let j = 0; j < NM; j++) { const k = row + j; elig[k] = elig[k] * 0.995 + MF[j] * p - MP[j]; }
+    } else {
+      if (d) for (let j = 0; j < NM; j++) { const k = row + j, e = Math.fround(elig[k] * 0.995 + MF[j] * p); elig[k] = e; const x = W[k] + d * e; W[k] = x < 0 ? 0 : x > WMAX ? WMAX : x; }
+      else for (let j = 0; j < NM; j++) { const k = row + j; elig[k] = elig[k] * 0.995 + MF[j] * p; }
     }
   }
   if (S.learn) {
