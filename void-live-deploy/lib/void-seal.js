@@ -77,11 +77,12 @@ export function drawSeal(ctx, w, h, p) {
   // the hairlines the seed composes
   ctx.lineWidth = 1; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   const form = p.form || 'vortex', many = 10 + L.rings * 3, sparks = [];
-  if (form === 'vortex') { for (let k = 1; k <= many; k++) { const rx = M * 0.04 + k * (M * 0.46 / many); const at = ring(rx, rx * ln.ratio, ln.tilt, 0.05 + 0.2 * (1 - k / many), k % 3 ? c0 : c1); if (k % 4 === 0) sparks.push(at(ln.at[k % 6] + k)); } }
+  const nth = (i, n, at) => i % n === at; // integer steps: which lines carry a point of light
+  if (form === 'vortex') { for (let k = 1; k <= many; k++) { const rx = M * 0.04 + k * (M * 0.46 / many); const at = ring(rx, rx * ln.ratio, ln.tilt, 0.05 + 0.2 * (1 - k / many), k % 3 ? c0 : c1); if (nth(k, 4, 0)) sparks.push(at(ln.at[k % 6] + k)); } }
   else if (form === 'orbit') { for (let k = 0; k < 2 + L.rings; k++) { const rx = M * (0.16 + 0.07 * k); const at = ring(rx, rx * ln.ratio, ln.rots[k % 6], 0.26 - k * 0.025, k % 2 ? c1 : c0); sparks.push(at(ln.at[k % 6])); } }
-  else if (form === 'currents') { const n = 14 + L.rings * 3, sc = p.field.scale; for (let i = 0; i < n; i++) { const y0 = (i + 0.5) / n * h, pts = []; for (let x = -8; x <= w + 8; x += 6) pts.push([x, y0 + N(x / w * sc, y0 / h * sc + i * 0.07, 3) * h * 0.22]); line(pts, 0.04 + 0.16 * Math.exp(-(((y0 - cy) / (h * 0.32)) ** 2)), i % 3 ? c0 : c1); if (i % 5 === 2) sparks.push(pts[Math.floor(pts.length * (0.2 + r() * 0.6))]); } }
+  else if (form === 'currents') { const n = 14 + L.rings * 3, sc = p.field.scale; for (let i = 0; i < n; i++) { const y0 = (i + 0.5) / n * h, pts = []; for (let x = -8; x <= w + 8; x += 6) pts.push([x, y0 + N(x / w * sc, y0 / h * sc + i * 0.07, 3) * h * 0.22]); line(pts, 0.04 + 0.16 * Math.exp(-(((y0 - cy) / (h * 0.32)) ** 2)), i % 3 ? c0 : c1); if (nth(i, 5, 2)) sparks.push(pts[Math.floor(pts.length * (0.2 + r() * 0.6))]); } }
   else if (form === 'burst') { const n = 56 + L.rings * 10; for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2 + ln.tilt, len = m * (0.3 + 0.35 * (N(Math.cos(t) * 2, Math.sin(t) * 2, 2) + 1) / 2), r0 = m * 0.12;
-      line([[cx + Math.cos(t) * r0, cy + Math.sin(t) * r0], [cx + Math.cos(t) * (r0 + len), cy + Math.sin(t) * (r0 + len)]], 0.06 + 0.14 * r(), i % 4 ? c0 : c1); if (i % 17 === 5) sparks.push([cx + Math.cos(t) * (r0 + len), cy + Math.sin(t) * (r0 + len)]); } }
+      line([[cx + Math.cos(t) * r0, cy + Math.sin(t) * r0], [cx + Math.cos(t) * (r0 + len), cy + Math.sin(t) * (r0 + len)]], 0.06 + 0.14 * r(), i % 4 ? c0 : c1); if (nth(i, 17, 5)) sparks.push([cx + Math.cos(t) * (r0 + len), cy + Math.sin(t) * (r0 + len)]); } }
   else { const t = ln.tilt * 0.6 - 0.35, c = Math.cos(t), s = Math.sin(t), span = Math.hypot(w, h), n = Math.ceil(span / ln.gap); for (let i = -n; i <= n; i++) { const d = i * ln.gap * 0.5, a = 0.02 + 0.24 * Math.exp(-((d / (M * 0.11)) ** 2)); if (a < 0.03) continue;
       const x0 = cx - c * span - s * d, y0 = cy - s * span + c * d; line([[x0, y0], [x0 + c * span * 2, y0 + s * span * 2]], a, i % 3 ? c0 : c1); if (i === 0) sparks.push([cx, cy]); } }
   // the points of light
