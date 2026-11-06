@@ -1,4 +1,4 @@
-// The trading bots and the arbitrage scanner (void-live-deploy/trading-bots/kit/, lib/trading-bots.js, lib/arb-venues.js, lib/x402-call.js).
+// The trading bots and the arbitrage scanner (void-live-deploy/trading-bots/kit/, lib/trading-bots.js, lib/arb-venues.js, lib/trading-paid.js).
 // The candles here are made up for the test (secret-scan: ok; nothing on the site is): the pages only ever show the real data files.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,9 +11,8 @@ import { runOnce, readConfig } from '../void-live-deploy/trading-bots/kit/bot.mj
 import { scanOnce } from '../void-live-deploy/trading-bots/kit/arb-scan.mjs';
 import { settingsOf, linkOf, heldFrom, tradesCsv, zipOf, crc32, scanCsv } from '../void-live-deploy/lib/trading-bots.js';
 import { quoteCall, quoteOut, readVenues } from '../void-live-deploy/lib/arb-venues.js';
-import { inputOf as btInput, answer } from '../void-live-deploy/functions/api/x402/backtest.js';
-import { inputOf as arbInput } from '../void-live-deploy/functions/api/x402/arbitrage.js';
-import { paidCall } from '../void-live-deploy/lib/x402-call.js';
+import { btInput, arbInput, answer, backtestRoute } from '../void-live-deploy/lib/trading-paid.js';
+import { PAID } from '../void-live-deploy/functions/api/x402/[service].js';
 import { SERVICES } from '../void-live-deploy/lib/x402.js';
 import { pages } from './trading-bots-pages.mjs';
 
@@ -114,15 +113,11 @@ test('paid calls: inputs checked before payment, and work that fails is never ch
   assert.equal(btInput({ bot: 'nope' }).ok, false); assert.equal(btInput({ bot: 'dip-rsi2', fee: 0.5 }).ok, false); assert.equal(btInput({ bot: 'dip-rsi2', from: '2020' }).ok, false);
   assert.equal(arbInput({ coin: 'DOGE' }).ok, false); assert.equal(arbInput({ coin: 'btc', size: 5 }).ok, false); assert.equal(arbInput({ coin: 'btc', venues: ['ftx'] }).ok, false);
   for (const k of ['backtest', 'arbitrage']) assert.equal(SERVICES[k].units, 50000, k + ' is 0.05 USDC');
-  const wallet = async () => ({ address: '0x' + '1'.repeat(40) });
-  const unpaid = await paidCall({ request: new Request('https://a-to-mind.com/api/x402/backtest', { method: 'POST' }), env: {}, name: 'backtest', run: async () => ({ ok: true, body: {} }), walletFn: wallet });
-  assert.equal(unpaid.status, 402); assert.equal((await unpaid.json()).accepts[0].payTo, '0x' + '1'.repeat(40));
-  const auth = { from: '0x' + '2'.repeat(40), to: '0x' + '1'.repeat(40), value: '50000' };
-  const hdr = btoa(JSON.stringify({ x402Version: 1, scheme: 'exact', network: 'base', payload: { signature: '0x', authorization: auth } }));
-  let settled = 0;
-  const failed = await paidCall({ request: new Request('https://a-to-mind.com/api/x402/backtest', { method: 'POST', headers: { 'x-payment': hdr } }), env: {}, name: 'backtest',
-    run: async () => ({ ok: false, status: 503, error: 'no data' }), walletFn: wallet, verifyFn: async () => ({ ok: true }), settleFn: async () => { settled++; return { ok: true }; } });
-  assert.equal(failed.status, 503); assert.equal(settled, 0, 'nothing settled when the work failed');
+  // sold through the wallet thread's one paid-call route: a bad body is refused before payment, and a failed run is not paid work
+  assert.notEqual(PAID.backtest.check({}), true); assert.equal(PAID.backtest.check({ bot: 'dip-rsi2' }), true); assert.notEqual(PAID.arbitrage.check({ coin: 'DOGE' }), true);
+  const noData = await backtestRoute.onRequestPost({ request: new Request('https://a-to-mind.com/api/x402/backtest', { method: 'POST', body: '{"bot":"dip-rsi2"}' }), env: { ASSETS: { fetch: async () => new Response('', { status: 404 }) } } });
+  assert.equal(noData.status, 503); assert.equal(PAID.backtest.paidOk(noData.status, await noData.json()), false, 'nothing settled when the data is missing');
+  assert.equal(PAID.arbitrage.paidOk(200, { rows: [] }), false, 'an empty scan is not paid work');
   const closes = Array.from({ length: 900 }, (_, i) => 100 + Math.sin(i / 20) * 10 + i / 10);
   const a = answer(btInput({ bot: 'trend-50-200' }).input, { rows: rowsFrom(closes), source: 'test', first: day(0), asOf: day(899) });
   assert.ok(a.equity.length > 500 && a.walkForward && /Past results/.test(a.note));

@@ -19,7 +19,7 @@ if (a.status !== 200) bad.push('free scan answered ' + a.status);
 const cat = await (await fetch(base + '/api/x402')).json();
 for (const [id, body] of [['backtest', { bot: 'trend-50-200', pair: 'BTC-USD' }], ['arbitrage', { coin: 'BTC' }]]) {
   const s = (cat.services || []).find((x) => x.id === id); if (!s) { bad.push(id + ' is not in the catalog'); continue; }
-  const r = await fetch(base + '/api/x402/' + id, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  const r = await fetch(base + '/api/x402/' + id, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); // void-review: ok: two unpaid probes of the live site, no database
   const j = await r.json().catch(() => ({})), acc = (j.accepts || [])[0] || {};
   out[id] = { status: r.status, price_usdc: s.price_usdc, payTo: acc.payTo || null, network: acc.network || null, amount: acc.maxAmountRequired || null };
   if (r.status !== 402) bad.push(id + ' unpaid call answered ' + r.status + ' (want 402)');

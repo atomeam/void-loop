@@ -5,7 +5,7 @@
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED (docs/RULES.md): an open, read-only GET. The caller picks only the coin, from a closed
 // list of two. One miss asks five fixed public hosts (Coinbase Exchange, Kraken, Bitstamp, Gemini, Base's public RPC) once each, with a 4 s timeout;
 // the answer is kept at the edge for 20 seconds, so a flood costs those hosts one call each per 20 s per coin. No key, no write, no database.
-import { scanNow } from './x402/arbitrage.js';
+import { scanNow } from '../../lib/trading-paid.js';
 
 export async function onRequestGet({ request, waitUntil }) {
   const coin = (new URL(request.url).searchParams.get('coin') || 'BTC').toUpperCase() === 'ETH' ? 'ETH' : 'BTC';

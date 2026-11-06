@@ -68,7 +68,8 @@ const skillTool = (s) => ({ name: s.tool, title: "Verse's " + s.skill + ' skill'
 // verified by the facilitator, settled only when the work was done, so a call that fails is never charged. Verse never holds a key.
 export const PAY_META = 'x402/payment', PAY_RESPONSE_META = 'x402/payment-response';
 const PAID_TITLE = { review: 'Code review with the closer read', answer: 'Ask Verse (paid answer)', fix: 'Fix a broken automation', translate: 'Translate text',
-  digest: 'Digest a transcript or video', appraise: 'Appraise an item from a photo', image: 'Paint a picture from a prompt' };
+  digest: 'Digest a transcript or video', appraise: 'Appraise an item from a photo', image: 'Paint a picture from a prompt',
+  backtest: 'Backtest a trading bot', arbitrage: 'Scan exchange price gaps' };
 const dollars = (units) => String(Number(units) / 1e6);
 const PAID_ANN = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // a call can charge the caller
 export const paidToolName = (id) => 'paid_' + id;
