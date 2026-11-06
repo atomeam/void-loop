@@ -385,7 +385,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 14,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/art-source.js",
