@@ -78,13 +78,24 @@ export function botRecord(files) {
   return files.every((f) => DATA.test(String(f)) && !NOT_DATA.test(String(f)));
 }
 
-/** every commit since the tested main only writes the incident record or another bot record, or is the squash of a pull
- * request in the same batch. Pure. */
-export function driftOk(commits, batch) {
+/** a squash of another pull request (merged by hand or by the bot) that changes no file this pull request changes, and no
+ * workflow, shared lib, skill, package or wrangler file. own: the Set of files this pull request changes; without it, no
+ * squash from outside the batch counts. 2026-11-06: the suite passed twice that day, and each time a hand merge landed on
+ * main within 30 seconds, so the green result no longer counted and the bot merged 0 pull requests in 28 hours (38 the day
+ * before the gate). verify.yml still runs the suite on main after each merge and reverts a commit that turns it red. Pure. */
+export function disjointSquash(files, own) {
+  if (!files || !squashOf(files.subject) || !files.length) return false;
+  if (!own || typeof own.has !== 'function' || !own.size) return false;
+  return files.every((f) => !own.has(String(f)) && !NOT_DATA.test(String(f)));
+}
+
+/** every commit since the tested main only writes the incident record or another bot record, is the squash of a pull
+ * request in the same batch, or is the squash of another pull request that shares no file with this one (own). Pure. */
+export function driftOk(commits, batch, own) {
   if (!Array.isArray(commits)) return false;
   const mates = new Set(batch || []);
   const incident = (files) => (files || []).every((f) => String(f).startsWith('void-live-deploy/incidents/'));
-  return commits.every((files) => incident(files) || botRecord(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
+  return commits.every((files) => incident(files) || botRecord(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))) || disjointSquash(files, own));
 }
 
 /** the suite passed, and either it merged this main, or only incident commits and squashes of its own batch landed since. Pure. */
@@ -94,7 +105,7 @@ export function mayMerge(row, mainSha) {
   const tested = recordedMain(suite);
   if (!tested) return false;
   if (sameSha(tested, mainSha)) return true;
-  return driftOk(row.drift, batchOf(suite));
+  return driftOk(row.drift, batchOf(suite), row.files);
 }
 
 /** the newest suite run on this head finished red, against any main (the check sits on the head, so a new push clears it). Pure. */

@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord, disjointSquash } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -177,4 +177,21 @@ test('a green run merges past the records the bot writes straight to main, and p
   assert.equal(botRecord(Object.assign(['void-live-deploy/tester-log.json'], { subject: 'Site test', author: 'someone' })), false, 'only the record bot');
   assert.equal(botRecord(['void-live-deploy/tester-log.json']), false, 'no author line (an older log): not a record');
   assert.equal(driftOk([...recs, squash(55, ['void.html'])], [4]), false, 'a pull request from outside the batch is still real drift');
+});
+
+test('a hand merge that shares no file with the pull request leaves its green run standing', () => {
+  const own = new Set(['tools/a.mjs', 'void.html']);
+  assert.equal(disjointSquash(squash(55, ['lab.html', 'tools/lab.mjs']), own), true, 'other files: the green run still counts');
+  assert.equal(disjointSquash(squash(55, ['void.html']), own), false, 'the same file: real drift');
+  assert.equal(disjointSquash(squash(55, ['.github/workflows/x.yml']), own), false, 'a workflow is never disjoint');
+  assert.equal(disjointSquash(squash(55, ['void-live-deploy/lib/brain.js']), own), false, 'a shared lib is never disjoint');
+  assert.equal(disjointSquash(squash(55, ['package.json']), own), false, 'a package file is never disjoint');
+  assert.equal(disjointSquash(squash(55, ['lab.html']), null), false, 'no file list for the pull request: the older rule');
+  assert.equal(disjointSquash(squash(55, ['lab.html']), new Set()), false, 'an empty file list says nothing');
+  assert.equal(disjointSquash(Object.assign(['lab.html'], { subject: 'Merge branch main' }), own), false, 'only the squash of a pull request');
+  const r = { ...row(7, inBatch(pass(OLD), [7]), [squash(55, ['lab.html'])]), files: own };
+  assert.equal(mayMerge(r, MAIN), true, 'the row carries its files, and the hand merge did not touch them');
+  assert.equal(mayMerge({ ...r, drift: [squash(55, ['void.html'])] }, MAIN), false, 'a hand merge on its file');
+  assert.equal(mayMerge({ ...r, files: null }, MAIN), false, 'without the file list, as before');
+  assert.equal(choose([r], MAIN, false).action, 'merge');
 });

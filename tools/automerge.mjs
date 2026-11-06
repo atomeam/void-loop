@@ -228,7 +228,16 @@ if (ready.length && !limited) {
     if (tested && mainSha && !samePrefix(tested, mainSha)) {
       try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s%nAUTHOR %an', tested + '..' + mainSha])); } catch (_) { drift = null; }
     }
-    rows.push({ ...row, suite, drift });
+    // the files this pull request changes: a hand merge on main that touches none of them leaves a green result standing
+    // (suite-gate.mjs, disjointSquash). 100 or more files, or a read that fails, gives no list, and the older rule stands.
+    let files = null;
+    if (drift && drift.length) {
+      try {
+        const list = gh(`repos/${repo}/pulls/${row.number}/files?per_page=100`);
+        if (Array.isArray(list) && list.length && list.length < 100) files = new Set(list.flatMap((f) => [f.filename, f.previous_filename].filter(Boolean)));
+      } catch (_) { files = null; }
+    }
+    rows.push({ ...row, suite, drift, files });
   }
   // the safety-check (asked by Verse): the unit tests of the skills and libs a PR changed, run on its head, before the
   // suite starts or the merge. Only on the pull requests the gate chose: on every ready one, the sweep passed its time limit.
