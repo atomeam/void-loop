@@ -25,6 +25,8 @@ const KEPT = [
   ['/emojis/everywhere/', 'weekly', '0.8', [D + 'emojis/everywhere/index.html', D + 'lib/emoji-looks.js']], // one emoji on every platform (2026-11-03)
   ['/cheat-codes/', 'weekly', '0.8', [D + 'cheat-codes/index.html']],
   ['/store/', 'weekly', '0.9', [D + 'store/index.html']],
+  ['/creed/', 'monthly', '0.7', [D + 'creed/index.html']], // what Verse believes and practices (2026-11-06)
+  ['/creed/give/', 'weekly', '0.7', [D + 'creed/give/index.html']],
   ['/code-review/', 'weekly', '0.9', [D + 'code-review/index.html']],
   ['/autopilot/', 'daily', '0.7', [D + 'autopilot/index.html', D + 'autopilot/app.js']], // what Verse did on its own (2026-10-30)
   ['/llms.txt', 'weekly', '0.5', [D + 'llms.txt']],

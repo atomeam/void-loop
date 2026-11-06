@@ -1,61 +1,252 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 86,
- "runsTotal": 287,
+ "cases": 92,
+ "runsTotal": 300,
  "kinds": {
-  "grow": 70,
-  "file": 90,
-  "teach": 7,
+  "file": 87,
+  "grow": 72,
   "tighten": 7,
   "none": 40,
-  "visitor": 73
+  "visitor": 94
  },
  "runs": [
   {
-   "at": "2026-11-06T04:12:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T03:36:56Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T03:24:35Z",
-   "passed": 82,
-   "of": 90,
+   "at": "2026-11-06T15:51:51Z",
+   "passed": 88,
+   "of": 95,
    "kind": "file",
-   "ms": 340,
-   "note": "fix: \"send it away\" only \"waking up\" appeared, never the answer",
+   "ms": 424,
+   "note": "fix: \"films by Kurosawa\" load 1510 ms > 1200",
    "failed": [
     {
-     "ask": "play chess",
-     "why": "fps 3 < 5"
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
     },
     {
-     "ask": "bokos like dune",
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "films by Kurosawa",
+     "why": "load 1510 ms > 1200"
+    },
+    {
+     "ask": "fimls by kurosawa",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "toss it off the screen",
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo what does ephemeral mean",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "map the heavy lifting for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T15:38:34Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T15:11:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T13:33:35Z",
+   "passed": 91,
+   "of": 94,
+   "kind": "grow",
+   "ms": 386,
+   "note": "new ground passed, kept as a regression case: \"create a toon style bird pls\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "send it away",
      "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T13:22:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T12:15:30Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T12:03:25Z",
+   "passed": 89,
+   "of": 94,
+   "kind": "grow",
+   "ms": 293,
+   "note": "new ground passed, kept as a regression case: \"yo create a toon style bird\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
      "ask": "send it away",
      "why": "only \"waking up\" appeared, never the answer"
     },
     {
-     "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25",
-     "why": "load 1280 ms > 1200"
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T11:54:34Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-06T11:27:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T11:10:13Z",
+   "passed": 90,
+   "of": 93,
+   "kind": "grow",
+   "ms": 344,
+   "note": "new ground passed, kept as a regression case: \"make a 2d toon dog pls\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "save this recipe: Lemon cake, ingredients: 200 g flour, 3 eggs; steps: mix. bake",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T10:58:47Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T10:32:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T10:20:14Z",
+   "passed": 89,
+   "of": 92,
+   "kind": "grow",
+   "ms": 397,
+   "note": "new ground passed, kept as a regression case: \"yo make a 2d toon dog\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
     },
     {
      "ask": "favorite this",
      "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T10:08:42Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-06T09:56:21Z",
+   "passed": 89,
+   "of": 92,
+   "kind": "file",
+   "ms": 415,
+   "note": "fix: \"turn the questions i missed into a five-minute challenge\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "turn the questions i missed into a five-minute challenge",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T09:44:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T09:29:54Z",
+   "passed": 88,
+   "of": 91,
+   "kind": "grow",
+   "ms": 312,
+   "note": "new ground passed, kept as a regression case: \"draw me a robot pls\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
     },
     {
      "ask": "film meatdata for ikiru",
@@ -68,114 +259,27 @@
    ]
   },
   {
-   "at": "2026-11-06T03:14:53Z",
+   "at": "2026-11-06T09:21:01Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-06T08:54:29Z",
    "passed": 0,
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T02:49:24Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T00:26:03Z",
-   "passed": 87,
+   "at": "2026-11-06T08:42:34Z",
+   "passed": 84,
    "of": 90,
-   "kind": "file",
-   "ms": 382,
-   "note": "fix: \"yo new automation\" load 1309 ms > 1200",
+   "kind": "grow",
+   "ms": 336,
+   "note": "new ground passed, kept as a regression case: \"yo draw me a robot\" (skill:cartoon)",
    "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "yo new automation",
-     "why": "load 1309 ms > 1200"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-06T00:16:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T22:16:47Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T18:51:53Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T18:16:04Z",
-   "passed": 87,
-   "of": 90,
-   "kind": "file",
-   "ms": 388,
-   "note": "fix: \"favorite this\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "dyslexia friendly font",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T18:05:55Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T17:15:33Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T16:31:22Z",
-   "passed": 73,
-   "of": 90,
-   "kind": "file",
-   "ms": 475,
-   "note": "fix: \"play solarquest\" load 1213 ms > 1200",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "load 1213 ms > 1200"
-    },
     {
      "ask": "what can I buy",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
@@ -185,129 +289,22 @@
      "why": "fps 2 < 5"
     },
     {
-     "ask": "bokos like dune",
+     "ask": "are you web4",
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "load 1906 ms > 1200"
-    },
-    {
-     "ask": "turn the questions i missed into a five-minute challenge",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "can we play despacito",
-     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
-    },
-    {
-     "ask": "what did this video teach? pls",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "yo watch the apollo 11 landing",
-     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T16:16:36Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T16:03:35Z",
-   "passed": 87,
-   "of": 90,
-   "kind": "file",
-   "ms": 379,
-   "note": "fix: \"flip this card\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "flip this card",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "https://github.com/atomeam/void-loop/blob/main/README.md",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T15:53:19Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T15:25:07Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T14:53:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T14:39:39Z",
-   "passed": 84,
-   "of": 90,
-   "kind": "file",
-   "ms": 373,
-   "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
-     "why": "load 1482 ms > 1200"
     },
     {
      "ask": "toss it off the screen",
      "why": "only \"waking up\" appeared, never the answer"
     },
     {
-     "ask": "closer on the figure",
-     "why": "only \"waking up\" appeared, never the answer"
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     },
     {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
+     "ask": "yo draw a cartoon cat",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-05T14:29:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -361,20 +358,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 55,
-   "passed": 424,
-   "of": 899,
-   "broken": 22,
-   "brokenOf": 408,
-   "brokenPassed": 22
+   "runs": 62,
+   "passed": 290,
+   "of": 1313,
+   "broken": 42,
+   "brokenOf": 984,
+   "brokenPassed": 6
   },
   {
    "from": "2026-10-16",
-   "runs": 136,
+   "runs": 110,
    "passed": 2727,
-   "of": 4911,
-   "broken": 73,
-   "brokenOf": 1830,
+   "of": 4259,
+   "broken": 47,
+   "brokenOf": 1178,
    "brokenPassed": 0
   },
   {
@@ -385,10 +382,10 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 96,
-   "passed": 1857,
-   "of": 2042,
-   "ms": 373
+   "runs": 128,
+   "passed": 2814,
+   "of": 3053,
+   "ms": 379
   }
  ],
  "seen": {
@@ -408,7 +405,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T03:24:35Z",
+  "skill:cartoon": "2026-11-06T15:51:51Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -705,6 +702,37 @@
   "skill:magic8": "2026-11-06T00:26:03Z",
   "skill:mind-field": "2026-11-06T03:24:35Z",
   "skill:morse": "2026-11-06T03:24:35Z",
-  "skill:music-tools": "2026-11-06T03:24:35Z"
+  "skill:music-tools": "2026-11-06T03:24:35Z",
+  "skill:client-handoff": "2026-11-06T04:49:27Z",
+  "skill:math-quiz": "2026-11-06T04:49:27Z",
+  "skill:my-device": "2026-11-06T04:49:27Z",
+  "skill:groups": "2026-11-06T06:12:58Z",
+  "skill:noise": "2026-11-06T06:12:58Z",
+  "skill:notes-fill": "2026-11-06T06:12:58Z",
+  "skill:open-tool": "2026-11-06T07:29:39Z",
+  "skill:palette": "2026-11-06T07:29:39Z",
+  "skill:palindrome": "2026-11-06T07:29:39Z",
+  "skill:image-gen": "2026-11-06T08:42:34Z",
+  "skill:password": "2026-11-06T08:42:34Z",
+  "skill:pdf-tools": "2026-11-06T08:42:34Z",
+  "skill:photo-tools": "2026-11-06T09:29:54Z",
+  "skill:podcast": "2026-11-06T09:29:54Z",
+  "skill:podcast-search": "2026-11-06T09:29:54Z",
+  "skill:pointing-arrow": "2026-11-06T09:56:21Z",
+  "skill:proverb": "2026-11-06T09:56:21Z",
+  "skill:pwcheck": "2026-11-06T09:56:21Z",
+  "skill:quote": "2026-11-06T10:20:14Z",
+  "skill:rally": "2026-11-06T10:20:14Z",
+  "skill:random": "2026-11-06T10:20:14Z",
+  "skill:rap": "2026-11-06T11:10:13Z",
+  "skill:recipes-fill": "2026-11-06T11:10:13Z",
+  "skill:rentbuy": "2026-11-06T11:10:13Z",
+  "skill:riddle-gen": "2026-11-06T12:03:25Z",
+  "skill:ritual-template": "2026-11-06T12:03:25Z",
+  "skill:rooms": "2026-11-06T12:03:25Z",
+  "skill:rps": "2026-11-06T13:33:35Z",
+  "skill:scores": "2026-11-06T13:33:35Z",
+  "skill:heavy-lift-map": "2026-11-06T15:51:51Z",
+  "skill:shuffle": "2026-11-06T15:51:51Z"
  }
 }

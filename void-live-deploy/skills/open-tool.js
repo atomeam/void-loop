@@ -24,7 +24,9 @@ const OPEN = /^(?:open|show(?: me)?|go to|take me to|launch|bring up)\s+(?:the |
 
 /** the tool an ask names, as { href, label }, or null. Pure. */
 export function toolAsk(text) {
-  const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
+  // what it is for does not change the tool: "word counter for essay", "character counter for twitter" (2026-11-06: fell to an article)
+  const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim()
+    .replace(/ (?:for|in) (?:an? |my )?(?:essays?|school|college|homework|assignments?|papers?|twitter|tweets?|instagram|seo|work|students?)$/, '');
   if (!t || t.length > 60) return null;
   const opened = OPEN.test(t) || / (?:tool|page|app)$/.test(t), name = t.replace(OPEN, '').replace(/^(?:an? |the )?(?:online |free |simple )?/, '').replace(/ (?:tool|page|app)$/, '').trim();
   const alias = ALIASES[t.replace(OPEN, '')] || ALIASES[name];

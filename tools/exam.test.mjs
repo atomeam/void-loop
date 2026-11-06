@@ -145,3 +145,19 @@ test('the exam reads the answer card\'s own audio, and says why a media check fa
   assert.equal(mediaLine({ src: 'https://cdn.example.com/a/b/ep42.mp3?x=1', status: 206, type: 'audio/mpeg', currentTime: 1.04 }), 'cdn.example.com, file ep42.mp3 · status 206 · audio/mpeg · played 1.0 s');
   assert.equal(mediaLine({ src: '/podcast/x.mp3' }), '/podcast/x.mp3 · status 0 · no type · played 0.0 s');
 });
+
+test('the exam reads the thing an ask made or changed, not the first one on the stage (#2326)', () => {
+  const src = readFileSync(new URL('./exam.mjs', import.meta.url), 'utf8');
+  assert.ok(src.includes("document.querySelector('.vpage.on') || document.querySelector('.thing[data-picked]') || document.querySelector('.thing')"), 'the picked thing comes before the first thing');
+  for (const f of ['../void-live-deploy/void.html', '../void-live-deploy/index.html']) {
+    const page = readFileSync(new URL(f, import.meta.url), 'utf8');
+    assert.ok(page.includes("if (el.dataset.id === selectedId) el.dataset.picked = '1';"), f + ' marks the picked thing');
+  }
+});
+
+test('a picture Verse paints for "generate a picture of a lighthouse" counts as an images answer (skills/image-gen.js)', () => {
+  const o = { text: 'A picture of a lighthouse at night. Painting it. Open the AI image generator with these words to pick another style.', note: 'skill:image-gen', ms: 2600, overflow: false, drawn: true };
+  const j = judge('images', o, { wantPicture: true });
+  assert.equal(j.checks.skill, true); assert.equal(j.checks.picture, true); assert.equal(j.checks.answered, true);
+  assert.equal(judge('images', { ...o, note: 'skill:video-gen' }, { wantPicture: true }).checks.skill, false);
+});

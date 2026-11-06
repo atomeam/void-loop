@@ -6432,6 +6432,296 @@
    "rank": 161566,
    "hardness": 8739,
    "title": "Compressport | Trail, Running, Triathlon Compression Apparel"
+  },
+  {
+   "site": "firefox-portal-detection.com",
+   "rank": 204,
+   "controls": 0,
+   "bytes": 8,
+   "hardness": null,
+   "title": "success",
+   "small": "2026-11-06",
+   "plain": true
+  },
+  {
+   "site": "id5-sync.com",
+   "rank": 1268,
+   "controls": 0,
+   "bytes": 12,
+   "hardness": null,
+   "title": "This is ID5.",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "icanhazip.com",
+   "rank": 253,
+   "controls": 0,
+   "bytes": 15,
+   "hardness": null,
+   "title": "48.217.180.210",
+   "small": "2026-11-06",
+   "plain": true
+  },
+  {
+   "site": "mega.co.nz",
+   "rank": 572,
+   "controls": 0,
+   "bytes": 554,
+   "hardness": null,
+   "title": "MEGA",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "example.com",
+   "rank": 177,
+   "controls": 0,
+   "bytes": 577,
+   "hardness": null,
+   "title": "Example Domain",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "uisp.com",
+   "rank": 2905,
+   "controls": 0,
+   "bytes": 705,
+   "hardness": null,
+   "title": "UISP - Ubiquiti",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "feednews.com",
+   "rank": 4672,
+   "controls": 0,
+   "bytes": 796,
+   "hardness": null,
+   "title": "Opera News",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "samsunghealth.com",
+   "rank": 3263,
+   "controls": 0,
+   "bytes": 989,
+   "hardness": null,
+   "title": "Samsung Health",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "netcraze.io",
+   "rank": 444,
+   "controls": 0,
+   "bytes": 1016,
+   "hardness": null,
+   "title": "CrazeDNS",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "bttrack.com",
+   "rank": 3268,
+   "controls": 0,
+   "bytes": 1719,
+   "hardness": null,
+   "title": "Tracking API",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "archive.org",
+   "rank": 153,
+   "controls": 0,
+   "bytes": 2046,
+   "hardness": null,
+   "title": "Internet Archive: Digital Library of Free &amp; Borrowable Texts, Movies, Music ",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "slideshare.net",
+   "rank": 557,
+   "controls": 0,
+   "bytes": 3038,
+   "hardness": null,
+   "title": "Client Challenge",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "dalyfeds.com",
+   "rank": 2875,
+   "controls": 0,
+   "bytes": 3109,
+   "hardness": null,
+   "title": "H5 Center",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "disqus.com",
+   "rank": 922,
+   "controls": 0,
+   "bytes": 6034,
+   "hardness": null,
+   "title": "&num;1 in audience engagement and community growth &vert; Disqus",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "myfritz.net",
+   "rank": 59,
+   "controls": 0,
+   "bytes": 6885,
+   "hardness": null,
+   "title": "MyFRITZ!Net",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "kahoot.it",
+   "rank": 3202,
+   "controls": 0,
+   "bytes": 7198,
+   "hardness": null,
+   "title": "Kahoot!",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "gosuslugi.ru",
+   "rank": 662,
+   "controls": 0,
+   "bytes": 9376,
+   "hardness": null,
+   "title": "Портал государственных услуг Российской Федерации",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "skybridge.click",
+   "rank": 141,
+   "controls": 0,
+   "bytes": 13100,
+   "hardness": null,
+   "title": "ООО&nbsp;\"СМП-74\"",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "tinyurl.com",
+   "rank": 296,
+   "controls": 0,
+   "bytes": 13866,
+   "hardness": null,
+   "title": "URL Shortener, Branded Short Links & Analytics | TinyURL",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "adsco.re",
+   "rank": 1949,
+   "controls": 1,
+   "bytes": 158,
+   "hardness": null,
+   "title": "This domain is used for traffic validation by Adscore , a bo",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "cloudflareinsights.com",
+   "rank": 315,
+   "controls": 1,
+   "bytes": 498,
+   "hardness": null,
+   "title": "Learn more about Cloudflare Web Analytics",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "registrar-servers.com",
+   "rank": 127,
+   "controls": 1,
+   "bytes": 2031,
+   "hardness": null,
+   "title": "Home - registrar-servers.com",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "onetag-sys.com",
+   "rank": 890,
+   "controls": 2,
+   "bytes": 923,
+   "hardness": null,
+   "title": "OneTag Advertising System",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "astrumu.io",
+   "rank": 179,
+   "controls": 2,
+   "bytes": 985,
+   "hardness": null,
+   "title": "astrumu.io",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "google.cn",
+   "rank": 377,
+   "controls": 2,
+   "bytes": 1408,
+   "hardness": null,
+   "title": "Google",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "share.google",
+   "rank": 523,
+   "controls": 3,
+   "bytes": 2016,
+   "hardness": null,
+   "title": "share.google",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "g.co",
+   "rank": 770,
+   "controls": 3,
+   "bytes": 2190,
+   "hardness": null,
+   "title": "g.co",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "amazon.co.uk",
+   "rank": 329,
+   "controls": 3,
+   "bytes": 3805,
+   "hardness": null,
+   "title": "Amazon.co.uk",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "amazon.de",
+   "rank": 379,
+   "controls": 3,
+   "bytes": 3817,
+   "hardness": null,
+   "title": "Amazon.de",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "live-video.net",
+   "rank": 401,
+   "controls": 4,
+   "bytes": 2180,
+   "hardness": null,
+   "title": "Amazon.com Property",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "dns.google",
+   "rank": 384,
+   "controls": 5,
+   "bytes": 1381,
+   "hardness": null,
+   "title": "Google Public DNS",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "vivoglobal.com",
+   "rank": 887,
+   "controls": 5,
+   "bytes": 2252,
+   "hardness": null,
+   "title": "维沃移动通信有限公司",
+   "small": "2026-11-06"
   }
  ]
 }

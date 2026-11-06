@@ -16,6 +16,7 @@
 import { append as noteAppend } from './notepad.js';
 import { goalOf, density } from '../lib/list-goal.js';
 import { soundOf } from './soundscape.js'; // "add soft rain" is a sound for the soundscape, not a list item
+import { addMs } from './timer.js'; // "add one minute" is time for the timer, not a list item (#2326)
 import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
 import { markerOf, cloudOf, reorder, PRIORITY } from '../lib/list-ops.js';
 
@@ -68,7 +69,7 @@ export function addOf(raw, isThing = () => false) {
   if (match) return cleanText(match[1]);
   // bare "add milk": onto the open list (or a new one), unless it names a stage thing, a look, a number or a link
   match = t.match(/^\s*add\s+([a-z][a-z' -]{0,40}?)\s*[.!]?\s*$/i);
-  if (match && !soundOf(t) && !isThing(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanText(match[1]);
+  if (match && !soundOf(t) && !addMs(t) && !isThing(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanText(match[1]);
   return '';
 }
 
@@ -111,6 +112,36 @@ export function ensure(stageApi, seedItems = []) {
     list.items = normalizeItems(list.items);
     seeds.forEach((seed) => { if (!list.items.some((item) => item.text.toLowerCase() === seed.text.toLowerCase())) list.items.push(seed); });
   }
+  stageApi.select(list.id);
+  return list;
+}
+
+const KINDS = { grocery: 'Grocery list', groceries: 'Grocery list', shopping: 'Shopping list', packing: 'Packing list', chore: 'Chores', chores: 'Chores' };
+/** the list an ask names by its kind ("grocery list", "a shopping list with eggs", "make a packing list"): its title, or ''. Pure. */
+export function kindOf(raw) {
+  const head = String(raw || '').toLowerCase().split(/\blist\s*(?::|\b(?:with|containing|including)\b)/)[0] + ' list';
+  const m = head.match(/\b(grocery|groceries|shopping|packing|chores?)\s+list\b/) || head.match(/^\s*list\s+(groceries|shopping|chores)\b/);
+  return m ? KINDS[m[1]] : '';
+}
+
+/** "list groceries" (the verb, not "a grocery list") fills the list already open: the top-misses check asks "add milk", then
+ *  "list groceries", and wants one list. Pure. */
+export function adoptsOpen(raw) {
+  return /^\s*list\s+(?:groceries|shopping|chores)\b/i.test(String(raw || ''));
+}
+
+/** a list named by its kind (docs/GAPS.md row 53, 2026-11-06: "grocery list" picked the stage's list of garden steps): the list with that
+ *  title, or an empty untitled list, which takes the title, or a new list with the title; with the seeds it does not have yet; picked.
+ *  adopt (the verb form, adoptsOpen): the open untitled list takes the title even when it has items, so no second list is made. */
+export function ensureNamed(stageApi, title, seedItems = [], adopt = false) {
+  const all = Object.values(stageApi.things()).filter((t) => t && t.kind === 'list');
+  const same = all.find((t) => String(t.title || '').trim().toLowerCase() === title.toLowerCase());
+  const open = adopt && !same && find(stageApi);
+  const blank = !same && ((open && !String(open.title || '').trim() && open) || all.find((t) => !String(t.title || '').trim() && !normalizeItems(t.items).length));
+  if (same || blank) { stageApi.select((same || blank).id); if (blank) blank.title = title; return ensure(stageApi, seedItems); }
+  const st = stageApi.stage, n = all.length;
+  const list = { id: uid('list'), kind: 'list', x: Math.max(40, (st.clientWidth || 800) / 2 - 140 + 30 * n), y: Math.max(40, (st.clientHeight || 600) / 2 - 120 + 30 * n), title, items: normalizeItems(seedItems) };
+  stageApi.things()[list.id] = list;
   stageApi.select(list.id);
   return list;
 }
@@ -172,7 +203,7 @@ export function ask(lower, text, stageApi) {
     stageApi.say('already on the list');
     return done('list-item-already-exists', list);
   }
-  if (wantsCreate(lower, text)) { ensure(stageApi, seedsOf(text)); return done('list'); }
+  if (wantsCreate(lower, text)) { const kind = kindOf(text); if (kind) ensureNamed(stageApi, kind, seedsOf(text), adoptsOpen(text)); else ensure(stageApi, seedsOf(text)); return done('list'); }
   return '';
 }
 
