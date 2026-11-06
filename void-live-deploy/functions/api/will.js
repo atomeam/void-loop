@@ -60,7 +60,7 @@ export async function onRequestPost({ request, env }) {
   const budget = money ? money.budget_cents : 0;
   const cands = (b.candidates || []).slice(0, 60).map((c, i) => {
     const cost = Math.max(0, Math.round(+c.cost_cents || 0));
-    return { id: i + 1, kind: String(c.kind || ''), title: String(c.title || '').slice(0, 160), why: String(c.why || '').slice(0, 200), weight: (+c.weight || 0) + (cost && budget >= cost ? 15 : 0), cost, source: String(c.source || '').replace(/[^\w .:-]/g, '').slice(0, 60) };
+    return { id: i + 1, kind: String(c.kind || ''), title: String(c.title || '').slice(0, 240), why: String(c.why || '').slice(0, 200), weight: (+c.weight || 0) + (cost && budget >= cost ? 15 : 0), cost, source: String(c.source || '').replace(/[^\w .:-]/g, '').slice(0, 60) };
   });
   if (!cands.length) return new Response('no candidates', { status: 400 });
   // Evidence for a stronger model: each time the free one fell short this week (+1 per 5, at most +10). Stays free until the budget covers it.

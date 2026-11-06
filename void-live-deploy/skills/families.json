@@ -11,10 +11,10 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-05",
- "bench_at": "2026-11-04",
+ "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
-  "tested": 7,
+  "tested": 11,
   "checked": 12,
   "proven": 385
  },
@@ -585,7 +585,7 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 2,
     "checked": 2,
     "proven": 38
    },
@@ -942,6 +942,22 @@
      "success_rate": 1,
      "promoted": "2026-11-04",
      "streak": 2
+    },
+    {
+     "name": "speed-tests",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
+     "promoted": "2026-11-06"
+    },
+    {
+     "name": "math-quiz",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
+     "promoted": "2026-11-06"
     }
    ]
   },
@@ -1330,7 +1346,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 2,
     "proven": 26
    },
@@ -1370,13 +1386,13 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "failing": [
+      "what's 7 factorial",
       "what is 5 factorial",
-      "what is 100 factorial",
-      "what is 10 factorial"
+      "what is 100 factorial"
      ],
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.994,
+     "success_rate": 0.993,
      "streak": 17
     },
     {
@@ -1501,6 +1517,13 @@
      "streak": 17
     },
     {
+     "name": "my-device",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "counter",
      "tier": "proven",
      "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
@@ -1619,7 +1642,7 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 13
    },
@@ -1745,6 +1768,14 @@
      "success_rate": 1,
      "promoted": "2026-11-04",
      "streak": 2
+    },
+    {
+     "name": "noise",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
+     "promoted": "2026-11-06"
     }
    ]
   },
@@ -2523,7 +2554,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 21 live findings, 2026-11-04",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 22 live findings, 2026-11-05",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2649,9 +2680,12 @@
      "name": "notes-fill",
      "tier": "proven",
      "why": "a self-test, 5 real asks in the benchmark",
+     "failing": [
+      "add a note: buy milk"
+     ],
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "promoted": "2026-10-29",
      "streak": 9
     },
@@ -2790,9 +2824,12 @@
      "name": "layer",
      "tier": "proven",
      "why": "a self-test, 7 real asks in the benchmark",
+     "failing": [
+      "put the sticky note in front of everything"
+     ],
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.857,
      "streak": 17
     },
     {

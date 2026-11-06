@@ -2293,9 +2293,9 @@
     }
   ],
   "totals": {
-    "asked": 259,
+    "asked": 262,
     "built": 243,
-    "through": "2026-11-05T07:30:00Z",
+    "through": "2026-11-06T00:06:00Z",
     "open": [
       {
         "ask": "Absorb every repository on the account into the core code",
@@ -2362,10 +2362,10 @@
       },
       {
         "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
-        "at": "2026-11-03T23:57:00Z",
-        "kind": "daily",
+        "at": "2026-11-05T23:57:00Z",
+        "kind": "build",
         "small": false,
-        "times": 1
+        "times": 3
       },
       {
         "ask": "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.",
@@ -2408,6 +2408,25 @@
         "kind": "build",
         "small": false,
         "times": 2
+      },
+      {
+        "ask": "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures.",
+        "at": "2026-11-06T00:06:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 5
+      },
+      {
+        "ask": "Automate the extraction of failing GitHub Action job names and error logs for better debugging.",
+        "at": "2026-11-06T00:06:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 5
+      },
+      {
+        "ask": "Fix the timers exam to correctly handle duration commands and increments.",
+        "small": false,
+        "times": 1
       }
     ]
   }
