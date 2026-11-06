@@ -84,7 +84,7 @@ ptest(import.meta.url, 'attention: the budget is spent where it is wanted, nothi
   const b = B.createBrain(8);
   const ids = B.scheduleTick(b); assert.ok(ids.includes('senses')); assert.ok(ids.length <= b.budget + 1);
   run(b, 600); const rests = new Set(B.ORGANS.filter((o) => o.rests && o.rests(b)).map((o) => o.id)); // an organ with nothing to do rests; it is not starved
-  assert.deepEqual([...rests], ['dialogue'], 'only the dialogue organ rests, with no recalled ask'); assert.equal(b.runs.dialogue, 0, 'a resting organ takes no run');
+  assert.deepEqual([...rests], ['strokes', 'rules', 'reflex', 'dialogue'], 'with nobody pointing only the stroke memory and the rules rest, with no stroke, the reflex, with no pointer, and the dialogue organ, with no recalled ask'); assert.equal(b.runs.dialogue, 0, 'a resting organ takes no run'); assert.equal(b.runs.strokes, 0, 'and neither does the stroke memory');
   for (const id of B.ORGAN_IDS) if (id !== 'senses' && id !== 'gestures' && id !== 'predictor' && !rests.has(id)) assert.ok(b.runs[id] > 0, id + ' ran');
   assert.ok(b.runs.predictor < b.runs.tissue, 'with nobody pointing the predictor gets less than the tissue');
   const before = b.focus.region; let tgt = before === 0 ? 11 : 0; const c = W.regionCenter(tgt);
@@ -227,7 +227,7 @@ ptest(import.meta.url, 'history and explain: it says what just happened and why 
 ptest(import.meta.url, 'knowledge: what it learned survives a reload as numbers, a wrong record is ignored, and a seal still holds no words', () => {
   const b = run(B.createBrain(28), 900, circle); B.ask(b, 'romance'); run(b, 100, circle);
   const k = JSON.parse(JSON.stringify(B.knowledgeOf(b))), b2 = B.createBrain(29), done = B.loadKnowledge(b2, k);
-  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'grower', 'formula', 'current', 'grains', 'pool', 'trace', 'asks', 'procedures', 'episodes']);
+  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'grower', 'formula', 'current', 'grains', 'pool', 'trace', 'strokes', 'rules', 'reflex', 'asks', 'procedures', 'episodes']);
   assert.deepEqual(b2.creature.mean, b.creature.mean.map((v) => Math.round(v * 1000) / 1000), 'the creature keeps its evolved physics');
   assert.deepEqual(Array.from(b2.synapses.W), Array.from(b.synapses.W, (v) => Math.fround(Math.round(v * 1000) / 1000)), 'the eye keeps its learned wiring');
   assert.deepEqual(Array.from(b2.will.q), Array.from(b.will.q, (v) => Math.round(v * 1000) / 1000).map((v) => Math.fround(v)));

@@ -455,6 +455,27 @@ export const SPECS = {
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
+// the trading bots (owner, 2026-11-06): a backtest on the real candles once /trading-bots/data/ has them, an honest note before; trades export, the link reopens
+const tradingBot = async (t) => {
+  const v = await t.waitText('#tb-result', /Total return|not on the site yet/, 20000);
+  if (/not on the site yet/.test(v)) return t.ok(true, 'no price history yet, and the page says so instead of showing numbers');
+  t.ok(/Worst drop/.test(v) && /Buy and hold/.test(v), 'the backtest shows the worst drop beside buy and hold');
+  await t.p.selectOption('#tb-form select[name=w]', 'held'); await t.p.waitForTimeout(800);
+  t.ok(/w=held/.test(t.p.url()), 'the held-out period goes into the link');
+  await t.download('#tb-csv', /-trades\.csv$/);
+  await t.share('#tb-share', async (p2) => /Total return/.test(await p2.locator('#tb-result').innerText()));
+};
+SPECS['/trading-bots/trend-50-200/'] = tradingBot; SPECS['/trading-bots/breakout-20-10/'] = tradingBot; SPECS['/trading-bots/dip-rsi2/'] = tradingBot;
+SPECS['/trading-bots/'] = async (t) => {
+  const v = await t.waitText('#tb-cards', /Last 24 months|not on the site yet/, 20000);
+  t.ok(/Last 24 months|not on the site yet/.test(v), 'every bot card shows its real backtest, or says the data is not there yet');
+  await t.download('#tb-zip', /verse-bot\.zip$/);
+};
+SPECS['/trading-bots/arbitrage/'] = async (t) => {
+  const v = await t.waitText('#ar-at', /^Read |could not be read/, 20000);
+  t.ok(/^Read |could not be read/.test(v), 'the scan reads the venues now, or says it could not: ' + v.slice(0, 60));
+  if (/^Read /.test(v)) { t.ok(/Net/.test(await t.text('#ar-rows')), 'every venue pair with its net after costs'); await t.download('#ar-csv', /^arbitrage-.*\.csv$/); }
+};
 SPECS['/emoji-combos/emoji-dictionary/'] = SPECS['/emoji-combos/']; // the family page, copied for the Versus floor
 // one emoji on every platform (lib/emoji-looks.js): the grid draws, a search for fire swaps it, the pictures load, the link keeps the emoji
 SPECS['/emojis/everywhere/'] = async (t) => {
@@ -468,6 +489,8 @@ SPECS['/emojis/everywhere/'] = async (t) => {
   t.ok(/tears of joy/i.test(await t.text('#ename')) && /e=%F0%9F%98%82|e=😂/.test(t.p.url()), 'a name in the link opens its emoji: ' + (await t.text('#ename')));
 };
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
+SPECS['/color/colour-picker-tool/'] = SPECS['/color/']; // the family page, copied for the Versus floor
+SPECS['/news/global-headlines/'] = SPECS['/news/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
 const LEDGER_FIX = [
@@ -561,6 +584,23 @@ SPECS['/treasury/'] = async (t) => {
   t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
   await t.waitText('#found', /\S/, 10000);
+};
+// /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
+SPECS['/creed/'] = async (t) => {
+  t.ok((await t.p.locator('ol.beliefs li').count()) === 10, 'ten beliefs');
+  t.ok((await t.p.locator('.practices a').count()) >= 5 && /\/creed\/give\//.test(await t.p.locator('.practices').innerHTML()), 'the practices link the pages that do them, Give included');
+  await t.click('#copy'); await t.waitText('#say', /\S/, 4000);
+  t.ok(/Copied|I ask, I learn/.test(await t.text('#say')), 'Copy the vow copies it (or shows it to copy): ' + (await t.text('#say')));
+  t.ok(/not a registered church/.test(await t.text('.honest')), 'the page says plainly what Verse is not');
+};
+SPECS['/creed/give/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...TREASURY_FIX, pots: { ...TREASURY_FIX.pots, giving: 293 } }) }));
+  await t.p.reload(); await t.waitText('#pot', /\$/, 10000);
+  t.ok((await t.text('#pot')).trim() === '$2.93', 'the giving pot is read from the treasury: ' + (await t.text('#pot')));
+  t.ok(/\$41\.88 realized/.test(await t.text('#pot-note')), 'the pledge names the realized money it comes from');
+  const hrefs = await t.p.locator('.cause .go a').evaluateAll((as) => as.map((a) => a.href));
+  t.ok((await t.p.locator('.cause').count()) === 6 && hrefs.length >= 6, '6 charities with their buttons');
+  t.ok(hrefs.every((h) => /^https:\/\//.test(h) && !/a-to-mind\.com|localhost|127\.0\.0\.1/.test(h)), 'every button opens the charity\'s own site');
 };
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));

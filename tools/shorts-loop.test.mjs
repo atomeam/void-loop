@@ -17,4 +17,7 @@ assert.equal(win.verdict, 'challenger'); assert.equal(win.qualityImproved, true)
 const same = judge(t1, { [t1.champion.film]: o(50, 1), [t1.challenger.film]: o(50, 4) }, { [t1.champion.film]: { score: 100 }, [t1.challenger.film]: { score: 100 } });
 assert.equal(same.qualityImproved, false, 'better outcomes alone are not better quality');
 assert.equal(judge(t1, { [t1.champion.film]: o(50, 4), [t1.challenger.film]: o(50, 1) }, {}).verdict, 'champion');
+// the daily job calls render(scene, 'media/shorts'): the take folder must be absolute, or ffmpeg's concat list doubles the path
+import { readFileSync } from 'node:fs';
+assert.match(readFileSync(new URL('./shorts.mjs', import.meta.url), 'utf8'), /mkdtempSync\(path\.join\(path\.resolve\(out\), '\.take-'\)\)/, 'the take folder is absolute (2026-11-06: no film was made)');
 console.log('shorts-loop: ok');

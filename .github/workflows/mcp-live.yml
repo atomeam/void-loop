@@ -27,13 +27,14 @@ on:
 permissions:
   contents: write # only to commit the finding and its ledger line to main
 
-concurrency:
-  group: mcp-live
-  cancel-in-progress: true
-
 jobs:
   probe:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    # on the job, not the workflow: a workflow_run whose deploy did not succeed is skipped here and must not cancel a probe
+    # that deploy.yml started (at the workflow level it did, so most probes ended cancelled)
+    concurrency:
+      group: mcp-live
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

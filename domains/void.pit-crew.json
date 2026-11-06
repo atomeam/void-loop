@@ -1,7 +1,13 @@
 {
-  "at": "2026-11-05T14:58:41.677Z",
+  "at": "2026-11-06T14:38:47.614Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261105-2357-3",
+      "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic.",
+      "target": "voice:ask-20261105-2357-3"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }

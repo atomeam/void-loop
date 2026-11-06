@@ -19,7 +19,7 @@ import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
-import { choose, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
+import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
@@ -74,7 +74,8 @@ function idleEvent() {
   try {
     const ev = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH || '', 'utf8'));
     const wr = ev.workflow_run;
-    return !!(wr && !(wr.pull_requests || []).length && wr.head_branch === 'main');
+    // the suite gate runs on main for a batch of pull requests: its result is never idle (2026-11-06: it was, and nothing merged)
+    return !!(wr && wr.name !== 'Suite on main' && !(wr.pull_requests || []).length && wr.head_branch === 'main');
   } catch (_) { return false; }
 }
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
@@ -133,7 +134,12 @@ for (const row of superseded(prs)) {
 let merged = 0;
 const ready = [];
 const closed = new Set(superseded(prs).map((r) => r.number));
+// A sweep reads the oldest pull requests first and stops reading after SWEEP_MS, so it always reaches the suite gate inside
+// the job's 15 minute limit (automerge.yml), with time left for the safety-check of the batch. The pull requests it did not read wait for the next sweep. (2026-11-06)
+const SWEEP_MS = +(process.env.AUTOMERGE_SWEEP_MS || 200e3), sweepStart = Date.now();
+if (!one && Array.isArray(prs)) prs.sort((a, b) => a.number - b.number);
 for (let p of prs) {
+  if (!one && Date.now() - sweepStart > SWEEP_MS) { console.log(`::notice::stopped the reading at #${p && p.number} after ${Math.round(SWEEP_MS / 1000)} s, so the suite gate runs inside the job's time limit. The next sweep reads the rest.`); break; }
   if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
   if (!one && budget().left < RATE_FLOOR) { console.log(`::notice::stopped the sweep at #${p && p.number}: under ${RATE_FLOOR} API calls left this hour. The next wake carries on.`); break; }
   if (!p || p.state !== 'open' || closed.has(p.number)) continue;
@@ -196,10 +202,7 @@ for (let p of prs) {
       console.log(`#${p.number}: merge gate ${gate.status} ${gate.conclusion || ''}`); continue;
     }
   } catch (e) { console.log(`#${p.number}: could not read the merge gate: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
-  // the safety-check (asked by Verse): the unit tests of the skills and libs this PR changed, run on its head, before the merge
-  const sc = safety(ex, gh, { repo, pr: p.number, sha: r.sha });
-  console.log(`#${p.number}: safety-check ${sc.state} (${sc.why})`);
-  if (sc.state === 'fail') continue;
+  // the safety-check runs later, on the batch the suite gate chooses only (chooseChecked below)
   ready.push({ number: p.number, review: 'merge', p, r });
 }
 // One pull request, and only after the full suite passed on top of current main (tools/suite-gate.mjs).
@@ -223,11 +226,19 @@ if (ready.length && !limited) {
     } catch (_) {}
     const tested = recordedMain(suite);
     if (tested && mainSha && !samePrefix(tested, mainSha)) {
-      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s', tested + '..' + mainSha])); } catch (_) { drift = null; }
+      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s%nAUTHOR %an', tested + '..' + mainSha])); } catch (_) { drift = null; }
     }
     rows.push({ ...row, suite, drift });
   }
-  choice = choose(rows, mainSha, running);
+  // the safety-check (asked by Verse): the unit tests of the skills and libs a PR changed, run on its head, before the
+  // suite starts or the merge. Only on the pull requests the gate chose: on every ready one, the sweep passed its time limit.
+  const safetyOk = (row) => {
+    const sc = safety(ex, gh, { repo, pr: row.number, sha: row.r.sha });
+    console.log(`#${row.number}: safety-check ${sc.state} (${sc.why})`);
+    return sc.state !== 'fail';
+  };
+  const checked = chooseChecked(rows, mainSha, running, safetyOk);
+  choice = checked.choice;
   const pick = choice.pr;
   console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
   // one suite run for the whole batch, dispatched from main: the workflow on main reads a list of pull requests (2026-11-06)
@@ -237,7 +248,17 @@ if (ready.length && !limited) {
     try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${list.join(',')}`]); console.log(`#${list.join(', #')}: full suite started ${where}`); }
     catch (e) { console.log(`#${list.join(', #')}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
   };
-  if (choice.action === 'queue' && pick) startSuite(choice.batch && choice.batch.length ? choice.batch : [pick], 'on top of ' + String(mainSha).slice(0, 7));
+  // a run scoped to one pull request sees only that one: a batch built here holds one pull request, and the scoped runs
+  // (one per event) outnumber the sweeps, so the queue moved one at a time (2026-11-06). A scoped run starts a full sweep
+  // instead, and the sweep builds the batch from every ready pull request.
+  const sweepAll = (why) => {
+    try { run(['workflow', 'run', 'automerge.yml', '--repo', repo, '--ref', 'main']); console.log('full sweep started: ' + why); }
+    catch (e) { console.log('could not start a full sweep: ' + String(e.stderr || e.message || e).slice(0, 200)); }
+  };
+  if (choice.action === 'queue' && pick) {
+    if (one) sweepAll(`#${pick.number} is ready; the sweep puts it in a batch with the other ready pull requests`);
+    else startSuite(choice.batch && choice.batch.length ? choice.batch : [pick], 'on top of ' + String(mainSha).slice(0, 7));
+  }
   if (choice.action === 'merge' && pick) {
     // the pull requests one green run tested, merged one after another; the first refusal stops the rest (they wait for the next run)
     const done = [];
@@ -254,7 +275,7 @@ if (ready.length && !limited) {
       } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); break; }
     }
     // main moved: start the suite for the next ready pull requests now, not at the next hourly sweep (2026-11-06)
-    if (done.length) startSuite(nextBatch(rows, done), 'on the new main');
+    if (done.length) { if (one) sweepAll('main moved'); else startSuite(nextBatch(checked.rows, done), 'on the new main'); }
   }
 }
 // The stall alarm (tools/merge-stall.mjs): in a sweep, no merge for 2 hours while a green pull request waits opens one issue
