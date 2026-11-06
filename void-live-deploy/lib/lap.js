@@ -74,7 +74,7 @@ export function lapProgress(beforeById, items) {
 
 export function candidateOf(step, nextUpgrade = {}, facts = null) {
   if (!step) return null;
-  if (step.kind === 'upgrade') return { kind: 'upgrade', title: (step.lap === 1 ? overhaulAsk(step.skill) : nextUpgrade[step.skill] ? 'Upgrade ' + step.skill + ': ' + nextUpgrade[step.skill] : upgradeAsk(step.skill).replace(/^./, (c) => c.toUpperCase())).slice(0, 150), why: 'its turn in this lap; it must end measurably better than last lap' + (facts ? ' (before: ' + factLine(facts) + ')' : ''), weight: 1000, source: 'lap' };
+  if (step.kind === 'upgrade') return { kind: 'upgrade', title: step.lap === 1 ? overhaulAsk(step.skill) : (nextUpgrade[step.skill] ? 'Upgrade ' + step.skill + ': ' + nextUpgrade[step.skill] : upgradeAsk(step.skill).replace(/^./, (c) => c.toUpperCase())).slice(0, 150), why: 'its turn in this lap; it must end measurably better than last lap' + (facts ? ' (before: ' + factLine(facts) + ')' : ''), weight: 1000, source: 'lap' };
   return { kind: 'new', title: 'Add new feature ' + step.n + ' of ' + NEW_PER_LAP + ' this lap, from wants, studies, Grok drafts or frontier ideas', why: 'every skill was upgraded this lap; new features come next', weight: 1000, source: 'lap' };
 }
 
@@ -83,6 +83,7 @@ export function candidateOf(step, nextUpgrade = {}, facts = null) {
 // the void look, mobile, no cut-off text). The most used go first: the home page, the ask flow, cards, the book, then the games.
 export const MOST_USED = ['surface:home', 'surface:ask', 'surface:cards', 'surface:book', 'surface:games'];
 export const overhaulWeights = (ids) => { const w = {}; MOST_USED.forEach((id, i) => { w[id] = 1000 - i; }); (ids || []).filter((id) => /^site:/.test(id)).forEach((id, i) => { w[id] = 500 - i; }); for (const id of ids || []) if (/^skill:/.test(id) && !(id in w)) w[id] = /game|rally|duel|chess|monopoly|card|book/.test(id) ? 10 : 0; return w; };
+// the overhaul ask is kept whole: a cap cut it at "beauty," on the wants card (2026-11-06), so it is never sliced (functions/api/will.js keeps 240)
 export const overhaulAsk = (id) => 'Overhaul ' + id + ': persona playtest, best-site check, rebuild what is weak (wider use per docs/WIDER-USE.md, layout, completeness, speed, beauty, no cut-off)';
 /** the "only site you need" line, counts only: "Only site you need: 9 replaced, 11 partial, 4 missing of 24 categories". Pure. */
 export const onlySiteLine = (c) => c ? 'Only site you need: ' + c.replaced + ' replaced, ' + c.partial + ' partial, ' + c.missing + ' missing of ' + c.categories + ' categories' : '';

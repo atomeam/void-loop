@@ -2,7 +2,7 @@
 // separate demo (owner, 2026-10-29: "combine all the builds into one entity", "dont fake it"). Its eye learns by reward-modulated STDP to
 // look where the tissue is alive, it runs in the brain's scheduler, it writes what it sees into the one workspace, its learned wiring is
 // kept between visits, and a working memory kept before it joined still loads. Run: node --test tools/brain-synapses.test.mjs
-import test from 'node:test';
+import { ptest, test } from './brain-par.mjs';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as Y from '../void-live-deploy/lib/brain-synapses.js';
@@ -25,7 +25,7 @@ function live(seed, learn, ms = 60000) {
   return { wiring: Y.wiring(S.W), late: late / (ms * 0.2), spikes: S.spikes };
 }
 
-test('dopamine teaches the eye: same-side wiring grows only with learning on, and the learned eye finds more living tissue', () => {
+ptest(import.meta.url, 'dopamine teaches the eye: same-side wiring grows only with learning on, and the learned eye finds more living tissue', () => {
   for (const seed of [1, 2, 3]) {
     const on = live(seed, true), off = live(seed, false);
     assert.ok(on.spikes > 1000 && off.spikes > 1000, 'its motor neurons spike');
@@ -35,7 +35,7 @@ test('dopamine teaches the eye: same-side wiring grows only with learning on, an
   }
 });
 
-test('it is an organ of the one brain: scheduled with the others, it writes into the shared input layer, and attention can see it', () => {
+ptest(import.meta.url, 'it is an organ of the one brain: scheduled with the others, it writes into the shared input layer, and attention can see it', () => {
   assert.ok(B.ORGAN_IDS.includes('synapses'));
   const b = B.createBrain(11); B.ask(b, 'lighthouse harbor fog');
   for (let t = 0; t < 240; t++) B.stepBrain(b, { x: 0.3 + 0.001 * t, y: 0.6, over: t < 120 });
