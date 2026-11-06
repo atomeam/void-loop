@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 3,
-    "proven": 38
+    "tested": 0,
+    "checked": 2,
+    "proven": 41
    },
    "from": 67,
    "to": 111
@@ -71,9 +71,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 2,
-    "proven": 26
+    "tested": 0,
+    "checked": 0,
+    "proven": 30
    },
    "from": 155,
    "to": 185
@@ -85,9 +85,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 13
+    "proven": 14
    },
    "from": 186,
    "to": 200
@@ -2212,8 +2212,10 @@
     "reaction test",
     "click speed test"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 108
   },
   {
@@ -2227,8 +2229,10 @@
     "7 times table quiz",
     "multiplication quiz"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the games it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "glow": 100,
    "n": 109
   },
   {
@@ -2242,8 +2246,10 @@
     "split alice, bob, carol and dave into 2 teams",
     "make 3 groups from: ann, ben, cal, dee, eve, fay"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Turn the page when you are done.",
+   "glow": 100,
    "n": 110
   },
   {
@@ -3131,8 +3137,10 @@
     "начислить ндс 5000 20%",
     "ндс 22% от 1000"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the numbers and money. Ask, and see.",
+   "glow": 100,
    "n": 160
   },
   {
@@ -3230,8 +3238,9 @@
     "split a 90 mile drive costing 36 dollars between 3 people",
     "share a 40 km trip that cost 24 dollars 4 ways"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the numbers and money are built on it.",
    "glow": 100,
    "n": 166
   },
@@ -3348,8 +3357,10 @@
     "what is my user agent",
     "what is my screen resolution"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the numbers and money are built on it. The void remembers each asking.",
+   "glow": 100,
    "n": 173
   },
   {
@@ -3515,8 +3526,9 @@
     "a train travels 120 km in 2 hours what is its speed",
     "400 + 562 + 129"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. The void remembers each asking.",
    "glow": 100,
    "n": 183
   },
@@ -3808,8 +3820,10 @@
     "pink noise for 30 minutes",
     "brown noise"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the body and mind, this one is trusted enough to be taught. The void remembers each asking.",
+   "glow": 100,
    "n": 200
   },
   {

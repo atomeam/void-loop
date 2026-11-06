@@ -2760,6 +2760,16 @@ say('nothing selected to remove');
       }
       return el;
     }
+    // "what can you do", "what can Verse do": a short, true answer (asked by Verse; lib/can-do.js): how many skills in how many families, read
+    // from skills/families.json, and one ask per family to tap, each one an example its own skill takes first in routing order
+    const wantsCanDo = (lower) => /^what\s+(?:else\s+)?can\s+(?:you|u|(?:verse|void|v01d))\s+do\b(?!\s+(?:now\s+that|today\s+that|that\s+you))/.test(lower);
+    function showCanDo() {
+      const el = showPage((p) => { p.innerHTML = '<h2>What I can do</h2><div class="sub">reading my skill list\u2026</div>'; }); // void-review: ok (a constant heading; nothing from a visitor)
+      Promise.all([import('/lib/can-do.js'), fetch('/skills/families.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null), skillsReady.catch(() => {})])
+        .then(([m, fam]) => { if (vpageEl !== el) return; el.innerHTML = '<h2>What I can do</h2>' + m.canDoHtml(esc, m.canDo(fam, learnedSkills)); })
+        .catch(() => { if (vpageEl === el) el.innerHTML = '<h2>What I can do</h2><p>Ask for anything: a timer, the weather, a game, a page about any topic.</p>'; });
+      return el;
+    }
     // "how do I make a timer", "how can I add a sticky note", "how to draw a circle" -> the self page at that line, not Wikipedia
     const HOWTO_KINDS = { clock: 'clock', clocks: 'clock', timer: 'timer', timers: 'timer', countdown: 'timer', sticky: 'sticky note', stickies: 'sticky note', note: 'sticky note', notes: 'sticky note', 'sticky note': 'sticky note',
       notepad: 'notepad', list: 'list', checklist: 'list', 'to-do list': 'list', 'todo list': 'list', calculator: 'calculator', counter: 'counter', shape: 'shape', circle: 'shape', square: 'shape', line: 'shape' };
@@ -6636,6 +6646,7 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(lower0); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
+      if (wantsCanDo(lower0)) { showCanDo(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'can-do' }); return; }
       if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' });
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's

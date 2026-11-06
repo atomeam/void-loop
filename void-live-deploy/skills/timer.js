@@ -22,6 +22,21 @@ function durationNumber(value) {
   return Object.prototype.hasOwnProperty.call(NUMBER_WORDS, token) ? NUMBER_WORDS[token] : 0;
 }
 
+// halves and "more", said as people say them, written as plain lengths so the parsers below read one form (asked by Verse:
+// "set a timer for 90 seconds" and increments): "2 and a half minutes" is 2.5 minutes (it was read as 30 seconds), "a minute and a
+// half" 1.5 minutes, "half a minute" 0.5 minutes, "an hour and a half" 1.5 hours, "1\u00bd minutes" 1.5 minutes
+const HALF_N = '\\d+(?:\\.\\d+)?|an?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty';
+const HALF_U = 'hours?|hrs?|minutes?|mins?|seconds?|secs?';
+/** "2 and a half minutes" -> "2.5 minutes", "a minute and a half" -> "1.5 minute", "half a minute" -> "0.5 minute"; anything else as
+ *  it was. Pure. */
+export function plainHalves(lower) {
+  return String(lower || '')
+    .replace(/(\d+)\s*\u00bd/g, (_, n) => String(+n + 0.5))
+    .replace(new RegExp('\\b(' + HALF_N + ')\\s+and\\s+an?\\s+half\\s+(' + HALF_U + ')\\b', 'g'), (_, n, u) => (durationNumber(n) + 0.5) + ' ' + u)
+    .replace(new RegExp('\\b(' + HALF_N + ')\\s+(' + HALF_U + ')\\s+and\\s+an?\\s+half\\b', 'g'), (_, n, u) => (durationNumber(n) + 0.5) + ' ' + u)
+    .replace(new RegExp('\\bhalf\\s+an?\\s+(' + HALF_U + ')\\b', 'g'), (_, u) => '0.5 ' + u);
+}
+
 /** "set an alarm for 7am", "wake me up at 6:30": ms until the next such time (no am/pm: the next of the two), or 0. Pure. */
 export function alarmMs(lower, now = new Date()) {
   const m = String(lower || '').trim().replace(/[?.!]+$/, '').match(/^(?:please\s+)?(?:(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm|wake\s+me(?:\s+up)?)\s+(?:for|at)\s+(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?:\s+(?:tomorrow|tonight|today))?(?:\s+please)?$/);
@@ -116,9 +131,13 @@ export function timerEnglish(lower) {
 
 /** "add one minute", "add 30 seconds to the timer", "plus 2 minutes", "extend it by 5 minutes": the length to add, or 0. Pure. */
 export function addMs(lower) {
-  const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, ''));
+  const s = plainHalves(timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, '')));
+  // "30 more seconds", "give it 2 more minutes": more of the running one, said without "add"
+  const more = new RegExp('^(?:please\\s+)?(?:give\\s+(?:it|me)\\s+)?((?:' + HALF_N + ')\\s+)more\\s+(' + HALF_U + ')(?:\\s+(?:on|to)\\s+(?:the\\s+|my\\s+)?(?:timer|countdown))?(?:\\s+please)?$').exec(s);
+  if (more) return parseDuration(more[1] + more[2]);
   const m = /^(?:please\s+)?(?:add|plus|put\s+on|give\s+(?:it|me)|extend\s+(?:it|the\s+(?:timer|countdown))\s+by|another)\s+(?:an?\s+other\s+|another\s+|an?\s+extra\s+|extra\s+)?(.+?)(?:\s+(?:more|extra))?(?:\s+(?:to|on(?:to)?)\s+(?:the\s+|my\s+|it|that)?\s*(?:timer|countdown)?)?(?:\s+please)?$/.exec(s);
   if (!m || !/(?:hours?|hrs?|minutes?|mins?|seconds?|secs?)\b/.test(m[1])) return 0;
+  if (/\b(?:timers?|countdowns?)\b/.test(m[1])) return 0; // "add a 30 second timer" makes a timer; it adds to none
   return parseDuration(m[1].replace(/^another\s+/, 'one '));
 }
 
@@ -152,7 +171,7 @@ export function unitlessAmount(lower) {
 export function parseDuration(text) {
   const alarm = alarmMs(text);
   if (alarm) return alarm;
-  const lower = timerEnglish((text || '').toLowerCase()).replace(/[-‐‑‒–—]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+  const lower = plainHalves(timerEnglish((text || '').toLowerCase()).replace(/[-‐‑‒–\u2014]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes'));
   const daysUntil = lower.match(/(?:how\s+many\s+)?days?\s+until\s+(.+)$/i);
   if (daysUntil) {
     const target = parseTargetDate(daysUntil[1].trim());
@@ -178,11 +197,11 @@ export function parseDuration(text) {
 
 /** the whole ask is a length ("5 minutes", "start 1 hour 30 min", "days until christmas"). Pure. */
 export function isDurationRequest(lower) {
-  const normalized = lower.replace(/[-‐‑‒–—]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+  const normalized = plainHalves(lower.replace(/[-‐‑‒–\u2014]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes'));
   if (/(?:how\s+many\s+)?days?\s+until\s+.+/i.test(normalized)) return true;
   const number = '(?:\\d+(?:\\.\\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)';
   const unit = '(?:hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)';
-  const duration = number + '\\s*' + unit + '(?:\\s*' + number + '\\s*' + unit + ')*';
+  const duration = number + '\\s*' + unit + '(?:\\s*(?:,\\s*|and\\s+)?' + number + '\\s*' + unit + ')*'; // "1 minute 30 seconds", "1 minute and 30 seconds"
   return new RegExp('^(?:please\\s+)?(?:(?:start|begin|go|run|set)\\s+)?(?:(?:a|an|the)\\s+)?(?:for\\s+)?' + duration + '(?:\\s+please)?[.!]?$').test(normalized);
 }
 
@@ -192,6 +211,7 @@ export function wantsCreate(lower) {
   const mentionsTimer = /\b(timers?|countdowns?|pomodoros?)\b/.test(lower);
   const duration = parseDuration(lower);
   if (unitlessAmount(lower)) return false; // "timer for 5" asks minutes or seconds; it does not start five minutes
+  if (addMs(lower) > 0) return false; // "add 30 seconds to the timer" adds to the one there (askAction); it never resets it to 30 seconds
   if (mentionsTimer && /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
   if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
   if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
@@ -384,6 +404,7 @@ export function askAction(lower, text, stageApi) {
     stageApi.say('added ' + clock(more) + ' · the timer is ' + clock(tm.duration) + ' (' + Math.round(tm.duration / 1000) + ' s) · ' + clock(left) + ' left');
     return 'timer-add';
   }
+  if (more > 0 && /\b(?:timers?|countdowns?)\b/.test(lower)) { stageApi.say('no timer to add to · try "set a timer for ' + Math.round(more / 1000) + ' seconds"'); return 'no timer'; }
   const action = wantsAction(lower, stageApi);
   if (!action) return '';
   const timerMentioned = /\b(timer|countdown)\b/.test(lower) || !!pickedTimer(stageApi);

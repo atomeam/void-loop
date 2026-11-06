@@ -8,15 +8,16 @@
   "streak": "consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Verse",
   "live": "a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven",
   "source": "source reliability (asked by Verse, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating",
+  "needs": "what a checked or tested skill still lacks to be proven, the fewest pieces of evidence the rating rule asks for (void-live-deploy/lib/proof-gap.js); written beside the rating on every build, so it is never a claim; asked by Verse",
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-05",
  "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
-  "tested": 11,
-  "checked": 13,
-  "proven": 385
+  "tested": 6,
+  "checked": 10,
+  "proven": 393
  },
  "families": [
   {
@@ -207,6 +208,7 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "promoted": "2026-10-30",
+     "needs": "1 more real ask in the benchmark that routes to it, or a browser-suite check named after it",
      "streak": 6
     },
     {
@@ -585,9 +587,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 3,
-    "proven": 38
+    "tested": 0,
+    "checked": 2,
+    "proven": 41
    },
    "skills": [
     {
@@ -746,7 +748,8 @@
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "needs": "a real ask in the benchmark that routes to it"
     },
     {
      "name": "ringer",
@@ -941,30 +944,34 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "promoted": "2026-11-04",
+     "needs": "a browser-suite check named after it, or 2 more real asks in the benchmark that route to it",
      "streak": 2
     },
     {
      "name": "speed-tests",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
+     "success_rate": 1,
      "promoted": "2026-11-06"
     },
     {
      "name": "math-quiz",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
+     "success_rate": 1,
      "promoted": "2026-11-06"
     },
     {
      "name": "groups",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
+     "success_rate": 1,
      "promoted": "2026-11-06"
     }
    ]
@@ -1095,7 +1102,8 @@
      "why": "3 real asks in the benchmark",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "needs": "a browser-suite check named after it, or a self-test (suite() in the skill, or a tools/*.test.mjs that imports it)"
     },
     {
      "name": "suntimes",
@@ -1120,7 +1128,8 @@
      "why": "a self-test, 1 real ask in the benchmark",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "needs": "a browser-suite check named after it, or 2 more real asks in the benchmark that route to it"
     },
     {
      "name": "place",
@@ -1354,9 +1363,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 2,
-    "proven": 26
+    "tested": 0,
+    "checked": 0,
+    "proven": 30
    },
    "skills": [
     {
@@ -1405,11 +1414,12 @@
     },
     {
      "name": "vat",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-11-05",
+     "success_rate": 1,
+     "promoted": "2026-11-06",
      "streak": 2
     },
     {
@@ -1461,12 +1471,12 @@
     },
     {
      "name": "drive-share",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-04",
+     "promoted": "2026-11-06",
      "streak": 2
     },
     {
@@ -1526,10 +1536,12 @@
     },
     {
      "name": "my-device",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-06",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-06"
     },
     {
      "name": "counter",
@@ -1614,12 +1626,12 @@
     },
     {
      "name": "sums",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-04",
+     "promoted": "2026-11-06",
      "streak": 2
     },
     {
@@ -1650,9 +1662,9 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 13
+    "proven": 14
    },
    "skills": [
     {
@@ -1779,10 +1791,11 @@
     },
     {
      "name": "noise",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
+     "success_rate": 1,
      "promoted": "2026-11-06"
     }
    ]
@@ -2056,6 +2069,7 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "promoted": "2026-11-04",
+     "needs": "1 more real ask in the benchmark that routes to it, or a browser-suite check named after it",
      "streak": 2
     },
     {
@@ -2150,7 +2164,8 @@
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-04"
+     "promoted": "2026-11-04",
+     "needs": "1 more real ask in the benchmark that routes to it, or a browser-suite check named after it"
     },
     {
      "name": "compliment",
@@ -2230,6 +2245,7 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "promoted": "2026-10-29",
+     "needs": "a browser-suite check named after it, or 2 more real asks in the benchmark that route to it",
      "streak": 7
     },
     {
@@ -2817,6 +2833,7 @@
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "promoted": "2026-10-29",
+     "needs": "a real ask in the benchmark that routes to it",
      "streak": 17
     },
     {
@@ -3756,7 +3773,8 @@
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-11-05",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "needs": "a browser-suite check named after it and a real ask in the benchmark that routes to it, or 3 real asks in the benchmark that route to it"
     },
     {
      "name": "systems-monitor",
@@ -3764,6 +3782,7 @@
      "why": "a self-test",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
+     "needs": "a browser-suite check named after it and a real ask in the benchmark that routes to it, or 3 real asks in the benchmark that route to it",
      "streak": 1
     },
     {
@@ -3836,6 +3855,7 @@
      "why": "a self-test",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
+     "needs": "a browser-suite check named after it and a real ask in the benchmark that routes to it, or 3 real asks in the benchmark that route to it",
      "streak": 1
     },
     {
@@ -3844,6 +3864,7 @@
      "why": "a self-test",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
+     "needs": "a browser-suite check named after it and a real ask in the benchmark that routes to it, or 3 real asks in the benchmark that route to it",
      "streak": 1
     },
     {
@@ -3852,6 +3873,7 @@
      "why": "a self-test",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
+     "needs": "a browser-suite check named after it and a real ask in the benchmark that routes to it, or 3 real asks in the benchmark that route to it",
      "streak": 1
     },
     {
@@ -4023,6 +4045,7 @@
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "promoted": "2026-10-30",
+     "needs": "a real ask in the benchmark that routes to it",
      "streak": 16
     },
     {
@@ -4031,6 +4054,7 @@
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
+     "needs": "a real ask in the benchmark that routes to it",
      "streak": 16
     },
     {

@@ -495,6 +495,8 @@ for (const [name, file] of [
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
+  ['can-do', 'can-do.test.mjs'], // "what can you do": the families, one ask each that its own skill takes first (lib/can-do.js)
+  ['proof-gap', 'proof-gap.test.mjs'], // what each checked and tested skill lacks to be proven, in families.json and on the family-health card
   ['actions-log', 'actions-log.test.mjs'],
   ['range-diff', 'range-diff.test.mjs'],
   ['clock', 'clock.test.mjs'],

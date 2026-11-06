@@ -12,6 +12,12 @@ export function sumOf(text) {
     const value = Math.round(Number(m[3]) / Number(m[1]) * Number(m[2]) * 100) / 100;
     return { kind: 'sum', value, line: m[3] + ' × (' + m[2] + ' / ' + m[1] + ') = ' + value };
   }
+  // the same unit price for any thing, said whole: "if 6 eggs cost 1.80 how much do 10 cost" (only apples were read until 2026-11-06)
+  m = t.match(/^(?:if\s+)?(\d+(?:\.\d+)?)\s+[a-z]+(?:\s+[a-z]+)?\s+costs?\s+\$?(\d+(?:\.\d+)?)(?:\s*(?:dollars?|euros?|pounds?))?,?\s+(?:then\s+)?how\s+much\s+(?:do|does|would|will)\s+(\d+(?:\.\d+)?)(?:\s+of\s+them)?\s+cost$/i);
+  if (m && Number(m[1])) {
+    const value = Math.round(Number(m[3]) / Number(m[1]) * Number(m[2]) * 100) / 100;
+    return { kind: 'sum', value, line: m[3] + ' × (' + m[2] + ' / ' + m[1] + ') = ' + value };
+  }
   m = t.match(/(\d+(?:\.\d+)?)\s*km\b.*?\b(\d+(?:\.\d+)?)\s*hours?/i);
   if (m && Number(m[2])) {
     const value = Math.round(Number(m[1]) / Number(m[2]) * 10) / 10;
