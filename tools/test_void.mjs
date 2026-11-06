@@ -4874,6 +4874,17 @@ try {
         && /5:00/.test(r.faces) && r.reload === 2 && r.i === '120000,run,full,40,#e8e8e8' && r.j === '' && r.alarm === 'true' && !!r.done && r.state === '2000,stop,part,40,#e8e8e8' && !P.errors.length,
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
+  // #2326: "add one minute" after "set a timer for 90 seconds" went to the list (a list card holding "one minute"), so the
+  // timer stayed at 1:30. It is time for the timer: the length grows to 2:30 (150 s), the card says so, and no list appears.
+  if (want("timer add time: \"add one minute\" after a 90 second timer makes it 2:30, not a list item")) { const P = await fresh();
+    await P.ask('set a timer for 90 seconds', 700);
+    await P.ask('add one minute', 700);
+    const st = await P.state(), tms = st.filter((t) => t.kind === 'timer');
+    const face = await P.p.$$eval('.thing.timer[data-picked]', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+    check('timer add time: "add one minute" after "set a timer for 90 seconds" makes that timer 150 s long, its card says 2:30 and 150 seconds and is the picked thing, and no list is made',
+      tms.length === 1 && tms[0].duration === 150000 && /2:30/.test(face) && /150 seconds/.test(face) && !st.some((t) => t.kind === 'list') && !P.errors.length,
+      JSON.stringify({ tms, face, kinds: st.map((t) => t.kind), e: P.errors }));
+    await P.ctx.close(); }
   // step 6's visible upgrade for the timer (owner, 2026-10-11: every cleanup move ships one): its progress ring was built with
   // createElement('svg'), an unknown HTML tag that never drew; it is a real SVG ring now, and a finished timer flashes 0:00
   if (want("timer ring and done flash: the progress ring is drawn and sweeps down while it runs, a finished timer flashes 0:00, steady with reduced motion")) {
