@@ -2,7 +2,7 @@
 // are broken, and when Verse writes new probe asks. Run: node --test tools/conductor.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, coderShort, CODER_RUN_CALLS, DAILY, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
+import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, designDue, willDue, lapDue, dailyDue, sweepDue, coderShort, CODER_RUN_CALLS, DAILY, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
 
 const H = 3600000, NOW = Date.parse('2026-10-26T08:00:00Z');
 const iso = (hAgo) => new Date(NOW - hAgo * H).toISOString();
@@ -107,6 +107,11 @@ test('the proving pass (grow-self.yml) runs again, at most every 2 hours and nev
   assert.equal(growDue({ exists: true, busy: true, lastRunMs: NOW - 9 * H, now: NOW }), false, 'one at a time');
   assert.equal(growDue({ exists: false, busy: false, lastRunMs: 0, now: NOW }), false);
   // the will: hourly from the clock, whatever started the last run (its own cron comes hours late, a deploy start counts too)
+  assert.equal(designDue({ exists: true, busy: false, lastRunMs: 0, now: NOW }), true, 'never ran');
+  assert.equal(designDue({ exists: true, busy: false, lastRunMs: NOW - 2 * H - 60000, now: NOW }), true);
+  assert.equal(designDue({ exists: true, busy: false, lastRunMs: NOW - 90 * 60000, now: NOW }), false, 'ran 90 minutes ago');
+  assert.equal(designDue({ exists: true, busy: true, lastRunMs: 0, now: NOW }), false, 'one at a time');
+  assert.equal(designDue({ exists: false, busy: false, lastRunMs: 0, now: NOW }), false);
   assert.equal(willDue({ exists: true, busy: false, lastRunMs: NOW - 61 * 60000, now: NOW }), true);
   assert.equal(willDue({ exists: true, busy: false, lastRunMs: NOW - 20 * 60000, now: NOW }), false, 'ran 20 minutes ago');
   assert.equal(willDue({ exists: true, busy: true, lastRunMs: NOW - 9 * H, now: NOW }), false, 'one at a time');
