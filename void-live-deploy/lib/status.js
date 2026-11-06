@@ -49,7 +49,7 @@ export const PROBES = Object.freeze([
   { kind: 'page', name: 'Fix an automation', path: '/fix/', method: 'GET' },
   { kind: 'page', name: 'Team chat', path: '/team/', method: 'GET' },
   { kind: 'api', name: 'MCP endpoint', path: '/api/mcp', method: 'POST', body: '{"jsonrpc":"2.0","id":1,"method":"ping"}' },
-  { kind: 'api', name: 'Tools for AIs', path: '/tools.json', method: 'GET', key: 'tools' },
+  { kind: 'api', name: 'Tools for AIs', path: '/tools.json', method: 'GET', key: 'tools', timeout: 20000 },
   { kind: 'api', name: 'Skills index', path: '/skills/index.json', method: 'GET' },
   { kind: 'api', name: 'Self-check', path: '/api/selfcheck', method: 'GET' },
   { kind: 'api', name: 'Status', path: '/api/status', method: 'GET', key: 'guards' },

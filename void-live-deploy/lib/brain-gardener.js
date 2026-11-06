@@ -18,6 +18,10 @@ import { GW, GH, deposit } from './brain-workspace.js';
 
 // the LZ78 count of lib/brain-organs.js (lzBits), here so this file needs nothing from the organ list that names it
 const lzBits = (s) => { const seen = new Set(); let w = '', p = 0; for (const ch of s) { const t = w + ch; if (seen.has(t)) w = t; else { seen.add(t); p++; w = ''; } } if (w) p++; return p * Math.log2(p + 1); };
+// the same count on symbol codes, with the phrases kept as a trie (phrase id * 256 + next symbol) instead of strings: every phrase LZ78
+// extends is one it has seen, so a trie holds the same set, and the count is the same number without making a string per symbol
+const LZ = new Map();
+function lzCodes(c, n) { LZ.clear(); let w = 0, p = 0, next = 1; for (let i = 0; i < n; i++) { const k = w * 256 + c[i], t = LZ.get(k); if (t !== undefined) w = t; else { LZ.set(k, next++); p++; w = 0; } } if (w) p++; return p * Math.log2(p + 1); }
 export const NX = 4, NY = 4, TILES = NX * NY, TW = GW / NX, TH = GH / NY, LEVELS = 8, BLINK = 4, THINK = 6, DUE = 24, FOCUS = 3;
 // the band is the middle third between what the coder says of a still patch and of a patch of pure noise (15 levels of change at random)
 const STILL = Math.log2(1 + lzBits('H'.repeat(TW * TH)));
@@ -39,17 +43,18 @@ export function makeGardener(seed = 1) {
 }
 export const tileOf = (x, y) => Math.floor(y / TH) * NX + Math.floor(x / TW);
 const level = (v) => Math.min(LEVELS - 1, Math.floor(clamp(v * 3.2, 0, 0.999) * LEVELS));
+const RES = new Uint8Array(TW * TH); // scratch: one shifted prediction's residual symbols
 /** the surprise of one patch: the LZ bits of what is left after the best of 9 shifted predictions from the last blink. Pure. */
 export function patchBits(cur, prev, t) {
   const x0 = (t % NX) * TW, y0 = Math.floor(t / NX) * TH;
   let best = Infinity, still = 0;
   for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-    let s = '', same = 0;
+    let n = 0, same = 0;
     for (let y = y0; y < y0 + TH; y++) for (let x = x0; x < x0 + TW; x++) {
       const px = (x + dx + GW) % GW, py = (y + dy + GH) % GH, r = cur[y * GW + x] - prev[py * GW + px];
-      if (!r) same++; s += String.fromCharCode(72 + clamp(r, -7, 7));
+      if (!r) same++; RES[n++] = 72 + clamp(r, -7, 7);
     }
-    const bits = lzBits(s); if (bits < best) best = bits;
+    const bits = lzCodes(RES, n); if (bits < best) best = bits;
     if (!dx && !dy) still = same / (TW * TH);
   }
   return { bits: Math.log2(1 + best), moved: 1 - still };

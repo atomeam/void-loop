@@ -1,8 +1,9 @@
 // Merge on GitHub's side, so no session has to sit and watch a PR (.github/workflows/automerge.yml runs this on every CI
 // finish, every review and every answer to one). It looks at each open PR from this repository (every one is labelled "automerge" by this script; owner 2026-10-15: "automerge everything always"; or the one PR given),
-// asks tools/pr-ready.mjs whether it is ready, and merges the ready ones. A merge made with the workflow's own token does
+// asks tools/pr-ready.mjs whether Verse's review is clean, then tools/suite-gate.mjs: one pull request, and only after the
+// full browser suite passed on that pull request merged with current main (suite-gate.yml). A merge made with the workflow's own token does
 // not start the push-to-main workflows, so it starts both itself: the deploy (deploy.yml, after_merge=true: it deploys at
-// once) and the full suite on that head (verify.yml, which reverts what broke it if it fails). A PR GitHub reports dirty (it conflicts with main)
+// once) and the full suite on that head (verify.yml, which reverts what broke it and files a heal job). A PR GitHub reports dirty (it conflicts with main)
 // gets no pull_request runs at all, so the bot merges main into it first (resolveMain in pr-ready.mjs: tools/merge-main.mjs from
 // main's checkout, the merge commit pushed to the branch, never forced, Verse's review dispatched on the new head); a conflict
 // outside the append-only records comes back as one comment on the PR naming the files.
@@ -18,6 +19,8 @@ import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
+import { choose, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
+import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
 // The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
@@ -60,6 +63,8 @@ function scopedPr() {
     if (ev.pull_request && ev.pull_request.number) return String(ev.pull_request.number);
     if (ev.inputs && /^\d+$/.test(String(ev.inputs.pr || ''))) return String(ev.inputs.pr);
     const wr = ev.workflow_run;
+    // a suite gate result changes which pull request goes next: sweep, so the green one merges or the next one is queued now
+    if (wr && wr.name === 'Suite on main') return '';
     if (wr && wr.pull_requests && wr.pull_requests.length === 1) return String(wr.pull_requests[0].number);
   } catch (_) {}
   return '';
@@ -126,6 +131,7 @@ for (const row of superseded(prs)) {
   } catch (e) { console.log('#' + row.number + ': could not close the superseded pull request: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
 let merged = 0;
+const ready = [];
 const closed = new Set(superseded(prs).map((r) => r.number));
 for (let p of prs) {
   if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
@@ -146,6 +152,11 @@ for (let p of prs) {
     try { run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] })); console.log(`#${p.number}: labelled ${LABEL} (every PR merges by itself)`); } catch (_) {}
   }
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
+  // GitHub's own auto-merge would land the pull request on whatever main is now, without the suite. The bot merges, one at a time, after the suite.
+  if (p.auto_merge && p.node_id) {
+    try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); console.log(`#${p.number}: GitHub auto-merge disarmed until the suite passes on current main`); }
+    catch (e) { console.log(`#${p.number}: could not disarm auto-merge: ${String(e.stderr || e.message || e).slice(0, 120)}`); }
+  }
   // behind main, and the update is clean: GitHub merges main in. A conflict comes back as dirty and is settled below.
   if (p.mergeable_state === 'behind') {
     try { run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/update-branch`, '-f', `expected_head_sha=${p.head.sha}`]); console.log(`#${p.number}: brought up to date with main`); }
@@ -189,24 +200,92 @@ for (let p of prs) {
   const sc = safety(ex, gh, { repo, pr: p.number, sha: r.sha });
   console.log(`#${p.number}: safety-check ${sc.state} (${sc.why})`);
   if (sc.state === 'fail') continue;
-  try {
-    if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-    // Arm GitHub's own auto-merge (squash) so a green pull request does not sit with autoMergeRequest null.
-    // When the arm takes, GitHub merges as soon as its required checks pass; the PUT below is the same merge if the arm cannot.
-    let armed = false;
-    if (eligible(p, repo) && p.node_id && !p.auto_merge) {
-      try {
-        const q = 'mutation($id:ID!){enablePullRequestAutoMerge(input:{pullRequestId:$id,mergeMethod:SQUASH}){pullRequest{autoMergeRequest{enabledAt mergeMethod}}}}';
-        const out = run(['api', 'graphql', '-f', 'query=' + q, '-f', 'id=' + p.node_id]);
-        armed = /enabledAt/.test(out);
-        console.log(`#${p.number}: auto-merge armed (squash)` + (armed ? '' : ' (no confirmation)'));
-      } catch (e) { console.log(`#${p.number}: auto-merge not armed: ${String(e.stderr || e.message || e).slice(0, 240)}`); }
-    }
-    if (armed) continue;
-    const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-    if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
-  } catch (e) { console.log(`#${p.number}: merge refused: ${String(e.stderr || e.message).slice(0, 300)}`); }
+  ready.push({ number: p.number, review: 'merge', p, r });
 }
+// One pull request, and only after the full suite passed on top of current main (tools/suite-gate.mjs).
+let mainSha = '', choice = null, suiteRun = null, mergeError = '';
+if (ready.length && !limited) {
+  let running = false;
+  try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  try {
+    const runs = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'suite-gate.yml', '--limit', '8', '--json', 'databaseId,status,conclusion,createdAt,url']));
+    const list = Array.isArray(runs) ? runs : [];
+    running = list.some((x) => ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(x.status));
+    const x = list.find((y) => y.status !== 'completed') || list[0];
+    if (x) suiteRun = { id: x.databaseId, status: x.status, conclusion: x.conclusion, createdAt: x.createdAt, url: x.url };
+  } catch (e) { console.log('could not read the suite queue: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  const rows = [];
+  for (const row of ready) {
+    let suite = null, drift = null;
+    try {
+      const runs = (gh(`repos/${repo}/commits/${row.r.sha}/check-runs?per_page=100`).check_runs || []).filter((c) => c.name === CHECK);
+      suite = runs.sort((a, b) => b.id - a.id)[0] || null;
+    } catch (_) {}
+    const tested = recordedMain(suite);
+    if (tested && mainSha && !samePrefix(tested, mainSha)) {
+      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s', tested + '..' + mainSha])); } catch (_) { drift = null; }
+    }
+    rows.push({ ...row, suite, drift });
+  }
+  choice = choose(rows, mainSha, running);
+  const pick = choice.pr;
+  console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
+  // one suite run for the whole batch, dispatched from main: the workflow on main reads a list of pull requests (2026-11-06)
+  const startSuite = (batch, where) => {
+    const list = (batch || []).map((x) => x.number).filter(Boolean);
+    if (!list.length) return;
+    try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${list.join(',')}`]); console.log(`#${list.join(', #')}: full suite started ${where}`); }
+    catch (e) { console.log(`#${list.join(', #')}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
+  };
+  if (choice.action === 'queue' && pick) startSuite(choice.batch && choice.batch.length ? choice.batch : [pick], 'on top of ' + String(mainSha).slice(0, 7));
+  if (choice.action === 'merge' && pick) {
+    // the pull requests one green run tested, merged one after another; the first refusal stops the rest (they wait for the next run)
+    const done = [];
+    for (const row of (choice.batch && choice.batch.length ? choice.batch : [pick])) {
+      const p = row.p, r = row.r;
+      try {
+        if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
+        if (eligible(p, repo) && p.auto_merge) {
+          try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
+        }
+        const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
+        if (!m.merged) break;
+        merged++; done.push(row); console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
+      } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); break; }
+    }
+    // main moved: start the suite for the next ready pull requests now, not at the next hourly sweep (2026-11-06)
+    if (done.length) startSuite(nextBatch(rows, done), 'on the new main');
+  }
+}
+// The stall alarm (tools/merge-stall.mjs): in a sweep, no merge for 2 hours while a green pull request waits opens one issue
+// that names the stuck step; a hung suite gate run is cancelled. The issue closes when a pull request merges again. Never fails the run.
+if (!one && !limited) {
+  try {
+    const recent = merged ? new Date().toISOString() : lastMerge(gh(`repos/${repo}/pulls?state=closed&sort=updated&direction=desc&per_page=30`));
+    const v = stallVerdict({ now: Date.now(), lastMergeAt: recent, ready: ready.map((x) => ({ number: x.number, createdAt: x.p.created_at })), choice, suiteRun, mainSha, mergeError });
+    const issue = (gh(`repos/${repo}/issues?state=open&labels=${STALL_LABEL}&per_page=5`) || []).find((i) => !i.pull_request && String(i.body || '').startsWith(STALL_MARK));
+    if (v.stalled) {
+      if (v.cancel) {
+        try { run(['api', '-X', 'POST', `repos/${repo}/actions/runs/${v.cancel}/cancel`]); console.log(`stall: cancelled the hung suite gate run ${v.cancel}`); }
+        catch (e) { console.log(`stall: could not cancel run ${v.cancel}: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
+      }
+      const body = withKey(v.body, v.key);
+      if (!issue) {
+        const made = JSON.parse(run(['api', '-X', 'POST', `repos/${repo}/issues`, '--input', '-'], JSON.stringify({ title: v.title, body, labels: [STALL_LABEL] })));
+        console.log(`::warning::merges stalled: ${v.step} (issue #${made.number})`);
+      } else if (keyOf(issue.body) !== v.key) {
+        run(['api', '-X', 'PATCH', `repos/${repo}/issues/${issue.number}`, '--input', '-'], JSON.stringify({ title: v.title, body }));
+        run(['api', '-X', 'POST', `repos/${repo}/issues/${issue.number}/comments`, '--input', '-'], JSON.stringify({ body: 'The stuck step changed: ' + v.step }));
+        console.log(`::warning::merges stalled, new step: ${v.step} (issue #${issue.number})`);
+      } else console.log(`merges stalled, same step as issue #${issue.number}: ${v.step}`);
+    } else if (issue && recent && Date.now() - Date.parse(recent) < STALL_MS) {
+      run(['api', '-X', 'POST', `repos/${repo}/issues/${issue.number}/comments`, '--input', '-'], JSON.stringify({ body: `The queue moves again: a pull request merged at ${recent}. Closing.` }));
+      run(['api', '-X', 'PATCH', `repos/${repo}/issues/${issue.number}`, '-f', 'state=closed', '-f', 'state_reason=completed']);
+      console.log(`stall over: closed issue #${issue.number}`);
+    }
+  } catch (e) { console.log('stall alarm: ' + String(e.stderr || e.message || e).slice(0, 200)); }
+}
+function samePrefix(a, b) { const x = String(a).toLowerCase(), y = String(b).toLowerCase(); return x === y || x.startsWith(y) || y.startsWith(x); }
 if (merged) {
   try { run(['workflow', 'run', 'deploy.yml', '--repo', repo, '--ref', 'main', '-f', 'after_merge=true']); console.log('deploy of main started'); }
   catch (e) { console.log('::warning::merged, but could not start the deploy: ' + String(e.stderr || e.message).slice(0, 300)); }

@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-04T19:50:28.375Z",
+ "as_of": "2026-11-05T20:02:23.303Z",
  "rules": "Legitimate sources only, each cited. A value is a number its source publishes (a prize pool, a bounty, a program credit) and is not a forecast; null means unknown. Anything that needs Atom's identity, a login or a card is ready to claim; Verse claims nothing in anyone's name.",
  "probes": {
   "devpost": "read",
@@ -10,9 +10,9 @@
  },
  "counts": {
   "places": 28,
-  "live_finds": 15,
+  "live_finds": 13,
   "ready_to_claim": 36,
-  "verse_does_it": 5,
+  "verse_does_it": 3,
   "not_eligible": 1,
   "not_reached": 1
  },
@@ -385,7 +385,7 @@
   {
    "id": "devpost:31024",
    "category": "hackathon prizes",
-   "title": "Meta VR Start Developer Competition 2026 (Sep 24 - Nov 18, 2026, 14 days left)",
+   "title": "Meta VR Start Developer Competition 2026 (Sep 24 - Nov 18, 2026, 13 days left)",
    "source": "https://start-developer-competition-26.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 100000000,
@@ -411,7 +411,7 @@
   {
    "id": "devpost:31667",
    "category": "hackathon prizes",
-   "title": "Kiroween 2026 (Oct 30 - Dec 04, 2026, about 1 month left)",
+   "title": "Kiroween 2026 (Oct 30 - Dec 04, 2026, 29 days left)",
    "source": "https://kiroween.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 10000000,
@@ -424,7 +424,7 @@
   {
    "id": "devpost:31302",
    "category": "hackathon prizes",
-   "title": "PayPal AI Hackathon (Oct 01 - Nov 12, 2026, 8 days left)",
+   "title": "PayPal AI Hackathon (Oct 01 - Nov 12, 2026, 7 days left)",
    "source": "https://paypalaihackathon.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 6750000,
@@ -463,7 +463,7 @@
   {
    "id": "devpost:31552",
    "category": "hackathon prizes",
-   "title": "UGREEN Hackathon 2026 on AI NAS (Oct 22 - Nov 16, 2026, 11 days left)",
+   "title": "UGREEN Hackathon 2026 on AI NAS (Oct 22 - Nov 16, 2026, 10 days left)",
    "source": "https://ugreenhackathon.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": 4600000,
@@ -476,7 +476,7 @@
   {
    "id": "devpost:31489",
    "category": "hackathon prizes",
-   "title": "EthnoHack (Nov 02 - 08, 2026, 4 days left)",
+   "title": "EthnoHack (Nov 02 - 08, 2026, 3 days left)",
    "source": "https://ethnohack2026.devpost.com/",
    "value_cents": null,
    "prize_pool_cents": null,
@@ -511,10 +511,10 @@
    "next_step": "Join, then Verse swaps in the tagged links and adds the disclosure line."
   },
   {
-   "id": "upsell:/team/",
+   "id": "upsell:/lab/",
    "category": "missed upsells",
-   "title": "People open /team/ (43 views in 7 days) and it offers nothing to buy",
-   "source": "https://a-to-mind.com/team/",
+   "title": "People open /lab/ (155 views in 7 days) and it offers nothing to buy",
+   "source": "https://a-to-mind.com/lab/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",
    "fit": "Verse's own public visit counts (/api/visit)",
@@ -523,10 +523,10 @@
    "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
   },
   {
-   "id": "upsell:/brain/",
+   "id": "upsell:/conquered/",
    "category": "missed upsells",
-   "title": "People open /brain/ (14 views in 7 days) and it offers nothing to buy",
-   "source": "https://a-to-mind.com/brain/",
+   "title": "People open /conquered/ (8 views in 7 days) and it offers nothing to buy",
+   "source": "https://a-to-mind.com/conquered/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",
    "fit": "Verse's own public visit counts (/api/visit)",
@@ -535,34 +535,10 @@
    "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
   },
   {
-   "id": "upsell:/news/",
+   "id": "upsell:/members/",
    "category": "missed upsells",
-   "title": "People open /news/ (9 views in 7 days) and it offers nothing to buy",
-   "source": "https://a-to-mind.com/news/",
-   "value_cents": null,
-   "value_note": "unknown until it converts: traffic is still small",
-   "fit": "Verse's own public visit counts (/api/visit)",
-   "status": "Verse does it",
-   "needs": null,
-   "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
-  },
-  {
-   "id": "upsell:/music/",
-   "category": "missed upsells",
-   "title": "People open /music/ (8 views in 7 days) and it offers nothing to buy",
-   "source": "https://a-to-mind.com/music/",
-   "value_cents": null,
-   "value_note": "unknown until it converts: traffic is still small",
-   "fit": "Verse's own public visit counts (/api/visit)",
-   "status": "Verse does it",
-   "needs": null,
-   "next_step": "Add the paid-Verse offer (/members/) to the page, where it helps the visitor."
-  },
-  {
-   "id": "upsell:/chords/",
-   "category": "missed upsells",
-   "title": "People open /chords/ (6 views in 7 days) and it offers nothing to buy",
-   "source": "https://a-to-mind.com/chords/",
+   "title": "People open /members/ (6 views in 7 days) and it offers nothing to buy",
+   "source": "https://a-to-mind.com/members/",
    "value_cents": null,
    "value_note": "unknown until it converts: traffic is still small",
    "fit": "Verse's own public visit counts (/api/visit)",

@@ -1,0 +1,17 @@
+{
+ "at": "2026-11-06T03:38:04.199Z",
+ "sha": "11c694ceb09bd607e416f0815c300d2cefa8e21c",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42156313501",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end"
+ ],
+ "touched": [
+  "tools/pr-ready.mjs",
+  "tools/pr-ready.test.mjs"
+ ],
+ "shards": [
+  2,
+  4
+ ]
+}

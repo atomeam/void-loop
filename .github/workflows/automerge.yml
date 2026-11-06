@@ -1,7 +1,7 @@
 # GitHub merges ready PRs by itself, so no session sits and watches CI (tools/automerge.mjs, tools/pr-ready.mjs).
-# Only PRs labelled "automerge" from this repository (never forks). Ready = the void-review check clean on the head (seconds),
-# nothing that already finished failed. CodeRabbit is an extra and never blocks. Nothing else is waited on: the full suite runs on main
-# on every head of main, started by this bot after it merges, and reverts a commit that fails it (verify.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
+# Only PRs labelled "automerge" from this repository (never forks). Verse's review must be clean, and the full browser
+# suite must have passed on that pull request merged with current main (suite-gate.yml). One pull request merges per run.
+# The suite still runs on main after the merge and reverts a commit that fails it, filing a heal job (verify.yml). It looks again whenever anything that could change the answer happens, and once an hour.
 # A PR that conflicts with main gets no pull_request runs at all (GitHub skips them), so a labelled one would sit silently forever
 # (2026-10-10). For such a PR the bot merges main into the branch itself (tools/merge-main.mjs from main's checkout settles the
 # append-only records), pushes the merge commit (never forced) and starts Verse's review on the new head; a conflict outside those
@@ -10,7 +10,7 @@ name: Verse automerge
 
 on:
   workflow_run:
-    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate"]
+    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate", "Suite on main"] # a suite gate result merges the green PR or queues the next (2026-11-06)
     types: [completed]
   pull_request_review:
     types: [submitted]
@@ -43,6 +43,7 @@ permissions:
   pull-requests: write # mark a draft ready; the one conflict comment; arm auto-merge
   checks: read
   actions: write # start the deploy of main after a merge; start Verse's review on a head the bot pushed
+  issues: write # the stall alarm: one merge-stall issue when no pull request merged for 2 hours (tools/merge-stall.mjs)
 
 jobs:
   automerge:
