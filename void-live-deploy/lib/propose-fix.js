@@ -114,7 +114,7 @@ export function balanceOff(edits) {
     const a = tally(e && e.find), b = tally(e && e.replace), bad = [];
     for (const [o, cl] of [['(', ')'], ['[', ']'], ['{', '}']]) { const d = b[o] - a[o]; if (d) bad.push(d > 0 ? d + ' "' + o + '" that it never closes' : -d + ' "' + cl + '" that it never opened'); }
     for (const q of ["'", '"', '`']) if ((a[q] - b[q]) % 2) bad.push('an unclosed ' + q);
-    if (bad.length) out.push('Your new line "' + String(e.replace).slice(0, 60) + '…" has ' + bad.join(' and ') + '.');
+    if (bad.length) out.push('Your new text "' + String(e.replace) + '" has ' + bad.join(' and ') + '.');
   }
   return out.join(' ').slice(0, 360);
 }
