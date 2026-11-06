@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T06:38:52Z",
-   "subject": "Verse Brain organ 26: Reflex, the tiny MLP drafts"
+   "at": "2026-11-06T08:22:19Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T06:37:08Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+   "at": "2026-11-06T08:15:35Z",
+   "subject": "Revert \"Knowledge cards: whole sentences, senses apart, a matching picture, a grounded take, worded stats, a true Adds to Verse line, and…"
   },
   {
-   "at": "2026-11-06T06:33:53Z",
-   "subject": "treasury: found money and the weekly review"
+   "at": "2026-11-06T08:11:50Z",
+   "subject": "Tower gate: my ip,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T06:31:30Z",
+   "at": "2026-11-06T08:10:53Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 9f52702d6d834e1959e890ff5a0070b89dd44e3a (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-06T08:10:08Z",
+   "subject": "Keep the parity inventories current after a merge (main's parity check was red)"
+  },
+  {
+   "at": "2026-11-06T08:07:10Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 9f52702d6d834e1959e890ff5a0070b89dd44e3a (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-06T08:05:21Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T06:28:33Z",
-   "subject": "Wallet watch: wait and move to the next Base endpoint when one rate-limits the read (#2394)"
+   "at": "2026-11-06T08:05:04Z",
+   "subject": "Tower size: how heavy each Versus site really is"
   },
   {
-   "at": "2026-11-06T06:27:35Z",
-   "subject": "Arbitrage scanner: a record of past scans, from real rows only (#2393)"
+   "at": "2026-11-06T08:03:13Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-06T06:26:13Z",
-   "subject": "treasury: found money and the weekly review"
+   "at": "2026-11-06T08:02:29Z",
+   "subject": "Feature scan: my-ip researched by Verse"
   },
   {
-   "at": "2026-11-06T06:25:36Z",
-   "subject": "Trading bots: one paid-call route for backtest and arbitrage, and escaped tables (#2373)"
+   "at": "2026-11-06T08:01:58Z",
+   "subject": "Versus smallest first for real: tiny sites found, tower reset, icanhazip.com assimilated at /ip (#2412)"
   },
   {
-   "at": "2026-11-06T06:20:58Z",
-   "subject": "Design pass batch 2: pages no longer jump while their data loads (#2390)"
-  },
-  {
-   "at": "2026-11-06T06:20:33Z",
-   "subject": "Treasury: Verse reads every USDC transfer into its wallet from the chain, daily (#2391)"
-  },
-  {
-   "at": "2026-11-06T06:18:55Z",
-   "subject": "Timer unit test: the stub stage can pick, and the timer is picked after add time (#2389)"
-  },
-  {
-   "at": "2026-11-06T06:17:21Z",
-   "subject": "Pick the timer that \"add one minute\" changes; clear stale picked marks (#2388)"
-  },
-  {
-   "at": "2026-11-06T06:15:55Z",
-   "subject": "Outcome exam: podcasts 85.6"
-  },
-  {
-   "at": "2026-11-06T06:15:52Z",
-   "subject": "GAPS batch 5: grocery list, big block letters, event countdown, tournament bracket (#2384)"
-  },
-  {
-   "at": "2026-11-06T06:14:58Z",
-   "subject": "Site test: fix: \"play reversi\" console: Cannot read properties of undef"
-  },
-  {
-   "at": "2026-11-06T06:14:34Z",
-   "subject": "MCP: every paid tool runs and gets a 402, and the registry listing moves to Verse 1.2.0 (#2383)"
-  },
-  {
-   "at": "2026-11-06T06:11:29Z",
+   "at": "2026-11-06T08:01:12Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T06:09:01Z",
-   "subject": "Design pass batch 1: tap targets and button contrast on every tool page (#2385)"
+   "at": "2026-11-06T07:58:55Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T06:02:51Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-06T07:58:41Z",
+   "subject": "Prices and images exams: fast ethereum and money asks, and pictures on the stage (#2415)"
   },
   {
-   "at": "2026-11-06T05:58:56Z",
-   "subject": "Incident: the browser suite failed on c5a28a1f (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T07:58:02Z",
+   "subject": "Failed jobs read: run 42181363096 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-06T07:57:32Z",
+   "subject": "Incident: the browser suite failed on f18aba43 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T07:55:27Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T07:49:29Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-06T07:49:16Z",
+   "subject": "Knowledge cards: whole sentences, senses apart, a matching picture, a grounded take, worded stats, a true Adds to Verse line, and Verse's…"
+  },
+  {
+   "at": "2026-11-06T07:44:26Z",
+   "subject": "Treasury: a giving pot, a tenth of what is left after Atom's cut (#2410)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 179
+  "day": 35,
+  "week": 186
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -899,14 +899,14 @@
   "source": "verse"
  },
  "tower": {
-  "target": "wheelofgold.com",
-  "since": "2026-11-05",
+  "target": "squoosh.app",
+  "since": "2026-11-06",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1269
+  "total": 1270
  }
 }
