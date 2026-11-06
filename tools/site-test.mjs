@@ -173,6 +173,22 @@ const fpsOf = (p, ms = 2000) => p.evaluate((ms) => new Promise((ok) => { let n =
 const meta = (c) => ({ probe: !!c.feature, page: !!c.page, variant: !!c.variant, feature: c.feature, base: c.base });
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+/** The second try of each load over the ceiling, made once the pool is done, one at a time (issue #2328). slots: case results; a slow
+ * one carries loadRecheck { c, r }, the judge's inputs. timeAlone(path) loads the page alone and returns its ms. The faster of the two
+ * loads counts, the case is judged again with it and the same limits, and loadRecheck is removed from every slot. A load that is still
+ * over the ceiling alone stays a failure: a slow site stays slow twice. */
+export async function recheckSlowLoads(slots, limits = {}, timeAlone) {
+  for (let k = 0; k < slots.length; k++) {
+    const s = slots[k]; if (!s || !s.loadRecheck) continue;
+    const { c, r } = s.loadRecheck; let loadMs = r.loadMs;
+    if (limits.loadMs && loadMs > limits.loadMs) { try { loadMs = Math.min(loadMs, await timeAlone(c.path)); } catch (_) {} }
+    const { loadRecheck, ...rest } = s, v = judge(c, { ...r, loadMs }, limits);
+    slots[k] = { ...rest, ...v, loadMs };
+    if (loadMs !== r.loadMs) console.log((v.ok ? 'ok   ' : 'FAIL ') + (c.ask || c.path) + ' · load again, alone: ' + loadMs + ' ms (first ' + r.loadMs + ' ms beside the other open cases)' + (v.ok ? '' : ' · ' + v.why.join('; ')));
+  }
+  return slots;
+}
+
 export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://a-to-mind.com', shots = 'site-test-shots' } = {}) {
   mkdirSync(shots, { recursive: true }); const { b, ctx } = await browser(); const out = [];
   // Asks start at most one every GAP_MS, as before, but the next one no longer waits for the last to finish: each takes about 8 s
@@ -187,13 +203,16 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR|cloudflareinsights|Permissions policy violation/i.test(m.text()) && errors.push(m.text()));
     // a script answered with the wrong type: name the file (the console line alone does not, issue #757)
     p.on('response', (res) => { const q = res.request(), ct = res.headers()['content-type'] || ''; if (q.resourceType() === 'script' && res.status() < 300 && !/javascript|wasm|json/.test(ct)) errors.unshift('script ' + new URL(res.url()).pathname + ' served as ' + (ct || 'nothing') + ' (' + res.status() + ')'); });
-    const t0 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); let loadMs = Date.now() - t0;
+    const t0 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); const loadMs = Date.now() - t0;
     // one slow load on a shared runner is not a slow site: over the ceiling, the page is loaded once more and the faster load counts
     // (issues #1022, #1028: 1244 and 1426 ms once, while the same pages load well inside the ceiling run after run). A slow site stays slow twice.
-    if (suite.limits && suite.limits.loadMs && loadMs > suite.limits.loadMs) { const t1 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); loadMs = Math.min(loadMs, Date.now() - t1); }
+    // Since the pool (#2201) up to POOL cases share the runner, so the second load is no longer timed here, beside the other open cases:
+    // it is timed alone after the pool (recheckSlowLoads). Issue #2328: "yo new automation" loaded the home page in 1309 ms twice while
+    // two other cases ran, and the run's median load was 382 ms.
+    const slowLoad = !!(suite.limits && suite.limits.loadMs && loadMs > suite.limits.loadMs);
     if (c.page) { await p.waitForTimeout(1500); const text = (await p.evaluate(() => document.body.innerText)).slice(0, 1500);
       const v = judge(c, { text, errors, loadMs }, suite.limits);
-      console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); return { ...v, ...meta(c), loadMs, chars: text.trim().length }; }
+      console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); return { ...v, ...meta(c), loadMs, chars: text.trim().length, ...(slowLoad ? { loadRecheck: { c, r: { text, errors, loadMs } } } : {}) }; }
     await p.waitForSelector('#input', { timeout: 15000 }); await p.waitForTimeout(800);
     const before = await p.evaluate(() => ({ n: document.querySelectorAll('.thing').length, t: document.body.innerText }));
     await p.fill('#input', c.ask); await p.keyboard.press('Enter');
@@ -215,7 +234,7 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     const statsIdleMs = await p.evaluate(() => { const e = performance.getEntriesByName('card-stats-idle').pop(); return e ? Math.round(e.duration) : null; }).catch(() => null);
     const v = judge(c, { ...seen, errors, fps, loadMs, statsIdleMs }, suite.limits);
     console.log((v.ok ? 'ok   ' : 'FAIL ') + c.ask + (fps ? ' · ' + fps + ' fps' : '') + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; ')) + (v.flags.length ? ' · flag: ' + v.flags.join('; ') : ''));
-    return { ...v, ...meta(c), fps, loadMs, statsIdleMs, chars: seen.text.trim().length };
+    return { ...v, ...meta(c), fps, loadMs, statsIdleMs, chars: seen.text.trim().length, ...(slowLoad ? { loadRecheck: { c, r: { ...seen, errors, fps, loadMs, statsIdleMs } } } : {}) };
     } finally { await cx.close().catch(() => {}); }
   };
   const running = new Set();
@@ -229,6 +248,9 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
       const job = one(c, k).finally(() => { open--; if (alone) solo = false; running.delete(job); }); running.add(job);
     }
     await Promise.all(running);
+    // every case is done, so nothing else shares the runner: each load over the ceiling is timed once more, alone, in a fresh context
+    await recheckSlowLoads(slots, suite.limits, async (path) => { const cx = await ctx(), p = await cx.newPage();
+      try { const t = Date.now(); await p.goto(site + (path || '/'), { waitUntil: 'load', timeout: 45000 }); return Date.now() - t; } finally { await cx.close().catch(() => {}); } });
   } finally { await b.close(); }
   for (const r of slots) if (r) out.push(r);
   return out;

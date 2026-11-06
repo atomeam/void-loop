@@ -832,8 +832,8 @@
     /* the speaker sits as far in from the right border as the title does from the left (owner, 2026-10-18): no negative margin, and the scrollbar's
        gutter is kept on both edges so a classic scrollbar does not push the speaker further in than the title */
     .vpage.vc-self { scrollbar-gutter: stable both-edges; }
-    .vpage.vc-self.vcard > .vread { right: 27px !important; } /* the title bar's margin, border and padding (12 + 3 + 12): the speaker's right inset is the title text's left one */
-    @media (max-width: 520px) { .vpage.vc-self.vcard > .vread { right: 21px !important; } }
+    .vpage.vc-self.vcard > .vread { right: 16px !important; } /* the title's margin (lib/card-frame.js: 16 px, no border or padding since #2336): the speaker's right inset is the title text's left one */
+    @media (max-width: 520px) { .vpage.vc-self.vcard > .vread { right: 6px !important; } } /* the title's phone margin, 6 px */
     .vpage.vc-self .src { padding-bottom: 10px; }
     .vpage.vc-self .vs-h { font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: 0; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid rgb(var(--d-key, 158 178 255) / .35); box-shadow: 0 1px 0 rgba(255, 210, 122, .18); }
     .vpage.vc-self .vs-sec p { margin: 0 0 10px; }
@@ -1429,6 +1429,8 @@ Object.values(things).forEach((th) => {
         if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
       keepVideosPut(stage, vids);
+      // the picked thing says so (the exam reads the thing an ask made or changed, not the first one on the stage, #2326)
+      if (selectedId) for (const el of stage.querySelectorAll(':scope > [data-id]')) if (el.dataset.id === selectedId) el.dataset.picked = '1';
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       tuckApply(); // anything tucked away while a game was open stays in the tray across redraws
@@ -4678,7 +4680,7 @@ say('nothing selected to remove');
 
     // --- Skill loader (edit engine step 1) ---
     const SKILLS_INDEX_URL = '/skills/index.json';
-    let learnedSkills = [], skillsLoaded = false, skillSlots = null;
+    let learnedSkills = [], skillsLoaded = false, skillSlots = null, skillFirst = null, firstAsks = null, skillPos = null, skillPull = null;
     const SKILL_LANES = 24; // modules requested at once: enough to fill a fast link, few enough that the top-ranked skills arrive first
     // set at the first sign of an ask (warmLibs below): no lane starts another skill file until the four libs every ask waits on are in, at most
     // 1.5 s. Asked for after the lanes were full, they queued behind every skill file requested meanwhile (watchdog #110, 2026-10-29: on the
@@ -4686,6 +4688,12 @@ say('nothing selected to remove');
     let askLibsHold = null;
     async function loadLearnedSkills() {
       let index = null;
+      // the known asks and the file of the skill that takes each (skills/first.json, tools/first-asks.mjs), fetched beside the index: a known
+      // ask loads its one skill at once, so "favorite this" (rank 278) does not wait on every skill above it while a busy device loads them (#2316, #2323, #2342)
+      skillFirst = fetch('/skills/first.json').then((r) => r.ok ? r.json() : null).then((j) => {
+        const m = new Map(); if (j && typeof j === 'object') for (const [f, l] of Object.entries(j)) if (Array.isArray(l)) for (const a of l) if (typeof a === 'string') m.set(a, f);
+        return (firstAsks = m);
+      }).catch(() => (firstAsks = new Map()));
       try {
         const res = await fetch(SKILLS_INDEX_URL);
         if (!res.ok) throw new Error('HTTP ' + res.status + ' fetching skills index');
@@ -4706,7 +4714,12 @@ say('nothing selected to remove');
       // Each skill module is requested in routing order, a few at a time, so the first-ranked ones arrive first: an ask is
       // answered as soon as every skill ranked above its match has loaded (firstSkill below), not after all of them (cleanup
       // step 5, 2026-10-11: on a slow phone the first skill answer waited about four seconds for 160 modules). Match order stays the index order.
+      // a live card (the Versus ladder reads data that changes every few minutes) is fetched under a key that turns over every 5 minutes, so a browser or
+      // edge copy of its code can never outlive that: a plain reload brings the current card (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card")
+      const LIVE_SKILLS = new Set(['tower']);
       skillSlots = index.map(() => { let set; const p = new Promise((r) => { set = r; }); return { p, set, skill: null, done: false }; });
+      skillPos = new Map(index.map((n, i) => [n, i]));
+      skillPull = (i) => { const slot = skillSlots[i]; if (!slot.done && !slot.pulled && !LIVE_SKILLS.has(index[i])) { slot.pulled = true; import('/skills/' + index[i] + '.js').then((mod) => { if (!slot.done) take(i, mod); }, () => {}); } return slot.p; };
       const missing = [];
       const take = (i, mod) => {
         const skill = mod && mod.default, slot = skillSlots[i];
@@ -4718,9 +4731,6 @@ say('nothing selected to remove');
         if (skill && skill.stageKinds && Object.values(things).some((t) => t && skill.stageKinds[t.kind] && !stage.querySelector(':scope > [data-id="' + CSS.escape(String(t.id)) + '"]'))) render();
         slot.done = true; slot.set(slot.skill);
       };
-      // a live card (the Versus ladder reads data that changes every few minutes) is fetched under a key that turns over every 5 minutes, so a browser or
-      // edge copy of its code can never outlive that: a plain reload brings the current card (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card")
-      const LIVE_SKILLS = new Set(['tower']);
       let nextIdx = 0;
       const lane = async () => { while (nextIdx < index.length) { if (askLibsHold) await askLibsHold; if (nextIdx >= index.length) break; const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js' + (LIVE_SKILLS.has(index[i]) ? '?live=' + Math.floor(Date.now() / 300000) : '')).catch(() => null)); } };
       await Promise.all(Array.from({ length: SKILL_LANES }, lane));
@@ -4926,6 +4936,8 @@ say('nothing selected to remove');
       if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t) || MY_BACKDROP_OFF.test(t.toLowerCase().trim())) return t; // the page's own ask, word for word (#2220)
       if (!fuzzy) await fuzzyReady();
       if (!fuzzy) return t;
+      // a known ask word for word (skills/first.json) is no slip, so it does not wait for the vocabulary (the loop below: "favorite this"
+      // waited the whole 2.5 s for the bookmarks skill, rank 278, to teach the word "favorite"; #2323)
       // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most
       // 2.5 s, and only while a typed word can still be a slip: once the loaded skills know every word correct() could change
       // (lib/fuzzy.js settled), the full vocabulary changes nothing, so the ask goes on (watchdog #110: "loan payment on 20000 at 6% for
@@ -4936,7 +4948,7 @@ say('nothing selected to remove');
         return loaded.length ? fuzzyVocab : null;
       };
       for (const until = Date.now() + FIRST_ASK_WAIT; !skillsLoaded && Date.now() < until;) {
-        const v = vocabNow(); if (v && fuzzy.settled(t, v)) return t;
+        const v = vocabNow(); if ((v && fuzzy.settled(t, v)) || (firstAsks && firstAsks.has(firstKey(t)))) return t;
         await Promise.race([skillsReady, new Promise((r) => setTimeout(r, Math.min(100, until - Date.now())))]);
       }
       const vocab = vocabNow();
@@ -4946,6 +4958,14 @@ say('nothing selected to remove');
       const sk = await firstSkill(r.text.toLowerCase(), r.text, Date.now());
       return fuzzy.confirm(r, sk && sk.name) ? r.text : t;
     }
+    // the key of a known ask in skills/first.json (tools/first-asks.mjs firstKey): lowercased, trimmed, inner spaces collapsed
+    const firstKey = (lower) => String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ');
+    // where a known ask sits in the routing order, or -1; waits at most `ms` for the table
+    async function knownAsk(lower, ms) {
+      const m = firstAsks || (skillFirst && (await Promise.race([skillFirst, new Promise((r) => setTimeout(() => r(null), Math.max(0, ms)))])));
+      const f = m && m.get(firstKey(lower)), at = f && skillPos ? skillPos.get(f) : undefined;
+      return typeof at === 'number' ? at : -1;
+    }
     async function firstSkill(lower0, text, deadline, all = false) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
@@ -4953,6 +4973,14 @@ say('nothing selected to remove');
       const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
       if (skillsLoaded || !skillSlots) return all ? learnedSkills.filter(fits) : (learnedSkills.find(fits) || null); // all: every skill that can answer, for Verse Brain to choose from
       if (all) return [];
+      // a known ask (skills/first.json): load the skill that takes it now, and take it as soon as it is in, unless a skill above it
+      // that has already loaded takes the ask first; routing in node checked that no skill above it takes the words
+      const at = await knownAsk(lower0, Math.min(1500, deadline - Date.now()));
+      if (at >= 0 && skillSlots[at]) {
+        const hint = await Promise.race([skillPull(at), new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
+        for (let i = 0; i < at; i++) { const sl = skillSlots[i]; if (sl.done && sl.skill && fits(sl.skill)) return sl.skill; }
+        if (hint && fits(hint)) return hint;
+      }
       for (const slot of skillSlots) {
         // past the deadline a skill still loading is passed over at once: a zero timer per slot cost 4 ms or more each (nested timers),
         // a second or more across a couple of hundred slots on a busy page

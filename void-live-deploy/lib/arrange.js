@@ -106,13 +106,16 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null, str
   const sp = 60 / p.bpm / 4, tension = (step) => { const s = p.sections.find((x) => step >= x.fromStep && step < x.fromStep + x.steps) || p.sections[0]; return 0.3 + 0.7 * s.tension; };
   // master: a limiter-like compressor so the loud sections never clip; the contrast between sections stays in the notes' own gains
   const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -8; comp.knee.value = 6; comp.ratio.value = 10; comp.attack.value = 0.003; comp.release.value = 0.12;
-  const out = ctx.createGain(); out.gain.value = 0.9; out.connect(comp); comp.connect(ctx.destination);
+  // 0.85, not 0.9: the guitar's presence peak (3 kHz) puts transients past the compressor's 3 ms attack, and at 0.9 they reached 1.02
+  const out = ctx.createGain(); out.gain.value = 0.85; out.connect(comp); comp.connect(ctx.destination);
   // the soft bus (pad, lead) is the one the kick ducks; the hard bus (guitar, bass, drums) is not
   const soft = ctx.createGain(); soft.gain.value = 1; soft.connect(out);
   const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600; lp.connect(soft);
   const bassLp = ctx.createBiquadFilter(); bassLp.type = 'lowpass'; bassLp.frequency.value = 420; bassLp.connect(out);
-  // a place in the stereo field: -1 left, 1 right (a context without a panner plays it in the middle)
-  const panned = (v, dest) => { if (!ctx.createStereoPanner) return dest; const n = ctx.createStereoPanner(); n.pan.value = v; n.connect(dest); return n; };
+  // a place in the stereo field: -1 left, 1 right. A context without a panner, or a mono render (the WAV and the section loudness), plays it in the
+  // middle: a mono fold of a panned part loses level to the pan law (about 4.6 dB at 0.75), which once made the loud sections too quiet against the intro.
+  const stereo = !!ctx.createStereoPanner && !(ctx.destination && ctx.destination.channelCount === 1);
+  const panned = (v, dest) => { if (!stereo) return dest; const n = ctx.createStereoPanner(); n.pan.value = v; n.connect(dest); return n; };
   // the guitar bus, one for each of the two takes, panned left and right as a metal record is (the two takes differ, so the image is wide):
   // drive, a hard tanh clip, then the cabinet: a presence peak near 3 kHz, low-pass near 5.5 kHz, a resonant bump near 100 Hz, a high-pass under the mud.
   // Verse's ears found the first mix mono (-60 dB of side against -13.9 dB in real metal) and 11 dB short in the presence band, so both changed here.
@@ -125,7 +128,7 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null, str
     drive.connect(shaper); shaper.connect(pres); pres.connect(cab); cab.connect(bump); bump.connect(hp); hp.connect(gOut); gOut.connect(panned(0.75 * side, out));
     return drive;
   };
-  const drives = [guitarBus(-1), guitarBus(1)];
+  const drives = stereo ? [guitarBus(-1), guitarBus(1)] : ((one) => [one, one])(guitarBus(0)); // in mono both takes share one bus, so they clip together as one part
   const amp = !!(strings && strings.buffers && strings.buffers.size);
   // with the recordings: the real bass gets more of its own top (the string's attack), and the climax lead has its own lighter drive on the soft bus
   const bassReal = ctx.createBiquadFilter(); bassReal.type = 'lowpass'; bassReal.frequency.value = 1800; bassReal.connect(out);

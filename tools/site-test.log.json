@@ -4108,5 +4108,23 @@
    ]
   },
   "note": "fix: \"longevity trial watch\" load 1233 ms > 1200"
+ },
+ {
+  "at": "2026-11-06T05:02:01Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1472,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 15949 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
