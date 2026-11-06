@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
+import { NAV as SHELL_NAV } from '../void-live-deploy/lib/verse-shell.js';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
@@ -1586,15 +1587,17 @@ try {
   }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
+    // the nav names its pages itself (lib/verse-shell.js NAV): the check reads the agent page's label there, so a theme rename keeps it true
+    const agentLabel = (SHELL_NAV.find((x) => x.href === '/agent/') || {}).label || '';
     await P.p.goto(base + 'agent/');
-    const nav = await until(() => P.p.evaluate(() => {
+    const nav = await until(() => P.p.evaluate((want) => {
       const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
-      if (!bar || !a || a.textContent !== 'Agents') return null;
+      if (!bar || !a || !want || a.textContent !== want) return null;
       const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
       return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
-    }), 8000);
-    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
-      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    }, agentLabel), 8000);
+    check(`phone polish: the agent page's nav item (${agentLabel}) is fully inside the nav bar and the page is not wider than the screen`,
+      nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
     await P.p.goto(base + 'compare/');
     const cmp = await until(() => P.p.evaluate(() => {
       const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
