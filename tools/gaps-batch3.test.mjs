@@ -122,3 +122,12 @@ test('the teams card deals the names it was given; the santa card hides each pai
   assert.equal((s.out.match(/gives to <button/g) || []).length, 3, 'no receiver is on the page until its button is pressed');
   assert.ok(!/gives to <strong>/.test(s.out));
 });
+
+import { readFileSync } from 'node:fs';
+test('remove duplicate lines: a text tool named alone is not a batch removal of the stage\'s drawn lines', () => {
+  const src = readFileSync(new URL('../void.html', import.meta.url), 'utf8').match(/\n    function isBatchRemoveAsk\(lower\) \{[\s\S]*?\n    \}\n/);
+  assert.ok(src, 'isBatchRemoveAsk is in void.html');
+  const isBatchRemoveAsk = new Function('return ' + src[0].trim())();
+  for (const a of ['remove duplicate lines', 'remove blank lines', 'remove empty lines', 'remove repeated lines', 'remove blank lines: a ⏎ ⏎ b']) assert.equal(isBatchRemoveAsk(a), false, a);
+  for (const a of ['remove all the notes', 'clear the timers', 'remove the lines', 'delete all lines', 'remove every circle']) assert.equal(isBatchRemoveAsk(a), true, a);
+});

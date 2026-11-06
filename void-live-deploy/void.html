@@ -5162,10 +5162,16 @@ say('nothing selected to remove');
     function openGame() { // a board with its own card, the thing "forget this" closes while that card has pushed others aside
       return Object.values(things).find((t) => t && isGameThing(t, stage.querySelector(':scope > .thing[data-id="' + CSS.escape(t.id) + '"]'))) || null;
     }
+    // "clear all the notes", "remove the timers": things of one kind off the stage. "remove blank lines: <pasted text>" is a text tool
+    // (skills/text-tools.js), not the stage's lines: an ask with a colon or a pasted line break is left to the skills, and so is a text tool
+    // named alone, "remove duplicate lines" (docs/GAPS.md row 1, 2026-11-06: it took the stage's drawn lines and said "none here").
+    function isBatchRemoveAsk(lower) {
+      return /\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower) && !/[:⏎\n]/.test(lower)
+        && !/\b(?:duplicate|duplicated|repeated|blank|empty)\s+lines\b/.test(lower)
+        && /\b(all|every|each|both)\b|\b(notes|stickies|notepads|timers|countdowns|clocks|shapes|circles|squares|lines|counters|lists|checklists|images|pictures|photos|links|cards|maps|calculators|calcs)\b/.test(lower);
+    }
     function handleMetaAsk(text, lower) {
-      // "remove blank lines: <pasted text>" is a text tool (skills/text-tools.js), not the stage's lines: an ask with a colon or a pasted line break is left to the skills
-      if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower) && !/[:⏎\n]/.test(lower)
-          && /\b(all|every|each|both)\b|\b(notes|stickies|notepads|timers|countdowns|clocks|shapes|circles|squares|lines|counters|lists|checklists|images|pictures|photos|links|cards|maps|calculators|calcs)\b/.test(lower)) {
+      if (isBatchRemoveAsk(lower)) {
         const kinds = /\bcards?\b/.test(lower) ? Array.from(new Set(['link', 'kept', ...batchKinds(lower.replace(/\ball\s+(?:the\s+)?cards?\b|\bcards?\b/g, ' ')).filter((k) => k !== 'link' || /\blinks?\b/.test(lower))])) : batchKinds(lower);
         if (kinds.length) {
           let n = 0;
