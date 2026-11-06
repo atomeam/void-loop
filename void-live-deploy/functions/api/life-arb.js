@@ -29,10 +29,8 @@ async function queueJobs(env, ranked) {
   if (!room) return [];
   const jobs = verseJobs(ranked, { max: room, have: new Set(rows.map((r) => r.target)) });
   const now = new Date().toISOString();
-  for (const [i, j] of jobs.entries()) {
-    await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .bind(Date.now().toString(36) + i, j.ask, j.target, 'queued', 'from the private life-arb scan', now, now).run();
-  }
+  const ins = 'INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)';
+  if (jobs.length) await env.DB.batch(jobs.map((j, i) => env.DB.prepare(ins).bind(Date.now().toString(36) + i, j.ask, j.target, 'queued', 'from the private life-arb scan', now, now)));
   return jobs;
 }
 

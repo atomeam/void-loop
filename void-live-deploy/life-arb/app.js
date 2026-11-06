@@ -50,10 +50,10 @@ function render() {
     [open.filter((o) => o.who !== 'atom').length, 'Verse can start'], [cash ? usd(cash.per_hour_cents) + '/h' : '—', 'best cash per hour (estimate)'],
   ].map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join('');
   const kinds = ['open', 'urgent', 'cash', 'verse', 'done'];
-  $('filters').innerHTML = kinds.map((k) => `<button data-show="${k}" aria-pressed="${k === show}">${{ open: 'Open', urgent: 'Closing soon', cash: 'Cash', verse: 'Verse can start', done: 'Taken or skipped' }[k]}</button>`).join('');
+  $('filters').innerHTML = kinds.map((k) => `<button data-show="${k}" aria-pressed="${k === show}">${{ open: 'Open', urgent: 'Closing soon', cash: 'Cash', verse: 'Verse can start', done: 'Taken or skipped' }[k]}</button>`).join(''); // void-review: ok (the labels and keys are the constants above; nothing from the API goes in)
   const pick = { open: (o) => !o.mark, urgent: (o) => !o.mark && o.urgent, cash: (o) => !o.mark && o.value_kind === 'cash', verse: (o) => !o.mark && o.who !== 'atom', done: (o) => !!o.mark }[show];
   const list = all.filter(pick);
-  $('opps').innerHTML = list.length ? list.map(card).join('') : '<li class="soft">Nothing here.</li>';
+  $('opps').innerHTML = list.length ? list.map(card).join('') : '<li class="soft">Nothing here.</li>'; // void-review: ok (card() passes every field from the API through esc(), and links only through safeUrl())
   $('sources').innerHTML = Object.entries(data.sources || {}).map(([k, v]) => `<li><b>${esc(v.count)}</b><span>${esc(k)}: ${esc(v.state)}</span></li>`).join('');
   $('gaps').innerHTML = (data.gaps || []).map((g) => `<li class="opp"><b>${esc(g.what)}</b><p class="ev">${esc(g.why)}</p><p class="next">${esc(g.ask)}</p></li>`).join('');
   $('status').textContent = 'Scanned ' + new Date(data.as_of).toLocaleString() + (data.queued && data.queued.length ? ' · ' + data.queued.length + ' job(s) handed to Verse\'s queue' : '');
