@@ -1,7 +1,8 @@
 /**
  * timer skill — countdowns on the stage: "set a timer for 5 minutes" (starts at once, like a phone's), "make a timer"
  * (waits), "another timer for 2 minutes", "pause / start / reset the timer", "make the timer bigger", "remove the timer",
- * "set an alarm for 7am", "remind me to stretch in 20 minutes", "days until christmas". A 3D hourglass stands beside it
+ * "set an alarm for 7am" / "alarm at 7am" (its own card: "Alarm for 7:00 AM", and three beeps made with Web Audio at that time while the
+ * page is open), "remind me to stretch in 20 minutes", "days until christmas". A 3D hourglass stands beside it
  * (skills/mini/timer.js); at 0:00 it says "timer done" and hands that down its arrows (stageApi.emit, frontier #24).
  * Moved out of void.html in cleanup step 6. The page asks its three hooks where its timer code always ran (`askAt`):
  * `ask` (create), `askAction` (start, pause, reset; before the early skill loop, so a bare "reset" reaches a timer first)
@@ -34,6 +35,32 @@ export function alarmMs(lower, now = new Date()) {
   while (at <= now) at.setHours(at.getHours() + step);
   if (/\btomorrow\b/.test(lower) && at.getDate() === now.getDate()) at.setDate(at.getDate() + 1);
   return at - now;
+}
+
+/** the clock time an alarm rings at, as the visitor's clock reads it: "7:00 AM". Pure given now. */
+export function alarmClock(ms, now = new Date()) {
+  const at = new Date(+now + ms), h = at.getHours();
+  return ((h % 12) || 12) + ':' + String(at.getMinutes()).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM');
+}
+
+/** what an alarm's card says under its countdown: "Alarm for 7:00 AM · rings in this page while it is open", or "… · paused". Pure. */
+export function alarmLine(th) {
+  if (!th || !th.alarmFor) return '';
+  return 'Alarm for ' + th.alarmFor + (th.running ? ' · rings in this page while it is open' : th.remaining > 0 ? ' · paused' : ' · rang');
+}
+
+/** three short beeps, three times: the alarm ringing (Web Audio, made here, nothing fetched). */
+function ring() {
+  try {
+    const AC = typeof window !== 'undefined' && (window.AudioContext || window.webkitAudioContext); if (!AC) return;
+    const ctx = new AC(), t0 = ctx.currentTime + 0.05;
+    for (let i = 0; i < 9; i++) {
+      const o = ctx.createOscillator(), g = ctx.createGain(), t = t0 + Math.floor(i / 3) * 1.2 + (i % 3) * 0.25;
+      o.type = 'square'; o.frequency.value = 880; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+      o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.2);
+    }
+    setTimeout(() => { try { ctx.close(); } catch (_) {} }, 4500);
+  } catch (_) {}
 }
 
 /** "christmas", "december 25", "25 dec": the next such day (ms since the epoch), or null. */
@@ -259,13 +286,14 @@ function mount(th, stageApi) {
 
   const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
   const total = th.duration;
-  const face = stageApi.timerFace(el);
+  const drawFace = stageApi.timerFace(el);
+  const face = (r, tot, word) => { drawFace(r, tot, word); if (th.alarmFor) { const set = el.querySelector('.timer-set'); if (set) set.textContent = alarmLine(th); } }; // an alarm says the time it rings at, not only a length
   face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
   // the face also writes the set length; say it on the card too so "add one minute" (2:30, 150) is in the card, not only the whisper
   if (!el.querySelector('.timer-set')) {
     const set = document.createElement('span');
     set.className = 'timer-set';
-    set.textContent = durationLabel(total);
+    set.textContent = th.alarmFor ? alarmLine(th) : durationLabel(total);
     el.appendChild(set);
   }
 
@@ -275,9 +303,11 @@ function mount(th, stageApi) {
       face(rem, total, rem > 0 ? 'running' : 'done');
       if (rem <= 0) {
         clearInterval(el._tickInterval);
+        const late = Date.now() - (th.startedAt + th.remaining); // how long ago it reached 0:00 (a page opened long after the time does not ring late)
         th.running = false; th.remaining = 0; th.startedAt = 0;
         stageApi.save();
-        stageApi.say(th.goal && !th.answered ? 'timer done · did this session meet the goal "' + th.goal + '"? tap yes or not yet' : 'timer done');
+        if (th.alarmFor) { if (late < 60000) ring(); face(0, total, 'done'); stageApi.say('Alarm: it is ' + th.alarmFor); }
+        else stageApi.say(th.goal && !th.answered ? 'timer done · did this session meet the goal "' + th.goal + '"? tap yes or not yet' : 'timer done');
         stageApi.emit(th, { event: 'done', text: (th.label ? th.label : 'the timer') + ' is done' }); // to whatever its arrows point at
       }
     }, 250);
@@ -328,12 +358,16 @@ export function ask(lower, text, stageApi) {
   lower = timerEnglish(lower);
   if (!wantsCreate(lower)) return '';
   const dur = parseDuration(lower) || 60000; // default 1 min
-  const t = ensure(stageApi, dur, wantsFresh(lower) && timers(stageApi).length > 0);
+  const alarm = alarmMs(lower); // an alarm is its own card: it never takes over a timer already on the stage
+  const t = ensure(stageApi, dur, (alarm > 0 || wantsFresh(lower)) && timers(stageApi).length > 0);
+  if (alarm) { t.alarmFor = alarmClock(alarm); t.label = 'the alarm for ' + t.alarmFor; }
+  else if (t.alarmFor) { delete t.alarmFor; delete t.label; } // a timer set on what was an alarm is a timer again
   // a timer asked for with a length ("set a timer for 5 minutes") starts at once, like every phone's; "make a timer" or "…paused" waits
   const startNow = /\b(start|begin|go)\b|^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b/.test(lower) || (parseDuration(lower) > 0 && !/\b(paused?|don'?t\s+start|not\s+yet|later)\b/.test(lower));
   if (startNow && !t.running) { t.running = true; t.startedAt = Date.now(); }
   stageApi.save(); stageApi.render();
-  return t.running ? 'timer-start' : 'timer';
+  if (t.alarmFor && typeof stageApi.say === 'function') stageApi.say('Alarm set for ' + t.alarmFor + '. It rings in this page while the page stays open.');
+  return t.running ? (t.alarmFor ? 'alarm-set' : 'timer-start') : 'timer';
 }
 
 /** start / pause / reset (the first timer, as it always was): what it did, 'no timer' when one was named and there is none,
