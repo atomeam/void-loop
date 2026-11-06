@@ -6664,6 +6664,31 @@ say('nothing selected to remove');
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
         if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }
         return; }
+      // self-first (lib/term-card.js selfPage; owner, 2026-11-06: "verse lab", "i cant find the lab anywhere"): an ask that names Verse
+      // ("verse treasury", "the crew on verse") is matched against Verse's own pages before any web lookup. A match answers from that page and
+      // says so; no match says Verse has no page by that name, and the web answer follows under that line. No page is invented.
+      if (/^(?:(?:what(?:\s+is|'s)|where(?:\s+is|'s)|tell me about|show(?: me)?|open|go to|take me to|find|explain|look up)\s+)?(?:(?:the|my|your)\s+)?(?:verse|vers|verses|verse's|void|void's|a-to-mind)\s+\S|\s(?:on|in|of|at|from)\s+(?:verse|vers|void|a-to-mind)\s*[?!.]*$/.test(lower0)) {
+        const KS = await import('/lib/term-card.js').catch(() => null);
+        const st = KS && KS.selfTerm ? KS.selfTerm(text) : null;
+        if (st && st.named && st.term) {
+          const askNo0 = askCount;
+          const sel = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><div class="sub">looking in Verse</div>'; });
+          const got = await KS.selfPage(text, (u) => fetch(u).then((r) => (r.ok ? r.text() : '')).catch(() => ''), (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null)).catch(() => null);
+          if (askNo0 !== askCount || vpageEl !== sel) return;
+          if (got && got.page) {
+            sel.dataset.page = got.page.href;
+            sel.innerHTML = '<h2><a href="' + esc(got.page.href) + '">' + esc(got.page.name) + '</a></h2>' + KS.selfHtml(esc, got.page) // void-review: ok (every value passes through esc in selfHtml and here)
+              + '<div class="src">From Verse itself: <a href="' + esc(got.page.href) + '">a-to-mind.com' + esc(got.page.href) + '</a></div>';
+            loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self first' }); return;
+          }
+          // no Verse page by that name: the web answer, with the line that says so above it
+          const line = KS.noSelfPageLine(esc, st.term);
+          const mark = () => { if (askNo0 !== askCount || !vpageEl) return; const h = vpageEl.querySelector('h2'); if (vpageEl.querySelector('.vt-none')) return; if (h) h.insertAdjacentHTML('afterend', line); else vpageEl.insertAdjacentHTML('afterbegin', line); }; // void-review: ok (the line is built with esc)
+          const asked = /^(why|how|when|where|which|who|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain)\b/.test(lower0);
+          (asked ? showAnswer(text) : showArticle('tell me about ' + st.term)).then((src) => { mark(); if (src === 'none') reportMiss(text, lookedUp()); }).catch(() => {});
+          loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self first, no page' }); return;
+        }
+      }
       if (/^(why|how|when|where|which|what\s+language\b|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
         showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;

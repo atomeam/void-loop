@@ -150,3 +150,32 @@ test('Verse\'s page leads the card, then the outside senses, in the article card
   assert.match(body, /m\.pictureFor\([\s\S]{0,400}KC\.imageFits\(\{[^}]*own: true \}\)/, 'the article\'s own photo passes the guard as its own');
   assert.equal(readFileSync(resolve(site, 'void.html'), 'utf8'), html, 'index.html and void.html stay copies');
 });
+
+test('self-first: an ask that names Verse is matched against Verse\'s own pages before the web (owner, 2026-11-06: "verse lab")', async () => {
+  const st = (a) => T.selfTerm(a);
+  assert.deepEqual(st('verse lab'), { term: 'lab', named: true });
+  assert.deepEqual(st('vers lab'), { term: 'lab', named: true }, 'a near spelling of the name');
+  assert.deepEqual(st('the lab on verse'), { term: 'lab', named: true });
+  assert.deepEqual(st('what is verse treasury'), { term: 'treasury', named: true });
+  assert.deepEqual(st('treasury'), { term: 'treasury', named: false }, 'a bare term goes the term card way, which also puts Verse\'s page first');
+  assert.equal(st('what is photosynthesis').named, false);
+  assert.equal(st('verse what time is it').named, false, 'speaking to Verse is not asking for a page');
+  assert.equal(st('verse make a circle').named, false);
+  const pages = { '/lab/': '<link rel="canonical" href="https://a-to-mind.com/lab/"><title>The Verse lab</title><meta name="description" content="Small experiments.">' };
+  const gt = async (p) => pages[p] || '';
+  const lab = await T.selfPage('vers lab', gt, async () => null);
+  assert.equal(lab.named, true); assert.ok(lab.page && lab.page.href === '/lab/', 'the lab page is found by its slug');
+  assert.match(T.selfHtml(esc, lab.page), /From Verse itself[\s\S]*href="\/lab\/"/);
+  const miss = await T.selfPage('verse banana', gt, async () => null);
+  assert.deepEqual([miss.named, miss.term, miss.page], [true, 'banana', null], 'no page is invented');
+  assert.match(T.noSelfPageLine(esc, '<b>'), /Verse has no page called .&lt;b&gt;.\. From the web:/);
+  let read = 0; await T.selfPage('what is photosynthesis', async () => { read++; return ''; }, async () => null);
+  assert.equal(read, 0, 'an ask that does not name Verse reads nothing');
+});
+
+test('self-first runs in the page before the question and topic routes', () => {
+  const html = readFileSync(resolve(site, 'index.html'), 'utf8');
+  const hook = html.indexOf('KS.selfPage('), q = html.indexOf("showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' })");
+  assert.ok(hook > 0 && q > hook, 'the Verse pages are read before the web answer');
+  assert.match(html.slice(hook, hook + 3000), /noSelfPageLine\(/);
+});

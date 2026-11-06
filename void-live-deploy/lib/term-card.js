@@ -74,6 +74,42 @@ export async function termPage(title, getText, getJson) {
   return null;
 }
 
+// Self-first answers (owner, 2026-11-06: "verse lab" got a web answer). An ask that names Verse ("verse treasury", "vers lab", "where is
+// verse's crew", "the treasury on verse") is matched against Verse's own pages before any web lookup. A match answers from that page; no
+// match says plainly that Verse has no page by that name, and the web answer follows. A page is never invented.
+const SELF_NAME = /^(?:verse|vers|verses|verse's|verses'|void|void's|a-to-mind|atomind|a2m)$/i;
+const NOT_PAGE = /^(?:what|why|how|when|where|which|who|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|i|you|please)\b|\b(?:make|add|draw|create|set|start|put|clear|remove|move|give|play|tell|say)\b/i;
+const FRAMES = /^(?:what(?:\s+is|'s)|where(?:\s+is|'s)|tell\s+me\s+about|show(?:\s+me)?|open|go\s+to|take\s+me\s+to|find|explain|look\s+up|search(?:\s+for)?)\s+/i;
+/** an ask -> { term, named }: named is true when the ask names Verse itself; term is what is left (the page asked for). Pure. */
+export function selfTerm(ask) {
+  let t = String(ask || '').toLowerCase().replace(/[\u2019]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim(), named = false;
+  t = t.replace(FRAMES, '').replace(/^(?:the|a|an|my|your)\s+/, '');
+  const first = t.split(' ')[0] || '';
+  if (SELF_NAME.test(first) && t.includes(' ')) { named = true; t = t.slice(first.length).trim(); }
+  const tail = /\s+(?:on|in|of|at|from)\s+(?:verse|vers|void|a-to-mind)$/i;
+  if (tail.test(t)) { named = true; t = t.replace(tail, ''); }
+  t = t.replace(/^(?:the|a|an)\s+/, '').replace(/\s+(?:page|section|area|tab)$/, '').trim();
+  // "verse what time is it" or "verse make a circle" speaks to Verse; it does not ask for a page
+  if (named && (NOT_PAGE.test(t) || t.split(' ').length > 4)) named = false;
+  return { term: t, named };
+}
+/** the Verse page an ask that names Verse asks for: { named, term, page } where page is termPage()'s result or null. An ask that does not name
+ *  Verse is { named: false, term, page: null } and reads nothing. */
+export async function selfPage(ask, getText, getJson) {
+  const { term, named } = selfTerm(ask);
+  if (!named || !term || term.split(' ').length > 4) return { named, term, page: null };
+  let page = null; try { page = await termPage(term, getText, getJson); } catch (_) { page = null; }
+  return { named, term, page };
+}
+/** the self-first card's body: Verse's page, what it is about and its live line, said to be from Verse itself. Pure. */
+export function selfHtml(esc, page) {
+  if (!page) return '';
+  return '<div class="vt-verse"><div class="vt-label">From Verse itself</div><a class="vt-page" href="' + esc(page.href) + '">' + esc(page.name) + '</a>'
+    + (page.about ? '<p>' + esc(page.about) + '</p>' : '') + (page.line ? '<div class="vt-state">' + esc(page.line) + '</div>' : '') + '</div>';
+}
+/** the line a named ask with no Verse page gets above the web answer. Pure. */
+export const noSelfPageLine = (esc, term) => '<p class="vt-none">Verse has no page called \u201c' + esc(term) + '\u201d. From the web:</p>';
+
 /** "either:a" -> "either: a": a colon glued to the next word gets its space back (Wikipedia's text extract drops it before a list). Times,
  *  verses and links keep theirs. Pure. */
 export const fixColons = (s) => String(s == null ? '' : s).replace(/([A-Za-zÀ-ɏ]):(?=[A-Za-zÀ-ɏ])/g, '$1: ');
