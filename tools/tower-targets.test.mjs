@@ -11,7 +11,8 @@ import { SITE_PAGES, MODE_SITES } from '../void-live-deploy/lib/tool-sites.js';
 
 // the host pages built before the rule (2026-11-06): they have a LANE_PAGES entry but no row yet. The list only shrinks: a listed host that has a row
 // fails, so take it off the day its row lands, and nothing is added to it
-const BEFORE_THE_RULE = ['sycophanthex.com', 'wheelroot.com', 'onlineconverter.com'];
+// dalyfeds.com (/starboard/) landed on main the same day, before this rule did
+const BEFORE_THE_RULE = ['sycophanthex.com', 'wheelroot.com', 'onlineconverter.com', 'dalyfeds.com'];
 const target = JSON.parse(readFileSync(new URL('../void-live-deploy/tower.target.json', import.meta.url), 'utf8'));
 const pathOf = (p) => String(p || '').replace(/[?#].*$/, '');
 const handFloor = (id) => FLOORS.some((f) => (f.id === id || f.id === String(id).split(': ')[0]) && !f.lane);
