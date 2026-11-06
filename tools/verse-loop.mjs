@@ -192,7 +192,8 @@ export function loadState(path) {
 export function saveState(path, s) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, JSON.stringify(s, null, 1) + '\n'); }
 
 /** The loop's own code: a commit to these after the failures began means the streak was not run on the code that runs now. */
-export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js'];
+// The patch guard is the coder's own check too: a guard that refused good code is fixed there (#2386), and that fix resumes the loop.
+export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js', 'void-live-deploy/lib/patch-guard.js'];
 
 /** Is the loop paused? From the flag in the state, or (a fresh runner) the open 'Verse loop paused' issue. Paused for
  *  PAUSE_HOURS from the moment it paused, then it resumes by itself: nobody has to close anything. It resumes early when
