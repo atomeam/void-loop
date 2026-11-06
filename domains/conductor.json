@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T21:24:08.722Z",
+ "updated": "2026-11-06T21:33:31.806Z",
  "last24h": {
-  "ticks": 64,
-  "started": 103,
+  "ticks": 65,
+  "started": 104,
   "requeued": 0,
   "setAside": 0,
   "probes": 11,
@@ -156,7 +156,8 @@
   "mw5fawr5": 1793997032415,
   "mw5faxjn": 1793998524408,
   "mw5faya0": 1793999087352,
-  "mw5fayvb": 1793999651177
+  "mw5fayvb": 1793999651177,
+  "mw5hhjuy": 1794000811806
  },
  "sweptAt": 1793999087352,
  "blueprintsAt": 1793998524408,
@@ -2077,6 +2078,33 @@
    "setAside": 0,
    "healed": [],
    "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 243,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T21:33:31.806Z",
+   "open": 253,
+   "started": [
+    {
+     "id": "mw5hhjuy",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
    "grow": false,
    "will": false,
    "lap": false,
