@@ -462,6 +462,7 @@ for (const [name, file] of [
   ['rides-live', 'rides-live.test.mjs'],
   ['baggage-live', 'baggage-live.test.mjs'],
   ['video-gen-live', 'video-gen-live.test.mjs'],
+  ['image-gen-live', 'image-gen-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
   ['print-file', 'print-file.test.mjs'],
