@@ -59,8 +59,8 @@ export function scoreOf(j, w, ev = {}) {
  *  head of its test name, anything else by its first clause, at a word, under 110 characters. The ask itself stays under it, whole. Pure. */
 const cutAt = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); if (s.length <= n) return s; const c = s.slice(0, n - 1).replace(/[\s,;:–-]+\S*$/, ''); return (c || s.slice(0, n - 1)) + '…'; };
 export function titleOf(r) {
-  const ask = String((r && r.ask) || '').trim(), flake = /^make "([^"]+)"? robust\b/i.exec(ask);
-  if (flake) { const check = flake[1].replace(/…$/, ''), head = check.split(/:\s/)[0]; return 'Steady a flaky check: ' + cutAt(head, 80); }
+  const ask = String((r && r.ask) || '').trim(), flake = /^make "(.+?)"? robust\b/i.exec(ask);
+  if (flake) { const check = flake[1].replace(/…$/, ''), head = check.split(/:\s/)[0].trim(); return 'Steady a flaky check: ' + cutAt(head, 80); }
   const first = ask.split(/(?<=[.!?])\s|:\s|;\s/)[0];
   return cutAt(first || ask || (r && r.id) || '', 110);
 }
