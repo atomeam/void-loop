@@ -69,7 +69,7 @@ async function playShow(text, api) {
       if (feed && feed.show && feed.show.title) show = { ...show, title: feed.show.title };
     }
   } catch (_) { ep = null; }
-  if (api._pageStill && !api._pageStill(el)) return true;
+  if (api._pageStill && !api._pageStill(el)) { done(); return true; } // a card left behind is not still loading
   if (!show || !ep) {
     el.innerHTML = '<h2>Podcast</h2><p>No public episode turned up for “' + escH(asked.show) + '”. The directory or the show’s feed did not answer.</p><div class="src">Looked up on <a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple’s podcast directory</a>, then the show’s own RSS.</div>';
     done();

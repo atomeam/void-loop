@@ -21,7 +21,7 @@ async function run(text, api) {
   });
   let track = null;
   try { track = await findTrack(asked.title, asked.artist); } catch (_) { track = null; }
-  if (api._pageStill && !api._pageStill(el)) return 'hear';
+  if (api._pageStill && !api._pageStill(el)) { el.removeAttribute('aria-busy'); return 'hear'; } // a card left behind is not still loading
   if (!track) {
     el.innerHTML = '<h2>Song</h2><p>No Apple preview matched “' + esc(asked.title) + '” by ' + esc(asked.artist) + '. Try the title and the artist the way the recording is credited.</p><div class="src">Looked up on <a href="https://itunes.apple.com/" target="_blank" rel="noopener">iTunes Search</a>. Nothing is played that the lookup did not name.</div>';
     el.removeAttribute('aria-busy');
