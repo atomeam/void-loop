@@ -111,6 +111,9 @@ if (!one) try {
 let prs;
 try { prs = one ? [gh(`repos/${repo}/pulls/${one}`)] : gh(`repos/${repo}/pulls?state=open&per_page=100`); }
 catch (e) { if (limited) stopForQuota(limited); throw e; }
+// A full sweep reads the oldest PRs first (2026-11-06): the suite gate batches the oldest ready PRs, and a sweep that read newest first
+// spent its 5 minutes on new PRs and was cancelled before it started any batch (run 42186187535 stopped at #2320).
+if (!one && Array.isArray(prs)) prs = prs.slice().sort((a, b) => a.number - b.number);
 const stuck = process.env.STUCK === '1', STUCK_MARK = '<!-- void-stuck -->';
 function noteStuck(p, why) {
   if (!stuck || stuckDecision(p, [], Date.now()).action === 'young') return;
@@ -134,7 +137,11 @@ for (const row of superseded(prs)) {
 let merged = 0;
 const ready = [];
 const closed = new Set(superseded(prs).map((r) => r.number));
+// The sweep's time budget: past it, the sweep stops reading and acts on what is ready, so the batch step always runs inside the job.
+export const SWEEP_MS = +(process.env.AUTOMERGE_SWEEP_MS || 300000);
+const sweepStarted = Date.now();
 for (let p of prs) {
+  if (!one && Date.now() - sweepStarted > SWEEP_MS) { console.log(`::notice::stopped reading at #${p && p.number}: the sweep's ${SWEEP_MS / 60000} minutes are spent. The ready PRs go to the suite gate now; the next sweep reads the rest.`); break; }
   if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
   if (!one && budget().left < RATE_FLOOR) { console.log(`::notice::stopped the sweep at #${p && p.number}: under ${RATE_FLOOR} API calls left this hour. The next wake carries on.`); break; }
   if (!p || p.state !== 'open' || closed.has(p.number)) continue;

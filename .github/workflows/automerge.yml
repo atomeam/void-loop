@@ -54,7 +54,7 @@ jobs:
     # The suite gate runs on main for a batch of pull requests, so its result is the exception: it merges the green one or queues the next.
     if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch != 'main' || github.event.workflow_run.pull_requests[0] || github.event.workflow_run.name == 'Suite on main'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
