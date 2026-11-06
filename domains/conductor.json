@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T16:30:27.551Z",
+ "updated": "2026-11-06T16:41:40.297Z",
  "last24h": {
-  "ticks": 40,
-  "started": 80,
+  "ticks": 41,
+  "started": 81,
   "requeued": 0,
   "setAside": 0,
   "probes": 6,
@@ -120,7 +120,7 @@
   "mw546mkf": 1793981864391,
   "mw56dws5": 1793982627551
  },
- "sweptAt": 1793979670513,
+ "sweptAt": 1793983300297,
  "visitorAt": "2026-11-06T16:04:05Z",
  "visitorFiled": [
   "feature:yunite-xyz-b0979f7e",
@@ -1415,6 +1415,32 @@
    ],
    "daily": [],
    "sweep": false,
+   "held": 14,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T16:41:40.297Z",
+   "open": 240,
+   "started": [
+    {
+     "id": "mvw5r1rz",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 98
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "held": 14,
    "warnings": 0
   }
