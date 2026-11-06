@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T03:03:54Z",
+   "at": "2026-11-06T04:03:10Z",
+   "subject": "Gaps batches 1 and 2: 24 asks Verse failed on, now answered in the page (#2346)"
+  },
+  {
+   "at": "2026-11-06T03:59:55Z",
+   "subject": "3D miniatures test WebGL once and detect KTX2 support only before a model loads (#2347)"
+  },
+  {
+   "at": "2026-11-06T03:59:33Z",
+   "subject": "Rewrite the parity inventories after merging main"
+  },
+  {
+   "at": "2026-11-06T03:58:31Z",
+   "subject": "Lab sync: log the remaining empty catches, walk the q-table by its keys"
+  },
+  {
+   "at": "2026-11-06T03:58:08Z",
+   "subject": "Lab sync: current parity and seo files, logged catches, reviewed innerHTML lines"
+  },
+  {
+   "at": "2026-11-06T03:58:04Z",
+   "subject": "Conversation orb: a follow-up is answered in the light of the ask it follows (#2348)"
+  },
+  {
+   "at": "2026-11-06T03:57:38Z",
+   "subject": "The will's overhaul ask is kept whole on the wants card (#2349)"
+  },
+  {
+   "at": "2026-11-06T03:57:20Z",
+   "subject": "Inventory: describe the 9 skills that had no line (main's inventory test failed) (#2350)"
+  },
+  {
+   "at": "2026-11-06T03:56:42Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T03:56:08Z",
+   "subject": "Parity: suncommunitynews.com, the newest obituary site, has its history and feature inventory (main's parity test was red) (#2354)"
+  },
+  {
+   "at": "2026-11-06T03:53:10Z",
+   "subject": "Verse's wallet: confirm payments in one batch, not a query per row (#2353)"
+  },
+  {
+   "at": "2026-11-06T03:52:57Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T03:52:11Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T01:55:11Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-06T03:44:56Z",
+   "subject": "Verse's own wallet: agents pay per call over x402 in USDC on Base (#2352)"
   },
   {
-   "at": "2026-11-06T00:40:38Z",
-   "subject": "Outcome exam: podcasts 84.8"
+   "at": "2026-11-06T03:44:20Z",
+   "subject": "converter: preload every module at once, so the page loads in one round trip (#2351)"
   },
   {
-   "at": "2026-11-06T00:27:59Z",
-   "subject": "Site test: fix: \"yo new automation\" load 1309 ms > 1200"
-  },
-  {
-   "at": "2026-11-06T00:06:34Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-06T00:04:39Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
-  },
-  {
-   "at": "2026-11-05T23:58:16Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows…"
-  },
-  {
-   "at": "2026-11-05T23:54:27Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows…"
-  },
-  {
-   "at": "2026-11-05T23:50:36Z",
-   "subject": "Versus by itself: news: suncommunitynews.com, the sites read recorded"
-  },
-  {
-   "at": "2026-11-05T22:32:04Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T22:25:57Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-05T21:04:46Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-11-05T20:49:16Z",
-   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
-  },
-  {
-   "at": "2026-11-05T20:15:04Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-11-05T20:02:29Z",
-   "subject": "treasury: found money and the weekly review"
-  },
-  {
-   "at": "2026-11-05T19:18:27Z",
-   "subject": "Outcome exam: podcasts 84.8"
-  },
-  {
-   "at": "2026-11-05T19:06:55Z",
-   "subject": "Site test: visitor pass 13/15"
-  },
-  {
-   "at": "2026-11-05T18:57:55Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-05T18:57:36Z",
-   "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-11-05T18:49:04Z",
+   "at": "2026-11-06T03:38:53Z",
    "subject": "Outcome exam: podcasts 86.4"
+  },
+  {
+   "at": "2026-11-06T03:38:04Z",
+   "subject": "Incident: the browser suite failed on 11c694ce (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T03:31:16Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T03:28:45Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-11-06T03:27:19Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 0,
-  "week": 152
+  "day": 7,
+  "week": 159
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
