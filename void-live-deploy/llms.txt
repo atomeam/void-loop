@@ -126,6 +126,7 @@ Each tool is a page of its own, free, with nothing to sign up for and no ads; al
 - https://a-to-mind.com/?q=<ask> opens Verse and runs the ask, for example https://a-to-mind.com/?q=weather%20in%20Tokyo
 
 ## Notes for crawlers and agents
+- Agents can pay per call, no account: POST https://a-to-mind.com/api/x402/review with {"code": ...} answers 402 with x402 payment requirements (0.05 USDC on Base, paid into Verse's own wallet); retry with the signed X-PAYMENT header for the AI closer read. Catalog: https://a-to-mind.com/api/x402. Protocol: https://docs.x402.org
 - Everything runs in the browser at https://a-to-mind.com. The one public API is code review: POST https://a-to-mind.com/api/review with {"code": ...} or {"diff": ...} returns findings (free); a Verse Pro key adds the closer read (https://a-to-mind.com/code-review/).
 - The public API is described in OpenAPI 3.1 at https://a-to-mind.com/openapi.json (code review, the MCP endpoint, tools.json, the catalog, and each skill's health: proven, checked, tested or experiment, at /skills/families.json), found from https://a-to-mind.com/.well-known/api-catalog (RFC 9727).
 - Browser agents with WebMCP (Chrome) find Verse's tools declared on the page itself (void_ask, void_stage, void_calculate, ...): each takes one plain-words ask and returns what appeared. The same list is at https://a-to-mind.com/tools.json.
