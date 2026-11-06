@@ -54,7 +54,9 @@ jobs:
     # The suite gate runs on main for a batch of pull requests, so its result is the exception: it merges the green one or queues the next.
     if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch != 'main' || github.event.workflow_run.pull_requests[0] || github.event.workflow_run.name == 'Suite on main'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    # 15, not 5 (2026-11-06): the sweep reads for 200 s at most (AUTOMERGE_SWEEP_MS), then runs the safety-check on the batch
+    # the suite gate chose. One check took 134 s that morning, so 5 minutes cut a sweep off before it started the gate.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
