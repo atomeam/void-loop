@@ -379,6 +379,7 @@ export function askAction(lower, text, stageApi) {
   if (tm) {
     tm.duration = (tm.duration || 0) + more; tm.remaining = (tm.remaining || 0) + more;
     const left = tm.running ? tm.remaining - (Date.now() - tm.startedAt) : tm.remaining;
+    stageApi.select(tm.id); // the timer the ask changed is the picked thing (the exam and the next "add one minute" read it)
     stageApi.save(); stageApi.render();
     stageApi.say('added ' + clock(more) + ' · the timer is ' + clock(tm.duration) + ' (' + Math.round(tm.duration / 1000) + ' s) · ' + clock(left) + ' left');
     return 'timer-add';

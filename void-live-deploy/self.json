@@ -582,84 +582,84 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T06:38:52Z",
+   "subject": "Verse Brain organ 26: Reflex, the tiny MLP drafts"
+  },
+  {
+   "at": "2026-11-06T06:37:08Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-11-06T06:33:53Z",
+   "subject": "treasury: found money and the weekly review"
+  },
+  {
+   "at": "2026-11-06T06:31:30Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T06:28:33Z",
+   "subject": "Wallet watch: wait and move to the next Base endpoint when one rate-limits the read (#2394)"
+  },
+  {
+   "at": "2026-11-06T06:27:35Z",
+   "subject": "Arbitrage scanner: a record of past scans, from real rows only (#2393)"
+  },
+  {
+   "at": "2026-11-06T06:26:13Z",
+   "subject": "treasury: found money and the weekly review"
+  },
+  {
+   "at": "2026-11-06T06:25:36Z",
+   "subject": "Trading bots: one paid-call route for backtest and arbitrage, and escaped tables (#2373)"
+  },
+  {
+   "at": "2026-11-06T06:20:58Z",
+   "subject": "Design pass batch 2: pages no longer jump while their data loads (#2390)"
+  },
+  {
+   "at": "2026-11-06T06:20:33Z",
+   "subject": "Treasury: Verse reads every USDC transfer into its wallet from the chain, daily (#2391)"
+  },
+  {
+   "at": "2026-11-06T06:18:55Z",
+   "subject": "Timer unit test: the stub stage can pick, and the timer is picked after add time (#2389)"
+  },
+  {
+   "at": "2026-11-06T06:17:21Z",
+   "subject": "Pick the timer that \"add one minute\" changes; clear stale picked marks (#2388)"
+  },
+  {
+   "at": "2026-11-06T06:15:55Z",
+   "subject": "Outcome exam: podcasts 85.6"
+  },
+  {
+   "at": "2026-11-06T06:15:52Z",
+   "subject": "GAPS batch 5: grocery list, big block letters, event countdown, tournament bracket (#2384)"
+  },
+  {
+   "at": "2026-11-06T06:14:58Z",
+   "subject": "Site test: fix: \"play reversi\" console: Cannot read properties of undef"
+  },
+  {
+   "at": "2026-11-06T06:14:34Z",
+   "subject": "MCP: every paid tool runs and gets a 402, and the registry listing moves to Verse 1.2.0 (#2383)"
+  },
+  {
+   "at": "2026-11-06T06:11:29Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T06:09:01Z",
+   "subject": "Design pass batch 1: tap targets and button contrast on every tool page (#2385)"
+  },
+  {
+   "at": "2026-11-06T06:02:51Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
    "at": "2026-11-06T05:58:56Z",
    "subject": "Incident: the browser suite failed on c5a28a1f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T05:58:47Z",
-   "subject": "Add the MIT license, and ship the PayPal button on /code-review/ (#2375)"
-  },
-  {
-   "at": "2026-11-06T05:58:15Z",
-   "subject": "Brain organ 25, Rules: the decision-tree drafts guess which way your next stroke goes (#2376)"
-  },
-  {
-   "at": "2026-11-06T05:57:49Z",
-   "subject": "Automerge: the suite gate result sweeps, and idle runs on main never replace the waiting sweep (#2381)"
-  },
-  {
-   "at": "2026-11-06T05:55:56Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:55:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T05:48:15Z",
-   "subject": "Outcome exam: timers 86.7"
-  },
-  {
-   "at": "2026-11-06T05:48:06Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T05:42:22Z",
-   "subject": "Gaps batch 4: phonetic alphabet, invisible characters, final exam grade, SQL formatter and XML to JSON in the page (#2377)"
-  },
-  {
-   "at": "2026-11-06T05:41:42Z",
-   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches (#2378)"
-  },
-  {
-   "at": "2026-11-06T05:41:17Z",
-   "subject": "The 3D note shows once, so it never hides the next answer (#2379)"
-  },
-  {
-   "at": "2026-11-06T05:40:57Z",
-   "subject": "Agents pay Verse over MCP, the review Action pays per review, and the listings and grant drafts are ready (#2380)"
-  },
-  {
-   "at": "2026-11-06T05:31:45Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:28:56Z",
-   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
-  },
-  {
-   "at": "2026-11-06T05:27:34Z",
-   "subject": "Page copies: void.html takes the deploy copies' change from #2369"
-  },
-  {
-   "at": "2026-11-06T05:24:21Z",
-   "subject": "Incident: the browser suite failed on 42ad9480 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T05:24:11Z",
-   "subject": "Tower gate: wheel,tournaments measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:22:02Z",
-   "subject": "A replace that misses shows the nearest lines (#2330) (#2372)"
-  },
-  {
-   "at": "2026-11-06T05:21:03Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:20:16Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 23,
-  "week": 174
+  "day": 28,
+  "week": 179
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

@@ -5,7 +5,7 @@
 // settled; a payment to anyone else is refused with the terms again. Every outside call is faked.
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { SERVICES } from '../void-live-deploy/lib/x402.js';
+import { SERVICES, bazaarOf } from '../void-live-deploy/lib/x402.js';
 import { VERSE_WALLET } from '../void-live-deploy/lib/verse-wallet-address.js';
 import { rpc, TOOLS, PAID_TOOLS, paidResult, PAY_META, PAY_RESPONSE_META } from '../void-live-deploy/lib/mcp.js';
 import { onRequestPost, mcpFailure } from '../void-live-deploy/functions/api/mcp.js';
@@ -99,4 +99,24 @@ assert.equal((await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: {
 // a picture that comes back as a data URL is an MCP image block, not text
 const pic = paidResult('image', { status: 200, body: { state: 'art', img: 'data:image/png;base64,iVBORw0KGgo=', seed: 4 }, settlement: { success: true, transaction: TX } });
 assert.deepEqual(pic.content[1], { type: 'image', data: 'iVBORw0KGgo=', mimeType: 'image/png' }); assert.equal(pic.structuredContent.img, undefined);
+// every listed paid tool asks to be paid when called without payment, also a service sold by a route file of its own (reached at its address)
+{
+  // the AI binding is there, as it is live; nothing runs it, because no call gets past the 402
+  const env = { DB: d1(), AI: { run: async () => assert.fail('no model runs before payment') } };
+  globalThis.fetch = async (req) => {
+    const u = new URL(typeof req === 'string' ? req : req.url), m = u.pathname.match(/^\/api\/x402\/(\w+)$/);
+    if (!m) return new Response('offline in tests', { status: 503 });
+    const own = await import('../void-live-deploy/functions/api/x402/' + m[1] + '.js');
+    return own.onRequestPost({ request: req, env, params: { service: m[1] }, waitUntil: () => {} });
+  };
+  try {
+    for (const id of Object.keys(SERVICES)) {
+      const args = bazaarOf(SERVICES[id]).info.input.body; // the example call each service declares for the Bazaar
+      const r = await call(env, 'paid_' + id, args);
+      assert.equal(r.isError, true, 'paid_' + id + ' without payment is an error result');
+      assert.equal(r.structuredContent && r.structuredContent.x402Version, 2, 'paid_' + id + ' asks to be paid: ' + JSON.stringify(r).slice(0, 200));
+      assert.equal(r.structuredContent.accepts[0].network, 'eip155:8453');
+    }
+  } finally { globalThis.fetch = realFetch; }
+}
 console.log('mcp x402: ok');
