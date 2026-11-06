@@ -574,13 +574,69 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-30T11:33:13Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-11-06T09:58:17Z",
+   "subject": "Site test: fix: \"turn the questions i missed into a five-minute challen"
+  },
+  {
+   "at": "2026-11-06T09:49:35Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next id5-sync.com (the target)"
+  },
+  {
+   "at": "2026-11-06T09:47:01Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 4 walled, 4 no-family); next id5-sync.com (the target)"
+  },
+  {
+   "at": "2026-11-06T09:46:56Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-11-06T09:46:27Z",
+   "subject": "Outcome exam: podcasts 84.8"
+  },
+  {
+   "at": "2026-11-06T09:31:44Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"draw me a rob"
+  },
+  {
+   "at": "2026-11-06T09:21:00Z",
+   "subject": "Outcome exam: podcasts 85.6"
+  },
+  {
+   "at": "2026-11-06T09:09:33Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T08:55:51Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-11-06T08:53:07Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+  },
+  {
+   "at": "2026-11-06T08:52:17Z",
+   "subject": "Outcome exam: podcasts 88.8"
+  },
+  {
+   "at": "2026-11-06T08:44:13Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo draw me a"
+  },
+  {
+   "at": "2026-11-06T08:40:55Z",
+   "subject": "Regenerate the files main left stale: HANDOFF-GAPS, PARITY, first asks, and the icanhazip.com date in the assimilated backfill"
+  },
+  {
+   "at": "2026-11-06T08:36:03Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-11-06T08:25:55Z",
    "subject": "Failed jobs read: run 42184801438 (void-live-deploy/incidents/actions/)"
@@ -604,62 +660,6 @@
   {
    "at": "2026-11-06T08:10:53Z",
    "subject": "Spotter: 1 check(s) healed with no revert after 9f52702d6d834e1959e890ff5a0070b89dd44e3a (tools/flakes.json)"
-  },
-  {
-   "at": "2026-11-06T08:07:10Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 9f52702d6d834e1959e890ff5a0070b89dd44e3a (tools/flakes.json)"
-  },
-  {
-   "at": "2026-11-06T08:05:21Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T08:05:04Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-06T08:03:13Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-06T08:02:29Z",
-   "subject": "Feature scan: my-ip researched by Verse"
-  },
-  {
-   "at": "2026-11-06T08:01:58Z",
-   "subject": "Versus smallest first for real: tiny sites found, tower reset, icanhazip.com assimilated at /ip (#2412)"
-  },
-  {
-   "at": "2026-11-06T08:01:12Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T07:58:55Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-06T07:58:41Z",
-   "subject": "Prices and images exams: fast ethereum and money asks, and pictures on the stage (#2415)"
-  },
-  {
-   "at": "2026-11-06T07:58:02Z",
-   "subject": "Failed jobs read: run 42181363096 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T07:57:32Z",
-   "subject": "Incident: the browser suite failed on f18aba43 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T07:55:27Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T07:49:29Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-06T07:49:16Z",
-   "subject": "Knowledge cards: whole sentences, senses apart, a matching picture, a grounded take, worded stats, a true Adds to Verse line, and Verse's…"
   }
  ],
  "builders": {
@@ -840,10 +840,6 @@
    "why": "the tower's sports floors lose \"pictures of the games\" to money only; free routes cover the big matches"
   }
  ],
- "visible": {
-  "day": 37,
-  "week": 188
- },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
   "tricks": [
@@ -899,14 +895,15 @@
   "source": "verse"
  },
  "tower": {
-  "target": "squoosh.app",
+  "target": "id5-sync.com",
   "since": "2026-11-06",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1270
+  "total": 1301
  }
 }
