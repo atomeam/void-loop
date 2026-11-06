@@ -9,7 +9,7 @@
 //   node tools/verse-job.mjs <job id> [--dry] [--force]    needs VOID_OWNER_TOKEN; the lap needs what verse-loop.yml gives it
 // Never fails the workflow for a job's own failure: the queue holds the result. Playbook: docs/playbooks/conductor.md.
 import { spawnSync } from 'node:child_process';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { kindOf, triesOf, withTries } from './conductor-core.mjs';
@@ -47,6 +47,27 @@ export function startHere(job, skills = []) {
   ].filter(Boolean).join(' ');
 }
 
+/** Where a tv job's page lives (2026-11-06: the first blueprint build, "Improve /markets/", read lib/markets.js at the repo root, found
+ *  nothing, and spent all 30 turns searching; the page's files are under void-live-deploy/). Names the page's own files that exist, so the
+ *  coder starts reading, not hunting. A new page names the page to copy and the files every new page touches. has(path): whether a
+ *  repo path exists; ls(dir): a folder's file names, or [] when it has none. '' for any other job. Pure. */
+export function tvStart(job, has = () => false, ls = () => []) {
+  if (kindOf(job.target) !== 'tv') return '';
+  const m = /^(Build|Improve) \/([\w-]+)\/?:/.exec(String(job.ask || '').trim());
+  if (!m) return '';
+  const name = m[2], dir = 'void-live-deploy/' + name + '/';
+  if (m[1] === 'Build' && !has(dir + 'index.html')) {
+    return 'Start here: copy the shape of void-live-deploy/translate/index.html for ' + dir + 'index.html; the page\'s logic goes in void-live-deploy/lib/' + name + '.js with tools/' + name + '.test.mjs; add the page to void-live-deploy/sitemap.xml, a skill with tools/new-skill.mjs, and a spec in tools/real-pages.mjs. Paths are from the repo root. Do not search the whole repo.';
+  }
+  const own = ls(dir).filter((f) => /\.(html|js)$/.test(f)).map((f) => dir + f);
+  const files = [...own, 'void-live-deploy/lib/' + name + '.js', 'void-live-deploy/functions/api/' + name + '.js', 'tools/' + name + '.test.mjs'].filter((f, i, a) => a.indexOf(f) === i && has(f)).slice(0, 6);
+  if (!files.length) return '';
+  return 'Start here: /' + name + '/ is ' + files.join(', ') + '. Paths are from the repo root. Read these first; do not search the whole repo.';
+}
+
+const inRepo = (rel) => existsSync(resolve(HERE, '..', rel));
+const filesIn = (rel) => { try { return readdirSync(resolve(HERE, '..', rel)); } catch { return []; } };
+
 /** The task text a lap gets for a job: its kind, its words, where to start, what the kind needs, capped. Pure. */
 export function taskText(job, skills = []) {
   const kind = kindOf(job.target), note = String(job.note || '').replace(/^claimed by [^·]*·?\s*/i, '').replace(/\btries \d+\s*·?\s*/g, '').trim();
@@ -55,7 +76,7 @@ export function taskText(job, skills = []) {
   // the cap grows by the spec, so it is never cut. 2026-10-31: "Overhaul surface:cards" reached this coder with only the thin Start here,
   // ran growth-suites, and gave back "No spec/template" at the 250000-token cap after 19 turns; the team agents already had willSpec.
   const spec = kind === 'versus' ? versusSpec(job) : kind === 'will' ? willSpec(job, skills) : kind === 'tv' ? tvSpec(job) : '', extra = spec ? '\n' + spec + '\n' + LOOP_DELIVER : '';
-  return [head.slice(0, 400), startHere(job, skills), note && 'Note: ' + note.slice(0, 600), (GUIDE[kind] || 'Do this, small and tested.') + extra].filter(Boolean).join('\n\n').slice(0, TEXT_MAX + extra.length);
+  return [head.slice(0, 400), startHere(job, skills) || tvStart(job, inRepo, filesIn), note && 'Note: ' + note.slice(0, 600), (GUIDE[kind] || 'Do this, small and tested.') + extra].filter(Boolean).join('\n\n').slice(0, TEXT_MAX + extra.length);
 }
 
 /** The lap's result: the last line of its output that is a JSON object, else null. Pure. */
@@ -103,9 +124,17 @@ export async function runJob(id, { dry = false, force = false, env = process.env
   let skills = []; try { skills = readdirSync(resolve(cwd, 'void-live-deploy/skills')).filter((f) => /\.js$/.test(f) && !/\.test\.js$/.test(f)).map((f) => f.replace(/\.js$/, '')); } catch (_) { /* no map, the job's words alone */ }
   const r = spawnSync(process.execPath, [bin, '--once', ...(dry ? ['--dry-run'] : []), '--task', taskText(job, skills)], { cwd, env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 55 * 60 * 1000 });
   const report = lastJson(r.stdout) || (r.error ? { outcome: 'error', why: String(r.error.message || r.error) } : null);
-  const patch = settle(report, job);
-  if (!dry) { const p = await call(env, 'PATCH', { id: job.id, state: patch.state, note: patch.note }); if (p.status !== 200) return { job, report, patch, error: 'the queue refused the result (' + p.status + ')' }; }
-  return { job, report, patch };
+  const patch = settle(report, job), turns = turnLog(r.stderr);
+  if (!dry) { const p = await call(env, 'PATCH', { id: job.id, state: patch.state, note: patch.note }); if (p.status !== 200) return { job, report, patch, turns, error: 'the queue refused the result (' + p.status + ')' }; }
+  return { job, report, patch, turns };
+}
+
+/** the coder's turn lines from the lap's stderr ("turn N: tool path -> result"), at most 60, key-like runs masked. Pure.
+ *  2026-11-06: an unattended job hit the 30-turn cap with no edit, and the log kept only the 600-character why, so where
+ *  the turns went could not be read. These lines show it. */
+export function turnLog(err) {
+  return String(err || '').split('\n').filter((l) => /^\s*turn \d+:/.test(l))
+    .map((l) => l.trim().replace(/[A-Za-z0-9_\-]{32,}/g, '[masked]').slice(0, 200)).slice(-60);
 }
 
 /** the lap's whole why for the job log: one line, at most 600 characters, any run of 32 or more key characters masked. Pure. */
@@ -124,6 +153,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     // the queue note keeps 90 characters; the job log keeps the whole why, so a cut note can be read in full (long key-like runs masked)
     const full = fullWhy(r.report);
     if (full) console.log('::notice title=verse-job why::' + full);
+    if (r.turns && r.turns.length) { console.log('::group::the coder\'s turns (' + r.turns.length + ')'); for (const t of r.turns) console.log(t); console.log('::endgroup::'); }
     if (process.env.GITHUB_STEP_SUMMARY) { try { import('node:fs').then((fs) => fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### verse-job\n\n```\n' + line + '\n```\n')); } catch (_) { /* the summary is optional */ } }
     process.exit(0);
   });

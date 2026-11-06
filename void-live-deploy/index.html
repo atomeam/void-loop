@@ -2538,25 +2538,27 @@ say('nothing selected to remove');
       return m ? { skill: m[1], via: 'skill' } : null;
     }
     function keepRead(el) {
-      if (!('speechSynthesis' in window) || el.querySelector(':scope > .vread')) return;
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'vread'; b.title = 'Read aloud';
-      b.setAttribute('aria-label', 'Read aloud'); b.setAttribute('aria-pressed', 'false'); b.innerHTML = READ_ICON;
-      el.insertBefore(b, el.firstChild);
+      if (!('speechSynthesis' in window)) return;
+      const on = readTimer !== 0 && readEl === el; // a redraw replaces the button; a card still being read keeps "Stop reading"
+      let b = el.querySelector(':scope > .vread');
+      if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'vread'; b.innerHTML = READ_ICON; el.insertBefore(b, el.firstChild); }
+      b.title = on ? 'Stop reading' : 'Read aloud';
+      b.setAttribute('aria-label', on ? 'Stop reading' : 'Read aloud'); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     // everything the card says, as words (no sources line, no buttons), read whole: a long card is read to its end
     function cardWords(el) {
       const c = el.cloneNode(true); c.querySelectorAll('.src, script, style, iframe, button, svg, canvas, .void-mini, .vtell, .vtell-box, details:not([open]) > :not(summary)').forEach((n) => n.remove());
       return (c.innerText || c.textContent || '').replace(/\s+/g, ' ').trim();
     }
-    let readTimer = 0;
+    let readTimer = 0, readEl = null;
     function readCard(el, b) {
       const btns = () => el.querySelectorAll(':scope > .vread');
-      const off = () => { clearInterval(readTimer); readTimer = 0; btns().forEach((x) => { x.setAttribute('aria-pressed', 'false'); x.title = 'Read aloud'; x.setAttribute('aria-label', 'Read aloud'); }); };
+      const off = () => { clearInterval(readTimer); readTimer = 0; readEl = null; btns().forEach((x) => { x.setAttribute('aria-pressed', 'false'); x.title = 'Read aloud'; x.setAttribute('aria-label', 'Read aloud'); }); };
       if (b.getAttribute('aria-pressed') === 'true') { speechSynthesis.cancel(); off(); return; }
       const t = cardWords(el); if (!t) { say('nothing to read yet'); return; }
       if (!sayAloud(t)) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = navigator.language || 'en-US'; speechSynthesis.speak(u); }
+      clearInterval(readTimer); readEl = el; // readTimer is 0 when idle, so a redraw (keepRead) can tell "this card is being read"
       btns().forEach((x) => { x.setAttribute('aria-pressed', 'true'); x.title = 'Stop reading'; x.setAttribute('aria-label', 'Stop reading'); });
-      clearInterval(readTimer);
       // the button turns back when the reading ends, and the reading stops when its card closes
       readTimer = setInterval(() => {
         if (vpageEl !== el || !el.isConnected) { speechSynthesis.cancel(); off(); return; }
@@ -3151,23 +3153,31 @@ say('nothing selected to remove');
           return 'wikipedia';
         }
         const url = (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || ('https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.title));
+        // a term card (lib/term-card.js; owner, 2026-11-06, the Treasury card): Verse's own page for the term first, then each outside sense on its own with
+        // its source, the picture only when it is of what the card is about, and Verse's take only under the sense it stands on
+        const KC = await import('/lib/term-card.js').catch(() => null); if (vpageEl !== el) return;
+        if (KC && !document.getElementById('vt-css')) { const st = document.createElement('style'); st.id = 'vt-css'; st.textContent = KC.TERM_CSS; document.head.appendChild(st); }
+        const ttl = j.title || hit.title, lead = KC ? KC.leadParts(j.extract || '') : { intro: '', senses: [], paras: [] }, multi = lead.senses.length >= 2;
+        const thumb = j.thumbnail && j.thumbnail.source && (!KC || KC.imageFits({ title: ttl, extract: j.extract || '', src: j.thumbnail.source })) ? j.thumbnail.source : '';
         el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
           + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
           + (corrected ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Showing “' + esc(corrected) + '” (you typed “' + esc(topic) + '”).</p>'
             : thinMatch(topic, (j.title || hit.title) + ' ' + (j.description || '') + ' ' + String(j.extract || '').slice(0, 300)) ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Closest match I found for “' + esc(topic) + '”.</p>' : '')
+          + '<div class="verse-slot"></div>'
           + '<div class="pic-slot"></div>'
-          + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
-          + '<p>' + esc(j.extract || '') + '</p>'
+          + (thumb ? '<img alt="" src="' + esc(thumb) + '">' : '')
+          // a lead that lists senses ("A treasury is either:") shows each as its own labelled sense; any other lead is one paragraph, its colons spaced
+          + (multi ? KC.sensesHtml(esc, { intro: lead.intro, senses: lead.senses, source: 'Wikipedia', url })
           // the source first, then Verse's take under it, labelled as a model's reading (owner, 2026-10-19: cards for show, takes above the facts)
-          + '<div class="take-slot"></div>'
+            : '<p>' + esc(KC ? KC.fixColons(j.extract || '') : (j.extract || '')) + '</p>' + '<div class="take-slot"></div>')
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el, false);
         // the card is typed by what the source says the page is (lib/card-kinds.js), and a name that is also a song, an album or a show says so
-        el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); keepCard(el);
+        el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); el.dataset.cardAdds = KC ? KC.addsFor({ title: ttl, desc: j.description || '', senses: lead.senses }) : ''; keepCard(el);
         import('/lib/card-kinds.js').then((k) => k.fetchAlso(j.title || hit.title)).then((also) => { if (also.length && vpageEl === el) { el.dataset.cardAlso = also.join(','); keepCard(el); } }).catch(() => {});
         // no lead image: the article's own photo (lib/page-picture.js; owner, 2026-10-17: the K-pop card "didnt look" up a picture), placed where a thumbnail goes
-        if (!(j.thumbnail && j.thumbnail.source)) import('/lib/page-picture.js').then((m) => m.pictureFor(j.title || hit.title)).then((src) => {
-          if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]')) return;
+        if (!thumb && !multi) import('/lib/page-picture.js').then((m) => m.pictureFor(j.title || hit.title)).then((src) => {
+          if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]') || (KC && !KC.imageFits({ title: ttl, extract: j.extract || '', src, own: true }))) return; // the article's own photo: of the subject, whatever its file is named
           const im = document.createElement('img'); im.alt = ''; im.src = src; im.dataset.pagePicture = '1'; const slot = el.querySelector('.pic-slot');
           if (slot) slot.after(im); else el.querySelector('h2').after(im); keepCard(el);
         }).catch(() => {});
@@ -3183,13 +3193,27 @@ say('nothing selected to remove');
           }).catch(() => {});
         }
         // Verse's own input on top of the summary (skills/take.js): what Verse can do about it at once, then its take (/api/answer, mode 'take')
+        // the take is shown only where it stands on something real: the sense whose words it shares, or Verse's own page (lib/term-card.js bindTake)
         import('/skills/take.js').then((T) => {
-          const slot = el.querySelector('.take-slot'); if (!slot) return;
           const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '' }, asks = T.relatedAsks(card);
-          const paint = (take) => { if (vpageEl === el) slot.innerHTML = T.takeHtml(esc, take, asks); };
-          paint('');
+          const pageP = KC ? KC.termPage(ttl, (p) => fetch(p).then((r) => (r.ok ? r.text() : '')).catch(() => ''), (p) => fetch(p).then((r) => (r.ok ? r.json() : null)).catch(() => null)).catch(() => null) : Promise.resolve(null);
+          let page = null, take = '';
+          const paint = () => {
+            if (vpageEl !== el) return;
+            const one = el.querySelector('.take-slot:not([data-sense])'), vs = el.querySelector('.verse-slot'), top = !!KC && (!!page || multi);
+            if (!KC) { if (one) one.innerHTML = T.takeHtml(esc, take, asks); return; }
+            if (vs) vs.innerHTML = top ? KC.verseHtml(esc, page, asks) : ''; // Verse's own page and what Verse can do lead the card
+            const grounds = multi ? lead.senses.map((t, i) => ({ key: String(i), text: t })) : [{ key: 'one', text: j.extract || '' }];
+            if (page) grounds.push({ key: 'verse', text: [page.name, page.about, page.line].join(' ') });
+            const at = take ? KC.bindTake(take, grounds, ttl) : null;
+            for (const s of el.querySelectorAll('.vt-sense .take-slot')) s.innerHTML = '';
+            if (one) one.innerHTML = T.takeHtml(esc, at === 'one' ? take : '', top ? [] : asks);
+            if (at != null && at !== 'one') { const s = el.querySelector('.take-slot[data-sense="' + at + '"]'); if (s) s.innerHTML = T.takeHtml(esc, take, []); }
+          };
+          paint();
+          pageP.then((p) => { page = p; if (p && vpageEl === el) { el.dataset.cardAdds = KC.addsFor({ title: ttl, desc: j.description || '', senses: lead.senses, page: p }); keepCard(el); } paint(); });
           fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'take', ...card }) })
-            .then((r) => (r.ok ? r.json() : null)).then((o) => { if (o && o.take) paint(o.take); }).catch(() => {});
+            .then((r) => (r.ok ? r.json() : null)).then((o) => { if (o && o.take) { take = o.take; paint(); } }).catch(() => {});
         }).catch(() => {});
         // Next #18/#19: two-part summon — the card, plus a base body dressed from this summary, then a behavior script (AI once, cached; fallback without AI).
         try {
@@ -6642,6 +6666,31 @@ say('nothing selected to remove');
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
         if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }
         return; }
+      // self-first (lib/term-card.js selfPage; owner, 2026-11-06: "verse lab", "i cant find the lab anywhere"): an ask that names Verse
+      // ("verse treasury", "the crew on verse") is matched against Verse's own pages before any web lookup. A match answers from that page and
+      // says so; no match says Verse has no page by that name, and the web answer follows under that line. No page is invented.
+      if (/^(?:(?:what(?:\s+is|'s)|where(?:\s+is|'s)|tell me about|show(?: me)?|open|go to|take me to|find|explain|look up)\s+)?(?:(?:the|my|your)\s+)?(?:verse|vers|verses|verse's|void|void's|a-to-mind)\s+\S|\s(?:on|in|of|at|from)\s+(?:verse|vers|void|a-to-mind)\s*[?!.]*$/.test(lower0)) {
+        const KS = await import('/lib/term-card.js').catch(() => null);
+        const st = KS && KS.selfTerm ? KS.selfTerm(text) : null;
+        if (st && st.named && st.term) {
+          const askNo0 = askCount;
+          const sel = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><div class="sub">looking in Verse</div>'; });
+          const got = await KS.selfPage(text, (u) => fetch(u).then((r) => (r.ok ? r.text() : '')).catch(() => ''), (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null)).catch(() => null);
+          if (askNo0 !== askCount || vpageEl !== sel) return;
+          if (got && got.page) {
+            sel.dataset.page = got.page.href;
+            sel.innerHTML = '<h2><a href="' + esc(got.page.href) + '">' + esc(got.page.name) + '</a></h2>' + KS.selfHtml(esc, got.page) // void-review: ok (every value passes through esc in selfHtml and here)
+              + '<div class="src">From Verse itself: <a href="' + esc(got.page.href) + '">a-to-mind.com' + esc(got.page.href) + '</a></div>';
+            loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self first' }); return;
+          }
+          // no Verse page by that name: the web answer, with the line that says so above it
+          const line = KS.noSelfPageLine(esc, st.term);
+          const mark = () => { if (askNo0 !== askCount || !vpageEl) return; const h = vpageEl.querySelector('h2'); if (vpageEl.querySelector('.vt-none')) return; if (h) h.insertAdjacentHTML('afterend', line); else vpageEl.insertAdjacentHTML('afterbegin', line); }; // void-review: ok (the line is built with esc)
+          const asked = /^(why|how|when|where|which|who|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain)\b/.test(lower0);
+          (asked ? showAnswer(text) : showArticle('tell me about ' + st.term)).then((src) => { mark(); if (src === 'none') reportMiss(text, lookedUp()); }).catch(() => {});
+          loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self first, no page' }); return;
+        }
+      }
       if (/^(why|how|when|where|which|what\s+language\b|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
         showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
