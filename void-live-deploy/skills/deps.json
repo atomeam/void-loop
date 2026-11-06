@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1153,
+ "counted": 1164,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -605,6 +605,13 @@
    "tests": 1
   },
   {
+   "file": "lib/barcode.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 15,
+   "tests": 1
+  },
+  {
    "file": "lib/cssmin.js",
    "skills": 4,
    "direct": 1,
@@ -735,7 +742,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 30
+   "tests": 31
   },
   {
    "file": "lib/void-seal.js",
@@ -910,7 +917,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 4,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/chat-calendar.js",
@@ -1876,7 +1883,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/calculators.js",
@@ -2289,7 +2296,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tower-art.js",
@@ -2789,6 +2796,13 @@
    "tests": 1
   },
   {
+   "file": "lib/inbox-blocks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -3055,6 +3069,13 @@
    "tests": 1
   },
   {
+   "file": "lib/verse-runs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
@@ -3081,6 +3102,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 4
+  },
+  {
+   "file": "lib/actions-log.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/agent-watch.js",
@@ -3234,7 +3262,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/epub-edit.js",
@@ -3504,6 +3532,13 @@
   },
   {
    "file": "lib/random-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/range-diff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3819,7 +3854,8 @@
    "imports": [
     "lib/guard.js",
     "lib/automations-run.js",
-    "lib/team-crew-run.js"
+    "lib/team-crew-run.js",
+    "lib/verse-runs.js"
    ],
    "importedBy": []
   },
@@ -4133,6 +4169,10 @@
    "reachedBy": [
     "functions/api/image.js"
    ]
+  },
+  "functions/api/ip.js": {
+   "imports": [],
+   "importedBy": []
   },
   "functions/api/jobs.js": {
    "imports": [
@@ -4807,6 +4847,10 @@
    "importedBy": [
     "skills/about-skill.js"
    ]
+  },
+  "lib/actions-log.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/actions.js": {
    "imports": [],
@@ -5599,6 +5643,28 @@
    "imports": [],
    "importedBy": [
     "skills/backlog-digest.js"
+   ]
+  },
+  "lib/barcode.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/a2a.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/base64.js": {
@@ -8527,6 +8593,15 @@
     "skills/imgfit.js"
    ]
   },
+  "lib/inbox-blocks.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/verse-runs.js"
+   ],
+   "reachedBy": [
+    "functions/api/automations/tick.js"
+   ]
+  },
   "lib/inbox-health.js": {
    "imports": [],
    "importedBy": [
@@ -11192,6 +11267,10 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/range-diff.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/rap-beat.js": {
    "imports": [
     "lib/compose.js",
@@ -13744,6 +13823,14 @@
     "skills/vat.js"
    ]
   },
+  "lib/verse-runs.js": {
+   "imports": [
+    "lib/inbox-blocks.js"
+   ],
+   "importedBy": [
+    "functions/api/automations/tick.js"
+   ]
+  },
   "lib/verse-secrets.js": {
    "imports": [],
    "importedBy": [
@@ -14820,6 +14907,10 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/client-handoff.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/clock.js": {
    "imports": [],
@@ -16826,6 +16917,10 @@
    ],
    "importedBy": []
   },
+  "skills/my-device.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/nca-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -18118,6 +18213,14 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/system-blueprint.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/system-handoff.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/system-status.js": {
    "imports": [
     "skills/status.js"
@@ -18125,6 +18228,10 @@
    "importedBy": [
     "skills/status-board.js"
    ]
+  },
+  "skills/systems-monitor.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/tab.js": {
    "imports": [
@@ -18414,6 +18521,7 @@
    "imports": [
     "lib/colour.js",
     "lib/qr.js",
+    "lib/barcode.js",
     "lib/hash.js",
     "lib/textdiff.js",
     "lib/markdown.js",

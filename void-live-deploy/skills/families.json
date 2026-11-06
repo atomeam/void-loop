@@ -14,7 +14,7 @@
  "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
-  "tested": 7,
+  "tested": 8,
   "checked": 12,
   "proven": 385
  },
@@ -1330,7 +1330,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 2,
     "proven": 26
    },
@@ -1499,6 +1499,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 17
+    },
+    {
+     "name": "my-device",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests"
     },
     {
      "name": "counter",
@@ -2523,7 +2530,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 21 live findings, 2026-11-04",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 22 live findings, 2026-11-05",
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
