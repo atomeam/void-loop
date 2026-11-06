@@ -4885,6 +4885,20 @@ try {
       tms.length === 1 && tms[0].duration === 150000 && /2:30/.test(face) && /150 seconds/.test(face) && !st.some((t) => t.kind === 'list') && !P.errors.length,
       JSON.stringify({ tms, face, kinds: st.map((t) => t.kind), e: P.errors }));
     await P.ctx.close(); }
+  // with another card picked, "add one minute" lengthens the timer and picks it, and only one card carries the mark (main, c5a28a1f
+  // shard 5: the timer was 150 s but the sticky stayed the picked one, so the timer face read nothing; a kept card kept a stale mark)
+  if (want("timer add time picks the timer: with the sticky picked, \"add one minute\" lengthens the timer and makes it the one picked thing")) { const P = await fresh();
+    await P.ask('set a timer for 90 seconds', 700);
+    await P.ask('sticky note buy milk', 500);
+    const before = await P.p.$$eval('.thing[data-picked]', (els) => els.map((e) => e.classList.contains('sticky') ? 'sticky' : e.className));
+    await P.ask('add one minute', 700);
+    const tms = (await P.state()).filter((t) => t.kind === 'timer');
+    const picked = await P.p.$$eval('.thing[data-picked]', (els) => els.map((e) => e.classList.contains('timer') ? 'timer' : e.className));
+    const face = await P.p.$$eval('.thing.timer[data-picked]', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+    check('timer add time picks the timer: with the sticky picked, "add one minute" makes the 90 second timer 150 s long and the one picked thing (its card says 2:30), and the sticky loses its picked mark',
+      before.length === 1 && before[0] === 'sticky' && tms.length === 1 && tms[0].duration === 150000 && picked.length === 1 && picked[0] === 'timer' && /2:30/.test(face) && !P.errors.length,
+      JSON.stringify({ before, tms, picked, face, e: P.errors }));
+    await P.ctx.close(); }
   // step 6's visible upgrade for the timer (owner, 2026-10-11: every cleanup move ships one): its progress ring was built with
   // createElement('svg'), an unknown HTML tag that never drew; it is a real SVG ring now, and a finished timer flashes 0:00
   if (want("timer ring and done flash: the progress ring is drawn and sweeps down while it runs, a finished timer flashes 0:00, steady with reduced motion")) {
