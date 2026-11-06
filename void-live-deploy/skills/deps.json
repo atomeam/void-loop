@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1192,
+ "counted": 1189,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 92,
+   "dependants": 90,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 26,
    "direct": 1,
-   "dependants": 92,
+   "dependants": 90,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 91,
+   "dependants": 89,
    "tests": 5
   },
   {
@@ -146,28 +146,28 @@
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 62,
+   "dependants": 61,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 61,
+   "dependants": 60,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 60,
+   "dependants": 59,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 58,
+   "dependants": 57,
    "tests": 4
   },
   {
@@ -195,14 +195,14 @@
    "file": "lib/qr.js",
    "skills": 13,
    "direct": 3,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 3
   },
   {
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 20,
    "tests": 1
   },
   {
@@ -300,35 +300,35 @@
    "file": "lib/flight-sites.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 15,
+   "dependants": 14,
    "tests": 1
   },
   {
    "file": "lib/game-kit.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 15,
+   "dependants": 14,
    "tests": 1
   },
   {
    "file": "lib/job-sites.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 15,
+   "dependants": 14,
    "tests": 2
   },
   {
    "file": "lib/rally-rules.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 14,
+   "dependants": 13,
    "tests": 1
   },
   {
    "file": "lib/card-deck.js",
    "skills": 9,
    "direct": 3,
-   "dependants": 13,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -356,7 +356,7 @@
    "file": "lib/tool-sites.js",
    "skills": 8,
    "direct": 2,
-   "dependants": 13,
+   "dependants": 12,
    "tests": 4
   },
   {
@@ -381,13 +381,6 @@
    "tests": 1
   },
   {
-   "file": "lib/art-source.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 13,
-   "tests": 1
-  },
-  {
    "file": "lib/movies.js",
    "skills": 7,
    "direct": 2,
@@ -395,16 +388,16 @@
    "tests": 1
   },
   {
+   "file": "lib/art-source.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
    "file": "lib/card-image.js",
    "skills": 7,
    "direct": 1,
-   "dependants": 11,
-   "tests": 5
-  },
-  {
-   "file": "lib/card-share.js",
-   "skills": 7,
-   "direct": 3,
    "dependants": 10,
    "tests": 4
   },
@@ -414,6 +407,13 @@
    "direct": 2,
    "dependants": 10,
    "tests": 2
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 7,
+   "direct": 3,
+   "dependants": 9,
+   "tests": 3
   },
   {
    "file": "lib/stage-find.js",
@@ -493,17 +493,17 @@
    "tests": 5
   },
   {
-   "file": "lib/card-forge.js",
+   "file": "lib/selfcheck.js",
    "skills": 5,
    "direct": 1,
    "dependants": 8,
    "tests": 1
   },
   {
-   "file": "lib/selfcheck.js",
+   "file": "lib/card-forge.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 8,
+   "dependants": 7,
    "tests": 1
   },
   {
@@ -608,21 +608,21 @@
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 1
   },
   {
@@ -703,27 +703,6 @@
    "tests": 1
   },
   {
-   "file": "lib/art-meta.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
-   "file": "lib/card-look.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
-   "file": "lib/card-sections.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/date-words.js",
    "skills": 4,
    "direct": 1,
@@ -734,13 +713,6 @@
    "file": "lib/gate-badge.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
-   "file": "lib/lineage.js",
-   "skills": 4,
-   "direct": 0,
    "dependants": 7,
    "tests": 1
   },
@@ -766,18 +738,32 @@
    "tests": 1
   },
   {
-   "file": "lib/void-seal.js",
+   "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 7,
-   "tests": 2
+   "dependants": 6,
+   "tests": 1
   },
   {
-   "file": "lib/card-frame.js",
+   "file": "lib/card-look.js",
    "skills": 4,
-   "direct": 4,
+   "direct": 0,
    "dependants": 6,
-   "tests": 21
+   "tests": 1
+  },
+  {
+   "file": "lib/card-sections.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/lineage.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/tower.js",
@@ -785,6 +771,20 @@
    "direct": 3,
    "dependants": 6,
    "tests": 31
+  },
+  {
+   "file": "lib/void-seal.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
+   "file": "lib/card-frame.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 5,
+   "tests": 20
   },
   {
    "file": "lib/field-cards.js",
@@ -2180,13 +2180,6 @@
    "tests": 0
   },
   {
-   "file": "lib/proof-gap.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/rap-stage.js",
    "skills": 1,
    "direct": 1,
@@ -3307,13 +3300,6 @@
    "tests": 2
   },
   {
-   "file": "lib/can-do.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/card-reply.js",
    "skills": 0,
    "direct": 0,
@@ -3749,13 +3735,6 @@
   },
   {
    "file": "lib/sun-day.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/term-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5410,7 +5389,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -5486,7 +5464,6 @@
     "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
-    "lib/term-card.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -5528,7 +5505,6 @@
    "reachedBy": [
     "lib/card-share.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
@@ -6778,10 +6754,6 @@
     "functions/api/rsvp.js"
    ]
   },
-  "lib/can-do.js": {
-   "imports": [],
-   "importedBy": []
-  },
   "lib/card-art.js": {
    "imports": [
     "lib/card-subject.js",
@@ -6831,7 +6803,6 @@
     "lib/card-share.js",
     "lib/duel-rules.js",
     "lib/self-context.js",
-    "lib/term-card.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -6864,7 +6835,6 @@
    "reachedBy": [
     "lib/card-frame.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/forge-table.js",
@@ -6884,7 +6854,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -6911,7 +6880,6 @@
    ],
    "importedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -6932,7 +6900,6 @@
    "reachedBy": [
     "lib/card-frame.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -6976,7 +6943,6 @@
     "functions/api/x402/[service].js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -6992,7 +6958,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -7040,7 +7005,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -7060,7 +7024,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -7113,7 +7076,6 @@
     "lib/duel-rules.js",
     "lib/self-context.js",
     "lib/skill-confidence.js",
-    "lib/term-card.js",
     "lib/tome.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -8320,7 +8282,6 @@
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -8563,7 +8524,6 @@
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
@@ -8802,7 +8762,6 @@
     "lib/duel-rules.js",
     "lib/self-context.js",
     "lib/skill-confidence.js",
-    "lib/term-card.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9169,7 +9128,6 @@
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -9359,7 +9317,6 @@
     "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
-    "lib/term-card.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/wiki-look.js",
@@ -9550,7 +9507,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -10122,7 +10078,6 @@
     "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
-    "lib/term-card.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/wiki-look.js",
@@ -10538,7 +10493,6 @@
     "functions/api/x402/[service].js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -11653,12 +11607,6 @@
    "imports": [],
    "importedBy": []
   },
-  "lib/proof-gap.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/family-health.js"
-   ]
-  },
   "lib/proposal.js": {
    "imports": [],
    "importedBy": [
@@ -11766,7 +11714,6 @@
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
-    "lib/term-card.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/about-skill.js",
@@ -11793,7 +11740,6 @@
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
@@ -12495,7 +12441,6 @@
     "lib/duel-rules.js",
     "lib/self-context.js",
     "lib/skill-confidence.js",
-    "lib/term-card.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -12650,7 +12595,6 @@
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
-    "lib/term-card.js",
     "lib/toolkit.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -13705,7 +13649,6 @@
     "functions/api/x402/[service].js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -13987,13 +13930,6 @@
     "skills/list-starters.js"
    ]
   },
-  "lib/term-card.js": {
-   "imports": [
-    "lib/card-frame.js",
-    "skills/take.js"
-   ],
-   "importedBy": []
-  },
   "lib/term-orbits-law.js": {
    "imports": [
     "lib/field-kit.js"
@@ -14138,7 +14074,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -14740,7 +14675,6 @@
    ],
    "reachedBy": [
     "lib/duel-rules.js",
-    "lib/term-card.js",
     "skills/about-skill.js",
     "skills/duel.js",
     "skills/forge-table.js",
@@ -16090,8 +16024,7 @@
     "lib/better.js",
     "lib/game-health.js",
     "lib/ladder.js",
-    "lib/match-history.js",
-    "lib/proof-gap.js"
+    "lib/match-history.js"
    ],
    "importedBy": []
   },
@@ -18923,8 +18856,7 @@
   "skills/take.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js",
-    "lib/term-card.js"
+    "functions/api/answer.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",

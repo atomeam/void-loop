@@ -5173,6 +5173,20 @@
    "weight": 1051957,
    "at": "2026-10-30"
   },
+  "example.com": {
+   "bytes": 577,
+   "controls": 1,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 10,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 917,
+   "shell": "none",
+   "weight": 2677,
+   "at": "2026-11-06"
+  },
   "exif.tools": {
    "bytes": 215044,
    "controls": 75,
@@ -6561,6 +6575,20 @@
    "weight": 268068,
    "at": "2026-10-30"
   },
+  "icanhazip.com": {
+   "bytes": 16,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 0,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "plain",
+   "shell": "none",
+   "text": 15,
+   "weight": 16,
+   "at": "2026-11-06"
+  },
   "icloud.com": {
    "bytes": 3791879,
    "scripts": 8,
@@ -6909,6 +6937,20 @@
    "weight": 228365,
    "at": "2026-10-29",
    "counted": "unrendered"
+  },
+  "ismycomputeron.com": {
+   "bytes": 98,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 4,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3,
+   "shell": "none",
+   "weight": 138,
+   "at": "2026-11-06"
   },
   "itranslate.com": {
    "bytes": 832705,
@@ -7453,6 +7495,20 @@
   "listennotes.com": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "lite.duckduckgo.com": {
+   "bytes": 2854,
+   "controls": 2,
+   "scripts": 0,
+   "styles": 1,
+   "nodes": 29,
+   "routes": 26,
+   "htmlControls": 2,
+   "counted": "rendered",
+   "text": 10,
+   "shell": "none",
+   "weight": 16144,
+   "at": "2026-11-06"
   },
   "littleshopofcolors.eu": {
    "bytes": 2192442,
@@ -8072,6 +8128,20 @@
    "shell": "none",
    "weight": 579214,
    "at": "2026-10-30"
+  },
+  "motherfuckingwebsite.com": {
+   "bytes": 4903,
+   "controls": 0,
+   "scripts": 1,
+   "styles": 0,
+   "nodes": 36,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3325,
+   "shell": "none",
+   "weight": 7263,
+   "at": "2026-11-06"
   },
   "mp3convert.org": {
    "refused": true,

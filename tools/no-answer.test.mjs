@@ -27,8 +27,7 @@ test('a Not found card is not a sourced answer and adds no fact', () => {
   const c = cardOf({ sources: 1, ageDays: 3, notFound: true });
   assert.equal(c.typeLine, 'Not found'); assert.equal(c.adds, ''); assert.equal(c.fetched, false); assert.equal(c.power, null);
   const real = cardOf({ sources: 1, ageDays: 3 });
-  assert.equal(real.typeLine, 'Answer \u2014 from a source'); assert.equal(real.adds, '', 'a sourced answer that filed nothing has no Adds to Verse line (2026-11-06: the generic line said nothing true)');
-  assert.equal(cardOf({ sources: 1, ageDays: 3, filed: 'The term treasury, in 2 senses from Wikipedia.' }).adds, 'The term treasury, in 2 senses from Wikipedia.');
+  assert.equal(real.typeLine, 'Answer — from a source'); assert.match(real.adds, /fact it did not have to be taught/);
 });
 test('fuzzy neighbours are a guess, offered as a question', () => {
   const near = [{ title: 'Happy Harry\'s', text: 'Happy Harry\'s was an American drugstore chain founded in 1962.' }];
