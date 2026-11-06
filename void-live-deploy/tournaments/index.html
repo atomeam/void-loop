@@ -65,7 +65,7 @@
   .grow { flex:1 1 12em; min-width:0; }
   .grow input { width:100%; }
   .check { display:flex; align-items:center; gap:6px; font-size:14px; color:var(--ink); min-height:34px; }
-  .check input { min-height:0; width:18px; height:18px; margin:0; }
+  .check input { min-height:0; width:24px; height:24px; margin:0; }
   td.gap { text-align:left; color:var(--quiet); font-size:12px; min-width:11em; white-space:normal; }
   td.mcol, th.mcol { white-space:nowrap; color:#cfcbe6; }
   .tag.mp { color:#fff3c4; border-color:#7a6726; background:#2a2412; }
@@ -119,7 +119,7 @@
           </optgroup>
         </select>
       </label>
-      <label id="modewrap"><span>Teams</span>
+      <label id="modewrap" hidden><span>Teams</span>
         <select id="mode" aria-label="Team size">
           <option value="solo">Solo</option>
           <option value="duos">Duos</option>
@@ -127,9 +127,9 @@
           <option value="squads">Squads</option>
         </select>
       </label>
-      <label id="elimwrap"><span id="elimname">Per elimination</span><input id="elim" type="number" min="0" max="20" step="1" inputmode="numeric" aria-label="Points per elimination"></label>
+      <label id="elimwrap" hidden><span id="elimname">Per elimination</span><input id="elim" type="number" min="0" max="20" step="1" inputmode="numeric" aria-label="Points per elimination"></label>
     </div>
-    <div id="tierbox">
+    <div id="tierbox" hidden>
       <p class="note">Placement tiers: each chip is a range of places and what it pays. Remove one with its ×, or add a range below.</p>
       <div class="chips" id="chips" role="list" aria-label="Placement tiers"></div>
       <div class="row">
@@ -143,7 +143,7 @@
         <label class="grow"><span>Like 1st:10, 2-5:5, 6-10:3, 11-25:1</span><input id="tiertext" type="text" spellcheck="false" autocomplete="off" aria-label="Placement tiers as text"></label>
       </details>
     </div>
-    <p class="note" id="tiers"></p>
+    <p class="note" id="tiers">Each round's score is the points: placement and eliminations are not used.</p>
   </section>
 
   <section class="card" aria-labelledby="h-results">
@@ -153,7 +153,7 @@
     <div class="scroll">
       <table id="grid" class="grid">
         <caption>Every team's numbers in the chosen round</caption>
-        <thead><tr><th scope="col">Team</th><th scope="col" id="ha">Place</th><th scope="col" id="hb">Elims</th></tr></thead>
+        <thead><tr><th scope="col">Team</th><th scope="col" id="ha">Score</th><th scope="col" id="hb" hidden>Elims</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>

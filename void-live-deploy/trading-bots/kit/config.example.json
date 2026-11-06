@@ -1,0 +1,7 @@
+{
+  "bot": "trend-50-200",
+  "exchange": "kraken",
+  "symbol": "BTC/USD",
+  "budget": 100,
+  "params": {}
+}
