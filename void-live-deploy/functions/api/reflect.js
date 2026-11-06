@@ -56,8 +56,8 @@ export async function onRequestPost({ request, env }) {
   if (kind === 'daily') { const week = weekFacts(ledger); if (week) pieces.push(['void.growth.json (the last 7 days)', week]); }
   const follow = ledger ? followFacts(followThrough(before, ledger, answered && answered.links), askRecord(before, ledger, answered)) : ''; if (follow) pieces.push(['void.growth.json and void.asks.json (what became of its asks)', follow]);
   // the site Versus is fighting goes first, so the asks serve beating it (lib/voice.js targetFacts); no tower files leave it out
-  try { const inv = await asset('/lap.items.json'); const [ev, fr, rk, sz, tg, ft] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json', '/tower.features.json'].map(asset));
-    const tf = ev ? targetFacts(tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft })), tg) : '';
+  try { const inv = await asset('/lap.items.json'); const [ev, fr, rk, sz, tg, ft, gn] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json', '/tower.features.json', '/tower.gone.json'].map(asset));
+    const tf = ev ? targetFacts(tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn })), tg) : '';
     // the asks held behind it (void.asks.json `held`) are named, so the reflection does not ask for them again while the target stands
     const hd = tf ? (answered && Array.isArray(answered.held) ? answered.held : []).filter((h) => h && h.until === tg.id && typeof h.words === 'string').map((h) => '"' + h.words + '"') : [];
     if (tf) pieces.unshift(['tower.target.json, void.asks.json held and the tower ranking (lib/tower.js)', tf + (hd.length ? ' These asks wait until ' + tg.id + ' is beaten, so do not ask for them now: ' + hd.join(', ') + '.' : '')]); } catch (_) { /* no tower */ }
