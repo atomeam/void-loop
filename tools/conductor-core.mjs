@@ -170,6 +170,20 @@ export const BLUEPRINTS_EVERY_H = 1;
 export function blueprintsDue({ queuedMs, now }) {
   return now - (queuedMs || 0) >= BLUEPRINTS_EVERY_H * H;
 }
+/** the calls one coder run can spend: its turn cap (tools/verse-coder.mjs LIMITS.turns). A run started with fewer calls left than this
+ *  gets a 429 partway and lands nothing (run 42284242262, 2026-11-06: started with 11 of 360 left, ended "no model answered"). */
+export const CODER_RUN_CALLS = 30;
+/** is the coder's free model budget (GET /api/coder: { hour:{used,cap}, day:{used,cap}, room, until }) too short for one whole run?
+ *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. Pure. */
+export function coderShort(budget, now, need = CODER_RUN_CALLS) {
+  if (!budget || typeof budget !== 'object') return null;
+  if (budget.room === false) return { until: budget.until || null };
+  const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);
+  const d = new Date(now);
+  if (left(budget.day) < need) return { until: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1)).toISOString() };
+  if (left(budget.hour) < need) return { until: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours() + 1)).toISOString() };
+  return null;
+}
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
 export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now }) {

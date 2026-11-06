@@ -34,6 +34,7 @@ export const LIMITS = {
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   podcasts: { rpm: 30, body: 0 }, // GET only: a search phrase, a chart, an iTunes id or a public https feed address in, normalised JSON out; SSRF-safe fetch, 3 MB and 8 s caps, edge-cached 15 min; 20 misses a minute in the route itself (functions/api/podcasts.js)
+  sitebench: { rpm: 20, body: 0 }, // GET only: a site from a closed list of one (lib/sitebench.js TARGETS) in, one row per page out, edge-cached ten minutes (functions/api/sitebench.js)
   news: { rpm: 30, body: 0 }, // GET only: a section and a language from two closed lists in, grouped headlines from fixed public feeds out, edge-cached seven minutes; 20 misses a minute in the route itself (functions/api/news.js)
   recipeimport: { rpm: 30, body: 1200000 }, // a recipe page's address in (GET) or one downsized photo of a recipe card (POST): the recipe or the text read out (functions/api/recipeimport.js); 15 addresses and 6 photos a minute in the route
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)

@@ -7,7 +7,7 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { plan, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
+import { plan, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, coderShort, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
 import { queueBlueprints } from './watch-build.mjs'; // every blueprint Verse wrote becomes a tv: build job, a few an hour
 import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
@@ -94,9 +94,11 @@ async function tick() {
   const backoff = loopBackoff(now);
   const paused = fs.existsSync('domains/verse-loop.pause') || !!backoff;
   for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) { wf[f].paused = paused; if (backoff) wf[f].pausedWhy = backoff; }
-  // the coder's free model budget (GET /api/coder: counts only). Full: the coder is not started until room comes back; unknown: started as before
+  // the coder's free model budget (GET /api/coder: counts only). Too short for one whole run (fewer calls left than its turn cap, or full):
+  // the coder is not started until the window resets, since a run that hits the cap partway lands nothing; unknown: started as before
   const budget = await coderBudget();
-  if (budget && budget.room === false) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = { until: budget.until };
+  const short = coderShort(budget, now);
+  if (short) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = short;
   let exam = null; try { exam = JSON.parse(fs.readFileSync('void-live-deploy/exam/latest.json', 'utf8')); } catch (_) { exam = null; }
   const p = plan({ jobs, wf, handed, now, exam });
   const done = { started: [], requeued: [], setAside: [], healed: [], probe: false };
