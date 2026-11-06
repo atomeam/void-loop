@@ -312,14 +312,18 @@ export const memberJoinedSay = (name) => 'Welcome, ' + name + '. You are a membe
 export const GOOD_FIRST = Object.freeze(['versus', 'gap', 'novelty']);
 const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Outdo a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
 /** a queued job as the public board shows it. The owner's own #work asks keep their words in the members-only chat. Pure. */
-export function boardRow(job, now) {
+export function boardRow(job, now, sc = null) {
   const k = kindOf(job.target), mine = ownerAsk(job);
   const title = mine ? 'An ask from the owner (members read it in #work)' : clean(hideSecrets(String(job.ask || '').replace(/\s*Answer in this thread[\s\S]*$/, '')), 160);
-  return { id: job.id, kind: k, label: KIND_WORD[k] || k, title, good: GOOD_FIRST.includes(k), owner: mine, waiting: Math.max(0, Math.floor((now - msOf(job.at)) / 864e5)) };
+  return { id: job.id, kind: k, label: KIND_WORD[k] || k, title, good: GOOD_FIRST.includes(k), owner: mine, waiting: Math.max(0, Math.floor((now - msOf(job.at)) / 864e5)),
+    ...(sc ? { leverage: sc[0], why: mine ? 'ranked by Verse' : clean(hideSecrets(sc[1]), 160) } : {}) };
 }
-/** the board, best first, good first tasks on top, at most `max`. Pure. */
-export function board(jobs, now, max = 40) {
-  return rank(jobs, now).map((j) => boardRow(j, now)).sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
+/** the board, best first, good first tasks on top, at most `max`. scores: Verse's leverage { id: [score, why] } (lib/team-priorities.js
+ *  scoresOf); with them the highest leverage comes first and busywork (a score under 0.2) stays off the board. Pure. */
+export function board(jobs, now, max = 40, scores = null) {
+  const rows = rank(jobs, now).map((j) => boardRow(j, now, scores ? scores[j.id] : null));
+  if (scores) return rows.filter((r) => !(r.leverage != null && /^busywork/.test(r.why || ''))).sort((a, b) => (b.leverage ?? -1) - (a.leverage ?? -1) || Number(b.good) - Number(a.good)).slice(0, max);
+  return rows.sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
 }
 /** an owner's one-line post from the site: "idea: ..." goes to #ideas, anything else ("job: ..." or plain words) to #work (a job). Pure. */
 export function quickPost(text) {

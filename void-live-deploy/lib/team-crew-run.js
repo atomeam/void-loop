@@ -237,6 +237,14 @@ const TITLES = { 'status-watch': 'probe the key pages and the hourly guards', 's
   'growth': 'draft promos from measured wins', 'tech-radar': 'read the browser release notes' };
 
 /** one run of the crew. -> { at, crew, filed, met, reopened, jobs, ms } */
+// main's state for the leverage score (lib/team-leverage.js): red when a check on main's newest commit failed. -> { red, checks, sha } or null
+export async function mainState(env) {
+  const h = { accept: 'application/vnd.github+json', ...(env.GITHUB_TOKEN ? { authorization: 'Bearer ' + env.GITHUB_TOKEN } : {}) };
+  const cr = json((await get(env, 'https://api.github.com/repos/' + REPO + '/commits/main/check-runs?per_page=100', { headers: h, ms: 8000 })).text);
+  if (!cr || !Array.isArray(cr.check_runs)) return null;
+  const red = cr.check_runs.filter((r) => ['failure', 'timed_out'].includes(r.conclusion)).map((r) => String(r.name || '').slice(0, 80));
+  return { red: red.length > 0, checks: red.slice(0, 8), sha: cr.check_runs[0] ? String(cr.check_runs[0].head_sha || '').slice(0, 12) : '' };
+}
 export async function crewTick(env, now = Date.now()) {
   if (!env || !env.DB) return { ok: false, say: 'no database bound' };
   const t0 = Date.now();
@@ -249,15 +257,15 @@ export async function crewTick(env, now = Date.now()) {
   // the evidence, read together
   const { results: openPages } = await env.DB.prepare("SELECT metric FROM void_team_wants WHERE state = 'open' AND (metric LIKE 'page:%' OR metric LIKE 'link:%')").all();
   const extra = openPages.map((r) => r.metric.replace(/^(page|link):/, '')).filter((p) => p.startsWith('/'));
-  const [ex, tw, st, pr, walk, misses7, sales30, idl] = await Promise.all([
+  const [ex, tw, st, pr, walk, misses7, sales30, idl, sz, main] = await Promise.all([
     readExam(env), get(env, ORIGIN + '/tower.evidence.json', { max: 8e6, ms: 12000 }), readStatus(env, now).catch(() => null),
     probe(env, [...C.KEY_PAGES, ...extra]), isDue('site-operator') ? linkWalk(env, run) : null,
     count(env, 'SELECT COUNT(*) AS n FROM void_misses WHERE last >= ?', new Date(now - 7 * 864e5).toISOString()),
     count(env, 'SELECT COUNT(*) AS n FROM void_sales WHERE verified = 1 AND at >= ?', new Date(now - 30 * 864e5).toISOString()),
-    ideas(env, now),
+    ideas(env, now), get(env, ORIGIN + '/tower.size.json', { max: 4e6, ms: 10000 }), mainState(env).catch(() => null),
   ]);
   const ev = { at: new Date(now).toISOString(), exam: ex.exam, examSrc: ex.src, tower: tw.status === 200 ? json(tw.text) : null, guards: st && st.guards ? st.guards : [], probe: pr,
-    links: walk ? walk.links : [], walk, misses7, sales30, ideas: idl };
+    links: walk ? walk.links : [], walk, misses7, sales30, ideas: idl, size: sz && sz.status === 200 ? json(sz.text) : null, main };
   // Verse's brain: measure, close, file
   const m = await measureOpen(env, ev, bots, now);
   const filed = await fileWants(env, C.wantsOf(ev), bots, now);
@@ -280,14 +288,16 @@ export async function prioritizeRun(env, ev, now, { force = false } = {}) {
   try { jobs = ((await env.DB.prepare("SELECT id, ask, target, state, note, at FROM void_queue WHERE state IN ('queued', 'building') ORDER BY at ASC LIMIT 400").all()).results || []).filter((j) => TEAM_KINDS.includes(kindOf(j.target))); } catch (_) { jobs = []; }
   try { wants = (await env.DB.prepare("SELECT * FROM void_team_wants WHERE state = 'open'").all()).results || []; } catch (_) { wants = []; }
   const override = await getState(env, 'override'), last = await getState(env, 'priorities');
-  const p = P.prioritize(jobs, wants, ev, override, now), week = 'the week of ' + C.weekOf(new Date(now).toISOString()), monday = new Date(now).getUTCDay() === 1;
+  let done = [];
+  try { done = (await env.DB.prepare("SELECT id, ask, target, state, updated FROM void_queue WHERE state IN ('done', 'live') AND updated >= ? ORDER BY updated DESC LIMIT 400").bind(new Date(now - 14 * 864e5).toISOString()).all()).results || []; } catch (_) { done = []; }
+  const p = P.prioritize(jobs, wants, { ...ev, done }, override, now), week = 'the week of ' + C.weekOf(new Date(now).toISOString()), monday = new Date(now).getUTCDay() === 1;
   const why = !last ? 'first ranking' : force ? 'the owner overrode' : monday && last.week !== week ? 'Monday: the new week\'s bets' : last.day !== dayKey(now) ? 'the daily ranking' : last.sig !== p.sig ? 'the evidence moved' : '';
   if (!why) return { changed: false, bets: last.bets.map((b) => b.id) };
   const betsMoved = !last || last.bets.map((b) => b.id).join(' ') !== p.bets.map((b) => b.id).join(' ');
   let brief = last ? last.brief : null;
   if (betsMoved || (monday && last && last.week !== week) || force) brief = await crewWrite(env, { c: 'work', by: 'verse', body: P.briefText(p, week, why), now }); // the pinned brief: posted again only when the bets change
   const lanes = Object.fromEntries(p.ranked.map((r) => [r.id, r.lane]));
-  await setState(env, 'priorities', { at: now, day: dayKey(now), week, why, sig: p.sig, order: p.order.slice(0, 300), lanes, bets: p.bets, ranked: p.ranked.slice(0, 15), brief, wip: P.WIP }, now);
+  await setState(env, 'priorities', { at: now, day: dayKey(now), week, why, sig: p.sig, order: p.order.slice(0, 300), lanes, bets: p.bets, ranked: p.ranked.slice(0, 15), scores: P.scoresOf(p.ranked), busywork: p.busywork, brief, wip: P.WIP }, now);
   return { changed: true, why, bets: p.bets.map((b) => b.id), brief };
 }
 
