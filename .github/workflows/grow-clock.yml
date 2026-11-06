@@ -9,10 +9,13 @@
 # (domains/conductor.json).
 #
 # One run used to sleep on the runner for 33 ticks (about five and a half hours). That held a runner the whole time, the next scheduled run
-# sat pending behind it, and a git fetch with no timeout could sit there until the 345-minute job limit. A tick is one short job. The schedule
-# is every 10 minutes. A dispatch (will.yml, or by hand) that finds the last tick already stale starts the next run; a tick that just landed
-# does not chain, so the runs do not pile up. The state between ticks is the conductor-state branch, not a sleeping runner, so a push to main
-# does not follow every tick.
+# sat pending behind it, and a git fetch with no timeout could sit there until the 345-minute job limit. A tick is one short job. The state
+# between ticks is the conductor-state branch, not a sleeping runner, so a push to main does not follow every tick.
+# The chain (2026-11-06): GitHub fired the '*/10' schedule twice between 09:00 and 15:00 UTC, and a dispatched tick's next run started at
+# once, found the tick fresh and ended the chain, so the conductor (and the crew clock, the will, the film and the podcast it starts) went
+# quiet for hours: the owner saw Verse's crew all idle. Now every run that ticked waits until 9 minutes after its tick landed and then
+# starts the next run, whatever started it. A run that finds a fresh tick does nothing and starts nothing, so two chains never run side by
+# side (the concurrency group keeps one run going and one waiting). The schedule and will.yml restart the chain if a start ever fails.
 name: Verse grows
 
 on:
@@ -37,11 +40,12 @@ concurrency:
 permissions:
   actions: write   # start the executors and the next clock run (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
   contents: write  # the conductor-state branch every tick, and domains/conductor.json on main every 3 hours
+  issues: read     # the coder's back-off issue ('Verse loop paused'): while it holds, no job is claimed for the coder
 
 jobs:
   clock:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -99,12 +103,27 @@ jobs:
             fi
           fi
           echo "chain=yes" >> "$GITHUB_OUTPUT"
-      # a dispatch that just ticked starts one more run, which no-ops if the tick is fresh, so a late schedule still gets a tick
-      # and the runs do not chain without end. A scheduled tick leaves the next one to the schedule.
-      - name: Start the next clock run
-        if: always() && !inputs.dry && github.event_name == 'workflow_dispatch' && steps.clock.outputs.chain == 'yes'
+      # The merge sweep twice an hour, on the clock that does keep time (2026-11-06): GitHub fired automerge.yml's hourly '17 * * * *'
+      # schedule 9 times in 48 hours, and 2 of those were cancelled, so a ready pull request with no new event waited for a person.
+      # A tick in minutes 0-9 or 30-39 of the hour starts one full sweep (no pr input), which reads every open pull request.
+      - name: The merge sweep twice an hour
+        if: always() && !inputs.dry && steps.clock.outputs.chain == 'yes'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          m=$((10#$(date -u +%M)))
+          if [ $((m / 10 % 3)) -eq 0 ]; then gh workflow run automerge.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "full merge sweep started (minute $m)"; else echo "no sweep this tick (minute $m)"; fi
+      # every run that ticked starts the next one 9 minutes after its tick landed (the fresh check is 8 minutes, so that run ticks too).
+      # The wait holds this runner about 9 minutes of every 10; the repository is public, so Actions minutes are not metered.
+      - name: Start the next clock run
+        if: always() && !inputs.dry && steps.clock.outputs.chain == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          state="$RUNNER_TEMP/conductor.json"
+          wait=$(node --input-type=module -e "import fs from 'node:fs'; let u=Date.now(); try { u=Date.parse(JSON.parse(fs.readFileSync(process.argv[1],'utf8')).updated)||u } catch {} console.log(Math.max(0, Math.min(540, Math.ceil((u + 540000 - Date.now()) / 1000))))" "$state" 2>/dev/null || echo 540)
+          echo "the next tick starts in ${wait}s"
+          sleep "$wait"
           for t in 1 2 3; do gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && exit 0; sleep $((t * 10)); done
           echo "::warning title=Clock chain broke::the next run did not start; the 10-minute schedule and will.yml restart it"

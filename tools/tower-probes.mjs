@@ -104,6 +104,12 @@ export const PROBES = Object.freeze({
     facts: [['add VAT', /\badd\b|начислить/i], ['take VAT out', /\bextract\b|take (?:it )?out|выделить/i], ['the rate', /\brate\b|ставк/i], ['20%', /\b20\s*%/], ['22%', /\b22\s*%/],
       ['net', /\bnet\b|без НДС/i], ['gross or total', /\btotal\b|\bgross\b|с НДС/i], ['the working shown', /\bworking\b|\u00d7|\*|÷|\//], ['sum in words', /прописью|in words/i]],
   },
+  // icanhazip.com answers with the caller's own address; both pages are read from the same runner, so both must show it
+  'my ip': {
+    site: 'https://icanhazip.com/', verse: '/ip',
+    truth: [['an IP address', /\b\d{1,3}(?:\.\d{1,3}){3}\b|\b[0-9a-f]{1,4}(?::[0-9a-f]{0,4}){2,7}\b/i]],
+    facts: [['the address', /\b\d{1,3}(?:\.\d{1,3}){3}\b|\b[0-9a-f]{1,4}(?::[0-9a-f]{0,4}){2,7}\b/i], ['IPv4 or IPv6 named', /\bIPv[46]\b/], ['how to get it from a terminal', /\bcurl\b/i]],
+  },
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
     truth: () => [[christmas() ? 'yes on Christmas Day' : 'no on any other day', christmas() ? /\bYES\b/i : /\bNO\b/i]],

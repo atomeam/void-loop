@@ -12,6 +12,7 @@
 //  - a page that uses navigator.gpu or navigator.xr also loads /lab/needs.js, which tells the visitor honestly when the browser lacks it.
 //  - files next to index.html that the page names (core.js, a worklet) are copied beside it.
 // Pure parts are exported and tested in tools/lab-import.test.mjs. The headless test is tools/lab-probe.mjs, the pipeline tools/lab-sync.mjs.
+import { LAB_TOOLS } from './lab-grade.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -71,6 +72,13 @@ export function metaOf(dir, html, specMd) {
 
 /** the rename (AGENTS.md: "Everything a person reads says Verse"): the old name as a word, capital letter only (the lowercase void is the dark stage), in text a person reads. Pure. */
 export const rename = (text) => String(text).replace(/\b(?:Void|V01D)\b/g, 'Verse');
+/** code with every empty catch (`catch (e) {}`, `catch {}`, one holding only a comment) logging what it caught with console.debug, under the
+ * experiment's slug: only a catch right after a try block's closing brace, so the word in a string stays. The drafts swallow errors around optional browser features (BroadcastChannel, storage, sensors), and Verse's review blocks
+ * an empty catch, so each nightly sync PR stopped at the gate. The page behaves the same: debug output shows only when a person opens the console. Pure. */
+export function quietCatches(code, slug = 'lab') {
+  const tag = JSON.stringify('lab ' + slug + ':');
+  return String(code).replace(/(\}\s*)catch\s*(?:\(\s*([A-Za-z_$][\w$]*)\s*\))?\s*\{\s*(?:\/\*[^*]*\*\/\s*)?\}/g, (all, before, v) => before + 'catch (' + (v || 'e') + ') { console.debug(' + tag + ', ' + (v || 'e') + '); }');
+}
 /** html with the old name changed in its text nodes only: never in tags, attributes, scripts, styles or comments (an id or a CSS selector must keep matching). Pure. */
 export function renameMarkup(html) {
   return String(html).replace(/(<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>|<!--[\s\S]*?-->)|>([^<]+)</g, (all, block, text) => (block ? all : '>' + rename(text) + '<'));
@@ -98,7 +106,7 @@ export function unfinished(html) {
 
 /** the draft as a page of Verse: scripts external, head and footer wrapped around it. Pure. meta is metaOf(); needs is needsOf(). */
 export function convertPage(html, meta, needs = needsOf(html)) {
-  const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: rename(x.code) }));
+  const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: quietCatches(rename(x.code), meta.slug) }));
   let h = renameMarkup(ext.html);
   const url = SITE + '/lab/' + meta.slug + '/', title = meta.title + ' · Verse lab';
   if (!/<html\b/i.test(h)) h = '<html lang="en">' + h + '</html>';
@@ -123,7 +131,7 @@ export function convertPage(html, meta, needs = needsOf(html)) {
 /** the shared stylesheet and the honest notice for a browser without WebGPU or WebXR: written next to the pages by every import. */
 export const LAB_CSS = `/* /lab/ (tools/lab-import.mjs): the footer every experiment wears, and the notice for a browser that lacks what it needs */
 .vl-bar{position:fixed;left:8px;bottom:8px;z-index:2147483646;font:12px/1.4 system-ui,-apple-system,sans-serif;background:rgba(7,6,11,.78);color:#ecebf5;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;opacity:.6;transition:opacity .2s}
-.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px}.vl-bar a:last-child{margin-right:0}
+.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px;display:inline-flex;align-items:center;min-height:24px}.vl-bar a:last-child{margin-right:0}
 .vl-sr{position:fixed;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;padding:0;border:0}
 .vl-note{position:fixed;left:8px;right:8px;top:8px;z-index:2147483647;font:14px/1.45 system-ui,-apple-system,sans-serif;background:#2b1a05;color:#ffe3b0;border:1px solid #b8791b;border-radius:10px;padding:8px 12px}
 .vl-note button{font:inherit;float:right;margin-left:10px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:0 10px;cursor:pointer}
@@ -135,7 +143,8 @@ export const LAB_CSS = `/* /lab/ (tools/lab-import.mjs): the footer every experi
 .lab li{border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,255,255,.04)}
 .lab li a{display:block;padding:12px 14px;text-decoration:none;min-height:44px}.lab li a:hover,.lab li a:focus-visible{background:rgba(255,255,255,.08);border-radius:12px}
 .lab h2{font-size:16px;margin:0 0 4px}.lab li p{margin:0;font-size:13px;opacity:.75}.lab .meta{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12px;opacity:.9}
-.badge{border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:0 8px}.badge.works{border-color:#4cc38a;color:#8ae6b6}.badge.needs-webgpu,.badge.needs-webxr{border-color:#e0a030;color:#ffd48a}
+.badge{border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:0 8px}.badge.works{border-color:#4cc38a;color:#8ae6b6}.badge.needs-webgpu,.badge.needs-webxr{border-color:#e0a030;color:#ffd48a}.badge.tool{border-color:#a58bff;color:#c9b8ff}
+.lab .note{font-size:13px;opacity:.7;margin:14px 0 0}.lab details{margin-top:26px}.lab summary{cursor:pointer;opacity:.85;min-height:44px;line-height:44px}.lab details ul{margin-top:10px}
 .lab footer{margin-top:28px;font-size:13px;opacity:.65}
 `;
 export const NEEDS_JS = `// /lab/needs.js (tools/lab-import.mjs): a lab experiment that needs WebGPU or WebXR says so plainly when this browser has neither,
@@ -201,16 +210,25 @@ export const STATUS_LABEL = { works: 'Works', 'needs-webgpu': 'Needs WebGPU', 'n
 export function listed(catalog) {
   return catalog.filter((e) => STATUS_LABEL[e.status]).sort((a, b) => (b.num - a.num) || (a.slug < b.slug ? -1 : 1));
 }
-/** the gallery page at /lab/ from the catalog: plain static cards, no script. Pure. */
+/** the gallery page at /lab/ from the catalog: plain static cards, no script. Pure.
+ *  (owner, 2026-11-06: "the lab experiments all seem pointless"): the tools come first (the job inside each cluster of experiments, made into a page, and
+ *  any experiment tools/lab-grade.mjs grades a tool); the experiments with no job are kept, each at its own address, folded away under them. */
 export function renderGallery(catalog) {
-  const rows = listed(catalog), works = rows.filter((e) => e.status === 'works').length;
-  const desc = 'Experiments from the Verse lab, each a single page you can open and play with: ' + rows.length + ' that run in a browser. No sign-up, nothing leaves your device.';
+  const rows = listed(catalog), made = rows.filter((e) => e.grade === 'tool'), rest = rows.filter((e) => e.grade !== 'tool');
+  const from = (key) => catalog.filter((e) => e.idea === key && STATUS_LABEL[e.status]).length;
+  const tools = LAB_TOOLS.map((t) => ({ ...t, n: from(t.key) })), count = tools.length + made.length;
+  const desc = 'Tools from the Verse lab, each a page that does one job, made from ' + rows.length + ' experiments: a spirit level, a file checksum checker, a seamless pattern maker, colours from a photo, dictation and a mind map. Nothing leaves your device.';
   const card = (e) => '<li><a href="/lab/' + esc(e.slug) + '/"><h2>' + esc(e.title) + '</h2><p>' + esc(e.blurb) + '</p><div class="meta"><span class="badge ' + esc(e.status) + '">' + STATUS_LABEL[e.status] + '</span><span>' + (e.num ? 'F' + String(e.num).padStart(3, '0') : 'draft') + '</span></div></a></li>';
-  return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n' + HANDOFF + '\n<title>Verse lab: ' + rows.length + ' small experiments to play with</title>\n'
-    + '<meta name="description" content="' + esc(desc) + '">\n<meta property="og:type" content="website">\n<meta property="og:site_name" content="Verse">\n<meta property="og:title" content="Verse lab: small experiments to play with">\n<meta property="og:description" content="' + esc(desc) + '">\n'
+  const toolCard = (t) => '<li><a href="' + esc(t.page) + '"><h2>' + esc(t.tool) + '</h2><p>' + esc(t.why.charAt(0).toUpperCase() + t.why.slice(1)) + '.</p><div class="meta"><span class="badge tool">Tool</span>' + (t.n ? '<span>from ' + t.n + ' experiment' + (t.n === 1 ? '' : 's') + '</span>' : '') + '</div></a></li>';
+  const madeCard = (e) => card(e).replace('<span class="badge ' + esc(e.status) + '">' + STATUS_LABEL[e.status] + '</span>', '<span class="badge tool">Tool</span>');
+  return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n' + HANDOFF + '\n<title>Verse lab: ' + count + ' tools made from ' + rows.length + ' experiments</title>\n'
+    + '<meta name="description" content="' + esc(desc) + '">\n<meta property="og:type" content="website">\n<meta property="og:site_name" content="Verse">\n<meta property="og:title" content="Verse lab: tools made from experiments">\n<meta property="og:description" content="' + esc(desc) + '">\n'
     + '<meta property="og:url" content="' + SITE + '/lab/">\n<meta property="og:image" content="' + SITE + '/og.png">\n<meta name="twitter:card" content="summary_large_image">\n<link rel="canonical" href="' + SITE + '/lab/">\n<link rel="icon" href="/icon.svg" type="image/svg+xml">\n'
-    + '<link rel="stylesheet" href="/lab/lab.css">\n' + BEACON + '\n</head>\n<body class="lab-page">\n<main class="lab">\n<h1>Verse lab</h1>\n<p class="lead">Small experiments the lab makes every hour: living fields, tiny minds, sound and touch. ' + works + ' run in any recent browser; the rest say what they need, such as WebGPU or a headset. Newest first.</p>\n<ul>\n'
-    + rows.map(card).join('\n') + '\n</ul>\n<footer><a href="/tools/">All tools</a> &middot; <a href="/">Ask Verse anything</a></footer>\n</main>\n</body>\n</html>\n';
+    + '<link rel="stylesheet" href="/lab/lab.css">\n' + BEACON + '\n</head>\n<body class="lab-page">\n<main class="lab">\n<h1>Verse lab</h1>\n<p class="lead">Tools the lab made from its experiments: each does one job you can come back to, on your device.</p>\n<ul>\n'
+    + [...tools.map(toolCard), ...made.map(madeCard)].join('\n') + '\n</ul>\n'
+    + '<p class="note">Each tool is the useful idea inside a cluster of the lab\'s hourly experiments: the tilt sensing that steered particles levels a shelf, the seal that hashed their state checks your download.</p>\n'
+    + (rest.length ? '<details>\n<summary>The ' + rest.length + ' experiments behind them (demos to watch and poke, kept as they were), newest first</summary>\n<ul>\n' + rest.map(card).join('\n') + '\n</ul>\n</details>\n' : '')
+    + '<footer><a href="/tools/">All tools</a> &middot; <a href="/">Ask Verse anything</a></footer>\n</main>\n</body>\n</html>\n';
 }
 export const readCatalog = (out = LAB_DIR) => { try { return JSON.parse(fs.readFileSync(path.join(out, 'catalog.json'), 'utf8')); } catch (_) { return []; } };
 export function writeCatalog(catalog, out = LAB_DIR) {

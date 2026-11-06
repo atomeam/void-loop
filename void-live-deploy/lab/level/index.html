@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: number; out: text">
+<title>Spirit level: a bubble level on your phone · Verse lab</title>
+<meta name="description" content="A free spirit level that uses your phone's motion sensor: lay it flat for a bubble level or stand it on its edge for a shelf or frame, with the angle in degrees, the slope in percent, mm per metre and inches per foot, a zero for an uneven phone case and a hold button. Nothing leaves your device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spirit level · Verse lab">
+<meta property="og:description" content="A bubble level on your phone's motion sensor, with the slope in percent, mm per metre and inches per foot. Nothing leaves your device.">
+<meta property="og:url" content="https://a-to-mind.com/lab/level/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tools.css">
+<style>
+  .gauge { width: min(320px, 80vw); display: block; margin: 8px auto; }
+  .gauge circle.rim { fill: none; stroke: var(--line); stroke-width: 1.2; } .gauge circle.mid { fill: none; stroke: var(--soft); stroke-width: .6; }
+  .gauge .bub { fill: var(--good); opacity: .85; } .gauge rect.tube { fill: none; stroke: var(--line); stroke-width: 1.2; } .gauge line { stroke: var(--accent); stroke-width: 1; }
+  .center { text-align: center; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/lab/level/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Spirit level","url":"https://a-to-mind.com/lab/level/","description":"A bubble level on your phone's motion sensor: lay it flat for a surface or stand it on its edge for a shelf or a picture frame, with the angle in degrees and the slope in percent, mm per metre and inches per foot, a zero for a thick case and a hold button. Without a sensor, the same angle from a rise and a run.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"spirit level app, bubble level online, phone level, level tool for shelves, slope percent to degrees, roof pitch angle, inches per foot slope","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/lab/level/?rise={rise}&run=12"},"rise-input":"required name=rise"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Spirit level","item":"https://a-to-mind.com/lab/level/"}]}]}</script>
+<!-- /seo -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/lab/level/app.js"></script>
+</head>
+<body>
+<main>
+  <h1>Spirit level</h1>
+  <p class="lead">Lay your phone flat on a surface, or stand it on its long edge against a shelf or a frame.</p>
+  <div class="panel center">
+    <svg id="ring" class="gauge" viewBox="0 0 100 100" role="img" aria-label="Bubble level"><circle class="rim" cx="50" cy="50" r="48"/><circle class="mid" cx="50" cy="50" r="8"/><line x1="50" y1="2" x2="50" y2="98" opacity=".25"/><line x1="2" y1="50" x2="98" y2="50" opacity=".25"/><circle id="bubble" class="bub" cx="50" cy="50" r="7"/></svg>
+    <svg id="bar" class="gauge" viewBox="0 0 100 40" role="img" aria-label="Edge level" hidden><rect class="tube" x="4" y="12" width="92" height="16" rx="8"/><line x1="44" y1="12" x2="44" y2="28"/><line x1="56" y1="12" x2="56" y2="28"/><circle id="tube" class="bub" cx="50" cy="20" r="6"/><g id="line"><line x1="4" y1="36" x2="96" y2="36" opacity=".6"/></g></svg>
+    <div id="read" class="big" aria-live="polite">–</div>
+    <p id="detail" class="note">Waiting for the motion sensor.</p>
+    <p id="nosensor" class="note" hidden>No motion sensor answered. A phone or tablet has one; a laptop usually does not. The sum below gives the same angle from two measurements.</p>
+    <div class="row" style="justify-content:center">
+      <button type="button" id="start" class="main" hidden>Start the level</button>
+      <button type="button" id="zero">Zero here</button>
+      <button type="button" id="reset">Reset zero</button>
+      <button type="button" id="hold" aria-pressed="false">Hold reading</button>
+      <button type="button" id="say">Copy reading</button>
+    </div>
+    <p id="zeroed" class="note"></p>
+  </div>
+  <h2>Angle from rise and run</h2>
+  <div class="panel">
+    <div class="row"><label for="rise">Rise</label><input id="rise" type="number" step="any" value="1" style="width:7em"><label for="run">Run</label><input id="run" type="number" step="any" value="48" style="width:7em"><span class="note">any unit, the same for both</span></div>
+    <p id="calcout" aria-live="polite"></p>
+  </div>
+  <p class="note">The reading is worked out on this device from its own sensor; nothing is sent anywhere. A thick or bent case tilts the phone: put it on a surface you trust and press Zero here first.</p>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/lab/level/?rise=4&amp;run=12">4/12 roof pitch</a><a href="/lab/level/?rise=6&amp;run=12">6/12 roof pitch</a><a href="/lab/level/?rise=1&amp;run=12">1:12 ramp</a><a href="/lab/level/?rise=2&amp;run=100">2% slope</a><a href="/lab/level/?rise=0.25&amp;run=12">Drain, 1/4 in per foot</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/calculators/">Formula calculators</a> <a href="/calculator/">Calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="from">Made from the lab's tilt experiments, which steered particles with this same sensor reading. <a href="/lab/">More from the lab</a></p>
+</main>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

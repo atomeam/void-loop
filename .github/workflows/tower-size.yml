@@ -23,7 +23,7 @@ permissions:
 jobs:
   size:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60 # 35 for the weights, up to 15 for the target crawl
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,12 +58,16 @@ jobs:
           # liveness guard: a target or lane rival that is gone, parked or moved off its domain is dropped before the target is set
           CHROME_PATH="$VOID_TEST_BROWSER" node tools/tower-alive.mjs || echo '::warning::liveness check did not finish'
           node tools/tower-target.mjs
+      # the whole target site, not only its front page (tools/site-crawl.mjs): no job ran the crawl, so every target's card said "Not crawled yet"
+      # (owner's live card, 2026-11-06, id5-sync.com). robots.txt first, at most 60 pages; a crawl that fails or runs long never stops the weights.
+      - name: Crawl the target
+        run: CHROME_PATH="$VOID_TEST_BROWSER" timeout 900 node tools/site-crawl.mjs --target --cap 60 || echo '::warning::the target crawl did not finish'
       - name: Commit the weights
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add void-live-deploy/tower.size.json void-live-deploy/tower.target.json void-live-deploy/tower.gone.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git add void-live-deploy/tower.size.json void-live-deploy/tower.target.json void-live-deploy/tower.gone.json void-live-deploy/tower.features.json domains/features; if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -q -m "Tower size: how heavy each Versus site really is"
           for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true

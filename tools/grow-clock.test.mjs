@@ -16,7 +16,12 @@ test('one conductor tick per run, so a runner is not held for hours, then a disp
   assert.doesNotMatch(y, /seq 1 /, 'the ticks are separate runs, not a loop on one runner');
   assert.match(y, /timeout 90 git fetch/, 'a stuck fetch used to sit until the old 345-minute job limit');
   const timeout = +/timeout-minutes: (\d+)/.exec(y)[1];
-  assert.ok(timeout <= 20 && timeout >= 10, 'the job ends and the chain step can run');
+  assert.ok(timeout <= 30 && timeout >= 10, 'the job ends and the chain step can run (a 15-minute tick at most, then a wait of 9 minutes at most)');
+  // 2026-11-06: the chain ended after one hop (the next run found the tick fresh), so the conductor ran only when GitHub's schedule fired,
+  // twice in six hours, and Verse's crew sat idle. Every run that ticked now starts the next 9 minutes after its tick, whatever started it.
+  assert.match(y, /Math\.min\(540, /, 'the wait before the next run is 9 minutes at most');
+  assert.doesNotMatch(y, /github\.event_name == 'workflow_dispatch' && steps\.clock\.outputs\.chain/, 'a scheduled tick chains too');
+  assert.match(y, /age < 8\*60\*1000/, 'a run that finds the tick fresh does nothing, so two chains never run side by side');
   assert.match(y, /cron: '\*\/10 \* \* \* \*'/);
   assert.match(y, /node tools\/conductor\.mjs tick/);
   assert.match(y, /- name: Start the next clock run\n\s+if: always\(\) && !inputs\.dry/, 'a failed tick or run never stops the clock');
