@@ -1472,14 +1472,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-27T08:19:58Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next randomarea.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-27T08:22:31Z",
    "line": "Versus: took on no site; next randomarea.com",
    "built": 0,
@@ -1831,6 +1823,16 @@
    "fixed": [],
    "pages_per_day": 2,
    "reads_next": "skybridge.click"
+  },
+  {
+   "at": "2026-11-06T17:43:01Z",
+   "line": "Versus: took on no site; next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "skybridge.click",
+   "noop": true
   }
  ]
 }
