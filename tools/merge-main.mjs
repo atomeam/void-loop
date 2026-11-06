@@ -24,7 +24,9 @@ sh('git fetch -q origin main');
 const GENERATED = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json', 'void-live-deploy/skills/deps.json',
   'void-live-deploy/skills/what.json', 'void-live-deploy/self.json', 'void-live-deploy/void.asks.json', 'void-live-deploy/lib/similar-index.js', 'void-live-deploy/skills/bench-alarms.json',
   'void-live-deploy/sitemap.xml', 'void-live-deploy/parity.json', 'void-live-deploy/incidents.json', 'void-live-deploy/tower.evidence.json'];
-const REGEN = GENERATED.concat('void-live-deploy/skills/index.json');
+// tools/parity.mjs writes parity.json together with docs/PARITY/<site>.md and the timelines in void-live-deploy/history/: staging only
+// parity.json left the inventories stale after a merge that moved a cited line, and the parity check went red on main and on every PR
+const REGEN = GENERATED.concat('void-live-deploy/skills/index.json', 'docs/PARITY', 'void-live-deploy/history');
 function regen() {
   if (!existsSync(resolve(process.cwd(), 'tools', 'refresh.mjs'))) return;
   try { execFileSync(process.execPath, [resolve(process.cwd(), 'tools', 'refresh.mjs'), '--keep-going'], { stdio: 'ignore' }); } catch (e) { console.error('tools/refresh.mjs failed after the merge (' + (e.status || e.message) + '): the check will say why'); }
