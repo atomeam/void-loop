@@ -32,8 +32,10 @@ export const ROUTES = Object.freeze({
   voice: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   versus: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   feature: { wf: AGENT, input: 'job', claims: true, cap: 40 },
-  // what Verse heard on TV or radio, built onto the site (tools/watch-build.mjs queues at most one an hour from the watch job)
-  tv: { wf: AGENT, input: 'job', claims: true, cap: 24 },
+  // what Verse heard on TV or radio, and each blueprint, built onto the site (tools/watch-build.mjs queues at most 3 an hour, 6 open).
+  // The cap counts every run of the coder today (as member's does), so 24 held every blueprint once the other kinds had used 24 runs;
+  // Adam 2026-11-06: "Raise it now". One a tick, as member: the queue's own limits and the coder's free model budget hold the rest.
+  tv: { wf: AGENT, input: 'job', claims: true, cap: 144 },
   review: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   gap: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   novelty: { wf: AGENT, input: 'job', claims: true, cap: 40 },
@@ -161,6 +163,13 @@ export const SWEEP_EVERY_H = 1;
 export function sweepDue({ sweptMs, now }) {
   return now - (sweptMs || 0) >= SWEEP_EVERY_H * H;
 }
+/** queue the blueprints not built yet (tools/watch-build.mjs queueBlueprints) at least every BLUEPRINTS_EVERY_H (owner, 2026-11-06: "the
+ *  blueprints should just automatically be started and built into verse somewhere"): the watch that also queues them runs a few times a
+ *  day when GitHub drops its cron, so the clock keeps the hour. queuedMs is when the conductor last did it (its state). Pure. */
+export const BLUEPRINTS_EVERY_H = 1;
+export function blueprintsDue({ queuedMs, now }) {
+  return now - (queuedMs || 0) >= BLUEPRINTS_EVERY_H * H;
+}
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
 export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now }) {
@@ -207,7 +216,7 @@ export function plan({ jobs = [], wf = {}, handed = {}, now, exam }) {
     if (triesOf(j.note) >= MAX_TRIES) { out.setAside.push({ id: j.id, note: withTries(j.note, triesOf(j.note), 'set aside after ' + MAX_TRIES + ' tries') }); continue; }
     const s = wf[r.wf] || {};
     if (!s.exists) { out.held.push({ id: j.id, why: r.wf + ' is not on main yet' }); continue; }
-    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (domains/verse-loop.pause)' }); continue; }
+    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (' + (s.pausedWhy || 'domains/verse-loop.pause') + ')' }); continue; }
     // the coder's free model calls are used up (functions/api/coder.js GET): a run now ends "no model answered" and spends one of the day's runs
     if (s.noModel) { out.held.push({ id: j.id, why: 'Verse\'s coder has used its free model calls' + (s.noModel.until ? ' until ' + String(s.noModel.until).slice(11, 16) + ' UTC' : '') }); continue; }
     if (taken.has(r.wf) || s.busy || (ALSO_BUSY[r.wf] || []).some((f) => wf[f] && wf[f].busy)) continue;

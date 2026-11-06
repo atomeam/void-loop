@@ -5061,11 +5061,13 @@ say('nothing selected to remove');
       }).catch(() => null);
       return ensureCardFrame.p;
     }
+    // the card sheet goes in before the home sheet: in void.html the cards section comes before the stage section, so the
+    // stage's later rules (the answer page above the ask bar, the glass) still win over the cards' older ones once split
     function ensureCardCss() {
       if (ensureCardCss.p) return ensureCardCss.p;
       const inline = [...document.querySelectorAll('style')].some((s) => s.textContent && s.textContent.includes('home cards:'));
       if (inline || document.getElementById('void-cards-css')) return ensureCardCss.p = Promise.resolve();
-      return ensureCardCss.p = new Promise((resolve) => { const l = document.createElement('link'); l.id = 'void-cards-css'; l.rel = 'stylesheet'; l.href = '/void-cards.css'; l.onload = l.onerror = () => resolve(); document.head.appendChild(l); });
+      return ensureCardCss.p = new Promise((resolve) => { const l = document.createElement('link'); l.id = 'void-cards-css'; l.rel = 'stylesheet'; l.href = '/void-cards.css'; l.onload = l.onerror = () => resolve(); const home = document.querySelector('link[href="/void-home.css"]'); if (home) home.parentNode.insertBefore(l, home); else document.head.appendChild(l); });
     }
     // a key, a tap on the bar, or the ask itself. Focus does not: the bar focuses itself on a desktop.
     function warmAskLibs() { if (warmAskLibs.done) return; warmAskLibs.done = true; ensureCardCss(); ensureCardFrame(); replyReady(); fuzzyReady(); shareReady(); pasteReady(); refusalReady(); keeperReady(); nearMissReady(); }

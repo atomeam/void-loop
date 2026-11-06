@@ -61,6 +61,26 @@ for (const width of [390, 1280]) {
       assert.deepEqual(found.empty.filter(inBar), [], 'no empty key in the ask bar');
     } finally { await p.close(); }
   });
+
+  // the answer card sits above the bar: void-cards.css loads with the first ask, and when it went in after void-home.css the cards'
+  // older .vpage rules won and the card covered the keys (2026-11-06)
+  test(`at ${width} px the answer card ends above the ask bar`, async () => {
+    const p = await browser.newPage({ viewport: { width, height: 800 }, colorScheme: 'dark' });
+    try {
+      await p.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
+      await p.goto(base + '/', { waitUntil: 'load' });
+      await p.waitForSelector('#input', { timeout: 15000 });
+      await p.fill('#input', 'what time is it'); await p.press('#input', 'Enter');
+      await p.waitForFunction(() => { const v = document.querySelector('.vpage'); return v && v.getBoundingClientRect().height > 40 && document.getElementById('void-cards-css'); }, null, { timeout: 20000 });
+      await p.waitForTimeout(800);
+      const g = await p.evaluate(() => { const v = document.querySelector('.vpage').getBoundingClientRect(), r = document.getElementById('row').getBoundingClientRect();
+        const sheets = [...document.querySelectorAll('link[rel="stylesheet"]')].map((l) => l.getAttribute('href'));
+        return { card: [Math.round(v.top), Math.round(v.bottom)], row: Math.round(r.top), sheets }; });
+      assert.ok(g.card[1] <= g.row, `the card ends above the bar: ${JSON.stringify(g)}`);
+      const c = g.sheets.indexOf('/void-cards.css'), h = g.sheets.indexOf('/void-home.css');
+      if (c >= 0 && h >= 0) assert.ok(c < h, `void-cards.css loads before void-home.css: ${JSON.stringify(g.sheets)}`);
+    } finally { await p.close(); }
+  });
 }
 
 test('bare() finds a key with the browser look and an icon key that shows nothing, and passes a styled one', async () => {

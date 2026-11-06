@@ -49,6 +49,8 @@ const ONLY_WHEN = {
   'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
   // /converter/ on a 390 px phone and with the network cut (tools/converter-phone.test.mjs): the page, its engines, the worker
+  // the stage opened beside a playing show on /local/ (tools/local-stage-dock.test.mjs)
+  'local-stage-dock.test.mjs': /void-live-deploy\/local\/(?:index\.html|watch\.js|stage-dock\.js|app\.js)$|local-stage-dock/,
   'converter-phone.test.mjs': /void-live-deploy\/(?:converter\/|sw\.js$|lib\/(?:converter|pdf-tools|transition|video-write|audio-write|mp3-edit|denoise|epub-edit|mp4-repair)\.js$)|converter-phone/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
   // glitch titles in a real browser (~3 min): a rule may be a function of the path. A script matters only when it holds a glitch letter
@@ -71,7 +73,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -126,6 +128,7 @@ for (const [name, file] of [
   ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],
+  ['local-stage-dock', 'local-stage-dock.test.mjs'], // a blueprint opened on stage keeps the show playing in a card beside it (owner, 2026-11-06)
   ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
@@ -237,6 +240,7 @@ for (const [name, file] of [
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
+  ['site-test-close', 'site-test-close.test.mjs'], // the site tester closes its own items: a recheck that passes on the live site closes the issue, one that still fails is queued once
   ['exam', 'exam.test.mjs'],
   ['hear', 'hear.test.mjs'],
   ['visitor-pass', 'visitor-pass.test.mjs'],
@@ -346,6 +350,7 @@ for (const [name, file] of [
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
   ['suite-gate', 'suite-gate.test.mjs'],
+  ['suite-diff', 'suite-diff.test.mjs'],
   ['merge-stall', 'merge-stall.test.mjs'], // no merge for 2 hours while a green pull request waits: one issue names the stuck step
   ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'], ['studies-api', 'studies-api.test.mjs'],
   ['review-api', 'review-api.test.mjs'], ['review-pr', 'review-pr.test.mjs'],
@@ -369,7 +374,7 @@ for (const [name, file] of [
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
   ['orb-memories', 'orb-memories.test.mjs'], // the memory orbs show Verse's memories: a brain's told words where it holds them, other cards' slots, the fluid pulled to them
-  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-six organs, attention, imagination, the mind layers, kept knowledge
+  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-nine organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
   ['brain-creature', 'brain-creature.test.mjs'], // F304's Lenia creature: it follows a moving target, it learns by online evolution, it runs in the brain, its genome is kept
@@ -386,6 +391,9 @@ for (const [name, file] of [
   ['brain-strokes', 'brain-strokes.test.mjs'], // the Hopfield drafts' associative memory: from the first half of a visitor's stroke it recalls the rest far closer than carrying it on and than the drafts' rule when strokes repeat, loses and stays quiet when they never do, runs in the brain, is kept
   ['brain-rules', 'brain-rules.test.mjs'], // the decision-tree drafts' tree: it guesses the way of the visitor's next stroke far more often than the best rule without a tree when the way hangs on where the last stroke ended, matches the table of what follows what on a fixed cycle, stays quiet on strokes that go any way, runs in the brain, is kept
   ['brain-reflex', 'brain-reflex.test.mjs'], // the tiny MLP drafts' network: it learns by backprop through the bodies it pushes to follow the pointer, closer than the best of 18 springs on a slow walk and under a tilt, about even on jumps, quiet on a circle where a spring wins, runs in the brain, is kept
+  ['brain-growth', 'brain-growth.test.mjs'], // the DLA evolution draft's growth: walkers stick where the pointer was, by a rule a (1+1) evolutionary strategy evolves, 1.4 to 2.8 times the cover of classic DLA, about even with the best of 8 fixed rules, quiet while one wins, runs in the brain, is kept
+  ['brain-atlas', 'brain-atlas.test.mjs'], // the Kohonen SOM draft's atlas: a self-organizing map of the pointer's moves, 2 to 11 times fewer held-out moves out of order than the same learner with no neighbourhood, as close a fit as k-means, quiet with no shape to map, runs in the brain, is kept
+  ['brain-curves', 'brain-curves.test.mjs'], // the KAN draft's curves: a Kolmogorov-Arnold network of spline curves guessing the next step, scored on held-out steps against the same step again and two tanh networks, quiet while a baseline wins
   ['brain-dialogue', 'brain-dialogue.test.mjs'], // the conversation orb: a repeat says when it was asked and what Verse said, a follow-up names the ask it follows, kept on the device, counts only in the self // the NCA drafts' cellular automaton: its tuned rule holds where the focus was and lets it go, beats the drafts' rule and random search, runs in the brain, is kept
   ['brain-dream', 'brain-dream.test.mjs'], // the brain's dreams: each fix, job and idea comes from something it read or holds, names it, is posted once by Verse, owner only, inside its limits
   ['brain-everywhere', 'brain-everywhere.test.mjs'], // the brain on every page: /visit.js loads lib/brain-everywhere.js, so a page reads and writes the one brain of the browser, keeps writes when none runs, and starts one only with the lock

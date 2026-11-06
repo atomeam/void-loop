@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1196,
+ "counted": 1194,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -980,7 +980,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 3,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/parody.js",
@@ -1333,6 +1333,13 @@
    "tests": 1
   },
   {
+   "file": "lib/models.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 71,
+   "tests": 14
+  },
+  {
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
@@ -1555,6 +1562,13 @@
    "direct": 0,
    "dependants": 9,
    "tests": 2
+  },
+  {
+   "file": "lib/studio.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 9,
+   "tests": 1
   },
   {
    "file": "lib/appraise-photo.js",
@@ -2187,13 +2201,6 @@
    "tests": 0
   },
   {
-   "file": "lib/proof-gap.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/rap-stage.js",
    "skills": 1,
    "direct": 1,
@@ -2212,7 +2219,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/routine-skill.js",
@@ -2402,13 +2409,6 @@
    "direct": 0,
    "dependants": 98,
    "tests": 35
-  },
-  {
-   "file": "lib/models.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 70,
-   "tests": 14
   },
   {
    "file": "lib/pages.js",
@@ -2748,13 +2748,6 @@
   },
   {
    "file": "lib/seo-audit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
    "dependants": 8,
@@ -3319,13 +3312,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
-  },
-  {
-   "file": "lib/can-do.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
   },
   {
    "file": "lib/card-reply.js",
@@ -6789,10 +6775,6 @@
     "functions/api/calshare.js",
     "functions/api/rsvp.js"
    ]
-  },
-  "lib/can-do.js": {
-   "imports": [],
-   "importedBy": []
   },
   "lib/card-art.js": {
    "imports": [
@@ -10294,7 +10276,8 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
-    "lib/team-mcp.js"
+    "lib/team-mcp.js",
+    "skills/video-gen.js"
    ]
   },
   "lib/motion-throttle.js": {
@@ -11666,12 +11649,6 @@
   "lib/progress-chart.js": {
    "imports": [],
    "importedBy": []
-  },
-  "lib/proof-gap.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/family-health.js"
-   ]
   },
   "lib/proposal.js": {
    "imports": [],
@@ -13664,7 +13641,8 @@
    ],
    "importedBy": [
     "functions/api/clip.js",
-    "functions/api/studio.js"
+    "functions/api/studio.js",
+    "skills/video-gen.js"
    ],
    "reachedBy": [
     "functions/api/card-art.js",
@@ -16129,8 +16107,7 @@
     "lib/better.js",
     "lib/game-health.js",
     "lib/ladder.js",
-    "lib/match-history.js",
-    "lib/proof-gap.js"
+    "lib/match-history.js"
    ],
    "importedBy": []
   },
@@ -19344,7 +19321,8 @@
   },
   "skills/video-gen.js": {
    "imports": [
-    "lib/video-gen.js"
+    "lib/video-gen.js",
+    "lib/studio.js"
    ],
    "importedBy": []
   },

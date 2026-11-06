@@ -1,0 +1,84 @@
+{
+ "at": "2026-11-06T18:51:01Z",
+ "sha": "8bfdb2716feea07a4f0e04feb5dfdc4d6431cc4c",
+ "runId": 42270835929,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42270835929",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (1)",
+   "id": 128074650955,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42270835929/job/128074650955",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 1 of 8 of the full suite)"
+   },
+   "tail": [],
+   "note": "log not read: the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway"
+  },
+  {
+   "name": "browser-suite (3)",
+   "id": 128074651066,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42270835929/job/128074651066",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 3 of 8 of the full suite)"
+   },
+   "tail": [],
+   "note": "log not read: the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway"
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 128074651165,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42270835929/job/128074651165",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 6 of 8 of the full suite)"
+   },
+   "tail": [],
+   "note": "log not read: the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway"
+  },
+  {
+   "name": "browser-suite (4)",
+   "id": 128074651180,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42270835929/job/128074651180",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 4 of 8 of the full suite)"
+   },
+   "tail": [],
+   "note": "log not read: the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway"
+  },
+  {
+   "name": "browser-suite (8)",
+   "id": 128074651586,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42270835929/job/128074651586",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 8 of 8 of the full suite)"
+   },
+   "tail": [],
+   "note": "log not read: the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway"
+  },
+  {
+   "name": "browser-suite (7)",
+   "id": 128074652460,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42270835929/job/128074652460",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 7 of 8 of the full suite)"
+   },
+   "tail": [],
+   "note": "log not read: the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway"
+  }
+ ]
+}
