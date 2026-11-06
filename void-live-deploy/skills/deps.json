@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1184,
+ "counted": 1186,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,7 +27,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 72,
+   "dependants": 74,
    "tests": 8
   },
   {
@@ -1371,7 +1371,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 23,
    "tests": 2
   },
   {
@@ -1385,7 +1385,7 @@
    "file": "lib/image-gen.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 10,
+   "dependants": 11,
    "tests": 3
   },
   {
@@ -1487,6 +1487,20 @@
    "tests": 3
   },
   {
+   "file": "lib/brain-rules.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-strokes.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/brain-synapses.js",
    "skills": 1,
    "direct": 0,
@@ -1511,7 +1525,7 @@
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -1582,7 +1596,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 4,
-   "tests": 22
+   "tests": 24
   },
   {
    "file": "lib/converter.js",
@@ -2614,6 +2628,13 @@
    "tests": 1
   },
   {
+   "file": "lib/x402.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 4
+  },
+  {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
@@ -2663,6 +2684,13 @@
    "tests": 0
   },
   {
+   "file": "lib/verse-wallet-address.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 10,
+   "tests": 3
+  },
+  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
@@ -2670,18 +2698,11 @@
    "tests": 1
   },
   {
-   "file": "lib/verse-wallet-address.js",
+   "file": "lib/verse-wallet.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 2
-  },
-  {
-   "file": "lib/x402.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 3
   },
   {
    "file": "lib/drive.js",
@@ -2705,45 +2726,38 @@
    "tests": 1
   },
   {
-   "file": "lib/verse-wallet.js",
+   "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
    "dependants": 8,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
    "dependants": 7,
-   "tests": 3
-  },
-  {
-   "file": "lib/studio.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
+   "tests": 4
   },
   {
    "file": "lib/watch-along.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 2
   },
   {
    "file": "lib/wiki-look.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/translate-langs.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 2
   },
   {
@@ -2761,7 +2775,28 @@
    "tests": 1
   },
   {
+   "file": "lib/translate-web.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/comments.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/digest.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2783,20 +2818,6 @@
   },
   {
    "file": "lib/team-crew.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/translate-web.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/translate-words.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2843,13 +2864,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/digest.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/icsfeed.js",
@@ -3879,6 +3893,7 @@
     "functions/api/x402/[service].js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js"
    ]
   },
@@ -3978,6 +3993,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/gallery.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -4053,6 +4069,9 @@
    ],
    "importedBy": [
     "functions/api/x402/[service].js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
    ]
   },
   "functions/api/earnings.js": {
@@ -4236,7 +4255,8 @@
     "functions/api/x402/[service].js"
    ],
    "reachedBy": [
-    "functions/api/image.js"
+    "functions/api/image.js",
+    "functions/api/mcp.js"
    ]
   },
   "functions/api/ip.js": {
@@ -4306,7 +4326,10 @@
     "lib/mcp.js",
     "lib/shortfall.js",
     "functions/api/review.js",
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "functions/api/x402/review.js",
+    "functions/api/x402/[service].js",
+    "lib/x402.js"
    ],
    "importedBy": []
   },
@@ -4678,6 +4701,7 @@
     "functions/api/card-art.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -4757,6 +4781,9 @@
    "importedBy": [
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
    ]
   },
   "functions/api/treasury.js": {
@@ -4863,7 +4890,9 @@
     "functions/api/appraise.js",
     "functions/api/image.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/mcp.js"
+   ]
   },
   "functions/api/x402/arbitrage.js": {
    "imports": [
@@ -4895,6 +4924,7 @@
     "functions/api/review.js"
    ],
    "importedBy": [
+    "functions/api/mcp.js",
     "functions/api/x402/index.js"
    ]
   },
@@ -5246,6 +5276,7 @@
     "skills/appraise.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/recipeimport.js",
     "functions/api/sing.js",
     "functions/api/translate.js",
@@ -6228,6 +6259,8 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
+    "lib/brain-strokes.js",
+    "lib/brain-rules.js",
     "lib/brain-dialogue.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
@@ -6262,6 +6295,8 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
+    "lib/brain-strokes.js",
+    "lib/brain-rules.js",
     "lib/brain-dialogue.js",
     "lib/brain-workspace.js"
    ],
@@ -6341,6 +6376,24 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-rules.js": {
+   "imports": [
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-dialogue.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-store.js": {
    "imports": [],
    "importedBy": [
@@ -6349,6 +6402,25 @@
    ],
    "reachedBy": [
     "lib/brain-everywhere.js"
+   ]
+  },
+  "lib/brain-strokes.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-dialogue.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/brain-synapses.js": {
@@ -6423,6 +6495,8 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
+    "lib/brain-rules.js",
+    "lib/brain-strokes.js",
     "lib/brain-synapses.js",
     "lib/brain-trace.js",
     "lib/brain.js",
@@ -6452,6 +6526,8 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
+    "lib/brain-strokes.js",
+    "lib/brain-rules.js",
     "lib/brain-dialogue.js"
    ],
    "importedBy": [
@@ -7566,6 +7642,7 @@
     "functions/api/digest.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -7865,6 +7942,7 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
+    "lib/brain-strokes.js",
     "lib/brain-synapses.js",
     "lib/brain-trace.js",
     "lib/brain-workspace.js",
@@ -7895,6 +7973,7 @@
     "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
+    "lib/brain-rules.js",
     "lib/field-vector-worker.js",
     "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
@@ -8815,6 +8894,7 @@
    ],
    "reachedBy": [
     "functions/api/card-art.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js",
     "skills/video-gen.js"
    ]
@@ -9656,7 +9736,8 @@
     "lib/drive.js",
     "lib/seo-audit.js",
     "lib/writing-aids.js",
-    "lib/colour.js"
+    "lib/colour.js",
+    "lib/x402.js"
    ],
    "importedBy": [
     "functions/api/mcp.js",
@@ -13458,6 +13539,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -14105,6 +14187,7 @@
     "lib/translate-words.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
    ]
@@ -14115,6 +14198,7 @@
     "functions/api/translate.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
    ]
@@ -14127,6 +14211,7 @@
     "functions/api/translate.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
    ]
@@ -14300,6 +14385,7 @@
    ],
    "reachedBy": [
     "functions/api/arbitrage.js",
+    "functions/api/mcp.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/arbitrage.js",
@@ -14323,6 +14409,7 @@
    ],
    "reachedBy": [
     "functions/api/arbitrage.js",
+    "functions/api/mcp.js",
     "functions/api/x402/arbitrage.js",
     "functions/api/x402/backtest.js",
     "functions/api/x402/index.js"
@@ -14535,6 +14622,7 @@
     "functions/api/watchalong.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/recipeimport.js",
     "functions/api/sing.js",
     "functions/api/translate.js",
@@ -14780,6 +14868,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -14888,17 +14977,25 @@
   "lib/x402.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/mcp.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/review.js",
+    "lib/mcp.js",
     "lib/verse-wallet.js",
     "lib/x402-call.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/arbitrage.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/x402/arbitrage.js",
     "functions/api/x402/backtest.js",
-    "functions/api/x402/index.js"
+    "functions/api/x402/index.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/a2a.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/yamljson.js": {
