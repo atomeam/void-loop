@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1189,
+ "counted": 1190,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 90,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 26,
    "direct": 1,
-   "dependants": 90,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 89,
+   "dependants": 90,
    "tests": 5
   },
   {
@@ -423,6 +423,13 @@
    "tests": 1
   },
   {
+   "file": "lib/calendar.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 6
+  },
+  {
    "file": "lib/match-history.js",
    "skills": 6,
    "direct": 5,
@@ -484,13 +491,6 @@
    "direct": 2,
    "dependants": 16,
    "tests": 1
-  },
-  {
-   "file": "lib/calendar.js",
-   "skills": 5,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 5
   },
   {
    "file": "lib/selfcheck.js",
@@ -831,7 +831,7 @@
   {
    "file": "lib/ics.js",
    "skills": 3,
-   "direct": 1,
+   "direct": 2,
    "dependants": 9,
    "tests": 1
   },
@@ -2198,7 +2198,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/routine-skill.js",
@@ -4976,6 +4976,10 @@
    ],
    "importedBy": []
   },
+  "functions/ip/index.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "functions/is-it/[what].js": {
    "imports": [
     "skills/is-it.js"
@@ -6734,6 +6738,7 @@
     "lib/agenda.js",
     "lib/calshare.js",
     "lib/chat-calendar.js",
+    "lib/ritual.js",
     "skills/calendar-file.js"
    ],
    "reachedBy": [
@@ -6742,7 +6747,8 @@
     "skills/calendar-fill.js",
     "skills/calendar.js",
     "skills/calendar3d.js",
-    "skills/dates.js"
+    "skills/dates.js",
+    "skills/ritual-template.js"
    ]
   },
   "lib/calshare.js": {
@@ -8956,13 +8962,13 @@
     "lib/flights-core.js",
     "lib/jobs-core.js",
     "lib/ritual.js",
-    "skills/calendar-file.js"
+    "skills/calendar-file.js",
+    "skills/ritual-template.js"
    ],
    "reachedBy": [
     "functions/api/jobs.js",
     "lib/flights-ui.js",
     "lib/jobs-ui.js",
-    "skills/ritual-template.js",
     "skills/work.js"
    ]
   },
@@ -12302,7 +12308,8 @@
   },
   "lib/ritual.js": {
    "imports": [
-    "lib/ics.js"
+    "lib/ics.js",
+    "lib/calendar.js"
    ],
    "importedBy": [
     "skills/ritual-template.js"
@@ -18153,7 +18160,8 @@
   },
   "skills/ritual-template.js": {
    "imports": [
-    "lib/ritual.js"
+    "lib/ritual.js",
+    "lib/ics.js"
    ],
    "importedBy": []
   },

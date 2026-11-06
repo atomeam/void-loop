@@ -9124,6 +9124,24 @@ try {
     check('weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur',
       m.hours === 8 && m.overlaps === 0 && m.clipped === 0 && (m.blur === 'none' || m.blur === '') && !H.errors.length, JSON.stringify({ ...m, errors: H.errors }));
     await H.ctx.close(); }
+  // the weather page with two looks out at once (asked by Verse: "Fix the weather page to clear the aria-busy state once the gate returns a result";
+  // 2026-11-06: Paris asked, then Boston while Paris was still out; Boston answered first and cleared aria-busy, then the late Paris answer drew over it)
+  if (want("weather page: a newer look wins, and aria-busy waits for it")) {
+    const P = await fresh({ base: base + 'weather/' });
+    const Hs = Array.from({ length: 48 }, (_, i) => new Date(Date.now() + i * 36e5).toISOString().slice(0, 13) + ':00');
+    const wx = { current: { time: Hs[0], temperature_2m: 10, apparent_temperature: 8, relative_humidity_2m: 60, weather_code: 3, wind_speed_10m: 10, is_day: 1 }, hourly: { time: Hs, temperature_2m: Hs.map(() => 10), precipitation_probability: Hs.map(() => 5), weather_code: Hs.map(() => 3), precipitation: Hs.map(() => 0) },
+      daily: { time: [0, 1, 2, 3, 4, 5, 6].map((d) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10)), temperature_2m_max: Array(7).fill(12), temperature_2m_min: Array(7).fill(5), precipitation_probability_max: Array(7).fill(5), weather_code: Array(7).fill(3), sunrise: [], sunset: [], precipitation_sum: Array(7).fill(0) } };
+    await P.ctx.route(/\/api\/weather\?/, async (r) => { const paris = /paris/i.test(new URL(r.request().url()).searchParams.get('q')); await new Promise((z) => setTimeout(z, paris ? 2500 : 500));
+      return r.fulfill(json({ ok: true, loc: { name: paris ? 'Paris, France' : 'Boston, Massachusetts, United States', lat: paris ? 48.85 : 42.36, lon: paris ? 2.35 : -71.06, us: false }, w: wx })); });
+    const busy = () => P.p.evaluate(() => document.querySelector('main').getAttribute('aria-busy'));
+    await P.p.fill('#q', 'Paris'); await P.p.press('#q', 'Enter'); await P.p.waitForTimeout(150);
+    await P.p.fill('#q', 'Boston'); await P.p.press('#q', 'Enter');
+    await until(async () => /Boston/.test(await P.p.textContent('#place').catch(() => '')), 5000);
+    const atBoston = await busy(); await P.p.waitForTimeout(3000);
+    const place = await P.p.textContent('#place'), after = await busy();
+    check('weather page: a newer look wins, and aria-busy waits for it (Paris asked, then Boston: Boston stays drawn when the slower Paris answer lands, and aria-busy clears once Boston is in)',
+      /Boston/.test(place) && atBoston === null && after === null && !P.errors.length, JSON.stringify({ place, atBoston, after, errors: P.errors }));
+    await P.ctx.close(); }
 
   // the lab judged by real use (owner's choice 2026-10-13: reuse /api/miss, capped): opening an experiment sends its id, once a day
   if (want("opening a lab experiment counts one use: its id only, once per browser per day")) {
@@ -12388,6 +12406,12 @@ try {
     const t = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((x) => /routine/i.test(x) ? x : '').catch(() => ''), 8000).catch(() => '');
     const n = await S.p.$$eval('.vpage.on [data-ritual] li', (l) => l.length).catch(() => 0), btn = await S.p.$('.vpage.on [data-ritual-ics]');
     check('ritual template: three steps, 35 minutes, a download button, no errors', n === 3 && /35 minutes/.test(t) && !!btn && !S.errors.length, JSON.stringify({ t, n, errors: S.errors }));
+    // time-zone-detect (asked by Verse): the card names the browser's zone and the file keeps each step at the clock time typed in it (tools/ritual-zone.test.mjs)
+    const tzLine = await S.p.$eval('.vpage.on [data-ritual-tz]', (e) => e.textContent).catch(() => ''), zone = await S.p.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const [dl] = await Promise.all([S.p.waitForEvent('download', { timeout: 5000 }).catch(() => null), S.p.click('.vpage.on [data-ritual-ics]')]);
+    const file = dl ? fs.readFileSync(await dl.path(), 'utf8') : '';
+    check('ritual template: the card names the browser time zone and the file writes the first step at 6:30 in it, with its VTIMEZONE',
+      tzLine.includes(zone) && file.includes('BEGIN:VTIMEZONE\r\nTZID:' + zone) && new RegExp('DTSTART;TZID=' + zone.replace('/', '\\/') + ':\\d{8}T063000').test(file), JSON.stringify({ tzLine, zone, head: file.slice(0, 300) }));
     await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;

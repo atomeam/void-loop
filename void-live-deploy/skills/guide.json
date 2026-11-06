@@ -2459,7 +2459,7 @@
     "will it rain tomorrow"
    ],
    "tier": "proven",
-   "why": "a self-test, 12 browser-suite mentions, 45 real asks in the benchmark",
+   "why": "a self-test, 14 browser-suite mentions, 45 real asks in the benchmark",
    "flavor": "An old art of the sky and earth, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
    "n": 122
@@ -2736,7 +2736,7 @@
     "ritual template: meditate 10, stretch 15, journal 10 at 6:30am"
    ],
    "tier": "proven",
-   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the time it is the one a traveller is told to ask for first. Say the words below and it answers.",
    "glow": 100,
    "n": 138
