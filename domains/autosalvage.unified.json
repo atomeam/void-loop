@@ -336,6 +336,84 @@
       "into": "/bots/ (api-uk-police)",
       "test": "tools/api-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/glassbox": {
+      "target": "bot",
+      "into": "/bots/ (glassbox-claim)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/glassbox/github-inert/workflows/promote-on-merge.yml": {
+      "target": "bot",
+      "into": "/bots/ (glassbox-promote)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/wix/src/backend": {
+      "target": "bot",
+      "into": "/bots/ (velo-endpoint)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/049-attested-external-link-policy": {
+      "target": "bot",
+      "into": "/bots/ (external-link-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/048-attested-breadcrumb-trail": {
+      "target": "bot",
+      "into": "/bots/ (breadcrumb-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/050-attested-canonical-identity": {
+      "target": "bot",
+      "into": "/bots/ (canonical-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/005-copy-clipboard-with-attested-toast": {
+      "target": "bot",
+      "into": "/bots/ (copy-receipt)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/022-voice-query-to-plan": {
+      "target": "bot",
+      "into": "/bots/ (voice-plan)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/024-functional-3d-run-graph": {
+      "target": "bot",
+      "into": "/bots/ (run-graph-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/073-local-bin-not-arrow": {
+      "target": "bot",
+      "into": "/bots/ (same-bin)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/072-local-pair-recall-gap": {
+      "target": "bot",
+      "into": "/bots/ (recall-gap)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/020-answer-ready-modular-blocks": {
+      "target": "bot",
+      "into": "/bots/ (answer-block-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/018-live-readonly-run-preview": {
+      "target": "bot",
+      "into": "/bots/ (run-replay)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; width:100%; height:100%; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.5); padding:10px 14px; border-radius:8px; }
+button { margin:4px; padding:6px 12px; background:#224; color:#cef; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+.card { position:absolute; width:140px; height:90px; background:rgba(40,60,100,.7); border:2px solid #6af; border-radius:8px; padding:8px; box-sizing:border-box; pointer-events:none; }
+#c1 { top:20%; left:15%; } #c2 { top:25%; left:60%; } #c3 { top:55%; left:25%; } #c4 { top:60%; left:70%; } #c5 { top:40%; left:40%; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F-544: WebGPU SDF Evolutionary DOM Coverage Mind · Verse lab</title>
+<meta name="description" content="A WebGPU raymarched signed-distance-field (SDF) surface whose shape parameters are evolved in real time by a local genetic algorithm.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F-544: WebGPU SDF Evolutionary DOM Coverage Mind · Verse lab">
+<meta property="og:description" content="A WebGPU raymarched signed-distance-field (SDF) surface whose shape parameters are evolved in real time by a local genetic algorithm.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f544-webgpu-sdf-evo-dom-coverage-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f544-webgpu-sdf-evo-dom-coverage-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F544 · SDF Evo Coverage</div>
+  <div id="status">init</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Pop</button>
+</div>
+<div class="card" id="c1">Verse Card A</div>
+<div class="card" id="c2">Verse Card B</div>
+<div class="card" id="c3">Verse Card C</div>
+<div class="card" id="c4">Verse Card D</div>
+<div class="card" id="c5">Verse Card E</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F-544: WebGPU SDF Evolutionary DOM Coverage Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

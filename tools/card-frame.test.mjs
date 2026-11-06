@@ -232,3 +232,7 @@ test('a kept card read today is fresh (2026-10-30: the boiled-egg card, read tha
   assert.equal(Math.floor(editedDaysAgo('Source: aa.com · read 2026-09-30', now)), 30);
   assert.equal(cardOf({ kind: 'Answer', sources: 3, ageDays: d, kept: true }).toughness, 9, 'read today counts as edited today');
 });
+test('the side arrows sit inside the card (2026-11-06: the right arrow at right:-1px gave every linked card a sideways scrollbar)', () => {
+  assert.match(CARD_CSS, /\.vc-arrows \.r\{right:0;/); assert.match(CARD_CSS, /\.vc-arrows \.l\{left:0;/);
+  assert.doesNotMatch(CARD_CSS, /\.vc-arrows \.[rl]\{(?:right|left):-/);
+});

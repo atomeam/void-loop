@@ -7,6 +7,8 @@
 // compute (translate, answer, the free rules-only code review). --list only checks that every route has a spec.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
+const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
@@ -15,7 +17,7 @@ export const OTHERS = ['/tournaments/', '/prizes/', '/random/wheel/', '/boards/'
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
-  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
+  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/' && !LAB_TOOL_DIRS.has(e.name)) continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route; the Lab's own tools (lib/toolkit.js TOOLS) are routes like any tool */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
 const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/', '/contribute/'];
@@ -625,7 +627,46 @@ for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companie
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
 // the lab gallery (tools/lab-import.mjs): the experiments under it are not routes here, each was opened headless by tools/lab-probe.mjs before it was published
-for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab li a').count(); t.ok(n > 50, n + ' experiments listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
+// the Lab's own tools: each does its one job with a real input and an exact answer
+const labPng = async (rgb) => {  // a real 2x2 PNG of one colour, for the palette tool
+  const zlib = await import('node:zlib'), crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
+  const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
+  const row = Buffer.from([0, ...rgb, ...rgb]);
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10]), chunk('IHDR', Buffer.concat([be(2), be(2), Buffer.from([8, 2, 0, 0, 0])])), chunk('IDAT', zlib.deflateSync(Buffer.concat([row, row]))), chunk('IEND', Buffer.alloc(0))]);
+};
+const ABC256 = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';  // SHA-256 of the 3 bytes "abc" (FIPS 180-2 test vector)
+Object.assign(SPECS, {
+  '/lab/level/': async (t) => {
+    await t.fill('#rise', '1'); await t.fill('#run', '100'); await t.p.waitForTimeout(200);
+    const s = await t.text('#calcout'); t.ok(/^0\.57°, a 1(?:\.0+)?% slope/.test(s), 'a rise of 1 over a run of 100 reads 0.57°, a 1% slope: ' + s.slice(0, 70));
+  },
+  '/lab/checksum/': async (t) => {
+    await t.fill('#text', 'abc'); await t.waitText('#texthash', /^ba7816bf/, 5000); t.ok((await t.text('#texthash')).trim() === ABC256, 'the text "abc" hashes to the FIPS test vector');
+    await t.p.setInputFiles('#pick', t.tmp('abc.txt', 'abc')); await t.waitText('#out', /ba7816bf/, 8000);
+    t.ok((await t.text('#out')).includes(ABC256), 'a file holding "abc" gets the same SHA-256');
+    await t.download('#save', /SHA256SUMS/);
+  },
+  '/lab/pattern/': async (t) => {
+    await t.waitText('#state', /tiles with no seam/, 20000); t.ok(/tiles with no seam/.test(await t.text('#state')), 'a pattern grows to the end');
+    await t.download('#save', /^pattern-.+\.png$/); await t.share('#link');
+  },
+  '/lab/photo-palette/': async (t) => {
+    await t.p.setInputFiles('#pick', t.tmp('red.png', await labPng([255, 0, 0]))); await t.waitText('#state', /largest share first/, 8000);
+    t.ok(/#ff0000/i.test(await t.text('#swatches')), 'a red photo gives #FF0000');
+    await t.copies('#hexes'); await t.download('#png', /-palette\.png$/);
+  },
+  '/lab/dictation/': async (t) => {
+    await t.fill('#text', 'one two three'); await t.p.waitForTimeout(200);
+    t.ok(/^3 words/.test(await t.text('#count')), 'three typed words count as 3 words');
+    await t.copies('#copy', 'one two three'); await t.download('#txt', /^dictation-.+\.txt$/);
+  },
+  '/lab/mind-map/': async (t) => {
+    await t.click('#sample'); await t.p.waitForTimeout(300);
+    const src = (await t.p.locator('#map img').getAttribute('src', { timeout: 5000 }).catch(() => '')) || ''; t.ok(/^data:image\/svg|^blob:/.test(src), 'the sample outline draws the map as a picture');
+    await t.download('#svg', /\.svg$/); await t.share('#link');
+  },
+});
+for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab > ul > li a').count(); t.ok(n >= 6, n + ' tools listed first'); t.ok(await t.p.locator('.lab > ul > li a[href="/lab/level/"]').isVisible(), 'the spirit level is listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
 const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;

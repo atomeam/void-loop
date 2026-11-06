@@ -1,8 +1,8 @@
 {
  "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "photos: squoosh.app",
+ "id": "dalyfeds.com",
  "since": "2026-11-06",
- "n": 12,
+ "n": 0,
  "progressAt": "2026-11-06",
  "season": {
   "start": "2026-11-06",
@@ -125,8 +125,24 @@
    "job": "script the journey with steps and negative controls"
   }
  ],
+ "skipped": [
+  {
+   "id": "id5-sync.com",
+   "at": "2026-11-06",
+   "why": "settled id5-sync.com as a non-site (an ad-tracking or sync endpoint): https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features"
+  }
+ ],
+ "settled": [
+  {
+   "id": "id5-sync.com",
+   "at": "2026-11-06",
+   "as": "non-site",
+   "kind": "an ad-tracking or sync endpoint",
+   "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features"
+  }
+ ],
  "last": {
   "at": "2026-11-06",
-  "why": "passed my ip (8/13, conquering in background)"
+  "why": "settled id5-sync.com as a non-site (an ad-tracking or sync endpoint): https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features"
  }
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --bg: #0a0c10;
+    --fg: #e8eef6;
+    --accent: #5ce1e6;
+    --card-bg: #161b22;
+    --border: #30363d;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100%; height: 100%; }
+  canvas { position: absolute; inset: 0; pointer-events: none; }
+  .body {
+    position: absolute; width: 120px; height: 80px; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: 8px; padding: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.4); cursor: grab; user-select: none;
+    display: flex; flex-direction: column; justify-content: space-between;
+    will-change: transform;
+  }
+  .body:active { cursor: grabbing; }
+  .label { font-weight: 600; color: var(--accent); }
+  .props { font-size: 11px; opacity: .7; }
+  #hud {
+    position: absolute; top: 12px; left: 12px; background: rgba(10,12,16,.75);
+    padding: 8px 12px; border-radius: 6px; z-index: 10; font-size: 12px;
+  }
+  button { background: #21262d; color: var(--fg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Rigid-Body Constraint DOM Mind · Verse lab</title>
+<meta name="description" content="A set of living DOM cards that are the rigid bodies. Each card has position, velocity, angular velocity, mass, friction, and restitution.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Rigid-Body Constraint DOM Mind · Verse lab">
+<meta property="og:description" content="A set of living DOM cards that are the rigid bodies. Each card has position, velocity, angular velocity, mass, friction, and restitution.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f602-webgpu-rigidbody-constraint-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f602-webgpu-rigidbody-constraint-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="fx"></canvas>
+  <div id="hud">
+    <div>F602 Rigid-Body Constraint DOM Mind</div>
+    <div>Tilt device or drag cards. Contacts transfer properties.</div>
+    <button id="seal">Seal Best</button>
+    <button id="reset">Reset</button>
+    <span id="status">ready</span>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Rigid-Body Constraint DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

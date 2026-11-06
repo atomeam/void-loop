@@ -48,6 +48,19 @@ test('grocery list: a list of its own with that title, never the list of garden 
   ask('shopping list', 'shopping list', e.api);
   assert.equal(Object.keys(e.things).length, 1);
   assert.equal(e.things.u.title, 'Shopping list');
+  // "list groceries" (the verb) fills the open untitled list that has milk on it: one list, not two (browser suite: top misses)
+  const m = stage({ u: { id: 'u', kind: 'list', x: 0, y: 0, title: '', items: [{ id: 'i1', text: 'milk', done: false }] } });
+  m.api.select('u');
+  ask('list groceries', 'list groceries', m.api);
+  assert.equal(Object.keys(m.things).length, 1, 'list groceries keeps one list');
+  assert.equal(m.things.u.title, 'Grocery list');
+  assert.deepEqual(m.things.u.items.map((i) => i.text), ['milk']);
+  // the noun form still makes a list of its own beside the open one (GAPS row 53)
+  const n = stage({ u: { id: 'u', kind: 'list', x: 0, y: 0, title: '', items: [{ id: 'i1', text: 'dig', done: false }] } });
+  n.api.select('u');
+  ask('grocery list', 'grocery list', n.api);
+  assert.equal(Object.values(n.things).filter((t) => t.kind === 'list').length, 2, 'a grocery list is never the open list of garden steps');
+  assert.equal(n.things.u.title, '');
 });
 
 test('big block letters: 5 rows of full blocks, the words from the ask, ready to copy', () => {

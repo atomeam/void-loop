@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "41780320552",
-  "at": "2026-11-04T05:50:41Z",
-  "what": "Verse hardened itself: 13 benchmark ask(s) for stopwatch, compliment, drive-share, palindrome, sums, pointing-arrow.  Why these: stopwatch (only 1 benchmark ask); compliment (no benchmark ask, evidence tier: tested); drive-share (no benchmark ask, evidence tier: tested); palindrome (no benchmark ask, evidence tier: tested); sums (no benchmark ask, evidence tier: tested); pointing-arrow (only 1 benchmark ask, evidence tier: checked). New phrases: “stopwatch” now opens stopwatch; “show stopwatch” now opens stopwatch; “give me a compliment” now opens compliment; “compliment me” now opens compliment; “say something nice” now opens compliment; “split a 90 mile drive costing 36 dollars between 3 people” now opens drive-share; “share a 40 km trip that cost 24 dollars 4 ways” now opens drive-share; “palindrome check for a man a plan a canal panama” now opens palindrome; “check if kayak is a palindrome” now opens palindrome; “if 3 apples cost 2.40 how much do 7 cost” now opens sums; “a train travels 120 km in 2 hours what is its speed” now opens sums; “posner cueing test” now opens pointing-arrow; “posner test” now opens pointing-arrow.",
-  "try": "stopwatch",
+  "run": "42191745610",
+  "at": "2026-11-06T09:01:05Z",
+  "what": "Verse hardened itself: 18 benchmark ask(s) for my-device, image-gen, groups, client-handoff, math-quiz, noise.  Why these: my-device (no benchmark ask, evidence tier: tested); image-gen (no benchmark ask, evidence tier: tested); groups (no benchmark ask, evidence tier: checked); client-handoff (no benchmark ask, evidence tier: tested); math-quiz (no benchmark ask, evidence tier: tested); noise (no benchmark ask, evidence tier: tested). New phrases: “what is my ip address” now opens my-device; “what is my user agent” now opens my-device; “what is my screen resolution” now opens my-device; “generate a picture of a lighthouse at night” now opens image-gen; “make an image of a sunset over the sea” now opens image-gen; “create a watercolour painting of a fox” now opens image-gen; “random team generator” now opens groups; “split alice, bob, carol and dave into 2 teams” now opens groups; “make 3 groups from: ann, ben, cal, dee, eve, fay” now opens groups; “client handoff for the onboarding automation” now opens client-handoff; “make a client handoff for the invoice flow” now opens client-handoff; “business handoff for weekly status reports” now opens client-handoff; “times tables quiz” now opens math-quiz; “7 times table quiz” now opens math-quiz; “multiplication quiz” now opens math-quiz; “white noise” now opens noise; “pink noise for 30 minutes” now opens noise; “brown noise” now opens noise.",
+  "try": "what is my ip address",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-04T03:34:58Z",
-    "try": "play rps",
-    "closedAt": "2026-11-04T05:50:18Z"
+    "at": "2026-11-04T05:50:41Z",
+    "try": "stopwatch",
+    "closedAt": "2026-11-06T09:00:50Z"
   }
 }

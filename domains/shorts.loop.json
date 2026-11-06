@@ -1,1 +1,40 @@
-{ "best": null, "trials": [] }
+{
+  "best": {
+    "hook": 0,
+    "pace": 38,
+    "music": "warm",
+    "style": "ink",
+    "scene": "split-dinner-bill"
+  },
+  "trials": [
+    {
+      "day": "20261106",
+      "knob": "hook",
+      "value": 1,
+      "champion": {
+        "hook": 0,
+        "pace": 38,
+        "music": "warm",
+        "style": "ink",
+        "scene": "split-dinner-bill",
+        "film": "20261106-short-split-dinner-bill-a",
+        "gate": {
+          "pass": true
+        }
+      },
+      "challenger": {
+        "hook": 1,
+        "pace": 38,
+        "music": "warm",
+        "style": "ink",
+        "scene": "split-dinner-bill",
+        "film": "20261106-short-split-dinner-bill-b",
+        "gate": {
+          "pass": true
+        }
+      },
+      "verdict": "waiting",
+      "note": "Recovered on 2026-11-06 from run 42249382478: both films passed the gate and are on /films/; the gate scores were in the run artifact only, so they are not recorded here."
+    }
+  ]
+}
