@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T10:39:18.879Z",
+  "at": "2026-11-06T13:49:58.593Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,25 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 84.8,
+      "score": 87.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of hardcore history",
-          "failed": [
-            "show",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -158,16 +143,26 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 94.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "what's the weather in miami tomorrow",
+          "failed": [
+            "fast",
+            "temp",
+            "close"
+          ],
+          "score": 57.1
+        },
+        {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
@@ -289,10 +284,66 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 88.9,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -451,6 +502,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 84.8
+    "score": 87.2
   }
 }
