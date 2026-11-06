@@ -2228,8 +2228,10 @@
     "reaction test",
     "click speed test"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 109
   },
   {
@@ -2243,8 +2245,10 @@
     "7 times table quiz",
     "multiplication quiz"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the games it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "glow": 100,
    "n": 110
   },
   {
@@ -2258,8 +2262,10 @@
     "split alice, bob, carol and dave into 2 teams",
     "make 3 groups from: ann, ben, cal, dee, eve, fay"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Turn the page when you are done.",
+   "glow": 100,
    "n": 111
   },
   {
@@ -3147,8 +3153,10 @@
     "начислить ндс 5000 20%",
     "ндс 22% от 1000"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the numbers and money. Ask, and see.",
+   "glow": 100,
    "n": 161
   },
   {
@@ -3365,8 +3373,10 @@
     "what is my user agent",
     "what is my screen resolution"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the numbers and money are built on it. The void remembers each asking.",
+   "glow": 100,
    "n": 174
   },
   {
@@ -3826,8 +3836,10 @@
     "pink noise for 30 minutes",
     "brown noise"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the body and mind, this one is trusted enough to be taught. The void remembers each asking.",
+   "glow": 100,
    "n": 201
   },
   {

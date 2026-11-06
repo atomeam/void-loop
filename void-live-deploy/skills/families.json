@@ -15,9 +15,9 @@
  "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
-  "tested": 12,
-  "checked": 13,
-  "proven": 385
+  "tested": 7,
+  "checked": 10,
+  "proven": 393
  },
  "families": [
   {
@@ -205,7 +205,8 @@
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-11-06",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "needs": "a browser-suite check named after it and a real ask in the benchmark that routes to it, or 3 real asks in the benchmark that route to it"
     },
     {
      "name": "video-gen",
