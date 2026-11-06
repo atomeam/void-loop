@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T06:38:52Z",
-   "subject": "Verse Brain organ 26: Reflex, the tiny MLP drafts"
+   "at": "2026-11-06T15:10:26Z",
+   "subject": "Weather page: the newest look wins; ritual .ics: steps at the clock time typed, in the browser's zone (#2432)"
   },
   {
-   "at": "2026-11-06T06:37:08Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+   "at": "2026-11-06T15:08:31Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T06:33:53Z",
-   "subject": "treasury: found money and the weekly review"
+   "at": "2026-11-06T15:08:16Z",
+   "subject": "Movie pick: follow the ask's intent and give every pick a similarity-score (#2433)"
   },
   {
-   "at": "2026-11-06T06:31:30Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-06T15:07:53Z",
+   "subject": "Team gate: judge a stale branch by net lines lost, not by more out than in (#2434)"
   },
   {
-   "at": "2026-11-06T06:28:33Z",
-   "subject": "Wallet watch: wait and move to the next Base endpoint when one rate-limits the read (#2394)"
+   "at": "2026-11-06T15:07:31Z",
+   "subject": "heavy-lift-map: map a process to the systems and automations Verse owns (#2435)"
   },
   {
-   "at": "2026-11-06T06:27:35Z",
-   "subject": "Arbitrage scanner: a record of past scans, from real rows only (#2393)"
+   "at": "2026-11-06T15:00:14Z",
+   "subject": "Tower gate: every floor measured against its live site (1 slices)"
   },
   {
-   "at": "2026-11-06T06:26:13Z",
-   "subject": "treasury: found money and the weekly review"
+   "at": "2026-11-06T14:39:33Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-11-06T06:25:36Z",
-   "subject": "Trading bots: one paid-call route for backtest and arbitrage, and escaped tables (#2373)"
+   "at": "2026-11-06T14:38:57Z",
+   "subject": "Site history: the next sites of the queue, each with a cited history"
   },
   {
-   "at": "2026-11-06T06:20:58Z",
-   "subject": "Design pass batch 2: pages no longer jump while their data loads (#2390)"
+   "at": "2026-11-06T14:38:47Z",
+   "subject": "Better: today's measure and the pit crew's list (counts only)"
   },
   {
-   "at": "2026-11-06T06:20:33Z",
-   "subject": "Treasury: Verse reads every USDC transfer into its wallet from the chain, daily (#2391)"
+   "at": "2026-11-06T14:37:45Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-11-06T06:18:55Z",
-   "subject": "Timer unit test: the stub stage can pick, and the timer is picked after add time (#2389)"
+   "at": "2026-11-06T14:36:17Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   },
   {
-   "at": "2026-11-06T06:17:21Z",
-   "subject": "Pick the timer that \"add one minute\" changes; clear stale picked marks (#2388)"
+   "at": "2026-11-06T14:27:39Z",
+   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
   },
   {
-   "at": "2026-11-06T06:15:55Z",
+   "at": "2026-11-06T13:50:02Z",
+   "subject": "Outcome exam: podcasts 87.2"
+  },
+  {
+   "at": "2026-11-06T13:35:32Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"create a toon"
+  },
+  {
+   "at": "2026-11-06T13:19:50Z",
+   "subject": "Subject eval: 54 of 54 live"
+  },
+  {
+   "at": "2026-11-06T13:13:14Z",
+   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+  },
+  {
+   "at": "2026-11-06T13:04:37Z",
    "subject": "Outcome exam: podcasts 85.6"
   },
   {
-   "at": "2026-11-06T06:15:52Z",
-   "subject": "GAPS batch 5: grocery list, big block letters, event countdown, tournament bracket (#2384)"
+   "at": "2026-11-06T12:58:21Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
   },
   {
-   "at": "2026-11-06T06:14:58Z",
-   "subject": "Site test: fix: \"play reversi\" console: Cannot read properties of undef"
+   "at": "2026-11-06T12:33:37Z",
+   "subject": "Outcome exam: podcasts 85.6"
   },
   {
-   "at": "2026-11-06T06:14:34Z",
-   "subject": "MCP: every paid tool runs and gets a 402, and the registry listing moves to Verse 1.2.0 (#2383)"
-  },
-  {
-   "at": "2026-11-06T06:11:29Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T06:09:01Z",
-   "subject": "Design pass batch 1: tap targets and button contrast on every tool page (#2385)"
-  },
-  {
-   "at": "2026-11-06T06:02:51Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:58:56Z",
-   "subject": "Incident: the browser suite failed on c5a28a1f (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T12:32:19Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 179
+  "day": 41,
+  "week": 192
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -894,19 +894,20 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-05T13:14Z",
+  "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-06T12:58Z",
   "source": "verse"
  },
  "tower": {
-  "target": "wheelofgold.com",
-  "since": "2026-11-05",
+  "target": "id5-sync.com",
+  "since": "2026-11-06",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1269
+  "total": 1301
  }
 }

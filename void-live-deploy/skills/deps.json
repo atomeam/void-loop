@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1191,
+ "counted": 1192,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1333,6 +1333,13 @@
    "tests": 1
   },
   {
+   "file": "lib/models.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 71,
+   "tests": 14
+  },
+  {
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
@@ -1555,6 +1562,13 @@
    "direct": 0,
    "dependants": 9,
    "tests": 2
+  },
+  {
+   "file": "lib/studio.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 9,
+   "tests": 1
   },
   {
    "file": "lib/appraise-photo.js",
@@ -2397,13 +2411,6 @@
    "tests": 35
   },
   {
-   "file": "lib/models.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 70,
-   "tests": 14
-  },
-  {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
@@ -2727,13 +2734,6 @@
   },
   {
    "file": "lib/seo-audit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
    "dependants": 8,
@@ -10266,7 +10266,8 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
-    "lib/team-mcp.js"
+    "lib/team-mcp.js",
+    "skills/video-gen.js"
    ]
   },
   "lib/motion-throttle.js": {
@@ -13630,7 +13631,8 @@
    ],
    "importedBy": [
     "functions/api/clip.js",
-    "functions/api/studio.js"
+    "functions/api/studio.js",
+    "skills/video-gen.js"
    ],
    "reachedBy": [
     "functions/api/card-art.js",
@@ -16660,6 +16662,10 @@
    ],
    "importedBy": []
   },
+  "skills/heavy-lift-map.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/holidays.js": {
    "imports": [],
    "importedBy": [
@@ -19263,7 +19269,8 @@
   },
   "skills/video-gen.js": {
    "imports": [
-    "lib/video-gen.js"
+    "lib/video-gen.js",
+    "lib/studio.js"
    ],
    "importedBy": []
   },
