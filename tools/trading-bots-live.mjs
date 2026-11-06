@@ -1,6 +1,7 @@
 // The trading bots and the arbitrage scanner, checked on the live site (.github/workflows/trading-bots-live.yml, started by hand or by the
-// thread that ships a change): the pages answer, the price history is there, the free scan reads real venues, and an unpaid call to each paid
-// service answers 402 paying the wallet the catalog names. Read only: no payment is made, nothing is written. Exit 1 when an answer is wrong.
+// thread that ships a change): the pages answer, the price history is there, the free scan reads real venues, the scan record answers, and
+// an unpaid call to each paid service answers 402 paying the wallet the catalog names. No payment is made; the only write is the row a fresh
+// free scan adds to its own record. Exit 1 when an answer is wrong.
 const base = process.argv[2] || 'https://a-to-mind.com';
 const bad = [], out = {};
 const get = async (p) => { const r = await fetch(base + p, { headers: { 'user-agent': 'Verse live check' } }); return { status: r.status, r }; };
@@ -16,6 +17,9 @@ for (const pair of ['BTC-USD', 'ETH-USD']) {
 const a = await get('/api/arbitrage?coin=ETH'); const aj = await a.r.json().catch(() => ({}));
 out.arbitrage = a.status === 200 ? { venues: Object.keys((aj.spread || {}).mids || {}), missing: aj.missing, best: aj.rows && aj.rows[0] && { buy: aj.rows[0].buy, sell: aj.rows[0].sell, net: aj.rows[0].net.toFixed(2) }, gasUsd: aj.gasUsd } : { status: a.status, error: aj.error };
 if (a.status !== 200) bad.push('free scan answered ' + a.status);
+const h = await get('/api/arbitrage?coin=ETH&history=1'); const hj = await h.r.json().catch(() => ({}));
+out.record = h.status === 200 ? { scans: hj.scans, first: hj.first, last: hj.last, cleared: hj.cleared, avgBestNet: hj.avgBestNet } : { status: h.status, error: hj.error };
+if (h.status !== 200 || typeof hj.scans !== 'number') bad.push('scan record answered ' + h.status);
 const cat = await (await fetch(base + '/api/x402')).json();
 for (const [id, body] of [['backtest', { bot: 'trend-50-200', pair: 'BTC-USD' }], ['arbitrage', { coin: 'BTC' }]]) {
   const s = (cat.services || []).find((x) => x.id === id); if (!s) { bad.push(id + ' is not in the catalog'); continue; }
