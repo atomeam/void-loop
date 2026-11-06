@@ -237,7 +237,17 @@ if (ready.length && !limited) {
     try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${list.join(',')}`]); console.log(`#${list.join(', #')}: full suite started ${where}`); }
     catch (e) { console.log(`#${list.join(', #')}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
   };
-  if (choice.action === 'queue' && pick) startSuite(choice.batch && choice.batch.length ? choice.batch : [pick], 'on top of ' + String(mainSha).slice(0, 7));
+  // a run scoped to one pull request sees only that one: a batch built here holds one pull request, and the scoped runs
+  // (one per event) outnumber the sweeps, so the queue moved one at a time (2026-11-06). A scoped run starts a full sweep
+  // instead, and the sweep builds the batch from every ready pull request.
+  const sweepAll = (why) => {
+    try { run(['workflow', 'run', 'automerge.yml', '--repo', repo, '--ref', 'main']); console.log('full sweep started: ' + why); }
+    catch (e) { console.log('could not start a full sweep: ' + String(e.stderr || e.message || e).slice(0, 200)); }
+  };
+  if (choice.action === 'queue' && pick) {
+    if (one) sweepAll(`#${pick.number} is ready; the sweep puts it in a batch with the other ready pull requests`);
+    else startSuite(choice.batch && choice.batch.length ? choice.batch : [pick], 'on top of ' + String(mainSha).slice(0, 7));
+  }
   if (choice.action === 'merge' && pick) {
     // the pull requests one green run tested, merged one after another; the first refusal stops the rest (they wait for the next run)
     const done = [];
@@ -254,7 +264,7 @@ if (ready.length && !limited) {
       } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); break; }
     }
     // main moved: start the suite for the next ready pull requests now, not at the next hourly sweep (2026-11-06)
-    if (done.length) startSuite(nextBatch(rows, done), 'on the new main');
+    if (done.length) { if (one) sweepAll('main moved'); else startSuite(nextBatch(rows, done), 'on the new main'); }
   }
 }
 // The stall alarm (tools/merge-stall.mjs): in a sweep, no merge for 2 hours while a green pull request waits opens one issue

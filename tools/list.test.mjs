@@ -21,6 +21,9 @@ test('list: adding (and what a bare "add" leaves to the stage), ticking and taki
   assert.equal(addOf('add milk'), 'milk');
   for (const a of ['add a clock', 'add stars', 'add the timer', 'add 5 and 6']) assert.equal(addOf(a), '', a);
   assert.equal(addOf('add glitter', (w) => w === 'glitter'), '', 'words that name a stage thing are not an item');
+  // a length of time is the timer's (#2326: "add one minute" made a list card holding "one minute"); a named list still takes it
+  for (const a of ['add one minute', 'add thirty seconds', 'add two hours']) assert.equal(addOf(a), '', a);
+  assert.equal(addOf('add one minute to the list'), 'one minute');
   assert.equal(checkOf('check off milk'), 'milk');
   assert.equal(checkOf('cross off eggs on the shopping list'), 'eggs');
   assert.equal(checkOf('mark bread as bought'), 'bread');
