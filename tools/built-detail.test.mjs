@@ -24,3 +24,18 @@ test('under each skill, a batch of new phrases lists only the phrases that open 
   assert.equal(by.gradient, 'New phrases: “css gradient” now opens gradient');
   assert.equal(by.wheel, 'New phrases: “spin the wheel” now opens wheel');
 });
+test('a probe route with no check on its answer is not listed as built; it is counted once in a note', () => {
+  const fam = { families: [{ id: 'sky', name: 'Sky and earth', skills: [{ name: 'flights' }] }] };
+  const led = [
+    { at: '2026-10-31T01:21:43Z', kind: 'fix', what: 'Verse routes "london to sydney flight" to its flights skill (the answer is not checked) (from my probes)' },
+    { at: '2026-10-30T19:46:31Z', kind: 'fix', what: 'Verse routes "flight status nyc to lon" to its flights skill (the answer is not checked) (from my probes)' },
+    { at: '2026-10-30T10:00:00Z', kind: 'build', what: 'the flights skill now shows the flight time between two cities' }];
+  const r = builtByFamily(led, fam);
+  assert.equal(r.total, 1); assert.equal(r.unchecked, 2);
+  assert.deepEqual(r.families[0].skills[0].items.map((i) => i.what), ['the flights skill now shows the flight time between two cities']);
+  const h = builtDetailHtml(r);
+  assert.ok(!h.includes('the answer is not checked')); assert.ok(h.includes('Left out: 2 probe lines'));
+  // the real ledger: none of its unchecked routes reach the list
+  const real = builtDetailHtml(builtByFamily(ledger, JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url)))));
+  assert.ok(!real.includes('(the answer is not checked)'));
+});

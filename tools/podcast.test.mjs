@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { buildEpisode, rss, firstSentence, latestDaily, loadEpisodes, DIR } from './podcast.mjs';
-import skill, { wantsPodcast, episodeAsked, cardHtml } from '../void-live-deploy/skills/podcast.js';
+import skill, { wantsPodcast, episodeAsked, cardHtml, sourceLine } from '../void-live-deploy/skills/podcast.js';
 for (const a of ['play the podcast', 'latest episode', 'verse podcast', 'verse out loud', "play verse's podcast", 'listen to your podcast', 'episode 2', 'podcast rss', 'Does Verse have a podcast?']) assert.ok(wantsPodcast(a.toLowerCase()), a);
 for (const a of ['best podcasts about history', 'start a podcast', 'make me a podcast about cats', 'latest episode of the office', 'play a song']) assert.ok(!wantsPodcast(a), a);
 assert.equal(episodeAsked('episode 3'), 3); assert.equal(skill.name, 'podcast');
@@ -25,4 +25,11 @@ for (const e of E) { assert.ok(existsSync(DIR + '/' + e.file) && statSync(DIR + 
 assert.equal(readFileSync(DIR + '/rss.xml', 'utf8'), rss(E), 'podcast/rss.xml is stale: node tools/podcast.mjs --rss');
 const h = cardHtml(E[E.length - 1], E, (s) => String(s).replace(/[<>&"']/g, (c) => '&#' + c.charCodeAt(0) + ';'));
 assert.match(h, /download/); assert.match(h, /\/podcast\/rss\.xml/); assert.match(h, /Full transcript/);
+// with the page's origin the player's address is whole (the outcome exam and a share both need https://, not a path), and it is the feed's own enclosure
+const last = E[E.length - 1], whole = cardHtml(last, E, (s) => String(s), 'https://a-to-mind.com/');
+assert.match(whole, new RegExp('<audio class="vpod-audio"[^>]* src="https://a-to-mind\\.com/podcast/' + last.file.replace(/\./g, '\\.') + '"'));
+assert.ok(rss(E).includes('<enclosure url="https://a-to-mind.com/podcast/' + last.file + '"'), 'the card plays the address the feed lists');
+// the show card names the directory that found the show: fyyd.de when Apple did not answer, never Apple then
+assert.match(sourceLine('fyyd'), /fyyd\.de/); assert.doesNotMatch(sourceLine('fyyd'), /found through <a href="https:\/\/podcasts\.apple\.com/);
+assert.match(sourceLine(undefined), /Apple’s podcast directory/);
 console.log('podcast: ok');

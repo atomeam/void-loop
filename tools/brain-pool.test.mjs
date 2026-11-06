@@ -2,15 +2,15 @@
 // 2026-10-29: "combine all the builds into one entity", "dont fake it"). F459's tiny network (6 -> 12 -> 3) set the viscosity, stiffness
 // and kernel size of an SPH fluid but was random and never learned. Here the network learns from mirrored tries on the same life, and is
 // measured against the same search on the output biases only (the best constant setting) and against random search.
-// Measured on 12 real brains' focus paths with a pointer stirring (400 lives, mean of the last 50): the learned network's cost was the
-// starter's over 1.41, the best constant setting's 1.35, random search's 1.19; the network beat both on 12 of 12. Its viscosity follows the
-// slosh it senses (it thickens the fluid when the drop sloshes). On the 3 brains this test runs (300 lives): learned 1.29 1.43 1.31,
-// constant 1.25 1.39 1.29, random 1.13 1.22 1.15; the correlation of viscosity with slosh 0.56 0.21 0.61.
+// Measured on 12 real brains' focus paths with a pointer stirring (300 lives, poolRow, 2026-11-06, after the rest density was kept by the
+// exact size): the learned network's cost was the starter's over 1.36, the best constant setting's 1.31, random search's 1.17; the network
+// beat both on 12 of 12. Its viscosity follows the slosh it senses (it thickens the fluid when the drop sloshes). On the 3 brains this test
+// runs: learned 1.30 1.39 1.33, constant 1.19 1.35 1.31, random 1.04 1.19 1.17; the correlation of viscosity with slosh 0.42 0.33 0.45.
 // Run: node --test tools/brain-pool.test.mjs
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as K from '../void-live-deploy/lib/brain-pool.js';
+import { par, ptest, test } from './brain-par.mjs';
 
 /** the real brain's focus, one frame each time the organ runs, while a visitor's pointer circles (and leaves) and words are told; with
  *  the pointer as the spoon the organ would get from the senses */
@@ -45,12 +45,14 @@ function senses(P, fr, from) {
   return { corr: a > 1e-18 ? c / Math.sqrt(a * d) : 0, spread: Math.sqrt(a / vi.length) };
 }
 
-test('the network that senses learns a lower cost than the best constant setting the same search finds, and than random search', () => {
-  const rows = [];
-  for (const seed of [1, 2, 3]) {
-    const fr = frames(seed, 1400), pool = (mode) => live(K.makePool(seed, mode), fr, 300), L = pool('learn'), Fx = pool('fixed'), Bl = pool('blind');
-    rows.push({ learn: K.gainOf(L), fixed: K.gainOf(Fx), blind: K.gainOf(Bl), corr: senses(L, fr, 7).corr, still: senses(Fx, fr, 7).spread });
-  }
+/** one brain's row: the learned network, the best constant setting and random search on that brain's focus path (a worker runs it) */
+export function poolRow(seed) {
+  const fr = frames(seed, 1400), pool = (mode) => live(K.makePool(seed, mode), fr, 300), L = pool('learn'), Fx = pool('fixed'), Bl = pool('blind');
+  return { learn: K.gainOf(L), fixed: K.gainOf(Fx), blind: K.gainOf(Bl), corr: senses(L, fr, 7).corr, still: senses(Fx, fr, 7).spread };
+}
+
+test('the network that senses learns a lower cost than the best constant setting the same search finds, and than random search', async () => {
+  const rows = await par(import.meta.url, 'poolRow', [[1], [2], [3]]); // the 3 brains at once
   const say = JSON.stringify(rows.map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, r3(v)]))));
   assert.ok(rows.every((r) => r.learn > r.fixed), 'learned over the best constant setting ' + say);
   assert.ok(rows.every((r) => r.learn > r.blind), 'learned over random search ' + say);
@@ -59,10 +61,10 @@ test('the network that senses learns a lower cost than the best constant setting
   assert.ok(rows.every((r) => r.corr > 0.15 && r.still < 1e-9), 'viscosity follows the slosh ' + say);
 });
 
-test('it runs in the brain as one of twenty-three organs: your pointer stirs it, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-six organs: your pointer stirs it, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('pool') && B.ORGAN_IDS.length === 23);
+  assert.ok(B.ORGAN_IDS.includes('pool') && B.ORGAN_IDS.length === 26);
   assert.ok(b.pool.lives >= 8 && b.runs.pool > 150, 'lives ' + b.pool.lives + ' runs ' + b.runs.pool);
   assert.ok(b.board.pool && b.board.pool.lives === b.pool.lives, JSON.stringify(b.board.pool));
   const sp = K.spoonOf(b.senses); assert.ok(sp && Number.isFinite(sp.vx) && Math.hypot(sp.vx, sp.vy) > 0, 'the pointer is a spoon ' + JSON.stringify(sp));

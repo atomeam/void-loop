@@ -4,7 +4,7 @@ const CACHE = 'void-shell-v2';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json', '/verse.css', '/verse-shell.js', '/verse-field.js'];
 // the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
 // modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
-const TOOLS = ['/bots/', '/agent/', '/photos/', '/brain/', '/progress/', '/ledger/', '/autopilot/', '/stopwatch/', '/word-count/', '/color/', '/color/gradient/', '/random/wheel/', '/random/people/', '/base64/bases/', '/convert/', '/resize-image/', '/password/strength/', '/random/', '/random/coin/', '/base64/', '/stl/', '/calculator/', '/calculators/', '/vat/', '/time/', '/password/', '/weather/', '/local/', '/translate/', '/recipes/', '/markets/', '/markets/caps/', '/metronome/', '/paint/', '/emojis/', '/emoji-combos/', '/tournaments/', '/prizes/', '/hosting/', '/identity/', '/cpan/', '/obituaries/', '/books/', '/podcasts/', '/scores/', '/scores/sports/', '/fantasy/', '/calendar/', '/notes/', '/generators/', '/boards/', '/fanfic/', '/team/', '/learn-to-draw/', '/converter/', '/rap/', '/news/', '/image/', '/video/', '/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/', '/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/', '/g/', '/is-it/christmas', '/tools/', '/markets/currency-converter/', '/emoji-combos/emoji-dictionary/', '/emojis/everywhere/', '/convert/unit-converter/', '/convert/unit-converter-2/'];
+const TOOLS = ['/bots/', '/agent/', '/photos/', '/brain/', '/progress/', '/ledger/', '/autopilot/', '/stopwatch/', '/word-count/', '/color/', '/color/gradient/', '/random/wheel/', '/random/people/', '/base64/bases/', '/convert/', '/resize-image/', '/password/strength/', '/random/', '/random/coin/', '/base64/', '/stl/', '/calculator/', '/calculators/', '/vat/', '/time/', '/password/', '/weather/', '/local/', '/translate/', '/recipes/', '/markets/', '/markets/caps/', '/metronome/', '/paint/', '/emojis/', '/emoji-combos/', '/tournaments/', '/prizes/', '/hosting/', '/identity/', '/cpan/', '/obituaries/', '/books/', '/podcasts/', '/scores/', '/scores/sports/', '/fantasy/', '/calendar/', '/notes/', '/generators/', '/boards/', '/fanfic/', '/team/', '/learn-to-draw/', '/converter/', '/rap/', '/news/', '/image/', '/video/', '/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/', '/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/', '/g/', '/is-it/christmas', '/tools/', '/markets/currency-converter/', '/emoji-combos/emoji-dictionary/', '/emojis/everywhere/', '/convert/unit-converter/', '/convert/unit-converter-2/', '/color/colour-picker-tool/', '/news/global-headlines/'];
 // any /is-it/<day> page (not its .rss or .json) is kept under its own path once visited
 // the pages whose own module files (/generators/<page>/app.js, /image/app.js) are kept like /lib/ code: the page itself is shelled at install
 // with every other kept page (see KEPT below), and its modules are kept the first time it loads under the worker
@@ -31,6 +31,15 @@ const pageCode = (p) => /^\/paint\/(?:app\.js|templates\/[a-z-]+\.json)$/.test(p
 // gate's wait, and Verse's own pages read 0 offline); a page's modules are kept the first time they load under the worker (the fetch handler below),
 // and a page opened offline before that still shows itself from its own HTML
 const keepTool = (c, t) => fetch(t).then((res) => (res.ok ? c.put(t, res) : null)).catch(() => {});
+// A few pages at a time, not every kept page at once. The site tester loads the home three at a time and times the
+// load event (1200 ms, tools/site-test.json). Install used to open all of TOOLS and LATER together (about 120
+// fetches). Three testers doing that filled the link, and "how much do i need to save a month to have 1 million
+// in 30 years at 7%" measured 1482 ms on the faster of two loads (issue #2296). The worker still activates only
+// after every page is kept, so the offline gate (it waits on serviceWorker.ready) still sees them.
+const PREFETCH_AT_ONCE = 8;
+async function keepBatched(c, urls) {
+  for (let i = 0; i < urls.length; i += PREFETCH_AT_ONCE) await Promise.all(urls.slice(i, i + PREFETCH_AT_ONCE).map((t) => keepTool(c, t)));
+}
 // the files a kept page fetches that are neither its HTML nor a modulepreload: /paint/ asks for its paintings by fetch and /emojis/
 // imports the closed list directly, so neither arrives through keepWhole — and a page that shows itself but cannot draw is offline 0
 // (the gate's own reading: paint measured 0 against an ideal of 1 until these were kept)
@@ -48,7 +57,11 @@ const CACHE_SCORES = 'void-scores-v1';
 const is3d = (p) => p.startsWith('/vendor/') || p.startsWith('/models/');
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL).catch(() => {}).then(() => Promise.all(KEPT.map((t) => keepTool(c, t)))).then(() => Promise.all(EXTRA.map((t) => keepTool(c, t))))).catch(() => {}).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(async (c) => {
+    await c.addAll(SHELL).catch(() => {});
+    await keepBatched(c, KEPT);
+    await keepBatched(c, EXTRA);
+  }).catch(() => {}).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D && k !== CACHE_SCORES).map((k) => caches.delete(k)))).then(() => self.clients.claim())
@@ -107,7 +120,10 @@ self.addEventListener('fetch', (e) => {
   // hours after the fix): Cloudflare stretches .js browser caching to 4 hours whatever _headers says, so a plain fetch kept the old file.
   // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load. Its answer goes back marked no-cache too, as above
   // (2026-10-30: a returning tab ran an old /metronome/app.js after a deploy, from its memory cache, until the tab was new).
-  e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((r) => (code ? asked(r) : r)).then((res) => {
+  // the shell's own files (the mark, the app icon, the manifest, verse.css, the skills index) are asked again too (2026-11-06: after the new
+  // mark shipped, a returning browser still drew the old oval from /icon.svg in its HTTP cache): an unchanged file costs a 304
+  const again = code || (!nav && url.pathname !== '/' && SHELL.includes(url.pathname));
+  e.respondWith(fetch(again ? new Request(req, { cache: 'no-cache' }) : req).then((r) => (again ? asked(r) : r)).then((res) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
     const tool = nav && isTool(url.pathname);
     if (res.ok && (!nav || tool || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(tool ? url.pathname : nav ? '/' : req, copy)); }

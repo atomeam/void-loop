@@ -10,7 +10,10 @@
 //                              grains (F456: grains thrown toward the focus that pass their genes on where they touch),
 //                              pool (F459: a particle fluid after the focus, whose viscosity, stiffness and kernel size a tiny network
 //                              sets and learns), trace (the NCA drafts: a cellular automaton that holds where the focus was for
-//                              a while and lets it go, whose rule the brain tunes), dialogue (the conversation orb: what this
+//                              a while and lets it go, whose rule the brain tunes), strokes (the Hopfield drafts: a memory of the
+//                              visitor's strokes that recalls the rest of a stroke from its first half), rules (the decision-tree drafts: a tree that
+//                              guesses which way the visitor's next stroke goes), reflex (the tiny MLP drafts: a
+//                              network that pushes three bodies after the pointer and learns how from what each push did), dialogue (the conversation orb: what this
 //                              visitor asked and what Verse answered, so a repeat or a follow-up builds on the first), will, arena
 //   3. attention               scheduleTick() here: each tick a budget of organ runs goes to the organs that want it most, the starved
 //                              ones catch up, and one spotlight (the focus layer) shows what the brain is thinking about
@@ -38,6 +41,9 @@ import { makeCurrent, currentOf } from './brain-current.js';
 import { makeGrains, grainsOf } from './brain-grains.js';
 import { makePool, poolOf } from './brain-pool.js';
 import { makeTrace, traceOf } from './brain-trace.js';
+import { makeStrokes, sampleStroke, strokesOf } from './brain-strokes.js';
+import { makeRules, takePiece, sureOf as rulesSure, rulesOf } from './brain-rules.js';
+import { makeReflex, reflexTick, reflexOf, gainOf as reflexGain } from './brain-reflex.js';
 import { makeDialogue, dialogueStats } from './brain-dialogue.js';
 
 export const VERSION = 1;
@@ -59,7 +65,7 @@ export function createBrain(seed = 1, opts = {}) {
   const ws = createWorkspace(seed, ORGAN_IDS.concat(['attention']));
   const b = { v: VERSION, seed, ws, genome: fixGenome(opts.genome || STARTER), budget: opts.phone ? BUDGET_PHONE : BUDGET,
     senses: { feat: new Float32Array(8), px: 0.5, py: 0.5, has: false, over: false, speed: 0, trail: [] },
-    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), painter: makePainter(seed), gardener: makeGardener(seed), grower: makeGrower(seed), formula: makeFormula(seed), current: makeCurrent(seed), grains: makeGrains(seed), pool: makePool(seed), trace: makeTrace(seed), dialogue: makeDialogue(), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
+    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), painter: makePainter(seed), gardener: makeGardener(seed), grower: makeGrower(seed), formula: makeFormula(seed), current: makeCurrent(seed), grains: makeGrains(seed), pool: makePool(seed), trace: makeTrace(seed), strokes: makeStrokes(), rules: makeRules(), reflex: makeReflex(seed), dialogue: makeDialogue(), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
     focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
     runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), recent: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
     board: { drive: 'rest', eye: null, creature: null, ear: null, paint: null, garden: null, grow: null, gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
@@ -103,6 +109,11 @@ export function scheduleTick(b) {
 export function stepBrain(b, input = {}) {
   const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++; b.painter.since++; b.gardener.since++; b.grower.since++; b.formula.since++; b.current.since++; b.grains.since++; b.pool.since++; b.trace.since++;
   if (Array.isArray(input.pitches)) for (const p of input.pitches.slice(-64)) if (Array.isArray(p)) hearFrame(b.ear, +p[0], +p[1]); // every pitch frame, run or not: the hearing organ learns the notes when it runs
+  sampleStroke(b.strokes, input); // every tick of the pointer, run or not: the stroke memory scores and stores a stroke when it runs
+  while (b.strokes.cut.length) takePiece(b.rules, b.strokes.cut.shift()); // each piece it cuts goes to the rules organ too, which learns it at once
+  if (b.board.rules && b.board.rules.sure && !rulesSure(b.rules)) b.board.rules.sure = false; // a tree no longer sure shows no orb
+  reflexTick(b.reflex, input); // every tick, run or not: the network pushes its bodies, learns, and is scored against the springs
+  if (b.board.reflex && b.board.reflex.live && !(reflexGain(b.reflex) > 1)) b.board.reflex.live = false; // a spring that wins again hides the orb
   updateFocus(b);
   const ids = scheduleTick(b);
   for (const id of ids) { const o = ORGANS.find((x) => x.id === id); o.run(b, input, imagine); b.runs[id]++; b.lastRun[id] = b.ticks; }
@@ -245,6 +256,9 @@ export function embodiment(b) {
   if (b.board.grains && b.board.grains.gain > 1 && b.ticks - b.board.grains.tick < 60) out.push({ key: 'grains', organ: 'grains', x: b.board.grains.x, y: b.board.grains.y, label: 'grains landing', size: 0.16, hue: 35 });
   if (b.board.pool && b.board.pool.gain > 1 && b.ticks - b.board.pool.tick < 60) out.push({ key: 'pool', organ: 'pool', x: b.board.pool.x, y: b.board.pool.y, label: 'pool following', size: 0.17, hue: 205 });
   if (b.board.trace && b.board.trace.gain > 1 && b.ticks - b.board.trace.tick < 60) out.push({ key: 'trace', organ: 'trace', x: b.board.trace.x, y: b.board.trace.y, label: 'recalling here', size: 0.15, hue: 40 });
+  if (b.board.strokes && b.board.strokes.live && b.board.strokes.gain > 1 && b.ticks - b.board.strokes.tick < 30) out.push({ key: 'strokes', organ: 'strokes', x: b.board.strokes.x, y: b.board.strokes.y, label: 'your stroke ends here', size: 0.15, hue: 280 });
+  if (b.board.rules && b.board.rules.sure && b.ticks - b.board.rules.tick < 40) out.push({ key: 'rules', organ: 'rules', x: b.board.rules.x, y: b.board.rules.y, label: 'your next stroke goes ' + b.board.rules.way, size: 0.13, hue: 160 });
+  if (b.board.reflex && b.board.reflex.live && b.ticks - b.board.reflex.tick < 30) out.push({ key: 'reflex', organ: 'reflex', x: b.board.reflex.x, y: b.board.reflex.y, label: 'following you', size: 0.12, hue: 30 });
   if (b.board.dialogue && b.ticks - b.board.dialogue.tick < 120) out.push({ key: 'dialogue', organ: 'dialogue', x: b.board.dialogue.x, y: b.board.dialogue.y, label: 'you asked before', size: 0.15, hue: 190 });
   if (b.board.creature) out.push({ key: 'creature', organ: 'creature', x: b.board.creature.x, y: b.board.creature.y, label: 'creature', size: 0.35, hue: 20 });
   if (b.board.action && b.board.action.name !== 'rest') out.push({ key: 'will', organ: 'will', x: b.focus.x, y: clamp(b.focus.y - 0.12, 0.04, 0.96), label: b.board.action.name, size: 0.5, hue: 140 });
@@ -267,7 +281,7 @@ export function selfOf(b) {
     q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest',
     wants: b.mind.goals.map((g) => ({ word: g.word, strength: Math.round(g.strength * 100) / 100 })), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length,
     eye: { wiring: Math.round(eyeWiring(b.synapses.W) * 100) / 100, seen: Math.round(b.synapses.seenAvg * 1000) / 1000, spikes: b.synapses.spikes },
-    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) }, hearing: earOf(b.ear), painter: painterOf(b.painter), gardener: gardenerOf(b.gardener), grower: growerOf(b.grower), formula: formulaOf(b.formula), current: currentOf(b.current), grains: grainsOf(b.grains), pool: poolOf(b.pool), trace: traceOf(b.trace), dialogue: dialogueStats(b.dialogue, b.dialogue.now || 0),
+    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) }, hearing: earOf(b.ear), painter: painterOf(b.painter), gardener: gardenerOf(b.gardener), grower: growerOf(b.grower), formula: formulaOf(b.formula), current: currentOf(b.current), grains: grainsOf(b.grains), pool: poolOf(b.pool), trace: traceOf(b.trace), strokes: strokesOf(b.strokes), rules: rulesOf(b.rules), reflex: reflexOf(b.reflex), dialogue: dialogueStats(b.dialogue, b.dialogue.now || 0),
     conflicts: b.mind.conflicts, aligned: b.mind.aligned || null, approval: Math.round(b.mind.approval * 100) / 100, recent: Mind.recent(b) };
 }
 /** plain sentences from the self, for the card and for "what is your brain doing". Pure. */
@@ -289,6 +303,9 @@ export function selfSays(b) {
   if (b.grains.bed.lives) { const g = s.grains; out.push('Grains: ' + g.lives + ' li' + (g.lives === 1 ? 'fe' : 'ves') + ' of grains thrown toward where the focus has been, that pass their bounce and grip on where they touch, from the grain that lands nearer; ' + (g.gain == null ? 'not yet enough lives to compare with grains that pass them at random.' : g.gain > 1 ? 'they land ' + g.gain.toFixed(1) + ' times nearer than grains that pass them at random.' : 'they do not yet land nearer than grains that pass them at random.')); }
   if (b.pool.lives) { const p = s.pool; out.push('Pool: ' + p.lives + ' li' + (p.lives === 1 ? 'fe' : 'ves') + ' of a particle fluid that flows after the focus, whose viscosity, stiffness and kernel size a tiny network sets from what it senses; ' + (p.gain == null || p.lives < 20 ? 'not yet enough lives to compare with the starter setting.' : p.gain > 1 ? 'it follows with ' + p.gain.toFixed(1) + ' times less lag, slosh and crush than the starter setting.' : 'it does not yet follow with less lag, slosh and crush than the starter setting.')); }
   if (b.trace.lives) { const t = s.trace; out.push('Trace: ' + t.lives + ' li' + (t.lives === 1 ? 'fe' : 'ves') + ' of a cellular automaton that holds where the focus was for a while and then lets it go, whose rule it tunes; ' + (t.gain == null || t.lives < 20 ? 'not yet enough lives to compare with the drafts\' rule.' : (t.gain > 1 ? 'it misses ' + t.gain.toFixed(1) + ' times less than the drafts\' rule' : 'it does not yet miss less than the drafts\' rule') + (t.hold != null ? ', and holds fresh marks at ' + t.hold.toFixed(2) + (t.stale != null ? ' and old ones at ' + t.stale.toFixed(2) : '') : '') + '.')); }
+  if (b.strokes.strokes) { const k = s.strokes; out.push('Strokes: ' + k.strokes + ' stroke' + (k.strokes === 1 ? '' : 's') + ' of yours, the last ' + k.stored + ' kept in an associative memory (the Hopfield drafts) that recalls the rest of a stroke from its first half; ' + (k.gain == null ? 'not yet enough strokes to compare with carrying a stroke on as it was going.' : (k.gain > 1 ? 'it lands ' + k.gain.toFixed(1) + ' times closer than carrying the stroke on as it was going' : 'your strokes do not repeat enough for it to land closer than carrying the stroke on as it was going') + (k.drafts != null ? ', and ' + k.drafts.toFixed(1) + ' times closer than the drafts\' rule as written' : '') + '.')); }
+  if (b.rules.pieces) { const k = s.rules; out.push('Rules: ' + k.pieces + ' stroke' + (k.pieces === 1 ? '' : 's') + ' of yours, and a decision tree of ' + k.leaves + (k.leaves === 1 ? ' leaf' : ' leaves') + (k.root ? ', split first on ' + k.root + ',' : '') + ' (the decision-tree drafts) that guesses which way your next stroke goes from how the last one went and where it ended; ' + (k.gain == null ? 'not yet enough strokes to compare with rules that need no tree.' : (k.sure ? 'it guesses right ' + Math.round(k.right * 100) + '% of the time, ' + k.gain.toFixed(1) + ' times as often as the best rule that needs no tree.' : 'it does not yet guess clearly better than the best rule that needs no tree.'))); }
+  if (b.reflex.steps) { const k = s.reflex; out.push('Reflex: a network of 92 numbers (the tiny MLP drafts) that pushes three bodies after your pointer and has learned from ' + k.steps + ' push' + (k.steps === 1 ? '' : 'es') + '; ' + (k.gain == null ? 'not yet enough ticks to compare with springs.' : (k.gain > 1 ? 'its bodies stay ' + k.gain.toFixed(2) + ' times closer to you than the best of 18 springs' : 'the best of 18 springs (pull ' + k.k + ', damping ' + k.c + ') follows you as well as it or better, so it shows nothing') + (k.unlearned != null && k.net ? ', and ' + (k.unlearned / k.net).toFixed(0) + ' times closer than the same network before it learned.' : '.'))); }
   { const d = s.dialogue; if (d.asks) out.push('Dialogue: ' + d.asks + ' ask' + (d.asks === 1 ? '' : 's') + ' of yours kept on this device, ' + d.answered + ' answered; ' + d.repeats + ' repeat' + (d.repeats === 1 ? '' : 's') + ' and ' + d.follows + ' follow-up' + (d.follows === 1 ? '' : 's') + ' built on an earlier ask' + (d.kept ? '; ' + d.kept + ' follow-up' + (d.kept === 1 ? '' : 's') + ' answered and not asked again, on ' + d.days + ' day' + (d.days === 1 ? '' : 's') : '') + '.'); }
   if (b.gardener.blinks) { const g = s.gardener; out.push('Gardener: ' + g.inBand + ' of ' + GARDEN_TILES + ' patches at the edge of chaos (' + g.classes.dead + ' too still, ' + g.classes.noise + ' too wild); it tended them ' + g.thoughts + ' time' + (g.thoughts === 1 ? '' : 's') + '.'); }
   if (b.synapses.spikes) out.push('Eye: ' + s.eye.spikes + ' spikes; its same-side wiring is ' + Math.round(s.eye.wiring * 100) + '% (it starts at 0 and grows as dopamine finds living tissue).');

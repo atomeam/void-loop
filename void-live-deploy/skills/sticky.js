@@ -47,7 +47,9 @@ export function textOf(raw, lower = String(raw).toLowerCase()) {
   return '';
 }
 
-export const wantsRemove = (lower) => /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(sticky|note|it|this)\b/.test(lower) && /\b(sticky|note)\b/.test(lower);
+// "all" / "every" / "each" / "both" is the page's batch remove (void.html handleMetaAsk): one sticky here used to
+// leave the rest, so "clear all the notes" kept a note and failed the suite
+export const wantsRemove = (lower) => /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(sticky|note|it|this)\b/.test(lower) && /\b(sticky|note)\b/.test(lower) && !/\b(?:all|every|each|both)\b/.test(lower);
 
 /** the plain asks the skill takes before the page's own parser (anything with a colour, a picked note or a removal goes
  *  on to the page, which asks the hooks below at the old places). Pure. */
