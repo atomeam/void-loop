@@ -63,7 +63,7 @@ ${RISK}
 <p class="muted">Change the pair: <a href="?pair=BTC-USD">BTC-USD</a> · <a href="?pair=ETH-USD">ETH-USD</a>. Live quotes for any coin are on <a href="/markets/">Markets</a>. Price gaps between exchanges, after every fee: <a href="/trading-bots/arbitrage/">Arbitrage scanner</a>.</p></section>
 ${SETUP('')}
 ${AGENTS}
-<footer>Backtests run in this page with <a href="/trading-bots/kit/strategy.js">strategy.js</a> on daily candles read once a day from Coinbase Exchange's public market data (<a href="/trading-bots/data/BTC-USD.json">BTC-USD</a>, <a href="/trading-bots/data/ETH-USD.json">ETH-USD</a>). Nothing is sent anywhere.</footer>
+<footer>Backtests run in this page with <a href="/trading-bots/kit/strategy.js">strategy.js</a> on daily candles read once a day from Coinbase Exchange's public market data (kept as JSON in /trading-bots/data/). Nothing is sent anywhere.</footer>
 </main>
 <script type="module" src="/lib/trading-bots.js"></script>
 </body>

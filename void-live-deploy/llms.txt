@@ -122,6 +122,11 @@ Each tool is a page of its own, free, with nothing to sign up for and no ads; al
 - Every Verse tool: Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit. https://a-to-mind.com/tools/
 <!-- /tools -->
 
+## Trading bots and arbitrage
+- [Trading bots](https://a-to-mind.com/trading-bots/): three daily long-or-cash bots (Trend 50/200, Breakout 20/10, Dip buyer RSI(2)) backtested in the browser on real BTC-USD and ETH-USD daily candles from Coinbase Exchange, with fees, slippage, max drawdown, buy-and-hold beside them, every trade and a walk-forward out-of-sample test. The bot is free (MIT) and runs on the owner's own computer and exchange account, paper mode first: https://a-to-mind.com/trading-bots/kit/README.md. Past results do not predict future results. Verse never trades, never holds money and never sees an exchange key.
+- [Arbitrage scanner](https://a-to-mind.com/trading-bots/arbitrage/): BTC and ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap v3 on Base, read now from their order books, net of both taker fees and DEX gas. Free view: GET https://a-to-mind.com/api/arbitrage?coin=BTC. Read only.
+- Paid per call over x402 (0.05 USDC on Base, same wallet as the code review): POST https://a-to-mind.com/api/x402/backtest with {"bot":"trend-50-200","pair":"BTC-USD","fee":0.008} (any parameters, dates, every trade, the walk-forward test); POST https://a-to-mind.com/api/x402/arbitrage with {"coin":"ETH","size":5000} (your size, fees, venues and transfer cost). A call without payment answers 402 with what to pay. Catalog: https://a-to-mind.com/api/x402
+
 ## Linking to an answer
 - https://a-to-mind.com/?q=<ask> opens Verse and runs the ask, for example https://a-to-mind.com/?q=weather%20in%20Tokyo
 
