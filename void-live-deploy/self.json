@@ -582,6 +582,38 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T08:15:35Z",
+   "subject": "Revert \"Knowledge cards: whole sentences, senses apart, a matching picture, a grounded take, worded stats, a true Adds to Verse line, and…"
+  },
+  {
+   "at": "2026-11-06T08:11:50Z",
+   "subject": "Tower gate: my ip,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T08:11:25Z",
+   "subject": "Keep the parity inventories current after a merge (main's parity check was red)"
+  },
+  {
+   "at": "2026-11-06T08:10:53Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 9f52702d6d834e1959e890ff5a0070b89dd44e3a (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-06T08:07:10Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 9f52702d6d834e1959e890ff5a0070b89dd44e3a (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-06T08:05:21Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T08:05:04Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-11-06T08:04:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T08:03:13Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
@@ -628,38 +660,6 @@
   {
    "at": "2026-11-06T07:44:26Z",
    "subject": "Treasury: a giving pot, a tenth of what is left after Atom's cut (#2410)"
-  },
-  {
-   "at": "2026-11-06T07:39:10Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T07:35:47Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T07:33:03Z",
-   "subject": "Failed jobs read: run 42177621429 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T07:32:43Z",
-   "subject": "Incident: the browser suite failed on 764780ff (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T07:31:23Z",
-   "subject": "Feature scan: is-it,random-number researched by Verse"
-  },
-  {
-   "at": "2026-11-06T07:30:49Z",
-   "subject": "Versus skips a rival whose site is gone or parked (#2409)"
-  },
-  {
-   "at": "2026-11-06T07:30:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T07:29:42Z",
-   "subject": "Site test: fix: \"bokos like dune\" only \"waking up\" appeared, never the"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 36,
-  "week": 187
+  "day": 37,
+  "week": 188
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
