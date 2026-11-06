@@ -1,7 +1,7 @@
 // POST /api/x402/arbitrage: BTC or ETH price gaps across exchanges and Uniswap v3 on Base, read now (lib/arb-venues.js) and worked out after
 // every cost (trading-bots/kit/arb.js), paid per call over x402 (lib/x402-call.js). Read only: public market data; nothing is traded.
 // The inputs are checked before any payment; when fewer than two venues answer, nothing is charged.
-import { paidCall } from '../../../lib/x402-call.js';
+import { paidCall, probeHandlers } from '../../../lib/x402-call.js';
 import { readVenues, COINS, VENUES } from '../../../lib/arb-venues.js';
 import { scan, spread } from '../../../trading-bots/kit/arb.js';
 
@@ -24,6 +24,10 @@ export async function scanNow(i, f = fetch) {
     spread: spread(r.venues), rows: scan(r.venues, { size: i.size, transferUsd: i.transferUsd }), missing: r.missing,
     note: 'Prices read now from public order books; they move in milliseconds and faster bots close real gaps first. Net is after both taker fees, DEX gas and your transfer cost. USDC is counted as one dollar. Nothing was traded.' } };
 }
+
+const probe = probeHandlers('arbitrage');
+export const onRequestGet = probe.get;
+export const onRequestHead = probe.head;
 
 export async function onRequestPost({ request, env }) {
   let b; try { b = JSON.parse(await request.text()); } catch (_) { return Response.json({ error: 'bad json' }, { status: 400 }); }

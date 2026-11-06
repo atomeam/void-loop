@@ -1,7 +1,7 @@
 // POST /api/x402/backtest: a Verse trading bot backtested on the site's own daily candles (/trading-bots/data/<PAIR>.json), paid per call over
 // x402 (lib/x402-call.js, the same flow as the code review). Read only: it computes; nothing is traded, no key is asked for or held.
 // The inputs are checked before any payment, so a bad call never costs anything.
-import { paidCall } from '../../../lib/x402-call.js';
+import { paidCall, probeHandlers } from '../../../lib/x402-call.js';
 import { BOTS, backtest, candlesOf, walkForward, paramsOf } from '../../../trading-bots/kit/strategy.js';
 
 export const PAIRS = ['BTC-USD', 'ETH-USD'];
@@ -27,6 +27,10 @@ export function answer(i, data) {
     walkForward: walkForward(c, i.bot, { fee: i.fee, slippage: i.slippage }),
     note: 'A backtest on past daily prices. Past results do not predict future results. Decided on the daily close, traded at the next open, long or cash.' };
 }
+
+const probe = probeHandlers('backtest');
+export const onRequestGet = probe.get;
+export const onRequestHead = probe.head;
 
 export async function onRequestPost({ request, env }) {
   let b; try { b = JSON.parse(await request.text()); } catch (_) { return Response.json({ error: 'bad json' }, { status: 400 }); }
