@@ -19,7 +19,7 @@ import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
-import { choose, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
+import { choose, nextAfterMerge, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
 // The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
@@ -62,6 +62,8 @@ function scopedPr() {
     if (ev.pull_request && ev.pull_request.number) return String(ev.pull_request.number);
     if (ev.inputs && /^\d+$/.test(String(ev.inputs.pr || ''))) return String(ev.inputs.pr);
     const wr = ev.workflow_run;
+    // a suite gate result changes which pull request goes next: sweep, so the green one merges or the next one is queued now
+    if (wr && wr.name === 'Suite on main') return '';
     if (wr && wr.pull_requests && wr.pull_requests.length === 1) return String(wr.pull_requests[0].number);
   } catch (_) {}
   return '';
@@ -235,7 +237,15 @@ if (ready.length && !limited) {
         try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
       }
       const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-      if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p); }
+      if (m.merged) {
+        merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
+        // main moved: start the suite for the next ready pull request now, not at the next hourly sweep (2026-11-06)
+        const next = nextAfterMerge(rows, pick);
+        if (next && next.r && next.r.branch) {
+          try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', next.r.branch, '-f', `pr=${next.number}`]); console.log(`#${next.number}: full suite started on the new main`); }
+          catch (e) { console.log(`#${next.number}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
+        }
+      }
     } catch (e) { console.log(`#${p.number}: merge refused: ${String(e.stderr || e.message).slice(0, 300)}`); }
   }
 }

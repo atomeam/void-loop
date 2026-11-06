@@ -10,7 +10,7 @@ name: Verse automerge
 
 on:
   workflow_run:
-    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate"]
+    workflows: ["Verse deploy", "Verse review", "Verse bench", "Merge gate", "Suite on main"] # a suite gate result merges the green PR or queues the next (2026-11-06)
     types: [completed]
   pull_request_review:
     types: [submitted]

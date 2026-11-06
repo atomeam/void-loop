@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, fixJob, CHECK } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, nextAfterMerge, fixJob, CHECK } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -40,6 +40,12 @@ test('one pull request: merge the one whose suite is fresh, otherwise queue the 
   assert.equal(queued.pr.number, 4, 'the oldest, and only that one');
   assert.equal(choose([row(2, fail(MAIN), [])], MAIN, false).action, 'hold', 'a failure on this main is not queued again');
   assert.equal(choose([{ number: 1, review: 'wait' }], MAIN, false).action, 'hold');
+});
+
+test('after a merge the oldest other ready pull request goes to the suite at once, not at the next hourly sweep', () => {
+  const rows = [row(9, null, null), row(3, pass(MAIN), []), row(5, fail(MAIN), []), { number: 2, review: 'wait' }];
+  assert.equal(nextAfterMerge(rows, rows[1]).number, 5, 'a failure on the old main is tried again on the new one');
+  assert.equal(nextAfterMerge([row(3, pass(MAIN), [])], { number: 3 }), null, 'nothing else ready: nothing queued');
 });
 
 test('a revert files one heal job and does not skip the check', () => {

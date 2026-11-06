@@ -72,6 +72,15 @@ export function choose(rows, mainSha, running) {
   return { pr: open[0], action: 'queue', why: 'the full suite has not passed on top of current main' };
 }
 
+/**
+ * after a merge, the next pull request to send to the suite (2026-11-06: the next one waited for the hourly sweep, so 30 sat open).
+ * Main just moved, so no other suite result counts on it: the oldest other ready pull request goes next. Pure.
+ */
+export function nextAfterMerge(rows, merged) {
+  const n = merged && merged.number;
+  return (rows || []).filter((r) => r && r.review === 'merge' && r.number !== n).sort((a, b) => a.number - b.number)[0] || null;
+}
+
 /** the heal job filed when a commit is reverted off main. Pure. */
 export function fixJob(sha, why) {
   const id = String(sha || '').replace(/[^0-9a-f]/gi, '').slice(0, 7) || 'unknown';
