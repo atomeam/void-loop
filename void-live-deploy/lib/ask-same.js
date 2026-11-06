@@ -30,7 +30,10 @@ export const uncite = (t) => tidy(String(t == null ? '' : t).replace(/\s*\[([^\]
 // "ask 1" and "ask 2" stay two); or the same verb on the same named target (the X exam, the X skill, a site, a commit). Two asks that name
 // different sites are never one. The card's lists fold with this and its own sameAsk (sameOrDup).
 const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site|ru)\b/gi;
-const sitesOfAsk = (t) => [...new Set((String(t).match(SITE) || []).map((s) => s.toLowerCase()))].sort().join(' ');
+/** the sites an ask names, lower case, each once (the one site rule: dupAsk, sameSites, and lib/voice.js sitesIn, which wants a ledger line
+ *  that proves an ask built to name every site the ask names). Pure. */
+export const sitesOf = (t) => [...new Set((String(t == null ? '' : t).match(SITE) || []).map((s) => s.toLowerCase()))];
+const sitesOfAsk = (t) => sitesOf(t).sort().join(' ');
 /** two asks name the same sites (none and none is the same). Two asks that do not are never one ask: dupAsk here and the voice
  *  record's sameAsk (lib/voice.js) both refuse them, so "ahead of ndscalc.ru" is not folded into "ahead of onlineconverter.com" (owner's
  *  self card, 2026-11-06: the ndscalc.ru ask showed as neither open nor built). Pure. */
