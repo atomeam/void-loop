@@ -81,7 +81,9 @@ export function pickFile(files) {
   return pick ? pick.name : '';
 }
 export const archiveFileUrl = (id, name) => 'https://archive.org/download/' + encodeURIComponent(id) + '/' + encodeURIComponent(name);
-/** where-to-watch links that are searches on legal services: never a stream. Pure. */
+/** where-to-watch links that are searches on legal services: never a stream. No Internet Archive search: a generic "free films" search next
+ *  to "Not free to stream here" read as "the Archive streams this film and Verse does not" (Adam, 2026-11-06, on The Blair Witch Project).
+ *  A film the Archive holds legally is found and checked by legalArchive, plays on the card, and links its own item page. Pure. */
 // Wikidata, the second source (2026-10-30: iTunes refuses shared cloud addresses, and every well-known pick, "The Grand Budapest Hotel (2014)",
 // "Parasite (2019)", came back "not verified" on a-to-mind.com). Keyless SPARQL: a film is an item labelled with this exact English title that is
 // an instance of film (Q11424) or of a kind of film, with a publication date. It gives the year, the director and the runtime, never a poster.
@@ -110,6 +112,5 @@ export function watchLinks(title, year, store) {
   const l = [];
   if (store) l.push({ label: 'Apple TV (buy or rent)', url: store });
   l.push({ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=' + q });
-  l.push({ label: 'Internet Archive: free films', url: 'https://archive.org/search?query=' + q + '&and[]=mediatype%3A%22movies%22' });
   return l;
 }

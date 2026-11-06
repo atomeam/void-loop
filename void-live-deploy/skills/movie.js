@@ -24,7 +24,8 @@ const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="'
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
 const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · Verse plays only free, legal films and official trailers</div>';
 
-/** the card of one movie: art, facts, the player, the links. Pure given a lookup result. */
+/** the card of one movie: art, facts, the player, the links. Pure given a lookup result. A generic Internet Archive search link is never
+ *  shown, also from an answer cached before 2026-11-06: the Archive is linked only as the checked item that plays here. */
 export function movieCard(f, esc) {
   if (!f.verified) return '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2><p>' + (f.unreachable ? 'Not checked: the movie sources did not answer just now, so I will not state anything about it. Ask again in a moment.' : 'Not verified: no source I check knows a movie by this name, so I will not state anything about it.') + '</p>';
   const price = [money(f.price, f.currency) && 'buy ' + money(f.price, f.currency), money(f.rentPrice, f.currency) && 'rent ' + money(f.rentPrice, f.currency)].filter(Boolean).join(' · ');
@@ -39,8 +40,8 @@ export function movieCard(f, esc) {
     + '<div class="mv-btns" style="display:flex;gap:8px;flex-wrap:wrap">'
     + (f.free ? '<button class="g-btn mv-play" type="button">Play the film here</button>' : '')
     + (f.trailer ? '<button class="g-btn mv-trailer" type="button">Play the official trailer</button>' : '') + '</div>'
-    + (f.free ? '<div class="sub">Free and legal: ' + esc(f.play.license) + ' · <a href="' + esc(safeUrl(f.play.page)) + '" target="_blank" rel="noopener">its page</a></div>' : '<div class="sub">Not free to stream here: watch it where it is sold or streamed legally.' + (price ? ' ' + esc(price) + '.' : '') + '</div>')
-    + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>'
+    + (f.free ? '<div class="sub">Free and legal, plays here: ' + esc(f.play.license) + ' · <a href="' + esc(safeUrl(f.play.page)) + '" target="_blank" rel="noopener">its Internet Archive page</a></div>' : '<div class="sub">Not free to stream here: watch it where it is sold or streamed legally.' + (price ? ' ' + esc(price) + '.' : '') + '</div>')
+    + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).filter((l) => l && !/^https:\/\/archive\.org\/search/.test(String(l.url))).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>'
     + SRC(f, esc);
 }
 export function wirePlayers(el, f) {
@@ -48,10 +49,13 @@ export function wirePlayers(el, f) {
   const show = (node) => { box.textContent = ''; box.append(node); };
   const vid = (src, poster) => { const v = document.createElement('video'); v.controls = true; v.autoplay = true; v.playsInline = true; v.preload = 'metadata'; if (poster && /^https:/.test(poster)) v.poster = poster; v.src = src; v.style.cssText = 'width:100%;max-height:60vh;background:#000;border-radius:8px'; return v; };
   const p = el.querySelector('.mv-play'), t = el.querySelector('.mv-trailer');
-  if (p) p.addEventListener('click', () => {
-    if (f.play.kind === 'video') show(vid(f.play.src, f.poster));
-    else { const i = document.createElement('iframe'); i.src = f.play.src; i.allowFullscreen = true; i.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation'); i.title = f.title; i.style.cssText = 'width:100%;aspect-ratio:16/9;border:0;border-radius:8px'; show(i); }
-  });
+  const film = (auto) => {
+    if (f.play.kind === 'video') { const v = vid(f.play.src, f.poster); v.autoplay = auto; if (!auto) v.preload = 'none'; return v; }
+    const i = document.createElement('iframe'); i.src = f.play.src; i.allowFullscreen = true; i.loading = 'lazy'; i.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation'); i.title = f.title; i.style.cssText = 'width:100%;aspect-ratio:16/9;border:0;border-radius:8px'; return i;
+  };
+  // a free, checked Archive film is on the card from the start, so it plainly plays in Verse (Adam, 2026-11-06); nothing loads until it is played
+  if (f.free && f.play) show(film(false));
+  if (p) p.addEventListener('click', () => show(film(true)));
   if (t) t.addEventListener('click', () => show(vid(f.trailer, f.poster)));
 }
 
