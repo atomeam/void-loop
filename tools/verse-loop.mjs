@@ -192,7 +192,8 @@ export function loadState(path) {
 export function saveState(path, s) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, JSON.stringify(s, null, 1) + '\n'); }
 
 /** The loop's own code: a commit to these after the failures began means the streak was not run on the code that runs now. */
-export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js'];
+// The patch guard is the coder's own check too: a guard that refused good code is fixed there (#2386), and that fix resumes the loop.
+export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js', 'void-live-deploy/lib/patch-guard.js'];
 
 /** Is the loop paused? From the flag in the state, or (a fresh runner) the open 'Verse loop paused' issue. Paused for
  *  PAUSE_HOURS from the moment it paused, then it resumes by itself: nobody has to close anything. It resumes early when
@@ -216,10 +217,16 @@ export function recordOutcome(state, outcome, { pr = null, why = '', at = Date.n
   if (outcome === 'shipped' && pr) s.prs.push(pr);
   return s;
 }
+/** A PR another job closed as superseded (tools/automerge.mjs leaves the void-superseded marker: a newer PR carries the same work) was
+ *  replaced, not refused. Issue #2438, 2026-11-06: #2329 was closed as superseded by #2436 and counted as "not merged", the third failure
+ *  that paused the loop for 6 hours. stateOf(url) returns 'SUPERSEDED' for one (prStateOf below); it is dropped and counts for nothing. */
+export const SUPERSEDED_MARK = '<!-- void-superseded -->';
+export const prStateOf = (v) => !v ? null : v.state === 'CLOSED' && (v.comments || []).some((c) => String(c && c.body || '').includes(SUPERSEDED_MARK)) ? 'SUPERSEDED' : v.state;
 export function settlePrs(state, stateOf) {
   const s = { ...state, prs: [] };
   for (const url of state.prs || []) {
     const st = stateOf(url);
+    if (st === 'SUPERSEDED') continue;
     if (st === 'MERGED') s.fails = 0;
     else if (st === 'CLOSED') { s.fails = (s.fails || 0) + 1; s.last = [...(s.last || []), { outcome: 'not merged', why: url }].slice(-BACKOFF_AFTER); }
     else s.prs.push(url);
@@ -364,7 +371,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     }
     // the PRs earlier laps opened: merged resets the streak, closed without merging counts
     if (keep && (state.prs || []).length) {
-      state = settlePrs(state, (url) => (ghJson('pr', 'view', url, '--json', 'state') || {}).state);
+      state = settlePrs(state, (url) => prStateOf(ghJson('pr', 'view', url, '--json', 'state,comments')));
       if (state.fails >= BACKOFF_AFTER) { trip(); saveState(statePath, state); return done('paused', 'a loop PR was closed without merging, the last of ' + BACKOFF_AFTER + ' failures in a row'); }
       saveState(statePath, state);
     }

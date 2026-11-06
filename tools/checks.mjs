@@ -49,6 +49,8 @@ const ONLY_WHEN = {
   'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
   // /converter/ on a 390 px phone and with the network cut (tools/converter-phone.test.mjs): the page, its engines, the worker
+  // the stage opened beside a playing show on /local/ (tools/local-stage-dock.test.mjs)
+  'local-stage-dock.test.mjs': /void-live-deploy\/local\/(?:index\.html|watch\.js|stage-dock\.js|app\.js)$|local-stage-dock/,
   'converter-phone.test.mjs': /void-live-deploy\/(?:converter\/|sw\.js$|lib\/(?:converter|pdf-tools|transition|video-write|audio-write|mp3-edit|denoise|epub-edit|mp4-repair)\.js$)|converter-phone/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
   // glitch titles in a real browser (~3 min): a rule may be a function of the path. A script matters only when it holds a glitch letter
@@ -71,7 +73,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -126,6 +128,7 @@ for (const [name, file] of [
   ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],
+  ['local-stage-dock', 'local-stage-dock.test.mjs'], // a blueprint opened on stage keeps the show playing in a card beside it (owner, 2026-11-06)
   ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
@@ -237,6 +240,7 @@ for (const [name, file] of [
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
+  ['site-test-close', 'site-test-close.test.mjs'], // the site tester closes its own items: a recheck that passes on the live site closes the issue, one that still fails is queued once
   ['exam', 'exam.test.mjs'],
   ['hear', 'hear.test.mjs'],
   ['visitor-pass', 'visitor-pass.test.mjs'],

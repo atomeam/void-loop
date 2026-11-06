@@ -30,7 +30,14 @@ export const uncite = (t) => tidy(String(t == null ? '' : t).replace(/\s*\[([^\]
 // "ask 1" and "ask 2" stay two); or the same verb on the same named target (the X exam, the X skill, a site, a commit). Two asks that name
 // different sites are never one. The card's lists fold with this and its own sameAsk (sameOrDup).
 const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site|ru)\b/gi;
-const sitesOfAsk = (t) => [...new Set((String(t).match(SITE) || []).map((s) => s.toLowerCase()))].sort().join(' ');
+/** the sites an ask names, lower case, each once (the one site rule: dupAsk, sameSites, and lib/voice.js sitesIn, which wants a ledger line
+ *  that proves an ask built to name every site the ask names). Pure. */
+export const sitesOf = (t) => [...new Set((String(t == null ? '' : t).match(SITE) || []).map((s) => s.toLowerCase()))];
+const sitesOfAsk = (t) => sitesOf(t).sort().join(' '); // void-review: ok (site names are text, sorted as text on purpose)
+/** two asks name the same sites (none and none is the same). Two asks that do not are never one ask: dupAsk here and the voice
+ *  record's sameAsk (lib/voice.js) both refuse them, so "ahead of ndscalc.ru" is not folded into "ahead of onlineconverter.com" (owner's
+ *  self card, 2026-11-06: the ndscalc.ru ask showed as neither open nor built). Pure. */
+export const sameSites = (a, b) => sitesOfAsk(a) === sitesOfAsk(b);
 /** an ask's words for comparing: tags out, lower case, letters and digits only. Pure. */
 export const askKey = (t) => uncite(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const targetsOf = (t) => {
@@ -44,7 +51,7 @@ export function dupAsk(a, b) {
   const ka = askKey(a), kb = askKey(b);
   if (!ka || !kb) return false;
   if (ka === kb) return true;
-  if (sitesOfAsk(a) !== sitesOfAsk(b)) return false;
+  if (!sameSites(a, b)) return false;
   const ma = ka.replace(/\d+/g, '#');
   if (ma === kb.replace(/\d+/g, '#') && ma.split(' ').filter((w) => w.length > 2 && !/#/.test(w)).length >= 4) return true;
   const ta = targetsOf(a);

@@ -50,8 +50,11 @@ export function velocityHtml(v, esc, fr = null) {
     + sparkSvg(v.days, 84, 18, { key: 'n', max, cls: 'vs-spark', ticks: true, ...(fr ? { segmentColors: frictionColors(fr) } : {}) }) + '<span class="vs-vel-label">' + esc(velocityLabel(v)) + (fr && fr.total ? '<span class="vs-overdue"> · ' + esc(fr.total) + ' overdue</span>' : '') + '</span></div>';
 }
 // the long lists fold (owner, 2026-10-18: "What I've asked for" and "What got built" read as a monolith): the newest FOLD show, the rest wait behind
-// "show all N"; a folded item is still in the saved text, as one line (its dates and details are marked data-share-skip, lib/card-share.js)
+// "show all N"; a folded item is still in the saved text, as one line (its dates and details are marked data-share-skip, lib/card-share.js;
+// a folded built row also keeps "Built <day>", data-share-short)
 export const FOLD = 5;
+/** a folded built row's line in the saved text: "Built 2026-10-22" (or "Built" with no date). Pure. */
+export const builtShort = (at) => 'Built' + (String(at || '').trim() ? ' ' + String(at).trim() : '');
 export const SHORT = 72; // a folded item's line in the saved text, so a long list still fits the saved card (lib/card-share.js BODY_MAX)
 /** a folded item's one line: its first SHORT characters, cut at a word, with an ellipsis when cut. Pure. */
 export function shortLine(t) {
@@ -208,8 +211,11 @@ export function sectionHtml(s, esc) {
     if (b.t === 'depth') return '<div class="v-depth" role="group" aria-label="Which builds to show">' + b.counts.map(([k, l, n], i) => '<button type="button" class="tr-copy" data-v-depth="' + k + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + esc(l + ' · ' + n) + '</button>').join(' ') + '</div>';
     if (b.t === 'list') {
       const more = b.items.filter((it) => it.more).length, skip = (it) => (it.more ? ' data-share-skip="1"' : '');
+      // a folded built row's details save as their short form, so the saved text still says it was built and when (owner's self card,
+      // 2026-11-06: with only the ask left, 25 folded built rows read as asks still waiting); the whole words, never a cut line
+      const meta = (it) => (it.more ? ' data-share-short="' + esc(builtShort(it.detail.at)) + '"' : '');
       return '<ul class="' + esc(b.cls) + ' vs-list">' + b.items.map((it) => '<li data-bullet="1"' + (b.cls.includes('v-built') ? ' data-depth="' + esc(it.depth) + '"' : '') + (it.more ? ' data-more="1" hidden' : it.hidden ? ' hidden' : '') + '><details' + (it.open ? ' open' : '') + '><summary>' + esc(it.text) + '</summary>'
-        + (it.detail ? '<div class="v-meta"' + skip(it) + '>' + (sentence(it.detail.ask) === sentence(it.text) ? '' : '<b>I asked:</b> ' + esc(it.detail.ask) + '<br>') + '<b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
+        + (it.detail ? '<div class="v-meta"' + meta(it) + '>' + (sentence(it.detail.ask) === sentence(it.text) ? '' : '<b>I asked:</b> ' + esc(it.detail.ask) + '<br>') + '<b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
         + '</details>' + (it.detail && it.sub ? '<div class="vs-sub"' + skip(it) + '>' + esc(it.sub) + '</div>' : '') + '</li>').join('') + '</ul>'
         + (more ? '<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="' + esc(b.items.length) + '">' + esc('show all ' + b.items.length) + '</button>' : '');
     }
