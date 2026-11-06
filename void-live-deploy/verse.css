@@ -195,8 +195,16 @@ body.vs-stand { margin: 0; min-height: 100vh; background: var(--bg); color: var(
   html.vs-tool:not([data-theme=light]), html.vs-tool:not([data-theme=light]) body {
     background: radial-gradient(ellipse 90% 55% at 50% -18%, rgb(var(--d-key) / .18), transparent 52%), #050505; color: var(--d-ink);
   }
-  html.vs-tool:not([data-theme=light]) :is(button, a):is(.go, .primary, .buy), html.vs-tool:not([data-theme=light]) button:is(.main, .eq) { color: var(--on-accent); }
+  /* a filled action button: the accent fill and its dark ink go together (2026-11-06: ink alone left dark text on a page's own dark fill, 1.02:1 on /jobs/) */
+  html.vs-tool:not([data-theme=light]) :is(button, a):is(.go, .primary, .buy, .solid), html.vs-tool:not([data-theme=light]) button:is(.main, .eq), html.vs-tool:not([data-theme=light]) .chip.on {
+    background-color: var(--accent); border-color: var(--accent); color: var(--on-accent);
+  }
 }
+/* tap targets on tool pages: 24 by 24 px at least (WCAG 2.5.8, tools/tower-gate.mjs designLook). A plain link gets taller with padding only, which
+   does not move the line it sits in; a box gets a minimum height. :where() keeps these at no weight, so a page's own larger size still wins. */
+:where(html.vs-tool) :where(a[href]) { padding-block: 5px; }
+:where(html.vs-tool) :where(select, button, input:not([type=checkbox], [type=radio], [type=hidden])) { min-height: 24px; }
+html.vs-tool input:is([type=checkbox], [type=radio]) { min-width: 24px !important; min-height: 24px !important; }
 @media screen and (forced-colors: active) {
   html.vs-tool:not([data-theme=light]),
   html.vs-tool:not([data-theme=light]) body { background: Canvas; color: CanvasText; }

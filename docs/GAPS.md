@@ -10,7 +10,7 @@ Evidence states, in order: **open** (seen failing, not built), **implemented** (
 
 Not on the list, by rule: recreations of a named game (wordle, tetris), tests that need an invented score or make a medical claim (iq test, personality test, color blindness test, hearing test), and fake card numbers. These were seen failing too, and stay out on purpose.
 
-Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.test.mjs` and `tools/my-device.test.mjs`; batch 2 in `tools/gaps-batch2.test.mjs`; batch 3 in `tools/gaps-batch3.test.mjs`; batch 4 in `tools/gaps-batch4.test.mjs`.
+Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.test.mjs` and `tools/my-device.test.mjs`; batch 2 in `tools/gaps-batch2.test.mjs`; batch 3 in `tools/gaps-batch3.test.mjs`; batch 4 in `tools/gaps-batch4.test.mjs`; batch 5 in `tools/gaps-batch5.test.mjs`.
 
 | # | Ask | Seen | Done when | State |
 |---|-----|------|-----------|-------|
@@ -66,15 +66,15 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 50 | make a business card | 2026-11-06: a card about Verse itself | a card from your name, role and contact, to print or save as PNG | open |
 | 51 | make a resume | 2026-11-06: how-to text | a resume form that becomes a clean page to print or save | open |
 | 52 | word counter for essay | 2026-11-06: an explanation | the word counter opens, the same as "word counter" | verified live 2026-11-06 |
-| 53 | grocery list | 2026-11-06: nothing | a list card on the stage that takes items and ticks them off | open |
+| 53 | grocery list | 2026-11-06: nothing | a list card on the stage that takes items and ticks them off | implemented |
 | 54 | strikethrough text | 2026-11-06: an article on the character | the text comes back with combining strokes, ready to copy | verified live 2026-11-06 |
 | 55 | upside down text | 2026-11-06: an article on the effect | the text comes back flipped from a mapping table, ready to copy | verified live 2026-11-06 |
 | 56 | small caps text | 2026-11-06: nothing | the text in Unicode small capitals, letters with no small capital left as they are | verified live 2026-11-06 |
 | 57 | bubble text | 2026-11-06: article on contrast ultrasound | the text in circled Unicode letters, ready to copy | verified live 2026-11-06 |
 | 58 | zalgo text | 2026-11-06: an article on the effect | the text with combining marks, light, medium or heavy as the ask says | verified live 2026-11-06 |
-| 59 | invisible character | 2026-11-06: a disambiguation card | the blank characters (U+200B, U+3164, U+2800) with a copy button for each and what each is | implemented |
-| 60 | text art big letters hello | 2026-11-06: nothing | the words in big block letters drawn from a font grid, ready to copy | open |
-| 61 | phonetic alphabet | 2026-11-06: a disambiguation card | the NATO and ICAO spelling alphabet, and the words spelled out letter by letter | implemented |
+| 59 | invisible character | 2026-11-06: a disambiguation card | the blank characters (U+200B, U+3164, U+2800) with a copy button for each and what each is | verified live 2026-11-06 |
+| 60 | text art big letters hello | 2026-11-06: nothing | the words in big block letters drawn from a font grid, ready to copy | implemented |
+| 61 | phonetic alphabet | 2026-11-06: a disambiguation card | the NATO and ICAO spelling alphabet, and the words spelled out letter by letter | verified live 2026-11-06 |
 | 62 | html color names | 2026-11-06: an explanation | the named colours of the CSS Color specification, each with its swatch and hex, searchable | open |
 | 63 | box shadow generator | 2026-11-06: how-to text | sliders for offset, blur, spread and colour, a live sample, the CSS to copy | open |
 | 64 | border radius generator | 2026-11-06: how-to text | a corner for each radius, a live sample, the CSS to copy | open |
@@ -90,11 +90,11 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 74 | allowance tracker | 2026-11-06: an explanation | money in and out per child, the balance, kept on the device | open |
 | 75 | time sheet | 2026-11-06: an article on timesheets | start and end times for each day, breaks taken off, the week's total hours | open |
 | 76 | shift schedule maker | 2026-11-06: an explanation | people and shifts on a week grid, hours per person, printable | open |
-| 77 | final exam grade needed | 2026-11-06: an explanation | current grade, exam weight and target in, the exam score needed out, worked out | implemented |
-| 78 | event countdown | 2026-11-06: an explanation | a countdown card to the date the ask names, days to seconds | open |
+| 77 | final exam grade needed | 2026-11-06: an explanation | current grade, exam weight and target in, the exam score needed out, worked out | verified live 2026-11-06 |
+| 78 | event countdown | 2026-11-06: an explanation | a countdown card to the date the ask names, days to seconds | implemented |
 | 79 | random team generator | 2026-11-06: an explanation | names in, split at random into the number of teams asked for | verified live 2026-11-06 |
 | 80 | secret santa draw | 2026-11-06: an explanation | names in, a draw where nobody gets themselves, each pairing shown one at a time | verified live 2026-11-06 |
-| 81 | tournament bracket | 2026-11-06: an article on brackets | names in, a single elimination bracket with byes, winners picked by clicking | open |
+| 81 | tournament bracket | 2026-11-06: an article on brackets | names in, a single elimination bracket with byes, winners picked by clicking | implemented |
 | 82 | keyboard tester | 2026-11-06: an explanation | a keyboard drawn in the page, each key lights when pressed, the key code shown | open |
 | 83 | mouse tester | 2026-11-06: an explanation | each button, the wheel and double clicks shown as they happen | open |
 | 84 | dead pixel test | 2026-11-06: article on defective pixels | full screen colours to step through with a click, said to be a visual check | open |
@@ -107,9 +107,9 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 91 | flowchart maker | 2026-11-06: an explanation | boxes and arrows drawn from typed lines like "start -> check -> end", saved as SVG | open |
 | 92 | svg editor | 2026-11-06: an explanation | SVG code and its drawing side by side, each updating the other's view | open |
 | 93 | code editor | 2026-11-06: an article on code editors | an editor with line numbers and colouring for HTML, CSS and JavaScript, with a live preview | open |
-| 94 | sql formatter | 2026-11-06: an explanation | pasted SQL comes back indented with keywords in capitals | implemented |
-| 95 | xml to json | 2026-11-06: an explanation | pasted XML comes back as JSON, with the error line when it does not parse | implemented |
-| 96 | html to markdown | 2026-11-06: an explanation | pasted HTML comes back as Markdown | open |
+| 94 | sql formatter | 2026-11-06: an explanation | pasted SQL comes back indented with keywords in capitals | verified live 2026-11-06 |
+| 95 | xml to json | 2026-11-06: an explanation | pasted XML comes back as JSON, with the error line when it does not parse | verified live 2026-11-06 |
+| 96 | html to markdown | 2026-11-06: an explanation | pasted HTML comes back as Markdown | verified live 2026-11-06 |
 | 97 | encrypt a message | 2026-11-06: an explanation | a message and a passphrase in, AES-GCM text out, and the same card decrypts it; nothing sent | open |
 | 98 | make a strong passphrase | 2026-11-06: an explanation | words picked in the page from the EFF long word list, the list credited, with the entropy in bits | open |
 | 99 | generate an ssh key | 2026-11-06: an explanation | an Ed25519 key pair made in the page with Web Crypto, saved as files, said never to leave the device | open |
