@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, botRecord, fixJob, CHECK, BATCH } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -105,4 +105,25 @@ test('a red batch is split in half until the red pull request runs alone, and on
   assert.equal(next.pr.number, 2);
   assert.equal(next.batch.length, 1, 'the half it was in, split again');
   assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), BATCH, 'main moved with code: a full batch again');
+});
+
+test('a green run merges past the records the bot writes straight to main, and past nothing else', () => {
+  const log = 'COMMIT Tower gate: prizes measured against their live sites\nAUTHOR github-actions[bot]\n\nvoid-live-deploy/tower-evidence/prizes-27fdb497.json\nvoid-live-deploy/tower.evidence.json\nvoid-live-deploy/tower.shots/prizes.jpg\n\n'
+    + 'COMMIT Site test: 12 checks\nAUTHOR github-actions[bot]\n\nvoid-live-deploy/tester-log.json\ntools/site-test.log.json\n';
+  const recs = parseLog(log);
+  assert.equal(recs[0].author, 'github-actions[bot]');
+  assert.deepEqual([...recs[0]], ['void-live-deploy/tower-evidence/prizes-27fdb497.json', 'void-live-deploy/tower.evidence.json', 'void-live-deploy/tower.shots/prizes.jpg'], 'the author line is not a file');
+  assert.equal(recs[1].subject, 'Site test: 12 checks');
+  assert.equal(driftOk(recs, []), true, 'bot records only: the green run still counts');
+  assert.equal(mayMerge(row(4, pass(OLD), recs), MAIN), true);
+  const bot = (subject, files) => Object.assign([...files], { subject, author: 'github-actions[bot]' });
+  assert.equal(botRecord(bot('Verse loop: nightly (#2312)', ['domains/x.md'])), false, 'a squash of a pull request is never a record');
+  assert.equal(botRecord(bot('Versus by itself', ['void-live-deploy/assimilated.json', 'void-live-deploy/colour/index.html'])), false, 'a page is code');
+  assert.equal(botRecord(bot('Upkeep', ['void-live-deploy/lib/clips.json'])), false, 'lib and skills feed the pages');
+  assert.equal(botRecord(bot('Upkeep', ['.github/workflows/x.yml'])), false, 'a workflow is code');
+  assert.equal(botRecord(bot('Deps', ['package-lock.json'])), false, 'dependencies are code');
+  assert.equal(botRecord(bot('Empty', [])), false, 'a commit with no files says nothing');
+  assert.equal(botRecord(Object.assign(['void-live-deploy/tester-log.json'], { subject: 'Site test', author: 'someone' })), false, 'only the record bot');
+  assert.equal(botRecord(['void-live-deploy/tester-log.json']), false, 'no author line (an older log): not a record');
+  assert.equal(driftOk([...recs, squash(55, ['void.html'])], [4]), false, 'a pull request from outside the batch is still real drift');
 });
