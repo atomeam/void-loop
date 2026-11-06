@@ -1388,14 +1388,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-26T16:56:18Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
    "at": "2026-10-26T16:58:53Z",
    "line": "Versus: took on no site; next supercolorapp.com",
    "built": 0,
@@ -1743,6 +1735,15 @@
    "fixed": [],
    "pages_per_day": 2,
    "reads_next": "uniteforliteracy.com"
+  },
+  {
+   "at": "2026-11-06T09:47:01Z",
+   "line": "Versus: took on no site (also read: 4 walled, 4 no-family); next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com"
   }
  ]
 }
