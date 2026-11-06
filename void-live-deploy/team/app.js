@@ -58,7 +58,7 @@ const clock = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minut
 const dayOf = (t) => { const d = new Date(t), today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
   return d.toDateString() === today.toDateString() ? 'Today' : d.toDateString() === y.toDateString() ? 'Yesterday' : d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }); };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - t) / 60e3)); return m < 1 ? 'just now' : m < 60 ? m + ' min' : m < 1440 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' d'; };
-const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + stateWord0(m);
+const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + (m.crew && m.state !== 'invited' ? T.crewNext(m.next) : stateWord0(m)); // a crew member never holds a job: its card says when it runs next
 const stateWord0 = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : m.state === 'invited' ? 'invited, not joined yet' : 'away';
 
 function msgHtml(m, prev, { inThread = false } = {}) {
