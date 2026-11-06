@@ -48,16 +48,25 @@ export function scriptsOf(html) {
   return out;
 }
 
-// ES module syntax that a Function body cannot hold: imports dropped, exports unwrapped (the rest of the line is still checked)
+// ES module syntax that a Function body cannot hold: imports dropped, exports unwrapped (the rest of the line is still checked).
+// A dropped part keeps its line breaks, so an error's line number is still the file's. The shebang a node script starts with
+// (#!/usr/bin/env node) is not JavaScript either. An import or export statement starts a line or follows a `;` (several on one
+// line), the braces of `import { a, b } from 'x'` may span lines, and an import may carry attributes (`with { type: 'json' }`). Before 2026-11-06 the shebang and those two forms were
+// refused as "does not parse" on 173 of the repo's 2,939 scripts, so the coder could not change them at all (Verse loop paused,
+// #2386: three laps refused on tools/openapi-check.mjs).
+const blank = (s) => s.replace(/[^\n]/g, '');
+const ATTRS = '(?:\\s*(?:with|assert)\\s*\\{[^}]*\\})?'; // import attributes: with { type: 'json' }
+const lead = (re) => new RegExp('(?<=^|;)([ \\t]*)' + re, 'gm');
 function unmodule(code) {
   return String(code)
-    .replace(/^[ \t]*import\s+(?:[\w*{}\s,$]+\s+from\s+)?(['"])[^'"\n]*\1[ \t]*;?/gm, '')
+    .replace(/^#![^\n]*/, '')
+    .replace(lead('import\\s+(?:[\\w*{}\\s,$]+?\\s+from\\s*)?([\'"])[^\'"\\n]*\\2' + ATTRS + '[ \\t]*;?'), (m, a) => a + blank(m.slice(a.length)))
     .replace(/^[ \t]*import\s*\(/gm, '(')
-    .replace(/^[ \t]*export\s+\{[^}]*\}(?:\s*from\s*(['"])[^'"\n]*\1)?[ \t]*;?/gm, '')
-    .replace(/^[ \t]*export\s+\*\s+(?:as\s+\w+\s+)?from\s*(['"])[^'"\n]*\1[ \t]*;?/gm, '')
-    .replace(/^([ \t]*)export\s+default\s+(?=(?:async\s+)?function\b|class\b)/gm, '$1')
-    .replace(/^([ \t]*)export\s+default\s+/gm, '$1void ')
-    .replace(/^([ \t]*)export\s+(?=(?:async\s+)?function\b|class\b|const\b|let\b|var\b)/gm, '$1')
+    .replace(lead('export\\s*\\{[^}]*\\}(?:\\s*from\\s*([\'"])[^\'"\\n]*\\2' + ATTRS + ')?[ \\t]*;?'), (m, a) => a + blank(m.slice(a.length)))
+    .replace(lead('export\\s+\\*\\s+(?:as\\s+[\\w$]+\\s+)?from\\s*([\'"])[^\'"\\n]*\\2[ \\t]*;?'), (m, a) => a + blank(m.slice(a.length)))
+    .replace(lead('export\\s+default\\s+(?=(?:async\\s+)?function\\b|class\\b)'), '$1')
+    .replace(lead('export\\s+default\\s+'), '$1void ')
+    .replace(lead('export\\s+(?=(?:async\\s+)?function\\b|class\\b|const\\b|let\\b|var\\b)'), '$1')
     .replace(/\bimport\.meta\b/g, '({})');
 }
 
@@ -123,7 +132,7 @@ function scan(code) {
 
 /** { error: null } when the JavaScript parses, else the error in plain words; `how` says which check ran */
 export function syntaxError(code, { module = false, fragment = false } = {}) {
-  const body = module || /^[ \t]*(?:import|export)\b/m.test(code) ? unmodule(code) : String(code);
+  const body = module || /^#!|(?:^|;)[ \t]*(?:import|export)\b/m.test(code) ? unmodule(code) : String(code);
   if (fragment) { // a snippet in an answer may be an object's insides or one expression: any reading that parses will do
     const first = syntaxError(body);
     if (!first.error || first.how !== 'parsed') return first;

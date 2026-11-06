@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1198,
+ "counted": 1194,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,14 +20,14 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 78,
-   "tests": 12
+   "dependants": 75,
+   "tests": 9
   },
   {
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 76,
+   "dependants": 75,
    "tests": 4
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 92,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 26,
    "direct": 1,
-   "dependants": 92,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 91,
+   "dependants": 90,
    "tests": 5
   },
   {
@@ -90,7 +90,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 58,
+   "dependants": 57,
    "tests": 2
   },
   {
@@ -125,49 +125,49 @@
    "file": "lib/reactions.js",
    "skills": 18,
    "direct": 1,
-   "dependants": 72,
+   "dependants": 71,
    "tests": 1
   },
   {
    "file": "lib/corrections.js",
    "skills": 17,
    "direct": 0,
-   "dependants": 61,
+   "dependants": 60,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
    "skills": 17,
    "direct": 5,
-   "dependants": 57,
+   "dependants": 56,
    "tests": 6
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 62,
+   "dependants": 61,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 61,
+   "dependants": 60,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 60,
+   "dependants": 59,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 58,
+   "dependants": 57,
    "tests": 4
   },
   {
@@ -209,7 +209,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 48,
+   "dependants": 47,
    "tests": 4
   },
   {
@@ -223,63 +223,63 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 47,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 48,
+   "dependants": 47,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 46,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 46,
    "tests": 1
   },
   {
    "file": "lib/hardened-line.js",
    "skills": 9,
    "direct": 2,
-   "dependants": 46,
+   "dependants": 45,
    "tests": 0
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 45,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 45,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 45,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 45,
    "tests": 1
   },
   {
@@ -475,7 +475,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 107,
+   "dependants": 106,
    "tests": 2
   },
   {
@@ -587,42 +587,42 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 106,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 106,
+   "dependants": 105,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 104,
+   "dependants": 103,
    "tests": 9
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 1
   },
   {
@@ -846,7 +846,7 @@
    "file": "lib/local-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 8,
+   "dependants": 7,
    "tests": 0
   },
   {
@@ -980,7 +980,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 3,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/parody.js",
@@ -1025,13 +1025,6 @@
    "tests": 1
   },
   {
-   "file": "lib/compose.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 39,
-   "tests": 3
-  },
-  {
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
@@ -1039,18 +1032,18 @@
    "tests": 4
   },
   {
+   "file": "lib/compose.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 38,
+   "tests": 3
+  },
+  {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 37,
    "tests": 2
-  },
-  {
-   "file": "lib/pay-share.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 36,
-   "tests": 1
   },
   {
    "file": "lib/store-db.js",
@@ -1060,24 +1053,31 @@
    "tests": 3
   },
   {
+   "file": "lib/pay-share.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 35,
+   "tests": 1
+  },
+  {
    "file": "lib/markets.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 34,
+   "dependants": 33,
    "tests": 5
   },
   {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 33,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 33,
+   "dependants": 32,
    "tests": 6
   },
   {
@@ -1333,87 +1333,80 @@
    "tests": 1
   },
   {
-   "file": "lib/follow-ask.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 38,
-   "tests": 1
-  },
-  {
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 36,
    "tests": 1
   },
   {
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 35,
    "tests": 1
   },
   {
    "file": "lib/rap.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 34,
    "tests": 5
   },
   {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 33,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 33,
    "tests": 2
   },
   {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 32,
+   "dependants": 31,
    "tests": 2
   },
   {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/actions.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 2
   },
   {
    "file": "lib/free-pics.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 2
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 24,
    "tests": 2
   },
   {
@@ -1431,20 +1424,6 @@
    "tests": 2
   },
   {
-   "file": "lib/appraise-photo.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-atlas.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-creature.js",
    "skills": 1,
    "direct": 0,
@@ -1455,13 +1434,6 @@
    "file": "lib/brain-current.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-curves.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 9,
    "tests": 1
   },
@@ -1501,13 +1473,6 @@
    "tests": 1
   },
   {
-   "file": "lib/brain-growth.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-hearing.js",
    "skills": 1,
    "direct": 1,
@@ -1526,7 +1491,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 9,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/brain-painter.js",
@@ -1590,6 +1555,13 @@
    "direct": 0,
    "dependants": 9,
    "tests": 2
+  },
+  {
+   "file": "lib/appraise-photo.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/boards.js",
@@ -1659,7 +1631,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 4,
-   "tests": 29
+   "tests": 25
   },
   {
    "file": "lib/converter.js",
@@ -1688,13 +1660,6 @@
    "direct": 1,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/local-media.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 3
   },
   {
    "file": "lib/rap-song.js",
@@ -1768,6 +1733,13 @@
   },
   {
    "file": "lib/learn.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 3
+  },
+  {
+   "file": "lib/local-media.js",
    "skills": 1,
    "direct": 1,
    "dependants": 3,
@@ -2233,7 +2205,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/routine-skill.js",
@@ -2414,260 +2386,267 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 100,
+   "dependants": 99,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 98,
    "tests": 35
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 70,
    "tests": 14
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 62,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 62,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 62,
+   "dependants": 61,
    "tests": 9
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 50,
+   "dependants": 49,
    "tests": 5
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 48,
    "tests": 0
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 48,
    "tests": 6
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 40,
    "tests": 0
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 38,
    "tests": 0
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 33,
    "tests": 9
   },
   {
    "file": "lib/free-router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 31,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 30,
    "tests": 3
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 30,
    "tests": 0
   },
   {
    "file": "lib/answer-free.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 29,
    "tests": 8
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 2
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 3
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
+   "tests": 1
+  },
+  {
+   "file": "lib/follow-ask.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/watch-build.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19,
-   "tests": 2
+   "dependants": 18,
+   "tests": 1
   },
   {
    "file": "lib/job-guide.js",
@@ -2775,18 +2754,18 @@
    "tests": 1
   },
   {
-   "file": "lib/watch-along.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 3
-  },
-  {
    "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
    "dependants": 7,
    "tests": 4
+  },
+  {
+   "file": "lib/watch-along.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 2
   },
   {
    "file": "lib/wiki-look.js",
@@ -3907,7 +3886,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/local.js",
     "functions/api/markets.js",
@@ -3957,7 +3935,6 @@
     "functions/api/x402/[service].js"
    ],
    "reachedBy": [
-    "functions/api/blueprint.js",
     "functions/api/mcp.js",
     "functions/api/sing.js"
    ]
@@ -4021,16 +3998,6 @@
     "functions/api/answer.js",
     "lib/router.js",
     "lib/clef.js"
-   ],
-   "importedBy": []
-  },
-  "functions/api/blueprint.js": {
-   "imports": [
-    "functions/api/answer.js",
-    "functions/api/watchalong.js",
-    "lib/actions.js",
-    "lib/watch-along.js",
-    "lib/watch-build.js"
    ],
    "importedBy": []
   },
@@ -4371,7 +4338,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -4927,9 +4893,7 @@
     "lib/local-media.js",
     "lib/watch-along.js"
    ],
-   "importedBy": [
-    "functions/api/blueprint.js"
-   ]
+   "importedBy": []
   },
   "functions/api/weather.js": {
    "imports": [
@@ -5104,7 +5068,6 @@
    "importedBy": [
     "functions/api/actions.js",
     "functions/api/approval.js",
-    "functions/api/blueprint.js",
     "functions/api/handoff.js",
     "functions/api/queue.js",
     "functions/api/reflect.js",
@@ -5190,7 +5153,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -5239,7 +5201,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -5282,7 +5243,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -5320,7 +5280,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -5354,7 +5313,6 @@
     "skills/appraise.js"
    ],
    "reachedBy": [
-    "functions/api/blueprint.js",
     "functions/api/mcp.js",
     "functions/api/recipeimport.js",
     "functions/api/sing.js",
@@ -5483,7 +5441,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/gallery.js",
@@ -5589,7 +5546,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -5760,7 +5716,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/crew.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -5905,7 +5860,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -6044,7 +5998,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -6135,25 +6088,6 @@
     "skills/toolkit.js"
    ]
   },
-  "lib/brain-atlas.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-dialogue.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-route.js",
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/brain-bridge.js": {
    "imports": [],
    "importedBy": [
@@ -6204,30 +6138,10 @@
     "lib/brain-route.js"
    ]
   },
-  "lib/brain-curves.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-dialogue.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-route.js",
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/brain-dialogue.js": {
    "imports": [
     "lib/brain-organs.js",
-    "lib/brain-workspace.js",
-    "lib/follow-ask.js"
+    "lib/brain-workspace.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -6374,25 +6288,6 @@
     "skills/verse-brain.js"
    ]
   },
-  "lib/brain-growth.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-dialogue.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-route.js",
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/brain-hearing.js": {
    "imports": [
     "lib/field-kit.js",
@@ -6458,9 +6353,6 @@
     "lib/brain-strokes.js",
     "lib/brain-rules.js",
     "lib/brain-reflex.js",
-    "lib/brain-growth.js",
-    "lib/brain-atlas.js",
-    "lib/brain-curves.js",
     "lib/brain-dialogue.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
@@ -6498,9 +6390,6 @@
     "lib/brain-strokes.js",
     "lib/brain-rules.js",
     "lib/brain-reflex.js",
-    "lib/brain-growth.js",
-    "lib/brain-atlas.js",
-    "lib/brain-curves.js",
     "lib/brain-dialogue.js",
     "lib/brain-workspace.js"
    ],
@@ -6705,17 +6594,14 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
-    "lib/brain-atlas.js",
     "lib/brain-creature.js",
     "lib/brain-current.js",
-    "lib/brain-curves.js",
     "lib/brain-dialogue.js",
     "lib/brain-field.js",
     "lib/brain-formula.js",
     "lib/brain-gardener.js",
     "lib/brain-grains.js",
     "lib/brain-grower.js",
-    "lib/brain-growth.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -6756,9 +6642,6 @@
     "lib/brain-strokes.js",
     "lib/brain-rules.js",
     "lib/brain-reflex.js",
-    "lib/brain-growth.js",
-    "lib/brain-atlas.js",
-    "lib/brain-curves.js",
     "lib/brain-dialogue.js"
    ],
    "importedBy": [
@@ -6818,7 +6701,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -6911,7 +6793,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7059,7 +6940,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7184,7 +7064,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7250,7 +7129,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7337,7 +7215,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7376,7 +7253,6 @@
    "reachedBy": [
     "functions/api/a2a.js",
     "functions/api/apibot.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7417,7 +7293,6 @@
     "functions/api/actions.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7525,7 +7400,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7649,7 +7523,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7781,7 +7654,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/free.js",
@@ -7899,7 +7771,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -7970,7 +7841,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/crew.js",
@@ -8177,15 +8047,12 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
-    "lib/brain-atlas.js",
     "lib/brain-creature.js",
     "lib/brain-current.js",
-    "lib/brain-curves.js",
     "lib/brain-formula.js",
     "lib/brain-gardener.js",
     "lib/brain-grains.js",
     "lib/brain-grower.js",
-    "lib/brain-growth.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
     "lib/brain-organs.js",
@@ -8501,14 +8368,12 @@
   "lib/follow-ask.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js",
-    "lib/brain-dialogue.js"
+    "functions/api/answer.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -8532,15 +8397,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain-route.js",
-    "lib/brain.js",
-    "skills/verse-brain.js"
+    "lib/bench-asks.js"
    ]
   },
   "lib/forge-duel.js": {
@@ -8598,7 +8455,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/gallery.js",
@@ -8639,7 +8495,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -8844,7 +8699,6 @@
     "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/crew.js",
     "functions/api/film-review.js",
@@ -8902,7 +8756,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9024,7 +8877,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9205,7 +9057,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9359,7 +9210,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9450,7 +9300,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/daily-art.js",
     "functions/api/local.js",
     "functions/api/markets.js",
@@ -9563,7 +9412,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9635,7 +9483,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9816,7 +9663,6 @@
     "lib/toolkit.js"
    ],
    "reachedBy": [
-    "functions/api/blueprint.js",
     "functions/api/local.js",
     "functions/api/watchalong.js",
     "skills/local-stations.js",
@@ -9832,9 +9678,6 @@
     "functions/api/local.js",
     "functions/api/watchalong.js",
     "skills/local-stations.js"
-   ],
-   "reachedBy": [
-    "functions/api/blueprint.js"
    ]
   },
   "lib/loop-share.js": {
@@ -9881,7 +9724,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -9922,7 +9764,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10051,7 +9892,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10126,7 +9966,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10175,7 +10014,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10214,7 +10052,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
@@ -10403,7 +10240,6 @@
     "functions/api/actions.js",
     "functions/api/apibot.js",
     "functions/api/approval.js",
-    "functions/api/blueprint.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
@@ -10550,7 +10386,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10594,7 +10429,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10641,7 +10475,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10677,7 +10510,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10740,7 +10572,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
@@ -10950,7 +10781,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -10999,7 +10829,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/boards/[[path]].js",
     "functions/api/calshare.js",
     "functions/api/card-art.js",
@@ -11133,7 +10962,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/crew.js",
@@ -11283,7 +11111,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11319,7 +11146,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11358,7 +11184,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11444,7 +11269,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11548,7 +11372,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11621,7 +11444,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11674,7 +11496,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11735,7 +11556,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -11840,7 +11660,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12157,7 +11976,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12231,7 +12049,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/local.js",
     "functions/api/markets.js",
@@ -12350,7 +12167,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12388,7 +12204,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12427,7 +12242,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12491,7 +12305,6 @@
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12554,7 +12367,6 @@
    "reachedBy": [
     "functions/api/a2a.js",
     "functions/api/apibot.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12635,7 +12447,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -12790,7 +12601,6 @@
    "reachedBy": [
     "functions/api/a2a.js",
     "functions/api/apibot.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13000,7 +12810,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13074,7 +12883,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13237,7 +13045,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13552,7 +13359,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13701,7 +13507,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13748,7 +13553,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13788,7 +13592,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -13864,7 +13667,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -14103,7 +13905,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
@@ -14638,7 +14439,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
@@ -14848,7 +14648,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -14908,7 +14707,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/crew.js",
@@ -14976,7 +14774,6 @@
    "imports": [],
    "importedBy": [
     "functions/api/appraise.js",
-    "functions/api/blueprint.js",
     "functions/api/watchalong.js"
    ],
    "reachedBy": [
@@ -14990,7 +14787,6 @@
   "lib/watch-build.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/blueprint.js",
     "lib/job-guide.js"
    ],
    "reachedBy": [
@@ -15053,7 +14849,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -15123,7 +14918,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/crew.js",
@@ -15253,7 +15047,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -16728,7 +16521,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -16791,7 +16583,6 @@
     "functions/api/answer.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
@@ -19162,7 +18953,6 @@
     "functions/api/a2a.js",
     "functions/api/apibot.js",
     "functions/api/bench.js",
-    "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
