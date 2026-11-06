@@ -2714,7 +2714,7 @@
    "chapter": "time",
    "name": "timer",
    "title": "Timer",
-   "line": "Countdowns on the stage: \"set a timer for 5 minutes\" (starts at once, like a phone's), \"make a timer\" (waits), \"another timer for 2 minutes\", \"pause / start / reset the timer\", \"make the timer bigger\", \"remove the timer\", \"set an alarm for 7am\", \"remind me to stretch in 20 minutes\", \"days until christmas\"",
+   "line": "Countdowns on the stage: \"set a timer for 5 minutes\" (starts at once, like a phone's), \"make a timer\" (waits), \"another timer for 2 minutes\", \"pause / start / reset the timer\", \"make the timer bigger\", \"remove the timer\", \"set an alarm for 7am\" / \"alarm at 7am\" (its own card: \"Alarm for 7:00 AM\", and three beeps made with Web Audio at that time while the page is open), \"remind me to stretch in 20 minutes\", \"days until christmas\"",
    "examples": [
     "set a timer for 5 minutes",
     "a 2 second timer",

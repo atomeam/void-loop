@@ -10,7 +10,7 @@ Evidence states, in order: **open** (seen failing, not built), **implemented** (
 
 Not on the list, by rule: recreations of a named game (wordle, tetris), tests that need an invented score or make a medical claim (iq test, personality test, color blindness test, hearing test), and fake card numbers. These were seen failing too, and stay out on purpose.
 
-Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.test.mjs` and `tools/my-device.test.mjs`; batch 2 in `tools/gaps-batch2.test.mjs`.
+Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.test.mjs` and `tools/my-device.test.mjs`; batch 2 in `tools/gaps-batch2.test.mjs`; batch 3 in `tools/gaps-batch3.test.mjs`.
 
 | # | Ask | Seen | Done when | State |
 |---|-----|------|-----------|-------|
@@ -30,7 +30,7 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 14 | discount 30% off 80 | 2026-11-06: 30% of 80 = 24 | the card says the price after the discount, 56, and the saving, 24 | implemented |
 | 15 | fuel cost for 300 miles at 30 mpg | 2026-11-06: only 300 miles in km | the card says 10 gallons, and the cost when a price per gallon is given | implemented |
 | 16 | make a table from a,b,c | 2026-11-06: raw Markdown pipes in a paragraph | a drawn table, with a box to add rows and copy as CSV or Markdown | implemented |
-| 17 | alarm at 7am | 2026-11-06: nothing | an alarm card set for 7:00 that rings in the page | open |
+| 17 | alarm at 7am | 2026-11-06: nothing | an alarm card set for 7:00 that rings in the page | implemented |
 | 18 | ring size chart | 2026-11-06: article on industrial back-up rings | a chart of US, UK, EU and Japan ring sizes with inside diameter in mm | open |
 | 19 | country codes list | 2026-11-06: an explanation of the code systems | a searchable list of ISO 3166 codes and calling codes, from the published standard | open |
 | 20 | gas mileage calculator | 2026-11-06: an explanation of mpg | a calculator: distance and fuel in, mpg and L/100 km out | implemented |
