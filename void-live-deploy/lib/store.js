@@ -124,6 +124,8 @@ export function sortProducts(products, by = 'featured') {
   if (by === 'price-asc') s.sort((a, b) => (a.cents || 0) - (b.cents || 0));
   else if (by === 'price-desc') s.sort((a, b) => (b.cents || 0) - (a.cents || 0));
   else if (by === 'newest') s.sort((a, b) => String(b.published || '').localeCompare(String(a.published || '')));
+  else if (by === 'rating') s.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  else if (by === 'brand') s.sort((a, b) => (a.brand || '').localeCompare(b.brand || ''));
   return s;
 }
 

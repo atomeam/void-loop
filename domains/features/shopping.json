@@ -29,6 +29,14 @@
     },
     {
      "group": "core",
+     "name": "Departments and filters",
+     "detail": "Category browse, filters by brand, price, rating, Prime, delivery date",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
      "name": "Product page",
      "detail": "Images, video, price, variants, specs, bullets, Q&A",
      "paid": false,
