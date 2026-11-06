@@ -87,7 +87,12 @@ export function fixPrompt(ask, skill, source, mode = 'learn', said = '', tried =
 export function settleNote(skill, ask, t = {}) {
   let out;
   if (t.applied === false) out = 'Your edits did not apply: each find must be one existing line, copied whole.';
-  else if (t.loadError) out = 'The edited file did not load (' + String(t.loadError).replace(/\s+/g, ' ').slice(0, 160) + '). Keep every pattern a valid JavaScript regular expression.';
+  else if (t.loadError) {
+    const err = String(t.loadError).replace(/\s+/g, ' ').slice(0, 160), off = balanceOff(t.edits);
+    // 2026-11-06: "audit this repo" died 3 times at "Unexpected token 'const'" with the regex advice below; the line lost its closing ")"
+    out = /regular expression/i.test(err) ? 'The edited file did not load (' + err + '). Keep every pattern a valid JavaScript regular expression.'
+      : 'The edited file is not valid JavaScript (' + err + ').' + (off ? ' ' + off : '') + ' Copy the line whole and change only the words inside one quoted string or pattern; keep every quote, comma and bracket of the line as it was.';
+  }
   else if (!t.takes) out = 'match() still does not take "' + ask + '": change the pattern match() uses (not only the examples) so it does.';
   else if (t.by && t.by !== skill) out = 'match() takes "' + ask + '" now, but the ' + t.by + ' skill comes earlier in the routing order and takes it first; that cannot be changed from this file.';
   else {
@@ -96,6 +101,22 @@ export function settleNote(skill, ask, t = {}) {
       : 'The collision check failed; make the pattern narrower, so other skills keep their asks.';
   }
   return out.slice(0, MAX_TRIED);
+}
+
+/** what a replacement unbalanced against the line it replaces: brackets opened minus closed, and the parity of each quote, outside escapes.
+ * A change inside one string or pattern keeps both; a replacement that drops the line's tail does not. '' when every edit keeps them. Pure. */
+export function balanceOff(edits) {
+  const tally = (t) => { const c = { '(': 0, '[': 0, '{': 0, "'": 0, '"': 0, '`': 0 }; const s = String(t || '');
+    for (let i = 0; i < s.length; i++) { const ch = s[i]; if (ch === '\\') { i++; continue; } if (ch === '(' || ch === ')') c['('] += ch === '(' ? 1 : -1; else if (ch === '[' || ch === ']') c['['] += ch === '[' ? 1 : -1; else if (ch === '{' || ch === '}') c['{'] += ch === '{' ? 1 : -1; else if (ch in c) c[ch]++; }
+    return c; };
+  const out = [];
+  for (const e of edits || []) {
+    const a = tally(e && e.find), b = tally(e && e.replace), bad = [];
+    for (const [o, cl] of [['(', ')'], ['[', ']'], ['{', '}']]) { const d = b[o] - a[o]; if (d) bad.push(d > 0 ? d + ' "' + o + '" that it never closes' : -d + ' "' + cl + '" that it never opened'); }
+    for (const q of ["'", '"', '`']) if ((a[q] - b[q]) % 2) bad.push('an unclosed ' + q);
+    if (bad.length) out.push('Your new line "' + String(e.replace).slice(0, 60) + '…" has ' + bad.join(' and ') + '.');
+  }
+  return out.join(' ').slice(0, 360);
 }
 
 /** One replacement that a matcher change could need: short, plain, nothing that runs or reaches out. */

@@ -120,6 +120,17 @@ export const ledgerWhat = (title, source) => String(title || '') + (source === '
 /** a gateway error worth one more try (the edge or the model's route hiccupped); 4xx and 500 are answers, not hiccups. Pure. */
 export const retryable = (status) => status === 502 || status === 503 || status === 504;
 export const RETRY_MS = 8000;
+/** the platform's own reason inside its HTML error page (2026-11-05/06: the forge logged only "HTTP 502 <html class", so nobody could tell a
+ * Worker limit from an upstream fault): the page title and its error code, e.g. "Worker exceeded resource limits (error 1102)". '' when the
+ * body is not an HTML page. Pure. */
+export function gatewayReason(body) {
+  const s = String(body || ''); if (!/^\s*(<!doctype|<html)/i.test(s)) return '';
+  const strip = (x) => String(x || '').replace(/<[^>]*>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+  // "a-to-mind.com | 502: Bad gateway", "Worker exceeded resource limits | a-to-mind.com | Cloudflare": keep the part that is neither the host nor the brand
+  const title = strip((/<title[^>]*>([\s\S]*?)<\/title>/i.exec(s) || [])[1]).split('|').map((x) => x.trim()).filter((x) => x && !/^cloudflare$/i.test(x) && !/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(x)).join(' | ');
+  const code = (/error code:?\s*(?:<[^>]*>\s*)*(\d{3,4})/i.exec(s) || /cf-error-code[^>]*>\s*(\d{3,4})/i.exec(s) || [])[1];
+  return ((title || 'an HTML error page') + (code && !title.includes(code) ? ' (error ' + code + ')' : '')).slice(0, 120);
+}
 /** The job's state after an attempt: 'done' when the fix passed (its pull request carries it), 'failed' when a step stopped it. Pure. */
 export const stateFor = (result) => (result && result.passed ? 'done' : 'failed');
 /** The part of a skill file the model is sent: the whole file when it fits, else its head and its tail (where match() and the examples live) with a
@@ -149,7 +160,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     let res = await go();
     // one more try after a gateway error (2026-10-19: a 502 from the model's route spent a whole tick of the growth clock)
     if (retryable(res.status)) { await new Promise((r) => setTimeout(r, RETRY_MS)); res = await go(); }
-    if (!res.ok) throw new Error(`${method} ${path}: HTTP ${res.status} ${(await res.text()).slice(0, 120)}`); return res.json();
+    if (!res.ok) { const t = await res.text(); throw new Error(`${method} ${path}: HTTP ${res.status} ${gatewayReason(t) || t.slice(0, 120)}`); } return res.json();
   };
   let job = null, miss;
   try {
@@ -187,7 +198,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     writeFileSync(file, source);
     const settled = col.status === 0 && (!land || (!land.loadError && land.takes && land.by === miss.skill));
     if (settled) { n++; break; }
-    tried = settleNote(miss.skill, miss.ask, { applied: true, loadError: land && land.loadError, takes: land ? land.takes : true, by: land && land.by, lines });
+    tried = settleNote(miss.skill, miss.ask, { applied: true, loadError: land && land.loadError, takes: land ? land.takes : true, by: land && land.by, lines, edits: p && p.edits });
     console.error('propose-fix: try ' + (n + 1) + ' did not settle: ' + tried);
     if (land && land.takes && land.by && land.by !== miss.skill && col.status === 0) { n++; break; } // only the earlier skill can let go: no new try helps
   }

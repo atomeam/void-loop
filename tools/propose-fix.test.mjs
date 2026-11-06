@@ -280,3 +280,29 @@ test('the ledger line says when the ask came from a probe, so the growth card co
   const wf = (await import('node:fs')).readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   assert.match(wf, /grow\.mjs fix "\$\{LEDGER:-\$TITLE\}"/, 'the workflow writes the ledger line, not the bare title');
 });
+
+test('a load error that is broken JavaScript, not a bad pattern, says what the new line unbalanced (2026-11-06: "audit this repo" died 3 times at "Unexpected token \'const\'")', async () => {
+  const { balanceOff } = await import('../void-live-deploy/lib/propose-fix.js');
+  const line = "const WHEN = new RegExp('^(?:audit (?:your|the) fixes|fix audit)$');";
+  const good = "const WHEN = new RegExp('^(?:audit (?:your|the) fixes|fix audit|audit (?:this|the) repo)$');";
+  const dropped = "const WHEN = new RegExp('^(?:audit (?:your|the) fixes|fix audit|audit (?:this|the) repo$'";
+  assert.equal(balanceOff([{ find: line, replace: good }]), '', 'a new alternative inside the string keeps the line balanced');
+  assert.equal(balanceOff([{ find: "examples: ['a'],", replace: "examples: ['a', 'b']," }]), '', 'a new quoted example keeps it too');
+  assert.equal(balanceOff([{ find: 'const R = /a\\(b/;', replace: 'const R = /a\\(b|c\\(d/;' }]), '', 'escaped brackets do not count');
+  assert.match(balanceOff([{ find: line, replace: dropped }]), /2 "\(" that it never closes/);
+  assert.match(balanceOff([{ find: "x('a');", replace: "x('a);" }]), /an unclosed '/);
+  const n = settleNote('fix-audit', 'audit this repo', { applied: true, loadError: "Unexpected token 'const'", edits: [{ find: line, replace: dropped }] });
+  assert.match(n, /not valid JavaScript \(Unexpected token 'const'\)/); assert.match(n, /never closes/); assert.match(n, /keep every quote, comma and bracket/);
+  assert.ok(!/valid JavaScript regular expression/.test(n), 'the regex advice is for a regex error only'); assert.ok(n.length <= MAX_TRIED);
+  assert.match(settleNote('coin', 'coinflip', { applied: true, loadError: 'Invalid regular expression: /(/: Unterminated group' }), /valid JavaScript regular expression/);
+});
+
+test('a platform error page names its reason instead of "<html class" (2026-11-06: half the sampled forge runs logged only that)', async () => {
+  const { gatewayReason } = await import('./propose-fix.mjs');
+  assert.equal(gatewayReason('{"error":"x"}'), '');
+  assert.equal(gatewayReason('Verse proposed nothing that passes the gate'), '');
+  const cf = '<!DOCTYPE html><html class="no-js" lang="en-US"><head><title>Worker exceeded resource limits | a-to-mind.com | Cloudflare</title></head><body><span class="cf-error-code">1102</span></body></html>';
+  assert.match(gatewayReason(cf), /Worker exceeded resource limits/); assert.match(gatewayReason(cf), /error 1102/);
+  assert.match(gatewayReason('<html class="no-js"><head><title>a-to-mind.com | 502: Bad gateway</title></head><body>Error code 502</body></html>'), /^502: Bad gateway/);
+  assert.equal(gatewayReason('<html class="x"><body>oops</body></html>'), 'an HTML error page');
+});
