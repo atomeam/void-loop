@@ -291,6 +291,9 @@
     },
     {
       "ask": "yo draw a cartoon cat"
+    },
+    {
+      "ask": "yo draw me a robot"
     }
   ],
   "candidates": [],
