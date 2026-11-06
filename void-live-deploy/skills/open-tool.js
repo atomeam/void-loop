@@ -23,6 +23,7 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'seamless pattern': '/lab/pattern/', 'tileable texture': '/lab/pattern/', 'seamless texture': '/lab/pattern/', 'pattern generator': '/lab/pattern/',
   'color palette from a photo': '/lab/photo-palette/', 'colour palette from a photo': '/lab/photo-palette/', 'palette from photo': '/lab/photo-palette/', 'color palette from image': '/lab/photo-palette/', 'colors from a photo': '/lab/photo-palette/',
   'speech to text': '/lab/dictation/', 'dictation': '/lab/dictation/', 'voice typing': '/lab/dictation/', 'voice to text': '/lab/dictation/', 'talk to type': '/lab/dictation/',
+  'h5 center': '/starboard/', 'dalyfeds': '/starboard/', 'dalyfeds.com': '/starboard/',
   'mind map': '/lab/mind-map/', 'mind map maker': '/lab/mind-map/', 'mindmap': '/lab/mind-map/', 'make a mind map': '/lab/mind-map/' };
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there

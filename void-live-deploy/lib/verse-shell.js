@@ -10,7 +10,7 @@ export const NAV = Object.freeze([
   { href: '/conquered/', label: 'Tower', also: ['/tower/', '/tower'] },
   { href: '/films/', label: 'Films' },
   { href: '/podcast/', label: 'Podcast' }, // Verse Out Loud, a new episode every day (owner, 2026-11-06: "where is my daily verse podcast")
-  { href: '/treasury/', label: 'Treasury' },
+  { href: '/treasury/', label: 'Treasury' }, { href: '/starboard/', label: 'Starboard' },
   { href: '/scoreboard/', label: 'Scoreboard' },
   { href: '/security/', label: 'Security' },
   { href: '/limits/', label: 'Limits' },
