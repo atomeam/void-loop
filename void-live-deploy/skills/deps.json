@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1171,
+ "counted": 1173,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,7 +27,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 72,
+   "dependants": 73,
    "tests": 8
   },
   {
@@ -1371,7 +1371,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
@@ -1480,6 +1480,13 @@
    "tests": 3
   },
   {
+   "file": "lib/brain-strokes.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-synapses.js",
    "skills": 1,
    "direct": 0,
@@ -1582,7 +1589,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 4,
-   "tests": 22
+   "tests": 23
   },
   {
    "file": "lib/converter.js",
@@ -2352,7 +2359,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 95,
-   "tests": 34
+   "tests": 35
   },
   {
    "file": "lib/models.js",
@@ -2506,7 +2513,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 27,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/answer-honesty.js",
@@ -2531,6 +2538,13 @@
   },
   {
    "file": "lib/draft.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 27,
+   "tests": 1
+  },
+  {
+   "file": "lib/follow-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 27,
@@ -3781,6 +3795,7 @@
     "lib/note-ask.js",
     "lib/telemetry.js",
     "lib/answer-free.js",
+    "lib/follow-ask.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -6097,6 +6112,7 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
+    "lib/brain-strokes.js",
     "lib/brain-dialogue.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
@@ -6131,6 +6147,7 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
+    "lib/brain-strokes.js",
     "lib/brain-dialogue.js",
     "lib/brain-workspace.js"
    ],
@@ -6220,6 +6237,25 @@
     "lib/brain-everywhere.js"
    ]
   },
+  "lib/brain-strokes.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-dialogue.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
   "lib/brain-synapses.js": {
    "imports": [
     "lib/field-kit.js",
@@ -6292,6 +6328,7 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
+    "lib/brain-strokes.js",
     "lib/brain-synapses.js",
     "lib/brain-trace.js",
     "lib/brain.js",
@@ -6321,6 +6358,7 @@
     "lib/brain-grains.js",
     "lib/brain-pool.js",
     "lib/brain-trace.js",
+    "lib/brain-strokes.js",
     "lib/brain-dialogue.js"
    ],
    "importedBy": [
@@ -7716,6 +7754,7 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
+    "lib/brain-strokes.js",
     "lib/brain-synapses.js",
     "lib/brain-trace.js",
     "lib/brain-workspace.js",
@@ -8012,6 +8051,40 @@
     "lib/rap-stage.js",
     "lib/rap-video.js",
     "skills/rap.js"
+   ]
+  },
+  "lib/follow-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/forge-duel.js": {
