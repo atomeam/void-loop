@@ -1,21 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:48:00Z",
-  "passed": 11,
-  "of": 13,
-  "kind": "teach",
-  "key": "teach | what did this video teach? pls",
-  "note": "teach V01D \"what did this video teach? pls\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): nothing appeared"
- },
- {
-  "at": "2026-10-15T06:50:33Z",
-  "passed": 2,
-  "of": 13,
-  "kind": "teach",
-  "key": "teach | yo watch the apollo 11 landing",
-  "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' b"
- },
- {
   "at": "2026-10-15T06:53:09Z",
   "passed": 6,
   "of": 13,
@@ -4564,5 +4548,52 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T11:54:34Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1428,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-06T12:03:25Z",
+  "passed": 89,
+  "of": 94,
+  "ms": 293,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "weather in boston",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "flip this card",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1428,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"yo create a toon style bird\" (skill:cartoon)"
  }
 ]

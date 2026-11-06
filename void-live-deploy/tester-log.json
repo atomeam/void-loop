@@ -1,16 +1,52 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 90,
+ "cases": 91,
  "runsTotal": 300,
  "kinds": {
-  "teach": 2,
   "file": 90,
-  "grow": 72,
+  "grow": 73,
   "tighten": 7,
   "none": 40,
-  "visitor": 89
+  "visitor": 90
  },
  "runs": [
+  {
+   "at": "2026-11-06T12:03:25Z",
+   "passed": 89,
+   "of": 94,
+   "kind": "grow",
+   "ms": 293,
+   "note": "new ground passed, kept as a regression case: \"yo create a toon style bird\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T11:54:34Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-06T11:27:48Z",
    "passed": 0,
@@ -274,39 +310,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T06:12:58Z",
-   "passed": 86,
-   "of": 90,
-   "kind": "file",
-   "ms": 436,
-   "note": "fix: \"play reversi\" console: Cannot read properties of undefined (reading 'queue')",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 4 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "play reversi",
-     "why": "console: Cannot read properties of undefined (reading 'queue')"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-06T06:01:29Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -360,20 +363,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 65,
-   "passed": 355,
-   "of": 1295,
+   "runs": 64,
+   "passed": 342,
+   "of": 1294,
    "broken": 40,
-   "brokenOf": 898,
-   "brokenPassed": 20
+   "brokenOf": 910,
+   "brokenPassed": 18
   },
   {
    "from": "2026-10-16",
-   "runs": 115,
+   "runs": 114,
    "passed": 2727,
-   "of": 4384,
-   "broken": 52,
-   "brokenOf": 1303,
+   "of": 4359,
+   "broken": 51,
+   "brokenOf": 1278,
    "brokenPassed": 0
   },
   {
@@ -384,9 +387,9 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 120,
-   "passed": 2546,
-   "of": 2770,
+   "runs": 122,
+   "passed": 2635,
+   "of": 2864,
    "ms": 377
   }
  ],
@@ -407,7 +410,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T11:10:13Z",
+  "skill:cartoon": "2026-11-06T12:03:25Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -728,6 +731,9 @@
   "skill:random": "2026-11-06T10:20:14Z",
   "skill:rap": "2026-11-06T11:10:13Z",
   "skill:recipes-fill": "2026-11-06T11:10:13Z",
-  "skill:rentbuy": "2026-11-06T11:10:13Z"
+  "skill:rentbuy": "2026-11-06T11:10:13Z",
+  "skill:riddle-gen": "2026-11-06T12:03:25Z",
+  "skill:ritual-template": "2026-11-06T12:03:25Z",
+  "skill:rooms": "2026-11-06T12:03:25Z"
  }
 }
