@@ -137,7 +137,7 @@ function adopt(g) {
   if (g.fit > fitness * 0.9) {
     qTable = JSON.parse(JSON.stringify(g.q));
     // mutate a bit
-    for (const s in qTable) for (const a in qTable[s]) qTable[s][a] += (Math.random()-0.5)*0.05;
+    for (const s of Object.keys(qTable)) for (const a of Object.keys(qTable[s])) qTable[s][a] += (Math.random()-0.5)*0.05;
     epsilon = Math.min(0.4, g.eps + 0.05);
     gen = (g.gen || 0) + 1;
     fitness = g.fit * 0.8;
@@ -159,7 +159,7 @@ async function persist() {
     const tx = db.transaction(STORE, 'readwrite');
     tx.objectStore(STORE).put(sealGenome(), 'current');
     await new Promise(r => tx.oncomplete = r);
-  } catch(e) {}
+  } catch (e) { console.warn('f574-crosstab-sealed-genome-cssgrid-mind:', e); }
 }
 
 async function restore() {
@@ -190,7 +190,7 @@ async function init() {
   setInterval(broadcast, 8000);
   document.getElementById('seal').onclick = persist;
   document.getElementById('reset').onclick = () => { qTable = {}; epsilon = 0.3; fitness = 0; gen = 0; createTiles(); };
-  document.getElementById('mutate').onclick = () => { for (const s in qTable) for (const a in qTable[s]) qTable[s][a] += (Math.random()-0.5)*0.2; };
+  document.getElementById('mutate').onclick = () => { for (const s of Object.keys(qTable)) for (const a of Object.keys(qTable[s])) qTable[s][a] += (Math.random()-0.5)*0.2; };
   document.getElementById('status').textContent = 'ready · open more tabs to migrate genomes';
 }
 

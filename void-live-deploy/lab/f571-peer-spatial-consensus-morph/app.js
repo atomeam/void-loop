@@ -23,7 +23,7 @@ function initCards() {
   CARD_DEFS.forEach((def, i) => {
     const el = document.createElement('div');
     el.className = 'card';
-    el.innerHTML = `<h3>${def.title}</h3><p>${def.desc}</p>`;
+    el.innerHTML = `<h3>${def.title}</h3><p>${def.desc}</p>`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
     el.dataset.idx = i;
     canvas.appendChild(el);
     cards.push({

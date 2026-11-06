@@ -134,7 +134,7 @@ async function loadSeal(){
     const tx = db.transaction('seal');
     const data = await new Promise(res=> tx.objectStore('seal').get('weights').onsuccess=e=>res(e.target.result));
     if(data){ w1.set(data.w1); b1.set(data.b1); w2.set(data.w2); b2.set(data.b2); crystals = data.crystals||0; }
-  }catch(e){}
+  }catch (e) { console.warn('f567-webgpu-lattice-gas-dom-flow-mind:', e); }
 }
 
 document.getElementById('seal').onclick = seal;

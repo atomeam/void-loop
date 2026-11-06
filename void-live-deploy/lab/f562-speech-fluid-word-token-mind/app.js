@@ -104,7 +104,7 @@ document.getElementById('reset').onclick = () => { tokens.forEach(t=>t.el.remove
     req.onsuccess = () => {
       if (req.result) { weights = new Float32Array(req.result.weights); document.getElementById('status').textContent='Restored'; }
     };
-  } catch(e) {}
+  } catch (e) { console.warn('f562-speech-fluid-word-token-mind:', e); }
 })();
 
 function loop() {

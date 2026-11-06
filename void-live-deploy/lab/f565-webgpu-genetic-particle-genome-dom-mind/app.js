@@ -69,7 +69,7 @@ function spawnCards() {
     el.style.left = (p.x % (W-140)) + 'px';
     el.style.top = (p.y % (H-80)) + 'px';
     el.style.borderColor = `hsl(${(p.genome[4]*60+180)}, 70%, 60%)`;
-    el.innerHTML = `<b>Elite ${i+1}</b><br>fit ${p.fitness.toFixed(1)}<br>g: ${p.genome.map(v=>v.toFixed(2)).join(' ')}`;
+    el.innerHTML = `<b>Elite ${i+1}</b><br>fit ${p.fitness.toFixed(1)}<br>g: ${p.genome.map(v=>v.toFixed(2)).join(' ')}`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
     el.dataset.idx = i;
     makeDraggable(el, p);
     document.body.appendChild(el);
@@ -201,7 +201,7 @@ async function loadFromDB() {
         statusEl.textContent = 'Restored sealed elites';
       }
     };
-  } catch(e) {}
+  } catch (e) { console.warn('f565-webgpu-genetic-particle-genome-dom-mind:', e); }
 }
 
 document.getElementById('evolve').onclick = evolve;

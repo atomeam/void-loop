@@ -257,7 +257,7 @@ async function loadSeal() {
         document.getElementById("status").textContent = "restored from seal";
       }
     };
-  } catch (e) {}
+  } catch (e) { console.warn('f562-webgpu-rd-attention-spatial-verse:', e); }
 }
 
 document.getElementById("seal").onclick = seal;

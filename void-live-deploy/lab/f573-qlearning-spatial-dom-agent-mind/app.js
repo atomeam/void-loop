@@ -156,13 +156,13 @@ function agentStep() {
 
 // Persistence
 function saveQ() {
-  try { localStorage.setItem('verse-f573-qtable', JSON.stringify(qTable)); } catch (e) {}
+  try { localStorage.setItem('verse-f573-qtable', JSON.stringify(qTable)); } catch (e) { console.warn('f573-qlearning-spatial-dom-agent-mind:', e); }
 }
 function loadQ() {
   try {
     const raw = localStorage.getItem('verse-f573-qtable');
     if (raw) qTable = JSON.parse(raw);
-  } catch (e) {}
+  } catch (e) { console.warn('f573-qlearning-spatial-dom-agent-mind:', e); }
 }
 
 createTiles();
