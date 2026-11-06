@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; z-index: 0; }
+  .card {
+    position: absolute; width: 180px; height: 120px; background: rgba(30,30,50,0.85);
+    border: 1px solid #446; border-radius: 12px; padding: 12px; z-index: 10;
+    backdrop-filter: blur(4px); transition: transform 0.3s, filter 0.3s, background 0.3s;
+    cursor: grab; user-select: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .card:active { cursor: grabbing; }
+  .card h3 { margin: 0 0 8px; font-size: 14px; }
+  .card p { margin: 0; font-size: 12px; opacity: 0.8; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 20; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 12px; }
+  button { background: #224; color: #fff; border: 1px solid #446; padding: 4px 10px; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #336; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F557: IntersectionObserver Evolutionary Particle Attention Mind · Verse lab</title>
+<meta name="description" content="A set of living DOM Verse cards whose screen-space visibility is continuously measured by native IntersectionObserver (threshold steps).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F557: IntersectionObserver Evolutionary Particle Attention Mind · Verse lab">
+<meta property="og:description" content="A set of living DOM Verse cards whose screen-space visibility is continuously measured by native IntersectionObserver (threshold steps).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f557-intersection-evo-particle-attention-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f557-intersection-evo-particle-attention-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>Attention: <span id="att">0.00</span> | Gen: <span id="gen">0</span> | FPS: <span id="fps">0</span></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F557: IntersectionObserver Evolutionary Particle Attention Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

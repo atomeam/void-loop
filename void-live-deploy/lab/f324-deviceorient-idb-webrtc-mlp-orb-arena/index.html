@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; background:#000; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.7); padding:10px; border-radius:8px; max-width:320px; font-size:13px; }
+button { margin:2px; padding:4px 8px; background:#333; color:#fff; border:1px solid #555; }
+#status { font-size:11px; color:#aaa; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>DeviceOrientation Causal MLP Genome Orb Arena · Verse lab</title>
+<meta name="description" content="Main thread: 40 agents on Canvas2D with simple Euler physics (position, velocity, orientation-biased gravity)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="DeviceOrientation Causal MLP Genome Orb Arena · Verse lab">
+<meta property="og:description" content="Main thread: 40 agents on Canvas2D with simple Euler physics (position, velocity, orientation-biased gravity)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f324-deviceorient-idb-webrtc-mlp-orb-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f324-deviceorient-idb-webrtc-mlp-orb-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div>F324 · DeviceOrientation Causal MLP Genome Orb Arena</div>
+  <button id="seal">Seal Top Genomes to IDB</button>
+  <button id="load">Load Sealed</button>
+  <button id="reset">Reset Arena</button><br>
+  <button id="offer">Make WebRTC Offer</button>
+  <button id="answer">Apply Answer</button>
+  <div id="status">Tilt device or move mouse. Agents evolve to chase resources under tilt-gravity.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">DeviceOrientation Causal MLP Genome Orb Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
