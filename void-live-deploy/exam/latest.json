@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T19:49:42.038Z",
+  "at": "2026-11-06T20:18:49.888Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,34 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 90.3,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
-            "audio"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -127,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -142,10 +118,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -260,12 +235,12 @@
       }
     },
     "sports": {
-      "score": 91.7,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "mlb scores",
+          "ask": "nfl scores",
           "failed": [
             "board"
           ],
@@ -280,13 +255,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],

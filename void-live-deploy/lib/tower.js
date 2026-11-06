@@ -237,6 +237,9 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   // Verse 2026-11-05) is assimilated by /emojis/dictionary/, built for it by hand (lib/emoji-dict.js); this row takes over from the loop's copy of
   // /emoji-combos/ (lib/self-sites.js), which stays where it is
   'emoji combos: emojigraph.org': '/emojis/dictionary/',
+  // dalyfeds.com ("H5 Center", a game portal page with three ad scripts) is taken on by /starboard/, a live benchmark of both sites and Verse's own weather, news,
+  // games and tools on one tracker-free page (domains/targets/dalyfeds.json)
+  'dalyfeds.com': '/starboard/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores

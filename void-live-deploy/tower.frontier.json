@@ -6722,6 +6722,60 @@
    "hardness": null,
    "title": "维沃移动通信有限公司",
    "small": "2026-11-06"
+  },
+  {
+   "site": "everycom.store",
+   "rank": 40053,
+   "controls": 0,
+   "bytes": 1186,
+   "hardness": null,
+   "title": "EveryCom Store",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "opentv.com",
+   "rank": 40107,
+   "controls": 0,
+   "bytes": 1759,
+   "hardness": null,
+   "title": "ION",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "adnext.mobi",
+   "rank": 40050,
+   "controls": 0,
+   "bytes": 5284,
+   "hardness": null,
+   "title": "ADNEXT",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "juicychat.ai",
+   "rank": 40015,
+   "controls": 0,
+   "bytes": 5845,
+   "hardness": null,
+   "title": "JuicyChat.AI",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "protopage.com",
+   "rank": 40011,
+   "controls": 0,
+   "bytes": 10239,
+   "hardness": null,
+   "title": "Protopage - Free Personalized Start Pages",
+   "small": "2026-11-06"
+  },
+  {
+   "site": "oneyeard.com",
+   "rank": 40056,
+   "controls": 1,
+   "bytes": 1753,
+   "hardness": null,
+   "title": "Sorry, This Page Can&#39;t Be Accessed",
+   "small": "2026-11-06"
   }
  ]
 }

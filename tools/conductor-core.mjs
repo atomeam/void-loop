@@ -163,12 +163,26 @@ export const SWEEP_EVERY_H = 1;
 export function sweepDue({ sweptMs, now }) {
   return now - (sweptMs || 0) >= SWEEP_EVERY_H * H;
 }
-/** queue the blueprints not built yet (tools/watch-build.mjs queueBlueprints) at least every BLUEPRINTS_EVERY_H (owner, 2026-11-06: "the
- *  blueprints should just automatically be started and built into verse somewhere"): the watch that also queues them runs a few times a
+/** queue the blueprints not built yet (tools/watch-build.mjs queueBlueprints) at least every BLUEPRINTS_EVERY_H (the owner asked on
+ *  2026-11-06 for every blueprint to build by itself): the watch that also queues them runs a few times a
  *  day when GitHub drops its cron, so the clock keeps the hour. queuedMs is when the conductor last did it (its state). Pure. */
 export const BLUEPRINTS_EVERY_H = 1;
 export function blueprintsDue({ queuedMs, now }) {
   return now - (queuedMs || 0) >= BLUEPRINTS_EVERY_H * H;
+}
+/** the calls one coder run can spend: its turn cap (tools/verse-coder.mjs LIMITS.turns). A run started with fewer calls left than this
+ *  gets a 429 partway and lands nothing (run 42284242262, 2026-11-06: started with 11 of 360 left, ended "no model answered"). */
+export const CODER_RUN_CALLS = 30;
+/** is the coder's free model budget (GET /api/coder: { hour:{used,cap}, day:{used,cap}, room, until }) too short for one whole run?
+ *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. Pure. */
+export function coderShort(budget, now, need = CODER_RUN_CALLS) {
+  if (!budget || typeof budget !== 'object') return null;
+  if (budget.room === false) return { until: budget.until || null };
+  const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);
+  const d = new Date(now);
+  if (left(budget.day) < need) return { until: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1)).toISOString() };
+  if (left(budget.hour) < need) return { until: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours() + 1)).toISOString() };
+  return null;
 }
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */

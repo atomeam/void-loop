@@ -390,6 +390,7 @@ for (const [name, file] of [
   ['brain-current', 'brain-current.test.mjs'], // F447's lattice-Boltzmann flow and evolved swimmers: mass and momentum kept, evolution beats random search and drifters, your drag stirs it, it is kept
   ['brain-grains', 'brain-grains.test.mjs'], // F456's granular grains: genes passed on touch from the nearer lander beat random passing and none, it runs in the brain, it is kept
   ['brain-pool', 'brain-pool.test.mjs'], // F459's SPH pool: a tiny network that sets viscosity, stiffness and kernel size beats the best constant setting and random search, follows the slosh, runs in the brain, is kept
+  ['unbidden', 'unbidden.test.mjs'], // Verse speaks first on /brain/: lines only from real facts, naming them, no invented number, once per gap for everyone
   ['brain-map', 'brain-map.test.mjs'], // /brain/'s live map: every light, spark and line of its feed is a real turn, write or change in the brain's state
   ['brain-trace', 'brain-trace.test.mjs'],
   ['brain-strokes', 'brain-strokes.test.mjs'], // the Hopfield drafts' associative memory: from the first half of a visitor's stroke it recalls the rest far closer than carrying it on and than the drafts' rule when strokes repeat, loses and stays quiet when they never do, runs in the brain, is kept

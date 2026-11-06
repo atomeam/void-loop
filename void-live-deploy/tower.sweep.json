@@ -1,8 +1,8 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 40000,
- "swept": 39257,
+ "cursor": 80000,
+ "swept": 78388,
  "lap": 0,
  "at": "2026-11-06",
  "smallest": [
@@ -88,12 +88,30 @@
    "plain": false
   },
   {
+   "rank": 40053,
+   "host": "everycom.store",
+   "controls": 0,
+   "bytes": 1186,
+   "words": 34,
+   "title": "EveryCom Store",
+   "plain": false
+  },
+  {
    "rank": 3268,
    "host": "bttrack.com",
    "controls": 0,
    "bytes": 1719,
    "words": 121,
    "title": "Tracking API",
+   "plain": false
+  },
+  {
+   "rank": 40107,
+   "host": "opentv.com",
+   "controls": 0,
+   "bytes": 1759,
+   "words": 1,
+   "title": "ION",
    "plain": false
   },
   {
@@ -121,6 +139,24 @@
    "bytes": 3109,
    "words": 2,
    "title": "H5 Center",
+   "plain": false
+  },
+  {
+   "rank": 40050,
+   "host": "adnext.mobi",
+   "controls": 0,
+   "bytes": 5284,
+   "words": 1,
+   "title": "ADNEXT",
+   "plain": false
+  },
+  {
+   "rank": 40015,
+   "host": "juicychat.ai",
+   "controls": 0,
+   "bytes": 5845,
+   "words": 1,
+   "title": "JuicyChat.AI",
    "plain": false
   },
   {
@@ -160,6 +196,15 @@
    "plain": false
   },
   {
+   "rank": 40011,
+   "host": "protopage.com",
+   "controls": 0,
+   "bytes": 10239,
+   "words": 116,
+   "title": "Protopage - Free Personalized Start Pages",
+   "plain": false
+  },
+  {
    "rank": 141,
    "host": "skybridge.click",
    "controls": 0,
@@ -193,6 +238,15 @@
    "bytes": 498,
    "words": 6,
    "title": "Learn more about Cloudflare Web Analytics",
+   "plain": false
+  },
+  {
+   "rank": 40056,
+   "host": "oneyeard.com",
+   "controls": 1,
+   "bytes": 1753,
+   "words": 45,
+   "title": "Sorry, This Page Can&#39;t Be Accessed",
    "plain": false
   },
   {
