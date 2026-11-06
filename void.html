@@ -2538,25 +2538,27 @@ say('nothing selected to remove');
       return m ? { skill: m[1], via: 'skill' } : null;
     }
     function keepRead(el) {
-      if (!('speechSynthesis' in window) || el.querySelector(':scope > .vread')) return;
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'vread'; b.title = 'Read aloud';
-      b.setAttribute('aria-label', 'Read aloud'); b.setAttribute('aria-pressed', 'false'); b.innerHTML = READ_ICON;
-      el.insertBefore(b, el.firstChild);
+      if (!('speechSynthesis' in window)) return;
+      const on = readTimer !== 0 && readEl === el; // a redraw replaces the button; a card still being read keeps "Stop reading"
+      let b = el.querySelector(':scope > .vread');
+      if (!b) { b = document.createElement('button'); b.type = 'button'; b.className = 'vread'; b.innerHTML = READ_ICON; el.insertBefore(b, el.firstChild); }
+      b.title = on ? 'Stop reading' : 'Read aloud';
+      b.setAttribute('aria-label', on ? 'Stop reading' : 'Read aloud'); b.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     // everything the card says, as words (no sources line, no buttons), read whole: a long card is read to its end
     function cardWords(el) {
       const c = el.cloneNode(true); c.querySelectorAll('.src, script, style, iframe, button, svg, canvas, .void-mini, .vtell, .vtell-box, details:not([open]) > :not(summary)').forEach((n) => n.remove());
       return (c.innerText || c.textContent || '').replace(/\s+/g, ' ').trim();
     }
-    let readTimer = 0;
+    let readTimer = 0, readEl = null;
     function readCard(el, b) {
       const btns = () => el.querySelectorAll(':scope > .vread');
-      const off = () => { clearInterval(readTimer); readTimer = 0; btns().forEach((x) => { x.setAttribute('aria-pressed', 'false'); x.title = 'Read aloud'; x.setAttribute('aria-label', 'Read aloud'); }); };
+      const off = () => { clearInterval(readTimer); readTimer = 0; readEl = null; btns().forEach((x) => { x.setAttribute('aria-pressed', 'false'); x.title = 'Read aloud'; x.setAttribute('aria-label', 'Read aloud'); }); };
       if (b.getAttribute('aria-pressed') === 'true') { speechSynthesis.cancel(); off(); return; }
       const t = cardWords(el); if (!t) { say('nothing to read yet'); return; }
       if (!sayAloud(t)) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = navigator.language || 'en-US'; speechSynthesis.speak(u); }
+      clearInterval(readTimer); readEl = el; // readTimer is 0 when idle, so a redraw (keepRead) can tell "this card is being read"
       btns().forEach((x) => { x.setAttribute('aria-pressed', 'true'); x.title = 'Stop reading'; x.setAttribute('aria-label', 'Stop reading'); });
-      clearInterval(readTimer);
       // the button turns back when the reading ends, and the reading stops when its card closes
       readTimer = setInterval(() => {
         if (vpageEl !== el || !el.isConnected) { speechSynthesis.cancel(); off(); return; }
