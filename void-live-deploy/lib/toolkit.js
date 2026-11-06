@@ -21,15 +21,17 @@ export const TOOLS = Object.freeze({
   '/ledger/': 'Repo activity ledger',
   '/random/coin/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base64/bases/': 'Base converter',
   '/password/strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/vat/': 'VAT calculator', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/scores/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/scores/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'The Crew', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
   // the Lab's tools: the one real job inside each cluster of hourly experiments (tools/lab-grade.mjs IDEAS), made into a page people come back to
   '/lab/level/': 'Spirit level', '/lab/checksum/': 'File checksum checker', '/lab/pattern/': 'Seamless pattern maker', '/lab/photo-palette/': 'Palette from a photo', '/lab/dictation/': 'Dictation', '/lab/mind-map/': 'Mind map maker',
+  // the deck built to take on dalyfeds.com (2026-11-06): a live benchmark of both sites, then weather, news, games and Lab tools on one page
+  '/starboard/': 'Starboard',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
 // pages /tools/ lists that TOOLS does not (no "Use with" row reaches them yet): the Tools page and its stage card list them both, from here
 export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/assimilated/', 'Every site Versus assimilated'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
-  ['/books/', 'Bookshelf'], ['/films/', 'Films'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'],
+  ['/books/', 'Bookshelf'], ['/films/', 'Holovids'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'],
   ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments'], ['/autopilot/', 'Autopilot: what Verse did on its own'], ['/progress/', 'What Verse can actually do']].map(Object.freeze));
 /** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, without /tools/ itself. Pure. */
 export const allTools = () => [...Object.entries(TOOLS), ...MORE_PAGES.filter(([p]) => !Object.hasOwn(TOOLS, p))].filter(([p]) => p !== '/tools/');
@@ -58,7 +60,7 @@ const HAND_RELATED = Object.freeze({
   '/calculators/': ['/calculator/', '/lab/level/', '/convert/', '/base64/bases/', '/vat/'],
   '/vat/': ['/calculator/', '/calculators/', '/convert/', '/markets/'],
   '/time/': ['/stopwatch/', '/weather/'],
-  '/weather/': ['/time/', '/stopwatch/', '/local/'],
+  '/weather/': ['/time/', '/stopwatch/', '/local/', '/starboard/'],
   '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/scores/': ['/scores/sports/', '/time/', '/calendar/'],
@@ -80,18 +82,20 @@ const HAND_RELATED = Object.freeze({
   '/learn-to-draw/': ['/stopwatch/', '/color/', '/resize-image/', '/notes/'],
   '/brain/': ['/piano/', '/tuner/', '/notes/', '/rap/', '/learn-to-draw/'],
   '/converter/': ['/photos/', '/pdf/', '/convert/', '/resize-image/'],
-  '/news/': ['/translate/', '/notes/', '/weather/', '/local/'],
+  '/news/': ['/translate/', '/notes/', '/weather/', '/local/', '/starboard/'],
+  // Starboard (dalyfeds.com's counterpart): the pages its panels come from
+  '/starboard/': ['/weather/', '/news/', '/random/wheel/', '/pdf/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
   '/rap/': ['/music/', '/metronome/', '/word-count/', '/translate/'],
   '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/', '/rap/'],
   '/piano/': ['/chords/', '/metronome/', '/tuner/'],
   '/tuner/': ['/piano/', '/chords/', '/metronome/'],
-  '/lab/level/': ['/convert/', '/calculators/', '/calculator/'],
-  '/lab/checksum/': ['/base64/', '/converter/', '/password/'],
-  '/lab/pattern/': ['/lab/photo-palette/', '/color/', '/color/gradient/', '/resize-image/'],
-  '/lab/photo-palette/': ['/lab/pattern/', '/color/', '/color/gradient/', '/photos/'],
-  '/lab/dictation/': ['/word-count/', '/translate/', '/notes/', '/lab/mind-map/'],
-  '/lab/mind-map/': ['/notes/', '/lab/dictation/', '/word-count/'],
+  '/lab/level/': ['/convert/', '/calculators/', '/calculator/', '/starboard/'],
+  '/lab/checksum/': ['/base64/', '/converter/', '/password/', '/starboard/'],
+  '/lab/pattern/': ['/lab/photo-palette/', '/color/', '/color/gradient/', '/resize-image/', '/starboard/'],
+  '/lab/photo-palette/': ['/lab/pattern/', '/color/', '/color/gradient/', '/photos/', '/starboard/'],
+  '/lab/dictation/': ['/word-count/', '/translate/', '/notes/', '/lab/mind-map/', '/starboard/'],
+  '/lab/mind-map/': ['/notes/', '/lab/dictation/', '/word-count/', '/starboard/'],
   '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
   '/chords/': ['/piano/', '/tuner/', '/metronome/'],
   // the flights pages (owner, 2026-10-26): the hub reaches each tool; each tool its closest sisters, the weather and the clocks
@@ -136,7 +140,7 @@ const HAND_CARD_ASK = Object.freeze({
   '/base64/bases/': 'convert 255 to binary', '/password/strength/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/vat/': 'vat calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
   '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/scores/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/starboard/': 'open starboard', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
   '/lab/level/': 'spirit level', '/lab/checksum/': 'sha256 checksum', '/lab/pattern/': 'seamless pattern maker', '/lab/photo-palette/': 'color palette from a photo', '/lab/dictation/': 'speech to text', '/lab/mind-map/': 'mind map maker',
 });
 // a self-built page opens its family's card on the stage
@@ -207,6 +211,8 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // Starboard, the deck that takes on dalyfeds.com (2026-11-06): 'starboard', 'h5 center', 'dalyfeds' open /starboard/
+  [/^(?:open |show )?(?:the )?(?:starboard|h5 ?center|dalyfeds(?:\.com)?)(?: page)?$/i, () => '/starboard/'],
   // Verse Brain full screen (owner, 2026-10-30: "verse brain needs a full screen"): 'full screen brain', 'open verse brain' open /brain/ (lib/brain-ask.js)
   [{ exec: (t) => (brainFullAsk(t) ? [t] : null) }, () => '/brain/'],
   // the drawing course (2026-10-29, assimilates wheelroot.com): 'learn to draw', 'drawing course', 'drawing lessons', 'drawing exercises' open /learn-to-draw/

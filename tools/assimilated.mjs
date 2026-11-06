@@ -88,14 +88,6 @@ export function fileOf(rows) {
     repo: REPO, target: (() => { const c = rows.find((r) => r.current); return c ? { site: c.site, page: c.page, score: c.score || null } : null; })(), counts: { sites: rows.length, surpassed: n((r) => r.outcome === 'surpassed'), passed: n((r) => r.outcome === 'passed'), assimilated: n((r) => RANK[r.outcome] === 5), current: n((r) => r.outcome === 'current'), parked: n((r) => r.outcome === 'parked'), ...(n((r) => r.outcome === 'non-site') ? { nonSites: n((r) => r.outcome === 'non-site') } : {}), tried: n((r) => (RANK[r.outcome] || 0) < 5 && r.outcome !== 'parked' && r.outcome !== 'non-site') }, sites: rows };
 }
 
-/** the day a floor was passed: its newest head-to-head measure in the evidence, else the day tower.target.json recorded it passed, else no date (none is made up). */
-export function floorAt(f, ev, tg, perFloor = {}) {
-  const dates = JSON.stringify([(ev && ev.floors && ev.floors[f.id]) || {}, perFloor[f.id] || {}]).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || [];
-  if (dates.length) return dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z';
-  const p = ((tg && tg.passed) || []).find((x) => x && x.id === f.id);
-  return p && /^20\d\d-\d\d-\d\d$/.test(String(p.at || '')) ? p.at + 'T00:00:00Z' : '';
-}
-
 /** the floors of the tower as the stage reads them, from the published files. */
 export async function floorsOf(cwd = root) {
   const { tower, towerArgs, learnedOf, fatalityOf } = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tower.js')).href);
@@ -103,11 +95,20 @@ export async function floorsOf(cwd = root) {
   const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }));
   // the evidence also lives one file per floor (void-live-deploy/tower-evidence/, keyed by its id), so a floor measured there is dated too
   const perFloor = {}; try { for (const f of readdirSync(resolve(cwd, 'void-live-deploy/tower-evidence'))) { const e = f.endsWith('.json') && read(cwd, 'void-live-deploy/tower-evidence/' + f); if (e && e.id) perFloor[e.id] = e; } } catch (_) { /* no per-floor evidence */ }
-  // a surpassed floor is dated by its newest head-to-head measure in the evidence
+  // a surpassed or passed floor is dated by floorAt: its newest head-to-head measure, else the day tower.target.json recorded it passed
   // what each site taught Verse, as the card's "What each site taught me" says it (skills/tower.js verseTake): its lesson, else Verse's edge
   const taught = (f) => learnedOf(f) || (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) : '');
   const cur = t.floors.find((f) => f.state === 'current');
-  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => ({ ...f, taught: taught(f), at: floorAt(f, ev, tg, perFloor) })));
+  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => { return { ...f, taught: taught(f), at: floorAt(f, ev, tg, perFloor) }; }));
+}
+
+/** the date a cleared or beaten floor is shown by: its newest head-to-head measure in the evidence (tower.evidence.json or its own file in
+ * void-live-deploy/tower-evidence/), else the day the tower target recorded it passed. Pure. */
+export function floorAt(f, ev, tg, perFloor = {}) {
+  const dates = JSON.stringify([(ev && ev.floors && ev.floors[f.id]) || {}, (perFloor && perFloor[f.id]) || {}]).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || [];
+  if (dates.length) return dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z';
+  const p = ((tg && tg.passed) || []).find((x) => x && x.id === f.id);
+  return p && /^20\d\d-\d\d-\d\d$/.test(String(p.at || '')) ? p.at + 'T00:00:00Z' : '';
 }
 
 /** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */

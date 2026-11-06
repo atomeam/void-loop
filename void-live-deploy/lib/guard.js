@@ -19,6 +19,7 @@ export const LIMITS = {
   apibot: { rpm: 60, body: 0 }, // GET only: the free API bots' relay (functions/api/apibot.js): an API id from a closed list and one input in, that API's reply out; 30 cache misses a minute per connection in the route, good answers edge-cached ten minutes
   free: { rpm: 30, body: 0 }, // the free-resource registry and its quota status (functions/api/free.js): GET only
   answer: { rpm: 30, body: 20000 },
+  unbidden: { rpm: 20, body: 0 }, // GET only: Verse speaks first on /brain/ (functions/api/unbidden.js); the page reads once a minute, a line is written at most once every 3 minutes for everyone and 240 times a day in all
   agent: { rpm: 90, body: 4000 }, // Verse's agent (functions/api/agent.js): the page polls the live feed every 2 s; a task is up to 1,000 characters, 20 a day per visitor in the route
   // Versus by itself asks Verse's own model here (functions/api/tower-self.js, owner only): up to 24,000 characters of site text and a 4,000-character
   // schema, JSON-escaped and UTF-8 (a CJK page is 3 bytes a character). The default 16,000 bytes refused every read with 413 (owner's review, 2026-10-30)
@@ -35,6 +36,7 @@ export const LIMITS = {
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   podcasts: { rpm: 30, body: 0 }, // GET only: a search phrase, a chart, an iTunes id or a public https feed address in, normalised JSON out; SSRF-safe fetch, 3 MB and 8 s caps, edge-cached 15 min; 20 misses a minute in the route itself (functions/api/podcasts.js)
+  sitebench: { rpm: 20, body: 0 }, // GET only: a site from a closed list of one (lib/sitebench.js TARGETS) in, one row per page out, edge-cached ten minutes (functions/api/sitebench.js)
   news: { rpm: 30, body: 0 }, // GET only: a section and a language from two closed lists in, grouped headlines from fixed public feeds out, edge-cached seven minutes; 20 misses a minute in the route itself (functions/api/news.js)
   recipeimport: { rpm: 30, body: 1200000 }, // a recipe page's address in (GET) or one downsized photo of a recipe card (POST): the recipe or the text read out (functions/api/recipeimport.js); 15 addresses and 6 photos a minute in the route
   recipes: { rpm: 30, body: 0 }, // GET only: a dish, up to three ingredients or an id in, TheMealDB's recipes out, edge-cached an hour; 20 misses a minute in the route itself (functions/api/recipes.js)

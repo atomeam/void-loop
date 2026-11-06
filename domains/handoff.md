@@ -15,7 +15,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- claude · claude/project-thread-xv0wrv · Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) · 2026-11-06 20:40 UTC
 - Claude (project thread) · claude/project-thread-5hqr45 · private life-arbitrage scan for the owner (/life-arb/, owner key only), ranked by value per hour of his time · 2026-11-06 05:30 UTC
+
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC

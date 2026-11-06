@@ -580,13 +580,57 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-11-06T18:41:16Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-11-06T20:24:23Z",
+   "subject": "Verse speaks first on its Brain page, from its live state"
+  },
+  {
+   "at": "2026-11-06T20:24:11Z",
+   "subject": "Design loop: check the live ask bar at 390 and 1280 px every 2 hours, with screenshots (#2478)"
+  },
+  {
+   "at": "2026-11-06T20:23:46Z",
+   "subject": "Starboard benchmark page, and theme names for the menu pages (#2479)"
+  },
+  {
+   "at": "2026-11-06T20:23:22Z",
+   "subject": "verse-job: show the coder's turn lines in the job log (#2480)"
+  },
+  {
+   "at": "2026-11-06T20:19:59Z",
+   "subject": "monitor-pack: propose monitors Verse owns so the client watches less (#2482)"
+  },
+  {
+   "at": "2026-11-06T20:18:58Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo render a c"
+  },
+  {
+   "at": "2026-11-06T20:18:53Z",
+   "subject": "Outcome exam: translate 89.2"
+  },
+  {
+   "at": "2026-11-06T20:13:03Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+  },
+  {
+   "at": "2026-11-06T20:10:40Z",
+   "subject": "Films: give each kept beat its own voice line, so long takes render (#2481)"
+  },
+  {
+   "at": "2026-11-06T20:09:21Z",
+   "subject": "Verse's coder: name a TV job's page files so a blueprint build starts reading (#2475)"
+  },
+  {
+   "at": "2026-11-06T20:06:57Z",
+   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
+  },
   {
    "at": "2026-11-06T20:06:03Z",
    "subject": "Shorts loop: today's trial and verdicts"
@@ -622,50 +666,6 @@
   {
    "at": "2026-11-06T19:55:31Z",
    "subject": "Read aloud: a redraw keeps the card's Stop reading state (#2421)"
-  },
-  {
-   "at": "2026-11-06T19:54:44Z",
-   "subject": "Better at my device, image gen, groups and 3 more: 18 more ways of asking answered right — new phrases: “what is my ip address” now opens…"
-  },
-  {
-   "at": "2026-11-06T19:54:02Z",
-   "subject": "Knowledge cards back on the site, with the card art and self card checks fixed at their root (#2423)"
-  },
-  {
-   "at": "2026-11-06T19:53:49Z",
-   "subject": "Incident: the browser suite failed on 442816a9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T19:53:41Z",
-   "subject": "Conductor: reword the tv cap comment in plain words (#2467)"
-  },
-  {
-   "at": "2026-11-06T19:53:20Z",
-   "subject": "Agents write pull requests in their own words, never quoting the owner (#2468)"
-  },
-  {
-   "at": "2026-11-06T19:52:51Z",
-   "subject": "Lab: every experiment opens a working tool, tools placed on the pages they belong to (#2469)"
-  },
-  {
-   "at": "2026-11-06T19:51:48Z",
-   "subject": "Brain: an organ whose state an older brain lacks rests instead of throwing (main's brain-skew test was red) (#2470)"
-  },
-  {
-   "at": "2026-11-06T19:49:45Z",
-   "subject": "Outcome exam: translate 89.2"
-  },
-  {
-   "at": "2026-11-06T19:47:32Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T19:47:06Z",
-   "subject": "Verse loop: closing the pause issue ends the saved pause too (#2472)"
-  },
-  {
-   "at": "2026-11-06T19:40:28Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   }
  ],
  "builders": {
@@ -847,8 +847,8 @@
   }
  ],
  "visible": {
-  "day": 70,
-  "week": 221
+  "day": 13,
+  "week": 13
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -907,13 +907,12 @@
  "tower": {
   "target": "dalyfeds.com",
   "since": "2026-11-06",
-  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1301
+  "total": 1307
  }
 }

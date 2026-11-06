@@ -204,6 +204,17 @@ window.seek(0);
 </script></body></html>`;
 }
 
+/** the voice lines a timeline keeps, each at its beat's start in ms: the hook line, then the line of each beat the timeline kept (by
+ *  its index in the script, since a long script loses middle beats), then the call to action. wavs = [hook, ...one per script beat, cta].
+ *  Every delay is a whole number of 0 ms or more. Pure. */
+export function voiceCues(tl, wavs) {
+  const at = (s) => Math.max(0, Math.round(((Number.isFinite(s) ? s : 0) + 0.15) * 1000));
+  const cues = [{ wav: wavs[0], ms: at(0) }];
+  for (const b of tl.beats) if (b.kind !== 'hook' && b.kind !== 'cta' && wavs[b.i + 1]) cues.push({ wav: wavs[b.i + 1], ms: at(b.from) });
+  const cta = tl.beats[tl.beats.length - 1];
+  if (cta && cta.kind === 'cta' && wavs.length > 1) cues.push({ wav: wavs[wavs.length - 1], ms: at(cta.from) });
+  return cues.filter((c) => c.wav);
+}
 const run = (cmd, args, opts = {}) => spawnSync(cmd, args, { encoding: 'utf8', maxBuffer: 64 << 20, ...opts });
 const secsOf = (f) => Number(run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).stdout.trim()) || 0;
 /** read one line aloud to a wav: Piper when PIPER_VOICE names a voice model, else espeak-ng, else null */
@@ -252,10 +263,10 @@ export async function render(script, out, { filmId, topic } = {}) {
   const args = ['-y', '-hide_banner', '-loglevel', 'error', '-framerate', String(FPS), '-i', path.join(dir, 'f%05d.jpg'), '-f', 'lavfi', '-i', bed];
   const vf = `scale=${W}:${H}:flags=lanczos,setsar=1,fps=30`;
   if (voiced) {
-    const starts = [0, ...tl.beats.slice(1).map((b) => b.from)];
-    wavs.forEach((w) => args.push('-i', w));
-    const parts = wavs.map((_, i) => `[${i + 2}:a]aresample=48000,aformat=channel_layouts=stereo,adelay=${Math.round((starts[i] + 0.15) * 1000)}|${Math.round((starts[i] + 0.15) * 1000)}[v${i}]`);
-    const fc = [`[0:v]${vf}[v]`, ...parts, `${wavs.map((_, i) => `[v${i}]`).join('')}amix=inputs=${wavs.length}:normalize=0,apad,atrim=duration=${T},asplit[vo][sc]`,
+    const cues = voiceCues(tl, wavs);
+    cues.forEach((c) => args.push('-i', c.wav));
+    const parts = cues.map((c, i) => `[${i + 2}:a]aresample=48000,aformat=channel_layouts=stereo,adelay=${c.ms}|${c.ms}[v${i}]`);
+    const fc = [`[0:v]${vf}[v]`, ...parts, `${cues.map((_, i) => `[v${i}]`).join('')}amix=inputs=${cues.length}:normalize=0,apad,atrim=duration=${T},asplit[vo][sc]`,
       `[1:a][sc]sidechaincompress=threshold=0.03:ratio=8:release=300[duck]`, `[vo][duck]amix=inputs=2:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=7[a]`].join(';');
     args.push('-filter_complex', fc, '-map', '[v]', '-map', '[a]');
   } else args.push('-filter_complex', `[0:v]${vf}[v]`, '-map', '[v]', '-map', '1:a');

@@ -228,10 +228,13 @@ export const SPECS = {
     // Knows first: what Verse knows, searchable, with no simulation loaded until Watch it think
     await t.p.waitForFunction(() => document.body.dataset.knowsReady === '1', null, { timeout: 15000 }).catch(() => {});
     t.ok(await t.p.evaluate(() => !window.verseBrainField && document.querySelectorAll('#kList .k-item').length >= 10), 'Knows opens with what Verse knows and no simulation running');
+    // Unbidden (brain/unbidden.js): Verse speaks first, under the Knows lede, voice off until pressed
+    t.ok(await t.p.evaluate(() => !!document.querySelector('#knows #unbidden') && document.querySelector('#unbidden .ub-btn').getAttribute('aria-pressed') === 'false'), 'Verse speaks first in Knows, with its voice off until you turn it on');
     await t.fill('#kFind', 'pdf'); await t.p.waitForTimeout(300);
     const hit = await t.text('#kSum'); t.ok(/^\d+ things? match “pdf”/.test(hit) && !/^0 /.test(hit), 'search finds what it knows: ' + hit);
     await t.click('#watchBtn');
     await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 15000 }).catch(() => {});
+    t.ok(await t.p.evaluate(() => !!document.querySelector('#panel #unbidden')), 'while it thinks, what Verse says first sits at the top of the panel, over none of the field');
     const fit = () => t.p.evaluate(() => {
       const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), live = document.querySelector('#live');
       const top = document.querySelector('#bar').getBoundingClientRect().bottom, hud = live.hidden ? innerHeight : live.getBoundingClientRect().top;

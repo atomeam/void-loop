@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { googleTrends, wikiTop, hnStory, isPerson, summaryOf, readTrends } from './trends.mjs';
 import { topicCheck, filmWordsCheck, overlap, dayMinus } from './topic-gate.mjs';
-import { FORMATS, ORDER, fits, scriptOf, timeline, linesOf, lineChars, factsOf, nameOf, MAX_S, pageHtml } from './film-studio.mjs';
+import { FORMATS, ORDER, fits, scriptOf, timeline, linesOf, lineChars, factsOf, nameOf, MAX_S, pageHtml, voiceCues } from './film-studio.mjs';
 import { planFilms, formatOrder, scriptOk, PER_DAY, MIN_VIEWS } from './shorts-loop.mjs';
 import { toUnlist, cleanup } from './film-cleanup.mjs';
 import { hookScore, captionCheck, SAFE } from './video-gate.mjs';
@@ -67,6 +67,13 @@ for (const f of ORDER) {
   assert.equal(tl.beats[0].kind, 'hook'); assert.equal(tl.beats.at(-1).kind, 'cta');
   for (const b of tl.beats) for (const l of linesOf(b).text.split('\n')) assert.ok(l.length <= lineChars(linesOf(b).size) + 2, f + ': a line too wide: ' + l);
   assert.match(pageHtml(sc, tl), /window\.measure=/);
+  // voiced with real line lengths: a long take loses middle beats, and each kept beat still gets its own line at its own start
+  const secs = sc.beats.map(() => 3.6), vt = timeline(sc, secs), wavs = ['hook', ...sc.beats.map((_, i) => 'b' + i), 'cta'];
+  const cues = voiceCues(vt, wavs), kept = vt.beats.filter((b) => b.kind !== 'hook' && b.kind !== 'cta');
+  assert.equal(cues.length, kept.length + 2, f + ': one line for the hook, each kept beat and the call to action');
+  for (const c of cues) assert.ok(Number.isInteger(c.ms) && c.ms >= 0, f + ': a voice delay of ' + c.ms + ' ms');
+  assert.deepEqual(cues.slice(1, -1).map((c) => c.wav), kept.map((b) => 'b' + b.i), f + ': each kept beat speaks its own line');
+  assert.equal(cues.at(-1).ms, Math.round((vt.beats.at(-1).from + 0.15) * 1000), f + ': the call to action speaks at its card');
 }
 const swift = T('Taylor Swift');
 assert.deepEqual(ORDER.filter((f) => fits(f, swift)), ['explainer', 'countdown'], 'a real person gets the fact formats only, never a parody');

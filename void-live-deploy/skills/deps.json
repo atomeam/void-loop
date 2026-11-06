@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1201,
+ "counted": 1204,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -475,7 +475,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 107,
+   "dependants": 108,
    "tests": 2
   },
   {
@@ -587,21 +587,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 108,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 106,
+   "dependants": 107,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 104,
+   "dependants": 105,
    "tests": 9
   },
   {
@@ -1025,18 +1025,18 @@
    "tests": 1
   },
   {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 40,
+   "tests": 4
+  },
+  {
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
    "dependants": 39,
    "tests": 3
-  },
-  {
-   "file": "lib/gumroad.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 39,
-   "tests": 4
   },
   {
    "file": "lib/alt-pay.js",
@@ -1046,18 +1046,18 @@
    "tests": 2
   },
   {
+   "file": "lib/store-db.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 3
+  },
+  {
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
    "dependants": 36,
    "tests": 1
-  },
-  {
-   "file": "lib/store-db.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 36,
-   "tests": 3
   },
   {
    "file": "lib/markets.js",
@@ -1084,14 +1084,14 @@
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 3
   },
   {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
@@ -1336,7 +1336,7 @@
    "file": "lib/models.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 72,
+   "dependants": 73,
    "tests": 14
   },
   {
@@ -1382,18 +1382,18 @@
    "tests": 2
   },
   {
+   "file": "lib/actions.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 31,
+   "tests": 2
+  },
+  {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
    "dependants": 31,
    "tests": 1
-  },
-  {
-   "file": "lib/actions.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 30,
-   "tests": 2
   },
   {
    "file": "lib/free-pics.js",
@@ -1420,7 +1420,7 @@
    "file": "lib/automations.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 19,
    "tests": 6
   },
   {
@@ -2397,6 +2397,13 @@
    "tests": 2
   },
   {
+   "file": "lib/verse-shell.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/visible.js",
    "skills": 1,
    "direct": 1,
@@ -2435,21 +2442,21 @@
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 62,
+   "dependants": 63,
    "tests": 9
   },
   {
@@ -2463,7 +2470,7 @@
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 0
   },
   {
@@ -2477,21 +2484,21 @@
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 0
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 41,
    "tests": 0
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 1
   },
   {
@@ -2673,63 +2680,63 @@
    "file": "lib/watch-build.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 3
   },
   {
    "file": "lib/team.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 7
   },
   {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/team-leverage.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 6
   },
   {
    "file": "lib/brain-dream.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 1
   },
   {
    "file": "lib/team-crew.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 1
   },
   {
    "file": "lib/team-priorities.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 2
   },
   {
@@ -2810,6 +2817,13 @@
    "tests": 4
   },
   {
+   "file": "lib/status.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/verse-wallet.js",
    "skills": 0,
    "direct": 0,
@@ -2829,13 +2843,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 0
-  },
-  {
-   "file": "lib/status.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
   },
   {
    "file": "lib/translate-web.js",
@@ -2878,6 +2885,13 @@
    "direct": 0,
    "dependants": 3,
    "tests": 1
+  },
+  {
+   "file": "lib/team-crew-run.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 3
   },
   {
    "file": "lib/trading-paid.js",
@@ -2941,13 +2955,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/team-crew-run.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 3
   },
   {
    "file": "lib/used.js",
@@ -3097,13 +3104,6 @@
    "tests": 1
   },
   {
-   "file": "lib/life-arb.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/misskey.js",
    "skills": 0,
    "direct": 0,
@@ -3181,6 +3181,13 @@
    "tests": 1
   },
   {
+   "file": "lib/sitebench.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/team-mcp.js",
    "skills": 0,
    "direct": 0,
@@ -3189,6 +3196,13 @@
   },
   {
    "file": "lib/treasury.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/unbidden.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3811,13 +3825,6 @@
    "tests": 2
   },
   {
-   "file": "lib/verse-shell.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/will-schema.js",
    "skills": 0,
    "direct": 0,
@@ -4291,6 +4298,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -4362,13 +4370,6 @@
   "functions/api/joins.js": {
    "imports": [
     "lib/joins.js"
-   ],
-   "importedBy": []
-  },
-  "functions/api/life-arb.js": {
-   "imports": [
-    "lib/guard.js",
-    "lib/life-arb.js"
    ],
    "importedBy": []
   },
@@ -4745,6 +4746,12 @@
    ],
    "importedBy": []
   },
+  "functions/api/sitebench.js": {
+   "imports": [
+    "lib/sitebench.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/sportsearch.js": {
    "imports": [
     "functions/api/answer.js",
@@ -4761,7 +4768,8 @@
    ],
    "reachedBy": [
     "functions/api/automations/tick.js",
-    "functions/api/crew.js"
+    "functions/api/crew.js",
+    "functions/api/unbidden.js"
    ]
   },
   "functions/api/store/[[path]].js": {
@@ -4858,6 +4866,7 @@
     "functions/api/hook/[id].js",
     "functions/api/members.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js"
    ]
   },
@@ -4893,6 +4902,17 @@
     "lib/treasury.js",
     "lib/verse-wallet.js",
     "lib/x402.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/unbidden.js": {
+   "imports": [
+    "lib/models.js",
+    "lib/daily-cap.js",
+    "lib/automation-fix.js",
+    "lib/shortfall.js",
+    "lib/team-crew-run.js",
+    "lib/unbidden.js"
    ],
    "importedBy": []
   },
@@ -5152,6 +5172,7 @@
     "functions/api/members.js",
     "functions/api/miss.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/refusal.js",
@@ -5761,6 +5782,7 @@
     "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/api/will.js",
     "lib/actions-failure.js",
     "lib/bench-asks.js",
@@ -5873,6 +5895,7 @@
    "reachedBy": [
     "functions/api/crew.js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -5898,6 +5921,7 @@
     "functions/api/crew.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/approval-core.js",
@@ -6283,6 +6307,7 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -7812,6 +7837,7 @@
     "functions/api/rapvoice.js",
     "functions/api/report.js",
     "functions/api/sing.js",
+    "functions/api/unbidden.js",
     "lib/free-router.js"
    ],
    "reachedBy": [
@@ -8034,6 +8060,7 @@
     "functions/api/sportsearch.js",
     "functions/api/team.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
@@ -8833,7 +8860,6 @@
     "functions/api/gumroad.js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
-    "functions/api/life-arb.js",
     "functions/api/misses.js",
     "functions/api/passkey.js",
     "functions/api/probe-asks.js",
@@ -8905,6 +8931,7 @@
     "functions/api/share/index.js",
     "functions/api/sing.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/index.js",
@@ -9021,6 +9048,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/treasury.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
@@ -9308,6 +9336,7 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -9717,12 +9746,6 @@
   "lib/ledger.js": {
    "imports": [],
    "importedBy": []
-  },
-  "lib/life-arb.js": {
-   "imports": [],
-   "importedBy": [
-    "functions/api/life-arb.js"
-   ]
   },
   "lib/lineage.js": {
    "imports": [],
@@ -10432,6 +10455,7 @@
     "functions/api/studio.js",
     "functions/api/tower-self.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/voice-reply.js",
     "functions/api/watchalong.js",
     "functions/api/will.js",
@@ -10838,6 +10862,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/watchalong.js",
@@ -11068,7 +11093,6 @@
     "functions/api/hook/[id].js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
-    "functions/api/life-arb.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
@@ -11114,6 +11138,7 @@
     "functions/api/tower-self.js",
     "functions/api/translate.js",
     "functions/api/treasury.js",
+    "functions/api/unbidden.js",
     "functions/api/v01d-fixes.js",
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
@@ -11219,6 +11244,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
@@ -11486,6 +11512,7 @@
     "lib/probe-asks.js",
     "lib/propose-fix.js",
     "lib/self-context.js",
+    "lib/unbidden.js",
     "lib/voice.js"
    ],
    "reachedBy": [
@@ -11516,6 +11543,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/voice-reply.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
@@ -11862,6 +11890,7 @@
     "functions/api/paypal/review.js",
     "functions/api/support.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
@@ -12789,6 +12818,7 @@
     "functions/api/hook/[id].js",
     "functions/api/members.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -13045,6 +13075,7 @@
     "functions/api/reflect.js",
     "functions/api/sing.js",
     "functions/api/tower-self.js",
+    "functions/api/unbidden.js",
     "functions/api/voice-reply.js",
     "functions/api/will.js",
     "lib/free-router.js"
@@ -13106,6 +13137,12 @@
    "imports": [],
    "importedBy": [
     "functions/api/sing.js"
+   ]
+  },
+  "lib/sitebench.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/sitebench.js"
    ]
   },
   "lib/skill-compose.js": {
@@ -13678,6 +13715,7 @@
    "reachedBy": [
     "functions/api/automations/tick.js",
     "functions/api/crew.js",
+    "functions/api/unbidden.js",
     "lib/team-crew-run.js"
    ]
   },
@@ -13730,6 +13768,7 @@
     "functions/api/review.js",
     "functions/api/support.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
@@ -14025,7 +14064,8 @@
    ],
    "importedBy": [
     "functions/api/automations/tick.js",
-    "functions/api/crew.js"
+    "functions/api/crew.js",
+    "functions/api/unbidden.js"
    ]
   },
   "lib/team-crew.js": {
@@ -14045,6 +14085,7 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -14068,6 +14109,7 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -14101,6 +14143,7 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -14128,6 +14171,7 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/members.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "lib/automations-run.js"
    ]
@@ -14212,6 +14256,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/watchalong.js",
@@ -14650,6 +14695,14 @@
     "functions/api/treasury.js"
    ]
   },
+  "lib/unbidden.js": {
+   "imports": [
+    "lib/persona.js"
+   ],
+   "importedBy": [
+    "functions/api/unbidden.js"
+   ]
+  },
   "lib/units.js": {
    "imports": [],
    "importedBy": []
@@ -14757,6 +14810,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/watchalong.js",
@@ -14807,7 +14861,9 @@
   },
   "lib/verse-shell.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/open-tool.js"
+   ]
   },
   "lib/verse-wallet-address.js": {
    "imports": [],
@@ -15003,6 +15059,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
@@ -15074,6 +15131,7 @@
     "functions/api/hook/[id].js",
     "functions/api/members.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -15101,6 +15159,7 @@
     "functions/api/hook/[id].js",
     "functions/api/members.js",
     "functions/api/team.js",
+    "functions/api/unbidden.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/approval-core.js",
@@ -15231,6 +15290,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
+    "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
@@ -17803,6 +17863,10 @@
    ],
    "importedBy": []
   },
+  "skills/monitor-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/monopoly-rules.js": {
    "imports": [],
    "importedBy": [
@@ -18019,7 +18083,8 @@
   },
   "skills/open-tool.js": {
    "imports": [
-    "lib/toolkit.js"
+    "lib/toolkit.js",
+    "lib/verse-shell.js"
    ],
    "importedBy": []
   },
