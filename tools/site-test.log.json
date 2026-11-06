@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-15T07:17:32Z",
-  "passed": 9,
-  "of": 15,
-  "kind": "file",
-  "key": "yo movie metadata for the matrix | refused: don't know this yet",
-  "note": "fix: \"yo movie metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-15T07:20:54Z",
   "passed": 15,
   "of": 15,
@@ -4708,5 +4700,23 @@
    ]
   },
   "note": "fix: \"films by Kurosawa\" load 1510 ms > 1200"
+ },
+ {
+  "at": "2026-11-06T16:04:05Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1505,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

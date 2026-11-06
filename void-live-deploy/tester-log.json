@@ -3,13 +3,20 @@
  "cases": 92,
  "runsTotal": 300,
  "kinds": {
-  "file": 87,
   "grow": 72,
+  "file": 86,
   "tighten": 7,
   "none": 40,
-  "visitor": 94
+  "visitor": 95
  },
  "runs": [
+  {
+   "at": "2026-11-06T16:04:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T15:51:51Z",
    "passed": 88,
@@ -271,40 +278,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T08:42:34Z",
-   "passed": 84,
-   "of": 90,
-   "kind": "grow",
-   "ms": 336,
-   "note": "new ground passed, kept as a regression case: \"yo draw me a robot\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "are you web4",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo draw a cartoon cat",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -358,20 +331,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 62,
-   "passed": 290,
-   "of": 1313,
-   "broken": 42,
-   "brokenOf": 984,
+   "runs": 64,
+   "passed": 281,
+   "of": 1373,
+   "broken": 45,
+   "brokenOf": 1059,
    "brokenPassed": 6
   },
   {
    "from": "2026-10-16",
-   "runs": 110,
+   "runs": 107,
    "passed": 2727,
-   "of": 4259,
-   "broken": 47,
-   "brokenOf": 1178,
+   "of": 4184,
+   "broken": 44,
+   "brokenOf": 1103,
    "brokenPassed": 0
   },
   {
@@ -382,7 +355,7 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 128,
+   "runs": 129,
    "passed": 2814,
    "of": 3053,
    "ms": 379
