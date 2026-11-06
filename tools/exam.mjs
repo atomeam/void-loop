@@ -14,7 +14,7 @@ import { resolve, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { spawnSync } from 'node:child_process';
-import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, DROP, SCALE } from '../void-live-deploy/lib/exam.js';
+import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, mediaLine, DROP, SCALE } from '../void-live-deploy/lib/exam.js';
 import { songAskOf, findTrack } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
 import { compute, money } from '../void-live-deploy/lib/vat.js';
@@ -307,14 +307,6 @@ async function readCard(page, ask) {
   if (obs.frame) Object.assign(obs.frame, await headOf(obs.frame.src));
   obs.ms = Date.now() - t0;
   return obs;
-}
-
-/** one line on the audio the exam read, for a failed audio or episode check: host, the file name, the status, the type and how far it played. Pure. */
-export function mediaLine(a) {
-  if (!a) return 'no audio element on the answer card';
-  let where = String(a.src || '').slice(0, 200);
-  try { const u = new URL(a.src); where = u.host + ' .../' + (u.pathname.split('/').pop() || '').slice(0, 80); } catch (_) {}
-  return where + ' · status ' + (a.status || 0) + ' · ' + (a.type || 'no type') + ' · played ' + Number(a.currentTime || 0).toFixed(1) + ' s';
 }
 
 function publishRow(domain, ask, judged, holdout) {
