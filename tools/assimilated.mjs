@@ -52,7 +52,7 @@ export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} 
   for (const f of floors) {
     if (f.state !== 'current' || !f.site) continue;
     const r = row(hostOf(f.url || f.site)); lift(r, 'current'); r.current = true; if (f.page) r.page = f.page; if (f.topic) r.topic = f.topic;
-    r.score = { n: f.n, m: f.m }; r.why = 'the target now: Verse is ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.topic ? ', measured against ' + f.page + ', the page that does its job (' + f.topic + ')' : ''); src(r, 'void-live-deploy/tower.target.json');
+    if (f.at && !r.at) r.at = f.at; r.score = { n: f.n, m: f.m }; r.why = 'the target now: Verse is ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.topic ? ', measured against ' + f.page + ', the page that does its job (' + f.topic + ')' : ''); src(r, 'void-live-deploy/tower.target.json');
   }
   // PASSED (owner, 2026-11-03): the Tower moved on; the open aspects are measured in the background until it is conquered (lib/tower.js)
   for (const f of floors) {
@@ -97,7 +97,7 @@ export async function floorsOf(cwd = root) {
   // what each site taught Verse, as the card's "What each site taught me" says it (skills/tower.js verseTake): its lesson, else Verse's edge
   const taught = (f) => learnedOf(f) || (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) : '');
   const cur = t.floors.find((f) => f.state === 'current');
-  return (cur ? [{ ...cur }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
+  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
 }
 
 /** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */

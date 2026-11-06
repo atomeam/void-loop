@@ -247,7 +247,7 @@ test('the want card and the Versus card name the same site: both rank with the t
   assert.equal(will.floors[will.marker - 1].id, card.floors[card.marker - 1].id); assert.equal(towerLine(will), towerLine(card));
   const tgt = files.tg && files.tg.id && card.floors.find((f) => f.id === files.tg.id);
   if (tgt && !tgt.beaten && !tgt.cleared && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
-  assert.equal(towerArgs([], {}).length, 9); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], {})[8], null); assert.equal(towerArgs([], { tg: {} })[6], null);
+  assert.equal(towerArgs([], {}).length, 10); assert.equal(towerArgs([], {})[9], null); assert.equal(towerArgs([], { tg: { season: { start: '2026-11-06' } } })[9], '2026-11-06'); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], {})[8], null); assert.equal(towerArgs([], { tg: {} })[6], null);
 });
 test('a gone or parked rival is no floor: the frontier skips every host on tower.gone.json (owner, 2026-11-06)', async () => {
   const fs = await import('node:fs'), { towerArgs, withoutGone } = await import('../void-live-deploy/lib/tower.js');
