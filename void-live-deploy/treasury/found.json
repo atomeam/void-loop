@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-06T06:26:04.741Z",
+ "as_of": "2026-11-06T06:33:40.149Z",
  "rules": "Legitimate sources only, each cited. A value is a number its source publishes (a prize pool, a bounty, a program credit) and is not a forecast; null means unknown. Anything that needs Atom's identity, a login or a card is ready to claim; Verse claims nothing in anyone's name.",
  "probes": {
   "devpost": "read",
