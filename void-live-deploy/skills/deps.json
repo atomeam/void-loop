@@ -1305,6 +1305,13 @@
    "tests": 1
   },
   {
+   "file": "lib/ask-same.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 36,
+   "tests": 1
+  },
+  {
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
@@ -2446,13 +2453,6 @@
    "tests": 0
   },
   {
-   "file": "lib/self-blocks.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 34,
-   "tests": 3
-  },
-  {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
@@ -2464,7 +2464,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 33,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/free-router.js",
@@ -3683,6 +3683,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/self-blocks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 4
   },
   {
    "file": "lib/seo.js",
@@ -5504,6 +5511,49 @@
     "skills/merge.js",
     "skills/oracle.js",
     "skills/rally.js"
+   ]
+  },
+  "lib/ask-same.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/self-blocks.js",
+    "lib/voice.js",
+    "skills/wants.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/answer.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "functions/api/x402/[service].js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js"
    ]
   },
   "lib/ask-text.js": {
@@ -12484,46 +12534,10 @@
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js",
-    "lib/weakest.js"
+    "lib/weakest.js",
+    "lib/ask-same.js"
    ],
-   "importedBy": [
-    "lib/voice.js"
-   ],
-   "reachedBy": [
-    "functions/api/a2a.js",
-    "functions/api/answer.js",
-    "functions/api/apibot.js",
-    "functions/api/bench.js",
-    "functions/api/card-art.js",
-    "functions/api/clip.js",
-    "functions/api/daily-art.js",
-    "functions/api/gallery.js",
-    "functions/api/image.js",
-    "functions/api/local.js",
-    "functions/api/markets.js",
-    "functions/api/mcp.js",
-    "functions/api/merge.js",
-    "functions/api/news.js",
-    "functions/api/podcasts.js",
-    "functions/api/rapvoice.js",
-    "functions/api/recipeimport.js",
-    "functions/api/recipes.js",
-    "functions/api/reflect.js",
-    "functions/api/repo.js",
-    "functions/api/report.js",
-    "functions/api/scores.js",
-    "functions/api/sing.js",
-    "functions/api/sportsearch.js",
-    "functions/api/translate.js",
-    "functions/api/voice-reply.js",
-    "functions/api/watchalong.js",
-    "functions/api/weather.js",
-    "functions/api/will.js",
-    "functions/api/x402/[service].js",
-    "lib/bench-asks.js",
-    "lib/built-detail.js",
-    "lib/self-context.js"
-   ]
+   "importedBy": []
   },
   "lib/self-context.js": {
    "imports": [
@@ -14534,7 +14548,7 @@
     "lib/persona.js",
     "lib/automation-fix.js",
     "skills/growth-tree.js",
-    "lib/self-blocks.js",
+    "lib/ask-same.js",
     "lib/weakest.js"
    ],
    "importedBy": [
@@ -19265,7 +19279,8 @@
   },
   "skills/wants.js": {
    "imports": [
-    "lib/visible.js"
+    "lib/visible.js",
+    "lib/ask-same.js"
    ],
    "importedBy": []
   },
