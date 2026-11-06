@@ -73,6 +73,10 @@
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/member-keep.js">
 <!-- /modulepreload -->
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/news/global-headlines/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"News: headlines from many sources, with followed topics","url":"https://a-to-mind.com/news/global-headlines/","description":"Headlines from the BBC, the Guardian, NPR, Al Jazeera, DW and more in one calm list: the source and age on every story, the same story from several sources grouped, sections, search, topics you follow and a read-later list on your device. Links out; no ads, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"breaking headlines, news about [topic], news, world news today, headlines from many sources, news aggregator no ads","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"News: headlines from many sources, with followed topics","item":"https://a-to-mind.com/news/global-headlines/"}]}]}</script>
+<!-- /seo -->
 </head>
 <body>
 <main id="app" aria-busy="true">
@@ -110,7 +114,7 @@
 
   <p id="member-offer" class="tk-row"><span class="tk-label">Your own Verse</span> <a href="/members/?from=news">Members get their own Verse to follow these sections with more model answers and private skills</a></p>
 <script type="module">import { wireOffer } from '/lib/member-keep.js'; wireOffer('news');</script>
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/weather/">Weather</a> <a href="/local/">Local TV and radio</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/news/">News</a> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/weather/">Weather</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 
   <p class="srcs" id="srcs">Sources: BBC News, The Guardian, NPR, Al Jazeera, DW, France 24, CBS News, ABC Australia, Sky News, Euronews and more, each through its public feed. Only headlines, links and the short summaries the feeds carry are shown; open the story at the source to read it.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>

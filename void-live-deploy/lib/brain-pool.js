@@ -44,10 +44,13 @@ const poly6 = (r2, h) => { const d = h * h - r2; return d > 0 ? (4 / (Math.PI * 
 const restCache = new Map();
 /** the density a still square lattice of spacing SPACE has under the poly6 kernel of radius h: the fluid's rest density at that size. */
 export function restDensity(h) {
-  const key = Math.round(h * 1e4); if (restCache.has(key)) return restCache.get(key);
+  // kept by the exact size: a key rounded to 1e-4 gave a nearby size the first size's density, so a brain's fluid depended on what other
+  // brains had run before it in the same page or process (2026-10-30: a test brain alone and after another differed)
+  if (restCache.has(h)) return restCache.get(h);
   let s = 0; const n = Math.ceil(h / SPACE);
   for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) s += MASS * poly6((i * SPACE) ** 2 + (j * SPACE) ** 2, h);
-  restCache.set(key, s); return s;
+  if (restCache.size > 4096) restCache.clear();
+  restCache.set(h, s); return s;
 }
 
 // ---- the fluid ------------------------------------------------------------------------------------------------------------------------
@@ -58,21 +61,27 @@ export function makeFluid(x = 0.5, y = 0.5) {
   for (let p = 0; p < NP; p++) { F.x[p] = x0 + (p % side) * SPACE; F.y[p] = y0 + Math.floor(p / side) * SPACE; }
   return F;
 }
+const NB = new Int32Array(NP * NP), NR = new Float64Array(NP * NP), NN = new Int32Array(NP); // stepFluid's neighbour lists
 export const copyFluid = (F) => ({ x: Float64Array.from(F.x), y: Float64Array.from(F.y), vx: Float64Array.from(F.vx), vy: Float64Array.from(F.vy), rho: Float64Array.from(F.rho), ax: new Float64Array(NP), ay: new Float64Array(NP), steps: F.steps });
 /** one SPH step at setting s ({ visc, stiff, size }) with the pull toward (tx, ty), and a tilt (gx, gy). Returns the step's cost parts:
  *  density error, lag (the drop's centre from the pull) and slosh (kinetic energy inside the drop). */
 export function stepFluid(F, s, tx, ty, gx = 0, gy = 0, spoon = null) {
   const h = H0 * s.size, h2 = h * h, rho0 = restDensity(h), { x, y, vx, vy, rho, ax, ay } = F, pr = F.pr || (F.pr = new Float64Array(NP));
   const k6 = (4 / (Math.PI * h ** 8)) * MASS, kg = (-30 / (Math.PI * h ** 5)) * MASS, kv = (40 / (Math.PI * h ** 5)) * MASS * s.visc, drag = s.visc * DRAG;
-  for (let p = 0; p < NP; p++) { let d = 0; for (let q = 0; q < NP; q++) { const r2 = (x[p] - x[q]) ** 2 + (y[p] - y[q]) ** 2; if (r2 < h2) { const e = h2 - r2; d += k6 * e * e * e; } } rho[p] = d; }
+  // each pair once: the neighbours of every particle (itself included) in index order, with their squared distance, so the density
+  // and the forces below add the same terms in the same order as a loop over all particles would
+  NN.fill(0);
+  for (let p = 0; p < NP; p++) { NB[p * NP + NN[p]] = p; NR[p * NP + NN[p]++] = 0; for (let q = p + 1; q < NP; q++) { const r2 = (x[p] - x[q]) ** 2 + (y[p] - y[q]) ** 2; if (r2 < h2) { NB[p * NP + NN[p]] = q; NR[p * NP + NN[p]++] = r2; NB[q * NP + NN[q]] = p; NR[q * NP + NN[q]++] = r2; } } }
+  for (let p = 0; p < NP; p++) { let d = 0; for (let k = p * NP, end = k + NN[p]; k < end; k++) { const e = h2 - NR[k]; d += k6 * e * e * e; } rho[p] = d; }
   for (let p = 0; p < NP; p++) pr[p] = s.stiff * (rho[p] - rho0); // pressure (it may pull a little where the fluid is thin: surface tension)
   for (let p = 0; p < NP; p++) {
     const dx = tx - x[p], dy = ty - y[p], dd = Math.hypot(dx, dy), pa = Math.min(PULL * dd, AMAX) / Math.max(dd, 1e-9), pp = pr[p], rp = rho[p];
     let fx = pa * dx + gx - drag * vx[p], fy = pa * dy + gy - drag * vy[p];
     if (spoon) { const w = Math.max(0, 1 - Math.hypot(x[p] - spoon.x, y[p] - spoon.y) / SPOON_R); fx += SPOON * w * (spoon.vx - vx[p]); fy += SPOON * w * (spoon.vy - vy[p]); } // your pointer stirs
-    for (let q = 0; q < NP; q++) {
-      const rx = x[p] - x[q], ry = y[p] - y[q], r2 = rx * rx + ry * ry;
-      if (q === p || r2 >= h2 || r2 < 1e-18) continue;
+    for (let k = p * NP, end = k + NN[p]; k < end; k++) {
+      const q = NB[k], r2 = NR[k];
+      if (q === p || r2 < 1e-18) continue;
+      const rx = x[p] - x[q], ry = y[p] - y[q];
       const r = Math.sqrt(r2), hr = h - r, g = (-((pp + pr[q]) / (2 * rho[q])) * kg * hr * hr) / rp, l = (kv * hr) / (rho[q] * rp);
       fx += (g * rx) / r + l * (vx[q] - vx[p]); fy += (g * ry) / r + l * (vy[q] - vy[p]);
     }

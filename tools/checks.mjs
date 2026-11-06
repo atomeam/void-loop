@@ -221,6 +221,7 @@ for (const [name, file] of [
   ['store', 'store.test.mjs'],
   ['pay-share', 'pay-share.test.mjs'],
   ['alt-pay', 'alt-pay.test.mjs'],
+  ['x402', 'x402.test.mjs'],
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],

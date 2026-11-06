@@ -5,10 +5,10 @@
 // Measured on 8 real brains' focus paths (300 lives): the tuned rule's error was the drafts' rule's over 7.0 to 9.6, random search's over
 // 4.2 to 7.1; on 40 new lives with the rule held fixed, 4.9 to 11.2 against 2.5 to 9.2; it beat random search on 8 of 8 both ways.
 // Run: node --test tools/brain-trace.test.mjs
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as K from '../void-live-deploy/lib/brain-trace.js';
+import { par, ptest, test } from './brain-par.mjs';
 
 /** the real brain's focus, one frame a tick, while a visitor's pointer circles (and leaves) and words are told */
 function frames(seed, ticks) {
@@ -44,12 +44,14 @@ test('the field is the drafts\' rule: as written a mark never lets go; a tuned r
   assert.ok(Math.abs(Math.max(...F.s) - s0 * 0.995) < 1e-9, 'the stamp decays by the rule\'s fifth number');
 });
 
-test('the tuned rule misses far less than the drafts\' rule and than random search, during learning and on new lives, and lets old marks go', () => {
-  const rows = [];
-  for (const seed of [1, 2, 3]) {
-    const fr = frames(seed, 1400), L = live(K.makeTrace(seed), fr, 300), Bl = live(K.makeTrace(seed, 'blind'), fr, 300), h = K.holdsOf(L);
-    rows.push({ learn: K.gainOf(L), blind: K.gainOf(Bl), heldLearn: heldOut(L.w, fr), heldBlind: heldOut(Bl.w, fr), hold: h.hold, stale: h.stale, empty: h.empty });
-  }
+/** one brain's row: the tuned rule and random search on that brain's focus path (a worker runs it) */
+export function traceRow(seed) {
+  const fr = frames(seed, 1400), L = live(K.makeTrace(seed), fr, 300), Bl = live(K.makeTrace(seed, 'blind'), fr, 300), h = K.holdsOf(L);
+  return { learn: K.gainOf(L), blind: K.gainOf(Bl), heldLearn: heldOut(L.w, fr), heldBlind: heldOut(Bl.w, fr), hold: h.hold, stale: h.stale, empty: h.empty };
+}
+
+test('the tuned rule misses far less than the drafts\' rule and than random search, during learning and on new lives, and lets old marks go', async () => {
+  const rows = await par(import.meta.url, 'traceRow', [[1], [2], [3]]); // the 3 brains at once
   const say = JSON.stringify(rows.map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, r3(v)]))));
   assert.ok(rows.every((r) => r.learn > 3 && r.heldLearn > 3), 'tuned over the drafts\' rule ' + say);
   assert.ok(rows.every((r) => r.learn > r.blind && r.heldLearn > r.heldBlind), 'tuned over random search ' + say);
@@ -57,7 +59,7 @@ test('the tuned rule misses far less than the drafts\' rule and than random sear
   assert.ok(rows.every((r) => r.hold > 0.5 && r.stale < r.hold - 0.3 && r.empty < 0.05), 'holds fresh, lets old go ' + say);
 });
 
-test('it runs in the brain as one of twenty-three organs: the focus seeds it, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-three organs: the focus seeds it, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
   assert.ok(B.ORGAN_IDS.includes('trace') && B.ORGAN_IDS.length === 23);
