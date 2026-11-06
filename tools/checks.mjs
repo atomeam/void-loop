@@ -195,6 +195,7 @@ for (const [name, file] of [
   ['collectible', 'collectible.test.mjs'],
   ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
+  ['action-root', 'action-root.test.mjs'],
   ['support', 'support.test.mjs'],
   ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
   ['kv-namespace', 'kv-namespace.test.mjs'],

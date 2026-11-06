@@ -13,7 +13,7 @@ import { recordShortfall } from '../../lib/shortfall.js';
 import { onRequestPost as review } from './review.js';
 import { onRequestPost as answer } from './answer.js';
 import { onRequestPost as paidReview } from './x402/review.js';
-import { onRequestPost as paidService } from './x402/[service].js';
+import { onRequestPost as paidService, PAID } from './x402/[service].js';
 import { SERVICES } from '../../lib/x402.js';
 
 const b64 = (o) => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
@@ -50,8 +50,10 @@ async function paidHttp(request, env, waitUntil, id, args, payment) {
   const headers = { 'content-type': 'application/json', ...(ip ? { 'cf-connecting-ip': ip } : {}) };
   if (payment) headers[Number(payment.x402Version) === 1 ? 'x-payment' : 'payment-signature'] = b64(payment);
   const inner = new Request(new URL(s.path, request.url), { method: 'POST', headers, body: JSON.stringify(args) });
-  const run = id === 'review' ? paidReview : paidService;
-  const res = await run({ request: inner, env: env || {}, params: { service: id }, waitUntil: (p) => (waitUntil ? waitUntil(p) : p) });
+  // review has its own handler, the rest are PAID in x402/[service].js; a service sold by a route file of its own (none once every one is in
+  // PAID) is reached at its own address, so the tool is never listed without a way to run it
+  const run = id === 'review' ? paidReview : PAID[id] ? paidService : null;
+  const res = run ? await run({ request: inner, env: env || {}, params: { service: id }, waitUntil: (p) => (waitUntil ? waitUntil(p) : p) }) : await fetch(inner);
   const body = await res.json().catch(() => null);
   return { status: res.status, body, required: unb64(res.headers.get('payment-required')), settlement: unb64(res.headers.get('payment-response') || res.headers.get('x-payment-response')) };
 }
