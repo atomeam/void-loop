@@ -75,6 +75,7 @@
  "decision-matrix": "\"decision matrix for whether to move to Berlin\" / \"decision matrix for pasta vs pizza\": a stage card with option columns and criteria rows",
  "deep-work": "A focus shield over the stage: \"shield everything except the notepad for 25 minutes\" dims every stage thing but the named kinds to 15% and runs a focus timer in",
  "define": "What a word means, from Wiktionary",
+ "delivery-checklist": "Turns a business idea into a concrete checklist of systems, automations, tests, and handoff points so Verse owns the heavy lifting",
  "delivery-pack": "Capture a business idea and turn it into a structured handoff package that reduces client work: clarified idea, systems to design/build/connect/test/monitor",
  "dependency-health": "\"dependency health\", \"how healthy are your dependencies\", \"are the shared files stable\": the dependency map held against two stability requirements",
  "deps": "\"dependency map\", \"what depends on lib/where.js\", \"who imports skills/scene3d.js\": who imports whom under the site's own code, from skills/deps.json",
