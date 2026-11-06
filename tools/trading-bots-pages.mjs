@@ -46,6 +46,7 @@ function head({ title, desc, url, name }) {
 <link rel="stylesheet" href="/trading-bots/tb.css">
 <link rel="modulepreload" href="/trading-bots/kit/strategy.js">
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
 </head>`;
 }
@@ -123,6 +124,10 @@ export function arbHtml() {
 <p class="muted" id="ar-mids"></p>
 <div class="row"><button type="button" id="ar-csv">Export this scan (CSV)</button><button type="button" id="ar-share">Share this scan</button><span class="muted" id="ar-shared"></span></div>
 <p class="muted">Taker fees are each venue's entry tier as published (Coinbase 0.60%, Kraken 0.80%, Bitstamp 0.40%, Gemini 1.20%, read 2026-11-06); Uniswap's pool fee is inside its quote and gas is priced from Base's gas price. USDC is counted as one dollar.</p></section>
+<section class="glass"><h2>What it has seen</h2>
+<p class="tb-note" id="ar-hist-at" aria-live="polite">Reading the record...</p>
+<div class="tb-scroll"><table id="ar-hist"></table></div>
+<p class="muted">One row per fresh scan of the coin above, kept 180 days, as JSON at <a href="/api/arbitrage?coin=BTC&amp;history=1">/api/arbitrage?history=1</a>. Scans happen when someone opens this page or the scheduled check runs, so the times are uneven. Cleared means the best pair whose books could fill the trade would have ended above $1,000 at the prices read; that is not money anyone made.</p></section>
 <section class="glass"><h2>Run it yourself</h2><p class="muted">The same math, on any exchanges ccxt supports, with your own size and fees, from your own computer. Read only: it never places an order.</p>
 <pre id="tb-curl">mkdir verse-bot &amp;&amp; cd verse-bot
 curl -fsSLO "${SITE}/trading-bots/kit/{bot.mjs,strategy.js,arb-scan.mjs,arb.js,arb.example.json,package.json,config.example.json,README.md,LICENSE}"

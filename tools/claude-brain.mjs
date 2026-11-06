@@ -5,7 +5,7 @@
 // MAX_OUTPUT_TOKENS, so the worst run costs about WORST_RUN_USD. The reply goes through the same gate (parseEdits) and the same
 // checks (tools/propose-fix.mjs) as Verse's own model; nothing it writes runs with a write token.
 //   node tools/propose-fix.mjs --brain claude ...   (the workflow's "brain: claude" input)
-import Anthropic from '@anthropic-ai/sdk';
+// the SDK loads only when a real call is made, so a test with a fake client runs where no package is installed (the merge gate's worktree)
 import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, MAX_TRIED, fixPrompt, parseEdits, evidenceOf } from '../void-live-deploy/lib/propose-fix.js';
 
 export const BRAIN_MODEL = 'claude-opus-5-5';
@@ -36,7 +36,8 @@ export function brainRequest({ ask, skill, source, mode = 'learn', said = '', tr
 
 /** Claude's proposal, in the shape /api/propose-fix answers ({ edits, why, confidence, evidence, model }) plus usage and cost; throws
  * when Claude declined, ran out of room, or proposed nothing that passes the gate. */
-export async function proposeWithClaude(miss, { client = new Anthropic() } = {}) {
+export async function proposeWithClaude(miss, { client } = {}) {
+  if (!client) client = new (await import('@anthropic-ai/sdk')).default();
   const r = await client.beta.messages.create(brainRequest(miss));
   const cost = costOf(r.usage);
   if (r.stop_reason === 'refusal') throw new Error('Claude declined (' + ((r.stop_details && r.stop_details.category) || 'no category') + '), $' + cost);

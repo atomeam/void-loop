@@ -428,13 +428,13 @@ async function start() {
 start();
 
 // ---- Verse's free bots (owner, 2026-11-03: "populate team with verses free bots too"): the tools anyone or any agent calls free over
-// /api/mcp, read from /tools.json (lib/mcp.js TOOLS), so the list is never written by hand. review_code_closer needs a paid key: left out.
+// /api/mcp, read from /tools.json (lib/mcp.js TOOLS), so the list is never written by hand. review_code_closer needs a paid key and the paid_* tools charge per call: left out.
 const FREE_PAGE = { ask_void: '/', review_code: '/code-review/', readability: '/word-count/', colour_contrast: '/color/', seo_audit: '/?q=' + encodeURIComponent('seo audit'),
   moon_phase: '/?q=' + encodeURIComponent('moon phase'), meteor_showers: '/?q=' + encodeURIComponent('meteor showers'), drive_time: '/?q=' + encodeURIComponent('drive time from Tampa to Orlando'),
   skill_health: '/skills/families.json', skill_discovery: '/skills/families.json' };
 export function freeBots(tj) {
   const tools = (tj && tj.mcp && Array.isArray(tj.mcp.tools)) ? tj.mcp.tools : [];
-  return tools.filter((t) => t && t.name && t.name !== 'review_code_closer').map((t) => {
+  return tools.filter((t) => t && t.name && t.name !== 'review_code_closer' && !/^paid_/.test(t.name)).map((t) => {
     const ex = /Asks like "([^"]{3,80})"/.exec(t.description || '');
     const page = FREE_PAGE[t.name] || (ex ? '/?q=' + encodeURIComponent(ex[1]) : '/?q=' + encodeURIComponent(t.title || t.name));
     return { name: t.title || t.name, tool: t.name, page, about: 'Free bot · call it on /api/mcp as ' + t.name + ', or open its page. ' + String(t.description || '').slice(0, 200) };

@@ -15,6 +15,7 @@ import * as translateRoute from '../translate.js';
 import * as digestRoute from '../digest.js';
 import * as appraiseRoute from '../appraise.js';
 import * as imageRoute from '../image.js';
+import { backtestRoute, arbitrageRoute, btInput, arbInput } from '../../../lib/trading-paid.js';
 
 const J = (b, s = 200, h = {}) => Response.json(b, { status: s, headers: { 'cache-control': 'no-store', ...h } });
 const str = (v) => (typeof v === 'string' ? v : '');
@@ -39,6 +40,11 @@ export const PAID = {
   image: { route: imageRoute, body: (b) => ({ prompt: str(b.prompt), negative: str(b.negative), style: str(b.style), shape: str(b.shape), seed: Number(b.seed) || 0 }),
     check: (b) => need(!!str(b.prompt).trim(), 'send { prompt }: what to paint'),
     paidOk: (s, j) => s === 200 && !!(j && j.state === 'art' && j.img) },
+  // the trading bots (lib/trading-paid.js): no free POST route of their own, the pages compute in the browser; read only, nothing is traded
+  backtest: { route: backtestRoute, body: (b) => b, check: (b) => { const i = btInput(b); return i.ok ? true : i.error; },
+    paidOk: (s, j) => s === 200 && !!(j && j.stats && Array.isArray(j.equity)) },
+  arbitrage: { route: arbitrageRoute, body: (b) => b, check: (b) => { const i = arbInput(b); return i.ok ? true : i.error; },
+    paidOk: (s, j) => s === 200 && !!(j && Array.isArray(j.rows) && j.rows.length) },
 };
 
 const nameOf = (params) => String((params && params.service) || '').toLowerCase();
