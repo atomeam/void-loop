@@ -123,8 +123,3 @@
   Cache-Control: public, max-age=60, stale-while-revalidate=300
 /converter/index.html
   Cache-Control: public, max-age=60, stale-while-revalidate=300
-
-# the owner's private life-arbitrage page (life-arb/, functions/api/life-arb.js): never indexed, never shown to a search engine; its data is owner-key only
-/life-arb/*
-  X-Robots-Tag: noindex, nofollow
-  Cache-Control: no-store

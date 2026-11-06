@@ -513,6 +513,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /lab/frontier-orientation-swarm/ | - | - | no | its tag |
 | /lab/frontier-webgpu-attention-field/ | - | - | no | its tag |
 | /learn-to-draw/ | - | number | yes | its tag |
+| /life-arb/ | - | - | no | its tag |
 | /limits/ | - | - | no | its tag |
 | /local/ | location | location, url | yes | its tag |
 | /markets/ | text | numbers, table | yes | handoff-types.json |
@@ -562,6 +563,11 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /team/ | text | text | yes | its tag |
 | /time/ | date, location | date, location | yes | handoff-types.json |
 | /tournaments/ | names | table, names | yes | handoff-types.json |
+| /trading-bots/ | - | table, code | yes | its tag |
+| /trading-bots/arbitrage/ | - | table, code | yes | its tag |
+| /trading-bots/breakout-20-10/ | - | table, code | yes | its tag |
+| /trading-bots/dip-rsi2/ | - | table, code | yes | its tag |
+| /trading-bots/trend-50-200/ | - | table, code | yes | its tag |
 | /translate/ | text, image, url | text | yes | handoff-types.json |
 | /treasury/ | - | - | no | its tag |
 | /tuner/ | text | number | yes | handoff-types.json |
