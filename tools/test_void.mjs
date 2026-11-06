@@ -11716,6 +11716,34 @@ try {
       rows.every((r) => !r.loadedAtAsk && r.first && r.firstMs != null && r.firstMs <= 1200 && r.right && r.w !== 'waking up'), JSON.stringify(rows));
   }
 
+  // Site tester issues #2316 #2323 #2342: on a slow or busy device "flip this card", "favorite this" and "send it away" showed only "waking up"
+  // until the tester gave up. Their skills rank far down the index, so the page waited for every skill above them, and "favorite this" also
+  // waited up to 2.5 s for the fuzzy layer. skills/first.json (tools/first-asks.mjs) names the one skill for each known ask, so the page
+  // loads that skill at once and skips the fuzzy wait. With the CPU 6x slower and no skill loaded yet, each one now gets its own answer in 4 s.
+  if (want("known first asks on a slow device (#2316 #2323 #2342): the one skill that takes it loads at once")) {
+    const ASKS = [['flip this card', /^skill:card-play$/], ['favorite this', /^skill:bookmarks$/], ['send it away', /^skill:dismiss$/]];
+    const rows = [];
+    for (const [a, note] of ASKS) {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+      await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+      const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p);
+      await p.addInitScript(() => { window.requestIdleCallback = () => 0; });
+      await p.goto(base); await p.waitForSelector('#input');
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+      const loadedAtAsk = await p.evaluate(() => document.documentElement.dataset.skills === 'ready');
+      await p.fill('#input', a); await p.keyboard.press('Enter'); const t0 = Date.now();
+      const done = await until(() => p.evaluate((q) => { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => x.ask === q).pop(); return l ? String(l.note) : ''; }, a).catch(() => ''), 30000);
+      const ms = done ? Date.now() - t0 : null;
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      const w = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+      rows.push({ a, loadedAtAsk, note: done || null, ms, right: note.test(String(done)), w });
+      await ctx.close();
+    }
+    check('known first asks on a slow device (#2316 #2323 #2342): with the CPU 6x slower and no skill loaded yet, "flip this card", "favorite this" and "send it away" are answered by card-play, bookmarks and dismiss within 4 s of Enter, and no "waking up" is left behind',
+      rows.every((r) => !r.loadedAtAsk && r.right && r.ms != null && r.ms <= 4000 && r.w !== 'waking up'), JSON.stringify(rows));
+  }
+
   if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
     const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
     const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'
