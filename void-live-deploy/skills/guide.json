@@ -1822,10 +1822,9 @@
    "title": "Magic 8 Ball",
    "line": "The Magic 8 Ball as a thing in the void",
    "examples": [
-    "magic 8 ball should spawn an 8 ball",
-    "magic 8 ball"
+    "magic 8 ball",
+    "shake the 8 ball"
    ],
-   "examplesFrom": "header",
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
    "n": 86,
@@ -5194,10 +5193,8 @@
    "title": "Tab",
    "line": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\", \"draft for me\" (reply, summary, notes, rewrite, proposal: sent to Verse once, said so on the card), and a step for Verse to propose",
    "examples": [
-    "put in the page",
-    "draft for me"
+    "show this tab"
    ],
-   "examplesFrom": "header",
    "tier": "checked",
    "why": "a self-test, 3 browser-suite mentions",
    "n": 275
@@ -8037,8 +8034,8 @@
    "line": "A Magic 8 Ball: glossy black ball, the white \"8\" circle on its back, and on the side facing you a dark window where the answer floats up on the blue triangle",
    "card": "Eightball",
    "examples": [
-    "magic 8 ball should spawn an 8 ball",
-    "magic 8 ball"
+    "magic 8 ball",
+    "shake the 8 ball"
    ],
    "owner": "eightball",
    "ownerPage": 86,
@@ -9068,7 +9065,7 @@
     {
      "rank": 31,
      "name": "tab",
-     "catches": "put in the page"
+     "catches": "show this tab"
     },
     {
      "rank": 32,
