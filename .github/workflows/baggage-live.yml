@@ -59,8 +59,12 @@ jobs:
             sleep $((i * 5))
           done
           echo "::error title=Finding not recorded::could not push the baggage finding to main"; exit 1
-      - name: Red when a page did not answer or a figure is gone
-        if: steps.call.outputs.code != '0'
+      - name: Warn when a cited page refused, every page that answered had its figures
+        if: steps.call.outputs.code == '2'
         run: |
-          echo "::error title=Baggage figures not confirmed::a cited page did not answer or a figure the card states is gone (exit ${{ steps.call.outputs.code }}); the finding records which"
+          echo "::warning title=Baggage figures partly unchecked::a cited page refused this runner (aa.com answers GitHub's network 403); every page that answered still has every figure, and the finding records which went unchecked"
+      - name: Red when a figure is gone or no page answered
+        if: steps.call.outputs.code != '0' && steps.call.outputs.code != '2'
+        run: |
+          echo "::error title=Baggage figures not confirmed::a figure the card states is gone from a page that answered, or no page answered (exit ${{ steps.call.outputs.code }}); the finding records which"
           exit 1
