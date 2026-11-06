@@ -346,6 +346,7 @@ for (const [name, file] of [
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
   ['suite-gate', 'suite-gate.test.mjs'],
+  ['suite-diff', 'suite-diff.test.mjs'],
   ['merge-stall', 'merge-stall.test.mjs'], // no merge for 2 hours while a green pull request waits: one issue names the stuck step
   ['rea-study', 'rea-study.test.mjs'], ['study-engine', 'study-engine.test.mjs'], ['studies-api', 'studies-api.test.mjs'],
   ['review-api', 'review-api.test.mjs'], ['review-pr', 'review-pr.test.mjs'],
