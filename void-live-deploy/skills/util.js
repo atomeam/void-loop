@@ -6,8 +6,9 @@
  * for the diff checker, lib/markdown.js for Markdown, lib/csvjson.js for CSV and JSON,
  * lib/yamljson.js for YAML and JSON, lib/cssmin.js for CSS); nothing is sent anywhere.
  */
-import { askColour, parse, toHex, describe } from '../lib/colour.js';
+import { askColour, parse, toHex, describe, contrast, passes } from '../lib/colour.js';
 import { qrMatrix, qrSvg } from '../lib/qr.js';
+import { barcodeSvg } from '../lib/barcode.js';
 import { ALGOS, algoOf, digestHex } from '../lib/hash.js';
 import { diffTexts, diffCounts, withContext, MAX_LINES } from '../lib/textdiff.js';
 import { mdToHtml } from '../lib/markdown.js';
@@ -52,6 +53,13 @@ export function utilOf(text) {
   // a diff checker and Markdown to HTML, asked for by name (2026-10-30: "diff checker" and "markdown to html" fell to an article that answered nothing)
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+|line\s+)?(?:diff|difference)\s+(?:checker|tool|finder|viewer)$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text|string)\s+(?:compare|comparison|diff)(?:\s+tool)?$|^(?:compare|diff)\s+(?:two\s+)?(?:texts|text|lists)$/.test(l)) return { kind: 'diffmaker' };
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:markdown|md)\s+(?:to\s+html(?:\s+converter)?|converter|preview(?:er)?|editor|viewer|renderer)$|^convert\s+markdown(?:\s+to\s+html)?$/.test(l)) return { kind: 'mdmaker' };
+  // with the Markdown after a colon or a new line (2026-11-06, docs/GAPS.md: "convert markdown to html: **bold**" fell to nothing): the same card, filled in
+  m = raw.match(/^(?:please\s+)?(?:convert\s+)?(?:this\s+)?(?:markdown|md)\s+(?:to\s+html|into\s+html|as\s+html)\s*(?::\s*|\n\s*)([\s\S]{1,200000})$/i) || raw.match(/^(?:please\s+)?(?:convert|render|turn)\s+(?:this\s+)?(?:markdown|md)(?:\s+(?:to|into)\s+html)?\s*(?::\s*|\n\s*)([\s\S]{1,200000})$/i);
+  if (m && m[1].trim()) return { kind: 'mdmaker', s: m[1] };
+  // a Code 128 barcode, drawn in the browser (2026-11-06, docs/GAPS.md: "barcode for 12345" fell to an article)
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:code\s*128\s+)?barcode\s+(?:generator|maker|creator)$|^(?:make|generate|create)\s+(?:me\s+)?an?\s+barcode$/.test(l)) return { kind: 'barcode', s: '' };
+  m = raw.match(/^(?:please\s+)?(?:(?:make|generate|create|draw)\s+(?:me\s+)?)?(?:an?\s+)?(?:code\s*128\s+)?barcode\s+(?:for|of|with|that\s+says)\s+["']?([ -~]{1,80}?)["']?\s*$/i);
+  if (m && m[1].trim()) return { kind: 'barcode', s: m[1].trim() };
   m = l.match(/^(?:convert\s+(?:this\s+|a\s+|my\s+)?)?(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv|json)\s+(?:file\s+)?to\s+(csv|json)(?:\s+(?:converter|tool|online))?$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv)\s+(?:to\s+)?json\s+converter$/);
   if (m && (m[3] || m[1] !== m[2])) return { kind: 'csvjson', dir: m[3] || m[1] };
   // YAML and JSON, both ways, and a YAML check (2026-10-30: "yaml to json" and "json to yaml" fell to an article that answered nothing)
@@ -78,6 +86,9 @@ export function utilOf(text) {
   if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };
   // what the forms above miss, from the colour page's own reader (lib/colour.js): "hsl(11, 100%, 60%)", "ff5733 color", "colour picker", "html color codes"
   { const c = askColour(t); if (c) return { kind: 'color', c: toHex(parse(c)) }; }
+  // 2026-11-06 (docs/GAPS.md): "contrast ratio between #000000 and #ffffff" fell to nothing. Two colours named around "contrast" are their WCAG 2 ratio.
+  m = l.match(/^(?:(?:what\s+is|what'?s|check|find|show\s+me)\s+)?(?:the\s+)?(?:wcag\s+)?(?:colou?r\s+)?contrast(?:\s+ratio)?(?:\s+(?:between|of|for))?\s+(.+?)\s*(?:\s(?:and|vs\.?|versus|on|against|with)\s|,)\s*(.+)$/);
+  if (m) { const A = parse(m[1].replace(/\s+(?:text|colou?r)$/, '')), B = parse(m[2].replace(/\s+(?:background|bg|colou?r)$/, '')); if (A && B) return { kind: 'contrast', a: toHex(A), b: toHex(B) }; }
   // counted as typed: the cleaned ask drops a closing "!" or "?", and "word count: ... amused!" came out one character short (the tower gate's
   // accuracy question for wordcounter.net); "how many words in X?" still loses its question mark, which is the ask's, not the text's
   const typed = raw.replace(/\s+/g, ' ');
@@ -304,6 +315,18 @@ async function run(text, api) {
     // the preview is the converter's own HTML: every text is escaped and a link keeps only an http, https, mailto or relative address (lib/markdown.js)
     const paint = () => { if (!box || !view || !out) return; const h = mdToHtml(box.value); view.innerHTML = h; out.textContent = h; }; // void-review: ok (mdToHtml escapes every text and keeps only http, https, mailto or relative addresses)
     if (box) box.addEventListener('input', paint);
+    if (box && q.s) { box.value = q.s; paint(); }
+  } else if (q.kind === 'barcode') {
+    el = showPage((p) => { p.innerHTML = '<h2>Barcode</h2><input class="util-in" maxlength="80" placeholder="Text or digits" aria-label="Barcode text" style="display:block;width:100%;max-width:100%;box-sizing:border-box;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px">' // void-review: ok (static markup; typed text goes to the input value only)
+      + '<div class="util-bc" style="margin:10px 0;overflow:auto"></div><p class="util-say" style="color:#8a8a8a"></p><p style="color:#8a8a8a">Code 128, the barcode most shipping labels and shelf tags use. Drawn in your browser and never sent anywhere. Print it at full size so a scanner can read it.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), view = el && el.querySelector && el.querySelector('.util-bc'), say = el && el.querySelector && el.querySelector('.util-say');
+    const paint = () => { if (!box || !view || !say) return; const v = box.value; if (!v) { view.innerHTML = ''; say.textContent = 'Type the text to encode'; return; } const svg = barcodeSvg(v, { esc }); view.innerHTML = svg || ''; say.textContent = svg ? 'Code 128 for ' + v : 'Code 128 takes plain letters, digits and symbols, up to 80'; }; // void-review: ok (barcodeSvg escapes the text it prints)
+    if (box) { box.addEventListener('input', paint); if (q.s) box.value = q.s; paint(); }
+  } else if (q.kind === 'contrast') {
+    const A = parse(q.a), B = parse(q.b), r = contrast(A, B), R = Math.round(r * 100) / 100, ok = passes(r), yn = (v) => (v ? 'passes' : 'fails');
+    el = showPage((p) => { p.innerHTML = '<h2>Contrast ' + R + ':1</h2><div style="padding:14px 16px;border-radius:12px;margin:8px 0;background:' + esc(q.b) + ';color:' + esc(q.a) + ';border:1px solid rgba(255,255,255,.15)"><div style="font-size:24px;font-weight:600">Large text</div><div>Normal text, ' + esc(q.a) + ' on ' + esc(q.b) + '</div></div>'
+      + '<ul><li><b>AA normal text</b> ' + yn(ok.aa) + ' (needs 4.5:1)</li><li><b>AA large text</b> ' + yn(ok.aaLarge) + ' (needs 3:1)</li><li><b>AAA normal text</b> ' + yn(ok.aaa) + ' (needs 7:1)</li><li><b>AAA large text</b> ' + yn(ok.aaaLarge) + ' (needs 4.5:1)</li></ul>'
+      + '<p style="color:#8a8a8a">The WCAG 2 contrast ratio, from 1:1 (the same colour) to 21:1 (black on white). Large text is 24px, or 18.7px bold.</p><p><a class="cc-open" href="/color/?c=' + esc(q.a.slice(1)) + '">' + esc(q.a) + ' in every model</a></p>'; });
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
@@ -359,8 +382,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', '16 character password', 'strong password', 'csv to json', 'yaml to json', 'json to yaml', 'yaml validator', 'minify css', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html', 'uuid generator', 'monthly electric bill avg for 1500sqft'],
-  nearMisses: ['what is csv', 'csv vs json', 'what is yaml', 'yaml vs json', 'yaml syntax', 'what is css', 'minify js', 'what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax', 'what is a uuid', 'uuid vs guid'],
+  examples: ['generate a password', '16 character password', 'strong password', 'csv to json', 'yaml to json', 'json to yaml', 'yaml validator', 'minify css', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html', 'uuid generator', 'monthly electric bill avg for 1500sqft', 'contrast ratio between #000000 and #ffffff', 'convert markdown to html: **bold**', 'make a barcode for 12345', 'barcode generator'],
+  nearMisses: ['what is csv', 'csv vs json', 'what is yaml', 'yaml vs json', 'yaml syntax', 'what is css', 'minify js', 'what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax', 'what is a uuid', 'uuid vs guid', 'contrast in photography', 'high contrast mode', 'what is a barcode', 'barcode scanner'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

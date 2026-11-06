@@ -111,12 +111,21 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null, str
   const soft = ctx.createGain(); soft.gain.value = 1; soft.connect(out);
   const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600; lp.connect(soft);
   const bassLp = ctx.createBiquadFilter(); bassLp.type = 'lowpass'; bassLp.frequency.value = 420; bassLp.connect(out);
-  // the guitar bus: drive, a hard tanh clip, then the cabinet: low-pass near 3.2 kHz with a resonant bump near 100 Hz, and a high-pass under the mud
-  const drive = ctx.createGain(); drive.gain.value = 3; const shaper = ctx.createWaveShaper(); shaper.curve = curve(4); try { shaper.oversample = '4x'; } catch (_) { /* a context without oversampling */ }
-  const cab = ctx.createBiquadFilter(); cab.type = 'lowpass'; cab.frequency.value = 3200; cab.Q.value = 0.7;
-  const bump = ctx.createBiquadFilter(); bump.type = 'peaking'; bump.frequency.value = 100; bump.Q.value = 1.2; bump.gain.value = 5;
-  const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 60; const gOut = ctx.createGain(); gOut.gain.value = 0.3;
-  drive.connect(shaper); shaper.connect(cab); cab.connect(bump); bump.connect(hp); hp.connect(gOut); gOut.connect(out);
+  // a place in the stereo field: -1 left, 1 right (a context without a panner plays it in the middle)
+  const panned = (v, dest) => { if (!ctx.createStereoPanner) return dest; const n = ctx.createStereoPanner(); n.pan.value = v; n.connect(dest); return n; };
+  // the guitar bus, one for each of the two takes, panned left and right as a metal record is (the two takes differ, so the image is wide):
+  // drive, a hard tanh clip, then the cabinet: a presence peak near 3 kHz, low-pass near 5.5 kHz, a resonant bump near 100 Hz, a high-pass under the mud.
+  // Verse's ears found the first mix mono (-60 dB of side against -13.9 dB in real metal) and 11 dB short in the presence band, so both changed here.
+  const guitarBus = (side) => {
+    const drive = ctx.createGain(); drive.gain.value = 3; const shaper = ctx.createWaveShaper(); shaper.curve = curve(4); try { shaper.oversample = '4x'; } catch (_) { /* a context without oversampling */ }
+    const pres = ctx.createBiquadFilter(); pres.type = 'peaking'; pres.frequency.value = 3000; pres.Q.value = 0.9; pres.gain.value = 4;
+    const cab = ctx.createBiquadFilter(); cab.type = 'lowpass'; cab.frequency.value = 5500; cab.Q.value = 0.7;
+    const bump = ctx.createBiquadFilter(); bump.type = 'peaking'; bump.frequency.value = 100; bump.Q.value = 1.2; bump.gain.value = 5;
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 60; const gOut = ctx.createGain(); gOut.gain.value = 0.3;
+    drive.connect(shaper); shaper.connect(pres); pres.connect(cab); cab.connect(bump); bump.connect(hp); hp.connect(gOut); gOut.connect(panned(0.75 * side, out));
+    return drive;
+  };
+  const drives = [guitarBus(-1), guitarBus(1)];
   const amp = !!(strings && strings.buffers && strings.buffers.size);
   // with the recordings: the real bass gets more of its own top (the string's attack), and the climax lead has its own lighter drive on the soft bus
   const bassReal = ctx.createBiquadFilter(); bassReal.type = 'lowpass'; bassReal.frequency.value = 1800; bassReal.connect(out);
@@ -163,17 +172,19 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null, str
     const g = (amp ? 0.45 : 0.13) * tension(n.step), len = n.open ? n.len : 0.8;
     if (amp) { // the real guitar into the amp: a chug is a palm mute (two takes in turn), an open hit rings root, fifth and octave; each played twice, 9 ms apart and a few cents off (double tracked)
       const at = t0 + n.step * sp, notes = mutedOf(n) ? [n.midi] : [n.midi, n.midi + 7, n.midi + 12], m = mutedOf(n) ? chug++ : 0;
-      for (const [dt, dr] of [[0, 1], [0.009, 1.003]]) for (const [i, midi] of notes.entries()) {
+      for (const [take, [dt, dr]] of [[0, 1], [0.009, 1.003]].entries()) for (const [i, midi] of notes.entries()) {
         const k = guitarTake(midi, { muted: mutedOf(n), n: m + (dt ? 1 : 0) }), buf = strings.buffers.get(k.path);
-        if (buf) sample(buf, at + dt, k.rate * dr, g * k.gain * (i ? 0.8 : 1), drive, at + dt + len * sp);
+        if (buf) sample(buf, at + dt, k.rate * dr, g * k.gain * (i ? 0.8 : 1), drives[take], at + dt + len * sp);
       }
-    } else for (const c of [-12, 12]) { // two detuned sawtooths a note (about 12 cents either side), and the fifth under an open chord
-      tone(drive, 'sawtooth', n.midi, n.step, len, g, 0.004, 0.03, c); if (n.open) tone(drive, 'sawtooth', n.midi + 7, n.step, len, g * 0.8, 0.004, 0.03, c);
+    } else for (const [take, c] of [-12, 12].entries()) { // two detuned sawtooths a note (about 12 cents either side, one left, one right), and the fifth under an open chord
+      tone(drives[take], 'sawtooth', n.midi, n.step, len, g, 0.004, 0.03, c); if (n.open) tone(drives[take], 'sawtooth', n.midi + 7, n.step, len, g * 0.8, 0.004, 0.03, c);
     }
   }
   const dr = p.drums;
   if (drumKit) { // the recorded kit: the velocity follows the section's tension, so the breakdown and climax hit harder than the drop
-    const rr = {}, hitOf = (voice, step, vel, gain) => { const n = rr[voice] = (rr[voice] ?? -1) + 1, k = drumTake('kit', voice, vel, n), buf = k && drumKit.buffers.get(k.path); if (buf) sample(buf, t0 + step * sp, 1, gain * k.gain, out); };
+    // the kick, snare and bass stay in the middle; the hats sit a little right and the crash a little left, as overheads hear a kit
+    const place = { hat: panned(0.3, out), crash: panned(-0.3, out) };
+    const rr = {}, hitOf = (voice, step, vel, gain) => { const n = rr[voice] = (rr[voice] ?? -1) + 1, k = drumTake('kit', voice, vel, n), buf = k && drumKit.buffers.get(k.path); if (buf) sample(buf, t0 + step * sp, 1, gain * k.gain, place[voice] || out); };
     for (const s of dr.kick) hitOf('kick', s, Math.min(1, 0.55 + 0.45 * tension(s)), 1);
     for (const s of dr.snare) hitOf('snare', s, Math.min(1, 0.5 + 0.5 * tension(s)), 0.8);
     for (const s of dr.hat) hitOf('hat', s, s % 4 === 0 ? 0.85 : 0.6, 0.35);
