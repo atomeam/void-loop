@@ -1201,9 +1201,9 @@
     {
      "name": "timer",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
-     "last_tested": "2026-11-05",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 4 browser-suite mentions, 34 real asks in the benchmark",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -2852,9 +2852,9 @@
     {
      "name": "dismiss",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-     "last_tested": "2026-11-05",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 17
     },
@@ -3520,9 +3520,9 @@
     {
      "name": "bookmarks",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-     "last_tested": "2026-11-05",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 16
     },
@@ -4189,9 +4189,9 @@
     {
      "name": "card-play",
      "tier": "proven",
-     "why": "a self-test, 4 real asks in the benchmark",
-     "last_tested": "2026-11-05",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 16
     }
