@@ -11,7 +11,7 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-05",
- "bench_at": "2026-11-04",
+ "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
   "tested": 7,
@@ -1370,13 +1370,13 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "failing": [
+      "what's 7 factorial",
       "what is 5 factorial",
-      "what is 100 factorial",
-      "what is 10 factorial"
+      "what is 100 factorial"
      ],
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.994,
+     "success_rate": 0.993,
      "streak": 17
     },
     {
@@ -2649,9 +2649,12 @@
      "name": "notes-fill",
      "tier": "proven",
      "why": "a self-test, 5 real asks in the benchmark",
+     "failing": [
+      "add a note: buy milk"
+     ],
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "promoted": "2026-10-29",
      "streak": 9
     },
@@ -2790,9 +2793,12 @@
      "name": "layer",
      "tier": "proven",
      "why": "a self-test, 7 real asks in the benchmark",
+     "failing": [
+      "put the sticky note in front of everything"
+     ],
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.857,
      "streak": 17
     },
     {
