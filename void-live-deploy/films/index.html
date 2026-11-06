@@ -248,7 +248,9 @@
         status.textContent = '';
         for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(lazy(card(f)));
       } else {
-        const say = () => { status.textContent = films.length + (films.length === 1 ? ' video' : ' videos') + (next != null ? ' so far' : '') + ', newest first. Tap one to watch, share or upload it.'; };
+        // the owner's count is every film stored (listed or not), so the number never reads as a cap while pages are still arriving
+        const stored = typeof j.stored === 'number' ? j.stored : null;
+        const say = () => { status.textContent = films.length + (films.length === 1 ? ' video' : ' videos') + (stored != null ? ' listed of ' + stored + ' stored' : '') + (next != null ? ', more loading' : '') + ', newest first. Tap one to watch, share or upload it.'; };
         say();
         for (const f of films) list.append(lazy(card(f)));
         const more = document.getElementById('more'), btn = more.querySelector('button');
@@ -259,11 +261,13 @@
           try { const fs = await page(); await viewsOf(fs); films.push(...fs); for (const f of fs) list.append(lazy(card(f))); say(); ok = true; btn.textContent = 'Show more videos'; }
           catch (_) { btn.textContent = 'Show more videos (try again)'; }
           busy = false; btn.disabled = false; more.hidden = next == null;
-          // still at the bottom (a short page, a tall screen): read on, since the watcher fires only when the edge moves into view
-          if (ok && next != null && more.getBoundingClientRect().top < innerHeight + 800) setTimeout(grow, 0);
+          // every page is read straight away, not only when the viewer scrolls to the edge (2026-11-06: the count stayed at the first
+          // page because the next was asked for only on a scroll), one page at a time so the server's minute budget holds
+          if (ok && next != null) setTimeout(grow, 250);
         };
         more.hidden = next == null;
         btn.addEventListener('click', grow);
+        if (next != null) setTimeout(grow, 250);
         if ('IntersectionObserver' in window) new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) grow(); }, { rootMargin: '800px' }).observe(more);
       }
     } catch (e) {

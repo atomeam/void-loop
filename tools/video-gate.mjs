@@ -8,20 +8,22 @@
 //   frame     1080x1920, 6-20 s
 //   no-bars   ffmpeg cropdetect over the whole film finds no black border (letterbox or pillarbox) wider than 8 px
 //   captions  every caption at least 64 px, inside the Shorts safe zone, on a backing box, short enough to fit its line
-//   footage   real a-to-mind.com footage: the page's answer was seen in the browser, and the picture moves (not a still card)
+//   footage   real a-to-mind.com footage (the page's answer seen in the browser), or a studio film with its source page; it moves
 //   audio     a voice at about -14 LUFS (-15.5..-12.5) with any bed ducked under it, or no voice: silence or a quiet bed at -25..-19 LUFS
 //   hook      the first line scores 60+ on hookScore (a relatable, concrete question in a few plain words)
+//   topic     the film's words are not a small everyday sum (bills, tips, percents) or adult content (tools/topic-gate.mjs)
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { filmWordsCheck } from './topic-gate.mjs';
 
 export const W = 1080, H = 1920;
 // the part of a Short no YouTube, TikTok or Reels button covers: below the top bar, above the title and buttons, left of the action rail
 export const SAFE = { x0: 60, x1: W - 140, y0: Math.round(H * 0.1), y1: Math.round(H * 0.72) };
 export const CAPTION_MIN = 64, BAR_PX = 8, LUFS = { voice: -14, tol: 1.5, bedMin: -25, bedMax: -19 }, HOOK_MIN = 60;
 
-const RELATABLE = /\b(you|your|you're|dinner|bill|tip|rent|split|song|stuck|money|pay|paycheck|late|sleep|kids?|groceries|gas|coffee|tonight|weekend|friends?|date|boss|work|recipe|cook|minutes?|hours?|cost|price|cheaper|save|owe)\b/i;
+const RELATABLE = /\b(you|your|you're|dinner|bill|tip|rent|split|song|stuck|money|pay|paycheck|late|sleep|kids?|groceries|gas|coffee|tonight|weekend|friends?|date|boss|work|recipe|cook|minutes?|hours?|cost|price|cheaper|save|owe|everyone|everybody|everywhere|talking|searching|trending|internet|feed|phone|group chat|pov|movie|trailer|documentary|worth it|today|why now)\b/i;
 const JARGON = /\b(ai|llm|model|experiment|verse|lab|agent|built this itself|skill|api|ledger|hypothesis)\b/i;
 /** how much an ordinary person would care about a hook, 0-100. Pure.
  *  +35 relatable (an everyday situation or "you"), +20 a question, +15 a concrete number or amount, +20 at most 8 words,
@@ -42,7 +44,8 @@ export function hookScore(hook) {
 export function captionCheck(captions) {
   const bad = [];
   for (const c of captions || []) {
-    const lines = String(c.text).split('\n'), wide = Math.max(...lines.map((l) => l.length)) * c.size * 0.62, tall = lines.length * c.size * 1.25;
+    // a caption the render measured on its own page carries its drawn box (rect: w and h in px); otherwise its size is estimated
+    const lines = String(c.text).split('\n'), wide = c.rect ? c.w : Math.max(...lines.map((l) => l.length)) * c.size * 0.62, tall = c.rect ? c.h : lines.length * c.size * 1.25;
     if (c.size < CAPTION_MIN) bad.push(c.text + ': ' + c.size + ' px < ' + CAPTION_MIN);
     if (!c.box) bad.push(c.text + ': no backing box');
     if (c.x < SAFE.x0 || c.x + wide > SAFE.x1 || c.y < SAFE.y0 || c.y + tall > SAFE.y1) bad.push(c.text.replace(/\n/g, ' ') + ': outside the safe zone');
@@ -107,13 +110,18 @@ export function gate(file, meta) {
   checks.push({ name: 'no-bars', ...noBars(bars, flatEdges(ranges)) });
   checks.push({ name: 'captions', ...captionCheck(meta.captions) });
   const scenes = (ff(['-i', file, '-vf', "select='gt(scene,0.003)',metadata=print", '-an', '-f', 'null', '-']).stderr.match(/lavfi\.scene_score/g) || []).length;
-  const f = meta.footage || {}, real = /^https:\/\/a-to-mind\.com\//.test(f.url || '') && f.answerSeen === true;
-  checks.push({ name: 'footage', ok: real && scenes >= 5, detail: (real ? 'a-to-mind.com answered "' + f.answer + '" on camera' : 'no real a-to-mind.com answer seen') + ', ' + scenes + ' moving frames (want 5+)' });
+  // footage: the live site filmed answering (tools/shorts.mjs), or a studio film (tools/studio.mjs) drawn frame by frame about a trend
+  // with the page its facts came from; either way the picture has to move
+  const f = meta.footage || {}, site = /^https:\/\/a-to-mind\.com\//.test(f.url || '') && f.answerSeen === true, studio = f.kind === 'studio' && /^https:\/\//.test(f.source || '');
+  checks.push({ name: 'footage', ok: (site || studio) && scenes >= 5, detail: (site ? 'a-to-mind.com answered "' + f.answer + '" on camera' : studio ? 'a studio film about a trend, facts from ' + f.source : 'no real footage: no a-to-mind.com answer, no studio source') + ', ' + scenes + ' moving frames (want 5+)' });
   let lufs = null;
   if (p.audio) { const m = ff(['-i', file, '-af', 'ebur128', '-f', 'null', '-']).stderr.match(/Integrated loudness:\s*I:\s*(-?[\d.]+|-inf)/); lufs = m ? (m[1] === '-inf' ? -Infinity : Number(m[1])) : null; }
   checks.push({ name: 'audio', ...audioCheck(lufs, !!meta.voice) });
   const hs = hookScore(meta.hook);
   checks.push({ name: 'hook', ok: hs >= HOOK_MIN, detail: '"' + meta.hook + '" scores ' + hs + ' (want ' + HOOK_MIN + '+)' });
+  // topic: no small everyday sum (nobody shared those), nothing adult (tools/topic-gate.mjs, on the film's own words)
+  const tw = filmWordsCheck(meta);
+  checks.push({ name: 'topic', ok: tw.ok, detail: tw.ok ? 'a topic people share' : 'refused topic: ' + tw.kinds.join(', ') + ' (a small everyday sum or adult content)' });
   const pass = checks.every((c) => c.ok);
   return { pass, score: Math.round((100 * checks.filter((c) => c.ok).length) / checks.length), hookScore: hs, lufs: lufs == null || !isFinite(lufs) ? null : lufs, checks, at: new Date().toISOString() };
 }

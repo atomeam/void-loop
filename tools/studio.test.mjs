@@ -1,148 +1,118 @@
-// The studio (lib/studio.js, functions/api/studio.js): its rules, and the route with a FAKE D1 and a stand-in Workers AI that answers like the
-// real models do (base64, { image }, a stream; the judge's JSON; a partner video's { state, result: { video } }). Run: node --test tools/studio.test.mjs
-import test from 'node:test';
+// tools/trends.mjs, tools/topic-gate.mjs, tools/studio.mjs, the format planner in tools/shorts-loop.mjs and tools/film-cleanup.mjs:
+// every kind of video, about what people watch today, never a small everyday sum, never harm, never a repeat, every page of /films/
 import assert from 'node:assert/strict';
-import { DatabaseSync } from 'node:sqlite';
-import { IMAGE_MODELS, VIDEO_MODELS } from '../void-live-deploy/lib/models.js';
-import * as S from '../void-live-deploy/lib/studio.js';
-import * as studio from '../void-live-deploy/functions/api/studio.js';
+import fs from 'node:fs';
+import { googleTrends, wikiTop, hnStory, isPerson, summaryOf, readTrends } from './trends.mjs';
+import { topicCheck, filmWordsCheck, overlap, dayMinus } from './topic-gate.mjs';
+import { FORMATS, ORDER, fits, scriptOf, timeline, linesOf, lineChars, factsOf, nameOf, MAX_S, pageHtml } from './studio.mjs';
+import { planFilms, formatOrder, scriptOk, PER_DAY, MIN_VIEWS } from './shorts-loop.mjs';
+import { toUnlist, cleanup } from './film-cleanup.mjs';
+import { hookScore, captionCheck, SAFE } from './video-gate.mjs';
 
-function d1() {
-  const db = new DatabaseSync(':memory:');
-  const stmt = (sql, a = []) => ({ bind: (...b) => stmt(sql, b), run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; }, first: async () => db.prepare(sql).get(...a) || null, all: async () => ({ results: db.prepare(sql).all(...a) }) });
-  return { prepare: (sql) => stmt(sql), batch: async (list) => Promise.all(list.map((s) => s.run())) };
+const trends = JSON.parse(fs.readFileSync(new URL('./fixtures/trends-sample.json', import.meta.url), 'utf8'));
+const T = (name) => trends.topics.find((t) => t.topic === name);
+
+// trend sources: parsed from their own shapes, no model writes a fact
+const rss = '<rss><channel><item><title>Wicked &amp; Glinda</title><ht:approx_traffic>500K+</ht:approx_traffic><ht:news_item_title><![CDATA[Box office record]]></ht:news_item_title></item><item><title></title></item></channel></rss>';
+assert.deepEqual(googleTrends(rss), [{ topic: 'Wicked & Glinda', source: 'Google Trends', url: 'https://trends.google.com/trending?geo=US', traffic: '500K+', news: 'Box office record' }]);
+const top = wikiTop({ items: [{ articles: [{ article: 'Main_Page' }, { article: 'Special:Search' }, { article: 'Deaths_in_2026' }, { article: 'Star_Wars', views: 9 }] }] });
+assert.deepEqual(top.map((t) => t.topic), ['Star Wars'], 'the front page, special pages and death lists are not news');
+assert.equal(hnStory({ type: 'story', id: 7, title: 'Show HN: A synth in a tweet', score: 3 }).topic, 'A synth in a tweet');
+assert.equal(hnStory({ type: 'story', title: 'x', dead: true }), null);
+assert.equal(isPerson({ description: 'American singer-songwriter (born 1989)' }), true);
+assert.equal(isPerson({ description: 'Hindu festival of lights', extract: 'Diwali is a festival.' }), false);
+const sum = summaryOf({ title: 'Diwali', description: 'festival', extract: 'Diwali is the festival of lights. It lasts five days.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Diwali' } } });
+assert.deepEqual(sum.sentences, ['Diwali is the festival of lights.', 'It lasts five days.']);
+assert.equal(summaryOf({ type: 'disambiguation', extract: 'x' }), null);
+// a source that fails is named, never fatal
+const fake = async (url) => {
+  if (url.includes('trends.google')) return new Response(rss, { status: 200 });
+  if (url.includes('wikimedia.org')) return new Response('nope', { status: 503 });
+  if (url.includes('topstories')) return Response.json([1]);
+  if (url.includes('/item/1')) return Response.json({ type: 'story', id: 1, title: 'A synth in a tweet' });
+  if (url.includes('page/summary')) return Response.json({ title: 'Wicked', extract: 'Wicked is a musical. It opened in 2003.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Wicked' } } });
+  return new Response('', { status: 404 });
+};
+const live = await readTrends({ fetchImpl: fake, now: Date.parse('2026-11-06T12:00:00Z') });
+assert.deepEqual(live.topics.map((t) => t.source), ['Google Trends', 'Hacker News']);
+assert.match(live.failed[0], /^Wikipedia: .*503/);
+assert.deepEqual(live.topics[0].summary, ['Wicked is a musical.', 'It opened in 2003.']);
+
+// the topic gate: the whole class of small everyday sums, harm, adult, repeats
+for (const t of ['how to split a dinner bill', 'Splitting a $84 dinner bill 3 ways?', 'how much do you tip on $47', '20% off coupon code', 'cups to grams', 'compound interest calculator', 'hourly wage to salary'])
+  assert.deepEqual(topicCheck(t).kinds, ['math'], t + ' is a small everyday sum');
+assert.deepEqual(topicCheck(T('earthquake today')).kinds, ['harm']);
+assert.equal(topicCheck(T('Star Wars')).ok, true, 'Star Wars is not a war');
+assert.equal(topicCheck('Diwali').ok, true);
+assert.deepEqual(topicCheck('nsfw clips').kinds, ['adult']);
+const recent = [{ topic: 'Wicked: For Good', day: '20261101' }];
+assert.deepEqual(topicCheck('Wicked For Good', recent, '20261106').kinds, ['repeat'], 'the same topic within 30 days');
+assert.equal(topicCheck('Wicked For Good', recent, '20261215').ok, true, 'after 30 days it may come back');
+assert.equal(dayMinus('20261106', 30), '20261007');
+assert.ok(overlap('chiefs vs bills', 'Chiefs Bills') === 1);
+assert.deepEqual(filmWordsCheck({ title: 'Splitting a $84 dinner bill 3 ways? #Shorts', description: 'x' }).kinds, ['math'], 'the dinner-bill films fail');
+assert.equal(filmWordsCheck({ title: 'Why is everyone talking about Diwali? #Shorts', description: 'Make one: https://a-to-mind.com/c/x?q=Election%202026%20news' }).ok, true, 'a link is not a percent');
+
+// the formats: eight kinds of video, each with a hook a stranger cares about, lines that fit their cards, facts only from the summary
+assert.equal(ORDER.length, 8);
+const diwali = T('Diwali'), facts = new Set(factsOf(diwali));
+for (const f of ORDER) {
+  const sc = scriptOf(f, diwali);
+  assert.ok(sc, f + ' can carry Diwali');
+  assert.ok(hookScore(sc.hook) >= 60, f + ': "' + sc.hook + '" scores ' + hookScore(sc.hook));
+  assert.ok(scriptOk(sc), f + ' lines fit their cards');
+  for (const b of sc.beats.filter((x) => x.kind === 'fact' && /^\d\. |^[A-Z]/.test(x.text) && FORMATS[f].facts)) assert.ok(facts.has(b.text.replace(/^\d\. /, '')), f + ' states only summary sentences: ' + b.text);
+  const tl = timeline(sc);
+  assert.ok(tl.total <= MAX_S + 0.01 && tl.total >= 6, f + ' runs ' + tl.total + ' s');
+  assert.equal(tl.beats[0].kind, 'hook'); assert.equal(tl.beats.at(-1).kind, 'cta');
+  for (const b of tl.beats) for (const l of linesOf(b).text.split('\n')) assert.ok(l.length <= lineChars(linesOf(b).size) + 2, f + ': a line too wide: ' + l);
+  assert.match(pageHtml(sc, tl), /window\.measure=/);
 }
-// a real 640 x 480 JPEG header (SOI, APP0, SOF0) padded to a plausible size, and a real PNG header of 1024 x 1024
-const jpeg = (w, h) => { const b = Buffer.alloc(9000); Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0, 16, 0x4a, 0x46, 0x49, 0x46, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0xff, 0xc0, 0, 17, 8, h >> 8, h & 255, w >> 8, w & 255, 3]).copy(b); return b.toString('base64'); };
-const png = (w, h) => { const b = Buffer.alloc(9000); Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52, w >>> 24, (w >> 16) & 255, (w >> 8) & 255, w & 255, h >>> 24, (h >> 16) & 255, (h >> 8) & 255, h & 255]).copy(b); return b.toString('base64'); };
-const KEY = 'owner-key-for-tests-only'; // secret-scan: ok (a made-up key for the test)
+const swift = T('Taylor Swift');
+assert.deepEqual(ORDER.filter((f) => fits(f, swift)), ['explainer', 'countdown'], 'a real person gets the fact formats only, never a parody');
+assert.equal(fits('trailer', { topic: 'A synth in a tweet', source: 'Hacker News' }), false, 'a story title is a headline, not a movie');
+assert.equal(nameOf({ topic: 'Pumpkin spice', title: 'Pumpkin pie spice' }), 'Pumpkin pie spice');
+// the gate reads a measured caption box when the render gives one
+assert.equal(captionCheck([{ text: 'a long line that the estimate would call too wide', size: 84, x: 70, y: 400, w: 860, h: 220, box: true, rect: true }]).ok, true);
+assert.equal(captionCheck([{ text: 'x', size: 84, x: 70, y: 400, w: SAFE.x1, h: 100, box: true, rect: true }]).ok, false);
 
-test('every image model has a price and a way to be asked; the video models have prices', () => {
-  for (const slug of Object.keys(IMAGE_MODELS)) {
-    assert.ok(Object.hasOwn(S.NEURONS, slug), slug + ' has a price');
-    assert.ok(S.neuronsOf(slug, [1024, 1024]) >= 0 && S.neuronsOf(slug, [1024, 1024]) < 5000, slug);
-    const a = S.paintAskOf(slug, 'a cat', [768, 1152], 3); assert.ok(a.form || a.json, slug);
-  }
-  assert.equal(S.neuronsOf('klein-4b', [1024, 1024]), 110); // 4 tiles x 26.05 + the input
-  assert.ok(S.neuronsOf('klein-9b', [1024, 1024]) > S.neuronsOf('klein-4b', [1024, 1024]));
-  for (const m of Object.keys(VIDEO_MODELS)) assert.ok(Number.isFinite(S.videoCostOf(m, 6, '720p')), m);
-  assert.equal(S.videoCostOf('p-video', 5, '720p', true), 0.025);
-  assert.equal(S.videoCostOf('nope', 5), Infinity);
-});
+// the planner: three films, three formats, three topics, none refused; the formats rotate; a judged best format keeps its place
+let log = { trials: [] };
+const d1 = planFilms(log, trends, '20261107');
+assert.equal(d1.films.length, PER_DAY);
+assert.equal(new Set(d1.films.map((f) => f.format)).size, PER_DAY, 'each film a different format');
+assert.equal(new Set(d1.films.map((f) => f.topic)).size, PER_DAY, 'each film a different topic');
+assert.deepEqual(d1.films.map((f) => f.format), ORDER.slice(0, 3), 'the first day takes the first three formats');
+for (const f of d1.films) { assert.equal(topicCheck(f.topic).ok, true); assert.match(f.film, /^20261107-[a-z]+-[a-z0-9-]+$/); }
+assert.deepEqual(d1.refused.map((r) => r.kinds[0]).sort(), ['harm', 'math', 'math']);
+log.trials.push(d1);
+const d2 = planFilms(log, trends, '20261108');
+assert.ok(d2.films.every((f) => !ORDER.slice(0, 3).includes(f.format)), 'the next day makes the formats not made yet');
+assert.ok(d2.films.every((f) => !d1.films.some((g) => g.topic === f.topic)), 'and no topic again within 30 days');
+const judged = { trials: [{ day: '20261101', films: [{ format: 'lyric', topic: 'x', outcome: { views: MIN_VIEWS, clicks: 3 } }, { format: 'news', topic: 'y', outcome: { views: MIN_VIEWS, clicks: 0 } }] }] };
+assert.equal(formatOrder(judged)[0], 'lyric', 'the best-scoring format keeps a place');
 
-test('the painter is asked in its own form', () => {
-  assert.deepEqual(S.paintAskOf('klein-4b', 'a cat', [1024, 768], 5), { form: { prompt: 'a cat', width: '1024', height: '768', seed: '5' } });
-  assert.equal(S.paintAskOf('flux-2-dev', 'a cat', [512, 512], 5).form.steps, '20');
-  const lucid = S.paintAskOf('lucid-origin', 'a cat', [1024, 768], 5).json;
-  assert.deepEqual([lucid.width, lucid.height, lucid.num_steps, lucid.guidance], [1024, 768, 20, 4.5]);
-  const schnell = S.paintAskOf('schnell', 'a cat', [1024, 768], 5).json;
-  assert.equal(schnell.width, undefined); assert.ok(schnell.steps <= 8); assert.equal(schnell.seed, undefined, 'schnell refuses a seed');
-  assert.equal(S.paintAskOf('nope', 'x', [1, 1], 1), null);
-});
+// the cleanup: listed films whose words are a refused kind come off the list, page by page, the owner's count is the stored total
+const page = (films, next, stored) => Response.json({ films, next, owner: true, stored });
+const posted = [];
+const site = async (url, o = {}) => {
+  if (o.method === 'POST') { posted.push([url, JSON.parse(o.body)]); return Response.json({ ok: true }); }
+  const from = Number(new URL(url).searchParams.get('from'));
+  if (from === 0) return page([{ id: '20261106-short-split-dinner-bill-a', title: 'Splitting a $84 dinner bill 3 ways? #Shorts', description: 'd' }, { id: 'old-1', title: 'Old', description: '', unlisted: true }], 60, 75);
+  return page([{ id: '20261106-short-split-dinner-bill-b', title: 'Splitting a $84 dinner bill 3 ways? #Shorts', description: 'd' }, { id: 'f2', title: 'Why is everyone talking about Diwali? #Shorts', description: 'd' }], null, 75);
+};
+assert.deepEqual(toUnlist([{ id: 'a', title: 'tip on $47', unlisted: true }]), [], 'an unlisted film is left as it is');
+const r = await cleanup({ site: 'https://x.test', token: 't', fetchImpl: site });
+assert.equal(r.stored, 75); assert.equal(r.seen, 4); assert.equal(r.pages, 2);
+assert.deepEqual(r.unlisted, ['20261106-short-split-dinner-bill-a', '20261106-short-split-dinner-bill-b']);
+assert.equal(posted.length, 2); assert.equal(posted[0][1].gate, undefined, 'posted again without gate pass: unlisted, still stored');
+assert.equal(r.listed, 1);
 
-test('the judge is read strictly, and the score weighs what is there over how it looks', () => {
-  const j = S.judgeOf('Sure! ```json\n{"checks":["yes","yes","no","Yes, clearly","no"],"clean":8,"look":6,"worst":"the snow looks flat"}\n```', 5);
-  assert.deepEqual(j.checks, [true, true, false, true, false]);
-  assert.equal(j.match, 0.6); assert.equal(j.clean, 8); assert.equal(j.worst, 'the snow looks flat');
-  assert.equal(S.judgeOf('{"checks":[],"clean":5,"look":5}', 3), null);
-  assert.equal(S.judgeOf('no json here', 3), null);
-  assert.equal(S.judgeOf('{"checks":["yes"],"clean":"x","look":5}', 1), null);
-  assert.equal(S.judgeOf('{"checks":["yes"],"flaws":0,"look":9}', 1), null, 'a flaw count is not a clean score (the judge read flaws as a count, live 2026-10-30)');
-  assert.equal(S.scoreOf({ match: 1, clean: 10, look: 10 }), 100);
-  assert.equal(S.scoreOf({ match: 0.6, clean: 8, look: 6 }), 65);
-  assert.ok(S.scoreOf({ match: 1, clean: 5, look: 5 }) > S.scoreOf({ match: 0.4, clean: 10, look: 10 }), 'what was asked counts most');
-  assert.equal(S.scoreOf({ match: 1, clean: 10, look: 10 }, [512, 512], [1024, 1024]), 25, 'a quarter of the asked pixels');
-  assert.match(S.judgePrompt('a fox', ['a fox', 'snow']), /1\. a fox\n2\. snow/);
-});
-
-test('a picture is read from its own bytes: kind and size', () => {
-  assert.deepEqual(S.sizeOf(jpeg(640, 480)), [640, 480]);
-  assert.deepEqual(S.sizeOf('data:image/png;base64,' + png(1024, 1024)), [1024, 1024]);
-  assert.equal(S.sizeOf('bm90IGFuIGltYWdl'), null);
-  assert.match(S.pictureOf(jpeg(10, 10)), /^data:image\/jpeg;base64,/);
-  assert.match(S.pictureOf(png(10, 10)), /^data:image\/png;base64,/);
-  assert.equal(S.pictureOf('abc'), '');
-  assert.equal(S.pictureOf('<script>' + 'A'.repeat(5000)), '');
-});
-
-test('the bench plan spends cheapest first and never past its cap; the champion is the best the day can pay for', () => {
-  const { plan, neurons } = S.planOf(Object.keys(IMAGE_MODELS), ['fox', 'sign', 'nope'], [1024, 1024], 3000);
-  assert.ok(neurons <= 3000);
-  assert.equal(plan[0].model, 'sdxl-lightning'); // free (beta) first
-  assert.ok(plan.every((p) => p.bench === 'fox' || p.bench === 'sign'));
-  assert.ok(!plan.some((p) => p.model === 'klein-9b' && p.bench === 'sign') || neurons <= 3000);
-  const rows = [];
-  for (const b of ['fox', 'hands', 'sign', 'astronaut']) { rows.push({ model: 'klein-4b', bench: b, score: 70, ms: 3000 }, { model: 'schnell', bench: b, score: 69, ms: 1500 }, { model: 'lucid-origin', bench: b, score: 90, ms: 9000 }); }
-  rows.push({ model: 'phoenix-1', bench: 'fox', score: 99, ms: 1 }, { model: 'gone', bench: 'fox', score: 100, ms: 1 });
-  const board = S.boardOf(rows);
-  assert.equal(board[0].model, 'phoenix-1'); assert.ok(!board.some((e) => e.model === 'gone'));
-  assert.equal(S.championOf(board, { maxNeurons: 5000 }), 'lucid-origin', 'phoenix has one prompt only');
-  assert.equal(S.championOf(board, { maxNeurons: 400 }), 'schnell', 'within the tie and cheaper than klein-4b');
-  assert.equal(S.championOf([], {}), 'klein-4b');
-});
-
-test('a clip is asked for inside what its model takes, and scored on its frames, its motion and whether it holds together', () => {
-  const a = S.videoAskOf('p-video', { seconds: 99, resolution: '4k', aspect: '2:1' });
-  assert.deepEqual([a.model, a.seconds, a.res, a.aspect, a.draft], ['p-video', 10, '720p', '16:9', true]);
-  assert.equal(S.videoAskOf('ltx-fast', { seconds: 1 }).seconds, 6);
-  assert.equal(S.videoAskOf('nope').model, 'p-video');
-  const pin = S.videoInputOf(a, 'a fox', 'data:image/png;base64,AAAA');
-  assert.equal(pin.image, 'data:image/png;base64,AAAA'); assert.equal(pin.disable_safety_filter, false);
-  const lin = S.videoInputOf(S.videoAskOf('ltx-fast', { aspect: '9:16' }), 'a fox', 'data:image/png;base64,AAAA');
-  assert.equal(lin.resolution, '720x1280'); assert.equal(lin.image_uri, undefined, 'ltx takes only an https first frame');
-  assert.equal(S.videoUrlOf({ state: 'Completed', result: { video: 'https://x.example/a.mp4' } }), 'https://x.example/a.mp4');
-  assert.equal(S.videoUrlOf({ result: { video: 'javascript:alert(1)' } }), '');
-  const f = { match: 1, clean: 8, look: 7 };
-  assert.ok(S.videoScoreOf([f, f], 0.1, true) > S.videoScoreOf([f, f], 0, true), 'a clip that does not move is a still');
-  assert.ok(S.videoScoreOf([f, f], 0.1, true) > S.videoScoreOf([f, f], 0.1, false));
-  assert.equal(S.videoScoreOf([], 0.1, true), 0);
-  assert.equal(S.steadyOf('{"steady": "yes", "why": "same fox"}'), true); assert.equal(S.steadyOf('nothing'), null);
-});
-
-const req = (body, key = KEY) => new Request('https://a-to-mind.com/api/studio', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: JSON.stringify(body) });
-function world(over = {}) {
-  studio.resetReady(); const calls = [];
-  const AI = { run: async (model, input) => {
-    calls.push({ model, input });
-    if (/gemma/.test(model)) return { response: '{"checks":["yes","yes","yes","no","yes"],"clean":7,"look":6,"worst":"soft focus"}' };
-    if (model === VIDEO_MODELS['p-video']) return over.video ? over.video(input) : { state: 'Completed', result: { video: 'https://videos.example/clip.mp4' } };
-    if (model === IMAGE_MODELS['phoenix-1'].id) return new Response(Buffer.from(jpeg(1024, 1024), 'base64')).body; // a stream
-    if (model === IMAGE_MODELS['sdxl-lightning'].id) return new Uint8Array(Buffer.from(png(1024, 1024), 'base64')); // bytes
-    if (model === IMAGE_MODELS['lucid-origin'].id) throw new Error('3036: account limited');
-    return { image: jpeg(1024, 1024) };
-  } };
-  return { env: { DB: d1(), READ_TOKEN: KEY, AI, ...over.env }, calls };
-}
-
-test('the route: strangers get nothing; the bench paints, judges and keeps numbers; the board picks a painter', async () => {
-  const { env, calls } = world();
-  assert.equal((await studio.onRequestPost({ request: req({ op: 'bench' }, 'wrong'), env })).status, 401);
-  assert.equal(calls.length, 0);
-  const r = await (await studio.onRequestPost({ request: req({ op: 'bench', prompts: ['fox'], models: ['klein-4b', 'phoenix-1', 'sdxl-lightning', 'lucid-origin'], cap: 6000, images: true }), env })).json();
-  assert.equal(r.ok, true); assert.equal(r.runs.length, 4);
-  const by = Object.fromEntries(r.runs.map((x) => [x.model, x]));
-  assert.equal(by['klein-4b'].score, 73.5); assert.deepEqual([by['klein-4b'].w, by['klein-4b'].h], [1024, 1024]); assert.match(by['klein-4b'].img, /^data:image\/jpeg/);
-  assert.match(by['phoenix-1'].img, /^data:image\/jpeg/, 'a stream is read'); assert.match(by['sdxl-lightning'].img, /^data:image\/png/, 'bytes are read');
-  assert.match(by['lucid-origin'].error, /account limited/, 'a model that fails says why, and the rest go on');
-  const judged = calls.filter((c) => /gemma/.test(c.model));
-  assert.equal(judged.length, 3); assert.match(judged[0].input.messages[0].content[0].text, /red fox/);
-  const g = await (await studio.onRequestGet({ env })).json();
-  assert.equal(g.ok, true); assert.equal(g.board.length, 3); assert.ok(!JSON.stringify(g).includes('data:image'));
-  assert.equal(g.champion, 'klein-4b', 'one prompt is not enough to switch');
-});
-
-test('the route: a clip inside the dollar cap, the model\'s own error when it fails, and the cap holds', async () => {
-  let { env } = world();
-  const ok = await (await studio.onRequestPost({ request: req({ op: 'video', prompt: 'a fox in snow', seconds: 5 }), env })).json();
-  assert.equal(ok.state, 'video'); assert.equal(ok.url, 'https://videos.example/clip.mp4'); assert.equal(ok.usd, 0.025);
-  ({ env } = world({ env: { OWNER_VIDEO_DAILY_USD: '0.03' } }));
-  await studio.onRequestPost({ request: req({ op: 'video', prompt: 'a fox in snow', seconds: 5 }), env });
-  const capped = await (await studio.onRequestPost({ request: req({ op: 'video', prompt: 'a fox in snow', seconds: 5 }), env })).json();
-  assert.equal(capped.state, 'resting'); assert.equal(capped.why, 'cap');
-  ({ env } = world({ video: () => { throw new Error('7003: no credits on the account'); } }));
-  const failed = await (await studio.onRequestPost({ request: req({ op: 'video', prompt: 'a fox' }), env })).json();
-  assert.equal(failed.state, 'failed'); assert.match(failed.why, /no credits/);
-  const again = await (await studio.onRequestPost({ request: req({ op: 'video', prompt: 'a fox' }), env })).json();
-  assert.equal(again.state, 'failed', 'a failed clip costs nothing, so the cap is not touched');
-  assert.equal((await (await studio.onRequestPost({ request: req({ op: 'video', prompt: '   ' }), env })).json()).state, 'refused');
-});
+// the workflow: trends, the plan, three studio renders, the cleanup, a dry run that posts nothing
+const wf = fs.readFileSync(new URL('../.github/workflows/shorts.yml', import.meta.url), 'utf8');
+assert.match(wf, /node tools\/trends\.mjs > trends\.json/);
+assert.match(wf, /node tools\/shorts-loop\.mjs plan --trends trends\.json/);
+assert.match(wf, /node tools\/studio\.mjs render --trial trial\.json --i "\$i"/);
+assert.match(wf, /node tools\/film-cleanup\.mjs/);
+assert.match(wf, /inputs\.dry/);
+console.log('studio: ok');
