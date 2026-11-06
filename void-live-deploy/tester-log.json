@@ -3,13 +3,20 @@
  "cases": 93,
  "runsTotal": 300,
  "kinds": {
-  "file": 83,
+  "file": 82,
   "grow": 72,
   "tighten": 7,
   "none": 40,
-  "visitor": 98
+  "visitor": 99
  },
  "runs": [
+  {
+   "at": "2026-11-06T18:05:35Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T17:28:03Z",
    "passed": 0,
@@ -268,28 +275,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-06T09:56:21Z",
-   "passed": 89,
-   "of": 92,
-   "kind": "file",
-   "ms": 415,
-   "note": "fix: \"turn the questions i missed into a five-minute challenge\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 1 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 1 < 5"
-    },
-    {
-     "ask": "turn the questions i missed into a five-minute challenge",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -343,20 +328,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 64,
-   "passed": 230,
-   "of": 1410,
-   "broken": 49,
-   "brokenOf": 1159,
+   "runs": 65,
+   "passed": 215,
+   "of": 1444,
+   "broken": 51,
+   "brokenOf": 1209,
    "brokenPassed": 6
   },
   {
    "from": "2026-10-16",
-   "runs": 103,
+   "runs": 101,
    "passed": 2727,
-   "of": 4084,
-   "broken": 40,
-   "brokenOf": 1003,
+   "of": 4034,
+   "broken": 38,
+   "brokenOf": 953,
    "brokenPassed": 0
   },
   {
@@ -367,7 +352,7 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 133,
+   "runs": 134,
    "passed": 2903,
    "of": 3148,
    "ms": 379
