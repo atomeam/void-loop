@@ -1,5 +1,5 @@
-// A blueprint's build, started and shown on its card (owner, 2026-11-06: "the blueprints should just automatically be started and built into
-// verse somewhere"). lib/watch-build.js has the why and the pure half; skills/system-blueprint.js is the card.
+// A blueprint's build, started and shown on its card (the owner asked on 2026-11-06 for every blueprint to build into Verse by itself).
+// lib/watch-build.js has the why and the pure half; skills/system-blueprint.js is the card.
 //   GET  ?idea=<the blueprint's idea>  -> { slug, state, line, page?, pr? }   what is real about its build now
 //   POST { idea }                      -> the same, after starting the build when it has not started
 // A build starts only for an idea Verse wrote itself (an idea note it learned from TV or radio, /api/watchalong). The job's words come from

@@ -7,6 +7,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { allTools, toolNamed } from '../lib/toolkit.js';
+import { NAV } from '../lib/verse-shell.js';
 
 // other names people type for a tool's page
 // (2026-10-30: "time zone converter", "random number generator", "binary to decimal", "hex to rgb" and "online stopwatch" fell to an article)
@@ -23,6 +24,10 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'seamless pattern': '/lab/pattern/', 'tileable texture': '/lab/pattern/', 'seamless texture': '/lab/pattern/', 'pattern generator': '/lab/pattern/',
   'color palette from a photo': '/lab/photo-palette/', 'colour palette from a photo': '/lab/photo-palette/', 'palette from photo': '/lab/photo-palette/', 'color palette from image': '/lab/photo-palette/', 'colors from a photo': '/lab/photo-palette/',
   'speech to text': '/lab/dictation/', 'dictation': '/lab/dictation/', 'voice typing': '/lab/dictation/', 'voice to text': '/lab/dictation/', 'talk to type': '/lab/dictation/',
+  'h5 center': '/starboard/', 'dalyfeds': '/starboard/', 'dalyfeds.com': '/starboard/',
+  // the menu's theme names (2026-11-06): each opens its page by the name the menu shows
+  'drones': '/bots/', 'verse drones': '/bots/', 'envoy': '/agent/', 'verse envoy': '/agent/', 'holovids': '/films/', 'verse holovids': '/films/', 'out loud': '/podcast/', 'verse out loud': '/podcast/',
+  'hoard': '/treasury/', 'the hoard': '/treasury/', 'verse star chart': '/scoreboard/', 'shields': '/security/', 'verse shields': '/security/', 'verse event horizon': '/limits/', 'assimilate page': '/contribute/',
   'mind map': '/lab/mind-map/', 'mind map maker': '/lab/mind-map/', 'mindmap': '/lab/mind-map/', 'make a mind map': '/lab/mind-map/' };
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
@@ -41,7 +46,7 @@ export function toolAsk(text) {
   if (!alias && (!name || (!opened && !TOOL_NOUN.test(name)))) return null;
   const href = alias || toolNamed(name);
   if (!href || OWNED.has(href)) return null;
-  const label = (allTools().find(([p]) => p === href) || [href, name])[1];
+  const label = (allTools().find(([p]) => p === href) || [href, (NAV.find((n) => n.href === href) || {}).label || name])[1];
   return { href, label };
 }
 

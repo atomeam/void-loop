@@ -124,8 +124,7 @@ export function planCycle(notes, { pages = [], built = [], today } = {}) {
   return planOf(top, pages, ranked.slice(1, 4));
 }
 
-// Every blueprint starts by itself (owner, 2026-11-06: "the blueprints should just automatically be started and built into verse
-// somewhere"). A blueprint is the card an idea note opens on the stage (local/watch.js "blueprint on stage", skills/system-blueprint.js).
+// Every blueprint starts by itself (the owner asked for this on 2026-11-06, so each blueprint builds into Verse with no tap). A blueprint is the card an idea note opens on the stage (local/watch.js "blueprint on stage", skills/system-blueprint.js).
 // Before this only the one best idea of an hour's watch was queued, and only with a score of 3 or more, so most blueprints never built.
 // Now each idea note Verse wrote becomes a tv: build job, best first, a few a run (tools/watch-build.mjs queue, from the conductor every
 // hour), and the card shows the job's real state. Only two kinds are left out, each with its reason on the card: a thing no web page can

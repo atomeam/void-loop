@@ -4,7 +4,9 @@
     "pace": 38,
     "music": "warm",
     "style": "ink",
-    "scene": "split-dinner-bill"
+    "scene": "split-dinner-bill",
+    "scores": {},
+    "formats": "pov"
   },
   "trials": [
     {
@@ -34,7 +36,66 @@
         }
       },
       "verdict": "waiting",
-      "note": "Recovered on 2026-11-06 from run 42249382478: both films passed the gate and are on /films/; the gate scores were in the run artifact only, so they are not recorded here."
+      "note": "Recovered on 2026-11-06 from run 42249382478: both films passed the gate and are on /films/; the gate scores were in the run artifact only, so they are not recorded here.",
+      "outcomes": {
+        "champion": {
+          "views": 0,
+          "clicks": 0
+        },
+        "challenger": {
+          "views": 1,
+          "clicks": 0
+        }
+      }
+    },
+    {
+      "day": "20261106",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "oxford city vs leicester city",
+          "name": "oxford city vs leicester city",
+          "film": "20261106-news-oxford-city-vs-leicester-city",
+          "hook": "Why is everyone talking about oxford city vs leicester city?",
+          "source": "Google Trends"
+        },
+        {
+          "format": "trailer",
+          "label": "Movie-trailer parody",
+          "topic": "Ramayana: Part 1",
+          "name": "Ramayana: Part 1",
+          "film": "20261106-trailer-ramayana-part-1",
+          "hook": "What if Ramayana: Part 1 got a movie trailer?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 90,
+            "failed": []
+          }
+        },
+        {
+          "format": "explainer",
+          "label": "Explainer",
+          "topic": "Russell Brand",
+          "name": "Russell Brand",
+          "film": "20261106-explainer-russell-brand",
+          "hook": "What is Russell Brand, and why now?",
+          "source": "Wikipedia"
+        }
+      ],
+      "refused": [
+        {
+          "topic": "tornado warning",
+          "kinds": [
+            "harm"
+          ],
+          "why": "about harm to people (tornado): not something to parody or make a trend film of"
+        }
+      ],
+      "verdict": "waiting"
     }
   ]
 }

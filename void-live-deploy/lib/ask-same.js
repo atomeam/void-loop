@@ -57,5 +57,9 @@ export function dupAsk(a, b) {
   const ta = targetsOf(a);
   return !!ta && ta === targetsOf(b) && ka.split(' ')[0] === kb.split(' ')[0];
 }
+/** the numbers that say which one an ask is about: "number 3", "no. 3", "#3", or a numbered label ("ask 3: ..."), in order, as one string.
+ *  Asks that differ there are different asks, however many other words they share (the self card's 30 "built ask number N: ..." builds
+ *  folded into one row and the browser check "void asks batch 4" went red on main, run 42188519562). A count ("17 checked") is not one. Pure. */
+export const askIds = (t) => (uncite(t).toLowerCase().match(/(?:\bnumber|\bno\.|#)\s*\d+|\b\d+(?=:(?:\s|$))/g) || []).map((x) => x.replace(/\D/g, '')).join(' ');
 /** one ask for the card's lists: the card's sameAsk or dupAsk. Pure. */
 export const sameOrDup = (a, b) => sameAsk(uncite(a), uncite(b)) || dupAsk(a, b);
