@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-15T07:27:54Z",
-  "passed": 15,
-  "of": 16,
-  "kind": "file",
-  "key": "yo menaing of saudade | refused: don't know this yet",
-  "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-15T07:34:43Z",
   "passed": 11,
   "of": 16,
@@ -4768,5 +4760,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"yo funny cartoon dog\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T17:01:06Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1228,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9879 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

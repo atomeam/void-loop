@@ -3,13 +3,20 @@
  "cases": 93,
  "runsTotal": 300,
  "kinds": {
-  "file": 85,
+  "file": 84,
   "grow": 72,
   "tighten": 7,
   "none": 40,
-  "visitor": 96
+  "visitor": 97
  },
  "runs": [
+  {
+   "at": "2026-11-06T17:01:06Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T16:48:52Z",
    "passed": 89,
@@ -283,28 +290,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T09:29:54Z",
-   "passed": 88,
-   "of": 91,
-   "kind": "grow",
-   "ms": 312,
-   "note": "new ground passed, kept as a regression case: \"draw me a robot pls\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -359,19 +344,19 @@
   {
    "from": "2026-10-09",
    "runs": 64,
-   "passed": 256,
-   "of": 1392,
-   "broken": 47,
-   "brokenOf": 1109,
+   "passed": 241,
+   "of": 1401,
+   "broken": 48,
+   "brokenOf": 1134,
    "brokenPassed": 6
   },
   {
    "from": "2026-10-16",
-   "runs": 105,
+   "runs": 104,
    "passed": 2727,
-   "of": 4134,
-   "broken": 42,
-   "brokenOf": 1053,
+   "of": 4109,
+   "broken": 41,
+   "brokenOf": 1028,
    "brokenPassed": 0
   },
   {
@@ -382,7 +367,7 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 131,
+   "runs": 132,
    "passed": 2903,
    "of": 3148,
    "ms": 379
