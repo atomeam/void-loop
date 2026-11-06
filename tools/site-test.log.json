@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:36:52Z",
-  "passed": 2,
-  "of": 12,
-  "kind": "teach",
-  "key": "teach | can we play despacito",
-  "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
- },
- {
   "at": "2026-10-15T06:39:37Z",
   "passed": 0,
   "of": 12,
@@ -4507,5 +4499,23 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"yo make a 2d toon dog\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T10:32:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1803,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
