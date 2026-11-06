@@ -20,6 +20,7 @@ import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
 import { choose, nextAfterMerge, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
+import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
 // The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
@@ -202,12 +203,16 @@ for (let p of prs) {
   ready.push({ number: p.number, review: 'merge', p, r });
 }
 // One pull request, and only after the full suite passed on top of current main (tools/suite-gate.mjs).
+let mainSha = '', choice = null, suiteRun = null, mergeError = '';
 if (ready.length && !limited) {
-  let mainSha = '', running = false;
+  let running = false;
   try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
   try {
-    const runs = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'suite-gate.yml', '--limit', '8', '--json', 'status,conclusion']));
-    running = (Array.isArray(runs) ? runs : []).some((x) => ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(x.status));
+    const runs = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'suite-gate.yml', '--limit', '8', '--json', 'databaseId,status,conclusion,createdAt,url']));
+    const list = Array.isArray(runs) ? runs : [];
+    running = list.some((x) => ['queued', 'in_progress', 'waiting', 'pending', 'requested'].includes(x.status));
+    const x = list.find((y) => y.status !== 'completed') || list[0];
+    if (x) suiteRun = { id: x.databaseId, status: x.status, conclusion: x.conclusion, createdAt: x.createdAt, url: x.url };
   } catch (e) { console.log('could not read the suite queue: ' + String(e.stderr || e.message || e).slice(0, 160)); }
   const rows = [];
   for (const row of ready) {
@@ -222,7 +227,7 @@ if (ready.length && !limited) {
     }
     rows.push({ ...row, suite, drift });
   }
-  const choice = choose(rows, mainSha, running);
+  choice = choose(rows, mainSha, running);
   const pick = choice.pr;
   console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
   if (choice.action === 'queue' && pick && pick.r && pick.r.branch) {
@@ -246,8 +251,36 @@ if (ready.length && !limited) {
           catch (e) { console.log(`#${next.number}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
         }
       }
-    } catch (e) { console.log(`#${p.number}: merge refused: ${String(e.stderr || e.message).slice(0, 300)}`); }
+    } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); }
   }
+}
+// The stall alarm (tools/merge-stall.mjs): in a sweep, no merge for 2 hours while a green pull request waits opens one issue
+// that names the stuck step; a hung suite gate run is cancelled. The issue closes when a pull request merges again. Never fails the run.
+if (!one && !limited) {
+  try {
+    const recent = merged ? new Date().toISOString() : lastMerge(gh(`repos/${repo}/pulls?state=closed&sort=updated&direction=desc&per_page=30`));
+    const v = stallVerdict({ now: Date.now(), lastMergeAt: recent, ready: ready.map((x) => ({ number: x.number, createdAt: x.p.created_at })), choice, suiteRun, mainSha, mergeError });
+    const issue = (gh(`repos/${repo}/issues?state=open&labels=${STALL_LABEL}&per_page=5`) || []).find((i) => !i.pull_request && String(i.body || '').startsWith(STALL_MARK));
+    if (v.stalled) {
+      if (v.cancel) {
+        try { run(['api', '-X', 'POST', `repos/${repo}/actions/runs/${v.cancel}/cancel`]); console.log(`stall: cancelled the hung suite gate run ${v.cancel}`); }
+        catch (e) { console.log(`stall: could not cancel run ${v.cancel}: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
+      }
+      const body = withKey(v.body, v.key);
+      if (!issue) {
+        const made = JSON.parse(run(['api', '-X', 'POST', `repos/${repo}/issues`, '--input', '-'], JSON.stringify({ title: v.title, body, labels: [STALL_LABEL] })));
+        console.log(`::warning::merges stalled: ${v.step} (issue #${made.number})`);
+      } else if (keyOf(issue.body) !== v.key) {
+        run(['api', '-X', 'PATCH', `repos/${repo}/issues/${issue.number}`, '--input', '-'], JSON.stringify({ title: v.title, body }));
+        run(['api', '-X', 'POST', `repos/${repo}/issues/${issue.number}/comments`, '--input', '-'], JSON.stringify({ body: 'The stuck step changed: ' + v.step }));
+        console.log(`::warning::merges stalled, new step: ${v.step} (issue #${issue.number})`);
+      } else console.log(`merges stalled, same step as issue #${issue.number}: ${v.step}`);
+    } else if (issue && recent && Date.now() - Date.parse(recent) < STALL_MS) {
+      run(['api', '-X', 'POST', `repos/${repo}/issues/${issue.number}/comments`, '--input', '-'], JSON.stringify({ body: `The queue moves again: a pull request merged at ${recent}. Closing.` }));
+      run(['api', '-X', 'PATCH', `repos/${repo}/issues/${issue.number}`, '-f', 'state=closed', '-f', 'state_reason=completed']);
+      console.log(`stall over: closed issue #${issue.number}`);
+    }
+  } catch (e) { console.log('stall alarm: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
 function samePrefix(a, b) { const x = String(a).toLowerCase(), y = String(b).toLowerCase(); return x === y || x.startsWith(y) || y.startsWith(x); }
 if (merged) {

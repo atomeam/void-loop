@@ -43,6 +43,7 @@ permissions:
   pull-requests: write # mark a draft ready; the one conflict comment; arm auto-merge
   checks: read
   actions: write # start the deploy of main after a merge; start Verse's review on a head the bot pushed
+  issues: write # the stall alarm: one merge-stall issue when no pull request merged for 2 hours (tools/merge-stall.mjs)
 
 jobs:
   automerge:
