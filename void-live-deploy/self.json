@@ -614,7 +614,7 @@
    "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
   },
   {
-   "at": "2026-11-06T05:27:34Z",
+   "at": "2026-11-06T05:26:32Z",
    "subject": "Page copies: void.html takes the deploy copies' change from #2369"
   },
   {
@@ -634,8 +634,12 @@
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T05:20:16Z",
+   "at": "2026-11-06T05:20:58Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-06T05:19:15Z",
+   "subject": "Brain step: faster smell and synapse pass, same state to the bit"
   },
   {
    "at": "2026-11-06T05:18:19Z",
@@ -656,10 +660,6 @@
   {
    "at": "2026-11-06T05:16:56Z",
    "subject": "Verse code review paid with PayPal, and the PayPal AI Hackathon entry pack (#2370)"
-  },
-  {
-   "at": "2026-11-06T05:16:48Z",
-   "subject": "Tower gate: random generators,random number,prizes measured against their live sites"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 21,
-  "week": 172
+  "day": 23,
+  "week": 174
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
