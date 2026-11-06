@@ -31,7 +31,7 @@ export async function lookup(title, year, get = getJson) {
   const links = watchLinks(name, yr, i ? i.store : '');
   if (w) links.push({ label: 'Wikidata: the record', url: w.page });
   return {
-    verified: true, title: name, year: yr, genre: i ? i.genre : '', rating: i ? i.rating : '', director: (i && i.director) || (w && w.director) || '', runtime: (i && i.runtime) || (w && w.runtime) || null, overview: i ? i.overview : '',
+    verified: true, title: name, year: yr, genre: (i && i.genre) || (w && w.genre) || '', rating: i ? i.rating : '', director: (i && i.director) || (w && w.director) || '', runtime: (i && i.runtime) || (w && w.runtime) || null, overview: i ? i.overview : '',
     poster: i ? i.poster : a ? 'https://archive.org/services/img/' + encodeURIComponent(a.identifier) : '', trailer: i ? i.trailer : '',
     price: i ? i.price : null, rentPrice: i ? i.rentPrice : null, currency: i ? i.currency : '',
     play, free: !!play, links, sources: [i && 'iTunes Search API', w && 'Wikidata', a && 'Internet Archive'].filter(Boolean),

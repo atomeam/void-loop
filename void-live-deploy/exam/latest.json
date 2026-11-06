@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T15:38:14.940Z",
+  "at": "2026-11-06T16:09:52.563Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -39,7 +39,7 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
             "audio"
           ],
@@ -150,10 +150,19 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 94.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "wheather in new york",
+          "failed": [
+            "fast",
+            "temp",
+            "close"
+          ],
+          "score": 57.1
+        },
         {
           "ask": "weather",
           "failed": [
@@ -282,12 +291,40 @@
       }
     },
     "sports": {
-      "score": 95.4,
+      "score": 91.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
           "failed": [
             "board"
           ],
