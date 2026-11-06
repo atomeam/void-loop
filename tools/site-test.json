@@ -294,6 +294,9 @@
     },
     {
       "ask": "yo draw me a robot"
+    },
+    {
+      "ask": "draw me a robot pls"
     }
   ],
   "candidates": [],
