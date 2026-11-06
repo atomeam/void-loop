@@ -30,7 +30,7 @@ export const uncite = (t) => tidy(String(t == null ? '' : t).replace(/\s*\[([^\]
 // "ask 1" and "ask 2" stay two); or the same verb on the same named target (the X exam, the X skill, a site, a commit). Two asks that name
 // different sites are never one. The card's lists fold with this and its own sameAsk (sameOrDup).
 const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site|ru)\b/gi;
-const sitesOfAsk = (t) => [...new Set((String(t).match(SITE) || []).map((s) => s.toLowerCase()))].sort().join(' ');
+const sitesOfAsk = (t) => [...new Set((String(t).match(SITE) || []).map((s) => s.toLowerCase()))].sort().join(' '); // void-review: ok (sorts site names, which are text)
 /** an ask's words for comparing: tags out, lower case, letters and digits only. Pure. */
 export const askKey = (t) => uncite(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const targetsOf = (t) => {
@@ -38,7 +38,7 @@ const targetsOf = (t) => {
   for (const m of s.matchAll(/\bthe ['‘"“]?([a-z0-9][a-z0-9-]*)['’"”]? (exam|skill)s?\b/g)) out.add(m[2] + ':' + m[1].replace(/s$/, ''));
   for (const m of s.match(SITE) || []) out.add('site:' + m);
   for (const m of s.match(/\b[0-9a-f]{7,40}\b/g) || []) if (/\d/.test(m) && /[a-f]/.test(m)) out.add('commit:' + m);
-  return [...out].sort().join(' ');
+  return [...out].sort().join(' '); // void-review: ok (sorts target labels, which are text)
 };
 export function dupAsk(a, b) {
   const ka = askKey(a), kb = askKey(b);
