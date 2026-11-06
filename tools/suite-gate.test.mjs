@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -104,5 +104,77 @@ test('a red batch is split in half until the red pull request runs alone, and on
   const next = choose([alone, row(2, inBatch(fail(MAIN), [1, 2]), [])], MAIN, false);
   assert.equal(next.pr.number, 2);
   assert.equal(next.batch.length, 1, 'the half it was in, split again');
-  assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), BATCH, 'main moved with code: a full batch again');
+  assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), 4, 'main moved with code: the same heads went red together, so still split');
+  assert.equal(batchSize(row(1, null, null), MAIN), BATCH, 'never run: a full batch');
+});
+
+test('main moving after every red batch no longer sends the same 8 back whole (2026-11-06: it never split, nothing merged)', () => {
+  const red8 = inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]);
+  const moved = [['void.html']];
+  const rows = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => row(n, red8, moved));
+  assert.deepEqual(choose(rows, MAIN, false).batch.map((r) => r.number), [1, 2, 3, 4]);
+  const red4 = inBatch(fail(OLD), [1, 2, 3, 4]);
+  const halves = [1, 2, 3, 4].map((n) => row(n, red4, moved)).concat([5, 6, 7, 8].map((n) => row(n, red8, moved)));
+  assert.deepEqual(choose(halves, MAIN, false).batch.map((r) => r.number), [1, 2]);
+});
+
+test('a pull request red alone on an older main runs again, alone, after the others', () => {
+  const alone = row(1, inBatch(fail(OLD), [1]), [['void.html']]);
+  assert.equal(failedHere(alone, MAIN), false, 'main moved: not held');
+  const first = choose([alone, row(2, null, null), row(3, null, null)], MAIN, false);
+  assert.deepEqual(first.batch.map((r) => r.number), [2, 3], 'the others go first, in a full batch');
+  const last = choose([alone], MAIN, false);
+  assert.deepEqual(last.batch.map((r) => r.number), [1], 'then it runs alone, never in a batch it would turn red');
+});
+
+test('the safety-check runs on the batch the gate chose only, and a pull request that fails it leaves the batch', () => {
+  const rows = [row(4, null, null), row(8, null, null), row(12, null, null)];
+  const asked = [];
+  const ok = chooseChecked(rows, MAIN, false, (r) => { asked.push(r.number); return true; });
+  assert.equal(ok.choice.action, 'queue');
+  assert.deepEqual(ok.choice.batch.map((r) => r.number), [4, 8, 12]);
+  assert.deepEqual(asked, [4, 8, 12], 'each pull request in the batch is checked once');
+  const many = Array.from({ length: 20 }, (_, i) => row(i + 1, null, null));
+  const seen = [];
+  chooseChecked(many, MAIN, false, (r) => { seen.push(r.number); return true; });
+  assert.equal(seen.length, 8, 'only the batch, not every ready pull request');
+  const asked2 = [];
+  const bad = chooseChecked(rows, MAIN, false, (r) => { asked2.push(r.number); return r.number !== 8; });
+  assert.deepEqual(bad.choice.batch.map((r) => r.number), [4, 12], 'the failing pull request is out of the batch');
+  assert.deepEqual(bad.rows.map((r) => r.number), [4, 12]);
+  assert.deepEqual(asked2, [4, 8, 12], 'a pull request that passed is not checked again');
+});
+
+test('a fresh green pull request that fails the safety-check is not merged; the gate chooses again', () => {
+  const rows = [row(3, pass(MAIN), []), row(5, null, null)];
+  const out = chooseChecked(rows, MAIN, false, (r) => r.number !== 3);
+  assert.equal(out.choice.action, 'queue');
+  assert.equal(out.choice.pr.number, 5);
+  const none = chooseChecked(rows, MAIN, false, () => false);
+  assert.equal(none.choice.action, 'hold');
+  assert.equal(chooseChecked(rows, MAIN, true, () => true).choice.action, 'merge');
+  let calls = 0;
+  assert.equal(chooseChecked([row(4, null, null)], MAIN, true, () => { calls++; return true; }).choice.action, 'wait');
+  assert.equal(calls, 0, 'nothing is checked while the gate only waits');
+});
+
+test('a green run merges past the records the bot writes straight to main, and past nothing else', () => {
+  const log = 'COMMIT Tower gate: prizes measured against their live sites\nAUTHOR github-actions[bot]\n\nvoid-live-deploy/tower-evidence/prizes-27fdb497.json\nvoid-live-deploy/tower.evidence.json\nvoid-live-deploy/tower.shots/prizes.jpg\n\n'
+    + 'COMMIT Site test: 12 checks\nAUTHOR github-actions[bot]\n\nvoid-live-deploy/tester-log.json\ntools/site-test.log.json\n';
+  const recs = parseLog(log);
+  assert.equal(recs[0].author, 'github-actions[bot]');
+  assert.deepEqual([...recs[0]], ['void-live-deploy/tower-evidence/prizes-27fdb497.json', 'void-live-deploy/tower.evidence.json', 'void-live-deploy/tower.shots/prizes.jpg'], 'the author line is not a file');
+  assert.equal(recs[1].subject, 'Site test: 12 checks');
+  assert.equal(driftOk(recs, []), true, 'bot records only: the green run still counts');
+  assert.equal(mayMerge(row(4, pass(OLD), recs), MAIN), true);
+  const bot = (subject, files) => Object.assign([...files], { subject, author: 'github-actions[bot]' });
+  assert.equal(botRecord(bot('Verse loop: nightly (#2312)', ['domains/x.md'])), false, 'a squash of a pull request is never a record');
+  assert.equal(botRecord(bot('Versus by itself', ['void-live-deploy/assimilated.json', 'void-live-deploy/colour/index.html'])), false, 'a page is code');
+  assert.equal(botRecord(bot('Upkeep', ['void-live-deploy/lib/clips.json'])), false, 'lib and skills feed the pages');
+  assert.equal(botRecord(bot('Upkeep', ['.github/workflows/x.yml'])), false, 'a workflow is code');
+  assert.equal(botRecord(bot('Deps', ['package-lock.json'])), false, 'dependencies are code');
+  assert.equal(botRecord(bot('Empty', [])), false, 'a commit with no files says nothing');
+  assert.equal(botRecord(Object.assign(['void-live-deploy/tester-log.json'], { subject: 'Site test', author: 'someone' })), false, 'only the record bot');
+  assert.equal(botRecord(['void-live-deploy/tester-log.json']), false, 'no author line (an older log): not a record');
+  assert.equal(driftOk([...recs, squash(55, ['void.html'])], [4]), false, 'a pull request from outside the batch is still real drift');
 });

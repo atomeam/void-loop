@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  .card {
+    position: absolute; min-width: 120px; padding: 12px 16px; background: rgba(20,20,40,0.75);
+    border: 1px solid rgba(100,180,255,0.4); border-radius: 12px; backdrop-filter: blur(4px);
+    pointer-events: auto; cursor: grab; transition: transform 0.1s linear, filter 0.2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .card:active { cursor: grabbing; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; z-index: 10; }
+  button { margin-top: 6px; padding: 4px 10px; background: #2a2a4a; color: #ccc; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-sandpile-local-evo-avalanche-dom-mind · Verse lab</title>
+<meta name="description" content="A discrete Bak-Tang-Wiesenfeld sandpile model (self-organized criticality) runs on a spatial lattice.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-sandpile-local-evo-avalanche-dom-mind · Verse lab">
+<meta property="og:description" content="A discrete Bak-Tang-Wiesenfeld sandpile model (self-organized criticality) runs on a spatial lattice.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f586-webgpu-sandpile-local-evo-avalanche-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f586-webgpu-sandpile-local-evo-avalanche-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  Sandpile SOC · Avalanche Mind<br>
+  Threshold: <span id="th">4</span> · Avalanches: <span id="av">0</span><br>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-sandpile-local-evo-avalanche-dom-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,5 +1,5 @@
 # The arbitrage scanner's record (lib/arb-history.js) fills on its own: every 30 minutes this asks the free scan for BTC and ETH, and each
-# fresh scan writes its own row. Read only: two GETs to the live site, no key, no payment, no trade. A failed GET is shown and not retried.
+# fresh scan writes its own row. Read only: GETs to the live site (the scan, then its record), no key, no payment, no trade. A failed GET is shown and not retried.
 name: Arbitrage record
 
 on:
@@ -20,5 +20,6 @@ jobs:
           for c in BTC ETH; do
             code=$(curl -sS -o /tmp/$c.json -w '%{http_code}' -A 'Verse arbitrage record' "https://a-to-mind.com/api/arbitrage?coin=$c" || echo 000)
             echo "$c: $code $(head -c 300 /tmp/$c.json 2>/dev/null)"
-            echo "- $c: $code" >> "$GITHUB_STEP_SUMMARY"
+            rec=$(curl -sS -A 'Verse arbitrage record' "https://a-to-mind.com/api/arbitrage?coin=$c&history=1" | head -c 400 || true)
+            echo "- $c: $code, record: $rec" >> "$GITHUB_STEP_SUMMARY"
           done
