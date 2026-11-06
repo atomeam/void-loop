@@ -1538,6 +1538,9 @@ try {
     const won3 = FLOORS.filter((f) => f.id !== TARGET).slice(0, 3);
     const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    // since the season reset (#2412, owner 2026-11-06: "clear and reset your damn verse screens") a site counts as surpassed only once the tower
+    // passed it in the season (tower.target.json `passed`), so the three conquered sites are passed in the served record's season too
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...served('tower.target.json'), passed: won3.map((f) => ({ id: f.id })) }) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
       return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
@@ -1561,6 +1564,9 @@ try {
     const all = (f) => passingRows(f, { evidence: 'stub' });
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    // both sites passed in the season (tower.target.json `passed`, #2412), so they count as surpassed and their entries are on the card
+    const tg = JSON.parse(fs.readFileSync(path.join(root, 'tower.target.json'), 'utf8'));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...tg, passed: Object.keys(floors).map((id) => ({ id })) }) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
       return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
@@ -1613,6 +1619,9 @@ try {
     // calculator.net's whole checklist as the gate demands it: its aspects and its journeys with steps and negative controls (docs/GATE-STANDARDS.md)
     const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), won = passingRows(FLOORS.find((f) => f.id === 'calculator'), { evidence: 'stub' });
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: won } : {} }) }); });
+    // calculator.net was passed in the season (tower.target.json `passed`, #2412), so the gate's full checklist makes it surpassed, as on the live tower
+    const tg = JSON.parse(fs.readFileSync(path.join(root, 'tower.target.json'), 'utf8'));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...tg, passed: [{ id: 'calculator' }] }) }));
     await P.p.evaluate(() => { window.__towerPollMs = 400; });
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
     const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
@@ -7847,7 +7856,7 @@ try {
     gen = 2; const three = await until(async () => { const r = await read(); return r && r.refreshed && /Round three/.test(r.text) ? r : null; }, 14000).catch(() => null);
     check('self card never repeats: "since i last looked" opens the self card (not the model) with the newest builds first; opened again it leads with "Since you last looked" (the counts that moved, the new build) and none of the sentences read before; open, it redraws by itself with the next round',
       !!one && one.lead === 'since' && /Newest/.test(one.head) && /blank stage with one quiet input/.test(one.text) && /Round one/.test(one.text) && loop && loop.note === 'voice'
-        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 asks built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
+        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 ask built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
         && !!three && /Round three/.test(three.text) && !/blank stage with one quiet input/.test(three.text) && !N.errors.length,
       JSON.stringify({ one: one && { ...one, text: one.text.slice(0, 200) }, loop, two: two && { ...two, text: two.text.slice(0, 300) }, three: three && three.text.slice(0, 200), errors: N.errors }));
     await N.ctx.close(); }
@@ -7869,7 +7878,10 @@ try {
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
-    const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
+    // each built ask in words of its own: since #2405 the card folds asks in nearly the same words into one (lib/ask-same.js sameOrDup), so 30 asks that
+    // shared one sentence folded to 1; letter-only words made from the ask's number keep the 30 apart (a digit is masked when asks are compared)
+    const word = (n) => { let w = ''; do { w = String.fromCharCode(97 + (n % 26)) + w; n = Math.floor(n / 26); } while (n > 0); return 'zq' + w; };
+    const long = (i) => 'built ask number ' + i + ': ' + Array.from({ length: 12 }, (_, k) => word(i * 12 + k)).join(' ') + ' ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
     // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
@@ -9182,12 +9194,15 @@ try {
       const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
       res.push({ id, ok: !!ok, hook, framed: !!fr });
     }
+    // "show me the lab" opens the lab page card since the lab skill (owner, 2026-11-06: "i cant find the lab anywhere"); the 12-experiment list stays one ask away
     await L.ask('show me the lab', 500);
+    const labCard = await until(async () => L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return !!pg && (pg.dataset.page === '/lab/' || !!pg.querySelector('a[href="/lab/"]')); }).catch(() => false), 6000);
+    await L.ask('what experiments do you have', 500);
     const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
     if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
     const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
-    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
-      res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
+    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" opens the lab page card; "what experiments do you have" lists all 12 and a click opens one',
+      res.every((r) => r.ok) && !!labCard && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' labCard ' + !!labCard + ' links ' + links.length + ' ' + L.errors.join(' | '));
     await L.ctx.close();
   }
 
