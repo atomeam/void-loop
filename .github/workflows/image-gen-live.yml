@@ -1,6 +1,6 @@
 # The /image/ painter against the live site (tools/image-gen-live.mjs): once a day, from GitHub's network, do what a visitor does on
 # a-to-mind.com/image/: read GET /api/image, the page and its script, paint one fixed picture, shrink it to the page's edit size with the
-# runner's ImageMagick (or ffmpeg), change it with one fixed line ("Change it"), and ask the same change again, which must come from the cache.
+# runner's ImageMagick (installed by the job; ubuntu-latest has none), change it with one fixed line ("Change it"), and ask the same change again, which must come from the cache.
 # Cost: at most 2 Workers AI pictures a day of the page's own share (the paint and the change); the repeat is free. Keep what each answer said
 # as an artifact (findings/image-gen/<date>T<hhmm>.json, attempt "live", the occasion number; no picture bytes) and write one `finding` line to the
 # growth ledger pointing at it. Both files are committed to main by the bot, as video-gen-live.yml does. No key is used and nothing a person typed is sent.
@@ -29,6 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install ImageMagick for the edit copy
+        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends imagemagick && convert -version | head -1
       - name: Paint and change one picture on the live site and write the finding
         id: check
         run: |
