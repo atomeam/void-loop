@@ -34,6 +34,8 @@ retries; a facilitator verifies it, the closer read runs, the facilitator settle
 only then is the read given. No settlement, no read, no charge. Catalog: `GET /api/x402`. Code: `lib/x402.js`, `lib/verse-wallet.js`,
 `functions/api/x402/`, tests `tools/x402.test.mjs`.
 
+- **Verse's address** (owner, 2026-11-06, his MetaMask wallet on Base): `0x172198B605c3A6388fc4265b09Bc9b3b71CC7196`, in
+  `lib/verse-wallet-address.js`. Self-custody, so no deposit minimum; EIP-55 checksum checked when it was set.
 - **The address**, in order: `VERSE_WALLET_ADDR` (a Pages variable, any receive address); else `VERSE_WALLET` in
   `lib/verse-wallet-address.js` (the same public address kept in the repo, so it ships with the next deploy and needs no Cloudflare
   or Coinbase account: the path when Atom has a self-custody wallet such as MetaMask or Rabby; not an exchange deposit address
