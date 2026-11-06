@@ -23,6 +23,9 @@ import { trace } from './brain-trace.js';
 import { strokes } from './brain-strokes.js';
 import { rules } from './brain-rules.js';
 import { reflex } from './brain-reflex.js';
+import { growth } from './brain-growth.js';
+import { atlas } from './brain-atlas.js';
+import { curves } from './brain-curves.js';
 import { dialogue } from './brain-dialogue.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
 
@@ -440,20 +443,7 @@ const arena = {
   }
 };
 
-/** An organ kept in its own module holds its state on the brain under its own key (hearing's is b.ear). A deploy can serve this file and
- *  lib/brain.js from two different builds for a minute (each /lib/ file is cached on its own): a new organ list beside a brain made before
- *  that organ existed (site-test issue #2387, 2026-11-06: "play reversi" threw "Cannot read properties of undefined (reading 'queue')" at
- *  06:05, seven minutes after organ 25 added strokes to both files). An organ whose state the brain does not hold rests, wants nothing and
- *  runs nothing, so the brain made by the older file keeps working until the next load brings both halves together. */
-export const STATE_KEY = { hearing: 'ear' };
-export const holdsState = (b, o) => !!(b && b[STATE_KEY[o.id] || o.id]);
-export const onlyWithState = (o) => ({ ...o,
-  rests: (b) => !holdsState(b, o) || !!(o.rests && o.rests(b)),
-  want: (b) => holdsState(b, o) ? o.want(b) : 0,
-  run: (b, ...rest) => holdsState(b, o) ? o.run(b, ...rest) : 0 });
-const OWN_MODULE = [synapses, creature, hearing, painter, gardener, grower, formula, current, grains, pool, trace, strokes, rules, reflex, dialogue].map(onlyWithState);
-const own = (o) => OWN_MODULE.find((x) => x.id === o.id) || o;
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, strokes, rules, reflex, dialogue, will, arena].map(own);
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, strokes, rules, reflex, growth, atlas, curves, dialogue, will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };

@@ -7,9 +7,9 @@
 // A tick never fails the clock: every error is a warning in the summary and the tick ends with exit 0. Playbook: docs/playbooks/conductor.md.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { plan, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
+import { plan, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, blueprintsDue, DAILY, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
-import { issueJobsOf } from './site-test-close.mjs';
+import { queueBlueprints } from './watch-build.mjs'; // every blueprint Verse wrote becomes a tv: build job, a few an hour
 import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
@@ -161,21 +161,27 @@ async function tick() {
   }
   let sweptAt = state.sweptAt || 0;
   if (sweepDue({ sweptMs: sweptAt, now }) && await act('automerge sweep', async () => { start('automerge.yml'); return true; })) { done.sweep = true; if (!DRY) sweptAt = now; }
-  return finish({ ...state, handed, sweptAt }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
+  // every blueprint not built yet goes on the queue, a few an hour, best first (tools/watch-build.mjs queueBlueprints keeps the pace)
+  let blueprintsAt = state.blueprintsAt || 0;
+  if (blueprintsDue({ queuedMs: blueprintsAt, now }) && !DRY) {
+    try { const out = await queueBlueprints(); done.blueprints = out.queued; for (const l of out.said) console.log('blueprints: ' + l); blueprintsAt = now; }
+    catch (e) { warn('blueprints: ' + String(e.message || e).slice(0, 120)); }
+  }
+  return finish({ ...state, handed, sweptAt, blueprintsAt }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
 }
 
 function finish(state, now, t) {
   const at = new Date(now).toISOString();
-  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], daily: t.done.daily || [], sweep: !!t.done.sweep, held: t.held.length, warnings: warnings.length }
+  const tick = t ? { at, open: t.open, started: t.done.started, requeued: t.done.requeued.length, setAside: t.done.setAside.length, healed: t.done.healed, probe: t.done.probe, grow: !!t.done.grow, will: !!t.done.will, lap: !!t.done.lap, revived: t.done.revived || [], daily: t.done.daily || [], sweep: !!t.done.sweep, blueprints: (t.done.blueprints || []).length, held: t.held.length, warnings: warnings.length }
     : { at, error: warnings[0] || 'no plan', warnings: warnings.length };
   const ticks = [...(state.ticks || []), tick].filter((x) => now - Date.parse(x.at) < 24 * 3600000).slice(-200);
   const day = { ticks: ticks.length, started: ticks.reduce((n, x) => n + ((x.started || []).length), 0), requeued: ticks.reduce((n, x) => n + (x.requeued || 0), 0),
     setAside: ticks.reduce((n, x) => n + (x.setAside || 0), 0), probes: ticks.filter((x) => x.probe).length, errors: ticks.filter((x) => x.error).length };
   const broken = t ? Object.entries(t.wf).filter(([, s]) => s.exists && s.fails >= 3).map(([f, s]) => ({ wf: f, fails: s.fails, url: s.url })) : (state.broken || []);
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
-    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, sweptAt: state.sweptAt || 0, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], issuesFiled: state.issuesFiled || [], ticks };
+    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, sweptAt: state.sweptAt || 0, blueprintsAt: state.blueprintsAt || 0, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
-  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}` : 'no plan: ' + (warnings[0] || ''),
+  const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}; daily jobs started ${(t.done.daily || []).join(', ') || 'none due'}; automerge sweep ${t.done.sweep ? 'started' : 'not due'}; blueprints queued ${(t.done.blueprints || []).join(', ') || 'none'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',
     `last 24 h: ${day.started} started, ${day.requeued} put back, ${day.setAside} set aside, ${day.probes} probe runs, ${day.errors} ticks without a plan`].filter(Boolean);
   console.log(lines.join('\n'));
