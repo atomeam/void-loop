@@ -1,0 +1,1 @@
+{"at":"2026-11-06T07:24:40Z","by":"claude","kind":"build","what":"ndscalc.ru tower: the VAT panel of /calculator/ adds or extracts Russian VAT at 22, 20, 10, 7, 5 or 0 percent to the kopeck, all on the device","asked":"Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic.","try":"ndscalc vat calculator"}

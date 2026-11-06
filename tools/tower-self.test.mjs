@@ -7,7 +7,7 @@ import path from 'node:path';
 import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, keepSeo, swWith, judgeRows, guardOf, reportLine, causeOfLap, isNoop, nextOf, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
 import { FLOORS, LANES, LANE_PAGES, passingRows } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
-import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
+import { SITE_PAGES, TARGET_SITES } from '../void-live-deploy/lib/tool-sites.js';
 import { probeFor } from './tower-probes.mjs';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -99,9 +99,11 @@ test('the page guard flags a frontier site at the front of the queue with no pag
 
 test('every self-built site is a lane site with its own page, the page its probe measures, a row in the tool table and a folder', () => {
   for (const r of SELF_SITES) {
-    const f = FLOORS.find((x) => x.id === r.lane); assert.ok(f, r.lane + ' is a floor'); assert.equal(f.lane, r.family); assert.equal(f.page, r.page); assert.equal(LANE_PAGES[r.lane], r.page);
-    assert.ok(LANES[r.family].includes(r.url)); assert.ok(SITE_PAGES.some((p) => p.path === r.path)); assert.equal(probeFor(r.lane).verse, r.page);
-    if (r.ask) assert.equal(probeFor(r.lane).ask.verse, r.ask);
+    // a page built by hand for the lane (lib/tool-sites.js TARGET_SITES: /emojis/dictionary/ for emojigraph.org) takes over from the loop's copy, which stays
+    const hand = TARGET_SITES.find((t) => t.lane === r.lane), page = hand ? hand.path : r.page;
+    const f = FLOORS.find((x) => x.id === r.lane); assert.ok(f, r.lane + ' is a floor'); assert.equal(f.lane, r.family); assert.equal(f.page, page); assert.equal(LANE_PAGES[r.lane], page);
+    assert.ok(LANES[r.family].includes(r.url)); assert.ok(SITE_PAGES.some((p) => p.path === r.path)); assert.equal(probeFor(r.lane).verse, page);
+    if (r.ask && !hand) assert.equal(probeFor(r.lane).ask.verse, r.ask);
     const html = fs.readFileSync(path.join(root, 'void-live-deploy', r.path, 'index.html'), 'utf8'); assert.ok(html.includes(MARK), r.path); assert.ok(html.includes('<h1') && html.includes(r.h1.replace(/&/g, '&amp;')), r.path);
     assert.doesNotMatch(r.name + r.h1 + r.intro + r.does + r.asks.join(' ') + r.path, /\.(?:com|org|net|io)\b/i, r.path + ' names no site');
   }

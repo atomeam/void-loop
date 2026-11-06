@@ -301,6 +301,12 @@ export const SPECS = {
     await t.click('#results .combo button[data-act="collect"] >> nth=0'); await t.p.waitForTimeout(200); t.ok((await t.p.inputValue('#build')).length > 0, 'collect puts the combo in the box');
     await t.share('#share');
   },
+  '/emojis/dictionary/': async (t) => { // emojigraph.org's lane: a search for cat finds the cat face, its card gives U+1F431, and the link keeps it
+    await t.fill('#q', 'cat face'); await t.p.waitForTimeout(400); t.ok(/cat face/i.test(await t.p.locator('main').innerText()), 'a search for cat face lists the cat face');
+    await t.p.goto(t.p.url().split('#')[0] + '#e=' + encodeURIComponent('\u{1F431}')); await t.p.waitForTimeout(600);
+    const card = await t.waitText('#one', /U\+1F431/, 5000); t.ok(/cat face/i.test(card) && /U\+1F431/.test(card), 'the link opens the cat face card with its code point');
+    t.ok((await t.p.locator('#related a[href="/emoji-combos/"]').count()) > 0, 'the page links to its related tools');
+  },
   '/emojis/': async (t) => { await t.fill('#q', 'heart'); await t.p.waitForTimeout(400); t.ok(/heart/i.test(await t.p.locator('main').innerText()), 'a search for heart lists hearts'); },
   '/fantasy/': async (t) => { await t.click('#example'); await t.p.waitForTimeout(500); t.ok((await t.text('#out')).length > 80 && !/Open or paste a sheet/.test(await t.text('#out')), 'the example sheet is read into a board'); await t.share('#share'); },
   '/flights/': async (t) => {

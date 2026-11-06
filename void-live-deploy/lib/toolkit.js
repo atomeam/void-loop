@@ -113,6 +113,8 @@ const HAND_RELATED = Object.freeze({
   '/emojis/': ['/emoji-combos/', '/word-count/', '/base64/', '/translate/'],
   // emoji combos (2026-10-30, against emojicombos.com): single emoji counted, what was collected counted or encoded, or kept as a snippet
   '/emoji-combos/': ['/emojis/', '/word-count/', '/base64/', '/g/'],
+  // the emoji dictionary (2026-11-06, emojigraph.org's tower lane): the wall and the combos it belongs with, a message counted or encoded
+  '/emojis/dictionary/': ['/emojis/', '/emoji-combos/', '/word-count/', '/base64/'],
   // the snippet in a link (/g/, the gist): its text in Base64, counted, kept as a note, or the repo it came from listed issue by issue
   '/g/': ['/base64/', '/word-count/', '/notes/', '/ledger/'],
   '/tools/': ['/color/', '/random/wheel/', '/calculator/'],

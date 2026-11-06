@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { TOPICS, topicOf, topicPageOf } from '../void-live-deploy/lib/tower-topic.js';
-import { tower, frontierPage } from '../void-live-deploy/lib/tower.js';
+import { tower, frontierPage, LANE_PAGES } from '../void-live-deploy/lib/tower.js';
 
 test('ndscalc.ru, a Russian VAT calculator, is the calculator in VAT mode; plain words that are not the job match nothing', () => {
   assert.equal(topicPageOf('НДС калькулятор онлайн - как выделить НДС 22% и как начислить НДС', 'ndscalc.ru'), '/calculator/?mode=vat');
@@ -17,6 +17,7 @@ test('every topic names a page that exists', () => {
   for (const [, , page] of TOPICS) { const dir = page.replace(/[?#].*$/, ''); assert.ok(existsSync(new URL('../void-live-deploy' + dir + 'index.html', import.meta.url)), page); }
 });
 test('the tower gives a frontier site its page by topic, and a host page first', () => {
+  assert.equal(LANE_PAGES['ndscalc.ru'], '/calculator/?mode=vat');
   assert.deepEqual(frontierPage({ host: 'ndscalc.ru', title: 'НДС калькулятор' }), { page: '/calculator/?mode=vat', topic: 'vat' });
   assert.deepEqual(frontierPage({ host: 'onlineconverter.com', title: 'Unit converter' }), { page: '/converter/' });
   const t = tower([], {}, { sites: [{ site: 'ndscalc.ru', hardness: 1, title: 'НДС калькулятор онлайн' }] }, null, null, null, 'ndscalc.ru');

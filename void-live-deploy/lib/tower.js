@@ -228,6 +228,12 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'wheelroot.com': '/learn-to-draw/',
   // onlineconverter.com (106 file and unit tools, each an upload to its server) is assimilated by /converter/, the same 106 tools listed with what Verse does on the device (domains/targets/onlineconverter.json)
   'onlineconverter.com': '/converter/',
+  // ndscalc.ru (a Russian VAT calculator) is assimilated by the calculator's VAT mode: the sum is worked out on the device, to the kopeck
+  'ndscalc.ru': '/calculator/?mode=vat',
+  // emojigraph.org (an emoji encyclopedia: every emoji by group and subgroup, its meaning and code, an emoji keyboard and a memory game; asked by
+  // Verse 2026-11-05) is assimilated by /emojis/dictionary/, built for it by hand (lib/emoji-dict.js); this row takes over from the loop's copy of
+  // /emoji-combos/ (lib/self-sites.js), which stays where it is
+  'emoji combos: emojigraph.org': '/emojis/dictionary/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores
@@ -382,8 +388,13 @@ export function easeLine(f) {
 /** a frontier site's Verse page: the one built for its host (LANE_PAGES), else the page that already does its job, by topic (lib/tower-topic.js;
  *  owner, 2026-11-03: ndscalc.ru said "no Verse page yet" while /vat/ was live). { page, topic } or {}. Pure. */
 export function frontierPage(x) {
-  if (LANE_PAGES[x.host]) return { page: LANE_PAGES[x.host] };
+  const lane = LANE_PAGES[x.host];
   const t = topicOf(x.title, x.host);
+  // a host page and a topic page for the same folder keep the topic (ndscalc.ru is VAT on the calculator)
+  if (lane) {
+    const same = t && String(t.page).replace(/[?#].*$/, '') === String(lane).replace(/[?#].*$/, '');
+    return same ? { page: lane, topic: t.topic } : { page: lane };
+  }
   return t ? { page: t.page, topic: t.topic } : {};
 }
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */

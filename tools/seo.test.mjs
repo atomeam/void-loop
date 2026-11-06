@@ -109,7 +109,10 @@ test('llms.txt lines: one per page, honest, each ending in its url; and llms.txt
   assert.equal(llmsOf('no markers here'), null);
 });
 
-test('the sitemap and the table agree on which tool pages exist', () => {
-  const sitemap = readFileSync(new URL('../void-live-deploy/sitemap.xml', import.meta.url), 'utf8');
-  for (const p of PAGES) assert.ok(sitemap.includes('<loc>' + SITE + p.path + '</loc>'), p.path + ' in the sitemap');
+test('the sitemap and the table agree on which tool pages exist', async () => {
+  // sitemap.xml is a build output (tools/generated.mjs): a pull request does not commit it and the deploy writes it from tools/sitemap.mjs,
+  // so the table is held against what the generator lists; tools/sitemap.test.mjs holds the committed file to the generator
+  const { pages } = await import('./sitemap.mjs'), fixPages = JSON.parse(readFileSync(new URL('./fix-pages.json', import.meta.url), 'utf8'));
+  const locs = new Set(pages({ fixPages }).map((e) => e.loc));
+  for (const p of PAGES) assert.ok(locs.has(p.path), p.path + ' in the sitemap');
 });

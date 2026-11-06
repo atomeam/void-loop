@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: text">
+<meta name="theme-color" content="#050505">
+<title>Emoji dictionary: every emoji, its meaning and code · Verse</title>
+<meta name="description" content="Every emoji of the Unicode list by group and subgroup: its name, keywords, the version it came in, its code points and how to write it in HTML, CSS and JavaScript. Copy it, build a message on the emoji keyboard, play the memory game. Works on this device; nothing is sent.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Emoji dictionary · Verse">
+<meta property="og:description" content="Every emoji with its name, keywords, version and code, an emoji keyboard and a memory game. Nothing is sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/emojis/dictionary/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/emojis/dictionary/">
+<link rel="modulepreload" href="/lib/emoji-dict.js">
+<link rel="modulepreload" href="/lib/emoji-dict-data.js">
+<style>
+  /* a-to-mind.com/emojis/dictionary/ (asked by Verse, 2026-11-05, for the emoji encyclopedia on its tower; lib/tower.js LANE_PAGES):
+     the emoji encyclopedia, in Verse's deep space (the /fanfic/ tokens: one cool key light, glass panels with a lit rim). The logic is lib/emoji-dict.js
+     on lib/emoji-dict-data.js, all on the device; the view rides in the hash (#e=, #q=, #g=, #k=, #m=, #view=) so a link opens it again. */
+  :root {
+    color-scheme: dark;
+    --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #9aa0b4;
+    --key: 158 178 255; --warm: 255 170 214; --teal: 92 232 205;
+    --glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%);
+    --rim: conic-gradient(from 200deg, rgb(var(--key) / .55), rgba(255,255,255,.05) 22%, rgb(var(--warm) / .32) 50%, rgba(255,255,255,.05) 74%, rgb(var(--teal) / .38) 90%, rgb(var(--key) / .55));
+    --lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42);
+    --line: rgba(255,255,255,.10); --field: rgba(6,8,14,.55);
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--sans); -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; overflow-x: hidden; }
+  #sky { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(60vmax 38vmax at 50% -12%, rgb(var(--key) / .16), transparent 70%), radial-gradient(40vmax 26vmax at 12% 30%, rgb(92 70 190 / .14), transparent 70%),
+      radial-gradient(36vmax 24vmax at 92% 64%, rgb(40 130 170 / .11), transparent 70%), var(--bg); }
+  a { color: rgb(var(--key)); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; border-radius: 6px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 16px 48px; min-height: 100vh; box-sizing: border-box; }
+  .crumbs { font-size: 14px; color: var(--ink-3); margin: 0 0 10px; } .crumbs a { color: var(--ink-2); display: inline-flex; min-height: 44px; align-items: center; }
+  h1 { font-weight: 280; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px;
+    background: linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); margin: 18px 0 8px; }
+  .intro { color: var(--ink-2); max-width: 44em; margin: 0 0 18px; }
+  .glass { position: relative; background: var(--glass); border-radius: 18px; box-shadow: var(--lift); margin: 0 0 18px; padding: 16px; isolation: isolate; }
+  .glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--rim); pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+  button, .btn { font: inherit; color: var(--ink); background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 999px; min-height: 44px; padding: 0 16px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  button:hover, .btn:hover { background: rgb(var(--key) / .12); }
+  button[aria-pressed="true"], button[aria-selected="true"] { background: rgb(var(--key) / .18); box-shadow: 0 0 0 1px rgb(var(--key) / .4) inset; }
+  input[type=search], textarea { font: inherit; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; width: 100%; box-sizing: border-box; min-height: 48px; }
+  textarea { min-height: 90px; font-size: 22px; font-family: var(--emoji), var(--sans); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
+  .chips button { font-size: 14px; }
+  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 4px; }
+  .grid button { width: 100%; min-height: 48px; padding: 0; justify-content: center; font: 28px/1 var(--emoji); border-radius: 12px; background: transparent; border-color: transparent; }
+  .grid button:hover, .grid button:focus-visible { background: rgb(var(--key) / .14); }
+  .detail { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: start; }
+  .big { font: 96px/1.1 var(--emoji); grid-row: span 3; }
+  .detail h2 { margin: 0; font-size: 22px; letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 500; }
+  .meta { color: var(--ink-3); font-size: 14px; margin: 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 10px 0 0; grid-column: 1 / -1; }
+  th, td { text-align: left; padding: 6px 8px; border-top: 1px solid var(--line); vertical-align: middle; overflow-wrap: anywhere; }
+  th { color: var(--ink-3); font-weight: 500; width: 8em; }
+  td button { min-height: 40px; font-size: 13px; padding: 0 12px; }
+  code { font-size: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; grid-column: 1 / -1; }
+  .note { color: var(--ink-3); font-size: 14px; margin: 10px 0 0; }
+  .board { display: grid; grid-template-columns: repeat(4, minmax(56px, 1fr)); gap: 8px; max-width: 420px; }
+  .board button { min-height: 64px; justify-content: center; font: 32px/1 var(--emoji); border-radius: 14px; padding: 0; }
+  .board button.down { color: transparent; background: linear-gradient(160deg, rgb(var(--key) / .22), rgba(255,255,255,.03)); }
+  .board button.found { opacity: .45; }
+  [hidden] { display: none !important; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (max-width: 520px) { .big { font-size: 72px; } .detail { grid-template-columns: 1fr; } .big { grid-row: auto; } }
+</style>
+<!-- seo -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Emoji dictionary: every emoji, its meaning and code","url":"https://a-to-mind.com/emojis/dictionary/","description":"Every emoji by group and subgroup with its name, keywords, Emoji version, code points and HTML, CSS and JavaScript escapes; similar emoji, an emoji keyboard and a memory game. Works on your device, nothing sent; the link holds the view.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"emoji meaning, emoji dictionary, emoji list, emoji keyboard online, emoji unicode code, emoji categories, emoji memory game","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Emoji dictionary: every emoji, its meaning and code","item":"https://a-to-mind.com/emojis/dictionary/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+<main>
+  <p class="crumbs"><a href="/emojis/">Emoji wall</a>&nbsp;·&nbsp;<a href="/emoji-combos/">Emoji combos</a></p>
+  <h1>Emoji dictionary</h1>
+  <p class="intro">Every emoji of the Unicode list, by group and subgroup: its name, keywords, the Emoji version it came in, its code points and how to write it in HTML, CSS and JavaScript. Copy one, build a message on the emoji keyboard, or play the memory game. It all works on this device: nothing you search or type is sent anywhere, and the link in the address bar holds what you see.</p>
+
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button type="button" role="tab" id="tab-browse" data-view="browse" aria-selected="true" aria-controls="v-browse">Browse and search</button>
+    <button type="button" role="tab" id="tab-keyboard" data-view="keyboard" aria-selected="false" aria-controls="v-keyboard">Emoji keyboard</button>
+    <button type="button" role="tab" id="tab-game" data-view="game" aria-selected="false" aria-controls="v-game">Memory game</button>
+    <button type="button" id="share">Copy link</button>
+  </div>
+
+  <section id="one" class="glass" aria-live="polite" hidden></section>
+
+  <section id="v-browse" role="tabpanel" aria-labelledby="tab-browse">
+    <div class="glass">
+      <label class="sr" for="q">Search emoji by name or keyword</label>
+      <input id="q" type="search" placeholder="Search emoji: cat, heart, party, or paste an emoji" autocomplete="off" enterkeyhint="search">
+      <div class="chips" id="groups" role="group" aria-label="Groups"></div>
+      <p class="note" id="count"></p>
+    </div>
+    <div id="list"></div>
+  </section>
+
+  <section id="v-keyboard" role="tabpanel" aria-labelledby="tab-keyboard" hidden>
+    <div class="glass">
+      <label for="kb">Your message (tap emoji below to add them)</label>
+      <textarea id="kb" spellcheck="false"></textarea>
+      <div class="row"><button type="button" id="kb-copy">Copy message</button><button type="button" id="kb-back">Delete last</button><button type="button" id="kb-clear">Clear</button></div>
+      <p class="note" id="kb-count"></p>
+      <div class="chips" id="kb-groups" role="group" aria-label="Keyboard groups"></div>
+    </div>
+    <div class="glass"><ul class="grid" id="kb-keys" aria-label="Emoji keys"></ul></div>
+  </section>
+
+  <section id="v-game" role="tabpanel" aria-labelledby="tab-game" hidden>
+    <div class="glass">
+      <p class="meta">Turn two cards at a time and find every pair. The board is dealt from the number in the link, so a friend with the same link plays the same board.</p>
+      <div class="row"><button type="button" id="g-new">New board</button><button type="button" data-pairs="6">6 pairs</button><button type="button" data-pairs="8">8 pairs</button><button type="button" data-pairs="12">12 pairs</button></div>
+      <p class="note" id="g-status" aria-live="polite"></p>
+      <div class="board" id="board" role="grid" aria-label="Memory game board"></div>
+    </div>
+  </section>
+
+  <p class="note" id="source"></p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emojis/">Emoji counts</a> <a href="/emoji-combos/">Emoji combos</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+</main>
+<script type="module">
+  import { EMOJI, GROUPS, SOURCE, groupCounts, subgroupsOf, groupIndex, search, similar, recordOf, codepoints, writings, shortcode, stateToHash, stateFromHash, newGame, flip, won, gameSpec } from '/lib/emoji-dict.js';
+  const $ = (id) => document.getElementById(id), esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  let st = stateFromHash(location.hash), game = null;
+  const keep = () => { const h = stateToHash(st); if (location.hash !== h) try { history.replaceState(null, '', location.pathname + location.search + h); } catch (_) {} };
+  const copy = async (text, btn, done = 'Copied') => { let ok = false; try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {} if (btn) { const was = btn.textContent; btn.textContent = ok ? done : 'Select and copy it by hand'; setTimeout(() => { btn.textContent = was; }, 1600); } return ok; };
+  const key = (e) => '<li><button type="button" data-e="' + esc(e.c) + '" aria-label="' + esc(e.n) + '" title="' + esc(e.n) + '">' + e.c + '</button></li>';
+  $('source').textContent = EMOJI.length + ' emoji in ' + GROUPS.length + ' groups, from ' + SOURCE + '. How an emoji looks depends on your device\'s font.';
+
+  // ---- browse and search ----
+  const counts = groupCounts();
+  $('groups').innerHTML = counts.map((c) => '<button type="button" data-g="' + c.key + '">' + esc(c.name) + ' (' + c.count + ')</button>').join('');
+  function drawList() {
+    const g = st.g || (st.q ? '' : GROUPS[0][0]);
+    for (const b of $('groups').querySelectorAll('button')) b.setAttribute('aria-pressed', String(!st.q && b.dataset.g === g));
+    if (st.q) {
+      const found = search(st.q);
+      $('count').textContent = found.length ? found.length + ' emoji found for "' + st.q + '"' : 'No emoji found for "' + st.q + '". Try a shorter word, or paste the emoji itself.';
+      $('list').innerHTML = found.length ? '<div class="glass"><ul class="grid" aria-label="Search results">' + found.map(key).join('') + '</ul></div>' : '';
+      return;
+    }
+    const gi = groupIndex(g), subs = subgroupsOf(gi);
+    $('count').textContent = GROUPS[gi][1] + ': ' + subs.reduce((n, s) => n + s.emoji.length, 0) + ' emoji in ' + subs.length + ' subgroups.';
+    $('list').innerHTML = subs.map((s) => '<div class="glass"><h2 id="sg-' + s.key + '">' + esc(s.name) + ' <span class="meta">(' + s.emoji.length + ')</span></h2><ul class="grid" aria-labelledby="sg-' + s.key + '">' + s.emoji.map(key).join('') + '</ul></div>').join('');
+  }
+  $('groups').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-g]'); if (!b) return; st = { ...st, g: b.dataset.g, q: '' }; $('q').value = ''; drawList(); keep(); });
+  let t = 0; $('q').addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { st = { ...st, q: $('q').value.trim() }; drawList(); keep(); }, 120); });
+
+  // ---- one emoji: its card ----
+  function drawOne() {
+    const e = recordOf(st.e); if (!e) { $('one').hidden = true; return; }
+    const w = writings(e.c), sims = similar(e, 16), grp = GROUPS[e.g][1], sub = subgroupsOf(e.g).find((s) => s.s === e.s);
+    const word = e.n.split(/[\s:]+/).filter((x) => !/^(?:face|with|and|of|the|button|flag)$/.test(x)).pop() || e.n;
+    const rows = [['Code points', codepoints(e.c)], ['Shortcode', shortcode(e)], ['HTML', w.html], ['CSS', w.css], ['JavaScript', w.js], ['UTF-8 bytes', w.utf8], ['UTF-16', w.utf16], ['In a link', w.url]];
+    $('one').innerHTML = '<div class="detail"><div class="big" aria-hidden="true">' + e.c + '</div><h2>' + esc(e.n) + '</h2>'
+      + '<p class="meta">' + esc(grp) + ' › ' + esc(sub ? sub.name : '') + ' · Emoji ' + esc(e.v) + '</p>'
+      + '<p class="meta">Keywords: ' + esc(e.k.join(', ') || 'none listed') + '</p>'
+      + '<div class="row"><button type="button" id="one-copy">Copy ' + e.c + '</button><button type="button" id="one-kb">Add to the keyboard</button><a class="btn" id="one-combos" href="/emoji-combos/?q=' + encodeURIComponent(word) + '">Find combos with it</a><button type="button" id="one-close">Close</button></div>'
+      + '<table aria-label="How to write it"><tbody>' + rows.map(([k, v]) => '<tr><th scope="row">' + k + '</th><td><code>' + esc(v) + '</code></td><td><button type="button" data-copy="' + esc(v) + '" aria-label="Copy ' + k + '">Copy</button></td></tr>').join('') + '</tbody></table>'
+      + (sims.length ? '<div style="grid-column:1/-1"><h2>Similar emoji</h2><ul class="grid">' + sims.map(key).join('') + '</ul></div>' : '') + '</div>';
+    $('one').hidden = false;
+    $('one-copy').addEventListener('click', (ev) => copy(e.c, ev.currentTarget));
+    $('one-kb').addEventListener('click', () => { st = { ...st, k: st.k + e.c }; $('kb').value = st.k; drawKb(); keep(); $('one-kb').textContent = 'Added'; });
+    $('one-close').addEventListener('click', () => { st = { ...st, e: '' }; drawOne(); keep(); });
+    for (const b of $('one').querySelectorAll('button[data-copy]')) b.addEventListener('click', () => copy(b.dataset.copy, b));
+  }
+  // any emoji key opens its card (in the keyboard view it types it instead)
+  document.addEventListener('click', (ev) => {
+    const b = ev.target.closest('button[data-e]'); if (!b) return;
+    if (st.view === 'keyboard' && b.closest('#kb-keys')) { st = { ...st, k: st.k + b.dataset.e }; $('kb').value = st.k; drawKb(); keep(); return; }
+    st = { ...st, e: b.dataset.e }; drawOne(); keep(); $('one').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
+
+  // ---- the keyboard ----
+  let kbGroup = 0;
+  const graphemes = (s) => (typeof Intl.Segmenter === 'function' ? [...new Intl.Segmenter('en', { granularity: 'grapheme' }).segment(String(s))].map((x) => x.segment) : Array.from(String(s))); // one emoji is one character, however many code points
+  $('kb-groups').innerHTML = counts.map((c) => '<button type="button" data-kg="' + c.g + '">' + esc(c.name) + '</button>').join('');
+  function drawKb() {
+    const n = graphemes(st.k).length;
+    $('kb-count').textContent = st.k ? n + ' characters as you see them, ' + st.k.length + ' UTF-16 units.' : 'Empty. The message is kept in the link, not on a server.';
+    for (const b of $('kb-groups').querySelectorAll('button')) b.setAttribute('aria-pressed', String(+b.dataset.kg === kbGroup));
+    if (!$('kb-keys').dataset.g || +$('kb-keys').dataset.g !== kbGroup) { $('kb-keys').dataset.g = kbGroup; $('kb-keys').innerHTML = EMOJI.filter((e) => e.g === kbGroup).map(key).join(''); }
+  }
+  $('kb-groups').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-kg]'); if (b) { kbGroup = +b.dataset.kg; drawKb(); } });
+  $('kb').addEventListener('input', () => { st = { ...st, k: $('kb').value }; drawKb(); keep(); });
+  $('kb-copy').addEventListener('click', (ev) => copy(st.k, ev.currentTarget));
+  $('kb-back').addEventListener('click', () => { const seg = graphemes(st.k); seg.pop(); st = { ...st, k: seg.join('') }; $('kb').value = st.k; drawKb(); keep(); });
+  $('kb-clear').addEventListener('click', () => { st = { ...st, k: '' }; $('kb').value = ''; drawKb(); keep(); });
+
+  // ---- the memory game ----
+  const seedNow = () => (crypto.getRandomValues(new Uint32Array(1))[0] % 1e9) + 1;
+  function startGame(m) { st = { ...st, m }; const s = gameSpec(m); game = newGame(s.seed, s.pairs, s.g); drawGame(); keep(); }
+  function drawGame() {
+    if (!game) { const s = gameSpec(st.m || seedNow() + '.8'); if (!st.m) st = { ...st, m: s.seed + '.' + s.pairs }; game = newGame(s.seed, s.pairs, s.g); }
+    const cols = game.cards.length > 16 ? 6 : 4; $('board').style.gridTemplateColumns = 'repeat(' + cols + ', minmax(48px, 1fr))';
+    $('board').innerHTML = game.cards.map((c, i) => { const up = game.open.includes(i) || game.found.includes(i); return '<button type="button" data-card="' + i + '" class="' + (game.found.includes(i) ? 'found' : up ? '' : 'down') + '" aria-label="' + (up ? esc((recordOf(c) || { n: c }).n) : 'Card ' + (i + 1) + ', face down') + '">' + (up ? c : '?') + '</button>'; }).join('');
+    $('g-status').textContent = won(game) ? 'All ' + game.cards.length / 2 + ' pairs found in ' + game.moves + ' moves. Copy the link to challenge a friend on this board.' : (game.found.length / 2) + ' of ' + game.cards.length / 2 + ' pairs found, ' + game.moves + ' moves.';
+  }
+  $('board').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-card]'); if (!b || !game) return; game = flip(game, +b.dataset.card); drawGame(); });
+  $('g-new').addEventListener('click', () => startGame(seedNow() + '.' + gameSpec(st.m).pairs));
+  for (const b of document.querySelectorAll('button[data-pairs]')) b.addEventListener('click', () => startGame(seedNow() + '.' + b.dataset.pairs));
+
+  // ---- the views and the link ----
+  function show(view) {
+    st = { ...st, view };
+    for (const v of ['browse', 'keyboard', 'game']) { $('v-' + v).hidden = v !== view; $('tab-' + v).setAttribute('aria-selected', String(v === view)); }
+    if (view === 'keyboard') drawKb(); if (view === 'game') drawGame();
+    keep();
+  }
+  for (const b of document.querySelectorAll('[role=tab]')) b.addEventListener('click', () => show(b.dataset.view));
+  $('share').addEventListener('click', (ev) => { keep(); copy(location.href, ev.currentTarget, 'Link copied'); });
+  function fromLink() { st = stateFromHash(location.hash); game = null; $('q').value = st.q; $('kb').value = st.k; drawList(); drawOne(); show(st.view); }
+  addEventListener('hashchange', () => { if (location.hash !== stateToHash(st)) fromLink(); });
+  fromLink();
+
+  // the "Use with" row (lib/toolkit.js): the emoji or the message carried to the pages that take text
+  import('/lib/toolkit.js').then((m) => m.mountRelated($('related'), '/emojis/dictionary/', [
+    { label: 'Count the message', href: () => (st.k ? '/word-count/?t=' + encodeURIComponent(st.k) : null) },
+    { label: 'Encode it in Base64', href: () => { const t = st.k || st.e; return t ? '/base64/?t=' + encodeURIComponent(t) : null; } },
+    { label: 'Combos with it', href: () => { const e = recordOf(st.e); return e ? '/emoji-combos/?q=' + encodeURIComponent(e.n.split(/[\s:]+/).pop()) : st.q ? '/emoji-combos/?q=' + encodeURIComponent(st.q) : null; } },
+  ])).catch(() => {});
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

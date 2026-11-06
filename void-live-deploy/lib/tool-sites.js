@@ -78,7 +78,24 @@ export const CALCULATOR_SITES = Object.freeze([
     links: [] },
 ]);
 
-export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...JOB_SITES, ...SELF_SITES, ...CALCULATOR_SITES]);
+// the tower targets given a page by hand (asked by Verse, 2026-10-29: "Add a lib/tool-sites.js row and LANE_PAGES entry for any new tower"): a
+// target of Versus (tower.target.json) or a site keyed by its host in lib/tower.js LANE_PAGES has a row here, in SELF_SITES, or in MODE_SITES
+// below; tools/tower-targets.test.mjs fails one that has none, so a new tower comes with its row
+export const TARGET_SITES = Object.freeze([
+  { path: '/emojis/dictionary/', card: 'emoji grinning face', lane: 'emoji combos: emojigraph.org', name: 'Emoji dictionary: every emoji, its meaning and code', h1: 'Emoji dictionary', tools: ['browse', 'search', 'codes', 'keyboard', 'game'],
+    intro: 'Every emoji of the Unicode list, by group and subgroup: its name, keywords, the Emoji version it came in, its code points and how to write it in HTML, CSS and JavaScript. Copy one, build a message on the emoji keyboard, or play the memory game. Nothing is sent anywhere.',
+    does: 'Every emoji by group and subgroup with its name, keywords, Emoji version, code points and HTML, CSS and JavaScript escapes; similar emoji, an emoji keyboard and a memory game. Works on your device, nothing sent; the link holds the view.',
+    asks: ['emoji meaning', 'emoji dictionary', 'emoji list', 'emoji keyboard online', 'emoji unicode code', 'emoji categories', 'emoji memory game'], links: [] },
+]);
+// a target whose job is a mode of a page that already exists (owner, 2026-11-03: "always combine pages when possible"): the row names the page and
+// its mode, never a second page (so it is not in SITE_PAGES: the page has its own row)
+export const MODE_SITES = Object.freeze([
+  { path: '/calculator/', page: '/calculator/?mode=vat', mode: 'vat', lane: 'ndscalc.ru', name: 'VAT calculator: add VAT or take it out, at every Russian rate',
+    does: 'Add VAT to a net sum or take it out of a total at 22%, 20%, 10%, 7%, 5% or 0%, to the kopeck, with the working and the sum in words. Worked out on your device; the link holds the sum, the rate and the mode.',
+    asks: ['vat calculator', 'add vat 22%', 'take vat out of a total', 'russian vat calculator'] },
+]);
+
+export const SITE_PAGES = Object.freeze([...PDF_SITES, ...KANBAN_SITES, ...FLIGHT_SITES, ...JOB_SITES, ...SELF_SITES, ...CALCULATOR_SITES, ...TARGET_SITES]);
 
 // ---- the asks that reach these pages (skills/pdf-tools.js, skills/kanban-board.js and the ask bar in lib/toolkit.js read them) ----
 const T = String.raw`(?:pdfs?|\.pdf)`, THE = String.raw`(?:(?:a|an|my|the|this|these|some|two|several|multiple|a few)\s+)*`;
