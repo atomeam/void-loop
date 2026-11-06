@@ -386,6 +386,7 @@
  "walls": "Wallpaper rolls and drywall sheets for a room or one wall, next to the paint and flooring answers",
  "wants": "\"what do you want built now\", \"name all your unbuilt asks\", \"your backlog\": one card, \"What I want built\", read from Verse's own records and never from a model",
  "watch": "\"watch this for me\": one thing Verse can already fetch and a condition: \"tell me when it's below 0 in Oslo\", \"let me know if https://… says sold out\"",
+ "we-own": "Package \"we own the heavy lifting\" for a business idea or system",
  "weather": "The weather now and the forecast for a place, kept current while the card is up",
  "web4": "The four steps of the web, in Verse's plain words: Web 1 read, Web 2 write and share, Web 3 own, Web 4 ask and it appears",
  "wheel": "\"spin the wheel\", \"wheel of names\", \"spin a wheel with pizza, tacos and sushi\"",

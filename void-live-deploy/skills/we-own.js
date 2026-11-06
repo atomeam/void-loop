@@ -1,5 +1,5 @@
 /**
- * we-own skill — package "we own the heavy lifting" for a business idea or system.
+ * we-own skill: package "we own the heavy lifting" for a business idea or system.
  * Clarifies ownership so the client keeps the outcome and does less work:
  * what the client owns (decisions, approvals, outcome), what A-to-Mind owns
  * (capture, design, build, connect, test, monitor, maintain), handoff points.
@@ -56,23 +56,17 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const subject = extractSubject(text);
   const own = ownershipOf(subject);
-  const el = showPage((p) => { p.innerHTML = '<h2>Ownership handoff</h2><div class="sub">packaging…</div>'; });
-  const html = [
-    `<h2>We own the heavy lifting: ${esc(own.subject)}</h2>`,
-    `<p class="sub">Client keeps the outcome. We take the systems.</p>`,
-    `<h3>What the client owns</h3><ul>`,
-    ...own.clientOwns.map(i => `<li>${esc(i)}</li>`),
-    `</ul>`,
-    `<h3>What we own</h3><ul>`,
-    ...own.weOwn.map(i => `<li>${esc(i)}</li>`),
-    `</ul>`,
-    `<h3>Handoff package</h3><ul>`,
-    ...own.handoff.map(i => `<li>${esc(i)}</li>`),
-    `</ul>`,
-    `<p><strong>We own the heavy lifting.</strong> You keep the result and do less.</p>`,
-    `<div class="src">Source: A-to-Mind delivery practice</div>`
-  ].join('');
-  el.innerHTML = html;
+  const items = (list) => list.map((i) => '<li>' + esc(i) + '</li>').join('');
+  // one page, every piece of text escaped where it goes in
+  showPage((p) => {
+    p.innerHTML = '<h2>We own the heavy lifting: ' + esc(own.subject) + '</h2>'
+      + '<p class="sub">Client keeps the outcome. We take the systems.</p>'
+      + '<h3>What the client owns</h3><ul>' + items(own.clientOwns) + '</ul>'
+      + '<h3>What we own</h3><ul>' + items(own.weOwn) + '</ul>'
+      + '<h3>Handoff package</h3><ul>' + items(own.handoff) + '</ul>'
+      + '<p><strong>We own the heavy lifting.</strong> You keep the result and do less.</p>'
+      + '<div class="src">Source: A-to-Mind delivery practice</div>';
+  });
   return 'we-own';
 }
 
