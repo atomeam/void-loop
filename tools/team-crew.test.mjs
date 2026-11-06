@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as C from '../void-live-deploy/lib/team-crew.js';
 import * as T from '../void-live-deploy/lib/team.js';
-import { crewTick, crewView } from '../void-live-deploy/lib/team-crew-run.js';
+import { crewTick, crewView, foldIdeaWants } from '../void-live-deploy/lib/team-crew-run.js';
 import * as API from '../void-live-deploy/functions/api/team.js';
 
 function d1() {
@@ -156,4 +156,45 @@ test('the owner removes a crew member and it stays removed; a crew member is nev
   assert.ok(!out.crew.includes('Growth')); assert.equal(rows(env, "SELECT off FROM void_team_agents WHERE name = 'Growth'")[0].off, 1);
   assert.ok(rows(env, 'SELECT job FROM void_team_agents').every((a) => a.job === null), 'no crew member holds a queue job');
   assert.equal(await API.handIdle(env, T0 + 7 * 3600e3), 0);
+});
+
+test('a crew card says when the member runs next, not a bare idle (owner, 2026-11-06: "why are all of verses own team idle ?")', async () => {
+  const M = 60e3;
+  assert.equal(T.crewNext(T0 + 12 * M, T0), 'next run in 12 min');
+  assert.equal(T.crewNext(T0 + 179 * M, T0), 'next run in 2 h 59 min');
+  assert.equal(T.crewNext(T0 + 120 * M, T0), 'next run in 2 h');
+  assert.equal(T.crewNext(T0 - 5 * M, T0), 'next run due now', 'its turn came: the next knock runs it');
+  assert.equal(T.crewNext(T0 - 130 * M, T0), 'next run late by 2 h 10 min (the clock missed)', 'a missed clock says so');
+  assert.equal(T.crewNext(null, T0), 'runs on the next clock knock', 'before the first run');
+  // the workspace and /api/crew carry each member's turn
+  const env = world();
+  await crewTick(env, T0);
+  const ags = rows(env, 'SELECT * FROM void_team_agents');
+  const turns = await API.crewTurns(env, ags);
+  const scout = C.CREW.find((b) => b.slug === 'tower-scout'), watch = C.CREW.find((b) => b.slug === 'status-watch');
+  assert.equal(turns[scout.id], T0 + scout.every * M - M);
+  assert.equal(turns[watch.id], T0 + watch.every * M - M);
+  const view = await crewView(env, T0 + M);
+  assert.equal(view.crew.find((c) => c.name === 'StatusWatch').next, T0 + watch.every * M - M);
+  assert.match(T.crewNext(view.crew.find((c) => c.name === 'TowerScout').next, T0 + M), /^next run in 3 h 58 min$/);
+});
+
+test('a TV or radio idea is built once, by the blueprint lane: the want adopts the lane\'s tv: job, and an older want with its own job is folded into it', async () => {
+  const idea = { h: 'abc123def456', topic: 'Art provenance tracker', note: 'Track who owned a painting.', show: 'Antiques Roadshow', value_cents: 900 };
+  const w = C.wantsOf({ ideas: [idea] }).find((x) => x.lane === 'idea');
+  assert.equal(w.target, 'tv:art-provenance-tracker'); assert.equal(C.jobOf(w).target, 'tv:art-provenance-tracker', 'filed in the blueprint lane, never as a feature: job beside it');
+  const env = world(); await crewTick(env, T0);
+  // an older want (filed before this) whose own feature: job waits beside the lane's tv: job for the same idea
+  const ins = (id, target, state) => env.DB.raw.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').run(id, 'build it', target, state, '', '2026-11-04T00:00:00Z', '2026-11-04T00:00:00Z');
+  ins('want-idea-old1', 'feature:want-idea-old1', 'queued'); ins('tv123', 'tv:art-provenance-tracker', 'queued');
+  ins('want-idea-old2', 'feature:want-idea-old2', 'queued');
+  const want = (key, title, job) => env.DB.raw.prepare("INSERT INTO void_team_wants (key, lane, kind, title, label, metric, better, baseline, latest, cite, private, job, thread, state, filed, checked) VALUES (?, 'idea', 'feature', ?, 'the build is live', ?, 'up', 0, 0, '[]', 0, ?, 0, 'open', ?, ?)").run(key, title, 'joblive:' + job, job, T0, T0);
+  want('idea-old1', 'Build "Art provenance tracker" onto a-to-mind.com, linked to a paid product', 'want-idea-old1');
+  want('idea-old2', 'Build "HVAC remote management" onto a-to-mind.com, linked to a paid product', 'want-idea-old2');
+  assert.deepEqual((await foldIdeaWants(env, T0 + 60e3)).sort(), ['idea-old1', 'idea-old2']);
+  const q = (id) => rows(env, 'SELECT target, state, note FROM void_queue WHERE id = ?', id)[0], wk = (k) => rows(env, 'SELECT job, metric FROM void_team_wants WHERE key = ?', k)[0];
+  assert.equal(q('want-idea-old1').state, 'set aside'); assert.match(q('want-idea-old1').note, /one build, not two: .*tv:art-provenance-tracker \(job tv123\)/);
+  assert.deepEqual({ ...wk('idea-old1') }, { job: 'tv123', metric: 'joblive:tv123' }, 'the want now closes when the lane\'s build is live');
+  assert.deepEqual([q('want-idea-old2').target, q('want-idea-old2').state], ['tv:hvac-remote-management', 'queued'], 'no lane job yet: its own job moves into the lane');
+  assert.deepEqual(await foldIdeaWants(env, T0 + 120e3), [], 'folded once');
 });

@@ -1,13 +1,13 @@
 {
- "at": "2026-11-05T13:14Z",
+ "at": "2026-11-06T12:58Z",
  "source": "verse",
  "note": "Verse's own count (/api/visit, a beacon per page load on the stage); Cloudflare unreadable: CLOUDFLARE_API_TOKEN: cannot look up the zone (HTTP 200; needs Zone > Zone > Read or CLOUDFLARE_ZONE_ID)",
  "week": {
-  "since": "2026-10-30",
+  "since": "2026-10-31",
   "unique": true,
-  "people": 99,
-  "views": 476,
-  "ours": 19471,
+  "people": 111,
+  "views": 490,
+  "ours": 20852,
   "bots": 2
  },
  "days": [
@@ -93,17 +93,25 @@
   },
   {
    "day": "2026-11-05",
-   "all": 1391,
-   "people": 208,
-   "ours": 1183,
+   "all": 4154,
+   "people": 262,
+   "ours": 3892,
    "bots": 0,
-   "uniquePeople": 17
+   "uniquePeople": 22
+  },
+  {
+   "day": "2026-11-06",
+   "all": 2485,
+   "people": 59,
+   "ours": 2426,
+   "bots": 0,
+   "uniquePeople": 34
   }
  ],
  "pages": [
   {
    "k": "/",
-   "n": 329
+   "n": 391
   },
   {
    "k": "/lab/",
@@ -111,11 +119,15 @@
   },
   {
    "k": "/team/",
-   "n": 47
+   "n": 62
+  },
+  {
+   "k": "/tools/",
+   "n": 23
   },
   {
    "k": "/brain/",
-   "n": 17
+   "n": 20
   },
   {
    "k": "/conquered/",
@@ -136,10 +148,6 @@
   {
    "k": "/music/",
    "n": 8
-  },
-  {
-   "k": "/emojis/",
-   "n": 7
   }
  ],
  "referrers": [
@@ -149,21 +157,29 @@
   },
   {
    "k": "bing.com",
-   "n": 21
+   "n": 23
   },
   {
    "k": "github.com",
-   "n": 13
+   "n": 19
   }
  ],
  "countries": [
   {
    "k": "US",
-   "n": 671
+   "n": 764
+  },
+  {
+   "k": "TR",
+   "n": 11
   },
   {
    "k": "BR",
    "n": 10
+  },
+  {
+   "k": "NL",
+   "n": 5
   },
   {
    "k": "CN",
@@ -171,10 +187,10 @@
   },
   {
    "k": "DE",
-   "n": 2
+   "n": 3
   },
   {
-   "k": "NL",
+   "k": "CA",
    "n": 2
   },
   {
@@ -182,5 +198,5 @@
    "n": 2
   }
  ],
- "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
+ "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)"
 }

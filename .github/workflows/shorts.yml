@@ -6,11 +6,12 @@ name: Verse shorts
 
 on:
   schedule:
-    - cron: '23 15 * * *' # daily, about 10 AM ET
+    - cron: '23 15 * * *' # daily, about 10 AM ET (GitHub drops many schedule events here; the conductor starts it once 15:00 UTC has passed with no run today: tools/conductor-core.mjs DAILY)
   workflow_dispatch:
 
 permissions:
-  contents: write # the loop log domains/shorts.loop.json, pushed on a helper/* branch (automerges)
+  contents: write # the loop log domains/shorts.loop.json, pushed to main
+  actions: write # to start the deploy after that push (a push with the Actions token starts no workflow)
 
 concurrency:
   group: shorts
@@ -68,10 +69,32 @@ jobs:
           name: verse-shorts
           path: media/shorts/
           retention-days: 14
-      - name: Keep the loop log
+      - name: A film was made (a crash is red, not a quiet green)
+        # 2026-11-04 and 11-05: render() crashed before filming (no media/shorts) and the run still showed green, so no film was made
+        # for two days and nobody saw it. A gate fail is fine (kept as the artifact); no film at all is a failure.
+        run: |
+          n=$(ls media/shorts/*.mp4 2>/dev/null | wc -l)
+          echo "films made today: $n" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$n" -gt 0 ] || { echo "::error title=No film made::the champion and the challenger both failed before a film existed (see the Film step)"; exit 1; }
+      # 2026-11-06: the log went to helper/shorts-loop-<day> with the Actions token, which starts no workflow, so no pull request was
+      # ever opened and domains/shorts.loop.json on main stayed empty since #2138. Each day planned the same first trial from an empty
+      # log and judged nothing, so the films could not improve. A second run on the same day was refused outright (the branch existed)
+      # and printed "no change". The log now goes straight to main (only this job writes it, one run at a time), and the deploy is
+      # started so /films/ and /progress/ read it.
+      - name: Keep the loop log on main
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          git add domains/shorts.loop.json
+          git diff --cached --quiet && { echo "the loop log did not change"; exit 0; }
           git config user.name "Verse"; git config user.email "verse@a-to-mind.com"
-          b="helper/shorts-loop-$(date -u +%Y%m%d)"; git checkout -b "$b"; git add domains/shorts.loop.json
-          git commit -m "Shorts loop: today's trial and verdicts" && git push origin "$b" || echo "no change"
+          git commit -q -m "Shorts loop: today's trial and verdicts"
+          for i in 1 2 3 4; do
+            if git push -q origin HEAD:main; then
+              gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
+              exit 0
+            fi
+            sleep $((2 ** i)); git pull -q --rebase --autostash origin main
+          done
+          echo "::error title=Loop log not kept::main refused the loop log four times"; exit 1

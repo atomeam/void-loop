@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; cursor:crosshair; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; font-size:13px; max-width:280px; }
+button { margin:4px 0; padding:6px 10px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#status { font-size:11px; color:#8af; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F605: WebXR Hand / Pointer MLP-Driven Position-Based Dynamics Mind Swarm · Verse lab</title>
+<meta name="description" content="True hybrid embodiment: WebXR hand joints (or pointer fallback) serve as causal input to a tiny local MLP that modulates rest lengths and stiffness of distance">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F605: WebXR Hand / Pointer MLP-Driven Position-Based Dynamics Mind Swarm · Verse lab">
+<meta property="og:description" content="True hybrid embodiment: WebXR hand joints (or pointer fallback) serve as causal input to a tiny local MLP that modulates rest lengths and stiffness of distance">
+<meta property="og:url" content="https://a-to-mind.com/lab/f605-webxr-hand-mlp-pbd-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f605-webxr-hand-mlp-pbd-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>F605 PBD Mind Swarm</strong></div>
+  <div>Hand/Pointer → MLP → Constraints</div>
+  <button id="seal">Seal Genome (hash)</button>
+  <button id="reset">Reset Weights</button>
+  <div id="status">Pointer mode. Move mouse to drive attractor.</div>
+  <div id="hash" style="word-break:break-all;font-size:10px;color:#fa8;"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F605: WebXR Hand / Pointer MLP-Driven Position-Based Dynamics Mind Swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

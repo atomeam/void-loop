@@ -89,3 +89,13 @@ test('baggage-live: a refusal alone warns, a figure gone is red, nothing answeri
   const none = Object.fromEntries(SOURCES.map(([n]) => [n, { status: 0, body: '', ms: 0, error: 'ENOTFOUND' }]));
   assert.equal(exitCodeOf(recordOf({ pages: none, at: AT })), 3);
 });
+
+test('baggage: the card\'s own self-test (asked by Verse: "Address the least-checked skills: video-gen and baggage"): every row, every source and figures that agree', async () => {
+  const { suite, cardHtml, default: sk } = await import('../void-live-deploy/skills/baggage.js');
+  assert.deepEqual(suite(), { ok: true, got: '' });
+  assert.equal(typeof sk.suite, 'function', 'tools/skills-check.mjs runs it every day');
+  const h = cardHtml((s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]));
+  for (const [a, b] of ROWS) { assert.ok(h.includes(a), a); assert.ok(h.includes(b), b); }
+  for (const [, u] of SOURCES) assert.ok(h.includes('href="' + u + '"'), u);
+  assert.ok(sk.match('checked bag weight limit') && !sk.match('my luggage is lost'));
+});

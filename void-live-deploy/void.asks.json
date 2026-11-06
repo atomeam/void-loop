@@ -2282,6 +2282,26 @@
       "words": "Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions.",
       "ledgerAt": "2026-11-05T08:40:00Z",
       "why": "built: lists run 13: 'draw yourself', 'what do you look like' and 'paint a self portrait' put Verse's own self-portrait on the stage instead of a text answer; 'who are you' stays the identity answer (skills/cartoon.js, tools/ca (linked by tools/asks-link.mjs, shared words: update, self, skill, rout, identity, bas, prob, trigg, portrait, instead, question)"
+    },
+    {
+      "words": "Automate the extraction of failing GitHub Action job names and error logs for better debugging.",
+      "ledgerAt": "2026-11-06T07:03:33Z",
+      "why": "built: Verse reads its own red GitHub Actions runs by itself (asked by Verse): when a workflow that tests main fails, actions-failures.yml reads the run with its own GITHUB_TOKEN and keeps each failed job, the step that failed, (linked by tools/asks-link.mjs, shared words: automate, extraction, fail, github, action, job, nam, err, log)"
+    },
+    {
+      "words": "Automate the extraction of failing GitHub Action job names and error logs.",
+      "ledgerAt": "2026-11-06T07:03:33Z",
+      "why": "built: Verse reads its own red GitHub Actions runs by itself (asked by Verse): when a workflow that tests main fails, actions-failures.yml reads the run with its own GITHUB_TOKEN and keeps each failed job, the step that failed, (linked by tools/asks-link.mjs, shared words: automate, extraction, fail, github, action, job, nam, err, log)"
+    },
+    {
+      "words": "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5.",
+      "ledgerAt": "2026-11-06T07:03:33Z",
+      "why": "built: Verse reads its own red GitHub Actions runs by itself (asked by Verse): when a workflow that tests main fails, actions-failures.yml reads the run with its own GITHUB_TOKEN and keeps each failed job, the step that failed, (linked by tools/asks-link.mjs, shared words: automate, extraction, fail, github, action, job, nam, err, log, commit, 814032d5)"
+    },
+    {
+      "words": "Automate the extraction of failing GitHub Action job names and error logs for commit 814032d5.",
+      "ledgerAt": "2026-11-06T07:03:33Z",
+      "why": "built: Verse reads its own red GitHub Actions runs by itself (asked by Verse): when a workflow that tests main fails, actions-failures.yml reads the run with its own GITHUB_TOKEN and keeps each failed job, the step that failed, (linked by tools/asks-link.mjs, shared words: automate, extraction, fail, github, action, job, nam, err, log, commit, 814032d5)"
     }
   ],
   "held": [
@@ -2293,121 +2313,155 @@
     }
   ],
   "totals": {
-    "asked": 259,
-    "built": 243,
-    "through": "2026-11-05T07:30:00Z",
+    "asked": 257,
+    "built": 249,
+    "through": "2026-11-06T00:06:00Z",
     "open": [
       {
         "ask": "Absorb every repository on the account into the core code",
         "at": "2026-10-28T22:29:00Z",
         "kind": "daily",
         "small": false,
-        "times": 6
+        "times": 6,
+        "ids": [
+          "ask-20261028-2055-1",
+          "ask-20261028-2100-1",
+          "ask-20261028-2101-1",
+          "ask-20261028-2148-1",
+          "ask-20261028-2155-1",
+          "ask-20261028-2059-1",
+          "ask-20261028-2145-1",
+          "ask-20261028-2202-1",
+          "ask-20261028-2203-1",
+          "ask-20261028-2205-2",
+          "ask-20261028-2223-2",
+          "ask-20261028-2229-2"
+        ]
       },
       {
         "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
         "at": "2026-10-31T08:49:00Z",
         "kind": "build",
         "small": false,
-        "times": 7
+        "times": 7,
+        "ids": [
+          "ask-20261030-1921-1",
+          "ask-20261030-1940-1",
+          "ask-20261030-1949-1",
+          "ask-20261030-1950-1",
+          "ask-20261030-2212-1",
+          "ask-20261030-1844-1",
+          "ask-20261031-0054-1",
+          "ask-20261031-0124-1",
+          "ask-20261031-0147-1",
+          "ask-20261031-0154-1",
+          "ask-20261031-0705-1",
+          "ask-20261031-0849-1"
+        ]
       },
       {
         "ask": "Address the least-checked skills: video-gen and baggage.",
         "at": "2026-10-31T21:54:00Z",
         "kind": "build",
         "small": true,
-        "times": 1
+        "times": 1,
+        "ids": [
+          "ask-20261031-0705-3",
+          "ask-20261031-0849-3",
+          "ask-20261031-1032-3",
+          "ask-20261031-1310-3",
+          "ask-20261031-1324-3",
+          "ask-20261031-1530-3",
+          "ask-20261031-1532-3",
+          "ask-20261031-1538-3",
+          "ask-20261031-1554-3",
+          "ask-20261031-1559-3",
+          "ask-20261031-2124-3",
+          "ask-20261031-2154-3"
+        ]
       },
       {
         "ask": "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru.",
-        "at": "2026-10-31T13:10:00Z",
+        "at": "2026-10-31T15:32:00Z",
         "kind": "build",
         "small": false,
-        "times": 1
+        "times": 2,
+        "ids": [
+          "ask-20261031-1032-1",
+          "ask-20261031-1310-1",
+          "ask-20261031-1532-1"
+        ]
       },
       {
         "ask": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
         "at": "2026-11-03T02:18:00Z",
         "kind": "build",
         "small": false,
-        "times": 5
-      },
-      {
-        "ask": "Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code.",
-        "at": "2026-11-01T02:23:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 1
-      },
-      {
-        "ask": "Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed.",
-        "at": "2026-11-01T19:30:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 1
-      },
-      {
-        "ask": "Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs.",
-        "at": "2026-11-01T22:43:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 1
-      },
-      {
-        "ask": "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests.",
-        "at": "2026-11-05T07:30:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 1
+        "times": 4,
+        "ids": [
+          "ask-20261102-0336-1",
+          "ask-20261102-1244-1",
+          "ask-20261102-1639-1",
+          "ask-20261102-1643-1",
+          "ask-20261102-1943-1",
+          "ask-20261102-1944-1",
+          "ask-20261103-0131-1",
+          "ask-20261103-0211-1",
+          "ask-20261103-0218-1",
+          "ask-20261031-1538-1",
+          "ask-20261031-1554-1",
+          "ask-20261031-1559-1"
+        ]
       },
       {
         "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
-        "at": "2026-11-03T23:57:00Z",
+        "at": "2026-11-05T23:57:00Z",
+        "kind": "build",
+        "small": true,
+        "times": 3,
+        "ids": [
+          "ask-20261105-1528-2",
+          "ask-20261105-1530-2",
+          "ask-20261105-1530-3",
+          "ask-20261105-1534-3",
+          "ask-20261105-1537-3",
+          "ask-20261105-1540-3",
+          "ask-20261105-1548-3",
+          "ask-20261105-1555-3",
+          "ask-20261105-1817-3",
+          "ask-20261105-1820-3",
+          "ask-20261105-2353-3",
+          "ask-20261105-2357-3"
+        ]
+      },
+      {
+        "ask": "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures.",
+        "at": "2026-11-06T00:06:00Z",
         "kind": "daily",
-        "small": false,
-        "times": 1
+        "small": true,
+        "times": 5,
+        "ids": [
+          "ask-20261105-1537-1",
+          "ask-20261105-1540-1",
+          "ask-20261105-1548-1",
+          "ask-20261105-1555-1",
+          "ask-20261105-1817-1",
+          "ask-20261105-1820-1",
+          "ask-20261105-2353-1",
+          "ask-20261105-2357-1",
+          "ask-20261106-0006-2",
+          "ask-20261105-1509-1",
+          "ask-20261105-1524-1",
+          "ask-20261105-1528-1"
+        ]
       },
       {
-        "ask": "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.",
-        "at": "2026-11-05T07:30:00Z",
-        "kind": "build",
+        "ask": "Fix the timers exam to correctly handle duration commands and increments.",
         "small": false,
-        "times": 1
-      },
-      {
-        "ask": "Fix the images exam to handle drawing, displaying specific URLs, and generating pictures.",
-        "at": "2026-11-04T16:59:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 1
-      },
-      {
-        "ask": "Fix the images exam to handle drawing commands, image URL rendering, and picture generation.",
-        "at": "2026-11-04T20:17:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 1
-      },
-      {
-        "ask": "Fix the prices exam by solving failures in ethereum and currency conversion queries.",
-        "at": "2026-11-05T00:18:00Z",
-        "kind": "daily",
-        "small": false,
-        "times": 1
-      },
-      {
-        "ask": "Implement a clear, useful answer for 'what can you do' for visitors.",
-        "at": "2026-11-04T20:54:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 1
-      },
-      {
-        "ask": "Fix the images exam failures by improving visual processing and image generation skills.",
-        "at": "2026-11-05T07:30:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 2
+        "times": 1,
+        "ids": [
+          "ask-20261105-1530-1"
+        ]
       }
     ]
   }

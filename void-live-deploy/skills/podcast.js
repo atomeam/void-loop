@@ -1,5 +1,5 @@
 /**
- * podcast skill - Verse Out Loud, Verse's own weekly podcast (owner, 2026-10-21: "Verse should make its own podcast").
+ * podcast skill - Verse Out Loud, Verse's own daily podcast (owner, 2026-10-21: "Verse should make its own podcast").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * The episodes are made by tools/podcast.mjs from the public record only (growth ledger, proven asks, Verse's own daily readout,
  * the incident log) and voiced with Piper, an open-source voice that runs on the CI machine (no account, no cost). The card plays the
@@ -26,9 +26,10 @@ export const wantsPodcast = (lower) => { const t = norm(lower); return RES.some(
 export const episodeAsked = (lower) => { const m = norm(lower).match(/episode\s+(\d{1,3})$/); return m ? +m[1] : 0; };
 const mmss = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
 
-/** the card's HTML for one episode. Pure (esc passed in). */
-export function cardHtml(ep, all, esc) {
-  const url = '/podcast/' + ep.file;
+/** the card's HTML for one episode. Pure (esc passed in). origin makes the audio and download addresses whole (https://a-to-mind.com/podcast/...), so a
+ * player, a reader or the outcome exam that copies the address off the card gets one that works anywhere, not a path. */
+export function cardHtml(ep, all, esc, origin = '') {
+  const url = String(origin || '').replace(/\/+$/, '') + '/podcast/' + ep.file;
   const lines = (ep.lines || []).map((l, i) => '<p class="vpod-line" data-i="' + i + '"' + (l.t != null ? ' data-t="' + l.t + '"' : '') + ' style="margin:.5em 0;white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.45;cursor:' + (l.t != null ? 'pointer' : 'auto') + '">'
     + (l.t != null ? '<span class="sub" style="font-variant-numeric:tabular-nums;margin-right:.4em">' + mmss(l.t) + '</span>' : '') + '<b>' + esc(l.who) + ':</b> ' + esc(l.text) + '</p>').join('');
   const others = all.filter((e) => e.n !== ep.n).slice(-5).reverse().map((e) => '<li><a href="#" data-ep="' + e.n + '">' + esc(e.title) + '</a></li>').join('');
@@ -43,14 +44,27 @@ export function cardHtml(ep, all, esc) {
     + '<div class="src" style="white-space:normal">Source: Verse\'s growth ledger, proven asks, daily readout and incident log, read aloud by tools/podcast.mjs with Piper voices. Nothing in it is made up.</div></div>';
 }
 
+/** where the show was found: Apple's directory, or fyyd.de when Apple did not answer (/api/podcasts says which). Pure. */
+export function sourceLine(source) {
+  const dir = source === 'fyyd'
+    ? '<a href="https://fyyd.de/" target="_blank" rel="noopener">fyyd.de</a>, an open podcast directory (Apple’s did not answer just now)'
+    : '<a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple’s podcast directory</a>';
+  return 'Source: the show’s RSS, found through ' + dir + '. Verse does not rehost the episode.';
+}
 const escH = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 async function playShow(text, api) {
   const asked = latestEpisodeOf(text); if (!asked) return false;
   const { showPage } = api;
   const el = showPage((p) => { p.dataset.cardKind = 'Podcast'; p.innerHTML = '<h2>Podcast</h2><p class="sub">Finding the latest episode of ' + escH(asked.show) + '…</p>'; });
-  let ep = null, show = null;
+  let ep = null, show = null, found = null, one = null;
   try {
-    const found = await fetch('/api/podcasts?q=' + encodeURIComponent(asked.show)).then((r) => r.json());
+    // one ask first (/api/podcasts?latest=: the directory, the show and the newest episode together, cached on the edge); the older two-step
+    // path (search, then the whole feed) runs only when that ask itself could not be read
+    one = await fetch('/api/podcasts?latest=' + encodeURIComponent(asked.show)).then((r) => r.json()).catch(() => null);
+    if (one && one.ok && one.episode) { ep = one.episode; show = one.show; found = one; }
+  } catch (_) {}
+  if (!ep && !(one && one.ok === false)) try {
+    found = await fetch('/api/podcasts?q=' + encodeURIComponent(asked.show)).then((r) => r.json());
     show = pickShow(found && found.shows, asked.show);
     if (show) {
       const feed = await fetch('/api/podcasts?feed=' + encodeURIComponent(show.feed)).then((r) => r.json());
@@ -67,9 +81,9 @@ async function playShow(text, api) {
   el.innerHTML = '<h2>Podcast</h2>'
     + '<p class="hear-title" style="font-size:1.1em;margin:0 0 2px;overflow-wrap:anywhere"><b>' + escH(ep.title) + '</b></p>'
     + '<p class="hear-artist" style="margin:0 0 8px">' + escH(show.title) + (show.author ? ' · ' + escH(show.author) : '') + '</p>'
-    + '<audio class="hear-audio" controls preload="metadata" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
+    + '<audio class="hear-audio" controls preload="auto" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
     + '<p><button type="button" class="hear-play">Play</button></p>'
-    + '<div class="src">Source: the show’s RSS, found through <a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple’s podcast directory</a>. Verse does not rehost the episode.</div>';
+    + '<div class="src">' + sourceLine(found && found.source) + '</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
   if (btn && audio) btn.addEventListener('click', () => { audio.play().catch(() => {}); });
   return true;
@@ -81,10 +95,10 @@ async function run(text, api) {
   let all = [];
   try { all = (await fetch('/podcast/episodes.json', { cache: 'no-cache' }).then((r) => r.json())).episodes || []; } catch (_) {}
   if (api._pageStill && !api._pageStill(el)) return 'podcast';
-  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the weekly podcast workflow.</p>'; return 'podcast'; }
+  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the daily podcast workflow.</p>'; return 'podcast'; }
   const show = (n) => {
     const ep = all.find((e) => e.n === n) || all[all.length - 1];
-    el.innerHTML = cardHtml(ep, all, esc);
+    el.innerHTML = cardHtml(ep, all, esc, location.origin);
     const audio = el.querySelector('.vpod-audio'), link = location.origin + '/podcast/?ep=' + ep.n;
     const share = async (u, title) => { try { if (navigator.share) { await navigator.share({ title, url: u }); return; } } catch (_) { return; } try { await navigator.clipboard.writeText(u); api.toast ? api.toast('Link copied') : 0; } catch (_) {} };
     el.querySelector('[data-act="share"]').onclick = () => share(link, 'Verse Out Loud: ' + ep.title);

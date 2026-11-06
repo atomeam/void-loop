@@ -12,7 +12,7 @@ import { isIt } from '../void-live-deploy/skills/is-it.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fixPages = JSON.parse(readFileSync(resolve(root, 'tools/fix-pages.json'), 'utf8'));
-const lab = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/lab/catalog.json'), 'utf8')).filter((e) => e.status !== 'broken').map((e) => e.slug).sort();
+const lab = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/lab/catalog.json'), 'utf8')).filter((e) => e.status !== 'broken' && e.grade !== 'toy').map((e) => e.slug).sort();
 const floors = floorPages(undefined, (p) => existsSync(resolve(root, 'void-live-deploy' + p + 'index.html')));
 const entries = pages({ fixPages, lab, floors }).map((p) => ({ ...p, lastmod: '2026-10-25' }));
 const locs = entries.map((e) => e.loc);
@@ -33,11 +33,14 @@ test('the tower floors\' pages: each once, only ones whose file exists, never a 
   assert.equal(dup.filter((l) => l === '/color/').length, 1, 'a floor page that is a tool is listed once');
 });
 
-test('the lab: the gallery and every experiment the catalog publishes, none that is broken', () => {
+test('the lab: the gallery, its tools and every experiment the catalog publishes that is a tool, none that is broken or a toy', () => {
   assert.ok(locs.includes('/lab/'));
   for (const slug of lab) assert.ok(locs.includes('/lab/' + slug + '/'), slug);
-  assert.equal(locs.filter((l) => l.startsWith('/lab/')).length, lab.length + 1);
-  assert.ok(!pages({ fixPages }).some((p) => p.loc.startsWith('/lab/')), 'no lab entries without a catalog');
+  // the Lab's own tool pages (lib/toolkit.js TOOLS) are tool pages like any other; the toys stay served but out of the sitemap (tools/lab-grade.mjs)
+  const labTools = Object.keys(TOOLS).filter((p) => p.startsWith('/lab/'));
+  assert.ok(labTools.length >= 6); for (const p of labTools) assert.ok(locs.includes(p), p);
+  assert.equal(locs.filter((l) => l.startsWith('/lab/')).length, lab.length + 1 + labTools.length);
+  assert.ok(!pages({ fixPages }).some((p) => p.loc.startsWith('/lab/') && !labTools.includes(p.loc)), 'no lab experiments without a catalog');
 });
 
 test('the /is-it/ days: one slug per day the function knows, every one answered by isIt, no aliases', () => {

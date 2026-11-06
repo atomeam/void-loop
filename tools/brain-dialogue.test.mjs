@@ -69,7 +69,7 @@ test('an owner key is never kept, the log is capped, and a wrong record restores
 
 test('it is an organ of the brain: a recalled ask lights its ideas again, it is kept on the device, and the self holds counts only', () => {
   const b = B.createBrain(7);
-  assert.ok(B.ORGAN_IDS.includes('dialogue') && B.ORGAN_IDS.length === 23);
+  assert.ok(B.ORGAN_IDS.includes('dialogue') && B.ORGAN_IDS.length === 29);
   B.ask(b, 'tell me about dragons'); Dl.heard(b.dialogue, 'tell me about dragons', T0); Dl.answered(b.dialogue, 'tell me about dragons', 'Dragons are creatures of myth.', T0 + 1000);
   for (let t = 0; t < 600; t++) B.stepBrain(b, { x: 0.5, y: 0.5, over: false });
   assert.equal(b.runs.dialogue, 0, 'with no recalled ask it rests and takes no run from the others');
@@ -103,4 +103,18 @@ test('the host: it hears the ask, keeps the answer, the card gets the earlier as
   assert.equal(a.kind, 'follow'); assert.equal(a.prior.ask, 'who painted the starry night'); assert.equal(a.prior.at, T0);
   clock += 20 * MIN; assert.deepEqual(h2.dialogue(), { asks: 2, answered: 2, repeats: 0, follows: 1, kept: 1, days: 1, met: false });
   h2.forgot(); assert.equal(h2.dialogue().asks, 0, 'Forget clears the log'); h2.stop();
+});
+
+test('builtOn says what an ask builds on without logging it, before or after the stage heard it', () => {
+  const D = Dl.makeDialogue();
+  Dl.heard(D, 'what is the tallest mountain on earth', T0); Dl.answered(D, 'what is the tallest mountain on earth', 'Mount Everest, at 8,849 m.', T0 + 1000);
+  const n = D.log.length, early = Dl.builtOn(D, 'how was that mountain formed', T0 + MIN);
+  assert.equal(D.log.length, n, 'nothing logged'); assert.equal(early.kind, 'follow');
+  assert.deepEqual(early.prior, { ask: 'what is the tallest mountain on earth', at: T0, answer: 'Mount Everest, at 8,849 m.' });
+  Dl.heard(D, 'how was that mountain formed', T0 + MIN);
+  assert.deepEqual(Dl.builtOn(D, 'how was that mountain formed', T0 + MIN + 500), early, 'once heard, its own link');
+  assert.equal(Dl.builtOn(D, 'weather in oslo', T0 + MIN), null, 'an ask that shares nothing builds on nothing');
+  Dl.heard(D, 'weather in oslo', T0 + 2 * MIN);
+  assert.equal(Dl.builtOn(D, 'weather in oslo', T0 + 2 * MIN + 100), null, 'a heard ask with no link builds on nothing');
+  assert.equal(Dl.builtOn(D, '', T0), null); assert.equal(Dl.builtOn(D, 'x', NaN), null);
 });

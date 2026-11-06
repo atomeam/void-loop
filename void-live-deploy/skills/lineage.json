@@ -1,10 +1,16 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 1,
+ "count": 3,
  "skills": {
+  "lab": [
+   "toolkit"
+  ],
   "drive-share": [
    "calc",
    "convert"
+  ],
+  "my-device": [
+   "eat"
   ]
  }
 }
