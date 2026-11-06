@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T18:52:33.326Z",
+ "updated": "2026-11-06T19:02:36.956Z",
  "last24h": {
-  "ticks": 51,
-  "started": 90,
+  "ticks": 52,
+  "started": 91,
   "requeued": 0,
   "setAside": 0,
   "probes": 8,
@@ -17,6 +17,10 @@
   },
   {
    "id": "mw4gkvdn",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "want-exam-translate",
    "why": "verse-job.yml reached its 40 runs today"
   },
   {
@@ -86,10 +90,6 @@
   {
    "id": "mvpkt0sa",
    "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpkt1c5",
-   "why": "verse-job.yml reached its 40 runs today"
   }
  ],
  "coder": {
@@ -147,7 +147,8 @@
   "mw5822ks": 1793987241757,
   "mw5am4wo": 1793989248311,
   "mw5am5lx": 1793989815865,
-  "mw5am6br": 1793991153326
+  "mw5am6br": 1793991153326,
+  "mw5am6zv": 1793991756956
  },
  "sweptAt": 1793991153326,
  "blueprintsAt": 1793990445306,
@@ -1731,6 +1732,33 @@
    "sweep": true,
    "blueprints": 0,
    "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T19:02:36.956Z",
+   "open": 246,
+   "started": [
+    {
+     "id": "mw5am6zv",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 239,
    "warnings": 1
   }
  ]
