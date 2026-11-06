@@ -4028,5 +4028,85 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T04:12:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2746,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 16015 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T04:38:05Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 922,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13464 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T04:49:27Z",
+  "passed": 85,
+  "of": 90,
+  "ms": 438,
+  "kind": "file",
+  "key": "longevity trial watch | load # ms > #",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "longevity trial watch",
+    "why": "load 1233 ms > 1200"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "flip this card",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 922,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13464 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"longevity trial watch\" load 1233 ms > 1200"
  }
 ]

@@ -120,7 +120,10 @@ self.addEventListener('fetch', (e) => {
   // hours after the fix): Cloudflare stretches .js browser caching to 4 hours whatever _headers says, so a plain fetch kept the old file.
   // An unchanged file costs a 304; a deploy reaches a returning visitor on the next load. Its answer goes back marked no-cache too, as above
   // (2026-10-30: a returning tab ran an old /metronome/app.js after a deploy, from its memory cache, until the tab was new).
-  e.respondWith(fetch(code ? new Request(req, { cache: 'no-cache' }) : req).then((r) => (code ? asked(r) : r)).then((res) => {
+  // the shell's own files (the mark, the app icon, the manifest, verse.css, the skills index) are asked again too (2026-11-06: after the new
+  // mark shipped, a returning browser still drew the old oval from /icon.svg in its HTTP cache): an unchanged file costs a 304
+  const again = code || (!nav && url.pathname !== '/' && SHELL.includes(url.pathname));
+  e.respondWith(fetch(again ? new Request(req, { cache: 'no-cache' }) : req).then((r) => (again ? asked(r) : r)).then((res) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
     const tool = nav && isTool(url.pathname);
     if (res.ok && (!nav || tool || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(tool ? url.pathname : nav ? '/' : req, copy)); }
