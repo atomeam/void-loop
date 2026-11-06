@@ -258,6 +258,7 @@ for (const [name, file] of [
   ['youtube', 'youtube.test.mjs'],
   ['video-gate', 'video-gate.test.mjs'],
   ['shorts-loop', 'shorts-loop.test.mjs'],
+  ['film-studio', 'film-studio.test.mjs'],
   ['skills', process.env.VOID_GATE === '1' ? 'skills-delta.mjs' : 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
   ['stage-pack-h', 'stage-pack-h.test.mjs'],
