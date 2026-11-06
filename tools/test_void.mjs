@@ -4885,6 +4885,20 @@ try {
       tms.length === 1 && tms[0].duration === 150000 && /2:30/.test(face) && /150 seconds/.test(face) && !st.some((t) => t.kind === 'list') && !P.errors.length,
       JSON.stringify({ tms, face, kinds: st.map((t) => t.kind), e: P.errors }));
     await P.ctx.close(); }
+  // with another card picked, "add one minute" lengthens the timer and picks it, and only one card carries the mark (main, c5a28a1f
+  // shard 5: the timer was 150 s but the sticky stayed the picked one, so the timer face read nothing; a kept card kept a stale mark)
+  if (want("timer add time picks the timer: with the sticky picked, \"add one minute\" lengthens the timer and makes it the one picked thing")) { const P = await fresh();
+    await P.ask('set a timer for 90 seconds', 700);
+    await P.ask('sticky note buy milk', 500);
+    const before = await P.p.$$eval('.thing[data-picked]', (els) => els.map((e) => e.classList.contains('sticky') ? 'sticky' : e.className));
+    await P.ask('add one minute', 700);
+    const tms = (await P.state()).filter((t) => t.kind === 'timer');
+    const picked = await P.p.$$eval('.thing[data-picked]', (els) => els.map((e) => e.classList.contains('timer') ? 'timer' : e.className));
+    const face = await P.p.$$eval('.thing.timer[data-picked]', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+    check('timer add time picks the timer: with the sticky picked, "add one minute" makes the 90 second timer 150 s long and the one picked thing (its card says 2:30), and the sticky loses its picked mark',
+      before.length === 1 && before[0] === 'sticky' && tms.length === 1 && tms[0].duration === 150000 && picked.length === 1 && picked[0] === 'timer' && /2:30/.test(face) && !P.errors.length,
+      JSON.stringify({ before, tms, picked, face, e: P.errors }));
+    await P.ctx.close(); }
   // step 6's visible upgrade for the timer (owner, 2026-10-11: every cleanup move ships one): its progress ring was built with
   // createElement('svg'), an unknown HTML tag that never drew; it is a real SVG ring now, and a finished timer flashes 0:00
   if (want("timer ring and done flash: the progress ring is drawn and sweeps down while it runs, a finished timer flashes 0:00, steady with reduced motion")) {
@@ -5814,7 +5828,7 @@ try {
       && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
     await F.ctx.close();
   }
-  if (want('verse brain: one workspace that twenty-five organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that twenty-six organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5885,9 +5899,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its twenty-five organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty-six organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 23 && a.rows === 23 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 25 && a.rows === 25 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }

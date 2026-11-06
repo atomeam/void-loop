@@ -195,6 +195,7 @@ for (const [name, file] of [
   ['collectible', 'collectible.test.mjs'],
   ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
+  ['action-root', 'action-root.test.mjs'],
   ['support', 'support.test.mjs'],
   ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
   ['kv-namespace', 'kv-namespace.test.mjs'],
@@ -219,6 +220,7 @@ for (const [name, file] of [
   ['price-lock', 'price-lock.test.mjs'],
   ['reinvest', 'reinvest.test.mjs'],
   ['treasury', 'treasury.test.mjs'],
+  ['wallet-watch', 'wallet-watch.test.mjs'],
   ['store', 'store.test.mjs'],
   ['pay-share', 'pay-share.test.mjs'],
   ['alt-pay', 'alt-pay.test.mjs'],
@@ -362,7 +364,7 @@ for (const [name, file] of [
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
   ['orb-memories', 'orb-memories.test.mjs'], // the memory orbs show Verse's memories: a brain's told words where it holds them, other cards' slots, the fluid pulled to them
-  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-five organs, attention, imagination, the mind layers, kept knowledge
+  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-six organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
   ['brain-creature', 'brain-creature.test.mjs'], // F304's Lenia creature: it follows a moving target, it learns by online evolution, it runs in the brain, its genome is kept
@@ -378,6 +380,7 @@ for (const [name, file] of [
   ['brain-trace', 'brain-trace.test.mjs'],
   ['brain-strokes', 'brain-strokes.test.mjs'], // the Hopfield drafts' associative memory: from the first half of a visitor's stroke it recalls the rest far closer than carrying it on and than the drafts' rule when strokes repeat, loses and stays quiet when they never do, runs in the brain, is kept
   ['brain-rules', 'brain-rules.test.mjs'], // the decision-tree drafts' tree: it guesses the way of the visitor's next stroke far more often than the best rule without a tree when the way hangs on where the last stroke ended, matches the table of what follows what on a fixed cycle, stays quiet on strokes that go any way, runs in the brain, is kept
+  ['brain-reflex', 'brain-reflex.test.mjs'], // the tiny MLP drafts' network: it learns by backprop through the bodies it pushes to follow the pointer, closer than the best of 18 springs on a slow walk and under a tilt, about even on jumps, quiet on a circle where a spring wins, runs in the brain, is kept
   ['brain-dialogue', 'brain-dialogue.test.mjs'], // the conversation orb: a repeat says when it was asked and what Verse said, a follow-up names the ask it follows, kept on the device, counts only in the self // the NCA drafts' cellular automaton: its tuned rule holds where the focus was and lets it go, beats the drafts' rule and random search, runs in the brain, is kept
   ['brain-dream', 'brain-dream.test.mjs'], // the brain's dreams: each fix, job and idea comes from something it read or holds, names it, is posted once by Verse, owner only, inside its limits
   ['brain-everywhere', 'brain-everywhere.test.mjs'], // the brain on every page: /visit.js loads lib/brain-everywhere.js, so a page reads and writes the one brain of the browser, keeps writes when none runs, and starts one only with the lock

@@ -54,12 +54,12 @@ await call('skill_eclipse', { ask: 'next eclipse' }, (s, text) => s.path === 'sk
 await call('skill_country', { ask: 'capital of australia' }, (s, text) => s.path === 'skill_code' && /Canberra/.test(text));
 await call('skill_define', { ask: 'define serendipity' }, (s, text) => s.path === 'skill_code' && /fortunate|luck|chance/i.test(text) && /wiktionary/.test(text));
 // a paid tool without payment: the x402 MCP transport's PaymentRequired (Verse's wallet on Base, 0.05 USDC), never a charge
-{
-  const { r: need, entry } = await exchange('paid_review', { code: 'function f(a) { eval(a) }', lang: 'javascript' });
+for (const [tool, args] of [['paid_review', { code: 'function f(a) { eval(a) }', lang: 'javascript' }], ['paid_backtest', { bot: 'trend-50-200', pair: 'BTC-USD' }]]) {
+  const { r: need, entry } = await exchange(tool, args);
   const pr = need.structuredContent || {}, acc = (pr.accepts || [])[0] || {};
-  if (!need.isError || pr.x402Version !== 2 || acc.network !== 'eip155:8453' || acc.amount !== '50000' || !/^0x[0-9a-fA-F]{40}$/.test(acc.payTo || '')) fail('paid_review without payment: ' + JSON.stringify(need).slice(0, 300));
+  if (!need.isError || pr.x402Version !== 2 || acc.network !== 'eip155:8453' || acc.amount !== '50000' || !/^0x[0-9a-fA-F]{40}$/.test(acc.payTo || '')) fail(tool + ' without payment: ' + JSON.stringify(need).slice(0, 300));
   entry.ok = true; entry.expect = 'payment required';
-  console.log('ok   paid_review asks to be paid: ' + acc.amount + ' units of USDC on ' + acc.network + ' to ' + acc.payTo);
+  console.log('ok   ' + tool + ' asks to be paid: ' + acc.amount + ' units of USDC on ' + acc.network + ' to ' + acc.payTo);
 }
 const { r: wrong, entry: refused } = await exchange('skill_swaps', { ask: 'define serendipity' });
 if (!wrong.isError) fail('skill_swaps took an ask that is not its own: ' + JSON.stringify(wrong.content));
