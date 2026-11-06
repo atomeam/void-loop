@@ -4,8 +4,8 @@
 //   node tools/watch-build.mjs queue [--file notes.json]    queue every blueprint not built yet as a tv: build job, a few a run, best first
 //                                                            (VOID_OWNER_TOKEN); conductor -> verse-job.yml builds each
 //   node tools/watch-build.mjs assemble [--check]           domains/tv-built/*.json -> void-live-deploy/tv-built.json, the log /local/ shows
-// tools/watch.py runs `queue` after every hour's learning, and the conductor runs queueBlueprints every hour whatever the watch does (owner,
-// 2026-11-06: "the blueprints should just automatically be started and built into verse somewhere"). An idea with any job already (open,
+// tools/watch.py runs `queue` after every hour's learning, and the conductor runs queueBlueprints every hour whatever the watch does (the owner
+// asked on 2026-11-06 for every blueprint to build by itself). An idea with any job already (open,
 // shipped, set aside) is not queued again; at most PER_RUN a run and BACKLOG_MAX open at once, so the rest wait for the next run instead of
 // crowding out every other kind of work (the limits adapt the pace, they never stop the line).
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
