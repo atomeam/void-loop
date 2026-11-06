@@ -1,21 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:25:50Z",
-  "passed": 8,
-  "of": 12,
-  "kind": "file",
-  "key": "play voidquest | console: Failed to load module script: Expected a JavaScript",
-  "note": "fix: \"play voidquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
- },
- {
-  "at": "2026-10-15T06:28:23Z",
-  "passed": 7,
-  "of": 12,
-  "kind": "file",
-  "key": "play solarquest | console: Failed to load module script: Expected a JavaScript",
-  "note": "fix: \"play solarquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
- },
- {
   "at": "2026-10-15T06:31:10Z",
   "passed": 11,
   "of": 12,
@@ -4446,5 +4430,59 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"draw me a robot pls\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T09:44:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 796,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T09:56:21Z",
+  "passed": 89,
+  "of": 92,
+  "ms": 415,
+  "kind": "file",
+  "key": "turn the questions i missed into a five-minute challenge | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 796,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"turn the questions i missed into a five-minute challenge\" only \"waking up\" appeared, never the answer"
  }
 ]

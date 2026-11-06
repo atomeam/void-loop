@@ -3,14 +3,43 @@
  "cases": 88,
  "runsTotal": 300,
  "kinds": {
-  "file": 92,
+  "file": 91,
   "teach": 7,
   "grow": 70,
   "tighten": 7,
   "none": 40,
-  "visitor": 84
+  "visitor": 85
  },
  "runs": [
+  {
+   "at": "2026-11-06T09:56:21Z",
+   "passed": 89,
+   "of": 92,
+   "kind": "file",
+   "ms": 415,
+   "note": "fix: \"turn the questions i missed into a five-minute challenge\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "turn the questions i missed into a five-minute challenge",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T09:44:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T09:29:54Z",
    "passed": 88,
@@ -271,55 +300,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T03:24:35Z",
-   "passed": 82,
-   "of": 90,
-   "kind": "file",
-   "ms": 340,
-   "note": "fix: \"send it away\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25",
-     "why": "load 1280 ms > 1200"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-06T03:14:53Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -373,20 +353,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 70,
-   "passed": 397,
-   "of": 1318,
-   "broken": 40,
-   "brokenOf": 860,
+   "runs": 69,
+   "passed": 382,
+   "of": 1319,
+   "broken": 41,
+   "brokenOf": 885,
    "brokenPassed": 22
   },
   {
    "from": "2026-10-16",
-   "runs": 118,
+   "runs": 117,
    "passed": 2727,
-   "of": 4459,
-   "broken": 55,
-   "brokenOf": 1378,
+   "of": 4434,
+   "broken": 54,
+   "brokenOf": 1353,
    "brokenPassed": 0
   },
   {
@@ -397,9 +377,9 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 112,
-   "passed": 2278,
-   "of": 2493,
+   "runs": 114,
+   "passed": 2367,
+   "of": 2585,
    "ms": 377
   }
  ],
@@ -420,7 +400,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T09:29:54Z",
+  "skill:cartoon": "2026-11-06T09:56:21Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -732,6 +712,9 @@
   "skill:pdf-tools": "2026-11-06T08:42:34Z",
   "skill:photo-tools": "2026-11-06T09:29:54Z",
   "skill:podcast": "2026-11-06T09:29:54Z",
-  "skill:podcast-search": "2026-11-06T09:29:54Z"
+  "skill:podcast-search": "2026-11-06T09:29:54Z",
+  "skill:pointing-arrow": "2026-11-06T09:56:21Z",
+  "skill:proverb": "2026-11-06T09:56:21Z",
+  "skill:pwcheck": "2026-11-06T09:56:21Z"
  }
 }
