@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T10:13:14.133Z",
+  "at": "2026-11-06T10:39:18.879Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -39,14 +39,15 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of hardcore history",
           "failed": [
-            "audio"
+            "show",
+            "episode"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
-          "ask": "play the latest episode of planet money",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
             "audio"
           ],
@@ -95,10 +96,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -158,7 +158,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -172,10 +172,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
