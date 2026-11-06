@@ -1,21 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:55:39Z",
-  "passed": 6,
-  "of": 13,
-  "kind": "file",
-  "key": "site | console: script /vendor/three-r#/build/three#module#min#js s",
-  "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
- },
- {
-  "at": "2026-10-15T06:58:08Z",
-  "passed": 8,
-  "of": 13,
-  "kind": "file",
-  "key": "menaing of saudade | refused: don't know this yet",
-  "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-15T07:02:38Z",
   "passed": 13,
   "of": 13,
@@ -4605,5 +4589,58 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T13:22:05Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1600,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9002 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T13:33:35Z",
+  "passed": 91,
+  "of": 94,
+  "ms": 386,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1600,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9002 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"create a toon style bird pls\" (skill:cartoon)"
  }
 ]

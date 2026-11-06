@@ -306,6 +306,9 @@
     },
     {
       "ask": "yo create a toon style bird"
+    },
+    {
+      "ask": "create a toon style bird pls"
     }
   ],
   "candidates": [],
