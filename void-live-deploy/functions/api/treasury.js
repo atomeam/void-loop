@@ -12,6 +12,7 @@
 import { ownerOk } from '../../lib/guard.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { realized, balances, bucketWeights, split, queueSpends, review } from '../../lib/treasury.js';
+import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
 
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
 const RECONCILE_MS = 6 * 3600e3;
@@ -36,6 +37,13 @@ const lastReview = (rows) => { const r = rows.filter((x) => x.kind === 'review')
 // Brings the ledger up to date with realized revenue, then queues what the buckets can afford. Idempotent.
 async function settle(env, policy) {
   const money = realized(await salesRows(env));
+  // USDC into Verse's wallet (lib/verse-wallet.js): x402 calls read back on chain, and store orders paid in USDC on Base. No fee is
+  // taken off: the facilitator pays the gas and its free settlements are not billed to the payee.
+  let usdc = usdcIncome();
+  try { const r = await incomeRows(env); usdc = usdcIncome(r.x, r.s); } catch (_) {}
+  money.gumroad_cents = money.realized_cents;
+  money.usdc = usdc;
+  money.realized_cents += usdc.cents;
   let rows = await ledger(env);
   const rv = lastReview(rows), learned = (rv && rv.learned) || {};
   const weights = bucketWeights(policy, { candidates: policy.candidates, learned });
@@ -83,6 +91,15 @@ export async function reconcile(env, fetchImpl = fetch) {
   return { ok: true, added };
 }
 
+// Verse's wallet as the chain shows it: its address, where it came from, and the USDC it holds (read live; null when the chain is not reachable).
+async function walletView(env) {
+  let w = null; try { w = await walletOf(env); } catch (_) {}
+  if (!w) return { address: null, note: 'Verse has no wallet yet: x402 calls stay closed until one exists' };
+  const units = await usdcBalance(env, w.address);
+  return { address: w.address, source: w.source, note: w.note, network: 'Base', asset: 'USDC', balance_units: units, balance_cents: units == null ? null : Number(BigInt(units) / 10000n),
+    explorer: 'https://basescan.org/address/' + w.address, sells: '/api/x402' };
+}
+
 function publicView(policy, s, env) {
   const b = balances(s.rows);
   const entries = s.rows.filter((r) => r.kind !== 'meta' && r.kind !== 'review').map((r) => ({ id: r.id, at: r.at, kind: r.kind, bucket: r.bucket, cents: r.cents,
@@ -91,7 +108,7 @@ function publicView(policy, s, env) {
   const reviews = s.rows.filter((r) => r.kind === 'review').map((r) => { try { return { at: r.at, ...JSON.parse(r.data) }; } catch (_) { return null; } }).filter(Boolean);
   return {
     as_of: new Date().toISOString(),
-    source: { only: 'realized Gumroad revenue', pings: true, gumroad_api: env.GUMROAD_ACCESS_TOKEN ? (meta ? 'on, last read ' + meta.at : 'on, not read yet') : 'off (no API token on the site: pings only)', fee_source: policy.source_of_funds && policy.source_of_funds.fee_source },
+    source: { only: 'realized revenue: Gumroad sales after fees and refunds, and USDC received on Base (x402 calls read back on chain, store orders paid in USDC)', pings: true, gumroad_api: env.GUMROAD_ACCESS_TOKEN ? (meta ? 'on, last read ' + meta.at : 'on, not read yet') : 'off (no API token on the site: pings only)', fee_source: policy.source_of_funds && policy.source_of_funds.fee_source },
     revenue: s.money, // sales, gross, Gumroad fees, refunded, realized: totals only
     balance_cents: s.money.realized_cents - s.rows.filter((r) => r.kind === 'paid').reduce((n, r) => n + r.cents, 0) - s.rows.filter((r) => r.kind === 'spend' && r.status === 'executed').reduce((n, r) => n + r.cents, 0),
     pots: b.pots, split_cents: b.split_cents, committed_cents: b.committed_cents,
@@ -120,6 +137,7 @@ export async function onRequestGet({ request, env, waitUntil }) {
   try {
     await ensure(env);
     const policy = await policyOf(request, env);
+    try { await confirmPayments(env); } catch (_) {} // x402 payments settled since the last read: counted once the chain shows them
     const s = await settle(env, policy);
     const meta = s.rows.find((r) => r.id === 'meta:reconciled');
     if (env.GUMROAD_ACCESS_TOKEN && (!meta || Date.now() - Date.parse(meta.at) > RECONCILE_MS) && typeof waitUntil === 'function') {
@@ -129,7 +147,7 @@ export async function onRequestGet({ request, env, waitUntil }) {
     if (!s.rows.some((r) => r.id === 'rv:' + weekOf(new Date().toISOString())) && typeof waitUntil === 'function') {
       try { waitUntil(weeklyReview(env, policy).catch(() => null)); } catch (_) {}
     }
-    return json(publicView(policy, s, env), 200, 'public, max-age=60');
+    return json({ ...publicView(policy, s, env), wallet: await walletView(env) }, 200, 'public, max-age=60');
   } catch (e) { return json({ error: 'treasury unavailable' }, 503); }
 }
 
