@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T18:30:15.865Z",
+ "updated": "2026-11-06T18:40:45.306Z",
  "last24h": {
   "ticks": 50,
   "started": 89,
@@ -107,7 +107,7 @@
  },
  "handed": {
   "mvbl52gd": 1793968312020,
-  "mva30i2e": 1793968312020,
+  "mva30i2e": 1793990445306,
   "mva30j4u": 1793976155394,
   "mveb8rsi": 1793945056275,
   "mvu167w7": 1793947060374,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1793933006938,
   "mvpuqb4r": 1793935659114,
   "mvvjzso8": 1793937026908,
-  "mw3p9w56": 1793903998452,
   "mw43w4tf": 1793923441359,
   "mw43w5uw": 1793925233814,
   "mw43w6vc": 1793930087442,
@@ -150,6 +149,7 @@
   "mw5am5lx": 1793989815865
  },
  "sweptAt": 1793987241757,
+ "blueprintsAt": 1793990445306,
  "visitorAt": "2026-11-06T18:05:35Z",
  "visitorFiled": [
   "feature:calculator-net-f655db8f",
@@ -234,30 +234,6 @@
   "probe:fix-these-errors"
  ],
  "ticks": [
-  {
-   "at": "2026-11-05T18:39:58.452Z",
-   "open": 205,
-   "started": [
-    {
-     "id": "mw3p9w56",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 200,
-   "warnings": 0
-  },
   {
    "at": "2026-11-05T22:25:34.172Z",
    "open": 209,
@@ -1700,6 +1676,33 @@
    "daily": [],
    "sweep": false,
    "held": 237,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T18:40:45.306Z",
+   "open": 244,
+   "started": [
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 3,
+   "held": 236,
    "warnings": 0
   }
  ]
