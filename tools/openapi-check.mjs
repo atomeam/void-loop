@@ -102,6 +102,7 @@ export const INTERNAL = {
   '/api/share/{room}': 'a shared Verse room (WebSocket)',
   '/api/watch': 'watches, signed-in',
   '/api/where': "the page's place lookup",
+  '/api/ip': "the my-device card's own address",
   '/api/markets': "the crypto card's price list and the /markets/ page's quotes: a symbol (letters, or a name from a closed list), a range from a closed list of eight and a day in, prices out from four fixed free sources, GET only, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute (functions/api/markets.js, lib/markets.js); the page and the card are the only callers",
   '/api/will': "Verse's will card",
   '/api/apibot': "the /bots/ page's relay for the few free APIs that send no CORS header: an id from a closed list, that API's own host only",

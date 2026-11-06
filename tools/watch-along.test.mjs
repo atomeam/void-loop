@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as W from '../void-live-deploy/lib/watch-along.js';
-import { onRequestPost, onRequestGet, hearBytes } from '../void-live-deploy/functions/api/watchalong.js';
+import { onRequestPost, onRequestGet, hearBytes, streamOf } from '../void-live-deploy/functions/api/watchalong.js';
 import { heardOnTv } from '../void-live-deploy/functions/api/appraise.js';
 
 test('roll-up captions build one line, a repeated cue is skipped, and only the newest characters are kept', () => {
@@ -187,4 +187,12 @@ test('a world channel (local/tv/world/<CC>.json channels) is a station Verse can
   const j = await (await onRequestPost({ request: post({ mode: 'ask', station: { kind: 'tv', cc: 'FR', id: 'France24.fr@English' }, captions: 'GOOD EVENING FROM PARIS' }), env })).json();
   assert.equal(j.text, 'A news desk in Paris.');
   assert.match(env.calls[0].input.messages[0].content, /France 24 English/);
+});
+
+test('a radio stream listed as http is read at its https twin, as the page plays it; a stream on its own port is not', () => {
+  assert.equal(streamOf({ url_resolved: 'http://stream.example.org/news.mp3' }), 'https://stream.example.org/news.mp3');
+  assert.equal(streamOf({ url_resolved: 'https://a.example.org/s', url: 'http://b.example.org/s' }), 'https://a.example.org/s');
+  assert.equal(streamOf({ url_resolved: 'http://ice.example.org:8000/s', url: 'https://c.example.org/s' }), 'https://c.example.org/s');
+  assert.equal(streamOf({ url_resolved: 'http://ice.example.org:8000/s' }), 'http://ice.example.org:8000/s');
+  assert.equal(streamOf({}), '');
 });

@@ -19,9 +19,7 @@ export function readiness(gh, repo, pr) {
   const p = gh(`repos/${repo}/pulls/${pr}`);
   if (p.merged) return { state: 'stop', why: 'already merged', merged: true };
   if (p.state !== 'open') return { state: 'stop', why: 'PR is ' + p.state };
-  // branch is on every answer. automerge starts the suite from it, and a green review used to omit it,
-  // so the suite never started and a ready pull request sat open (2026-11-05, #2306).
-  const sha = p.head.sha, base = { sha, draft: !!p.draft, branch: p.head && p.head.ref };
+  const sha = p.head.sha, base = { sha, draft: !!p.draft, branch: p.head && p.head.ref }; // branch on every answer: automerge.mjs starts the suite gate on it (2026-11-06: a 'merge' answer had none, so no suite ever started)
   if (p.mergeable_state === 'dirty') return { ...base, state: 'resolve', why: 'conflicts with main (a conflicted PR gets no checks, so main is merged in first)', branch: p.head && p.head.ref };
   // one read for every check on this head (2026-11-04: three reads, one per name, were a third of the bot's API quota)
   const all = gh(`repos/${repo}/commits/${sha}/check-runs?per_page=100`).check_runs || [];

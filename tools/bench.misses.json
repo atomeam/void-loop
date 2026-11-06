@@ -1,10 +1,11 @@
 {
- "at": "2026-11-04T18:11:15.631Z",
- "sha": "4a96359bb69a",
- "score": 3335,
+ "at": "2026-11-05T18:26:24.872Z",
+ "sha": "34f124043488",
+ "score": 3332,
  "total": 3353,
  "misses": [
   "5 m c -> article fallback",
+  "add a note: buy milk -> sticky",
   "chicken curry recipe -> (none)",
   "chicken recipes -> (none)",
   "coin flip -> skill:coin",
@@ -13,6 +14,7 @@
   "flip a coin heads or tails -> skill:coin",
   "flip a coin please -> skill:coin",
   "flip a coin plz -> skill:coin",
+  "put the sticky note in front of everything -> sticky",
   "show me a visa test card -> article fallback",
   "simple interest on 1000 at 5% for 3 years -> skill:formulas",
   "stopwatch -> stopwatch",
@@ -21,6 +23,7 @@
   "what is 10 factorial -> skill:snippet",
   "what is 100 factorial -> skill:snippet",
   "what is 5 factorial -> skill:snippet",
-  "what is 7 factorial -> skill:snippet"
+  "what is 7 factorial -> skill:snippet",
+  "what's 7 factorial -> skill:snippet"
  ]
 }

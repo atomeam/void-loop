@@ -14,6 +14,14 @@
     $('when').textContent = 'As of ' + new Date(t.as_of).toLocaleString() + '. Source: ' + t.source.only + '; Gumroad API ' + t.source.gumroad_api + '.';
     $('balance').textContent = usd(t.balance_cents);
     $('balance-note').innerHTML = esc(rv.sales + ' sale' + (rv.sales === 1 ? '' : 's') + ', ' + usd(rv.gross_cents) + ' gross, ' + usd(rv.fee_cents) + ' Gumroad fees, ' + usd(rv.refunded_cents) + ' refunded: ' + usd(rv.realized_cents) + ' realized.') + (rv.sales ? '' : ' No sales yet, so there is nothing to split or spend.') + ' <a href="' + esc(t.source.fee_source) + '">Gumroad\'s fees</a>.';
+    const u = rv.usdc || {}, w = t.wallet || {};
+    if (u.cents) $('balance-note').insertAdjacentHTML('beforeend', ' ' + esc(usd(rv.gumroad_cents) + ' from Gumroad and ' + usd(u.cents) + ' in USDC (' + u.x402_payments + ' paid call' + (u.x402_payments === 1 ? '' : 's') + ', ' + u.store_usdc_orders + ' store order' + (u.store_usdc_orders === 1 ? '' : 's') + ').'));
+    $('wallet').innerHTML = w.address
+      ? '<div class="grid"><div class="card"><b>' + (w.balance_cents == null ? 'not read' : usd(w.balance_cents)) + '</b><span>USDC on Base, read from the chain now</span></div>'
+        + '<div class="card"><b>' + esc(u.x402_payments || 0) + '</b><span>paid calls confirmed on chain' + (u.x402_waiting ? ' · ' + esc(u.x402_waiting) + ' waiting for confirmations' : '') + '</span></div>'
+        + '<div class="card"><b>' + usd(u.x402_cents || 0) + '</b><span>received from agents</span></div></div>'
+        + '<p class="note">' + esc(w.note) + ': <a href="' + esc(safeUrl(w.explorer)) + '" rel="noopener"><code>' + esc(w.address) + '</code></a></p>'
+      : '<p class="note">' + esc(w.note || 'No wallet yet.') + '</p>';
     const pots = [['owner', "Atom's cut"], ['reserve', 'Reserve'], ...['infrastructure', 'tools', 'growth', 'bounties'].map((k) => [k, names[k] || k])];
     $('pots').innerHTML = pots.map(([k, n]) => '<div class="card"><b>' + usd(t.pots[k]) + '</b><span>' + esc(n) + (t.weights[k] != null ? ' · ' + pct(t.weights[k]) + ' of reinvestment' : '') + '</span></div>').join('');
     const p = t.policy;

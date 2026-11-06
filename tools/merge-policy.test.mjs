@@ -43,11 +43,10 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
   assert.equal(stuckDecision(pr({ created_at: '2026-11-04T10:00:00Z' }), [], now).action, 'young');
 });
 
-test('squash merge waits for the suite, GitHub auto-merge stays off, and the hourly run remains', () => {
-  // #2309 stopped arming GitHub auto-merge: that lands on whatever main is now, before the suite.
-  // The bot squash-merges itself once the suite is green, and disarms auto-merge if it is still on.
-  // suite-gate.yml lives on main and checks the pull request out itself. Dispatching it on the
-  // pull request branch never starts, so a green review used to leave the pull request sitting open.
+// 2026-11-06: since the suite gate (#2309) the bot no longer arms GitHub's auto-merge (it would merge on whatever main is, without the
+// suite). It disarms it, and merges one pull request itself with a squash, only after the suite passed on top of current main.
+// suite-gate.yml lives on main and checks the pull request out itself, so the suite is dispatched from main (#2315).
+test('the automerge workflow merges with a squash after the suite gate, and keeps the hourly run', () => {
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
   assert.match(yml, /pull-requests: write/, 'file .github/workflows/automerge.yml keeps pull-requests: write');
@@ -55,6 +54,7 @@ test('squash merge waits for the suite, GitHub auto-merge stays off, and the hou
   assert.match(yml, /STUCK:/, 'file .github/workflows/automerge.yml keeps the stuck sweep');
   assert.match(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs disarms GitHub auto-merge until the suite is green');
   assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges after the suite');
+  assert.match(src, /choose\(rows, mainSha, running\)/, 'file tools/automerge.mjs picks what merges with the suite gate');
   assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
   assert.doesNotMatch(src, /enablePullRequestAutoMerge/, 'file tools/automerge.mjs must not arm GitHub auto-merge');
   assert.match(src, /workflow', 'run', 'suite-gate\.yml', '--repo', repo, '--ref', 'main'/, 'file tools/automerge.mjs starts the suite from main');
