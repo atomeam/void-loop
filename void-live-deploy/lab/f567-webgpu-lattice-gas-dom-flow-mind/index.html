@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  .atom {
+    position: absolute; width: 120px; height: 80px; border-radius: 12px;
+    background: rgba(30,40,60,0.85); border: 1px solid #4af;
+    color: #adf; padding: 8px; font-size: 12px; cursor: pointer;
+    transition: transform 0.1s linear, background 0.3s; box-shadow: 0 0 12px #4af4;
+    pointer-events: auto; user-select: none;
+  }
+  .atom.sealed { border-color: #fa4; box-shadow: 0 0 18px #fa84; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { margin: 0 4px; padding: 4px 10px; background: #246; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  #status { margin-top: 6px; font-size: 11px; color: #8cf; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-lattice-gas-dom-flow-mind · Verse lab</title>
+<meta name="description" content="A discrete Lattice Gas Automaton (LGA / FHP-style) runs on a WebGPU compute grid (Canvas2D cellular fallback).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-lattice-gas-dom-flow-mind · Verse lab">
+<meta property="og:description" content="A discrete Lattice Gas Automaton (LGA / FHP-style) runs on a WebGPU compute grid (Canvas2D cellular fallback).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f567-webgpu-lattice-gas-dom-flow-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f567-webgpu-lattice-gas-dom-flow-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="seal">Seal</button>
+  <button id="reset">Reset</button>
+  <button id="clear">Clear Atoms</button>
+  <div id="status">Regime: idle | Prediction: — | Crystals: 0</div>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-lattice-gas-dom-flow-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

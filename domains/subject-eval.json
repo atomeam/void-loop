@@ -1,5 +1,5 @@
 {
- "at": "2026-11-05T13:35:00.099Z",
+ "at": "2026-11-06T13:19:46.608Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -688,7 +688,7 @@
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature · Show",
+   "kind": "Creature",
    "title": "Blue whale",
    "theme": "specimen",
    "photo": true,

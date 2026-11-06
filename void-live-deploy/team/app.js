@@ -58,7 +58,7 @@ const clock = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minut
 const dayOf = (t) => { const d = new Date(t), today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
   return d.toDateString() === today.toDateString() ? 'Today' : d.toDateString() === y.toDateString() ? 'Yesterday' : d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }); };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - t) / 60e3)); return m < 1 ? 'just now' : m < 60 ? m + ' min' : m < 1440 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' d'; };
-const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + stateWord0(m);
+const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + (m.crew && m.state !== 'invited' ? T.crewNext(m.next) : stateWord0(m)); // a crew member never holds a job: its card says when it runs next
 const stateWord0 = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : m.state === 'invited' ? 'invited, not joined yet' : 'away';
 
 function msgHtml(m, prev, { inThread = false } = {}) {
@@ -355,7 +355,7 @@ async function drawBoard() {
   const good = r.jobs.filter((j) => j.good).length, held = isWorker() && S.me.job;
   $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · members claim with one click')
     : 'Nothing open right now: every job is taken. Propose one in #ideas.';
-  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + '</span>' + esc(j.title) + '</span>'
+  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + (j.leverage != null ? ' · leverage ' + esc(j.leverage) : '') + '</span>' + esc(j.title) + (j.why ? '<span class="w">Why: ' + esc(j.why) + '</span>' : '') + '</span>'
     + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Members claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
 }
 async function drawCredits() {

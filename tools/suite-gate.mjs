@@ -30,12 +30,13 @@ export function parseLog(text) {
   let cur = null;
   for (const line of String(text || '').split('\n')) {
     const t = line.trim();
-    if (t === 'COMMIT' || t.startsWith('COMMIT ')) { // "COMMIT <subject>" with --pretty=format:'COMMIT %s'
+    if (t === 'COMMIT' || t.startsWith('COMMIT ')) { // "COMMIT <subject>" with --pretty=format:'COMMIT %s%nAUTHOR %an'
       if (cur) commits.push(cur);
       cur = [];
       if (t.length > 7) cur.subject = t.slice(7).trim();
       continue;
     }
+    if (cur && !cur.length && cur.author === undefined && t.startsWith('AUTHOR ')) { cur.author = t.slice(7).trim(); continue; }
     if (cur && line.trim()) cur.push(line.trim());
   }
   if (cur) commits.push(cur);
@@ -62,25 +63,26 @@ export function squashOf(subject) {
   return m ? Number(m[1]) : 0;
 }
 
-// The records the bots on main write every few minutes (site test, outcome exam, tower evidence, growth ledger, flakes,
-// conductor, hand-off log). The browser suite stubs them (claims-verified.json, tester-log.json) or reads the same file the
-// page serves (void.growth.json), so a commit that writes only these does not change what the suite tested. A suite run takes
-// about 21 minutes and these commits land every 5 to 15, so with only the incident record allowed nothing could merge
-// (2026-11-06: no merge after 08:05 UTC). tower.target.json stays out: the tower checks read it (3 went red on it that day).
-export const RECORDS = [
-  'void-live-deploy/incidents/', 'void-live-deploy/exam/', 'void-live-deploy/tower-evidence/', 'void-live-deploy/tower.shots/', 'growth/entries/',
-  'void-live-deploy/claims-verified.json', 'void-live-deploy/tester-log.json', 'void-live-deploy/void.growth.json',
-  'tools/site-test.json', 'tools/site-test.log.json', 'tools/site-test.seen.json', 'tools/flakes.json', 'tools/grown.json',
-  'domains/handoff.md', 'domains/void.agents.log.md', 'domains/conductor.json',
-];
-const isRecord = (f) => RECORDS.some((r) => (r.endsWith('/') ? String(f).startsWith(r) : String(f) === r));
+/** the bot that writes Verse's records straight to main (tower evidence, site tests, exams, findings, treasury). */
+export const RECORD_BOT = 'github-actions[bot]';
+const DATA = /\.(json|jsonl|md|txt|log|csv|xml|png|jpe?g|webp|gif|ico)$/i; // records and the screenshots and icons they cite
+const NOT_DATA = /^(\.github\/|void-live-deploy\/(lib|skills)\/)|(^|\/)(package(-lock)?\.json|wrangler\.(json|jsonc|toml))$/;
 
-/** every commit since the tested main only writes the bots' records (RECORDS), or is the squash of a pull request in the same batch. Pure. */
+/** a commit the record bot wrote straight to main that only changes data files (no code, page, workflow or skill file),
+ * and that is not the squash of a pull request. About 7 land an hour (2026-11-06: 127 of 173 bot commits in a day), and a
+ * suite run takes about 30 minutes, so without this a green run almost never found main unmoved. Pure. */
+export function botRecord(files) {
+  if (!files || files.author !== RECORD_BOT || squashOf(files.subject) || !files.length) return false;
+  return files.every((f) => DATA.test(String(f)) && !NOT_DATA.test(String(f)));
+}
+
+/** every commit since the tested main only writes the incident record or another bot record, or is the squash of a pull
+ * request in the same batch. Pure. */
 export function driftOk(commits, batch) {
   if (!Array.isArray(commits)) return false;
   const mates = new Set(batch || []);
-  const records = (files) => (files || []).every(isRecord);
-  return commits.every((files) => records(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
+  const incident = (files) => (files || []).every((f) => String(f).startsWith('void-live-deploy/incidents/'));
+  return commits.every((files) => incident(files) || botRecord(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
 }
 
 /** the suite passed, and either it merged this main, or only incident commits and squashes of its own batch landed since. Pure. */
@@ -133,6 +135,23 @@ export function choose(rows, mainSha, running) {
   if (running) return { pr: open[0], batch: [open[0]], action: 'wait', why: 'one suite is already running; the next pull request waits' };
   const batch = open.slice(0, batchSize(open[0], mainSha));
   return { pr: open[0], batch, action: 'queue', why: 'the full suite has not passed on top of current main' + (batch.length > 1 ? ` (one run for ${batch.length} pull requests)` : '') };
+}
+
+// The safety-check (tools/skill-safety.mjs) runs node --test on a pull request's head: seconds each, so a sweep that ran it
+// on every ready pull request passed the 5 minute job limit and never reached the suite gate (2026-11-06, no gate run from
+// 08:57 on). It runs here on the batch the gate chose only. A pull request that fails it leaves the rows, and the gate
+// chooses again from the rest. check(row) returns true when the row may go on.
+export function chooseChecked(rows, mainSha, running, check) {
+  let left = (rows || []).slice();
+  const passed = new Set();
+  for (let round = 0; round <= (rows || []).length; round++) {
+    const choice = choose(left, mainSha, running);
+    const todo = choice.action === 'merge' || choice.action === 'queue' ? (choice.batch && choice.batch.length ? choice.batch : [choice.pr]).filter(Boolean) : [];
+    const failed = todo.filter((r) => !passed.has(r) && !(check(r) && passed.add(r)));
+    if (!failed.length) return { choice, rows: left };
+    left = left.filter((r) => !failed.includes(r));
+  }
+  return { choice: choose(left, mainSha, running), rows: left };
 }
 
 /**

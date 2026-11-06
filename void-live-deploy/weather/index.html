@@ -104,25 +104,29 @@
     get(pointUrl(loc.lat, loc.lon)).then((j) => { const st = j && j.properties && j.properties.radarStation; if (!st) throw new Error('no station');
       $('radar').innerHTML = '<p class="note">Radar loop from ' + esc(st) + ', the nearest weather service radar.</p><img src="' + esc(radarLoop(st)) + '" alt="Radar loop from ' + esc(st) + ', the weather service\'s nearest radar to ' + esc(loc.name.split(',')[0]) + '" loading="lazy">'; }).catch(() => { $('radar').textContent = 'The weather service did not name a radar for this place just now.'; });
   }
+  let looking = 0; // the newest look: one asked earlier that answers late neither draws over it nor clears its aria-busy
   async function look(place, coords) {
+    const me = ++looking, live = () => me === looking;
     $('status').textContent = 'Looking: the weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset…';
     document.querySelector('main').setAttribute('aria-busy', 'true'); // busy while the forecast is fetched: a reader (and the tower gate) waits for it
     try {
       let loc = coords || null, w = null;
       // Verse's own /api/weather first: the place and its forecast in one round trip, kept on the edge for ten minutes, so the page draws at once;
       // a 404 there is a place not found; anything else falls back to asking Open-Meteo from here
-      if (!loc) { try { const r = await fetch('/api/weather?q=' + encodeURIComponent(place), { signal: timed() }), j = await r.json().catch(() => null); if (r.status === 404 && j && j.kind === 'missing') { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } if (r.ok && j && j.ok && j.loc && j.w) { loc = j.loc; w = j.w; } } catch (_) {} }
-      if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
+      if (!loc) { try { const r = await fetch('/api/weather?q=' + encodeURIComponent(place), { signal: timed() }), j = await r.json().catch(() => null); if (r.status === 404 && j && j.kind === 'missing') { if (live()) $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } if (r.ok && j && j.ok && j.loc && j.w) { loc = j.loc; w = j.w; } } catch (_) {} }
+      if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { if (live()) $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
       if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
       const v = viewOf(w, loc);
       if (!v.hours.length) throw new Error('no forecast');
+      if (!live()) return;
       draw(v); cardAsk = weatherAsk(place); document.dispatchEvent(new Event('tk:card')); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
       extras(loc);
     } catch (_) {
+      if (!live()) return;
       let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
       if (kept && kept.v) { draw(kept.v, new Date(kept.at).toLocaleString()); $('alerts').textContent = 'Alerts need the network.'; $('radar').textContent = 'Radar needs the network.'; }
       else $('status').textContent = 'The forecast service did not answer. Check the network and try again.';
-    } finally { document.querySelector('main').removeAttribute('aria-busy'); }
+    } finally { if (live()) document.querySelector('main').removeAttribute('aria-busy'); }
   }
   const q = new URLSearchParams(location.search), asked = placeOf(q.get('q') || q.get('place') || '');
   $('q').value = asked;
