@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1193,
+ "counted": 1196,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -385,7 +385,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 14,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/art-source.js",
@@ -2386,14 +2386,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 100,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 98,
+   "dependants": 99,
    "tests": 35
   },
   {
@@ -2429,7 +2429,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 49,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/earnings.js",
@@ -2645,15 +2645,22 @@
    "file": "lib/watch-build.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 1
   },
   {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 3
+  },
+  {
+   "file": "lib/team.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 16,
+   "tests": 7
   },
   {
    "file": "lib/sale-jobs.js",
@@ -2663,11 +2670,11 @@
    "tests": 1
   },
   {
-   "file": "lib/team.js",
+   "file": "lib/team-leverage.js",
    "skills": 0,
    "direct": 0,
    "dependants": 15,
-   "tests": 6
+   "tests": 1
   },
   {
    "file": "lib/automations-run.js",
@@ -2695,7 +2702,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 14,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/x402.js",
@@ -2919,7 +2926,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/used.js",
@@ -3063,6 +3070,13 @@
   },
   {
    "file": "lib/lap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/life-arb.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -4311,6 +4325,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/life-arb.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/life-arb.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/local.js": {
    "imports": [
     "functions/api/answer.js",
@@ -4772,6 +4793,7 @@
     "functions/api/gumroad.js",
     "lib/automation-fix.js",
     "lib/team-priorities.js",
+    "lib/team-leverage.js",
     "lib/team.js",
     "lib/team-crew.js",
     "lib/job-guide.js",
@@ -8649,6 +8671,7 @@
     "functions/api/gumroad.js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
+    "functions/api/life-arb.js",
     "functions/api/misses.js",
     "functions/api/passkey.js",
     "functions/api/probe-asks.js",
@@ -9123,6 +9146,7 @@
     "functions/team/mcp.js",
     "lib/automations-run.js",
     "lib/team-crew-run.js",
+    "lib/team-leverage.js",
     "lib/team-priorities.js"
    ]
   },
@@ -9519,6 +9543,12 @@
   "lib/ledger.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/life-arb.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/life-arb.js"
+   ]
   },
   "lib/lineage.js": {
    "imports": [],
@@ -10841,6 +10871,7 @@
     "functions/api/hook/[id].js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
+    "functions/api/life-arb.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
@@ -13786,6 +13817,30 @@
     "lib/automations-run.js"
    ]
   },
+  "lib/team-leverage.js": {
+   "imports": [
+    "lib/team.js"
+   ],
+   "importedBy": [
+    "functions/api/team.js",
+    "lib/team-priorities.js"
+   ],
+   "reachedBy": [
+    "functions/api/approval.js",
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/crew.js",
+    "functions/api/github-events.js",
+    "functions/api/gumroad.js",
+    "functions/api/hook/[id].js",
+    "functions/api/members.js",
+    "functions/api/watch.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
+    "lib/automations-run.js",
+    "lib/team-crew-run.js"
+   ]
+  },
   "lib/team-mcp.js": {
    "imports": [
     "lib/mcp.js"
@@ -13796,7 +13851,8 @@
   },
   "lib/team-priorities.js": {
    "imports": [
-    "lib/team.js"
+    "lib/team.js",
+    "lib/team-leverage.js"
    ],
    "importedBy": [
     "functions/api/team.js",
@@ -13826,6 +13882,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/team-crew-run.js",
+    "lib/team-leverage.js",
     "lib/team-priorities.js"
    ],
    "reachedBy": [
@@ -14769,6 +14826,7 @@
     "functions/team/mcp.js",
     "lib/automations-run.js",
     "lib/team-crew-run.js",
+    "lib/team-leverage.js",
     "lib/team-priorities.js",
     "lib/team.js"
    ]
