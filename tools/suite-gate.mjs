@@ -62,12 +62,25 @@ export function squashOf(subject) {
   return m ? Number(m[1]) : 0;
 }
 
-/** every commit since the tested main only writes the incident record, or is the squash of a pull request in the same batch. Pure. */
+// The records the bots on main write every few minutes (site test, outcome exam, tower evidence, growth ledger, flakes,
+// conductor, hand-off log). The browser suite stubs them (claims-verified.json, tester-log.json) or reads the same file the
+// page serves (void.growth.json), so a commit that writes only these does not change what the suite tested. A suite run takes
+// about 21 minutes and these commits land every 5 to 15, so with only the incident record allowed nothing could merge
+// (2026-11-06: no merge after 08:05 UTC). tower.target.json stays out: the tower checks read it (3 went red on it that day).
+export const RECORDS = [
+  'void-live-deploy/incidents/', 'void-live-deploy/exam/', 'void-live-deploy/tower-evidence/', 'void-live-deploy/tower.shots/', 'growth/entries/',
+  'void-live-deploy/claims-verified.json', 'void-live-deploy/tester-log.json', 'void-live-deploy/void.growth.json',
+  'tools/site-test.json', 'tools/site-test.log.json', 'tools/site-test.seen.json', 'tools/flakes.json', 'tools/grown.json',
+  'domains/handoff.md', 'domains/void.agents.log.md', 'domains/conductor.json',
+];
+const isRecord = (f) => RECORDS.some((r) => (r.endsWith('/') ? String(f).startsWith(r) : String(f) === r));
+
+/** every commit since the tested main only writes the bots' records (RECORDS), or is the squash of a pull request in the same batch. Pure. */
 export function driftOk(commits, batch) {
   if (!Array.isArray(commits)) return false;
   const mates = new Set(batch || []);
-  const incident = (files) => (files || []).every((f) => String(f).startsWith('void-live-deploy/incidents/'));
-  return commits.every((files) => incident(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
+  const records = (files) => (files || []).every(isRecord);
+  return commits.every((files) => records(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
 }
 
 /** the suite passed, and either it merged this main, or only incident commits and squashes of its own batch landed since. Pure. */

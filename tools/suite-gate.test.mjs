@@ -106,3 +106,24 @@ test('a red batch is split in half until the red pull request runs alone, and on
   assert.equal(next.batch.length, 1, 'the half it was in, split again');
   assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), BATCH, 'main moved with code: a full batch again');
 });
+
+test('the bots\' records on main do not make a green suite stale; a page, a tower target or a test does (2026-11-06)', () => {
+  // the commits that landed during suite gate run 42191380554 (21 minutes) and the next 10 minutes
+  const log = parseLog([
+    'COMMIT Site test: visitor pass 14/15', '', 'tools/site-test.log.json', 'void-live-deploy/claims-verified.json', 'void-live-deploy/tester-log.json', '',
+    'COMMIT Outcome exam: podcasts 85.6', '', 'void-live-deploy/exam/history.json', 'void-live-deploy/exam/latest.json', '',
+    'COMMIT Site test: new ground passed', '', 'tools/site-test.json', 'tools/site-test.log.json', 'tools/site-test.seen.json', 'void-live-deploy/claims-verified.json', 'void-live-deploy/tester-log.json', '',
+    'COMMIT Growth: fold the waiting entries', '', 'growth/entries/20261106T073301Z-claude-f78329d8.json', 'void-live-deploy/void.growth.json', '',
+    'COMMIT Spotter: 1 check healed', '', 'tools/flakes.json', '',
+    'COMMIT Conductor: the last 24 hours', '', 'domains/conductor.json', '',
+    'COMMIT Failed jobs read', '', 'void-live-deploy/incidents/actions/42181363096.json', '',
+  ].join('\n'));
+  assert.equal(log.length, 7);
+  assert.equal(driftOk(log, []), true, 'records only: the suite result still holds');
+  assert.equal(mayMerge(row(5, pass(OLD), log), MAIN), true);
+  // a commit that also writes code, the page or the tower target is real drift
+  assert.equal(driftOk([...log, Object.assign(['void-live-deploy/tower-evidence/x.json', 'void-live-deploy/tower.target.json'], { subject: 'Tower gate: x' })], []), false);
+  assert.equal(driftOk([Object.assign(['void-live-deploy/exam/latest.json', 'void-live-deploy/void.html'], { subject: 'x' })], []), false);
+  assert.equal(driftOk([Object.assign(['tools/site-test.json.bak'], { subject: 'x' })], []), false, 'a record name is matched whole');
+  assert.equal(driftOk([Object.assign(['tools/test_void.mjs'], { subject: 'x' })], []), false);
+});
