@@ -1,14 +1,15 @@
-# The full browser suite on the merge of one pull request with current main, before automerge lands it
-# (Atom: no pull request merges unless it is green on top of current main). One run at a time. Nothing
-# is skipped: the same five shards verify.yml runs on main. A red result is a check on the pull request's
-# head; automerge does not merge it and does not queue it again until main or the head moves.
+# The full browser suite on current main with the ready pull requests merged into it, before automerge lands them
+# (Atom: no pull request merges unless it is green on top of current main). One run at a time, for up to 8 pull requests
+# (2026-11-06: one 25-minute run per pull request kept 30 waiting for half a day). A pull request that conflicts with the
+# others is left out of the run. Nothing is skipped: the same shards verify.yml runs on main. The result is a check on each
+# pull request's head that names the batch; automerge merges a green batch one by one, and splits a red batch in half.
 name: Suite on main
 
 on:
   workflow_dispatch:
     inputs:
       pr:
-        description: The pull request to test, merged with current main
+        description: The pull requests to test, merged into current main in this order (one number, or several separated by commas)
         required: true
         type: string
 
@@ -27,30 +28,40 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      sha: ${{ steps.meta.outputs.sha }}
       main: ${{ steps.meta.outputs.main }}
-      ref: ${{ steps.meta.outputs.ref }}
+      prs: ${{ steps.meta.outputs.prs }}
+      shas: ${{ steps.meta.outputs.shas }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-      - name: The pull request and the main it will merge
+      - name: The pull requests and the main they merge into
         id: meta
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ inputs.pr }}
         run: |
           set -euo pipefail
-          json=$(gh api "repos/${{ github.repository }}/pulls/$PR")
-          sha=$(printf '%s' "$json" | jq -r .head.sha)
-          ref=$(printf '%s' "$json" | jq -r .head.ref)
-          git fetch -q origin "$ref" main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           main=$(git rev-parse origin/main)
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          git checkout -q --detach "$main"
+          prs=""; shas=""
+          for n in $(printf '%s' "$PR" | tr ',' ' '); do
+            case "$n" in ''|*[!0-9]*) echo "skip '$n': not a pull request number"; continue;; esac
+            state=$(gh api "repos/${{ github.repository }}/pulls/$n" --jq .state)
+            [ "$state" = open ] || { echo "#$n is $state: left out"; continue; }
+            git fetch -q origin "pull/$n/head"
+            sha=$(git rev-parse FETCH_HEAD)
+            if git merge --no-edit -q "$sha" >/dev/null 2>&1; then prs="$prs $n"; shas="$shas $sha"; echo "#$n $sha merged into the batch"
+            else git merge --abort || true; echo "#$n conflicts with main or the batch: left out of this run"; fi
+          done
+          [ -n "$prs" ] || { echo "no pull request in this run"; exit 1; }
           echo "main=$main" >> "$GITHUB_OUTPUT"
-          echo "### #$PR $sha on top of $main" >> "$GITHUB_STEP_SUMMARY"
+          echo "prs=${prs# }" >> "$GITHUB_OUTPUT"
+          echo "shas=${shas# }" >> "$GITHUB_OUTPUT"
+          echo "### #${prs# } on top of $main" >> "$GITHUB_STEP_SUMMARY"
 
   suite:
     needs: prepare
@@ -63,15 +74,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.prepare.outputs.sha }}
+          ref: ${{ needs.prepare.outputs.main }}
           fetch-depth: 0
-      - name: Merge current main (the tree the suite judges)
+      - name: Merge the pull requests into main (the tree the suite judges)
+        env:
+          SHAS: ${{ needs.prepare.outputs.shas }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch -q origin "${{ needs.prepare.outputs.main }}"
-          git merge --no-edit "${{ needs.prepare.outputs.main }}"
+          for sha in $SHAS; do git fetch -q origin "$sha"; git merge --no-edit -q "$sha"; done
       - name: The full browser suite, shard ${{ matrix.shard }} of 8
         uses: ./.github/actions/void-test
         with:
@@ -85,27 +97,32 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Record the suite on the pull request head
+      - name: Record the suite on each pull request head, with the batch it ran in
         env:
           GH_TOKEN: ${{ github.token }}
-          SHA: ${{ needs.prepare.outputs.sha }}
+          SHAS: ${{ needs.prepare.outputs.shas }}
+          PRS: ${{ needs.prepare.outputs.prs }}
           MAIN: ${{ needs.prepare.outputs.main }}
           RESULT: ${{ needs.suite.result }}
         run: |
           set -euo pipefail
-          if [ "$RESULT" = "success" ]; then conclusion=success; summary="The full browser suite passed on the merge with main $MAIN. Nothing was skipped."; else conclusion=failure; summary="The full browser suite did not pass on the merge with main $MAIN ($RESULT). This pull request does not merge."; fi
-          gh api --method POST "repos/${{ github.repository }}/check-runs" \
-            -f name=suite-on-main \
-            -f head_sha="$SHA" \
-            -f status=completed \
-            -f conclusion="$conclusion" \
-            -f "output[title]=main:$MAIN" \
-            -f "output[summary]=$summary"
-          echo "### suite-on-main $conclusion for main:$MAIN" >> "$GITHUB_STEP_SUMMARY"
-      - name: Wake automerge for this pull request
+          [ -n "$SHAS" ] || { echo "no pull request was tested"; exit 0; }
+          batch=$(for n in $PRS; do printf '#%s ' "$n"; done)
+          if [ "$RESULT" = "success" ]; then conclusion=success; summary="The full browser suite passed on main $MAIN with these pull requests merged into it. Nothing was skipped."; else conclusion=failure; summary="The full browser suite did not pass on main $MAIN with these pull requests merged into it ($RESULT). None of them merges from this run; a batch of several is split and run again."; fi
+          for sha in $SHAS; do
+            gh api --method POST "repos/${{ github.repository }}/check-runs" \
+              -f name=suite-on-main \
+              -f head_sha="$sha" \
+              -f status=completed \
+              -f conclusion="$conclusion" \
+              -f "output[title]=main:$MAIN" \
+              -f "output[summary]=$summary
+          batch: ${batch% }"
+          done
+          echo "### suite-on-main $conclusion for main:$MAIN, batch ${batch% }" >> "$GITHUB_STEP_SUMMARY"
+      - name: Wake automerge
         if: always()
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          PR: ${{ inputs.pr }}
-        run: gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main -f pr="$PR"
+        run: gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main # a sweep: a green batch merges every pull request in it

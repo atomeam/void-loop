@@ -19,7 +19,7 @@ import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
-import { choose, nextAfterMerge, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
+import { choose, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
@@ -223,35 +223,38 @@ if (ready.length && !limited) {
     } catch (_) {}
     const tested = recordedMain(suite);
     if (tested && mainSha && !samePrefix(tested, mainSha)) {
-      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT', tested + '..' + mainSha])); } catch (_) { drift = null; }
+      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s', tested + '..' + mainSha])); } catch (_) { drift = null; }
     }
     rows.push({ ...row, suite, drift });
   }
   choice = choose(rows, mainSha, running);
   const pick = choice.pr;
   console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
-  if (choice.action === 'queue' && pick && pick.r && pick.r.branch) {
-    try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', pick.r.branch, '-f', `pr=${pick.number}`]); console.log(`#${pick.number}: full suite started on top of ${String(mainSha).slice(0, 7)}`); }
-    catch (e) { console.log(`#${pick.number}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
-  }
+  // one suite run for the whole batch, dispatched from main: the workflow on main reads a list of pull requests (2026-11-06)
+  const startSuite = (batch, where) => {
+    const list = (batch || []).map((x) => x.number).filter(Boolean);
+    if (!list.length) return;
+    try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${list.join(',')}`]); console.log(`#${list.join(', #')}: full suite started ${where}`); }
+    catch (e) { console.log(`#${list.join(', #')}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
+  };
+  if (choice.action === 'queue' && pick) startSuite(choice.batch && choice.batch.length ? choice.batch : [pick], 'on top of ' + String(mainSha).slice(0, 7));
   if (choice.action === 'merge' && pick) {
-    const p = pick.p, r = pick.r;
-    try {
-      if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-      if (eligible(p, repo) && p.auto_merge) {
-        try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
-      }
-      const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-      if (m.merged) {
-        merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
-        // main moved: start the suite for the next ready pull request now, not at the next hourly sweep (2026-11-06)
-        const next = nextAfterMerge(rows, pick);
-        if (next && next.r && next.r.branch) {
-          try { run(['workflow', 'run', 'suite-gate.yml', '--repo', repo, '--ref', next.r.branch, '-f', `pr=${next.number}`]); console.log(`#${next.number}: full suite started on the new main`); }
-          catch (e) { console.log(`#${next.number}: could not start the suite: ${String(e.stderr || e.message || e).slice(0, 200)}`); }
+    // the pull requests one green run tested, merged one after another; the first refusal stops the rest (they wait for the next run)
+    const done = [];
+    for (const row of (choice.batch && choice.batch.length ? choice.batch : [pick])) {
+      const p = row.p, r = row.r;
+      try {
+        if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
+        if (eligible(p, repo) && p.auto_merge) {
+          try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
         }
-      }
-    } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); }
+        const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
+        if (!m.merged) break;
+        merged++; done.push(row); console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
+      } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); break; }
+    }
+    // main moved: start the suite for the next ready pull requests now, not at the next hourly sweep (2026-11-06)
+    if (done.length) startSuite(nextBatch(rows, done), 'on the new main');
   }
 }
 // The stall alarm (tools/merge-stall.mjs): in a sweep, no merge for 2 hours while a green pull request waits opens one issue
