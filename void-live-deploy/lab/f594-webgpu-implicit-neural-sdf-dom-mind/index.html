@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+  #scene { position: fixed; inset: 0; perspective: 800px; pointer-events: none; }
+  .node {
+    position: absolute; width: 120px; height: 70px; background: rgba(30,40,60,0.75);
+    border: 1px solid #4af; border-radius: 8px; padding: 8px; font-size: 12px;
+    transform-style: preserve-3d; pointer-events: auto; cursor: pointer;
+    backdrop-filter: blur(4px); transition: box-shadow 0.2s;
+  }
+  .node:hover { box-shadow: 0 0 20px #4af; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 13px; z-index: 10; }
+  #status { color: #8f8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Implicit Neural SDF DOM Mind · Verse lab</title>
+<meta name="description" content="A novel hybrid spatial interface for The Verse canvas: an implicit neural signed-distance field (SDF) of a &quot;mind volume&quot; that is raymarched in WebGPU for a live">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Implicit Neural SDF DOM Mind · Verse lab">
+<meta property="og:description" content="A novel hybrid spatial interface for The Verse canvas: an implicit neural signed-distance field (SDF) of a &quot;mind volume&quot; that is raymarched in WebGPU for a live">
+<meta property="og:url" content="https://a-to-mind.com/lab/f594-webgpu-implicit-neural-sdf-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f594-webgpu-implicit-neural-sdf-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="scene"></div>
+<div id="hud">
+  F594 Implicit Neural SDF Mind<br>
+  <span id="status">Initializing…</span><br>
+  Click to sculpt surface · Nodes stick to evolving field
+</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Implicit Neural SDF DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

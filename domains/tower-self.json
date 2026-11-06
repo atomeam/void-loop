@@ -1300,25 +1300,93 @@
     "place": 8,
     "why": "not sized yet, hardness 97, Tranco 304708"
    }
+  },
+  "firefox-portal-detection.com": {
+   "at": "2026-11-06T09:46:15Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (7 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 1,
+    "why": "0 controls, 0 KB, Tranco 204"
+   }
+  },
+  "id5-sync.com": {
+   "at": "2026-11-06T09:46:19Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (12 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 2,
+    "why": "0 controls, 0 KB, Tranco 1268"
+   }
+  },
+  "mega.co.nz": {
+   "at": "2026-11-06T09:46:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a cloud storage and encrypted file sharing service. Verse does not have a page for cloud storage, file hosting, or secure data synchronization)",
+   "title": "MEGA: Protect your Online Privacy",
+   "ease": {
+    "score": 99.9,
+    "place": 3,
+    "why": "0 controls, 1 KB, Tranco 572"
+   }
+  },
+  "example.com": {
+   "at": "2026-11-06T09:46:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a placeholder domain for documentation examples and explicitly states it is not a service for testing or monitoring. Since Verse is a)",
+   "title": "Example Domain",
+   "ease": {
+    "score": 99.9,
+    "place": 4,
+    "why": "0 controls, 1 KB, Tranco 177"
+   }
+  },
+  "uisp.com": {
+   "at": "2026-11-06T09:46:45Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides ISP network management software and hardware, including billing, monitoring, and network design tools. Verse has no tool for network)",
+   "title": "UISP Overview - Ubiquiti",
+   "ease": {
+    "score": 99.9,
+    "place": 5,
+    "why": "0 controls, 1 KB, Tranco 2905"
+   }
+  },
+  "feednews.com": {
+   "at": "2026-11-06T09:46:46Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 99.9,
+    "place": 6,
+    "why": "0 controls, 1 KB, Tranco 4672"
+   }
+  },
+  "samsunghealth.com": {
+   "at": "2026-11-06T09:46:50Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a health and wellness platform providing services like activity tracking and fitness monitoring. Verse does not have a page that offers health)",
+   "title": "Samsung Health",
+   "ease": {
+    "score": 99.9,
+    "place": 7,
+    "why": "0 controls, 1 KB, Tranco 3263"
+   }
+  },
+  "netcraze.io": {
+   "at": "2026-11-06T09:46:51Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 99.9,
+    "place": 8,
+    "why": "0 controls, 1 KB, Tranco 444"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-26T16:56:18Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-26T16:58:53Z",
-   "line": "Versus: took on no site; next supercolorapp.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
   {
    "at": "2026-10-26T22:52:52Z",
    "line": "Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io",
@@ -1659,6 +1727,25 @@
    "fixed": [],
    "pages_per_day": 2,
    "reads_next": "uniteforliteracy.com"
+  },
+  {
+   "at": "2026-11-06T09:47:01Z",
+   "line": "Versus: took on no site (also read: 4 walled, 4 no-family); next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com"
+  },
+  {
+   "at": "2026-11-06T09:49:35Z",
+   "line": "Versus: took on no site; next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com",
+   "noop": true
   }
  ]
 }

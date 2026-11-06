@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1191,
+ "counted": 1193,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -384,7 +384,7 @@
    "file": "lib/movies.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
@@ -421,6 +421,13 @@
    "direct": 4,
    "dependants": 9,
    "tests": 1
+  },
+  {
+   "file": "lib/calendar.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 6
   },
   {
    "file": "lib/match-history.js",
@@ -484,13 +491,6 @@
    "direct": 2,
    "dependants": 16,
    "tests": 1
-  },
-  {
-   "file": "lib/calendar.js",
-   "skills": 5,
-   "direct": 1,
-   "dependants": 11,
-   "tests": 5
   },
   {
    "file": "lib/selfcheck.js",
@@ -759,6 +759,13 @@
    "tests": 1
   },
   {
+   "file": "lib/film-discovery.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
    "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
@@ -831,7 +838,7 @@
   {
    "file": "lib/ics.js",
    "skills": 3,
-   "direct": 1,
+   "direct": 2,
    "dependants": 9,
    "tests": 1
   },
@@ -965,6 +972,13 @@
    "file": "lib/list-ops.js",
    "skills": 3,
    "direct": 3,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/movie-intent.js",
+   "skills": 3,
+   "direct": 1,
    "dependants": 3,
    "tests": 1
   },
@@ -1781,13 +1795,6 @@
    "tests": 2
   },
   {
-   "file": "lib/film-discovery.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/formula-engine.js",
    "skills": 1,
    "direct": 0,
@@ -2198,7 +2205,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/routine-skill.js",
@@ -2677,6 +2684,13 @@
    "tests": 1
   },
   {
+   "file": "lib/team-crew.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 14,
+   "tests": 1
+  },
+  {
    "file": "lib/team-priorities.js",
    "skills": 0,
    "direct": 0,
@@ -2832,13 +2846,6 @@
   },
   {
    "file": "lib/members.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/team-crew.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -4766,6 +4773,7 @@
     "lib/automation-fix.js",
     "lib/team-priorities.js",
     "lib/team.js",
+    "lib/team-crew.js",
     "lib/job-guide.js",
     "lib/brain-dream.js",
     "lib/automations-run.js",
@@ -6738,6 +6746,7 @@
     "lib/agenda.js",
     "lib/calshare.js",
     "lib/chat-calendar.js",
+    "lib/ritual.js",
     "skills/calendar-file.js"
    ],
    "reachedBy": [
@@ -6746,7 +6755,8 @@
     "skills/calendar-fill.js",
     "skills/calendar.js",
     "skills/calendar3d.js",
-    "skills/dates.js"
+    "skills/dates.js",
+    "skills/ritual-template.js"
    ]
   },
   "lib/calshare.js": {
@@ -8236,7 +8246,13 @@
    ],
    "importedBy": [
     "functions/api/filmfind.js",
+    "lib/movie-intent.js",
     "skills/film-metadata.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js",
+    "skills/movie.js",
+    "skills/pick-for-me.js"
    ]
   },
   "lib/film-reviews.js": {
@@ -8960,13 +8976,13 @@
     "lib/flights-core.js",
     "lib/jobs-core.js",
     "lib/ritual.js",
-    "skills/calendar-file.js"
+    "skills/calendar-file.js",
+    "skills/ritual-template.js"
    ],
    "reachedBy": [
     "functions/api/jobs.js",
     "lib/flights-ui.js",
     "lib/jobs-ui.js",
-    "skills/ritual-template.js",
     "skills/work.js"
    ]
   },
@@ -10283,6 +10299,18 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/movie-intent.js": {
+   "imports": [
+    "lib/film-discovery.js"
+   ],
+   "importedBy": [
+    "skills/movie.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js",
+    "skills/pick-for-me.js"
+   ]
+  },
   "lib/movies.js": {
    "imports": [],
    "importedBy": [
@@ -10296,6 +10324,7 @@
    ],
    "reachedBy": [
     "functions/api/filmfind.js",
+    "lib/movie-intent.js",
     "skills/calendar-fill.js",
     "skills/calendar.js",
     "skills/dates.js",
@@ -12306,7 +12335,8 @@
   },
   "lib/ritual.js": {
    "imports": [
-    "lib/ics.js"
+    "lib/ics.js",
+    "lib/calendar.js"
    ],
    "importedBy": [
     "skills/ritual-template.js"
@@ -13738,11 +13768,22 @@
   "lib/team-crew.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/team.js",
     "lib/team-crew-run.js"
    ],
    "reachedBy": [
+    "functions/api/approval.js",
+    "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/crew.js"
+    "functions/api/crew.js",
+    "functions/api/github-events.js",
+    "functions/api/gumroad.js",
+    "functions/api/hook/[id].js",
+    "functions/api/members.js",
+    "functions/api/watch.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
+    "lib/automations-run.js"
    ]
   },
   "lib/team-mcp.js": {
@@ -16631,6 +16672,10 @@
    ],
    "importedBy": []
   },
+  "skills/heavy-lift-map.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/holidays.js": {
    "imports": [],
    "importedBy": [
@@ -16823,6 +16868,10 @@
    "importedBy": []
   },
   "skills/know.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/lab.js": {
    "imports": [],
    "importedBy": []
   },
@@ -17502,7 +17551,8 @@
   },
   "skills/movie.js": {
    "imports": [
-    "lib/movies.js"
+    "lib/movies.js",
+    "lib/movie-intent.js"
    ],
    "importedBy": [
     "skills/media-pick.js",
@@ -18157,7 +18207,8 @@
   },
   "skills/ritual-template.js": {
    "imports": [
-    "lib/ritual.js"
+    "lib/ritual.js",
+    "lib/ics.js"
    ],
    "importedBy": []
   },
@@ -19305,10 +19356,6 @@
     "lib/watch.js",
     "skills/live.js"
    ],
-   "importedBy": []
-  },
-  "skills/we-own.js": {
-   "imports": [],
    "importedBy": []
   },
   "skills/weather.js": {

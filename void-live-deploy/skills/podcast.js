@@ -1,5 +1,5 @@
 /**
- * podcast skill - Verse Out Loud, Verse's own weekly podcast (owner, 2026-10-21: "Verse should make its own podcast").
+ * podcast skill - Verse Out Loud, Verse's own daily podcast (owner, 2026-10-21: "Verse should make its own podcast").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * The episodes are made by tools/podcast.mjs from the public record only (growth ledger, proven asks, Verse's own daily readout,
  * the incident log) and voiced with Piper, an open-source voice that runs on the CI machine (no account, no cost). The card plays the
@@ -89,7 +89,7 @@ async function run(text, api) {
   let all = [];
   try { all = (await fetch('/podcast/episodes.json', { cache: 'no-cache' }).then((r) => r.json())).episodes || []; } catch (_) {}
   if (api._pageStill && !api._pageStill(el)) return 'podcast';
-  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the weekly podcast workflow.</p>'; return 'podcast'; }
+  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the daily podcast workflow.</p>'; return 'podcast'; }
   const show = (n) => {
     const ep = all.find((e) => e.n === n) || all[all.length - 1];
     el.innerHTML = cardHtml(ep, all, esc, location.origin);

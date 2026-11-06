@@ -4,7 +4,7 @@
   "unitingchurch.org.au": {
    "status": "parked",
    "since": "2026-11-05T03:43:40.099Z",
-   "checked": "2026-11-06T08:05:03.493Z",
+   "checked": "2026-11-06T12:28:11.322Z",
    "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au",
    "final": "https://controlhosting.net/"
   }
