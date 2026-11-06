@@ -312,6 +312,9 @@
     },
     {
       "ask": "yo funny cartoon dog"
+    },
+    {
+      "ask": "funny cartoon dog pls"
     }
   ],
   "candidates": [],
