@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1187,
+ "counted": 1188,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1305,6 +1305,13 @@
    "tests": 1
   },
   {
+   "file": "lib/follow-ask.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 1
+  },
+  {
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
@@ -2559,13 +2566,6 @@
   },
   {
    "file": "lib/draft.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 28,
-   "tests": 1
-  },
-  {
-   "file": "lib/follow-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 28,
@@ -6120,7 +6120,8 @@
   "lib/brain-dialogue.js": {
    "imports": [
     "lib/brain-organs.js",
-    "lib/brain-workspace.js"
+    "lib/brain-workspace.js",
+    "lib/follow-ask.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -8339,7 +8340,8 @@
   "lib/follow-ask.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/brain-dialogue.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -8368,7 +8370,15 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain-route.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/forge-duel.js": {
