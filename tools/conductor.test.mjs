@@ -121,6 +121,26 @@ test('a paused coder (domains/verse-loop.pause) takes no job and says why; the o
   assert.equal(p.start.find((s) => s.wf === 'propose-fix.yml').id, 'p1', 'probes are not the coder\'s');
 });
 
+test('the coder\'s own back-off holds its jobs with the reason the conductor read (no claim, no run that answers "paused")', async () => {
+  const jobs = [job('w1', 'will:paint'), job('p1', 'probe:q')];
+  const why = "the coder's back-off, #2386, until 12:08 UTC";
+  const p = plan({ jobs, wf: all({ [AGENT]: { paused: true, pausedWhy: why } }), now: NOW });
+  assert.ok(!p.start.some((s) => s.wf === AGENT));
+  assert.ok(p.held.some((h) => h.id === 'w1' && h.why.includes(why)));
+  const { loopBackoff } = await import('./conductor.mjs');
+  const issue = JSON.stringify([{ number: 2386, title: 'Verse loop paused', createdAt: '2026-11-06T06:08:54Z' }]);
+  const commit = (at) => JSON.stringify([{ commit: { committer: { date: at } } }]);
+  // paused: the issue is open and the loop's code has not changed since
+  assert.match(loopBackoff(Date.parse('2026-11-06T07:20:00Z'), (k) => k === 'issue' ? issue : commit('2026-11-05T01:00:00Z')), /#2386, until 12:08 UTC/);
+  // a fix to the loop's code after the pause began resumes it at once, as the loop itself does
+  assert.equal(loopBackoff(Date.parse('2026-11-06T07:40:00Z'), (k) => k === 'issue' ? issue : commit('2026-11-06T07:30:00Z')), null);
+  // six hours on: over by itself
+  assert.equal(loopBackoff(Date.parse('2026-11-06T12:30:00Z'), (k) => k === 'issue' ? issue : commit('2026-11-05T01:00:00Z')), null);
+  // no issue, or GitHub unreadable: not paused (the run still honours its own pause)
+  assert.equal(loopBackoff(NOW, () => '[]'), null);
+  assert.equal(loopBackoff(NOW, () => { throw new Error('HTTP 403'); }), null);
+});
+
 test('verse-job and verse-loop are one coder: a lap running holds the queue job back, and neither is handed its own repair', () => {
   const jobs = [job('w1', 'will:paint')];
   const busy = plan({ jobs, wf: { ...all(), [LAP]: live({ busy: true }) }, now: NOW });

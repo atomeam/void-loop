@@ -13,8 +13,8 @@
  "smoke_at": "2026-11-06",
  "bench_at": "2026-11-05",
  "totals": {
-  "experiment": 1,
-  "tested": 12,
+  "experiment": 0,
+  "tested": 14,
   "checked": 13,
   "proven": 385
  },
@@ -3595,19 +3595,19 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 1,
-    "tested": 5,
+    "experiment": 0,
+    "tested": 7,
     "checked": 2,
     "proven": 49
    },
    "skills": [
     {
      "name": "lab",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-11-06"
+     "promoted": "2026-11-06"
     },
     {
      "name": "team-chat",
@@ -3874,6 +3874,13 @@
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
      "streak": 2
+    },
+    {
+     "name": "heavy-lift-map",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "store",
