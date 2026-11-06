@@ -14,6 +14,9 @@ const FN = join(ROOT, 'functions');
 export const INTERNAL = {
   '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
+  '/api/life-arb': "the owner's private life-arbitrage list for /life-arb/ (functions/api/life-arb.js, lib/life-arb.js): GET and marks are owner only; a keyless scan answers counts per source only, at most every 3 hours, for .github/workflows/life-arb.yml; private by design, so never published",
+  '/api/paypal': "what the /code-review/ PayPal checkout sells (functions/api/paypal/index.js): GET only, the price and whether it is open; the page's PayPal button is the caller, and the public machine-paid route is x402 (/api/x402/)",
+  '/api/paypal/review': "the /code-review/ PayPal checkout itself (functions/api/paypal/review.js, lib/paypal.js): an order tied to the hash of the code, then the review once PayPal approves it; the page's PayPal button is the caller, and the public machine-paid route is x402 (/api/x402/)",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
   '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",
   '/api/selfcheck': "Verse's check of its own pages: the status card reads the newest report, and only the owner's self-check job (tools/self-check.mjs, .github/workflows/self-check.yml) hands one in (functions/api/selfcheck.js)",
