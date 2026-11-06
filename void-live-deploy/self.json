@@ -270,6 +270,12 @@
    "date": "2026-11-04",
    "ask": "system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff)",
    "from": "new idea by growth agent; helper/system-status"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
+   "from": "new idea by growth agent; helper/heavy-lift-map"
   }
  ],
  "open": [
@@ -582,84 +588,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T06:38:52Z",
-   "subject": "Verse Brain organ 26: Reflex, the tiny MLP drafts"
+   "at": "2026-11-06T16:26:03Z",
+   "subject": "Rebuild the parity docs after the merge"
   },
   {
-   "at": "2026-11-06T06:37:08Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+   "at": "2026-11-06T16:20:02Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T06:33:53Z",
-   "subject": "treasury: found money and the weekly review"
+   "at": "2026-11-06T16:19:23Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T06:31:30Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-06T16:18:24Z",
+   "subject": "Mark heavy-lift-map shipped with main SHA d93f7ca after PR #2435 merge (#2449)"
   },
   {
-   "at": "2026-11-06T06:28:33Z",
-   "subject": "Wallet watch: wait and move to the next Base endpoint when one rate-limits the read (#2394)"
+   "at": "2026-11-06T16:16:57Z",
+   "subject": "Verse Out Loud: today's episode, read from the day's record"
   },
   {
-   "at": "2026-11-06T06:27:35Z",
-   "subject": "Arbitrage scanner: a record of past scans, from real rows only (#2393)"
+   "at": "2026-11-06T16:15:25Z",
+   "subject": "Dark mic and sound keys on the home ask bar; the design loop runs every 2 hours and flags bare controls (#2392)"
   },
   {
-   "at": "2026-11-06T06:26:13Z",
-   "subject": "treasury: found money and the weekly review"
+   "at": "2026-11-06T16:12:58Z",
+   "subject": "Verse loop: nightly (#2436)"
   },
   {
-   "at": "2026-11-06T06:25:36Z",
-   "subject": "Trading bots: one paid-call route for backtest and arbitrage, and escaped tables (#2373)"
+   "at": "2026-11-06T16:10:43Z",
+   "subject": "Movie pick: read each film's genre from Wikidata, so the match score can test it (#2437)"
   },
   {
-   "at": "2026-11-06T06:20:58Z",
-   "subject": "Design pass batch 2: pages no longer jump while their data loads (#2390)"
+   "at": "2026-11-06T16:10:26Z",
+   "subject": "Morning routine: \"make me a morning routine starting at 6:30\" is a ritual, not a recipe timer (#2439)"
   },
   {
-   "at": "2026-11-06T06:20:33Z",
-   "subject": "Treasury: Verse reads every USDC transfer into its wallet from the chain, daily (#2391)"
+   "at": "2026-11-06T16:10:05Z",
+   "subject": "Podcast: a hung ffmpeg install no longer cancels the daily episode (#2447)"
   },
   {
-   "at": "2026-11-06T06:18:55Z",
-   "subject": "Timer unit test: the stub stage can pick, and the timer is picked after add time (#2389)"
+   "at": "2026-11-06T16:09:56Z",
+   "subject": "Outcome exam: podcasts 86.4"
   },
   {
-   "at": "2026-11-06T06:17:21Z",
-   "subject": "Pick the timer that \"add one minute\" changes; clear stale picked marks (#2388)"
+   "at": "2026-11-06T16:08:18Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T06:15:55Z",
-   "subject": "Outcome exam: podcasts 85.6"
+   "at": "2026-11-06T16:06:16Z",
+   "subject": "Failed jobs read: run 42244869099 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-06T06:15:52Z",
-   "subject": "GAPS batch 5: grocery list, big block letters, event countdown, tournament bracket (#2384)"
+   "at": "2026-11-06T16:06:06Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T06:14:58Z",
-   "subject": "Site test: fix: \"play reversi\" console: Cannot read properties of undef"
+   "at": "2026-11-06T16:05:43Z",
+   "subject": "Main green: list groceries fills the open list, no-list removes answer at once, list card types over the seeded title (#2426)"
   },
   {
-   "at": "2026-11-06T06:14:34Z",
-   "subject": "MCP: every paid tool runs and gets a 402, and the registry listing moves to Verse 1.2.0 (#2383)"
+   "at": "2026-11-06T16:05:26Z",
+   "subject": "Incident: the browser suite failed on 923ce150 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-06T06:11:29Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-06T16:05:13Z",
+   "subject": "Automerge sweep: safety-check on the chosen batch only, so the sweep reaches the suite gate (#2425)"
   },
   {
-   "at": "2026-11-06T06:09:01Z",
-   "subject": "Design pass batch 1: tap targets and button contrast on every tool page (#2385)"
+   "at": "2026-11-06T16:03:51Z",
+   "subject": "Lab: 475 experiments live at /lab/, 23 waiting for a fix (#2441)"
   },
   {
-   "at": "2026-11-06T06:02:51Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-06T16:01:42Z",
+   "subject": "Film card: link the Internet Archive only as a checked free film that plays here (#2442)"
   },
   {
-   "at": "2026-11-06T05:58:56Z",
-   "subject": "Incident: the browser suite failed on c5a28a1f (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T16:01:01Z",
+   "subject": "Team jobs: one piece of work to one seat, the highest leverage first, no busywork (#2443)"
   }
  ],
  "builders": {
@@ -841,8 +847,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 179
+  "day": 51,
+  "week": 202
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -894,19 +900,20 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 99 (476 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-05T13:14Z",
+  "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-06T12:58Z",
   "source": "verse"
  },
  "tower": {
-  "target": "wheelofgold.com",
-  "since": "2026-11-05",
+  "target": "id5-sync.com",
+  "since": "2026-11-06",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1269
+  "total": 1301
  }
 }
