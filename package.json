@@ -1,7 +1,6 @@
 {
   "name": "void-loop",
   "private": true,
-  "license": "MIT",
   "type": "module",
   "bin": {
     "verse-loop": "tools/verse-loop.mjs"

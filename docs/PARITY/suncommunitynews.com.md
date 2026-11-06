@@ -12,9 +12,9 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Top stories, updated through the day | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:87 `sec="top" aria-pressed="true">Top stories</button><button type="button" data-sec="world" a` |
-| Sections: world, business, science, sport | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:86 `<nav id="secs" aria-label="Sections">` |
-| Regional editions | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:87 `dle-east" aria-pressed="false">Middle East</button><button type="button" data-sec="latin-a` |
-| Search the news | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:83 `<label class="vh" for="q">Search the headlines</label>` |
-| Full articles written by its own reporters | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:87 `"report" aria-pressed="false">Verse reports</button><button type="button" data-sec="my" ar` |
+| Top stories, updated through the day | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:91 `sec="top" aria-pressed="true">Top stories</button><button type="button" data-sec="world" a` |
+| Sections: world, business, science, sport | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:90 `<nav id="secs" aria-label="Sections">` |
+| Regional editions | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:91 `dle-east" aria-pressed="false">Middle East</button><button type="button" data-sec="latin-a` |
+| Search the news | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:87 `<label class="vh" for="q">Search the headlines</label>` |
+| Full articles written by its own reporters | Reading | have | every site of this kind offers it | void-live-deploy/news/global-headlines/index.html:91 `"report" aria-pressed="false">Verse reports</button><button type="button" data-sec="my" ar` |
 | Its live pages could not be read, so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://suncommunitynews.com/ | not compared yet |
