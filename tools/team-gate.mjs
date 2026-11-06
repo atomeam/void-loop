@@ -25,7 +25,7 @@ const PR_RE = /^review by team:([^·]+?) · PR: (https:\/\/github\.com\/atomeam\
 const NOTES = /^(domains\/|docs\/)|\.md$/i;
 const PAGE = /^void-live-deploy\/([a-z0-9][a-z0-9-]*)\/index\.html$/;
 const ENGINE = /^void-live-deploy\/lib\/[^/]+\.js$/;
-export const SMALL = 40; // lines a fix may take away without question
+export const SMALL = 40; // net lines (out minus in) a fix may take away without question
 
 /** the handed-in job a queue row is: { agent, url, number } or null. Pure. */
 export function handedIn(job) {
@@ -45,7 +45,7 @@ export function judge(job, pr, files) {
   const fs = files || [], removed = fs.filter((f) => f.status === 'removed').length;
   if (removed) return { back: 'its pull request removes ' + removed + ' file' + (removed > 1 ? 's' : '') + ': built on an old copy of main?' };
   const adds = fs.reduce((n, f) => n + (f.additions || 0), 0), dels = fs.reduce((n, f) => n + (f.deletions || 0), 0);
-  if (dels > SMALL && dels > adds) return { back: 'its pull request takes away more than it adds (' + dels + ' lines out, ' + adds + ' in): built on an old copy of main?' };
+  if (dels - adds > SMALL) return { back: 'its pull request takes away more than it adds (' + dels + ' lines out, ' + adds + ' in): built on an old copy of main?' };
   if (!fs.some((f) => !NOTES.test(f.filename))) return { back: 'its pull request changes only notes, not the page or the code' };
   const pages = pagesOf(fs);
   if (kindOf(job.target) === 'versus' && !pages.length && !fs.some((f) => ENGINE.test(f.filename))) return { back: 'a versus job needs the page itself; its pull request changes no page' };
