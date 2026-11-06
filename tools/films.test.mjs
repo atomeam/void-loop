@@ -24,7 +24,12 @@ function r2() {
     head: async (k) => (m.has(k) ? obj(k, m.get(k)) : null),
     get: async (k, o = {}) => { const v = m.get(k); if (!v) return null; const b = o.range ? v.bytes.slice(o.range.offset, o.range.offset + o.range.length) : v.bytes;
       return { ...obj(k, v), body: b, text: async () => new TextDecoder().decode(b) }; },
-    list: async ({ prefix }) => ({ objects: [...m].filter(([k]) => k.startsWith(prefix)).map(([k, v]) => obj(k, v)) }) };
+    // like R2: keys in order, at most `limit` a call, with a cursor while there are more
+    list: async ({ prefix, limit = 1000, cursor }) => {
+      const all = [...m].filter(([k]) => k.startsWith(prefix)).sort(([a], [b]) => (a < b ? -1 : 1)), at = Number(cursor || 0);
+      const part = all.slice(at, at + Math.min(limit, 1000)), end = at + part.length;
+      return { objects: part.map(([k, v]) => obj(k, v)), truncated: end < all.length, ...(end < all.length ? { cursor: String(end) } : {}) };
+    } };
 }
 const OWNER = 'owner-token-for-tests-1234567890';
 async function world() {
@@ -151,4 +156,58 @@ test('a film that has not passed the quality gate stays unlisted: stored, seen o
   // reversible: the words again with gate 'pass' list it
   await post({ words: { title: 'Old text card', description: 'd', tags: '', gate: 'pass' }, wordsOnly: true, id: '20261103-old-card-r1', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
   assert.equal((await ids(null)).length, 2);
+});
+
+test('the list has no ceiling (owner, 2026-11-06: "films is stopping at 60 ? why ?"): every stored film comes back, a page at a time, past R2\'s 1000 keys a call', async () => {
+  const { env } = await world();
+  const N = 650; // 1300 keys: two R2 list calls
+  for (let i = 0; i < N; i++) {
+    const id = 'film-' + String(i).padStart(4, '0');
+    await env.FILMS.put('films/' + id + '.mp4', FILM);
+    await env.FILMS.put('films/' + id + '.json', JSON.stringify({ title: 't' + i, gate: i % 3 ? 'pass' : '' }));
+  }
+  assert.equal((await api.storedFilms(env)).length, N, 'every film in the bucket, past the first 1000 keys');
+  const walk = async (auth) => {
+    const seen = []; let from = 0, pages = 0;
+    for (;;) {
+      const j = await (await get(env, auth, '/api/films' + (from ? '?from=' + from : ''))).json();
+      seen.push(...j.films.map((f) => f.id)); pages++;
+      if (j.next == null) return { seen, pages, first: j };
+      assert.ok(j.next > from, 'each page moves on'); from = j.next;
+    }
+  };
+  const all = await walk(OWNER);
+  assert.equal(all.seen.length, N, 'the owner gets every film, the unlisted marked'); assert.equal(new Set(all.seen).size, N, 'none twice');
+  assert.equal(all.seen[0], 'film-0649', 'newest first'); assert.ok(all.pages > 1);
+  const first = await (await get(env, OWNER)).json();
+  assert.equal(first.films.length, api.PAGE); assert.equal(first.stored, N, 'the owner is told how many are stored');
+  const open = await walk(null);
+  assert.equal(open.seen.length, N - Math.ceil(N / 3), 'anyone gets every film that passed the gate, on every page');
+  assert.equal(open.first.stored, undefined, 'only the owner sees the stored count');
+});
+
+test('the grid reads past 60 (owner, 2026-11-06: "ok still capping at 60 videos"): a page of pictures never spends the next page\'s budget', async () => {
+  const { env } = await world();
+  for (let i = 0; i < 130; i++) {
+    const id = 'film-' + String(i).padStart(4, '0');
+    await env.FILMS.put('films/' + id + '.mp4', FILM);
+    await env.FILMS.put('films/' + id + '.json', JSON.stringify({ title: 't' + i, gate: 'pass' }));
+  }
+  const through = (path, next) => guard({ request: new Request('https://x.test' + path, { headers: { 'cf-connecting-ip': '203.0.113.60' } }), env, next });
+  const list = (path) => through(path, (req) => api.onRequestGet({ request: req, env }));
+  const first = await (await list('/api/films')).json();
+  assert.equal(first.films.length, api.PAGE); assert.equal(first.next, api.PAGE);
+  // the browser loads every card's picture: one Range GET or more per film, all signed links, more than the list's whole minute
+  for (let i = 0; i < 2; i++) for (const f of first.films) {
+    const r = await through(f.src, () => new Response('x', { status: 206 }));
+    assert.equal(r.status, 206, 'a signed picture is never refused for the list\'s budget');
+  }
+  const second = await list('/api/films?from=' + first.next);
+  assert.equal(second.status, 200, 'the next page is still answered after 120 pictures in the same minute');
+  const j = await second.json();
+  assert.equal(j.films.length, api.PAGE); assert.equal(j.films[0].id, 'film-0069');
+  const page = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
+  assert.match(page, /'data-src': f\.src/, 'a card\'s picture waits until the card is near the screen');
+  assert.doesNotMatch(page, /\$\('video', \{ src: f\.src \+ '#t=0\.5'/, 'no grid card loads its picture up front');
+  assert.match(page, /r2\.status !== 429/, 'a busy minute waits and asks again instead of ending the list');
 });

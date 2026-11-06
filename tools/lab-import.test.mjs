@@ -6,9 +6,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { rename, renameMarkup, slugOf, numberOf, parseSpec, clip, needsOf, externalize, convertPage, unfinished, metaOf, importDrafts, listed, renderGallery, brokenMd, tryNext, hashOf, readDrafts, LAB_DIR } from './lab-import.mjs';
+import { rename, quietCatches, renameMarkup, slugOf, numberOf, parseSpec, clip, needsOf, externalize, convertPage, unfinished, metaOf, importDrafts, listed, renderGallery, brokenMd, tryNext, hashOf, readDrafts, LAB_DIR } from './lab-import.mjs';
 import { classify, hasFallback } from './lab-probe.mjs';
 import { pending, merge } from './lab-sync.mjs';
+import { ruleReview } from '../void-live-deploy/lib/code-review.js';
 
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'lab-test-'));
 const draft = (root, dir, html, spec) => { fs.mkdirSync(path.join(root, dir), { recursive: true }); fs.writeFileSync(path.join(root, dir, 'index.html'), html); if (spec != null) fs.writeFileSync(path.join(root, dir, 'SPEC.md'), spec); };
@@ -158,4 +159,16 @@ test('what is committed under void-live-deploy/lab/ agrees with its catalog', ()
   }
   const md = fs.readFileSync(new URL('../domains/lab.broken.md', import.meta.url), 'utf8');
   for (const e of cat.filter((x) => x.status === 'broken')) assert.ok(md.includes('- ' + e.slug + ' |'), e.slug + ' is in domains/lab.broken.md');
+});
+
+test('quietCatches: every empty catch logs under the slug, so Verse\'s review does not stop the nightly lab PR', () => {
+  const src = "try { a(); } catch(e) {}\ntry { b(); } catch {}\ntry { c(); } catch (err) { /* fallback */ }\ntry { d(); }catch(e){}\ntry { f(); } catch (e) { keep(e); }\nconst s = 'catch {}';";
+  const out = quietCatches(src, 'f999-test');
+  assert.equal((out.match(/console\.debug\("lab f999-test:", (?:e|err)\)/g) || []).length, 4);
+  assert.match(out, /catch \(e\) \{ keep\(e\); \}/, 'a catch that does something stays as it was');
+  const empty = (code) => ruleReview(code, { lang: 'javascript' }).findings.filter((f) => f.rule === 'empty-catch');
+  assert.ok(empty(src).length >= 4, 'the review flags the drafts as they come');
+  assert.equal(empty(out.replace("const s = 'catch {}';", '')).length, 0, 'and none after the import');
+  const page = convertPage('<!doctype html><html><head><title>T</title></head><body><script>try { x(); } catch(e) {}</script></body></html>', { slug: 'f1-t', num: 1, title: 'T', blurb: 'b', source: 'f1-t' });
+  assert.match(page.scripts[0].code, /console\.debug\("lab f1-t:", e\)/, 'convertPage applies it');
 });

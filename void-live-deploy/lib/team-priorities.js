@@ -4,6 +4,7 @@
 // overrides with one message ("priority: <job>" puts a job first, "drop: <job>" sends it last, "priority: reset" clears). Pure: the reads
 // and writes are lib/team-crew-run.js prioritize and functions/api/team.js handOut.
 import { kindOf } from './team.js';
+import { leverageOf } from './team-leverage.js';
 
 export const WIP = Object.freeze({ build: 3, research: 1 });
 export const BETS_MAX = 3;
@@ -21,7 +22,7 @@ const r2 = (x) => Math.round(x * 100) / 100;
 export function scoreOf(j, w, ev = {}) {
   const kind = kindOf(j.target), ask = String(j.ask || ''), drivers = [], evidence = [];
   let impact = 1, confidence = 0.5;
-  const add = (n, why) => { impact = Math.max(impact, n); drivers.push(why); };
+  const weight = new Map(), add = (n, why) => { impact = Math.max(impact, n); drivers.push(why); weight.set(why, n); };
   if (w) {
     confidence = 0.9; let cite = []; try { cite = JSON.parse(w.cite || '[]'); } catch (_) { cite = []; }
     if (!w.private) for (const c of cite.slice(0, 2)) if (c && /^https:\/\//.test(c.url || '')) evidence.push({ what: c.what || c.url, url: c.url });
@@ -43,10 +44,25 @@ export function scoreOf(j, w, ev = {}) {
   }
   if (/^team-\d+$/.test(j.id)) { add(5, 'asked in #work by the owner'); confidence = Math.max(confidence, 0.8); }
   if (/^ask-\d+$/.test(j.id)) add(3, 'filed by a member in #work');
+  // leverage (lib/team-leverage.js): what it unblocks, what it earns, the smallest site first; a repeat of shipped work or pure churn falls
+  const L = leverageOf(j, ev, ev.now || Date.now());
+  for (const [n, why] of L.add) add(n, why);
+  drivers.sort((a, b) => (weight.get(b) || 0) - (weight.get(a) || 0)); // the strongest reason first, so a card's first words say it
+  let mult = 1; for (const [f, why] of L.mult) { mult *= f; drivers.unshift(why); } // a repeat or churn says so before anything else
   if (!drivers.length) drivers.push('a ' + kind + ' job with no measured outcome yet');
   const effort = (EFFORT[kind] || 3) + (ask.length > 300 ? 1 : 0) + tries(j.note);
   confidence = Math.max(0.1, confidence - 0.15 * tries(j.note));
-  return { id: j.id, ask: ask.slice(0, 200), kind, state: j.state, want: w ? w.key : null, lane: laneOf(j, w), impact: r2(impact), effort, confidence: r2(confidence), score: r2(impact * confidence / effort), drivers, evidence };
+  return { id: j.id, title: titleOf({ ask, id: j.id }), ask: ask.slice(0, 200), kind, state: j.state, want: w ? w.key : null, lane: laneOf(j, w), impact: r2(impact), effort, confidence: r2(confidence), score: r2(impact * confidence / effort * mult), drivers, evidence, busywork: L.busywork };
+}
+
+/** a bet's title a person reads whole on /team/ and /brain/ (owner, 2026-11-06: the bets showed as cut-off sentences): a flaky check by the
+ *  head of its test name, anything else by its first clause, at a word, under 110 characters. The ask itself stays under it, whole. Pure. */
+const cutAt = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); if (s.length <= n) return s; const c = s.slice(0, n - 1).replace(/[\s,;:–-]+\S*$/, ''); return (c || s.slice(0, n - 1)) + '…'; };
+export function titleOf(r) {
+  const ask = String((r && r.ask) || '').trim(), flake = /^make "([^"]+)"? robust\b/i.exec(ask);
+  if (flake) { const check = flake[1].replace(/…$/, ''), head = check.split(/:\s/)[0]; return 'Steady a flaky check: ' + cutAt(head, 80); }
+  const first = ask.split(/(?<=[.!?])\s|:\s|;\s/)[0];
+  return cutAt(first || ask || (r && r.id) || '', 110);
 }
 
 /** an owner message that sets a priority -> { pin } | { drop } | { reset } | null */
@@ -70,12 +86,13 @@ export function mergeOverride(old, o, now) {
 export function prioritize(jobs, wants, ev = {}, override = null, now = Date.now()) {
   const byJob = new Map((wants || []).filter((w) => w.job).map((w) => [w.job, w]));
   const live = override && now - (override.at || 0) < OVERRIDE_MS ? override : { pin: [], drop: [] };
-  const ranked = (jobs || []).filter((j) => j && ['queued', 'building'].includes(j.state)).map((j) => scoreOf(j, byJob.get(j.id), ev))
+  const ranked = (jobs || []).filter((j) => j && ['queued', 'building'].includes(j.state)).map((j) => scoreOf(j, byJob.get(j.id), { now, ...ev }))
     .sort((a, b) => b.score - a.score || a.effort - b.effort || String(a.id).localeCompare(String(b.id)));
   for (const r of ranked) { if (live.pin.includes(r.id)) r.override = 'pinned by the owner'; if (live.drop.includes(r.id)) r.override = 'dropped by the owner'; }
   const pinned = live.pin.map((id) => ranked.find((r) => r.id === id)).filter(Boolean), dropped = ranked.filter((r) => live.drop.includes(r.id));
-  const rest = ranked.filter((r) => !live.pin.includes(r.id) && !live.drop.includes(r.id));
-  const ordered = [...pinned, ...rest, ...dropped];
+  const busy = ranked.filter((r) => r.busywork && !live.pin.includes(r.id) && !live.drop.includes(r.id)); // busywork goes last and is never a bet
+  const rest = ranked.filter((r) => !live.pin.includes(r.id) && !live.drop.includes(r.id) && !r.busywork);
+  const ordered = [...pinned, ...rest, ...dropped, ...busy];
   // the bets: pins first, then the best, within the WIP lanes (3 build, 1 research), at most 3, and none far below the best
   const bets = [], lanes = { build: 0, research: 0 }, top = rest.length ? rest[0].score : 0;
   for (const r of [...pinned, ...rest]) {
@@ -85,8 +102,14 @@ export function prioritize(jobs, wants, ev = {}, override = null, now = Date.now
     bets.push(r); lanes[r.lane]++;
   }
   const sig = bets.map((b) => b.id).join(' ') + '|' + ordered.slice(0, 12).map((r) => r.id).join(' ');
-  return { order: ordered.map((r) => r.id), bets, ranked: ordered, sig };
+  return { order: ordered.map((r) => r.id), bets, ranked: ordered, sig, busywork: busy.map((r) => r.id) };
 }
+
+/** a job card's leverage line: the score and the reasons that made it, as an agent or the board shows it */
+const whyOf = (r) => (r.busywork ? 'busywork, ' + r.busywork : r.drivers.slice(0, 2).join('; ')).slice(0, 160);
+export const leverageLine = (r) => (r ? 'Leverage ' + r.score + ': ' + whyOf(r) : '');
+/** the scores kept for every ranked job, so a card shows its own: { id: [score, why] } */
+export const scoresOf = (ranked, max = 300) => Object.fromEntries((ranked || []).slice(0, max).map((r) => [r.id, [r.score, whyOf(r)]]));
 
 /** the WIP cap at hand-out: may an agent start this job, with these jobs being built by agents now? */
 export function wipAllows(job, building, laneById = {}) {
@@ -101,7 +124,8 @@ export function briefText(p, week, why) {
   p.bets.forEach((b, i) => lines.push('Bet ' + (i + 1) + ': ' + b.id + ' (' + b.lane + ', score ' + b.score + ' = impact ' + b.impact + ' × confidence ' + b.confidence + ' ÷ effort ' + b.effort + ')' + (b.override ? ' [' + b.override + ']' : '') + '. ' + b.ask
     + '\n   Why: ' + b.drivers.join('; ') + (b.evidence.length ? '\n   Evidence: ' + b.evidence.map((e) => e.what + ' ' + e.url).join(' · ') : '')));
   const next = p.ranked.filter((r) => !p.bets.includes(r)).slice(0, 5);
-  if (next.length) lines.push('Then: ' + next.map((r) => r.id + ' (' + r.score + ')').join(', ') + '.');
+  if (next.length) lines.push('Then: ' + next.filter((r) => !r.busywork).map((r) => r.id + ' (' + r.score + ')').join(', ') + '.');
+  if (p.busywork && p.busywork.length) lines.push('Last, as busywork (no agent gets these while better work waits): ' + p.busywork.slice(0, 6).join(', ') + '.');
   lines.push('Override with one message here: "priority: <job>" puts it first, "drop: <job>" sends it last, "priority: reset" clears.');
   return lines.join('\n');
 }

@@ -2,7 +2,9 @@
 # where it should go next, what feels weakest about it and which game to learn next. Its words are saved on the site
 # ("what do you think of yourself?"), a concrete small ask goes to the builders' queue credited to Verse, and every
 # reflection since the last run (the after-build ones too) is copied word for word into domains/void.voice.md on main.
-# When Verse flags something as striking, an issue is opened so Adam hears it (and NOTIFY_WEBHOOK gets it, when set).
+# When Verse flags something as striking it goes to NOTIFY_WEBHOOK (when set) and the run's summary; its words are already in the log.
+# No issue: an issue is a fix item, and a reflection has nothing to fix or close (owner, 2026-11-06: issue #2326 "Verse says: ..." was
+# one of the issues he cleared by hand for the 10th time).
 # Two crons because GitHub's are UTC: 18:09 UTC is 2:09 PM in summer time, 19:09 UTC in winter; the gate (tools/cron-gate.mjs)
 # keeps the one that fired for today's season, however late GitHub starts it.
 # About 2 Actions minutes a day. Needs the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN).
@@ -20,7 +22,6 @@ concurrency:
 
 permissions:
   contents: write # the log on main
-  issues: write # tell Adam when Verse says something striking
 
 jobs:
   daily:
@@ -77,16 +78,14 @@ jobs:
       - name: Tell Adam when Verse says something striking
         if: steps.ask.outputs.striking == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
           NOTIFY_WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK }}
         run: |
           node -e "
             const e = require('./daily.json');
             const body = ['Verse flagged this in its daily reflection (' + e.at + '), in its own words:', '', ...[e.thoughts, e.weakest && 'Weakest right now: ' + e.weakest, e.next_game && 'Next game: ' + e.next_game, e.better && 'How I would make it better: ' + e.better].filter(Boolean).map((t) => '> ' + t), '', ...(e.asks || []).map((a) => '- ' + a.ask), '', 'The whole log: domains/void.voice.md'].join('\n');
             require('fs').writeFileSync('striking.md', body);
-            require('fs').writeFileSync('striking.title', 'Verse says: ' + e.thoughts.replace(/\s+/g, ' ').slice(0, 90));
           "
-          gh issue create --title "$(cat striking.title)" --body-file striking.md
+          cat striking.md >> "$GITHUB_STEP_SUMMARY"
           if [ -n "$NOTIFY_WEBHOOK" ]; then
             jq -Rs '{text: ., content: .}' < striking.md | curl -fsS -X POST -H 'content-type: application/json' --data @- "$NOTIFY_WEBHOOK" || true
           fi

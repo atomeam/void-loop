@@ -35,7 +35,7 @@ export function scoreIdea(n, today = new Date().toISOString().slice(0, 10)) {
   const md = today.slice(5), stale = (/\bhalloween\b/.test(text) && md > '10-31') || (/\bchristmas\b/.test(text) && md > '12-25') ? 3 : 0;
   const score = Math.min(4, useful) + Math.min(4, revenue) - hard - stale;
   const why = [useful && 'useful ' + Math.min(4, useful), revenue && 'earns ' + Math.min(4, revenue), hard && 'not a web page (-5)', stale && 'its day has passed (-3)'].filter(Boolean).join(', ');
-  return { score, useful: Math.min(4, useful), revenue: Math.min(4, revenue), hard, why };
+  return { score, useful: Math.min(4, useful), revenue: Math.min(4, revenue), hard, stale, why };
 }
 
 /** a short url-safe name for an idea. Pure. */
@@ -97,24 +97,86 @@ export function productFor(n) {
   return { key: 'multiverse', name: PRODUCTS.multiverse.name, url: PRODUCTS.multiverse.url };
 }
 
-/** this cycle's plan from Verse's idea notes: the best idea not built yet, scored, matched to a page and a product, or null. built: the
- *  slugs (or source keys) already in domains/tv-built/. Pure. */
-export function planCycle(notes, { pages = [], built = [], today } = {}) {
+/** Verse's idea notes ranked best first, each { n, s: its score, slug }, without the ones already built. Pure. */
+function rankIdeas(notes, { built = [], today } = {}) {
   const done = new Set(built.map((s) => String(s).toLowerCase()));
-  const ranked = (Array.isArray(notes) ? notes : []).filter((n) => n && n.kind === 'idea' && String(n.note || '').length >= 12)
+  return (Array.isArray(notes) ? notes : []).filter((n) => n && n.kind === 'idea' && String(n.note || '').length >= 12)
     .map((n) => ({ n, s: scoreIdea(n, today), slug: slugOf(n.topic || n.note) }))
     .filter((x) => !done.has(x.slug) && !done.has(sourceKey(x.n)))
     .sort((a, b) => b.s.score - a.s.score || String(b.n.at || '').localeCompare(String(a.n.at || '')));
-  const top = ranked[0];
-  if (!top || top.s.score < 3) return null;
+}
+/** one ranked idea as a build plan: matched to a page and a product. Pure. */
+function planOf(top, pages = [], passed = []) {
   const page = matchPage(top.n, pages) || categoryOf(top.n, pages);
   return {
     slug: top.slug, topic: String(top.n.topic || '').slice(0, 80), note: String(top.n.note || '').slice(0, 220), score: top.s,
     source: { medium: top.n.medium || '', station: top.n.station || '', network: top.n.network || '', show: top.n.show || '', day: top.n.day || '', at: top.n.at || '' },
     action: page ? 'improve' : 'new', page: page ? page.route : '/' + top.slug + '/', matched: page,
-    product: productFor(top.n), passed: ranked.slice(1, 4).map((x) => ({ topic: x.n.topic, score: x.s.score, why: x.s.why })),
+    product: productFor(top.n), passed: passed.map((x) => ({ topic: x.n.topic, score: x.s.score, why: x.s.why })),
   };
 }
+
+/** this cycle's plan from Verse's idea notes: the best idea not built yet, scored, matched to a page and a product, or null. built: the
+ *  slugs (or source keys) already in domains/tv-built/. Pure. */
+export function planCycle(notes, { pages = [], built = [], today } = {}) {
+  const ranked = rankIdeas(notes, { built, today }), top = ranked[0];
+  if (!top || top.s.score < 3) return null;
+  return planOf(top, pages, ranked.slice(1, 4));
+}
+
+// Every blueprint starts by itself (owner, 2026-11-06: "the blueprints should just automatically be started and built into verse
+// somewhere"). A blueprint is the card an idea note opens on the stage (local/watch.js "blueprint on stage", skills/system-blueprint.js).
+// Before this only the one best idea of an hour's watch was queued, and only with a score of 3 or more, so most blueprints never built.
+// Now each idea note Verse wrote becomes a tv: build job, best first, a few a run (tools/watch-build.mjs queue, from the conductor every
+// hour), and the card shows the job's real state. Only two kinds are left out, each with its reason on the card: a thing no web page can
+// be (a headset, a drone) and a dated idea whose day has passed.
+export const SKIPS = Object.freeze({ hard: 'it needs hardware no web page can be', stale: 'its day has passed' });
+/** why an idea is not built, or '' when it is built. Pure. */
+export const skipOf = (s) => (s && s.hard ? SKIPS.hard : s && s.stale ? SKIPS.stale : '');
+/** every idea worth building, best first, at most limit, one plan per slug: planCycle without the score floor, so a blueprint builds
+ *  unless skipOf names a reason. Pure. */
+export function planAll(notes, { pages = [], built = [], today, limit = 60 } = {}) {
+  const out = [], seen = new Set();
+  for (const x of rankIdeas(notes, { built, today })) {
+    if (seen.has(x.slug)) continue; seen.add(x.slug);
+    if (skipOf(x.s)) continue;
+    out.push(planOf(x, pages));
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
+/** the idea note a blueprint card was opened from: the note whose ask (lib/watch-along.js ideaAskFromNote, the words the card's link
+ *  carries) or topic has the same slug as the card's idea; null when Verse wrote no such note (someone typed their own blueprint). Pure. */
+export function noteOfIdea(notes, idea, askOf = (n) => n.topic) {
+  const want = slugOf(idea);
+  if (!idea || want === 'idea') return null;
+  for (const n of Array.isArray(notes) ? notes : []) {
+    if (!n || n.kind !== 'idea') continue;
+    if (slugOf(n.topic || n.note) === want || slugOf(askOf(n) || '') === want) return n;
+  }
+  return null;
+}
+/** the queue target a blueprint builds under: the same tv: lane the watch build uses, so one idea is one job whichever way it starts. Pure. */
+export const targetOf = (n) => ('tv:' + slugOf(n.topic || n.note)).slice(0, 40);
+
+/** what a blueprint card says about its build, from what is real: the served log (built entries), the queue row for its target, and
+ *  whether Verse wrote the idea. -> { state, line, page?, pr? }. state: live | shipped | building | queued | set aside | failed | starting
+ *  | skipped | plan. Pure. */
+export function buildState({ slug, built = [], row = null, verse = false, skip = '' }) {
+  const b = (Array.isArray(built) ? built : []).find((e) => e && e.slug === slug);
+  if (b) return { state: 'live', page: b.mode || b.feature, pr: b.pr || null, line: 'Live: built ' + (b.action === 'improve' ? 'into ' : 'as ') + (b.mode || b.feature) + (b.pr ? ' in #' + b.pr : '') };
+  const st = row && row.state, pr = row && Number((/\bPR #?(\d+)/i.exec(String(row.note || '')) || [])[1]) || null;
+  if (st === 'done' || st === 'live') return { state: 'shipped', pr, line: 'Built' + (pr ? ' in #' + pr : '') + ': live once it merges and deploys' };
+  if (st === 'building') return { state: 'building', line: 'Building now: Verse\'s coder has this job' };
+  if (st === 'queued') return { state: 'queued', line: 'Queued to build: Verse\'s conductor hands it to the coder' };
+  if (st === 'set aside') return { state: 'set aside', line: 'Set aside after the coder tried it three times' };
+  if (st === 'failed') return { state: 'failed', line: 'The build failed; it goes back to the queue when Verse heals it' };
+  if (verse && skip) return { state: 'skipped', line: 'Not built: ' + skip };
+  if (verse) return { state: 'starting', line: 'Starting the build' };
+  return { state: 'plan', line: 'A plan: builds start by themselves for the ideas Verse learns from TV and radio' };
+}
+
 /** one idea's identity across cycles: medium, station and the moment it was noted. Pure. */
 export const sourceKey = (n) => [n && n.medium, n && n.station, n && n.at].map((s) => String(s || '')).join('|').toLowerCase();
 
@@ -135,6 +197,7 @@ export function tvSpec(job, plan) {
     p.action === 'improve' ? 'A page already does part of this: ' + p.page + (p.matched ? (p.matched.category ? ' (the page for this category)' : ' (shared words: ' + (p.matched.shared || []).join(', ') + ')') : '') + '. Add this to that page as a mode (a section or tab on the same page, with a ?mode= link); do not add a second page or a separate matching tool.'
       : 'One page per category: check void-live-deploy/*/index.html titles first; if a page already covers this category, add this to it as a mode and add no new page. Only when nothing fits, build ' + (p.page || '/' + slug + '/') + ' (index.html and app.js, its logic in void-live-deploy/lib/ with a node:test file).',
     'Earn: the page links to ' + (p.product ? p.product.name + ' at ' + p.product.url : 'the Gumroad product that fits (lib/watch-build.js PRODUCTS)') + ', in one honest line that says what the buyer gets.',
+    'Reach: never add a link or content to the home page (void-live-deploy/index.html). A mode is reached through its page; a new page goes in void-live-deploy/sitemap.xml and gets a skill made with tools/new-skill.mjs, so the book (the menu) lists it and Verse answers its name with the page.',
     'Test: a spec for the route in tools/real-pages.mjs that uses the feature the way a person would and checks the exact answer.',
     'Lineage: add domains/tv-built/' + slug + '.json with { slug, topic, source: { medium, station, network, show, day }, feature: <the page>, mode: <the page with its ?mode= link, when it is a mode>, product: <url>, job: "' + (job && job.id || '') + '" } (the pull request is read from git at deploy).',
   ].join('\n');

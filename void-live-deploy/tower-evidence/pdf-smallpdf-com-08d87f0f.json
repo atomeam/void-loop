@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 157,
-   "best": 649,
-   "evidence": "Verse (/pdf/studio/) 157 ms to the load event (median of 3, phone width) vs smallpdf.com 649 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "verse": 181,
+   "best": 557,
+   "evidence": "Verse (/pdf/studio/) 181 ms to the load event (median of 3, phone width) vs smallpdf.com 557 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/pdf/studio/) 3 of 3 loads answered vs smallpdf.com 3 of 3 loads answered",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/pdf/studio/) 0 px sideways overflow at 390 px vs smallpdf.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 6,
    "evidence": "Verse (/pdf/studio/) 0 unnamed controls or images vs smallpdf.com 6 unnamed controls or images",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/pdf/studio/) 1 (1: the page shows itself again with the network cut) vs smallpdf.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/pdf/studio/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs smallpdf.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,7 +54,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/pdf/studio/) 3 of 3 right against the worked-out answer; judged against the standard, not smallpdf.com (the site is not asked)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "of": 3
   },
   "design polish": {
@@ -62,7 +62,7 @@
    "verse": 0,
    "best": 5,
    "evidence": "Verse (/pdf/studio/) 0 design defects vs smallpdf.com 5 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), smallpdf.com (0 low-contrast texts, 4 small tap targets, layout shift 0.14)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   },
   "merge and split": {
@@ -70,7 +70,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/pdf/studio/) 2 of 2 shown vs smallpdf.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 3,
    "best": 2,
    "evidence": "Verse (/pdf/studio/) 3 of 3 shown vs smallpdf.com 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "of": 3,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/pdf/studio/) 1 of 1 shown vs smallpdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -100,7 +100,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/pdf/studio/) 1 of 1 shown vs smallpdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -110,7 +110,7 @@
    "verse": 18,
    "best": 11,
    "evidence": "Verse (/pdf/studio/) 18 of 19 things a full answer shows vs smallpdf.com 11 of 19 things a full answer shows (Verse lacks: no account; site lacks: delete pages, reorder pages, page numbers, on this device, no account, works offline, ask questions about a PDF, Reorder pages with thumbnails)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "of": 19,
    "siteRead": true
   },
@@ -119,7 +119,7 @@
    "verse": 7,
    "best": 6,
    "evidence": "Verse (/pdf/studio/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs smallpdf.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T14:50:57.928Z",
+   "at": "2026-11-06T14:34:23.909Z",
    "siteRead": true
   }
  }
