@@ -118,3 +118,21 @@ test('builtOn says what an ask builds on without logging it, before or after the
   assert.equal(Dl.builtOn(D, 'weather in oslo', T0 + 2 * MIN + 100), null, 'a heard ask with no link builds on nothing');
   assert.equal(Dl.builtOn(D, '', T0), null); assert.equal(Dl.builtOn(D, 'x', NaN), null);
 });
+
+test('an ask that points back follows the newest ask it shares a word with, even when the same words were asked before (live, 2026-11-06)', () => {
+  const D = Dl.makeDialogue();
+  // earlier that day the same follow-up was asked after another ask, and answered without it
+  Dl.heard(D, 'what is table mountain', T0); Dl.answered(D, 'what is table mountain', 'Table Mountain is a flat-topped mountain.', T0 + 1000);
+  Dl.heard(D, 'how was that mountain formed', T0 + MIN); Dl.answered(D, 'how was that mountain formed', 'Since you did not specify which mountain', T0 + MIN + 1000);
+  const t = T0 + 3 * 3600000;
+  Dl.heard(D, 'what is the tallest mountain on earth', t); Dl.answered(D, 'what is the tallest mountain on earth', 'Mount Everest, at 8,849 m.', t + 1000);
+  const b = Dl.builtOn(D, 'how was that mountain formed', t + MIN);
+  assert.equal(b.kind, 'follow', 'not a repeat of the same words asked hours before');
+  assert.deepEqual(b.prior, { ask: 'what is the tallest mountain on earth', at: t, answer: 'Mount Everest, at 8,849 m.' });
+  assert.equal(Dl.heard(D, 'how was that mountain formed', t + MIN).kind, 'follow');
+  // an ask that names its subject is still a repeat on a later day
+  assert.equal(Dl.heard(D, 'what is the tallest mountain on earth', t + DAY).kind, 'repeat');
+  // an ask that points back but shares nothing with any earlier ask is a repeat of itself
+  Dl.heard(D, 'who built it', T0 + 2 * MIN);
+  assert.equal(Dl.heard(D, 'who built it', t + DAY + MIN).kind, 'repeat');
+});

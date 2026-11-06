@@ -362,6 +362,28 @@
    ]
   },
   {
+   "site": "icanhazip.com",
+   "url": "https://icanhazip.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-06T00:00:00Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "Passed icanhazip.com (0/13, conquering in background); fixing: speed, mobile, accessibility, accuracy",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 0,
+    "m": 13
+   },
+   "pageWas": "/ip"
+  },
+  {
    "site": "suncommunitynews.com",
    "url": "https://suncommunitynews.com/",
    "status": "passed, conquering in background",
@@ -6920,28 +6942,6 @@
    "sources": [
     "void-live-deploy/lib/tool-sites.js"
    ]
-  },
-  {
-   "site": "icanhazip.com",
-   "url": "https://icanhazip.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "",
-   "page": "",
-   "lane": "",
-   "took": "",
-   "why": "Passed icanhazip.com (0/13, conquering in background); fixing: speed, mobile, accessibility, accuracy",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 0,
-    "m": 13
-   },
-   "pageWas": "/ip"
   }
  ]
 }

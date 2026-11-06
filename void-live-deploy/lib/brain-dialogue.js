@@ -19,6 +19,7 @@
 // Pure: no DOM, no clock (every time is passed in), no Math.random.
 import { cleanWords } from './brain-organs.js';
 import { deposit } from './brain-workspace.js';
+import { points } from './follow-ask.js';
 
 export const MAX = 60, ASK_MAX = 160, ANSWER_MAX = 240, DAY = 86400000, GAP = 10 * 60000, FOLLOW_DAYS = 30, REPEAT = 0.8, MATCH_MS = 5 * 60000;
 const KEY_ASK = /^\s*(?:unlock\s*)+\S{16,}/i;
@@ -32,23 +33,33 @@ export const snippet = (text) => String(text == null ? '' : text).replace(/<[^>]
 const same = (a, b) => { if (!a.length || !b.length) return 0; const B = new Set(b); let n = 0; for (const w of new Set(a)) if (B.has(w)) n++; return n / new Set([...a, ...b]).size; };
 const flat = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
-/** what `ask` at time `at` builds on in the log: { kind: 'repeat' | 'follow', entry } or null. Pure. */
+/** what `ask` at time `at` builds on in the log: { kind: 'repeat' | 'follow', entry } or null. An ask that points back at something it
+ *  does not name ("how was that mountain formed", lib/follow-ask.js points) means what the newest ask it shares a word with was about, so
+ *  for it a follow-up comes before a repeat: the same words asked on another day after another ask are about that ask, not the old one.
+ *  Live on 2026-11-06 the follow-up to "what is the tallest mountain on earth" was taken as a repeat of the same words asked earlier that
+ *  day, so the earlier ask was not sent and the old answer ("Since you did not specify which mountain") came back. Pure. */
 export function recall(D, ask, at) {
   const words = cleanWords(ask), f = flat(ask);
   if (!f) return null;
-  for (let i = D.log.length - 1; i >= 0; i--) {
-    const e = D.log[i];
-    if (!(at - e.at >= GAP || dayOf(at) !== e.day)) continue;
-    if (flat(e.ask) === f || (words.length && same(words, e.words) >= REPEAT)) return { kind: 'repeat', entry: e };
-  }
-  if (!words.length) return null;
-  for (let i = D.log.length - 1; i >= 0; i--) {
-    const e = D.log[i]; if (at - e.at > FOLLOW_DAYS * DAY) break;
-    if (flat(e.ask) === f || same(words, e.words) >= REPEAT) continue; // asked again inside GAP: not a follow-up of itself
-    const near = new Set([...e.words, ...cleanWords(e.answer || '')]);
-    if (words.some((w) => near.has(w))) return { kind: 'follow', entry: e };
-  }
-  return null;
+  const repeat = () => {
+    for (let i = D.log.length - 1; i >= 0; i--) {
+      const e = D.log[i];
+      if (!(at - e.at >= GAP || dayOf(at) !== e.day)) continue;
+      if (flat(e.ask) === f || (words.length && same(words, e.words) >= REPEAT)) return { kind: 'repeat', entry: e };
+    }
+    return null;
+  };
+  const follow = () => {
+    if (!words.length) return null;
+    for (let i = D.log.length - 1; i >= 0; i--) {
+      const e = D.log[i]; if (at - e.at > FOLLOW_DAYS * DAY) break;
+      if (flat(e.ask) === f || same(words, e.words) >= REPEAT) continue; // asked again inside GAP: not a follow-up of itself
+      const near = new Set([...e.words, ...cleanWords(e.answer || '')]);
+      if (words.some((w) => near.has(w))) return { kind: 'follow', entry: e };
+    }
+    return null;
+  };
+  return points(ask) ? follow() || repeat() : repeat() || follow();
 }
 
 /** the visitor asked `ask` at `at`: it is logged, and what it builds on is returned ({ kind, entry } or null). An owner key is not logged. */
