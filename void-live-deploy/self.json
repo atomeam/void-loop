@@ -582,6 +582,30 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T05:58:56Z",
+   "subject": "Incident: the browser suite failed on c5a28a1f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T05:58:47Z",
+   "subject": "Add the MIT license, and ship the PayPal button on /code-review/ (#2375)"
+  },
+  {
+   "at": "2026-11-06T05:58:15Z",
+   "subject": "Brain organ 25, Rules: the decision-tree drafts guess which way your next stroke goes (#2376)"
+  },
+  {
+   "at": "2026-11-06T05:57:49Z",
+   "subject": "Automerge: the suite gate result sweeps, and idle runs on main never replace the waiting sweep (#2381)"
+  },
+  {
+   "at": "2026-11-06T05:55:56Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:55:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T05:48:15Z",
    "subject": "Outcome exam: timers 86.7"
   },
@@ -614,7 +638,7 @@
    "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
   },
   {
-   "at": "2026-11-06T05:26:32Z",
+   "at": "2026-11-06T05:27:34Z",
    "subject": "Page copies: void.html takes the deploy copies' change from #2369"
   },
   {
@@ -634,32 +658,8 @@
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T05:20:58Z",
+   "at": "2026-11-06T05:20:16Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T05:19:15Z",
-   "subject": "Brain step: faster smell and synapse pass, same state to the bit"
-  },
-  {
-   "at": "2026-11-06T05:18:19Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-06T05:17:34Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T05:17:17Z",
-   "subject": "\"add one minute\" adds time to the timer, not a list item (#2326) (#2369)"
-  },
-  {
-   "at": "2026-11-06T05:17:06Z",
-   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
-  },
-  {
-   "at": "2026-11-06T05:16:56Z",
-   "subject": "Verse code review paid with PayPal, and the PayPal AI Hackathon entry pack (#2370)"
   }
  ],
  "builders": {
