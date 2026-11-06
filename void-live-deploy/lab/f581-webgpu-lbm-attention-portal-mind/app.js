@@ -104,7 +104,7 @@ async function tryWebGPU() {
     statusEl.textContent = 'WebGPU ready (compute path sketched)';
     // In a full version a compute shader would own the lattice buffers.
     // This prototype keeps the JS kernel for guaranteed interactivity.
-  } catch (e) { /* fallback */ }
+  } catch (e) { console.debug("lab f581-webgpu-lbm-attention-portal-mind:", e); }
 }
 
 function spawnPortals() {
@@ -209,7 +209,7 @@ async function seal() {
   try {
     const bc = new BroadcastChannel('f581-genome');
     bc.postMessage(genome);
-  } catch (e) {}
+  } catch (e) { console.debug("lab f581-webgpu-lbm-attention-portal-mind:", e); }
 }
 
 document.getElementById('seal').onclick = seal;
@@ -233,4 +233,4 @@ try {
       statusEl.textContent = 'adopted higher genome';
     }
   };
-} catch (e) {}
+} catch (e) { console.debug("lab f581-webgpu-lbm-attention-portal-mind:", e); }

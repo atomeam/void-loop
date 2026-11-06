@@ -39,7 +39,7 @@ async function tryWebGPU() {
     const adapter = await navigator.gpu.requestAdapter();
     gpuDevice = await adapter.requestDevice();
     console.log('WebGPU available for future kernel');
-  } catch(e) {}
+  } catch (e) { console.debug("lab f583-broadcast-indexeddb-pheromone-webgpu-diffusion-mind:", e); }
 }
 tryWebGPU();
 

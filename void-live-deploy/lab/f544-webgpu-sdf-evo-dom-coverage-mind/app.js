@@ -206,7 +206,7 @@ document.getElementById('seal').onclick = () => {
       tx.objectStore('genomes').put({ id:1, genes: Array.from(best), fitness: fit, hash });
     };
     req.onupgradeneeded = ev => ev.target.result.createObjectStore('genomes',{keyPath:'id'});
-  } catch(e) {}
+  } catch (e) { console.debug("lab f544-webgpu-sdf-evo-dom-coverage-mind:", e); }
   const bc = new BroadcastChannel('f544-genome');
   bc.postMessage({ genes: Array.from(best), fitness: fit, hash });
   status.textContent = `sealed fit ${fit.toFixed(2)}`;
@@ -236,4 +236,4 @@ try {
     const g = tx.objectStore('genomes').get(1);
     g.onsuccess = () => { if (g.result) best = new Float32Array(g.result.genes); };
   };
-} catch(e) {}
+} catch (e) { console.debug("lab f544-webgpu-sdf-evo-dom-coverage-mind:", e); }

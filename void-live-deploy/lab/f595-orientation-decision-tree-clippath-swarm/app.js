@@ -146,7 +146,7 @@ document.getElementById('restore').onclick = async () => {
         document.getElementById('status').textContent = 'Restored fitness ' + bestFitness;
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f595-orientation-decision-tree-clippath-swarm:", e); }
 };
 
 channel.onmessage = e => {

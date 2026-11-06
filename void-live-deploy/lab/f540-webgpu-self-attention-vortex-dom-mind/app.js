@@ -26,7 +26,7 @@ function initCards() {
   for (let i=0; i<5; i++) {
     const el = document.createElement('div');
     el.className = 'card';
-    el.innerHTML = `<h4>${titles[i]}</h4><div class="state">attn: 0.00</div>`;
+    el.innerHTML = `<h4>${titles[i]}</h4><div class="state">attn: 0.00</div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     el.style.left = (80 + i*160) + 'px';
     el.style.top = (60 + (i%2)*120) + 'px';
     document.body.appendChild(el);
@@ -176,7 +176,7 @@ async function probeGPU() {
   try {
     const adapter = await navigator.gpu.requestAdapter();
     if (adapter) { gpu = true; document.getElementById('status').textContent += ' · WebGPU available (compute path ready)'; }
-  } catch(e) {}
+  } catch (e) { console.debug("lab f540-webgpu-self-attention-vortex-dom-mind:", e); }
 }
 
 initParticles(); initCards(); initWeights(); openDB(); probeGPU(); loop();

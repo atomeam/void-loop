@@ -184,7 +184,7 @@ async function seal() {
   try {
     const bc = new BroadcastChannel('verse-sph-genome');
     bc.postMessage({ type: 'genome', data: elites });
-  } catch(e) {}
+  } catch (e) { console.debug("lab f566-webgpu-sph-orientation-genome-dom-mind:", e); }
 }
 
 async function load() {

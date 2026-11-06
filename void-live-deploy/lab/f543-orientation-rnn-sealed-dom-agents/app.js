@@ -13,7 +13,7 @@ class Agent {
     this.id = i;
     this.el = document.createElement('div');
     this.el.className = 'agent';
-    this.el.innerHTML = `<div class="id">Agent ${i}</div><div class="energy">E:1.0</div>`;
+    this.el.innerHTML = `<div class="id">Agent ${i}</div><div class="energy">E:1.0</div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     stage.appendChild(this.el);
     this.x = rand(50, window.innerWidth-150);
     this.y = rand(50, window.innerHeight-150);

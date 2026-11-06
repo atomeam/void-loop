@@ -198,4 +198,4 @@ try {
     }
   };
   // could post on strong injects, omitted for simplicity
-} catch {}
+} catch (e) { console.debug("lab f565-adaptive-quadtree-spatial-mind:", e); }

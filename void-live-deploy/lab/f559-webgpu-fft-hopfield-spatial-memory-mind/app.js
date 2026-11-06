@@ -134,7 +134,7 @@ async function load() {
       patterns = req.result.patterns.map(p => new Float32Array(p));
       statusEl.textContent = `Loaded ${patterns.length} memories from IndexedDB`;
     }
-  } catch (e) {}
+  } catch (e) { console.debug("lab f559-webgpu-fft-hopfield-spatial-memory-mind:", e); }
 }
 load();
 

@@ -87,7 +87,7 @@ async function initAgents() {
       agents.forEach((a,i) => { if(saved[i]) a.genome.set(saved[i]); });
       statusEl.textContent += ' | Loaded sealed genomes';
     }
-  } catch(e) {}
+  } catch (e) { console.debug("lab f606-webrtc-sealed-genome-webgpu-swarm-mind:", e); }
 }
 
 function idbOpen() {
@@ -116,7 +116,7 @@ async function saveGenomes() {
     const db = await idbOpen();
     const data = agents.map(a => Array.from(a.genome));
     idbSet(db, 'genomes', data);
-  } catch(e) {}
+  } catch (e) { console.debug("lab f606-webrtc-sealed-genome-webgpu-swarm-mind:", e); }
 }
 
 // WebRTC gossip via BroadcastChannel signaling (same-origin tabs)

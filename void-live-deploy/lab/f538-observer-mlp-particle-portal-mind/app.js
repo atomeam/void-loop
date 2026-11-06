@@ -12,7 +12,7 @@ const portals = [];
 for (let i = 0; i < N_PORTALS; i++) {
   const el = document.createElement('div');
   el.className = 'verse-portal';
-  el.innerHTML = `<h3>Portal ${i+1}</h3><p>vis 0.00</p>`;
+  el.innerHTML = `<h3>Portal ${i+1}</h3><p>vis 0.00</p>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
   el.style.left = (80 + (i%3)*220) + 'px';
   el.style.top = (80 + Math.floor(i/3)*180) + 'px';
   portalsEl.appendChild(el);
@@ -100,7 +100,7 @@ async function seal() {
     const tx = req.result.transaction('genomes','readwrite');
     tx.objectStore('genomes').put({id, data}, 'best');
     status.textContent = 'sealed ' + id;
-    try { new BroadcastChannel('f538-genome').postMessage({id, data}); } catch(e){}
+    try { new BroadcastChannel('f538-genome').postMessage({id, data}); } catch (e) { console.debug("lab f538-observer-mlp-particle-portal-mind:", e); }
   };
 }
 document.getElementById('seal').onclick = seal;
@@ -119,7 +119,7 @@ try {
       status.textContent = 'adopted ' + e.data.id;
     }
   };
-} catch(e){}
+} catch (e) { console.debug("lab f538-observer-mlp-particle-portal-mind:", e); }
 
 // Loop
 function loop() {

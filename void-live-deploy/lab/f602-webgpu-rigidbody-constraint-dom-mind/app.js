@@ -14,7 +14,7 @@ function rand(a,b){ return a + Math.random()*(b-a); }
 function createBody(i) {
   const el = document.createElement('div');
   el.className = 'body';
-  el.innerHTML = `<div class="label">Body ${i}</div><div class="props"></div>`;
+  el.innerHTML = `<div class="label">Body ${i}</div><div class="props"></div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
   stage.appendChild(el);
   return {
     el, i,
@@ -193,7 +193,7 @@ async function restore() {
         statusEl.textContent = 'restored';
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f602-webgpu-rigidbody-constraint-dom-mind:", e); }
 }
 document.getElementById('seal').onclick = seal;
 document.getElementById('reset').onclick = () => location.reload();

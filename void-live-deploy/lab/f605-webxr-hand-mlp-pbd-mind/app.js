@@ -64,7 +64,7 @@ async function tryWebXR() {
     if (!supported) return;
     status.textContent = 'WebXR available. Click canvas for hand mode (requires headset).';
     // Full immersive session would go here; for canvas prototype we stay pointer + note
-  } catch(e) {}
+  } catch (e) { console.debug("lab f605-webxr-hand-mlp-pbd-mind:", e); }
 }
 tryWebXR();
 

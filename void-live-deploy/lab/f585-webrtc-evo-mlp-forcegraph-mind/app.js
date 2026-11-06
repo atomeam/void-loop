@@ -175,7 +175,7 @@ async function loadSeal() {
         statusEl.textContent = 'Restored sealed genome';
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f585-webrtc-evo-mlp-forcegraph-mind:", e); }
 }
 document.getElementById('seal').onclick = saveSeal;
 document.getElementById('reset').onclick = () => { location.reload(); };
@@ -212,7 +212,7 @@ function setupChannel(ch) {
         genomes[target].w1.forEach(row => row.forEach((_,j) => row[j] += (Math.random()-0.5)*0.05));
         statusEl.textContent = 'Adopted higher-fitness genome from peer';
       }
-    } catch(err) {}
+    } catch (err) { console.debug("lab f585-webrtc-evo-mlp-forcegraph-mind:", err); }
   };
 }
 setInterval(() => {

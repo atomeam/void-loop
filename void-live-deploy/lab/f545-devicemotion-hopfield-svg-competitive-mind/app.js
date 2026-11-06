@@ -192,7 +192,7 @@ document.getElementById('seal').onclick = async () => {
         agents.forEach(a => a.morph());
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f545-devicemotion-hopfield-svg-competitive-mind:", e); }
 })();
 
 function loop() {

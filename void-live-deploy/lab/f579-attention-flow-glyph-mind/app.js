@@ -185,4 +185,4 @@ try {
     }
   };
   setInterval(() => ch.postMessage({attn, fitness}), 8000);
-} catch(e) {}
+} catch (e) { console.debug("lab f579-attention-flow-glyph-mind:", e); }

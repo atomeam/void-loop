@@ -92,7 +92,7 @@ function ensurePanels(n) {
     const p = document.createElement('div');
     p.className = 'panel';
     const t = panelTemplates[panels.length % panelTemplates.length];
-    p.innerHTML = `<h3>${t.title}</h3><p>${t.body}</p>`;
+    p.innerHTML = `<h3>${t.title}</h3><p>${t.body}</p>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     panelsContainer.appendChild(p);
     panels.push(p);
   }

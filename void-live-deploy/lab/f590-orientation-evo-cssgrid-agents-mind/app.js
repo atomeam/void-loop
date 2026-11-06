@@ -113,7 +113,7 @@ document.getElementById('seal').onclick = async () => {
   try {
     const bc = new BroadcastChannel('f590-genome');
     bc.postMessage({ type:'genome', data, hash: hashStr(JSON.stringify(bestGenome)) });
-  } catch(e){}
+  } catch (e) { console.debug("lab f590-orientation-evo-cssgrid-agents-mind:", e); }
 };
 
 document.getElementById('reset').onclick = () => { fitness.fill(0); bestFitness=0; init(); };
@@ -140,5 +140,5 @@ step();
         applyAll();
       }
     };
-  } catch(e){}
+  } catch (e) { console.debug("lab f590-orientation-evo-cssgrid-agents-mind:", e); }
 })();

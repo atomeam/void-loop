@@ -129,7 +129,7 @@ function updatePortals() {
       p.style.left = (ox + (cx / cnt) * cell) + 'px';
       p.style.top = (oy + (cy / cnt) * cell) + 'px';
     }
-    p.innerHTML = `portal ${pi}<br>res: ${residual.toFixed(2)}`;
+    p.innerHTML = `portal ${pi}<br>res: ${residual.toFixed(2)}`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
   });
 }
 
@@ -213,7 +213,7 @@ async function loadSeal() {
         updateStatus();
       }
     };
-  } catch (e) {}
+  } catch (e) { console.debug("lab f055-webgpu-hopfield-spatial-completion:", e); }
 }
 
 // init

@@ -22,7 +22,7 @@ function initField() {
   for (let i=0; i<N_CARDS; i++) {
     const d = document.createElement('div');
     d.className = 'card';
-    d.innerHTML = `<h4>Organ ${i+1}</h4>activity: 0.00`;
+    d.innerHTML = `<h4>Organ ${i+1}</h4>activity: 0.00`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     cardsEl.appendChild(d);
     cards.push({ el:d, x: Math.random()*W, y: Math.random()*H, vx:0, vy:0, act:0 });
   }

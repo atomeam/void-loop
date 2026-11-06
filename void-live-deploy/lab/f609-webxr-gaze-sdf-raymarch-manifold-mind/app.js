@@ -190,7 +190,7 @@ async function tryXR() {
   try {
     const ok = await navigator.xr.isSessionSupported('immersive-vr');
     if (ok) document.getElementById('xrbtn').style.display = 'inline-block';
-  } catch(e) {}
+  } catch (e) { console.debug("lab f609-webxr-gaze-sdf-raymarch-manifold-mind:", e); }
 }
 
 document.getElementById('xrbtn').onclick = async () => {

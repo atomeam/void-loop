@@ -185,7 +185,7 @@ async function load() {
         status.textContent = 'Restored from seal';
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f561-deviceorientation-lif-spike-audio-mind:", e); }
 }
 load();
 

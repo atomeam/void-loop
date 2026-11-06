@@ -24,7 +24,7 @@ const CARDS = [
 CARDS.forEach((c, i) => {
   const el = document.createElement('div');
   el.className = 'card';
-  el.innerHTML = `<h3>${c.t}</h3><p>${c.d}</p>`;
+  el.innerHTML = `<h3>${c.t}</h3><p>${c.d}</p>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
   el.onclick = () => injectAt(i % 4 * 16, Math.floor(i / 4) * 12);
   STAGE.appendChild(el);
 });
@@ -135,7 +135,7 @@ async function tryLoad() {
         STATUS.textContent = 'restored';
       }
     };
-  } catch (e) {}
+  } catch (e) { console.debug("lab f576-webgpu-ca-css-grid-living-layout-mind:", e); }
 }
 
 // Minimal WebGPU attempt (placeholder; falls back)

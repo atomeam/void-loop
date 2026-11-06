@@ -76,7 +76,7 @@ function sealCard(idx) {
   cards[idx].el.style.transform = 'scale(1.15)';
   cards[idx].el.textContent = 'S' + hash.slice(-3);
   setTimeout(() => cards[idx].el.style.transform = '', 200);
-  try { new BroadcastChannel('f556-seal').postMessage({idx, hash}); } catch(e) {}
+  try { new BroadcastChannel('f556-seal').postMessage({idx, hash}); } catch (e) { console.debug("lab f556-webxr-hand-magnetic-dom-hopfield:", e); }
   status.textContent = `Sealed fragment ${hash} into card ${idx}`;
 }
 
@@ -144,7 +144,7 @@ async function load() {
         status.textContent = 'Restored sealed memory';
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f556-webxr-hand-magnetic-dom-hopfield:", e); }
   initHopfield();
   spawnCards();
   loop();

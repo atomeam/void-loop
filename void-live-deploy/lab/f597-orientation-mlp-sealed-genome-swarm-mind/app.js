@@ -67,7 +67,7 @@ async function load() {
       data.genomes.forEach((g,i) => { if(agents[i]) agents[i].genome.set(g); agents[i].energy = data.energies[i]||50; });
       status('Restored sealed swarm');
     }
-  } catch(e) {}
+  } catch (e) { console.debug("lab f597-orientation-mlp-sealed-genome-swarm-mind:", e); }
 }
 
 function idbOpen() {
@@ -87,7 +87,7 @@ async function save() {
       genomes: agents.map(a => Array.from(a.genome)),
       energies: agents.map(a => a.energy)
     }, 'state');
-  } catch(e) {}
+  } catch (e) { console.debug("lab f597-orientation-mlp-sealed-genome-swarm-mind:", e); }
 }
 
 function status(t) { document.getElementById('status').textContent = t; }

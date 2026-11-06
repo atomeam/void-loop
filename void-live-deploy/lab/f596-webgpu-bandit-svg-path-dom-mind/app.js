@@ -71,7 +71,7 @@ const cards = [];
 paths.forEach((p, i) => {
   const card = document.createElement('div');
   card.className = 'card';
-  card.innerHTML = `<input value="idea ${i+1}">`;
+  card.innerHTML = `<input value="idea ${i+1}">`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
   document.body.appendChild(card);
   let drag = false, ox, oy;
   card.addEventListener('pointerdown', e => { drag=true; ox=e.offsetX; oy=e.offsetY; });

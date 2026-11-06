@@ -38,7 +38,7 @@ async function initSensors() {
       sensors.charging = bat.charging;
       bat.addEventListener('levelchange', () => { sensors.battery = bat.level; updateStatus(); });
       bat.addEventListener('chargingchange', () => { sensors.charging = bat.charging; updateStatus(); });
-    } catch(e) {}
+    } catch (e) { console.debug("lab f572-ambient-sensor-mlp-living-tiles:", e); }
   }
   // Ambient Light
   if ('AmbientLightSensor' in window) {
@@ -61,7 +61,7 @@ async function initSensors() {
   // Request permission on iOS
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
     document.body.addEventListener('click', async () => {
-      try { await DeviceOrientationEvent.requestPermission(); } catch(e) {}
+      try { await DeviceOrientationEvent.requestPermission(); } catch (e) { console.debug("lab f572-ambient-sensor-mlp-living-tiles:", e); }
     }, { once: true });
   }
   updateStatus();
@@ -184,7 +184,7 @@ async function restore() {
         }
       }
     };
-  } catch(e) {}
+  } catch (e) { console.debug("lab f572-ambient-sensor-mlp-living-tiles:", e); }
 }
 
 document.getElementById('seal').onclick = seal;

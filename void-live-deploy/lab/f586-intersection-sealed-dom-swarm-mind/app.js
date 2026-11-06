@@ -44,7 +44,7 @@ function mutateWeights(w, rate=0.15){
 function createAgent(i){
   const el = document.createElement('div');
   el.className = 'agent';
-  el.innerHTML = `<div class="id">A${i}</div><div class="fit">fit 0</div>`;
+  el.innerHTML = `<div class="id">A${i}</div><div class="fit">fit 0</div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
   STAGE.appendChild(el);
   const genome = {
     hue: rand(0,360),

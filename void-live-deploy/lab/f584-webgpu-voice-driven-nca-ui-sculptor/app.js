@@ -16,7 +16,7 @@ function makePortals() {
   titles.forEach((t, i) => {
     const el = document.createElement('div');
     el.className = 'portal';
-    el.innerHTML = `<h3>${t}</h3><p>local field</p>`;
+    el.innerHTML = `<h3>${t}</h3><p>local field</p>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     el.style.left = (80 + i * 160) + 'px';
     el.style.top = (120 + (i%2)*140) + 'px';
     document.body.appendChild(el);

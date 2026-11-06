@@ -176,7 +176,7 @@ function setupRTC() {
         agents[0].fitness = 0;
         document.getElementById('status').textContent = 'Received sealed genome via WebRTC';
       }
-    } catch {}
+    } catch (e) { console.debug("lab f324-deviceorient-idb-webrtc-mlp-orb-arena:", e); }
   };
   pc.onicecandidate = e => { if (e.candidate) console.log('ICE', e.candidate.candidate); };
 }

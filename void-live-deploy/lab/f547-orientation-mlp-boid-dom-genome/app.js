@@ -84,7 +84,7 @@ function spawn() {
   for (let i = 0; i < N; i++) {
     const el = document.createElement('div');
     el.className = 'verse-card';
-    el.innerHTML = `<div class="id">C${i}</div><div class="fit">0.00</div>`;
+    el.innerHTML = `<div class="id">C${i}</div><div class="fit">0.00</div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     stage.appendChild(el);
     cards.push({
       el, x: Math.random() * innerWidth, y: Math.random() * innerHeight,

@@ -111,7 +111,7 @@ class Node {
     this.el.style.top = this.y + 'px';
     this.el.style.width = this.w + 'px';
     this.el.style.height = this.h + 'px';
-    this.el.innerHTML = `<div class="val">${this.value.toFixed(2)}</div><div class="meta">d${this.depth} v${this.variance.toFixed(2)}</div>`;
+    this.el.innerHTML = `<div class="val">${this.value.toFixed(2)}</div><div class="meta">d${this.depth} v${this.variance.toFixed(2)}</div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     this.el.style.background = `hsla(${200 + this.value*60}, 50%, 25%, 0.4)`;
   }
 }
@@ -174,7 +174,7 @@ async function restore() {
         }
       };
     };
-  } catch (err) {}
+  } catch (err) { console.debug("lab f605-webgpu-quadtree-policy-partition-mind:", err); }
 }
 document.getElementById('seal').onclick = seal;
 document.getElementById('restore').onclick = restore;

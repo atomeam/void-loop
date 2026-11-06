@@ -32,7 +32,7 @@ class Agent {
     this.Who = weights?.Who || Array.from({length:32}, () => rand(0.4));
     this.el = document.createElement('div');
     this.el.className = 'agent';
-    this.el.innerHTML = `<div class="id">A${id}</div><div class="fit">fit 0</div>`;
+    this.el.innerHTML = `<div class="id">A${id}</div><div class="fit">fit 0</div>`; // void-review: ok (built from this file's own constants and numbers, no visitor text)
     this.el.style.left = x+'px';
     this.el.style.top = y+'px';
     this.el.style.setProperty('--hue', this.hue);

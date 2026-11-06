@@ -161,7 +161,7 @@ sealBtn.onclick = async () => {
         status.textContent = 'Restored sealed mind';
       }
     };
-  } catch {}
+  } catch (e) { console.debug("lab f608-webgpu-esn-wavefield-dom-portals-mind:", e); }
 })();
 
 initESN();

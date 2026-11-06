@@ -200,7 +200,7 @@ async function loadGenome() {
       statusEl.textContent = `Loaded ${rec.hash || 'genome'}`;
       return true;
     }
-  } catch(e) {}
+  } catch (e) { console.debug("lab f542-webgpu-wave-interference-phase-dom-mind:", e); }
   return false;
 }
 
