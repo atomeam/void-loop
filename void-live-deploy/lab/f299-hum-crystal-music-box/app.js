@@ -1,4 +1,5 @@
 "use strict";
+import { renderTune, wavOf, levelOf, speakerDbOf } from './tone.js';
 // ---------- music helpers ----------
 const A4=440, midiOf=f=>69+12*Math.log2(f/A4), freqOf=m=>A4*Math.pow(2,(m-69)/12);
 const NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -90,30 +91,16 @@ function addNote(n){notes.push(n);crystals.push({n,born:performance.now(),ring:1
 function rebuild(){crystals.length=0;const now=performance.now();notes.forEach((n,i)=>crystals.push({n,born:now-2000+i*30,ring:0}))}
 
 // ---------- audio ----------
-let ac=null; const getAC=()=>ac||(ac=new (window.AudioContext||window.webkitAudioContext)());
-function voice(ctx,dest,midi,t,dur,ai){
-  const f=freqOf(midi), g=ctx.createGain(), o=ctx.createOscillator(), o2=ctx.createOscillator();
-  o.type='sine'; o2.type='triangle'; o.frequency.value=f; o2.frequency.value=f*(ai?2.003:3.01);
-  const g2=ctx.createGain(); g2.gain.value=ai?.18:.1;
-  o.connect(g); o2.connect(g2).connect(g); g.connect(dest);
-  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.28,t+.008); g.gain.exponentialRampToValueAtTime(.001,t+dur+.9);
-  o.start(t);o2.start(t);o.stop(t+dur+1);o2.stop(t+dur+1);
-}
+// every tune is rendered and mastered to one clear level in tone.js (peak -1 dBFS, soft limiter), then played as one buffer; Save sound writes the same samples
+let ac=null, playing=null; const getAC=()=>ac||(ac=new (window.AudioContext||window.webkitAudioContext)());
 function playList(list){
-  if(!list.length) return; const ctx=getAC(); ctx.resume(); const t0=ctx.currentTime+.08, s0=list[0].start;
-  list.forEach(n=>{voice(ctx,ctx.destination,n.midi,t0+(n.start-s0),n.dur,n.ai);
-    const c=crystals.find(c=>c.n===n); if(c) setTimeout(()=>c.ring=1,(n.start-s0)*1000+80)});
+  if(!list.length) return; const ctx=getAC(); ctx.resume(); const t0=ctx.currentTime+.08, s0=list[0].start, lead=.02;
+  const data=renderTune(list,ctx.sampleRate,lead), buf=ctx.createBuffer(1,data.length,ctx.sampleRate); buf.getChannelData(0).set(data);
+  if(playing){try{playing.stop()}catch(e){}} const src=ctx.createBufferSource(); src.buffer=buf; src.connect(ctx.destination); src.start(t0-lead); playing=src;
+  src.onended=()=>{if(playing===src) playing=null};
+  list.forEach(n=>{const c=crystals.find(c=>c.n===n); if(c) setTimeout(()=>c.ring=1,(n.start-s0)*1000+80)});
 }
-async function renderWav(list){
-  const s0=list[0].start, len=list[list.length-1].start-s0+list[list.length-1].dur+1.5, sr=44100;
-  const oc=new OfflineAudioContext(1,Math.ceil(len*sr),sr); list.forEach(n=>voice(oc,oc.destination,n.midi,n.start-s0+.02,n.dur,n.ai));
-  const b=(await oc.startRendering()).getChannelData(0); const dv=new DataView(new ArrayBuffer(44+b.length*2));
-  const w=(o,s)=>[...s].forEach((ch,i)=>dv.setUint8(o+i,ch.charCodeAt(0)));
-  w(0,'RIFF');dv.setUint32(4,36+b.length*2,true);w(8,'WAVEfmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
-  dv.setUint32(24,sr,true);dv.setUint32(28,sr*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);w(36,'data');dv.setUint32(40,b.length*2,true);
-  for(let i=0;i<b.length;i++) dv.setInt16(44+i*2,Math.max(-1,Math.min(1,b[i]))*32767,true);
-  return new Blob([dv],{type:'audio/wav'});
-}
+async function renderWav(list){ const sr=44100; return new Blob([wavOf(renderTune(list,sr),sr)],{type:'audio/wav'}); }
 
 // ---------- mic ----------
 let mic=null;
@@ -224,6 +211,8 @@ async function selftest(){
   R.answer={len:ans.length,inKey:ans.filter(n=>snap(n.midi)===n.midi).length,endsHome:ans.length?ans[ans.length-1].midi===snap(userT[0].midi):false};
   // 4) share link round trip
   const enc=encode(userT.concat(ans)), dec=decode(enc); R.share={chars:enc.length,roundTrip:dec.every((n,i)=>n.midi===userT.concat(ans)[i].midi)};
+  // 5) playback level: the demo tune comes out mastered (tone.js), peak at -1 dBFS, never over
+  const lv=levelOf(renderTune(gen(4),44100)); R.level={peakDb:+lv.peakDb.toFixed(2),rmsDb:+lv.rmsDb.toFixed(2),phoneDb:+speakerDbOf(renderTune(gen(4),44100),44100).toFixed(2)};
   window.__F299=R; document.title='SELFTEST DONE'; console.log('F299',JSON.stringify(R)); return R;
 }
 if(/selftest/.test(location.search)) selftest();
