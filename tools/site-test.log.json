@@ -1,20 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:20:22Z",
-  "passed": 11,
-  "of": 11,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"air quality in Tokyo\" (skill:air)"
- },
- {
-  "at": "2026-10-15T06:23:11Z",
-  "passed": 6,
-  "of": 12,
-  "kind": "file",
-  "key": "what are you? | console: Failed to load module script: Expected a JavaScript",
-  "note": "fix: \"what are you?\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
- },
- {
   "at": "2026-10-15T06:25:50Z",
   "passed": 8,
   "of": 12,
@@ -4422,5 +4407,44 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T09:21:01Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1358,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-06T09:29:54Z",
+  "passed": 88,
+  "of": 91,
+  "ms": 312,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1358,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"draw me a robot pls\" (skill:cartoon)"
  }
 ]
