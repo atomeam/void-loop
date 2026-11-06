@@ -74,6 +74,8 @@ export const LIMITS = {
   'film-views': { rpm: 60, body: 0 }, // Verse Tube view counts (functions/api/film-views.js): one D1 upsert per view, no KV
   'film-review': { rpm: 30, body: 4000 }, // a paying member's or the owner's verdict on a film and a note of up to 1,000 characters (functions/api/film-review.js)
   support: { rpm: 10, body: 6000 }, // the support desk (functions/api/support.js): paying users only, a report of up to 2,000 characters
+  sponsors: { rpm: 60, body: 600 }, // Starboard's sponsor grid (functions/api/sponsors.js): GET the grid, POST a view beacon of up to 6 tile ids; 30 views a minute per hashed connection in the route itself
+  claim: { rpm: 20, body: 300 }, // Starboard's claim wall (functions/api/claim.js): GET the rules, POST one Base address; 5 a minute per hashed connection, one per window, a daily cap and the pool check in the route itself
   x402: { rpm: 30, body: 70000 }, // Verse's pay-per-call API for agents (functions/api/x402/): the same review body, paid in USDC over x402 (lib/x402.js)
   review: { rpm: 60, body: 70000 }, // Verse's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   studies: { rpm: 20, body: 0 }, // owner-only, read only: the study panel lists Verse's studies (functions/api/studies.js)

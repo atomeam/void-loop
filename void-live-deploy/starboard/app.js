@@ -60,3 +60,49 @@
     { label: 'The time in this place', href: () => (shownPlace ? '/time/?c=' + encodeURIComponent(shownPlace.split(',')[0]) : null) },
     { label: 'Translate the top headline', href: () => (topStory ? '/translate/?q=' + encodeURIComponent(topStory.title) + '&to=es' : null) },
   ]);
+
+  // the sponsor grid (functions/api/sponsors.js): live tiles, open slots and the plans; a view is counted once per page load, and the
+  // server counts it as billable only from a person who is not the owner (Verse's own runs, tests and crawlers are kept apart)
+  const ownerTok = () => store.get('a2m.void.owner.v1') || '';
+  const usdText = (c) => '$' + (Number(c || 0) / 100).toFixed(2);
+  const day = (t) => new Date(t).toLocaleDateString();
+  fetch('/api/sponsors').then((r) => r.json()).then((j) => {
+    if (!j || !j.ok) throw new Error('closed');
+    const slots = j.slots || [];
+    $('tiles').innerHTML = slots.map((g) => g.tile
+      ? '<div><a href="' + esc(g.tile.url) + '" rel="sponsored noopener" target="_blank">' + esc(g.tile.title) + '</a>' + (g.tile.text ? '<div>' + esc(g.tile.text) + '</div>' : '') + '<small>Sponsored until ' + esc(day(g.tile.ends)) + '</small></div>'
+      : '<div class="open">Tile ' + esc(g.slot) + ' is open<small>' + (g.open ? 'Free now' : 'Free from ' + esc(day(g.free_from))) + '</small></div>').join('');
+    $('plans').innerHTML = 'Buy a tile: ' + (j.plans || []).map((p) => esc(p.days) + (p.days === 1 ? ' day ' : ' days ') + esc(p.price_usdc) + ' USDC').join(', ')
+      + '. Paid in USDC on Base over x402: an agent sends <code>POST /api/x402/sponsor/&lt;day|week|month&gt;</code> with <code>{ slot, title, url, text }</code>. A bought tile waits for the end of the one before it in that slot.';
+    const sp = j.split || {};
+    $('split').innerHTML = esc(j.rule || '') + ' Confirmed sponsor income ' + usdText(sp.sponsor_cents) + ': ' + usdText(sp.house_cents) + ' to the treasury, ' + usdText(sp.pool_cents) + ' in the visitor pool. <a href="/treasury/#sponsor-split">The split on the Treasury</a>';
+    const ids = slots.filter((g) => g.tile).map((g) => g.tile.id);
+    if (ids.length) {
+      const h = { 'content-type': 'application/json' }; if (ownerTok()) h.authorization = 'Bearer ' + ownerTok();
+      fetch('/api/sponsors', { method: 'POST', headers: h, body: JSON.stringify({ tiles: ids, w: navigator.webdriver ? 1 : 0 }) }).catch(() => {});
+    }
+  }).catch(() => { $('tiles').innerHTML = '<p class="note">The sponsor grid is closed for now.</p>'; });
+
+  // the claim wall (functions/api/claim.js): paid only from the visitor pool, one claim per visitor and per address in each window
+  async function claimRules() {
+    try {
+      const j = await (await fetch('/api/claim')).json();
+      if (!j || !j.ok) throw new Error('closed');
+      $('claimRule').textContent = 'Claim ' + j.claim_usdc + ' USDC to your Base address, once every ' + j.window_hours + ' hours, ' + j.per_day + ' claims a day in all. '
+        + 'Claims come only from the visitor pool, the half of sponsor income left after the treasury\'s share. The pool holds ' + usdText(j.pool_cents) + ' now.'
+        + (j.open ? '' : ' The wall opens when sponsor income comes in.');
+    } catch (_) { $('claimRule').textContent = 'The claim wall is closed for now.'; }
+  }
+  $('claimForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const address = $('addr').value.trim();
+    if (!/^0x[0-9a-fA-F]{40}$/.test(address)) { $('claimNote').textContent = 'Type a Base address: 0x and 40 hex characters.'; return; }
+    $('claimNote').textContent = 'Sending your claim…';
+    try {
+      const h = { 'content-type': 'application/json' }; if (ownerTok()) h.authorization = 'Bearer ' + ownerTok();
+      const j = await (await fetch('/api/claim', { method: 'POST', headers: h, body: JSON.stringify({ address, w: navigator.webdriver ? 1 : 0 }) })).json();
+      $('claimNote').textContent = j && j.ok ? 'Claimed ' + j.owed_usdc + ' USDC: ' + j.note + '.' : (j && j.error) || 'The claim was not recorded.';
+      claimRules();
+    } catch (_) { $('claimNote').textContent = 'The claim wall did not answer. Nothing was recorded.'; }
+  });
+  claimRules();

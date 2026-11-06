@@ -24,6 +24,15 @@
         + (Array.isArray(w.services) && w.services.length ? '<p class="note">What agents can pay for, each call ' + esc(w.services[0].price_usdc) + ' USDC, charged only when the work is done (<a href="/api/x402">catalog</a>):</p><ul class="sells">'
           + w.services.map((s) => { const b = (u.by_service || {})[s.id] || { calls: 0, cents: 0 }; return '<li><code>' + esc(s.path) + '</code> ' + esc(s.description) + ' <b>' + esc(b.calls) + ' paid call' + (b.calls === 1 ? '' : 's') + ', ' + usd(b.cents) + '</b></li>'; }).join('') + '</ul>' : '')
       : '<p class="note">' + esc(w.note || 'No wallet yet.') + '</p>';
+    // Starboard's sponsor grid (lib/sponsors.js): the house share first, the visitor pool from the rest, all from verified sponsor income
+    const sp = t.sponsors;
+    $('sponsors').innerHTML = sp
+      ? '<div class="grid"><div class="card"><b>' + usd(sp.sponsor_cents) + '</b><span>sponsor income confirmed on chain' + (sp.waiting_cents ? ' · ' + usd(sp.waiting_cents) + ' waiting' : '') + '</span></div>'
+        + '<div class="card"><b>' + usd(sp.house_cents) + '</b><span>house share to the treasury, ' + esc(Math.round(sp.house_bps / 100)) + '%</span></div>'
+        + '<div class="card"><b>' + usd(sp.pool_cents) + '</b><span>visitor pool, the rest</span></div>'
+        + '<div class="card"><b>' + usd(sp.claimed_cents) + '</b><span>claimed by visitors · ' + usd(sp.paid_out_cents) + ' sent</span></div></div>'
+        + '<p class="note">' + esc(sp.rule) + ' ' + esc(sp.live_tiles) + ' of ' + esc(sp.slots) + ' tiles are live. <a href="/starboard/#sponsors">The grid and the claim wall on Starboard</a></p>'
+      : '<p class="note">The sponsor split did not load. <a href="/starboard/#sponsors">The grid on Starboard</a></p>';
     const pots = [['owner', "Atom's cut"], ['giving', 'Giving'], ['reserve', 'Reserve'], ...['infrastructure', 'tools', 'growth', 'bounties'].map((k) => [k, names[k] || k])];
     $('pots').innerHTML = pots.map(([k, n]) => '<div class="card"><b>' + usd(t.pots[k]) + '</b><span>' + esc(n) + (t.weights[k] != null ? ' · ' + pct(t.weights[k]) + ' of reinvestment' : '') + '</span></div>').join('');
     const p = t.policy;
