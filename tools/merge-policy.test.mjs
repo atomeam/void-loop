@@ -42,13 +42,16 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
   assert.equal(stuckDecision(pr({ created_at: '2026-11-04T10:00:00Z' }), [], now).action, 'young');
 });
 
-test('the automerge workflow arms squash auto-merge and keeps the hourly run', () => {
+// 2026-11-06: since the suite gate (#2309) the bot no longer arms GitHub's auto-merge (it would merge on whatever main is, without the
+// suite). It disarms it, and merges one pull request itself with a squash, only after the suite passed on top of current main.
+test('the automerge workflow merges with a squash after the suite gate, and keeps the hourly run', () => {
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
   assert.match(yml, /pull-requests: write/);
   assert.match(yml, /17 \* \* \* \*/);
   assert.match(yml, /STUCK:/);
-  assert.match(src, /enablePullRequestAutoMerge/);
-  assert.match(src, /mergeMethod:SQUASH/);
+  assert.match(src, /disablePullRequestAutoMerge/);
+  assert.match(src, /merge_method=squash/);
+  assert.match(src, /choose\(rows, mainSha, running\)/);
   assert.match(src, /update-branch/);
 });
