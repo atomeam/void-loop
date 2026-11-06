@@ -18,10 +18,18 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const DIR = resolve(root, 'void-live-deploy/incidents/actions');
 const REPO = /^[\w.-]+\/[\w.-]+$/.test(String(process.env.GITHUB_REPOSITORY || '')) ? process.env.GITHUB_REPOSITORY : 'atomeam/void-loop';
 
-/** GET a REST path with gh; text, or { error } with the first line gh printed (an HTTP 403 or 410 for a log, say). Never throws. */
+/** GET a REST path with gh; text, or { error } with the first line gh printed (an HTTP 403 or 410 for a log, say). Never throws.
+ *  A newer gh will not print a body that holds terminal colour codes, and every job log does (run 42184801438, 2026-11-06: all five
+ *  logs "not read"); that is gh's own guard, not GitHub refusing the log, so the same GET runs once more with the flag gh names, and
+ *  the colours are stripped when the log is read (lib/actions-failure.js ANSI). An older gh, without the flag, never says this. */
 export function ghGet(path, run = execFileSync) {
-  try { return run('gh', ['api', path], { encoding: 'utf8', timeout: 60e3, maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'] }); }
-  catch (e) { return { error: (String(e && e.stderr || e && e.message || 'gh api failed').split('\n').find((x) => x.trim()) || 'gh api failed').slice(0, 160) }; }
+  const opts = { encoding: 'utf8', timeout: 60e3, maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'] };
+  const first = (e) => (String(e && e.stderr || e && e.message || 'gh api failed').split('\n').find((x) => x.trim()) || 'gh api failed').slice(0, 160);
+  try { return run('gh', ['api', path], opts); }
+  catch (e) {
+    if (!/--allow-escape-sequences/.test(String(e && e.stderr || e && e.message || ''))) return { error: first(e) };
+    try { return run('gh', ['api', '--allow-escape-sequences', path], opts); } catch (e2) { return { error: first(e2) }; }
+  }
 }
 const json = (x) => { if (typeof x !== 'string') return null; try { return JSON.parse(x); } catch (_) { return null; } };
 

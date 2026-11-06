@@ -31,14 +31,45 @@ export function judgeOne(rival, o) {
   if (PARKED.test(String(o.text || '').slice(0, 4000)) && String(o.text || '').length < 3000) return { ok: false, kind: 'parked', why: o.url + ' is a parked-domain page' };
   return { ok: true, why: o.url + ' -> ' + o.final + ' (' + o.status + ')' };
 }
+// A non-site (owner, 2026-11-06: the tower stood on id5-sync.com, an ad-tracker sync endpoint whose whole home page is the line "This is ID5.",
+// as "the next site Verse has not beaten"): a host that answers on its own domain with a page that has nothing on it to use (no control, no
+// link, no form, no frame or canvas, a line of text at most) is a machine endpoint, not a site a person uses. Verse lacks none of its features
+// (there are none), so it is settled as a non-site with the evidence of the fetch, logged in tower.gone.json, and the tower moves on. Only a
+// host Verse has no page for is judged this way (icanhazip.com's one line is a service Verse answers at /ip, and stays a real fight).
+export const NON_SITE_CHARS = 160;
+const STILL_LOADING = /\b(?:loading|enable javascript|please wait|checking your browser|just a moment|redirecting)\b/i;
+const NON_SITE_KINDS = [
+  [/(?:^|[.-])(?:detectportal|portal-detection|connectivity(?:check)?|captive|generate[_-]?204|nmcheck|msftconnecttest|msftncsi)(?:[.-]|$)|(?:^|[.-])portal[.-]detection(?:[.-]|$)/i, 'a connectivity check'],
+  [/(?:^|[.-])(?:sync|usersync|cookiesync|pixel|beacon|tracker|track(?:ing)?|adserver|adserv|ads|adsrv|analytics|metrics|telemetry|collect|log|stats|tag|tags|match|cm|id)(?:[.-]|\d|$)|sync|pixel|beacon|track|analytic|telemetry/i, 'an ad-tracking or sync endpoint'],
+  [/(?:^|[.-])(?:cdn\w*|static\w*|assets?|media|img\w*|edge|cache)(?:[.-]|\d|$)|cdn/i, 'a CDN or asset host'],
+];
+/** what a non-site is for, from its host and its text: a connectivity check, an ad-tracking or sync endpoint, a CDN host, else a stub. Pure. */
+export function nonSiteKind(host, text = '') {
+  const h = bare(host);
+  for (const [re, kind] of NON_SITE_KINDS) if (re.test(h)) return kind;
+  return /^(?:success|ok|1|true)$/i.test(String(text).trim()) ? 'a connectivity check' : 'an inert stub page';
+}
+/** an opened page that is a non-site: { kind, why } with the evidence, or null. Needs the page's shape (open() reads it). Pure. */
+export function nonSiteOf(rival, o) {
+  const s = o && o.shape; if (!s || o.error || !(o.status >= 200 && o.status < 400)) return null;
+  let fh = ''; try { fh = new URL(o.final).hostname; } catch (_) {}
+  if (!ownHost(fh, rival)) return null;
+  const text = String(s.sample || '').replace(/\s+/g, ' ').trim();
+  if (s.controls || s.links || s.forms || s.frames || s.canvas || !s.chars || s.chars > NON_SITE_CHARS || STILL_LOADING.test(text)) return null;
+  const kind = nonSiteKind(rival, text);
+  return { kind, why: o.url + ' (' + o.status + ') shows ' + s.chars + ' character' + (s.chars === 1 ? '' : 's') + ' of text ("' + text.slice(0, 80) + '"), 0 controls, 0 links, 0 forms and ' + (s.bytes || 0) + ' bytes of page: ' + kind + ', not a site a person uses; Verse lacks none of its features' };
+}
 /** both addresses to the verdict. Gone when either ends on another domain or is parked (the domain was handed elsewhere), or when neither loads.
  *  One scheme erroring while the other serves the real site (emojigraph.org: http 500, https 200) stays alive, with a note. Pure. */
-export function judge(rival, opened) {
+export function judge(rival, opened, { nonSite = false } = {}) {
   const r = opened.map((o) => ({ o, j: judgeOne(rival, o) }));
   const hijack = r.find((x) => x.j.kind === 'moved' || x.j.kind === 'parked');
   if (hijack) return { alive: false, status: 'parked', why: hijack.j.why, final: hijack.o.final || null, checks: r.map((x) => x.j.why) };
   const good = r.find((x) => x.j.ok);
   if (!good) return { alive: false, status: 'gone', why: r.map((x) => x.j.why).join('; '), final: null, checks: r.map((x) => x.j.why) };
+  // a non-site is judged on every address that loaded: one with something to use on it (a real page on http, a stub on https) is a site
+  const ns = nonSite ? r.filter((x) => x.j.ok).map((x) => nonSiteOf(rival, x.o)) : [];
+  if (ns.length && ns.every(Boolean)) return { alive: false, status: 'non-site', kind: ns[0].kind, why: ns[0].why, final: good.o.final, checks: r.map((x) => x.j.why), shape: good.o.shape };
   return { alive: true, status: 'alive', why: good.j.why, final: good.o.final, checks: r.map((x) => x.j.why) };
 }
 /** opens one address in the browser and waits out redirects by meta refresh and script: the address it settles on, its status and text */
@@ -51,40 +82,60 @@ export async function open(b, url, { settle = 4000, timeout = 30000 } = {}) {
     // a meta refresh or a script may move the page after load: wait until the address has held still for `settle` ms (at most 3 hops)
     for (let i = 0; i < 4; i++) { const at = p.url(); await p.waitForTimeout(settle); await p.waitForLoadState('load', { timeout }).catch(() => {}); if (p.url() === at) break; }
     const text = await p.evaluate(() => (document.title || '') + '\n' + (document.body ? document.body.innerText : '')).catch(() => '');
-    return { url, final: p.url(), status, text };
+    // the page's shape, for a non-site (nonSiteOf): what there is on it to use, read from the rendered page
+    const shape = await p.evaluate(() => {
+      const n = (q) => document.querySelectorAll(q).length, t = (document.body ? document.body.innerText : '').trim();
+      return { chars: t.length, sample: t.slice(0, 200), controls: n('a[href],button,input:not([type=hidden]),select,textarea,summary,[role=button],[role=link],[role=textbox],[onclick],[contenteditable=""],[contenteditable=true]'), links: n('a[href]'), forms: n('form'), frames: n('iframe,frame,embed,object'), canvas: n('canvas'), scripts: n('script'), bytes: document.documentElement.outerHTML.length };
+    }).catch(() => null);
+    return { url, final: p.url(), status, text, shape };
   } catch (e) { return { url, error: String(e && e.message || e).split('\n')[0] }; } finally { await ctx.close().catch(() => {}); }
 }
 /** a rival host checked on http and https */
 export async function check(b, rival, opts = {}) {
   const urls = opts.urls || ['https://' + rival + '/', 'http://' + rival + '/'];
   const opened = []; for (const u of urls) opened.push(await open(b, u, opts));
-  return { rival, at: new Date().toISOString(), ...judge(rival, opened) };
+  return { rival, at: new Date().toISOString(), ...judge(rival, opened, opts) };
 }
 /** the gone list after a round of checks: gone rivals added with a log entry, rivals that came back taken off (logged too). Pure. */
 export function fold(old, results, at) {
   const gone = { ...((old && old.gone) || {}) }, log = ((old && old.log) || []).slice(-200);
   for (const r of results) {
-    if (!r.alive) { if (!gone[r.rival]) log.push({ at, rival: r.rival, status: r.status, why: r.why }); gone[r.rival] = { status: r.status, since: (gone[r.rival] && gone[r.rival].since) || at, checked: at, why: r.why, final: r.final }; }
+    if (!r.alive) { if (!gone[r.rival] || gone[r.rival].status !== r.status) log.push({ at, rival: r.rival, status: r.status, why: r.why, ...(r.kind ? { kind: r.kind } : {}), ...(r.shape ? { shape: r.shape } : {}) }); gone[r.rival] = { status: r.status, since: (gone[r.rival] && gone[r.rival].since) || at, checked: at, why: r.why, final: r.final, ...(r.kind ? { kind: r.kind } : {}), ...(r.shape ? { shape: r.shape } : {}) }; }
     else if (gone[r.rival]) { log.push({ at, rival: r.rival, status: 'back', why: r.why }); delete gone[r.rival]; }
   }
-  return { about: 'Rivals the tower skips because their site is gone, parked or moved to another domain (tools/tower-alive.mjs). Re-checked on every run.', gone, log };
+  return { about: 'Rivals the tower skips because their site is gone, parked or moved to another domain, or is a non-site (a tracker, sync, CDN or connectivity endpoint with nothing on its home page to use), each with the evidence of a real fetch (tools/tower-alive.mjs). Re-checked on every run.', gone, log };
 }
 /** the gone list on disk ({} when none) and whether a floor id or host is on it */
 export const readGone = (file = GONE_FILE) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')).gone || {}; } catch (_) { return {}; } };
 export const isGone = (idOrHost, gone = readGone()) => { const h = rivalHost(idOrHost); return !!h && Object.keys(gone).some((g) => ownHost(h, g)); };
 
+// the open sites at the front of the queue, the target first, as the tower orders them from the published files (the same call tower-target
+// makes): each run checks this many ahead, so a run of non-sites at the front is settled in one pass and the target lands on a real site
+export const NEXT_CHECKED = 6;
+async function frontOfQueue(k) {
+  try {
+    const { tower, towerArgs } = await import('../void-live-deploy/lib/tower.js'), { overlay, readFloorDir } = await import('./tower-files.mjs');
+    const rd = (f) => { try { return JSON.parse(fs.readFileSync(path.join(SITE, f), 'utf8')); } catch (_) { return null; } };
+    const tg = rd('tower.target.json') || {}, ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
+    const t = tower(...towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg, ft: rd('tower.features.json'), gn: rd('tower.gone.json') }));
+    return t.floors.filter((f) => !f.beaten && !f.cleared).slice(0, k);
+  } catch (e) { console.log('::warning::the queue could not be read: ' + String(e && e.message || e).slice(0, 160)); return []; }
+}
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { chromium } = await import('playwright-core');
   const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
   const args = process.argv.slice(2), add = args.includes('--write');
   let rivals = args.filter((a) => a !== '--write').map(rivalHost).filter(Boolean);
   const write = add || !rivals.length;
+  let stubs = new Set(); // the hosts a non-site verdict may be given to: pageless sites at the front of the queue, and the non-sites already found
   if (write) {
     const { LANE_PAGES, hostOf } = await import('../void-live-deploy/lib/tower.js');
     const t = (() => { try { return JSON.parse(fs.readFileSync(path.join(SITE, 'tower.target.json'), 'utf8')); } catch (_) { return {}; } })();
-    rivals = [...new Set([...rivals, ...Object.keys(readGone()), rivalHost(t.id), ...(t.passed || []).map((r) => rivalHost(r.id)), ...Object.keys(LANE_PAGES).filter((k) => hostOf(k) === k).map(rivalHost)].filter(Boolean))];
+    const front = await frontOfQueue(NEXT_CHECKED);
+    stubs = new Set([...front.filter((f) => !f.page).map((f) => rivalHost(f.url || f.site || f.id)), ...Object.entries(readGone()).filter(([, g]) => g.status === 'non-site').map(([h]) => h)].filter(Boolean));
+    rivals = [...new Set([...rivals, ...Object.keys(readGone()), rivalHost(t.id), ...front.map((f) => rivalHost(f.url || f.site || f.id)), ...(t.passed || []).map((r) => rivalHost(r.id)), ...Object.keys(LANE_PAGES).filter((k) => hostOf(k) === k).map(rivalHost)].filter(Boolean))];
   }
-  const results = []; for (const r of rivals) { const x = await check(b, r); results.push(x); console.log((x.alive ? 'alive ' : x.status.padEnd(6)) + ' ' + r + ': ' + x.checks.join(' | ')); }
+  const results = []; for (const r of rivals) { const x = await check(b, r, { nonSite: stubs.has(r) }); results.push(x); console.log((x.alive ? 'alive ' : x.status.padEnd(6)) + ' ' + r + ': ' + (x.status === 'non-site' ? x.why : x.checks.join(' | '))); }
   await b.close();
   if (write) {
     let old = {}; try { old = JSON.parse(fs.readFileSync(GONE_FILE, 'utf8')); } catch (_) {}
