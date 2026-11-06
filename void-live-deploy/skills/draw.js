@@ -13,7 +13,7 @@
  * skills/scene3d.js (loaded only then) into the layer's canvas, so a 3D layer stacks, fades, clips and blends with flat ones;
  * "turn the ring 70", the Turn button, or a right or shift drag spins it. Where the browser offers VR, Enter VR puts the layer
  * in a headset in front of you and a controller's trigger paints in the air; leaving brings the strokes back to the card.
- * A coloured shape ("draw a red circle", "dessine un cercle rouge", "dibuja un círculo rojo"; lib/shape-picture.js) is drawn for you as a
+ * A coloured shape ("draw a red circle", "dessine un cercle rouge", "dibuja un círculo rojo", "zeichne einen roten Kreis"; lib/shape-picture.js) is drawn for you as a
  * picture card: the shape in SVG, "Paint it" carries it to /paint/ as a PNG (lib/image-handoff.js), "Keep drawing on it" opens this canvas
  * with it on the first layer, and the stage's one shape (skills/shape.js) gets the same ask, so "make the shape blue" still reaches it.
  * "make the picture bigger" (or smaller) redraws the card's picture while it is open.
@@ -539,7 +539,7 @@ function run(text, api) {
 
 export default {
   name: 'draw',
-  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush', 'make a 2d sketch of a tree', 'draw a red circle', 'dessine un cercle rouge', 'draw a blue star'],
+  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush', 'make a 2d sketch of a tree', 'draw a red circle', 'dessine un cercle rouge', 'zeichne einen roten kreis', 'draw a blue star'],
   nearMisses: ['draw a cat', 'what is charcoal', 'how do i draw a horse', 'paint my wall', 'make a cube'],
   drawOf, brushFrom,
   match(lower, text) { return !!drawOf(text || lower) || !!shapeAsk(text || lower) || (!!resizeAsk(text || lower) && cardOn()); },
