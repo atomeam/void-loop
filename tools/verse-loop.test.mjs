@@ -363,7 +363,7 @@ test('the back-off: three failures pause for 6 hours, a merged PR resets the str
   assert.equal(pauseState({ state: streak, now: t0 + 600e3, changedAt: t0 - 7200e3 }).paused, true, 'a change before the first failure does not');
   assert.equal(pauseState({ state: streak, now: t0 + 600e3 }).paused, true, 'no change: the 6 hours hold');
   assert.equal(pauseState({ state: {}, issue: { createdAt: '2026-10-28T10:00:00Z' }, now: t0 + 3600e3, changedAt: t0 + 60e3 }).resume, true, 'a fresh runner measures from the issue');
-  assert.ok(LOOP_CODE.includes('tools/verse-coder.mjs') && LOOP_CODE.includes('tools/verse-loop.mjs'));
+  assert.ok(LOOP_CODE.includes('tools/verse-coder.mjs') && LOOP_CODE.includes('tools/verse-loop.mjs') && LOOP_CODE.includes('void-live-deploy/lib/patch-guard.js'));
 });
 
 test('a lap: a commit to the loop\'s own code after the failures began ends the pause early and says why on the issue', async () => {
