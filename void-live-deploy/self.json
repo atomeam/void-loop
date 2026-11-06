@@ -582,6 +582,62 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T05:48:15Z",
+   "subject": "Outcome exam: timers 86.7"
+  },
+  {
+   "at": "2026-11-06T05:48:06Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T05:42:22Z",
+   "subject": "Gaps batch 4: phonetic alphabet, invisible characters, final exam grade, SQL formatter and XML to JSON in the page (#2377)"
+  },
+  {
+   "at": "2026-11-06T05:41:42Z",
+   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches (#2378)"
+  },
+  {
+   "at": "2026-11-06T05:41:17Z",
+   "subject": "The 3D note shows once, so it never hides the next answer (#2379)"
+  },
+  {
+   "at": "2026-11-06T05:40:57Z",
+   "subject": "Agents pay Verse over MCP, the review Action pays per review, and the listings and grant drafts are ready (#2380)"
+  },
+  {
+   "at": "2026-11-06T05:31:45Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:28:56Z",
+   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
+  },
+  {
+   "at": "2026-11-06T05:27:34Z",
+   "subject": "Page copies: void.html takes the deploy copies' change from #2369"
+  },
+  {
+   "at": "2026-11-06T05:24:21Z",
+   "subject": "Incident: the browser suite failed on 42ad9480 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T05:24:11Z",
+   "subject": "Tower gate: wheel,tournaments measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:22:02Z",
+   "subject": "A replace that misses shows the nearest lines (#2330) (#2372)"
+  },
+  {
+   "at": "2026-11-06T05:21:03Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:20:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T05:18:19Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
@@ -604,62 +660,6 @@
   {
    "at": "2026-11-06T05:16:48Z",
    "subject": "Tower gate: random generators,random number,prizes measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:16:33Z",
-   "subject": "Trading bots with real backtests, and an arbitrage scanner, sold per call over x402 (#2371)"
-  },
-  {
-   "at": "2026-11-06T05:16:13Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:16:01Z",
-   "subject": "Automerge: a run scoped to one pull request starts a full sweep, so suite batches hold every ready pull request (#2360)"
-  },
-  {
-   "at": "2026-11-06T05:15:16Z",
-   "subject": "Known first asks load their own skill at once (#2316 #2323 #2342) (#2361)"
-  },
-  {
-   "at": "2026-11-06T05:14:45Z",
-   "subject": "Gaps batch 3: the list reaches 100, and alarm, word counter, fancy text, teams and secret santa work in the page (#2362)"
-  },
-  {
-   "at": "2026-11-06T05:12:56Z",
-   "subject": "Site tester: time a slow load again alone, after the pool (#2328) (#2363)"
-  },
-  {
-   "at": "2026-11-06T05:12:37Z",
-   "subject": "Verse sells six more services per call over x402, findable in the Bazaar (#2368)"
-  },
-  {
-   "at": "2026-11-06T05:11:14Z",
-   "subject": "Main green: card art, poster wins, contrast, self card and the heavy song pass again (#2367)"
-  },
-  {
-   "at": "2026-11-06T05:10:06Z",
-   "subject": "Tower gate: prizes,wheel,tournaments measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T05:00:57Z",
-   "subject": "Make the tool strip links 44 px tap targets on every ring page (#2366)"
-  },
-  {
-   "at": "2026-11-06T04:59:41Z",
-   "subject": "Incident: the browser suite failed on 674babb3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T04:57:55Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-06T04:57:19Z",
-   "subject": "Verse's wallet: Atom's MetaMask address on Base as payTo (#2365)"
-  },
-  {
-   "at": "2026-11-06T04:52:12Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 15,
-  "week": 166
+  "day": 21,
+  "week": 172
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

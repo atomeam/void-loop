@@ -1305,6 +1305,13 @@
    "tests": 1
   },
   {
+   "file": "lib/follow-ask.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 1
+  },
+  {
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
@@ -1385,7 +1392,7 @@
    "file": "lib/image-gen.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 10,
+   "dependants": 11,
    "tests": 3
   },
   {
@@ -1511,7 +1518,7 @@
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 1
   },
   {
@@ -2537,13 +2544,6 @@
    "tests": 1
   },
   {
-   "file": "lib/follow-ask.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 28,
-   "tests": 1
-  },
-  {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
@@ -2614,6 +2614,13 @@
    "tests": 1
   },
   {
+   "file": "lib/x402.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 4
+  },
+  {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
@@ -2663,6 +2670,13 @@
    "tests": 0
   },
   {
+   "file": "lib/verse-wallet-address.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 10,
+   "tests": 3
+  },
+  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
@@ -2670,18 +2684,11 @@
    "tests": 1
   },
   {
-   "file": "lib/verse-wallet-address.js",
+   "file": "lib/verse-wallet.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 2
-  },
-  {
-   "file": "lib/x402.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 3
   },
   {
    "file": "lib/drive.js",
@@ -2705,45 +2712,38 @@
    "tests": 1
   },
   {
-   "file": "lib/verse-wallet.js",
+   "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
    "dependants": 8,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
    "dependants": 7,
-   "tests": 3
-  },
-  {
-   "file": "lib/studio.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
+   "tests": 4
   },
   {
    "file": "lib/watch-along.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 2
   },
   {
    "file": "lib/wiki-look.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/translate-langs.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 5,
+   "dependants": 6,
    "tests": 2
   },
   {
@@ -2761,7 +2761,28 @@
    "tests": 1
   },
   {
+   "file": "lib/translate-web.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/comments.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/digest.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2783,20 +2804,6 @@
   },
   {
    "file": "lib/team-crew.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/translate-web.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/translate-words.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2843,13 +2850,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/digest.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/icsfeed.js",
@@ -3879,6 +3879,7 @@
     "functions/api/x402/[service].js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js"
    ]
   },
@@ -3978,6 +3979,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/gallery.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -4053,6 +4055,9 @@
    ],
    "importedBy": [
     "functions/api/x402/[service].js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
    ]
   },
   "functions/api/earnings.js": {
@@ -4236,7 +4241,8 @@
     "functions/api/x402/[service].js"
    ],
    "reachedBy": [
-    "functions/api/image.js"
+    "functions/api/image.js",
+    "functions/api/mcp.js"
    ]
   },
   "functions/api/ip.js": {
@@ -4306,7 +4312,10 @@
     "lib/mcp.js",
     "lib/shortfall.js",
     "functions/api/review.js",
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "functions/api/x402/review.js",
+    "functions/api/x402/[service].js",
+    "lib/x402.js"
    ],
    "importedBy": []
   },
@@ -4678,6 +4687,7 @@
     "functions/api/card-art.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -4757,6 +4767,9 @@
    "importedBy": [
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
    ]
   },
   "functions/api/treasury.js": {
@@ -4863,7 +4876,9 @@
     "functions/api/appraise.js",
     "functions/api/image.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/mcp.js"
+   ]
   },
   "functions/api/x402/arbitrage.js": {
    "imports": [
@@ -4895,6 +4910,7 @@
     "functions/api/review.js"
    ],
    "importedBy": [
+    "functions/api/mcp.js",
     "functions/api/x402/index.js"
    ]
   },
@@ -5246,6 +5262,7 @@
     "skills/appraise.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/recipeimport.js",
     "functions/api/sing.js",
     "functions/api/translate.js",
@@ -6019,7 +6036,8 @@
   "lib/brain-dialogue.js": {
    "imports": [
     "lib/brain-organs.js",
-    "lib/brain-workspace.js"
+    "lib/brain-workspace.js",
+    "lib/follow-ask.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -7566,6 +7584,7 @@
     "functions/api/digest.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -8166,7 +8185,8 @@
   "lib/follow-ask.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/brain-dialogue.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -8195,7 +8215,15 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain-route.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/forge-duel.js": {
@@ -8815,6 +8843,7 @@
    ],
    "reachedBy": [
     "functions/api/card-art.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js",
     "skills/video-gen.js"
    ]
@@ -9656,7 +9685,8 @@
     "lib/drive.js",
     "lib/seo-audit.js",
     "lib/writing-aids.js",
-    "lib/colour.js"
+    "lib/colour.js",
+    "lib/x402.js"
    ],
    "importedBy": [
     "functions/api/mcp.js",
@@ -13458,6 +13488,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -14105,6 +14136,7 @@
     "lib/translate-words.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
    ]
@@ -14115,6 +14147,7 @@
     "functions/api/translate.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
    ]
@@ -14127,6 +14160,7 @@
     "functions/api/translate.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/sing.js",
     "functions/api/x402/[service].js"
    ]
@@ -14300,6 +14334,7 @@
    ],
    "reachedBy": [
     "functions/api/arbitrage.js",
+    "functions/api/mcp.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/arbitrage.js",
@@ -14323,6 +14358,7 @@
    ],
    "reachedBy": [
     "functions/api/arbitrage.js",
+    "functions/api/mcp.js",
     "functions/api/x402/arbitrage.js",
     "functions/api/x402/backtest.js",
     "functions/api/x402/index.js"
@@ -14535,6 +14571,7 @@
     "functions/api/watchalong.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/api/recipeimport.js",
     "functions/api/sing.js",
     "functions/api/translate.js",
@@ -14780,6 +14817,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/mcp.js",
     "functions/api/x402/[service].js"
    ]
   },
@@ -14888,17 +14926,25 @@
   "lib/x402.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/mcp.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/review.js",
+    "lib/mcp.js",
     "lib/verse-wallet.js",
     "lib/x402-call.js"
    ],
    "reachedBy": [
+    "functions/api/a2a.js",
     "functions/api/arbitrage.js",
+    "functions/api/mcp/server-card.js",
     "functions/api/x402/arbitrage.js",
     "functions/api/x402/backtest.js",
-    "functions/api/x402/index.js"
+    "functions/api/x402/index.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/a2a.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/yamljson.js": {
