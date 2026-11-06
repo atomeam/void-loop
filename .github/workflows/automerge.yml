@@ -34,8 +34,11 @@ on:
 # (15 were waiting on 2026-11-04). That queue was the backlog. The in-progress sweep is never cancelled.
 # Since the bot looks only at the PR an event is about (tools/automerge.mjs, scopedPr), the group is per PR: events about one PR
 # share one running and one waiting run, so a burst about PR A never replaces the waiting run for PR B. Sweeps share "sweep".
+# A run on main that is about no pull request (a deploy or a review of main) does no work (the job "if" below), so it gets a group
+# of its own. In "sweep" it replaced the waiting full sweep every few minutes, and on 2026-11-06 only 2 of 300 runs were full sweeps:
+# the suite gate got no new batch and nothing merged. "Suite on main" is about no pull request too, but its result is a real sweep.
 concurrency:
-  group: void-automerge-${{ github.event.pull_request.number || inputs.pr || (github.event.workflow_run && github.event.workflow_run.pull_requests[0].number) || 'sweep' }}
+  group: void-automerge-${{ github.event.pull_request.number || inputs.pr || (github.event.workflow_run && github.event.workflow_run.pull_requests[0].number) || (github.event.workflow_run && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name != 'Suite on main' && format('idle-{0}', github.run_id)) || 'sweep' }}
   cancel-in-progress: false
 
 permissions:
@@ -47,8 +50,9 @@ permissions:
 
 jobs:
   automerge:
-    # a run on main that is not about a pull request (a deploy, the review of main) changes no PR: no runner at all
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch != 'main' || github.event.workflow_run.pull_requests[0]
+    # a run on main that is not about a pull request (a deploy, the review of main) changes no PR: no runner at all.
+    # The suite gate runs on main for a batch of pull requests, so its result is the exception: it merges the green one or queues the next.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch != 'main' || github.event.workflow_run.pull_requests[0] || github.event.workflow_run.name == 'Suite on main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

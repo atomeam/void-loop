@@ -832,8 +832,8 @@
     /* the speaker sits as far in from the right border as the title does from the left (owner, 2026-10-18): no negative margin, and the scrollbar's
        gutter is kept on both edges so a classic scrollbar does not push the speaker further in than the title */
     .vpage.vc-self { scrollbar-gutter: stable both-edges; }
-    .vpage.vc-self.vcard > .vread { right: 27px !important; } /* the title bar's margin, border and padding (12 + 3 + 12): the speaker's right inset is the title text's left one */
-    @media (max-width: 520px) { .vpage.vc-self.vcard > .vread { right: 21px !important; } }
+    .vpage.vc-self.vcard > .vread { right: 16px !important; } /* the title's margin (lib/card-frame.js: 16 px, no border or padding since #2336): the speaker's right inset is the title text's left one */
+    @media (max-width: 520px) { .vpage.vc-self.vcard > .vread { right: 6px !important; } } /* the title's phone margin, 6 px */
     .vpage.vc-self .src { padding-bottom: 10px; }
     .vpage.vc-self .vs-h { font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: 0; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid rgb(var(--d-key, 158 178 255) / .35); box-shadow: 0 1px 0 rgba(255, 210, 122, .18); }
     .vpage.vc-self .vs-sec p { margin: 0 0 10px; }
@@ -1429,6 +1429,9 @@ Object.values(things).forEach((th) => {
         if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
       keepVideosPut(stage, vids);
+      // the picked thing says so (the exam reads the thing an ask made or changed, not the first one on the stage, #2326)
+      // a card kept from the last draw keeps its attributes, so the mark comes off every card that is no longer the picked one
+      for (const el of stage.querySelectorAll(':scope > [data-id]')) { delete el.dataset.picked; if (el.dataset.id === selectedId) el.dataset.picked = '1'; }
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       tuckApply(); // anything tucked away while a game was open stays in the tray across redraws
@@ -1720,12 +1723,13 @@ Object.values(things).forEach((th) => {
     
     // 3D figures (board Next #17 / #18): stage items of kind 'figure' live in skills/figures3d.js's WebGL layer, not in #stage.
     // That module and three.js load only once a figure is on the stage, so the empty page loads no 3D code at all.
-    let figures3d = null, figures3dP = null;
+    let figures3d = null, figures3dP = null, figures3dSaid = false;
     function syncFigures() {
       const figs = Object.values(things).filter((t) => t.kind === 'figure');
       if (!figs.length && !figures3d) return;
       if (!figures3dP) figures3dP = import('/skills/figures3d.js').then((m) => (figures3d = m));
-      figures3dP.then((m) => m.syncFigures(figs)).catch(() => { figures3dP = null; if (figs.length) say("3D can't show in this browser"); });
+      // said once a page load: each render retries the import, and a note on every render took the place of the answer to each ask
+      figures3dP.then((m) => m.syncFigures(figs)).catch(() => { figures3dP = null; if (figs.length && !figures3dSaid) { figures3dSaid = true; say("3D can't show in this browser"); } });
     }
 
     // a figure thrown off the screen in the 3D layer (figures3d.js) is gone from the stage too, like any thrown thing
