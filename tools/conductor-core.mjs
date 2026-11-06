@@ -214,7 +214,7 @@ export function plan({ jobs = [], wf = {}, handed = {}, now, exam }) {
     if (triesOf(j.note) >= MAX_TRIES) { out.setAside.push({ id: j.id, note: withTries(j.note, triesOf(j.note), 'set aside after ' + MAX_TRIES + ' tries') }); continue; }
     const s = wf[r.wf] || {};
     if (!s.exists) { out.held.push({ id: j.id, why: r.wf + ' is not on main yet' }); continue; }
-    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (domains/verse-loop.pause)' }); continue; }
+    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (' + (s.pausedWhy || 'domains/verse-loop.pause') + ')' }); continue; }
     // the coder's free model calls are used up (functions/api/coder.js GET): a run now ends "no model answered" and spends one of the day's runs
     if (s.noModel) { out.held.push({ id: j.id, why: 'Verse\'s coder has used its free model calls' + (s.noModel.until ? ' until ' + String(s.noModel.until).slice(11, 16) + ' UTC' : '') }); continue; }
     if (taken.has(r.wf) || s.busy || (ALSO_BUSY[r.wf] || []).some((f) => wf[f] && wf[f].busy)) continue;
