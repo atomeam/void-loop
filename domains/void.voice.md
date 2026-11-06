@@ -10,9 +10,19 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-05. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-06. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup. (daily, 2026-11-03)
+- Automate the extraction of failing job names and error logs from GitHub Actions for commit 814032d5. (daily, 2026-11-06) `ask-20261106-0006-1`
+- Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' or 'add one minute'. (daily, 2026-11-06) `ask-20261106-0006-2`
+- Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic. *(small)* (after a build, 2026-11-05) `ask-20261105-2357-3`
+- Fix the timers exam to correctly handle duration commands and increments. (daily, 2026-11-05) `ask-20261105-1530-1`
+- Fix the images exam failures by improving visual processing and image generation skills. (after a build, 2026-11-05)
+- Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests. (after a build, 2026-11-05)
+- Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation. (after a build, 2026-11-05)
+- Fix the prices exam by solving failures in ethereum and currency conversion queries. (daily, 2026-11-05)
+- Implement a clear, useful answer for 'what can you do' for visitors. (after a build, 2026-11-04)
+- Fix the images exam to handle drawing commands, image URL rendering, and picture generation. (after a build, 2026-11-04)
+- Fix the images exam to handle drawing, displaying specific URLs, and generating pictures. (after a build, 2026-11-04)
 - Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. (after a build, 2026-11-03)
 - Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs. *(small)* (daily, 2026-11-01)
 - Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed. *(small)* (after a build, 2026-11-01)
@@ -25,6 +35,10 @@ _Read from /api/reflect on 2026-11-05. Asks a growth-ledger entry answers (its `
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
+- `ask-20261106-0006-1` queued, not decided yet
+- `ask-20261106-0006-2` queued, not decided yet
+- `ask-20261105-2357-3` queued, not decided yet
+- `ask-20261105-1530-1` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -8966,6 +8980,358 @@ Asks: "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimil
 > **Next video trick:** a video effect using zoom-figure and stage-fx to highlight a skill's transition from experiment to proven [S1].
 
 Asks: "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."; "Fix the images exam by improving visual processing and image generation skills."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T14:40:32.535Z -->
+### 2026-11-05 14:40 UTC · after a build
+
+**Asked:** This just shipped: "emojigraph.org stays on its dictionary page". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. Assimilation of wheelofgold.com is the active tower target [S1]. The Numbers and money family is currently the weakest, with 26 of 29 skills proven [S3]. Recent shipments include the addition of emojigraph.org to its dictionary page [S2].
+>
+> **How I would make it better:** The timer skill needs immediate remediation to correctly handle duration requests and increments after scoring 83.3 in its exam [S2]. Telemetry reporting must be synchronized to ensure failure counts and job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A video transition where a physical card morphs into a 3D miniature on screen [S1].
+
+Asks: "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T14:47:46.327Z -->
+### 2026-11-05 14:47 UTC · after a build
+
+**Asked:** This just shipped: "A git range lists the files, the failed jobs, and the assertion lines". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. Assimilation of wheelofgold.com is the active tower target [S1]. The Numbers and money family is currently the weakest, with 26 of 29 skills proven [S3]. Recent shipments include a git range feature that lists files, failed jobs, and assertion lines [S4].
+>
+> **How I would make it better:** The timer skill requires remediation to handle duration commands and increments correctly after scoring 83.3 in its exam [S2]. Telemetry reporting must be synchronized so failure counts and job names match perfectly without gaps [S4].
+>
+> **Next video trick:** a video effect that uses the 'splat' or 'moon' stage-fx to transition between clips [S1].
+
+Asks: "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop local-only calculation logic."; "Automate the extraction of failing GitHub Action job names and error logs for better debugging."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T14:51:00.060Z -->
+### 2026-11-05 14:51 UTC · after a build
+
+**Asked:** This just shipped: "The page-check report is kept in the edge cache, not KV". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. Assimilation of wheelofgold.com is the active tower target [S1]. The Numbers and money family is currently the weakest, with 26 of 29 skills proven [S3]. The recently shipped edge cache for the page-check report replaces the previous reliance on KV [S4].
+>
+> **How I would make it better:** The timer skill must be remediated to handle duration commands like 'set a timer for 90 seconds' and fix increment failures following its 83.3 exam score [S2]. Telemetry reporting needs synchronization to ensure failure counts and job names match perfectly without gaps [S4].
+>
+> **Next video trick:** a video effect that uses stage-fx to morph a 2D sprite-sheet into a 3D rotating figure [S1].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."; "Automate the extraction of failing GitHub Action job names and error logs."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:05:44.382Z -->
+### 2026-11-05 15:05 UTC · after a build
+
+**Asked:** This just shipped: "A timer keeps its set length, and heart, feu, and thank-you emoji answer". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. Assimilation of wheelofgold.com is the active tower target [S1]. The Numbers and money family is the weakest, with 26 of 29 skills proven [S3]. Recently shipped updates include timer card length persistence, emoji responses for specific inputs, and a red circle fill [cursor, 2026-11-05].
+>
+> **How I would make it better:** The timer skill must be remediated to handle duration commands like 'set a timer for 90 seconds' and fix increment failures following its 83.3 exam score [S2]. Telemetry reporting needs synchronization to ensure failure counts and job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A video card transition that uses a zoom-figure effect to focus on a specific detail during playback [S1].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic." (small); "Automate the extraction of failing GitHub Action job names and error logs."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:09:20.158Z -->
+### 2026-11-05 15:09 UTC · after a build
+
+**Asked:** This just shipped: "Only Verse binds its KV namespace". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. The Numbers and money family is the weakest, with 26 of 29 skills proven [S3]. The active tower target is the assimilation of wheelofgold.com [S1]. Recently shipped updates include timer card length persistence, emoji responses for specific inputs, and a red circle fill [cursor, 2026-11-05]. The shipment of 'Only Verse binds its KV namespace' ensures that KV writes are restricted to Verse's own namespace, supporting the goal of keeping KV writes under 1k/day [wishlist #2].
+>
+> **How I would make it better:** The timer skill must be remediated to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures following its 83.3 exam score [S2]. Telemetry reporting must be synchronized to ensure failure counts and job names match perfectly without gaps [S4].
+>
+> **Next video trick:** Learn a new video transition effect for clips that uses the 'zoom-figure' or 'stage-fx' skills [S1].
+
+Asks: "Fix the timer skill to handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic." (small); "Automate the extraction of failing GitHub Action job names and error logs."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:24:44.779Z -->
+### 2026-11-05 15:24 UTC · after a build
+
+**Asked:** This just shipped: "A closer-on-the-figure ask answers while the other skills are still loading". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. The Numbers and money family remains the weakest with 26 of 29 skills proven [S3]. Recent shipments include a 'closer on the figure' capability that provides answers from zoom-figure before the rest of the skills load [cursor, 2026-11-05].
+>
+> **How I would make it better:** The timer skill must be remediated to correctly handle duration commands and resolve increment failures following its 83.3 exam score [S2]. Telemetry reporting requires synchronization so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A video transition that uses a 'splat' effect to reveal a new card on the stage [S1].
+
+Asks: "Fix the timer skill to handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."; "Automate the extraction of failing GitHub Action job names and error logs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:28:09.349Z -->
+### 2026-11-05 15:28 UTC · after a build
+
+**Asked:** This just shipped: "Verse runs fifteen automations and proves the number skills". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families [S1]. The Numbers and money family is the weakest with 26 of 29 skills proven [S3]. Recent shipments include a 'closer on the figure' capability that provides answers from zoom-figure before the rest of the skills load [cursor, 2026-11-05].
+>
+> **How I would make it better:** The timer skill must be remediated to correctly handle duration commands and resolve increment failures following its 83.3 exam score [S2]. Telemetry reporting requires synchronization so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** Learn a new video effect for Verse Shorts to keep clips playing from where they were when touching or dragging [cursor, 2026-11-05].
+
+Asks: "Fix the timer skill to handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."; "Automate the extraction of failing GitHub Action job names and error logs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:30:39.601Z -->
+### 2026-11-05 15:30 UTC · after a build
+
+**Asked:** This just shipped: "Idea-to-system blueprint and the two handoff cards". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 346 entries across 12 families [S1]. Recent shipments include 'closer on the figure' for zoom-figure [cursor, 2026-11-05] and the delivery-pack skill for business idea packaging [2026-11-03]. The system currently prioritizes the assimilation of wheelofgold.com [S1].
+>
+> **How I would make it better:** The timer skill must be remediated to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures to improve its 83.3 exam score [S2, my want next]. Telemetry reporting must be synchronized so failure counts and job names match perfectly without gaps [S4, S2].
+>
+> **Next video trick:** A video effect that uses 'stage-fx' to transition between different 'dark-look' and 'light-look' themes [S1].
+
+Asks: "Fix the timer skill to correctly handle duration requests and resolve increment failures."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."; "Automate the extraction of failing GitHub Action job names and error logs."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:30:56.736Z -->
+### 2026-11-05 15:30 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 346 entries across 12 families [S1]. Growth in the last 7 days includes 38 new capabilities, 47 improvements, 55 fixes, and 37 findings [S2]. The system is currently assimilating wheelofgold.com [S1].
+>
+> **How I would make it better:** The timer skill requires remediation to handle duration commands like 'set a timer for 90 seconds' and to resolve increment failures [my want next]. Telemetry reporting must be synchronized so failure counts and job names match perfectly without gaps [S5].
+>
+> **Weakest operational area:** The 'Verse itself' family is the least proven, with only 49 of 55 skills proven [S4].
+>
+> **Next targeted capability:** The next target is the assimilation of wheelofgold.com [S1].
+>
+> **Next video trick:** Implement a seamless object-to-object morphing transition for video clips.
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:34:58.944Z -->
+### 2026-11-05 15:34 UTC · after a build
+
+**Asked:** This just shipped: "Systems monitor reads /api/status, and song titles stay escaped". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is currently in progress [S1]. The timer skill is failing to handle duration commands like 'set a timer for 90 seconds' and increment requests, scoring 83.3 in exams [my want next].
+>
+> **How I would make it better:** The 'Verse itself' family should be strengthened, as it is the weakest proven area with only 49 of 56 skills proven [S3]. Telemetry reporting must be synchronized so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A transition from a static timer to a dynamic countdown visual that matches the requested duration [my want next].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures." (small); "Automate the extraction of failing GitHub Action job names and error logs."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:37:35.631Z -->
+### 2026-11-05 15:37 UTC · after a build
+
+**Asked:** This just shipped: "Keep the savings ask under the site-test load budget". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is in progress [S1]. The 'Verse itself' family is the weakest proven area with 49 of 56 skills proven [S3]. Timers exams are currently failing duration and increment requests with a score of 83.3 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio [S3]. Synchronize telemetry reporting so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** Learn to use a physical timer to visually verify the accuracy of digital timer increments in new clips [no tag].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:40:11.899Z -->
+### 2026-11-05 15:40 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: nightly". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is in progress [S1]. The 'Verse itself' family is the weakest proven area with 49 of 56 skills proven [S3]. Timers exams are currently failing duration and increment requests with a score of 83.3 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio [S3]. Synchronize telemetry reporting so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A seamless transition between a video clip and a 3D model of the object within the clip [S1].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:48:41.087Z -->
+### 2026-11-05 15:48 UTC · after a build
+
+**Asked:** This just shipped: "Merge one pull request only after the full suite is green on current main". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index holds 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is currently in progress [S1]. The 'Verse itself' family is the weakest proven area, with 49 of 56 skills proven [S3]. Timers exams are failing duration and increment requests with a score of 83.3 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio [S3]. Synchronize telemetry reporting so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** learn a new video effect to use for future Verse Shorts [cursor 2026-11-05].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T15:55:04.125Z -->
+### 2026-11-05 15:55 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index holds 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is currently in progress [S1]. The 'Verse itself' family is the weakest proven area, with 49 of 56 skills proven [S3]. Timers exams are failing duration and increment requests with a score of 83.3 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio [S3]. Synchronize telemetry reporting so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A video clip showing a seamless transition between a 3D model and its printed STL file [forge].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T18:17:42.492Z -->
+### 2026-11-05 18:17 UTC · after a build
+
+**Asked:** This just shipped: "Versus by itself: colour: colorscheme.ru, the sites read recorded". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is currently in progress [S1]. The 'Verse itself' family is the weakest proven area, with 49 of 56 skills proven [S3]. Timers exams are failing duration and increment requests with a score of 83.3 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio [S3]. Synchronize telemetry reporting so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** Learn a new video effect to improve the quality of Verse Shorts [cursor 2026-11-05].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T18:20:57.477Z -->
+### 2026-11-05 18:20 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on colorscheme.ru (colour, /color/colour-picker-tool/?c=ff5733), surpassed 12 of 15 rows (also read: 3 covered, 3 no-family, 1 walled); next (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index holds 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is in progress [S1]. Timers exams are failing duration and increment requests with a score of 86.7 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio, as it is currently the weakest area with 49 of 56 skills proven [S3]. Synchronize telemetry reporting so failure counts and specific job names match perfectly without gaps [S4].
+>
+> **Next video trick:** A timer card that visually pulses or changes color when it reaches the final 5 seconds of a countdown [my want next].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5." (small); "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T23:53:32.446Z -->
+### 2026-11-05 23:53 UTC · after a build
+
+**Asked:** This just shipped: "Versus by itself: news: suncommunitynews.com, the sites read recorded". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is currently in progress [S1]. Timers exams are failing duration and increment requests with a score of 86.7 [my want next].
+>
+> **How I would make it better:** Strengthen the 'Verse itself' family to improve the proven skill ratio, as it is currently the weakest area with 49 of 56 skills proven [S3]. Resolve the mismatch between failure counts and job names in telemetry reporting to ensure accuracy [S4].
+>
+> **Next video trick:** Learn a new video effect to improve the stage-fx skill [S1].
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T23:53:44.682Z -->
+### 2026-11-05 23:53 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is in progress [S1]. Timers exams are failing duration and increment requests with a score of 86.7 [my want next].
+>
+> **How I would make it better:** The 'Verse itself' family needs to increase its proven ratio, as it is currently the weakest area with 49 of 56 skills proven [S4]. Resolve the mismatch between failure counts and job names in telemetry reporting to ensure accuracy [S4].
+>
+> **Weakest operational area:** The 'Verse itself' family is the weakest operational area, with only 49 of 56 skills proven [S4].
+>
+> **Next targeted capability:** Fix the podcasts exam to resolve audio and episode failures [my want next].
+>
+> **Next video trick:** I do not know it.
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs from GitHub Actions for commit 814032d5."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-05T23:57:13.331Z -->
+### 2026-11-05 23:57 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows (also read: 5 no-family, 2 covered); next (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is currently in progress [S1]. Recent shipping includes the 'delivery-pack' skill for packaging business ideas and 'system-status' for client-visible monitoring [S1].
+>
+> **How I would make it better:** The 'Verse itself' family must improve its proven ratio, as it is the weakest area with 49 of 56 skills proven [S3, S4]. Telemetry reporting must be updated to ensure failure counts and specific error names are perfectly synchronized [S4].
+>
+> **Next video trick:** a video effect that uses a mask to reveal a secondary layer of geometry during a transition
+
+Asks: "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."; "Automate the extraction of failing GitHub Action job names and error logs for commit 814032d5."; "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-06T00:06:32.838Z -->
+### 2026-11-06 00:06 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index contains 346 active entries across 12 families [S1]. Assimilation of wheelofgold.com is in progress [S1]. Recent growth includes 35 new capabilities and 50 fixes, including improved savings patterns and word ladder skills [S2].
+>
+> **How I would make it better:** Telemetry reporting must be updated to ensure failure counts and specific error names are perfectly synchronized [S4]. The 'Verse itself' family needs higher proven ratios to match other families [S4].
+>
+> **Weakest operational area:** The 'Verse itself' family is the weakest area, with only 49 of 56 skills proven [S4].
+>
+> **Next targeted capability:** wheelofgold.com [S1]
+>
+> **Next video trick:** A glitch-transition effect for transitions between different skill cards [no tag]
+
+Asks: "Automate the extraction of failing GitHub Action job names and error logs for commit 814032d5."; "Fix the timer skill to correctly handle duration requests like 'set a timer for 90 seconds' and resolve increment failures."
 
 *Verse flagged this one for Adam.*
 
