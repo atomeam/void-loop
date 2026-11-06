@@ -7,10 +7,14 @@ const SAMPLE = 'Plan the trip\n  Where\n    Lisbon\n    Porto\n  When\n    May\n
 const box = $('text');
 const fromHash = /^#o=/.test(location.hash) ? unpackOf(location.hash.slice(3)) : null;
 try { box.value = fromHash || localStorage.getItem(KEY) || SAMPLE; } catch (_) { box.value = fromHash || SAMPLE; }
-let svg = '';
+let svg = '', shown = '';
 function draw() {
   const t = treeOf(box.value); svg = t ? svgOf(t, { light: $('light').checked }) : '';
-  $('map').innerHTML = svg || '<p class="note">Type a first line for the middle, then indent the branches under it.</p>';
+  // shown as an <img> of its own SVG: a map from a shared link can never run anything on this page
+  if (shown) URL.revokeObjectURL(shown);
+  shown = svg ? URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })) : '';
+  if (shown) { const img = new Image(); img.alt = 'Mind map'; img.src = shown; $('map').replaceChildren(img); }
+  else $('map').replaceChildren(Object.assign(document.createElement('p'), { className: 'note', textContent: 'Type a first line for the middle, then indent the branches under it.' }));
   $('size').textContent = t ? sizeOf(t) + ' ideas' : '';
   for (const id of ['svg', 'png', 'link']) $(id).disabled = !svg;
   try { localStorage.setItem(KEY, box.value); } catch (_) { /* private mode */ }
