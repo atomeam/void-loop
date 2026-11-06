@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T16:51:34.341Z",
+  "at": "2026-11-06T03:38:49.388Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -281,26 +281,19 @@
       }
     },
     "sports": {
-      "score": 90.7,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "premier league scores",
+          "ask": "nfl scores",
           "failed": [
             "board"
           ],
           "score": 83.3
         },
         {
-          "ask": "serie a scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "la liga scores",
+          "ask": "mlb scores",
           "failed": [
             "board"
           ],
@@ -315,6 +308,20 @@
         },
         {
           "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
