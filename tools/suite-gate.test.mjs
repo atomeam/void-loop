@@ -104,7 +104,27 @@ test('a red batch is split in half until the red pull request runs alone, and on
   const next = choose([alone, row(2, inBatch(fail(MAIN), [1, 2]), [])], MAIN, false);
   assert.equal(next.pr.number, 2);
   assert.equal(next.batch.length, 1, 'the half it was in, split again');
-  assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), BATCH, 'main moved with code: a full batch again');
+  assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), 4, 'main moved with code: the same heads went red together, so still split');
+  assert.equal(batchSize(row(1, null, null), MAIN), BATCH, 'never run: a full batch');
+});
+
+test('main moving after every red batch no longer sends the same 8 back whole (2026-11-06: it never split, nothing merged)', () => {
+  const red8 = inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]);
+  const moved = [['void.html']];
+  const rows = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => row(n, red8, moved));
+  assert.deepEqual(choose(rows, MAIN, false).batch.map((r) => r.number), [1, 2, 3, 4]);
+  const red4 = inBatch(fail(OLD), [1, 2, 3, 4]);
+  const halves = [1, 2, 3, 4].map((n) => row(n, red4, moved)).concat([5, 6, 7, 8].map((n) => row(n, red8, moved)));
+  assert.deepEqual(choose(halves, MAIN, false).batch.map((r) => r.number), [1, 2]);
+});
+
+test('a pull request red alone on an older main runs again, alone, after the others', () => {
+  const alone = row(1, inBatch(fail(OLD), [1]), [['void.html']]);
+  assert.equal(failedHere(alone, MAIN), false, 'main moved: not held');
+  const first = choose([alone, row(2, null, null), row(3, null, null)], MAIN, false);
+  assert.deepEqual(first.batch.map((r) => r.number), [2, 3], 'the others go first, in a full batch');
+  const last = choose([alone], MAIN, false);
+  assert.deepEqual(last.batch.map((r) => r.number), [1], 'then it runs alone, never in a batch it would turn red');
 });
 
 test('the safety-check runs on the batch the gate chose only, and a pull request that fails it leaves the batch', () => {
