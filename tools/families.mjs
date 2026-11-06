@@ -71,7 +71,7 @@ export const MEANS = {
   streak: 'consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Verse',
   live: 'a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven',
   source: 'source reliability (asked by Verse, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating',
-  needs: 'what a checked or tested skill still lacks to be proven, the fewest pieces of evidence the rating rule asks for (void-live-deploy/lib/proof-gap.js); written beside the rating on every build, so it is never a claim; asked by Verse',
+  needs: 'what a checked or tested skill (never an experiment) still lacks to be proven, the fewest pieces of evidence the rating rule asks for (void-live-deploy/lib/proof-gap.js); written beside the rating on every build, so it is never a claim; asked by Verse',
   not_here: 'how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person\'s own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device',
 };
 
@@ -234,7 +234,7 @@ export function build(names, ev, meta = {}) {
       const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke, retest.at && retest.passed.has(n) ? retest.at : ''); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
       const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
       const pr = promotedOn(x.tier, prevRows.get(n), today); if (pr) x.promoted = pr; // the day it moved up a rating (asked by Verse)
-      if (x.tier !== 'proven') { const nd = needsWords({ ...e, liveFresh: !!(e.live && e.liveAt && daysOld(e.liveAt, today) < LIVE_FRESH_DAYS) }); if (nd) x.needs = nd; } // what it lacks to be proven (asked by Verse)
+      if (x.tier === 'checked' || x.tier === 'tested') { const nd = needsWords({ ...e, liveFresh: !!(e.live && e.liveAt && daysOld(e.liveAt, today) < LIVE_FRESH_DAYS) }); if (nd) x.needs = nd; } // what it lacks to be proven (asked by Verse)
       if (Number.isFinite(+(smoke.streak || {})[n])) x.streak = +smoke.streak[n]; // clean smoke runs in a row
       const rel = meta.sources && meta.sources[n] ? reliabilityOf(meta.sources[n], x, e, today) : null; if (rel) x.source = rel; // source reliability (asked by Verse)
       return x; });

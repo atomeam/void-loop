@@ -31,11 +31,12 @@ test('proof-gap: every way it names makes the skill proven, and nothing smaller 
   assert.deepEqual(evidenceOfWhy('a self-test, 2 browser-suite mentions, 1 real ask in the benchmark'), { suite: true, browser: 2, bench: 1, live: 0 });
 });
 
-test('proof-gap: families.json carries `needs` for each skill short of proven, and none for a proven one', () => {
-  const b = build(['vat', 'calc'], { vat: { suite: true, browser: 0, bench: 2 }, calc: { suite: true, browser: 2, bench: 9 } }, { today });
+test('proof-gap: families.json carries `needs` for each checked or tested skill, and none for a proven one or an experiment', () => {
+  const b = build(['vat', 'calc', 'tab'], { vat: { suite: true, browser: 0, bench: 2 }, calc: { suite: true, browser: 2, bench: 9 }, tab: { suite: false, browser: 0, bench: 0 } }, { today });
   const rows = b.families.flatMap((f) => f.skills);
   assert.equal(rows.find((s) => s.name === 'vat').needs, '1 more real ask in the benchmark that routes to it, or a browser-suite check named after it');
   assert.equal(rows.find((s) => s.name === 'calc').needs, undefined);
+  assert.equal(rows.find((s) => s.name === 'tab').needs, undefined, 'an experiment row stays as it was');
 });
 
 test('proof-gap: the list is every checked and tested skill, weakest family first, checked before tested', () => {
