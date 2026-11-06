@@ -20,7 +20,7 @@ export const PLACES = Object.freeze({
   '/color/': [['palette', 'pull the colours out of a photo, as codes to copy']],
   '/color/gradient/': [['pattern', 'grow a seamless pattern that tiles, and download it']],
   '/notes/': [['dictation', 'speak, and get the words as text to copy into a note'], ['mindmap', 'lay your ideas out as a map, and save it']],
-  '/base64/': [['checksum', 'check a downloaded file is the file it says it is (SHA-256)']],
+  '/base64/': [['checksum', 'check a downloaded file is the file it says it is, by its sha256 sum']],
   '/calculators/': [['level', 'level a shelf or a frame by rise and run (open it on its own page on a phone for the tilt sensor)']],
 });
 
