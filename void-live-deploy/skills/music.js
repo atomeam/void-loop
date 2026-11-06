@@ -11,7 +11,8 @@
  */
 import { compose, describe, notesText, renderWav, schedule, noteName, instrumentsFor, playedLine } from '../lib/compose.js';
 import { arrange, scheduleArranged, arrangedWav, sectionsLine, sectionsSvg, arrangedLine } from '../lib/arrange.js'; // a heavy ask (lib/arrange.js): a song with a shape
-import { refKey, scoreOf, scoreLine, loadRefs, measureSong } from '../lib/genre-score.js'; // held against real songs of its kind
+import { refKey, scoreLine, loadRefs } from '../lib/genre-score.js'; // held against real songs of its kind
+import { withMaster, masteredOAC, remaster, remasterLine, loadTune, saveTune } from '../lib/genre-master.js'; // and mastered by ear against them
 
 const KINDS = '(?:song|songs|tune|beat|beats|lullaby|melody|jingle|music|soundtrack|ditty|loop)';
 const WHEN = new RegExp('^(?!.*\\b(?:list|lyrics|playlist|chords|sheet)\\b)(?:please\\s+|can you\\s+|could you\\s+|will you\\s+)?(?:(?:make|compose|write|create|generate|give|play|cook up)(?:\\s+(?:me|us))?\\s+(?:a\\s+|an\\s+|some\\s+|my\\s+|another\\s+|new\\s+)?(?:[a-z]+\\s+){0,3}?' + KINDS + '(?:\\s+(?:for|about|to|in|with)\\s+.{1,60})?|music\\s+for\\s+.{2,60}|(?:a|an)\\s+(?:[a-z]+\\s+){0,2}' + KINDS + '\\s+(?:for|about)\\s+.{2,60})\\s*[?.!]*$', 'i');
@@ -84,7 +85,7 @@ function run(text, api) {
       try { ac = new AC(); ac.resume && ac.resume(); } catch (_) { msg('Could not start sound.'); ac = null; return; }
       const mine = ac; busy = true; if (!inst) msg(p.sections ? 'loading the band…' : 'loading the piano…');
       const kit = await instruments(ac).catch(() => ({})); busy = false; if (ac !== mine) return;
-      dur = (p.sections ? scheduleArranged : schedule)(ac, p, ac.currentTime + 0.1, kit); t0 = ac.currentTime + 0.1; q('.mu-play').textContent = 'Stop'; msg('');
+      dur = (p.sections ? scheduleArranged : schedule)(withMaster(ac, loadTune(refKey(p))), p, ac.currentTime + 0.1, kit); t0 = ac.currentTime + 0.1; q('.mu-play').textContent = 'Stop'; msg('');
       const head = q('.mu-head'), tick = () => { if (!ac) return; const f = Math.max(0, Math.min(1, (ac.currentTime - t0) / (p.steps * 60 / p.bpm / 4))); if (head) { head.setAttribute('x1', f * 320); head.setAttribute('x2', f * 320); head.setAttribute('opacity', '.8'); } raf = requestAnimationFrame(tick); };
       tick(); timer = setTimeout(stop, dur * 1000 + 300);
     });
@@ -93,20 +94,27 @@ function run(text, api) {
       try {
         const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext; if (!OAC) { msg('This browser cannot render audio offline.'); return; }
         const kit = await instruments(new OAC(1, 1, 48000)).catch(() => ({}));
-        const bytes = await (p.sections ? arrangedWav(p, OAC, kit) : renderWav(p, OAC, kit)); if (!bytes) { msg('This browser cannot render audio offline.'); return; }
+        const MOAC = masteredOAC(OAC, loadTune(refKey(p))), bytes = await (p.sections ? arrangedWav(p, MOAC, kit) : renderWav(p, MOAC, kit)); if (!bytes) { msg('This browser cannot render audio offline.'); return; }
         const u = URL.createObjectURL(new Blob([bytes], { type: 'audio/wav' })), a = document.createElement('a');
         a.href = u; a.download = (p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'song') + '.v01d.wav'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 2000); msg('saved');
       } catch (_) { msg('could not render'); }
     });
-    // Verse renders its own song and holds it against real songs of its kind (lib/genre-score.js); no reference measured means no score
+    // Verse renders its own song, holds it against real songs of its kind (lib/genre-score.js) and masters it by ear against them
+    // (lib/genre-master.js): it keeps a master only when the song scores closer through it. No reference measured means no score.
     q('.mu-cmp').addEventListener('click', async () => {
       const out = q('.mu-score'); msg('listening…');
       try {
         const refs = await loadRefs(), key = refKey(p), has = refs && refs.genres && refs.genres[key];
         const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-        const own = has && OAC ? await measureSong(p, OAC, p.sections ? scheduleArranged : schedule, await instruments(new OAC(2, 1, 44100)).catch(() => ({}))) : null;
-        if (has && !own) { msg(OAC ? 'could not measure the song' : 'This browser cannot render audio offline.'); return; }
-        if (out) out.textContent = scoreLine(scoreOf(own, refs, key)); msg('');
+        if (!has) { if (out) out.textContent = scoreLine(null); msg(''); return; }
+        if (!OAC) { msg('This browser cannot render audio offline.'); return; }
+        msg('mastering by ear…');
+        const kit = await instruments(new OAC(2, 1, 44100)).catch(() => ({}));
+        const r = await remaster(p, OAC, p.sections ? scheduleArranged : schedule, kit, refs, key, loadTune(key));
+        if (!r || !r.before) { msg('could not measure the song'); return; }
+        if (r.better) saveTune(key, r.tune);
+        if (out) out.textContent = scoreLine(r.after) + ' ' + remasterLine(r, r.before.label);
+        msg('');
       } catch (_) { msg('could not compare'); }
     });
     singButton(el, text, q, msg);
