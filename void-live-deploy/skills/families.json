@@ -14,7 +14,7 @@
  "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
-  "tested": 11,
+  "tested": 12,
   "checked": 13,
   "proven": 385
  },
@@ -3583,7 +3583,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 5,
+    "tested": 6,
     "checked": 2,
     "proven": 49
    },
@@ -3765,6 +3765,13 @@
      "last_tested": "2026-11-05",
      "last_tested_by": "the daily smoke test",
      "streak": 1
+    },
+    {
+     "name": "monitor-handoff",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests"
     },
     {
      "name": "incident",
