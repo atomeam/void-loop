@@ -43,3 +43,12 @@ test('an alarm never takes over a timer that is already on the stage, and a time
   ask('2 minutes', '2 minutes', s.api); // the alarm is the picked one
   assert.ok(!ts[1].alarmFor && !ts[1].label && ts[1].duration === 120000);
 });
+
+import { toolAsk } from '../void-live-deploy/skills/open-tool.js';
+test('word counter for essay: what the tool is for does not change the tool', () => {
+  for (const a of ['word counter for essay', 'word counter for my essay', 'character counter for twitter']) {
+    const r = toolAsk(a);
+    assert.ok(r && /word-count/.test(JSON.stringify(r)), a + ': ' + JSON.stringify(r));
+  }
+  assert.equal(toolAsk('for essay'), null);
+});
