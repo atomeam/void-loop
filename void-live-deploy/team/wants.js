@@ -39,10 +39,10 @@ function bets(box, j) {
   sum.replaceChildren('Ranked ' + ago(p.at) + ' (' + p.why + '), ' + p.week + '. Impact (revenue, exam-score gain, breakage, Tower easiest-first) ÷ effort × confidence. WIP: ' + p.wip.build + ' build lanes + ' + p.wip.research + ' research lane.');
   if (p.brief) { const a = node('a', ' The pinned brief in #work.'); a.href = '/team/#c=work&t=' + p.brief; sum.append(a); }
   if (p.override && (p.override.pin.length || p.override.drop.length)) sum.append(node('span', ' Owner override: ' + [...p.override.pin.map((x) => x + ' first'), ...p.override.drop.map((x) => x + ' last')].join(', ') + '.', 'wsub'));
-  const row = (b, i) => { const li = node('li'); li.dataset.state = 'bet'; li.append(node('span', i == null ? String(b.score) : 'Bet ' + (i + 1), 'wst'), ' ', node('b', b.id), ' ', node('span', b.ask), node('span', b.lane + ' · score ' + b.score + ' = impact ' + b.impact + ' × confidence ' + b.confidence + ' ÷ effort ' + b.effort + (b.override ? ' · ' + b.override : '') + ' · why: ' + b.drivers.join('; '), 'wsub'));
+  const row = (b, i) => { const li = node('li'); li.dataset.state = 'bet'; li.append(node('span', i == null ? String(b.score) : 'Bet ' + (i + 1), 'wst'), ' ', node('b', b.title || b.id), ' ', node('span', b.ask, 'wask'), node('span', b.lane + ' · score ' + b.score + ' = impact ' + b.impact + ' × confidence ' + b.confidence + ' ÷ effort ' + b.effort + (b.override ? ' · ' + b.override : '') + ' · job ' + b.id + ' · why: ' + b.drivers.join('; '), 'wsub'));
     if (b.evidence && b.evidence.length) { const s = node('span', 'Evidence: ', 'wsrc'); b.evidence.forEach((e, k) => { if (k) s.append(' · '); const a = node('a', e.what); a.href = e.url; a.rel = 'noopener'; s.append(a); }); li.append(s); }
     return li; };
-  list.replaceChildren(...(p.bets.length ? p.bets.map((b, i) => row(b, i)) : [node('li', 'No bet: nothing is on the queue.')]), ...(p.next.length ? [node('li', 'Then, in order: ' + p.next.map((r) => r.id + ' (' + r.score + ')').join(', '), 'wsub')] : []));
+  list.replaceChildren(...(p.bets.length ? p.bets.map((b, i) => row(b, i)) : [node('li', 'No bet: nothing is on the queue.')]), ...(p.next.length ? [node('li', 'Then, in order: ' + p.next.map((r) => (r.title || r.id) + ' (' + r.score + ')').join(' · '), 'wsub')] : []));
 }
 
 async function load() {

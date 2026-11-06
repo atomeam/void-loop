@@ -197,8 +197,14 @@
       // starts, and the page asks for it as the viewer scrolls, so the list never ends before the films do
       let next = j.next == null ? null : j.next;
       const views = {};
+      // a busy minute (429) waits as long as the server says and asks again, so a long scroll never stops at a page edge
       const page = async () => {
-        const r2 = await fetch('/api/films?from=' + next, good ? { headers: { authorization: 'Bearer ' + good } } : {});
+        let r2;
+        for (let tries = 0; ; tries++) {
+          r2 = await fetch('/api/films?from=' + next, good ? { headers: { authorization: 'Bearer ' + good } } : {}); // void-review: ok (a retry after the server's own wait, at most 3 times)
+          if (r2.status !== 429 || tries >= 3) break;
+          await new Promise((ok) => setTimeout(ok, 1000 * Math.min(60, Number(r2.headers.get('retry-after')) || 20)));
+        }
         const j2 = await r2.json().catch(() => ({}));
         if (!r2.ok) throw new Error(String(r2.status));
         next = j2.next == null ? null : j2.next;
@@ -217,8 +223,12 @@
       const v = new URLSearchParams(location.search).get('v'), cur = films.find((f) => f.id === v);
       const when = (f) => new Date(f.at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
       const card = (f) => $('a', { class: 'film thumb', href: '?v=' + encodeURIComponent(f.id), 'data-id': f.id }, [
-        $('video', { src: f.src + '#t=0.5', muted: '', playsinline: '', preload: 'metadata', draggable: 'false', 'aria-hidden': 'true' }),
+        $('video', { 'data-src': f.src + '#t=0.5', muted: '', playsinline: '', preload: 'metadata', draggable: 'false', 'aria-hidden': 'true' }),
         $('div', { class: 'body' }, [$('h2', { text: f.title }), $('div', { class: 'when', text: vlabel(f.id) + ' · ' + when(f) })])]);
+      // a card's picture loads when the card comes near the screen (owner, 2026-11-06: "ok still capping at 60 videos"): 60 pictures at
+      // once used to spend the minute's budget before the next page was asked for
+      const near = 'IntersectionObserver' in window ? new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) { const vd = e.target; vd.src = vd.dataset.src; near.unobserve(vd); } }, { rootMargin: '600px' }) : null;
+      const lazy = (el) => { const vd = el.querySelector('video[data-src]'); if (vd) near ? near.observe(vd) : (vd.src = vd.dataset.src); return el; };
       if (cur) {
         document.title = cur.title + ' · Verse Tube';
         try { if (!sessionStorage.getItem('a2m.tube.seen.' + cur.id)) { sessionStorage.setItem('a2m.tube.seen.' + cur.id, '1');
@@ -236,18 +246,21 @@
           $('article', { class: 'film watchbox', 'data-id': cur.id }, [$('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata', draggable: 'false' }), $('div', { class: 'body' }, kids)]),
           $('h3', { class: 'kick', text: 'Up next' }));
         status.textContent = '';
-        for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(card(f));
+        for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(lazy(card(f)));
       } else {
         const say = () => { status.textContent = films.length + (films.length === 1 ? ' video' : ' videos') + (next != null ? ' so far' : '') + ', newest first. Tap one to watch, share or upload it.'; };
         say();
-        for (const f of films) list.append(card(f));
+        for (const f of films) list.append(lazy(card(f)));
         const more = document.getElementById('more'), btn = more.querySelector('button');
         let busy = false;
         const grow = async () => {
           if (busy || next == null) return; busy = true; btn.disabled = true;
-          try { const fs = await page(); await viewsOf(fs); films.push(...fs); for (const f of fs) list.append(card(f)); say(); }
+          let ok = false;
+          try { const fs = await page(); await viewsOf(fs); films.push(...fs); for (const f of fs) list.append(lazy(card(f))); say(); ok = true; btn.textContent = 'Show more videos'; }
           catch (_) { btn.textContent = 'Show more videos (try again)'; }
           busy = false; btn.disabled = false; more.hidden = next == null;
+          // still at the bottom (a short page, a tall screen): read on, since the watcher fires only when the edge moves into view
+          if (ok && next != null && more.getBoundingClientRect().top < innerHeight + 800) setTimeout(grow, 0);
         };
         more.hidden = next == null;
         btn.addEventListener('click', grow);
