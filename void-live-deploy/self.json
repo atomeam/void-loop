@@ -582,18 +582,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T05:58:13Z",
-   "subject": "Brain step: about 25% faster, the same numbers"
-  },
-  {
-   "at": "2026-11-06T05:57:49Z",
-   "subject": "Automerge: the suite gate result sweeps, and idle runs on main never replace the waiting sweep (#2381)"
-  },
-  {
-   "at": "2026-11-06T05:55:56Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
    "at": "2026-11-06T05:48:15Z",
    "subject": "Outcome exam: timers 86.7"
   },
@@ -646,6 +634,10 @@
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
+   "at": "2026-11-06T05:20:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T05:19:15Z",
    "subject": "Brain step: faster smell and synapse pass, same state to the bit"
   },
@@ -660,6 +652,14 @@
   {
    "at": "2026-11-06T05:17:17Z",
    "subject": "\"add one minute\" adds time to the timer, not a list item (#2326) (#2369)"
+  },
+  {
+   "at": "2026-11-06T05:17:06Z",
+   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
+  },
+  {
+   "at": "2026-11-06T05:16:56Z",
+   "subject": "Verse code review paid with PayPal, and the PayPal AI Hackathon entry pack (#2370)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 22,
-  "week": 173
+  "day": 23,
+  "week": 174
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

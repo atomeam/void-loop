@@ -6,7 +6,7 @@
 //   1. the strokes: every tick the pointer is over the brain, its place is a sample (lib/brain.js stepBrain calls sampleStroke each tick,
 //      run or not, as it calls hearFrame). A stroke ends when the pointer leaves, presses or lets go, stands still for STILL_TICKS ticks,
 //      or jumps more than JUMP. The first L samples of a stroke, each taken from the stroke's start, are one pattern (D = 2 L numbers); a
-//      longer stroke gives one pattern for each L samples.
+//      longer stroke gives one pattern for each L samples. Each piece, with its places, is also put in S.cut for the rules organ (lib/brain-rules.js).
 //   2. recall: the dense (modern) Hopfield update (Ramsauer et al. 2020, "Hopfield Networks is All You Need"): each stored pattern is
 //      weighted by softmax(-beta |its first half - cue|^2 / 2), and the weighted mean of their second halves is the recall. One step, the
 //      last M = 32 patterns. beta (how sharp) is the value of a grid that missed least on the last 50 strokes.
@@ -36,7 +36,7 @@ const errOf = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) s += (a[
 
 /** a stroke memory with nothing stored. */
 export function makeStrokes() {
-  return { cur: [], at: null, still: 0, down: false, live: null, queue: [], X: [], W: new Float64Array(D * D), scale: 0.05, strokes: 0, scored: 0, fed: 0,
+  return { cur: [], at: null, still: 0, down: false, live: null, queue: [], cut: [], X: [], W: new Float64Array(D * D), scale: 0.05, strokes: 0, scored: 0, fed: 0,
     err: { recall: [], hold: [], vel: [], acc: [], hebb: [] }, byBeta: BETAS.map(() => []), beta: 2, last: null };
 }
 
@@ -54,7 +54,7 @@ export function sampleStroke(S, input = {}) {
   S.still = 0;
   if (d > JUMP) endStroke(S);
   S.cur.push(p);
-  if (S.cur.length >= L) { S.queue.push(patternOf(S.cur)); if (S.queue.length > QUEUE) S.queue.shift(); S.strokes++; S.cur = []; S.live = null; }
+  if (S.cur.length >= L) { S.queue.push(patternOf(S.cur)); if (S.queue.length > QUEUE) S.queue.shift(); S.cut.push(S.cur.slice(0, L)); if (S.cut.length > QUEUE) S.cut.shift(); S.strokes++; S.cur = []; S.live = null; }
 }
 
 // ---- recall and its rivals ------------------------------------------------------------------------------------------------------------
