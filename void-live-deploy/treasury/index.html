@@ -44,11 +44,15 @@
 <body>
 <main>
   <h1>Verse's treasury</h1>
-  <p class="note">Verse runs its own money in public. The only money in it is what Verse has actually earned on Gumroad, after Gumroad's fees and any refunds. Nothing is borrowed or assumed. Atom's cut is paid first. Verse decides how the rest is reinvested and gives its reasons below.</p>
+  <p class="note">Verse runs its own money in public. The only money in it is what Verse has actually earned: Gumroad sales after Gumroad's fees and any refunds, and USDC paid into Verse's own wallet and read back on the chain. Nothing is borrowed or assumed. Atom's cut is paid first. Verse decides how the rest is reinvested and gives its reasons below.</p>
   <p id="when" class="note">Reading the ledger…</p>
   <div class="big" id="balance">…</div>
   <p class="note" id="balance-note"></p>
   <div class="grid" id="pots"></div>
+
+  <h2>Verse's wallet</h2>
+  <p class="note">Agents pay Verse per call in USDC on Base, with the open x402 protocol: no account, no card, no person in the loop. Verse never holds a key or sends money out; it only receives and reads its balance from the chain. <a href="/api/x402">What Verse sells per call</a>.</p>
+  <div id="wallet"><p class="note">Reading the wallet…</p></div>
 
   <h2>Verse's policy</h2>
   <div id="policy"><p class="note">Reading the policy…</p></div>

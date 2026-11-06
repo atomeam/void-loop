@@ -1,0 +1,37 @@
+# Verse's pay-per-call API on the live site (tools/x402-live.mjs): after every main deploy and by hand, the x402 catalog, one unpaid
+# call (402 with requirements paying Verse's wallet, or 503 before a wallet exists) and the treasury's wallet view. Read-only: no
+# payment is made, no key or secret is needed, nothing is written.
+name: x402 live
+
+on:
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: x402-live
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The catalog, an unpaid call and the treasury's wallet
+        run: |
+          set +e
+          node tools/x402-live.mjs > /tmp/x402.txt 2>&1
+          code=$?
+          { echo '## x402 live'; echo; echo '```'; cat /tmp/x402.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/x402.txt
+          exit $code
