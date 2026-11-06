@@ -4027,7 +4027,8 @@ try {
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
     const first = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
     // opened (show me, then Done): the next visit does not offer the same things as new (an ignored line comes back: #1209)
-    await P.p.click('[data-showcase="show"]'); await P.p.waitForTimeout(800);
+    // the home page does not paint #away-note (display:none, blank stage). The link is still there; the click is forced.
+    await P.p.click('[data-showcase="show"]', { force: true }); await P.p.waitForTimeout(800);
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
     const second = await note();
     check('look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it',
@@ -4180,7 +4181,7 @@ try {
     r.before = await note(P);
     await P.p.mouse.move(220, 220);
     r.pill = await until(async () => ((await note(P)).includes('I built this: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
-    await P.p.click('[data-showcase="show"]');
+    await P.p.click('[data-showcase="show"]', { force: true });
     r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
     await P.p.click('[data-showcase="next"]');
     r.s2 = await until(async () => ((await kinds(P)) === 'counter' ? await barText(P) : ''), 6000);
@@ -4212,7 +4213,7 @@ try {
     const asks = () => P.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]'));
     const cleaned = await asks();
     await P.p.mouse.move(220, 220);
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]', { force: true });
     const bar = await until(async () => ((await P.state()).some((t) => t.kind === 'counter') ? P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')) : ''), 6000).catch(() => '');
     const afterPreview = await asks();
     await P.ask('sticky note buy milk', 800); const afterTyped = await asks();
@@ -4235,7 +4236,7 @@ try {
     await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
     const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]', { force: true });
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
     const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
@@ -4269,7 +4270,7 @@ try {
     const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
     await until(async () => /I built this/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
-    await P.p.click('[data-showcase="show"]');
+    await P.p.click('[data-showcase="show"]', { force: true });
     const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
     await P.p.click('[data-showcase="next"]');
     const second = await until(async () => { const t = await barText(); return /flagged/.test(t) ? t : ''; }, 8000) || await barText();
