@@ -3,7 +3,7 @@
  * tower of stacked floors rising from a dark base in deep space, one floor per site in Versus order (the first conquest at the bottom). A surpassed floor is lit
  * and solid, its site's name etched in gold on its face; the current floor is under construction, a glowing scaffold with its "n of m" progress
  * ring; the few floors ahead are faint dark outlines (the queue has no end, so only the next AHEAD_SHOWN are drawn); the top carries Verse's
- * mark, a glowing core with three thin tilted rings. It turns slowly on its own (still with reduced motion). Tapping a floor calls
+ * mark, a V of light with a star at its open end. It turns slowly on its own (still with reduced motion). Tapping a floor calls
  * data.onFloor(id), or opens the floor's own Verse page when there is no callback.
  * data: { floors: [{ id, site, state: 'beaten' | 'current' | 'ahead', n, m, page? }], onFloor?: (id) => void }
  * Pure: layout(floors) says what is drawn where (tools/tower-mini.test.mjs).
@@ -53,10 +53,12 @@ export default function build(ctx, data) {
   const base = new THREE.Mesh(G(new THREE.CylinderGeometry(BASE_R, BASE_R * 1.12, BASE_H, 64)), baseM); base.position.y = BASE_H / 2; base.castShadow = base.receiveShadow = true;
   const baseRim = new THREE.Mesh(G(new THREE.TorusGeometry(BASE_R, 0.003, 10, 96).rotateX(Math.PI / 2)), ringGold); baseRim.position.y = BASE_H;
   const tower = new THREE.Group(), mark = new THREE.Group();
-  // Verse's mark: a glowing core with three thin tilted rings (lib/void-seal.js, the atom galaxy, kept simple)
-  const sun = new THREE.Mesh(G(new THREE.SphereGeometry(0.028, 32, 24)), core); mark.add(sun);
-  const ringG = G(new THREE.TorusGeometry(0.062, 0.0028, 8, 96)), rings = [];
-  for (let i = 0; i < 3; i++) { const r = new THREE.Mesh(ringG, i === 1 ? ringGold : orbitM); r.rotation.set(1.1 + i * 0.5, i * 2.1, i * 0.7); mark.add(r); rings.push(r); }
+  // Verse's mark, the app icon in light (icon.svg, 2026-10-30): a V of two rounded strokes and one star at its open end, turning on its own
+  const vM = M(new THREE.MeshStandardMaterial({ color: '#9eb2ff', emissive: '#9eb2ff', emissiveIntensity: 1.4, roughness: 0.25, metalness: 0.4 }));
+  const strokeG = G(new THREE.CapsuleGeometry(0.0075, 0.075, 6, 16)), vee = new THREE.Group(), rings = [vee];
+  for (const side of [-1, 1]) { const st = new THREE.Mesh(strokeG, vM); st.rotation.z = -side * 0.52; st.position.set(side * 0.021, 0, 0); vee.add(st); }
+  const star = new THREE.Mesh(G(new THREE.OctahedronGeometry(0.011)), core); star.scale.set(1, 1.6, 0.5); star.position.set(0.06, 0.05, 0); vee.add(star);
+  mark.add(vee);
   root.add(base, baseRim, tower, mark);
   let d = data || {}, lay = layout([]), floorMeshes = [], perFloor = [], moreLabel = null;
   const clear = () => { for (const x of perFloor) { tower.remove(x.obj); for (const g of x.geos) g.dispose(); for (const t of x.texs) t.dispose(); for (const m of x.mats) m.dispose(); } perFloor = []; floorMeshes = []; if (moreLabel) { root.remove(moreLabel.obj); moreLabel.tex.dispose(); moreLabel.mat.dispose(); if (moreLabel.geo) moreLabel.geo.dispose(); moreLabel = null; } };
