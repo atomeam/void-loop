@@ -10,7 +10,7 @@
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED.
 //   - spend model calls: 'ask' has 12 a minute per connection, 'learn' 3 a minute per connection, one learn per station every 2 minutes
 //     for everyone and LEARN_PER_DAY learns a day in all (D1 counters); 'choose' needs the owner key;
-//   - make Verse's server read a radio stream: only the stream Radio Browser lists for that station id, https on the standard port and a
+//   - make Verse's server read a radio stream: only the stream Radio Browser lists for that station id (or its https twin, as the page plays it), https on the standard port and a
 //     host name (lib/local-media.js playableStream), at most HEAR_BYTES bytes or HEAR_MS milliseconds, then dropped;
 //   - put words in Verse's notes: a note is the model's own sentence about the material, at most 240 characters, checked by notesFrom();
 //     captions are fenced as material, never instructions; a note is shown as text, never as markup, and never runs anything.
@@ -19,7 +19,7 @@ import { rateLimited } from './answer.js';
 import { imageBytes } from './appraise.js';
 import { ownerOk } from '../../lib/guard.js';
 import { models, HEAR_FALLBACK } from '../../lib/models.js';
-import { playableStream } from '../../lib/local-media.js';
+import { playableStream, httpsOf } from '../../lib/local-media.js';
 import { stationOf, askMessages, learnMessages, notesFrom, senses, chooseMessages, pickFrom, wordsOf, KINDS, CAPTION_MAX } from '../../lib/watch-along.js';
 
 export const ASK_PER_MIN = 12, LEARN_PER_MIN = 3, LEARN_GAP_S = 120, LEARN_PER_DAY = 400, HEAR_BYTES = 200000, HEAR_MS = 12000, FRAME_MAX = 400000;
@@ -55,12 +55,14 @@ export async function tvStation(env, origin, s) {
   }
   return null;
 }
+/** the stream address of a Radio Browser entry, as the page plays it: an http address is tried as its https twin (lib/local-media.js httpsOf). */
+export const streamOf = (st) => { const a = [st && st.url_resolved, st && st.url].map((u) => String(u || '').trim()).filter(Boolean); for (const u of a) { const h = httpsOf(u); if (h) return h; } return a[0] || ''; };
 /** a radio station from Radio Browser by its id: { name, cc, stream, codec } or null. */
 export async function radioStation(id, fetchFn = fetch) {
   for (const h of RADIO_HOSTS) {
     try {
       const list = await getJson('https://' + h + '/json/stations/byuuid/' + encodeURIComponent(id), fetchFn), st = Array.isArray(list) && list[0];
-      if (st) return { name: String(st.name || 'A station').replace(/\s+/g, ' ').trim().slice(0, 90), cc: String(st.countrycode || '').toUpperCase().slice(0, 2), stream: String(st.url_resolved || st.url || '').trim(), codec: String(st.codec || '').toUpperCase() };
+      if (st) return { name: String(st.name || 'A station').replace(/\s+/g, ' ').trim().slice(0, 90), cc: String(st.countrycode || '').toUpperCase().slice(0, 2), stream: streamOf(st), codec: String(st.codec || '').toUpperCase() };
     } catch (_) {}
   }
   return null;
