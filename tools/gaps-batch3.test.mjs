@@ -52,3 +52,73 @@ test('word counter for essay: what the tool is for does not change the tool', ()
   }
   assert.equal(toolAsk('for essay'), null);
 });
+
+import { upsideDown, smallCaps, circled, strike, zalgo, runTextTool } from '../void-live-deploy/lib/text-tools.js';
+import { textToolByName } from '../void-live-deploy/skills/text-tools.js';
+test('fancy text: upside down, small caps, bubble, strikethrough and zalgo, each a Unicode mapping', () => {
+  assert.equal(upsideDown('Hello, world!'), "¡plɹoʍ 'ollǝH");
+  assert.equal(upsideDown(upsideDown('pod')), 'pod');
+  assert.equal(smallCaps('hello box'), 'ʜᴇʟʟᴏ ʙᴏx');
+  assert.equal(circled('Hi 2026'), 'Ⓗⓘ ②⓪②⑥');
+  assert.equal(strike('no way'), 'n̶o̶ w̶a̶y̶');
+  const z = zalgo('hi', 'heavy', () => 0.99);
+  assert.equal(z.replace(/[̀-ͯ]/g, ''), 'hi');
+  assert.ok(z.length >= 2 + 2 * 24, 'heavy puts 12 marks a side on each letter at most');
+  assert.equal(zalgo('a b', 'light', () => 0).replace(/[̀-ͯ]/g, ''), 'a b');
+  assert.equal(runTextTool('strikethrough text: hi').text, 'h̶i̶');
+  assert.equal(runTextTool('strikethrough: hi').text, '~~hi~~', 'Markdown strikethrough stays as it was');
+  for (const [a, id] of [['upside down text', 'upside-down'], ['small caps text', 'small-caps'], ['bubble text', 'bubble'], ['strikethrough text', 'strike'], ['zalgo text', 'zalgo']]) assert.equal(textToolByName(a)?.id, id, a);
+  for (const a of ['upside down', 'upside down cake recipe', 'what is zalgo text', 'bubble']) assert.equal(textToolByName(a), null, a);
+});
+
+import groups, { groupsOf, namesOf, teams, santa } from '../void-live-deploy/skills/groups.js';
+test('random teams and secret santa: the ask names the names; teams are even, and nobody draws themselves', () => {
+  assert.deepEqual(groupsOf('random team generator'), { kind: 'teams', count: 2, names: [] });
+  assert.deepEqual(groupsOf('split Alice, Bob, Carol and Dave into 2 teams'), { kind: 'teams', count: 2, names: ['Alice', 'Bob', 'Carol', 'Dave'] });
+  assert.deepEqual(groupsOf('make 3 groups from: a, b, c, d, e, f').count, 3);
+  assert.deepEqual(groupsOf('secret santa draw'), { kind: 'santa', names: [] });
+  assert.deepEqual(groupsOf('secret santa: ann, ben, cal').names, ['ann', 'ben', 'cal']);
+  for (const a of groups.nearMisses) assert.equal(groupsOf(a), null, a);
+  assert.deepEqual(namesOf('ann\nben\n\nann\n- cal'), ['ann', 'ben', 'cal']);
+  let seed = 7; const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const names = 'a b c d e f g h i j k'.split(' ');
+  for (let i = 0; i < 200; i++) {
+    const ts = teams(names, 3, rng), sizes = ts.map((t) => t.length);
+    assert.equal(ts.flat().sort().join(), names.join());
+    assert.ok(Math.max(...sizes) - Math.min(...sizes) <= 1, JSON.stringify(sizes));
+  }
+  const seen = {};
+  for (let i = 0; i < 4000; i++) {
+    const p = santa(['a', 'b', 'c', 'd'], rng);
+    assert.ok(p.every(([g, r]) => g !== r));
+    assert.equal(new Set(p.map(([, r]) => r)).size, 4, 'each name is drawn once');
+    const k = p.map(([, r]) => r).join(''); seen[k] = (seen[k] || 0) + 1;
+  }
+  // 4 names have 9 draws where nobody gets themselves; each should come up about 4000 / 9 = 444 times
+  assert.equal(Object.keys(seen).length, 9);
+  assert.ok(Object.values(seen).every((n) => n > 350 && n < 540), JSON.stringify(seen));
+  assert.equal(santa(['solo']), null);
+});
+
+test('the teams card deals the names it was given; the santa card hides each pairing until it is pressed', () => {
+  const card = (text) => {
+    const parts = {}, part = (sel) => { const k = sel.replace(/^[.#]/, ''); return (parts[k] = parts[k] || { value: '', innerHTML: '', textContent: '', style: {}, dataset: {}, on: {}, focus() {}, querySelector: () => null, querySelectorAll: () => [], addEventListener(ev, f) { this.on[ev] = f; } }); };
+    const el = { innerHTML: '', querySelector: part };
+    const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const said = groups.run(text, { showPage: (f) => { f(el); return el; }, esc });
+    const box = /<textarea class="gr-names"[^>]*>([^<]*)<\/textarea>/.exec(el.innerHTML);
+    parts['gr-names'].value = box ? box[1].replace(/&lt;/g, '<').replace(/&amp;/g, '&') : ''; // what the browser hands back as the box's value
+    if (parts['gr-count']) parts['gr-count'].value = (/class="gr-count"[^>]*value="(\d+)"/.exec(el.innerHTML) || [])[1] || '';
+    parts['gr-go'].on.click();
+    return { said, h: el.innerHTML, out: parts['gr-out'].innerHTML, say: parts['gr-say'].textContent };
+  };
+  const t = card('split ann, ben, <cal>, dee into 2 teams');
+  assert.equal(t.said, 'groups');
+  assert.match(t.say, /^4 names in 2 teams\.$/);
+  assert.equal((t.out.match(/Team \d/g) || []).length, 2);
+  assert.ok(t.out.includes('&lt;cal>') && !t.out.includes('<cal>'), 'names are escaped');
+  const s = card('secret santa: ann, ben, cal');
+  assert.match(s.say, /^3 names drawn\./);
+  assert.equal((s.out.match(/gives to <button/g) || []).length, 3, 'no receiver is on the page until its button is pressed');
+  assert.ok(!/gives to <strong>/.test(s.out));
+});

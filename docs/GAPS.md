@@ -67,11 +67,11 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 51 | make a resume | 2026-11-06: how-to text | a resume form that becomes a clean page to print or save | open |
 | 52 | word counter for essay | 2026-11-06: an explanation | the word counter opens, the same as "word counter" | implemented |
 | 53 | grocery list | 2026-11-06: nothing | a list card on the stage that takes items and ticks them off | open |
-| 54 | strikethrough text | 2026-11-06: an article on the character | the text comes back with combining strokes, ready to copy | open |
-| 55 | upside down text | 2026-11-06: an article on the effect | the text comes back flipped from a mapping table, ready to copy | open |
-| 56 | small caps text | 2026-11-06: nothing | the text in Unicode small capitals, letters with no small capital left as they are | open |
-| 57 | bubble text | 2026-11-06: article on contrast ultrasound | the text in circled Unicode letters, ready to copy | open |
-| 58 | zalgo text | 2026-11-06: an article on the effect | the text with combining marks, a slider for how many | open |
+| 54 | strikethrough text | 2026-11-06: an article on the character | the text comes back with combining strokes, ready to copy | implemented |
+| 55 | upside down text | 2026-11-06: an article on the effect | the text comes back flipped from a mapping table, ready to copy | implemented |
+| 56 | small caps text | 2026-11-06: nothing | the text in Unicode small capitals, letters with no small capital left as they are | implemented |
+| 57 | bubble text | 2026-11-06: article on contrast ultrasound | the text in circled Unicode letters, ready to copy | implemented |
+| 58 | zalgo text | 2026-11-06: an article on the effect | the text with combining marks, light, medium or heavy as the ask says | implemented |
 | 59 | invisible character | 2026-11-06: a disambiguation card | the blank characters (U+200B, U+3164, U+2800) with a copy button for each and what each is | open |
 | 60 | text art big letters hello | 2026-11-06: nothing | the words in big block letters drawn from a font grid, ready to copy | open |
 | 61 | phonetic alphabet | 2026-11-06: a disambiguation card | the NATO and ICAO spelling alphabet, and the words spelled out letter by letter | open |
@@ -92,8 +92,8 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 76 | shift schedule maker | 2026-11-06: an explanation | people and shifts on a week grid, hours per person, printable | open |
 | 77 | final exam grade needed | 2026-11-06: an explanation | current grade, exam weight and target in, the exam score needed out, worked out | open |
 | 78 | event countdown | 2026-11-06: an explanation | a countdown card to the date the ask names, days to seconds | open |
-| 79 | random team generator | 2026-11-06: an explanation | names in, split at random into the number of teams asked for | open |
-| 80 | secret santa draw | 2026-11-06: an explanation | names in, a draw where nobody gets themselves, each pairing shown one at a time | open |
+| 79 | random team generator | 2026-11-06: an explanation | names in, split at random into the number of teams asked for | implemented |
+| 80 | secret santa draw | 2026-11-06: an explanation | names in, a draw where nobody gets themselves, each pairing shown one at a time | implemented |
 | 81 | tournament bracket | 2026-11-06: an article on brackets | names in, a single elimination bracket with byes, winners picked by clicking | open |
 | 82 | keyboard tester | 2026-11-06: an explanation | a keyboard drawn in the page, each key lights when pressed, the key code shown | open |
 | 83 | mouse tester | 2026-11-06: an explanation | each button, the wheel and double clicks shown as they happen | open |
