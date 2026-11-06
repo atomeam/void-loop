@@ -15,6 +15,9 @@ import { btInput, arbInput, answer, backtestRoute } from '../void-live-deploy/li
 import { PAID } from '../void-live-deploy/functions/api/x402/[service].js';
 import { SERVICES } from '../void-live-deploy/lib/x402.js';
 import { pages } from './trading-bots-pages.mjs';
+import { DatabaseSync } from 'node:sqlite';
+import { rowOf, record, summary } from '../void-live-deploy/lib/arb-history.js';
+import { onRequestGet as arbitrageGet } from '../void-live-deploy/functions/api/arbitrage.js';
 
 const day = (i) => new Date(Date.UTC(2018, 0, 1) + i * 864e5).toISOString().slice(0, 10);
 const rowsFrom = (closes) => closes.map((c, i) => [day(i), i ? closes[i - 1] : c, Math.max(c, i ? closes[i - 1] : c) * 1.001, Math.min(c, i ? closes[i - 1] : c) * 0.999, c, 1]);
@@ -142,4 +145,39 @@ test('the written pages are current, carry the risk notice and declare their han
     assert.match(html, /<meta name="verse-handoff" content="in: [^"]+; out: [^"]+">/); assert.match(html, /never/i);
     assert.doesNotMatch(html, /best (ever|bot)|guarantee|profit(able)? every/i, rel + ' makes no claim the backtest does not show');
   }
+});
+
+// an in-memory stand-in for Cloudflare D1 (the same shape tools/x402-services.test.mjs uses)
+function d1() {
+  const db = new DatabaseSync(':memory:');
+  const stmt = (sql, a = []) => ({ bind: (...b) => stmt(sql, b), run: async () => ({ meta: { changes: Number(db.prepare(sql).run(...a).changes) } }), all: async () => ({ results: db.prepare(sql).all(...a) }),
+    first: async (col) => { const r = db.prepare(sql).get(...a); return r == null ? null : col ? r[col] : r; } });
+  return { raw: db, prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; for (const s of list) out.push(await s.run()); return out; } };
+}
+const scanBody = (at, rows, coin = 'BTC') => ({ coin, at, spread: { mids: { coinbase: 1, kraken: 1, gemini: 1 } }, rows });
+const row = (buy, sell, net, filled = true) => ({ buy, sell, net, netPct: net / 1000, filled });
+
+test('the scan record keeps one real row per fresh scan and sums it up honestly', async () => {
+  assert.equal(rowOf({ coin: 'BTC', at: '2026-11-06T00:00:00Z', rows: [] }), null, 'an empty scan is not a row');
+  const r = rowOf(scanBody('2026-11-06T00:00:00Z', [row('kraken', 'coinbase', 4.2, false), row('gemini', 'kraken', -3.1)]));
+  assert.equal(r.best_buy, 'gemini', 'the best pair is the best one whose books could fill the trade'); assert.equal(r.cleared, 0); assert.equal(r.venues, 3);
+  const db = d1(), t0 = Date.parse('2026-11-06T00:00:00Z');
+  assert.equal(await record(db, scanBody(new Date(t0).toISOString(), [row('kraken', 'coinbase', -2), row('gemini', 'kraken', -5)]), t0), true);
+  assert.equal(await record(db, scanBody(new Date(t0 + 5000).toISOString(), [row('kraken', 'coinbase', 9)]), t0), false, 'under 15 s after the last row: not written');
+  assert.equal(await record(db, scanBody(new Date(t0 + 60000).toISOString(), [row('kraken', 'coinbase', 1.5), row('gemini', 'kraken', -1)]), t0), true);
+  assert.equal(await record(db, scanBody(new Date(t0 + 1000).toISOString(), [row('kraken', 'coinbase', 1)], 'ETH'), t0), true, 'each coin has its own record');
+  const s = await summary(db, 'BTC');
+  assert.equal(s.scans, 2); assert.equal(s.cleared, 1); assert.equal(s.avgBestNet, -0.25); assert.deepEqual([s.best.buy, s.best.sell, s.best.net], ['kraken', 'coinbase', 1.5]);
+  assert.equal(s.first, new Date(t0).toISOString()); assert.deepEqual(s.pairs.map((p) => [p.buy, p.sell, p.times, p.cleared]), [['kraken', 'coinbase', 2, 1]]);
+  const empty = await summary(d1(), 'ETH'); assert.equal(empty.scans, 0); assert.equal(empty.best, null); assert.equal(empty.avgBestNet, null);
+  // rows older than 180 days go when a new row is written
+  await record(db, scanBody(new Date(t0 + 200 * 864e5).toISOString(), [row('kraken', 'coinbase', -1)]), t0 + 200 * 864e5);
+  assert.equal((await summary(db, 'BTC')).scans, 1);
+});
+
+test('GET /api/arbitrage?history=1 answers the record, and 503 without a database', async () => {
+  const db = d1(); await record(db, scanBody('2026-11-06T00:00:00Z', [row('kraken', 'coinbase', -2)]));
+  const ok = await arbitrageGet({ request: new Request('https://a-to-mind.com/api/arbitrage?coin=btc&history=1'), env: { DB: db } });
+  assert.equal(ok.status, 200); const j = await ok.json(); assert.equal(j.coin, 'BTC'); assert.equal(j.scans, 1); assert.match(j.note, /Nothing was traded/);
+  assert.equal((await arbitrageGet({ request: new Request('https://a-to-mind.com/api/arbitrage?history=1'), env: {} })).status, 503);
 });
