@@ -1,0 +1,29 @@
+# The owner's private life-arbitrage scan (void-live-deploy/lib/life-arb.js, functions/api/life-arb.js, /life-arb/; owner, 2026-11-06:
+# "an arb scanner only we can use for life itself"). Every 6 hours it asks the site to scan: the scan itself runs on Cloudflare and keeps
+# its results in D1, owner key only. This job needs no secret and logs counts per source only, never an opportunity (the repository and
+# its logs are public).
+name: life-arb
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch: {}
+
+concurrency:
+  group: life-arb
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Scan (counts only)
+        run: |
+          set -euo pipefail
+          code=$(curl -sS -o scan.json -w '%{http_code}' -X POST -H 'content-type: application/json' --data '{"action":"scan"}' https://a-to-mind.com/api/life-arb)
+          echo "life-arb scan answered $code"
+          jq '{ran, as_of, count, queued, sources, last, next_after}' scan.json | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$code" = "200" ]

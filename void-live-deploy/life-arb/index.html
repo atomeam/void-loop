@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Life arbitrage · Verse (private)</title>
+<link rel="stylesheet" href="/verse.css" media="screen">
+<style>
+  /* a-to-mind.com/life-arb/ (owner, 2026-11-06: "an arb scanner only we can use for life itself"): private, owner key only, never listed */
+  :root { color-scheme: dark; --bg: #07060d; --panel: #100e1a; --ink: #ecebf5; --soft: #a3a0b3; --line: #262236; --accent: #a58bff; --good: #6fe3a5; --warn: #ffcf6e; --bad: #ff8a7e; }
+  html, body { margin: 0; background: radial-gradient(1200px 600px at 70% -10%, #1a1240 0%, transparent 60%), radial-gradient(900px 500px at -10% 110%, #0d1f3a 0%, transparent 55%), var(--bg); background-attachment: fixed; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; min-height: 100%; }
+  main { max-width: 980px; margin: 0 auto; padding: 22px 16px 48px; }
+  h1 { font-size: clamp(24px, 5vw, 34px); margin: 4px 0 2px; font-weight: 700; letter-spacing: -0.01em; }
+  .lede { color: var(--soft); margin: 0 0 18px; max-width: 64ch; }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 26px 0 8px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 8px 0; padding: 0; list-style: none; }
+  .tiles li, .panel, .opp { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .tiles b { display: block; font-size: 26px; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .tiles span, .soft { color: var(--soft); font-size: 13px; }
+  .opps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .opp header { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .opp .n { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; min-width: 2ch; }
+  .opp a { color: var(--ink); font-weight: 600; text-decoration-color: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; padding: 0; list-style: none; }
+  .chips li { font-size: 12px; border-radius: 99px; padding: 2px 9px; background: #1f1a35; color: var(--soft); }
+  .chips li.urgent { background: #3a2410; color: var(--warn); }
+  .chips li.cash { color: var(--good); }
+  .chips li.high { color: var(--bad); }
+  .ev { color: var(--soft); font-size: 14px; margin: 4px 0; }
+  .next { margin: 6px 0 2px; }
+  .asks { margin: 4px 0 0; padding-left: 18px; color: var(--warn); font-size: 13px; }
+  .row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  button, input { font: inherit; color: var(--ink); background: #1b1730; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; min-height: 44px; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  input { flex: 1; min-width: 200px; }
+  .done { opacity: .5; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .filters button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  .bad { color: var(--bad); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Life arbitrage</h1>
+  <p class="lede">Private to Atom and Verse. Real gaps between what something costs you, in money and minutes, and what it is worth, found on a schedule and ranked by net value per hour of your time, deadlines first. Every value is one its source states; your minutes are an estimate, shown with its basis. Nothing here buys, signs up or claims anything: each of those waits for your yes.</p>
+  <section id="key" class="panel" hidden>
+    <p>This page reads only with the owner key, kept on this device.</p>
+    <div class="row"><input id="k" type="password" autocomplete="current-password" aria-label="Owner key" placeholder="Owner key"><button id="save">Open</button></div>
+  </section>
+  <p id="status" class="soft" role="status">Loading…</p>
+  <ul class="tiles" id="tiles"></ul>
+  <div class="filters" id="filters" role="group" aria-label="Show"></div>
+  <ol class="opps" id="opps"></ol>
+  <h2>Sources</h2>
+  <ul class="tiles" id="sources"></ul>
+  <h2>Not scanned yet, and why</h2>
+  <ul class="opps" id="gaps"></ul>
+  <div class="row"><button id="scan">Scan now</button></div>
+</main>
+<script type="module" src="/life-arb/app.js"></script>
+</body>
+</html>

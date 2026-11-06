@@ -14,9 +14,10 @@ import { auditPage, auditSite } from '../void-live-deploy/lib/seo-audit.js';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..', 'void-live-deploy');
 const BASELINE = path.join(here, 'seo-audit.baseline.json');
-// not pages a visitor lands on from a search: the libraries, the functions, the deploy's own internal views and the embed frame
+// not pages a visitor lands on from a search: the libraries, the functions, the deploy's own internal views, the embed frame and the owner's
+// private, noindex pages (/life-arb/, owner key only)
 const SKIP_DIR = new Set(['vendor', 'functions', 'lib', 'skills', 'node_modules', 'models', 'fonts', 'tower.shots', 'tower.icons', 'data', 'fringe']);
-const SKIP_PAGE = /^\/(?:void\.html|404\.html|handoff\.html|studies\.html|surface\.html|calendar\/embed\/|store\/receipt\/)$/;
+const SKIP_PAGE = /^\/(?:void\.html|404\.html|handoff\.html|studies\.html|surface\.html|calendar\/embed\/|store\/receipt\/|life-arb\/)$/;
 
 /** every file under the deploy as a site path ('/photos/index.html'), and the pages among them ('/photos/'). */
 export function walk(dir = root, base = '') {
