@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T17:19:03.436Z",
+  "at": "2026-11-06T17:46:53.076Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,18 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 87.2,
+      "score": 88.8,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
         {
           "ask": "play the latest episode of crime junkie",
           "failed": [
@@ -143,7 +135,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -158,10 +150,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -473,6 +464,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 87.2
+    "score": 88.8
   }
 }
