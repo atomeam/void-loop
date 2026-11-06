@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 93,
-   "best": 1155,
-   "evidence": "Verse (/recipes/?q=pancakes) 93 ms to the load event (median of 3, phone width) vs yummly.com 1155 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "verse": 109,
+   "best": 1655,
+   "evidence": "Verse (/recipes/?q=pancakes) 109 ms to the load event (median of 3, phone width) vs yummly.com 1655 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs yummly.com 3 of 3 loads answered",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs yummly.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 14,
    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs yummly.com 14 unnamed controls or images",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs yummly.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs yummly.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 5,
    "best": 5,
    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not yummly.com (the site is not asked)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "of": 5
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
    "best": 49,
-   "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs yummly.com 49 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), yummly.com (24 low-contrast texts, 24 small tap targets, layout shift 0.16)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs yummly.com 49 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), yummly.com (24 low-contrast texts, 24 small tap targets, layout shift 0.17)",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   },
   "search by ingredient": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs yummly.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs yummly.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs yummly.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -100,7 +100,7 @@
    "verse": 20,
    "best": 2,
    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs yummly.com 2 of 20 things a full answer shows (Verse lacks: none; site lacks: ingredients, the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, print, works offline, Search by dish name, Ingredient search, include and exclude, Scale servings (1/2x, 1x, 2x), US / metric, Nutrition facts per serving, Save recipes into collections)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "of": 20,
    "siteRead": true
   },
@@ -109,7 +109,7 @@
    "verse": 8,
    "best": 11,
    "evidence": "Verse (/recipes/?q=pancakes) 8 of 11 wider-use points (docs/WIDER-USE.md) vs yummly.com 11 of 11 wider-use points (docs/WIDER-USE.md) (the site could not be read: held to the full 11)",
-   "at": "2026-11-04T14:48:38.688Z",
+   "at": "2026-11-06T14:31:56.683Z",
    "siteRead": true
   }
  }

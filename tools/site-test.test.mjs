@@ -68,3 +68,20 @@ console.log('site-test: ' + n + ' checks passed');
   const r = [{ ask: 'what are you?', ok: false, why: ['missing text /Verse/', 'slow'] }, { ask: 'play chess', ok: true, why: [] }];
   assert.deepEqual(failedOf(r), [{ ask: 'what are you?', why: 'missing text /Verse/' }]);
   assert.equal(failedOf(Array.from({ length: 20 }, (_, i) => ({ ask: 'a' + i, ok: false, why: [] }))).length, 12); }
+
+// issue #2328: a load over the ceiling is timed again alone, after the pool; the faster load counts, and a slow site stays slow twice
+{ const { recheckSlowLoads, judge: j } = await import('./site-test.mjs');
+  const lim = { loadMs: 1200 }, c = { ask: 'yo new automation' }, r = { text: 'Your automations\nnew automation', errors: [], loadMs: 1309 };
+  const slow = { ...j(c, r, lim), loadMs: 1309, chars: 30, loadRecheck: { c, r } };
+  assert.equal(slow.ok, false);
+  const asked = [], fast = await recheckSlowLoads([slow, null, { ...j({ ask: 'ok' }, { text: 'hi', loadMs: 400 }, lim), loadMs: 400 }], lim, async (p) => { asked.push(p); return 380; });
+  assert.deepEqual(asked, [undefined], 'only the slow one is loaded again');
+  assert.equal(fast[0].ok, true); assert.equal(fast[0].loadMs, 380); assert.equal(fast[0].chars, 30); assert.equal('loadRecheck' in fast[0], false);
+  assert.equal(fast[2].loadMs, 400);
+  const still = await recheckSlowLoads([{ ...slow }], lim, async () => 1500);
+  assert.equal(still[0].ok, false); assert.equal(still[0].loadMs, 1309); assert.match(still[0].why.join(), /load 1309 ms > 1200/);
+  const broke = await recheckSlowLoads([{ ...slow }], lim, async () => { throw new Error('timeout'); });
+  assert.equal(broke[0].ok, false, 'a second load that fails keeps the first verdict');
+  const src = (await import('node:fs')).readFileSync(new URL('./site-test.mjs', import.meta.url), 'utf8');
+  assert.equal((src.match(/loadMs = Math\.min\(loadMs, Date\.now\(\) - t1\)/g) || []).length, 0, 'the second load is not timed inside the pool');
+  assert.match(src, /await Promise\.all\(running\);\n[^\n]*\n\s*await recheckSlowLoads\(slots, suite\.limits/, 'the recheck runs after every case is done'); }

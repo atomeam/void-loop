@@ -2138,6 +2138,23 @@ try {
     check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), each with a JSON link to film metadata and the found ones as JSON (never the unfound), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
       rows.length === 2 && /Talk to Me/.test(rows[0]) && pickJs && pickJs.count === 2 && pickJs.films[0].director === 'Danny Philippou' && pickJs.films[0].runtime === '95 min' && !('description' in pickJs.films[1]) && pickJs.films.every((f) => f.title !== 'Made Up Movie Zork') && rowJson.join('|') === 'film metadata for Talk to Me|film metadata for Nosferatu' && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
     await M.ctx.close(); }
+  // asked by Verse (2026-10-22): "Add a 'similarity-score' field to the movie picks JSON so users can see how closely a pick matches their
+  // expressed intent". The ask's intent goes to the model, each row says how it matches, the JSON gives every pick its score (lib/movie-intent.js).
+  if (want("real movies: \"scary movies from the 90s\" asks for 90s horror and scores each pick")) { const M = await fresh();
+    let prompt = '';
+    await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { prompt = (JSON.parse(r.request().postData() || '{}').ask) || ''; return r.fulfill(json({ answer: '1. Se7en (1995)\n2. Scream (1996)\n3. Made Up Zork (1997)' })); });
+    await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      const f = t === 'Scream' ? { verified: true, title: t, year: 1996, genre: 'Horror', overview: 'A masked killer stalks a small town.', poster: '', trailer: '', free: false, play: null, links: [], sources: ['iTunes Search API'] }
+        : t === 'Se7en' ? { verified: true, title: t, year: 1995, genre: 'Thriller', overview: 'Two detectives hunt a serial killer.', poster: '', trailer: '', free: false, play: null, links: [], sources: ['iTunes Search API'] }
+        : { verified: false, title: t }; return r.fulfill(json(f)); });
+    await M.ask('scary movies from the 90s', 1800);
+    const sims = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => [x.querySelector('b') && x.querySelector('b').textContent, (x.querySelector('.mv-sim') || {}).textContent || '']));
+    const js = await M.p.$eval('.vpage.on .mv-picks-json pre', (e) => JSON.parse(e.textContent)).catch(() => null);
+    const head = await M.p.$eval('.vpage.on h2', (e) => e.textContent).catch(() => ''), all = await M.p.$eval('.vpage.on', (e) => e.textContent).catch(() => '');
+    check('real movies: "scary movies from the 90s" asks the model for 90s horror, lists the 100% match first with "Matches 2 of 2", and the JSON gives each pick its similarity-score',
+      /horror movies released between 1990 and 1999/.test(prompt) && /scary \(horror\), 1990s/.test(head) && sims.length === 2 && sims[0][0] === 'Scream' && /Matches 2 of 2 \(100%\)/.test(sims[0][1]) && /Matches 1 of 2 \(50%\)/.test(sims[1][1])
+      && js && js.films[0]['similarity-score'] === 100 && js.films[1]['similarity-score'] === 50 && !M.errors.length, JSON.stringify({ prompt, head, all: all.slice(0, 400), sims, js, e: M.errors }));
+    await M.ctx.close(); }
   // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
   // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
   if (want("real music: \"pick a song\" shows only found songs with their cover and a preview")) { const U = await fresh();
@@ -4874,6 +4891,31 @@ try {
         && /5:00/.test(r.faces) && r.reload === 2 && r.i === '120000,run,full,40,#e8e8e8' && r.j === '' && r.alarm === 'true' && !!r.done && r.state === '2000,stop,part,40,#e8e8e8' && !P.errors.length,
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
+  // #2326: "add one minute" after "set a timer for 90 seconds" went to the list (a list card holding "one minute"), so the
+  // timer stayed at 1:30. It is time for the timer: the length grows to 2:30 (150 s), the card says so, and no list appears.
+  if (want("timer add time: \"add one minute\" after a 90 second timer makes it 2:30, not a list item")) { const P = await fresh();
+    await P.ask('set a timer for 90 seconds', 700);
+    await P.ask('add one minute', 700);
+    const st = await P.state(), tms = st.filter((t) => t.kind === 'timer');
+    const face = await P.p.$$eval('.thing.timer[data-picked]', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+    check('timer add time: "add one minute" after "set a timer for 90 seconds" makes that timer 150 s long, its card says 2:30 and 150 seconds and is the picked thing, and no list is made',
+      tms.length === 1 && tms[0].duration === 150000 && /2:30/.test(face) && /150 seconds/.test(face) && !st.some((t) => t.kind === 'list') && !P.errors.length,
+      JSON.stringify({ tms, face, kinds: st.map((t) => t.kind), e: P.errors }));
+    await P.ctx.close(); }
+  // with another card picked, "add one minute" lengthens the timer and picks it, and only one card carries the mark (main, c5a28a1f
+  // shard 5: the timer was 150 s but the sticky stayed the picked one, so the timer face read nothing; a kept card kept a stale mark)
+  if (want("timer add time picks the timer: with the sticky picked, \"add one minute\" lengthens the timer and makes it the one picked thing")) { const P = await fresh();
+    await P.ask('set a timer for 90 seconds', 700);
+    await P.ask('sticky note buy milk', 500);
+    const before = await P.p.$$eval('.thing[data-picked]', (els) => els.map((e) => e.classList.contains('sticky') ? 'sticky' : e.className));
+    await P.ask('add one minute', 700);
+    const tms = (await P.state()).filter((t) => t.kind === 'timer');
+    const picked = await P.p.$$eval('.thing[data-picked]', (els) => els.map((e) => e.classList.contains('timer') ? 'timer' : e.className));
+    const face = await P.p.$$eval('.thing.timer[data-picked]', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+    check('timer add time picks the timer: with the sticky picked, "add one minute" makes the 90 second timer 150 s long and the one picked thing (its card says 2:30), and the sticky loses its picked mark',
+      before.length === 1 && before[0] === 'sticky' && tms.length === 1 && tms[0].duration === 150000 && picked.length === 1 && picked[0] === 'timer' && /2:30/.test(face) && !P.errors.length,
+      JSON.stringify({ before, tms, picked, face, e: P.errors }));
+    await P.ctx.close(); }
   // step 6's visible upgrade for the timer (owner, 2026-10-11: every cleanup move ships one): its progress ring was built with
   // createElement('svg'), an unknown HTML tag that never drew; it is a real SVG ring now, and a finished timer flashes 0:00
   if (want("timer ring and done flash: the progress ring is drawn and sweeps down while it runs, a finished timer flashes 0:00, steady with reduced motion")) {
@@ -5041,7 +5083,8 @@ try {
     await P.p.fill('.list-add-input', 'rice'); await P.p.press('.list-add-input', 'Enter'); await P.p.waitForTimeout(200); r.typed = await L();
     await (await P.p.$$('.list-entry input[type=checkbox]'))[1].click(); await P.p.waitForTimeout(200); r.tick = await L();
     await (await P.p.$$('.list-entry .list-remove'))[2].click(); await P.p.waitForTimeout(200); r.x = await L();
-    await P.p.click('.list-title'); await P.p.keyboard.type('Saturday'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200); r.title = await L();
+    // the seed is titled "Shopping list" now (GAPS batch 5), so the typed title replaces it
+    await P.p.click('.list-title'); await P.p.keyboard.press('Control+A'); await P.p.keyboard.type('Saturday'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200); r.title = await L();
     await P.ask('make the list red', 400); r.red = await L(); r.edge = await P.p.$eval('.thing.list-card', (e) => e.style.borderColor).catch(() => '');
     await P.p.reload(); await until(async () => !!(await card()), 6000); r.reload = await card(); r.reloadTitle = await P.p.$eval('.list-title', (e) => e.textContent).catch(() => '');
     await P.ask('clear the list', 400); r.clearSaid = await P.whisper(); r.clear = await L(); r.empty = await P.p.$eval('.list-empty', (e) => e.textContent).catch(() => '');
@@ -5803,7 +5846,7 @@ try {
       && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
     await F.ctx.close();
   }
-  if (want('verse brain: one workspace that twenty-three organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that twenty-six organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5874,9 +5917,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its twenty-three organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty-six organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 23 && a.rows === 23 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 26 && a.rows === 26 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
@@ -9099,6 +9142,24 @@ try {
     check('weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur',
       m.hours === 8 && m.overlaps === 0 && m.clipped === 0 && (m.blur === 'none' || m.blur === '') && !H.errors.length, JSON.stringify({ ...m, errors: H.errors }));
     await H.ctx.close(); }
+  // the weather page with two looks out at once (asked by Verse: "Fix the weather page to clear the aria-busy state once the gate returns a result";
+  // 2026-11-06: Paris asked, then Boston while Paris was still out; Boston answered first and cleared aria-busy, then the late Paris answer drew over it)
+  if (want("weather page: a newer look wins, and aria-busy waits for it")) {
+    const P = await fresh({ base: base + 'weather/' });
+    const Hs = Array.from({ length: 48 }, (_, i) => new Date(Date.now() + i * 36e5).toISOString().slice(0, 13) + ':00');
+    const wx = { current: { time: Hs[0], temperature_2m: 10, apparent_temperature: 8, relative_humidity_2m: 60, weather_code: 3, wind_speed_10m: 10, is_day: 1 }, hourly: { time: Hs, temperature_2m: Hs.map(() => 10), precipitation_probability: Hs.map(() => 5), weather_code: Hs.map(() => 3), precipitation: Hs.map(() => 0) },
+      daily: { time: [0, 1, 2, 3, 4, 5, 6].map((d) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10)), temperature_2m_max: Array(7).fill(12), temperature_2m_min: Array(7).fill(5), precipitation_probability_max: Array(7).fill(5), weather_code: Array(7).fill(3), sunrise: [], sunset: [], precipitation_sum: Array(7).fill(0) } };
+    await P.ctx.route(/\/api\/weather\?/, async (r) => { const paris = /paris/i.test(new URL(r.request().url()).searchParams.get('q')); await new Promise((z) => setTimeout(z, paris ? 2500 : 500));
+      return r.fulfill(json({ ok: true, loc: { name: paris ? 'Paris, France' : 'Boston, Massachusetts, United States', lat: paris ? 48.85 : 42.36, lon: paris ? 2.35 : -71.06, us: false }, w: wx })); });
+    const busy = () => P.p.evaluate(() => document.querySelector('main').getAttribute('aria-busy'));
+    await P.p.fill('#q', 'Paris'); await P.p.press('#q', 'Enter'); await P.p.waitForTimeout(150);
+    await P.p.fill('#q', 'Boston'); await P.p.press('#q', 'Enter');
+    await until(async () => /Boston/.test(await P.p.textContent('#place').catch(() => '')), 5000);
+    const atBoston = await busy(); await P.p.waitForTimeout(3000);
+    const place = await P.p.textContent('#place'), after = await busy();
+    check('weather page: a newer look wins, and aria-busy waits for it (Paris asked, then Boston: Boston stays drawn when the slower Paris answer lands, and aria-busy clears once Boston is in)',
+      /Boston/.test(place) && atBoston === null && after === null && !P.errors.length, JSON.stringify({ place, atBoston, after, errors: P.errors }));
+    await P.ctx.close(); }
 
   // the lab judged by real use (owner's choice 2026-10-13: reuse /api/miss, capped): opening an experiment sends its id, once a day
   if (want("opening a lab experiment counts one use: its id only, once per browser per day")) {
@@ -11716,6 +11777,48 @@ try {
       rows.every((r) => !r.loadedAtAsk && r.first && r.firstMs != null && r.firstMs <= 1200 && r.right && r.w !== 'waking up'), JSON.stringify(rows));
   }
 
+  // Site tester issues #2316 #2323 #2342: on a slow or busy device "flip this card", "favorite this" and "send it away" showed only "waking up"
+  // until the tester gave up. Their skills rank far down the index, so the page waited for every skill above them, and "favorite this" also
+  // waited up to 2.5 s for the fuzzy layer. skills/first.json (tools/first-asks.mjs) names the one skill for each known ask, so the page
+  // loads that skill at once and skips the fuzzy wait. With the CPU 6x slower and no skill loaded yet, each one now gets its own answer in 4 s.
+  if (want("known first asks on a slow device (#2316 #2323 #2342): the one skill that takes it loads at once")) {
+    const ASKS = [['flip this card', /^skill:card-play$/], ['favorite this', /^skill:bookmarks$/], ['send it away', /^skill:dismiss$/]];
+    const rows = [];
+    for (const [a, note] of ASKS) {
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+      await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+      const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p);
+      await p.addInitScript(() => { window.requestIdleCallback = () => 0; });
+      await p.goto(base); await p.waitForSelector('#input');
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 });
+      const loadedAtAsk = await p.evaluate(() => document.documentElement.dataset.skills === 'ready');
+      await p.fill('#input', a); await p.keyboard.press('Enter'); const t0 = Date.now();
+      const done = await until(() => p.evaluate((q) => { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => x.ask === q).pop(); return l ? String(l.note) : ''; }, a).catch(() => ''), 30000);
+      const ms = done ? Date.now() - t0 : null;
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      const w = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+      rows.push({ a, loadedAtAsk, note: done || null, ms, right: note.test(String(done)), w });
+      await ctx.close();
+    }
+    check('known first asks on a slow device (#2316 #2323 #2342): with the CPU 6x slower and no skill loaded yet, "flip this card", "favorite this" and "send it away" are answered by card-play, bookmarks and dismiss within 4 s of Enter, and no "waking up" is left behind',
+      rows.every((r) => !r.loadedAtAsk && r.right && r.ms != null && r.ms <= 4000 && r.w !== 'waking up'), JSON.stringify(rows));
+  }
+
+  // On a device where the 3D layer cannot load (no WebGL, or skills/figures3d.js not reached), every render tried the import again and said
+  // "3D can't show in this browser" again, so with a figure on the stage that note took the place of the answer to each later ask: a live
+  // check of "send it away" (#2342) read only the 3D note. The note is said once a page load now; the import is still tried on each render.
+  if (want("3D note once: where 3D cannot load, the note shows once and the next ask keeps its own answer")) { const G = await fresh();
+    await G.ctx.route(/\/skills\/figures3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
+    await G.ask('summon a sprite', 900); const w1 = await G.whisper();
+    const figs = (await G.state()).filter((t) => t.kind === 'figure').length;
+    await G.ask('a clock', 900); const w2 = await G.whisper();
+    await G.ask('flip it', 900); const w3 = await G.whisper();
+    const NOTE = "3D can't show in this browser";
+    check('3D note once: with the 3D layer out of reach and a sprite on the stage, "3D can\'t show in this browser" shows once, and the asks after it ("a clock", "flip it") each show their own line, never the 3D note again',
+      figs === 1 && w1 === NOTE && w2 !== NOTE && w3 !== NOTE && !!w3, JSON.stringify({ figs, w1, w2, w3 }));
+  }
+
   if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
     const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
     const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'
@@ -12321,6 +12424,12 @@ try {
     const t = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((x) => /routine/i.test(x) ? x : '').catch(() => ''), 8000).catch(() => '');
     const n = await S.p.$$eval('.vpage.on [data-ritual] li', (l) => l.length).catch(() => 0), btn = await S.p.$('.vpage.on [data-ritual-ics]');
     check('ritual template: three steps, 35 minutes, a download button, no errors', n === 3 && /35 minutes/.test(t) && !!btn && !S.errors.length, JSON.stringify({ t, n, errors: S.errors }));
+    // time-zone-detect (asked by Verse): the card names the browser's zone and the file keeps each step at the clock time typed in it (tools/ritual-zone.test.mjs)
+    const tzLine = await S.p.$eval('.vpage.on [data-ritual-tz]', (e) => e.textContent).catch(() => ''), zone = await S.p.evaluate(() => Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const [dl] = await Promise.all([S.p.waitForEvent('download', { timeout: 5000 }).catch(() => null), S.p.click('.vpage.on [data-ritual-ics]')]);
+    const file = dl ? fs.readFileSync(await dl.path(), 'utf8') : '';
+    check('ritual template: the card names the browser time zone and the file writes the first step at 6:30 in it, with its VTIMEZONE',
+      tzLine.includes(zone) && file.includes('BEGIN:VTIMEZONE\r\nTZID:' + zone) && new RegExp('DTSTART;TZID=' + zone.replace('/', '\\/') + ':\\d{8}T063000').test(file), JSON.stringify({ tzLine, zone, head: file.slice(0, 300) }));
     await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
