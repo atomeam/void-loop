@@ -140,8 +140,8 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 5,
+    "experiment": 0,
+    "tested": 6,
     "checked": 2,
     "proven": 49
    },
@@ -2733,7 +2733,7 @@
    "examples": [
     "morning routine as calendar events",
     "export my evening routine to my calendar",
-    "ritual template: meditate 10, stretch 15, journal 10 at 6:30am"
+    "make me a morning routine starting at 6:30"
    ],
    "tier": "proven",
    "why": "3 browser-suite mentions, 3 real asks in the benchmark",
@@ -6696,8 +6696,8 @@
     "vers lab",
     "the lab"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 362
   },
   {
