@@ -116,6 +116,28 @@ export function ensure(stageApi, seedItems = []) {
   return list;
 }
 
+const KINDS = { grocery: 'Grocery list', groceries: 'Grocery list', shopping: 'Shopping list', packing: 'Packing list', chore: 'Chores', chores: 'Chores' };
+/** the list an ask names by its kind ("grocery list", "a shopping list with eggs", "make a packing list"): its title, or ''. Pure. */
+export function kindOf(raw) {
+  const head = String(raw || '').toLowerCase().split(/\blist\s*(?::|\b(?:with|containing|including)\b)/)[0] + ' list';
+  const m = head.match(/\b(grocery|groceries|shopping|packing|chores?)\s+list\b/) || head.match(/^\s*list\s+(groceries|shopping|chores)\b/);
+  return m ? KINDS[m[1]] : '';
+}
+
+/** a list named by its kind (docs/GAPS.md row 53, 2026-11-06: "grocery list" picked the stage's list of garden steps): the list with that
+ *  title, or an empty untitled list, which takes the title, or a new list with the title; with the seeds it does not have yet; picked */
+export function ensureNamed(stageApi, title, seedItems = []) {
+  const all = Object.values(stageApi.things()).filter((t) => t && t.kind === 'list');
+  const same = all.find((t) => String(t.title || '').trim().toLowerCase() === title.toLowerCase());
+  const blank = !same && all.find((t) => !String(t.title || '').trim() && !normalizeItems(t.items).length);
+  if (same || blank) { stageApi.select((same || blank).id); if (blank) blank.title = title; return ensure(stageApi, seedItems); }
+  const st = stageApi.stage, n = all.length;
+  const list = { id: uid('list'), kind: 'list', x: Math.max(40, (st.clientWidth || 800) / 2 - 140 + 30 * n), y: Math.max(40, (st.clientHeight || 600) / 2 - 120 + 30 * n), title, items: normalizeItems(seedItems) };
+  stageApi.things()[list.id] = list;
+  stageApi.select(list.id);
+  return list;
+}
+
 const itemNamed = (list, text) => list && list.items.find((item) => item.text.toLowerCase() === text.toLowerCase());
 
 /** every list ask, at the place the page's list code ran: what it did ('no list' and 'list-item-not-found' when there is
@@ -173,7 +195,7 @@ export function ask(lower, text, stageApi) {
     stageApi.say('already on the list');
     return done('list-item-already-exists', list);
   }
-  if (wantsCreate(lower, text)) { ensure(stageApi, seedsOf(text)); return done('list'); }
+  if (wantsCreate(lower, text)) { const kind = kindOf(text); if (kind) ensureNamed(stageApi, kind, seedsOf(text)); else ensure(stageApi, seedsOf(text)); return done('list'); }
   return '';
 }
 

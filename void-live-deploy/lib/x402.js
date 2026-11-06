@@ -58,7 +58,7 @@ export const SERVICES = {
     input: { text: { type: 'string', description: 'a transcript, at least a few sentences (or send url)', required: false }, url: { type: 'string', description: 'a PeerTube or Internet Archive video link', required: false }, ask: { type: 'string', description: 'a question about it, optional', required: false } },
     output: { points: 'array of key lines', answer: 'array of lines that answer ask', summary: 'short summary, when the model is on' },
     tags: ['summarization', 'video', 'nlp'],
-    example: { input: { text: 'In this lesson we cover three ways to store energy ...', ask: 'what are the three ways?' }, output: { ok: true, points: ['three ways to store energy'], answer: ['batteries, pumped water and flywheels'], summary: 'The lesson compares three ways to store energy.' } },
+    example: { input: { text: 'Energy can be stored in batteries. Energy can also be stored by pumping water uphill. Flywheels store energy as motion. These are the three ways we cover today.', ask: 'what are the three ways?' }, output: { ok: true, points: ['three ways to store energy'], answer: ['batteries, pumped water and flywheels'], summary: 'The lesson compares three ways to store energy.' } },
   },
   appraise: {
     path: '/api/x402/appraise', method: 'POST', units: 50000, route: 'appraise',
@@ -66,7 +66,7 @@ export const SERVICES = {
     input: { image: { type: 'string', description: 'a PNG, JPEG or WebP data URL, under 800 KB', required: true }, note: { type: 'string', description: 'what the item is, optional', required: false } },
     output: { seen: 'what the photo shows', value: '{ kind, cents, text }', text: 'the appraisal, text' },
     tags: ['vision', 'appraisal', 'pricing'],
-    example: { input: { image: 'data:image/jpeg;base64,...', note: 'old pocket watch' }, output: { seen: 'a gold-colored pocket watch with a chain', value: { kind: 'watch', cents: 15000, text: 'about $150' }, text: 'About $150 as seen.' } },
+    example: { input: { image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', note: 'old pocket watch' }, output: { seen: 'a gold-colored pocket watch with a chain', value: { kind: 'watch', cents: 15000, text: 'about $150' }, text: 'About $150 as seen.' } },
   },
   image: {
     path: '/api/x402/image', method: 'POST', units: 50000, route: 'image',
@@ -77,7 +77,7 @@ export const SERVICES = {
     example: { input: { prompt: 'a lighthouse at dusk, watercolor' }, output: { state: 'art', img: 'data:image/jpeg;base64,...', seed: 42 } },
   },
   backtest: {
-    path: '/api/x402/backtest', method: 'POST', units: 50000,
+    path: '/api/x402/backtest', method: 'POST', units: 50000, route: 'x402/backtest',
     description: 'Backtest a Verse trading bot (trend-50-200, breakout-20-10, dip-rsi2) on real BTC-USD or ETH-USD daily candles: your parameters, fee, slippage and dates; every trade, the equity curve, max drawdown, buy-and-hold beside it and a walk-forward out-of-sample test. Read only: nothing is traded.',
     input: { bot: { type: 'string', description: 'trend-50-200 | breakout-20-10 | dip-rsi2', required: true }, pair: { type: 'string', description: 'BTC-USD or ETH-USD', required: false }, params: { type: 'object', description: 'the bot\'s parameters, optional', required: false }, fee: { type: 'number', description: 'fee per trade as a fraction (0.008 = 0.8%)', required: false }, slippage: { type: 'number', description: 'slippage per trade as a fraction', required: false }, from: { type: 'string', description: 'YYYY-MM-DD, optional', required: false }, to: { type: 'string', description: 'YYYY-MM-DD, optional', required: false } },
     output: { stats: 'return, CAGR, max drawdown, trades, win rate, exposure', hold: 'buy and hold over the same days', trades: 'every trade', equity: 'daily equity', walkForward: 'yearly out-of-sample windows' },
@@ -85,7 +85,7 @@ export const SERVICES = {
     example: { input: { bot: 'trend-50-200', pair: 'BTC-USD', fee: 0.006, from: '2020-01-01' }, output: { bot: 'trend-50-200', pair: 'BTC-USD', stats: { totalReturn: 'fraction', maxDrawdown: 'fraction', trades: 'count' }, hold: { totalReturn: 'fraction', maxDrawdown: 'fraction' }, walkForward: { windows: 'one per year' } } },
   },
   arbitrage: {
-    path: '/api/x402/arbitrage', method: 'POST', units: 50000,
+    path: '/api/x402/arbitrage', method: 'POST', units: 50000, route: 'x402/arbitrage',
     description: 'Scan BTC or ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap v3 on Base, read now from their order books: for your size, every buy-here-sell-there pair with the net dollars after both taker fees, DEX gas and your transfer cost. Read only: nothing is traded.',
     input: { coin: { type: 'string', description: 'BTC or ETH', required: true }, size: { type: 'number', description: 'dollars per trade, 10 to 250000 (default 1000)', required: false }, fees: { type: 'object', description: 'your taker fee per venue as a fraction, optional', required: false }, transferUsd: { type: 'number', description: 'cost to move the coin between venues, dollars (default 0: you hold both sides)', required: false }, venues: { type: 'array', description: 'coinbase, kraken, bitstamp, gemini, uniswap; optional', required: false } },
     output: { rows: 'every venue pair, best first: buy, sell, average prices, top-of-book gap, fees, gas, net dollars and percent', spread: 'mid price per venue', missing: 'venues that did not answer' },
