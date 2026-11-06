@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-15T07:02:38Z",
-  "passed": 13,
-  "of": 13,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
- },
- {
   "at": "2026-10-15T07:07:55Z",
   "passed": 10,
   "of": 14,
@@ -4642,5 +4635,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"create a toon style bird pls\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T15:11:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2090,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9982 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
