@@ -159,7 +159,7 @@
  "print-download": ["download the print file","download the print file offline","get me the 3mf for the rotor","get the print file","save the print file for offline"],
  "video-gen": ["animate a cat chasing yarn","animate waves on a beach at sunset"],
  "image-gen": ["ai art of a castle","create a watercolour painting of a fox","generate a picture of a lighthouse at night","generate an ai image of a red car","make an image of a sunset over the sea","sketch a house"],
- "cartoon": ["cartoon version of a dog","cartoon version of a plague","cartoon version of a shipwreck","cartoon version of gg allin","create a toon style bird","draw a cartoon cat","draw a toon cat","draw me a robot","draw yourself","funny cartoon dog","generate a toon style dog","make a 2d toon dog","make a cartoon of a dragon","paint a self portrait","render a cartoon dragon","render a low poly dog","style like mickey mouse","what do you look like"],
+ "cartoon": ["cartoon version of a dog","cartoon version of a plague","cartoon version of a shipwreck","cartoon version of gg allin","create a toon style bird","draw a cartoon cat","draw a toon cat","draw me a robot","draw me a robot pls","draw yourself","funny cartoon dog","generate a toon style dog","make a 2d toon dog","make a cartoon of a dragon","paint a self portrait","render a cartoon dragon","render a low poly dog","style like mickey mouse","what do you look like"],
  "zoom-figure": ["closer on the figure","spin the 3d model","zoom in","zoom in on the figure","zoom out on the figure"],
  "figure-can": ["figure abilities","what can motelet do","what can this figure do","what does this figure do"],
  "show-countdown": ["show countdown","show the countdown","show the countdown to christmas","show the days until a date"],
