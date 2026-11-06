@@ -34,7 +34,23 @@ const get = async (url, max = 3e6) => { const r = await fetch(url, { headers: { 
 export const STUB_RE = /\b(is offline|currently offline|temporarily unavailable|service unavailable|coming soon|under construction|under maintenance|be right back|domain (?:is )?for sale|buy this domain|parked|default web page|welcome to nginx|it works!|access denied|just a moment|enable javascript|attention required|403 forbidden|404 not found|page not found)\b/i;
 export function usable(html) {
   const t = String(html), text = t.replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
-  return t.length >= 300 && text.length >= 120 && !STUB_RE.test(text.slice(0, 600)) && /<(form|input|button|select|textarea|canvas|script)\b/i.test(t);
+  if (STUB_RE.test(text.slice(0, 600))) return false;
+  // a tiny page is a site too (owner, 2026-11-06: "the easiest site to assimilate was never even found"): one answer in a few words
+  // (ismycomputeron.com says YES) is the smallest a site can be, so under 120 characters of real text it needs nothing to press
+  return tinyPage(t, text) || (t.length >= 300 && text.length >= 120 && /<(form|input|button|select|textarea|canvas|script)\b/i.test(t));
+}
+/** a whole site in a few words: under 120 visible characters (at least 2), under 32 KB of html, not a redirect stub (a meta refresh or a script
+ *  that sends the visitor elsewhere) and not a frameset around another page. Pure. */
+export function tinyPage(html, text = null) {
+  const t = String(html), v = text !== null ? text : t.replace(/<(script|style|noscript)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+  return v.length >= 2 && v.length < 120 && t.length < 32768 && !/^(?:it works!?|hello,? world!?|welcome to nginx!?|test(?:ing)?|index of\b.*|ok|success|default page|placeholder|nothing to see here\.?)$/i.test(v) && !/<meta\b[^>]*http-equiv=["']?refresh|<frameset\b|(?:window\.|document\.)?location(?:\.href)?\s*=|location\.replace\(/i.test(t);
+}
+/** a home page served as plain text (icanhazip.com answers with your address): its row, or null when it is empty, an error word or too long to be a
+ *  page. Pure. */
+export function plainRow(body, at = new Date().toISOString().slice(0, 10)) {
+  const b = Buffer.isBuffer(body) ? body : Buffer.from(String(body || '')), text = b.toString('utf8').trim();
+  if (text.length < 2 || b.length > 4096 || STUB_RE.test(text.slice(0, 300)) || /^(?:ok|error|not found|forbidden|unauthori[sz]ed|bad request)\b/i.test(text)) return null;
+  return { bytes: b.length, controls: 0, scripts: 0, styles: 0, nodes: 0, routes: 0, htmlControls: 0, counted: 'plain', shell: 'none', text: text.length, weight: b.length, at };
 }
 export const CONTENT_RE = /\b(fan ?fic(?:tion)?|forums?|community|webmistress|webmaster|members?|log ?in|sign ?in|sign ?up|register|subscribe|newsletter|latest news|blog|archive of|read more|terms of service|privacy policy|all rights reserved|copyright \d{4}|staff|contest|announcements?)\b/gi;
 /** a tool, not a content site: the page does something with an input (not just a search or login box) and its words are not a community's, a blog's or a
@@ -70,8 +86,8 @@ export async function renderedPage(browser, url) {
     const loaded = await page.goto(url, { waitUntil: 'load', timeout: 20000 }).then(() => true, () => false);
     if (loaded) await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
     else if (!/^https?:/.test(page.url())) return null;
-    const html = await page.content(), n = controlsOf(html).total;
-    return loaded || n > 0 ? { controls: n, html, url: page.url() } : null;
+    const html = await page.content(), n = controlsOf(html).total, text = typeof page.evaluate === 'function' ? await page.evaluate(() => (document.body ? document.body.innerText.trim().length : 0)).catch(() => null) : null;
+    return loaded || n > 0 ? { controls: n, html, url: page.url(), text } : null;
   } catch (_) { return null; } finally { if (ctx) await ctx.close().catch(() => {}); }
 }
 /** the controls of a page after its scripts ran (renderedPage's count), or null when the page will not render. */
@@ -90,14 +106,16 @@ export async function readSite(host, { browser = null } = {}) {
   try {
     const rb = await get(base + 'robots.txt', 2e5).catch(() => null);
     if (rb && rb.ok && /text/.test(rb.type) && !robotsAllows(rb.buf.toString('utf8'), '/')) return null;
-    const home = await get(base); if (!home.ok || !/html/.test(home.type)) return null;
+    const home = await get(base); if (!home.ok) return null;
+    if (/^text\/plain/i.test(home.type)) return plainRow(home.buf); // a plain-text home page is the whole site: nothing to press, its bytes are its weight
+    if (!/html/.test(home.type)) return null;
     const html = home.buf.toString('utf8'), origin = new URL(home.url).origin, found = [];
     if (!usable(html)) return null; // isTool() stays exported but is not applied: the owner asked for the smallest site by size, not the smallest tool (2026-10-29) // an empty body, a bot wall or a redirect stub says nothing about the site: not weighed, never lightest
     for (const m of html.matchAll(/<script\b[^>]*\ssrc=["']([^"']+)["']|<link\b[^>]*rel=["']?stylesheet[^>]*\shref=["']([^"']+)["']/gi)) { try { const u = new URL(m[1] || m[2], home.url); if (found.length < 12) found.push(u.href); } catch (_) { /* a bad url */ } }
     const assets = []; for (const u of found) { try { const a = await get(u); if (a.ok) assets.push({ url: u, bytes: a.buf.length }); } catch (_) { /* skipped */ } }
     let sm = null; try { const s = await get(origin + '/sitemap.xml', 2e6); if (s.ok) sm = (s.buf.toString('utf8').match(/<loc>/g) || []).length || null; } catch (_) { /* none */ }
     const m = measure({ html, htmlBytes: home.buf.length, assets, sitemapUrls: sm, host });
-    const seen = browser ? await renderedPage(browser, home.url) : null, counted = seen ? { controls: seen.controls, htmlControls: m.controls, counted: 'rendered' } : { counted: browser ? 'unrendered' : 'html' }; // unrendered: the browser tried and the page would not render, so it waits its 30 days
+    const seen = browser ? await renderedPage(browser, home.url) : null, counted = seen ? { controls: seen.controls, htmlControls: m.controls, counted: 'rendered', ...(Number.isFinite(seen.text) ? { text: seen.text } : {}) } : { counted: browser ? 'unrendered' : 'html' }; // unrendered: the browser tried and the page would not render, so it waits its 30 days
     const shell = seen ? shellOf(seen) : shellOf({ html, url: home.url, controls: m.controls }); // the page as the browser left it, else the raw html
     return { ...m, ...counted, shell, weight: weightOf(m), at: new Date().toISOString().slice(0, 10) };
   } catch (_) { return null; }
@@ -107,7 +125,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const fr = readJson(path.join(ROOT, 'void-live-deploy', 'tower.frontier.json'), null), file = readJson(OUT, { sites: {} }), only = opt('--only', '');
   const sites = FLOORS.map((f) => ({ id: f.id, host: hostOf(f.url) })).concat(frontierOf(fr).map((x) => ({ id: x.host, host: x.host })));
   const browser = await openBrowser();
-  const list = only ? sites.filter((s) => only.split(',').includes(s.host)) : planSizes({ sites, file, max: Number(opt('--max', 120)), rendered: !!browser });
+  // --only reads any host named, on the tower or not yet (the sweep's new smallest sites are weighed before they are floors)
+  const list = only ? [...new Set(only.split(',').map((h) => hostOf(h)).filter(Boolean))].map((host) => sites.find((s) => s.host === host) || { id: host, host }) : planSizes({ sites, file, max: Number(opt('--max', 120)), rendered: !!browser });
   const out = { about: 'How big each Versus site really is, measured by tools/tower-size.mjs: the interactive elements on its home page (controls: links, inputs, buttons, selects; counted on the rendered page when counted is rendered, with htmlControls the raw-html count, else on the raw html), transfer bytes of its home page plus its own scripts and styles, script and element counts, routes (sitemap urls, else internal links). shell is wall (a bot check) or gateway (a country or language picker) when the home page is a door, not the site, else none. The queue ranks the fewest controls first, the fewer bytes on a tie, on rendered rows that are not a door; the rest stand behind. weight = bytes + 2000 per script + 10 per element + 500 per route (lib/tower-weight.js). Keyed by host.', sites: { ...(file.sites || {}) } };
   let n = 0, late = 0; const queue = [...list], stop = Date.now() + Math.max(1, Number(opt('--minutes', 35)) || 35) * 6e4;
   // a known site that timed out or would not render keeps its row, marked unrendered, and waits its 30 days

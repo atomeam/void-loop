@@ -466,38 +466,6 @@
     #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; overflow-wrap: anywhere; max-height: 4.6em; overflow-y: auto; }
     #hints div.sel, #hints div:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
     #hints b { font-weight: inherit; color: var(--fg); }
-    #dock {
-      position: fixed; left: 0; right: 0; bottom: 0;
-      padding: 12px 16px 18px;
-      background: linear-gradient(to top, #050505 60%, transparent);
-    }
-    #row {
-      max-width: 720px; margin: 0 auto;
-      display: flex; gap: 8px; align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 8px 10px 8px 18px;
-      background: rgba(12,12,12,0.92);
-    }
-    #input {
-      flex: 1; border: 0; outline: 0; background: transparent;
-      color: var(--fg); font: inherit; min-width: 0;
-    }
-    #input::placeholder { color: var(--muted); }
-    #go {
-      border: 0; border-radius: 999px;
-      background: #1d1d1d; color: var(--accent);
-      padding: 8px 14px; font: inherit; cursor: pointer;
-    }
-    #go:hover { background: #2a2a2a; }
-    #mic { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; font: 13px/1.2 inherit; padding: 7px 11px; cursor: pointer; opacity: 1; }
-    #mic:hover { background: #2a2a2a; }
-    #mic.listening, #mic[aria-pressed="true"] { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
-    #mic svg { width: 16px; height: 16px; vertical-align: -3px; }
-    #sound { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; padding: 7px 11px; cursor: pointer; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
-    #sound[hidden] { display: none; } /* a fresh visit is the void: the speaker appears with the first touch, move or key */
-    #sound:hover { background: #2a2a2a; } #sound[aria-pressed="true"] { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
-    #sound svg { width: 16px; height: 16px; } #sound:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
 #whisper {
       max-width: 720px; margin: 6px auto 0;
       color: var(--muted); font-size: 12px; min-height: 16px;
@@ -583,6 +551,32 @@
     html, body { background-color: transparent; }
     html { background-color: var(--void-bg, var(--sky-bg, #050505)); }
     /* home stage: the empty void, in the first stylesheet */
+    #dock {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      padding: 12px 16px 18px;
+      background: linear-gradient(to top, #050505 60%, transparent);
+    }
+    #row {
+      max-width: 720px; margin: 0 auto;
+      display: flex; gap: 8px; align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 10px 8px 18px;
+      background: rgba(12,12,12,0.92);
+    }
+    #input {
+      flex: 1; border: 0; outline: 0; background: transparent;
+      color: var(--fg); font: inherit; min-width: 0;
+    }
+    #input::placeholder { color: var(--muted); }
+    /* the ask bar's round keys (mic, sound, send): one dark style, here in the first stylesheet and in verse-critical, never in the card
+       sheet that loads with the first ask (owner, 2026-11-06: the empty stage showed the mic and the speaker as the browser's grey buttons) */
+    #go, #mic, #sound { appearance: none; -webkit-appearance: none; border: 0; border-radius: 999px; background: #1c2030; color: #f2f4fb;
+      min-width: 44px; min-height: 44px; padding: 0 12px; font: inherit; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+    #mic, #sound { width: 44px; padding: 0; color: #c9cee0; }
+    #sound[hidden] { display: none; } /* a fresh visit is the void: the speaker appears with the first touch, move or key */
+    #mic svg, #sound svg { width: 18px; height: 18px; display: block; flex: none; }
+    #mic.listening { color: #fff; background: #26304a; }
     #void-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background: radial-gradient(circle at 50% 45%, var(--void-glow, var(--sky-glow, #0b0b10)), transparent 70%);
       opacity: 0; transition: opacity 1.5s ease; }
@@ -1175,7 +1169,8 @@
     @media (max-width:700px){#dock{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}}
     #input{flex:1;min-width:0;min-height:44px;border:0;outline:0;background:transparent;color:#f2f4fb;font:16px/1.3 ui-sans-serif,system-ui,sans-serif}
     #input::placeholder{color:#b4b9cb} /* 4.5:1 or better on the bar even over a white backdrop (the empty-state check) */
-    #go{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit}
+    #go,#mic,#sound{min-width:44px;min-height:44px;border:0;border-radius:999px;background:#1c2030;color:#f2f4fb;font:inherit;display:inline-flex;align-items:center;justify-content:center;flex:none;padding:0 12px}
+    #mic,#sound{width:44px;padding:0;color:#c9cee0} #sound[hidden]{display:none} #mic svg,#sound svg{width:18px;height:18px;display:block}
     #void-anchor{position:fixed;right:12px;bottom:12px;z-index:6;width:28px;height:28px;display:grid;place-items:center;color:#d7d2ff;opacity:.12}
     #void-anchor svg{width:16px;height:16px;display:block}
     @media (max-width:700px){#void-anchor{right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));opacity:.22}}
@@ -3334,12 +3329,37 @@ say('nothing selected to remove');
     function parseCurrency(lower) {
       const t = String(lower || '').toLowerCase().replace(/^(?:how\s+much\s+is|what(?:'s|\s+is)|convert)\s+/, '').replace(/[?.!]+$/, '').replace(/(\d),(\d{3})/g, '$1$2').trim();
       const m = t.match(/^([$€£¥₹₩₺₪฿])?\s*(\d+(?:\.\d+)?)\s*(k\b)?\s*([a-z][a-z .()]{0,28}?)?\s+(?:in|to|into)\s+([a-z][a-z .()]{1,28}?)$/i);
-      if (!m) return null;
+      if (!m) return fxRateAsk(t);
       const from = m[1] ? (m[4] ? fxCode(m[4]) || FX_SYMBOL[m[1]] : FX_SYMBOL[m[1]]) : fxCode(m[4]);
       const to = fxCode(m[5]);
       if (!from || !to) return null;
       const amount = parseFloat(m[2]) * (m[3] ? 1000 : 1);
       return { amount, from, to };
+    }
+    // the rate itself, no amount (asked by Verse, exam prices): "exchange rate usd to eur", "usd to eur exchange rate", "usd/eur",
+    // "rate between euros and dollars", "dollars to euros". One of the first currency, in the second.
+    function fxRateAsk(t) {
+      const said = /\brates?\b/.test(t);
+      const p = t.replace(/^(?:(?:the|today'?s|current|latest|live)\s+)+/, '').replace(/^(?:(?:exchange|conversion|currency|fx)\s+)?rates?\s+(?:(?:of|for|from|between)\s+)?/, '')
+        .replace(/\s+(?:(?:exchange|conversion|fx)\s+)?rates?(?:\s+(?:today|now|right\s+now))?$/, '').trim();
+      const m = p.match(/^([a-z][a-z .()]{1,28}?)\s*(?:\/|\s(?:in|to|into|vs\.?|versus|and)\s)\s*([a-z][a-z .()]{1,28}?)$/);
+      if (!m || (!said && !/^[a-z .()]+\s(?:in|to|into)\s/.test(p) && !/\//.test(p))) return null;
+      const from = fxCode(m[1]), to = fxCode(m[2]);
+      return from && to && from !== to ? { amount: 1, from, to } : null;
+    }
+    // where a currency answer can come from, all asked at once, the first good answer wins (exam prices: "100 usd in eur" was read
+    // while the card still said "checking rates", the two Frankfurter hosts each a new connection on a first ask): Frankfurter's two
+    // hosts, and Verse's own copy of the same ECB rate (/api/markets, kept an hour at the edge, on the page's own warm connection).
+    // Each: [url, read(json) -> { value, date, src } | null].
+    function fxTries(from, to, amount) {
+      const ecb = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
+      const direct = (j) => (j && j.rates && j.rates[to] != null ? { value: Number(j.rates[to]), date: j.date || '', src: ecb } : null);
+      return [
+        ['https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount, direct],
+        ['https://api.frankfurter.app/latest?from=' + from + '&to=' + to + '&amount=' + amount, direct],
+        ['/api/markets?w=' + from + to, (j) => { const q = j && j.ok && j.quotes && j.quotes[0];
+          return q && q.ok && q.price > 0 ? { value: Math.round(q.price * amount * 1e5) / 1e5, date: q.asOf ? new Date(q.asOf).toISOString().slice(0, 10) : '', src: ecb.replace('Source: ', 'Source: Verse Markets · ') } : null; }],
+      ];
     }
     // Arithmetic in words: "what is 12 times 7", "sqrt of 144", "2 to the power of 10", "is 97 a prime number",
     // "how many seconds in a day". A small parser of its own (+ - * / ^, brackets, square roots); nothing is ever eval'd.
@@ -4403,18 +4423,16 @@ say('nothing selected to remove');
         const { amount, from, to } = cm;
         if (from !== to) el.dataset.page = '/markets/?s=' + from + to; // the full link opens the pair on Markets: the same ECB rate over time, with a chart
         setV('…', 'checking rates');
-        const src = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
         if (from === to) { setV(fmtNum(amount) + ' ' + to, 'Same currency.', ''); return 'currency'; }
         try {
-          // two hosts, first answer wins: one of them stalls on a slow link (a visitor's phone on a weak connection)
-          const urls = ['https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount, 'https://api.frankfurter.app/latest?from=' + from + '&to=' + to + '&amount=' + amount];
-          const j = await Promise.any(urls.map((u) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => { if (!r.ok) throw 0; return r.json(); })));
-          if (vpageEl === el && j && j.rates && j.rates[to] != null) {
-            const day = j.date ? new Date(j.date + 'T12:00:00Z') : null;
+          // every source at once, first good answer wins: one of them stalls on a slow link (a visitor's phone on a weak connection)
+          const j = await Promise.any(fxTries(from, to, amount).map(([u, read]) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => { if (!r.ok) throw 0; return r.json(); }).then((x) => { const v = read(x); if (!v || !(v.value >= 0)) throw 0; return v; })));
+          if (vpageEl === el && j) {
+            const day = /^\d{4}-\d{2}-\d{2}$/.test(j.date) ? new Date(j.date + 'T12:00:00Z') : null;
             const dayWords = day ? day.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '';
-            const unit = j.rates[to] / amount;
-            setV(fmtNum(j.rates[to]) + ' ' + to, fmtNum(amount) + ' ' + from + ' = ' + fmtNum(j.rates[to]) + ' ' + to + ' · 1 ' + from + ' = ' + String(+unit.toPrecision(4)) + ' ' + to
-              + (dayWords ? ' · ECB rate of ' + dayWords : ''), src);
+            const unit = j.value / amount, big = amount === 1 ? String(+j.value.toPrecision(5)) : fmtNum(j.value); // the rate alone keeps its digits ("1 USD = 0.8682 EUR", not 0.87)
+            setV(big + ' ' + to, (amount === 1 ? '1 ' + from + ' = ' + big + ' ' + to : fmtNum(amount) + ' ' + from + ' = ' + big + ' ' + to + ' · 1 ' + from + ' = ' + String(+unit.toPrecision(4)) + ' ' + to)
+              + (dayWords ? ' · ECB rate of ' + dayWords : ''), j.src);
           } else if (vpageEl === el) setV('?', 'The currency service didn\'t answer just now.');
         } catch (_) { if (vpageEl === el) setV('?', 'The currency service didn\'t answer just now.'); }
         hit = true;
@@ -6367,10 +6385,10 @@ say('nothing selected to remove');
         if (!quiet) rememberAsk(typed);
         if (!skillsRunning) takeUndoSnapshot();
         currentAsk = lastAsk = typed;
-        let did = false;
+        let did = false, none = false;
         if (stageKinds.list && typeof stageKinds.list.ask === 'function') {
           const d = stageKinds.list.ask(listLower, typed, stageApi);
-          did = !!(d && d !== 'no list');
+          did = !!(d && d !== 'no list'); none = d === 'no list';
         } else {
           const sel = selectedId && things[selectedId];
           const list = (sel && sel.kind === 'list' && sel) || Object.values(things).find((t) => t && t.kind === 'list');
@@ -6379,9 +6397,12 @@ say('nothing selected to remove');
             else list.items = [];
             save(); render();
             did = true;
-          }
+          } else none = true;
         }
         if (did) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: listClear ? 'list-cleared' : 'list-removed' }); return; }
+        // no list on the stage: said at once. The ask used to go on down the slow path (an article fallback, seconds), so the next ask
+        // ("make a list") ran first and this one, landing late, took the new list away (watchdog #2324: the list card and list goal checks)
+        if (none) { say('there is no list on the stage'); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'no-list' }); return; }
       }
       // "clear" is the whole stage, already in memory. After a reload the suite asks within a few hundred ms, while the
       // rest of the index is still loading, and a whispered "waking up" let the test move on. The clear then landed late
