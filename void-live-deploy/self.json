@@ -588,84 +588,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T19:03:10Z",
+   "at": "2026-11-06T20:06:03Z",
+   "subject": "Shorts loop: today's trial and verdicts"
+  },
+  {
+   "at": "2026-11-06T20:04:00Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T19:02:16Z",
-   "subject": "Failure reader: read a job log gh holds back for its colour codes (#2424)"
+   "at": "2026-11-06T20:02:16Z",
+   "subject": "Verse loop: the lap's output file goes outside the checkout, so scheduled laps stop skipping (#2476)"
   },
   {
-   "at": "2026-11-06T19:01:51Z",
-   "subject": "Cards: no painting of the word \"Calculated\", and no sideways scrollbar (#2427)"
-  },
-  {
-   "at": "2026-11-06T19:01:31Z",
-   "subject": "Tower: ndscalc.ru's two journeys scripted, the last 2 of its 12 aspects (#2428)"
-  },
-  {
-   "at": "2026-11-06T19:01:09Z",
-   "subject": "video-gen and baggage get their own daily self-tests (asked by Verse) (#2429)"
-  },
-  {
-   "at": "2026-11-06T18:59:15Z",
-   "subject": "Self card: asks naming different sites stay apart; folded built rows copy as Built and their day (#2430)"
-  },
-  {
-   "at": "2026-11-06T18:58:41Z",
-   "subject": "Absorb glassbox, the Wix backend and the next ten drafts into Verse as bots (#2431)"
-  },
-  {
-   "at": "2026-11-06T18:58:04Z",
-   "subject": "Main green: skill index, families, generated pages, MAP, overlap allowance and header budget current again (#2448)"
-  },
-  {
-   "at": "2026-11-06T18:56:57Z",
-   "subject": "Films reach past 60, and the films loop log and podcast reach main and the site on their own (#2450)"
-  },
-  {
-   "at": "2026-11-06T18:56:48Z",
+   "at": "2026-11-06T20:00:05Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T18:56:08Z",
-   "subject": "Tower card: site history under the target; Versus page reads the crawls and settled non-sites (#2461)"
+   "at": "2026-11-06T19:58:24Z",
+   "subject": "Assimilated: date a passed site by the day the tower recorded it passed (#2418)"
   },
   {
-   "at": "2026-11-06T18:55:37Z",
-   "subject": "Suite gate: a red batch splits even when main moved (#2463)"
+   "at": "2026-11-06T19:57:27Z",
+   "subject": "Versus checks serve their own tower.target.json, so a moving tower no longer turns main red (#2420)"
   },
   {
-   "at": "2026-11-06T18:55:09Z",
-   "subject": "Verse's crew and coder: podcasts in one ask, bets read whole, one build per TV idea, no runs burned while the coder is paused (#2464)"
+   "at": "2026-11-06T19:56:57Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T18:53:46Z",
-   "subject": "Failed jobs read: run 42270835929 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-06T19:56:07Z",
+   "subject": "Films: eight video formats on live trends, a topic gate, every page of /films/ (#2473)"
   },
   {
-   "at": "2026-11-06T18:52:56Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-06T19:55:31Z",
+   "subject": "Read aloud: a redraw keeps the card's Stop reading state (#2421)"
   },
   {
-   "at": "2026-11-06T18:50:49Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-06T19:54:44Z",
+   "subject": "Better at my device, image gen, groups and 3 more: 18 more ways of asking answered right — new phrases: “what is my ip address” now opens…"
   },
   {
-   "at": "2026-11-06T18:45:44Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"funny cartoon"
+   "at": "2026-11-06T19:54:02Z",
+   "subject": "Knowledge cards back on the site, with the card art and self card checks fixed at their root (#2423)"
   },
   {
-   "at": "2026-11-06T18:44:43Z",
-   "subject": "Claude/project thread rkur4a (#2462)"
+   "at": "2026-11-06T19:53:49Z",
+   "subject": "Incident: the browser suite failed on 442816a9 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-06T18:41:16Z",
-   "subject": "Local TV: a blueprint opened on stage keeps the show playing in a card beside it (#2451)"
+   "at": "2026-11-06T19:53:41Z",
+   "subject": "Conductor: reword the tv cap comment in plain words (#2467)"
   },
   {
-   "at": "2026-11-06T18:40:50Z",
-   "subject": "Issues close themselves: site test rechecks its items, watchdog rechecks hourly-ish, no noise issues (#2453)"
+   "at": "2026-11-06T19:53:20Z",
+   "subject": "Agents write pull requests in their own words, never quoting the owner (#2468)"
+  },
+  {
+   "at": "2026-11-06T19:52:51Z",
+   "subject": "Lab: every experiment opens a working tool, tools placed on the pages they belong to (#2469)"
+  },
+  {
+   "at": "2026-11-06T19:51:48Z",
+   "subject": "Brain: an organ whose state an older brain lacks rests instead of throwing (main's brain-skew test was red) (#2470)"
+  },
+  {
+   "at": "2026-11-06T19:49:45Z",
+   "subject": "Outcome exam: translate 89.2"
+  },
+  {
+   "at": "2026-11-06T19:47:32Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T19:47:06Z",
+   "subject": "Verse loop: closing the pause issue ends the saved pause too (#2472)"
+  },
+  {
+   "at": "2026-11-06T19:40:28Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   }
  ],
  "builders": {
@@ -847,8 +847,8 @@
   }
  ],
  "visible": {
-  "day": 61,
-  "week": 212
+  "day": 70,
+  "week": 221
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
