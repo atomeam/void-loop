@@ -29,8 +29,8 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 2,
+    "tested": 2,
+    "checked": 3,
     "proven": 38
    },
    "from": 67,
@@ -2242,8 +2242,8 @@
     "split alice, bob, carol and dave into 2 teams",
     "make 3 groups from: ann, ben, cal, dee, eve, fay"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 110
   },
   {
