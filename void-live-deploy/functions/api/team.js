@@ -57,6 +57,7 @@ import { session, brake } from '../../lib/void-me.js';
 import { findMemberSale } from './gumroad.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as P from '../../lib/team-priorities.js';
+import * as L from '../../lib/team-leverage.js';
 import * as T from '../../lib/team.js';
 import { CREW } from '../../lib/team-crew.js';
 import { briefOf } from '../../lib/job-guide.js';
@@ -252,18 +253,61 @@ async function threadId(env, v, me) {
 export async function handOut(env, a, now, only = null) {
   if (a.job) return { job: a.job, thread: a.thread, already: true };
   const skip = only ? [] : String(a.skip || '').split(' ').filter(Boolean); // a job picked on the board is taken even if this agent gave it back once
-  const ranked = T.rank(await queued(env), now, skip);
-  for (const j of only ? ranked.filter((x) => x.id === only).slice(0, 1) : await ordered(env, ranked, now)) { // Verse's own order and WIP cap, unless a job was picked on the board
+  const ranked = T.rank(await queued(env), now, skip), { list, pr } = await ordered(env, ranked, now);
+  const building = await buildingNow(env); // every job being built now, by an agent or the conductor: a job that touches the same work is not handed out
+  for (const j of only ? ranked.filter((x) => x.id === only).slice(0, 1) : list) { // Verse's own order and WIP cap, unless a job was picked on the board
+    if (building.some((b) => L.overlapOf(j, b))) continue; // one piece of work, one seat (lib/team-leverage.js scopeOf)
     let took = false;
     try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
     const asked = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 AND channel = 'work' AND by <> 'verse'").bind(j.id).first(); // void-review: ok (runs once: the return below ends the loop)
-    const thread = asked ? asked.id : await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
-    if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's (or the filing member's) own post is the job's thread
+    const sc = pr && pr.scores ? pr.scores[j.id] : null, lev = sc ? 'Leverage ' + sc[0] + ': ' + sc[1] : 'Leverage: not ranked yet (the next crew run scores it)';
+    const text = T.assignText(a.name, j) + '\n\n' + lev;
+    const thread = asked ? asked.id : await write(env, { c: 'work', by: 'verse', body: text, job: j.id, now });
+    if (asked) await write(env, { c: 'work', by: 'verse', body: text, thread, now }); // the owner's (or the filing member's) own post is the job's thread
     await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run(); // void-review: ok (runs once: the return below ends the loop)
-    return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, brief: briefOf(j, T.kindOf(j.target)), thread };
+    return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, brief: briefOf(j, T.kindOf(j.target)), thread, ...(sc ? { leverage: sc[0], why: sc[1] } : {}) };
   }
   return null;
+}
+// Verse's leverage for every ranked job (lib/team-crew-run.js prioritizeRun keeps it), for the board's cards. -> { id: [score, why] } or null
+async function scoresNow(env) {
+  try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'priorities'").first(); const v = r ? JSON.parse(r.v) : null; return v && v.scores ? v.scores : null; } catch (_) { return null; }
+}
+// who holds what (GET ?held, the owner's): each seat with a job, the job's id and kind, its leverage, and the seat it overlaps, if any
+async function heldView(env) {
+  const { results } = await env.DB.prepare('SELECT a.name, a.job, a.job_at, q.ask, q.target FROM void_team_agents a LEFT JOIN void_queue q ON q.id = a.job WHERE a.job IS NOT NULL AND a.off = 0 ORDER BY a.job_at ASC').all();
+  const sc = (await scoresNow(env)) || {}, rows = results.map((r) => ({ name: r.name, job: r.job, kind: T.kindOf(r.target), since: r.job_at, leverage: sc[r.job] ? sc[r.job][0] : null, why: sc[r.job] ? sc[r.job][1] : null }));
+  for (let i = 0; i < results.length; i++) for (let k = 0; k < i; k++) {
+    const key = L.overlapOf({ id: results[i].job, ask: results[i].ask, target: results[i].target }, { id: results[k].job, ask: results[k].ask, target: results[k].target });
+    if (key && !rows[i].overlaps) rows[i].overlaps = { name: results[k].name, job: results[k].job, on: L.scopeWord(key) };
+  }
+  return { held: rows, building: (await buildingNow(env)).length };
+}
+// every job being built now (an agent's claim or the conductor's), for the overlap check
+async function buildingNow(env) {
+  try { return (await env.DB.prepare("SELECT id, ask, target, note FROM void_queue WHERE state = 'building' LIMIT 200").all()).results || []; } catch (_) { return []; }
+}
+/** two seats on one piece of work, or a seat on busywork: the later claim gives its job back, with the reason in its #work thread
+ *  (owner, 2026-11-06: "make sure verse is not causing overlap"; "never busywork for the sake of nothing"). At most one pass a minute.
+ *  -> [{ name, job, why }] */
+export async function deconflict(env, now) {
+  try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'deconflict'").first(); if (r && now - Number(r.v) < 60e3) return []; } catch (_) { return []; }
+  await env.DB.prepare("INSERT INTO void_team_crew (k, v, at) VALUES ('deconflict', ?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, at = excluded.at").bind(String(now), now).run().catch(() => null);
+  const { results: held } = await env.DB.prepare('SELECT a.*, q.ask AS q_ask, q.target AS q_target, q.note AS q_note FROM void_team_agents a JOIN void_queue q ON q.id = a.job WHERE a.job IS NOT NULL AND a.off = 0 AND q.state = \'building\' ORDER BY a.job_at ASC').all();
+  let pr = null; try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'priorities'").first(); pr = r ? JSON.parse(r.v) : null; } catch (_) { pr = null; }
+  const busy = new Set((pr && pr.busywork) || []), out = [], kept = [];
+  for (const a of held) {
+    const j = { id: a.job, ask: a.q_ask, target: a.q_target };
+    const first = kept.find((k) => L.overlapOf(j, k.j)), key = first ? L.overlapOf(j, first.j) : null;
+    const why = first ? 'overlaps ' + first.j.id + ' held by @' + first.a.name + ' (both touch ' + L.scopeWord(key) + '). One piece of work, one seat: @' + a.name + ' gets the next job instead'
+      : busy.has(a.job) ? 'busywork: ' + ((pr.scores && pr.scores[a.job] && pr.scores[a.job][1]) || 'it redoes shipped work') + '. @' + a.name + ' gets the next highest-leverage job instead' : '';
+    if (!why) { kept.push({ a, j }); continue; }
+    await giveBack(env, a, now, why, false); // void-review: ok (runs only for a job that overlaps or is busywork: a handful at most, once a minute)
+    if (busy.has(a.job)) await env.DB.prepare("UPDATE void_queue SET state = 'set aside' WHERE id = ? AND state = 'queued'").bind(a.job).run().catch(() => null); // void-review: ok (same handful)
+    out.push({ name: a.name, job: a.job, why });
+  }
+  return out;
 }
 // Verse's own order (lib/team-priorities.js, kept by lib/team-crew-run.js prioritizeRun): the owner's pins first, then Verse's ranking, the
 // owner's drops last; and the WIP cap (3 build lanes, 1 research lane) between the agents. With no ranking yet, the queue's own rank stands.
@@ -272,14 +316,15 @@ async function ordered(env, ranked, now) {
   try {
     const { results } = await env.DB.prepare("SELECT k, v FROM void_team_crew WHERE k IN ('priorities', 'override')").all();
     for (const r of results) { const v = JSON.parse(r.v); if (r.k === 'priorities') pr = v; else ov = v; }
-  } catch (_) { return ranked.slice(0, 8); }
-  if (!pr) return ranked.slice(0, 8);
+  } catch (_) { return { list: ranked.slice(0, 8), pr: null }; }
+  if (!pr) return { list: ranked.slice(0, 8), pr: null };
   const live = ov && now - (ov.at || 0) < P.OVERRIDE_MS ? ov : { pin: [], drop: [] }, at = new Map(pr.order.map((id, i) => [id, i]));
   const pos = (j) => (live.pin.includes(j.id) ? -100 + live.pin.indexOf(j.id) : live.drop.includes(j.id) ? 1e6 : at.has(j.id) ? at.get(j.id) : 1e5);
   const list = ranked.map((j, i) => ({ j, k: pos(j), i })).sort((x, y) => x.k - y.k || x.i - y.i).map((x) => x.j);
   let building = [];
   try { building = (await env.DB.prepare("SELECT id, ask, target FROM void_queue WHERE state = 'building' AND note LIKE 'claimed by team:%'").all()).results || []; } catch (_) { building = []; }
-  return list.filter((j) => live.pin.includes(j.id) || P.wipAllows(j, building, pr.lanes || {})).slice(0, 8);
+  const busy = new Set(pr.busywork || []); // busywork is never handed out unless the owner pinned it
+  return { list: list.filter((j) => live.pin.includes(j.id) || (!busy.has(j.id) && P.wipAllows(j, building, pr.lanes || {}))).slice(0, 8), pr };
 }
 // the owner's post at the top of #work is a job: it goes on the build queue as a feature, and Verse hands it out in that same thread
 async function enqueue(env, msg, body, now, note = 'asked in #work by the owner') {
@@ -348,6 +393,7 @@ export async function sweep(env, now) {
   for (const a of busy) await unstall(env, a, now);
   const { results } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE job IS NOT NULL AND seen < ?').bind(now - T.STALE_MS).all();
   for (const a of results) await giveBack(env, a, now, '@' + a.name + ' went quiet for 30 minutes', false);
+  await deconflict(env, now).catch(() => []);
   return results.length;
 }
 
@@ -489,9 +535,9 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
   const sp = new URL(request.url).searchParams;
-  if (sp.has('jobs')) return json({ ok: true, jobs: T.board(await queued(env), now), good: T.GOOD_FIRST, join: T.JOIN_PRODUCT, products: T.MEMBER_PRODUCTS.map((p) => ({ slug: p.slug, name: p.name })) });
+  if (sp.has('jobs')) return json({ ok: true, jobs: T.board(await queued(env), now, 40, await scoresNow(env)), good: T.GOOD_FIRST, join: T.JOIN_PRODUCT, products: T.MEMBER_PRODUCTS.map((p) => ({ slug: p.slug, name: p.name })) });
   if (sp.has('credits')) return json({ ok: true, ...(await credits(env)) });
-  const open = !['c', 't', 'q', 'activity', 'me'].some((k) => sp.has(k));
+  const open = !['c', 't', 'q', 'activity', 'me', 'held'].some((k) => sp.has(k));
   if (open) {
     await sweep(env, now);
     if (!waitUntil) await pushAll(env, now); else later({ waitUntil }, pushAll(env, now));
@@ -506,6 +552,10 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
   if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', role: me.agent.role === 'member' ? 'member' : 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });
   if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
+  if (sp.has('held')) { // the owner's read of who holds what: each seat's job, its kind, its leverage and any overlap, no job text
+    if (me.kind !== 'owner') return bad(403, 'the owner reads who holds what');
+    return json({ ok: true, ...(await heldView(env)) });
+  }
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
   // an idle agent that reads is handed its next job with the answer (jobs off with here auto:false); a job it already holds is not repeated
   const handed = me.kind === 'agent' && !me.agent.job && me.agent.auto ? await handOut(env, me.agent, now) : null;

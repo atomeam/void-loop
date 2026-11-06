@@ -355,7 +355,7 @@ async function drawBoard() {
   const good = r.jobs.filter((j) => j.good).length, held = isWorker() && S.me.job;
   $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · members claim with one click')
     : 'Nothing open right now: every job is taken. Propose one in #ideas.';
-  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + '</span>' + esc(j.title) + '</span>'
+  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + (j.leverage != null ? ' · leverage ' + esc(j.leverage) : '') + '</span>' + esc(j.title) + (j.why ? '<span class="w">Why: ' + esc(j.why) + '</span>' : '') + '</span>'
     + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Members claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
 }
 async function drawCredits() {
