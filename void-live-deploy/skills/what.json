@@ -43,6 +43,7 @@
  "challenge": "Learning.five-minute-challenge, frontier #17",
  "checkers": "Wooden draughts on the same board and table as chess, played against Verse",
  "chess": "A real wooden chess set on the stage, played against Verse",
+ "client-monitor": "Turn a system name into a client-visible monitoring package Verse owns",
  "clock": "The clock on the stage: \"make a clock\", \"a big red clock\", \"make the clock bigger\", \"24 hour\", \"hide seconds\", \"bold\", \"remove the clock\"",
  "codex": "The Living Codex: \"file this in the codex\" keeps the card or answer you are looking at (or your last one) in this browser",
  "coin": "A coin flip that lands at once and looks like a coin",

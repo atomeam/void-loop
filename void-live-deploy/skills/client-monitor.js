@@ -1,5 +1,5 @@
 /**
- * client-monitor skill — turn a system name into a client-visible monitoring package Verse owns.
+ * client-monitor skill: turn a system name into a client-visible monitoring package Verse owns.
  * "client monitor for the invoice automation", "what will you monitor for the onboarding flow",
  * "monitor this for the client: support router".
  * The card lists the monitors Verse will watch (status, connected tools, schedule, docs) so the client does less checking.
