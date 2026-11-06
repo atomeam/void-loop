@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T04:57:55Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-06T05:19:15Z",
+   "subject": "Brain step: faster smell and synapse pass, same state to the bit"
   },
   {
-   "at": "2026-11-06T04:57:50Z",
-   "subject": "Brain organ 25, Rules: the decision-tree drafts guess which way your next stroke goes"
+   "at": "2026-11-06T05:18:19Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T04:57:19Z",
-   "subject": "Verse's wallet: Atom's MetaMask address on Base as payTo (#2365)"
-  },
-  {
-   "at": "2026-11-06T04:52:12Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T04:51:30Z",
-   "subject": "Site test: fix: \"longevity trial watch\" load 1233 ms > 1200"
-  },
-  {
-   "at": "2026-11-06T04:48:40Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T04:41:10Z",
-   "subject": "Verse's wallet: a receive address kept in the repo, no Coinbase account needed (#2356)"
-  },
-  {
-   "at": "2026-11-06T04:39:49Z",
-   "subject": "The new mark reaches a returning browser (#2357)"
-  },
-  {
-   "at": "2026-11-06T04:37:12Z",
-   "subject": "claude-brain loads the SDK only for a real call, so its fake-client test runs in the merge gate's worktree without packages"
-  },
-  {
-   "at": "2026-11-06T04:37:01Z",
-   "subject": "Incident: the browser suite failed on 29cdceaf (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T04:27:30Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T04:27:05Z",
+   "at": "2026-11-06T05:17:34Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T04:25:57Z",
-   "subject": "Tower gate: prizes measured against their live sites"
+   "at": "2026-11-06T05:17:17Z",
+   "subject": "\"add one minute\" adds time to the timer, not a list item (#2326) (#2369)"
   },
   {
-   "at": "2026-11-06T04:19:54Z",
+   "at": "2026-11-06T05:17:06Z",
+   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
+  },
+  {
+   "at": "2026-11-06T05:16:56Z",
+   "subject": "Verse code review paid with PayPal, and the PayPal AI Hackathon entry pack (#2370)"
+  },
+  {
+   "at": "2026-11-06T05:16:48Z",
+   "subject": "Tower gate: random generators,random number,prizes measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:16:33Z",
+   "subject": "Trading bots with real backtests, and an arbitrage scanner, sold per call over x402 (#2371)"
+  },
+  {
+   "at": "2026-11-06T05:16:13Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T04:16:56Z",
-   "subject": "brain: organ 24, Strokes, the Hopfield drafts' associative memory recalls the rest of a visitor's stroke"
+   "at": "2026-11-06T05:16:01Z",
+   "subject": "Automerge: a run scoped to one pull request starts a full sweep, so suite batches hold every ready pull request (#2360)"
   },
   {
-   "at": "2026-11-06T04:10:46Z",
-   "subject": "Outcome exam: podcasts 85.6"
+   "at": "2026-11-06T05:15:16Z",
+   "subject": "Known first asks load their own skill at once (#2316 #2323 #2342) (#2361)"
   },
   {
-   "at": "2026-11-06T04:08:04Z",
-   "subject": "Finding: image-gen checked against the live site (findings/image-gen)"
+   "at": "2026-11-06T05:14:45Z",
+   "subject": "Gaps batch 3: the list reaches 100, and alarm, word counter, fancy text, teams and secret santa work in the page (#2362)"
   },
   {
-   "at": "2026-11-06T04:06:37Z",
-   "subject": "The old art goes: new mark, icons, share pictures, cards, card art, book cover and the prize wheel in the one Verse look (#2336)"
+   "at": "2026-11-06T05:12:56Z",
+   "subject": "Site tester: time a slow load again alone, after the pool (#2328) (#2363)"
   },
   {
-   "at": "2026-11-06T04:06:17Z",
-   "subject": "Watch with Verse: hear radio stations Radio Browser lists as http (#2337)"
+   "at": "2026-11-06T05:12:37Z",
+   "subject": "Verse sells six more services per call over x402, findable in the Bazaar (#2368)"
   },
   {
-   "at": "2026-11-06T04:05:58Z",
-   "subject": "The away line stays clickable while hidden, so the walkthrough tests run again (#2338)"
+   "at": "2026-11-06T05:11:14Z",
+   "subject": "Main green: card art, poster wins, contrast, self card and the heavy song pass again (#2367)"
+  },
+  {
+   "at": "2026-11-06T05:10:06Z",
+   "subject": "Tower gate: prizes,wheel,tournaments measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:00:57Z",
+   "subject": "Make the tool strip links 44 px tap targets on every ring page (#2366)"
+  },
+  {
+   "at": "2026-11-06T04:59:41Z",
+   "subject": "Incident: the browser suite failed on 674babb3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T04:58:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-06T04:57:55Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 11,
-  "week": 162
+  "day": 17,
+  "week": 168
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
