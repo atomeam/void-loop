@@ -141,6 +141,7 @@
  "grades": "GPA from your grades, the score you need on a final, cumulative GPA, and a percent as a letter grade",
  "gradient": "\"gradient generator\", \"css gradient\", \"make a gradient from red to blue\"",
  "group": "\"group the clock and the note\", \"move the group to the top left\", \"make the group bigger\", \"ungroup\"",
+ "groups": "Names into teams, and a secret santa draw, in the page",
  "growth": "\"growth\" / \"how have you grown\": Verse's growth ledger, newest first",
  "guide": "The book: everything Verse can do, one page each, read like a Skyrim book",
  "habit-ring": "\"habit ring for write, walk, sleep\" puts 1 to 7 habits on the stage as SVG rings; tap a ring to mark today, \"mark walk done today\" does the same by words",

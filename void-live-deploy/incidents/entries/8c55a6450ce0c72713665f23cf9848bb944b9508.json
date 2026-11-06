@@ -16,6 +16,11 @@
   2
  ],
  "passed": [
-  1
- ]
+  1,
+  2
+ ],
+ "closedAt": "2026-11-06T04:37:00.927Z",
+ "closedBy": "29cdceaf86da1e252bbcd31d4f5b9ac32aff3171",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42160519046",
+ "minutes": 784
 }
