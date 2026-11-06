@@ -3334,12 +3334,37 @@ say('nothing selected to remove');
     function parseCurrency(lower) {
       const t = String(lower || '').toLowerCase().replace(/^(?:how\s+much\s+is|what(?:'s|\s+is)|convert)\s+/, '').replace(/[?.!]+$/, '').replace(/(\d),(\d{3})/g, '$1$2').trim();
       const m = t.match(/^([$€£¥₹₩₺₪฿])?\s*(\d+(?:\.\d+)?)\s*(k\b)?\s*([a-z][a-z .()]{0,28}?)?\s+(?:in|to|into)\s+([a-z][a-z .()]{1,28}?)$/i);
-      if (!m) return null;
+      if (!m) return fxRateAsk(t);
       const from = m[1] ? (m[4] ? fxCode(m[4]) || FX_SYMBOL[m[1]] : FX_SYMBOL[m[1]]) : fxCode(m[4]);
       const to = fxCode(m[5]);
       if (!from || !to) return null;
       const amount = parseFloat(m[2]) * (m[3] ? 1000 : 1);
       return { amount, from, to };
+    }
+    // the rate itself, no amount (asked by Verse, exam prices): "exchange rate usd to eur", "usd to eur exchange rate", "usd/eur",
+    // "rate between euros and dollars", "dollars to euros". One of the first currency, in the second.
+    function fxRateAsk(t) {
+      const said = /\brates?\b/.test(t);
+      const p = t.replace(/^(?:(?:the|today'?s|current|latest|live)\s+)+/, '').replace(/^(?:(?:exchange|conversion|currency|fx)\s+)?rates?\s+(?:(?:of|for|from|between)\s+)?/, '')
+        .replace(/\s+(?:(?:exchange|conversion|fx)\s+)?rates?(?:\s+(?:today|now|right\s+now))?$/, '').trim();
+      const m = p.match(/^([a-z][a-z .()]{1,28}?)\s*(?:\/|\s(?:in|to|into|vs\.?|versus|and)\s)\s*([a-z][a-z .()]{1,28}?)$/);
+      if (!m || (!said && !/^[a-z .()]+\s(?:in|to|into)\s/.test(p) && !/\//.test(p))) return null;
+      const from = fxCode(m[1]), to = fxCode(m[2]);
+      return from && to && from !== to ? { amount: 1, from, to } : null;
+    }
+    // where a currency answer can come from, all asked at once, the first good answer wins (exam prices: "100 usd in eur" was read
+    // while the card still said "checking rates", the two Frankfurter hosts each a new connection on a first ask): Frankfurter's two
+    // hosts, and Verse's own copy of the same ECB rate (/api/markets, kept an hour at the edge, on the page's own warm connection).
+    // Each: [url, read(json) -> { value, date, src } | null].
+    function fxTries(from, to, amount) {
+      const ecb = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
+      const direct = (j) => (j && j.rates && j.rates[to] != null ? { value: Number(j.rates[to]), date: j.date || '', src: ecb } : null);
+      return [
+        ['https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount, direct],
+        ['https://api.frankfurter.app/latest?from=' + from + '&to=' + to + '&amount=' + amount, direct],
+        ['/api/markets?w=' + from + to, (j) => { const q = j && j.ok && j.quotes && j.quotes[0];
+          return q && q.ok && q.price > 0 ? { value: Math.round(q.price * amount * 1e5) / 1e5, date: q.asOf ? new Date(q.asOf).toISOString().slice(0, 10) : '', src: ecb.replace('Source: ', 'Source: Verse Markets · ') } : null; }],
+      ];
     }
     // Arithmetic in words: "what is 12 times 7", "sqrt of 144", "2 to the power of 10", "is 97 a prime number",
     // "how many seconds in a day". A small parser of its own (+ - * / ^, brackets, square roots); nothing is ever eval'd.
@@ -4403,18 +4428,16 @@ say('nothing selected to remove');
         const { amount, from, to } = cm;
         if (from !== to) el.dataset.page = '/markets/?s=' + from + to; // the full link opens the pair on Markets: the same ECB rate over time, with a chart
         setV('…', 'checking rates');
-        const src = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
         if (from === to) { setV(fmtNum(amount) + ' ' + to, 'Same currency.', ''); return 'currency'; }
         try {
-          // two hosts, first answer wins: one of them stalls on a slow link (a visitor's phone on a weak connection)
-          const urls = ['https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount, 'https://api.frankfurter.app/latest?from=' + from + '&to=' + to + '&amount=' + amount];
-          const j = await Promise.any(urls.map((u) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => { if (!r.ok) throw 0; return r.json(); })));
-          if (vpageEl === el && j && j.rates && j.rates[to] != null) {
-            const day = j.date ? new Date(j.date + 'T12:00:00Z') : null;
+          // every source at once, first good answer wins: one of them stalls on a slow link (a visitor's phone on a weak connection)
+          const j = await Promise.any(fxTries(from, to, amount).map(([u, read]) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => { if (!r.ok) throw 0; return r.json(); }).then((x) => { const v = read(x); if (!v || !(v.value >= 0)) throw 0; return v; })));
+          if (vpageEl === el && j) {
+            const day = /^\d{4}-\d{2}-\d{2}$/.test(j.date) ? new Date(j.date + 'T12:00:00Z') : null;
             const dayWords = day ? day.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '';
-            const unit = j.rates[to] / amount;
-            setV(fmtNum(j.rates[to]) + ' ' + to, fmtNum(amount) + ' ' + from + ' = ' + fmtNum(j.rates[to]) + ' ' + to + ' · 1 ' + from + ' = ' + String(+unit.toPrecision(4)) + ' ' + to
-              + (dayWords ? ' · ECB rate of ' + dayWords : ''), src);
+            const unit = j.value / amount, big = amount === 1 ? String(+j.value.toPrecision(5)) : fmtNum(j.value); // the rate alone keeps its digits ("1 USD = 0.8682 EUR", not 0.87)
+            setV(big + ' ' + to, (amount === 1 ? '1 ' + from + ' = ' + big + ' ' + to : fmtNum(amount) + ' ' + from + ' = ' + big + ' ' + to + ' · 1 ' + from + ' = ' + String(+unit.toPrecision(4)) + ' ' + to)
+              + (dayWords ? ' · ECB rate of ' + dayWords : ''), j.src);
           } else if (vpageEl === el) setV('?', 'The currency service didn\'t answer just now.');
         } catch (_) { if (vpageEl === el) setV('?', 'The currency service didn\'t answer just now.'); }
         hit = true;

@@ -10,7 +10,7 @@ on the size of the cut: "Let Verse decide". Live at **https://a-to-mind.com/trea
   Test purchases are not money; refunds and lost disputes take the price back. Gumroad's fees are taken off from its published
   schedule (https://gumroad.com/help/article/66-gumroads-fees): 10% + 50c plus 2.9% + 30c on a direct sale, 30% on Discover.
   Nothing is borrowed, nothing is assumed, no money is spent before it is earned. Zero sales is a zero balance.
-- **The split (Verse's policy, `void-live-deploy/treasury/policy.json`).** Atom's cut first, then the reserve, then four
+- **The split (Verse's policy, `void-live-deploy/treasury/policy.json`).** Atom's cut first, then giving (10% of what is left, for the causes on /creed/give/; owner, 2026-11-06: "verse should become a religion and a charity"; a gift leaves the pot only when Atom sends it on the charity's own page and records it with `{action:'given', cents, to}`), then the reserve, then four
   reinvestment buckets (infrastructure, tools/APIs, ads/growth, bounties for member builders) weighted by expected return
   (each candidate's impact x confidence per dollar, times what the bucket has actually returned; each bucket 10-50%). A
   priorities engine can feed `priorities: [{bucket, score}]` into `bucketWeights` once one is published.
