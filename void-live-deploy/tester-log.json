@@ -1,16 +1,108 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 279,
+ "runsTotal": 285,
  "kinds": {
   "grow": 70,
-  "file": 88,
+  "file": 90,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 67
+  "visitor": 71
  },
  "runs": [
+  {
+   "at": "2026-11-06T03:24:35Z",
+   "passed": 82,
+   "of": 90,
+   "kind": "file",
+   "ms": 340,
+   "note": "fix: \"send it away\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 3 < 5"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25",
+     "why": "load 1280 ms > 1200"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T03:14:53Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T02:49:24Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T00:26:03Z",
+   "passed": 87,
+   "of": 90,
+   "kind": "file",
+   "ms": 382,
+   "note": "fix: \"yo new automation\" load 1309 ms > 1200",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "yo new automation",
+     "why": "load 1309 ms > 1200"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T00:16:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-05T22:16:47Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-05T18:51:53Z",
    "passed": 0,
@@ -216,189 +308,86 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T13:23:33Z",
-   "passed": 85,
-   "of": 90,
-   "kind": "file",
-   "ms": 281,
-   "note": "fix: \"closer on the figure\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "fly around",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T13:12:35Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T12:45:18Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T12:32:47Z",
-   "passed": 87,
-   "of": 89,
-   "kind": "grow",
-   "ms": 284,
-   "note": "new ground passed, kept as a regression case: \"yo draw a cartoon cat\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T12:21:56Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T11:58:48Z",
-   "passed": 83,
-   "of": 89,
-   "kind": "file",
-   "ms": 336,
-   "note": "fix: \"what are the figures doing\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 4 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "what are the figures doing",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "order food from lovebird in lakeland",
-     "why": "refused: couldn't find"
-    }
-   ]
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-13",
+   "from": "2026-08-14",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-20",
+   "from": "2026-08-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-27",
+   "from": "2026-08-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-03",
+   "from": "2026-09-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-10",
+   "from": "2026-09-11",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-17",
+   "from": "2026-09-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-24",
+   "from": "2026-09-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-01",
+   "from": "2026-10-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-08",
-   "runs": 41,
+   "from": "2026-10-09",
+   "runs": 52,
    "passed": 424,
-   "of": 603,
-   "broken": 8,
-   "brokenOf": 112,
+   "of": 827,
+   "broken": 19,
+   "brokenOf": 336,
    "brokenPassed": 22
   },
   {
-   "from": "2026-10-15",
-   "runs": 150,
+   "from": "2026-10-16",
+   "runs": 139,
    "passed": 2727,
-   "of": 5207,
-   "broken": 87,
-   "brokenOf": 2126,
+   "of": 4983,
+   "broken": 76,
+   "brokenOf": 1902,
    "brokenPassed": 0
   },
   {
-   "from": "2026-10-22",
+   "from": "2026-10-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-29",
-   "runs": 88,
-   "passed": 1688,
-   "of": 1862,
+   "from": "2026-10-30",
+   "runs": 94,
+   "passed": 1857,
+   "of": 2042,
    "ms": 373
   }
  ],
@@ -419,7 +408,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-05T18:16:04Z",
+  "skill:cartoon": "2026-11-06T03:24:35Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -710,6 +699,12 @@
   "skill:imgfit": "2026-11-05T16:31:22Z",
   "skill:is-it": "2026-11-05T18:16:04Z",
   "skill:kanban-board": "2026-11-05T18:16:04Z",
-  "skill:leet": "2026-11-05T18:16:04Z"
+  "skill:leet": "2026-11-05T18:16:04Z",
+  "skill:local-stations": "2026-11-06T00:26:03Z",
+  "skill:lorem": "2026-11-06T00:26:03Z",
+  "skill:magic8": "2026-11-06T00:26:03Z",
+  "skill:mind-field": "2026-11-06T03:24:35Z",
+  "skill:morse": "2026-11-06T03:24:35Z",
+  "skill:music-tools": "2026-11-06T03:24:35Z"
  }
 }
