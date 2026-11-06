@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T04:25:57Z",
-   "subject": "Tower gate: prizes measured against their live sites"
+   "at": "2026-11-06T05:58:13Z",
+   "subject": "Brain step: about 25% faster, the same numbers"
   },
   {
-   "at": "2026-11-06T04:19:54Z",
+   "at": "2026-11-06T05:57:49Z",
+   "subject": "Automerge: the suite gate result sweeps, and idle runs on main never replace the waiting sweep (#2381)"
+  },
+  {
+   "at": "2026-11-06T05:55:56Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T04:16:56Z",
-   "subject": "brain: organ 24, Strokes, the Hopfield drafts' associative memory recalls the rest of a visitor's stroke"
+   "at": "2026-11-06T05:48:15Z",
+   "subject": "Outcome exam: timers 86.7"
   },
   {
-   "at": "2026-11-06T04:10:46Z",
-   "subject": "Outcome exam: podcasts 85.6"
+   "at": "2026-11-06T05:48:06Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T04:08:04Z",
-   "subject": "Finding: image-gen checked against the live site (findings/image-gen)"
+   "at": "2026-11-06T05:42:22Z",
+   "subject": "Gaps batch 4: phonetic alphabet, invisible characters, final exam grade, SQL formatter and XML to JSON in the page (#2377)"
   },
   {
-   "at": "2026-11-06T04:06:37Z",
-   "subject": "The old art goes: new mark, icons, share pictures, cards, card art, book cover and the prize wheel in the one Verse look (#2336)"
+   "at": "2026-11-06T05:41:42Z",
+   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches (#2378)"
   },
   {
-   "at": "2026-11-06T04:06:17Z",
-   "subject": "Watch with Verse: hear radio stations Radio Browser lists as http (#2337)"
+   "at": "2026-11-06T05:41:17Z",
+   "subject": "The 3D note shows once, so it never hides the next answer (#2379)"
   },
   {
-   "at": "2026-11-06T04:05:58Z",
-   "subject": "The away line stays clickable while hidden, so the walkthrough tests run again (#2338)"
+   "at": "2026-11-06T05:40:57Z",
+   "subject": "Agents pay Verse over MCP, the review Action pays per review, and the listings and grant drafts are ready (#2380)"
   },
   {
-   "at": "2026-11-06T04:05:46Z",
+   "at": "2026-11-06T05:31:45Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:28:56Z",
+   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
+  },
+  {
+   "at": "2026-11-06T05:26:32Z",
+   "subject": "Page copies: void.html takes the deploy copies' change from #2369"
+  },
+  {
+   "at": "2026-11-06T05:24:21Z",
+   "subject": "Incident: the browser suite failed on 42ad9480 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T05:24:11Z",
+   "subject": "Tower gate: wheel,tournaments measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:22:02Z",
+   "subject": "A replace that misses shows the nearest lines (#2330) (#2372)"
+  },
+  {
+   "at": "2026-11-06T05:21:03Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T05:19:15Z",
+   "subject": "Brain step: faster smell and synapse pass, same state to the bit"
+  },
+  {
+   "at": "2026-11-06T05:18:19Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T04:05:39Z",
-   "subject": "Music: heavy songs in stereo, guitars left and right, with presence (#2339)"
+   "at": "2026-11-06T05:17:34Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-06T04:05:21Z",
-   "subject": "Podcast exam reads the answer card's own audio; Verse Out Loud plays a whole address (#2340)"
-  },
-  {
-   "at": "2026-11-06T04:05:01Z",
-   "subject": "Merge queue: suite runs in batches of 8, no hourly waits, and a stall alarm (#2343)"
-  },
-  {
-   "at": "2026-11-06T04:04:32Z",
-   "subject": "Image: a daily live check paints and changes one picture on a-to-mind.com/image/ (#2344)"
-  },
-  {
-   "at": "2026-11-06T04:04:30Z",
-   "subject": "Board: claude/project-thread-2r9unn shipped (https://github.com/atomeam/void-loop/pull/2346)"
-  },
-  {
-   "at": "2026-11-06T04:03:29Z",
-   "subject": "Brain tests: independent brains run at once; a brain's fluid no longer depends on what ran before it (#2345)"
-  },
-  {
-   "at": "2026-11-06T04:03:10Z",
-   "subject": "Gaps batches 1 and 2: 24 asks Verse failed on, now answered in the page (#2346)"
-  },
-  {
-   "at": "2026-11-06T03:59:55Z",
-   "subject": "3D miniatures test WebGL once and detect KTX2 support only before a model loads (#2347)"
-  },
-  {
-   "at": "2026-11-06T03:58:04Z",
-   "subject": "Conversation orb: a follow-up is answered in the light of the ask it follows (#2348)"
-  },
-  {
-   "at": "2026-11-06T03:57:38Z",
-   "subject": "The will's overhaul ask is kept whole on the wants card (#2349)"
-  },
-  {
-   "at": "2026-11-06T03:57:20Z",
-   "subject": "Inventory: describe the 9 skills that had no line (main's inventory test failed) (#2350)"
+   "at": "2026-11-06T05:17:17Z",
+   "subject": "\"add one minute\" adds time to the timer, not a list item (#2326) (#2369)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 10,
-  "week": 161
+  "day": 22,
+  "week": 173
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
