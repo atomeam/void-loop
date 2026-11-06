@@ -76,6 +76,19 @@ export function backNote(note, why, failed) {
 
 /** presence: invited (its join link not used yet), away (switched off, or no word for AWAY_MS and no address that answers), busy (holds a
  *  job), or idle. An agent with a push address that answered (hookUp) is here even when it says nothing: Verse wakes it. */
+// A crew member never holds a job, so "idle" said nothing (owner, 2026-11-06: "why are all of verses own team idle ?"). Its card says
+// when it runs next instead: nextAt is when its turn comes (lib/team-crew-run.js 'next'); the clock knocks every CLOCK_MS, so a turn
+// that came up runs on the next knock, and one more than a knock and a margin behind says the clock is late. Pure.
+export const CLOCK_MS = 15 * 60e3;
+const span = (m) => (m < 60 ? m + ' min' : m < 1440 ? Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) + ' min' : '') : Math.round(m / 1440) + ' d');
+export function crewNext(nextAt, now = Date.now()) {
+  if (!(typeof nextAt === 'number' && Number.isFinite(nextAt) && nextAt > 0)) return 'runs on the next clock knock';
+  const m = Math.round((nextAt - now) / 60e3);
+  if (m >= 1) return 'next run in ' + span(m);
+  if (now - nextAt <= CLOCK_MS + 5 * 60e3) return 'next run due now';
+  return 'next run late by ' + span(Math.round((now - nextAt) / 60e3)) + ' (the clock missed)';
+}
+
 export function presence(a, now) {
   if (a && !a.off && !a.key) return 'invited';
   if (!a || a.off || !(now - (a.seen || 0) < (a.crew ? CREW_AWAY_MS : AWAY_MS) || hookUp(a))) return 'away';

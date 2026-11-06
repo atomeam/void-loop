@@ -58,6 +58,7 @@ import { findMemberSale } from './gumroad.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as P from '../../lib/team-priorities.js';
 import * as T from '../../lib/team.js';
+import { CREW } from '../../lib/team-crew.js';
 import { briefOf } from '../../lib/job-guide.js';
 import * as Dream from '../../lib/brain-dream.js';
 import { fire } from '../../lib/automations-run.js';
@@ -475,6 +476,14 @@ async function credits(env) {
     shipped: rows.map((r) => ({ name: r.name, role: r.role === 'member' ? 'member' : 'agent', job: r.job, link: r.link, at: r.at, state: word(states[r.job]) })) };
 }
 
+// when each crew member's next turn comes (lib/team-crew-run.js keeps { <slug>: ms } as 'next'), by agent id; {} before the crew's first run
+export async function crewTurns(env, ags) {
+  if (!ags.some((a) => a.crew)) return {};
+  let next = {}; try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'next'").first(); next = r ? JSON.parse(r.v) || {} : {}; } catch (_) { next = {}; }
+  const out = {}; for (const b of CREW) if (typeof next[b.slug] === 'number') out[b.id] = next[b.slug];
+  return out;
+}
+
 // as: an agent's id the caller already proved (functions/team/mcp.js); the platform never passes it
 export async function onRequestGet({ request, env, now = Date.now(), as = null, waitUntil }) {
   if (!env.DB) return bad(503, 'storage not bound');
@@ -489,7 +498,8 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     await handIdle(env, now); // before the count: the agents here take the jobs at the front of the queue
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
-    const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true, did: T.hideSecrets(a.did || ''), didAt: a.did_at || null } : {}) }));
+    const turns = await crewTurns(env, ags);
+    const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true, did: T.hideSecrets(a.did || ''), didAt: a.did_at || null, next: turns[a.id] || null } : {}) }));
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }

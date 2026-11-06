@@ -142,6 +142,25 @@ export const WILL_EVERY_H = 1;
 export function willDue({ exists, busy, lastRunMs, now }) {
   return !!exists && !busy && now - (lastRunMs || 0) >= WILL_EVERY_H * H;
 }
+/** the jobs that must run every day whatever GitHub's scheduler does (owner, 2026-11-06: "why did you stop the films ... and where is my
+ *  daily verse podcast", "nothing is automatic anymore"). Their crons were dropped for days: shorts.yml fired 6 hours late or not at all,
+ *  so no film was made. Each tick starts a daily job once its hour (UTC) has come and it has no run since then (any trigger), never while
+ *  one runs or waits. A run that failed today is not started again until tomorrow: three failures in a row queue a heal: job. Pure. */
+export const DAILY = Object.freeze([
+  { wf: 'verse-podcast.yml', hourUtc: 13, what: "today's episode of Verse Out Loud" },
+  { wf: 'shorts.yml', hourUtc: 15, what: "today's film (champion against challenger, the better one posted)" },
+]);
+export function dailyDue({ exists, busy, lastRunMs, now, hourUtc }) {
+  if (!exists || busy) return false;
+  const d = new Date(now), slot = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), hourUtc);
+  return now >= slot && (lastRunMs || 0) < slot;
+}
+/** a full automerge sweep (automerge.yml with no pr) at least every SWEEP_EVERY_H: its hourly cron fired a few times a day, and a sweep
+ *  is what sends ready pull requests to the suite gate. sweptMs is when the conductor last started one (its state). Pure. */
+export const SWEEP_EVERY_H = 1;
+export function sweepDue({ sweptMs, now }) {
+  return now - (sweptMs || 0) >= SWEEP_EVERY_H * H;
+}
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
 export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now }) {

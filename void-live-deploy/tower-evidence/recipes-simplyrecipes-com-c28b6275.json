@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 87,
-   "best": 237,
-   "evidence": "Verse (/recipes/?q=pancakes) 87 ms to the load event (median of 3, phone width) vs simplyrecipes.com 237 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "verse": 159,
+   "best": 301,
+   "evidence": "Verse (/recipes/?q=pancakes) 159 ms to the load event (median of 3, phone width) vs simplyrecipes.com 301 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs simplyrecipes.com 3 of 3 loads answered",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs simplyrecipes.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs simplyrecipes.com 0 unnamed controls or images",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs simplyrecipes.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs simplyrecipes.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,7 +54,7 @@
    "verse": 5,
    "best": 5,
    "evidence": "Verse (/recipes/?q=pancakes) 5 of 5 right against the worked-out answer; judged against the standard, not simplyrecipes.com (the site is not asked)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "of": 5
   },
   "design polish": {
@@ -62,7 +62,7 @@
    "verse": 0,
    "best": 17,
    "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs simplyrecipes.com 17 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), simplyrecipes.com (1 low-contrast texts, 16 small tap targets, layout shift 0.00)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   },
   "search by ingredient": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs simplyrecipes.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs simplyrecipes.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs simplyrecipes.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -100,7 +100,7 @@
    "verse": 20,
    "best": 2,
    "evidence": "Verse (/recipes/?q=pancakes) 20 of 20 things a full answer shows vs simplyrecipes.com 2 of 20 things a full answer shows (Verse lacks: none; site lacks: ingredients, the steps, servings, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline, Search by dish name, Ingredient search, include and exclude, US / metric, Nutrition facts per serving, Save recipes into collections)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "of": 20,
    "siteRead": true
   },
@@ -109,7 +109,7 @@
    "verse": 8,
    "best": 6.5,
    "evidence": "Verse (/recipes/?q=pancakes) 8 of 11 wider-use points (docs/WIDER-USE.md) vs simplyrecipes.com 6.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T14:47:53.200Z",
+   "at": "2026-11-06T14:31:07.009Z",
    "siteRead": true
   }
  }
