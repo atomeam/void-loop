@@ -1,7 +1,7 @@
 // tools/design-loop.mjs: the pure parts (the order, the slice, the colour that passes, the rule a small target gets, the marked block)
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { controlsIn, rank, sliceFor, passColor, ratio, targetRule, blockRules, withBlock, keeps, onlyBlock, rulesFor, sitePages, START, END } from './design-loop.mjs';
+import { controlsIn, rank, sliceFor, passColor, ratio, targetRule, blockRules, withBlock, keeps, onlyBlock, rulesFor, bareRules, sitePages, START, END } from './design-loop.mjs';
 
 const hex = (h) => ({ r: parseInt(h.slice(1, 3), 16), g: parseInt(h.slice(3, 5), 16), b: parseInt(h.slice(5, 7), 16) });
 
@@ -78,4 +78,12 @@ test('onlyBlock passes a page that is its old self plus the block, and nothing e
   assert.equal(onlyBlock(old, withBlock(old, { '#a': 'background:url(http://x/y)' })), false, 'a url in a value');
   assert.equal(onlyBlock(old, withBlock(old, { '#a': 'color:red}</style><script>1</script><style>a{' })), false, 'markup in a value');
   assert.equal(onlyBlock(old, old), false, 'no block at all');
+});
+
+test('bare rules: an unstyled key gets the dark key, an empty key with an svg gets an icon size, an empty key without one gets nothing', () => {
+  const r = bareRules({ unstyled: [{ sel: '#mic', bg: 'rgb(107, 107, 107)', text: '' }], empty: [{ sel: '#sound', svg: true, label: 'sound' }, { sel: 'a:nth-of-type(2)', svg: false, label: '' }] });
+  assert.match(r['#mic'], /appearance:none/); assert.match(r['#mic'], /background:#1c2030/);
+  assert.equal(r['#sound svg'], 'width:18px;height:18px;flex:none');
+  assert.equal(Object.keys(r).length, 2);
+  assert.deepEqual(bareRules(undefined), {});
 });

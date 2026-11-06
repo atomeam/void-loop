@@ -8,6 +8,8 @@
 // by at most a quarter of its pixels beyond what the page moves by itself. A shift it cannot fix by a rule is listed, not hidden. Everything it kept goes in --out as one patch
 // with void-live-deploy/design-loop.json (what it measured, before and after); the workflow's write job moves only those bytes onto main.
 //   node tools/design-loop.mjs [--run N] [--size 30] [--pages /a/,/b/] [--out dir] [--site https://a-to-mind.com] [--write]
+// It also finds controls left with the browser's own look and icon buttons that show nothing (bare(), below), gives them Verse's dark key,
+// and counts them as defects. The home is measured but never written: its 3 copies must match, so its defects are listed for a builder.
 // Without --write it measures and prints, and changes no file.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -15,6 +17,7 @@ import http from 'node:http';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { designLook, defects, UA, CLS_INIT } from './tower-gate.mjs';
+import { splitHome } from './split-void-page.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE_DIR = path.join(root, 'void-live-deploy');
@@ -127,6 +130,45 @@ export function failing() {
   };
 }
 
+// in the page: controls the page forgot to style, and icon buttons that show nothing (owner, 2026-11-06: the home's mic and speaker came up as
+// the browser's grey buttons, one of them an empty box). A control is unstyled when it still has the browser's own look: its appearance is
+// not none and its background and border are those of a plain <button> in a shadow root, where no page style reaches. A button or link is
+// empty when it has no text and nothing painted in it (no picture, svg or canvas of at least 4 by 4 px, no background picture, no ::before
+// or ::after content). Each comes with a selector named the same way as the contrast and target failures.
+export function bare() {
+  const vis = (e) => { const r = e.getBoundingClientRect(), cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none' && +cs.opacity !== 0; };
+  const esc = (x) => CSS.escape(x);
+  const path = (e) => { const steps = []; for (let x = e; x && x !== document.body; x = x.parentElement) { if (x.id) { steps.unshift('#' + esc(x.id)); return steps.join(' > '); } const k = [...x.parentElement.children].filter((y) => y.tagName === x.tagName).indexOf(x) + 1; steps.unshift(x.tagName.toLowerCase() + ':nth-of-type(' + k + ')'); } return 'body > ' + steps.join(' > '); };
+  const name = (e) => (e.id ? '#' + esc(e.id) : path(e));
+  const host = document.createElement('div'); host.style.cssText = 'position:absolute;left:-9999px;top:0';
+  const root = host.attachShadow({ mode: 'open' }); document.body.appendChild(host);
+  const plain = {};
+  for (const [k, make] of Object.entries({ button: () => document.createElement('button'), select: () => document.createElement('select') })) { const x = make(); x.textContent = 'x'; root.appendChild(x); const cs = getComputedStyle(x); plain[k] = { bg: cs.backgroundColor, border: cs.borderTopStyle + ' ' + cs.borderTopWidth }; }
+  const unstyled = [], empty = [];
+  try {
+    for (const e of document.querySelectorAll('button, select, input[type=button], input[type=submit], input[type=reset]')) {
+      if (!vis(e) || e.closest('[aria-hidden="true"]')) continue;
+      const cs = getComputedStyle(e), ref = plain[e.tagName === 'SELECT' ? 'select' : 'button'];
+      if (cs.appearance !== 'none' && cs.backgroundImage === 'none' && cs.backgroundColor === ref.bg && cs.borderTopStyle + ' ' + cs.borderTopWidth === ref.border) unstyled.push({ sel: name(e), bg: cs.backgroundColor, text: (e.textContent || e.getAttribute('aria-label') || '').trim().slice(0, 30) });
+    }
+    for (const e of document.querySelectorAll('button, a[href], [role=button]')) {
+      if (!vis(e) || e.closest('[aria-hidden="true"]') || (e.textContent || '').trim() || (e.value || '').trim()) continue;
+      const cs = getComputedStyle(e), pseudo = ['::before', '::after'].some((w) => { const c = getComputedStyle(e, w).content; return c && c !== 'none' && c !== 'normal' && c !== '""'; });
+      if (pseudo || (cs.backgroundImage && cs.backgroundImage !== 'none')) continue;
+      const shown = [...e.querySelectorAll('img, svg, canvas, video, picture')].some((x) => { const r = x.getBoundingClientRect(); return r.width >= 4 && r.height >= 4; });
+      if (!shown) empty.push({ sel: name(e), svg: !!e.querySelector('svg'), label: (e.getAttribute('aria-label') || e.title || '').slice(0, 30) });
+    }
+  } finally { host.remove(); }
+  return { unstyled, empty };
+}
+/** the rules that give unstyled controls Verse's dark key and size an icon that has no size: one rule per selector. Pure. */
+export function bareRules(found) {
+  const rules = {};
+  for (const u of (found && found.unstyled) || []) rules[u.sel] = 'appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb';
+  for (const e of (found && found.empty) || []) if (e.svg) rules[e.sel + ' svg'] = 'width:18px;height:18px;flex:none';
+  return rules;
+}
+
 /** the rules that answer one page's failures: one rule per selector. Pure. */
 export function rulesFor(fail) {
   const rules = {}, bySel = {};
@@ -153,6 +195,10 @@ function serve(site) {
     const u = new URL(q.url, 'http://x'); let f = path.join(SITE_DIR, decodeURIComponent(u.pathname));
     if (!f.startsWith(SITE_DIR)) { r.writeHead(403); return r.end(); }
     if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
+    // the home is served split (tools/split-void-page.mjs: a critical style inline, the rest in files that load later), so measure it that way
+    const home = path.join(SITE_DIR, 'index.html'), split = (f === home || /^\/void-[\w-]+\.(?:css|js)$/.test(u.pathname)) ? splitHome(fs.readFileSync(home, 'utf8')) : null;
+    if (split && f === home) { r.writeHead(200, { 'content-type': types['.html'] }); return r.end(split.html); }
+    if (split && split.files[u.pathname.slice(1)]) { r.writeHead(200, { 'content-type': types[path.extname(u.pathname)] }); return r.end(split.files[u.pathname.slice(1)]); }
     if (fs.existsSync(f) && fs.statSync(f).isFile()) { r.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); return fs.createReadStream(f).pipe(r); }
     if (!site || q.method !== 'GET') { r.writeHead(404); return r.end(); }
     try { const x = await fetch(site + u.pathname + u.search, { headers: { 'user-agent': UA } }); r.writeHead(x.status, { 'content-type': x.headers.get('content-type') || 'application/octet-stream' }); r.end(Buffer.from(await x.arrayBuffer())); } catch (_) { r.writeHead(502); r.end(); }
@@ -167,13 +213,15 @@ async function look(browser, base, url) {
   try {
     await p.goto(base + url, { waitUntil: 'load', timeout: 30000 });
     await p.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
+    await p.mouse.move(195, 300); await p.mouse.move(200, 320); // a control that shows with the first move (the home's speaker) is measured too
     await p.waitForTimeout(800);
     const l = await p.evaluate(designLook);
     const overflow = await p.evaluate(() => Math.max(0, document.documentElement.scrollWidth - innerWidth));
-    const fail = await p.evaluate(failing);
+    const fail = await p.evaluate(failing), found = await p.evaluate(bare);
+    fail.bare = found;
     const shot = (await p.screenshot()).toString('base64');
     await p.waitForTimeout(400); const shot2 = (await p.screenshot()).toString('base64'); // a page that moves by itself (a canvas, a clock)
-    return { contrast: l.contrast, targets: l.targets, cls: Math.round(l.cls * 1000) / 1000, defects: defects(l), overflow, fail, shot, shot2 };
+    return { contrast: l.contrast, targets: l.targets, unstyled: found.unstyled.length, empty: found.empty.length, cls: Math.round(l.cls * 1000) / 1000, defects: defects(l) + found.unstyled.length + found.empty.length, overflow, fail, shot, shot2 };
   } catch (e) { return null; } finally { await ctx.close(); }
 }
 // the share of the first screen's pixels that changed between two pictures, measured in the browser (the way tools/visual.mjs does)
@@ -223,17 +271,20 @@ async function main() {
       const html = fs.readFileSync(pg.file, 'utf8');
       const before = await look(browser, base, pg.url);
       if (!before) { report.pages.push({ url: pg.url, state: 'not measured' }); console.log(`${pg.url}: not measured (it did not load)`); continue; }
-      const row = { url: pg.url, before: { defects: before.defects, contrast: before.contrast, targets: before.targets, cls: before.cls, overflow: before.overflow } };
+      const row = { url: pg.url, before: { defects: before.defects, contrast: before.contrast, targets: before.targets, unstyled: before.unstyled, empty: before.empty, cls: before.cls, overflow: before.overflow } };
       if (!before.defects) { report.pages.push({ ...row, state: 'clean' }); console.log(`${pg.url}: 0 defects`); continue; }
-      const rules = rulesFor(before.fail), next = Object.keys(rules).length ? withBlock(html, rules) : null;
+      const rules = { ...rulesFor(before.fail), ...bareRules(before.fail.bare) }, next = Object.keys(rules).length ? withBlock(html, rules) : null;
       const shift = before.cls > 0.1 ? ' (a layout shift of ' + before.cls + ' that no rule fixes: listed for a builder)' : '';
+      // the home lives in 3 copies that must stay the same (void.html, void-live-deploy/void.html and index.html): the loop lists it for a
+      // builder instead of writing one copy, so a bare control or an empty button on the home is still found and reported every run
+      if (pg.url === '/') { report.pages.push({ ...row, state: 'listed', why: 'the home has 3 copies that must match: listed for a builder' + shift, found: before.fail.bare }); console.log(`/: ${before.defects} defects, listed for a builder (the home is not written by the loop)`); continue; }
       if (!next || next === html) { report.pages.push({ ...row, state: 'listed', why: 'no rule fixes it' + shift }); console.log(`${pg.url}: ${before.defects} defects, no rule fixes them${shift}`); continue; }
       fs.writeFileSync(pg.file, next);
       const after = await look(browser, base, pg.url);
       // what the change moved: the share that changed, less the share the page moves by itself in the same time
       const share = after ? Math.max(0, (await moved(browser, before.shot, after.shot)) - (await moved(browser, before.shot, before.shot2))) : 1;
       if (keeps(before, after, share)) {
-        report.pages.push({ ...row, state: 'fixed', after: { defects: after.defects, contrast: after.contrast, targets: after.targets, cls: after.cls, overflow: after.overflow }, rules: Object.keys(rules).length, moved: Math.round(share * 1000) / 1000, ...(shift ? { why: shift.trim() } : {}) });
+        report.pages.push({ ...row, state: 'fixed', after: { defects: after.defects, contrast: after.contrast, targets: after.targets, unstyled: after.unstyled, empty: after.empty, cls: after.cls, overflow: after.overflow }, rules: Object.keys(rules).length, moved: Math.round(share * 1000) / 1000, ...(shift ? { why: shift.trim() } : {}) });
         console.log(`${pg.url}: ${before.defects} -> ${after.defects} defects (${Object.keys(rules).length} rules, ${(share * 100).toFixed(1)}% of the first screen changed)${shift}`);
         if (!write) fs.writeFileSync(pg.file, html);
       } else {
