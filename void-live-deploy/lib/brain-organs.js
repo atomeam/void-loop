@@ -448,7 +448,19 @@ const arena = {
   }
 };
 
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, strokes, rules, reflex, growth, atlas, curves, dialogue, will, arena];
+// A deploy serves each /lib/ file on its own, so for a minute a visitor can get this organ list beside a brain made by an older lib/brain.js that
+// does not hold the newest organ's state (site-test issue #2387: "play reversi" threw reading 'queue' seven minutes after the strokes organ
+// shipped). Every organ kept in its own module is wrapped here: without its state in the brain it rests, wants nothing and runs nothing; with
+// its state it is the organ as written (tools/brain-skew.test.mjs). STATE_KEY names the brain key of an organ whose state is not under its id.
+export const STATE_KEY = { hearing: 'ear' };
+const guarded = (o) => {
+  const key = STATE_KEY[o.id] || o.id, has = (b) => !!(b && b[key]);
+  return { ...o, rests: (b) => !has(b) || !!(o.rests && o.rests(b)), want: (b) => (has(b) ? o.want(b) : 0), run: (b, ...rest) => (has(b) ? o.run(b, ...rest) : 0) };
+};
+const OWN = [synapses, creature, hearing, painter, gardener, grower, formula, current, grains, pool, trace, strokes, rules, reflex, growth, atlas, curves, dialogue].map(guarded);
+const own = (id) => OWN.find((o) => o.id === id);
+
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, own('gardener'), rhythm, own('synapses'), own('creature'), own('hearing'), swarm, membrane, own('painter'), own('grower'), own('formula'), own('current'), own('grains'), own('pool'), own('trace'), own('strokes'), own('rules'), own('reflex'), own('growth'), own('atlas'), own('curves'), own('dialogue'), will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };

@@ -104,5 +104,8 @@ test('a bet has a title a person reads whole: a flaky check by the head of its t
   const long = P.titleOf({ ask: 'make "' + 'word '.repeat(40) + '" robust: fix it' }); assert.ok(long.length <= 102 && long.endsWith('…') && !/\s…$/.test(long), long);
   assert.equal(P.titleOf({ ask: 'Fix the podcasts exam: crime junkie plays nothing. The card waits on two asks.' }), 'Fix the podcasts exam');
   assert.equal(P.titleOf({ ask: '', id: 'team-12' }), 'team-12');
+  // A check name that holds its own quotes still reads as a whole title, not a cut-off ask.
+  assert.equal(P.titleOf({ ask: 'make "pdf card "Summary" page: it renders" robust: fix the test or the code' }), 'Steady a flaky check: pdf card "Summary" page');
+  assert.equal(P.titleOf({ ask: 'make ""growth" board shows rows" robust: fix it' }), 'Steady a flaky check: "growth" board shows rows');
   const r = P.scoreOf({ id: 'f1', ask: 'make "sky / still" robust: fix the test or the code, never skip', target: 'flake:sky', state: 'queued' }, null, {}); assert.equal(r.title, 'Steady a flaky check: sky / still');
 });
