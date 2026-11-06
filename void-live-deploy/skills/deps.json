@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1167,
+ "counted": 1171,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -573,7 +573,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 99,
+   "dependants": 101,
    "tests": 2
   },
   {
@@ -790,21 +790,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 101,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 98,
+   "dependants": 100,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 96,
+   "dependants": 98,
    "tests": 9
   },
   {
@@ -1021,8 +1021,15 @@
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 37,
    "tests": 4
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 36,
+   "tests": 2
   },
   {
    "file": "lib/pay-share.js",
@@ -1032,11 +1039,11 @@
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
+   "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 32,
-   "tests": 1
+   "dependants": 34,
+   "tests": 3
   },
   {
    "file": "lib/markets.js",
@@ -1044,13 +1051,6 @@
    "direct": 2,
    "dependants": 32,
    "tests": 5
-  },
-  {
-   "file": "lib/store-db.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 32,
-   "tests": 3
   },
   {
    "file": "lib/store-products.js",
@@ -1070,7 +1070,7 @@
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 26,
+   "dependants": 28,
    "tests": 3
   },
   {
@@ -2344,42 +2344,42 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 94,
+   "dependants": 96,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 93,
+   "dependants": 95,
    "tests": 34
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 65,
+   "dependants": 67,
    "tests": 14
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 57,
+   "dependants": 59,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 57,
+   "dependants": 59,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 56,
+   "dependants": 58,
    "tests": 9
   },
   {
@@ -2393,14 +2393,14 @@
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 44,
+   "dependants": 46,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 45,
    "tests": 6
   },
   {
@@ -2656,6 +2656,13 @@
    "tests": 1
   },
   {
+   "file": "lib/paid-access.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 0
+  },
+  {
    "file": "lib/drive.js",
    "skills": 0,
    "direct": 0,
@@ -2682,13 +2689,6 @@
    "direct": 0,
    "dependants": 7,
    "tests": 3
-  },
-  {
-   "file": "lib/paid-access.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 0
   },
   {
    "file": "lib/studio.js",
@@ -2733,6 +2733,13 @@
    "tests": 2
   },
   {
+   "file": "lib/x402.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/comments.js",
    "skills": 0,
    "direct": 0,
@@ -2755,6 +2762,13 @@
   },
   {
    "file": "lib/team-crew.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/verse-wallet.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -4467,7 +4481,11 @@
     "lib/paid-access.js"
    ],
    "importedBy": [
-    "functions/api/mcp.js"
+    "functions/api/mcp.js",
+    "functions/api/x402/review.js"
+   ],
+   "reachedBy": [
+    "functions/api/x402/index.js"
    ]
   },
   "functions/api/routes.js": {
@@ -4670,7 +4688,8 @@
    "imports": [
     "lib/guard.js",
     "lib/store-db.js",
-    "lib/treasury.js"
+    "lib/treasury.js",
+    "lib/verse-wallet.js"
    ],
    "importedBy": []
   },
@@ -4757,6 +4776,22 @@
     "lib/will-last.js"
    ],
    "importedBy": []
+  },
+  "functions/api/x402/index.js": {
+   "imports": [
+    "functions/api/x402/review.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/x402/review.js": {
+   "imports": [
+    "lib/x402.js",
+    "lib/verse-wallet.js",
+    "functions/api/review.js"
+   ],
+   "importedBy": [
+    "functions/api/x402/index.js"
+   ]
   },
   "functions/boards/t/[[path]].js": {
    "imports": [
@@ -4934,7 +4969,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/store/[[path]].js",
-    "lib/store.js"
+    "lib/store.js",
+    "lib/verse-wallet.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -4961,8 +4997,11 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/treasury.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
     "skills/shop.js",
@@ -5466,6 +5505,8 @@
     "functions/api/watch.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -6951,6 +6992,8 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -8295,6 +8338,8 @@
     "functions/api/sing.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/fanfic/rss.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
@@ -8403,6 +8448,8 @@
     "functions/api/team.js",
     "functions/api/treasury.js",
     "functions/api/watch.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -9802,6 +9849,8 @@
     "functions/api/sportsearch.js",
     "functions/api/support.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -10143,6 +10192,8 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -10410,6 +10461,8 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/c/[clip].js",
     "functions/fanfic/rss.js",
     "functions/films/rss.js",
@@ -10505,6 +10558,8 @@
     "functions/api/watch.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -10531,6 +10586,8 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/mcp.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js"
    ]
   },
@@ -11110,6 +11167,8 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/watch.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -11797,6 +11856,8 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
@@ -12970,6 +13031,8 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/watch.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -13399,6 +13462,8 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -13900,6 +13965,8 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -13941,6 +14008,19 @@
   "lib/verse-shell.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/verse-wallet.js": {
+   "imports": [
+    "lib/alt-pay.js",
+    "lib/x402.js"
+   ],
+   "importedBy": [
+    "functions/api/treasury.js",
+    "functions/api/x402/review.js"
+   ],
+   "reachedBy": [
+    "functions/api/x402/index.js"
+   ]
   },
   "lib/video-gen.js": {
    "imports": [
@@ -14104,6 +14184,8 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -14318,6 +14400,8 @@
     "functions/api/watch.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
+    "functions/api/x402/index.js",
+    "functions/api/x402/review.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
@@ -14469,6 +14553,17 @@
     "functions/tools.json.js",
     "lib/a2a.js",
     "lib/team-mcp.js"
+   ]
+  },
+  "lib/x402.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/x402/review.js",
+    "lib/verse-wallet.js"
+   ],
+   "reachedBy": [
+    "functions/api/treasury.js",
+    "functions/api/x402/index.js"
    ]
   },
   "lib/yamljson.js": {
