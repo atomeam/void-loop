@@ -1,7 +1,7 @@
 // node --test tools/exam.test.mjs — an ask's score is the checks it passed, a drop is a regression, the will takes the lowest domain.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { judge, domainScore, lowestDomain, compareRuns, revertAfter, scaleSettling, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, SCALE } from '../void-live-deploy/lib/exam.js';
+import { judge, domainScore, lowestDomain, compareRuns, revertAfter, scaleSettling, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, mediaLine, SCALE } from '../void-live-deploy/lib/exam.js';
 import { examBoost, score } from './conductor-core.mjs';
 import { songAskOf } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
@@ -134,4 +134,14 @@ test('every public calculator ask has a number the engine itself would show', ()
     for (const a of pub[d]) { assert.ok(!asks.has(a.ask.toLowerCase()), a.ask); asks.add(a.ask.toLowerCase()); }
   }
   for (const a of pub.songs) if (!a.ambiguous) assert.ok(songAskOf(a.ask), a.ask);
+});
+
+test('the exam reads the answer card\'s own audio, and says why a media check failed', () => {
+  const src = readFileSync(new URL('./exam.mjs', import.meta.url), 'utf8');
+  assert.match(src, /card\.querySelector\('audio\[src\]'\)/, 'media is read from the answer card, not the first audio on the page');
+  assert.doesNotMatch(src, /document\.querySelector\('audio\[src\]'\)/);
+  assert.match(src, /document\.querySelector\('audio\[data-exam-audio\]'\)/, 'the exam plays the same element it read');
+  assert.equal(mediaLine(null), 'no audio element on the answer card');
+  assert.equal(mediaLine({ src: 'https://cdn.example.com/a/b/ep42.mp3?x=1', status: 206, type: 'audio/mpeg', currentTime: 1.04 }), 'cdn.example.com, file ep42.mp3 · status 206 · audio/mpeg · played 1.0 s');
+  assert.equal(mediaLine({ src: '/podcast/x.mp3' }), '/podcast/x.mp3 · status 0 · no type · played 0.0 s');
 });

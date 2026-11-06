@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Claude (gaps thread) · claude/project-thread-2r9unn · docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is device info (/api/ip), random colour, contrast, Markdown with text, text-tool boxes, wheel with spaces, age with a birth date, random words and dates, Fibonacci, Code 128 barcode · 2026-11-06 UTC
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
@@ -89,6 +88,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is device info (/api/ip), random colour, contrast, Markdown with text, text-tool boxes, wheel with spaces, age with a birth date, random words and dates, Fibonacci, Code 128 barcode (Claude (gaps thread), 2026-11-06)**: shipped in https://github.com/atomeam/void-loop/pull/2346.
 - **Savings load (cursor, 2026-11-05)**: "how much do i need to save a month to have 1 million in 30 years at 7%" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once. https://github.com/atomeam/void-loop/pull/2311
 - **Closer on the figure (cursor, 2026-11-05)**: "closer on the figure" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292
 - **Blank home, videos keep playing (cursor, 2026-11-05)**: the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was. https://github.com/atomeam/void-loop/pull/2291
