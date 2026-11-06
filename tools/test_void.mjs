@@ -5814,7 +5814,7 @@ try {
       && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
     await F.ctx.close();
   }
-  if (want('verse brain: one workspace that twenty-three organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that twenty-five organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5885,7 +5885,7 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its twenty-three organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty-five organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
       a.organs === 23 && a.rows === 23 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
@@ -11753,6 +11753,20 @@ try {
     }
     check('known first asks on a slow device (#2316 #2323 #2342): with the CPU 6x slower and no skill loaded yet, "flip this card", "favorite this" and "send it away" are answered by card-play, bookmarks and dismiss within 4 s of Enter, and no "waking up" is left behind',
       rows.every((r) => !r.loadedAtAsk && r.right && r.ms != null && r.ms <= 4000 && r.w !== 'waking up'), JSON.stringify(rows));
+  }
+
+  // On a device where the 3D layer cannot load (no WebGL, or skills/figures3d.js not reached), every render tried the import again and said
+  // "3D can't show in this browser" again, so with a figure on the stage that note took the place of the answer to each later ask: a live
+  // check of "send it away" (#2342) read only the 3D note. The note is said once a page load now; the import is still tried on each render.
+  if (want("3D note once: where 3D cannot load, the note shows once and the next ask keeps its own answer")) { const G = await fresh();
+    await G.ctx.route(/\/skills\/figures3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
+    await G.ask('summon a sprite', 900); const w1 = await G.whisper();
+    const figs = (await G.state()).filter((t) => t.kind === 'figure').length;
+    await G.ask('a clock', 900); const w2 = await G.whisper();
+    await G.ask('flip it', 900); const w3 = await G.whisper();
+    const NOTE = "3D can't show in this browser";
+    check('3D note once: with the 3D layer out of reach and a sprite on the stage, "3D can\'t show in this browser" shows once, and the asks after it ("a clock", "flip it") each show their own line, never the 3D note again',
+      figs === 1 && w1 === NOTE && w2 !== NOTE && w3 !== NOTE && !!w3, JSON.stringify({ figs, w1, w2, w3 }));
   }
 
   if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
