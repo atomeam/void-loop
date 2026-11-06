@@ -16,6 +16,7 @@ async function run(text, api) {
   const { showPage } = api;
   const el = showPage((p) => {
     p.dataset.cardKind = 'Song';
+    p.setAttribute('aria-busy', 'true'); // still being filled: a screen reader and the outcome exam wait for the track
     p.innerHTML = '<h2>Song</h2><p class="sub">Looking up ' + esc(asked.title) + ' by ' + esc(asked.artist) + '…</p>';
   });
   let track = null;
@@ -23,6 +24,7 @@ async function run(text, api) {
   if (api._pageStill && !api._pageStill(el)) return 'hear';
   if (!track) {
     el.innerHTML = '<h2>Song</h2><p>No Apple preview matched “' + esc(asked.title) + '” by ' + esc(asked.artist) + '. Try the title and the artist the way the recording is credited.</p><div class="src">Looked up on <a href="https://itunes.apple.com/" target="_blank" rel="noopener">iTunes Search</a>. Nothing is played that the lookup did not name.</div>';
+    el.removeAttribute('aria-busy');
     return 'hear';
   }
   el.innerHTML = '<h2>Song</h2>'
@@ -33,6 +35,7 @@ async function run(text, api) {
     + '<div class="src">Source: <a href="https://itunes.apple.com/search?entity=song&term=' + encodeURIComponent(asked.title + ' ' + asked.artist) + '" target="_blank" rel="noopener">iTunes Search</a> preview (30 seconds). The file is Apple\'s; Verse does not rehost it.</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
   if (btn && audio) btn.addEventListener('click', () => { audio.play().catch(() => {}); });
+  el.removeAttribute('aria-busy');
   return 'hear';
 }
 
