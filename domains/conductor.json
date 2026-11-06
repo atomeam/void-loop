@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T01:54:47.442Z",
+ "updated": "2026-11-06T02:04:59.938Z",
  "last24h": {
-  "ticks": 42,
-  "started": 74,
+  "ticks": 43,
+  "started": 76,
   "requeued": 0,
   "setAside": 3,
-  "probes": 6,
+  "probes": 7,
   "errors": 0
  },
  "broken": [],
@@ -39,7 +39,7 @@
    "cap": 90
   },
   "day": {
-   "used": 58,
+   "used": 68,
    "cap": 360
   },
   "room": true,
@@ -54,7 +54,7 @@
   "mveb8svc": 1793925233814,
   "mvfu4evy": 1793930087442,
   "mw2u6oyx": 1793844816429,
-  "mvpuq9g6": 1793845764880,
+  "mvpuq9g6": 1793930699938,
   "mw2u6pxi": 1793845764880,
   "mvpuqaee": 1793849788965,
   "mvpuqb4r": 1793850871957,
@@ -1363,6 +1363,36 @@
    "probe": false,
    "grow": false,
    "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 5,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T02:04:59.938Z",
+   "open": 205,
+   "started": [
+    {
+     "id": "mvw5r04u",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 96
+    },
+    {
+     "id": "mvpuq9g6",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 80
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
    "lap": false,
    "revived": [
     "void-tick.yml"
