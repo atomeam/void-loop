@@ -527,3 +527,12 @@ test('one open PR per task: a lap that would repeat a fresh open loop PR spends 
   assert.deepEqual(st.prs, ['https://github.com/example/repo/pull/7']);
   assert.equal(st.fails, 0);
 });
+
+test('the lap step writes nothing into the checkout before the lap reads git status', () => {
+  // a lap with local changes skips; the 19:39 lap on 2026-11-06 skipped on its own "tee lap.txt"
+  const wf = readFileSync(new URL('../.github/workflows/verse-loop.yml', import.meta.url), 'utf8');
+  const line = wf.split('\n').find((l) => /^\s*node tools\/verse-loop\.mjs --once/.test(l));
+  assert.ok(line, 'the workflow runs a lap');
+  const outs = [...line.matchAll(/(?:\btee\s+(?:-a\s+)?|>>?\s*)("?)([^\s"|;&]+)\1/g)].map((m) => m[2]);
+  for (const o of outs) assert.match(o, /^\$\{?(RUNNER_TEMP|GITHUB_STEP_SUMMARY|GITHUB_OUTPUT)\b|^\/dev\//, 'the lap writes ' + o + ' into the checkout');
+});
