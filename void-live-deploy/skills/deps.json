@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1188,
+ "counted": 1187,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -465,6 +465,13 @@
    "tests": 5
   },
   {
+   "file": "lib/telemetry.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 106,
+   "tests": 2
+  },
+  {
    "file": "lib/colour.js",
    "skills": 5,
    "direct": 1,
@@ -577,11 +584,25 @@
    "tests": 1
   },
   {
-   "file": "lib/telemetry.js",
+   "file": "lib/verse-secrets.js",
    "skills": 4,
-   "direct": 1,
-   "dependants": 104,
-   "tests": 2
+   "direct": 0,
+   "dependants": 106,
+   "tests": 1
+  },
+  {
+   "file": "lib/note-ask.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 105,
+   "tests": 1
+  },
+  {
+   "file": "lib/automation-fix.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 103,
+   "tests": 9
   },
   {
    "file": "lib/card-kinds.js",
@@ -792,27 +813,6 @@
    "direct": 4,
    "dependants": 4,
    "tests": 1
-  },
-  {
-   "file": "lib/verse-secrets.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 104,
-   "tests": 1
-  },
-  {
-   "file": "lib/note-ask.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 103,
-   "tests": 1
-  },
-  {
-   "file": "lib/automation-fix.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 101,
-   "tests": 9
   },
   {
    "file": "lib/share.js",
@@ -1302,6 +1302,13 @@
    "skills": 2,
    "direct": 1,
    "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/ask-same.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 36,
    "tests": 1
   },
   {
@@ -1858,6 +1865,13 @@
    "tests": 1
   },
   {
+   "file": "lib/actions-failure.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/arrange.js",
    "skills": 1,
    "direct": 1,
@@ -2365,14 +2379,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 100,
+   "dependants": 99,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 98,
    "tests": 35
   },
   {
@@ -2439,13 +2453,6 @@
    "tests": 0
   },
   {
-   "file": "lib/self-blocks.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 34,
-   "tests": 3
-  },
-  {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
@@ -2457,7 +2464,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 33,
-   "tests": 8
+   "tests": 9
   },
   {
    "file": "lib/free-router.js",
@@ -3049,13 +3056,6 @@
   },
   {
    "file": "lib/lap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/life-arb.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3685,6 +3685,13 @@
    "tests": 1
   },
   {
+   "file": "lib/self-blocks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 4
+  },
+  {
    "file": "lib/seo.js",
    "skills": 0,
    "direct": 0,
@@ -4294,13 +4301,6 @@
   "functions/api/joins.js": {
    "imports": [
     "lib/joins.js"
-   ],
-   "importedBy": []
-  },
-  "functions/api/life-arb.js": {
-   "imports": [
-    "lib/guard.js",
-    "lib/life-arb.js"
    ],
    "importedBy": []
   },
@@ -5031,6 +5031,14 @@
     "skills/about-skill.js"
    ]
   },
+  "lib/actions-failure.js": {
+   "imports": [
+    "lib/automation-fix.js"
+   ],
+   "importedBy": [
+    "skills/incident-autopsy.js"
+   ]
+  },
   "lib/actions-log.js": {
    "imports": [],
    "importedBy": []
@@ -5505,6 +5513,49 @@
     "skills/rally.js"
    ]
   },
+  "lib/ask-same.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/self-blocks.js",
+    "lib/voice.js",
+    "skills/wants.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/answer.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "functions/api/x402/[service].js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js"
+   ]
+  },
   "lib/ask-text.js": {
    "imports": [],
    "importedBy": [
@@ -5620,6 +5671,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/will.js",
+    "lib/actions-failure.js",
     "lib/bench-asks.js",
     "lib/code-review.js",
     "lib/correction-fix.js",
@@ -5702,6 +5754,7 @@
     "lib/self-context.js",
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
+    "skills/incident-autopsy.js",
     "skills/repo.js",
     "skills/routine.js",
     "skills/work.js"
@@ -8575,7 +8628,6 @@
     "functions/api/gumroad.js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
-    "functions/api/life-arb.js",
     "functions/api/misses.js",
     "functions/api/passkey.js",
     "functions/api/probe-asks.js",
@@ -9444,12 +9496,6 @@
   "lib/ledger.js": {
    "imports": [],
    "importedBy": []
-  },
-  "lib/life-arb.js": {
-   "imports": [],
-   "importedBy": [
-    "functions/api/life-arb.js"
-   ]
   },
   "lib/lineage.js": {
    "imports": [],
@@ -10543,6 +10589,7 @@
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
+    "lib/actions-failure.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -10569,6 +10616,7 @@
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "lib/voice.js",
+    "skills/incident-autopsy.js",
     "skills/repo.js",
     "skills/routine.js",
     "skills/work.js"
@@ -10756,7 +10804,6 @@
     "functions/api/hook/[id].js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
-    "functions/api/life-arb.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
@@ -12487,46 +12534,10 @@
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js",
-    "lib/weakest.js"
+    "lib/weakest.js",
+    "lib/ask-same.js"
    ],
-   "importedBy": [
-    "lib/voice.js"
-   ],
-   "reachedBy": [
-    "functions/api/a2a.js",
-    "functions/api/answer.js",
-    "functions/api/apibot.js",
-    "functions/api/bench.js",
-    "functions/api/card-art.js",
-    "functions/api/clip.js",
-    "functions/api/daily-art.js",
-    "functions/api/gallery.js",
-    "functions/api/image.js",
-    "functions/api/local.js",
-    "functions/api/markets.js",
-    "functions/api/mcp.js",
-    "functions/api/merge.js",
-    "functions/api/news.js",
-    "functions/api/podcasts.js",
-    "functions/api/rapvoice.js",
-    "functions/api/recipeimport.js",
-    "functions/api/recipes.js",
-    "functions/api/reflect.js",
-    "functions/api/repo.js",
-    "functions/api/report.js",
-    "functions/api/scores.js",
-    "functions/api/sing.js",
-    "functions/api/sportsearch.js",
-    "functions/api/translate.js",
-    "functions/api/voice-reply.js",
-    "functions/api/watchalong.js",
-    "functions/api/weather.js",
-    "functions/api/will.js",
-    "functions/api/x402/[service].js",
-    "lib/bench-asks.js",
-    "lib/built-detail.js",
-    "lib/self-context.js"
-   ]
+   "importedBy": []
   },
   "lib/self-context.js": {
    "imports": [
@@ -13872,6 +13883,7 @@
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
+    "lib/actions-failure.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -13898,6 +13910,7 @@
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "lib/voice.js",
+    "skills/incident-autopsy.js",
     "skills/repo.js",
     "skills/routine.js",
     "skills/work.js"
@@ -14404,6 +14417,7 @@
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
+    "lib/actions-failure.js",
     "lib/automation-fix.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
@@ -14432,6 +14446,7 @@
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "lib/voice.js",
+    "skills/incident-autopsy.js",
     "skills/repo.js",
     "skills/routine.js",
     "skills/work.js"
@@ -14533,7 +14548,7 @@
     "lib/persona.js",
     "lib/automation-fix.js",
     "skills/growth-tree.js",
-    "lib/self-blocks.js",
+    "lib/ask-same.js",
     "lib/weakest.js"
    ],
    "importedBy": [
@@ -16699,6 +16714,7 @@
   "skills/incident-autopsy.js": {
    "imports": [
     "lib/autopsy.js",
+    "lib/actions-failure.js",
     "lib/reaction-bar.js"
    ],
    "importedBy": []
@@ -19263,7 +19279,8 @@
   },
   "skills/wants.js": {
    "imports": [
-    "lib/visible.js"
+    "lib/visible.js",
+    "lib/ask-same.js"
    ],
    "importedBy": []
   },
