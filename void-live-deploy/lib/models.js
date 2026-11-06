@@ -42,3 +42,12 @@ export function models(path) {
   if (!PATHS.includes(path)) throw new Error('unknown model path: ' + path);
   return PATH_MODELS[path] || FREE_MODEL;
 }
+
+// Workers Free refuses these (Cloudflare changelog, 2026-07-28, error 5035). They are not gateway aliases.
+export const PAID_PLAN_MODELS = Object.freeze(['@cf/moonshotai/kimi-k2.6', '@cf/moonshotai/kimi-k2.7-code', '@cf/zai-org/glm-5.2']);
+// Short names for the free allowance only. The gateway id is optional (lib/ai-gateway.js).
+export const GATEWAY_ALIASES = Object.freeze({
+  'verse-answer': FREE_MODEL,
+  'verse-fallback': ANSWER_FALLBACK,
+  'verse-review': PATH_MODELS.review,
+});
