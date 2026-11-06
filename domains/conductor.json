@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T06:22:08.419Z",
+ "updated": "2026-11-06T06:37:40.374Z",
  "last24h": {
-  "ticks": 46,
-  "started": 80,
+  "ticks": 47,
+  "started": 81,
   "requeued": 0,
   "setAside": 3,
   "probes": 8,
@@ -78,7 +78,7 @@
   "mva30i2e": 1793939518551,
   "mva30j4u": 1793945056275,
   "mveb8rsi": 1793945056275,
-  "mvu167w7": 1793925233814,
+  "mvu167w7": 1793947060374,
   "mveb8svc": 1793925233814,
   "mvfu4evy": 1793930087442,
   "mvpuq9g6": 1793930699938,
@@ -1492,6 +1492,30 @@
      "kind": "versus",
      "wf": "verse-job.yml",
      "score": 97
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 12,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T06:37:40.374Z",
+   "open": 228,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 105
     }
    ],
    "requeued": 0,
