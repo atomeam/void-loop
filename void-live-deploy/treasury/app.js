@@ -21,6 +21,8 @@
         + '<div class="card"><b>' + esc(u.x402_payments || 0) + '</b><span>paid calls confirmed on chain' + (u.x402_waiting ? ' · ' + esc(u.x402_waiting) + ' waiting for confirmations' : '') + '</span></div>'
         + '<div class="card"><b>' + usd(u.x402_cents || 0) + '</b><span>received from agents</span></div></div>'
         + '<p class="note">' + esc(w.note) + ': <a href="' + esc(safeUrl(w.explorer)) + '" rel="noopener"><code>' + esc(w.address) + '</code></a></p>'
+        + (Array.isArray(w.services) && w.services.length ? '<p class="note">What agents can pay for, each call ' + esc(w.services[0].price_usdc) + ' USDC, charged only when the work is done (<a href="/api/x402">catalog</a>):</p><ul class="sells">'
+          + w.services.map((s) => { const b = (u.by_service || {})[s.id] || { calls: 0, cents: 0 }; return '<li><code>' + esc(s.path) + '</code> ' + esc(s.description) + ' <b>' + esc(b.calls) + ' paid call' + (b.calls === 1 ? '' : 's') + ', ' + usd(b.cents) + '</b></li>'; }).join('') + '</ul>' : '')
       : '<p class="note">' + esc(w.note || 'No wallet yet.') + '</p>';
     const pots = [['owner', "Atom's cut"], ['reserve', 'Reserve'], ...['infrastructure', 'tools', 'growth', 'bounties'].map((k) => [k, names[k] || k])];
     $('pots').innerHTML = pots.map(([k, n]) => '<div class="card"><b>' + usd(t.pots[k]) + '</b><span>' + esc(n) + (t.weights[k] != null ? ' · ' + pct(t.weights[k]) + ' of reinvestment' : '') + '</span></div>').join('');

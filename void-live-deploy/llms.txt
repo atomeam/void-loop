@@ -131,7 +131,14 @@ Each tool is a page of its own, free, with nothing to sign up for and no ads; al
 - https://a-to-mind.com/?q=<ask> opens Verse and runs the ask, for example https://a-to-mind.com/?q=weather%20in%20Tokyo
 
 ## Notes for crawlers and agents
-- Agents can pay per call, no account: POST https://a-to-mind.com/api/x402/review with {"code": ...} answers 402 with x402 payment requirements (0.05 USDC on Base, paid into Verse's own wallet); retry with the signed X-PAYMENT header for the AI closer read. Catalog: https://a-to-mind.com/api/x402. Protocol: https://docs.x402.org
+- Agents can pay per call, no account, 0.05 USDC on Base each, paid into Verse's own wallet over x402 (https://docs.x402.org). A POST without payment answers 402 with the payment requirements; retry with the signed X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header. Only work that is done is charged: a refusal or a busy model comes back with paid: false and nothing is settled. GET on each URL also answers the 402. Catalog with prices and input schemas: https://a-to-mind.com/api/x402
+  - POST https://a-to-mind.com/api/x402/review {"code": ...} or {"diff": ...}: code review with the AI closer read
+  - POST https://a-to-mind.com/api/x402/answer {"ask": ...}: a direct answer to a question
+  - POST https://a-to-mind.com/api/x402/fix {"ask": ..., "details": ...}: what a broken automation error means and how to fix it
+  - POST https://a-to-mind.com/api/x402/translate {"text": ..., "to": "es"}: translation between 100 languages
+  - POST https://a-to-mind.com/api/x402/digest {"text": ...} or {"url": ...}: the key points of a transcript or page, with an optional "ask"
+  - POST https://a-to-mind.com/api/x402/appraise {"image": "data:image/png;base64,..."}: what an item in a photo is worth
+  - POST https://a-to-mind.com/api/x402/image {"prompt": ...}: a picture painted from a prompt
 - Everything runs in the browser at https://a-to-mind.com. The one public API is code review: POST https://a-to-mind.com/api/review with {"code": ...} or {"diff": ...} returns findings (free); a Verse Pro key adds the closer read (https://a-to-mind.com/code-review/).
 - The public API is described in OpenAPI 3.1 at https://a-to-mind.com/openapi.json (code review, the MCP endpoint, tools.json, the catalog, and each skill's health: proven, checked, tested or experiment, at /skills/families.json), found from https://a-to-mind.com/.well-known/api-catalog (RFC 9727).
 - Browser agents with WebMCP (Chrome) find Verse's tools declared on the page itself (void_ask, void_stage, void_calculate, ...): each takes one plain-words ask and returns what appeared. The same list is at https://a-to-mind.com/tools.json.

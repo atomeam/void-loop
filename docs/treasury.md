@@ -32,8 +32,22 @@ Agents pay Verse per call in USDC on Base with the open x402 protocol (https://d
 `POST /api/x402/review` answers 402 with what to pay (0.05 USDC); the agent signs an EIP-3009 authorization to Verse's address and
 retries; a facilitator verifies it, the closer read runs, the facilitator settles (it broadcasts the transfer and pays the gas), and
 only then is the read given. No settlement, no read, no charge. Catalog: `GET /api/x402`. Code: `lib/x402.js`, `lib/verse-wallet.js`,
-`functions/api/x402/`, tests `tools/x402.test.mjs`.
+`functions/api/x402/`, tests `tools/x402.test.mjs` and `tools/x402-services.test.mjs`; live check `tools/x402-live.mjs`.
 
+- **What is sold** (owner, 2026-11-06: "so maybe verse can immediatly start charging for its code review and anything else
+  possible"), each 0.05 USDC (`SERVICES` in `lib/x402.js`): `review` (its own route, `functions/api/x402/review.js`), and `answer`,
+  `fix`, `translate`, `digest`, `appraise` and `image` (`functions/api/x402/[service].js`). Each of those runs one of the site's
+  free routes unchanged (`functions/api/answer.js`, `translate.js`, `digest.js`, `appraise.js`, `image.js`), so its per-connection
+  limits still apply and the free pages stay free. A call that cannot work is refused with 400 before any payment; only an answer
+  that did the work (`paidOk` in `PAID`) is settled and given. A refusal, a rate limit or a busy model comes back with `paid: false`
+  and is never settled. Tests: `tools/x402-services.test.mjs`.
+- **Found by agents**: every paid URL answers GET and HEAD with the same 402, and the v2 `PAYMENT-REQUIRED` header carries the
+  Bazaar extension (`extensions.bazaar`: the input body example, the output example and a JSON schema; `bazaarOf` in
+  `lib/x402.js`). PayAI's facilitator lists a resource in its Bazaar by itself, with no registration, the first time it verifies or
+  settles a payment for it, or when its catalog probe (HEAD, then GET) gets a 402 (docs.payai.network/x402/facilitators/bazaar).
+  The services are also in `llms.txt`, `openapi.json` and on `/treasury/`, which shows each one's confirmed calls and cents.
+- **Verse's address** (owner, 2026-11-06, his MetaMask wallet on Base): `0x172198B605c3A6388fc4265b09Bc9b3b71CC7196`, in
+  `lib/verse-wallet-address.js`. Self-custody, so no deposit minimum; EIP-55 checksum checked when it was set.
 - **The address**, in order: `VERSE_WALLET_ADDR` (a Pages variable, any receive address); else `VERSE_WALLET` in
   `lib/verse-wallet-address.js` (the same public address kept in the repo, so it ships with the next deploy and needs no Cloudflare
   or Coinbase account: the path when Atom has a self-custody wallet such as MetaMask or Rabby; not an exchange deposit address

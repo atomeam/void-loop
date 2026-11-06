@@ -126,11 +126,13 @@ export function usdcIncome(x402Rows = [], storeRows = []) {
   const ok = x402Rows.filter((r) => r.status === 'verified'), waiting = x402Rows.filter((r) => r.status === 'settled');
   const x402_cents = ok.reduce((n, r) => n + centsOf(r.units), 0);
   const store_cents = storeRows.filter((r) => r.provider === 'usdc-base' && r.status === 'paid' && !r.refunded).reduce((n, r) => n + Math.max(0, Math.round(Number(r.cents) || 0)), 0);
-  return { x402_payments: ok.length, x402_cents, x402_waiting: waiting.length, store_usdc_orders: storeRows.filter((r) => r.provider === 'usdc-base' && r.status === 'paid' && !r.refunded).length, store_usdc_cents: store_cents, cents: x402_cents + store_cents };
+  const by_service = {}; // each paid service's confirmed calls and cents, from the rows themselves (a row with no service name counts as review, the first one sold)
+  for (const r of ok) { const k = String(r.service || 'review'); const b = by_service[k] || (by_service[k] = { calls: 0, cents: 0 }); b.calls += 1; b.cents += centsOf(r.units); }
+  return { x402_payments: ok.length, x402_cents, x402_waiting: waiting.length, by_service, store_usdc_orders: storeRows.filter((r) => r.provider === 'usdc-base' && r.status === 'paid' && !r.refunded).length, store_usdc_cents: store_cents, cents: x402_cents + store_cents };
 }
 export async function incomeRows(env) {
   await ensureWallet(env);
-  const x = (await env.DB.prepare('SELECT status, units FROM void_x402').all()).results || [];
+  const x = (await env.DB.prepare('SELECT status, units, service FROM void_x402').all()).results || [];
   let s = [];
   try { s = (await env.DB.prepare("SELECT provider, status, cents, refunded FROM store_orders WHERE provider = 'usdc-base'").all()).results || []; } catch (_) {} // no store table on this deployment
   return { x, s };

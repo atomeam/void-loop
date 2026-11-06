@@ -13,6 +13,7 @@ import { ownerOk } from '../../lib/guard.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { realized, balances, bucketWeights, split, queueSpends, review } from '../../lib/treasury.js';
 import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
+import { SERVICES, usdcText } from '../../lib/x402.js';
 
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
 const RECONCILE_MS = 6 * 3600e3;
@@ -97,7 +98,8 @@ async function walletView(env) {
   if (!w) return { address: null, note: 'Verse has no wallet yet: x402 calls stay closed until one exists' };
   const units = await usdcBalance(env, w.address);
   return { address: w.address, source: w.source, note: w.note, network: 'Base', asset: 'USDC', balance_units: units, balance_cents: units == null ? null : Number(BigInt(units) / 10000n),
-    explorer: 'https://basescan.org/address/' + w.address, sells: '/api/x402' };
+    explorer: 'https://basescan.org/address/' + w.address, sells: '/api/x402',
+    services: Object.entries(SERVICES).map(([id, s]) => ({ id, path: s.path, price_usdc: usdcText(s.units), description: s.description })) };
 }
 
 function publicView(policy, s, env) {
