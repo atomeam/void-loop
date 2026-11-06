@@ -21,4 +21,4 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Tags or folders | Organising | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:156 `maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></d` |
 | Share a note by link | Sharing | have | every site of this kind offers it | void-live-deploy/notes/index.html:164 `id="shareBtn" data-w="share">Copy share link</button>` |
 | Edit together in real time | Sharing | missing | studied by hand: onenote.com offers this (https://onenote.com/) | no sign of it in the source of /notes/ |
-| Clip pages from the web | Files | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:260 `const pics = [...(e.clipboardData ? e.clipboardData.files : [])].filter((f) => /^ima` |
+| Clip pages from the web | Files | have | studied by hand: onenote.com offers this (https://onenote.com/) | void-live-deploy/notes/index.html:195 `ing="lazy" allow="microphone; clipboard-write" style="display:block;width:100%;height:560p` |
