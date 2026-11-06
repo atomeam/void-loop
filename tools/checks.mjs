@@ -277,6 +277,7 @@ for (const [name, file] of [
   ['motorbody', 'motorbody.test.mjs'],
   ['incident', 'incident.test.mjs'],
   ['incident-log', 'incident-log.test.mjs'],
+  ['actions-failure', 'actions-failure.test.mjs'],
   ['cite', 'cite.test.mjs'],
   ['showcase', 'showcase.test.mjs'],
   ['fix-pages', 'fix-pages.test.mjs'],
