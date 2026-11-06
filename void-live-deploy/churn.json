@@ -1,91 +1,71 @@
 {
- "at": "2026-11-06T10:23:15.760Z",
+ "at": "2026-11-06T19:41:03.762Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "domains/conductor.json",
-   "changes": 136
-  },
-  {
-   "file": "domains/handoff.md",
-   "changes": 64
+   "changes": 129
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 58
+   "changes": 68
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 58
+   "changes": 68
   },
   {
-   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 44
+   "file": "domains/handoff.md",
+   "changes": 63
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 44
+   "changes": 48
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 47
   },
   {
    "file": "domains/tower-self.json",
    "changes": 43
   },
   {
-   "file": "docs/HANDOFF-GAPS.md",
-   "changes": 40
-  },
-  {
-   "file": "tools/handoff-e2e.mjs",
-   "changes": 33
-  },
-  {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 29
-  },
-  {
    "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 29
-  },
-  {
-   "file": "domains/growth-inbox.md",
-   "changes": 27
+   "changes": 30
   },
   {
    "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
-   "changes": 27
+   "changes": 28
   },
   {
-   "file": "docs/PARITY/github.md",
-   "changes": 25
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 26
   },
   {
-   "file": "docs/PARITY/hugging-face.md",
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 26
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
    "changes": 25
   },
   {
    "file": "tools/real-pages.mjs",
-   "changes": 25
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 25
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 25
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
    "changes": 24
   },
   {
-   "file": "void-live-deploy/bots/registry.json",
-   "changes": 21
+   "file": "docs/PARITY/lichess.md",
+   "changes": 22
   },
   {
    "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/bots/registry.json",
    "changes": 21
   },
   {
@@ -93,15 +73,7 @@
    "changes": 19
   },
   {
-   "file": "tools/families.mjs",
-   "changes": 19
-  },
-  {
-   "file": "docs/PARITY/google-search.md",
-   "changes": 18
-  },
-  {
-   "file": "tools/bench.json",
+   "file": "domains/growth-inbox.md",
    "changes": 18
   },
   {
@@ -109,11 +81,15 @@
    "changes": 18
   },
   {
-   "file": "domains/autosalvage.unified.json",
+   "file": "docs/PARITY/github.md",
    "changes": 17
   },
   {
-   "file": "void-live-deploy/lib/guard.js",
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 17
+  },
+  {
+   "file": "domains/autosalvage.unified.json",
    "changes": 17
   },
   {
@@ -129,23 +105,23 @@
    "changes": 15
   },
   {
-   "file": "void-live-deploy/skills/util.js",
-   "changes": 15
-  },
-  {
-   "file": "tools/word-math.golden.json",
+   "file": "tools/families.mjs",
    "changes": 14
   },
   {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 14
+   "file": "docs/PARITY/google-search.md",
+   "changes": 13
+  },
+  {
+   "file": "docs/PARITY/youtube.md",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/lib/guard.js",
+   "changes": 13
   },
   {
    "file": "void-live-deploy/sw.js",
-   "changes": 14
-  },
-  {
-   "file": "tools/openapi-check.mjs",
    "changes": 13
   }
  ]

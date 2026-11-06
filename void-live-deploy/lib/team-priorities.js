@@ -52,7 +52,17 @@ export function scoreOf(j, w, ev = {}) {
   if (!drivers.length) drivers.push('a ' + kind + ' job with no measured outcome yet');
   const effort = (EFFORT[kind] || 3) + (ask.length > 300 ? 1 : 0) + tries(j.note);
   confidence = Math.max(0.1, confidence - 0.15 * tries(j.note));
-  return { id: j.id, ask: ask.slice(0, 200), kind, state: j.state, want: w ? w.key : null, lane: laneOf(j, w), impact: r2(impact), effort, confidence: r2(confidence), score: r2(impact * confidence / effort * mult), drivers, evidence, busywork: L.busywork };
+  return { id: j.id, title: titleOf({ ask, id: j.id }), ask: ask.slice(0, 200), kind, state: j.state, want: w ? w.key : null, lane: laneOf(j, w), impact: r2(impact), effort, confidence: r2(confidence), score: r2(impact * confidence / effort * mult), drivers, evidence, busywork: L.busywork };
+}
+
+/** a bet's title a person reads whole on /team/ and /brain/ (owner, 2026-11-06: the bets showed as cut-off sentences): a flaky check by the
+ *  head of its test name, anything else by its first clause, at a word, under 110 characters. The ask itself stays under it, whole. Pure. */
+const cutAt = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); if (s.length <= n) return s; const c = s.slice(0, n - 1).replace(/[\s,;:–-]+\S*$/, ''); return (c || s.slice(0, n - 1)) + '…'; };
+export function titleOf(r) {
+  const ask = String((r && r.ask) || '').trim(), flake = /^make "(.+?)"? robust\b/i.exec(ask);
+  if (flake) { const check = flake[1].replace(/…$/, ''), head = check.split(/:\s/)[0].trim(); return 'Steady a flaky check: ' + cutAt(head, 80); }
+  const first = ask.split(/(?<=[.!?])\s|:\s|;\s/)[0];
+  return cutAt(first || ask || (r && r.id) || '', 110);
 }
 
 /** an owner message that sets a priority -> { pin } | { drop } | { reset } | null */

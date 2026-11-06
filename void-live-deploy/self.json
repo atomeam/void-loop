@@ -270,6 +270,12 @@
    "date": "2026-11-04",
    "ask": "system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff)",
    "from": "new idea by growth agent; helper/system-status"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
+   "from": "new idea by growth agent; helper/heavy-lift-map"
   }
  ],
  "open": [
@@ -574,13 +580,41 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-30T11:33:13Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-11-06T16:11:53Z",
+   "subject": "Regenerate HANDOFF-GAPS and the lichess PARITY page after merging main"
+  },
+  {
+   "at": "2026-11-06T16:10:43Z",
+   "subject": "Movie pick: read each film's genre from Wikidata, so the match score can test it (#2437)"
+  },
+  {
+   "at": "2026-11-06T16:10:26Z",
+   "subject": "Morning routine: \"make me a morning routine starting at 6:30\" is a ritual, not a recipe timer (#2439)"
+  },
+  {
+   "at": "2026-11-06T16:10:05Z",
+   "subject": "Podcast: a hung ffmpeg install no longer cancels the daily episode (#2447)"
+  },
+  {
+   "at": "2026-11-06T16:09:56Z",
+   "subject": "Outcome exam: podcasts 86.4"
+  },
+  {
+   "at": "2026-11-06T16:08:49Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-06T16:08:18Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
   {
    "at": "2026-11-06T16:06:16Z",
    "subject": "Failed jobs read: run 42244869099 (void-live-deploy/incidents/actions/)"
@@ -632,34 +666,6 @@
   {
    "at": "2026-11-06T15:41:39Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-06T15:38:18Z",
-   "subject": "Outcome exam: podcasts 86.4"
-  },
-  {
-   "at": "2026-11-06T15:38:02Z",
-   "subject": "Verse runs its own day: the clock keeps going, the daily film and podcast start themselves, the crew says when it runs next (#2440)"
-  },
-  {
-   "at": "2026-11-06T15:37:44Z",
-   "subject": "Failed jobs read: run 42240559933 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T15:37:24Z",
-   "subject": "Incident: the browser suite failed on b8b7e8ad (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T15:26:58Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T15:23:12Z",
-   "subject": "Failed jobs read: run 42240108371 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T15:22:46Z",
-   "subject": "Incident: the browser suite failed on d93f7ca1 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
@@ -840,10 +846,6 @@
    "why": "the tower's sports floors lose \"pictures of the games\" to money only; free routes cover the big matches"
   }
  ],
- "visible": {
-  "day": 49,
-  "week": 200
- },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
   "tricks": [
@@ -899,7 +901,7 @@
   "source": "verse"
  },
  "tower": {
-  "target": "id5-sync.com",
+  "target": "dalyfeds.com",
   "since": "2026-11-06",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [

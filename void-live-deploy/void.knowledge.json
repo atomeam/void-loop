@@ -1,5 +1,50 @@
 [
   {
+    "id": "page:gosuslugi-ru",
+    "from": "page",
+    "consumed": "gosuslugi.ru",
+    "learned": "gosuslugi.ru walled: a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "gosuslugi.ru was walled",
+    "at": "2026-11-06T17:40:18Z",
+    "seen": 1
+  },
+  {
+    "id": "page:myfritz-net",
+    "from": "page",
+    "consumed": "myfritz.net",
+    "learned": "myfritz.net walled: a sign-in wall",
+    "retain": "myfritz.net was walled",
+    "at": "2026-11-06T17:40:09Z",
+    "seen": 1
+  },
+  {
+    "id": "page:slideshare-net",
+    "from": "page",
+    "consumed": "slideshare.net",
+    "learned": "slideshare.net walled: a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "slideshare.net was walled",
+    "at": "2026-11-06T17:39:44Z",
+    "seen": 1
+  },
+  {
+    "id": "page:archive-org",
+    "from": "page",
+    "consumed": "archive.org",
+    "learned": "archive.org walled: a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "archive.org was walled",
+    "at": "2026-11-06T17:39:42Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
+    "from": "page",
+    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
+    "learned": "2026-11-06: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"",
+    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-06) did not work",
+    "at": "2026-11-06T12:15:21.960Z",
+    "seen": 1
+  },
+  {
     "id": "page:netcraze-io",
     "from": "page",
     "consumed": "netcraze.io",
@@ -33,15 +78,6 @@
     "learned": "2026-11-06: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
     "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-06) did not work (credits)",
     "at": "2026-11-06T07:19:00.422Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
-    "from": "page",
-    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
-    "learned": "2026-11-06: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"",
-    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-06) did not work",
-    "at": "2026-11-06T04:08:03.405Z",
     "seen": 1
   },
   {
@@ -99,6 +135,24 @@
     "seen": 1
   },
   {
+    "id": "page:convertunits-com",
+    "from": "page",
+    "consumed": "convertunits.com",
+    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
+    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
+    "at": "2026-11-05T02:31:06Z",
+    "seen": 1
+  },
+  {
+    "id": "page:convertlive-com",
+    "from": "page",
+    "consumed": "convertlive.com",
+    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
+    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
+    "at": "2026-11-05T02:30:05Z",
+    "seen": 1
+  },
+  {
     "id": "page:ofont-ru",
     "from": "page",
     "consumed": "ofont.ru",
@@ -114,24 +168,6 @@
     "learned": "emojigraph.org assimilated; Verse's page /emoji-combos/emoji-dictionary/",
     "retain": "emojigraph.org was assimilated by /emoji-combos/emoji-dictionary/",
     "at": "2026-11-03T23:37:24Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertunits-com",
-    "from": "page",
-    "consumed": "convertunits.com",
-    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
-    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
-    "at": "2026-11-03T14:21:44Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertlive-com",
-    "from": "page",
-    "consumed": "convertlive.com",
-    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
-    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
-    "at": "2026-11-03T14:21:10Z",
     "seen": 1
   },
   {

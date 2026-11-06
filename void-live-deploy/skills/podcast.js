@@ -56,8 +56,14 @@ async function playShow(text, api) {
   const asked = latestEpisodeOf(text); if (!asked) return false;
   const { showPage } = api;
   const el = showPage((p) => { p.dataset.cardKind = 'Podcast'; p.innerHTML = '<h2>Podcast</h2><p class="sub">Finding the latest episode of ' + escH(asked.show) + '…</p>'; });
-  let ep = null, show = null, found = null;
+  let ep = null, show = null, found = null, one = null;
   try {
+    // one ask first (/api/podcasts?latest=: the directory, the show and the newest episode together, cached on the edge); the older two-step
+    // path (search, then the whole feed) runs only when that ask itself could not be read
+    one = await fetch('/api/podcasts?latest=' + encodeURIComponent(asked.show)).then((r) => r.json()).catch(() => null);
+    if (one && one.ok && one.episode) { ep = one.episode; show = one.show; found = one; }
+  } catch (_) {}
+  if (!ep && !(one && one.ok === false)) try {
     found = await fetch('/api/podcasts?q=' + encodeURIComponent(asked.show)).then((r) => r.json());
     show = pickShow(found && found.shows, asked.show);
     if (show) {
@@ -75,7 +81,7 @@ async function playShow(text, api) {
   el.innerHTML = '<h2>Podcast</h2>'
     + '<p class="hear-title" style="font-size:1.1em;margin:0 0 2px;overflow-wrap:anywhere"><b>' + escH(ep.title) + '</b></p>'
     + '<p class="hear-artist" style="margin:0 0 8px">' + escH(show.title) + (show.author ? ' · ' + escH(show.author) : '') + '</p>'
-    + '<audio class="hear-audio" controls preload="metadata" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
+    + '<audio class="hear-audio" controls preload="auto" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
     + '<p><button type="button" class="hear-play">Play</button></p>'
     + '<div class="src">' + sourceLine(found && found.source) + '</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
