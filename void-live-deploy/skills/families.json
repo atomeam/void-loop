@@ -13,10 +13,10 @@
  "smoke_at": "2026-11-06",
  "bench_at": "2026-11-05",
  "totals": {
-  "experiment": 1,
-  "tested": 12,
-  "checked": 13,
-  "proven": 385
+  "experiment": 0,
+  "tested": 13,
+  "checked": 12,
+  "proven": 386
  },
  "families": [
   {
@@ -610,10 +610,15 @@
     {
      "name": "coin",
      "tier": "proven",
-     "why": "a self-test, 12 browser-suite mentions, 2 real asks in the benchmark",
+     "why": "a self-test, 12 browser-suite mentions, 8 real asks in the benchmark",
+     "failing": [
+      "flip a coin",
+      "flip a coin please",
+      "coin flip"
+     ],
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.25,
      "promoted": "2026-10-29",
      "streak": 12
     },
@@ -1597,10 +1602,13 @@
     {
      "name": "formulas",
      "tier": "proven",
-     "why": "a self-test, 11 real asks in the benchmark",
+     "why": "a self-test, 12 real asks in the benchmark",
+     "failing": [
+      "simple interest on 1000 at 5% for 3 years"
+     ],
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.917,
      "promoted": "2026-10-29",
      "streak": 8
     },
@@ -1807,8 +1815,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 3,
-    "proven": 44
+    "checked": 2,
+    "proven": 45
    },
    "sources": {
     "read": 27,
@@ -2158,12 +2166,15 @@
     },
     {
      "name": "riddle",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "failing": [
+      "tell me a riddle"
+     ],
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
-     "promoted": "2026-11-04"
+     "success_rate": 0.667,
+     "promoted": "2026-11-06"
     },
     {
      "name": "compliment",
@@ -3595,19 +3606,19 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 1,
-    "tested": 5,
+    "experiment": 0,
+    "tested": 6,
     "checked": 2,
     "proven": 49
    },
    "skills": [
     {
      "name": "lab",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-11-06"
+     "promoted": "2026-11-06"
     },
     {
      "name": "team-chat",
