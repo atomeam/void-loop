@@ -37,8 +37,8 @@ export function due(entries, now = new Date()) {
 }
 
 /** the job's words: what to fix and what not to do. Pure. */
-// the check by the head of its test name (the part before its first colon, cut at a word), so the bet reads whole on /team/ and /brain/
-export const nameOf = (check) => { const s = String(check || '').replace(/\s+/g, ' ').trim(), head = s.split(/:\s/)[0]; if (head.length <= 80) return head; return head.slice(0, 79).replace(/\s+\S*$/, '') + '…'; };
+// the check by the head of its test name (the part before its first colon), so the bet reads whole on /team/ and /brain/
+export const nameOf = (check) => String(check || '').replace(/\s+/g, ' ').trim().split(/:\s/)[0];
 export const askOf = (g) => `make "${nameOf(g.check)}" robust: fix the test or the code, never skip, quarantine or retry it. It failed on main and healed with no revert ${g.times}x in ${DAYS} days (${g.shas.join(', ')}; tools/flakes.json)`.slice(0, 200);
 
 /** the file in its own style: one entry per line */
