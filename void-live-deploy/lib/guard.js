@@ -23,6 +23,7 @@ export const LIMITS = {
   'tower-self': { rpm: 30, body: 120000 },
   appraise: { rpm: 6, body: 1200000 },
   watchalong: { rpm: 30, body: 450000 }, // watch with Verse (functions/api/watchalong.js): the last minutes of captions and at most one small still of the screen (400 KB); the route keeps its own 12 asks and 3 learns a minute
+  blueprint: { rpm: 30, body: 2000 }, // a blueprint card's build line (functions/api/blueprint.js): one idea of at most 280 characters; the route keeps its own 20 a minute
   translate: { rpm: 40, body: 1200000 }, // 5,000 characters of text, or one downsized photo whose text the vision model reads, 40 a minute: a translation model call each (functions/api/translate.js) // one downsized photo (768 px JPEG) per call, 6 a minute: a vision model call each (functions/api/appraise.js) // /api/answer also keeps its own tighter 12 a minute for model calls
   'fanfic-hits': { rpm: 60, body: 0 }, // /fanfic/ read counts (functions/api/fanfic-hits.js): a POST has no body; one count per visitor, story and day, 30 a minute per connection in the route
   boards: { rpm: 600, body: 4700000 }, // the boards (functions/api/boards/[[path]].js): a catalog page loads up to 150 thumbnails; a post carries one picture of up to 4 MB and its thumbnail; posting, reporting and making boards are rate-limited per hashed address in the route itself, behind a bot check
