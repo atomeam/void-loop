@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T14:42:35.394Z",
+ "updated": "2026-11-06T14:56:48.963Z",
  "last24h": {
   "ticks": 38,
-  "started": 71,
+  "started": 72,
   "requeued": 0,
   "setAside": 0,
   "probes": 6,
@@ -71,11 +71,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 30,
    "cap": 90
   },
   "day": {
-   "used": 248,
+   "used": 278,
    "cap": 360
   },
   "room": true,
@@ -93,7 +93,6 @@
   "mvpuqaee": 1793933006938,
   "mvpuqb4r": 1793935659114,
   "mvvjzso8": 1793937026908,
-  "mw3m1qvj": 1793890206315,
   "mw3m1rj1": 1793891238166,
   "mw3p9ue1": 1793893767367,
   "mw3p9uze": 1793902700155,
@@ -115,7 +114,8 @@
   "mw4n3xj1": 1793951324937,
   "mw4ouwnx": 1793952976112,
   "mw4ouxn8": 1793955601329,
-  "mw4ouylb": 1793958599851
+  "mw4ouylb": 1793958599851,
+  "mw4ouzj0": 1793977008963
  },
  "visitorAt": "2026-11-06T13:33:35Z",
  "visitorFiled": [
@@ -201,30 +201,6 @@
   "review:2435"
  ],
  "ticks": [
-  {
-   "at": "2026-11-05T14:50:06.315Z",
-   "open": 195,
-   "started": [
-    {
-     "id": "mw3m1qvj",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 191,
-   "warnings": 0
-  },
   {
    "at": "2026-11-05T15:07:18.166Z",
    "open": 194,
@@ -1302,6 +1278,36 @@
    "healed": [],
    "probe": false,
    "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 14,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T14:56:48.963Z",
+   "open": 238,
+   "started": [
+    {
+     "id": "mw4p9cye",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 76
+    },
+    {
+     "id": "mw4ouzj0",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 41
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
    "will": false,
    "lap": false,
    "revived": [
