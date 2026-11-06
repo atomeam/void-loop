@@ -17,5 +17,5 @@ test('JSON on ask; a bad header is never echoed', async () => {
   assert.deepEqual(await onRequestGet({ request: req('1.2.3.4', '*/*', 'https://a-to-mind.com/ip?format=json') }).json(), { ok: true, ip: '1.2.3.4', v6: false });
   assert.equal(formatOf('https://a-to-mind.com/ip', 'application/json'), 'json');
   const bad = onRequestGet({ request: req('<script>') }); assert.equal(bad.status, 503); assert.equal(await bad.text(), 'unknown\n');
-  assert.doesNotMatch(page(null), /script/);
+  assert.doesNotMatch(page(null), /<script/i);
 });
