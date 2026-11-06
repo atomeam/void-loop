@@ -185,3 +185,29 @@ test('the list has no ceiling (owner, 2026-11-06: "films is stopping at 60 ? why
   assert.equal(open.seen.length, N - Math.ceil(N / 3), 'anyone gets every film that passed the gate, on every page');
   assert.equal(open.first.stored, undefined, 'only the owner sees the stored count');
 });
+
+test('the grid reads past 60 (owner, 2026-11-06: "ok still capping at 60 videos"): a page of pictures never spends the next page\'s budget', async () => {
+  const { env } = await world();
+  for (let i = 0; i < 130; i++) {
+    const id = 'film-' + String(i).padStart(4, '0');
+    await env.FILMS.put('films/' + id + '.mp4', FILM);
+    await env.FILMS.put('films/' + id + '.json', JSON.stringify({ title: 't' + i, gate: 'pass' }));
+  }
+  const through = (path, next) => guard({ request: new Request('https://x.test' + path, { headers: { 'cf-connecting-ip': '203.0.113.60' } }), env, next });
+  const list = (path) => through(path, (req) => api.onRequestGet({ request: req, env }));
+  const first = await (await list('/api/films')).json();
+  assert.equal(first.films.length, api.PAGE); assert.equal(first.next, api.PAGE);
+  // the browser loads every card's picture: one Range GET or more per film, all signed links, more than the list's whole minute
+  for (let i = 0; i < 2; i++) for (const f of first.films) {
+    const r = await through(f.src, () => new Response('x', { status: 206 }));
+    assert.equal(r.status, 206, 'a signed picture is never refused for the list\'s budget');
+  }
+  const second = await list('/api/films?from=' + first.next);
+  assert.equal(second.status, 200, 'the next page is still answered after 120 pictures in the same minute');
+  const j = await second.json();
+  assert.equal(j.films.length, api.PAGE); assert.equal(j.films[0].id, 'film-0069');
+  const page = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
+  assert.match(page, /'data-src': f\.src/, 'a card\'s picture waits until the card is near the screen');
+  assert.doesNotMatch(page, /\$\('video', \{ src: f\.src \+ '#t=0\.5'/, 'no grid card loads its picture up front');
+  assert.match(page, /r2\.status !== 429/, 'a busy minute waits and asks again instead of ending the list');
+});

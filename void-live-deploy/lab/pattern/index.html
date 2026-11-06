@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: color; out: image">
+<title>Seamless pattern maker: tileable textures as PNG · Verse lab</title>
+<meta name="description" content="Grow a seamless, tileable pattern (spots, coral, maze, worms or holes) in two colours you pick, see it repeated to check there is no seam, and download it as a PNG up to 2048 px or keep a link that grows the same one again. Free, made on your device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Seamless pattern maker · Verse lab">
+<meta property="og:description" content="Tileable spots, coral and maze textures in your colours, as a PNG or a link. Made on your device.">
+<meta property="og:url" content="https://a-to-mind.com/lab/pattern/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tools.css">
+<style>
+  .stage { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .stage { grid-template-columns: 1fr; } }
+  #view, #tiled { width: 100%; aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); }
+  #view { image-rendering: auto; } #tiled { background-size: 33.34% 33.34%; background-repeat: repeat; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/lab/pattern/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Seamless pattern maker","url":"https://a-to-mind.com/lab/pattern/","description":"Grow a seamless, tileable pattern (spots, coral, maze, worms or holes) in two colours you pick, check it repeated with no seam, and download it as a PNG up to 2048 px or keep a link that grows the same pattern again. Made on your device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"seamless pattern maker, tileable texture generator, seamless background generator, pattern generator png, reaction diffusion pattern, seamless texture online","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Seamless pattern maker","item":"https://a-to-mind.com/lab/pattern/"}]}]}</script>
+<!-- /seo -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/lab/pattern/app.js"></script>
+</head>
+<body>
+<main>
+  <h1>Seamless pattern maker</h1>
+  <p class="lead">Grow a pattern that tiles with no seam, in your colours, for a background, wallpaper, a print or a game texture.</p>
+  <div class="panel">
+    <div class="row">
+      <label for="preset">Pattern</label><select id="preset"></select>
+      <label for="back">Ground</label><input id="back" type="color">
+      <label for="ink">Ink</label><input id="ink" type="color">
+      <button type="button" id="swap">Swap</button>
+    </div>
+    <div class="row"><button type="button" id="new" class="main">Grow a new one</button><label for="seed">Seed</label><input id="seed" type="number" min="1" step="1" style="width:8em"></div>
+    <div class="stage"><div><canvas id="view" width="256" height="256" aria-label="The tile"></canvas><p class="note">The tile</p></div><div><div id="tiled" role="img" aria-label="The tile repeated 3 by 3"></div><p class="note">Repeated 3 by 3: look for a seam</p></div></div>
+    <p id="state" class="note" aria-live="polite">Growing…</p>
+    <div class="row"><label for="size">PNG size</label><select id="size"><option>512</option><option selected>1024</option><option>2048</option></select><button type="button" id="save" disabled>Download PNG</button><button type="button" id="link">Copy link</button></div>
+  </div>
+  <p class="note">The same pattern, seed and colours always grow the same tile, so the link is the pattern; nothing is uploaded. Your palette from Colour codes is used when you have kept one.</p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/photo-palette/">Palette from a photo</a> <a href="/color/">Colour codes</a> <a href="/color/gradient/">Gradient</a> <a href="/resize-image/">Resize an image</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="from">Made from the lab's Turing-pattern experiments, which grew these as screensavers; this grows one you keep. <a href="/lab/">More from the lab</a></p>
+</main>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
