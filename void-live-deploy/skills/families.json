@@ -14,7 +14,7 @@
  "bench_at": "2026-11-05",
  "totals": {
   "experiment": 0,
-  "tested": 11,
+  "tested": 12,
   "checked": 13,
   "proven": 385
  },
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
     "proven": 59
    },
@@ -198,6 +198,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 17
+    },
+    {
+     "name": "image-gen",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests"
     },
     {
      "name": "video-gen",
@@ -1201,7 +1208,7 @@
     {
      "name": "timer",
      "tier": "proven",
-     "why": "a self-test, 4 browser-suite mentions, 34 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 34 real asks in the benchmark",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
      "success_rate": 1
@@ -2660,9 +2667,9 @@
     {
      "name": "sticky",
      "tier": "proven",
-     "why": "a self-test, 15 browser-suite mentions, 4 real asks in the benchmark",
-     "last_tested": "2026-11-05",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 17 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 17
     },

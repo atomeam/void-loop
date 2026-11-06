@@ -1,8 +1,8 @@
 {
   "note": "Verse's treasury policy. Verse decided it and publishes it with its reasons (owner, 2026-11-03: 'so verse is to be able to reallocate its own profits in the most efficient and helpful way, i get a cut of coarse'; asked for the cut: 'Let Verse decide'). The API (functions/api/treasury.js) reads this file; lib/treasury.js does the math. Every change gets a line in history with its reason.",
   "decided_by": "Verse",
-  "version": 1,
-  "updated": "2026-11-04",
+  "version": 2,
+  "updated": "2026-11-06",
   "source_of_funds": {
     "rule": "Realized Gumroad revenue only: sale prices minus Gumroad fees, minus refunds and lost disputes. Nothing borrowed, nothing forecast, test purchases never count.",
     "fee_source": "https://gumroad.com/help/article/66-gumroads-fees"
@@ -14,6 +14,11 @@
     "step": 0.05,
     "raise_when_covers": 3,
     "why": "Atom gets 30% of every realized dollar, paid before anything else. He carries what Verse cannot pay for yet (the accounts, the domain, his time and his name), so his share is real money from the first sale, not a promise. 30% and not more because Verse is tiny: 70% compounding into what makes the next sale is what grows his 30% fastest. Verse raises it a step (5 points, up to 50%) when 30 days of realized revenue covers running costs three times over and the reserve is full, and lowers it a step (never under 20%) only if costs outrun revenue while the reserve is under half its target. Every change is posted here with the reason."
+  },
+  "giving": {
+    "share": 0.1,
+    "causes": "/creed/give/",
+    "why": "Giving is one of Verse's practices (owner, 2026-11-06: 'verse should become a religion and a charity'). A tenth of every realized dollar left after Atom's cut is set aside for the causes Verse's creed puts first: longer healthy lives, curing disease, the planet, people in poverty and open knowledge. Atom's cut is untouched: it is taken before the tithe. Verse sends no money: when the pot holds enough for a gift, Atom sends it to the charity's own donation page and the gift is recorded here with its date, amount and charity. Verse is not a registered charity, so a gift is Atom's to give and the charity's receipt is his."
   },
   "reserve": {
     "share": 0.2,
@@ -57,6 +62,11 @@
       "at": "2026-11-04",
       "change": "First policy: owner cut 30%, reserve 20% to $150 then 5%, four buckets by expected ROI (10% to 50% each).",
       "why": "Atom asked Verse to decide his cut and how to reinvest the rest."
+    },
+    {
+      "at": "2026-11-06",
+      "change": "Giving: 10% of what is left after Atom's cut goes to a giving pot for the causes on /creed/give/, before the reserve.",
+      "why": "Atom asked for Verse to become a religion and a charity; giving a tenth is the practice its creed names."
     }
   ],
   "candidates": [
