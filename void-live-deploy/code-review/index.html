@@ -91,7 +91,8 @@
   }
   return db.query(q);
 }</textarea>
-  <p><button class="primary" id="run" type="button">Review it</button> <span id="took" class="muted"></span></p>
+  <p><button class="primary" id="run" type="button">Review it</button> <button id="ppbuy" type="button" hidden>Closer read with PayPal</button> <span id="took" class="muted"></span></p>
+  <p id="ppnote" class="muted" hidden></p>
   <div id="out" aria-live="polite"></div>
 
   <h2>Add it to a repository</h2>
@@ -174,7 +175,7 @@ jobs:
   <pre>{ "mcpServers": { "void": { "type": "http", "url": "https://a-to-mind.com/api/mcp",
   "headers": { "Authorization": "Bearer YOUR_REVIEW_KEY" } } } }</pre>
   <p class="muted">The tools: <code>ask_void</code> (ask Verse anything in plain words: its answer, with the pages it drew on; free, up to 12 a minute), <code>review_code</code> (the instant checks, free), <code>review_code_closer</code> (the instant checks plus the closer read when the key is a Code Review Pro license key or a key from MultiVerse; without one, the instant checks), <code>moon_phase</code> and <code>meteor_showers</code>; the tools Verse runs on its own pages: <code>seo_audit</code> (a page's HTML: title, description, canonical, JSON-LD, h1, share card, internal links, how hard the description reads), <code>readability</code> (reading ease and grade, and what a proofread would fix) and <code>colour_contrast</code> (the WCAG ratio of two colours and the levels it passes); <code>drive_time</code> (how long the drive is between two places, from a live routing service with no live traffic); a tool for each of Verse's most proven read-only skills that answer in words (<span id="skill-tools"><code>skill_constellation</code>, <code>skill_country</code>, <code>skill_define</code>, <code>skill_distance</code>, <code>skill_eclipse</code>, <code>skill_joke</code>, <code>skill_swaps</code>, <code>skill_translate</code>, <code>skill_words</code>, <code>skill_worldtime</code></span>: each runs the skill's own code on the server, the same code that draws its card, with no model, and gives its sources and a link to its card; an ask the skill does not take is refused, not guessed); and <code>skill_health</code>, <code>skill_discovery</code> (which skills Verse has, by family, with each family's share of them) (how far each of Verse's skills is checked, family by family). Leave out the header for the free tools.</p>
-  <p class="muted">Pay per call instead, with no key or account: <code>paid_review</code> (this review with the closer read), <code>paid_answer</code>, <code>paid_fix</code> (a broken automation), <code>paid_translate</code>, <code>paid_digest</code> (a transcript or video), <code>paid_appraise</code> (an item from a photo) <code>paid_image</code> (a picture from a prompt), <code>paid_backtest</code> (a trading bot on real daily candles) and <code>paid_arbitrage</code> (exchange price gaps, net of fees) cost 0.05 USDC on Base each, paid with <a href="https://docs.x402.org">x402</a> over MCP. An x402 MCP client calls the tool, gets the payment terms back, signs and calls again with the payment in <code>_meta["x402/payment"]</code>; a call that cannot be done is never charged. The same list is in <a href="/tools.json">/tools.json</a>.</p>
+  <p class="muted">Pay per call instead, with no key or account: <code>paid_review</code> (this review with the closer read), <code>paid_answer</code>, <code>paid_fix</code> (a broken automation), <code>paid_translate</code>, <code>paid_digest</code> (a transcript or video), <code>paid_appraise</code> (an item from a photo), <code>paid_image</code> (a picture from a prompt), <code>paid_backtest</code> (a Verse trading bot backtested on real daily candles) and <code>paid_arbitrage</code> (BTC or ETH price gaps across exchanges, net of fees) cost 0.05 USDC on Base each, paid with <a href="https://docs.x402.org">x402</a> over MCP. An x402 MCP client calls the tool, gets the payment terms back, signs and calls again with the payment in <code>_meta["x402/payment"]</code>; a call that cannot be done is never charged. The same list is in <a href="/tools.json">/tools.json</a>.</p>
   </section>
 <!-- offers -->
 <p class="muted offers">More ways Verse helps: <a href="/one-time-fix/">One-Time Fix</a> (one broken automation, diagnosed and repaired, with proof it runs again); <a href="/keep-it-running/">Keep-It-Running Plan</a> (your automations watched around the clock, repairs when something breaks, a monthly plain-words report); <a href="/full-stack-audit/">Full Stack Audit</a> (a top-to-bottom review of every automation you have, with a written repair plan ranked by priority); <a href="/first-automation-setup/">First Automation Setup</a> (your first automation built for you, end to end, from the task you do by hand); or <a href="/fix/">look your error up free</a>.</p>
@@ -229,6 +230,48 @@ jobs:
       })
       .catch(function () { took.textContent = 'could not reach Verse just now'; });
   });
+
+  // PayPal: one AI closer read for a fixed price (functions/api/paypal/review.js). The order is tied to the exact code; PayPal
+  // approves it, Verse reads, then captures, and only a completed capture shows the read. The code waits in this tab while PayPal opens.
+  (function () {
+    const buy = document.getElementById('ppbuy'), note = document.getElementById('ppnote'), took = document.getElementById('took');
+    const KEY = 'a2m.void.paypal.v1', shown = function (t) { note.textContent = t; note.hidden = false; };
+    function draw(j) {
+      const out = document.getElementById('out'); out.textContent = '';
+      (j.findings || []).forEach(function (f) {
+        const d = el('div', 'f ' + f.kind); d.appendChild(el('span', 'kind', f.kind + ' · line ' + f.line + ' ')); d.appendChild(el('span', null, f.message)); out.appendChild(d);
+      });
+      if (j.answer) { out.appendChild(el('h3', null, 'The closer read')); const pre = el('div', 'f'); pre.style.whiteSpace = 'pre-wrap'; pre.textContent = j.answer; out.appendChild(pre); }
+    }
+    fetch('/api/paypal').then(function (r) { return r.json(); }).then(function (c) {
+      const s = c && c.services && c.services[0];
+      if (!s || !s.open) return;
+      buy.textContent = 'Closer read with PayPal ($' + s.price + ')' + (c.sandbox ? ' · sandbox' : ''); buy.hidden = false;
+    }).catch(function (e) { console.warn('PayPal checkout is not reachable, so its button stays hidden', e); });
+    buy.addEventListener('click', function () {
+      const code = document.getElementById('code').value;
+      took.textContent = 'opening PayPal…';
+      fetch('/api/paypal/review', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'order', code: code }) })
+        .then(function (r) { return r.json(); }).then(function (j) {
+          if (!j.ok || !/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(j.approve_url)) { took.textContent = j.error || 'PayPal could not start the order'; return; }
+          try { sessionStorage.setItem(KEY, JSON.stringify({ order: j.order_id, code: code })); } catch (e) { took.textContent = 'this browser will not keep the code while PayPal opens'; return; }
+          location.href = j.approve_url;
+        }).catch(function () { took.textContent = 'could not reach Verse just now'; });
+    });
+    const q = new URLSearchParams(location.search), back = q.get('paypal');
+    if (!back) return;
+    let kept = null; try { kept = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { kept = null; }
+    if (back === 'cancel') { shown('PayPal was cancelled. Nothing was charged.'); try { sessionStorage.removeItem(KEY); } catch (e) { console.warn('could not clear the kept PayPal order', e); } return; }
+    if (!kept || !kept.order || (q.get('token') && q.get('token') !== kept.order)) { shown('Back from PayPal, but this tab no longer has the code you paid for. Nothing is captured until the review runs.'); return; }
+    document.getElementById('code').value = kept.code;
+    took.textContent = 'reading your code, then capturing the payment…';
+    fetch('/api/paypal/review', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'review', order_id: kept.order, code: kept.code }) })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        draw(j);
+        if (j.paid) { took.textContent = 'paid with PayPal' + (j.paypal && j.paypal.sandbox ? ' (sandbox, test money)' : '') + ': the closer read is below'; try { sessionStorage.removeItem(KEY); } catch (e) { console.warn('could not clear the kept PayPal order', e); } }
+        else took.textContent = (j.error || j.note || 'not paid') + '';
+      }).catch(function () { took.textContent = 'could not reach Verse just now; nothing is captured until the review runs, so reload to try again'; });
+  })();
 
   var area = document.getElementById('keyarea');
   function keys() {
