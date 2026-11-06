@@ -5066,7 +5066,8 @@ try {
     await P.p.fill('.list-add-input', 'rice'); await P.p.press('.list-add-input', 'Enter'); await P.p.waitForTimeout(200); r.typed = await L();
     await (await P.p.$$('.list-entry input[type=checkbox]'))[1].click(); await P.p.waitForTimeout(200); r.tick = await L();
     await (await P.p.$$('.list-entry .list-remove'))[2].click(); await P.p.waitForTimeout(200); r.x = await L();
-    await P.p.click('.list-title'); await P.p.keyboard.type('Saturday'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200); r.title = await L();
+    // the seed is titled "Shopping list" now (GAPS batch 5), so the typed title replaces it
+    await P.p.click('.list-title'); await P.p.keyboard.press('Control+A'); await P.p.keyboard.type('Saturday'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200); r.title = await L();
     await P.ask('make the list red', 400); r.red = await L(); r.edge = await P.p.$eval('.thing.list-card', (e) => e.style.borderColor).catch(() => '');
     await P.p.reload(); await until(async () => !!(await card()), 6000); r.reload = await card(); r.reloadTitle = await P.p.$eval('.list-title', (e) => e.textContent).catch(() => '');
     await P.ask('clear the list', 400); r.clearSaid = await P.whisper(); r.clear = await L(); r.empty = await P.p.$eval('.list-empty', (e) => e.textContent).catch(() => '');
