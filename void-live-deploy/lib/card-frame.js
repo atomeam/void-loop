@@ -248,7 +248,10 @@ export function editedDaysAgo(text, now = Date.now()) {
 // the full page of a skill that has one (owner, 2026-10-25: "why are you not linking the cards to the pages?"): a card from one of these skills
 // carries a link to its page, the one the Versus fights are measured on
 import { SITE_PAGES } from './tool-sites.js';
-export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
+export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 
+  // the Lab's tools open as an open-tool card, whose page link is the tool (skills/open-tool.js sets the card's page)
+  ...Object.fromEntries([['/lab/level/', 'Spirit level'], ['/lab/checksum/', 'File checksum checker'], ['/lab/pattern/', 'Seamless pattern maker'], ['/lab/photo-palette/', 'Palette from a photo'], ['/lab/dictation/', 'Dictation'], ['/lab/mind-map/', 'Mind map maker']].map(([p, n]) => ['lab ' + p, [p, n]])),
+  'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
   weather: ['/weather/', 'Weather'], recipe: ['/recipes/', 'Recipes'], calc: ['/calculator/', 'Calculator'], vat: ['/vat/', 'VAT calculator'], 'calc-more': ['/calculator/', 'Calculator'],
   convert: ['/convert/', 'Unit converter'], gradient: ['/color/gradient/', 'Gradient'], wheel: ['/random/wheel/', 'Wheel of names'], coin: ['/random/coin/', 'Coin flip'],
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base64/bases/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
