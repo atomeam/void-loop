@@ -6,7 +6,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
 
 const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
@@ -346,6 +346,11 @@ test('the back-off: three failures pause for 6 hours, a merged PR resets the str
   assert.equal(settlePrs(st, () => 'MERGED').fails, 0, 'merged resets');
   assert.equal(settlePrs(st, () => 'CLOSED').fails, 3, 'closed without merging counts');
   assert.deepEqual(settlePrs(st, () => 'OPEN').prs, ['u1']);
+  // #2438: a PR closed as superseded by a newer one carrying the same work is not a failure, and leaves the list
+  const sup = settlePrs(st, () => 'SUPERSEDED'); assert.equal(sup.fails, st.fails, 'superseded counts for nothing'); assert.deepEqual(sup.prs, []);
+  assert.equal(prStateOf({ state: 'CLOSED', comments: [{ body: SUPERSEDED_MARK + '\nThis loop/x pull request is superseded by #2436' }] }), 'SUPERSEDED');
+  assert.equal(prStateOf({ state: 'CLOSED', comments: [{ body: 'no' }] }), 'CLOSED', 'closed by anything else still counts');
+  assert.equal(prStateOf({ state: 'MERGED', comments: [] }), 'MERGED'); assert.equal(prStateOf(null), null);
   const t0 = Date.parse('2026-10-28T10:00:00Z');
   assert.deepEqual(pauseState({ state: {}, now: t0 }), { paused: false, resume: false });
   assert.equal(pauseState({ state: { pausedAt: t0 }, now: t0 + 5.9 * 3600e3 }).paused, true);

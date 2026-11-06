@@ -237,6 +237,7 @@ for (const [name, file] of [
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
+  ['site-test-close', 'site-test-close.test.mjs'], // the site tester closes its own items: a recheck that passes on the live site closes the issue, one that still fails is queued once
   ['exam', 'exam.test.mjs'],
   ['hear', 'hear.test.mjs'],
   ['visitor-pass', 'visitor-pass.test.mjs'],

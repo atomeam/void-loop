@@ -100,6 +100,16 @@ async function tick() {
       state.visitorAt = last.at; state.visitorFiled = [...seen].slice(-80);
     }
   } catch (e) { if (!/ENOENT/.test(String(e && e.code || e.message))) warn('visitor: ' + String(e.message || e).slice(0, 80)); }
+  // open site-test issues the hourly recheck has not closed (tools/site-test-close.mjs): each becomes one fix job, once, after a 2-hour
+  // grace in which a flake closes itself. The recheck closes the issue once the fix is live (owner, 2026-11-06: "clear the issues").
+  try {
+    const open = JSON.parse(gh('api', `repos/${REPO}/issues?labels=site-test&state=open&per_page=50`));
+    const seen = new Set((state.issuesFiled || []).concat(jobs.map((j) => j.target)));
+    if (!DRY) for (const job of issueJobsOf(open, [...seen], now)) {
+      if (await act('issue ' + job.target, async () => (await queue('POST', { ask: job.ask, target: job.target })).status === 200)) seen.add(job.target);
+    }
+    state.issuesFiled = [...seen].filter((t) => /^issue:/.test(t)).slice(-80);
+  } catch (e) { warn('site-test issues: ' + String(e.message || e).slice(0, 80)); }
   for (const s of p.start) {
     const ok = await act('start ' + s.id, async () => {
       const job = jobs.find((x) => x.id === s.id) || {};
