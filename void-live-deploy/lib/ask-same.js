@@ -33,7 +33,7 @@ const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|in
 /** the sites an ask names, lower case, each once (the one site rule: dupAsk, sameSites, and lib/voice.js sitesIn, which wants a ledger line
  *  that proves an ask built to name every site the ask names). Pure. */
 export const sitesOf = (t) => [...new Set((String(t == null ? '' : t).match(SITE) || []).map((s) => s.toLowerCase()))];
-const sitesOfAsk = (t) => sitesOf(t).sort().join(' ');
+const sitesOfAsk = (t) => sitesOf(t).sort().join(' '); // void-review: ok (site names are text, sorted as text on purpose)
 /** two asks name the same sites (none and none is the same). Two asks that do not are never one ask: dupAsk here and the voice
  *  record's sameAsk (lib/voice.js) both refuse them, so "ahead of ndscalc.ru" is not folded into "ahead of onlineconverter.com" (owner's
  *  self card, 2026-11-06: the ndscalc.ru ask showed as neither open nor built). Pure. */
