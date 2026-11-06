@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import { webcrypto } from 'node:crypto';
 import { requirements, paymentRequired, readPayment, verify, settle, settlementHeader, facilitatorOf, DEFAULT_FACILITATOR, USDC_BASE, SERVICES, centsOf } from '../void-live-deploy/lib/x402.js';
+import { VERSE_WALLET } from '../void-live-deploy/lib/verse-wallet-address.js';
 import { walletOf, bearerJwt, walletJwt, sortedJson, cdpAccount, usdcIncome, recordPayment, confirmPayments, usdcBalance } from '../void-live-deploy/lib/verse-wallet.js';
 import * as route from '../void-live-deploy/functions/api/x402/review.js';
 import { onRequestGet as x402Catalog } from '../void-live-deploy/functions/api/x402/index.js';
@@ -158,6 +159,10 @@ const parts = (jwt) => { const [h, c, s] = jwt.split('.'); return { h: JSON.pars
 // ---- the wallet's address, in order ----
 {
   assert.equal(await walletOf({}), null);
+  assert.equal(VERSE_WALLET === '' || /^0x[0-9a-fA-F]{40}$/.test(VERSE_WALLET), true, 'the repo address is empty or one 0x address');
+  assert.deepEqual(await walletOf({}, fetch, VERSE), { address: VERSE, source: 'set', note: 'Verse\'s wallet address, kept with the site' }, 'the repo address opens paid calls with no Cloudflare step');
+  assert.equal((await walletOf({ VERSE_WALLET_ADDR: OTHER }, fetch, VERSE)).address, OTHER, 'the Pages variable wins over the repo line');
+  assert.equal(await walletOf({}, fetch, 'not-an-address'), null, 'a malformed repo address opens nothing');
   assert.equal((await walletOf({ CRYPTO_USDC_BASE_ADDR: OTHER })).source, 'store');
   assert.equal((await walletOf({ VERSE_WALLET_ADDR: VERSE, CRYPTO_USDC_BASE_ADDR: OTHER })).address, VERSE);
   const env = { DB: d1(), ...cdpEnv, CRYPTO_USDC_BASE_ADDR: OTHER };
