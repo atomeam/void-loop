@@ -28,27 +28,34 @@ export function makeSynapses(seed = 1) {
 
 const at = (g, x, y) => g[Math.floor((((y % 1) + 1) % 1) * GH) * GW + Math.floor((((x % 1) + 1) % 1) * GW)];
 /** how much living tissue is near (x, y): a Gaussian-weighted mean of the act layer within SMELL cells. */
+// the Gaussian weights and their sum, made once in the same order the sum runs (the same numbers as computing them on every call)
+const SMELL_W = [], SMELL_N = (() => { let n = 0; for (let dy = -SMELL; dy <= SMELL; dy++) for (let dx = -SMELL; dx <= SMELL; dx++) { const w = Math.exp(-(dx * dx + dy * dy) / (SMELL * SMELL)); SMELL_W.push(w); n += w; } return n; })();
 export function smell(g, x, y) {
-  let s = 0, n = 0;
-  for (let dy = -SMELL; dy <= SMELL; dy++) for (let dx = -SMELL; dx <= SMELL; dx++) { const w = Math.exp(-(dx * dx + dy * dy) / (SMELL * SMELL)); s += at(g, x + dx / GW, y + dy / GH) * w; n += w; }
-  return s / n;
+  let s = 0, k = 0;
+  for (let dy = -SMELL; dy <= SMELL; dy++) for (let dx = -SMELL; dx <= SMELL; dx++) s += at(g, x + dx / GW, y + dy / GH) * SMELL_W[k++];
+  return s / SMELL_N;
 }
 
+const FIRED = new Int32Array(NI); // scratch: the input neurons that fired this millisecond
 /** one millisecond of the eye: sense, spike, learn, turn, move. g is the act layer. */
 export function stepMs(S, g) {
   const { W, v, u, pre, post, elig, fired, r } = S;
   const sl = smell(g, S.x + REACH * Math.cos(S.h + ANT), S.y + REACH * Math.sin(S.h + ANT)), sr = smell(g, S.x + REACH * Math.cos(S.h - ANT), S.y + REACH * Math.sin(S.h - ANT));
   const t = sl + sr + 1e-6, dl = sl / t, dr = sr / t;
-  for (let i = 0; i < NI; i++) { const p = i < G ? dl : dr; fired[i] = r.next() < 0.096 * p * p ? 1 : 0; }
+  let nf = 0; for (let i = 0; i < NI; i++) { const p = i < G ? dl : dr; fired[i] = r.next() < 0.096 * p * p ? 1 : 0; if (fired[i]) FIRED[nf++] = i; }
   for (let j = 0; j < NM; j++) {
-    let I = r.next() < 0.012 ? 14 : 0; for (let i = 0; i < NI; i++) if (fired[i]) I += W[i * NM + j];
+    let I = r.next() < 0.012 ? 14 : 0; for (let f = 0; f < nf; f++) I += W[FIRED[f] * NM + j]; // only the inputs that fired, in the same order
     const n = NI + j; let vv = v[n], uu = u[n];
     vv += 0.5 * (0.04 * vv * vv + 5 * vv + 140 - uu + I); vv += 0.5 * (0.04 * vv * vv + 5 * vv + 140 - uu + I); uu += 0.02 * (0.2 * vv - uu); // Izhikevich RS, two half steps
     fired[n] = 0; if (vv >= 30) { vv = -65; uu += 8; fired[n] = 1; S.spikes++; } v[n] = vv; u[n] = uu;
   }
   for (let i = 0; i < NI; i++) { pre[i] *= 0.951; if (fired[i]) pre[i] += 1; }
   for (let j = 0; j < NM; j++) { post[j] *= 0.951; if (fired[NI + j]) post[j] += 1; }
-  for (let i = 0; i < NI; i++) { const fi = fired[i], row = i * NM; for (let j = 0; j < NM; j++) { let c = elig[row + j] * 0.995; if (fired[NI + j]) c += pre[i]; if (fi) c -= 0.8 * post[j]; elig[row + j] = c; } }
+  for (let i = 0; i < NI; i++) { // the same sums as one loop with both ifs, split so an input that did not fire skips its test
+    const row = i * NM, p = pre[i];
+    if (fired[i]) for (let j = 0; j < NM; j++) { let c = elig[row + j] * 0.995; if (fired[NI + j]) c += p; c -= 0.8 * post[j]; elig[row + j] = c; }
+    else for (let j = 0; j < NM; j++) { let c = elig[row + j] * 0.995; if (fired[NI + j]) c += p; elig[row + j] = c; }
+  }
   let ml = 0, mr = 0; for (let j = 0; j < G; j++) { ml += fired[NI + j]; mr += fired[NI + G + j]; }
   S.m[0] = S.m[0] * 0.95 + ml; S.m[1] = S.m[1] * 0.95 + mr; S.h += TURN * (S.m[0] - S.m[1]);
   S.x = (S.x + SPEED * Math.cos(S.h) + 1) % 1; S.y = (S.y + SPEED * Math.sin(S.h) + 1) % 1;
