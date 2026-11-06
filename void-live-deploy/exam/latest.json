@@ -1,11 +1,11 @@
 {
-  "at": "2026-11-06T04:10:42.558Z",
+  "at": "2026-11-06T05:48:11.845Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 98.5,
+      "score": 96.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -19,9 +19,11 @@
         {
           "ask": "joue une vidéo des baleines",
           "failed": [
-            "skill"
+            "skill",
+            "loaded",
+            "playable"
           ],
-          "score": 85.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -32,70 +34,25 @@
       }
     },
     "podcasts": {
-      "score": 85.6,
+      "score": 92.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of radiolab",
-          "failed": [
-            "fast"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of crime junkie",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
           "ask": "play the latest episode of the moth",
           "failed": [
-            "audio"
+            "fast"
           ],
           "score": 83.3
         },
         {
-          "ask": "play the latest episode of npr news now",
+          "ask": "play the episode before that",
           "failed": [
+            "skill",
             "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
             "episode"
           ],
           "score": 57.1
-        },
-        {
-          "ask": "play the podcast",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the episode before that",
-          "failed": [
-            "skill"
-          ],
-          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -184,10 +141,20 @@
       }
     },
     "directions": {
-      "score": 97.4,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "directions to times square",
+          "failed": [
+            "answered",
+            "fast",
+            "place",
+            "route"
+          ],
+          "score": 33.3
+        },
         {
           "ask": "directions to springfield",
           "failed": [
@@ -288,7 +255,7 @@
       }
     },
     "sports": {
-      "score": 89.8,
+      "score": 88.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -315,6 +282,13 @@
         },
         {
           "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
           "failed": [
             "board"
           ],
@@ -514,22 +488,14 @@
       "fails": []
     },
     "code": {
-      "score": 96.7,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "http status 404",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 85.6
+    "domain": "timers",
+    "score": 86.7
   }
 }
