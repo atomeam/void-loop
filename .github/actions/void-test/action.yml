@@ -90,7 +90,9 @@ runs:
     - name: node tools/test_sky.mjs (the sky world takes the stage and gives the void back, at 375 px, keyboard only, with reduced motion and on a low-power device)
       if: inputs.bench != 'only'
       shell: bash
-      run: node tools/test_sky.mjs
+      run: |
+        set -o pipefail
+        node tools/test_sky.mjs 2>&1 | tee sky-output.txt
     - name: node tools/test_calendar.mjs
       if: inputs.bench != 'only' && inputs.part != 'suite'
       shell: bash
