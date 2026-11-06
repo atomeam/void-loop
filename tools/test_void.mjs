@@ -9195,12 +9195,15 @@ try {
       const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
       res.push({ id, ok: !!ok, hook, framed: !!fr });
     }
+    // "show me the lab" opens the lab page card since the lab skill (owner, 2026-11-06: "i cant find the lab anywhere"); the 12-experiment list stays one ask away
     await L.ask('show me the lab', 500);
+    const labCard = await until(async () => L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return !!pg && (pg.dataset.page === '/lab/' || !!pg.querySelector('a[href="/lab/"]')); }).catch(() => false), 6000);
+    await L.ask('what experiments do you have', 500);
     const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
     if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
     const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
-    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
-      res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
+    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" opens the lab page card; "what experiments do you have" lists all 12 and a click opens one',
+      res.every((r) => r.ok) && !!labCard && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' labCard ' + !!labCard + ' links ' + links.length + ' ' + L.errors.join(' | '));
     await L.ctx.close();
   }
 
