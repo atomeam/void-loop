@@ -2302,6 +2302,31 @@
       "words": "Automate the extraction of failing GitHub Action job names and error logs for commit 814032d5.",
       "ledgerAt": "2026-11-06T07:03:33Z",
       "why": "built: Verse reads its own red GitHub Actions runs by itself (asked by Verse): when a workflow that tests main fails, actions-failures.yml reads the run with its own GITHUB_TOKEN and keeps each failed job, the step that failed, (linked by tools/asks-link.mjs, shared words: automate, extraction, fail, github, action, job, nam, err, log, commit, 814032d5)"
+    },
+    {
+      "words": "Absorb every repository on the account into the core code to unify the system architecture.",
+      "ledgerAt": "2026-11-06T10:54:21Z",
+      "why": "built: 13 more pieces unified into Verse's own code, 69 of 551 now (was 56); 387 left to salvage (was 400). From the owner's other repositories: glassbox's candidate-claim check and its promote-on-merge rule, and the Wix site's (linked by tools/asks-link.mjs, shared words: absorb, repository, account, core, code, unify)"
+    },
+    {
+      "words": "Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse [What I want next].",
+      "ledgerAt": "2026-11-06T10:54:21Z",
+      "why": "built: 13 more pieces unified into Verse's own code, 69 of 551 now (was 56); 387 left to salvage (was 400). From the owner's other repositories: glassbox's candidate-claim check and its promote-on-merge rule, and the Wix site's (linked by tools/asks-link.mjs, shared words: absorb, repository, account, core, code, repo, unify, verse, next)"
+    },
+    {
+      "words": "Absorb every repository on the account into the core code to transform fragmented repos into a unified Verse",
+      "ledgerAt": "2026-11-06T10:54:21Z",
+      "why": "built: 13 more pieces unified into Verse's own code, 69 of 551 now (was 56); 387 left to salvage (was 400). From the owner's other repositories: glassbox's candidate-claim check and its promote-on-merge rule, and the Wix site's (linked by tools/asks-link.mjs, shared words: absorb, repository, account, core, code, repo, unify, verse)"
+    },
+    {
+      "words": "Absorb every repository on the account into the core code to transform fragmented repos into a unified system.",
+      "ledgerAt": "2026-11-06T10:54:21Z",
+      "why": "built: 13 more pieces unified into Verse's own code, 69 of 551 now (was 56); 387 left to salvage (was 400). From the owner's other repositories: glassbox's candidate-claim check and its promote-on-merge rule, and the Wix site's (linked by tools/asks-link.mjs, shared words: absorb, repository, account, core, code, repo, unify)"
+    },
+    {
+      "words": "Absorb every repository on the account into the core code [What I want next].",
+      "ledgerAt": "2026-11-06T10:54:21Z",
+      "why": "built: 13 more pieces unified into Verse's own code, 69 of 551 now (was 56); 387 left to salvage (was 400). From the owner's other repositories: glassbox's candidate-claim check and its promote-on-merge rule, and the Wix site's (linked by tools/asks-link.mjs, shared words: absorb, repository, account, core, code, next)"
     }
   ],
   "held": [
@@ -2314,30 +2339,9 @@
   ],
   "totals": {
     "asked": 257,
-    "built": 249,
+    "built": 252,
     "through": "2026-11-06T00:06:00Z",
     "open": [
-      {
-        "ask": "Absorb every repository on the account into the core code",
-        "at": "2026-10-28T22:29:00Z",
-        "kind": "daily",
-        "small": false,
-        "times": 6,
-        "ids": [
-          "ask-20261028-2055-1",
-          "ask-20261028-2100-1",
-          "ask-20261028-2101-1",
-          "ask-20261028-2148-1",
-          "ask-20261028-2155-1",
-          "ask-20261028-2059-1",
-          "ask-20261028-2145-1",
-          "ask-20261028-2202-1",
-          "ask-20261028-2203-1",
-          "ask-20261028-2205-2",
-          "ask-20261028-2223-2",
-          "ask-20261028-2229-2"
-        ]
-      },
       {
         "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
         "at": "2026-10-31T08:49:00Z",
@@ -2357,39 +2361,6 @@
           "ask-20261031-0154-1",
           "ask-20261031-0705-1",
           "ask-20261031-0849-1"
-        ]
-      },
-      {
-        "ask": "Address the least-checked skills: video-gen and baggage.",
-        "at": "2026-10-31T21:54:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 1,
-        "ids": [
-          "ask-20261031-0705-3",
-          "ask-20261031-0849-3",
-          "ask-20261031-1032-3",
-          "ask-20261031-1310-3",
-          "ask-20261031-1324-3",
-          "ask-20261031-1530-3",
-          "ask-20261031-1532-3",
-          "ask-20261031-1538-3",
-          "ask-20261031-1554-3",
-          "ask-20261031-1559-3",
-          "ask-20261031-2124-3",
-          "ask-20261031-2154-3"
-        ]
-      },
-      {
-        "ask": "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru.",
-        "at": "2026-10-31T15:32:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 2,
-        "ids": [
-          "ask-20261031-1032-1",
-          "ask-20261031-1310-1",
-          "ask-20261031-1532-1"
         ]
       },
       {
