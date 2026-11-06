@@ -1,5 +1,5 @@
-// The lab's usefulness gate (owner, 2026-11-06: "the lab experiments all seem pointless can you make them all more useful and meaningful
-// and make grok build better and more useful things"). One plain test for every draft the lab repo makes: does it do a real job a person
+// The lab's usefulness gate (the owner asked on 2026-11-06 for useful, meaningful experiments and better builds from Grok).
+// One plain test for every draft the lab repo makes: does it do a real job a person
 // would come back for (a tool, a calculator, a converter, a checker, a maker that gives back something to keep), or is it a toy?
 //
 // A draft is a TOOL when its code shows both halves of a job, and its words say what the job is:
