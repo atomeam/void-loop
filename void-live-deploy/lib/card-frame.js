@@ -48,8 +48,9 @@ const artLookOf = (m) => { const l = artLook(m); return { artHue: l.hue, artInk:
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
  *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is;
- *  kept: the values were read from the named sources on a date and kept in Verse (a kitchen card), not fetched for this ask */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false, kept = false } = {}) {
+ *  kept: the values were read from the named sources on a date and kept in Verse (a kitchen card), not fetched for this ask;
+ *  filed: for a fetched answer, the one line of what it added (the term and the senses it filed, the Verse page it links), or '' */
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false, kept = false, filed = '' } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -71,7 +72,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
-    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : 'A fact it did not have to be taught: fetched, sourced and dated.') : '',
+    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : addsLine(filed)) : '', // filed: what this card itself added (lib/term-card.js addsFor, data-card-adds), never a generic line; none, no line (owner, 2026-11-06)
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
     keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
@@ -112,7 +113,9 @@ export function chromeHtml(c, esc) {
   const notice = c.notice ? '<div class="vc-notice">' + esc(c.notice) + '</div>' : '';
   const adds = c.adds || kws || badges || notice ? '<div class="vc-adds"' + (badges || notice ? ' data-facts="1"' : '') + '>' + badges + (kws ? '<div class="vc-kws">' + kws + '</div>' : '') + (c.adds ? '<span class="vc-addstext"><b' + trace + '>Adds to Verse</b> ' + esc(c.adds) + '</span>' : '') + notice + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
-  const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: how fresh the source is, 9 if edited today, 1 if a year or more')
+  // a fetched answer's two numbers say what they are in words (owner, 2026-11-06: "P 1" and "R 2" read as nothing): the sources it stands on, and how fresh they are out of 9
+  const said = (v, word, t) => '<span title="' + t + '"><b>' + v + '</b> ' + word + '</span>';
+  const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? said(c.power, c.power === 1 ? 'source' : 'sources', 'power: the sources it stands on') + said(c.toughness, 'of 9 fresh', 'resistance: how fresh the source is, 9 if edited today, 1 if a year or more')
     : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: the real asks that proved it, about 3 more for each tenfold') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';
   const arrows = '<div class="vc-arrows" aria-hidden="true">' + (c.arrowIn ? '<i class="in">\u25bc</i>' : '') + ['r', 'b', 'l'].slice(0, c.arrowsOut).map((d) => '<i class="' + d + '">\u25b6</i>').join('') + '</div>';
   const foot = '<div class="vc-foot"><div class="vc-num">' + (c.rarity ? esc(c.rarity.name) + ' · ' : '') + (c.number ? esc(c.number) + ' · ' : '') + 'Verse' + (c.tested ? ' · tested ' + esc(c.tested) : '') + '</div>' + plate + '</div>';
@@ -288,7 +291,7 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined });
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined, filed: el.dataset.cardAdds || '' });
   // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
   const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
   if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);

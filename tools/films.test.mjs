@@ -210,4 +210,6 @@ test('the grid reads past 60 (owner, 2026-11-06: "ok still capping at 60 videos"
   assert.match(page, /'data-src': f\.src/, 'a card\'s picture waits until the card is near the screen');
   assert.doesNotMatch(page, /\$\('video', \{ src: f\.src \+ '#t=0\.5'/, 'no grid card loads its picture up front');
   assert.match(page, /r2\.status !== 429/, 'a busy minute waits and asks again instead of ending the list');
+  assert.match(page, /if \(ok && next != null\) setTimeout\(grow, 250\)/, 'every page is read straight away, not only on a scroll (the count stayed at 60)');
+  assert.match(page, /' listed of ' \+ stored \+ ' stored'/, 'the owner sees how many films are stored in all');
 });
