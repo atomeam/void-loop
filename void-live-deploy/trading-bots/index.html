@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: none; out: table, code">
+<meta name="theme-color" content="#050505">
+<title>Trading bots with real backtests · Verse</title>
+<meta name="description" content="Trading bots you run on your own exchange account: three daily long-or-cash strategies with real backtests on BTC and ETH since 2015, fees and slippage included, worst drop and a held-out period. Free, MIT, paper mode first.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Trading bots with real backtests · Verse">
+<meta property="og:description" content="Trading bots you run on your own exchange account: three daily long-or-cash strategies with real backtests on BTC and ETH since 2015, fees and slippage included, worst drop and a held-out period. Free, MIT, paper mode first.">
+<meta property="og:url" content="https://a-to-mind.com/trading-bots/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/trading-bots/">
+<link rel="stylesheet" href="/trading-bots/tb.css">
+<link rel="modulepreload" href="/trading-bots/kit/strategy.js">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse trading bots","url":"https://a-to-mind.com/trading-bots/","description":"Trading bots you run on your own exchange account: three daily long-or-cash strategies with real backtests on BTC and ETH since 2015, fees and slippage included, worst drop and a held-out period. Free, MIT, paper mode first.","applicationCategory":"FinanceApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}}]}</script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+<nav class="crumbs"><a href="/">Verse</a> / Trading bots</nav>
+<h1>Trading bots with real backtests</h1>
+<p class="lead">Three plain daily rules you run on your own exchange account. Each is tested here, in your browser, on real daily prices with a fee and slippage on every trade, next to simply buying and holding. The rules use textbook settings chosen before the test, not fitted to it.</p>
+<section class="glass risk" aria-label="Risk"><p><b>Risk:</b> every number here is a backtest on past prices. Past results do not predict future results, these rules have long losing stretches, and you can lose money. This is software you run yourself, not financial advice. Verse never sees your exchange key, never holds your money and never places a trade.</p></section>
+<section class="glass"><h2>The bots</h2><p class="tb-note" id="tb-asof">Reading the price history...</p><div id="tb-cards"></div>
+<p class="muted">Change the pair: <a href="?pair=BTC-USD">BTC-USD</a> · <a href="?pair=ETH-USD">ETH-USD</a>. Live quotes for any coin are on <a href="/markets/">Markets</a>. Price gaps between exchanges, after every fee: <a href="/trading-bots/arbitrage/">Arbitrage scanner</a>.</p></section>
+<section class="glass" id="setup"><h2>Run it on your own account</h2>
+<ol>
+<li>Install Node.js 18 or newer.</li>
+<li>Download the bot: <button type="button" id="tb-zip">Download the bot (.zip)</button>, or in a terminal:
+<pre id="tb-curl">mkdir verse-bot &amp;&amp; cd verse-bot
+curl -fsSLO "https://a-to-mind.com/trading-bots/kit/{bot.mjs,strategy.js,arb-scan.mjs,arb.js,arb.example.json,package.json,config.example.json,README.md,LICENSE}"
+npm install &amp;&amp; cp config.example.json config.json</pre><button type="button" id="tb-copy">Copy the commands</button></li>
+<li>In <code>config.json</code> set <code>bot</code>, your <code>exchange</code> (a ccxt id such as <code>kraken</code> or <code>coinbase</code>), the <code>symbol</code> (such as <code>BTC/USD</code>) and <code>budget</code>, the most it may ever spend on one buy.</li>
+<li>Paper mode first, no key and no trades: <code>node bot.mjs</code>. It prints the day's decision and keeps a pretend balance.</li>
+<li>Live when you are ready: make an exchange API key with <b>trade permission only, never withdrawal</b>, put it in <code>EXCHANGE_API_KEY</code> and <code>EXCHANGE_API_SECRET</code>, set <code>VERSE_BOT_LIVE=yes</code> and run <code>node bot.mjs --live --loop</code> on a computer that stays on.</li>
+</ol>
+<p class="muted">The files: <a href="/trading-bots/kit/bot.mjs">bot.mjs</a>, <a href="/trading-bots/kit/strategy.js">strategy.js</a> (the same file this page runs), <a href="/trading-bots/kit/arb-scan.mjs">arb-scan.mjs</a> and <a href="/trading-bots/kit/arb.js">arb.js</a> (the read-only arbitrage scanner), <a href="/trading-bots/kit/package.json">package.json</a>, <a href="/trading-bots/kit/config.example.json">config.example.json</a>, <a href="/trading-bots/kit/README.md">README.md</a>, <a href="/trading-bots/kit/LICENSE">LICENSE</a> (MIT). Spot only, long or cash, no leverage; it only sells coins it bought itself.</p></section>
+<section class="glass"><h2>For agents</h2><p class="muted">The same backtest as JSON, any bot, pair, parameters, fee and window, with every trade and the walk-forward test: <code>POST https://a-to-mind.com/api/x402/backtest</code>, paid per call in USDC on Base over <a href="https://docs.x402.org">x402</a>. A call without payment answers 402 with what to pay. Catalog: <a href="/api/x402">/api/x402</a>.</p></section>
+<footer>Backtests run in this page with <a href="/trading-bots/kit/strategy.js">strategy.js</a> on daily candles read once a day from Coinbase Exchange's public market data (<a href="/trading-bots/data/BTC-USD.json">BTC-USD</a>, <a href="/trading-bots/data/ETH-USD.json">ETH-USD</a>). Nothing is sent anywhere.</footer>
+</main>
+<script type="module" src="/lib/trading-bots.js"></script>
+</body>
+</html>

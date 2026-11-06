@@ -25,6 +25,20 @@ export const SERVICES = {
     output: { findings: 'array of { line, rule, message, severity }', answer: 'the closer read, text', review: '"model"' },
     tags: ['code-review', 'security', 'developer-tools'],
   },
+  backtest: {
+    path: '/api/x402/backtest', method: 'POST', units: 50000,
+    description: 'Backtest a Verse trading bot (trend-50-200, breakout-20-10, dip-rsi2) on real BTC-USD or ETH-USD daily candles: your parameters, fee, slippage and dates; every trade, the equity curve, max drawdown, buy-and-hold beside it and a walk-forward out-of-sample test. Read only: nothing is traded.',
+    input: { bot: { type: 'string', description: 'trend-50-200 | breakout-20-10 | dip-rsi2', required: true }, pair: { type: 'string', description: 'BTC-USD or ETH-USD', required: false }, params: { type: 'object', description: 'the bot\'s parameters, optional', required: false }, fee: { type: 'number', description: 'fee per trade as a fraction (0.008 = 0.8%)', required: false }, slippage: { type: 'number', description: 'slippage per trade as a fraction', required: false }, from: { type: 'string', description: 'YYYY-MM-DD, optional', required: false }, to: { type: 'string', description: 'YYYY-MM-DD, optional', required: false } },
+    output: { stats: 'return, CAGR, max drawdown, trades, win rate, exposure', hold: 'buy and hold over the same days', trades: 'every trade', equity: 'daily equity', walkForward: 'yearly out-of-sample windows' },
+    tags: ['trading', 'backtest', 'crypto', 'finance'],
+  },
+  arbitrage: {
+    path: '/api/x402/arbitrage', method: 'POST', units: 50000,
+    description: 'Scan BTC or ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap v3 on Base, read now from their order books: for your size, every buy-here-sell-there pair with the net dollars after both taker fees, DEX gas and your transfer cost. Read only: nothing is traded.',
+    input: { coin: { type: 'string', description: 'BTC or ETH', required: true }, size: { type: 'number', description: 'dollars per trade, 10 to 250000 (default 1000)', required: false }, fees: { type: 'object', description: 'your taker fee per venue as a fraction, optional', required: false }, transferUsd: { type: 'number', description: 'cost to move the coin between venues, dollars (default 0: you hold both sides)', required: false }, venues: { type: 'array', description: 'coinbase, kraken, bitstamp, gemini, uniswap; optional', required: false } },
+    output: { rows: 'every venue pair, best first: buy, sell, average prices, top-of-book gap, fees, gas, net dollars and percent', spread: 'mid price per venue', missing: 'venues that did not answer' },
+    tags: ['trading', 'arbitrage', 'crypto', 'market-data'],
+  },
 };
 
 export const facilitatorOf = (env = {}) => {
