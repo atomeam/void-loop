@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generatedTouched } from './generated.mjs';
-import { onlyBuildConflicts } from './merge-gate.mjs';
+import { gateStatus, onlyBuildConflicts } from './merge-gate.mjs';
 import { behindCount } from './pre-pr.mjs';
 
 test('a build output in the diff is named, a source file is not', () => {
@@ -12,6 +12,15 @@ test('the merge gate regenerates a build output and stops on any other file', ()
   assert.equal(onlyBuildConflicts(['void-live-deploy/skills/index.json', 'void-live-deploy/sitemap.xml']), true);
   assert.equal(onlyBuildConflicts(['void-live-deploy/skills/index.json', 'void.html']), false);
   assert.equal(onlyBuildConflicts([]), false);
+});
+
+test('the merge gate installs packages once after a red run, and only a red that survives the install counts', () => {
+  const seq = (...v) => () => v.shift();
+  let installs = 0; const install = (s) => () => { installs++; return s; };
+  assert.equal(gateStatus(seq(0), install(0)), 0); assert.equal(installs, 0);
+  assert.equal(gateStatus(seq(1, 0), install(0)), 0); assert.equal(installs, 1);
+  assert.equal(gateStatus(seq(1, 1), install(0)), 1);
+  assert.equal(gateStatus(seq(1, 0), install(1)), 1, 'a failed install keeps the first red');
 });
 
 test('behind main is the count git prints', () => {
