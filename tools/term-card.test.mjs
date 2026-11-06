@@ -61,6 +61,13 @@ test('3. a picture shows only when it is of what the card is about', () => {
   assert.equal(T.imageFits({ title: 'The Fourth Kind', extract: 'A 2009 film.', src: 'https://upload.wikimedia.org/test/fourth.svg' }), true);
   assert.equal(T.imageFits({ title: 'Some thing', extract: 'x', src: 'https://upload.wikimedia.org/x/DSC_0012.JPG' }), true, 'a file name with no words is not judged');
   assert.equal(T.imageFits({ title: 'Cat', extract: 'x', src: 'http://upload.wikimedia.org/x/Cat.jpg' }), false);
+  // the article's own photo (lib/page-picture.js) is of the subject by where it comes from: the K-pop card's concert photo is kept
+  // (owner, 2026-10-17; the browser check "Verse card art: an answer with no lead image looks up the article's own photo" went red without it)
+  const KPOP = 'K-pop is a form of popular music originating in South Korea, from idol groups and bands.';
+  assert.equal(T.imageFits({ title: 'K-pop', extract: KPOP, src: 'https://upload.wikimedia.org/t/640px-Seoul_concert.jpg' }), false, 'as a lead thumbnail, a file named for another thing is judged');
+  assert.equal(T.imageFits({ title: 'K-pop', extract: KPOP, src: 'https://upload.wikimedia.org/t/640px-Seoul_concert.jpg', own: true }), true, 'the article\'s own photo is kept');
+  assert.equal(T.imageFits({ title: 'Treasury', extract: TREASURY, src: 'https://upload.wikimedia.org/x/Treasury.jpg', own: true }), false, 'a lead of several senses: not even its own photo');
+  assert.equal(T.imageFits({ title: 'K-pop', extract: KPOP, src: 'http://upload.wikimedia.org/t/concert.png', own: true }), false, 'https only');
 });
 
 test('4. Verse\'s take is shown only when it stands on something real, under the sense it matches', () => {
@@ -140,5 +147,6 @@ test('Verse\'s page leads the card, then the outside senses, in the article card
   const body = html.slice(at, at + 4000), vs = body.indexOf('<div class="verse-slot"></div>'), senses = body.indexOf('KC.sensesHtml(');
   assert.ok(vs > 0 && senses > vs, 'the Verse slot comes before the senses');
   assert.match(body, /KC\.imageFits\(/, 'the lead picture passes the guard');
+  assert.match(body, /m\.pictureFor\([\s\S]{0,400}KC\.imageFits\(\{[^}]*own: true \}\)/, 'the article\'s own photo passes the guard as its own');
   assert.equal(readFileSync(resolve(site, 'void.html'), 'utf8'), html, 'index.html and void.html stay copies');
 });

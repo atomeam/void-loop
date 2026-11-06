@@ -99,10 +99,13 @@ export function fileWords(src) {
 }
 /** whether a picture is of what the card is about. No: the lead lists several senses (a picture can be of one of them at most, and it
  *  belongs to none in particular), or the file's name holds words and none of them is in the title or the lead (the Brisbane building on a
- *  card about the idea of a treasury). A file name with no words is not judged. Pure. */
-export function imageFits({ title = '', extract = '', src = '' } = {}) {
+ *  card about the idea of a treasury). A file name with no words is not judged. own: the picture was taken from the article's own photos
+ *  (lib/page-picture.js, which leaves out its logos, icons, flags and maps), so it is of the subject by where it comes from and its file
+ *  name, which names the scene ("Seoul concert" on the K-pop card, owner, 2026-10-17), is not judged; the senses rule still holds. Pure. */
+export function imageFits({ title = '', extract = '', src = '', own = false } = {}) {
   if (!/^https:\/\//.test(String(src || ''))) return false;
   if (leadParts(extract).senses.length >= 2) return false;
+  if (own) return true;
   const fw = fileWords(src); if (!fw.length) return true;
   const known = new Set([...words(title), ...words(extract)].map(singular));
   return fw.some((w) => known.has(w));

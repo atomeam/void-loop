@@ -3180,7 +3180,7 @@ say('nothing selected to remove');
         import('/lib/card-kinds.js').then((k) => k.fetchAlso(j.title || hit.title)).then((also) => { if (also.length && vpageEl === el) { el.dataset.cardAlso = also.join(','); keepCard(el); } }).catch(() => {});
         // no lead image: the article's own photo (lib/page-picture.js; owner, 2026-10-17: the K-pop card "didnt look" up a picture), placed where a thumbnail goes
         if (!thumb && !multi) import('/lib/page-picture.js').then((m) => m.pictureFor(j.title || hit.title)).then((src) => {
-          if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]') || (KC && !KC.imageFits({ title: ttl, extract: j.extract || '', src }))) return;
+          if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]') || (KC && !KC.imageFits({ title: ttl, extract: j.extract || '', src, own: true }))) return; // the article's own photo: of the subject, whatever its file is named
           const im = document.createElement('img'); im.alt = ''; im.src = src; im.dataset.pagePicture = '1'; const slot = el.querySelector('.pic-slot');
           if (slot) slot.after(im); else el.querySelector('h2').after(im); keepCard(el);
         }).catch(() => {});
