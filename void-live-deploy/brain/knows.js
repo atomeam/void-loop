@@ -1,7 +1,7 @@
 // /brain/'s first view (owner, 2026-11-03: "make it into a more functional usable brain"): what Verse knows, searchable, light and 2D. The
 // wants it holds now (/api/will, live), every skill with what it does and the page it powers, every tool page, every site Versus took on and
 // what came of it, the lessons its model recalls when it proposes a fix, and what it did lately: brain/knows.json (tools/brain-knows.mjs).
-// The simulation (app.js, map.js, dreams.js: twenty-three organs, a canvas and a map) loads only when asked for, with "Watch it think",
+// The simulation (app.js, map.js, dreams.js: twenty-six organs, a canvas and a map) loads only when asked for, with "Watch it think",
 // ?view=watch or ?t=words, so the first view costs one small module and one file instead of 50 modules and two animation loops.
 import { KINDS, LABEL, wantsOf, search, countsOf, hrefOf } from '/lib/brain-knows.js';
 
