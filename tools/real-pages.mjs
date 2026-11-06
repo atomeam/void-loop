@@ -455,6 +455,27 @@ export const SPECS = {
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
+// the trading bots (owner, 2026-11-06): a backtest on the real candles once /trading-bots/data/ has them, an honest note before; trades export, the link reopens
+const tradingBot = async (t) => {
+  const v = await t.waitText('#tb-result', /Total return|not on the site yet/, 20000);
+  if (/not on the site yet/.test(v)) return t.ok(true, 'no price history yet, and the page says so instead of showing numbers');
+  t.ok(/Worst drop/.test(v) && /Buy and hold/.test(v), 'the backtest shows the worst drop beside buy and hold');
+  await t.p.selectOption('#tb-form select[name=w]', 'held'); await t.p.waitForTimeout(800);
+  t.ok(/w=held/.test(t.p.url()), 'the held-out period goes into the link');
+  await t.download('#tb-csv', /-trades\.csv$/);
+  await t.share('#tb-share', async (p2) => /Total return/.test(await p2.locator('#tb-result').innerText()));
+};
+SPECS['/trading-bots/trend-50-200/'] = tradingBot; SPECS['/trading-bots/breakout-20-10/'] = tradingBot; SPECS['/trading-bots/dip-rsi2/'] = tradingBot;
+SPECS['/trading-bots/'] = async (t) => {
+  const v = await t.waitText('#tb-cards', /Last 24 months|not on the site yet/, 20000);
+  t.ok(/Last 24 months|not on the site yet/.test(v), 'every bot card shows its real backtest, or says the data is not there yet');
+  await t.download('#tb-zip', /verse-bot\.zip$/);
+};
+SPECS['/trading-bots/arbitrage/'] = async (t) => {
+  const v = await t.waitText('#ar-at', /^Read |could not be read/, 20000);
+  t.ok(/^Read |could not be read/.test(v), 'the scan reads the venues now, or says it could not: ' + v.slice(0, 60));
+  if (/^Read /.test(v)) { t.ok(/Net/.test(await t.text('#ar-rows')), 'every venue pair with its net after costs'); await t.download('#ar-csv', /^arbitrage-.*\.csv$/); }
+};
 SPECS['/emoji-combos/emoji-dictionary/'] = SPECS['/emoji-combos/']; // the family page, copied for the Versus floor
 // one emoji on every platform (lib/emoji-looks.js): the grid draws, a search for fire swaps it, the pictures load, the link keeps the emoji
 SPECS['/emojis/everywhere/'] = async (t) => {

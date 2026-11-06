@@ -270,7 +270,9 @@ async function readCard(page, ask) {
   }, ask, { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(2200);
   const obs = await page.evaluate(() => {
-    const card = document.querySelector('.vpage.on') || document.querySelector('.thing') || document.body;
+    // the answer's card, else the thing the ask made or changed (it is picked), else the first thing: an older timer on the
+    // stage is not the answer to "set a timer for 45 seconds" (#2326)
+    const card = document.querySelector('.vpage.on') || document.querySelector('.thing[data-picked]') || document.querySelector('.thing') || document.body;
     let note = '';
     try {
       const log = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]');

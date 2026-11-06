@@ -16,6 +16,7 @@
 import { append as noteAppend } from './notepad.js';
 import { goalOf, density } from '../lib/list-goal.js';
 import { soundOf } from './soundscape.js'; // "add soft rain" is a sound for the soundscape, not a list item
+import { addMs } from './timer.js'; // "add one minute" is time for the timer, not a list item (#2326)
 import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
 import { markerOf, cloudOf, reorder, PRIORITY } from '../lib/list-ops.js';
 
@@ -68,7 +69,7 @@ export function addOf(raw, isThing = () => false) {
   if (match) return cleanText(match[1]);
   // bare "add milk": onto the open list (or a new one), unless it names a stage thing, a look, a number or a link
   match = t.match(/^\s*add\s+([a-z][a-z' -]{0,40}?)\s*[.!]?\s*$/i);
-  if (match && !soundOf(t) && !isThing(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanText(match[1]);
+  if (match && !soundOf(t) && !addMs(t) && !isThing(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanText(match[1]);
   return '';
 }
 

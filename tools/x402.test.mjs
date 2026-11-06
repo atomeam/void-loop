@@ -188,7 +188,7 @@ const chain = ({ to = VERSE, value = 50000n, ok = true } = {}) => async (_u, ini
 };
 {
   assert.deepEqual(usdcIncome([{ status: 'verified', units: '50000' }, { status: 'settled', units: '50000' }, { status: 'not on chain', units: '50000' }], [{ provider: 'usdc-base', status: 'paid', cents: 900 }, { provider: 'usdc-base', status: 'awaiting', cents: 900 }]),
-    { x402_payments: 1, x402_cents: 5, x402_waiting: 1, store_usdc_orders: 1, store_usdc_cents: 900, cents: 905 });
+    { x402_payments: 1, x402_cents: 5, x402_waiting: 1, by_service: { review: { calls: 1, cents: 5 } }, store_usdc_orders: 1, store_usdc_cents: 900, cents: 905 });
   assert.equal(await usdcBalance({}, VERSE, chain()), '1234560');
   const policy = JSON.parse(readFileSync(new URL('../void-live-deploy/treasury/policy.json', import.meta.url), 'utf8'));
   const env = { DB: d1(), VERSE_WALLET_ADDR: VERSE, ASSETS: { fetch: async () => Response.json(policy) } };
