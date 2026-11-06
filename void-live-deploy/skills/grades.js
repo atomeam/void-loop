@@ -113,7 +113,10 @@ function gradesOf(text) {
     || /^what(?:'s|\s+is)\s+my\s+(?:(?:weighted|unweighted|semester|college|high\s+school)\s+)?gpa$/.test(t)) return { kind: 'gpaForm', weighted: /\bweighted\b/.test(t) && !/unweighted/.test(t) };
   if (/^(?:(?:open|show(?:\s+me)?|give\s+me|use)\s+)?(?:an?\s+|the\s+)?(?:final(?:\s+exam)?\s+grade|final\s+exam|finals?|grade|exam\s+grade|test\s+grade)\s+calc(?:ulator)?$/.test(t)
     || /^what\s+(?:grade|score|mark|percent(?:age)?)\s+do\s+i\s+need\s+(?:to\s+get\s+)?on\s+(?:my|the)\s+(?:final|final\s+exam|exam)$/.test(t)
-    || /^what\s+do\s+i\s+need\s+(?:to\s+get\s+)?on\s+(?:my|the)\s+(?:final|final\s+exam|exam)$/.test(t)) return { kind: 'finalForm' };
+    || /^what\s+do\s+i\s+need\s+(?:to\s+get\s+)?on\s+(?:my|the)\s+(?:final|final\s+exam|exam)$/.test(t)
+    // "final exam grade needed", "grade needed on final exam", "score needed on my final" (docs/GAPS.md row 77, 2026-11-06: an explanation)
+    || /^(?:the\s+)?(?:final(?:\s+exam)?|exam)\s+(?:grade|score|mark)\s+(?:i\s+)?need(?:ed)?$/.test(t)
+    || /^(?:the\s+)?(?:grade|score|mark)\s+(?:i\s+)?need(?:ed)?\s+(?:on|for)\s+(?:my\s+|the\s+|a\s+)?(?:final|final\s+exam|exam)$/.test(t)) return { kind: 'finalForm' };
   // a percent or a GPA as a letter grade
   if (!/\bout\s+of\b/.test(t)) {
     m = t.match(/^(?:what\s+(?:letter\s+)?grade\s+is\s+(?:an?\s+)?|what\s+is\s+(?:an?\s+)?|is\s+(?:an?\s+)?)?(\d{1,3}(?:\.\d+)?)\s*(?:%|percent)?\s+(?:is\s+what\s+(?:letter\s+)?grade|in\s+(?:a\s+)?letter\s+grade|as\s+a\s+letter(?:\s+grade)?|to\s+(?:a\s+)?letter(?:\s+grade)?|letter\s+grade)$/)
