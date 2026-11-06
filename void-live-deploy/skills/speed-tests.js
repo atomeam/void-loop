@@ -153,7 +153,7 @@ function typing(api, seconds) {
       const c = e(a[i]);
       h += i < b.length ? '<span style="color:' + (b[i] === a[i] ? '#7ee08a' : '#ff6b7a;text-decoration:underline') + '">' + c + '</span>' : i === b.length ? '<span style="border-bottom:2px solid #9ad">' + c + '</span>' : c;
     }
-    box.innerHTML = h;
+    box.innerHTML = h; // void-review: ok, h is the escaped characters of a passage in PASSAGES above, never text from a user
   };
   const finish = () => {
     clearInterval(timer); timer = null; done = true; input.readOnly = true;

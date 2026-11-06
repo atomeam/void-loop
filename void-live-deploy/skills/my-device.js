@@ -120,8 +120,7 @@ const KEY_W = { Backspace: 2, Tab: 1.5, Backslash: 1.5, CapsLock: 1.8, Enter: 2.
 
 function keysCard(api) {
   const el = api.showPage((p) => {
-    // void-review: ok, every label and code comes from KEY_ROWS and KEY_NAMES above, never from a user
-    p.innerHTML = '<h2>Keyboard tester</h2><div class="kt-pad" tabindex="0" role="application" aria-label="Keyboard tester: press keys here" style="outline:1px dashed rgba(255,255,255,.25);border-radius:12px;padding:10px;overflow-x:auto">'
+    p.innerHTML = '<h2>Keyboard tester</h2><div class="kt-pad" tabindex="0" role="application" aria-label="Keyboard tester: press keys here" style="outline:1px dashed rgba(255,255,255,.25);border-radius:12px;padding:10px;overflow-x:auto">' // void-review: ok, every label and code comes from KEY_ROWS and KEY_NAMES above, never from a user
       + KEY_ROWS.map((r) => '<div style="display:flex;gap:4px;margin:4px 0">' + r.map((c) => '<span class="kt-k" data-c="' + c + '" style="flex:' + (KEY_W[c] || 1) + ' 0 0;min-width:' + Math.round(26 * (KEY_W[c] || 1)) + 'px;padding:6px 2px;text-align:center;border-radius:6px;border:1px solid rgba(255,255,255,.22);font:13px system-ui;transition:background .1s">' + keyLabel(c) + '</span>').join('') + '</div>').join('')
       + '</div><p class="kt-out" aria-live="polite" style="font-size:18px;margin:10px 0">Click the keyboard, then press any key.</p><p class="kt-n" style="color:#8a8a8a"></p>'
       + NOTE('Read in your browser from each key press · nothing is kept or sent · the system keeps some keys, like the Windows key and Cmd+Tab, for itself');
