@@ -4010,5 +4010,23 @@
    ]
   },
   "note": "fix: \"send it away\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-06T03:36:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3089,
+   "failed": [
+    {
+     "ask": "flip a coin",
+     "why": [
+      "slow 18414 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
