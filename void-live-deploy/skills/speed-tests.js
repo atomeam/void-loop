@@ -2,11 +2,13 @@
  * speed-tests skill - three small tests that run in the page (docs/GAPS.md rows 27, 28 and 29, 2026-11-06: each gave a definition or an article):
  * "reaction time test" (wait for green, click, five tries, the average and the best in ms), "click speed test" (clicks per second over 5 or
  * 10 seconds, "10 second click test"), "aim trainer" (20 targets, hits, misses and the average time to a hit).
+ * Row 26 (2026-11-06: an explanation): "typing speed test" gives a passage to type for 30 or 60 seconds, then words per minute
+ * (correct characters / 5 a minute) and accuracy. The passages are written for this card.
  * Times come from performance.now() in this browser. Nothing is kept or sent, and no score is compared with anyone else's.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }. Tests: tools/gaps-batch2.test.mjs.
  */
 
-/** which test an ask names: { kind: 'reaction' | 'clicks' | 'aim', seconds? } or null. Pure. */
+/** which test an ask names: { kind: 'reaction' | 'clicks' | 'aim' | 'typing', seconds? } or null. Pure. */
 export function testOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (!t || t.length > 60) return null;
@@ -16,6 +18,8 @@ export function testOf(text) {
   let m = t.match(new RegExp(pre + '(?:(5|10|five|ten)[ -]second )?(?:click(?:ing)?(?: speed)?|cps|clicks per second|mouse click) (?:test|tester|counter|game|checker)(?: (?:for |in )?(5|10|five|ten) ?(?:s|secs?|seconds?))?$'));
   if (m) { const w = m[1] || m[2]; return { kind: 'clicks', seconds: w === '5' || w === 'five' ? 5 : 10 }; }
   if (new RegExp(pre + '(?:aim (?:trainer|training|test|practice|game)|mouse (?:accuracy|aim) (?:test|trainer|game)|target practice game)$').test(t)) return { kind: 'aim' };
+  m = t.match(new RegExp(pre + '(?:(30|60|1|one)[ -](?:second|minute) )?(?:typing(?: speed)?|type speed|typing wpm|wpm|words per minute|keyboard typing) (?:test|tester|game|checker|practice)(?: (?:for |in )?(30|60|1|one) ?(?:s|secs?|seconds?|min|minutes?))?$'));
+  if (m) { const w = m[1] || m[2]; return { kind: 'typing', seconds: w === '30' ? 30 : 60 }; }
   return null;
 }
 
@@ -34,6 +38,22 @@ export function aimSummary(hitTimes, misses) {
   const s = summary(hitTimes), all = s.count + (misses || 0);
   return { hits: s.count, misses: misses || 0, accuracy: all ? Math.round((s.count / all) * 100) : 0, avg: s.avg };
 }
+
+/** words per minute (correct characters / 5 a minute) and accuracy in whole percent of the characters typed. Pure. */
+export function typingScore(target, typed, ms) {
+  const a = String(target || ''), b = String(typed || '');
+  let ok = 0; for (let i = 0; i < b.length; i++) if (b[i] === a[i]) ok++;
+  const min = ms > 0 ? ms / 60000 : 0;
+  return { chars: b.length, correct: ok, errors: b.length - ok, wpm: min ? Math.round(ok / 5 / min) : 0, accuracy: b.length ? Math.round((ok / b.length) * 100) : 0 };
+}
+
+/** passages written for this card, plain words and punctuation a keyboard has */
+export const PASSAGES = [
+  'The night shift starts when the last bus leaves. A good list on the fridge, a full kettle and one quiet hour can carry a whole week. Most days the plan holds, and when it does not, the next small step is still clear.',
+  'Rain moved across the hills before noon, and the river rose a little by the old bridge. Two kids raced paper boats along the bank while a dog watched from the steps, sure that it could catch them both.',
+  'A small garden needs less than people think: sun for six hours, water in the morning and a little patience. Tomatoes like warm soil, beans climb anything near them, and mint will take the whole yard if you let it.',
+  'The map was folded wrong, so the north edge sat in the middle. We found the trail anyway, by the third red marker on the pines, and reached the lake just as the light turned gold over the far shore.',
+];
 
 const BTN = 'padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#e8e8e8;cursor:pointer;font:14px system-ui';
 const now = () => (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now());
@@ -113,16 +133,56 @@ function aim(api) {
   return 'speed-tests';
 }
 
+function typing(api, seconds) {
+  const { showPage, esc } = api, e = esc || ((s) => String(s));
+  let pick = Math.floor(Math.random() * PASSAGES.length), len = seconds;
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Typing speed test</h2><div role="group" aria-label="Length" style="display:flex;gap:6px;margin:8px 0">' // void-review: ok, the values are the numbers 30 and 60 and a boolean, never text from a user
+      + [30, 60].map((n) => '<button type="button" class="ty-len" data-s="' + n + '" aria-pressed="' + (n === seconds) + '" style="' + BTN + '">' + n + ' seconds</button>').join('')
+      + '<button type="button" class="ty-new" style="' + BTN + '">New passage</button></div>'
+      + '<p class="ty-text" style="font:18px/1.6 ui-monospace,monospace;background:#1d1d2e;border-radius:12px;padding:12px;user-select:none"></p>'
+      + '<textarea class="ty-in" rows="4" aria-label="Type the passage here" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Start typing to start the clock" style="width:100%;box-sizing:border-box;font:18px/1.5 ui-monospace,monospace;border-radius:10px;padding:10px;background:#11111c;color:#e8e8e8;border:1px solid rgba(255,255,255,.2)"></textarea>'
+      + '<p class="ty-out" aria-live="polite" style="font-size:18px;margin:10px 0"></p><p style="color:#8a8a8a">Words per minute counts correct characters, five to a word. Accuracy counts the characters you typed.</p>' + NOTE;
+  });
+  const $ = (c) => el && el.querySelector && el.querySelector(c), box = $('.ty-text'), input = $('.ty-in'), out = $('.ty-out');
+  if (!box || !input) return 'speed-tests';
+  let t0 = 0, timer = null, done = false;
+  const paint = () => {
+    const a = PASSAGES[pick], b = input.value || ''; let h = '';
+    for (let i = 0; i < a.length; i++) {
+      const c = e(a[i]);
+      h += i < b.length ? '<span style="color:' + (b[i] === a[i] ? '#7ee08a' : '#ff6b7a;text-decoration:underline') + '">' + c + '</span>' : i === b.length ? '<span style="border-bottom:2px solid #9ad">' + c + '</span>' : c;
+    }
+    box.innerHTML = h; // void-review: ok, h is the escaped characters of a passage in PASSAGES above, never text from a user
+  };
+  const finish = () => {
+    clearInterval(timer); timer = null; done = true; input.readOnly = true;
+    const ms = Math.min(now() - t0, len * 1000), s = typingScore(PASSAGES[pick], input.value, ms);
+    if (out) out.textContent = s.wpm + ' words per minute · ' + s.accuracy + '% accuracy · ' + s.errors + ' wrong of ' + s.chars + ' characters';
+  };
+  const reset = () => { clearInterval(timer); timer = null; t0 = 0; done = false; input.readOnly = false; input.value = ''; if (out) out.textContent = ''; paint(); };
+  input.addEventListener('input', () => {
+    if (done) return;
+    if (!t0 && input.value) { t0 = now(); timer = setInterval(() => { if (api._pageStill && !api._pageStill(el)) { clearInterval(timer); return; } const ms = now() - t0; if (ms >= len * 1000) finish(); else if (out) out.textContent = Math.ceil((len * 1000 - ms) / 1000) + ' s left'; }, 200); }
+    paint();
+    if (input.value.length >= PASSAGES[pick].length) finish();
+  });
+  if (el.querySelectorAll) for (const b of el.querySelectorAll('.ty-len')) b.addEventListener('click', () => { len = +b.dataset.s; for (const o of el.querySelectorAll('.ty-len')) o.setAttribute('aria-pressed', String(o === b)); reset(); });
+  const nb = $('.ty-new'); if (nb) nb.addEventListener('click', () => { pick = (pick + 1) % PASSAGES.length; reset(); });
+  paint();
+  return 'speed-tests';
+}
+
 function run(text, api) {
   const q = testOf(text);
   if (!q) return 'none';
-  return q.kind === 'reaction' ? reaction(api) : q.kind === 'clicks' ? clicks(api, q.seconds) : aim(api);
+  return q.kind === 'reaction' ? reaction(api) : q.kind === 'clicks' ? clicks(api, q.seconds) : q.kind === 'typing' ? typing(api, q.seconds) : aim(api);
 }
 
 export default {
   name: 'speed-tests',
-  examples: ['reaction time test', 'reaction test', 'click speed test', 'cps test', '10 second click test', 'aim trainer', 'aim test'],
-  nearMisses: ['what is a good reaction time', 'average reaction time', 'reaction time definition', 'how fast can I click', 'aim of the study', 'click test for dogs'],
+  examples: ['reaction time test', 'reaction test', 'click speed test', 'cps test', '10 second click test', 'aim trainer', 'aim test', 'typing speed test', 'typing test', 'wpm test'],
+  nearMisses: ['what is a good reaction time', 'average reaction time', 'reaction time definition', 'how fast can I click', 'aim of the study', 'click test for dogs', 'what is a good typing speed', 'average typing speed', 'typing speed test for kids definition', 'how to type faster'],
   match(lower, text) { return !!testOf(text || lower); },
   run,
 };
