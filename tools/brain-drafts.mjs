@@ -31,7 +31,7 @@ export const TECHNIQUES = [
   ['concept graph', /concept[ -]graph|spatial graph|graph mind|co-?occurrence|message[ -]passing|spatial[ -]token|token[ -]swarm|embedding/, 'concepts'],
   ['speech words', /speech|spoken|voice/, 'concepts'],
   ['q-learning', /q-learning|tabular q|\bq-table/, 'will'],
-  ['decision tree', /decision[ -]tree/, 'will'],
+  ['decision tree', /decision[ -]tree/, 'rules'], // the decision-tree drafts: a tree that guesses the way of the visitor's next stroke (lib/brain-rules.js)
   ['policy', /\bpolicy\b|\brl\b|reinforcement|reward/, 'will'],
   ['kuramoto rhythm', /kuramoto|phase[ -]lock|phase oscillat|oscillator/, 'rhythm'],
   ['spectral and wave', /spectral|resonan|\bwave\b|interference|harmonic|sonif|acoustic|audio/, 'rhythm'],
