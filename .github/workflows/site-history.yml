@@ -10,7 +10,7 @@ on:
         description: "sites to document this run"
         default: "40"
   schedule:
-    - cron: '47 6 * * *'
+    - cron: '47 */6 * * *' # four runs a day, so the histories under the ops on the tower and in Web Lore fill in through the day
 concurrency:
   group: void-site-history
   cancel-in-progress: false
@@ -36,12 +36,14 @@ jobs:
           node tools/site-history.mjs --missing --max "$MAX" --slow
           # parity.mjs rebuilds void-live-deploy/history/<slug>.json (what /obituaries/ opens) and parity.json from docs/HISTORY; without --write it does nothing
           node tools/parity.mjs --write
+          # Web Lore (/lore/): every site, sorted, with its cited record; rebuilt from the same histories
+          node tools/lore.mjs
       - name: Commit
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/HISTORY docs/PARITY void-live-deploy/history void-live-deploy/parity.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git add docs/HISTORY docs/PARITY void-live-deploy/history void-live-deploy/parity.json void-live-deploy/lore.json void-live-deploy/lib/lore-names.js; if git diff --cached --quiet; then echo "no change"; exit 0; fi
           git commit -q -m "Site history: the next sites of the queue, each with a cited history"
           for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
           gh workflow run deploy.yml --ref main -f after_merge=true

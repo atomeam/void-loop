@@ -234,7 +234,7 @@ export function renderGallery(catalog) {
     + [...tools.map(toolCard), ...made.map(madeCard)].join('\n') + '\n</ul>\n'
     + '<p class="note">Each tool is the useful idea inside a cluster of the lab\'s hourly experiments: the tilt sensing that steered particles levels a shelf, the seal that hashed their state checks your download.</p>\n'
     + (rest.length ? '<details>\n<summary>The ' + rest.length + ' experiments behind them, newest first: each demo opens the tool its idea became</summary>\n<ul>\n' + rest.map(card).join('\n') + '\n</ul>\n</details>\n' : '')
-    + '<footer><a href="/tools/">All tools</a> &middot; <a href="/">Ask Verse anything</a></footer>\n</main>\n</body>\n</html>\n';
+    + '<footer><a href="/tools/">All tools</a> &middot; <a href="/lore/">Web Lore</a> &middot; <a href="/">Ask Verse anything</a></footer>\n</main>\n</body>\n</html>\n';
 }
 export const readCatalog = (out = LAB_DIR) => { try { return JSON.parse(fs.readFileSync(path.join(out, 'catalog.json'), 'utf8')); } catch (_) { return []; } };
 export function writeCatalog(catalog, out = LAB_DIR) {

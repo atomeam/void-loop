@@ -606,6 +606,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /learn-to-draw/ | - | number | yes | its tag |
 | /limits/ | - | - | no | its tag |
 | /local/ | location | location, url | yes | its tag |
+| /lore/ | - | - | no | its tag |
 | /markets/ | text | numbers, table | yes | handoff-types.json |
 | /markets/caps/ | text | numbers, table | no | handoff-types.json |
 | /markets/currency-converter/ | text | numbers, table | yes | its tag |

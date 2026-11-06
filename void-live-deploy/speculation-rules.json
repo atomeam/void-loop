@@ -5,7 +5,7 @@
       "where": {
         "and": [
           { "href_matches": { "pathname": "/*" } },
-          { "not": { "href_matches": [{ "pathname": "/api/*" }, { "pathname": "/c/*" }, { "pathname": "/@*" }, { "pathname": "/gen/*" }, { "pathname": "/is-it/*" }, { "pathname": "/boards/t/*" }, { "pathname": "/team/join/*" }, { "pathname": "/team/mcp" }, { "pathname": "/films/rss" }, { "pathname": "/fanfic/rss" }, { "pathname": "/tools.json" }, { "pathname": "/emoji" }, { "pathname": "/emoji/*" }, { "pathname": "/ip" }, { "pathname": "/ip/*" }, { "pathname": "/*.:ext(json|xml|txt|rss|zip|pdf|stl|glb|gz)" }] } },
+          { "not": { "href_matches": [{ "pathname": "/api/*" }, { "pathname": "/c/*" }, { "pathname": "/@*" }, { "pathname": "/gen/*" }, { "pathname": "/is-it/*" }, { "pathname": "/boards/t/*" }, { "pathname": "/team/join/*" }, { "pathname": "/team/mcp" }, { "pathname": "/films/rss" }, { "pathname": "/fanfic/rss" }, { "pathname": "/tools.json" }, { "pathname": "/emoji" }, { "pathname": "/emoji/*" }, { "pathname": "/ip" }, { "pathname": "/ip/*" }, { "pathname": "/lore" }, { "pathname": "/lore/*" }, { "pathname": "/*.:ext(json|xml|txt|rss|zip|pdf|stl|glb|gz)" }] } },
           { "not": { "selector_matches": [".no-prerender", "[download]", "[target=_blank]", "[rel~=nofollow]"] } }
         ]
       },
@@ -18,7 +18,7 @@
       "where": {
         "and": [
           { "href_matches": { "pathname": "/*" } },
-          { "not": { "href_matches": [{ "pathname": "/" }, { "pathname": "/api/*" }, { "pathname": "/c/*" }, { "pathname": "/@*" }, { "pathname": "/gen/*" }, { "pathname": "/is-it/*" }, { "pathname": "/boards/t/*" }, { "pathname": "/team/join/*" }, { "pathname": "/team/mcp" }, { "pathname": "/films/rss" }, { "pathname": "/fanfic/rss" }, { "pathname": "/tools.json" }, { "pathname": "/emoji" }, { "pathname": "/emoji/*" }, { "pathname": "/ip" }, { "pathname": "/ip/*" }, { "pathname": "/*.:ext(json|xml|txt|rss|zip|pdf|stl|glb|gz)" }] } },
+          { "not": { "href_matches": [{ "pathname": "/" }, { "pathname": "/api/*" }, { "pathname": "/c/*" }, { "pathname": "/@*" }, { "pathname": "/gen/*" }, { "pathname": "/is-it/*" }, { "pathname": "/boards/t/*" }, { "pathname": "/team/join/*" }, { "pathname": "/team/mcp" }, { "pathname": "/films/rss" }, { "pathname": "/fanfic/rss" }, { "pathname": "/tools.json" }, { "pathname": "/emoji" }, { "pathname": "/emoji/*" }, { "pathname": "/ip" }, { "pathname": "/ip/*" }, { "pathname": "/lore" }, { "pathname": "/lore/*" }, { "pathname": "/*.:ext(json|xml|txt|rss|zip|pdf|stl|glb|gz)" }] } },
           { "not": { "selector_matches": [".no-prerender", "[download]", "[target=_blank]", "[rel~=nofollow]"] } }
         ]
       },

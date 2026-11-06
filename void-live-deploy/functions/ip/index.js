@@ -25,7 +25,7 @@ export const CARD = '/?q=' + encodeURIComponent('what is my ip');
 export function nav() {
   const link = (href, label) => '<a href="' + esc(href) + '">' + esc(label) + '</a>';
   return '<nav id="related" aria-label="Use with"><span>Use with</span>' + link(CARD, 'See it as a card on the stage')
-    + WITH.filter((p) => TOOLS[p]).map((p) => link(p, TOOLS[p])).join('') + link('/tools/', 'All tools') + '</nav><p class="home"><a href="/">Ask Verse anything</a></p>';
+    + WITH.filter((p) => TOOLS[p]).map((p) => link(p, TOOLS[p])).join('') + link('/lore/', 'Web Lore') + link('/tools/', 'All tools') + '</nav><p class="home"><a href="/">Ask Verse anything</a></p>';
 }
 /** the page a person sees: the address, its family, the one line to get it from a terminal, the Use with row and the way home. No script. Pure. */
 export function page(ip) {

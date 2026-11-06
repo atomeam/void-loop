@@ -167,6 +167,15 @@ export async function build(liveAll) {
     const h = historyFor(s.slug); if (h) { files[path.join(DEP, 'history', s.slug + '.json')] = JSON.stringify({ site: s.site, doc: 'docs/HISTORY/' + s.slug + '.md', ...h }) + '\n'; parity[s.slug].events = h.events.filter((e) => !e.u).length; }
     for (const r of inv.rows) if (r.status === 'missing' || r.status === 'partial') { const k = r.page + ' · ' + r.label; const e = rank.get(k) || { page: r.page, label: r.label, status: r.status, sites: [] }; e.sites.push(s.site); rank.set(k, e); }
   }
+  // every history written, not only the hand floors': a frontier site documented by tools/site-history.mjs gets its timeline too (the ops under
+  // the tower and /lore/ open /history/<slug>.json; without this a passed frontier op had a history on disk and none on the site)
+  const done = new Set(sites.map((s) => s.slug));
+  for (const f of (fs.existsSync(HDIR) ? fs.readdirSync(HDIR) : []).filter((f) => f.endsWith('.md') && f !== 'README.md').sort()) {
+    const slug = f.slice(0, -3); if (done.has(slug)) continue;
+    const h = historyFor(slug); if (!h) continue;
+    let site = slug; try { site = (/^- Site: (.+?) \(/m.exec(fs.readFileSync(path.join(HDIR, f), 'utf8')) || [])[1] || slug; } catch (_) {}
+    files[path.join(DEP, 'history', slug + '.json')] = JSON.stringify({ site, doc: 'docs/HISTORY/' + f, ...h }) + '\n';
+  }
   const BIG = /Google|ESPN|BBC|Yahoo|Spotify|Apple|LinkedIn|Allrecipes|Trello|4chan|bing|deepl|notion|outlook|icloud/i;
   const ranked = [...rank.values()].map((e) => ({ ...e, score: e.sites.length + 5 * e.sites.filter((x) => BIG.test(x)).length })).sort((a, b) => b.score - a.score || a.label.localeCompare(b.label));
   const R = ['# Parity: what Verse still lacks', '', 'Built by `node tools/parity.mjs --write`. One file per site in this folder; each names every feature of the original and whether Verse has it, with evidence. The list below ranks the missing and partial features by the visitors they reach: one point for each original site that offers it, five more for each of the most-visited originals (the ones named in plain text in the score).', '', '| Score | Verse page | Feature | Status | Original sites that have it |', '| --- | --- | --- | --- | --- |'];

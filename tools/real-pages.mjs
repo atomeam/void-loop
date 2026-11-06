@@ -134,6 +134,13 @@ export const SPECS = {
     const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
     await t.links();
   },
+  '/lore/': async (t) => { // Web Lore: lore.json drawn as one shelf per category; the search box narrows the shelves to a site or a category
+    const tally = await t.waitText('#tally', /sites/, 10000); t.ok(/\d[\d,]* *sites/.test(tally), 'it counts the sites: ' + tally.slice(0, 60));
+    const shelves = await t.p.locator('#shelves details').count(); t.ok(shelves > 5, shelves + ' shelves');
+    await t.p.fill('#find', '4chan'); await t.p.waitForTimeout(200);
+    const hit = await t.p.locator('#shelves li a').allInnerTexts(); t.ok(hit.some((x) => /4chan/i.test(x)), 'the search finds 4chan (' + hit.length + ' rows)');
+    await t.links();
+  },
   '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece
     const n = await t.waitText('#n', /scanned/, 10000); t.ok(/\d+\s*scanned/.test(n), 'it counts what was scanned: ' + n.slice(0, 80));
     t.ok((await t.p.locator('#top tr').count()) > 0, 'the next pieces by value are listed');
