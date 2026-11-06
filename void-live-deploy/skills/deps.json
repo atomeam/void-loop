@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1189,
+ "counted": 1191,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 90,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 26,
    "direct": 1,
-   "dependants": 90,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 89,
+   "dependants": 90,
    "tests": 5
   },
   {
@@ -384,7 +384,7 @@
    "file": "lib/movies.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 1
   },
   {
@@ -759,6 +759,13 @@
    "tests": 1
   },
   {
+   "file": "lib/film-discovery.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
    "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
@@ -965,6 +972,13 @@
    "file": "lib/list-ops.js",
    "skills": 3,
    "direct": 3,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/movie-intent.js",
+   "skills": 3,
+   "direct": 1,
    "dependants": 3,
    "tests": 1
   },
@@ -1779,13 +1793,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/film-discovery.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/formula-engine.js",
@@ -4974,6 +4981,10 @@
    "imports": [
     "lib/listgen.js"
    ],
+   "importedBy": []
+  },
+  "functions/ip/index.js": {
+   "imports": [],
    "importedBy": []
   },
   "functions/is-it/[what].js": {
@@ -8232,7 +8243,13 @@
    ],
    "importedBy": [
     "functions/api/filmfind.js",
+    "lib/movie-intent.js",
     "skills/film-metadata.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js",
+    "skills/movie.js",
+    "skills/pick-for-me.js"
    ]
   },
   "lib/film-reviews.js": {
@@ -10279,6 +10296,18 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/movie-intent.js": {
+   "imports": [
+    "lib/film-discovery.js"
+   ],
+   "importedBy": [
+    "skills/movie.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js",
+    "skills/pick-for-me.js"
+   ]
+  },
   "lib/movies.js": {
    "imports": [],
    "importedBy": [
@@ -10292,6 +10321,7 @@
    ],
    "reachedBy": [
     "functions/api/filmfind.js",
+    "lib/movie-intent.js",
     "skills/calendar-fill.js",
     "skills/calendar.js",
     "skills/dates.js",
@@ -17498,7 +17528,8 @@
   },
   "skills/movie.js": {
    "imports": [
-    "lib/movies.js"
+    "lib/movies.js",
+    "lib/movie-intent.js"
    ],
    "importedBy": [
     "skills/media-pick.js",
