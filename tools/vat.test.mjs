@@ -1,7 +1,7 @@
 import test from 'node:test';
 import vatSkill from '../void-live-deploy/skills/vat.js';
 import assert from 'node:assert/strict';
-import { compute, parseAmount, parseRate, round2, stateFromQuery, queryFromState, workingOf } from '../void-live-deploy/lib/vat.js';
+import { compute, parseAmount, parseRate, round2, stateFromQuery, queryFromState, workingOf, moneyWords } from '../void-live-deploy/lib/vat.js';
 import { vatAskOf, vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
 
 test('extract VAT correctly from a total', () => {
@@ -63,6 +63,14 @@ test('working display is generated for both modes', () => {
   const added = compute({ amount: 1000, rate: 20, mode: 'add' });
   const steps2 = workingOf(added, 'en');
   assert.ok(steps2.length >= 2);
+});
+
+test('the total is spelled in words on the device', () => {
+  const r = compute({ amount: 1000, rate: 22, mode: 'extract' });
+  assert.equal(moneyWords(r.gross), 'one thousand');
+  assert.equal(moneyWords(r.net), 'eight hundred nineteen and 67/100');
+  assert.equal(moneyWords(1200), 'one thousand two hundred');
+  assert.equal(moneyWords(-1), '');
 });
 
 test("vat skill is registered and matches VAT asks", () => {
