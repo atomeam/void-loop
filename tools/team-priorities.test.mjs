@@ -98,10 +98,10 @@ test('the run ranks the queue, pins a brief only when the bets change, hands job
   assert.equal(v.priorities.bets[0].id, 'f1'); assert.equal(v.priorities.brief, r3.brief); assert.deepEqual(v.priorities.override.pin, ['f1']);
 });
 
-test('a bet has a title a person reads whole: a flaky check by the head of its test name, anything else by its first clause, never cut', () => {
+test('a bet has a title a person reads whole: a flaky check by the head of its test name, anything else by its first clause, at a word', () => {
   const flake = P.titleOf({ ask: 'make "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last" robust: fix the test or the code' });
   assert.equal(flake, 'Steady a flaky check: paste any size and read aloud');
-  const long = 'word '.repeat(40).trim(); assert.equal(P.titleOf({ ask: 'make "' + long + '" robust: fix it' }), 'Steady a flaky check: ' + long, 'whole, never cut');
+  const long = P.titleOf({ ask: 'make "' + 'word '.repeat(40) + '" robust: fix it' }); assert.ok(long.length <= 102 && long.endsWith('…') && !/\s…$/.test(long), long);
   assert.equal(P.titleOf({ ask: 'Fix the podcasts exam: crime junkie plays nothing. The card waits on two asks.' }), 'Fix the podcasts exam');
   assert.equal(P.titleOf({ ask: '', id: 'team-12' }), 'team-12');
   const r = P.scoreOf({ id: 'f1', ask: 'make "sky / still" robust: fix the test or the code, never skip', target: 'flake:sky', state: 'queued' }, null, {}); assert.equal(r.title, 'Steady a flaky check: sky / still');

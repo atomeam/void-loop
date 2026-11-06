@@ -56,11 +56,13 @@ export function scoreOf(j, w, ev = {}) {
 }
 
 /** a bet's title a person reads whole on /team/ and /brain/ (owner, 2026-11-06: the bets showed as cut-off sentences): a flaky check by the
- *  head of its test name (before its first colon), anything else by its first clause. Never cut: the page wraps it. Pure. */
+ *  head of its test name, anything else by its first clause, at a word, under 110 characters. The ask itself stays under it, whole. Pure. */
+const cutAt = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); if (s.length <= n) return s; const c = s.slice(0, n - 1).replace(/[\s,;:–-]+\S*$/, ''); return (c || s.slice(0, n - 1)) + '…'; };
 export function titleOf(r) {
-  const ask = String((r && r.ask) || '').replace(/\s+/g, ' ').trim(), flake = /^make "([^"]+)"? robust\b/i.exec(ask);
-  if (flake) return 'Steady a flaky check: ' + flake[1].split(/:\s/)[0].trim();
-  return ask.split(/(?<=[.!?])\s|:\s|;\s/)[0] || ask || String((r && r.id) || '');
+  const ask = String((r && r.ask) || '').trim(), flake = /^make "([^"]+)"? robust\b/i.exec(ask);
+  if (flake) { const check = flake[1].replace(/…$/, ''), head = check.split(/:\s/)[0]; return 'Steady a flaky check: ' + cutAt(head, 80); }
+  const first = ask.split(/(?<=[.!?])\s|:\s|;\s/)[0];
+  return cutAt(first || ask || (r && r.id) || '', 110);
 }
 
 /** an owner message that sets a priority -> { pin } | { drop } | { reset } | null */
