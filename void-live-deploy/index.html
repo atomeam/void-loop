@@ -6366,10 +6366,10 @@ say('nothing selected to remove');
         if (!quiet) rememberAsk(typed);
         if (!skillsRunning) takeUndoSnapshot();
         currentAsk = lastAsk = typed;
-        let did = false;
+        let did = false, none = false;
         if (stageKinds.list && typeof stageKinds.list.ask === 'function') {
           const d = stageKinds.list.ask(listLower, typed, stageApi);
-          did = !!(d && d !== 'no list');
+          did = !!(d && d !== 'no list'); none = d === 'no list';
         } else {
           const sel = selectedId && things[selectedId];
           const list = (sel && sel.kind === 'list' && sel) || Object.values(things).find((t) => t && t.kind === 'list');
@@ -6378,9 +6378,12 @@ say('nothing selected to remove');
             else list.items = [];
             save(); render();
             did = true;
-          }
+          } else none = true;
         }
         if (did) { say(''); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: listClear ? 'list-cleared' : 'list-removed' }); return; }
+        // no list on the stage: said at once. The ask used to go on down the slow path (an article fallback, seconds), so the next ask
+        // ("make a list") ran first and this one, landing late, took the new list away (watchdog #2324: the list card and list goal checks)
+        if (none) { say('there is no list on the stage'); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'no-list' }); return; }
       }
       // "clear" is the whole stage, already in memory. After a reload the suite asks within a few hundred ms, while the
       // rest of the index is still loading, and a whispered "waking up" let the test move on. The clear then landed late
