@@ -686,6 +686,7 @@ for (const [name, file] of [
   ['open-data bots', 'open-data.test.mjs'],
   ['cross checks', 'cross-checks.test.mjs'],
   ['answer free', 'answer-free.test.mjs'],
+  ['client-handoff', 'client-handoff.test.mjs'],
 ]) {
   // the load-bench test spawns the real bench, which needs the installed packages (bench.mjs imports playwright-core): with
   // VOID_SKIP_BENCH it runs from a worktree without node_modules (merge-gate.mjs), so it sits out with the bench check above
