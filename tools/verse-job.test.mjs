@@ -5,7 +5,7 @@ import http from 'node:http';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskText, startHere, lastJson, settle, runJob, GUIDE, fullWhy } from './verse-job.mjs';
+import { taskText, startHere, lastJson, settle, runJob, GUIDE, fullWhy, turnLog } from './verse-job.mjs';
 import { GUIDE as GUIDE_TEAM } from '../void-live-deploy/lib/job-guide.js';
 import { ROUTES } from './conductor-core.mjs';
 
@@ -85,7 +85,7 @@ test('shipped is done; paused, skipped, idle, healed and a lap that fixed someth
 
 test('end to end against a fake queue and a stub lap: the job is read, the lap gets its words, the result is written back', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'vj-')), seen = { patches: [], gets: 0 }, stub = join(dir, 'lap.mjs');
-  writeFileSync(stub, "console.log('noise');\nconsole.log(JSON.stringify({ outcome: process.env.STUB_OUTCOME, why: 'stub', pr: process.env.STUB_OUTCOME === 'shipped' ? 'https://x/pull/1' : undefined, task: { kind: 'next' }, args: process.argv.slice(2).join(' ').slice(0, 60) }));\n");
+  writeFileSync(stub, "console.log('noise');\nconsole.error('  turn 1: read index.html -> ok');\nconsole.error('other noise');\nconsole.log(JSON.stringify({ outcome: process.env.STUB_OUTCOME, why: 'stub', pr: process.env.STUB_OUTCOME === 'shipped' ? 'https://x/pull/1' : undefined, task: { kind: 'next' }, args: process.argv.slice(2).join(' ').slice(0, 60) }));\n");
   const server = http.createServer((req, res) => {
     if (req.headers.authorization !== 'Bearer tkn') { res.statusCode = 401; return res.end('no'); }
     let body = ''; req.on('data', (c) => { body += c; }); req.on('end', () => {
@@ -97,7 +97,8 @@ test('end to end against a fake queue and a stub lap: the job is read, the lap g
   try {
     const env = { ...process.env, VOID_OWNER_TOKEN: 'tkn', VOID_API: 'http://127.0.0.1:' + server.address().port + '/api/queue', VERSE_LOOP_BIN: stub };
     let r = await runJob('j1', { env: { ...env, STUB_OUTCOME: 'shipped' } });
-    assert.equal(r.patch.state, 'done'); assert.deepEqual(seen.patches[0], { id: 'j1', state: 'done', note: 'verse-job: PR https://x/pull/1' });
+    assert.equal(r.patch.state, 'done'); assert.deepEqual(r.turns, ['turn 1: read index.html -> ok'], 'the coder\'s turn lines come back from the lap\'s stderr');
+    assert.deepEqual(seen.patches[0], { id: 'j1', state: 'done', note: 'verse-job: PR https://x/pull/1' });
     r = await runJob('j1', { env: { ...env, STUB_OUTCOME: 'dropped' } });
     assert.equal(seen.patches[1].state, 'queued'); assert.match(seen.patches[1].note, /^tries 1 · dropped: stub/);
     r = await runJob('j1', { env: { ...env, STUB_OUTCOME: 'shipped' }, dry: true });
@@ -115,4 +116,12 @@ test('the job log keeps the whole why, one line, with key-like runs masked', () 
   assert.equal(fullWhy({ why: 'token ' + 'a'.repeat(40) + ' refused' }), 'token [masked] refused');
   assert.equal(fullWhy({ why: 'x'.repeat(5000).replace(/x/g, 'ab ') }).length, 600);
   assert.equal(fullWhy(null), '');
+});
+
+test('the job log keeps the coder\'s turn lines from stderr, masked, and only those', () => {
+  const err = ['verse-loop: lap start', '  turn 1: search foo -> 3 hits', '  turn 2: read ' + 'k'.repeat(40) + ' -> ok', 'turn x: not a turn', '  turn 30: finish  -> stopped'].join('\n');
+  assert.deepEqual(turnLog(err), ['turn 1: search foo -> 3 hits', 'turn 2: read [masked] -> ok', 'turn 30: finish  -> stopped']);
+  assert.deepEqual(turnLog(''), []); assert.deepEqual(turnLog(undefined), []);
+  const many = Array.from({ length: 80 }, (_, i) => 'turn ' + (i + 1) + ': read a -> ok').join('\n');
+  assert.equal(turnLog(many).length, 60, 'at most 60 lines'); assert.match(turnLog(many)[59], /^turn 80:/, 'the last turns are kept');
 });
