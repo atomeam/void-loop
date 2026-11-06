@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Verse's Shorts get better on real outcomes (owner, 2026-11-03: "it should just get better over time as well as the video quality").
 // Since 2026-11-06 every film is a different kind of video about something people are watching today: each day three films, each in a
-// different format of tools/studio.mjs (news parody, trailer parody, explainer, POV skit, countdown, nature parody, review parody,
+// different format of tools/film-studio.mjs (news parody, trailer parody, explainer, POV skit, countdown, nature parody, review parody,
 // lyric video), about topics from tools/trends.mjs that pass tools/topic-gate.mjs (no small everyday sums, no harm, nothing adult, no
 // repeat of the last 30 days). The formats rotate, least recently made first; once films have MIN_VIEWS views their format's outcome
 // is scored, and the best-scoring format keeps one of the day's three places. The older knob trials (one Short against a challenger)
@@ -16,7 +16,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KNOBS, BASE, SCENES } from './shorts.mjs';
-import { ORDER as FORMATS, FORMATS as FORMAT_DEFS, fits, scriptOf, nameOf, lineChars, linesOf } from './studio.mjs';
+import { ORDER as FORMATS, FORMATS as FORMAT_DEFS, fits, scriptOf, nameOf, lineChars, linesOf } from './film-studio.mjs';
 import { topicCheck } from './topic-gate.mjs';
 import { hookScore, HOOK_MIN } from './video-gate.mjs';
 

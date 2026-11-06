@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// What people are watching and searching today, for Verse's films (tools/studio.mjs makes the film, tools/shorts-loop.mjs picks the
+// What people are watching and searching today, for Verse's films (tools/film-studio.mjs makes the film, tools/shorts-loop.mjs picks the
 // topic). Three free sources, no key, read from GitHub's network by .github/workflows/shorts.yml:
 //   Google Trends   https://trends.google.com/trending/rss?geo=US      the day's rising searches in the US
 //   Wikipedia       the most read English articles yesterday (wikimedia pageviews API)

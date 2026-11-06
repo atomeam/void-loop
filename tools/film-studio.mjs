@@ -14,9 +14,9 @@
 // The picture is drawn in a headless browser frame by frame (a moving full-bleed background, no bars), 1080x1920, 25 frames a second;
 // the voice is Piper (PIPER and PIPER_VOICE, as the podcast uses) or espeak-ng when installed, otherwise the film has music only.
 // Every render goes through tools/video-gate.mjs; only a pass is ever posted.
-//   node tools/studio.mjs formats                                    the formats
-//   node tools/studio.mjs script --format news --topic-file t.json   print the script a topic gets
-//   node tools/studio.mjs render --trial trial.json --i 0 [--out media/shorts]   film the trial's i-th film -> <film>.mp4 + <film>.json
+//   node tools/film-studio.mjs formats                                    the formats
+//   node tools/film-studio.mjs script --format news --topic-file t.json   print the script a topic gets
+//   node tools/film-studio.mjs render --trial trial.json --i 0 [--out media/shorts]   film the trial's i-th film -> <film>.mp4 + <film>.json
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -289,5 +289,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log((m.gate.pass ? 'GATE PASS ' : 'GATE FAIL ') + f.film + ' (' + m.label + ', ' + m.topic + '): ' + m.gate.checks.map((c) => (c.ok ? '' : 'FAIL ') + c.name + ' (' + c.detail + ')').join('; '));
     process.exit(0);
   }
-  console.error('usage: node tools/studio.mjs formats | script --format F --topic-file t.json | render --trial trial.json --i N [--out dir]'); process.exit(2);
+  console.error('usage: node tools/film-studio.mjs formats | script --format F --topic-file t.json | render --trial trial.json --i N [--out dir]'); process.exit(2);
 }

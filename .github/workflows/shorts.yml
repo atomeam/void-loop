@@ -1,7 +1,7 @@
 # Verse's Shorts: every kind of video, about what people watch today. tools/trends.mjs reads three free trend sources (Google Trends,
 # Wikipedia's most-read, Hacker News), tools/topic-gate.mjs refuses small everyday sums, harm, adult topics and any topic made in the
 # last 30 days, and tools/shorts-loop.mjs plans three films in three formats (news parody, trailer, explainer, POV skit, countdown,
-# nature documentary, product review, lyric video), the least recently made first, the best-scoring kept in. tools/studio.mjs films
+# nature documentary, product review, lyric video), the least recently made first, the best-scoring kept in. tools/film-studio.mjs films
 # each at 1080x1920 with a Piper voice, then tools/video-gate.mjs measures it (no bars, legible captions, footage, loudness, hook,
 # topic). Only a pass goes on /films/ (listed) and, when the repo variable YT_UPLOAD is 1, to Verse's channel. tools/film-cleanup.mjs
 # takes off the list any listed film whose words are a refused topic, and counts every film stored. A dry run posts nothing.
@@ -68,7 +68,7 @@ jobs:
         run: |
           node tools/shorts-loop.mjs judge | tee -a "$GITHUB_STEP_SUMMARY"
           s=0; node tools/shorts-loop.mjs plan --trends trends.json > trial.json 2> plan.txt || s=$?; cat plan.txt | tee -a "$GITHUB_STEP_SUMMARY"; exit $s
-      - name: Film, render and gate the three films (tools/studio.mjs)
+      - name: Film, render and gate the three films (tools/film-studio.mjs)
         continue-on-error: true
         env:
           PIPER: python -m piper
@@ -76,7 +76,7 @@ jobs:
         run: |
           [ -f "$PIPER_VOICE" ] || unset PIPER_VOICE
           for i in 0 1 2; do
-            node tools/studio.mjs render --trial trial.json --i "$i" --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            node tools/film-studio.mjs render --trial trial.json --i "$i" --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           done
           for m in media/shorts/*.json; do node tools/shorts-loop.mjs record "$m"; done
       - name: Put each passed film on /films/

@@ -110,7 +110,7 @@ export function gate(file, meta) {
   checks.push({ name: 'no-bars', ...noBars(bars, flatEdges(ranges)) });
   checks.push({ name: 'captions', ...captionCheck(meta.captions) });
   const scenes = (ff(['-i', file, '-vf', "select='gt(scene,0.003)',metadata=print", '-an', '-f', 'null', '-']).stderr.match(/lavfi\.scene_score/g) || []).length;
-  // footage: the live site filmed answering (tools/shorts.mjs), or a studio film (tools/studio.mjs) drawn frame by frame about a trend
+  // footage: the live site filmed answering (tools/shorts.mjs), or a studio film (tools/film-studio.mjs) drawn frame by frame about a trend
   // with the page its facts came from; either way the picture has to move
   const f = meta.footage || {}, site = /^https:\/\/a-to-mind\.com\//.test(f.url || '') && f.answerSeen === true, studio = f.kind === 'studio' && /^https:\/\//.test(f.source || '');
   checks.push({ name: 'footage', ok: (site || studio) && scenes >= 5, detail: (site ? 'a-to-mind.com answered "' + f.answer + '" on camera' : studio ? 'a studio film about a trend, facts from ' + f.source : 'no real footage: no a-to-mind.com answer, no studio source') + ', ' + scenes + ' moving frames (want 5+)' });
