@@ -157,5 +157,6 @@
   {"check": "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS a", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T20:17:37Z"},
   {"check": "suite budget: the whole suite ran past 1680 s", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T20:17:37Z"},
   {"check": "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's", "sha": "7e98af9b1d24671f5ae653721bd6b360ab267464", "at": "2026-11-05T15:19:09Z"},
-  {"check": "self card never repeats: \"since i last looked\" opens the self card (not the model) with the newest builds first; opened again it leads with \"Since you last look", "sha": "9f52702d6d834e1959e890ff5a0070b89dd44e3a", "at": "2026-11-06T08:07:10Z"}
+  {"check": "self card never repeats: \"since i last looked\" opens the self card (not the model) with the newest builds first; opened again it leads with \"Since you last look", "sha": "9f52702d6d834e1959e890ff5a0070b89dd44e3a", "at": "2026-11-06T08:07:10Z"},
+  {"check": "list card: seeds from \"a shopping list with eggs, milk and bread\", \"add X to the list\", \"add milk\" again adds nothing, \"check off\" ticks and \"mark X as done\" to", "sha": "9f52702d6d834e1959e890ff5a0070b89dd44e3a", "at": "2026-11-06T08:10:53Z"}
 ]

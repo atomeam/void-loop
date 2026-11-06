@@ -1,8 +1,8 @@
 {
  "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "my ip",
+ "id": "photos: squoosh.app",
  "since": "2026-11-06",
- "n": 0,
+ "n": 12,
  "progressAt": "2026-11-06",
  "season": {
   "start": "2026-11-06",
@@ -68,6 +68,17 @@
    "n": 15,
    "m": 15,
    "open": []
+  },
+  {
+   "id": "my ip",
+   "at": "2026-11-06",
+   "n": 8,
+   "m": 13,
+   "open": [
+    "plain text for scripts",
+    "journey: do the main job and see the result",
+    "journey: share the result and reopen it from the link"
+   ]
   }
  ],
  "background": [
@@ -94,6 +105,28 @@
    "aspect": "journey: share the result and reopen it from the link",
    "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "my ip",
+   "aspect": "plain text for scripts",
+   "since": "2026-11-06",
+   "job": "measure it in tools/tower-gate.mjs"
+  },
+  {
+   "id": "my ip",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-06",
+   "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "my ip",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-06",
+   "job": "script the journey with steps and negative controls"
   }
- ]
+ ],
+ "last": {
+  "at": "2026-11-06",
+  "why": "passed my ip (8/13, conquering in background)"
+ }
 }
