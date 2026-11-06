@@ -54,10 +54,10 @@ ptest(import.meta.url, 'the map keeps neighbouring moves on neighbouring units f
   for (const r of by('still')) { assert.equal(r.gain, null, 'one cell: nothing to map'); assert.equal(r.live, false); }
 });
 
-ptest(import.meta.url, 'it runs in the brain as one of twenty-eight organs: your pointer trains it, it shows while it keeps the order, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-nine organs: your pointer trains it, it shows while it keeps the order, it is kept, and the self says so', () => {
   const b = B.createBrain(7), r = rng(3), f = VISITORS.wander(); B.tell(b, 'river stone light');
   for (let t = 0; t < TICKS; t++) B.stepBrain(b, { over: true, ...f(t, r) });
-  assert.ok(B.ORGAN_IDS.includes('atlas') && B.ORGAN_IDS.length === 28);
+  assert.ok(B.ORGAN_IDS.includes('atlas') && B.ORGAN_IDS.length === 29);
   const s = X.atlasOf(b.atlas);
   assert.ok(s.evals > 40 && s.gain > 1.8 && s.live, 'on this slow walk the map keeps the order and fits the moves ' + JSON.stringify(s));
   assert.ok(b.runs.atlas > 0 && b.atlas.fed > 0, 'it took runs and left a little life where the map holds your move ' + b.runs.atlas + ' ' + b.atlas.fed);

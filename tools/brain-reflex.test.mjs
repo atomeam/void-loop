@@ -48,10 +48,10 @@ ptest(import.meta.url, 'the network learns to follow: closer than the best of 18
   assert.ok(by('circles').every((r) => r.gain < 1 && r.lead), 'a circle: a spring that knows the pointer\'s speed is closer, so it must not claim a gain ' + say);
 });
 
-ptest(import.meta.url, 'it runs in the brain as one of twenty-eight organs: your pointer moves its bodies, it shows only while it wins, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-nine organs: your pointer moves its bodies, it shows only while it wins, it is kept, and the self says so', () => {
   const b = B.createBrain(7), r = rng(3), f = VISITORS.wander(); B.tell(b, 'river stone light');
   for (let t = 0; t < TICKS; t++) B.stepBrain(b, { over: true, ...f(t, r) });
-  assert.ok(B.ORGAN_IDS.includes('reflex') && B.ORGAN_IDS.length === 28);
+  assert.ok(B.ORGAN_IDS.includes('reflex') && B.ORGAN_IDS.length === 29);
   const s = X.reflexOf(b.reflex);
   assert.ok(s.steps >= TICKS - 1 && s.gain > 1.2, 'gain ' + s.gain + ' net ' + s.net + ' spring ' + s.spring);
   assert.ok(b.runs.reflex > 0 && b.reflex.fed > 0, 'it took runs and left a memory where its bodies are ' + b.runs.reflex + ' ' + b.reflex.fed);
