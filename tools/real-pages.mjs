@@ -489,6 +489,8 @@ SPECS['/emojis/everywhere/'] = async (t) => {
   t.ok(/tears of joy/i.test(await t.text('#ename')) && /e=%F0%9F%98%82|e=😂/.test(t.p.url()), 'a name in the link opens its emoji: ' + (await t.text('#ename')));
 };
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
+SPECS['/color/colour-picker-tool/'] = SPECS['/color/']; // the family page, copied for the Versus floor
+SPECS['/news/global-headlines/'] = SPECS['/news/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
 const LEDGER_FIX = [

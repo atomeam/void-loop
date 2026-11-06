@@ -91,7 +91,8 @@
   }
   return db.query(q);
 }</textarea>
-  <p><button class="primary" id="run" type="button">Review it</button> <span id="took" class="muted"></span></p>
+  <p><button class="primary" id="run" type="button">Review it</button> <button id="ppbuy" type="button" hidden>Closer read with PayPal</button> <span id="took" class="muted"></span></p>
+  <p id="ppnote" class="muted" hidden></p>
   <div id="out" aria-live="polite"></div>
 
   <h2>Add it to a repository</h2>
@@ -229,6 +230,48 @@ jobs:
       })
       .catch(function () { took.textContent = 'could not reach Verse just now'; });
   });
+
+  // PayPal: one AI closer read for a fixed price (functions/api/paypal/review.js). The order is tied to the exact code; PayPal
+  // approves it, Verse reads, then captures, and only a completed capture shows the read. The code waits in this tab while PayPal opens.
+  (function () {
+    const buy = document.getElementById('ppbuy'), note = document.getElementById('ppnote'), took = document.getElementById('took');
+    const KEY = 'a2m.void.paypal.v1', shown = function (t) { note.textContent = t; note.hidden = false; };
+    function draw(j) {
+      const out = document.getElementById('out'); out.textContent = '';
+      (j.findings || []).forEach(function (f) {
+        const d = el('div', 'f ' + f.kind); d.appendChild(el('span', 'kind', f.kind + ' · line ' + f.line + ' ')); d.appendChild(el('span', null, f.message)); out.appendChild(d);
+      });
+      if (j.answer) { out.appendChild(el('h3', null, 'The closer read')); const pre = el('div', 'f'); pre.style.whiteSpace = 'pre-wrap'; pre.textContent = j.answer; out.appendChild(pre); }
+    }
+    fetch('/api/paypal').then(function (r) { return r.json(); }).then(function (c) {
+      const s = c && c.services && c.services[0];
+      if (!s || !s.open) return;
+      buy.textContent = 'Closer read with PayPal ($' + s.price + ')' + (c.sandbox ? ' · sandbox' : ''); buy.hidden = false;
+    }).catch(function (e) { console.warn('PayPal checkout is not reachable, so its button stays hidden', e); });
+    buy.addEventListener('click', function () {
+      const code = document.getElementById('code').value;
+      took.textContent = 'opening PayPal…';
+      fetch('/api/paypal/review', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'order', code: code }) })
+        .then(function (r) { return r.json(); }).then(function (j) {
+          if (!j.ok || !/^https:\/\/www\.(sandbox\.)?paypal\.com\//.test(j.approve_url)) { took.textContent = j.error || 'PayPal could not start the order'; return; }
+          try { sessionStorage.setItem(KEY, JSON.stringify({ order: j.order_id, code: code })); } catch (e) { took.textContent = 'this browser will not keep the code while PayPal opens'; return; }
+          location.href = j.approve_url;
+        }).catch(function () { took.textContent = 'could not reach Verse just now'; });
+    });
+    const q = new URLSearchParams(location.search), back = q.get('paypal');
+    if (!back) return;
+    let kept = null; try { kept = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { kept = null; }
+    if (back === 'cancel') { shown('PayPal was cancelled. Nothing was charged.'); try { sessionStorage.removeItem(KEY); } catch (e) { console.warn('could not clear the kept PayPal order', e); } return; }
+    if (!kept || !kept.order || (q.get('token') && q.get('token') !== kept.order)) { shown('Back from PayPal, but this tab no longer has the code you paid for. Nothing is captured until the review runs.'); return; }
+    document.getElementById('code').value = kept.code;
+    took.textContent = 'reading your code, then capturing the payment…';
+    fetch('/api/paypal/review', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'review', order_id: kept.order, code: kept.code }) })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        draw(j);
+        if (j.paid) { took.textContent = 'paid with PayPal' + (j.paypal && j.paypal.sandbox ? ' (sandbox, test money)' : '') + ': the closer read is below'; try { sessionStorage.removeItem(KEY); } catch (e) { console.warn('could not clear the kept PayPal order', e); } }
+        else took.textContent = (j.error || j.note || 'not paid') + '';
+      }).catch(function () { took.textContent = 'could not reach Verse just now; nothing is captured until the review runs, so reload to try again'; });
+  })();
 
   var area = document.getElementById('keyarea');
   function keys() {
