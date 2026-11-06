@@ -129,6 +129,38 @@ export const circled = (s) => Array.from(String(s)).map((c) => {
   const k = c.codePointAt(0);
   return k >= 65 && k <= 90 ? String.fromCodePoint(0x24b6 + k - 65) : k >= 97 && k <= 122 ? String.fromCodePoint(0x24d0 + k - 97) : k >= 49 && k <= 57 ? String.fromCodePoint(0x2460 + k - 49) : k === 48 ? '⓪' : c;
 }).join('');
+// a 5-row block font (docs/GAPS.md row 60, 2026-11-06: "text art big letters hello" gave nothing): # is a filled cell
+const BIG = {
+  A: [' ### ', '#   #', '#####', '#   #', '#   #'], B: ['#### ', '#   #', '#### ', '#   #', '#### '], C: [' ####', '#    ', '#    ', '#    ', ' ####'],
+  D: ['#### ', '#   #', '#   #', '#   #', '#### '], E: ['#####', '#    ', '#### ', '#    ', '#####'], F: ['#####', '#    ', '#### ', '#    ', '#    '],
+  G: [' ####', '#    ', '#  ##', '#   #', ' ####'], H: ['#   #', '#   #', '#####', '#   #', '#   #'], I: ['###', ' # ', ' # ', ' # ', '###'],
+  J: ['  ###', '   # ', '   # ', '#  # ', ' ##  '], K: ['#   #', '#  # ', '###  ', '#  # ', '#   #'], L: ['#    ', '#    ', '#    ', '#    ', '#####'],
+  M: ['#   #', '## ##', '# # #', '#   #', '#   #'], N: ['#   #', '##  #', '# # #', '#  ##', '#   #'], O: [' ### ', '#   #', '#   #', '#   #', ' ### '],
+  P: ['#### ', '#   #', '#### ', '#    ', '#    '], Q: [' ### ', '#   #', '# # #', '#  # ', ' ## #'], R: ['#### ', '#   #', '#### ', '#  # ', '#   #'],
+  S: [' ####', '#    ', ' ### ', '    #', '#### '], T: ['#####', '  #  ', '  #  ', '  #  ', '  #  '], U: ['#   #', '#   #', '#   #', '#   #', ' ### '],
+  V: ['#   #', '#   #', '#   #', ' # # ', '  #  '], W: ['#   #', '#   #', '# # #', '## ##', '#   #'], X: ['#   #', ' # # ', '  #  ', ' # # ', '#   #'],
+  Y: ['#   #', ' # # ', '  #  ', '  #  ', '  #  '], Z: ['#####', '   # ', '  #  ', ' #   ', '#####'],
+  0: [' ### ', '#  ##', '# # #', '##  #', ' ### '], 1: [' # ', '## ', ' # ', ' # ', '###'], 2: [' ### ', '#   #', '  ## ', ' #   ', '#####'],
+  3: ['#### ', '    #', ' ### ', '    #', '#### '], 4: ['#   #', '#   #', '#####', '    #', '    #'], 5: ['#####', '#    ', '#### ', '    #', '#### '],
+  6: [' ### ', '#    ', '#### ', '#   #', ' ### '], 7: ['#####', '    #', '   # ', '  #  ', '  #  '], 8: [' ### ', '#   #', ' ### ', '#   #', ' ### '],
+  9: [' ### ', '#   #', ' ####', '    #', ' ### '], ' ': ['   ', '   ', '   ', '   ', '   '], '!': ['#', '#', '#', ' ', '#'], '?': [' ### ', '#   #', '  ## ', '     ', '  #  '],
+  '.': [' ', ' ', ' ', ' ', '#'], ',': ['  ', '  ', '  ', ' #', '# '], '-': ['    ', '    ', '####', '    ', '    '], "'": ['#', '#', ' ', ' ', ' '],
+};
+/** the text in 5-row block letters made of █, one banner a line of text, at most 12 characters a banner (longer lines wrap at a space);
+ *  characters the font lacks are left out and returned in `missing`. Pure. */
+export function bigLetters(s) {
+  const missing = new Set(), out = [];
+  const lines = String(s).toUpperCase().split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 12);
+  const wrapped = [];
+  for (const l of lines) { let cur = ''; for (const w of l.split(/\s+/)) { if (cur && (cur + ' ' + w).length > 12) { wrapped.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w; } if (cur) wrapped.push(cur); }
+  for (const l of wrapped.slice(0, 16)) {
+    const glyphs = Array.from(l).map((c) => { if (!BIG[c]) missing.add(c); return BIG[c]; }).filter(Boolean);
+    if (!glyphs.length) continue;
+    for (let r = 0; r < 5; r++) out.push(glyphs.map((g) => g[r]).join(' ').replace(/#/g, '█').replace(/\s+$/, ''));
+    out.push('');
+  }
+  return { text: out.join('\n').replace(/\n+$/, ''), missing: [...missing] };
+}
 /** a long stroke (U+0336) through each character but spaces and line ends. Pure. */
 export const strike = (s) => Array.from(String(s)).map((c) => (/\s/.test(c) ? c : c + '̶')).join('');
 /** combining marks (U+0300 to U+036F) above and below each letter: 1 to 2 a side light, 2 to 5 medium, 6 to 12 heavy. Pure given rng. */
@@ -409,6 +441,9 @@ export const TOOLS = [
     (s) => { const f = frequency(s, true).slice(0, 10); return { text: f.map(([w, n]) => n + '  ' + w).join('\n'), note: 'little words like "the" and "of" left out; "word frequency" counts every word' }; }),
   T('frequency', 'Word frequency', ['word\\s+(?:frequency|frequencies|counts?)', '(?:count|how\\s+often)\\s+(?:each\\s+)?words?(?:\\s+(?:appears?|occurs?|used))?', 'frequency\\s+of\\s+words', 'frequency'],
     (s) => { const f = frequency(s); return { text: f.slice(0, 200).map(([w, n]) => n + '  ' + w).join('\n'), note: plural(f.length, 'different word') + ', most used first' + (f.length > 200 ? ' (first 200 shown)' : '') }; }),
+  T('big-letters', 'Big block letters', ['(?:text\\s+art\\s+)?(?:big|block|banner)\\s+(?:letters?|text)(?:\\s+(?:generator|maker|font))?', 'ascii\\s+(?:art\\s+)?(?:text|letters|banner)(?:\\s+(?:generator|maker))?', 'text\\s+art\\s+(?:generator|maker)'],
+    (s) => { const r = bigLetters(s); return { text: r.text, note: '5 rows of █, up to 12 characters a row; it copies as plain text' + (r.missing.length ? '. Left out, not in the font: ' + r.missing.join(' ') : '') }; },
+    { forms: [/^(?:make\s+|write\s+|draw\s+|type\s+|spell\s+)?(?:text\s+art\s+)?(?:in\s+)?(?:big|block|banner|ascii)\s+(?:art\s+)?letters?\s+(?:for\s+|of\s+|saying\s+|that\s+says\s+)?(?!(?:generator|maker|font|online|tool)$)(.+)$/, /^(?:text\s+art\s+(?:text\s+|letters\s+)?|ascii\s+art\s+(?:text|letters)\s+)(?:for\s+|of\s+|saying\s+)?(?!(?:(?:big|block|banner)\s+(?:letters?|text))?\s*(?:generator|maker|font|online|tool)?$)(.+)$/, /^(?:write\s+|make\s+|draw\s+)?(.+?)\s+in\s+(?:big|block|ascii|banner)\s+(?:art\s+)?letters$/] }),
   T('upside-down', 'Upside down', ['(?:turn\\s+|flip\\s+)?upside[\\s-]?down\\s+(?:text|letters|writing|font)', '(?:turn|flip)\\s+(?:the\\s+|my\\s+)?(?:text|letters|words)\\s+upside[\\s-]?down'], (s) => upsideDown(s), { note: 'flipped character by character; letters with no upside-down form are left as they are' }),
   T('small-caps', 'Small caps', ['small[\\s-]?caps?(?:\\s+(?:text|letters|font|generator))?', 'small\\s+capitals?(?:\\s+(?:text|letters))?'], (s) => smallCaps(s), { note: 'Unicode small capitals; x has no small capital and stays x, and capitals stay capitals' }),
   T('bubble', 'Bubble text', ['bubble\\s+(?:text|letters|font|writing)', 'circled?\\s+(?:text|letters|font)'], (s) => circled(s), { note: 'circled Unicode letters and numbers; other characters stay as they are' }),

@@ -17,18 +17,18 @@
    "tests": 3
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 32,
+   "direct": 2,
+   "dependants": 75,
+   "tests": 9
+  },
+  {
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
    "dependants": 75,
    "tests": 4
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 32,
-   "direct": 2,
-   "dependants": 74,
-   "tests": 8
   },
   {
    "file": "lib/load-later.js",
@@ -1011,13 +1011,6 @@
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 41,
-   "tests": 2
-  },
-  {
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
@@ -1030,6 +1023,13 @@
    "direct": 1,
    "dependants": 38,
    "tests": 3
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 2
   },
   {
    "file": "lib/store-db.js",
@@ -1371,7 +1371,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 2
   },
   {
@@ -1474,6 +1474,13 @@
   },
   {
    "file": "lib/brain-pool.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-reflex.js",
    "skills": 1,
    "direct": 0,
    "dependants": 9,
@@ -1596,7 +1603,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 4,
-   "tests": 24
+   "tests": 25
   },
   {
    "file": "lib/converter.js",
@@ -2310,7 +2317,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/tower-art.js",
@@ -2628,13 +2635,6 @@
    "tests": 1
   },
   {
-   "file": "lib/x402.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 17,
-   "tests": 4
-  },
-  {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
@@ -2677,6 +2677,13 @@
    "tests": 1
   },
   {
+   "file": "lib/x402.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 13,
+   "tests": 4
+  },
+  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -2684,25 +2691,11 @@
    "tests": 0
   },
   {
-   "file": "lib/verse-wallet-address.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 10,
-   "tests": 3
-  },
-  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 1
-  },
-  {
-   "file": "lib/verse-wallet.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 2
   },
   {
    "file": "lib/drive.js",
@@ -2759,6 +2752,27 @@
    "direct": 0,
    "dependants": 6,
    "tests": 2
+  },
+  {
+   "file": "lib/verse-wallet-address.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 4
+  },
+  {
+   "file": "lib/verse-wallet.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
+   "file": "lib/arb-venues.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/film-reviews.js",
@@ -2824,7 +2838,7 @@
    "tests": 1
   },
   {
-   "file": "lib/x402-call.js",
+   "file": "lib/trading-paid.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2836,13 +2850,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 10
-  },
-  {
-   "file": "lib/arb-venues.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/calshare.js",
@@ -2934,6 +2941,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/arb-history.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/aurora-feed.js",
@@ -3912,7 +3926,8 @@
   },
   "functions/api/arbitrage.js": {
    "imports": [
-    "functions/api/x402/arbitrage.js"
+    "lib/trading-paid.js",
+    "lib/arb-history.js"
    ],
    "importedBy": []
   },
@@ -4888,28 +4903,12 @@
     "functions/api/translate.js",
     "functions/api/digest.js",
     "functions/api/appraise.js",
-    "functions/api/image.js"
+    "functions/api/image.js",
+    "lib/trading-paid.js"
    ],
    "importedBy": [
     "functions/api/mcp.js"
    ]
-  },
-  "functions/api/x402/arbitrage.js": {
-   "imports": [
-    "lib/x402-call.js",
-    "lib/arb-venues.js",
-    "trading-bots/kit/arb.js"
-   ],
-   "importedBy": [
-    "functions/api/arbitrage.js"
-   ]
-  },
-  "functions/api/x402/backtest.js": {
-   "imports": [
-    "lib/x402-call.js",
-    "trading-bots/kit/strategy.js"
-   ],
-   "importedBy": []
   },
   "functions/api/x402/index.js": {
    "imports": [
@@ -5111,7 +5110,6 @@
     "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
-    "functions/api/arbitrage.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -5137,13 +5135,10 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
-    "lib/x402-call.js",
     "skills/shop.js",
     "skills/store.js"
    ]
@@ -5306,15 +5301,23 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/arb-history.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/arbitrage.js"
+   ]
+  },
   "lib/arb-venues.js": {
    "imports": [
     "trading-bots/kit/arb.js"
    ],
    "importedBy": [
-    "functions/api/x402/arbitrage.js"
+    "lib/trading-paid.js"
    ],
    "reachedBy": [
-    "functions/api/arbitrage.js"
+    "functions/api/arbitrage.js",
+    "functions/api/mcp.js",
+    "functions/api/x402/[service].js"
    ]
   },
   "lib/arcade-ghost.js": {
@@ -6261,6 +6264,7 @@
     "lib/brain-trace.js",
     "lib/brain-strokes.js",
     "lib/brain-rules.js",
+    "lib/brain-reflex.js",
     "lib/brain-dialogue.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
@@ -6297,6 +6301,7 @@
     "lib/brain-trace.js",
     "lib/brain-strokes.js",
     "lib/brain-rules.js",
+    "lib/brain-reflex.js",
     "lib/brain-dialogue.js",
     "lib/brain-workspace.js"
    ],
@@ -6356,6 +6361,25 @@
    "imports": [],
    "importedBy": [
     "functions/api/propose-fix.js"
+   ]
+  },
+  "lib/brain-reflex.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-dialogue.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/brain-route.js": {
@@ -6495,6 +6519,7 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
+    "lib/brain-reflex.js",
     "lib/brain-rules.js",
     "lib/brain-strokes.js",
     "lib/brain-synapses.js",
@@ -6528,6 +6553,7 @@
     "lib/brain-trace.js",
     "lib/brain-strokes.js",
     "lib/brain-rules.js",
+    "lib/brain-reflex.js",
     "lib/brain-dialogue.js"
    ],
    "importedBy": [
@@ -7942,6 +7968,7 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
+    "lib/brain-reflex.js",
     "lib/brain-strokes.js",
     "lib/brain-synapses.js",
     "lib/brain-trace.js",
@@ -14131,6 +14158,20 @@
    ],
    "importedBy": []
   },
+  "lib/trading-paid.js": {
+   "imports": [
+    "trading-bots/kit/strategy.js",
+    "lib/arb-venues.js",
+    "trading-bots/kit/arb.js"
+   ],
+   "importedBy": [
+    "functions/api/arbitrage.js",
+    "functions/api/x402/[service].js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
+   ]
+  },
   "lib/transition.js": {
    "imports": [],
    "importedBy": [
@@ -14384,15 +14425,11 @@
     "lib/verse-wallet.js"
    ],
    "reachedBy": [
-    "functions/api/arbitrage.js",
     "functions/api/mcp.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js",
-    "functions/api/x402/review.js",
-    "lib/x402-call.js"
+    "functions/api/x402/review.js"
    ]
   },
   "lib/verse-wallet.js": {
@@ -14404,14 +14441,10 @@
    "importedBy": [
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/review.js",
-    "lib/x402-call.js"
+    "functions/api/x402/review.js"
    ],
    "reachedBy": [
-    "functions/api/arbitrage.js",
     "functions/api/mcp.js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js"
    ]
   },
@@ -14961,19 +14994,6 @@
     "lib/team-mcp.js"
    ]
   },
-  "lib/x402-call.js": {
-   "imports": [
-    "lib/x402.js",
-    "lib/verse-wallet.js"
-   ],
-   "importedBy": [
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js"
-   ],
-   "reachedBy": [
-    "functions/api/arbitrage.js"
-   ]
-  },
   "lib/x402.js": {
    "imports": [],
    "importedBy": [
@@ -14982,15 +15002,11 @@
     "functions/api/x402/[service].js",
     "functions/api/x402/review.js",
     "lib/mcp.js",
-    "lib/verse-wallet.js",
-    "lib/x402-call.js"
+    "lib/verse-wallet.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
-    "functions/api/arbitrage.js",
     "functions/api/mcp/server-card.js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",

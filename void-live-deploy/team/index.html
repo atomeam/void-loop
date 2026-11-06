@@ -188,13 +188,13 @@
   .build li .t { flex: 1; min-width: 0; } .build li .k { display: block; font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
   .build .good1 { color: var(--good); } .build li .btn { min-height: 44px; padding: 0 12px; }
   .build form.row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .build form.row .wide { grid-column: 1 / -1; }
-  .build input, .build select { min-height: 40px; width: 100%; border-radius: 10px; border: 1px solid var(--line-2); background: var(--field); color: var(--ink); padding: 0 10px; font: inherit; }
+  .build input, .build select { min-height: 40px; width: 100%; border-radius: 10px; border: 1px solid var(--line-2); background: var(--field); color: var(--ink); padding: 0 10px; font: inherit; box-sizing: border-box; min-width: 0; }
   .build details { margin-top: 12px; } .build summary { cursor: pointer; font-weight: 600; }
   .build .steps li { display: block; }
   .build #quick { display: flex; gap: 8px; margin-top: 10px; } .build #quick input { flex: 1; }
   @media (max-width: 900px) { .build .cols { grid-template-columns: 1fr; } .build form.row { grid-template-columns: 1fr; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
-  .botlist { columns: 2 18rem; padding-left: 1.1rem; } .botlist li { break-inside: avoid; margin: .2rem 0; }
+  .botlist { columns: 2 18rem; padding-left: 1.1rem; } .botlist li { break-inside: avoid; margin: .2rem 0; } .botlist a { padding-block: 4px; } /* each agent link is 24 px tall to tap; inline padding does not move the line */
 </style>
 <link rel="stylesheet" href="/verse.css">
 <!-- seo -->

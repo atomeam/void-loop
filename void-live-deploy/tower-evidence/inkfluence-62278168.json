@@ -1,0 +1,116 @@
+{
+ "id": "inkfluence",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 105,
+   "best": 375,
+   "evidence": "Verse (/books/) 105 ms to the load event (median of 3, phone width) vs inkfluenceai.com 375 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T06:38:47.473Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/books/) 3 of 3 loads answered vs inkfluenceai.com 3 of 3 loads answered",
+   "at": "2026-11-06T06:38:47.473Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/books/) 0 px sideways overflow at 390 px vs inkfluenceai.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-06T06:38:47.473Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/books/) 0 unnamed controls or images vs inkfluenceai.com 1 unnamed controls or images",
+   "at": "2026-11-06T06:38:47.473Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-06T06:38:47.473Z",
+   "of": 2,
+   "part": true
+  },
+  "sharing": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-06T06:38:47.473Z",
+   "of": 2,
+   "part": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 7,
+   "best": 7,
+   "evidence": "Verse (/books/) 7 of 7 right against the worked-out answer; judged against the standard, not inkfluenceai.com (the site is not asked)",
+   "at": "2026-11-06T06:38:47.473Z",
+   "of": 7
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 114,
+   "evidence": "Verse (/books/) 0 design defects vs inkfluenceai.com 114 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), inkfluenceai.com (90 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+   "at": "2026-11-06T06:38:47.473Z",
+   "siteRead": true
+  },
+  "book studio": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-06T06:38:47.473Z",
+   "of": 2,
+   "part": true
+  },
+  "chapters": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 2,
+   "evidence": "Verse (/books/) 0 of 2 shown for the question (Verse lacks: chapter titles, surpassed count); judged on Verse alone, the site is not asked",
+   "at": "2026-11-06T06:38:47.473Z",
+   "was": "equal-and-better",
+   "of": 2,
+   "part": true
+  },
+  "export": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-06T06:38:47.473Z",
+   "of": 2,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 8,
+   "best": 1,
+   "evidence": "Verse (/books/) 8 of 8 things a full answer shows vs inkfluenceai.com 1 of 8 things a full answer shows (Verse lacks: none; site lacks: book studio, export markdown, export text, no credits, no subscriptions, works offline, back to Verse)",
+   "at": "2026-11-06T06:38:47.473Z",
+   "of": 8,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 8.5,
+   "best": 4,
+   "evidence": "Verse (/books/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs inkfluenceai.com 4 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-06T06:38:47.473Z",
+   "siteRead": true
+  }
+ }
+}

@@ -90,10 +90,10 @@ test('on a visitor whose strokes repeat, the recall lands far closer than carryi
   assert.ok(rows.every((r) => r.three > 10 * r.wander && r.six > 5 * r.wander), 'the gain comes from repeats ' + say);
 });
 
-ptest(import.meta.url, 'it runs in the brain as one of twenty-five organs: your strokes feed it, it recalls where a stroke ends, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-six organs: your strokes feed it, it recalls where a stroke ends, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (const f of visitor(4, ['circle', 'zigzag', 'eight'], 90)) B.stepBrain(b, f);
-  assert.ok(B.ORGAN_IDS.includes('strokes') && B.ORGAN_IDS.length === 25);
+  assert.ok(B.ORGAN_IDS.includes('strokes') && B.ORGAN_IDS.length === 26);
   const S = b.strokes;
   assert.ok(S.strokes >= 80 && S.scored >= 60 && b.runs.strokes > 60, 'strokes ' + S.strokes + ' scored ' + S.scored + ' runs ' + b.runs.strokes);
   assert.ok(K.gainOf(S) > 5, 'gain ' + K.gainOf(S));

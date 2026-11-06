@@ -49,7 +49,7 @@ export const TECHNIQUES = [
   ['memory', /memory|consolidat|palace|echo/, 'memory'],
   ['swarm and fluid', /swarm|boids|flock|particle|fluid|\bsph\b|forag|vector[ -]field|advection|vortex/, 'swarm'],
   ['genome arena', /genome|competition|competitive|arena|evolv|\bevo\b|genetic|population/, 'arena'],
-  ['tiny mlp', /\bmlp\b|perceptron|neural kernel/, 'arena'],
+  ['tiny mlp', /\bmlp\b|perceptron|neural kernel/, 'reflex'],
   ['seal', /seal|indexeddb/, 'arena'],
   ['tilt', /orientation|tilt|devicemotion|accelerat/, 'senses'],
   ['webxr hand and gaze', /webxr|hand[ -]track|\bgaze\b|\bhand\b/, 'senses'],
