@@ -980,7 +980,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/parody.js",
@@ -2205,7 +2205,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/routine-skill.js",
@@ -2429,7 +2429,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 49,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/earnings.js",

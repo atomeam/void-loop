@@ -582,6 +582,54 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T16:10:43Z",
+   "subject": "Movie pick: read each film's genre from Wikidata, so the match score can test it (#2437)"
+  },
+  {
+   "at": "2026-11-06T16:10:26Z",
+   "subject": "Morning routine: \"make me a morning routine starting at 6:30\" is a ritual, not a recipe timer (#2439)"
+  },
+  {
+   "at": "2026-11-06T16:10:05Z",
+   "subject": "Podcast: a hung ffmpeg install no longer cancels the daily episode (#2447)"
+  },
+  {
+   "at": "2026-11-06T16:09:56Z",
+   "subject": "Outcome exam: podcasts 86.4"
+  },
+  {
+   "at": "2026-11-06T16:08:18Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-06T16:06:16Z",
+   "subject": "Failed jobs read: run 42244869099 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-06T16:06:06Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T16:05:43Z",
+   "subject": "Main green: list groceries fills the open list, no-list removes answer at once, list card types over the seeded title (#2426)"
+  },
+  {
+   "at": "2026-11-06T16:05:26Z",
+   "subject": "Incident: the browser suite failed on 923ce150 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T16:05:13Z",
+   "subject": "Automerge sweep: safety-check on the chosen batch only, so the sweep reaches the suite gate (#2425)"
+  },
+  {
+   "at": "2026-11-06T16:03:51Z",
+   "subject": "Lab: 475 experiments live at /lab/, 23 waiting for a fix (#2441)"
+  },
+  {
+   "at": "2026-11-06T16:03:14Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T16:01:42Z",
    "subject": "Film card: link the Internet Archive only as a checked free film that plays here (#2442)"
   },
@@ -612,54 +660,6 @@
   {
    "at": "2026-11-06T15:41:39Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-06T15:38:18Z",
-   "subject": "Outcome exam: podcasts 86.4"
-  },
-  {
-   "at": "2026-11-06T15:38:02Z",
-   "subject": "Verse runs its own day: the clock keeps going, the daily film and podcast start themselves, the crew says when it runs next (#2440)"
-  },
-  {
-   "at": "2026-11-06T15:37:44Z",
-   "subject": "Failed jobs read: run 42240559933 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T15:37:24Z",
-   "subject": "Incident: the browser suite failed on b8b7e8ad (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T15:35:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T15:26:58Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T15:23:12Z",
-   "subject": "Failed jobs read: run 42240108371 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T15:22:46Z",
-   "subject": "Incident: the browser suite failed on d93f7ca1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T15:17:48Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-11-06T15:17:22Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T15:13:19Z",
-   "subject": "Tower gate: is it,weather,sports: onefootball.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T15:10:26Z",
-   "subject": "Weather page: the newest look wins; ritual .ics: steps at the clock time typed, in the browser's zone (#2432)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 47,
-  "week": 198
+  "day": 51,
+  "week": 202
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
