@@ -5,7 +5,7 @@ import http from 'node:http';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskText, startHere, lastJson, settle, runJob, GUIDE, fullWhy, turnLog } from './verse-job.mjs';
+import { taskText, startHere, tvStart, lastJson, settle, runJob, GUIDE, fullWhy, turnLog } from './verse-job.mjs';
 import { GUIDE as GUIDE_TEAM } from '../void-live-deploy/lib/job-guide.js';
 import { ROUTES } from './conductor-core.mjs';
 
@@ -124,4 +124,18 @@ test('the job log keeps the coder\'s turn lines from stderr, masked, and only th
   assert.deepEqual(turnLog(''), []); assert.deepEqual(turnLog(undefined), []);
   const many = Array.from({ length: 80 }, (_, i) => 'turn ' + (i + 1) + ': read a -> ok').join('\n');
   assert.equal(turnLog(many).length, 60, 'at most 60 lines'); assert.match(turnLog(many)[59], /^turn 80:/, 'the last turns are kept');
+});
+
+test('a tv job names its page\'s real files, from the repo root, so the coder does not hunt', () => {
+  const real = new Set(['void-live-deploy/markets/index.html', 'void-live-deploy/lib/markets.js', 'void-live-deploy/functions/api/markets.js', 'tools/markets.test.mjs']);
+  const has = (p) => real.has(p), ls = (d) => (d === 'void-live-deploy/markets/' ? ['index.html', 'caps', 'screener'] : []);
+  const s = tvStart(job({ target: 'tv:agricultural-market-tracker', ask: 'Improve /markets/: agricultural market tracker (heard on WXYZ).' }), has, ls);
+  for (const f of real) assert.ok(s.includes(f), f);
+  assert.doesNotMatch(s, /caps|screener/);
+  assert.match(s, /do not search the whole repo/);
+  const n = tvStart(job({ target: 'tv:irish-pub-locator', ask: 'Build /irish-pub-locator/: irish pub locator (heard on WXYZ).' }), has, ls);
+  assert.match(n, /void-live-deploy\/translate\/index\.html/);
+  assert.match(n, /void-live-deploy\/irish-pub-locator\/index\.html/);
+  assert.equal(tvStart(job({ target: 'feature:x', ask: 'Improve /markets/: x' }), has, ls), '');
+  assert.match(taskText(job({ target: 'tv:agricultural-market-tracker', ask: 'Improve /markets/: agricultural market tracker.' })), /void-live-deploy\/lib\/markets\.js/);
 });

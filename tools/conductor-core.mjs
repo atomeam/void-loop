@@ -163,8 +163,8 @@ export const SWEEP_EVERY_H = 1;
 export function sweepDue({ sweptMs, now }) {
   return now - (sweptMs || 0) >= SWEEP_EVERY_H * H;
 }
-/** queue the blueprints not built yet (tools/watch-build.mjs queueBlueprints) at least every BLUEPRINTS_EVERY_H (owner, 2026-11-06: "the
- *  blueprints should just automatically be started and built into verse somewhere"): the watch that also queues them runs a few times a
+/** queue the blueprints not built yet (tools/watch-build.mjs queueBlueprints) at least every BLUEPRINTS_EVERY_H (the owner asked on
+ *  2026-11-06 for every blueprint to build by itself): the watch that also queues them runs a few times a
  *  day when GitHub drops its cron, so the clock keeps the hour. queuedMs is when the conductor last did it (its state). Pure. */
 export const BLUEPRINTS_EVERY_H = 1;
 export function blueprintsDue({ queuedMs, now }) {
