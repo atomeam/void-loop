@@ -17,6 +17,7 @@ export const LIMITS = {
   apibot: { rpm: 60, body: 0 }, // GET only: the free API bots' relay (functions/api/apibot.js): an API id from a closed list and one input in, that API's reply out; 30 cache misses a minute per connection in the route, good answers edge-cached ten minutes
   free: { rpm: 30, body: 0 }, // the free-resource registry and its quota status (functions/api/free.js): GET only
   answer: { rpm: 30, body: 20000 },
+  unbidden: { rpm: 20, body: 0 }, // GET only: Verse speaks first on /brain/ (functions/api/unbidden.js); the page reads once a minute, a line is written at most once every 3 minutes for everyone and 240 times a day in all
   agent: { rpm: 90, body: 4000 }, // Verse's agent (functions/api/agent.js): the page polls the live feed every 2 s; a task is up to 1,000 characters, 20 a day per visitor in the route
   // Versus by itself asks Verse's own model here (functions/api/tower-self.js, owner only): up to 24,000 characters of site text and a 4,000-character
   // schema, JSON-escaped and UTF-8 (a CJK page is 3 bytes a character). The default 16,000 bytes refused every read with 413 (owner's review, 2026-10-30)
