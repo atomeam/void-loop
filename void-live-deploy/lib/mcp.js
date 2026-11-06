@@ -19,9 +19,10 @@ import { drive } from './drive.js';
 import { auditPage } from './seo-audit.js';
 import { readingLevel, proofread } from './writing-aids.js';
 import { parse as parseColour, contrast as contrastOf, passes, toHex } from './colour.js';
+import { SERVICES } from './x402.js';
 
 export const PROTOCOL = '2025-06-18';
-export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.3.0' };
+export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.4.0' };
 // Verse's MCP Server Card (SEP-2127, Final; schema v1): the static card at the reserved place beside the endpoint,
 // /api/mcp/server-card (functions/api/mcp/server-card.js). Identity matches server.json (the registry entry) and the
 // endpoint is the one initialize answers on, with the protocol version it speaks; no tools are listed (the card format
@@ -57,6 +58,27 @@ const skillTool = (s) => ({ name: s.tool, title: "Verse's " + s.skill + ' skill'
   description: "Ask Verse's \"" + s.skill + "\" skill (" + s.familyName + "), one of the proven skills with the most evidence that Verse offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Verse's benchmark, its tests), never from how it describes itself. Asks like "
     + s.examples.map((e) => '"' + e + '"').join(', ') + ". The skill's own code answers it on the server, the same code that draws its card on a-to-mind.com (no model), with the sources its card cites; an ask the skill does not take is refused, not guessed. Times are worked out on the server's clock (UTC). The card itself is at the \"open\" link in the result.",
   inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The ask in plain words (3 to 600 characters)' + (s.examples[0] ? ', e.g. "' + s.examples[0] + '"' : '') + '.' }, response_type: RESPONSE_TYPE } } });
+
+// Verse's paid services as MCP tools (owner, 2026-11-06: "charge for its code review and anything else possible"): one tool per x402
+// service (lib/x402.js SERVICES), paid per call in USDC on Base over x402's MCP transport (x402 Foundation, specs/transports-v2/mcp.md;
+// docs.cdp.coinbase.com/x402/seller/mcp-payments). A call without _meta["x402/payment"] gets a tool result with isError and the
+// PaymentRequired object (x402Version 2) in structuredContent and, as JSON text, in content[0]; the client signs and calls again with
+// the PaymentPayload in _meta["x402/payment"]; the answer comes with the settlement in result._meta["x402/payment-response"]. The work
+// and the payment are the paid HTTP routes' own (functions/api/x402/, ctx.paid hands the call over): checked before any payment,
+// verified by the facilitator, settled only when the work was done, so a call that fails is never charged. Verse never holds a key.
+export const PAY_META = 'x402/payment', PAY_RESPONSE_META = 'x402/payment-response';
+const PAID_TITLE = { review: 'Code review with the closer read', answer: 'Ask Verse (paid answer)', fix: 'Fix a broken automation', translate: 'Translate text',
+  digest: 'Digest a transcript or video', appraise: 'Appraise an item from a photo', image: 'Paint a picture from a prompt' };
+const dollars = (units) => String(Number(units) / 1e6);
+const PAID_ANN = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // a call can charge the caller
+export const paidToolName = (id) => 'paid_' + id;
+function paidSchema(s) {
+  const required = Object.entries(s.input).filter(([, f]) => f.required).map(([k]) => k);
+  return { type: 'object', ...(required.length ? { required } : {}), properties: Object.fromEntries(Object.entries(s.input).map(([k, f]) => [k, { type: f.type, description: f.description }])) };
+}
+export const PAID_TOOLS = Object.entries(SERVICES).map(([id, s]) => ({ name: paidToolName(id), title: (PAID_TITLE[id] || id) + ' (' + dollars(s.units) + ' USDC, x402)', annotations: PAID_ANN,
+  description: s.description + ' Costs ' + dollars(s.units) + ' USDC on Base (eip155:8453) per call, paid with x402 over MCP: call it without payment to get the PaymentRequired terms in structuredContent, then call it again with the signed PaymentPayload in params._meta["' + PAY_META + '"]. The settlement comes back in result._meta["' + PAY_RESPONSE_META + '"]. A call that cannot be done (bad input, the service busy) is never charged. The same service over HTTP: POST https://a-to-mind.com' + s.path + '.',
+  inputSchema: paidSchema(s) }));
 
 export const TOOLS = [
   { name: 'ask_void', title: 'Ask Verse anything', annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
@@ -94,6 +116,7 @@ export const TOOLS = [
   { name: 'skill_discovery', title: "Discover Verse's skills by family", annotations: RO,
     description: "Skill Discovery (asked by Verse): what skills Verse has and how they are spread across its families, for an agent that wants to know where to look before it asks. Gives each family's id, name, what it is for, how many skills it holds, its share of all of Verse's skills (the distribution), and the skills in it by name with their rating; ask for one family, or only the skills at a rating. Read from a-to-mind.com/skills/families.json, rated from evidence only. Ask a skill by name through ask_void or the skill's own tool.",
     inputSchema: { type: 'object', properties: { family: { type: 'string', description: "Only this family (an id from the result, e.g. numbers)." }, tier: { type: 'string', enum: ['experiment', 'tested', 'checked', 'proven'], description: 'Only skills rated at least this high.' }, response_type: RESPONSE_TYPE } } },
+  ...PAID_TOOLS,
 ];
 
 const err = (id, code, message) => ({ jsonrpc: '2.0', id: id ?? null, error: { code, message } });
@@ -202,12 +225,47 @@ async function discovery(a, ctx) {
   return toolResult(text, { skills: all, family_count: data.families.length, distribution: families.map((f) => ({ id: f.id, skills: f.skills, share: f.share })), families, source: SITE + '/skills/families.json' });
 }
 
+// a paid tool's answer, from what the paid HTTP route gave (ctx.paid): { status, body, required (the v2 PaymentRequired, decoded),
+// settlement (the decoded payment response), settleFailed (why settling failed) }. Pure.
+export function paidResult(id, r) {
+  const s = SERVICES[id], tool = paidToolName(id);
+  if (!s || !r) return toolError('That paid service is not here.');
+  const body = r.body && typeof r.body === 'object' ? r.body : {};
+  if (r.status === 402 && r.required) {
+    const pr = { x402Version: 2, error: r.settleFailed ? 'Settlement failed: ' + String(r.settleFailed).slice(0, 200) : String(r.required.error || 'Payment required').slice(0, 300),
+      resource: { url: 'mcp://tool/' + tool, description: s.description, mimeType: 'application/json' }, accepts: Array.isArray(r.required.accepts) ? r.required.accepts : [] };
+    return { content: [{ type: 'text', text: JSON.stringify(pr) }], structuredContent: pr, isError: true };
+  }
+  if (r.status === 200 && r.settlement && r.settlement.success) {
+    const { img, ...data } = body, content = [];
+    const img64 = typeof img === 'string' && /^data:(image\/(?:png|jpeg|webp));base64,([A-Za-z0-9+/]+=*)$/.exec(img);
+    const findings = Array.isArray(data.findings) && data.findings.length ? data.findings.map((f) => 'line ' + f.line + ' · ' + (f.kind || f.severity || f.rule) + ' · ' + f.message).join('\n') : '';
+    const words = [findings, typeof data.answer === 'string' ? data.answer : Array.isArray(data.answer) ? data.answer.join('\n') : '', typeof data.text === 'string' ? data.text : '',
+      Array.isArray(data.points) ? data.points.map((x) => '- ' + x).join('\n') : '', typeof data.summary === 'string' ? data.summary : ''].filter(Boolean).join('\n\n');
+    const sources = Array.isArray(data.sources) && data.sources.length ? '\n\nSources:\n' + data.sources.map((x) => '- ' + x.title + ': ' + x.url).join('\n') : '';
+    content.push({ type: 'text', text: (words || (img ? 'Painted' + (data.seed != null ? ' (seed ' + data.seed + ')' : '') + '.' : JSON.stringify(data))) + sources });
+    if (img64) content.push({ type: 'image', data: img64[2], mimeType: img64[1] });
+    else if (typeof img === 'string' && /^https:\/\//.test(img)) data.img = img;
+    return { content, structuredContent: data, isError: false, _meta: { [PAY_RESPONSE_META]: r.settlement } };
+  }
+  const why = String(body.error || body.note || 'status ' + r.status).slice(0, 300);
+  return { content: [{ type: 'text', text: 'Not done, and nothing was charged: ' + why }], ...(Object.keys(body).length ? { structuredContent: body } : {}), isError: true };
+}
+async function paidCall(id, a, ctx, meta) {
+  if (!ctx || typeof ctx.paid !== 'function') return toolError('The paid tools are only reachable at https://a-to-mind.com/api/mcp.');
+  const payment = meta && typeof meta === 'object' ? meta[PAY_META] : undefined;
+  if (payment != null && (typeof payment !== 'object' || Array.isArray(payment))) return toolError('_meta["' + PAY_META + '"] must be the x402 PaymentPayload object.');
+  const args = {}; for (const k of Object.keys(SERVICES[id].input)) if (a[k] !== undefined) args[k] = a[k]; // only the fields the service sells
+  return paidResult(id, await ctx.paid(id, args, payment || null));
+}
+
 const RUN = {
   ask_void: askVoid,
   skill_health: health,
   skill_discovery: discovery,
   ...Object.fromEntries(SKILL_TOOLS.map((s) => [s.tool, (a, ctx) => askSkill(s, a, ctx)])),
   review_code_closer: closer,
+  ...Object.fromEntries(Object.keys(SERVICES).map((id) => [paidToolName(id), (a, ctx, meta) => paidCall(id, a, ctx, meta)])),
   seo_audit(a) {
     if (typeof a.html !== 'string' || !a.html.trim()) return toolError('Give the page as "html".');
     if (a.html.length > 500000) return toolError('That page is over 500,000 characters.');
@@ -263,7 +321,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, its SEO audit of a page (seo_audit), readability, colour contrast, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, the skill's own code run on the server, no model), and skill_health (how far each skill is checked). ask_void and the closer read call a model; the skill tools do not." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, its SEO audit of a page (seo_audit), readability, colour contrast, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, the skill's own code run on the server, no model), and skill_health (how far each skill is checked). ask_void and the closer read call a model; the skill tools do not. The paid_* tools (code review with the closer read, answers, automation fixes, translation, digests, appraisals, pictures) cost 0.05 USDC on Base per call, paid with x402 over MCP: call one without payment for the PaymentRequired terms, then again with the signed payment in params._meta[\"x402/payment\"]." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {
@@ -271,7 +329,7 @@ export async function rpc(msg, ctx) {
     const fn = Object.prototype.hasOwnProperty.call(RUN, params.name) ? RUN[params.name] : null;
     if (!fn) return err(id, -32602, 'Unknown tool: ' + String(params.name).slice(0, 60));
     const args = params.arguments && typeof params.arguments === 'object' && !Array.isArray(params.arguments) ? params.arguments : {};
-    try { return ok(id, shaped(await fn(args, ctx), args.response_type)); } catch (_) { return ok(id, toolError('The tool failed on that input.')); }
+    try { return ok(id, shaped(await fn(args, ctx, params._meta), args.response_type)); } catch (_) { return ok(id, toolError('The tool failed on that input.')); }
   }
   return err(id, -32601, 'Method not found: ' + method.slice(0, 60));
 }

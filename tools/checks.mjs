@@ -223,6 +223,8 @@ for (const [name, file] of [
   ['alt-pay', 'alt-pay.test.mjs'],
   ['x402', 'x402.test.mjs'],
   ['x402-services', 'x402-services.test.mjs'],
+  ['mcp-x402', 'mcp-x402.test.mjs'],
+  ['x402-pay', 'x402-pay.test.mjs'],
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
