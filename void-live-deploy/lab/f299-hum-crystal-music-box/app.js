@@ -96,7 +96,7 @@ let ac=null, playing=null; const getAC=()=>ac||(ac=new (window.AudioContext||win
 function playList(list){
   if(!list.length) return; const ctx=getAC(); ctx.resume(); const t0=ctx.currentTime+.08, s0=list[0].start, lead=.02;
   const data=renderTune(list,ctx.sampleRate,lead), buf=ctx.createBuffer(1,data.length,ctx.sampleRate); buf.getChannelData(0).set(data);
-  if(playing){try{playing.stop()}catch(e){}} const src=ctx.createBufferSource(); src.buffer=buf; src.connect(ctx.destination); src.start(t0-lead); playing=src;
+  if(playing) playing.stop(); const src=ctx.createBufferSource(); src.buffer=buf; src.connect(ctx.destination); src.start(t0-lead); playing=src;
   src.onended=()=>{if(playing===src) playing=null};
   list.forEach(n=>{const c=crystals.find(c=>c.n===n); if(c) setTimeout(()=>c.ring=1,(n.start-s0)*1000+80)});
 }
