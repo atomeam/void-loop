@@ -132,6 +132,7 @@ for (const [name, file] of [
   ['team', 'team.test.mjs'],
   ['team-crew', 'team-crew.test.mjs'],
   ['team-priorities', 'team-priorities.test.mjs'],
+  ['team-leverage', 'team-leverage.test.mjs'], // one piece of work to one seat, the highest leverage first, no busywork (owner, 2026-11-06)
   ['naming-audit', 'naming-audit.test.mjs'],
   ['music-tools', 'music-tools.test.mjs'],
   ['flights', 'flights.test.mjs'],
@@ -216,6 +217,7 @@ for (const [name, file] of [
   ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
   ['film-discovery', 'film-discovery.test.mjs'],
+  ['movie-intent', 'movie-intent.test.mjs'],
   ['store-gap', 'store-gap.test.mjs'],
   ['film-share', 'film-share.test.mjs'],
   ['appraise', 'appraise.test.mjs'],
