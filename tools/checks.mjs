@@ -122,6 +122,7 @@ for (const [name, file] of [
   ['rap-piano', 'rap-piano.test.mjs'],
   ['rap-strings', 'rap-strings.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
+  ['trading-bots', 'trading-bots.test.mjs'], // the trading bots, their backtests and the arbitrage scanner (owner, 2026-11-06: "verse can build and sell trading bots too")
   ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],

@@ -9,6 +9,9 @@ import { usdcIncome } from '../void-live-deploy/lib/verse-wallet.js';
 import * as paid from '../void-live-deploy/functions/api/x402/[service].js';
 import * as review from '../void-live-deploy/functions/api/x402/review.js';
 import { onRequestGet as catalog } from '../void-live-deploy/functions/api/x402/index.js';
+import * as backtest from '../void-live-deploy/functions/api/x402/backtest.js';
+import * as arbitrage from '../void-live-deploy/functions/api/x402/arbitrage.js';
+const OWN = { review, backtest, arbitrage }; // services with a route file of their own
 
 const VERSE = '0x1111111111111111111111111111111111111111', PAYER = '0x3333333333333333333333333333333333333333', TX = '0x' + 'ab'.repeat(32);
 const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64');
@@ -37,13 +40,13 @@ const ctx = (name, method, body, headers = {}, env) => ({ request: new Request(o
 
 // every service sold has a route, and the Bazaar declaration has the v2 shape (info.input with a body example, info.output, a schema)
 for (const [name, s] of Object.entries(SERVICES)) {
-  assert.ok(name === 'review' || paid.PAID[name], name + ' has a paid route');
+  assert.ok(OWN[name] || paid.PAID[name], name + ' has a paid route');
   assert.equal(s.units, 50000, name + ' is 0.05 USDC');
   const bz = bazaarOf(s);
   assert.equal(bz.info.input.type, 'http'); assert.equal(bz.info.input.method, 'POST'); assert.ok(bz.info.input.body); assert.equal(bz.info.output.type, 'json'); assert.ok(bz.schema.properties.input);
   assert.equal(requirements(name, VERSE, origin).v1.outputSchema.input.discoverable, true);
 }
-assert.deepEqual(Object.keys(paid.PAID).sort(), Object.keys(SERVICES).filter((k) => k !== 'review').sort(), 'no route for a service that is not sold');
+assert.deepEqual(Object.keys(paid.PAID).sort(), Object.keys(SERVICES).filter((k) => !OWN[k]).sort(), 'no route for a service that is not sold');
 
 // GET, HEAD and a POST without payment: 402 naming the repo wallet on Base (what a Bazaar probe and an agent see)
 for (const name of Object.keys(paid.PAID)) {
@@ -55,6 +58,17 @@ for (const name of Object.keys(paid.PAID)) {
   assert.ok(v2.extensions.bazaar.info.input.body, name + ' declares itself for the Bazaar');
   assert.equal((await paid.onRequestHead(ctx(name, 'HEAD', null, {}, env))).status, 402);
   assert.equal((await paid.onRequestPost(ctx(name, 'POST', {}, {}, env))).status, 400, name + ': an empty call is refused before any payment');
+}
+// the services with a route file of their own (the trading bots' backtest and the arbitrage scan, through lib/x402-call.js): the same 402s
+for (const name of ['backtest', 'arbitrage']) {
+  const env = { DB: d1() }, r = OWN[name];
+  const g = await r.onRequestGet(ctx(name, 'GET', null, {}, env));
+  assert.equal(g.status, 402, name + ' GET is a 402');
+  const v2 = unb64(g.headers.get('payment-required'));
+  assert.equal(v2.accepts[0].payTo, VERSE_WALLET); assert.equal(v2.accepts[0].network, 'eip155:8453'); assert.equal(v2.resource.url, origin + '/api/x402/' + name);
+  assert.ok(v2.extensions.bazaar.info.input.body, name + ' declares itself for the Bazaar');
+  assert.equal((await r.onRequestHead(ctx(name, 'HEAD', null, {}, env))).status, 402);
+  assert.equal((await r.onRequestPost(ctx(name, 'POST', {}, {}, env))).status, 400, name + ': an empty call is refused before any payment');
 }
 assert.equal((await paid.onRequestGet(ctx('nope', 'GET', null, {}, { DB: d1() }))).status, 404);
 assert.equal((await review.onRequestGet(ctx('review', 'GET', null, {}, { DB: d1() }))).status, 402, 'code review answers the Bazaar probe too');
