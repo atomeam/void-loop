@@ -202,7 +202,7 @@
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
@@ -300,8 +300,15 @@
    "file": "lib/flight-sites.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 1
+  },
+  {
+   "file": "lib/job-sites.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 15,
+   "tests": 2
   },
   {
    "file": "lib/game-kit.js",
@@ -309,13 +316,6 @@
    "direct": 1,
    "dependants": 14,
    "tests": 1
-  },
-  {
-   "file": "lib/job-sites.js",
-   "skills": 9,
-   "direct": 1,
-   "dependants": 14,
-   "tests": 2
   },
   {
    "file": "lib/rally-rules.js",
@@ -356,7 +356,7 @@
    "file": "lib/tool-sites.js",
    "skills": 8,
    "direct": 2,
-   "dependants": 12,
+   "dependants": 13,
    "tests": 4
   },
   {
@@ -846,7 +846,7 @@
    "file": "lib/local-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 8,
+   "dependants": 9,
    "tests": 0
   },
   {
@@ -864,11 +864,25 @@
    "tests": 2
   },
   {
+   "file": "lib/brain-ask.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-bridge.js",
    "skills": 3,
    "direct": 2,
    "dependants": 5,
    "tests": 2
+  },
+  {
+   "file": "lib/converter-ask.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/generators.js",
@@ -881,20 +895,6 @@
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-ask.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/converter-ask.js",
-   "skills": 3,
-   "direct": 1,
    "dependants": 4,
    "tests": 1
   },
@@ -1221,6 +1221,13 @@
    "tests": 1
   },
   {
+   "file": "lib/toolkit.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 3,
+   "tests": 18
+  },
+  {
    "file": "lib/video.js",
    "skills": 2,
    "direct": 2,
@@ -1317,13 +1324,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/toolkit.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 2,
-   "tests": 18
   },
   {
    "file": "lib/walker.js",
@@ -5029,7 +5029,9 @@
    "importedBy": []
   },
   "functions/ip/index.js": {
-   "imports": [],
+   "imports": [
+    "lib/toolkit.js"
+   ],
    "importedBy": []
   },
   "functions/is-it/[what].js": {
@@ -6131,6 +6133,7 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "functions/ip/index.js",
     "skills/open-tool.js",
     "skills/toolkit.js"
    ]
@@ -7585,6 +7588,7 @@
     "skills/converter.js"
    ],
    "reachedBy": [
+    "functions/ip/index.js",
     "skills/open-tool.js",
     "skills/toolkit.js"
    ]
@@ -8439,6 +8443,7 @@
     "skills/flights.js"
    ],
    "reachedBy": [
+    "functions/ip/index.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
@@ -9293,6 +9298,7 @@
     "skills/work.js"
    ],
    "reachedBy": [
+    "functions/ip/index.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
@@ -9809,6 +9815,7 @@
     "functions/api/blueprint.js",
     "functions/api/local.js",
     "functions/api/watchalong.js",
+    "functions/ip/index.js",
     "skills/local-stations.js",
     "skills/open-tool.js",
     "skills/toolkit.js"
@@ -12816,6 +12823,7 @@
    "reachedBy": [
     "functions/api/reflect.js",
     "functions/api/will.js",
+    "functions/ip/index.js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
@@ -14347,6 +14355,7 @@
     "skills/pdf-tools.js"
    ],
    "reachedBy": [
+    "functions/ip/index.js",
     "lib/duel-rules.js",
     "skills/about-skill.js",
     "skills/duel.js",
@@ -14366,6 +14375,7 @@
     "lib/local-ask.js"
    ],
    "importedBy": [
+    "functions/ip/index.js",
     "skills/open-tool.js",
     "skills/toolkit.js"
    ]

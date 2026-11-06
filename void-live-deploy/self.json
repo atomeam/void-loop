@@ -588,6 +588,30 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T19:12:49Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T19:09:09Z",
+   "subject": "Outcome exam: podcasts 86.4"
+  },
+  {
+   "at": "2026-11-06T19:07:08Z",
+   "subject": "Conductor: raise the tv lane's daily cap to 144 so queued blueprints build today (#2466)"
+  },
+  {
+   "at": "2026-11-06T19:05:55Z",
+   "subject": "IP page: the Use with row, All tools and the way home (#2465)"
+  },
+  {
+   "at": "2026-11-06T19:03:10Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-06T19:03:04Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-06T19:02:16Z",
    "subject": "Failure reader: read a job log gh holds back for its colour codes (#2424)"
   },
@@ -642,30 +666,6 @@
   {
    "at": "2026-11-06T18:53:46Z",
    "subject": "Failed jobs read: run 42270835929 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T18:52:56Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-06T18:50:49Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T18:45:44Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"funny cartoon"
-  },
-  {
-   "at": "2026-11-06T18:44:43Z",
-   "subject": "Claude/project thread rkur4a (#2462)"
-  },
-  {
-   "at": "2026-11-06T18:41:16Z",
-   "subject": "Local TV: a blueprint opened on stage keeps the show playing in a card beside it (#2451)"
-  },
-  {
-   "at": "2026-11-06T18:40:50Z",
-   "subject": "Issues close themselves: site test rechecks its items, watchdog rechecks hourly-ish, no noise issues (#2453)"
   }
  ],
  "builders": {
