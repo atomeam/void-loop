@@ -3864,5 +3864,151 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T00:16:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2007,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10502 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T00:26:03Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 382,
+  "kind": "file",
+  "key": "yo new automation | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "yo new automation",
+    "why": "load 1309 ms > 1200"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2007,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10502 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"yo new automation\" load 1309 ms > 1200"
+ },
+ {
+  "at": "2026-11-06T02:49:24Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2287,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12031 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T03:14:53Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1814,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12916 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T03:24:35Z",
+  "passed": 82,
+  "of": 90,
+  "ms": 340,
+  "kind": "file",
+  "key": "send it away | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25",
+    "why": "load 1280 ms > 1200"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1814,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12916 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"send it away\" only \"waking up\" appeared, never the answer"
  }
 ]
