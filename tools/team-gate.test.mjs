@@ -32,6 +32,8 @@ test('a branch built on an old copy of main goes back, whatever else it adds', (
   const strip = judge(job('feature:x'), merged, [f('void-live-deploy/lib/x.js', 20, 331)]);
   assert.match(strip.back, /takes away more than it adds \(331 lines out, 20 in\)/);
   assert.ok(judge(job('flake:y'), merged, [f('tools/y.test.mjs', 3, 12)]).pages, 'a small fix may take a few lines away');
+  const swap = [f('tools/test_void.mjs', 24, 36), ...Array.from({ length: 210 }, (_, i) => f('history/' + i + '.json', 1, 1))];
+  assert.ok(judge(job('flake:z'), merged, swap).pages, 'a fix that swaps lines one for one (246 out, 234 in) is not a stale branch');
 });
 
 test('open waits, closed without a merge goes back, a page goes to the live check', () => {
