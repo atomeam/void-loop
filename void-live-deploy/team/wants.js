@@ -2,6 +2,7 @@
 // real brain should generate a never-ending queue of its own real wants and needs ... show the live queue on /team/ and /brain/"). Each want
 // names the evidence it came from and the one number that closes it; a private want (what visitors typed, sales) shows neither. Nothing is
 // sent from here; the week's bets (Verse's own priorities, lib/team-priorities.js) fill every element marked data-crew-bets; the list is read again every minute while the page is seen. Fills every element marked data-crew-wants.
+import { crewNext } from '/lib/team.js';
 const boxes = [...document.querySelectorAll('[data-crew-wants]')], betBoxes = [...document.querySelectorAll('[data-crew-bets]')];
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - (typeof t === 'number' ? t : Date.parse(t))) / 60e3)); return !Number.isFinite(m) ? '' : m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
@@ -29,7 +30,7 @@ function draw(box, j) {
   if (!j || !j.ok) { if (sum) sum.textContent = 'The wants could not be read just now.'; return; }
   if (sum) sum.textContent = j.open + ' open · ' + j.met + ' met' + (j.lastRun ? ' · the crew last ran ' + ago(j.lastRun.at) + ' (run ' + j.lastRun.run + ': ' + j.lastRun.jobs + ' jobs done, ' + j.lastRun.filed + ' wants filed, ' + j.lastRun.met + ' met)' : ' · the crew has not run yet');
   list.replaceChildren(...(j.wants.length ? j.wants.slice(0, 24).map(want) : [node('li', 'No want filed yet: the crew files them from the evidence on its next run.')]));
-  if (crewList) crewList.replaceChildren(...j.crew.map((c) => { const li = node('li'); li.append(node('b', c.name), ' ', node('span', (c.here ? 'here' : 'away') + ' · ' + c.done + ' done', 'wsub'), node('span', c.did ? 'Last: ' + c.did + (c.didAt ? ' (' + ago(c.didAt) + ')' : '') : 'Nothing done yet.', 'wsrc')); return li; }));
+  if (crewList) crewList.replaceChildren(...j.crew.map((c) => { const li = node('li'); li.append(node('b', c.name), ' ', node('span', crewNext(c.next) + ' · ' + c.done + ' done', 'wsub'), node('span', c.did ? 'Last: ' + c.did + (c.didAt ? ' (' + ago(c.didAt) + ')' : '') : 'Nothing done yet.', 'wsrc')); return li; }));
 }
 
 function bets(box, j) {

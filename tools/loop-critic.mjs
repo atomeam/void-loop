@@ -15,11 +15,14 @@ export const RULES = [
   ['unverified', /\b(guaranteed|100% (accurate|uptime)|always works|never fails|best in the world)\b/i, 'unverified claim: back it with a check or remove it'],
 ];
 const SEEN = /(void\.growth\.json|void-live-deploy\/(skills|lib)\/|void\.html|\.card|preview)/;
+// skills/first.json lists the asks visitors type (tools/first-asks.mjs), not words Verse says. "translate i love you into
+// spanish" is a visitor's ask, so the roleplay rule does not apply to it. The asks are critiqued where they are written.
+const ASKS = /void-live-deploy\/skills\/first\.json$/;
 export function critique(diff) {
   const out = []; let file = '';
   for (const l of String(diff).split('\n')) {
     if (l.startsWith('+++ ')) { file = l.slice(6); continue; }
-    if (!l.startsWith('+') || l.startsWith('+++') || !SEEN.test(file)) continue;
+    if (!l.startsWith('+') || l.startsWith('+++') || !SEEN.test(file) || ASKS.test(file)) continue;
     for (const [id, re, why] of RULES) if (re.test(l.slice(1))) out.push({ id, file, line: l.slice(1).trim().slice(0, 160), why });
   }
   return out;

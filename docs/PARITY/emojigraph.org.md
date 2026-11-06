@@ -11,8 +11,8 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Search combos by tag | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:80 `<p class="intro">Search emoji combos, kaomoji and text art by tag and copy them. Collect` |
-| Copy a combo | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:79 `<h1>Emoji combos to copy</h1>` |
-| Collect several into one | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:80 `ext art by tag and copy them. Collect several into one, make fancy text, turn a picture in` |
-| Fancy text | Text | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:80 `ollect several into one, make fancy text, turn a picture into dot art, and keep combos of` |
+| Search combos by tag | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:85 `<p class="intro">Search emoji combos, kaomoji and text art by tag and copy them. Collect` |
+| Copy a combo | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:84 `<h1>Emoji combos to copy</h1>` |
+| Collect several into one | Combos | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:85 `ext art by tag and copy them. Collect several into one, make fancy text, turn a picture in` |
+| Fancy text | Text | have | every site of this kind offers it | void-live-deploy/emoji-combos/emoji-dictionary/index.html:85 `ollect several into one, make fancy text, turn a picture into dot art, and keep combos of` |
 | Its live pages could not be read, so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://emojigraph.org/ | not compared yet |

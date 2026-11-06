@@ -54,7 +54,8 @@ test('the automerge workflow merges with a squash after the suite gate, and keep
   assert.match(yml, /STUCK:/, 'file .github/workflows/automerge.yml keeps the stuck sweep');
   assert.match(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs disarms GitHub auto-merge until the suite is green');
   assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges after the suite');
-  assert.match(src, /choose\(rows, mainSha, running\)/, 'file tools/automerge.mjs picks what merges with the suite gate');
+  assert.match(src, /chooseChecked\(rows, mainSha, running, safetyOk\)/, 'file tools/automerge.mjs: the suite gate chooses, and the safety-check runs on its batch');
+  assert.match(src, /const safetyOk = [^]*?safety\(ex, gh,/, 'file tools/automerge.mjs safety-checks the batch');
   assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
   assert.doesNotMatch(src, /enablePullRequestAutoMerge/, 'file tools/automerge.mjs must not arm GitHub auto-merge');
   assert.match(src, /workflow', 'run', 'suite-gate\.yml', '--repo', repo, '--ref', 'main'/, 'file tools/automerge.mjs starts the suite from main');
@@ -101,4 +102,16 @@ test('a merge-policy failure names the rule and the file, branch or label', () =
   const gate = readFileSync(new URL('./merge-gate.mjs', import.meta.url), 'utf8');
   assert.match(gate, /explainPolicyFailure/);
   assert.match(gate, /FAIL\\s\+merge-policy/);
+});
+
+// 2026-11-06: only 2 of 300 automerge runs were full sweeps. A run on main about no pull request (a deploy, the review of main) took the
+// "sweep" group and replaced the waiting sweep, and the suite gate's own result ("Suite on main", on main, no pull request) was skipped
+// by the job "if" and by idleEvent. So no new batch went to the suite and nothing merged.
+test('a suite gate result sweeps, and an idle run on main never replaces the waiting sweep', () => {
+  const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
+  const group = yml.match(/^\s*group: (.+)$/m)[1];
+  assert.match(group, /head_branch == 'main' && github\.event\.workflow_run\.name != 'Suite on main' && format\('idle-\{0\}', github\.run_id\)\) \|\| 'sweep'/);
+  assert.match(yml, /if: .*github\.event\.workflow_run\.name == 'Suite on main'/);
+  assert.match(src, /wr\.name !== 'Suite on main' && !\(wr\.pull_requests/);
 });
