@@ -38,6 +38,17 @@
       : '<p class="note">The first weekly review runs on Monday. With no spends measured yet, it keeps the weights on the ROI ranking and learns nothing.</p>';
   }).catch(() => { $('when').textContent = 'The ledger did not load. Try again in a minute.'; $('balance').textContent = ''; });
 
+  // what the wallet has received, read from the chain by the daily scan (tools/wallet-watch.mjs): the record when the live read gets no answer
+  fetch('/treasury/wallet.json').then((r) => (r.ok ? r.json() : null)).then((v) => {
+    if (!v || !v.address || !v.as_of) return; // not read from the chain yet
+    const rows = (v.incoming || []).slice(0, 10);
+    $('received').innerHTML = '<div class="grid"><div class="card"><b>' + (v.balance_cents == null ? 'not read' : usd(v.balance_cents)) + '</b><span>USDC on Base, read from the chain ' + esc(day(v.as_of)) + '</span></div>'
+      + '<div class="card"><b>' + esc(v.transfers_in || 0) + '</b><span>USDC transfers in, ' + usd(v.received_cents || 0) + ' received in all</span></div></div>'
+      + (rows.length ? '<table><tbody>' + rows.map((x) => '<tr><td class="num">block ' + esc(x.block) + '</td><td><a href="' + esc(safeUrl('https://basescan.org/tx/' + x.tx)) + '" rel="noopener"><code>' + esc(x.tx.slice(0, 12)) + '…</code></a> from <code>' + esc(x.from.slice(0, 8)) + '…</code></td><td class="num">' + usd(Number(BigInt(x.units) / 10000n)) + '</td></tr>').join('') + '</tbody></table>'
+        : '<p class="note">No USDC has reached the wallet yet. Every transfer in, from a paid call, a bounty paid out or anyone else, shows here with its transaction.</p>')
+      + (v.gap ? '<p class="note">' + esc(v.gap) + '</p>' : '');
+  }).catch(() => {});
+
   fetch('/treasury/found.json').then((r) => r.json()).then((f) => {
     const groups = {};
     for (const x of f.finds) (groups[x.category] = groups[x.category] || []).push(x);
