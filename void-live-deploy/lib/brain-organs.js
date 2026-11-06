@@ -275,8 +275,9 @@ const concepts = {
 };
 
 // ---- tissue: Gray-Scott reaction-diffusion fed by everything that lands in the input and memory layers -------------------------------------
+const T_NU = new Float32Array(CELLS), T_NV = new Float32Array(CELLS); // scratch for the next sub and act layers: copied in before they are read, so no state crosses calls
 export function tissueStep(ws, feed, kill, iters = 2, owner = 'tissue', garden = null) { // garden: the gardener's feed and kill offsets per patch (lib/brain-gardener.js)
-  const u = ws.layers.sub, v = ws.layers.act, inp = ws.layers.input, mem = ws.layers.memory, nu = new Float32Array(CELLS), nv = new Float32Array(CELLS);
+  const u = ws.layers.sub, v = ws.layers.act, inp = ws.layers.input, mem = ws.layers.memory, nu = T_NU, nv = T_NV;
   const o = ws.organs.indexOf(owner);
   for (let it = 0; it < iters; it++) {
     // laplacian4 written out: the same four wrapped neighbours added in the same order, without two modulos per cell per neighbour
@@ -284,8 +285,8 @@ export function tissueStep(ws, feed, kill, iters = 2, owner = 'tissue', garden =
       const i = row + x, xl = row + (x ? x - 1 : GW - 1), xr = row + (x + 1 < GW ? x + 1 : 0), U = u[i], V = v[i], uvv = U * V * V, seed = inp[i] * 0.06 + mem[i] * 0.01, t = garden ? tileOf(x, y) : 0, F = garden ? feed + garden.df[t] : feed, Kl = garden ? kill + garden.dk[t] : kill;
       nu[i] = clamp(U + 0.2097 * (u[xl] + u[xr] + u[up + x] + u[dn + x] - 4 * U) - uvv + F * (1 - U) - seed, 0, 1);
       nv[i] = clamp(V + 0.105 * (v[xl] + v[xr] + v[up + x] + v[dn + x] - 4 * V) + uvv - (Kl + F) * V + seed, 0, 1);
+      if (o >= 0 && Math.abs(nv[i] - V) > 0.01) { ws.owner[i] = o; ws.wroteAt[i] = ws.tick; ws.writes[o]++; } // the ownership pass, folded in: v[i] is not written until u.set
     } }
-    for (let i = 0; i < CELLS; i++) { if (o >= 0 && Math.abs(nv[i] - v[i]) > 0.01) { ws.owner[i] = o; ws.wroteAt[i] = ws.tick; ws.writes[o]++; } }
     u.set(nu); v.set(nv);
   }
   return ws;
