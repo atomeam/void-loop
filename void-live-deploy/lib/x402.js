@@ -58,7 +58,7 @@ export const SERVICES = {
     input: { text: { type: 'string', description: 'a transcript, at least a few sentences (or send url)', required: false }, url: { type: 'string', description: 'a PeerTube or Internet Archive video link', required: false }, ask: { type: 'string', description: 'a question about it, optional', required: false } },
     output: { points: 'array of key lines', answer: 'array of lines that answer ask', summary: 'short summary, when the model is on' },
     tags: ['summarization', 'video', 'nlp'],
-    example: { input: { text: 'In this lesson we cover three ways to store energy ...', ask: 'what are the three ways?' }, output: { ok: true, points: ['three ways to store energy'], answer: ['batteries, pumped water and flywheels'], summary: 'The lesson compares three ways to store energy.' } },
+    example: { input: { text: 'Energy can be stored in batteries. Energy can also be stored by pumping water uphill. Flywheels store energy as motion. These are the three ways we cover today.', ask: 'what are the three ways?' }, output: { ok: true, points: ['three ways to store energy'], answer: ['batteries, pumped water and flywheels'], summary: 'The lesson compares three ways to store energy.' } },
   },
   appraise: {
     path: '/api/x402/appraise', method: 'POST', units: 50000, route: 'appraise',
@@ -66,7 +66,7 @@ export const SERVICES = {
     input: { image: { type: 'string', description: 'a PNG, JPEG or WebP data URL, under 800 KB', required: true }, note: { type: 'string', description: 'what the item is, optional', required: false } },
     output: { seen: 'what the photo shows', value: '{ kind, cents, text }', text: 'the appraisal, text' },
     tags: ['vision', 'appraisal', 'pricing'],
-    example: { input: { image: 'data:image/jpeg;base64,...', note: 'old pocket watch' }, output: { seen: 'a gold-colored pocket watch with a chain', value: { kind: 'watch', cents: 15000, text: 'about $150' }, text: 'About $150 as seen.' } },
+    example: { input: { image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', note: 'old pocket watch' }, output: { seen: 'a gold-colored pocket watch with a chain', value: { kind: 'watch', cents: 15000, text: 'about $150' }, text: 'About $150 as seen.' } },
   },
   image: {
     path: '/api/x402/image', method: 'POST', units: 50000, route: 'image',

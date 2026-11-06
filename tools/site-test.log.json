@@ -4144,5 +4144,63 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T06:01:29Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1728,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14352 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T06:12:58Z",
+  "passed": 86,
+  "of": 90,
+  "ms": 436,
+  "kind": "file",
+  "key": "site | console: Cannot read properties of undefined (reading 'queue",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play reversi",
+    "why": "console: Cannot read properties of undefined (reading 'queue')"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1728,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 14352 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"play reversi\" console: Cannot read properties of undefined (reading 'queue')"
  }
 ]
