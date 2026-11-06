@@ -1556,14 +1556,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-27T16:00:06Z",
-   "line": "Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com",
-   "built": 0,
-   "queued": 5,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-27T22:34:36Z",
    "line": "Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com",
    "built": 0,
@@ -1918,6 +1910,16 @@
    "fixed": [],
    "pages_per_day": 1,
    "reads_next": "juicychat.ai"
+  },
+  {
+   "at": "2026-11-06T23:29:54Z",
+   "line": "Versus: took on no site; next dalyfeds.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "juicychat.ai",
+   "noop": true
   }
  ]
 }
