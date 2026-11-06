@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 99,
-   "best": 805,
-   "evidence": "Verse (/books/) 99 ms to the load event (median of 3, phone width) vs sudowrite.com 805 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-06T06:36:46.052Z",
+   "verse": 116,
+   "best": 1238,
+   "evidence": "Verse (/books/) 116 ms to the load event (median of 3, phone width) vs sudowrite.com 1238 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T06:32:28.640Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/books/) 3 of 3 loads answered vs sudowrite.com 3 of 3 loads answered",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/books/) 0 px sideways overflow at 390 px vs sudowrite.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 3,
    "evidence": "Verse (/books/) 0 unnamed controls or images vs sudowrite.com 3 unnamed controls or images",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "of": 2,
    "part": true
   },
@@ -47,7 +47,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "of": 2,
    "part": true
   },
@@ -56,7 +56,7 @@
    "verse": 7,
    "best": 7,
    "evidence": "Verse (/books/) 7 of 7 right against the worked-out answer; judged against the standard, not sudowrite.com (the site is not asked)",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "of": 7
   },
   "design polish": {
@@ -64,7 +64,7 @@
    "verse": 0,
    "best": 97,
    "evidence": "Verse (/books/) 0 design defects vs sudowrite.com 97 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), sudowrite.com (54 low-contrast texts, 43 small tap targets, layout shift 0.00)",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "siteRead": true
   },
   "book studio": {
@@ -72,7 +72,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "of": 2,
    "part": true
   },
@@ -81,7 +81,7 @@
    "verse": 0,
    "best": 2,
    "evidence": "Verse (/books/) 0 of 2 shown for the question (Verse lacks: chapter titles, surpassed count); judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "was": "equal-and-better",
    "of": 2,
    "part": true
@@ -91,7 +91,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "of": 2,
    "part": true
   },
@@ -100,7 +100,7 @@
    "verse": 8,
    "best": 0,
    "evidence": "Verse (/books/) 8 of 8 things a full answer shows vs sudowrite.com 0 of 8 things a full answer shows (Verse lacks: none; site lacks: book studio, chapters, export markdown, export text, no credits, no subscriptions, works offline, back to Verse)",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "of": 8,
    "siteRead": true
   },
@@ -109,7 +109,7 @@
    "verse": 8.5,
    "best": 6.5,
    "evidence": "Verse (/books/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs sudowrite.com 6.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-06T06:36:46.052Z",
+   "at": "2026-11-06T06:32:28.640Z",
    "siteRead": true
   }
  }

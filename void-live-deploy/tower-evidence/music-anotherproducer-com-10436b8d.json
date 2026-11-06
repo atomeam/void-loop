@@ -2,12 +2,11 @@
  "id": "music: anotherproducer.com",
  "rows": {
   "speed": {
-   "verdict": "worse",
-   "verse": 228,
-   "best": 172,
-   "evidence": "Verse (/bpm/) 228 ms to the load event (median of 3, phone width) vs anotherproducer.com 172 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T15:09:02.323Z",
-   "was": "equal-and-better",
+   "verdict": "equal-and-better",
+   "verse": 163,
+   "best": 191,
+   "evidence": "Verse (/bpm/) 163 ms to the load event (median of 3, phone width) vs anotherproducer.com 191 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "reliability": {
@@ -15,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/bpm/) 3 of 3 loads answered vs anotherproducer.com 3 of 3 loads answered",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "mobile": {
@@ -23,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/bpm/) 0 px sideways overflow at 390 px vs anotherproducer.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "accessibility": {
@@ -31,7 +30,7 @@
    "verse": 0,
    "best": 3,
    "evidence": "Verse (/bpm/) 0 unnamed controls or images vs anotherproducer.com 3 unnamed controls or images",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "offline": {
@@ -39,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/bpm/) 1 (1: the page shows itself again with the network cut) vs anotherproducer.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "sharing": {
@@ -47,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/bpm/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs anotherproducer.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "accuracy": {
@@ -55,15 +54,15 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/bpm/) 4 of 4 right against the worked-out answer; judged against the standard, not anotherproducer.com (the site is not asked)",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "of": 4
   },
   "design polish": {
    "verdict": "better",
-   "verse": 1,
+   "verse": 0,
    "best": 36,
-   "evidence": "Verse (/bpm/) 1 design defects vs anotherproducer.com 36 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), anotherproducer.com (6 low-contrast texts, 30 small tap targets, layout shift 0.02)",
-   "at": "2026-11-05T15:09:02.323Z",
+   "evidence": "Verse (/bpm/) 0 design defects vs anotherproducer.com 36 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), anotherproducer.com (6 low-contrast texts, 30 small tap targets, layout shift 0.02)",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   },
   "tap tempo counter": {
@@ -71,7 +70,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/bpm/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "of": 3,
    "part": true
   },
@@ -80,7 +79,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/bpm/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "of": 2,
    "part": true
   },
@@ -89,7 +88,7 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/bpm/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "of": 4,
    "part": true
   },
@@ -98,7 +97,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/bpm/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "of": 2,
    "part": true
   },
@@ -107,7 +106,7 @@
    "verse": 16,
    "best": 8,
    "evidence": "Verse (/bpm/) 16 of 16 things a full answer shows vs anotherproducer.com 8 of 16 things a full answer shows (Verse lacks: none; site lacks: half and double, average of the last taps, a click on each tap, nothing uploaded, Playlists, Original music creation, Share links, cards and codes, No account)",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "of": 16,
    "siteRead": true
   },
@@ -116,7 +115,7 @@
    "verse": 7.5,
    "best": 4,
    "evidence": "Verse (/bpm/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs anotherproducer.com 4 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T15:09:02.323Z",
+   "at": "2026-11-06T06:40:05.516Z",
    "siteRead": true
   }
  }
