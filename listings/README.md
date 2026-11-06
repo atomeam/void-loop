@@ -1,7 +1,7 @@
 # Where Verse gets listed
 
 The official MCP registry publishes by itself from this repository. Every other listing below is ready in this folder and not
-sent: each waits on the owner's yes. Nothing here holds a key or a secret.
+sent: each goes out only after the owner says yes (the confirm line, a safety gate). Nothing here holds a key or a secret.
 
 | Listing | What it is | State | The one step after a yes |
 | --- | --- | --- | --- |

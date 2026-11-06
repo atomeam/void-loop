@@ -13,7 +13,7 @@
  "smoke_at": "2026-11-06",
  "bench_at": "2026-11-05",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 12,
   "checked": 13,
   "proven": 385
@@ -3595,12 +3595,20 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 5,
     "checked": 2,
     "proven": 49
    },
    "skills": [
+    {
+     "name": "lab",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-11-06"
+    },
     {
      "name": "team-chat",
      "tier": "proven",
