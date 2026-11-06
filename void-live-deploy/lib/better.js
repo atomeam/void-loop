@@ -17,6 +17,8 @@ const median = (xs) => { const s = xs.slice().sort((a, b) => a - b); return s.le
 const OWNER = /\b(?:the\s+)?owner\b|\bAdam\b/;
 // a fix that came out of a probe (a `probe:` job, "from a probe", "a probe miss"), not a line about the probe tooling itself
 const PROBE = /\bprobe:|\bfrom (?:a |my |its |one of my |Verse's )?probes?\b|\bprobes? (?:miss|found|caught|wrote)|\bprobed\b/i;
+// a ledger line whose answer the forge did not check (titleFor in tools/propose-fix.mjs writes this for a route-only fix)
+const UNCHECKED = /\banswer is not checked\b/i;
 
 /** the time an ask id names: ask-YYYYMMDD-HHMM-N -> ms, or null */
 export function askTime(id) {
@@ -41,7 +43,9 @@ export function measure({ ledger = [], families = null, asks = [], decisions = {
   const L = (Array.isArray(ledger) ? ledger : []).filter((e) => e && e.at && Number.isFinite(Date.parse(e.at)));
   const week = L.filter((e) => now - Date.parse(e.at) <= 7 * DAY);
   const owner = week.filter((e) => OWNER.test(String(e.what || ''))).length;
-  const probeFixes = week.filter((e) => PROBE.test(String(e.what || '')) && (e.kind === 'fix' || e.kind === 'grow' || e.kind === 'build')).length;
+  // a fix counts only when the card answers: a route the forge did not check ("the answer is not checked") is a route, not a fix
+  const probeLines = week.filter((e) => PROBE.test(String(e.what || '')) && (e.kind === 'fix' || e.kind === 'grow' || e.kind === 'build'));
+  const probeFixes = probeLines.filter((e) => !UNCHECKED.test(String(e.what || ''))).length, probeRoutes = probeLines.length - probeFixes;
   // asks: a ledger line carrying `asked: <id>` built it; lag is from the id's time to that line, over the last 14 days of builds
   const builtAt = new Map();
   for (const e of L) if (e.asked && askTime(e.asked) !== null && !builtAt.has(e.asked)) builtAt.set(String(e.asked), Date.parse(e.at));
@@ -57,7 +61,7 @@ export function measure({ ledger = [], families = null, asks = [], decisions = {
   const benchScore = bench && Number.isFinite(+bench.score) ? +bench.score : null, benchTotal = bench && Number.isFinite(+bench.total) ? +bench.total : null;
   return {
     week: week.length, owner, askedBuilt: lags.length, medianLagDays: lags.length ? r1(median(lags)) : null, open: open.length, oldestOpenDays: r1(oldestOpenDays),
-    skills: skills.length, failing, unsure, benchScore, benchTotal, probeFixes,
+    skills: skills.length, failing, unsure, benchScore, benchTotal, probeFixes, probeRoutes,
   };
 }
 
@@ -178,7 +182,7 @@ export function betterHtml(esc, rows) {
     f.askedBuilt || f.open ? 'my own asks ' + (f.askedBuilt ? 'shipped in ' + esc(f.medianLagDays) + ' day' + (f.medianLagDays === 1 ? '' : 's') : 'have not shipped lately') + (f.open ? ', ' + esc(f.open) + ' still open (the oldest ' + esc(f.oldestOpenDays) + ' day' + (f.oldestOpenDays === 1 ? '' : 's') + ')' : ', none open') : '',
     f.skills ? esc(f.failing) + ' skill' + (f.failing === 1 ? '' : 's') + ' failing and ' + esc(f.unsure) + ' barely checked of ' + esc(f.skills) + frictionTrend : '',
     f.benchTotal ? 'the bench answers ' + pct(p.bench) : '',
-    f.week ? esc(f.probeFixes) + ' fix' + (f.probeFixes === 1 ? '' : 'es') + ' this week came from my own probes' : '',
+    f.week ? esc(f.probeFixes) + ' fix' + (f.probeFixes === 1 ? '' : 'es') + ' this week came from my own probes' + (f.probeRoutes ? ' (and ' + esc(f.probeRoutes) + ' route' + (f.probeRoutes === 1 ? '' : 's') + ' whose answer is not checked yet)' : '') : '',
   ].filter(Boolean);
   return '<div class="sub growth-better" data-better="' + esc(c.score) + '" data-better-trend="' + trend + '"' + (c.weakest ? ' data-weakest="' + esc(c.weakest) + '"' : '')
     + ' style="line-height:1.45">Better: <b>' + esc(c.score) + '</b> of 100' + (bits ? ' (' + bits + ')' : ' (first measure)') + '. ' + facts.join('; ') + '.'

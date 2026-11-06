@@ -273,6 +273,10 @@ test('the ledger line says when the ask came from a probe, so the growth card co
   const { measure } = await import('../void-live-deploy/lib/better.js');
   const now = Date.parse('2026-10-30T20:00:00Z'), line = (what) => ({ at: '2026-10-30T19:00:00Z', by: 'verse', kind: 'fix', what });
   assert.equal(measure({ ledger: [line(ledgerWhat(t, 'probe')), line(ledgerWhat(t, 'miss'))], now }).probeFixes, 1, 'the growth card counts the probe\'s fix and only it');
+  // a self-fix counts only when the card answers (#1987): a route the forge did not check is shown apart, not counted as a fix
+  const routed = 'Verse routes "rent vs buy in austin tx" to its rentbuy skill (the answer is not checked)';
+  const m = measure({ ledger: [line(ledgerWhat(t, 'probe')), line(ledgerWhat(routed, 'probe'))], now });
+  assert.equal(m.probeFixes, 1, 'only the answered fix counts'); assert.equal(m.probeRoutes, 1, 'the unchecked route is kept apart');
   const wf = (await import('node:fs')).readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   assert.match(wf, /grow\.mjs fix "\$\{LEDGER:-\$TITLE\}"/, 'the workflow writes the ledger line, not the bare title');
 });
