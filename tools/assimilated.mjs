@@ -97,7 +97,10 @@ export async function floorsOf(cwd = root) {
   // what each site taught Verse, as the card's "What each site taught me" says it (skills/tower.js verseTake): its lesson, else Verse's edge
   const taught = (f) => learnedOf(f) || (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) : '');
   const cur = t.floors.find((f) => f.state === 'current');
-  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
+  // a floor passed with no head-to-head measure (icanhazip.com, my ip: measured false) is dated by the pass the Tower recorded for it
+  // (tower.target.json passed, and the passes of earlier seasons in archived), so every row keeps a real date
+  const passedAt = {}; for (const p of [].concat((tg && tg.passed) || [], ...(((tg && tg.archived) || []).map((a) => a.passed || [])))) if (p && p.id && /^20\d\d-\d\d-\d\d$/.test(String(p.at || '')) && !(passedAt[p.id] > p.at)) passedAt[p.id] = p.at;
+  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : passedAt[f.id] ? passedAt[f.id] + 'T00:00:00Z' : '' }; }));
 }
 
 /** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */
