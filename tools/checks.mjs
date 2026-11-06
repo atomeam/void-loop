@@ -222,6 +222,7 @@ for (const [name, file] of [
   ['pay-share', 'pay-share.test.mjs'],
   ['alt-pay', 'alt-pay.test.mjs'],
   ['x402', 'x402.test.mjs'],
+  ['x402-services', 'x402-services.test.mjs'],
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
