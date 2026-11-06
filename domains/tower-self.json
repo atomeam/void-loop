@@ -1556,14 +1556,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-27T08:22:31Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-27T16:00:06Z",
    "line": "Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com",
    "built": 0,
@@ -1917,6 +1909,15 @@
    "pages_per_day": 2,
    "reads_next": "skybridge.click",
    "noop": true
+  },
+  {
+   "at": "2026-11-06T23:27:20Z",
+   "line": "Versus: took on no site (also read: 4 no-family, 3 walled, 1 not-judged); the model answered 401 on 1 of 8 reads, so those were not judged; next dalyfeds.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "juicychat.ai"
   }
  ]
 }

@@ -1223,3 +1223,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-06T09:47:01Z | verse | build | Versus: took on no site (also read: 4 walled, 4 no-family); next id5-sync.com (the target)
 2026-11-06T17:40:27Z | verse | build | Versus: took on no site (also read: 4 no-family, 4 walled); next id5-sync.com (the target)
 2026-11-06T20:24:05Z | claude | build | Unbidden: Verse speaks first on /brain/ (lib/unbidden.js, functions/api/unbidden.js, brain/unbidden.js). One or two sentences from its live state when something changed (at most one per 3 minutes for everyone, 240 model calls a day), every source named, no number that is not in the facts; voice off until pressed, in its own voice (/api/rapvoice).
+2026-11-06T23:27:20Z | verse | build | Versus: took on no site (also read: 4 no-family, 3 walled, 1 not-judged); the model answered 401 on 1 of 8 reads, so those were not judged; next dalyfeds.com (the target)
