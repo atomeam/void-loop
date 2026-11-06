@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1187,
+ "counted": 1190,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2379,14 +2379,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 99,
+   "dependants": 100,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 98,
+   "dependants": 99,
    "tests": 35
   },
   {
@@ -3056,6 +3056,13 @@
   },
   {
    "file": "lib/lap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/life-arb.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -4301,6 +4308,13 @@
   "functions/api/joins.js": {
    "imports": [
     "lib/joins.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/life-arb.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/life-arb.js"
    ],
    "importedBy": []
   },
@@ -8628,6 +8642,7 @@
     "functions/api/gumroad.js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
+    "functions/api/life-arb.js",
     "functions/api/misses.js",
     "functions/api/passkey.js",
     "functions/api/probe-asks.js",
@@ -9496,6 +9511,12 @@
   "lib/ledger.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/life-arb.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/life-arb.js"
+   ]
   },
   "lib/lineage.js": {
    "imports": [],
@@ -10804,6 +10825,7 @@
     "functions/api/hook/[id].js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
+    "functions/api/life-arb.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",

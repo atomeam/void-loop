@@ -582,6 +582,38 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T07:20:47Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-06T07:20:10Z",
+   "subject": "Self card: true counts and clean text (#2405)"
+  },
+  {
+   "at": "2026-11-06T07:19:01Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-11-06T07:17:49Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-06T07:17:33Z",
+   "subject": "Verse reads its own red GitHub Actions runs: failed jobs, failing step, last 30 lines (#2404)"
+  },
+  {
+   "at": "2026-11-06T07:16:42Z",
+   "subject": "Brain page test: expect the 26 organs its title names (#2403)"
+  },
+  {
+   "at": "2026-11-06T07:12:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-06T07:12:32Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
    "at": "2026-11-06T07:03:23Z",
    "subject": "Site test: visitor pass 14/15"
   },
@@ -628,38 +660,6 @@
   {
    "at": "2026-11-06T06:39:00Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T06:37:08Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-11-06T06:33:53Z",
-   "subject": "treasury: found money and the weekly review"
-  },
-  {
-   "at": "2026-11-06T06:31:30Z",
-   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T06:28:33Z",
-   "subject": "Wallet watch: wait and move to the next Base endpoint when one rate-limits the read (#2394)"
-  },
-  {
-   "at": "2026-11-06T06:27:35Z",
-   "subject": "Arbitrage scanner: a record of past scans, from real rows only (#2393)"
-  },
-  {
-   "at": "2026-11-06T06:26:13Z",
-   "subject": "treasury: found money and the weekly review"
-  },
-  {
-   "at": "2026-11-06T06:25:36Z",
-   "subject": "Trading bots: one paid-call route for backtest and arbitrage, and escaped tables (#2373)"
-  },
-  {
-   "at": "2026-11-06T06:20:58Z",
-   "subject": "Design pass batch 2: pages no longer jump while their data loads (#2390)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 32,
-  "week": 183
+  "day": 34,
+  "week": 185
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
