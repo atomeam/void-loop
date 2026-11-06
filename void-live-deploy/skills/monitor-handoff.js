@@ -2,15 +2,16 @@
  * monitor-handoff skill: hand off a client-visible monitor for systems Verse owns.
  * Produces a status card the client can ask for, reducing their work by showing
  * real (never invented) state of monitors, docs, and running automations.
- * "monitor handoff for the onboarding system", "client monitor pack for my automation",
- * "handoff the monitors for this idea".
+ * "monitor handoff for the onboarding system", "status handoff for my automation",
+ * "handoff the monitors for this idea". "client monitor ..." is skills/client-monitor.js's, and "handoff monitor ..."
+ * (one monitor, no "the") is skills/systems-monitor.js's board, so neither is matched here.
  * Uses existing /api/status where possible; empty surface stays empty.
  */
 export function isMonitorHandoff(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:monitor|status)\s+handoff\b/i.test(t)
-    || /^(?:client|business)\s+monitor(?:\s+(?:pack|handoff))?\b/i.test(t)
-    || /^(?:handoff|package)\s+(?:the\s+)?monitors?\b/i.test(t)
+    || /^business\s+monitor(?:\s+(?:pack|handoff))?\b/i.test(t)
+    || /^(?:handoff|package)\s+(?:the\s+monitors?|monitors)\b/i.test(t)
     || /^(?:make|generate|create)\s+(?:a\s+)?monitor\s+handoff\b/i.test(t);
 }
 
@@ -49,25 +50,29 @@ export default {
   name: 'monitor-handoff',
   examples: [
     'monitor handoff for the onboarding system',
-    'client monitor pack for my automation',
+    'status handoff for my automation',
     'handoff the monitors for invoice reminders',
     'make a monitor handoff for the support router'
   ],
   nearMisses: [
     'what is a monitor',
     'monitor the weather',
-    'status of the news'
+    'status of the news',
+    'client monitor for the invoice automation',
+    'handoff monitor board'
   ],
   match(lower, text) { return isMonitorHandoff(text || lower); },
   run,
   suite() {
     const ok = isMonitorHandoff('monitor handoff for the onboarding system')
-      && isMonitorHandoff('client monitor pack for my automation')
+      && isMonitorHandoff('status handoff for my automation')
       && isMonitorHandoff('handoff the monitors for invoice reminders')
       && isMonitorHandoff('make a monitor handoff for the support router')
       && !isMonitorHandoff('what is a monitor')
       && !isMonitorHandoff('monitor the weather')
-      && !isMonitorHandoff('status of the news');
+      && !isMonitorHandoff('status of the news')
+      && !isMonitorHandoff('client monitor for the invoice automation')
+      && !isMonitorHandoff('handoff monitor board');
     return { ok, got: 'match works' };
   }
 };
