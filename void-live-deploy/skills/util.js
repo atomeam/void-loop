@@ -115,6 +115,10 @@ export function utilOf(text) {
   // "nato alphabet for hello", "spell hello in nato", "morse code for sos", "hello in binary"
   m = t.match(/^(?:(?:the\s+)?(?:nato|phonetic)\s+(?:alphabet|spelling)\s+(?:for|of)\s+(.{1,40})|spell\s+(.{1,40}?)\s+(?:in|with\s+the)\s+(?:nato|phonetic)(?:\s+alphabet)?)$/i);
   if (m) return { kind: 'nato', s: (m[1] || m[2]).trim() };
+  // "invisible character", "blank character copy", "zero width space": the blank characters, each with its own copy button (docs/GAPS.md row 59, 2026-11-06: a disambiguation card)
+  if (/^(?:copy\s+(?:and\s+paste\s+)?(?:an?\s+)?)?(?:invisible|blank|empty|hidden)\s+(?:characters?|chars?|text|letters?|symbols?|space|name)(?:\s+(?:copy(?:\s+(?:and\s+)?paste)?|generator|for\s+(?:discord|whatsapp|fortnite|instagram|names?)))?$|^(?:copy\s+(?:an?\s+)?)?zero[\s-]width\s+(?:space|character|joiner|char)s?$/i.test(t)) return { kind: 'blank' };
+  // "phonetic alphabet", "nato alphabet", "icao spelling alphabet chart" named alone: the whole table and a box to spell in (docs/GAPS.md row 61, 2026-11-06: a disambiguation card)
+  if (/^(?:the\s+)?(?:nato|icao|phonetic|nato\s+phonetic|icao\s+phonetic|military|military\s+phonetic|police|pilot|radio)\s+(?:spelling\s+)?alphabet(?:\s+(?:chart|list|table|letters|words|translator|converter|generator))?$/i.test(t)) return { kind: 'nato', s: '' };
   m = t.match(/^(?:(?:the\s+)?morse(?:\s+code)?\s+(?:for|of)\s+(.{1,60})|(.{1,60}?)\s+in\s+morse(?:\s+code)?)$/i);
   if (m) return { kind: 'morse', s: (m[1] || m[2]).trim() };
   m = t.match(/^(?:(?:the\s+)?(?:word|text)\s+)?["“']?([a-z ]{1,24}?)["”']?\s+in\s+binary$/i);
@@ -143,6 +147,15 @@ export function utilOf(text) {
   return null;
 }
 const NATO = { A: 'Alfa', B: 'Bravo', C: 'Charlie', D: 'Delta', E: 'Echo', F: 'Foxtrot', G: 'Golf', H: 'Hotel', I: 'India', J: 'Juliett', K: 'Kilo', L: 'Lima', M: 'Mike', N: 'November', O: 'Oscar', P: 'Papa', Q: 'Quebec', R: 'Romeo', S: 'Sierra', T: 'Tango', U: 'Uniform', V: 'Victor', W: 'Whiskey', X: 'X-ray', Y: 'Yankee', Z: 'Zulu', 0: 'Zero', 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine' };
+/** each character of s as its NATO word; a space is ·, anything else stays as it is. Pure. */
+export const natoWords = (s) => Array.from(String(s || '').toUpperCase()).map((c) => NATO[c] || (c === ' ' ? '·' : c)).join(' ');
+// the blank characters people copy for an empty name or message: [the character, code point, Unicode name, what it does]
+export const BLANKS = [
+  ['\u200B', 'U+200B', 'Zero width space', 'takes no room, so a line can break there'],
+  ['\u3164', 'U+3164', 'Hangul filler', 'a wide blank that many apps keep in a name'],
+  ['\u2800', 'U+2800', 'Braille pattern blank', 'a blank the width of a letter, not counted as a space by most apps'],
+  ['\u00A0', 'U+00A0', 'No-break space', 'looks like a space, and a line never breaks there'],
+];
 const MORSE = { A: '·−', B: '−···', C: '−·−·', D: '−··', E: '·', F: '··−·', G: '−−·', H: '····', I: '··', J: '·−−−', K: '−·−', L: '·−··', M: '−−', N: '−·', O: '−−−', P: '·−−·', Q: '−−·−', R: '·−·', S: '···', T: '−', U: '··−', V: '···−', W: '·−−', X: '−··−', Y: '−·−−', Z: '−−··', 0: '−−−−−', 1: '·−−−−', 2: '··−−−', 3: '···−−', 4: '····−', 5: '·····', 6: '−····', 7: '−−···', 8: '−−−··', 9: '−−−−·', '.': '·−·−·−', ',': '−−··−−', '?': '··−−··', '!': '−·−·−−', '/': '−··−·', '@': '·−−·−·' };
 const EMOJI = { happy: '😀 😊 😄', sad: '😢 😞 ☹️', love: '❤️ 😍 🥰', laugh: '😂 🤣', angry: '😠 😡', tired: '😴 🥱', cool: '😎', thinking: '🤔', party: '🎉 🥳', fire: '🔥', ok: '👌 👍', yes: '✅ 👍', no: '❌ 👎', thanks: '🙏', heart: '❤️', star: '⭐ 🌟', sun: '☀️', moon: '🌙', rain: '🌧️', snow: '❄️', coffee: '☕', pizza: '🍕', cake: '🎂', dog: '🐶', cat: '🐱', money: '💰 💵', idea: '💡', rocket: '🚀', music: '🎵 🎶', birthday: '🎂 🎉', surprised: '😮 😲', scared: '😱', sick: '🤒', cry: '😭', wink: '😉', kiss: '😘', clap: '👏', strong: '💪', eyes: '👀', skull: '💀', ghost: '👻', robot: '🤖', alien: '👽', earth: '🌍', flower: '🌸', tree: '🌳', car: '🚗', home: '🏠', book: '📚', phone: '📱', time: '⏰', warning: '⚠️', check: '✔️' };
 function hex(c) { c = NAMED[c] || c; c = c.replace('#', ''); if (c.length === 3) c = c.split('').map((x) => x + x).join(''); return '#' + c.toLowerCase(); }
@@ -357,8 +370,22 @@ async function run(text, api) {
   } else if (q.kind === 'syllables') {
     const n = syllables(q.w);
     el = showPage((p) => { p.innerHTML = '<h2>Syllables</h2>' + big(n + (n === 1 ? ' syllable' : ' syllables'), 44) + '<p style="color:#8a8a8a">“' + esc(q.w) + '”, counted by its vowel sounds; a few words break the rules</p>'; });
+  } else if (q.kind === 'blank') {
+    el = showPage((p) => { p.innerHTML = '<h2>Invisible characters</h2><ul style="list-style:none;padding:0;margin:0">' + BLANKS.map(([ch, code, name, note], i) => '<li style="margin:8px 0"><button type="button" class="util-blank" data-i="' + i + '">copy</button> <b>' + esc(code) + '</b> ' + esc(name) + ' <span style="color:#8a8a8a">· ' + esc(note) + '</span></li>').join('') + '</ul>'
+      + '<p class="util-say" aria-live="polite" style="min-height:1.4em;color:#8a8a8a"></p><div class="src">Names and code points from the Unicode Standard. Each button copies one character and nothing else. Some apps remove blanks from names or messages</div>'; });
+    const say = el && el.querySelector && el.querySelector('.util-say');
+    for (const b of (el && el.querySelectorAll ? el.querySelectorAll('.util-blank') : [])) b.addEventListener('click', async () => { const [ch, code] = BLANKS[+b.dataset.i]; let ok = false; try { await navigator.clipboard.writeText(ch); ok = true; } catch (_) {} if (say) say.textContent = ok ? code + ' copied. Paste it where you want the blank.' : 'Your browser did not allow the copy.'; });
+  } else if (q.kind === 'nato' && !q.s) {
+    const cell = (k) => '<tr><td style="padding:1px 10px 1px 0"><b>' + esc(k) + '</b></td><td>' + esc(NATO[k]) + '</td></tr>';
+    const keys = Object.keys(NATO).sort((a, b) => (/\d/.test(a) - /\d/.test(b)) || (a < b ? -1 : 1));
+    el = showPage((p) => { p.innerHTML = '<h2>NATO phonetic alphabet</h2><input class="util-in" type="text" placeholder="spell a word" aria-label="Word to spell" style="display:block;width:100%;box-sizing:border-box;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px">'
+      + '<div class="util-out" style="font-size:20px;line-height:1.4;margin:8px 0;word-break:break-word;min-height:1.4em"></div>' + copyBtn
+      + '<div style="columns:2;column-gap:24px;margin-top:8px"><table style="border-collapse:collapse">' + keys.map(cell).join('') + '</table></div>'
+      + '<div class="src">The ICAO radiotelephony spelling alphabet (ICAO Annex 10), used by NATO. Radio operators also say Niner for 9 and Fower for 4. Spelled in your browser</div>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out');
+    if (box && out) box.addEventListener('input', () => { out.textContent = natoWords(box.value); });
   } else if (q.kind === 'nato') {
-    const words = Array.from(q.s.toUpperCase()).map((c) => NATO[c] || (c === ' ' ? '·' : c)).join(' ');
+    const words = natoWords(q.s);
     el = showPage((p) => { p.innerHTML = '<h2>NATO alphabet</h2>' + big(words, 24) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” letter by letter</p>'; });
   } else if (q.kind === 'morse') {
     const code = Array.from(q.s.toUpperCase()).map((c) => (c === ' ' ? '/' : MORSE[c] || '')).filter(Boolean).join(' ');
