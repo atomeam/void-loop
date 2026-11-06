@@ -52,3 +52,30 @@ test('merge-main still stops for a person when the branch moved a skill', () => 
   assert.equal(r.status, 1);
   assert.match(r.stderr, /conflicts need a person: void-live-deploy\/skills\/index\.json/);
 });
+
+// the same, for one generated file both sides changed
+function repoFile(file, base, mainText, branchText) {
+  const root = mkdtempSync(join(tmpdir(), 'merge-main-')), sh = (cwd, c) => execSync(c, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  sh(root, 'git init -q --bare -b main origin.git');
+  const clone = (d) => { sh(root, `git clone -q origin.git ${d}`); sh(join(root, d), 'git config user.email t@example.invalid && git config user.name t && git config commit.gpgsign false'); return join(root, d); };
+  const put = (dir, text) => { mkdirSync(dirname(join(dir, file)), { recursive: true }); writeFileSync(join(dir, file), text); };
+  const a = clone('a'); sh(a, 'git checkout -q -b main'); put(a, base); sh(a, 'git add -A && git commit -q -m base && git push -q origin main');
+  const m = clone('m'); sh(m, 'git checkout -q main'); put(m, mainText); sh(m, 'git add -A && git commit -q -m "main moves the line" && git push -q origin main');
+  sh(a, 'git checkout -q -b branch'); put(a, branchText); sh(a, 'git add -A && git commit -q -m "branch moves the line"');
+  return a;
+}
+
+test('merge-main takes main\'s side of a conflicted parity inventory instead of stopping for a person', () => {
+  const inv = 'docs/PARITY/site.md', a = repoFile(inv, 'cites line 10\n', 'cites line 12\n', 'cites line 11\n');
+  const r = mergeMain(a);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.equal(readFileSync(join(a, inv), 'utf8'), 'cites line 12\n');
+  assert.equal(execSync('git status --porcelain', { cwd: a, encoding: 'utf8' }).trim(), '', 'the merge is committed');
+});
+
+test('merge-main still stops for a person on a conflict in a file nobody generates', () => {
+  const a = repoFile('docs/notes.md', 'one\n', 'two\n', 'three\n');
+  const r = mergeMain(a);
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /conflicts need a person: docs\/notes\.md/);
+});
