@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: none; out: table, code">
+<meta name="theme-color" content="#050505">
+<title>Crypto arbitrage scanner: net of fees · Verse</title>
+<meta name="description" content="Live crypto arbitrage scanner: BTC and ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap on Base, from real order books, with the net dollars after both taker fees and DEX gas. Read only; a free scanner you can run yourself.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Crypto arbitrage scanner: net of fees · Verse">
+<meta property="og:description" content="Live crypto arbitrage scanner: BTC and ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap on Base, from real order books, with the net dollars after both taker fees and DEX gas. Read only; a free scanner you can run yourself.">
+<meta property="og:url" content="https://a-to-mind.com/trading-bots/arbitrage/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/trading-bots/arbitrage/">
+<link rel="stylesheet" href="/trading-bots/tb.css">
+<link rel="modulepreload" href="/trading-bots/kit/strategy.js">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse arbitrage scanner","url":"https://a-to-mind.com/trading-bots/arbitrage/","description":"Live crypto arbitrage scanner: BTC and ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap on Base, from real order books, with the net dollars after both taker fees and DEX gas. Read only; a free scanner you can run yourself.","applicationCategory":"FinanceApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}}]}</script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body data-page="arbitrage">
+<main>
+<nav class="crumbs"><a href="/">Verse</a> / <a href="/trading-bots/">Trading bots</a> / Arbitrage scanner</nav>
+<h1>Arbitrage scanner, net of every fee</h1>
+<p class="lead">Buy a coin where it is cheap and sell it where it is dear: this reads each venue's order book right now and works out, for a $1,000 trade, what you would end with after both taker fees and the gas on a Uniswap leg. Most of the time the honest answer is less than you started with.</p>
+<section class="glass risk" aria-label="Risk"><p><b>Risk:</b> prices move in milliseconds and faster bots close real gaps first, so a gap shown here is not money in hand. Selling on one venue what you bought on another needs coins and cash already on both, or a transfer that takes time and costs a fee. Verse only reads public prices: it never trades and never holds money or keys.</p></section>
+<section class="glass"><h2>Right now</h2>
+<form class="tb-form" id="ar-form"><label>Coin <select name="coin"><option>BTC</option><option>ETH</option></select></label><button type="submit">Scan again</button></form>
+<p class="tb-note" id="ar-at" aria-live="polite">Reading the order books...</p>
+<div id="ar-best"></div>
+<div class="tb-scroll"><table id="ar-rows"></table></div>
+<p class="muted" id="ar-mids"></p>
+<div class="row"><button type="button" id="ar-csv">Export this scan (CSV)</button><button type="button" id="ar-share">Share this scan</button><span class="muted" id="ar-shared"></span></div>
+<p class="muted">Taker fees are each venue's entry tier as published (Coinbase 0.60%, Kraken 0.80%, Bitstamp 0.40%, Gemini 1.20%, read 2026-11-06); Uniswap's pool fee is inside its quote and gas is priced from Base's gas price. USDC is counted as one dollar.</p></section>
+<section class="glass"><h2>Run it yourself</h2><p class="muted">The same math, on any exchanges ccxt supports, with your own size and fees, from your own computer. Read only: it never places an order.</p>
+<pre id="tb-curl">mkdir verse-bot &amp;&amp; cd verse-bot
+curl -fsSLO "https://a-to-mind.com/trading-bots/kit/{bot.mjs,strategy.js,arb-scan.mjs,arb.js,arb.example.json,package.json,config.example.json,README.md,LICENSE}"
+npm install &amp;&amp; node arb-scan.mjs --every 30</pre><div class="row"><button type="button" id="tb-copy">Copy the commands</button><button type="button" id="tb-zip">Download the kit (.zip)</button></div></section>
+<section class="glass"><h2>For agents</h2><p class="muted">Your own size (up to $250,000), fees, venues and transfer cost, every pair with average fill prices: <code>POST https://a-to-mind.com/api/x402/arbitrage</code> with <code>{"coin":"ETH","size":5000}</code>, paid per call in USDC on Base over <a href="https://docs.x402.org">x402</a>. A call without payment answers 402 with what to pay. Free view: <a href="/api/arbitrage?coin=BTC">/api/arbitrage</a>.</p></section>
+<footer>Order books from the venues' public market data, read by <a href="/lib/arb-venues.js">lib/arb-venues.js</a>; the math is <a href="/trading-bots/kit/arb.js">arb.js</a>. Backtested trading bots: <a href="/trading-bots/">Trading bots</a>. Quotes: <a href="/markets/">Markets</a>.</footer>
+</main>
+<script type="module" src="/lib/trading-bots.js"></script>
+</body>
+</html>

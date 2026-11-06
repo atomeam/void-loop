@@ -11,11 +11,11 @@
 // 9.0 against 3.9 (every brain better). The field's lowest entropy after warm-up, 8 brains over 1800 ticks: 0.50 with it against
 // 0.38 without (mean 0.611 against 0.596). Run:
 // node --test tools/brain-gardener.test.mjs
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as G from '../void-live-deploy/lib/brain-gardener.js';
 import { rng } from '../void-live-deploy/lib/field-kit.js';
+import { par, ptest, test } from './brain-par.mjs';
 
 const W = 64, H = 48;
 // the coder reads the activity layer as 8 levels a cell (as blink() does)
@@ -55,25 +55,37 @@ function run(seed, on, T) {
 // (seeds 1-8, 1800 ticks, no visitor), before and after organ 18: while it gardens the tissue never collapsed (lowest entropy under 0.12)
 // on any brain, while only watching it collapsed on 2 (then 1) of them; the mean entropy with and without gardening stayed within 0.04.
 // Seed 3 is a brain that collapses when only watched, so it is the one this check uses.
-test('it never costs the field: while it gardens the tissue does not collapse, on a brain that collapses when only watched', () => {
-  const low = (seed, on) => { const b = B.createBrain(seed); b.gardener.on = on; let m = 1;
-    for (let t = 0; t < 1800; t++) { B.stepBrain(b, {}); if (t > 300 && t % 10 === 0) m = Math.min(m, b.metrics.entropy); }
-    return { m, b }; };
-  const seeds = [2, 3], on = seeds.map((s) => low(s, true)), off = low(3, false);
-  on.forEach((r, i) => { assert.ok(r.m > 0.12, 'seed ' + seeds[i] + ' lowest entropy ' + r.m); assert.ok(r.b.gardener.thoughts > 0); });
+/** one brain with no visitor for 1800 ticks, gardening or only watching: its lowest entropy after warm-up (a worker runs it) */
+export function lowest(seed, on) {
+  const b = B.createBrain(seed); b.gardener.on = on; let m = 1;
+  for (let t = 0; t < 1800; t++) { B.stepBrain(b, {}); if (t > 300 && t % 10 === 0) m = Math.min(m, b.metrics.entropy); }
+  return { m, thoughts: b.gardener.thoughts };
+}
+
+test('it never costs the field: while it gardens the tissue does not collapse, on a brain that collapses when only watched', async () => {
+  const seeds = [2, 3], [on2, on3, off] = await par(import.meta.url, 'lowest', [[2, true], [3, true], [3, false]]), on = [on2, on3]; // at once
+  on.forEach((r, i) => { assert.ok(r.m > 0.12, 'seed ' + seeds[i] + ' lowest entropy ' + r.m); assert.ok(r.thoughts > 0); });
   assert.ok(off.m < 0.12, 'seed 3 only watching should collapse: lowest entropy ' + off.m);
 });
 
-test('in the brain it keeps more patches at the edge of chaos than the same brain only watching, on every brain tried', () => {
-  const seeds = [21, 22, 23], on = seeds.map((s) => run(s, true, 1200)), off = seeds.map((s) => run(s, false, 1200));
+/** run() in a worker: the patches in the band, and for the first brain what the test reads of it (its self, runs, acts, knowledge) */
+export function band(seed, on, T, full) {
+  const { inBand, b } = run(seed, on, T); if (!full) return { inBand };
+  return { inBand, self: B.selfSays(b).find((l) => /^Gardener:/.test(l)) || '', runs: b.runs.gardener, thoughts: b.gardener.thoughts,
+    acts: Object.values(G.gardenerOf(b.gardener).acts).reduce((a, v) => a + v, 0), k: B.knowledgeOf ? JSON.parse(JSON.stringify(B.knowledgeOf(b))) : null };
+}
+
+test('in the brain it keeps more patches at the edge of chaos than the same brain only watching, on every brain tried', async () => {
+  const seeds = [21, 22, 23], all = await par(import.meta.url, 'band', [...seeds.map((s, i) => [s, true, 1200, i === 0]), ...seeds.map((s) => [s, false, 1200, false])]); // the 6 brains at once
+  const on = all.slice(0, 3), off = all.slice(3);
   const mean = (r) => r.reduce((a, x) => a + x.inBand, 0) / r.length;
   seeds.forEach((s, i) => assert.ok(on[i].inBand > off[i].inBand, 'seed ' + s + ': ' + on[i].inBand + ' vs ' + off[i].inBand));
   assert.ok(mean(on) > mean(off) + 3, mean(on) + ' vs ' + mean(off));
-  const b = on[0].b, self = B.selfSays(b).find((l) => /^Gardener:/.test(l)) || '';
-  assert.ok(B.ORGAN_IDS.includes('gardener') && B.ORGAN_IDS.length === 23);
-  assert.ok(b.runs.gardener > 100, 'runs ' + b.runs.gardener);
+  const b = on[0], self = b.self;
+  assert.ok(B.ORGAN_IDS.includes('gardener') && B.ORGAN_IDS.length === 25);
+  assert.ok(b.runs > 100, 'runs ' + b.runs);
   assert.match(self, /^Gardener: \d+ of 16 patches at the edge of chaos \(\d+ too still, \d+ too wild\); it tended them \d+ times?\./);
-  assert.ok(b.gardener.thoughts > 0 && Object.values(G.gardenerOf(b.gardener).acts).reduce((a, v) => a + v, 0) > 0);
-  const k = B.knowledgeOf ? B.knowledgeOf(b) : null;
-  if (k) { const fresh = B.createBrain(99); assert.ok(B.loadKnowledge(fresh, JSON.parse(JSON.stringify(k))).includes('gardener')); }
+  assert.ok(b.thoughts > 0 && b.acts > 0);
+  const k = b.k;
+  if (k) { const fresh = B.createBrain(99); assert.ok(B.loadKnowledge(fresh, k).includes('gardener')); }
 });

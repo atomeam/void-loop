@@ -1,16 +1,130 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 283,
+ "runsTotal": 291,
  "kinds": {
   "grow": 70,
-  "file": 89,
+  "file": 91,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 70
+  "visitor": 76
  },
  "runs": [
+  {
+   "at": "2026-11-06T05:32:50Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T05:02:01Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T04:49:27Z",
+   "passed": 85,
+   "of": 90,
+   "kind": "file",
+   "ms": 438,
+   "note": "fix: \"longevity trial watch\" load 1233 ms > 1200",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "longevity trial watch",
+     "why": "load 1233 ms > 1200"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T04:38:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T04:12:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T03:36:56Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T03:24:35Z",
+   "passed": 82,
+   "of": 90,
+   "kind": "file",
+   "ms": 340,
+   "note": "fix: \"send it away\" only \"waking up\" appeared, never the answer",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 3 < 5"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25",
+     "why": "load 1280 ms > 1200"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T03:14:53Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T02:49:24Z",
    "passed": 0,
@@ -190,112 +304,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T15:25:07Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T14:53:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T14:39:39Z",
-   "passed": 84,
-   "of": 90,
-   "kind": "file",
-   "ms": 373,
-   "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
-     "why": "load 1482 ms > 1200"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T14:29:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T14:03:44Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T13:36:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T13:23:33Z",
-   "passed": 85,
-   "of": 90,
-   "kind": "file",
-   "ms": 281,
-   "note": "fix: \"closer on the figure\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 3 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "fly around",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T13:12:35Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -349,20 +357,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 50,
+   "runs": 57,
    "passed": 424,
-   "of": 783,
-   "broken": 17,
-   "brokenOf": 292,
+   "of": 951,
+   "broken": 24,
+   "brokenOf": 460,
    "brokenPassed": 22
   },
   {
    "from": "2026-10-16",
-   "runs": 141,
+   "runs": 134,
    "passed": 2727,
-   "of": 5027,
-   "broken": 78,
-   "brokenOf": 1946,
+   "of": 4859,
+   "broken": 71,
+   "brokenOf": 1778,
    "brokenPassed": 0
   },
   {
@@ -373,9 +381,9 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 92,
-   "passed": 1775,
-   "of": 1952,
+   "runs": 100,
+   "passed": 1942,
+   "of": 2132,
    "ms": 377
   }
  ],
@@ -396,7 +404,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T00:26:03Z",
+  "skill:cartoon": "2026-11-06T04:49:27Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -690,6 +698,12 @@
   "skill:leet": "2026-11-05T18:16:04Z",
   "skill:local-stations": "2026-11-06T00:26:03Z",
   "skill:lorem": "2026-11-06T00:26:03Z",
-  "skill:magic8": "2026-11-06T00:26:03Z"
+  "skill:magic8": "2026-11-06T00:26:03Z",
+  "skill:mind-field": "2026-11-06T03:24:35Z",
+  "skill:morse": "2026-11-06T03:24:35Z",
+  "skill:music-tools": "2026-11-06T03:24:35Z",
+  "skill:client-handoff": "2026-11-06T04:49:27Z",
+  "skill:math-quiz": "2026-11-06T04:49:27Z",
+  "skill:my-device": "2026-11-06T04:49:27Z"
  }
 }
