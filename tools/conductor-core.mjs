@@ -174,8 +174,11 @@ export function blueprintsDue({ queuedMs, now }) {
  *  gets a 429 partway and lands nothing (run 42284242262, 2026-11-06: started with 11 of 360 left, ended "no model answered"). */
 export const CODER_RUN_CALLS = 30;
 /** is the coder's free model budget (GET /api/coder: { hour:{used,cap}, day:{used,cap}, room, until }) too short for one whole run?
- *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. Pure. */
-export function coderShort(budget, now, need = CODER_RUN_CALLS) {
+ *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. spare: a free model
+ *  key outside Cloudflare is set (GROQ, CEREBRAS or GEMINI, the fallbacks in tools/verse-coder.mjs), so the coder answers without this
+ *  budget and is never held for it. Pure. */
+export function coderShort(budget, now, need = CODER_RUN_CALLS, spare = false) {
+  if (spare) return null;
   if (!budget || typeof budget !== 'object') return null;
   if (budget.room === false) return { until: budget.until || null };
   const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);
