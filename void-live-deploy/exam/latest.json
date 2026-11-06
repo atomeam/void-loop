@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T12:07:09.802Z",
+  "at": "2026-11-06T12:33:33.961Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,10 +34,17 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 85.6,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of serial",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of hardcore history",
           "failed": [
@@ -45,6 +52,13 @@
             "episode"
           ],
           "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of crime junkie",
@@ -81,10 +95,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -144,17 +157,16 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
@@ -276,19 +288,12 @@
       }
     },
     "sports": {
-      "score": 88.9,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mlb scores",
           "failed": [
             "board"
           ],
@@ -494,6 +499,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 86.4
+    "score": 85.6
   }
 }
