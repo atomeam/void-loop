@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T19:57:46.695Z",
+ "updated": "2026-11-06T20:07:24.542Z",
  "last24h": {
-  "ticks": 56,
-  "started": 97,
+  "ticks": 57,
+  "started": 98,
   "requeued": 0,
   "setAside": 0,
   "probes": 9,
@@ -11,18 +11,6 @@
  },
  "broken": [],
  "held": [
-  {
-   "id": "mw4p9cye",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mw4gkvdn",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "want-exam-translate",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
   {
    "id": "mvbl52gd",
    "why": "store-gap.yml reached its 6 runs today"
@@ -32,70 +20,58 @@
    "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "mvw5r1rz",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvw5r2hk",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvw5r36z",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvw5r3w1",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvp4ahwz",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1ee0lk",
-   "why": "verse-job.yml reached its 8 runs today"
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1g8ei3",
-   "why": "verse-job.yml reached its 8 runs today"
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1kno2c",
-   "why": "verse-job.yml reached its 8 runs today"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mvwl3b1c",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvwl3biu",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvwl3bx7",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvwl3cbp",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvwl3cpy",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvwl3d38",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpkt0sa",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 60,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -151,7 +127,8 @@
   "mw5am6zv": 1793991756956,
   "mw5d0wxm": 1793993635546,
   "mw5d0xyf": 1793994393532,
-  "mw5d0yxg": 1793995066695
+  "mw5d0yxg": 1793995066695,
+  "mw5d0zxp": 1793995644542
  },
  "sweptAt": 1793995066695,
  "blueprintsAt": 1793994393532,
@@ -1882,6 +1859,33 @@
    "sweep": true,
    "blueprints": 0,
    "held": 76,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T20:07:24.542Z",
+   "open": 246,
+   "started": [
+    {
+     "id": "mw5d0zxp",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 14,
    "warnings": 1
   }
  ]
