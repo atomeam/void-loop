@@ -124,9 +124,17 @@ export async function runJob(id, { dry = false, force = false, env = process.env
   let skills = []; try { skills = readdirSync(resolve(cwd, 'void-live-deploy/skills')).filter((f) => /\.js$/.test(f) && !/\.test\.js$/.test(f)).map((f) => f.replace(/\.js$/, '')); } catch (_) { /* no map, the job's words alone */ }
   const r = spawnSync(process.execPath, [bin, '--once', ...(dry ? ['--dry-run'] : []), '--task', taskText(job, skills)], { cwd, env, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 55 * 60 * 1000 });
   const report = lastJson(r.stdout) || (r.error ? { outcome: 'error', why: String(r.error.message || r.error) } : null);
-  const patch = settle(report, job);
-  if (!dry) { const p = await call(env, 'PATCH', { id: job.id, state: patch.state, note: patch.note }); if (p.status !== 200) return { job, report, patch, error: 'the queue refused the result (' + p.status + ')' }; }
-  return { job, report, patch };
+  const patch = settle(report, job), turns = turnLog(r.stderr);
+  if (!dry) { const p = await call(env, 'PATCH', { id: job.id, state: patch.state, note: patch.note }); if (p.status !== 200) return { job, report, patch, turns, error: 'the queue refused the result (' + p.status + ')' }; }
+  return { job, report, patch, turns };
+}
+
+/** the coder's turn lines from the lap's stderr ("turn N: tool path -> result"), at most 60, key-like runs masked. Pure.
+ *  2026-11-06: an unattended job hit the 30-turn cap with no edit, and the log kept only the 600-character why, so where
+ *  the turns went could not be read. These lines show it. */
+export function turnLog(err) {
+  return String(err || '').split('\n').filter((l) => /^\s*turn \d+:/.test(l))
+    .map((l) => l.trim().replace(/[A-Za-z0-9_\-]{32,}/g, '[masked]').slice(0, 200)).slice(-60);
 }
 
 /** the lap's whole why for the job log: one line, at most 600 characters, any run of 32 or more key characters masked. Pure. */
@@ -145,6 +153,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     // the queue note keeps 90 characters; the job log keeps the whole why, so a cut note can be read in full (long key-like runs masked)
     const full = fullWhy(r.report);
     if (full) console.log('::notice title=verse-job why::' + full);
+    if (r.turns && r.turns.length) { console.log('::group::the coder\'s turns (' + r.turns.length + ')'); for (const t of r.turns) console.log(t); console.log('::endgroup::'); }
     if (process.env.GITHUB_STEP_SUMMARY) { try { import('node:fs').then((fs) => fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### verse-job\n\n```\n' + line + '\n```\n')); } catch (_) { /* the summary is optional */ } }
     process.exit(0);
   });

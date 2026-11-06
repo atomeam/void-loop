@@ -261,6 +261,20 @@
    "refused": true,
    "at": "2026-10-29"
   },
+  "adnext.mobi": {
+   "bytes": 5284,
+   "controls": 7,
+   "scripts": 4,
+   "styles": 3,
+   "nodes": 32,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 2190,
+   "shell": "none",
+   "weight": 13604,
+   "at": "2026-11-06"
+  },
   "adsco.re": {
    "refused": true,
    "at": "2026-11-06"
@@ -5264,6 +5278,10 @@
    "weight": 1633879,
    "at": "2026-10-30"
   },
+  "everycom.store": {
+   "refused": true,
+   "at": "2026-11-06"
+  },
   "ex-unit.nagoya": {
    "bytes": 953037,
    "controls": 51,
@@ -7245,6 +7263,20 @@
    "weight": 902801,
    "at": "2026-10-30"
   },
+  "juicychat.ai": {
+   "bytes": 995318,
+   "controls": 118,
+   "scripts": 13,
+   "styles": 2,
+   "nodes": 58,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 12239,
+   "shell": "none",
+   "weight": 1021898,
+   "at": "2026-11-06"
+  },
   "junit.org": {
    "bytes": 576450,
    "controls": 45,
@@ -8968,6 +9000,20 @@
    "weight": 2090285,
    "at": "2026-10-30"
   },
+  "opentv.com": {
+   "bytes": 5906880,
+   "controls": 2,
+   "scripts": 6,
+   "styles": 2,
+   "nodes": 22,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 106,
+   "shell": "none",
+   "weight": 5919100,
+   "at": "2026-11-06"
+  },
   "opportunitiesforyoungkenyans.co.ke": {
    "bytes": 2032455,
    "controls": 420,
@@ -9637,6 +9683,20 @@
    "shell": "none",
    "weight": 1261406,
    "at": "2026-10-30"
+  },
+  "protopage.com": {
+   "bytes": 1671315,
+   "controls": 2,
+   "scripts": 7,
+   "styles": 3,
+   "nodes": 56,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 449,
+   "shell": "none",
+   "weight": 1685875,
+   "at": "2026-11-06"
   },
   "pureplanetcommunity.nl": {
    "refused": true,

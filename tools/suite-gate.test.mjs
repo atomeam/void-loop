@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord, foreignSquash, MAX_FOREIGN } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -178,3 +178,30 @@ test('a green run merges past the records the bot writes straight to main, and p
   assert.equal(botRecord(['void-live-deploy/tester-log.json']), false, 'no author line (an older log): not a record');
   assert.equal(driftOk([...recs, squash(55, ['void.html'])], [4]), false, 'a pull request from outside the batch is still real drift');
 });
+
+test('a green run counts past hand merges of unrelated pull requests (2026-11-06: 8 landed during one green run)', () => {
+  const sq = (n, files) => Object.assign([...files], { subject: `Some change (#${n})`, author: 'atomeam' });
+  const own = ['void-live-deploy/lib/sky-card.js', 'tools/sky-card.test.mjs'];
+  const moved = [sq(2470, ['void-live-deploy/lib/brain-organs.js']), sq(2472, ['tools/verse-loop.mjs', 'tools/verse-loop.test.mjs'])];
+  assert.equal(foreignSquash(moved[0], own), true);
+  assert.equal(driftOk(moved, [2294, 2297], own), true, 'no shared file and no harness file: the green run still counts');
+  assert.equal(driftOk(moved, [2294, 2297]), false, 'files unknown: only the older rule');
+  assert.equal(driftOk(moved, [2294, 2297], []), false, 'no files: unknown');
+  assert.equal(driftOk([sq(2470, ['void-live-deploy/lib/sky-card.js'])], [2294], own), false, 'a shared file is real drift');
+  for (const f of ['.github/workflows/suite-gate.yml', '.github/actions/void-test/action.yml', 'tools/test_void.mjs', 'tools/test_sky.mjs', 'package-lock.json', 'void-live-deploy/wrangler.jsonc']) {
+    assert.equal(driftOk([sq(9, [f])], [], own), false, `a change to the suite itself (${f}) is real drift`);
+  }
+  assert.equal(driftOk([sq(2473, ['.github/workflows/shorts.yml', 'films/index.html'])], [], own), true, 'a workflow the suite does not run is not the harness');
+  assert.equal(foreignSquash(Object.assign(['x.js'], { subject: 'Merge branch main' }), own), false, 'not a squash: real drift');
+  const many = Array.from({ length: MAX_FOREIGN + 1 }, (_, i) => sq(3000 + i, [`skills/s${i}.js`]));
+  assert.equal(driftOk(many.slice(0, MAX_FOREIGN), [], own), true);
+  assert.equal(driftOk(many, [], own), false, 'more than MAX_FOREIGN unrelated squashes: run it again');
+  const r = { ...row(2294, inBatchOf(pass(OLD), [2294, 2297]), moved), files: own };
+  assert.equal(mayMerge(r, MAIN), true);
+  assert.equal(mayMerge({ ...r, files: null }, MAIN), false);
+  const c = choose([r, { ...row(2297, inBatchOf(pass(OLD), [2294, 2297]), moved), files: ['skills/other.js'] }, row(2302, null, null)], MAIN, false);
+  assert.equal(c.action, 'merge');
+  assert.deepEqual(c.batch.map((x) => x.number), [2294, 2297]);
+});
+
+function inBatchOf(check, batch) { return { ...check, output: { ...check.output, summary: 'batch: ' + batch.map((n) => '#' + n).join(' ') } }; }
