@@ -93,6 +93,8 @@ export const SAYS = Object.freeze({
   off: ['The painter is resting: pictures are off for now.', 'Der Maler ruht: Bilder sind gerade aus.'],
   gone: ['That picture is no longer kept here. Paint it again with the same seed, then change it.', 'Dieses Bild ist hier nicht mehr gespeichert. Mal es noch mal mit gleichem Seed, dann ändere es.'],
   badpic: ['That picture could not be read for a change. Try again.', 'Das Bild ließ sich für eine Änderung nicht lesen. Versuch es noch mal.'],
+  words: ['I could not fill in the words just now. Try again in a minute.', 'Die Worte gingen gerade nicht. Versuch es gleich noch mal.'],
+  wordsmine: ['That is enough word help for today. More tomorrow (midnight UTC).', 'Das war genug Worthilfe für heute. Morgen mehr (Mitternacht UTC).'],
 });
 
 // "Change it" (2026-10-30, the owner: "assimilate their tech into verse ... same with image and video"): a picture Verse painted here, changed by
@@ -126,3 +128,17 @@ export function imageSizeOf(b) {
 export const fitsEdit = (dims, [w, h]) => !!dims && dims.w < 512 && dims.h < 512 && Math.max(dims.w, dims.h) >= 256 && Math.abs(dims.w / dims.h - w / h) <= 0.03 * (w / h);
 /** the painter's words for a change: the typed line, keep the rest of image 0, and the always-on safe words. Pure. */
 export const changePromptOf = (change) => [cleanLine(change, CHANGE_MAX), 'keep everything else in image 0 the same: the same scene, layout, subject, colours and style', 'safe for work, fully clothed'].join(', ');
+
+// "Fill in my words" (2026-11-06; the owner: "lots of music making apps exist that make good music with ai ... same with image and video"): the
+// leading image generators turn a short line into a fuller picture description before they paint. Verse's free text model writes that fuller line
+// (functions/api/image.js wordsOf), the page puts it in the box, and the person reads and can edit it before Make, so nothing is painted from words
+// they did not see. The fuller line goes through the same refusals as a typed prompt.
+export const WORDS_PER_CONN = 30, WORDS_DAY = 1500;
+export const wordsAskOf = (prompt, style = 'none', de = false) => [
+  'You write prompts for an image model. Rewrite the short idea as one picture description of 40 to 70 words: the subject, what it does, the setting, the light, the colours, and the camera or the medium. ' +
+  'Keep every thing the idea names. Add no real people, no brand names and no words written in the picture unless the idea asks for them. Keep it safe for work. ' +
+  'Answer with the description only, in ' + (de ? 'German' : 'English') + ', as plain text on one line: no quotes, no list, no heading.',
+  'Idea: ' + cleanLine(prompt) + (style !== 'none' && STYLES[style] ? '\nStyle: ' + STYLES[style].en : ''),
+];
+/** the model's answer as one prompt line: a leading label and wrapping quotes taken off, then cleaned like a typed prompt; '' when nothing is left */
+export const wordsOutOf = (text) => cleanLine(cleanLine(text, 2000).replace(/^(?:prompt|description|beschreibung)\s*:\s*/i, '').replace(/^["'\u201c\u201d\u201e]+|["'\u201c\u201d]+$/g, ''), PROMPT_MAX);
