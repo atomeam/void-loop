@@ -16,6 +16,11 @@ const REF = 'a'.repeat(64), REF2 = 'b'.repeat(64), REF3 = 'c'.repeat(64);
 const png = (w, h, fill = 0) => { const b = Buffer.alloc(9000, fill); Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52]).copy(b); b.writeUInt32BE(w, 16); b.writeUInt32BE(h, 20); return b; };
 const url = (b) => 'data:image/png;base64,' + b.toString('base64');
 const PAGE = pageOf(200, '<main><button id="make"></button><div id="pics"></div></main><script type="module" src="/image/app.js"></script><meta name="verse-handoff" content="x">');
+test('image-gen-live: the page counts as wired for hand-off by its tag or by the hand-off module it loads (/image/ has the module)', () => {
+  assert.equal(pageOf(200, '<link rel="modulepreload" href="/lib/image-handoff.js">').handoff, true);
+  assert.equal(pageOf(200, '<meta name="verse-handoff" content="in: text; out: image">').handoff, true);
+  assert.equal(pageOf(200, '<main id="make"></main>').handoff, false);
+});
 const SCRIPT = scriptOf(200, "const smallOf = (src) => 1; async function changeIt(p) { body: JSON.stringify({ act: 'change' }) }");
 const art = (extra = {}, fill = 1) => answerOf(200, { state: 'art', img: url(png(1024, 1024, fill)), seed: 4242, style: 'none', shape: 'square', painter: 'workers-ai', w: 1024, h: 1024, ref: REF, ...extra });
 const COPY = { ok: true, tool: 'convert', type: 'image/jpeg', w: 504, h: 504, bytes: 41000 };
@@ -46,7 +51,7 @@ test('image-gen-live: a resting painter or a resting change in the route\'s own 
   const r4 = recordOf({ page: PAGE, script: SCRIPT, paint: art(), copy: COPY, change: rest('gone'), at: AT });
   assert.equal(r4.checksPass, false); assert.match(r4.error, /resting for gone/);
   const r5 = recordOf({ page: PAGE, script: SCRIPT, paint: art(), copy: { ok: false, why: 'no image tool on the runner (convert missing or failed)' }, at: AT });
-  assert.equal(r5.checksPass, true); assert.equal(r5.ok, false); assert.match(ledgerWhat(r5), /change was not tested \(no image tool/);
+  assert.equal(r5.checksPass, false); assert.equal(r5.ok, false); assert.match(r5.error, /^the edit copy: no image tool/);
 });
 
 test('image-gen-live: a change that is the same picture, not cached again, by another painter, or without the typed line is a problem', () => {

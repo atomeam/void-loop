@@ -50,7 +50,7 @@ export function answerProblem(a, what, size) {
   if (size && (a.w !== size[0] || a.h !== size[1])) return what + ': ' + a.w + 'x' + a.h + ', not ' + size.join('x');
   return '';
 }
-export const pageOf = (status, html) => ({ status, make: html.includes('id="make"'), pics: html.includes('id="pics"'), app: /<script[^>]+src="[^"]*app\.js/.test(html), handoff: /<meta name="verse-handoff"/.test(html) });
+export const pageOf = (status, html) => ({ status, make: html.includes('id="make"'), pics: html.includes('id="pics"'), app: /<script[^>]+src="[^"]*app\.js/.test(html), handoff: /<meta name="verse-handoff"/.test(html) || /\/lib\/(?:image-)?handoff\.js/.test(html) });
 export const scriptOf = (status, js) => ({ status, changeIt: /function changeIt\(/.test(js), sendsChange: /act: 'change'/.test(js), shrinks: /const smallOf = /.test(js) });
 export function pageProblem(p, s) {
   if (!p || p.status !== 200) return 'GET /image/ answered ' + ((p && p.status) || 'nothing');
@@ -66,7 +66,9 @@ export function recordOf({ left = null, page = null, script = null, paint = null
   const size = SHAPES[ASK.shape];
   let problem = error || pageProblem(page, script) || answerProblem(paint, 'the paint', size);
   if (!problem && paint.state === 'art') {
-    if (copy && copy.ok) problem = answerProblem(change, 'the change', size);
+    // without the edit copy the change is never asked, so the check would stay green while testing nothing: that is a problem
+    if (!copy || !copy.ok) problem = 'the edit copy: ' + ((copy && copy.why) || 'not made');
+    else problem = answerProblem(change, 'the change', size);
     if (!problem && change && change.state === 'art') {
       if (change.change !== CHANGE) problem = 'the change: it does not name the typed line';
       else if (change.img.sha256 === paint.img.sha256) problem = 'the change: the same picture came back';
@@ -98,7 +100,6 @@ export function ledgerWhat(rec) {
   if (p.state !== 'art') return 'image-gen checked against the live site' + first + ': the painter is resting (' + p.why + '), in its own words, and /image/ is served' + where;
   const painted = 'a ' + p.w + 'x' + p.h + ' picture painted by ' + p.painter + (p.cached ? ' (from the cache)' : '');
   if (rec.ok) return 'image-gen checked against the live site' + first + ': ' + painted + ', changed with one typed line at its own size by Workers AI, and the same change again came from the cache' + where;
-  if (rec.copy && !rec.copy.ok) return 'image-gen checked against the live site' + first + ': ' + painted + '; the change was not tested (' + rec.copy.why + ')' + where;
   return 'image-gen checked against the live site' + first + ': ' + painted + '; the change is resting (' + ((rec.change && rec.change.why) || '?') + '), in its own words' + where;
 }
 
