@@ -111,8 +111,10 @@ test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait
   assert.equal((html.match(/data-more="1" hidden/g) || []).length, 25 + 1, '25 older builds and 1 older ask are folded');
   assert.match(html, /<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="30">show all 30<\/button>/);
   assert.match(html, /data-n="6">show all 6</);
-  assert.equal((html.match(/data-share-skip="1"/g) || []).length, 25 * 2 + 1, 'an older build keeps a short line, not its details and dates; an older ask keeps a short line');
-  assert.equal((html.match(/data-share-short/g) || []).length, 0, 'a folded item saves its whole line, never a cut one (owner, 2026-10-22: no cut-off anywhere)');
+  assert.equal((html.match(/data-share-skip="1"/g) || []).length, 25 + 1, 'an older build keeps its line and "Built <day>", not its details and dates; an older ask keeps a short line');
+  const shorts = [...html.matchAll(/data-share-short="([^"]*)"/g)].map((m) => m[1]);
+  assert.equal(shorts.length, 25, 'each older build saves its details as their short form');
+  assert.ok(shorts.every((x) => /^Built 2026-10-1\d$/.test(x)), 'a folded item saves whole words, never a cut line (owner, 2026-10-22: no cut-off anywhere): ' + shorts.join());
   const { shortLine, SHORT } = await import('../void-live-deploy/lib/self-blocks.js');
   assert.equal(shortLine('ask 7'), 'ask 7');
   const sl = shortLine('a careful sentence about what Verse wanted built and why it mattered to the stage, twice over');
@@ -121,6 +123,40 @@ test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait
   assert.match(html, /<details class="vs-sec vs-log" data-sec="built"><summary class="vs-sum"><h3 class="vs-h">What got built <span class="vs-n">\(30 of 40 asks\)/);
   assert.match(html, /<h3 class="vs-h">What I've asked for <span class="vs-n">\(6 waiting\)/);
   assert.match(html, /<section class="vs-sec" data-sec="words"><blockquote class="vs-voice">/, 'the untitled opening stays a plain section');
+});
+
+test('a folded built row on the self card still says it was built and when in the copied text (owner\'s self card, 2026-11-06: 25 folded built rows read as asks still waiting)', async () => {
+  const { selfSections, selfHtml, FOLD } = await import('../void-live-deploy/lib/self-blocks.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const words = ['lantern harbour compass', 'glacier thimble violin', 'saffron quarry ribbon', 'walnut beacon cinder', 'tulip anvil prism', 'ember cobweb harvest', 'orchard meadow sparrow'];
+  const recent = words.slice(0, FOLD + 2).map((w, i) => ({ ask: 'Build the ' + w, what: w + ' works now', at: '2026-10-2' + i + 'T09:00:00Z', times: 2, depth: 'root' }));
+  const html = selfHtml(selfSections({ entries: [{ kind: 'daily', thoughts: 'hi' }], asks: [], follow: { total: 9, built: 7, recent } }), esc);
+  // a small DOM-like tree of the markup, with what lib/card-share.js bodyOf does before textOf: [data-share-skip] out, [data-share-short] saved as its short form
+  const unesc = (t) => t.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const tree = (src) => {
+    const root = { nodeType: 1, tagName: 'DIV', attrs: {}, childNodes: [] }, stack = [root];
+    for (const m of src.matchAll(/<(\/?)([a-zA-Z0-9]+)([^>]*)>|([^<]+)/g)) {
+      const top = stack[stack.length - 1];
+      if (m[4]) { top.childNodes.push({ nodeType: 3, nodeValue: unesc(m[4]) }); continue; }
+      if (m[1]) { stack.pop(); continue; }
+      const attrs = {}; for (const a of m[3].matchAll(/([\w-]+)(?:="([^"]*)")?/g)) attrs[a[1]] = a[2] === undefined ? '' : unesc(a[2]);
+      const el = { nodeType: 1, tagName: m[2].toUpperCase(), attrs, childNodes: [], getAttribute: (k) => (k in attrs ? attrs[k] : null) };
+      top.childNodes.push(el); if (!/^(?:br|img|input)$/i.test(m[2])) stack.push(el);
+    }
+    return root;
+  };
+  const saved = (n) => { if (n.nodeType !== 1) return n; if ('data-share-skip' in n.attrs) return null; if ('data-share-short' in n.attrs) return { ...n, childNodes: [{ nodeType: 3, nodeValue: n.attrs['data-share-short'] }] };
+    return { ...n, childNodes: n.childNodes.map(saved).filter(Boolean) }; };
+  const ul = /<ul class="v-asks v-built vs-list">[\s\S]*?<\/ul>/.exec(html)[0];
+  const rows = tree(ul).childNodes[0].childNodes.map((li) => tidy(textOf(saved(li))));
+  assert.equal(rows.length, FOLD + 2);
+  assert.equal(rows[FOLD], '- Build the ' + words[FOLD] + '\nBuilt 2026-10-2' + FOLD, 'a folded built row: its ask, then that it was built and when');
+  assert.equal(rows[FOLD + 1], '- Build the ' + words[FOLD + 1] + '\nBuilt 2026-10-2' + (FOLD + 1));
+  assert.ok(!rows.some((r) => /\.\.\.|\u2026/.test(r)), 'nothing cut');
+  assert.match(rows[0], /^- Build the lantern harbour compass\.?\nWhat was built \(2026-10-20\): lantern harbour compass works now\.?\n2026-10-20 · asked 2 times$/, 'a row that is not folded saves as before');
+  // on the page the fold is as it was: the folded row is hidden behind "show all", its details in the closed row
+  assert.equal((ul.match(/data-more="1" hidden/g) || []).length, 2);
+  assert.match(ul, /<div class="v-meta" data-share-short="Built 2026-10-25"><b>What was built \(2026-10-25\):<\/b> ember cobweb harvest works now/);
 });
 
 test('a card shared before the rename (V01D-CARD:) still pastes, and new copies carry VERSE-CARD:', () => {
@@ -161,7 +197,7 @@ test('self card copy text (2026-10-22): no empty "- " bullets, a deep folded ite
   const deep = 'the deepest folded build, a long sentence that must be copied whole and never be cut short with an ellipsis at all';
   const recent = Array.from({ length: 400 }, (_, i) => ({ ask: 'ask ' + i, what: i === 399 ? deep : 'built ' + i, at: '2026-10-1' + (i % 9) + 'T00:00:00Z', times: 1, depth: 'root' }));
   const html = selfHtml(selfSections({ entries: [{ kind: 'daily', thoughts: 'hi', weakest: 'maps' }], asks: [], follow: { total: 400, built: 400, recent } }), esc);
-  assert.ok(!/data-share-short/.test(html));
+  assert.ok([...html.matchAll(/data-share-short="([^"]*)"/g)].every((m) => /^Built 2026-10-1\d$/.test(m[1])), 'a folded build saves only "Built <day>" as its short form, never a cut line');
   if (!parseHTML) return; // the DOM half runs where linkedom is installed; the browser check (tools/site-test) covers the page
   const { document } = parseHTML('<div>' + html + '</div>');
   const t = tidy(textOf(document.querySelector('div')));
