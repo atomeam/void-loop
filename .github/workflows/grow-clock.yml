@@ -37,6 +37,7 @@ concurrency:
 permissions:
   actions: write   # start the executors and the next clock run (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
   contents: write  # the conductor-state branch every tick, and domains/conductor.json on main every 3 hours
+  issues: read     # the coder's back-off issue ('Verse loop paused'): while it holds, no job is claimed for the coder
 
 jobs:
   clock:

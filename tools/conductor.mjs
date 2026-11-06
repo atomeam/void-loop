@@ -9,7 +9,8 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { plan, probeDue, growDue, willDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
-import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
+import { composeAsk } from './skill-compose.mjs';
+import { pauseState, PAUSE_TITLE, LOOP_CODE } from './verse-loop.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
 const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
@@ -37,6 +38,21 @@ function runsOf(wf) {
 }
 function todayOf(wf, day) {
   try { return JSON.parse(gh('api', `repos/${REPO}/actions/workflows/${wf}/runs?created=>=${day}&per_page=1`)).total_count || 0; } catch (_) { return 0; }
+}
+/** the coder's back-off as words (why and until when), or null when it is not paused. Reads the open 'Verse loop paused' issue and
+ *  the newest commit to the loop's own code, as tools/verse-loop.mjs does: a fix to that code after the pause began resumes it. */
+export function loopBackoff(now, read = gh) {
+  let issue = null;
+  try { issue = (JSON.parse(read('issue', 'list', '--repo', REPO, '--state', 'open', '--search', `"${PAUSE_TITLE}" in:title`, '--json', 'number,title,createdAt')) || []).find((i) => i.title === PAUSE_TITLE) || null; }
+  catch (_) { return null; } // unreadable: started as before (the run itself still honours the pause)
+  if (!issue) return null;
+  let changedAt = 0;
+  for (const f of LOOP_CODE) {
+    try { const c = JSON.parse(read('api', `repos/${REPO}/commits?sha=main&path=${encodeURIComponent(f)}&per_page=1`))[0]; changedAt = Math.max(changedAt, Date.parse(c && c.commit && c.commit.committer && c.commit.committer.date) || 0); }
+    catch (_) { /* one unreadable file: the others still count */ }
+  }
+  const p = pauseState({ issue, now, changedAt: changedAt || null });
+  return p.paused ? `the coder's back-off, #${issue.number}, until ${new Date(p.until).toISOString().slice(11, 16)} UTC` : null;
 }
 function start(wf, input, id) {
   const a = ['workflow', 'run', wf, '--repo', REPO, '--ref', 'main'];
@@ -70,8 +86,13 @@ async function tick() {
   }
   for (const r of Object.values(ROUTES)) if (wf[r.wf] && wf[r.wf].exists && !('counted' in wf[r.wf])) { wf[r.wf].today = todayOf(r.wf, day); wf[r.wf].counted = true; }
   // the kill switch is a file in the repository the clock checks out each tick (domains/verse-loop.pause): while it exists the coder takes no job
-  const paused = fs.existsSync('domains/verse-loop.pause');
-  for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].paused = paused;
+  // and the coder's own back-off (tools/verse-loop.mjs: three laps that failed or did not merge pause it 6 hours, said in an open
+  // 'Verse loop paused' issue). Before 2026-11-06 the conductor did not read it: it claimed a job for the coder every tick, the run
+  // answered "paused" in two seconds after a checkout, npm ci and a Chromium install, the job went back, and the tick counted it as
+  // started (83 "started" in a day while the coder landed nothing).
+  const backoff = loopBackoff(now);
+  const paused = fs.existsSync('domains/verse-loop.pause') || !!backoff;
+  for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) { wf[f].paused = paused; if (backoff) wf[f].pausedWhy = backoff; }
   // the coder's free model budget (GET /api/coder: counts only). Full: the coder is not started until room comes back; unknown: started as before
   const budget = await coderBudget();
   if (budget && budget.room === false) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = { until: budget.until };
