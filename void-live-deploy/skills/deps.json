@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1186,
+ "counted": 1185,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1011,13 +1011,6 @@
    "tests": 1
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 41,
-   "tests": 2
-  },
-  {
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
@@ -1030,6 +1023,13 @@
    "direct": 1,
    "dependants": 38,
    "tests": 3
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 2
   },
   {
    "file": "lib/store-db.js",
@@ -2628,13 +2628,6 @@
    "tests": 1
   },
   {
-   "file": "lib/x402.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 17,
-   "tests": 4
-  },
-  {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
@@ -2677,6 +2670,13 @@
    "tests": 1
   },
   {
+   "file": "lib/x402.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 13,
+   "tests": 4
+  },
+  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -2684,25 +2684,11 @@
    "tests": 0
   },
   {
-   "file": "lib/verse-wallet-address.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 10,
-   "tests": 3
-  },
-  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 1
-  },
-  {
-   "file": "lib/verse-wallet.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 2
   },
   {
    "file": "lib/drive.js",
@@ -2759,6 +2745,27 @@
    "direct": 0,
    "dependants": 6,
    "tests": 2
+  },
+  {
+   "file": "lib/verse-wallet-address.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 4
+  },
+  {
+   "file": "lib/verse-wallet.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
+   "file": "lib/arb-venues.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/film-reviews.js",
@@ -2824,7 +2831,7 @@
    "tests": 1
   },
   {
-   "file": "lib/x402-call.js",
+   "file": "lib/trading-paid.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2836,13 +2843,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 10
-  },
-  {
-   "file": "lib/arb-venues.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/calshare.js",
@@ -2934,6 +2934,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/arb-history.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/aurora-feed.js",
@@ -3912,7 +3919,8 @@
   },
   "functions/api/arbitrage.js": {
    "imports": [
-    "functions/api/x402/arbitrage.js"
+    "lib/trading-paid.js",
+    "lib/arb-history.js"
    ],
    "importedBy": []
   },
@@ -4888,28 +4896,12 @@
     "functions/api/translate.js",
     "functions/api/digest.js",
     "functions/api/appraise.js",
-    "functions/api/image.js"
+    "functions/api/image.js",
+    "lib/trading-paid.js"
    ],
    "importedBy": [
     "functions/api/mcp.js"
    ]
-  },
-  "functions/api/x402/arbitrage.js": {
-   "imports": [
-    "lib/x402-call.js",
-    "lib/arb-venues.js",
-    "trading-bots/kit/arb.js"
-   ],
-   "importedBy": [
-    "functions/api/arbitrage.js"
-   ]
-  },
-  "functions/api/x402/backtest.js": {
-   "imports": [
-    "lib/x402-call.js",
-    "trading-bots/kit/strategy.js"
-   ],
-   "importedBy": []
   },
   "functions/api/x402/index.js": {
    "imports": [
@@ -5111,7 +5103,6 @@
     "functions/api/a2a.js",
     "functions/api/answer.js",
     "functions/api/apibot.js",
-    "functions/api/arbitrage.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
@@ -5137,13 +5128,10 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
-    "lib/x402-call.js",
     "skills/shop.js",
     "skills/store.js"
    ]
@@ -5306,15 +5294,23 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/arb-history.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/arbitrage.js"
+   ]
+  },
   "lib/arb-venues.js": {
    "imports": [
     "trading-bots/kit/arb.js"
    ],
    "importedBy": [
-    "functions/api/x402/arbitrage.js"
+    "lib/trading-paid.js"
    ],
    "reachedBy": [
-    "functions/api/arbitrage.js"
+    "functions/api/arbitrage.js",
+    "functions/api/mcp.js",
+    "functions/api/x402/[service].js"
    ]
   },
   "lib/arcade-ghost.js": {
@@ -14131,6 +14127,20 @@
    ],
    "importedBy": []
   },
+  "lib/trading-paid.js": {
+   "imports": [
+    "trading-bots/kit/strategy.js",
+    "lib/arb-venues.js",
+    "trading-bots/kit/arb.js"
+   ],
+   "importedBy": [
+    "functions/api/arbitrage.js",
+    "functions/api/x402/[service].js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
+   ]
+  },
   "lib/transition.js": {
    "imports": [],
    "importedBy": [
@@ -14384,15 +14394,11 @@
     "lib/verse-wallet.js"
    ],
    "reachedBy": [
-    "functions/api/arbitrage.js",
     "functions/api/mcp.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js",
-    "functions/api/x402/review.js",
-    "lib/x402-call.js"
+    "functions/api/x402/review.js"
    ]
   },
   "lib/verse-wallet.js": {
@@ -14404,14 +14410,10 @@
    "importedBy": [
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/review.js",
-    "lib/x402-call.js"
+    "functions/api/x402/review.js"
    ],
    "reachedBy": [
-    "functions/api/arbitrage.js",
     "functions/api/mcp.js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js"
    ]
   },
@@ -14961,19 +14963,6 @@
     "lib/team-mcp.js"
    ]
   },
-  "lib/x402-call.js": {
-   "imports": [
-    "lib/x402.js",
-    "lib/verse-wallet.js"
-   ],
-   "importedBy": [
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js"
-   ],
-   "reachedBy": [
-    "functions/api/arbitrage.js"
-   ]
-  },
   "lib/x402.js": {
    "imports": [],
    "importedBy": [
@@ -14982,15 +14971,11 @@
     "functions/api/x402/[service].js",
     "functions/api/x402/review.js",
     "lib/mcp.js",
-    "lib/verse-wallet.js",
-    "lib/x402-call.js"
+    "lib/verse-wallet.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
-    "functions/api/arbitrage.js",
     "functions/api/mcp/server-card.js",
-    "functions/api/x402/arbitrage.js",
-    "functions/api/x402/backtest.js",
     "functions/api/x402/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",

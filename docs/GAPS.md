@@ -10,7 +10,7 @@ Evidence states, in order: **open** (seen failing, not built), **implemented** (
 
 Not on the list, by rule: recreations of a named game (wordle, tetris), tests that need an invented score or make a medical claim (iq test, personality test, color blindness test, hearing test), and fake card numbers. These were seen failing too, and stay out on purpose.
 
-Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.test.mjs` and `tools/my-device.test.mjs`; batch 2 in `tools/gaps-batch2.test.mjs`; batch 3 in `tools/gaps-batch3.test.mjs`; batch 4 in `tools/gaps-batch4.test.mjs`; batch 5 in `tools/gaps-batch5.test.mjs`.
+Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.test.mjs` and `tools/my-device.test.mjs`; batch 2 in `tools/gaps-batch2.test.mjs`; batch 3 in `tools/gaps-batch3.test.mjs`; batch 4 in `tools/gaps-batch4.test.mjs`; batch 5 in `tools/gaps-batch5.test.mjs`; batch 6 in `tools/gaps-batch6.test.mjs`.
 
 | # | Ask | Seen | Done when | State |
 |---|-----|------|-----------|-------|
@@ -39,7 +39,7 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 23 | how many calories do i burn running 3 miles | 2026-11-06: only 3 miles in km | an estimate from the MET formula with weight asked, the formula shown | open |
 | 24 | times tables quiz | 2026-11-06: a Python script | a quiz in the page: questions, typed answers, a score | verified live 2026-11-06 |
 | 25 | math quiz | 2026-11-06: article on a Ghana school competition | a quiz in the page with levels and a score | verified live 2026-11-06 |
-| 26 | typing speed test | 2026-11-06: an explanation | a passage to type, words per minute and accuracy measured in the page | open |
+| 26 | typing speed test | 2026-11-06: an explanation | a passage to type, words per minute and accuracy measured in the page | implemented |
 | 27 | reaction time test | 2026-11-06: a definition | wait for the colour change, click, see the time in ms over five tries | verified live 2026-11-06 |
 | 28 | click speed test | 2026-11-06: an explanation | clicks per second over 5 or 10 seconds | verified live 2026-11-06 |
 | 29 | aim trainer | 2026-11-06: article on aim-trainer games | targets to click, with hits, misses and average time | verified live 2026-11-06 |
@@ -47,7 +47,7 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 31 | rain sounds | 2026-11-06: article on an album | a rain sound made in the page from filtered noise, said to be made, not recorded | verified live 2026-11-06 |
 | 32 | drum machine | 2026-11-06: an article | a step sequencer with kick, snare and hat drawn from synthesised sounds | open |
 | 33 | periodic table | 2026-11-06: an article | the 118 elements in their grid, each with symbol, number and mass from IUPAC | open |
-| 34 | text to speech hello world | 2026-10-30: a Python snippet | the words are read aloud by the browser's own voice, with a voice and rate to pick | open |
+| 34 | text to speech hello world | 2026-10-30: a Python snippet | the words are read aloud by the browser's own voice, with a voice and rate to pick | implemented |
 | 35 | speech to text | 2026-10-30: an article | dictation in the page where the browser supports it, the text to copy | open |
 | 36 | record my voice | 2026-10-30: "I cannot record your voice" | a recorder in the page; the file stays on the device and can be saved | open |
 | 37 | voice changer | 2026-11-06: an article | record or use the mic, pitch and effects applied in the page | open |
@@ -95,13 +95,13 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | 79 | random team generator | 2026-11-06: an explanation | names in, split at random into the number of teams asked for | verified live 2026-11-06 |
 | 80 | secret santa draw | 2026-11-06: an explanation | names in, a draw where nobody gets themselves, each pairing shown one at a time | verified live 2026-11-06 |
 | 81 | tournament bracket | 2026-11-06: an article on brackets | names in, a single elimination bracket with byes, winners picked by clicking | verified live 2026-11-06 |
-| 82 | keyboard tester | 2026-11-06: an explanation | a keyboard drawn in the page, each key lights when pressed, the key code shown | open |
-| 83 | mouse tester | 2026-11-06: an explanation | each button, the wheel and double clicks shown as they happen | open |
-| 84 | dead pixel test | 2026-11-06: article on defective pixels | full screen colours to step through with a click, said to be a visual check | open |
+| 82 | keyboard tester | 2026-11-06: an explanation | a keyboard drawn in the page, each key lights when pressed, the key code shown | implemented |
+| 83 | mouse tester | 2026-11-06: an explanation | each button, the wheel and double clicks shown as they happen | implemented |
+| 84 | dead pixel test | 2026-11-06: article on defective pixels | full screen colours to step through with a click, said to be a visual check | implemented |
 | 85 | webcam test | 2026-11-06: an explanation | the camera shown in the page after the browser asks, its resolution read, nothing sent | open |
 | 86 | microphone test | 2026-11-06: a disambiguation card | a level meter from the mic after the browser asks, a playback of 5 seconds, nothing sent | open |
 | 87 | screen recorder | 2026-11-06: an article on screen recorders | the browser's screen capture, recorded in the page, saved as a file on the device | open |
-| 88 | battery status | 2026-11-06: article on grid storage | the battery level and charging state where the browser gives them, and says so where it does not | open |
+| 88 | battery status | 2026-11-06: article on grid storage | the battery level and charging state where the browser gives them, and says so where it does not | implemented |
 | 89 | online notepad | 2026-11-06: "none of my sources answered" | a note box that keeps its text on the device, with a word count and a save as file | open |
 | 90 | whiteboard | 2026-11-06: an article on whiteboards | a canvas to draw on with pens, an eraser, undo and save as PNG | open |
 | 91 | flowchart maker | 2026-11-06: an explanation | boxes and arrows drawn from typed lines like "start -> check -> end", saved as SVG | open |
