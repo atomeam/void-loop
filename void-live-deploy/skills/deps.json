@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1171,
+ "counted": 1173,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2352,7 +2352,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 95,
-   "tests": 34
+   "tests": 35
   },
   {
    "file": "lib/models.js",
@@ -2506,7 +2506,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 27,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/answer-honesty.js",
@@ -2531,6 +2531,13 @@
   },
   {
    "file": "lib/draft.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 27,
+   "tests": 1
+  },
+  {
+   "file": "lib/follow-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 27,
@@ -3781,6 +3788,7 @@
     "lib/note-ask.js",
     "lib/telemetry.js",
     "lib/answer-free.js",
+    "lib/follow-ask.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -8012,6 +8020,40 @@
     "lib/rap-stage.js",
     "lib/rap-video.js",
     "skills/rap.js"
+   ]
+  },
+  "lib/follow-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/forge-duel.js": {
@@ -16928,6 +16970,10 @@
    "imports": [
     "lib/learn.js"
    ],
+   "importedBy": []
+  },
+  "skills/monitor-handoff.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/monopoly-rules.js": {
