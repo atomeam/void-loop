@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { position:absolute; inset:0; z-index:0; }
+#agents { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.agent {
+  position:absolute; width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:bold; color:#000;
+  transition:transform 0.05s linear;
+  box-shadow:0 0 12px currentColor;
+  pointer-events:auto; cursor:grab;
+}
+#ui { position:absolute; top:12px; left:12px; z-index:2; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; }
+button { margin:4px; padding:6px 10px; background:#222; color:#eee; border:1px solid #444; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#status { font-size:12px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F554: Competitive MLP Portal Agents with Collision-Sealed Genome Transfer · Verse lab</title>
+<meta name="description" content="A population of independent floating DOM portals, each embodying its own tiny pure-JS MLP.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F554: Competitive MLP Portal Agents with Collision-Sealed Genome Transfer · Verse lab">
+<meta property="og:description" content="A population of independent floating DOM portals, each embodying its own tiny pure-JS MLP.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f554-competitive-mlp-portal-agents-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f554-competitive-mlp-portal-agents-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="agents"></div>
+<div id="ui">
+  <button id="seal">Seal Genomes</button>
+  <button id="ori">Enable Orientation</button>
+  <button id="reset">Reset Random</button>
+  <div id="status">F554: Competitive MLP portals · collision-sealed genomes</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F554: Competitive MLP Portal Agents with Collision-Sealed Genome Transfer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

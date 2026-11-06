@@ -28,8 +28,10 @@ export function ritualAsk(text) {
     const start = timeOf(m[3] || '7:00am');
     return steps.length && start ? { name: m[1] || 'ritual', start, steps } : null;
   }
-  if ((m = /^(?:(?:export|download|save|add|put|make|turn) (?:my |a |the )?)?(morning|evening|workout) (?:routine|ritual)(?: template)?(?: as (?:calendar )?events| (?:to|into|in|on) (?:my )?calendar| as (?:an? )?(?:ics|calendar file))(?: (?:at|from|starting at) (\d{1,2}(?::\d\d)?\s*(?:am|pm)?))?$/.exec(t))) {
-    const p = PRESETS[m[1]], start = timeOf(m[2] || p.start);
+  // "make me a morning routine starting at 6:30" (2026-11-06, a-to-mind.com: it opened a recipe timer "Me a morning routine starting at 6",
+  // one 30:00 step): a preset with its start time is a ritual too, with or without "as calendar events"
+  if ((m = /^(?:(?:export|download|save|add|put|make|turn|build|plan|set up) (?:me )?(?:my |a |the )?)?(morning|evening|workout) (?:routine|ritual)(?: template)?(?:(?: as (?:calendar )?events| (?:to|into|in|on) (?:my )?calendar| as (?:an? )?(?:ics|calendar file))(?: (?:at|from|starting at) (\d{1,2}(?::\d\d)?\s*(?:am|pm)?))?| (?:at|from|starting at|starting|that starts at) (\d{1,2}(?::\d\d)?\s*(?:am|pm)?))$/.exec(t))) {
+    const p = PRESETS[m[1]], start = timeOf(m[2] || m[3] || p.start);
     return start ? { name: m[1], start, steps: p.steps } : null;
   }
   return null;

@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T13:49:58.593Z",
+  "at": "2026-11-06T16:09:52.563Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,10 +34,17 @@
       }
     },
     "podcasts": {
-      "score": 87.2,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of the ted radio hour",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -148,7 +155,7 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "what's the weather in miami tomorrow",
+          "ask": "wheather in new york",
           "failed": [
             "fast",
             "temp",
@@ -284,7 +291,7 @@
       }
     },
     "sports": {
-      "score": 88.9,
+      "score": 91.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -311,27 +318,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -502,6 +488,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 87.2
+    "score": 86.4
   }
 }

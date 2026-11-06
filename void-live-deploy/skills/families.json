@@ -13,10 +13,10 @@
  "smoke_at": "2026-11-06",
  "bench_at": "2026-11-05",
  "totals": {
-  "experiment": 0,
-  "tested": 7,
-  "checked": 12,
-  "proven": 391
+  "experiment": 1,
+  "tested": 12,
+  "checked": 13,
+  "proven": 385
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
-    "proven": 60
+    "proven": 59
    },
    "skills": [
     {
@@ -201,12 +201,10 @@
     },
     {
      "name": "image-gen",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-11-06",
      "streak": 1
     },
     {
@@ -595,9 +593,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 2,
-    "proven": 40
+    "tested": 2,
+    "checked": 3,
+    "proven": 38
    },
    "skills": [
     {
@@ -964,21 +962,19 @@
     },
     {
      "name": "math-quiz",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
-     "success_rate": 1,
      "promoted": "2026-11-06",
      "streak": 1
     },
     {
      "name": "groups",
-     "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
-     "success_rate": 1,
      "promoted": "2026-11-06",
      "streak": 1
     }
@@ -1369,9 +1365,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 2,
-    "proven": 27
+    "proven": 26
    },
    "skills": [
     {
@@ -1541,12 +1537,10 @@
     },
     {
      "name": "my-device",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-11-06",
      "streak": 1
     },
     {
@@ -1668,9 +1662,9 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
-    "proven": 14
+    "proven": 13
    },
    "skills": [
     {
@@ -1797,11 +1791,10 @@
     },
     {
      "name": "noise",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "its tests",
-     "success_rate": 1,
      "promoted": "2026-11-06",
      "streak": 1
     }
@@ -3602,12 +3595,20 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 0,
-    "tested": 4,
+    "experiment": 1,
+    "tested": 5,
     "checked": 2,
-    "proven": 50
+    "proven": 49
    },
    "skills": [
+    {
+     "name": "lab",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-11-06",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-11-06"
+    },
     {
      "name": "team-chat",
      "tier": "proven",
@@ -3860,12 +3861,10 @@
     },
     {
      "name": "client-handoff",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-06",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
-     "promoted": "2026-11-06",
      "streak": 2
     },
     {
