@@ -88,14 +88,26 @@ export function grade({ dir = '', html = '', spec = '' }) {
 // `page` is where the tool lives once built; `exists` names a Verse page that already does that job (the toy merges into it, no new page).
 export const IDEAS = Object.freeze([
   { key: 'checksum', re: /\b(?:sha-?256|sealed?|seal|hash|attested|attest)\b/i, nameOnly: true, tool: 'File checksum checker', page: '/lab/checksum/', why: 'the drafts seal their state with SHA-256; a person needs that to check a download is the file it says it is' },
-  { key: 'level', re: /\b(?:orientation|deviceorientation|tilt|gyro|accelerometer|gravity)\b/i, tool: 'Spirit level', page: '/lab/level/', why: 'the drafts read the phone\'s tilt to steer particles; the same reading levels a shelf or a picture frame' },
-  { key: 'pitch', re: /\b(?:pitch|tuner|hum|yin|spectral|spectrum|acoustic|audio|sound|resonan\w*|voice)\b/i, tool: 'Tuner', page: '/tuner/', exists: '/tuner/', why: 'the drafts analyse microphone sound; Verse\'s tuner already turns that into a note and cents' },
+  { key: 'level', re: /\b(?:orient|orientation|deviceorientation|tilt|gyro|accelerometer|gravity)\b/i, tool: 'Spirit level', page: '/lab/level/', why: 'the drafts read the phone\'s tilt to steer particles; the same reading levels a shelf or a picture frame' },
+  { key: 'pitch', re: /\b(?:pitch|tuner|hum|yin|spectral|spectrum|acoustic|audio|audible|sound|resonan\w*|voice)\b/i, tool: 'Tuner', page: '/tuner/', exists: '/tuner/', why: 'the drafts analyse microphone sound; Verse\'s tuner already turns that into a note and cents' },
   { key: 'dictation', re: /\b(?:speech|spoken|dictat\w*|transcri\w*)\b/i, tool: 'Dictation pad', page: '/lab/dictation/', why: 'the drafts turn speech into orbs; a person wants the words, as text they can copy' },
   { key: 'palette', re: /\b(?:k-?means|som|self-?organi[sz]ing|cluster\w*|quantiz\w*|vector quantiz\w*)\b/i, tool: 'Photo palette', page: '/lab/photo-palette/', why: 'the drafts cluster points; clustering a photo\'s pixels gives the colours a person can use' },
   { key: 'pattern', re: /\b(?:reaction[- ]diffusion|gray-?scott|rd|turing|nca|lattice|cellular|automat\w*|dla|wfc|wave[- ]function|l-?system|growth|coral|morphogen\w*|field)\b/i, tool: 'Seamless pattern maker', page: '/lab/pattern/', why: 'the drafts grow patterns on a grid that wraps; that is a tileable texture a person can download' },
   { key: 'mindmap', re: /\b(?:graph|force-?directed|concept|co-?occurrence|association\w*|knowledge)\b/i, tool: 'Mind map', page: '/lab/mind-map/', why: 'the drafts lay concepts out as a force graph; typed ideas laid out that way are a mind map to save' },
-  { key: 'webrtc', re: /\bwebrtc\b/i, tool: 'Send to another device', page: null, why: 'the drafts link two tabs over WebRTC; the useful form sends a note or file between a person\'s own devices' },
+  { key: 'webrtc', re: /\bwebrtc\b/i, tool: 'Note in a link', page: '/g/', exists: '/g/', why: 'the drafts link two tabs over WebRTC; the useful form carries a note from one of a person\'s devices to another, and a locked note in a link does that' },
+  // the local "x-not-y" series (local-private-not-shared, local-optin-not-record...) argue for keeping a person's things on their own device
+  { key: 'notes', re: /\blocal \w+ not \w+\b/i, nameOnly: true, tool: 'Notes', page: '/notes/', exists: '/notes/', why: 'the drafts argue for keeping a person\'s own things on their device and never sending them; Verse\'s notes page keeps notes that way' },
 ]);
+// a toy whose name and SPEC match no IDEAS row still holds a nearest tool: the first FOLDS row its name matches (the last row takes the rest).
+// Folding keeps every lab address useful: the demo page opens the tool its idea is closest to, and the report counts it as folded, not matched.
+export const FOLDS = Object.freeze([
+  { key: 'mindmap', re: /\b(?:token|tokens|sequence|transformer|surprisal|hypervector|embedding|echo|oracle|taste)\b/i, why: 'it links words or signals into a web of ideas; the mind map lays out the person\'s own ideas that way' },
+  { key: 'pattern', re: /[\s\S]/, why: 'it draws a living field to watch; the pattern maker turns that kind of field into a texture a person can download' },
+]);
+/** the FOLDS row for a toy with no IDEAS row (never null). Pure. */
+export function foldOf({ dir = '', spec = '' }) { const name = wordsOf(dir, spec); return FOLDS.find((f) => f.re.test(name)); }
+/** the tool a catalog idea key opens: { key, tool, page } or null. Pure. */
+export function toolOf(key) { const i = IDEAS.find((x) => x.key === key && x.page); return i ? { key: i.key, tool: i.tool, page: i.page } : null; }
 /** the IDEAS row a toy belongs to, or null (a pure toy with no tool in it). Pure. */
 export function ideaOf({ dir = '', spec = '' }) {
   // the draft's own name decides first; the SPEC only when the name names no technique (nearly every SPEC says "sealed to IndexedDB with SHA-256")
@@ -104,18 +116,21 @@ export function ideaOf({ dir = '', spec = '' }) {
 }
 
 /** what the catalog keeps for a draft: { grade, idea? } (the sync adds it to each entry; the gallery lists tools, the sitemap skips toys). Pure. */
-export function verdictOf(d) { const g = grade(d), i = g.grade === 'toy' ? ideaOf(d) : null; return { grade: g.grade, ...(i ? { idea: i.key } : {}) }; }
+export function verdictOf(d) {
+  const g = grade(d); if (g.grade !== 'toy') return { grade: g.grade };
+  const i = ideaOf(d); return i ? { grade: 'toy', idea: i.key } : { grade: 'toy', idea: foldOf(d).key, folded: true };
+}
 /** the tools the toys' ideas became, as the gallery lists them: [{ key, tool, page, why }] (an idea with no page yet is left out). */
 export const LAB_TOOLS = Object.freeze(IDEAS.filter((i) => i.page).map(({ key, tool, page, why }) => Object.freeze({ key, tool, page, why })));
 /** every draft graded: [{ slug, dir, grade, job, inputs, keeps, why, idea }], by name. slugOf is lab-import's. Pure. */
 export function gradeAll(drafts, slugOf) {
-  return drafts.map((d) => { const g = grade(d), i = g.grade === 'toy' ? ideaOf(d) : null; return { slug: slugOf(d.dir), dir: d.dir, ...g, idea: i ? i.key : null }; });
+  return drafts.map((d) => { const g = grade(d), v = verdictOf(d); return { slug: slugOf(d.dir), dir: d.dir, ...g, idea: v.idea || null, ...(v.folded ? { folded: true } : {}) }; });
 }
-/** the counts a report needs: { total, tool, toy, ideas: { key: n }, pure } . Pure. */
+/** the counts a report needs: { total, tool, toy, ideas: { key: n }, pure, folded } (folded: toys that took their nearest tool). Pure. */
 export function countsOf(rows) {
-  const ideas = {}; let pure = 0;
-  for (const r of rows) if (r.grade === 'toy') { if (r.idea) ideas[r.idea] = (ideas[r.idea] || 0) + 1; else pure++; }
-  return { total: rows.length, tool: rows.filter((r) => r.grade === 'tool').length, toy: rows.filter((r) => r.grade === 'toy').length, ideas, pure };
+  const ideas = {}; let pure = 0, folded = 0;
+  for (const r of rows) if (r.grade === 'toy') { if (r.idea) { ideas[r.idea] = (ideas[r.idea] || 0) + 1; if (r.folded) folded++; } else pure++; }
+  return { total: rows.length, tool: rows.filter((r) => r.grade === 'tool').length, toy: rows.filter((r) => r.grade === 'toy').length, ideas, pure, folded };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

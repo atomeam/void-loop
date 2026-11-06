@@ -2248,7 +2248,8 @@
   "status": "works",
   "source": "F451-expression-tree-spatial-evo-mind",
   "hash": "979c6bc2eb39",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern"
  },
  {
   "slug": "f451-webxr-hand-ising-mlp-field",
@@ -2499,7 +2500,9 @@
   "status": "works",
   "source": "F433-webgpu-multiagent-genome-competition",
   "hash": "e7816a7b001d",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f432-webgpu-mlp-sph-genome-competition",
@@ -2603,7 +2606,9 @@
   "status": "works",
   "source": "F424-local-spatial-token-mind",
   "hash": "d1aa3b951afb",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f423-webgpu-fluid-policy-mind",
@@ -2624,7 +2629,8 @@
   "status": "works",
   "source": "F422-webgpu-sequence-transformer-morph",
   "hash": "d608ca39ff42",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern"
  },
  {
   "slug": "f421-webgpu-predictive-spectral-constellation",
@@ -2672,7 +2678,9 @@
   "status": "works",
   "source": "F418-webgpu-causal-fluid-mind",
   "hash": "d5dae3f369ad",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f417-local-embedding-morph-field",
@@ -2791,7 +2799,9 @@
   "status": "works",
   "source": "F407-local-causal-echo-chamber",
   "hash": "0d844449590a",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f406-predictive-residual-lattice",
@@ -2930,7 +2940,8 @@
   ],
   "source": "F319-webgpu-orient-advection-mlp-probes",
   "hash": "7992f257a6cc",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "level"
  },
  {
   "slug": "f318-webgpu-online-kmeans-particle-mind",
@@ -3102,7 +3113,9 @@
   "status": "works",
   "source": "F308-lbm-wing-forge",
   "hash": "912e7211e747",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f307-webgpu-mlp-physics-dom-pushers",
@@ -3126,7 +3139,9 @@
   "status": "works",
   "source": "F306-slime-rail-planner",
   "hash": "2f79bf0c2ef2",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f305-webgpu-orient-genome-competition-arena",
@@ -3147,7 +3162,9 @@
   "status": "works",
   "source": "F304-lenia-gait-evolver",
   "hash": "8e83b0e3fd1c",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f303-webgpu-hebbian-spatial-memory-morph",
@@ -3193,7 +3210,9 @@
   "status": "works",
   "source": "F-300-kuramoto-phase-lock-mind",
   "hash": "90d3c2acee0a",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f300-orient-causal-mlp-physical-dom-agents",
@@ -3924,7 +3943,9 @@
   "status": "works",
   "source": "F254-webgpu-multiagent-genome-competition",
   "hash": "faad33f62801",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f253-webgpu-nca-spatial-audio-ui-mind",
@@ -4021,7 +4042,9 @@
   ],
   "source": "F247-webgpu-causal-token-swarm-mind",
   "hash": "0c2026deb07e",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f247-webxr-gaze-rnn-dom-portals",
@@ -4172,7 +4195,8 @@
   ],
   "source": "F237-orient-webgpu-mlp-dom",
   "hash": "e2ca628ab803",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "level"
  },
  {
   "slug": "f237-spoken-fluid-intent",
@@ -4269,7 +4293,9 @@
   "status": "works",
   "source": "F231-taste-oracle",
   "hash": "7d3671b7e115",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f230-orientation-genome-arena",
@@ -4315,7 +4341,9 @@
   "status": "works",
   "source": "F227-hypervector-dreamer",
   "hash": "daa85c539ff7",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f226-webxr-gaze-mlp-sealed-agents",
@@ -4350,7 +4378,9 @@
   "status": "works",
   "source": "F225-surprisal-strata",
   "hash": "91297c394942",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f224-thought-trace-lattice",
@@ -4382,7 +4412,9 @@
   "status": "works",
   "source": "F222-screen-grazing-lichen",
   "hash": "6873f70d977a",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f221-webgpu-mlp-physics-learner",
@@ -4406,7 +4438,9 @@
   "status": "works",
   "source": "F220-webgpu-mlp-sph-genome-competition",
   "hash": "4ab7731776a8",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f220-window-spanning-organism",
@@ -4416,7 +4450,9 @@
   "status": "works",
   "source": "F220-window-spanning-organism",
   "hash": "26689ba5362b",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f219-webgpu-spatial-attention-mind",
@@ -4451,7 +4487,8 @@
   "status": "works",
   "source": "F217-audible-synapse-forager",
   "hash": "921684e5f693",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pitch"
  },
  {
   "slug": "f216-webxr-hand-residual-oracle-dom",
@@ -4695,7 +4732,9 @@
   "status": "works",
   "source": "F200-webgpu-causal-fluid-mind",
   "hash": "d5dae3f369ad",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "pattern",
+  "folded": true
  },
  {
   "slug": "f200-webxr-hand-rnn-dom-physics",
@@ -4755,7 +4794,9 @@
   "status": "works",
   "source": "F197-local-spatial-token-mind",
   "hash": "d1aa3b951afb",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f197-webgpu-acoustic-swarm-mind",
@@ -5217,7 +5258,8 @@
   "status": "works",
   "source": "162-local-incubate-not-log",
   "hash": "4832f5412472",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "161-local-map-not-sense",
@@ -5227,7 +5269,8 @@
   "status": "works",
   "source": "161-local-map-not-sense",
   "hash": "cb09ce698cad",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "160-local-span-not-clock",
@@ -5237,7 +5280,8 @@
   "status": "works",
   "source": "160-local-span-not-clock",
   "hash": "5ab56004626c",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "159-local-sensation-not-claim",
@@ -5247,7 +5291,8 @@
   "status": "works",
   "source": "159-local-sensation-not-claim",
   "hash": "bf67b0f4d38f",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "157-local-isolated-not-sequence",
@@ -5257,7 +5302,8 @@
   "status": "works",
   "source": "157-local-isolated-not-sequence",
   "hash": "bd95f1280bf6",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "156-local-cooccur-not-imply",
@@ -5267,7 +5313,8 @@
   "status": "works",
   "source": "156-local-cooccur-not-imply",
   "hash": "722b68e73d89",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "155-local-optin-not-record",
@@ -5277,7 +5324,8 @@
   "status": "works",
   "source": "155-local-optin-not-record",
   "hash": "178512d42193",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "153-local-faint-not-promote",
@@ -5287,7 +5335,8 @@
   "status": "works",
   "source": "153-local-faint-not-promote",
   "hash": "d88e95760f12",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "152-local-incubate-not-attest",
@@ -5308,7 +5357,8 @@
   "status": "works",
   "source": "151-local-proxy-not-sense",
   "hash": "33519d7173bd",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "150-local-interval-not-measure",
@@ -5318,7 +5368,8 @@
   "status": "works",
   "source": "150-local-interval-not-measure",
   "hash": "f0c007316f3a",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "149-local-intero-not-claim",
@@ -5328,7 +5379,8 @@
   "status": "works",
   "source": "149-local-intero-not-claim",
   "hash": "cb04a91cf382",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "147-local-quiet-not-boost",
@@ -5338,7 +5390,8 @@
   "status": "works",
   "source": "147-local-quiet-not-boost",
   "hash": "c4f812fe1ddd",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "145-local-gaze-not-command",
@@ -5348,7 +5401,8 @@
   "status": "works",
   "source": "145-local-gaze-not-command",
   "hash": "8aff2c67136d",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "144-local-weak-not-attest",
@@ -5369,7 +5423,8 @@
   "status": "works",
   "source": "141-local-private-not-shared",
   "hash": "fc379962e73a",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "notes"
  },
  {
   "slug": "f055-webgpu-hopfield-spatial-completion",
@@ -5498,7 +5553,9 @@
   "status": "works",
   "source": "F048-local-causal-echo-chamber",
   "hash": "0d844449590a",
-  "grade": "toy"
+  "grade": "toy",
+  "idea": "mindmap",
+  "folded": true
  },
  {
   "slug": "f048-resonant-spatial-audio-mind",
