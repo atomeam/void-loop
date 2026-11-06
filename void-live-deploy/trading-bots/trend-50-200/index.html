@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: none; out: table, code">
+<meta name="theme-color" content="#050505">
+<title>Trend 50/200 trading bot: backtest and setup · Verse</title>
+<meta name="description" content="Trend 50/200 trading bot: Holds the coin while its 50-day average is above its 200-day average, and holds cash otherwise. Real backtest on BTC and ETH daily prices with fees, slippage, worst drop, every trade and a walk-forward test. Free bot you run yourself.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Trend 50/200 trading bot: backtest and setup · Verse">
+<meta property="og:description" content="Trend 50/200 trading bot: Holds the coin while its 50-day average is above its 200-day average, and holds cash otherwise. Real backtest on BTC and ETH daily prices with fees, slippage, worst drop, every trade and a walk-forward test. Free bot you run yourself.">
+<meta property="og:url" content="https://a-to-mind.com/trading-bots/trend-50-200/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/trading-bots/trend-50-200/">
+<link rel="stylesheet" href="/trading-bots/tb.css">
+<link rel="modulepreload" href="/trading-bots/kit/strategy.js">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse Trend 50/200 bot","url":"https://a-to-mind.com/trading-bots/trend-50-200/","description":"Trend 50/200 trading bot: Holds the coin while its 50-day average is above its 200-day average, and holds cash otherwise. Real backtest on BTC and ETH daily prices with fees, slippage, worst drop, every trade and a walk-forward test. Free bot you run yourself.","applicationCategory":"FinanceApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}}]}</script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body data-bot="trend-50-200">
+<main>
+<nav class="crumbs"><a href="/">Verse</a> / <a href="/trading-bots/">Trading bots</a> / Trend 50/200</nav>
+<h1>Trend 50/200</h1>
+<p class="lead">Holds the coin while its 50-day average is above its 200-day average, and holds cash otherwise.</p>
+<ul><li>Buy at the next open when the 50-day average of closes is above the 200-day average.</li><li>Sell at the next open when it is not.</li><li>Decided on the daily close (00:00 UTC), traded at the next open. Long or cash only.</li></ul>
+<section class="glass risk" aria-label="Risk"><p><b>Risk:</b> every number here is a backtest on past prices. Past results do not predict future results, these rules have long losing stretches, and you can lose money. This is software you run yourself, not financial advice. Verse never sees your exchange key, never holds your money and never places a trade.</p></section>
+<section class="glass"><h2>Backtest</h2>
+<form class="tb-form" id="tb-form">
+<label>Pair <select name="pair"><option>BTC-USD</option><option>ETH-USD</option></select></label>
+<label>Fee per trade, % <input name="fee" type="number" min="0" max="5" step="0.01" inputmode="decimal"></label>
+<label>Slippage per trade, % <input name="slip" type="number" min="0" max="5" step="0.01" inputmode="decimal"></label>
+<label>Period <select name="w"><option value="all">All history</option><option value="held">Last 24 months only</option></select></label>
+<button type="submit">Run</button>
+</form><p class="tb-err" id="tb-err" role="alert"></p>
+<p class="tb-note" id="tb-asof">Reading the price history...</p>
+<div id="tb-result" aria-live="polite"></div>
+<div class="row"><button type="button" id="tb-csv">Export trades (CSV)</button><button type="button" id="tb-share">Share this backtest</button><span class="muted" id="tb-shared"></span></div>
+</section>
+<section class="glass"><h2>Walk-forward test</h2><p class="muted">The honest check: each year, the settings that did best over the three years before it (from a small grid) are picked, then run untouched on that year. Those years were never seen when the settings were picked.</p><div class="tb-scroll"><table id="tb-wf"></table></div></section>
+<section class="glass"><h2>Every trade</h2><p class="muted" id="tb-trades-note"></p><div class="tb-scroll"><table id="tb-trades"></table></div></section>
+<section class="glass" id="setup"><h2>Run it on your own account</h2>
+<ol>
+<li>Install Node.js 18 or newer.</li>
+<li>Download the bot: <button type="button" id="tb-zip">Download the bot (.zip)</button> (its config already says <code>trend-50-200</code>), or in a terminal:
+<pre id="tb-curl">mkdir verse-bot &amp;&amp; cd verse-bot
+curl -fsSLO "https://a-to-mind.com/trading-bots/kit/{bot.mjs,strategy.js,arb-scan.mjs,arb.js,arb.example.json,package.json,config.example.json,README.md,LICENSE}"
+npm install &amp;&amp; cp config.example.json config.json</pre><button type="button" id="tb-copy">Copy the commands</button></li>
+<li>In <code>config.json</code> set <code>bot</code> (<code>trend-50-200</code>), your <code>exchange</code> (a ccxt id such as <code>kraken</code> or <code>coinbase</code>), the <code>symbol</code> (such as <code>BTC/USD</code>) and <code>budget</code>, the most it may ever spend on one buy.</li>
+<li>Paper mode first, no key and no trades: <code>node bot.mjs</code>. It prints the day's decision and keeps a pretend balance.</li>
+<li>Live when you are ready: make an exchange API key with <b>trade permission only, never withdrawal</b>, put it in <code>EXCHANGE_API_KEY</code> and <code>EXCHANGE_API_SECRET</code>, set <code>VERSE_BOT_LIVE=yes</code> and run <code>node bot.mjs --live --loop</code> on a computer that stays on.</li>
+</ol>
+<p class="muted">The files: <a href="/trading-bots/kit/bot.mjs">bot.mjs</a>, <a href="/trading-bots/kit/strategy.js">strategy.js</a> (the same file this page runs), <a href="/trading-bots/kit/arb-scan.mjs">arb-scan.mjs</a> and <a href="/trading-bots/kit/arb.js">arb.js</a> (the read-only arbitrage scanner), <a href="/trading-bots/kit/package.json">package.json</a>, <a href="/trading-bots/kit/config.example.json">config.example.json</a>, <a href="/trading-bots/kit/README.md">README.md</a>, <a href="/trading-bots/kit/LICENSE">LICENSE</a> (MIT). Spot only, long or cash, no leverage; it only sells coins it bought itself.</p></section>
+<section class="glass"><h2>For agents</h2><p class="muted">The same backtest as JSON, any bot, pair, parameters, fee and window, with every trade and the walk-forward test: <code>POST https://a-to-mind.com/api/x402/backtest</code>, paid per call in USDC on Base over <a href="https://docs.x402.org">x402</a>. A call without payment answers 402 with what to pay. Catalog: <a href="/api/x402">/api/x402</a>.</p></section>
+<footer>Worked out in this page with <a href="/trading-bots/kit/strategy.js">strategy.js</a>, the same file the bot runs, on daily candles from Coinbase Exchange's public market data. Other bots: <a href="/trading-bots/breakout-20-10/">Breakout 20/10</a>, <a href="/trading-bots/dip-rsi2/">Dip buyer RSI(2)</a>. Quotes: <a href="/markets/">Markets</a>.</footer>
+</main>
+<script type="module" src="/lib/trading-bots.js"></script>
+</body>
+</html>
