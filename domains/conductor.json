@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T06:37:40.374Z",
+ "updated": "2026-11-06T06:54:34.638Z",
  "last24h": {
   "ticks": 47,
   "started": 81,
@@ -201,30 +201,6 @@
   "gap:want-exam-sports"
  ],
  "ticks": [
-  {
-   "at": "2026-11-05T06:45:47.675Z",
-   "open": 186,
-   "started": [
-    {
-     "id": "mvvk3ljc",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 96
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 1,
-   "warnings": 0
-  },
   {
    "at": "2026-11-05T07:22:01.331Z",
    "open": 192,
@@ -1523,6 +1499,30 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 12,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T06:54:34.638Z",
+   "open": 227,
+   "started": [
+    {
+     "id": "mvw5r1rz",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 97
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": true,
    "will": false,
    "lap": false,
    "revived": [
