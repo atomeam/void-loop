@@ -2737,7 +2737,7 @@
     "timer"
    ],
    "tier": "proven",
-   "why": "a self-test, 4 browser-suite mentions, 34 real asks in the benchmark",
+   "why": "a self-test, 6 browser-suite mentions, 34 real asks in the benchmark",
    "flavor": "Asked 34 times in earnest, and never once left unanswered. It has not failed a reader yet.",
    "glow": 100,
    "n": 138
@@ -4950,7 +4950,7 @@
     "note: call mom"
    ],
    "tier": "proven",
-   "why": "a self-test, 15 browser-suite mentions, 4 real asks in the benchmark",
+   "why": "a self-test, 17 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "An old art of the stage, tested each day before the sun is up.",
    "glow": 100,
    "n": 260

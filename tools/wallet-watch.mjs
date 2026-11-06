@@ -59,21 +59,42 @@ async function rpc(url, method, params) {
   return j.result;
 }
 
-/** Read the chain from where the last read stopped (or the last 2 days) to now, in chunks a public RPC accepts. */
-export async function read({ url = process.env.BASE_RPC_URL || 'https://mainnet.base.org', address, prev, now = new Date().toISOString(), chunk = 2000 } = {}) {
-  const latest = parseInt(await rpc(url, 'eth_blockNumber', []), 16);
+// Public Base endpoints, tried in this order. Each one limits how fast it is asked; a limit moves the read to the next one.
+export const RPCS = ['https://mainnet.base.org', 'https://base-rpc.publicnode.com', 'https://base.drpc.org', 'https://1rpc.io/base'];
+const LIMITED = /request limit|rate.?limit|too many requests|\b429\b/i; // "slow down", not "ask for a smaller range"
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** Read the chain from where the last read stopped (or the last 2 days) to now, in chunks a public RPC accepts.
+ *  A rate limit waits and asks again, then moves to the next endpoint; a refused range is asked again in halves. */
+export async function read({ url, urls, address, prev, now = new Date().toISOString(), chunk = 10000, pause = 250, sleep = wait } = {}) {
+  const list = [...new Set(urls || (url ? [url] : [process.env.BASE_RPC_URL, ...RPCS].filter(Boolean)))];
+  let at = 0, tries = 0;
+  const call = async (method, params) => {
+    for (;;) {
+      try { return await rpc(list[at], method, params); }
+      catch (e) {
+        if (!LIMITED.test(e.message)) throw e;
+        if (tries < 2) { tries++; await sleep(1500 * tries); continue; }
+        if (at + 1 >= list.length) throw e;
+        at++; tries = 0;
+      }
+    }
+  };
+  const latest = parseInt(await call('eth_blockNumber', []), 16);
   const same = prev && prev.address && prev.address.toLowerCase() === address.toLowerCase() && prev.read_to_block;
   let from = same ? prev.read_to_block + 1 : Math.max(0, latest - 2 * DAY_BLOCKS);
   if (latest - from > 7 * DAY_BLOCKS) from = latest - 7 * DAY_BLOCKS; // a long gap: the last week, and the gap is said in the file
   const logs = [];
   for (let a = from; a <= latest;) {
     const b = Math.min(latest, a + chunk - 1);
-    try { logs.push(...await rpc(url, 'eth_getLogs', [{ address: USDC_BASE, topics: [TRANSFER, null, topicOf(address)], fromBlock: '0x' + a.toString(16), toBlock: '0x' + b.toString(16) }])); a = b + 1; }
-    catch (e) { if (chunk <= 125) throw e; chunk = Math.floor(chunk / 2); } // the RPC wants a smaller range
+    try { logs.push(...await call('eth_getLogs', [{ address: USDC_BASE, topics: [TRANSFER, null, topicOf(address)], fromBlock: '0x' + a.toString(16), toBlock: '0x' + b.toString(16) }])); a = b + 1; }
+    catch (e) { if (LIMITED.test(e.message) || chunk <= 125) throw e; chunk = Math.floor(chunk / 2); } // the RPC wants a smaller range
+    if (pause) await sleep(pause);
   }
-  const bal = BigInt(await rpc(url, 'eth_call', [{ to: USDC_BASE, data: '0x70a08231' + topicOf(address).slice(2) }, 'latest'])).toString();
+  const bal = BigInt(await call('eth_call', [{ to: USDC_BASE, data: '0x70a08231' + topicOf(address).slice(2) }, 'latest'])).toString();
   const out = merge(prev, incoming(logs, address), { address, toBlock: latest, balanceUnits: bal, now });
   if (same && from !== prev.read_to_block + 1) out.gap = 'blocks ' + (prev.read_to_block + 1) + ' to ' + (from - 1) + ' were not read (more than a week since the last read)';
+  out.rpc = new URL(list[at]).host;
   return out;
 }
 
