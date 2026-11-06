@@ -607,6 +607,23 @@ SPECS['/life-arb/'] = async (t) => {
   await t.p.locator('#opps li.opp').first().getByRole('button', { name: 'Took it' }).click(); await t.p.waitForTimeout(300);
   t.ok(/^1\b/.test((await t.text('#tiles li:first-child')).trim()), 'a find marked taken leaves the open list');
 };
+// /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
+SPECS['/creed/'] = async (t) => {
+  t.ok((await t.p.locator('ol.beliefs li').count()) === 10, 'ten beliefs');
+  t.ok((await t.p.locator('.practices a').count()) >= 5 && /\/creed\/give\//.test(await t.p.locator('.practices').innerHTML()), 'the practices link the pages that do them, Give included');
+  await t.click('#copy'); await t.waitText('#say', /\S/, 4000);
+  t.ok(/Copied|I ask, I learn/.test(await t.text('#say')), 'Copy the vow copies it (or shows it to copy): ' + (await t.text('#say')));
+  t.ok(/not a registered church/.test(await t.text('.honest')), 'the page says plainly what Verse is not');
+};
+SPECS['/creed/give/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...TREASURY_FIX, pots: { ...TREASURY_FIX.pots, giving: 293 } }) }));
+  await t.p.reload(); await t.waitText('#pot', /\$/, 10000);
+  t.ok((await t.text('#pot')).trim() === '$2.93', 'the giving pot is read from the treasury: ' + (await t.text('#pot')));
+  t.ok(/\$41\.88 realized/.test(await t.text('#pot-note')), 'the pledge names the realized money it comes from');
+  const hrefs = await t.p.locator('.cause .go a').evaluateAll((as) => as.map((a) => a.href));
+  t.ok((await t.p.locator('.cause').count()) === 6 && hrefs.length >= 6, '6 charities with their buttons');
+  t.ok(hrefs.every((h) => /^https:\/\//.test(h) && !/a-to-mind\.com|localhost|127\.0\.0\.1/.test(h)), 'every button opens the charity\'s own site');
+};
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
   await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first
