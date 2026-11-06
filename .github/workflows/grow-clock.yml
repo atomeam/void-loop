@@ -102,6 +102,17 @@ jobs:
             fi
           fi
           echo "chain=yes" >> "$GITHUB_OUTPUT"
+      # The merge sweep twice an hour, on the clock that does keep time (2026-11-06): GitHub fired automerge.yml's hourly '17 * * * *'
+      # schedule 9 times in 48 hours, and 2 of those were cancelled, so a ready pull request with no new event waited for a person.
+      # A tick in minutes 0-9 or 30-39 of the hour starts one full sweep (no pr input), which reads every open pull request.
+      - name: The merge sweep twice an hour
+        if: always() && !inputs.dry && steps.clock.outputs.chain == 'yes'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          m=$((10#$(date -u +%M)))
+          if [ $((m / 10 % 3)) -eq 0 ]; then gh workflow run automerge.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "full merge sweep started (minute $m)"; else echo "no sweep this tick (minute $m)"; fi
       # every run that ticked starts the next one 9 minutes after its tick landed (the fresh check is 8 minutes, so that run ticks too).
       # The wait holds this runner about 9 minutes of every 10; the repository is public, so Actions minutes are not metered.
       - name: Start the next clock run
