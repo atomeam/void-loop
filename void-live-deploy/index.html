@@ -3156,31 +3156,23 @@ say('nothing selected to remove');
           return 'wikipedia';
         }
         const url = (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || ('https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.title));
-        // a term card (lib/term-card.js; owner, 2026-11-06, the Treasury card): Verse's own page for the term first, then each outside sense on its own with
-        // its source, the picture only when it is of what the card is about, and Verse's take only under the sense it stands on
-        const KC = await import('/lib/term-card.js').catch(() => null); if (vpageEl !== el) return;
-        if (KC && !document.getElementById('vt-css')) { const st = document.createElement('style'); st.id = 'vt-css'; st.textContent = KC.TERM_CSS; document.head.appendChild(st); }
-        const ttl = j.title || hit.title, lead = KC ? KC.leadParts(j.extract || '') : { intro: '', senses: [], paras: [] }, multi = lead.senses.length >= 2;
-        const thumb = j.thumbnail && j.thumbnail.source && (!KC || KC.imageFits({ title: ttl, extract: j.extract || '', src: j.thumbnail.source })) ? j.thumbnail.source : '';
         el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
           + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
           + (corrected ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Showing “' + esc(corrected) + '” (you typed “' + esc(topic) + '”).</p>'
             : thinMatch(topic, (j.title || hit.title) + ' ' + (j.description || '') + ' ' + String(j.extract || '').slice(0, 300)) ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Closest match I found for “' + esc(topic) + '”.</p>' : '')
-          + '<div class="verse-slot"></div>'
           + '<div class="pic-slot"></div>'
-          + (thumb ? '<img alt="" src="' + esc(thumb) + '">' : '')
-          // a lead that lists senses ("A treasury is either:") shows each as its own labelled sense; any other lead is one paragraph, its colons spaced
-          + (multi ? KC.sensesHtml(esc, { intro: lead.intro, senses: lead.senses, source: 'Wikipedia', url })
+          + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
+          + '<p>' + esc(j.extract || '') + '</p>'
           // the source first, then Verse's take under it, labelled as a model's reading (owner, 2026-10-19: cards for show, takes above the facts)
-            : '<p>' + esc(KC ? KC.fixColons(j.extract || '') : (j.extract || '')) + '</p>' + '<div class="take-slot"></div>')
+          + '<div class="take-slot"></div>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el, false);
         // the card is typed by what the source says the page is (lib/card-kinds.js), and a name that is also a song, an album or a show says so
-        el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); el.dataset.cardAdds = KC ? KC.addsFor({ title: ttl, desc: j.description || '', senses: lead.senses }) : ''; keepCard(el);
+        el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); keepCard(el);
         import('/lib/card-kinds.js').then((k) => k.fetchAlso(j.title || hit.title)).then((also) => { if (also.length && vpageEl === el) { el.dataset.cardAlso = also.join(','); keepCard(el); } }).catch(() => {});
         // no lead image: the article's own photo (lib/page-picture.js; owner, 2026-10-17: the K-pop card "didnt look" up a picture), placed where a thumbnail goes
-        if (!thumb && !multi) import('/lib/page-picture.js').then((m) => m.pictureFor(j.title || hit.title)).then((src) => {
-          if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]') || (KC && !KC.imageFits({ title: ttl, extract: j.extract || '', src }))) return;
+        if (!(j.thumbnail && j.thumbnail.source)) import('/lib/page-picture.js').then((m) => m.pictureFor(j.title || hit.title)).then((src) => {
+          if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]')) return;
           const im = document.createElement('img'); im.alt = ''; im.src = src; im.dataset.pagePicture = '1'; const slot = el.querySelector('.pic-slot');
           if (slot) slot.after(im); else el.querySelector('h2').after(im); keepCard(el);
         }).catch(() => {});
@@ -3196,27 +3188,13 @@ say('nothing selected to remove');
           }).catch(() => {});
         }
         // Verse's own input on top of the summary (skills/take.js): what Verse can do about it at once, then its take (/api/answer, mode 'take')
-        // the take is shown only where it stands on something real: the sense whose words it shares, or Verse's own page (lib/term-card.js bindTake)
         import('/skills/take.js').then((T) => {
+          const slot = el.querySelector('.take-slot'); if (!slot) return;
           const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '' }, asks = T.relatedAsks(card);
-          const pageP = KC ? KC.termPage(ttl, (p) => fetch(p).then((r) => (r.ok ? r.text() : '')).catch(() => ''), (p) => fetch(p).then((r) => (r.ok ? r.json() : null)).catch(() => null)).catch(() => null) : Promise.resolve(null);
-          let page = null, take = '';
-          const paint = () => {
-            if (vpageEl !== el) return;
-            const one = el.querySelector('.take-slot:not([data-sense])'), vs = el.querySelector('.verse-slot'), top = !!KC && (!!page || multi);
-            if (!KC) { if (one) one.innerHTML = T.takeHtml(esc, take, asks); return; }
-            if (vs) vs.innerHTML = top ? KC.verseHtml(esc, page, asks) : ''; // Verse's own page and what Verse can do lead the card
-            const grounds = multi ? lead.senses.map((t, i) => ({ key: String(i), text: t })) : [{ key: 'one', text: j.extract || '' }];
-            if (page) grounds.push({ key: 'verse', text: [page.name, page.about, page.line].join(' ') });
-            const at = take ? KC.bindTake(take, grounds, ttl) : null;
-            for (const s of el.querySelectorAll('.vt-sense .take-slot')) s.innerHTML = '';
-            if (one) one.innerHTML = T.takeHtml(esc, at === 'one' ? take : '', top ? [] : asks);
-            if (at != null && at !== 'one') { const s = el.querySelector('.take-slot[data-sense="' + at + '"]'); if (s) s.innerHTML = T.takeHtml(esc, take, []); }
-          };
-          paint();
-          pageP.then((p) => { page = p; if (p && vpageEl === el) { el.dataset.cardAdds = KC.addsFor({ title: ttl, desc: j.description || '', senses: lead.senses, page: p }); keepCard(el); } paint(); });
+          const paint = (take) => { if (vpageEl === el) slot.innerHTML = T.takeHtml(esc, take, asks); };
+          paint('');
           fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'take', ...card }) })
-            .then((r) => (r.ok ? r.json() : null)).then((o) => { if (o && o.take) { take = o.take; paint(); } }).catch(() => {});
+            .then((r) => (r.ok ? r.json() : null)).then((o) => { if (o && o.take) paint(o.take); }).catch(() => {});
         }).catch(() => {});
         // Next #18/#19: two-part summon — the card, plus a base body dressed from this summary, then a behavior script (AI once, cached; fallback without AI).
         try {
