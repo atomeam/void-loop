@@ -113,6 +113,37 @@ const SPLIT = { comma: ',', semicolon: ';', pipe: '|', space: ' ', tab: '\t', da
 const JOIN = { comma: ', ', space: ' ', semicolon: '; ', pipe: ' | ', dash: ' - ', slash: ' / ', tab: '\t', nothing: '', newline: '\n' };
 const BRACKETS = { round: '()', paren: '()', parenthes: '()', square: '[]', curly: '{}', brace: '{}', angle: '<>' };
 const FILL = '(?:\\s+(?:of|in|for|on|from|to|these|those|this|that|the|my|following|text|lines?|words|list|paragraphs?|below|here|it|selection|selected|please))*';
+// 2026-11-06 (docs/GAPS.md rows 54 to 58): fancy text. Each is a plain Unicode mapping, worked out here, so the result pastes anywhere that shows Unicode.
+const FLIP = Object.fromEntries([...'abcdefghijklmnopqrstuvwxyz'].map((c, i) => [c, [...'ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz'][i]])
+  .concat([...'ACEFGJLMPTUVWY'].map((c, i) => [c, [...'∀ƆƎℲ⅁ſ˥WԀ⊥∩ΛM⅄'][i]]))
+  .concat([...'HINOSXZ'].map((c) => [c, c]))
+  .concat([...'123456789'].map((c, i) => [c, [...'ƖᄅƐㄣϛ9ㄥ86'][i]]))
+  .concat([['.', '˙'], [',', "'"], ["'", ','], ['?', '¿'], ['!', '¡'], ['(', ')'], [')', '('], ['[', ']'], [']', '['], ['{', '}'], ['}', '{'], ['<', '>'], ['>', '<'], ['_', '‾'], ['&', '⅋'], ['"', '„'], [';', '؛']]));
+/** the text turned upside down: each character flipped (capitals with no flipped form take their small letter's), the order reversed. Pure. */
+export const upsideDown = (s) => Array.from(String(s)).reverse().map((c) => FLIP[c] || FLIP[c.toLowerCase()] || c).join('');
+const SMALL = Object.fromEntries([...'abcdefghijklmnopqrstuvwyz'].map((c, i) => [c, [...'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘꞯʀꜱᴛᴜᴠᴡʏᴢ'][i]]));
+/** small letters as Unicode small capitals; x has none and capitals stay capitals. Pure. */
+export const smallCaps = (s) => Array.from(String(s)).map((c) => SMALL[c] || c).join('');
+/** letters and digits in their circled forms (U+24B6, U+24D0, U+2460, U+24EA). Pure. */
+export const circled = (s) => Array.from(String(s)).map((c) => {
+  const k = c.codePointAt(0);
+  return k >= 65 && k <= 90 ? String.fromCodePoint(0x24b6 + k - 65) : k >= 97 && k <= 122 ? String.fromCodePoint(0x24d0 + k - 97) : k >= 49 && k <= 57 ? String.fromCodePoint(0x2460 + k - 49) : k === 48 ? '⓪' : c;
+}).join('');
+/** a long stroke (U+0336) through each character but spaces and line ends. Pure. */
+export const strike = (s) => Array.from(String(s)).map((c) => (/\s/.test(c) ? c : c + '̶')).join('');
+/** combining marks (U+0300 to U+036F) above and below each letter: 1 to 2 a side light, 2 to 5 medium, 6 to 12 heavy. Pure given rng. */
+export function zalgo(s, level = 'medium', rng = Math.random) {
+  const [lo, hi] = level === 'light' ? [1, 2] : level === 'heavy' ? [6, 12] : [2, 5];
+  const mark = (from, to) => String.fromCodePoint(from + Math.floor(rng() * (to - from + 1)));
+  const n = () => lo + Math.floor(rng() * (hi - lo + 1));
+  return Array.from(String(s)).map((c) => {
+    if (/\s/.test(c)) return c;
+    let out = c;
+    for (let i = n(); i > 0; i--) out += mark(0x0300, 0x0315); // above
+    for (let i = n(); i > 0; i--) out += mark(0x0316, 0x0333); // below
+    return out;
+  }).join('');
+}
 const T = (id, title, heads, fn, o = {}) => ({ id, title, heads: heads.map((h) => new RegExp('^(?:' + h + ')' + FILL + '$')), fn, body: 'text', ...o });
 const LOOSE = '(?!(?:is|was|means|mean|explained|works|vs)\\b)';
 
@@ -157,6 +188,8 @@ export const TOOLS = [
   T('md-bold', 'Bold', ['(?:markdown\\s+|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?)?bold(?:\\s+text)?'], (s) => wrapEach(s, '**', '**')),
   T('md-italic', 'Italic', ['(?:markdown\\s+|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?)?italics?(?:\\s+text)?'], (s) => wrapEach(s, '*', '*')),
   T('md-code', 'Code', ['(?:markdown|inline|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?|as)\\s*code(?:\\s+(?:format|formatting|font))?', 'code\\s+block', 'code\\s+format'], (s) => (lines(s).length > 1 ? '```\n' + s.trim() + '\n```' : '`' + s.trim() + '`')),
+  // "strikethrough text" (with the word text) is the Unicode stroke that pastes anywhere; "strikethrough: hi" stays Markdown's ~~hi~~
+  T('strike', 'Strikethrough text', ['strike[\\s-]?through\\s+(?:text|font|generator|letters)', 'cross(?:ed)?[\\s-]?out\\s+(?:text|letters|words)'], (s) => strike(s), { note: 'a long stroke (U+0336) after each character; it shows where the font supports combining marks' }),
   T('md-strike', 'Strikethrough', ['(?:markdown\\s+|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?)?strike[\\s-]?(?:through|out)?'], (s) => wrapEach(s, '~~', '~~')),
   T('date', 'Date stamp', ['(?:insert\\s+)?(?:the\\s+|a\\s+|today\\s*s\\s+)?(?:date\\s+stamp|datestamp|date\\s+now|today\\s*s\\s+date)', 'insert\\s+(?:the\\s+|today\\s*s\\s+)?date'], (s, a, c) => stamp('date', c.now) + (s ? ' ' + s : ''), { body: 'opt' }),
   T('iso', 'ISO timestamp', ['(?:insert\\s+)?(?:an?\\s+|the\\s+)?iso\\s+(?:8601\\s+)?(?:time\\s?stamp|stamp|date(?:\\s*time)?)', 'insert\\s+(?:an?\\s+|the\\s+)?iso\\s+(?:time\\s?stamp|date)'], (s, a, c) => stamp('iso', c.now) + (s ? ' ' + s : ''), { body: 'opt', note: 'UTC, ISO 8601' }),
@@ -270,6 +303,10 @@ export const TOOLS = [
     (s) => { const f = frequency(s, true).slice(0, 10); return { text: f.map(([w, n]) => n + '  ' + w).join('\n'), note: 'little words like "the" and "of" left out; "word frequency" counts every word' }; }),
   T('frequency', 'Word frequency', ['word\\s+(?:frequency|frequencies|counts?)', '(?:count|how\\s+often)\\s+(?:each\\s+)?words?(?:\\s+(?:appears?|occurs?|used))?', 'frequency\\s+of\\s+words', 'frequency'],
     (s) => { const f = frequency(s); return { text: f.slice(0, 200).map(([w, n]) => n + '  ' + w).join('\n'), note: plural(f.length, 'different word') + ', most used first' + (f.length > 200 ? ' (first 200 shown)' : '') }; }),
+  T('upside-down', 'Upside down', ['(?:turn\\s+|flip\\s+)?upside[\\s-]?down\\s+(?:text|letters|writing|font)', '(?:turn|flip)\\s+(?:the\\s+|my\\s+)?(?:text|letters|words)\\s+upside[\\s-]?down'], (s) => upsideDown(s), { note: 'flipped character by character; letters with no upside-down form are left as they are' }),
+  T('small-caps', 'Small caps', ['small[\\s-]?caps?(?:\\s+(?:text|letters|font|generator))?', 'small\\s+capitals?(?:\\s+(?:text|letters))?'], (s) => smallCaps(s), { note: 'Unicode small capitals; x has no small capital and stays x, and capitals stay capitals' }),
+  T('bubble', 'Bubble text', ['bubble\\s+(?:text|letters|font|writing)', 'circled?\\s+(?:text|letters|font)'], (s) => circled(s), { note: 'circled Unicode letters and numbers; other characters stay as they are' }),
+  T('zalgo', 'Zalgo text', ['(?<arg>light|medium|heavy)?\\s*(?:zalgo|glitch(?:ed|y)?|cursed|creepy)\\s+text(?:\\s+(?<arg2>light|medium|heavy))?', '(?<arg>light|medium|heavy)?\\s*zalgo(?:\\s+(?<arg2>light|medium|heavy))?'], (s, a, c) => zalgo(s, a || 'medium', c.rng), { note: 'combining marks stacked above and below each letter; ask for light or heavy zalgo text for less or more' }),
 ];
 
 const BYID = Object.fromEntries(TOOLS.map((t) => [t.id, t]));

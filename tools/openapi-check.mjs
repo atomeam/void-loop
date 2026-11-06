@@ -121,10 +121,14 @@ export function methodsOf(src) {
   return new Set([...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+onRequest(Get|Post|Put|Patch|Delete)\b/g)].map((m) => m[1].toLowerCase()));
 }
 
+// A documented concrete path served by a one-segment dynamic route (/api/x402/answer by functions/api/x402/[service].js): the route
+// that would serve it. A static file next to the dynamic one (x402/review.js) is matched first, by its own path.
+const dynamicFor = (routes, path) => [...routes.keys()].find((r) => /\{[^}[\]]+\}/.test(r) && new RegExp('^' + r.replace(/[.*+?^$()|\\]/g, '\\$&').replace(/\{[^}[\]]+\}/g, '[^/]+') + '$').test(path));
 export function check({ spec, routes, catalog, statics = new Set() }) {
   const problems = [];
   for (const [path, ops] of Object.entries(spec.paths || {})) {
-    const have = routes.get(path) || (statics.has(path) ? new Set(['get']) : null); // a static file answers GET
+    const dyn = routes.has(path) ? null : dynamicFor(routes, path);
+    const have = routes.get(path) || (dyn ? routes.get(dyn) : null) || (statics.has(path) ? new Set(['get']) : null); // a static file answers GET
     for (const m of Object.keys(ops).filter((k) => METHODS.includes(k))) {
       if (!have) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but no function serves ${path}`);
       else if (!have.has(m)) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but its function has no onRequest${m[0].toUpperCase() + m.slice(1)}`);
@@ -134,7 +138,8 @@ export function check({ spec, routes, catalog, statics = new Set() }) {
   }
   for (const path of routes.keys()) {
     if (!path.startsWith('/api/') && path !== '/tools.json') continue; // /[handle] is the share-card page, not an API
-    if (!spec.paths[path] && !INTERNAL[path]) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Verse's own`);
+    const served = /\{/.test(path) && Object.keys(spec.paths || {}).some((p) => dynamicFor(new Map([[path, null]]), p) === path); // its concrete paths are documented one by one
+    if (!spec.paths[path] && !INTERNAL[path] && !served) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Verse's own`);
   }
   for (const path of Object.keys(INTERNAL)) if (!routes.has(path)) problems.push(`tools/openapi-check.mjs marks ${path} internal, but no function serves it any more`);
   const ls = (catalog && catalog.linkset && catalog.linkset[0]) || {};
