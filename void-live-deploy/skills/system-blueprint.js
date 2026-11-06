@@ -144,8 +144,7 @@ export function showBuild(line, s) {
   span.textContent = s.line;
   if (s.page && /^\/[a-z0-9][\w\/?=&.-]*$/i.test(s.page)) { const a = document.createElement('a'); a.href = s.page; a.textContent = ' open it'; span.append(' ·', a); }
 }
-// Every blueprint starts its own build (owner, 2026-11-06: "the blueprints should just automatically be started and built into verse
-// somewhere"): opening the card asks /api/blueprint to start it, which it does only for an idea Verse learned itself, and the line says
+// Every blueprint starts its own build (the owner asked for this on 2026-11-06): opening the card asks /api/blueprint to start it, which it does only for an idea Verse learned itself, and the line says
 // what is real (queued, building, live with its page, or a plan). One look when the card opens, one more a minute later while it is open.
 function buildLine(el, idea) {
   const line = el.querySelector('.bp-build');

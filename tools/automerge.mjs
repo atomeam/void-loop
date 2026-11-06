@@ -228,7 +228,13 @@ if (ready.length && !limited) {
     if (tested && mainSha && !samePrefix(tested, mainSha)) {
       try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s%nAUTHOR %an', tested + '..' + mainSha])); } catch (_) { drift = null; }
     }
-    rows.push({ ...row, suite, drift });
+    // the pull request's own files: a green run still counts past the squash of a pull request that shares none of them
+    // (tools/suite-gate.mjs, driftOk). More than 100, or unreadable: unknown, and only the older drift rule applies.
+    let files = null;
+    if (drift && drift.length) {
+      try { const list = gh(`repos/${repo}/pulls/${row.number}/files?per_page=100`); if (Array.isArray(list) && list.length < 100) files = list.flatMap((f) => [f.filename, f.previous_filename].filter(Boolean)); } catch (_) { files = null; }
+    }
+    rows.push({ ...row, suite, drift, files });
   }
   // the safety-check (asked by Verse): the unit tests of the skills and libs a PR changed, run on its head, before the
   // suite starts or the merge. Only on the pull requests the gate chose: on every ready one, the sweep passed its time limit.

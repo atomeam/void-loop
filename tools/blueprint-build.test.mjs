@@ -1,5 +1,4 @@
-// Every blueprint starts its own build (owner, 2026-11-06: "the blueprints should just automatically be started and built into verse
-// somewhere"): the plans (lib/watch-build.js planAll), which idea a card is (noteOfIdea), what the card says (buildState), the pace
+// Every blueprint starts its own build (the owner asked for this on 2026-11-06): the plans (lib/watch-build.js planAll), which idea a card is (noteOfIdea), what the card says (buildState), the pace
 // (tools/watch-build.mjs pickToQueue), the conductor's hour, the route (functions/api/blueprint.js) and the card's line.
 // Run: node --test tools/blueprint-build.test.mjs
 import { test } from 'node:test';

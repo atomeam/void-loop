@@ -251,6 +251,8 @@ import { SITE_PAGES } from './tool-sites.js';
 export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 
   // the Lab's tools open as an open-tool card, whose page link is the tool (skills/open-tool.js sets the card's page)
   ...Object.fromEntries([['/lab/level/', 'Spirit level'], ['/lab/checksum/', 'File checksum checker'], ['/lab/pattern/', 'Seamless pattern maker'], ['/lab/photo-palette/', 'Palette from a photo'], ['/lab/dictation/', 'Dictation'], ['/lab/mind-map/', 'Mind map maker']].map(([p, n]) => ['lab ' + p, [p, n]])),
+  // Starboard opens as an open-tool card too ("open starboard"), linking the deck
+  'deck /starboard/': ['/starboard/', 'Starboard'],
   'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
   weather: ['/weather/', 'Weather'], recipe: ['/recipes/', 'Recipes'], calc: ['/calculator/', 'Calculator'], vat: ['/vat/', 'VAT calculator'], 'calc-more': ['/calculator/', 'Calculator'],
   convert: ['/convert/', 'Unit converter'], gradient: ['/color/gradient/', 'Gradient'], wheel: ['/random/wheel/', 'Wheel of names'], coin: ['/random/coin/', 'Coin flip'],

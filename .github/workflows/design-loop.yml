@@ -7,6 +7,9 @@
 # The measure job holds no write token. The write job checks that each page in the patch is its old self plus the marked block and
 # nothing else (tools/design-loop.mjs --check), commits to main, and starts the deploy; the tower gate then measures the floors whose
 # pages changed against their live rivals, and verify.yml reverts main if the suite goes red.
+# The live-bar job opens the live home at 390 x 844 (a phone, touch) and 1280 x 800, asks a question, and fails when the answer card
+# comes within 12 px of the ask bar, a key in the bar is not dark, round and 44 px with its icon showing, or the page scrolls
+# sideways (tools/ask-bar.test.mjs with ASK_BAR_SITE). Its screenshots of both widths are kept as the ask-bar-live artifact.
 name: Verse improves its design
 
 on:
@@ -35,6 +38,49 @@ permissions:
   contents: read
 
 jobs:
+  live-bar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: The live ask bar at 390 and 1280 px
+        shell: bash
+        env:
+          ASK_BAR_SITE: https://a-to-mind.com
+          ASK_BAR_SHOTS: ${{ runner.temp }}/ask-bar
+          VOID_HEAVY_OFF: '1'
+        run: |
+          set -o pipefail
+          node --test tools/ask-bar.test.mjs 2>&1 | tee bar.txt
+          { echo "### The live ask bar"; echo; grep -E '^# at [0-9]+ px:' bar.txt | sed 's/^# /- /' || true; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ask-bar-live
+          path: ${{ runner.temp }}/ask-bar
+          if-no-files-found: ignore
+          retention-days: 14
+
   measure:
     runs-on: ubuntu-latest
     timeout-minutes: 45
