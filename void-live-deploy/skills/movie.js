@@ -13,7 +13,7 @@ const dayPick = () => FREE_PICKS[Math.floor(Date.now() / 864e5) % FREE_PICKS.len
 
 // LOOKUP_V names the lookup's answers: before 2026-10-30 a well-known film came back "not verified" (iTunes refused, no second source) and
 // browsers and the edge kept that answer for a day. A new v is a new address, so no answer cached by the old lookup is read again.
-export const LOOKUP_V = 2;
+export const LOOKUP_V = 3; // 3, 2026-11-06: the Wikidata answer carries the genres, so a pick's match score can test its genre
 export const lookupUrl = (m) => '/api/movies?title=' + encodeURIComponent(m.title) + (m.year ? '&year=' + m.year : '') + '&v=' + LOOKUP_V;
 async function lookup(m) {
   try { const r = await fetch(lookupUrl(m)); if (!r.ok) return { verified: false, title: m.title, year: m.year }; return await r.json(); } catch (_) { return { verified: false, title: m.title, year: m.year }; }

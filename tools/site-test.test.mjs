@@ -80,6 +80,14 @@ console.log('site-test: ' + n + ' checks passed');
   assert.equal(fast[2].loadMs, 400);
   const still = await recheckSlowLoads([{ ...slow }], lim, async () => 1500);
   assert.equal(still[0].ok, false); assert.equal(still[0].loadMs, 1309); assert.match(still[0].why.join(), /load 1309 ms > 1200/);
+  // #2364: one ask's home page load slow twice while the run's median home page load is fast is the network's tail, not a slow page
+  const many = [{ ...slow, loadRecheck: { c, r: { ...r, loadMs: 1233 } } }, ...[300, 420, 380, 500].map((ms) => ({ ...j({ ask: 'x' + ms }, { text: 'hi', loadMs: ms }, lim), loadMs: ms }))];
+  const tail = await recheckSlowLoads(many, lim, async () => 1240);
+  assert.equal(tail[0].ok, true, 'a fast page across the run is not filed for one slow load'); assert.equal(tail[0].loadMs, 420);
+  const slowPage = await recheckSlowLoads([{ ...slow }, { ...slow }, { ...slow }], lim, async () => 1300);
+  assert.equal(slowPage.every((x) => !x.ok), true, 'a page slow across the run and alone still fails');
+  const { medianLoads } = await import('./site-test.mjs');
+  assert.deepEqual(medianLoads([{ loadMs: 100 }, { loadMs: 300 }, { path: '/films/', loadMs: 900 }, null]), { '/': 300, '/films/': 900 }, 'each page has its own median');
   const broke = await recheckSlowLoads([{ ...slow }], lim, async () => { throw new Error('timeout'); });
   assert.equal(broke[0].ok, false, 'a second load that fails keeps the first verdict');
   const src = (await import('node:fs')).readFileSync(new URL('./site-test.mjs', import.meta.url), 'utf8');

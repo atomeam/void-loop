@@ -1,0 +1,153 @@
+# Verse improves its own design, every 2 hours, without a session driving it (owner, 2026-11-06: "its never complete verse is meant to
+# constantly improve its design"). tools/design-loop.mjs takes the next 30 of Verse's own pages, fewest controls first (the slices go round,
+# so every page comes up), measures each at phone width with the tower gate's design test (contrast, tap targets, layout shift), writes
+# the CSS rules that fix what it found into one marked <style> block at the end of the page, measures again, and keeps the rules only
+# when the defects went down and nothing else got worse (no sideways scroll, no new layout shift, at most a quarter of the first screen
+# moved). It records every page in void-live-deploy/design-loop.json. A defect no rule can fix is listed there for a builder.
+# The measure job holds no write token. The write job checks that each page in the patch is its old self plus the marked block and
+# nothing else (tools/design-loop.mjs --check), commits to main, and starts the deploy; the tower gate then measures the floors whose
+# pages changed against their live rivals, and verify.yml reverts main if the suite goes red.
+name: Verse improves its design
+
+on:
+  schedule:
+    - cron: '31 1-23/2 * * *' # every 2 hours, on the odd hours (propose-fix takes the even ones)
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: "a comma list of paths to work on (empty = the next slice, fewest controls first)"
+        type: string
+        default: ''
+      size:
+        description: "how many pages a run takes"
+        type: string
+        default: '30'
+      dry:
+        description: "measure and fix in the runner, but commit nothing"
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-design-loop
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      fixed: ${{ steps.loop.outputs.fixed }}
+      title: ${{ steps.loop.outputs.title }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Checks
+        run: node --test tools/design-loop.test.mjs
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Measure, fix, measure again
+        id: loop
+        shell: bash
+        env:
+          PAGES: ${{ inputs.pages }}
+          SIZE: ${{ inputs.size || '30' }}
+          DRY: ${{ inputs.dry && '1' || '' }}
+        run: |
+          echo "fixed=0" >> "$GITHUB_OUTPUT"
+          args=(--write --out "$RUNNER_TEMP/dl" --size "$SIZE"); [ -n "$PAGES" ] && args+=(--pages "$PAGES")
+          node tools/design-loop.mjs "${args[@]}" | tee loop.txt
+          r="$RUNNER_TEMP/dl/design-loop.report.json"
+          fixed=$(node -p "require(process.argv[1]).summary.fixed" "$r")
+          title=$(node -p "const s = require(process.argv[1]).summary; 'Design loop: ' + s.fixed + ' page' + (s.fixed === 1 ? '' : 's') + ' fixed, ' + s.defectsBefore + ' -> ' + s.defectsAfter + ' design defects'" "$r")
+          {
+            echo "### $title"
+            echo
+            echo "$(node -p "const s = require(process.argv[1]).summary; s.measured + ' measured, ' + s.clean + ' clean, ' + s.fixed + ' fixed, ' + s.listed + ' listed for a builder'" "$r")"
+            echo
+            echo '```'
+            grep -E '^/' loop.txt || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "title=$title" >> "$GITHUB_OUTPUT"
+          [ "$fixed" -gt 0 ] || { echo "nothing to commit: no page was fixed"; exit 0; }
+          # the pages still pass their own tests with the block in them
+          node --test tools/verse-shell.test.mjs tools/glass-pages.test.mjs tools/fresh-scripts.test.mjs tools/is-it.test.mjs
+          node tools/design-loop.mjs --check
+          [ -n "$DRY" ] && { echo "a dry run: nothing committed"; exit 0; }
+          echo "fixed=$fixed" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: design-loop
+          path: |
+            ${{ runner.temp }}/dl/design-loop.patch
+            ${{ runner.temp }}/dl/design-loop.report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # moves only the patch's bytes onto main: every page must be its old self plus the marked block, and the record must be JSON
+  write:
+    needs: measure
+    if: needs.measure.outputs.fixed != '0' && needs.measure.outputs.fixed != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write # start the deploy after the commit (a push by this token starts no workflow)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: design-loop
+          path: ${{ runner.temp }}/dl
+      - name: Commit the fixes and deploy
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ needs.measure.outputs.title }}
+        run: |
+          patch="$RUNNER_TEMP/dl/design-loop.patch"
+          git apply --numstat "$patch" | cut -f3 | grep -vE '^void-live-deploy/((([A-Za-z0-9_.-]+/)*index\.html)|design-loop\.json)$' && { echo "::error title=Not committed::the patch touches more than pages and the record"; exit 1; } || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          url=""
+          for i in 1 2 3 4; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            # runs never overlap (the concurrency group), so the patch applies unless a builder changed the same pages meanwhile
+            git apply "$patch" || { echo "::warning title=Not committed::main moved and the fixes no longer apply; the next run measures again"; exit 0; }
+            node tools/design-loop.mjs --check || exit 1
+            git add -A -- void-live-deploy
+            git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
+            git commit -q -m "$TITLE" -m "Measured at phone width, fixed with CSS rules in one marked block per page, and measured again; kept only where the defects went down and nothing else got worse (tools/design-loop.mjs, .github/workflows/design-loop.yml)."
+            git push -q origin HEAD:main && { url="https://github.com/${{ github.repository }}/commit/$(git rev-parse HEAD)"; break; }
+            sleep $((2 ** i))
+          done
+          [ -n "$url" ] || exit 1
+          echo "### $TITLE: $url" >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
