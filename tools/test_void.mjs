@@ -1538,6 +1538,8 @@ try {
     const won3 = FLOORS.filter((f) => f.id !== TARGET).slice(0, 3);
     const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    // since the season reset (#2412) a site shows only once tower.target.json lists it as passed this season: the stub season has these three passed
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...served('tower.target.json'), passed: won3.map((f) => ({ id: f.id, at: '2026-11-06' })) }) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
       return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
@@ -1561,7 +1563,12 @@ try {
     const all = (f) => passingRows(f, { evidence: 'stub' });
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    // since the season reset (#2412) a site shows only once tower.target.json lists it as passed this season, so the stub passes both floors there too
+    const tg = JSON.parse(fs.readFileSync(path.join(root, 'tower.target.json'), 'utf8')), passed = [...(tg.passed || []), ...Object.keys(floors).map((id) => ({ id, at: '2026-11-06' }))];
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...tg, passed }) }));
     await P.ask('the tower', 1200);
+    // the card can take longer than the ask's wait on a phone runner: wait for its rows, then read them
+    await P.p.waitForSelector('.vpage.on .tower-floor', { timeout: 8000 }).catch(() => {});
     const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
       return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
         every: [...c.querySelectorAll('.tw-links')].every((l) => l.querySelector('.tw-page')), wide: document.documentElement.scrollWidth <= innerWidth }; }).catch((e) => ({ err: String(e) }));
@@ -1613,6 +1620,9 @@ try {
     // calculator.net's whole checklist as the gate demands it: its aspects and its journeys with steps and negative controls (docs/GATE-STANDARDS.md)
     const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), won = passingRows(FLOORS.find((f) => f.id === 'calculator'), { evidence: 'stub' });
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: won } : {} }) }); });
+    // since the season reset (#2412) a site shows only once tower.target.json lists it as passed this season: calculator.net is passed in the stub season
+    const tg = JSON.parse(fs.readFileSync(path.join(root, 'tower.target.json'), 'utf8'));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ ...tg, passed: [{ id: 'calculator', at: '2026-11-06' }] }) }));
     await P.p.evaluate(() => { window.__towerPollMs = 400; });
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
     const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
@@ -7830,7 +7840,7 @@ try {
     gen = 2; const three = await until(async () => { const r = await read(); return r && r.refreshed && /Round three/.test(r.text) ? r : null; }, 14000).catch(() => null);
     check('self card never repeats: "since i last looked" opens the self card (not the model) with the newest builds first; opened again it leads with "Since you last looked" (the counts that moved, the new build) and none of the sentences read before; open, it redraws by itself with the next round',
       !!one && one.lead === 'since' && /Newest/.test(one.head) && /blank stage with one quiet input/.test(one.text) && /Round one/.test(one.text) && loop && loop.note === 'voice'
-        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 asks built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
+        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 ask built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
         && !!three && /Round three/.test(three.text) && !/blank stage with one quiet input/.test(three.text) && !N.errors.length,
       JSON.stringify({ one: one && { ...one, text: one.text.slice(0, 200) }, loop, two: two && { ...two, text: two.text.slice(0, 300) }, three: three && three.text.slice(0, 200), errors: N.errors }));
     await N.ctx.close(); }
