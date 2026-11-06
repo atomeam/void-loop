@@ -200,14 +200,26 @@ export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tool
  *  `changedAt` (the newest commit to LOOP_CODE on main) is after the first failure of the streak: the failures were on code
  *  that no longer runs (2026-10-29: the coder's token-cap fix merged at the same minute the third failure paused the loop
  *  for 6 hours). Pure. */
-export function pauseState({ state = {}, issue = null, now = Date.now(), changedAt = null }) {
+export function pauseState({ state = {}, issue = null, now = Date.now(), changedAt = null, closed = false }) {
   const since = state.pausedAt != null ? state.pausedAt : issue && Date.parse(issue.createdAt) ? Date.parse(issue.createdAt) : null;
   if (since == null) return { paused: false, resume: false };
   const until = since + PAUSE_HOURS * 3600e3;
+  // the pause's issue was closed while the state still held the pause: the issue is the switch, so the state follows it
+  // (2026-11-06: issue #2438 closed at 18:40, yet the saved state kept laps and queue jobs paused until 21:22)
+  if (now < until && state.pausedAt != null && !issue && closed) return { paused: false, resume: true, until, closed: true };
   const ats = (state.last || []).map((l) => Number(l && l.at)).filter((n) => n > 0);
   const began = ats.length ? Math.min(...ats) : since;
   if (now < until && Number(changedAt) > began) return { paused: false, resume: true, until, early: true };
   return now < until ? { paused: true, resume: false, until } : { paused: false, resume: true, until };
+}
+
+/** Was the issue this pause opened closed? `closedIssues` is the closed 'Verse loop paused' issues (gh issue list, or null when gh
+ *  failed: then no, and the pause holds). The pause's own issue is the one opened when it paused, so it counts only if it was
+ *  created no earlier than PAUSE_SKEW before `pausedAt` (an older closed issue is an earlier pause). Pure. */
+export const PAUSE_SKEW = 15 * 60e3;
+export function pauseIssueClosed(closedIssues, pausedAt) {
+  if (!Array.isArray(closedIssues) || pausedAt == null) return false;
+  return closedIssues.some((i) => i && i.title === PAUSE_TITLE && Date.parse(i.createdAt) >= Number(pausedAt) - PAUSE_SKEW);
 }
 
 /** The streak after one lap. A merged PR resets it; a PR closed without merging counts as a failure. Pure. */
@@ -357,10 +369,11 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     // the pause: skip until it ends, then resume by itself
     const issue = pauseIssue();
     const ct = state.pausedAt != null || issue ? Number(git('log', '-1', '--first-parent', '--format=%ct', 'HEAD', '--', ...LOOP_CODE).out.trim()) : 0;
-    const p = pauseState({ state, issue, now, changedAt: ct > 0 ? ct * 1000 : null });
+    const closed = state.pausedAt != null && !issue && pauseIssueClosed(ghJson('issue', 'list', '--state', 'closed', '--search', `"${PAUSE_TITLE}" in:title`, '--json', 'number,title,createdAt', '--limit', '5'), state.pausedAt);
+    const p = pauseState({ state, issue, now, changedAt: ct > 0 ? ct * 1000 : null, closed });
     if (p.paused) return done('paused', `${BACKOFF_AFTER} laps in a row failed or did not merge; it resumes by itself at ${new Date(p.until).toISOString()}`);
     if (p.resume) {
-      step(p.early ? 'the loop\'s code changed after the failures began; resuming early' : 'the pause is over; resuming');
+      step(p.closed ? 'the pause\'s issue was closed; resuming' : p.early ? 'the loop\'s code changed after the failures began; resuming early' : 'the pause is over; resuming');
       if (keep) {
         if (issue) gh('issue', 'close', String(issue.number), '--comment', p.early
           ? `Resumed early: the loop's own code changed on main after these failures began, so they were not on the code that runs now (tools/verse-loop.mjs).`
