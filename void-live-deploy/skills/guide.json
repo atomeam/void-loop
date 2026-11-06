@@ -2737,7 +2737,7 @@
     "timer"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
+   "why": "a self-test, 4 browser-suite mentions, 34 real asks in the benchmark",
    "flavor": "Asked 34 times in earnest, and never once left unanswered. It has not failed a reader yet.",
    "glow": 100,
    "n": 138
@@ -5280,7 +5280,7 @@
     "dismiss the selected thing"
    ],
    "tier": "proven",
-   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Turn the page when you are done.",
    "glow": 100,
    "n": 280
@@ -6513,7 +6513,7 @@
     "bookmark this ask"
    ],
    "tier": "proven",
-   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Asked 3 times in earnest, and never once left unanswered. This is the page of bookmarks.",
    "glow": 100,
    "n": 354
@@ -7778,7 +7778,7 @@
     "put tape on my notes"
    ],
    "tier": "proven",
-   "why": "a self-test, 4 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
    "flavor": "Keep this page; the safety and small delights are built on it. It has not failed a reader yet.",
    "glow": 100,
    "n": 427
