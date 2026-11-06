@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: text; out: text">
+<title>File checksum checker: SHA-256, MD5, SHA-1 on your device · Verse lab</title>
+<meta name="description" content="Check a download is the file it says it is: drop any file, of any size, and get its SHA-256 (plus MD5, SHA-1 or SHA-512), compared against the sum you paste or a SHA256SUMS list. The file is never uploaded; a SHA256SUMS file of your own downloads in one click.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="File checksum checker · Verse lab">
+<meta property="og:description" content="SHA-256, MD5, SHA-1 and SHA-512 of any file, checked against the sum you paste. The file never leaves your device.">
+<meta property="og:url" content="https://a-to-mind.com/lab/checksum/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tools.css">
+<style> ul { list-style: none; padding: 0; margin: 6px 0; } li { margin: 6px 0; } li button { min-height: 30px; padding: 2px 10px; margin-left: 4px; } </style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/lab/checksum/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"File checksum checker","url":"https://a-to-mind.com/lab/checksum/","description":"Check a download is the file it says it is: drop any file, of any size, and get its SHA-256 (with MD5, SHA-1 or SHA-512 if wanted), compared against the sum you paste or a SHA256SUMS list. The file is read on your device and never uploaded.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"sha256 checksum online, verify sha256 of a file, md5 checksum checker, file hash checker, check iso checksum, sha256sum online no upload","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"File checksum checker","item":"https://a-to-mind.com/lab/checksum/"}]}]}</script>
+<!-- /seo -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/lab/checksum/app.js"></script>
+</head>
+<body>
+<main>
+  <h1>File checksum checker</h1>
+  <p class="lead">Is this download the file it says it is? Drop it here and paste the checksum the download page gives.</p>
+  <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose files to check">Drop files here, or tap to choose. Any size: a 20 GB image is read in pieces.</div>
+  <input id="pick" type="file" multiple hidden>
+  <div class="panel">
+    <label for="expect">The checksum you were given (SHA-256, MD5, SHA-1 or SHA-512)</label>
+    <input id="expect" type="text" autocomplete="off" spellcheck="false" placeholder="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" style="width:100%">
+    <details><summary class="note">Or paste a whole SHA256SUMS list</summary><textarea id="sums" spellcheck="false" style="min-height:90px" placeholder="hash  file-name"></textarea></details>
+    <div class="row"><span class="note">Also work out:</span>
+      <label><input type="checkbox" id="a-md5"> MD5</label><label><input type="checkbox" id="a-sha1"> SHA-1</label><label><input type="checkbox" id="a-sha512"> SHA-512</label></div>
+  </div>
+  <div id="out" aria-live="polite"></div>
+  <div class="row"><button type="button" id="save" disabled>Download SHA256SUMS</button></div>
+  <h2>The SHA-256 of a text</h2>
+  <div class="panel"><textarea id="text" style="min-height:80px" placeholder="Type or paste text (hashed as its UTF-8 bytes, the same as echo -n text | sha256sum)"></textarea><p id="texthash" class="mono"></p></div>
+  <p class="note">Every sum is worked out in this browser. The file is read on this device and never uploaded, so this works offline and on private files.</p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/base64/">Base64</a> <a href="/converter/">File converter</a> <a href="/password/">Password generator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="from">Made from the lab's sealed experiments, which hashed their own state with SHA-256; this hashes your file, which is what the sum is for. <a href="/lab/">More from the lab</a></p>
+</main>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

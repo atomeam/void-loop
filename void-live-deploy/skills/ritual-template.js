@@ -31,7 +31,7 @@ function run(text, api) {
 export default {
   name: 'ritual-template',
   about: 'A sequence of habits (morning, evening, workout, or your own) as back-to-back daily calendar events in one .ics file.',
-  examples: ['morning routine as calendar events', 'export my evening routine to my calendar', 'ritual template: meditate 10, stretch 15, journal 10 at 6:30am'],
+  examples: ['morning routine as calendar events', 'export my evening routine to my calendar', 'make me a morning routine starting at 6:30', 'ritual template: meditate 10, stretch 15, journal 10 at 6:30am'],
   nearMisses: ['my morning', 'export my calendar', 'call this my morning', 'morning routine ideas'],
   match(lower, text) { return !!ritualAsk(text || lower); },
   run
