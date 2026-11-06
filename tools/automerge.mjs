@@ -226,7 +226,7 @@ if (ready.length && !limited) {
     } catch (_) {}
     const tested = recordedMain(suite);
     if (tested && mainSha && !samePrefix(tested, mainSha)) {
-      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s', tested + '..' + mainSha])); } catch (_) { drift = null; }
+      try { drift = parseLog(ex('git', ['log', '--name-only', '--pretty=format:COMMIT %s%nAUTHOR %an', tested + '..' + mainSha])); } catch (_) { drift = null; }
     }
     rows.push({ ...row, suite, drift });
   }

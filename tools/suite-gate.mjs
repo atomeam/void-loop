@@ -30,12 +30,13 @@ export function parseLog(text) {
   let cur = null;
   for (const line of String(text || '').split('\n')) {
     const t = line.trim();
-    if (t === 'COMMIT' || t.startsWith('COMMIT ')) { // "COMMIT <subject>" with --pretty=format:'COMMIT %s'
+    if (t === 'COMMIT' || t.startsWith('COMMIT ')) { // "COMMIT <subject>" with --pretty=format:'COMMIT %s%nAUTHOR %an'
       if (cur) commits.push(cur);
       cur = [];
       if (t.length > 7) cur.subject = t.slice(7).trim();
       continue;
     }
+    if (cur && !cur.length && cur.author === undefined && t.startsWith('AUTHOR ')) { cur.author = t.slice(7).trim(); continue; }
     if (cur && line.trim()) cur.push(line.trim());
   }
   if (cur) commits.push(cur);
@@ -62,12 +63,26 @@ export function squashOf(subject) {
   return m ? Number(m[1]) : 0;
 }
 
-/** every commit since the tested main only writes the incident record, or is the squash of a pull request in the same batch. Pure. */
+/** the bot that writes Verse's records straight to main (tower evidence, site tests, exams, findings, treasury). */
+export const RECORD_BOT = 'github-actions[bot]';
+const DATA = /\.(json|jsonl|md|txt|log|csv|xml|png|jpe?g|webp|gif|ico)$/i; // records and the screenshots and icons they cite
+const NOT_DATA = /^(\.github\/|void-live-deploy\/(lib|skills)\/)|(^|\/)(package(-lock)?\.json|wrangler\.(json|jsonc|toml))$/;
+
+/** a commit the record bot wrote straight to main that only changes data files (no code, page, workflow or skill file),
+ * and that is not the squash of a pull request. About 7 land an hour (2026-11-06: 127 of 173 bot commits in a day), and a
+ * suite run takes about 30 minutes, so without this a green run almost never found main unmoved. Pure. */
+export function botRecord(files) {
+  if (!files || files.author !== RECORD_BOT || squashOf(files.subject) || !files.length) return false;
+  return files.every((f) => DATA.test(String(f)) && !NOT_DATA.test(String(f)));
+}
+
+/** every commit since the tested main only writes the incident record or another bot record, or is the squash of a pull
+ * request in the same batch. Pure. */
 export function driftOk(commits, batch) {
   if (!Array.isArray(commits)) return false;
   const mates = new Set(batch || []);
   const incident = (files) => (files || []).every((f) => String(f).startsWith('void-live-deploy/incidents/'));
-  return commits.every((files) => incident(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
+  return commits.every((files) => incident(files) || botRecord(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
 }
 
 /** the suite passed, and either it merged this main, or only incident commits and squashes of its own batch landed since. Pure. */
