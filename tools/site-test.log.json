@@ -3606,5 +3606,335 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T15:53:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2015,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9529 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T16:03:35Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 379,
+  "kind": "file",
+  "key": "flip this card | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "flip this card",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "https://github.com/atomeam/void-loop/blob/main/README.md",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2015,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9529 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"flip this card\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T16:16:36Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2380,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T16:31:22Z",
+  "passed": 73,
+  "of": 90,
+  "ms": 475,
+  "kind": "file",
+  "key": "play solarquest | load # ms > #",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "load 1213 ms > 1200"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "load 1906 ms > 1200"
+   },
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "can we play despacito",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "what did this video teach? pls",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "yo watch the apollo 11 landing",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2380,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"play solarquest\" load 1213 ms > 1200"
+ },
+ {
+  "at": "2026-11-05T17:15:33Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1868,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17432 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T18:05:55Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1699,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11030 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-05T18:16:04Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 388,
+  "kind": "file",
+  "key": "favorite this | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "dyslexia friendly font",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1699,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11030 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"favorite this\" only \"waking up\" appeared, never the answer"
+ },
+ {
+  "at": "2026-11-05T18:51:53Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 13,
+   "of": 15,
+   "medianMs": 2728,
+   "failed": [
+    {
+     "ask": "convert 100 usd to eur",
+     "why": [
+      "refused"
+     ]
+    },
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 13675 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 13/15"
+ },
+ {
+  "at": "2026-11-05T22:16:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1465,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T00:16:19Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2007,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10502 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T00:26:03Z",
+  "passed": 87,
+  "of": 90,
+  "ms": 382,
+  "kind": "file",
+  "key": "yo new automation | load # ms > #",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "yo new automation",
+    "why": "load 1309 ms > 1200"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2007,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10502 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"yo new automation\" load 1309 ms > 1200"
+ },
+ {
+  "at": "2026-11-06T02:49:24Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2287,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12031 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

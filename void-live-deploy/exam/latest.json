@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-05T15:05:52.889Z",
+  "at": "2026-11-06T00:40:34.478Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -44,9 +44,9 @@
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
-            "episode"
+            "audio"
           ],
           "score": 85.7
         },
@@ -162,25 +162,23 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -219,7 +217,7 @@
       }
     },
     "recipes": {
-      "score": 95.4,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -227,10 +225,9 @@
           "ask": "recipe",
           "failed": [
             "skill",
-            "method",
             "rival"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "receta de guacamole",
@@ -296,59 +293,10 @@
       }
     },
     "sports": {
-      "score": 89.8,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "mlb scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "premier league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "serie a scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "la liga scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "scores",
           "failed": [
@@ -382,33 +330,10 @@
       }
     },
     "emoji": {
-      "score": 85,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "heart emoji",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "emoji feu",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        },
-        {
-          "ask": "emoji for thank you",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        }
-      ]
+      "fails": []
     },
     "translate": {
       "score": 89.2,
@@ -476,7 +401,7 @@
       ]
     },
     "timers": {
-      "score": 83.3,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -495,19 +420,11 @@
           "score": 80
         },
         {
-          "ask": "timer for 5",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
           "ask": "set a timer for 45 seconds",
           "failed": [
-            "mobile",
-            "rival"
+            "mobile"
           ],
-          "score": 60
+          "score": 80
         }
       ]
     },
@@ -567,7 +484,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 83.3
+    "domain": "podcasts",
+    "score": 84.8
   }
 }
