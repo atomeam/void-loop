@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T15:53:09.220Z",
+ "updated": "2026-11-06T16:03:51.354Z",
  "last24h": {
-  "ticks": 37,
-  "started": 74,
+  "ticks": 38,
+  "started": 76,
   "requeued": 0,
   "setAside": 0,
   "probes": 6,
@@ -115,7 +115,8 @@
   "mw4ouylb": 1793958599851,
   "mw4ouzj0": 1793977008963,
   "mw546kng": 1793979670513,
-  "mw546l9r": 1793980389220
+  "mw546l9r": 1793980389220,
+  "mw546lyb": 1793981031354
  },
  "sweptAt": 1793979670513,
  "visitorAt": "2026-11-06T15:51:51Z",
@@ -1299,6 +1300,38 @@
     },
     {
      "id": "mw546l9r",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "held": 14,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T16:03:51.354Z",
+   "open": 241,
+   "started": [
+    {
+     "id": "mvw5r1rz",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 98
+    },
+    {
+     "id": "mw546lyb",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
