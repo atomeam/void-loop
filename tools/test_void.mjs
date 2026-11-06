@@ -7862,7 +7862,10 @@ try {
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
-    const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
+    // each built ask in words of its own: asks with only the numbers changed, or most words shared, are one ask (lib/ask-same.js, #2405), so
+    // thirty asks that differ only by their number fold into one row (red on main since #2405, 2026-11-06)
+    const L26 = 'abcdefghijklmnopqrstuvwxyz', own = (i) => Array.from({ length: 7 }, (_, k) => 'zo' + L26[Math.floor(i / 26)] + L26[i % 26] + L26[k]).join(' ');
+    const long = (i) => 'built ask number ' + i + ': ' + own(i) + ', ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
     // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
