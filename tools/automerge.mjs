@@ -135,7 +135,7 @@ let merged = 0;
 const ready = [];
 const closed = new Set(superseded(prs).map((r) => r.number));
 // A sweep reads the oldest pull requests first and stops reading after SWEEP_MS, so it always reaches the suite gate inside
-// the job's 5 minute limit (automerge.yml). The pull requests it did not read wait for the next sweep. (2026-11-06)
+// the job's 15 minute limit (automerge.yml), with time left for the safety-check of the batch. The pull requests it did not read wait for the next sweep. (2026-11-06)
 const SWEEP_MS = +(process.env.AUTOMERGE_SWEEP_MS || 200e3), sweepStart = Date.now();
 if (!one && Array.isArray(prs)) prs.sort((a, b) => a.number - b.number);
 for (let p of prs) {
