@@ -582,6 +582,54 @@
  },
  "commits": [
   {
+   "at": "2026-11-06T04:57:55Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-06T04:57:50Z",
+   "subject": "Brain organ 25, Rules: the decision-tree drafts guess which way your next stroke goes"
+  },
+  {
+   "at": "2026-11-06T04:57:19Z",
+   "subject": "Verse's wallet: Atom's MetaMask address on Base as payTo (#2365)"
+  },
+  {
+   "at": "2026-11-06T04:52:12Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T04:51:30Z",
+   "subject": "Site test: fix: \"longevity trial watch\" load 1233 ms > 1200"
+  },
+  {
+   "at": "2026-11-06T04:48:40Z",
+   "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-06T04:41:10Z",
+   "subject": "Verse's wallet: a receive address kept in the repo, no Coinbase account needed (#2356)"
+  },
+  {
+   "at": "2026-11-06T04:39:49Z",
+   "subject": "The new mark reaches a returning browser (#2357)"
+  },
+  {
+   "at": "2026-11-06T04:37:12Z",
+   "subject": "claude-brain loads the SDK only for a real call, so its fake-client test runs in the merge gate's worktree without packages"
+  },
+  {
+   "at": "2026-11-06T04:37:01Z",
+   "subject": "Incident: the browser suite failed on 29cdceaf (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T04:27:30Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-06T04:27:05Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
    "at": "2026-11-06T04:25:57Z",
    "subject": "Tower gate: prizes measured against their live sites"
   },
@@ -612,54 +660,6 @@
   {
    "at": "2026-11-06T04:05:58Z",
    "subject": "The away line stays clickable while hidden, so the walkthrough tests run again (#2338)"
-  },
-  {
-   "at": "2026-11-06T04:05:46Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-06T04:05:39Z",
-   "subject": "Music: heavy songs in stereo, guitars left and right, with presence (#2339)"
-  },
-  {
-   "at": "2026-11-06T04:05:21Z",
-   "subject": "Podcast exam reads the answer card's own audio; Verse Out Loud plays a whole address (#2340)"
-  },
-  {
-   "at": "2026-11-06T04:05:01Z",
-   "subject": "Merge queue: suite runs in batches of 8, no hourly waits, and a stall alarm (#2343)"
-  },
-  {
-   "at": "2026-11-06T04:04:32Z",
-   "subject": "Image: a daily live check paints and changes one picture on a-to-mind.com/image/ (#2344)"
-  },
-  {
-   "at": "2026-11-06T04:04:30Z",
-   "subject": "Board: claude/project-thread-2r9unn shipped (https://github.com/atomeam/void-loop/pull/2346)"
-  },
-  {
-   "at": "2026-11-06T04:03:29Z",
-   "subject": "Brain tests: independent brains run at once; a brain's fluid no longer depends on what ran before it (#2345)"
-  },
-  {
-   "at": "2026-11-06T04:03:10Z",
-   "subject": "Gaps batches 1 and 2: 24 asks Verse failed on, now answered in the page (#2346)"
-  },
-  {
-   "at": "2026-11-06T03:59:55Z",
-   "subject": "3D miniatures test WebGL once and detect KTX2 support only before a model loads (#2347)"
-  },
-  {
-   "at": "2026-11-06T03:58:04Z",
-   "subject": "Conversation orb: a follow-up is answered in the light of the ask it follows (#2348)"
-  },
-  {
-   "at": "2026-11-06T03:57:38Z",
-   "subject": "The will's overhaul ask is kept whole on the wants card (#2349)"
-  },
-  {
-   "at": "2026-11-06T03:57:20Z",
-   "subject": "Inventory: describe the 9 skills that had no line (main's inventory test failed) (#2350)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 10,
-  "week": 161
+  "day": 11,
+  "week": 162
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
