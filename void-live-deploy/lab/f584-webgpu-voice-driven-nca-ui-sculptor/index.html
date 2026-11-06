@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .portal {
+    position: absolute; width: 180px; height: 120px; background: rgba(20,24,40,0.75);
+    border: 1px solid #4af; border-radius: 12px; padding: 12px; box-sizing: border-box;
+    backdrop-filter: blur(4px); cursor: grab; user-select: none; transition: none;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .portal h3 { margin: 0; font-size: 14px; color: #8cf; }
+  .portal p { margin: 0; font-size: 12px; opacity: 0.8; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px; border-radius: 8px; }
+  #ui label { font-size: 12px; }
+  button, input { margin: 2px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Voice-Driven NCA UI Sculptor · Verse lab</title>
+<meta name="description" content="A WebGPU compute Neural Cellular Automaton (NCA) runs as a continuous “thought field.” Microphone amplitude (or a simulated voice energy slider) injects local">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Voice-Driven NCA UI Sculptor · Verse lab">
+<meta property="og:description" content="A WebGPU compute Neural Cellular Automaton (NCA) runs as a continuous “thought field.” Microphone amplitude (or a simulated voice energy slider) injects local">
+<meta property="og:url" content="https://a-to-mind.com/lab/f584-webgpu-voice-driven-nca-ui-sculptor/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f584-webgpu-voice-driven-nca-ui-sculptor/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <label>Energy <input id="energy" type="range" min="0" max="1" step="0.01" value="0.3"></label><br>
+  <button id="mic">Enable Mic</button>
+  <button id="reset">Reset Weights</button>
+  <button id="seal">Seal State</button>
+  <div id="status">init…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Voice-Driven NCA UI Sculptor</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

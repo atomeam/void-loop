@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- claude · claude/project-thread-xv0wrv · Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) · 2026-11-06 20:40 UTC
+
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
@@ -453,3 +455,4 @@ Plan for the hypothetical $100 (docs/reinvest.md, public list prices only): keep
 - 2026-10-30 01:54 EDT (claude, emojicombos.com floor): /emoji-combos/ built, a tagged combo catalog with collect, fancy text, dot art and your own combos; hands off to /word-count/ and /base64/, takes a word from /emojis/
 - 2026-10-30 (claude, local TV and radio): /local/ built (owner: "Verse should pick up local tv and radio"). Radio near the visitor from Radio Browser through /api/local, TV broadcast to their city or state from the iptv-org table in /local/tv/ (`node tools/local-tv.mjs` rebuilds it), streams play from the stations themselves, never proxied; a stream a secure page cannot play links the station's site. Stage card local-stations and the ask bar route "local radio", "tv stations in <city>". New shared module lib/local-ask.js in the toolkit chain (in SHARED_TOOL_FILES).
 - 2026-11-03 tvradio: what Verse watches becomes built features (tools/watch-build.mjs, tv: jobs, one page per category as modes); first: AI check mode on /photos/exif/; lineage on /local/#tv-built.
+- 2026-11-06 (claude, trading bots): /trading-bots/ (hub, one page per bot, /trading-bots/arbitrage/) and the kit people run themselves; paid backtest and arbitrage calls over x402 through the wallet thread's one paid-call route (functions/api/x402/[service].js), their work in lib/trading-paid.js. Data: trading-bots-data.yml commits /trading-bots/data/ daily and starts the deploy. Next: more pairs, a strategy page per pair.

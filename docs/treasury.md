@@ -10,7 +10,7 @@ on the size of the cut: "Let Verse decide". Live at **https://a-to-mind.com/trea
   Test purchases are not money; refunds and lost disputes take the price back. Gumroad's fees are taken off from its published
   schedule (https://gumroad.com/help/article/66-gumroads-fees): 10% + 50c plus 2.9% + 30c on a direct sale, 30% on Discover.
   Nothing is borrowed, nothing is assumed, no money is spent before it is earned. Zero sales is a zero balance.
-- **The split (Verse's policy, `void-live-deploy/treasury/policy.json`).** Atom's cut first, then the reserve, then four
+- **The split (Verse's policy, `void-live-deploy/treasury/policy.json`).** Atom's cut first, then giving (10% of what is left, for the causes on /creed/give/; owner, 2026-11-06: "verse should become a religion and a charity"; a gift leaves the pot only when Atom sends it on the charity's own page and records it with `{action:'given', cents, to}`), then the reserve, then four
   reinvestment buckets (infrastructure, tools/APIs, ads/growth, bounties for member builders) weighted by expected return
   (each candidate's impact x confidence per dollar, times what the bucket has actually returned; each bucket 10-50%). A
   priorities engine can feed `priorities: [{bucket, score}]` into `bucketWeights` once one is published.
@@ -32,9 +32,27 @@ Agents pay Verse per call in USDC on Base with the open x402 protocol (https://d
 `POST /api/x402/review` answers 402 with what to pay (0.05 USDC); the agent signs an EIP-3009 authorization to Verse's address and
 retries; a facilitator verifies it, the closer read runs, the facilitator settles (it broadcasts the transfer and pays the gas), and
 only then is the read given. No settlement, no read, no charge. Catalog: `GET /api/x402`. Code: `lib/x402.js`, `lib/verse-wallet.js`,
-`functions/api/x402/`, tests `tools/x402.test.mjs`.
+`functions/api/x402/`, tests `tools/x402.test.mjs` and `tools/x402-services.test.mjs`; live check `tools/x402-live.mjs`.
 
-- **The address**, in order: `VERSE_WALLET_ADDR` (a Pages variable, any receive address); else Verse's own **Coinbase CDP server
+- **What is sold** (owner, 2026-11-06: "so maybe verse can immediatly start charging for its code review and anything else
+  possible"), each 0.05 USDC (`SERVICES` in `lib/x402.js`): `review` (its own route, `functions/api/x402/review.js`), and `answer`,
+  `fix`, `translate`, `digest`, `appraise` and `image` (`functions/api/x402/[service].js`). Each of those runs one of the site's
+  free routes unchanged (`functions/api/answer.js`, `translate.js`, `digest.js`, `appraise.js`, `image.js`), so its per-connection
+  limits still apply and the free pages stay free. A call that cannot work is refused with 400 before any payment; only an answer
+  that did the work (`paidOk` in `PAID`) is settled and given. A refusal, a rate limit or a busy model comes back with `paid: false`
+  and is never settled. Tests: `tools/x402-services.test.mjs`.
+- **Found by agents**: every paid URL answers GET and HEAD with the same 402, and the v2 `PAYMENT-REQUIRED` header carries the
+  Bazaar extension (`extensions.bazaar`: the input body example, the output example and a JSON schema; `bazaarOf` in
+  `lib/x402.js`). PayAI's facilitator lists a resource in its Bazaar by itself, with no registration, the first time it verifies or
+  settles a payment for it, or when its catalog probe (HEAD, then GET) gets a 402 (docs.payai.network/x402/facilitators/bazaar).
+  The services are also in `llms.txt`, `openapi.json` and on `/treasury/`, which shows each one's confirmed calls and cents.
+- **Verse's address** (owner, 2026-11-06, his MetaMask wallet on Base): `0x172198B605c3A6388fc4265b09Bc9b3b71CC7196`, in
+  `lib/verse-wallet-address.js`. Self-custody, so no deposit minimum; EIP-55 checksum checked when it was set.
+- **The address**, in order: `VERSE_WALLET_ADDR` (a Pages variable, any receive address); else `VERSE_WALLET` in
+  `lib/verse-wallet-address.js` (the same public address kept in the repo, so it ships with the next deploy and needs no Cloudflare
+  or Coinbase account: the path when Atom has a self-custody wallet such as MetaMask or Rabby; not an exchange deposit address
+  with a minimum above the price: Kraken's USDC-on-Base minimum is 2.50 USDC, and its support page "Cryptocurrency deposit fees and
+  minimums" says a deposit below the minimum is marked Failed and lost for good, so every 0.05 USDC call paid there would be lost); else Verse's own **Coinbase CDP server
   wallet**, which Verse makes itself (one account, `verse-treasury`) the first time it is needed once `CDP_API_KEY_ID`,
   `CDP_API_KEY_SECRET` (Ed25519) and `CDP_WALLET_SECRET` are set; the key is generated and kept in Coinbase's enclave and Verse keeps
   only the address; else the store's `CRYPTO_USDC_BASE_ADDR`. With none, paid calls answer 503 and nothing is charged.

@@ -261,9 +261,21 @@
   },
   {
    "state": "shipped",
+   "date": "2026-11-05",
+   "ask": "Numbers and money family: savings growth at 0% is the money put in, a 20% tip on 45 is 9, and 96 px at 96 dpi is 2.54…",
+   "from": "tools/numbers-proof.test.mjs"
+  },
+  {
+   "state": "shipped",
    "date": "2026-11-04",
    "ask": "system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff)",
    "from": "new idea by growth agent; helper/system-status"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
+   "from": "new idea by growth agent; helper/heavy-lift-map"
   }
  ],
  "open": [
@@ -568,7 +580,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-11-06T18:41:16Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -576,111 +588,111 @@
  },
  "commits": [
   {
-   "at": "2026-11-05T12:41:25Z",
-   "subject": "Verse routes \"rent vs buy in austin tx\" to its rentbuy skill the answer is not checked"
+   "at": "2026-11-06T20:24:23Z",
+   "subject": "Verse speaks first on its Brain page, from its live state"
   },
   {
-   "at": "2026-11-05T12:41:15Z",
-   "subject": "Record that the news section chips scroll on purpose"
+   "at": "2026-11-06T20:24:11Z",
+   "subject": "Design loop: check the live ask bar at 390 and 1280 px every 2 hours, with screenshots (#2478)"
   },
   {
-   "at": "2026-11-05T12:40:43Z",
-   "subject": "Add language pairs, keyless APIs, and the next salvage bots (#2275)"
+   "at": "2026-11-06T20:23:46Z",
+   "subject": "Starboard benchmark page, and theme names for the menu pages (#2479)"
   },
   {
-   "at": "2026-11-05T12:36:08Z",
-   "subject": "Tower size: how heavy each Versus site really is"
+   "at": "2026-11-06T20:23:22Z",
+   "subject": "verse-job: show the coder's turn lines in the job log (#2480)"
   },
   {
-   "at": "2026-11-05T12:34:49Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"yo draw a car"
+   "at": "2026-11-06T20:19:59Z",
+   "subject": "monitor-pack: propose monitors Verse owns so the client watches less (#2482)"
   },
   {
-   "at": "2026-11-05T12:34:31Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-06T20:18:58Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo render a c"
   },
   {
-   "at": "2026-11-05T12:34:15Z",
-   "subject": "Keep the phone nav, compare, and credits readable"
+   "at": "2026-11-06T20:18:53Z",
+   "subject": "Outcome exam: translate 89.2"
   },
   {
-   "at": "2026-11-05T12:27:10Z",
-   "subject": "A weave ask answers while the other skills are still loading (#2274)"
+   "at": "2026-11-06T20:13:03Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
   },
   {
-   "at": "2026-11-05T12:26:02Z",
-   "subject": "Incident: the browser suite failed on 6ca3d789 (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T20:10:40Z",
+   "subject": "Films: give each kept beat its own voice line, so long takes render (#2481)"
   },
   {
-   "at": "2026-11-05T12:24:53Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-06T20:09:21Z",
+   "subject": "Verse's coder: name a TV job's page files so a blueprint build starts reading (#2475)"
   },
   {
-   "at": "2026-11-05T12:21:09Z",
-   "subject": "Clear the stage before the next ask, and keep a phone panel above the bar (#2250) (#2273)"
+   "at": "2026-11-06T20:06:57Z",
+   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
   },
   {
-   "at": "2026-11-05T12:20:57Z",
-   "subject": "Outcome exam: timers 83.3"
+   "at": "2026-11-06T20:06:03Z",
+   "subject": "Shorts loop: today's trial and verdicts"
   },
   {
-   "at": "2026-11-05T12:01:02Z",
-   "subject": "Site test: fix: \"what are the figures doing\" only \"waking up\" appeared,"
+   "at": "2026-11-06T20:04:00Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-05T11:59:33Z",
-   "subject": "Incidents closed: shard(s) 3 passed on 19b31783 (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T20:02:16Z",
+   "subject": "Verse loop: the lap's output file goes outside the checkout, so scheduled laps stop skipping (#2476)"
   },
   {
-   "at": "2026-11-05T11:59:09Z",
-   "subject": "Incident: the browser suite failed on 04a320ee (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T20:00:05Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-05T11:53:26Z",
-   "subject": "Outcome exam: timers 83.3"
+   "at": "2026-11-06T19:58:24Z",
+   "subject": "Assimilated: date a passed site by the day the tower recorded it passed (#2418)"
   },
   {
-   "at": "2026-11-05T11:43:15Z",
-   "subject": "A no on /agent/ stays declined, and the live probe waits for this deploy (#2271)"
+   "at": "2026-11-06T19:57:27Z",
+   "subject": "Versus checks serve their own tower.target.json, so a moving tower no longer turns main red (#2420)"
   },
   {
-   "at": "2026-11-05T11:39:42Z",
-   "subject": "Verse loop: task, Queue job mvoxkjn0 (feature: amazon-com-00694bb6): build \"Pr (#2268)"
+   "at": "2026-11-06T19:56:57Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-05T11:37:43Z",
-   "subject": "Incident: the browser suite failed on deb906d7 (void-live-deploy/incidents.json)"
+   "at": "2026-11-06T19:56:07Z",
+   "subject": "Films: eight video formats on live trends, a topic gate, every page of /films/ (#2473)"
   },
   {
-   "at": "2026-11-05T11:37:13Z",
-   "subject": "Site test: fix: \"weave a constellation called night ops\" only \"waking u"
+   "at": "2026-11-06T19:55:31Z",
+   "subject": "Read aloud: a redraw keeps the card's Stop reading state (#2421)"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Bot families and salvage (cursor, 2026-11-05)",
-    "line": "23 more languages (4,290 phrasebooks), nine keyless APIs, an encoding checker for every pair, and a drug-name check across openFDA and RxNorm. The next ten salvage pieces are bots, including pinned english-words and ODbL countries URLs.…"
+    "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
    },
    {
-    "name": "Constellation weave (cursor, 2026-11-05)",
-    "line": "\"weave a constellation called night ops\" answers from constellation-weaver before the page says waking up, while the rest of the skills are still loading. The sky family still owns \"where is Orion\".…"
+    "name": "Savings load (cursor, 2026-11-05)",
+    "line": "\"how much do i need to save a month to have 1 million in 30 years at 7%\" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once.…"
    },
    {
-    "name": "Verify reds (cursor, 2026-11-05)",
-    "line": "\"clear\" empties the stage before the skill index finishes, so the redact check's tree walker has a note; a slow drop of the walking figure stays on the floor; a phone How-to-play panel ends above the ask bar. #2250 stays open until verify…"
+    "name": "Closer on the figure (cursor, 2026-11-05)",
+    "line": "\"closer on the figure\" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292"
    },
    {
-    "name": "Agent no kept (cursor, 2026-11-05)",
-    "line": "a no on /agent/ stays on the task it was sent to, and Verse's note is stored before the response so a deploy cannot drop it. The probe waits until production says writesFirst. https://github.com/atomeam/void-loop/pull/2271"
+    "name": "Blank home, videos keep playing (cursor, 2026-11-05)",
+    "line": "the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was.…"
    },
    {
-    "name": "Autosalvage batch (cursor, 2026-11-05)",
-    "line": "heading permalinks, a sealed status snapshot, one subprocessor row and a weak-signal hypothesis are bots, and simple-icons (CC0) and Tabler (MIT) pin an SVG URL. Open-Meteo stays a separate service. With the capital fix, the registry is…"
+    "name": "Phone panel and tray drag (cursor, 2026-11-05)",
+    "line": "a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands.…"
    },
    {
-    "name": "Country capitals (cursor, 2026-11-05)",
-    "line": "Antigua and Barbuda's capital bot says St. John's (the English Wikipedia sitelink; the Wikidata item has no English label), and Equatorial Guinea's says Ciudad de la Paz since 2026-01-03, with Malabo until then. The same rule covers every…"
+    "name": "Timers and emoji exam (cursor, 2026-11-05)",
+    "line": "a timer card keeps the length it was set for (1:30 and 90 stay while it ticks), \"timer for 5\" asks minutes or seconds, the hourglass fits a 320px card, heart / feu / thank you answer with an emoji, and a red circle fills red.…"
    }
   ],
   "ladders": [
@@ -835,8 +847,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 436
+  "day": 13,
+  "week": 13
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -888,19 +900,19 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 78 (253 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-04T13:00Z",
+  "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-06T12:58Z",
   "source": "verse"
  },
  "tower": {
-  "target": "wheelofgold.com",
-  "since": "2026-11-05",
+  "target": "dalyfeds.com",
+  "since": "2026-11-06",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1269
+  "total": 1307
  }
 }

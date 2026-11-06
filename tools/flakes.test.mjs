@@ -26,6 +26,7 @@ test('the job says fix it, never skip it, and fits the queue', () => {
   assert.ok(targetOf(g.check).length <= 40 && targetOf(g.check).startsWith('flake:'));
   assert.ok(askOf(g).length <= 200);
   assert.match(askOf({ check: 'sky / still', times: 2, shas: ['a', 'b'] }), /never skip, quarantine or retry/);
+  assert.match(askOf({ check: 'paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB', times: 2, shas: ['a'] }), /^make "paste any size and read aloud" robust/, 'the check by the head of its name, whole');
 });
 
 test('the file is one entry per line, and merge-main and revert-records treat it as an append-only record', () => {

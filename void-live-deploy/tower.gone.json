@@ -1,12 +1,31 @@
 {
- "about": "Rivals the tower skips because their site is gone, parked or moved to another domain (tools/tower-alive.mjs). Re-checked on every run.",
+ "about": "Rivals the tower skips because their site is gone, parked or moved to another domain, or is a non-site (a tracker, sync, CDN or connectivity endpoint with nothing on its home page to use), each with the evidence of a real fetch (tools/tower-alive.mjs). Re-checked on every run.",
  "gone": {
   "unitingchurch.org.au": {
    "status": "parked",
    "since": "2026-11-05T03:43:40.099Z",
-   "checked": "2026-11-05T12:36:07.443Z",
+   "checked": "2026-11-06T20:28:26.415Z",
    "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au",
    "final": "https://controlhosting.net/"
+  },
+  "id5-sync.com": {
+   "status": "non-site",
+   "since": "2026-11-06T18:33:06.247Z",
+   "checked": "2026-11-06T20:28:26.415Z",
+   "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features",
+   "final": "https://id5-sync.com/",
+   "kind": "an ad-tracking or sync endpoint",
+   "shape": {
+    "chars": 12,
+    "sample": "This is ID5.",
+    "controls": 0,
+    "links": 0,
+    "forms": 0,
+    "frames": 0,
+    "canvas": 0,
+    "scripts": 0,
+    "bytes": 51
+   }
   }
  },
  "log": [
@@ -15,6 +34,24 @@
    "rival": "unitingchurch.org.au",
    "status": "parked",
    "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au"
+  },
+  {
+   "at": "2026-11-06T18:33:06.247Z",
+   "rival": "id5-sync.com",
+   "status": "non-site",
+   "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features",
+   "kind": "an ad-tracking or sync endpoint",
+   "shape": {
+    "chars": 12,
+    "sample": "This is ID5.",
+    "controls": 0,
+    "links": 0,
+    "forms": 0,
+    "frames": 0,
+    "canvas": 0,
+    "scripts": 0,
+    "bytes": 51
+   }
   }
  ]
 }

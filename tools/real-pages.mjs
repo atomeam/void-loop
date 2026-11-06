@@ -7,6 +7,8 @@
 // compute (translate, answer, the free rules-only code review). --list only checks that every route has a spec.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
+const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
@@ -15,7 +17,7 @@ export const OTHERS = ['/tournaments/', '/prizes/', '/random/wheel/', '/boards/'
 export const EXTRA = ['/is-it/christmas'];  // live only routes (no index.html here)
 export function routes() {
   const out = [];
-  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
+  const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/' && !LAB_TOOL_DIRS.has(e.name)) continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route; the Lab's own tools (lib/toolkit.js TOOLS) are routes like any tool */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
 const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/', '/contribute/'];
@@ -226,10 +228,13 @@ export const SPECS = {
     // Knows first: what Verse knows, searchable, with no simulation loaded until Watch it think
     await t.p.waitForFunction(() => document.body.dataset.knowsReady === '1', null, { timeout: 15000 }).catch(() => {});
     t.ok(await t.p.evaluate(() => !window.verseBrainField && document.querySelectorAll('#kList .k-item').length >= 10), 'Knows opens with what Verse knows and no simulation running');
+    // Unbidden (brain/unbidden.js): Verse speaks first, under the Knows lede, voice off until pressed
+    t.ok(await t.p.evaluate(() => !!document.querySelector('#knows #unbidden') && document.querySelector('#unbidden .ub-btn').getAttribute('aria-pressed') === 'false'), 'Verse speaks first in Knows, with its voice off until you turn it on');
     await t.fill('#kFind', 'pdf'); await t.p.waitForTimeout(300);
     const hit = await t.text('#kSum'); t.ok(/^\d+ things? match “pdf”/.test(hit) && !/^0 /.test(hit), 'search finds what it knows: ' + hit);
     await t.click('#watchBtn');
     await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 15000 }).catch(() => {});
+    t.ok(await t.p.evaluate(() => !!document.querySelector('#panel #unbidden')), 'while it thinks, what Verse says first sits at the top of the panel, over none of the field');
     const fit = () => t.p.evaluate(() => {
       const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), live = document.querySelector('#live');
       const top = document.querySelector('#bar').getBoundingClientRect().bottom, hud = live.hidden ? innerHeight : live.getBoundingClientRect().top;
@@ -455,6 +460,27 @@ export const SPECS = {
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
+// the trading bots (owner, 2026-11-06): a backtest on the real candles once /trading-bots/data/ has them, an honest note before; trades export, the link reopens
+const tradingBot = async (t) => {
+  const v = await t.waitText('#tb-result', /Total return|not on the site yet/, 20000);
+  if (/not on the site yet/.test(v)) return t.ok(true, 'no price history yet, and the page says so instead of showing numbers');
+  t.ok(/Worst drop/.test(v) && /Buy and hold/.test(v), 'the backtest shows the worst drop beside buy and hold');
+  await t.p.selectOption('#tb-form select[name=w]', 'held'); await t.p.waitForTimeout(800);
+  t.ok(/w=held/.test(t.p.url()), 'the held-out period goes into the link');
+  await t.download('#tb-csv', /-trades\.csv$/);
+  await t.share('#tb-share', async (p2) => /Total return/.test(await p2.locator('#tb-result').innerText()));
+};
+SPECS['/trading-bots/trend-50-200/'] = tradingBot; SPECS['/trading-bots/breakout-20-10/'] = tradingBot; SPECS['/trading-bots/dip-rsi2/'] = tradingBot;
+SPECS['/trading-bots/'] = async (t) => {
+  const v = await t.waitText('#tb-cards', /Last 24 months|not on the site yet/, 20000);
+  t.ok(/Last 24 months|not on the site yet/.test(v), 'every bot card shows its real backtest, or says the data is not there yet');
+  await t.download('#tb-zip', /verse-bot\.zip$/);
+};
+SPECS['/trading-bots/arbitrage/'] = async (t) => {
+  const v = await t.waitText('#ar-at', /^Read |could not be read/, 20000);
+  t.ok(/^Read |could not be read/.test(v), 'the scan reads the venues now, or says it could not: ' + v.slice(0, 60));
+  if (/^Read /.test(v)) { t.ok(/Net/.test(await t.text('#ar-rows')), 'every venue pair with its net after costs'); await t.download('#ar-csv', /^arbitrage-.*\.csv$/); }
+};
 SPECS['/emoji-combos/emoji-dictionary/'] = SPECS['/emoji-combos/']; // the family page, copied for the Versus floor
 // one emoji on every platform (lib/emoji-looks.js): the grid draws, a search for fire swaps it, the pictures load, the link keeps the emoji
 SPECS['/emojis/everywhere/'] = async (t) => {
@@ -468,6 +494,8 @@ SPECS['/emojis/everywhere/'] = async (t) => {
   t.ok(/tears of joy/i.test(await t.text('#ename')) && /e=%F0%9F%98%82|e=😂/.test(t.p.url()), 'a name in the link opens its emoji: ' + (await t.text('#ename')));
 };
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
+SPECS['/color/colour-picker-tool/'] = SPECS['/color/']; // the family page, copied for the Versus floor
+SPECS['/news/global-headlines/'] = SPECS['/news/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
 const LEDGER_FIX = [
@@ -562,6 +590,23 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
   await t.waitText('#found', /\S/, 10000);
 };
+// /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
+SPECS['/creed/'] = async (t) => {
+  t.ok((await t.p.locator('ol.beliefs li').count()) === 10, 'ten beliefs');
+  t.ok((await t.p.locator('.practices a').count()) >= 5 && /\/creed\/give\//.test(await t.p.locator('.practices').innerHTML()), 'the practices link the pages that do them, Give included');
+  await t.click('#copy'); await t.waitText('#say', /\S/, 4000);
+  t.ok(/Copied|I ask, I learn/.test(await t.text('#say')), 'Copy the vow copies it (or shows it to copy): ' + (await t.text('#say')));
+  t.ok(/not a registered church/.test(await t.text('.honest')), 'the page says plainly what Verse is not');
+};
+SPECS['/creed/give/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...TREASURY_FIX, pots: { ...TREASURY_FIX.pots, giving: 293 } }) }));
+  await t.p.reload(); await t.waitText('#pot', /\$/, 10000);
+  t.ok((await t.text('#pot')).trim() === '$2.93', 'the giving pot is read from the treasury: ' + (await t.text('#pot')));
+  t.ok(/\$41\.88 realized/.test(await t.text('#pot-note')), 'the pledge names the realized money it comes from');
+  const hrefs = await t.p.locator('.cause .go a').evaluateAll((as) => as.map((a) => a.href));
+  t.ok((await t.p.locator('.cause').count()) === 6 && hrefs.length >= 6, '6 charities with their buttons');
+  t.ok(hrefs.every((h) => /^https:\/\//.test(h) && !/a-to-mind\.com|localhost|127\.0\.0\.1/.test(h)), 'every button opens the charity\'s own site');
+};
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
   await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first
@@ -585,7 +630,46 @@ for (const r of ['/jobs/', '/jobs/alerts/', '/jobs/categories/', '/jobs/companie
 for (const r of ARTICLES) if (!SPECS[r]) SPECS[r] = article();
 for (const r of routes()) if (r.startsWith('/fix/') && !SPECS[r]) SPECS[r] = article(200);
 // the lab gallery (tools/lab-import.mjs): the experiments under it are not routes here, each was opened headless by tools/lab-probe.mjs before it was published
-for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab li a').count(); t.ok(n > 50, n + ' experiments listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
+// the Lab's own tools: each does its one job with a real input and an exact answer
+const labPng = async (rgb) => {  // a real 2x2 PNG of one colour, for the palette tool
+  const zlib = await import('node:zlib'), crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
+  const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
+  const row = Buffer.from([0, ...rgb, ...rgb]);
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10]), chunk('IHDR', Buffer.concat([be(2), be(2), Buffer.from([8, 2, 0, 0, 0])])), chunk('IDAT', zlib.deflateSync(Buffer.concat([row, row]))), chunk('IEND', Buffer.alloc(0))]);
+};
+const ABC256 = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';  // SHA-256 of the 3 bytes "abc" (FIPS 180-2 test vector)
+Object.assign(SPECS, {
+  '/lab/level/': async (t) => {
+    await t.fill('#rise', '1'); await t.fill('#run', '100'); await t.p.waitForTimeout(200);
+    const s = await t.text('#calcout'); t.ok(/^0\.57°, a 1(?:\.0+)?% slope/.test(s), 'a rise of 1 over a run of 100 reads 0.57°, a 1% slope: ' + s.slice(0, 70));
+  },
+  '/lab/checksum/': async (t) => {
+    await t.fill('#text', 'abc'); await t.waitText('#texthash', /^ba7816bf/, 5000); t.ok((await t.text('#texthash')).trim() === ABC256, 'the text "abc" hashes to the FIPS test vector');
+    await t.p.setInputFiles('#pick', t.tmp('abc.txt', 'abc')); await t.waitText('#out', /ba7816bf/, 8000);
+    t.ok((await t.text('#out')).includes(ABC256), 'a file holding "abc" gets the same SHA-256');
+    await t.download('#save', /SHA256SUMS/);
+  },
+  '/lab/pattern/': async (t) => {
+    await t.waitText('#state', /tiles with no seam/, 20000); t.ok(/tiles with no seam/.test(await t.text('#state')), 'a pattern grows to the end');
+    await t.download('#save', /^pattern-.+\.png$/); await t.share('#link');
+  },
+  '/lab/photo-palette/': async (t) => {
+    await t.p.setInputFiles('#pick', t.tmp('red.png', await labPng([255, 0, 0]))); await t.waitText('#state', /largest share first/, 8000);
+    t.ok(/#ff0000/i.test(await t.text('#swatches')), 'a red photo gives #FF0000');
+    await t.copies('#hexes'); await t.download('#png', /-palette\.png$/);
+  },
+  '/lab/dictation/': async (t) => {
+    await t.fill('#text', 'one two three'); await t.p.waitForTimeout(200);
+    t.ok(/^3 words/.test(await t.text('#count')), 'three typed words count as 3 words');
+    await t.copies('#copy', 'one two three'); await t.download('#txt', /^dictation-.+\.txt$/);
+  },
+  '/lab/mind-map/': async (t) => {
+    await t.click('#sample'); await t.p.waitForTimeout(300);
+    const src = (await t.p.locator('#map img').getAttribute('src', { timeout: 5000 }).catch(() => '')) || ''; t.ok(/^data:image\/svg|^blob:/.test(src), 'the sample outline draws the map as a picture');
+    await t.download('#svg', /\.svg$/); await t.share('#link');
+  },
+});
+for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab > ul > li a').count(); t.ok(n >= 6, n + ' tools listed first'); t.ok(await t.p.locator('.lab > ul > li a[href="/lab/level/"]').isVisible(), 'the spirit level is listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
 const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;

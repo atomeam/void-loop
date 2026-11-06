@@ -50,7 +50,7 @@
   .note { font-size: 13px; color: var(--soft); }
   .err { color: var(--bad); font-size: 14px; }
   .ok { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
-  .st { display: grid; grid-template-columns: minmax(7em, 10em) 5.5em 1fr 4.5em; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .st { display: grid; grid-template-columns: minmax(7em, 10em) 5.5em 1fr 4.5em; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--line); font-size: 14px; } .st a.note { padding-block: 0; min-height: 24px; display: flex; align-items: center; } /* the check link in each row: 24 px tall without making the row taller */
   .st:first-child { border-top: 0; }
   .st-kind { font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; opacity: .75; margin: 12px 0 2px; }
   .st .hist { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; height: 16px; }
