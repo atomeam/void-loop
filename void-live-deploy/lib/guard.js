@@ -63,6 +63,11 @@ export const LIMITS = {
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
   memory: { rpm: 30, body: 262144 }, // owner-only: what Verse remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
   films: { rpm: 120, body: 40000000 }, // Verse's films for people who pay (functions/api/films.js): a video seeks with many Range GETs; only the owner POSTs a film (OWNER_WRITES)
+  // a film's signed watch link (GET /api/films?id=&exp=&sig=) counts apart from the list (owner, 2026-11-06: "ok still capping at 60
+  // videos"): a page of 60 films loads 60 or more Range GETs for their pictures, so in one 120-a-minute budget the call for the next
+  // page was refused with 429 and the grid stopped at 60. Each link is HMAC-signed and runs out, and a wrong signature still counts
+  // as a wrong key, so a higher budget here opens nothing new
+  'films-watch': { rpm: 3000, body: 0 },
   'film-views': { rpm: 60, body: 0 }, // Verse Tube view counts (functions/api/film-views.js): one D1 upsert per view, no KV
   'film-review': { rpm: 30, body: 4000 }, // a paying member's or the owner's verdict on a film and a note of up to 1,000 characters (functions/api/film-review.js)
   support: { rpm: 10, body: 6000 }, // the support desk (functions/api/support.js): paying users only, a report of up to 2,000 characters
@@ -268,16 +273,22 @@ async function capped(request, max) {
   return out;
 }
 
+/** the rate budget a request counts against: a film's signed watch link has its own, so the pictures never use up the list's */
+export function watchBucket(request, url, route) {
+  return route === 'films' && /^(GET|HEAD)$/.test(request.method) && url.searchParams.has('id') && url.searchParams.has('sig') ? 'films-watch' : route;
+}
+
 // The middleware for every /api route (functions/api/_middleware.js).
 export async function guard(ctx) {
   const { request, env } = ctx;
   const url = new URL(request.url), route = url.pathname.split('/')[2] || '';
-  const lim = LIMITS[route] || DEFAULT_LIMIT;
+  const bucket = watchBucket(request, url, route);
+  const lim = LIMITS[bucket] || DEFAULT_LIMIT;
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { allow: 'GET, POST, PUT, PATCH', 'cache-control': 'no-store' } }); // no CORS: other sites can't read Verse's API
   if (!NO_ORIGIN_CHECK.includes(route) && crossSite(request)) return plain(403, 'cross-site requests are refused');
   const conn = await connId(request, env);
   if ((await peek(url.origin, 'fail:' + conn)) >= FAIL_MAX) return plain(429, 'too many wrong keys, wait a minute', { 'retry-after': '60' });
-  if ((await bump(url.origin, 'rl:' + route + ':' + conn)) > lim.rpm) return plain(429, 'slow down', { 'retry-after': '60' });
+  if ((await bump(url.origin, 'rl:' + bucket + ':' + conn)) > lim.rpm) return plain(429, 'slow down', { 'retry-after': '60' });
   let req = request;
   if (!/^(GET|HEAD)$/.test(request.method) && OWNER_WRITES.includes(route) && !(await ownerOk(request, env))) { await bump(url.origin, 'fail:' + conn); return plain(403, 'only the owner writes here'); }
   if (!/^(GET|HEAD)$/.test(request.method)) {
