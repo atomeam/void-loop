@@ -84,4 +84,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped | 2026-11-05 | Numbers and money family: savings growth at 0% is the money put in, a 20% tip on 45 is 9, and 96 px at 96 dpi is 2.54 cm. vat and hear already had their own tests. The numbers-prove branch was not taken: it cleared the hear skill's HTML escaping. | tools/numbers-proof.test.mjs |
 | open | 2026-11-04 | Versus topic pages: replace the flat tower placeholder with a real per-topic experience | asked by Verse (void-voice 2026-11-04) |
 | shipped 25990ecbc | 2026-11-04 | system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff) | new idea by growth agent; helper/system-status |
-| building | 2026-11-06 | heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less | new idea by growth agent; helper/heavy-lift-map |
+| shipped d93f7ca | 2026-11-06 | heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less | new idea by growth agent; helper/heavy-lift-map |

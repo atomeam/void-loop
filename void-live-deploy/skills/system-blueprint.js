@@ -7,7 +7,8 @@
  * ("blueprint of the human body") is not one.
  * becomes a card: outcome, likely friction, ordered build steps, next actions, open questions.
  * No model call; the planner is fixed templates by idea shape so the same sentence always
- * yields the same structure. Nothing is sent. Empty surface stays empty until someone asks.
+ * yields the same structure. Empty surface stays empty until someone asks. The card's build line
+ * (functions/api/blueprint.js) starts the build of an idea Verse learned itself and shows its real state.
  */
 
 // Each lead keeps the idea in group 1. "blueprint of the human body" matches none of them.
@@ -127,9 +128,32 @@ function run(text, api) {
       + '<p><b>Build order</b></p><ol>' + bp.steps.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ol>'
       + '<p><b>Next actions</b></p><ol>' + bp.next.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ol>'
       + '<p><b>Open questions</b></p><ol>' + bp.questions.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ol>'
-      + '<div class="src">Local plan · shape ' + esc(bp.shape) + ' · nothing sent · as of 2026-11</div>';
+      + '<p class="bp-build" data-state="checking"><b>Build:</b> <span>checking…</span></p>'
+      + '<div class="src">Local plan · shape ' + esc(bp.shape) + ' · as of 2026-11</div>';
+    buildLine(el, bp.idea);
   });
   return 'system-blueprint';
+}
+
+/** the card's build line from /api/blueprint's answer: its words as text, and a link only to a page on Verse itself. Pure but for el. */
+export function showBuild(line, s) {
+  if (!line) return;
+  const span = line.querySelector('span');
+  if (!s || !s.line) { line.dataset.state = 'unknown'; span.textContent = 'its state did not load just now'; return; }
+  line.dataset.state = String(s.state || '');
+  span.textContent = s.line;
+  if (s.page && /^\/[a-z0-9][\w\/?=&.-]*$/i.test(s.page)) { const a = document.createElement('a'); a.href = s.page; a.textContent = ' open it'; span.append(' ·', a); }
+}
+// Every blueprint starts its own build (owner, 2026-11-06: "the blueprints should just automatically be started and built into verse
+// somewhere"): opening the card asks /api/blueprint to start it, which it does only for an idea Verse learned itself, and the line says
+// what is real (queued, building, live with its page, or a plan). One look when the card opens, one more a minute later while it is open.
+function buildLine(el, idea) {
+  const line = el.querySelector('.bp-build');
+  if (!line || typeof fetch !== 'function') return;
+  const ask = (method) => fetch('/api/blueprint' + (method === 'GET' ? '?idea=' + encodeURIComponent(idea) : ''), method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ idea }) })
+    .then((r) => r.json()).then((s) => showBuild(line, s)).catch(() => showBuild(line, null));
+  ask('POST');
+  setTimeout(() => { if (line.isConnected) ask('GET'); }, 60000);
 }
 
 export default {

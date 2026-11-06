@@ -14,6 +14,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { LAB_DIR, readDrafts, metaOf, hashOf, importDrafts, readCatalog, writeCatalog, brokenMd, needsOf } from './lab-import.mjs';
 import { probe, classify, hasFallback, sourceOf } from './lab-probe.mjs';
+import { verdictOf } from './lab-grade.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const REPO = 'https://github.com/atomeam/a-to-mind.com';
@@ -36,11 +37,13 @@ export async function sync({ drafts, all = false, only = null, lab = LAB_DIR, lo
   const stage = fs.mkdtempSync(path.join(os.tmpdir(), 'lab-stage-')), slugs = new Set(todo.map((t) => t.meta.slug));
   const cut = new Map(importDrafts({ drafts, out: stage, only: slugs }).filter((r) => r.error).map((r) => [r.slug, r.error])); // a file cut off mid-write is never opened
   const rows = await probe({ labDir: stage, slugs: [...slugs].filter((x) => !cut.has(x)), log: () => process.stderr.write('.') });
-  const entries = todo.map(({ meta, hash }) => {
-    if (cut.has(meta.slug)) return { slug: meta.slug, num: meta.num, title: meta.title, blurb: meta.blurb, status: 'broken', error: cut.get(meta.slug), source: meta.source, hash };
+  const entries = todo.map(({ d, meta, hash }) => {
+    // the usefulness grade (tools/lab-grade.mjs): the gallery lists the tools first and folds the toys away; the sitemap leaves toys out
+    const graded = verdictOf(d);
+    if (cut.has(meta.slug)) return { slug: meta.slug, num: meta.num, title: meta.title, blurb: meta.blurb, status: 'broken', error: cut.get(meta.slug), source: meta.source, hash, ...graded };
     const row = rows.find((r) => r.slug === meta.slug), src = sourceOf(stage, meta.slug), needs = needsOf(src);
     const v = classify({ needs, fallback: hasFallback(src) }, row);
-    return { slug: meta.slug, num: meta.num, title: meta.title, blurb: meta.blurb, status: v.status, ...(needs.length ? { needs } : {}), ...(v.error ? { error: v.error } : {}), source: meta.source, hash };
+    return { slug: meta.slug, num: meta.num, title: meta.title, blurb: meta.blurb, status: v.status, ...(needs.length ? { needs } : {}), ...(v.error ? { error: v.error } : {}), source: meta.source, hash, ...graded };
   });
   const now = merge(catalog, entries), publish = new Set(entries.filter((e) => e.status !== 'broken').map((e) => e.slug));
   const notice = new Set(now.filter((e) => e.status.startsWith('needs-')).map((e) => e.slug));

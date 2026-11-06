@@ -56,3 +56,22 @@ console.log('podcast: ok');
   assert.equal(d.counts.merged, 2); assert.equal(d.days, 1);
 }
 console.log('podcast daily: ok');
+// 2026-11-06: one runner's apt-get install ffmpeg hung for 20 minutes and the job limit cancelled the day's episode. The install is
+// cut off per try, retried with a fresh index, and falls back to a static ffmpeg and ffprobe build, so the episode is still made.
+{
+  const wfy = readFileSync(new URL('../.github/workflows/verse-podcast.yml', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+  const step = wfy.slice(wfy.indexOf('- name: Piper and ffmpeg'), wfy.indexOf('- name: The two voices'));
+  assert.match(step, /timeout-minutes: \d+/, 'the install step has its own limit, under the job limit');
+  assert.match(step, /timeout \d+ sudo -E apt-get install/, 'each apt try is cut off');
+  assert.match(step, /apt-get update/, 'the index is refreshed between tries');
+  assert.match(step, /ffmpeg-release-amd64-static/, 'a static build when apt gives nothing');
+  assert.match(step, /command -v ffprobe/, 'podcast.mjs needs ffprobe as well as ffmpeg');
+}
+{
+  // 2026-11-06: episode 3 reached main and not the site, because a push with the Actions token starts no deploy
+  const wfy = readFileSync(new URL('../.github/workflows/verse-podcast.yml', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+  const put = wfy.slice(wfy.indexOf('- name: Put it on main'));
+  assert.match(put, /git push origin HEAD:main[\s\S]{0,200}gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/, 'the episode push starts the deploy');
+  assert.match(put, /GH_TOKEN: \$\{\{ github\.token \}\}/, 'gh has a token');
+  assert.match(wfy, /permissions:\n  contents: write\n  actions: write/, 'the job may start the deploy');
+}

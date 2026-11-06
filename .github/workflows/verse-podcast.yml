@@ -22,6 +22,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write # to start the deploy after the push (a push with the Actions token starts no workflow)
 
 jobs:
   episode:
@@ -38,10 +39,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      # 2026-11-06: apt-get install ffmpeg hung for 20 minutes on one runner (pip had finished in 11 s) and the job limit cancelled the
+      # episode. Each apt try is cut off at 2.5 minutes, the index is refreshed between tries, and if apt still gives nothing a static
+      # ffmpeg and ffprobe build is fetched instead, so the episode is made whatever the runner's package mirror does.
       - name: Piper and ffmpeg
+        timeout-minutes: 10
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          pip install --quiet piper-tts
-          sudo apt-get install -y -qq ffmpeg > /dev/null
+          timeout 300 pip install --quiet piper-tts
+          for i in 1 2 3; do
+            command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null && break
+            timeout 150 sudo -E apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null || echo "apt try $i gave no ffmpeg"
+            command -v ffmpeg >/dev/null || timeout 120 sudo -E apt-get update -qq || true
+          done
+          if ! command -v ffprobe >/dev/null; then
+            echo "apt gave no ffmpeg: a static build instead"
+            mkdir -p ~/ffmpeg-static && cd ~/ffmpeg-static
+            timeout 180 curl -fsSL -o ff.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+            tar -xJf ff.tar.xz --strip-components=1
+            echo "$HOME/ffmpeg-static" >> "$GITHUB_PATH"
+          fi
       - name: The two voices (cached)
         id: voices
         uses: actions/cache@v4
@@ -62,14 +80,20 @@ jobs:
           PIPER: python -m piper
         run: node tools/podcast.mjs --make --days 1 --voices ~/piper-voices ${{ inputs.force && '--force' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Put it on main
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git add void-live-deploy/podcast
           git diff --cached --quiet && { echo "no new episode"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Verse Out Loud: today's episode, read from the day's record"
+          # 2026-11-06: episode 3 reached main but not the site, because a push with the Actions token starts no deploy
           for i in 1 2 3 4; do
-            git push origin HEAD:main && exit 0
-            sleep $((2 ** i)); git pull --rebase origin main
+            if git push origin HEAD:main; then
+              gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
+              exit 0
+            fi
+            sleep $((2 ** i)); git pull --rebase --autostash origin main
           done
           exit 1
