@@ -122,6 +122,23 @@ export function choose(rows, mainSha, running) {
   return { pr: open[0], batch, action: 'queue', why: 'the full suite has not passed on top of current main' + (batch.length > 1 ? ` (one run for ${batch.length} pull requests)` : '') };
 }
 
+// The safety-check (tools/skill-safety.mjs) runs node --test on a pull request's head: seconds each, so a sweep that ran it
+// on every ready pull request passed the 5 minute job limit and never reached the suite gate (2026-11-06, no gate run from
+// 08:57 on). It runs here on the batch the gate chose only. A pull request that fails it leaves the rows, and the gate
+// chooses again from the rest. check(row) returns true when the row may go on.
+export function chooseChecked(rows, mainSha, running, check) {
+  let left = (rows || []).slice();
+  const passed = new Set();
+  for (let round = 0; round <= (rows || []).length; round++) {
+    const choice = choose(left, mainSha, running);
+    const todo = choice.action === 'merge' || choice.action === 'queue' ? (choice.batch && choice.batch.length ? choice.batch : [choice.pr]).filter(Boolean) : [];
+    const failed = todo.filter((r) => !passed.has(r) && !(check(r) && passed.add(r)));
+    if (!failed.length) return { choice, rows: left };
+    left = left.filter((r) => !failed.includes(r));
+  }
+  return { choice: choose(left, mainSha, running), rows: left };
+}
+
 /**
  * after a merge, the next pull request to send to the suite (2026-11-06: the next one waited for the hourly sweep, so 30 sat open).
  * Main just moved, so no other suite result counts on it: the oldest other ready pull request goes next. Pure.

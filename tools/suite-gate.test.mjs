@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -105,4 +105,35 @@ test('a red batch is split in half until the red pull request runs alone, and on
   assert.equal(next.pr.number, 2);
   assert.equal(next.batch.length, 1, 'the half it was in, split again');
   assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), BATCH, 'main moved with code: a full batch again');
+});
+
+test('the safety-check runs on the batch the gate chose only, and a pull request that fails it leaves the batch', () => {
+  const rows = [row(4, null, null), row(8, null, null), row(12, null, null)];
+  const asked = [];
+  const ok = chooseChecked(rows, MAIN, false, (r) => { asked.push(r.number); return true; });
+  assert.equal(ok.choice.action, 'queue');
+  assert.deepEqual(ok.choice.batch.map((r) => r.number), [4, 8, 12]);
+  assert.deepEqual(asked, [4, 8, 12], 'each pull request in the batch is checked once');
+  const many = Array.from({ length: 20 }, (_, i) => row(i + 1, null, null));
+  const seen = [];
+  chooseChecked(many, MAIN, false, (r) => { seen.push(r.number); return true; });
+  assert.equal(seen.length, 8, 'only the batch, not every ready pull request');
+  const asked2 = [];
+  const bad = chooseChecked(rows, MAIN, false, (r) => { asked2.push(r.number); return r.number !== 8; });
+  assert.deepEqual(bad.choice.batch.map((r) => r.number), [4, 12], 'the failing pull request is out of the batch');
+  assert.deepEqual(bad.rows.map((r) => r.number), [4, 12]);
+  assert.deepEqual(asked2, [4, 8, 12], 'a pull request that passed is not checked again');
+});
+
+test('a fresh green pull request that fails the safety-check is not merged; the gate chooses again', () => {
+  const rows = [row(3, pass(MAIN), []), row(5, null, null)];
+  const out = chooseChecked(rows, MAIN, false, (r) => r.number !== 3);
+  assert.equal(out.choice.action, 'queue');
+  assert.equal(out.choice.pr.number, 5);
+  const none = chooseChecked(rows, MAIN, false, () => false);
+  assert.equal(none.choice.action, 'hold');
+  assert.equal(chooseChecked(rows, MAIN, true, () => true).choice.action, 'merge');
+  let calls = 0;
+  assert.equal(chooseChecked([row(4, null, null)], MAIN, true, () => { calls++; return true; }).choice.action, 'wait');
+  assert.equal(calls, 0, 'nothing is checked while the gate only waits');
 });
