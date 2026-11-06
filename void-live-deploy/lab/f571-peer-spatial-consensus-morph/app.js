@@ -124,7 +124,7 @@ async function initOPFS() {
     }
   } catch (err) {
     console.warn('OPFS unavailable', err);
-    document.getElementById('status').textContent = 'OPFS unavailable — memory only';
+    document.getElementById('status').textContent = 'OPFS unavailable - memory only';
   }
 }
 

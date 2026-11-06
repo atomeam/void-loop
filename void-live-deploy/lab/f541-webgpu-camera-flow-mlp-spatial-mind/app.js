@@ -31,7 +31,7 @@ function initCards() {
   for (let i=0; i<4; i++) {
     const el = document.createElement('div');
     el.className = 'card';
-    el.innerHTML = `<h4>${titles[i]}</h4><div class="state">flow: 0.00</div>`;
+    el.innerHTML = `<h4>${titles[i]}</h4><div class="state">flow: 0.00</div>`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
     el.style.left = (100 + i*180) + 'px';
     el.style.top = (80 + (i%2)*140) + 'px';
     document.body.appendChild(el);
@@ -223,7 +223,7 @@ async function probeGPU() {
   try {
     const adapter = await navigator.gpu.requestAdapter();
     if (adapter) document.getElementById('status').textContent += ' · WebGPU available (compute path ready)';
-  } catch(e) {}
+  } catch (e) { console.warn('f541-webgpu-camera-flow-mlp-spatial-mind:', e); }
 }
 
 initParticles(); initCards(); initWeights(); openDB(); probeGPU(); loop();

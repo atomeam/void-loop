@@ -87,7 +87,7 @@ function spawnPortals(map) {
       el.className = 'portal';
       el.style.left = (px - 40) + 'px';
       el.style.top = (py - 20) + 'px';
-      el.innerHTML = `\u0394 ${pred}<br><small>click to reinforce</small>`;
+      el.innerHTML = `\u0394 ${pred}<br><small>click to reinforce</small>`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
       el.onclick = () => {
         if (history.length) {
           const last = history[history.length-1];

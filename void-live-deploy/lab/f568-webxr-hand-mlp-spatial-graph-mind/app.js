@@ -127,12 +127,12 @@ canvas.addEventListener('pointerdown', e => {
 });
 
 document.getElementById('enterXR').onclick = async () => {
-  if (!navigator.xr) { status.textContent = 'WebXR not available — using pointer'; return; }
+  if (!navigator.xr) { status.textContent = 'WebXR not available - using pointer'; return; }
   try {
     xrSession = await navigator.xr.requestSession('immersive-vr', {optionalFeatures:['hand-tracking']});
     status.textContent = 'WebXR active (hand tracking if supported)';
   } catch(e) {
-    status.textContent = 'WebXR failed: ' + e.message + ' — pointer mode';
+    status.textContent = 'WebXR failed: ' + e.message + ' - pointer mode';
   }
 };
 
@@ -151,7 +151,7 @@ loadSealed().then(()=>{
     createNode(400,200,20);
     createNode(300,300,-10);
   }
-  status.textContent = 'Ready — move pointer or enter XR. Drag to interact. Seal to persist.';
+  status.textContent = 'Ready - move pointer or enter XR. Drag to interact. Seal to persist.';
   requestAnimationFrame(()=>step(pointer));
 });
 

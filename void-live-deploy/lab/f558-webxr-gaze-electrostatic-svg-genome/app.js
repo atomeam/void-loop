@@ -40,7 +40,7 @@ function init() {
   g.setAttribute('r', 8);
   svg.appendChild(g);
   loadGenome();
-  status.textContent = 'ready — move pointer';
+  status.textContent = 'ready - move pointer';
   requestAnimationFrame(loop);
 }
 
@@ -106,7 +106,7 @@ function checkDwell() {
         a.el.setAttribute('stroke', '#0f0');
         a.fitness += 1;
         dwell[i] = 0;
-        status.textContent = `Dwell seal on agent ${i} — genome ${frag}`;
+        status.textContent = `Dwell seal on agent ${i} - genome ${frag}`;
         // slight mutation
         for (let k = 0; k < mlp.w1.length; k++) mlp.w1[k] += (Math.random()-0.5)*0.02;
       }

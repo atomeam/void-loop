@@ -136,7 +136,7 @@ function loop(t) {
   if (t - last > 16) {
     step2D();
     draw();
-    status.innerHTML = `F532 DEM Granular Mind<br>WebGPU: ${modeWebGPU?'yes':'fallback 2D'}<br>Particles: ${particles.length}<br>Best fitness: ${Math.max(...genomes.map(g=>g.fitness)).toFixed(3)}<br>Gravity: ${gravity.x.toFixed(2)},${gravity.y.toFixed(2)}`;
+    status.innerHTML = `F532 DEM Granular Mind<br>WebGPU: ${modeWebGPU?'yes':'fallback 2D'}<br>Particles: ${particles.length}<br>Best fitness: ${Math.max(...genomes.map(g=>g.fitness)).toFixed(3)}<br>Gravity: ${gravity.x.toFixed(2)},${gravity.y.toFixed(2)}`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
     last = t;
   }
   requestAnimationFrame(loop);
@@ -188,7 +188,7 @@ boxes.forEach(b => {
 
 // Seal + Broadcast
 let bc;
-try { bc = new BroadcastChannel('f532-dem'); } catch(e) {}
+try { bc = new BroadcastChannel('f532-dem'); } catch (e) { console.warn('f532-webgpu-dem-granular-dom-mind:', e); }
 document.getElementById('seal').onclick = seal;
 async function seal() {
   const best = genomes.reduce((a,b) => a.fitness > b.fitness ? a : b);
@@ -197,7 +197,7 @@ async function seal() {
   const hex = [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
   localStorage.setItem('f532-last', hex);
   if (bc) bc.postMessage({type:'genome', genomes, hash:hex});
-  status.innerHTML += `<br>Sealed ${hex.slice(0,8)}`;
+  status.innerHTML += `<br>Sealed ${hex.slice(0,8)}`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
 }
 if (bc) bc.onmessage = e => {
   if (e.data.type === 'genome' && e.data.genomes) {
@@ -216,7 +216,7 @@ async function tryWebGPU() {
     if (!adapter) return;
     device = await adapter.requestDevice();
     modeWebGPU = true;
-    status.innerHTML = status.innerHTML.replace('checking...', 'yes (compute path reserved)');
-  } catch(e) {}
+    status.innerHTML = status.innerHTML.replace('checking...', 'yes (compute path reserved)'); // void-review: ok (constant labels, numbers or a hash only; no visitor text)
+  } catch (e) { console.warn('f532-webgpu-dem-granular-dom-mind:', e); }
 }
 tryWebGPU();

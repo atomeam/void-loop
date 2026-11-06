@@ -131,7 +131,7 @@ async function loadSeal() {
     const tx = db.transaction('k');
     const req = tx.objectStore('k').get('seal');
     req.onsuccess = () => { if (req.result) { kernel = req.result.kernel; gen = req.result.gen; status.textContent = 'restored'; } };
-  } catch(e) {}
+  } catch (e) { console.warn('f548-webgpu-semantic-embedding-swarm-mind:', e); }
 }
 
 initParticles(); initCards(); loadSeal();

@@ -207,13 +207,13 @@ document.getElementById('seal').onclick = sealField;
 document.getElementById('reset').onclick = () => { initAgents(); totalTransfers = 0; status.textContent = 'Agents reset'; };
 
 document.getElementById('xr').onclick = async () => {
-  if (!navigator.xr) { status.textContent = 'WebXR not available — using pointer'; return; }
+  if (!navigator.xr) { status.textContent = 'WebXR not available - using pointer'; return; }
   try {
     const session = await navigator.xr.requestSession('immersive-vr', {optionalFeatures:['hand-tracking']});
     status.textContent = 'XR session started (hand tracking optional)';
     // Minimal XR stub: in full build, bind hand joints to tendril root
     session.end();
   } catch(e) {
-    status.textContent = 'XR unavailable or denied — pointer mode active';
+    status.textContent = 'XR unavailable or denied - pointer mode active';
   }
 };

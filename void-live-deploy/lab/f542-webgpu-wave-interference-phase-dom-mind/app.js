@@ -200,7 +200,7 @@ async function loadGenome() {
       statusEl.textContent = `Loaded ${rec.hash || 'genome'}`;
       return true;
     }
-  } catch(e) {}
+  } catch (e) { console.warn('f542-webgpu-wave-interference-phase-dom-mind:', e); }
   return false;
 }
 
@@ -215,7 +215,7 @@ async function init() {
   for (let i = 0; i < NUM; i++) sources.push(randomSource(i));
   const loaded = await loadGenome();
   createDOM();
-  statusEl.textContent = loaded ? statusEl.textContent : 'Ready — drag cards, click to tune freq';
+  statusEl.textContent = loaded ? statusEl.textContent : 'Ready - drag cards, click to tune freq';
   render();
 }
 init();

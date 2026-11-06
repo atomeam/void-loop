@@ -77,7 +77,7 @@ async function loadGenomes() {
       document.getElementById('status').textContent = 'Loaded sealed genomes';
       return;
     }
-  } catch(e) {}
+  } catch (e) { console.warn('f554-competitive-mlp-portal-agents-genome:', e); }
   for (let i=0;i<N;i++) agents.push(makeAgent(i));
 }
 

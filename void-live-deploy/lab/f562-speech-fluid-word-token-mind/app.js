@@ -21,7 +21,7 @@ function embed(word) {
 }
 
 function predict() {
-  if (history.length < 1) return '—';
+  if (history.length < 1) return '-';
   // Tiny causal attention proxy: weighted sum of recent embeddings
   const last = history.slice(-4);
   let score = 0;
@@ -72,10 +72,10 @@ if (SR) {
     const w = e.results[e.results.length-1][0].transcript.trim().split(/\s+/).pop();
     if (w) spawn(w);
   };
-  rec.onerror = () => document.getElementById('status').textContent = 'Speech error — type instead';
+  rec.onerror = () => document.getElementById('status').textContent = 'Speech error - type instead';
 }
 document.getElementById('listen').onclick = () => {
-  if (!rec) return alert('SpeechRecognition not supported — use the text box');
+  if (!rec) return alert('SpeechRecognition not supported - use the text box');
   if (!listening) { rec.start(); listening=true; document.getElementById('listen').textContent='Stop'; document.getElementById('status').textContent='Listening…'; }
   else { rec.stop(); listening=false; document.getElementById('listen').textContent='Start Listen'; }
 };
@@ -93,7 +93,7 @@ async function seal() {
   } catch(e) { document.getElementById('status').textContent = 'Seal failed (in-memory)'; }
 }
 document.getElementById('seal').onclick = seal;
-document.getElementById('reset').onclick = () => { tokens.forEach(t=>t.el.remove()); tokens.length=0; history=[]; weights.fill(0.1); document.getElementById('pred').textContent='Prediction: —'; };
+document.getElementById('reset').onclick = () => { tokens.forEach(t=>t.el.remove()); tokens.length=0; history=[]; weights.fill(0.1); document.getElementById('pred').textContent='Prediction: -'; };
 
 // Load
 (async () => {

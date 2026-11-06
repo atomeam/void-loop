@@ -166,11 +166,11 @@ const portals = [];
 function createPortal(x, y, title) {
   const el = document.createElement('div');
   el.className = 'portal';
-  el.innerHTML = `<h3>${title}</h3><div class="meta">fitness: 0.5<br>seal: —</div>`;
+  el.innerHTML = `<h3>${title}</h3><div class="meta">fitness: 0.5<br>seal: -</div>`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
   document.body.appendChild(el);
   const p = {
     el, x, y, vx: 0, vy: 0, size: 1, energy: 0.5,
-    mlp: new MLP(), seal: '—', title
+    mlp: new MLP(), seal: '-', title
   };
   portals.push(p);
   return p;
@@ -244,7 +244,7 @@ async function step() {
     p.el.style.top = p.y + 'px';
     p.el.style.transform = `scale(${p.size})`;
     p.el.style.opacity = 0.6 + p.energy * 0.4;
-    p.el.querySelector('.meta').innerHTML = `fitness: ${p.mlp.fitness.toFixed(2)}<br>seal: ${p.seal}<br>energy: ${p.energy.toFixed(2)}`;
+    p.el.querySelector('.meta').innerHTML = `fitness: ${p.mlp.fitness.toFixed(2)}<br>seal: ${p.seal}<br>energy: ${p.energy.toFixed(2)}`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
   }
 
   // render fluid

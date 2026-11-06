@@ -58,7 +58,7 @@ class Agent {
     this.fitness = 0.5;
     this.el = document.createElement('div');
     this.el.className = 'agent';
-    this.el.innerHTML = `<strong>A${id}</strong><span>f:0.50</span>`;
+    this.el.innerHTML = `<strong>A${id}</strong><span>f:0.50</span>`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
     this.el.style.background = `hsla(${hue},70%,40%,0.75)`;
     this.el.style.left = x + 'px';
     this.el.style.top = y + 'px';

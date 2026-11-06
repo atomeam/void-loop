@@ -18,7 +18,7 @@ function hashStr(s) {
 }
 
 function getState() {
-  const positions = tiles.map(t => [parseInt(t.style.gridColumn) || 1, parseInt(t.style.gridRow) || 1]);
+  const positions = tiles.map(t => [parseInt(t.style.gridColumn, 10) || 1, parseInt(t.style.gridRow, 10) || 1]);
   const avg = positions.reduce((a, p) => [a[0]+p[0], a[1]+p[1]], [0,0]).map(x => x/N);
   const varX = positions.reduce((s, p) => s + (p[0]-avg[0])**2, 0)/N;
   if (varX < 0.8) return 'cluster';

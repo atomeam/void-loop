@@ -252,7 +252,7 @@ async function loop(){
         statusEl.textContent = 'adopted peer genome fit=' + fitness.toFixed(2);
       }
     };
-  } catch(e){}
+  } catch (e) { console.warn('f539-webgpu-sph-orientation-mlp-buoyant-dom-mind:', e); }
   statusEl.textContent = 'running · tilt or move pointer · Seal to share';
   requestAnimationFrame(loop);
 })();

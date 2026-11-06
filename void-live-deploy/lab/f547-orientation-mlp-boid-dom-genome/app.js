@@ -84,7 +84,7 @@ function spawn() {
   for (let i = 0; i < N; i++) {
     const el = document.createElement('div');
     el.className = 'verse-card';
-    el.innerHTML = `<div class="id">C${i}</div><div class="fit">0.00</div>`;
+    el.innerHTML = `<div class="id">C${i}</div><div class="fit">0.00</div>`; // void-review: ok (constant labels, numbers or a hash only; no visitor text)
     stage.appendChild(el);
     cards.push({
       el, x: Math.random() * innerWidth, y: Math.random() * innerHeight,
@@ -247,6 +247,6 @@ async function loop() {
   initWeights();
   await loadWeights();
   spawn();
-  statusEl.textContent = hasOrient ? 'Orientation active' : 'Pointer proxy active — move mouse';
+  statusEl.textContent = hasOrient ? 'Orientation active' : 'Pointer proxy active - move mouse';
   loop();
 })();
