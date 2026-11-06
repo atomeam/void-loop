@@ -1,43 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:04:21Z",
-  "passed": 10,
-  "of": 10,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"my actions\" (skill:actions)"
- },
- {
-  "at": "2026-10-15T06:20:22Z",
-  "passed": 11,
-  "of": 11,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"air quality in Tokyo\" (skill:air)"
- },
- {
-  "at": "2026-10-15T06:23:11Z",
-  "passed": 6,
-  "of": 12,
-  "kind": "file",
-  "key": "what are you? | console: Failed to load module script: Expected a JavaScript",
-  "note": "fix: \"what are you?\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
- },
- {
-  "at": "2026-10-15T06:25:50Z",
-  "passed": 8,
-  "of": 12,
-  "kind": "file",
-  "key": "play voidquest | console: Failed to load module script: Expected a JavaScript",
-  "note": "fix: \"play voidquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
- },
- {
-  "at": "2026-10-15T06:28:23Z",
-  "passed": 7,
-  "of": 12,
-  "kind": "file",
-  "key": "play solarquest | console: Failed to load module script: Expected a JavaScript",
-  "note": "fix: \"play solarquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
- },
- {
   "at": "2026-10-15T06:31:10Z",
   "passed": 11,
   "of": 12,
@@ -4328,5 +4290,199 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T08:07:14Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1908,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 17593 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T08:33:20Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1350,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 9918 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T08:42:34Z",
+  "passed": 84,
+  "of": 90,
+  "ms": 336,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "are you web4",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo draw a cartoon cat",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1350,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 9918 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"yo draw me a robot\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T08:54:29Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2082,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16003 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T09:21:01Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1358,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-06T09:29:54Z",
+  "passed": 88,
+  "of": 91,
+  "ms": 312,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1358,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"draw me a robot pls\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T09:44:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 796,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-06T09:56:21Z",
+  "passed": 89,
+  "of": 92,
+  "ms": 415,
+  "kind": "file",
+  "key": "turn the questions i missed into a five-minute challenge | only \"waking up\" appeared, never the answer",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "turn the questions i missed into a five-minute challenge",
+    "why": "only \"waking up\" appeared, never the answer"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 796,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"turn the questions i missed into a five-minute challenge\" only \"waking up\" appeared, never the answer"
  }
 ]
