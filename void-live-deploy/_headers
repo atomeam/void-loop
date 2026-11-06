@@ -54,6 +54,12 @@
 /lib/*
   Cache-Control: public, max-age=60, must-revalidate
 
+# the mark and the app icons: re-checked like the skills, so a new mark (2026-11-06) reaches a returning browser within a minute
+/icon.svg
+  Cache-Control: public, max-age=60, must-revalidate
+/icon-*.png
+  Cache-Control: public, max-age=60, must-revalidate
+
 # Speculation rules (sent on every page by the /* rule above): Chrome prefetches a same-origin page on hover and prerenders it on pointer down,
 # so it opens instantly. The browser reads the rules only with this type. What they leave out (the API, Functions, feeds, home) is in the file.
 /speculation-rules.json
