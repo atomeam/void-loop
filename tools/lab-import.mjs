@@ -12,7 +12,7 @@
 //  - a page that uses navigator.gpu or navigator.xr also loads /lab/needs.js, which tells the visitor honestly when the browser lacks it.
 //  - files next to index.html that the page names (core.js, a worklet) are copied beside it.
 // Pure parts are exported and tested in tools/lab-import.test.mjs. The headless test is tools/lab-probe.mjs, the pipeline tools/lab-sync.mjs.
-import { LAB_TOOLS } from './lab-grade.mjs';
+import { LAB_TOOLS, toolOf } from './lab-grade.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -104,6 +104,11 @@ export function unfinished(html) {
   return /<script\b/i.test(left) ? 'truncated file: a <script> never closes, so the page ends mid-code' : '';
 }
 
+/** the footer bar an experiment wears: back to the Lab, Ask Verse, and the tool its idea became when it has one (tools/lab-use-it.mjs). Pure. */
+export function barOf(tool) {
+  const use = tool ? ' <a class="vl-use" href="' + esc(tool.page) + '" data-tool="' + esc(tool.tool) + '">Use it: ' + esc(tool.tool) + '</a>' : '';
+  return '<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a>' + use + '</footer>' + (tool ? '<script src="/lab/use-it.js" defer></script>' : '');
+}
 /** the draft as a page of Verse: scripts external, head and footer wrapped around it. Pure. meta is metaOf(); needs is needsOf(). */
 export function convertPage(html, meta, needs = needsOf(html)) {
   const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: quietCatches(rename(x.code), meta.slug) }));
@@ -123,7 +128,7 @@ export function convertPage(html, meta, needs = needsOf(html)) {
     '<link rel="stylesheet" href="/lab/lab.css">', needs.length ? '<script src="/lab/needs.js" data-needs="' + needs.join(' ') + '" defer></script>' : '', BEACON].filter(Boolean).join('\n');
   h = /<\/head>/i.test(h) ? h.replace(/<\/head>/i, () => head + '\n</head>') : h.replace(/<head\b[^>]*>/i, (m) => m + head);
   const hasH1 = /<h1\b/i.test(h);
-  const tail = (hasH1 ? '' : '<h1 class="vl-sr">' + esc(meta.title) + '</h1>\n') + '<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>\n';
+  const tail = (hasH1 ? '' : '<h1 class="vl-sr">' + esc(meta.title) + '</h1>\n') + barOf(meta.tool || null) + '\n'; // meta.tool: the tool this experiment opens (tools/lab-use-it.mjs)
   h = /<\/body>/i.test(h) ? h.replace(/<\/body>/i, () => tail + '</body>') : /<\/html>/i.test(h) ? h.replace(/<\/html>/i, () => '<body>' + tail + '</body></html>') : h + '\n' + tail;
   return { html: h, scripts };
 }
@@ -182,7 +187,7 @@ export function readDrafts(draftsDir) {
   });
 }
 /** import the drafts into `out` (`only`: just these slugs; `skip`: not these; `noticeFor`: the slugs that get the missing-WebGPU/WebXR notice, all that use them when null): pages, app.js files, the sibling files they name, and the shared css and notice. Returns [{ ...meta, needs, hash, changed }]. Never deletes. */
-export function importDrafts({ drafts, out = LAB_DIR, skip = new Set(), only = null, noticeFor = null }) {
+export function importDrafts({ drafts, out = LAB_DIR, skip = new Set(), only = null, noticeFor = null, toolFor = null }) {
   const done = []; const seen = new Set();
   writeIfChanged(path.join(out, 'lab.css'), LAB_CSS); writeIfChanged(path.join(out, 'needs.js'), NEEDS_JS);
   for (const d of readDrafts(drafts)) {
@@ -191,7 +196,7 @@ export function importDrafts({ drafts, out = LAB_DIR, skip = new Set(), only = n
     if (skip.has(meta.slug) || (only && !only.has(meta.slug))) continue;
     const cut = unfinished(d.html);
     if (cut) { done.push({ ...meta, needs: needsOf(d.html), hash: hashOf(d), changed: false, error: cut }); continue; }
-    const needs = needsOf(d.html), { html, scripts } = convertPage(d.html, meta, !noticeFor || noticeFor.has(meta.slug) ? needs : []), dir = path.join(out, meta.slug);
+    const needs = needsOf(d.html), { html, scripts } = convertPage(d.html, toolFor ? { ...meta, tool: toolFor(d, meta) } : meta, !noticeFor || noticeFor.has(meta.slug) ? needs : []), dir = path.join(out, meta.slug);
     let changed = writeIfChanged(path.join(dir, 'index.html'), html);
     for (const s of scripts) changed = writeIfChanged(path.join(dir, s.file), s.code.replace(/^\n/, '')) || changed;
     for (const f of fs.readdirSync(path.join(drafts, d.dir))) {
@@ -211,14 +216,15 @@ export function listed(catalog) {
   return catalog.filter((e) => STATUS_LABEL[e.status]).sort((a, b) => (b.num - a.num) || (a.slug < b.slug ? -1 : 1));
 }
 /** the gallery page at /lab/ from the catalog: plain static cards, no script. Pure.
- *  (owner, 2026-11-06: "the lab experiments all seem pointless"): the tools come first (the job inside each cluster of experiments, made into a page, and
+ *  (the owner asked on 2026-11-06 for a useful lab): the tools come first (the job inside each cluster of experiments, made into a page, and
  *  any experiment tools/lab-grade.mjs grades a tool); the experiments with no job are kept, each at its own address, folded away under them. */
 export function renderGallery(catalog) {
   const rows = listed(catalog), made = rows.filter((e) => e.grade === 'tool'), rest = rows.filter((e) => e.grade !== 'tool');
   const from = (key) => catalog.filter((e) => e.idea === key && STATUS_LABEL[e.status]).length;
   const tools = LAB_TOOLS.map((t) => ({ ...t, n: from(t.key) })), count = tools.length + made.length;
-  const desc = 'Tools from the Verse lab, each a page that does one job, made from ' + rows.length + ' experiments: a spirit level, a file checksum checker, a seamless pattern maker, colours from a photo, dictation and a mind map. Nothing leaves your device.';
-  const card = (e) => '<li><a href="/lab/' + esc(e.slug) + '/"><h2>' + esc(e.title) + '</h2><p>' + esc(e.blurb) + '</p><div class="meta"><span class="badge ' + esc(e.status) + '">' + STATUS_LABEL[e.status] + '</span><span>' + (e.num ? 'F' + String(e.num).padStart(3, '0') : 'draft') + '</span></div></a></li>';
+  const desc = 'Tools from the Verse lab, each a page that does one job, made from ' + rows.length + ' experiments: a spirit level, a file checksum checker, a seamless pattern maker, colours from a photo, dictation, a mind map, a tuner, notes and a note in a link. Every experiment opens its tool. Nothing leaves your device.';
+  const opens = (e) => { const t = e.grade === 'toy' && e.idea ? toolOf(e.idea) : null; return t ? '<span>opens ' + esc(t.tool) + '</span>' : ''; };
+  const card = (e) => '<li><a href="/lab/' + esc(e.slug) + '/"><h2>' + esc(e.title) + '</h2><p>' + esc(e.blurb) + '</p><div class="meta"><span class="badge ' + esc(e.status) + '">' + STATUS_LABEL[e.status] + '</span><span>' + (e.num ? 'F' + String(e.num).padStart(3, '0') : 'draft') + '</span>' + opens(e) + '</div></a></li>';
   const toolCard = (t) => '<li><a href="' + esc(t.page) + '"><h2>' + esc(t.tool) + '</h2><p>' + esc(t.why.charAt(0).toUpperCase() + t.why.slice(1)) + '.</p><div class="meta"><span class="badge tool">Tool</span>' + (t.n ? '<span>from ' + t.n + ' experiment' + (t.n === 1 ? '' : 's') + '</span>' : '') + '</div></a></li>';
   const madeCard = (e) => card(e).replace('<span class="badge ' + esc(e.status) + '">' + STATUS_LABEL[e.status] + '</span>', '<span class="badge tool">Tool</span>');
   return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n' + HANDOFF + '\n<title>Verse lab: ' + count + ' tools made from ' + rows.length + ' experiments</title>\n'
@@ -227,7 +233,7 @@ export function renderGallery(catalog) {
     + '<link rel="stylesheet" href="/lab/lab.css">\n' + BEACON + '\n</head>\n<body class="lab-page">\n<main class="lab">\n<h1>Verse lab</h1>\n<p class="lead">Tools the lab made from its experiments: each does one job you can come back to, on your device.</p>\n<ul>\n'
     + [...tools.map(toolCard), ...made.map(madeCard)].join('\n') + '\n</ul>\n'
     + '<p class="note">Each tool is the useful idea inside a cluster of the lab\'s hourly experiments: the tilt sensing that steered particles levels a shelf, the seal that hashed their state checks your download.</p>\n'
-    + (rest.length ? '<details>\n<summary>The ' + rest.length + ' experiments behind them (demos to watch and poke, kept as they were), newest first</summary>\n<ul>\n' + rest.map(card).join('\n') + '\n</ul>\n</details>\n' : '')
+    + (rest.length ? '<details>\n<summary>The ' + rest.length + ' experiments behind them, newest first: each demo opens the tool its idea became</summary>\n<ul>\n' + rest.map(card).join('\n') + '\n</ul>\n</details>\n' : '')
     + '<footer><a href="/tools/">All tools</a> &middot; <a href="/">Ask Verse anything</a></footer>\n</main>\n</body>\n</html>\n';
 }
 export const readCatalog = (out = LAB_DIR) => { try { return JSON.parse(fs.readFileSync(path.join(out, 'catalog.json'), 'utf8')); } catch (_) { return []; } };
