@@ -1,0 +1,298 @@
+{
+ "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
+ "source": "https://tranco-list.eu/top-1m.csv.zip",
+ "cursor": 40000,
+ "swept": 39257,
+ "lap": 0,
+ "at": "2026-11-06",
+ "smallest": [
+  {
+   "rank": 204,
+   "host": "firefox-portal-detection.com",
+   "controls": 0,
+   "bytes": 8,
+   "words": 1,
+   "title": "success",
+   "plain": true
+  },
+  {
+   "rank": 1268,
+   "host": "id5-sync.com",
+   "controls": 0,
+   "bytes": 12,
+   "words": 3,
+   "title": "This is ID5.",
+   "plain": false
+  },
+  {
+   "rank": 253,
+   "host": "icanhazip.com",
+   "controls": 0,
+   "bytes": 15,
+   "words": 1,
+   "title": "48.217.180.210",
+   "plain": true
+  },
+  {
+   "rank": 572,
+   "host": "mega.co.nz",
+   "controls": 0,
+   "bytes": 554,
+   "words": 1,
+   "title": "MEGA",
+   "plain": false
+  },
+  {
+   "rank": 177,
+   "host": "example.com",
+   "controls": 0,
+   "bytes": 577,
+   "words": 27,
+   "title": "Example Domain",
+   "plain": false
+  },
+  {
+   "rank": 2905,
+   "host": "uisp.com",
+   "controls": 0,
+   "bytes": 705,
+   "words": 3,
+   "title": "UISP - Ubiquiti",
+   "plain": false
+  },
+  {
+   "rank": 4672,
+   "host": "feednews.com",
+   "controls": 0,
+   "bytes": 796,
+   "words": 2,
+   "title": "Opera News",
+   "plain": false
+  },
+  {
+   "rank": 3263,
+   "host": "samsunghealth.com",
+   "controls": 0,
+   "bytes": 989,
+   "words": 2,
+   "title": "Samsung Health",
+   "plain": false
+  },
+  {
+   "rank": 444,
+   "host": "netcraze.io",
+   "controls": 0,
+   "bytes": 1016,
+   "words": 1,
+   "title": "CrazeDNS",
+   "plain": false
+  },
+  {
+   "rank": 3268,
+   "host": "bttrack.com",
+   "controls": 0,
+   "bytes": 1719,
+   "words": 121,
+   "title": "Tracking API",
+   "plain": false
+  },
+  {
+   "rank": 153,
+   "host": "archive.org",
+   "controls": 0,
+   "bytes": 2046,
+   "words": 12,
+   "title": "Internet Archive: Digital Library of Free &amp; Borrowable Texts, Movies, Music &amp; Wayb",
+   "plain": false
+  },
+  {
+   "rank": 557,
+   "host": "slideshare.net",
+   "controls": 0,
+   "bytes": 3038,
+   "words": 37,
+   "title": "Client Challenge",
+   "plain": false
+  },
+  {
+   "rank": 2875,
+   "host": "dalyfeds.com",
+   "controls": 0,
+   "bytes": 3109,
+   "words": 2,
+   "title": "H5 Center",
+   "plain": false
+  },
+  {
+   "rank": 922,
+   "host": "disqus.com",
+   "controls": 0,
+   "bytes": 6034,
+   "words": 8,
+   "title": "&num;1 in audience engagement and community growth &vert; Disqus",
+   "plain": false
+  },
+  {
+   "rank": 59,
+   "host": "myfritz.net",
+   "controls": 0,
+   "bytes": 6885,
+   "words": 1,
+   "title": "MyFRITZ!Net",
+   "plain": false
+  },
+  {
+   "rank": 3202,
+   "host": "kahoot.it",
+   "controls": 0,
+   "bytes": 7198,
+   "words": 1,
+   "title": "Kahoot!",
+   "plain": false
+  },
+  {
+   "rank": 662,
+   "host": "gosuslugi.ru",
+   "controls": 0,
+   "bytes": 9376,
+   "words": 16,
+   "title": "Портал государственных услуг Российской Федерации",
+   "plain": false
+  },
+  {
+   "rank": 141,
+   "host": "skybridge.click",
+   "controls": 0,
+   "bytes": 13100,
+   "words": 2,
+   "title": "ООО&nbsp;\"СМП-74\"",
+   "plain": false
+  },
+  {
+   "rank": 296,
+   "host": "tinyurl.com",
+   "controls": 0,
+   "bytes": 13866,
+   "words": 9,
+   "title": "URL Shortener, Branded Short Links & Analytics | TinyURL",
+   "plain": false
+  },
+  {
+   "rank": 1949,
+   "host": "adsco.re",
+   "controls": 1,
+   "bytes": 158,
+   "words": 20,
+   "title": "This domain is used for traffic validation by Adscore , a bo",
+   "plain": false
+  },
+  {
+   "rank": 315,
+   "host": "cloudflareinsights.com",
+   "controls": 1,
+   "bytes": 498,
+   "words": 6,
+   "title": "Learn more about Cloudflare Web Analytics",
+   "plain": false
+  },
+  {
+   "rank": 127,
+   "host": "registrar-servers.com",
+   "controls": 1,
+   "bytes": 2031,
+   "words": 13,
+   "title": "Home - registrar-servers.com",
+   "plain": false
+  },
+  {
+   "rank": 890,
+   "host": "onetag-sys.com",
+   "controls": 2,
+   "bytes": 923,
+   "words": 21,
+   "title": "OneTag Advertising System",
+   "plain": false
+  },
+  {
+   "rank": 179,
+   "host": "astrumu.io",
+   "controls": 2,
+   "bytes": 985,
+   "words": 22,
+   "title": "astrumu.io",
+   "plain": false
+  },
+  {
+   "rank": 377,
+   "host": "google.cn",
+   "controls": 2,
+   "bytes": 1408,
+   "words": 4,
+   "title": "Google",
+   "plain": false
+  },
+  {
+   "rank": 523,
+   "host": "share.google",
+   "controls": 3,
+   "bytes": 2016,
+   "words": 45,
+   "title": "share.google",
+   "plain": false
+  },
+  {
+   "rank": 770,
+   "host": "g.co",
+   "controls": 3,
+   "bytes": 2190,
+   "words": 49,
+   "title": "g.co",
+   "plain": false
+  },
+  {
+   "rank": 329,
+   "host": "amazon.co.uk",
+   "controls": 3,
+   "bytes": 3805,
+   "words": 22,
+   "title": "Amazon.co.uk",
+   "plain": false
+  },
+  {
+   "rank": 379,
+   "host": "amazon.de",
+   "controls": 3,
+   "bytes": 3817,
+   "words": 21,
+   "title": "Amazon.de",
+   "plain": false
+  },
+  {
+   "rank": 401,
+   "host": "live-video.net",
+   "controls": 4,
+   "bytes": 2180,
+   "words": 32,
+   "title": "Amazon.com Property",
+   "plain": false
+  },
+  {
+   "rank": 384,
+   "host": "dns.google",
+   "controls": 5,
+   "bytes": 1381,
+   "words": 30,
+   "title": "Google Public DNS",
+   "plain": false
+  },
+  {
+   "rank": 887,
+   "host": "vivoglobal.com",
+   "controls": 5,
+   "bytes": 2252,
+   "words": 10,
+   "title": "维沃移动通信有限公司",
+   "plain": false
+  }
+ ]
+}
