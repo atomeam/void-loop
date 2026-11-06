@@ -582,84 +582,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T15:10:26Z",
-   "subject": "Weather page: the newest look wins; ritual .ics: steps at the clock time typed, in the browser's zone (#2432)"
-  },
-  {
-   "at": "2026-11-06T15:08:31Z",
+   "at": "2026-11-06T16:08:18Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-06T15:08:16Z",
-   "subject": "Movie pick: follow the ask's intent and give every pick a similarity-score (#2433)"
+   "at": "2026-11-06T16:06:16Z",
+   "subject": "Failed jobs read: run 42244869099 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-06T15:07:53Z",
-   "subject": "Team gate: judge a stale branch by net lines lost, not by more out than in (#2434)"
+   "at": "2026-11-06T16:06:06Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T15:07:31Z",
-   "subject": "heavy-lift-map: map a process to the systems and automations Verse owns (#2435)"
+   "at": "2026-11-06T16:05:43Z",
+   "subject": "Main green: list groceries fills the open list, no-list removes answer at once, list card types over the seeded title (#2426)"
   },
   {
-   "at": "2026-11-06T15:00:14Z",
-   "subject": "Tower gate: every floor measured against its live site (1 slices)"
+   "at": "2026-11-06T16:05:26Z",
+   "subject": "Incident: the browser suite failed on 923ce150 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-06T14:39:33Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-11-06T16:05:13Z",
+   "subject": "Automerge sweep: safety-check on the chosen batch only, so the sweep reaches the suite gate (#2425)"
   },
   {
-   "at": "2026-11-06T14:38:57Z",
-   "subject": "Site history: the next sites of the queue, each with a cited history"
+   "at": "2026-11-06T16:03:51Z",
+   "subject": "Lab: 475 experiments live at /lab/, 23 waiting for a fix (#2441)"
   },
   {
-   "at": "2026-11-06T14:38:47Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-11-06T16:01:42Z",
+   "subject": "Film card: link the Internet Archive only as a checked free film that plays here (#2442)"
   },
   {
-   "at": "2026-11-06T14:37:45Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-11-06T16:01:01Z",
+   "subject": "Team jobs: one piece of work to one seat, the highest leverage first, no busywork (#2443)"
   },
   {
-   "at": "2026-11-06T14:36:17Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+   "at": "2026-11-06T15:59:50Z",
+   "subject": "Lab skill: \"verse lab\" opens the lab, and the book (the menu) lists it (#2445)"
   },
   {
-   "at": "2026-11-06T14:27:39Z",
-   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
+   "at": "2026-11-06T15:59:03Z",
+   "subject": "Daily film: the take folder is absolute, so ffmpeg finds the frames (#2446)"
   },
   {
-   "at": "2026-11-06T13:50:02Z",
-   "subject": "Outcome exam: podcasts 87.2"
+   "at": "2026-11-06T15:52:41Z",
+   "subject": "Site test: fix: \"films by Kurosawa\" load 1510 ms > 1200"
   },
   {
-   "at": "2026-11-06T13:35:32Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"create a toon"
+   "at": "2026-11-06T15:44:05Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T13:19:50Z",
-   "subject": "Subject eval: 54 of 54 live"
-  },
-  {
-   "at": "2026-11-06T13:13:14Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
-  },
-  {
-   "at": "2026-11-06T13:04:37Z",
-   "subject": "Outcome exam: podcasts 85.6"
-  },
-  {
-   "at": "2026-11-06T12:58:21Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
-  },
-  {
-   "at": "2026-11-06T12:33:37Z",
-   "subject": "Outcome exam: podcasts 85.6"
-  },
-  {
-   "at": "2026-11-06T12:32:19Z",
+   "at": "2026-11-06T15:41:39Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-06T15:38:18Z",
+   "subject": "Outcome exam: podcasts 86.4"
+  },
+  {
+   "at": "2026-11-06T15:38:02Z",
+   "subject": "Verse runs its own day: the clock keeps going, the daily film and podcast start themselves, the crew says when it runs next (#2440)"
+  },
+  {
+   "at": "2026-11-06T15:37:44Z",
+   "subject": "Failed jobs read: run 42240559933 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-06T15:37:24Z",
+   "subject": "Incident: the browser suite failed on b8b7e8ad (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-06T15:26:58Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-06T15:23:12Z",
+   "subject": "Failed jobs read: run 42240108371 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 41,
-  "week": 192
+  "day": 47,
+  "week": 198
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
