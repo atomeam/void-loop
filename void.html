@@ -1430,7 +1430,8 @@ Object.values(things).forEach((th) => {
       });
       keepVideosPut(stage, vids);
       // the picked thing says so (the exam reads the thing an ask made or changed, not the first one on the stage, #2326)
-      if (selectedId) for (const el of stage.querySelectorAll(':scope > [data-id]')) if (el.dataset.id === selectedId) el.dataset.picked = '1';
+      // a card kept from the last draw keeps its attributes, so the mark comes off every card that is no longer the picked one
+      for (const el of stage.querySelectorAll(':scope > [data-id]')) { delete el.dataset.picked; if (el.dataset.id === selectedId) el.dataset.picked = '1'; }
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       tuckApply(); // anything tucked away while a game was open stays in the tray across redraws
