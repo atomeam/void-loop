@@ -2138,6 +2138,23 @@ try {
     check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), each with a JSON link to film metadata and the found ones as JSON (never the unfound), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
       rows.length === 2 && /Talk to Me/.test(rows[0]) && pickJs && pickJs.count === 2 && pickJs.films[0].director === 'Danny Philippou' && pickJs.films[0].runtime === '95 min' && !('description' in pickJs.films[1]) && pickJs.films.every((f) => f.title !== 'Made Up Movie Zork') && rowJson.join('|') === 'film metadata for Talk to Me|film metadata for Nosferatu' && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
     await M.ctx.close(); }
+  // asked by Verse (2026-10-22): "Add a 'similarity-score' field to the movie picks JSON so users can see how closely a pick matches their
+  // expressed intent". The ask's intent goes to the model, each row says how it matches, the JSON gives every pick its score (lib/movie-intent.js).
+  if (want("real movies: \"scary movies from the 90s\" asks for 90s horror and scores each pick")) { const M = await fresh();
+    let prompt = '';
+    await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { prompt = (JSON.parse(r.request().postData() || '{}').ask) || ''; return r.fulfill(json({ answer: '1. Se7en (1995)\n2. Scream (1996)\n3. Made Up Zork (1997)' })); });
+    await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      const f = t === 'Scream' ? { verified: true, title: t, year: 1996, genre: 'Horror', overview: 'A masked killer stalks a small town.', poster: '', trailer: '', free: false, play: null, links: [], sources: ['iTunes Search API'] }
+        : t === 'Se7en' ? { verified: true, title: t, year: 1995, genre: 'Thriller', overview: 'Two detectives hunt a serial killer.', poster: '', trailer: '', free: false, play: null, links: [], sources: ['iTunes Search API'] }
+        : { verified: false, title: t }; return r.fulfill(json(f)); });
+    await M.ask('scary movies from the 90s', 1800);
+    const sims = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => [x.querySelector('b') && x.querySelector('b').textContent, (x.querySelector('.mv-sim') || {}).textContent || '']));
+    const js = await M.p.$eval('.vpage.on .mv-picks-json pre', (e) => JSON.parse(e.textContent)).catch(() => null);
+    const head = await M.p.$eval('.vpage.on h2', (e) => e.textContent).catch(() => ''), all = await M.p.$eval('.vpage.on', (e) => e.textContent).catch(() => '');
+    check('real movies: "scary movies from the 90s" asks the model for 90s horror, lists the 100% match first with "Matches 2 of 2", and the JSON gives each pick its similarity-score',
+      /horror movies released between 1990 and 1999/.test(prompt) && /scary \(horror\), 1990s/.test(head) && sims.length === 2 && sims[0][0] === 'Scream' && /Matches 2 of 2 \(100%\)/.test(sims[0][1]) && /Matches 1 of 2 \(50%\)/.test(sims[1][1])
+      && js && js.films[0]['similarity-score'] === 100 && js.films[1]['similarity-score'] === 50 && !M.errors.length, JSON.stringify({ prompt, head, all: all.slice(0, 400), sims, js, e: M.errors }));
+    await M.ctx.close(); }
   // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
   // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
   if (want("real music: \"pick a song\" shows only found songs with their cover and a preview")) { const U = await fresh();
