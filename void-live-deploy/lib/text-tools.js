@@ -144,6 +144,110 @@ export function zalgo(s, level = 'medium', rng = Math.random) {
     return out;
   }).join('');
 }
+// ---- SQL formatter (docs/GAPS.md row 94, 2026-11-06): keywords in capitals outside strings, quoted names and comments; each clause on its own line,
+// the items of SELECT, GROUP BY and ORDER BY one a line, AND and OR under WHERE, a subquery indented. Nothing is run or checked.
+const SQL_KW = new Set(('select from where and or not in is null as on join inner left right full outer cross natural group by order having limit offset union all distinct '
+  + 'insert into values update set delete create table alter drop index view primary key foreign references default case when then else end like ilike between exists '
+  + 'asc desc with returning count sum avg min max coalesce cast intersect except true false if unique check constraint add column using over partition window fetch next rows only top').split(' '));
+const SQL_CLAUSE = [['select'], ['from'], ['where'], ['group', 'by'], ['order', 'by'], ['having'], ['limit'], ['offset'], ['union', 'all'], ['union'], ['intersect'], ['except'],
+  ['insert', 'into'], ['values'], ['update'], ['set'], ['delete', 'from'], ['returning'], ['with'], ['window'], ['left', 'outer', 'join'], ['right', 'outer', 'join'], ['full', 'outer', 'join'],
+  ['inner', 'join'], ['left', 'join'], ['right', 'join'], ['full', 'join'], ['cross', 'join'], ['natural', 'join'], ['join'], ['on']];
+const SQL_LIST = new Set(['select', 'group by', 'order by', 'set', 'returning', 'values']);
+export function formatSql(src) {
+  const toks = String(src || '').match(/'(?:[^']|'')*'?|"(?:[^"]|"")*"?|`[^`]*`?|\[[^\]\n]*\]|--[^\n]*|\/\*[\s\S]*?(?:\*\/|$)|\d+(?:\.\d+)?|[A-Za-z_][\w$]*|<>|!=|<=|>=|\|\||::|\s+|[^\s]/g) || [];
+  const t = toks.filter((x) => !/^\s+$/.test(x));
+  const low = (x) => (/^[A-Za-z_]/.test(x || '') ? x.toLowerCase() : '');
+  const lines = []; let line = '', depth = 0, between = false;
+  const frames = [{ sub: true, clause: '' }];
+  const pad = () => '  '.repeat(depth);
+  const nl = (extra = 0) => { if (line.trim()) lines.push(line.replace(/\s+$/, '')); line = pad() + '  '.repeat(extra); };
+  const FN = new Set(['count', 'sum', 'avg', 'min', 'max', 'coalesce', 'cast']);
+  const put = (s, prev) => { const p = low(prev); const tight = !line.trim() || /[(.]$/.test(line) || /^[,;).]/.test(s) || s === '::' || prev === '::' || (s === '(' && /^[A-Za-z_]/.test(prev || '') && (!SQL_KW.has(p) || FN.has(p))); line += tight ? s : ' ' + s; };
+  let prev = '';
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i], w = low(tok), f = frames[frames.length - 1];
+    if (/^--|^\/\*/.test(tok)) { put(tok, prev); if (tok.startsWith('--')) nl(); prev = tok; continue; }
+    if (tok === ';') { put(';', prev); nl(); lines.push(''); line = ''; depth = 0; frames.length = 1; frames[0].clause = ''; prev = tok; continue; }
+    if (tok === '(') { const sub = low(t[i + 1]) === 'select' || low(t[i + 1]) === 'with'; put('(', prev); frames.push({ sub, clause: '' }); if (sub) depth += 2; prev = tok; continue; }
+    if (tok === ')') { const g = frames.length > 1 ? frames.pop() : f; if (g.sub) { depth = Math.max(0, depth - 1); nl(); depth = Math.max(0, depth - 1); } put(')', prev); prev = tok; continue; }
+    if (f.sub && w) {
+      const c = SQL_CLAUSE.find((p) => p.every((x, k) => low(t[i + k]) === x));
+      if (c) {
+        const name = c.join(' ');
+        nl(name === 'on' ? 1 : 0); put(c.map((x) => x.toUpperCase()).join(' '), prev); i += c.length - 1; prev = t[i]; f.clause = name; between = false;
+        if (name === 'select' && low(t[i + 1]) === 'distinct') { put('DISTINCT', prev); i++; prev = t[i]; }
+        if (SQL_LIST.has(name) && name !== 'values') nl(1);
+        continue;
+      }
+      if ((w === 'and' || w === 'or') && !between && /^(?:where|having|on)$/.test(f.clause)) { nl(1); put(w.toUpperCase(), prev); prev = tok; continue; }
+      if (w === 'and' && between) between = false;
+      if (w === 'between') between = true;
+    }
+    if (tok === ',' && f.sub && SQL_LIST.has(f.clause) && f.clause !== 'values') { put(',', prev); nl(1); prev = tok; continue; }
+    put(SQL_KW.has(w) ? tok.toUpperCase() : tok, prev); prev = tok;
+  }
+  nl();
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+// ---- XML to JSON (docs/GAPS.md row 95, 2026-11-06): a hand-written parser. An element with only text is its text; attributes are "@name";
+// text beside attributes or children is "#text"; a child name met twice is an array; an empty element is null. Values stay strings.
+// A document that does not parse says the line it stops at.
+const XML_ENT = { lt: '<', gt: '>', amp: '&', quot: '"', apos: "'" };
+export function xmlToJson(src) {
+  const s = String(src || ''); let i = 0;
+  const lineAt = (k) => s.slice(0, k).split('\n').length;
+  const fail = (msg, k = i) => { const e = new Error('Line ' + lineAt(k) + ': ' + msg); e.xml = true; throw e; };
+  const decode = (x, at) => x.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);?/gi, (all, e) => {
+    if (e[0] === '#') { const n = e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : +e.slice(1); return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : fail('the character reference ' + all + ' is not a character', at); }
+    return e in XML_ENT ? XML_ENT[e] : fail('the entity ' + all + ' is not one of &lt; &gt; &amp; &quot; &apos;', at);
+  });
+  const ws = () => { while (/\s/.test(s[i] || '')) i++; };
+  const skipMisc = () => { for (;;) { ws(); if (s.startsWith('<?', i)) { const e = s.indexOf('?>', i); if (e < 0) fail('the <? is never closed'); i = e + 2; }
+    else if (s.startsWith('<!--', i)) { const e = s.indexOf('-->', i); if (e < 0) fail('the comment is never closed'); i = e + 3; }
+    else if (/^<!doctype/i.test(s.slice(i, i + 9))) { let d = 0; for (; i < s.length; i++) { if (s[i] === '[') d++; else if (s[i] === ']') d--; else if (s[i] === '>' && d <= 0) { i++; break; } } }
+    else return; } };
+  const NAME = /[A-Za-z_][\w:.-]*/y;
+  const name = () => { NAME.lastIndex = i; const m = NAME.exec(s); if (!m) fail(s[i] ? 'a name was expected, not "' + s[i] + '"' : 'the document ends too soon'); i += m[0].length; return m[0]; };
+  const element = () => {
+    const at = i; i++; const tag = name(), attrs = {}, kids = []; let text = '';
+    for (;;) {
+      ws();
+      if (s.startsWith('/>', i)) { i += 2; return build(attrs, kids, text); }
+      if (s[i] === '>') { i++; break; }
+      if (!s[i]) fail('<' + tag + '> is never closed', at);
+      const a = name(); ws(); if (s[i] !== '=') fail('the attribute ' + a + ' has no = and value'); i++; ws();
+      const q = s[i]; if (q !== '"' && q !== "'") fail('the value of ' + a + ' is not in quotes'); const e = s.indexOf(q, i + 1); if (e < 0) fail('the value of ' + a + ' is never closed');
+      const v = s.slice(i + 1, e); if (v.includes('<')) fail('the value of ' + a + ' has a <'); if ('@' + a in attrs) fail('the attribute ' + a + ' is there twice'); attrs['@' + a] = decode(v, i); i = e + 1;
+    }
+    for (;;) {
+      if (i >= s.length) fail('<' + tag + '> is opened here and never closed', at);
+      if (s.startsWith('</', i)) { const ca = i; i += 2; const c = name(); ws(); if (s[i] !== '>') fail('</' + c + ' has no >'); i++; if (c !== tag) fail('</' + c + '> closes <' + tag + '>, which is opened on line ' + lineAt(at), ca); return build(attrs, kids, text); }
+      if (s.startsWith('<!--', i)) { const e = s.indexOf('-->', i); if (e < 0) fail('the comment is never closed'); i = e + 3; continue; }
+      if (s.startsWith('<![CDATA[', i)) { const e = s.indexOf(']]>', i); if (e < 0) fail('the CDATA section is never closed'); text += s.slice(i + 9, e); i = e + 3; continue; }
+      if (s.startsWith('<?', i)) { const e = s.indexOf('?>', i); if (e < 0) fail('the <? is never closed'); i = e + 2; continue; }
+      if (s[i] === '<') { kids.push([s.slice(i + 1).match(/^[A-Za-z_][\w:.-]*/)?.[0] || '', null]); kids[kids.length - 1][1] = element(); continue; }
+      const e = s.indexOf('<', i), end = e < 0 ? s.length : e; text += decode(s.slice(i, end), i); i = end;
+    }
+  };
+  const build = (attrs, kids, text) => {
+    const tx = kids.length ? text.trim() : text.trim() ? text : '';
+    if (!kids.length && !Object.keys(attrs).length) return tx ? tx.trim() : null;
+    const o = { ...attrs };
+    for (const [k, v] of kids) o[k] = k in o ? (Array.isArray(o[k]) ? [...o[k], v] : [o[k], v]) : v;
+    if (tx.trim()) o['#text'] = tx.trim();
+    return o;
+  };
+  skipMisc();
+  if (s[i] !== '<') fail(i < s.length ? 'the document has to start with an element, like <root>' : 'there is no element here');
+  const rootName = s.slice(i + 1).match(/^[A-Za-z_][\w:.-]*/)?.[0] || '';
+  const root = element();
+  skipMisc();
+  if (i < s.length) fail('there is more after the root element </' + rootName + '>; XML has one root');
+  return { [rootName]: root };
+}
+const xmlTool = (s) => { try { return { text: JSON.stringify(xmlToJson(s), null, 2), note: 'Attributes are "@name", text beside them is "#text", a repeated element is a list, and every value stays a string' }; } catch (e) { if (!e.xml) throw e; return { text: '', note: e.message }; } };
+
 const T = (id, title, heads, fn, o = {}) => ({ id, title, heads: heads.map((h) => new RegExp('^(?:' + h + ')' + FILL + '$')), fn, body: 'text', ...o });
 const LOOSE = '(?!(?:is|was|means|mean|explained|works|vs)\\b)';
 
@@ -238,6 +342,8 @@ export const TOOLS = [
   T('ellipsis', 'Ellipsis', ['(?:insert\\s+)?(?:an?\\s+)?ellipsis(?:\\s+character)?'], (s) => (s ? s.replace(/\.{3,}/g, '…') : '…'), { body: 'opt', note: 'U+2026; in a text, ... becomes …' }),
   T('nbsp', 'Non-breaking space', ['(?:insert\\s+)?(?:an?\\s+)?(?:nbsp|non[\\s-]?breaking\\s+space|no[\\s-]?break\\s+space)'], (s) => (s ? s.replace(/ /g, ' ') : ' '), { body: 'opt', note: 'U+00A0; in a text, every space becomes one' }),
   T('html', 'As HTML', ['(?:copy\\s+(?:it\\s+)?as|convert\\s+to|turn\\s+into|make\\s+it)\\s+html', 'html'], toHtml),
+  T('sql', 'SQL, formatted', ['sql\\s+(?:formatter|format|beautifier|beautify|pretty\\s*print(?:er)?|prettifier|prettify)', '(?:format|beautify|prettify|pretty\\s*print|indent)\\s+(?:the\\s+|this\\s+|my\\s+)?sql(?:\\s+query)?'], (b) => ({ text: formatSql(b), note: 'Keywords in capitals, each clause on its own line. The query is not run or checked' })),
+  T('xml-json', 'XML as JSON', ['(?:convert\\s+)?xml\\s+(?:to|into|as)\\s+json(?:\\s+(?:converter|conversion|online|tool))?', '(?:convert|turn|change)\\s+(?:this\\s+)?xml\\s+(?:to|into)\\s+json'], xmlTool),
   T('markdown', 'As Markdown', ['(?:copy\\s+(?:it\\s+)?as|convert\\s+to|turn\\s+into|make\\s+it)\\s+markdown', 'html\\s+to\\s+markdown'], toMarkdown),
   T('plain', 'As plain text', ['(?:copy\\s+(?:it\\s+)?as|paste\\s+as|convert\\s+to|turn\\s+into|make\\s+it)\\s+plain(?:\\s+text)?', 'paste\\s+plain(?:\\s+text)?', 'clear\\s+(?:the\\s+)?formatting', 'strip\\s+(?:the\\s+)?(?:formatting|markdown|html|tags)', 'remove\\s+(?:the\\s+)?(?:formatting|markdown|html\\s+tags)'], toPlain),
   T('unhighlight', 'Highlight removed', ['(?:remove|clear|undo|strip)\\s+(?:the\\s+)?highlight(?:ing|s)?', 'unhighlight'], (s) => s.replace(/<\/?mark\b[^>]*>/gi, '').replace(/==([^=]+)==/g, '$1')),

@@ -562,6 +562,11 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /team/ | text | text | yes | its tag |
 | /time/ | date, location | date, location | yes | handoff-types.json |
 | /tournaments/ | names | table, names | yes | handoff-types.json |
+| /trading-bots/ | - | table, code | yes | its tag |
+| /trading-bots/arbitrage/ | - | table, code | yes | its tag |
+| /trading-bots/breakout-20-10/ | - | table, code | yes | its tag |
+| /trading-bots/dip-rsi2/ | - | table, code | yes | its tag |
+| /trading-bots/trend-50-200/ | - | table, code | yes | its tag |
 | /translate/ | text, image, url | text | yes | handoff-types.json |
 | /treasury/ | - | - | no | its tag |
 | /tuner/ | text | number | yes | handoff-types.json |

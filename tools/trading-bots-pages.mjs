@@ -46,6 +46,7 @@ function head({ title, desc, url, name }) {
 <link rel="stylesheet" href="/trading-bots/tb.css">
 <link rel="modulepreload" href="/trading-bots/kit/strategy.js">
 <script type="application/ld+json">${JSON.stringify(ld)}</script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
 </head>`;
 }
