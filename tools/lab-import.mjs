@@ -123,7 +123,7 @@ export function convertPage(html, meta, needs = needsOf(html)) {
 /** the shared stylesheet and the honest notice for a browser without WebGPU or WebXR: written next to the pages by every import. */
 export const LAB_CSS = `/* /lab/ (tools/lab-import.mjs): the footer every experiment wears, and the notice for a browser that lacks what it needs */
 .vl-bar{position:fixed;left:8px;bottom:8px;z-index:2147483646;font:12px/1.4 system-ui,-apple-system,sans-serif;background:rgba(7,6,11,.78);color:#ecebf5;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;opacity:.6;transition:opacity .2s}
-.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px}.vl-bar a:last-child{margin-right:0}
+.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px;display:inline-flex;align-items:center;min-height:24px}.vl-bar a:last-child{margin-right:0}
 .vl-sr{position:fixed;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;padding:0;border:0}
 .vl-note{position:fixed;left:8px;right:8px;top:8px;z-index:2147483647;font:14px/1.45 system-ui,-apple-system,sans-serif;background:#2b1a05;color:#ffe3b0;border:1px solid #b8791b;border-radius:10px;padding:8px 12px}
 .vl-note button{font:inherit;float:right;margin-left:10px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:0 10px;cursor:pointer}
