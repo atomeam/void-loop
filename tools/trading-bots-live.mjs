@@ -15,7 +15,7 @@ for (const pair of ['BTC-USD', 'ETH-USD']) {
   if (j.rows.length < 1000 || Date.now() - Date.parse(j.asOf) > 4 * 86400000) bad.push(pair + ' data is short or stale');
 }
 const a = await get('/api/arbitrage?coin=ETH'); const aj = await a.r.json().catch(() => ({}));
-out.arbitrage = a.status === 200 ? { venues: Object.keys((aj.spread || {}).mids || {}), missing: aj.missing, best: aj.rows && aj.rows[0] && { buy: aj.rows[0].buy, sell: aj.rows[0].sell, net: aj.rows[0].net.toFixed(2) }, gasUsd: aj.gasUsd } : { status: a.status, error: aj.error };
+out.freeScan = a.status === 200 ? { venues: Object.keys((aj.spread || {}).mids || {}), missing: aj.missing, best: aj.rows && aj.rows[0] && { buy: aj.rows[0].buy, sell: aj.rows[0].sell, net: aj.rows[0].net.toFixed(2) }, gasUsd: aj.gasUsd } : { status: a.status, error: aj.error };
 if (a.status !== 200) bad.push('free scan answered ' + a.status);
 const h = await get('/api/arbitrage?coin=ETH&history=1'); const hj = await h.r.json().catch(() => ({}));
 out.record = h.status === 200 ? { scans: hj.scans, first: hj.first, last: hj.last, cleared: hj.cleared, avgBestNet: hj.avgBestNet } : { status: h.status, error: hj.error };
