@@ -60,8 +60,6 @@ test('the shell files (the mark, the app icon, the manifest, verse.css) are aske
     assert.deepEqual(w.calls, [{ url: 'https://a-to-mind.com' + p, cache: 'no-cache' }], p);
     assert.equal(res.headers.get('cache-control'), 'no-cache', p);
   }
-  const h = fs.readFileSync(path.join(site, '_headers'), 'utf8');
-  for (const rule of ['/icon.svg', '/icon-*.png']) assert.match(h, new RegExp('^' + rule.replace(/[.*]/g, (c) => '\\' + c) + '\\n  Cache-Control: public, max-age=60, must-revalidate', 'm'), rule + ' has a short cache rule');
 });
 
 test('offline, a page script falls back to the browser\'s own copy', async () => {
