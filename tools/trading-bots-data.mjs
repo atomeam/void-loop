@@ -27,7 +27,7 @@ async function pair(p, full) {
     const to = Math.min(from + 299 * DAY, today);
     const u = `https://api.exchange.coinbase.com/products/${p}/candles?granularity=86400&start=${new Date(from).toISOString()}&end=${new Date(to).toISOString()}`;
     let r, tries = 0;
-    for (;;) { r = await fetch(u, { headers: { 'user-agent': 'Verse backtest data (a-to-mind.com)', accept: 'application/json' } }); if (r.ok || ++tries > 3) break; await sleep(1500 * tries); }
+    for (;;) { r = await fetch(u, { headers: { 'user-agent': 'Verse backtest data (a-to-mind.com)', accept: 'application/json' } }); if (r.ok || ++tries > 3) break; await sleep(1500 * tries); } // void-review: ok: paged HTTP with retry, not a query
     if (!r.ok) throw new Error(p + ': Coinbase answered ' + r.status);
     add.push(...rowsOf(await r.json(), now));
     from = to + DAY; await sleep(350); // under the public limit

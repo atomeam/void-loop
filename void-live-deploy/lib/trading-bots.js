@@ -121,12 +121,12 @@ async function botPage(id) {
 <p class="tb-legend"><span class="k-bot">Bot</span> <span class="k-hold">Buy and hold</span>, $1 at the start</p>
 ${chartSvg(r, data.candles)}${statsTable(r)}`;
     const trades = [...(r.open ? [r.open] : []), ...r.trades.slice().reverse()];
-    $('#tb-trades').innerHTML = '<thead><tr><th>Bought</th><th>Price</th><th>Sold</th><th>Price</th><th>Return</th></tr></thead><tbody>' + trades.slice(0, 60).map((t) =>
-      `<tr><td>${t.in}</td><td>${t.inPrice.toFixed(2)}</td><td>${t.out || 'still holding'}</td><td>${t.outPrice ? t.outPrice.toFixed(2) : ''}</td><td class="${t.ret >= 0 ? 'up' : 'down'}">${pct(t.ret)}</td></tr>`).join('') + '</tbody>';
+    $('#tb-trades').innerHTML = '<thead><tr><th>Bought</th><th>Price</th><th>Sold</th><th>Price</th><th>Return</th></tr></thead><tbody>' + trades.slice(0, 60).map((t) => // void-review: ok: dates escaped, every other cell a number the backtest computed
+      `<tr><td>${esc(t.in)}</td><td>${t.inPrice.toFixed(2)}</td><td>${esc(t.out || 'still holding')}</td><td>${t.outPrice ? t.outPrice.toFixed(2) : ''}</td><td class="${t.ret >= 0 ? 'up' : 'down'}">${pct(t.ret)}</td></tr>`).join('') + '</tbody>';
     $('#tb-trades-note').textContent = trades.length > 60 ? 'The newest 60 of ' + trades.length + ' trades; Export CSV has them all.' : trades.length + ' trades.';
     const wf = walkForward(data.candles, id, { fee: cur.fee / 100, slippage: cur.slip / 100 });
-    $('#tb-wf').innerHTML = wf.windows.length ? '<thead><tr><th>Test year</th><th>Picked on the 3 years before</th><th>Bot that year</th><th>Hold that year</th></tr></thead><tbody>' +
-      wf.windows.map((w) => `<tr><td>${w.testFrom.slice(0, 4)}${w.testTo.slice(5) !== '12-31' ? ' (to ' + w.testTo.slice(5) + ')' : ''}</td><td>${Object.entries(w.params).map(([k, v]) => k + ' ' + v).join(', ')}</td><td>${pct(w.test.totalReturn)}</td><td>${pct(w.holdTest.totalReturn)}</td></tr>`).join('') +
+    $('#tb-wf').innerHTML = wf.windows.length ? /* void-review: ok: dates and settings escaped, the rest numbers */ '<thead><tr><th>Test year</th><th>Picked on the 3 years before</th><th>Bot that year</th><th>Hold that year</th></tr></thead><tbody>' +
+      wf.windows.map((w) => `<tr><td>${esc(w.testFrom.slice(0, 4))}${w.testTo.slice(5) !== '12-31' ? ' (to ' + esc(w.testTo.slice(5)) + ')' : ''}</td><td>${esc(Object.entries(w.params).map(([k, v]) => k + ' ' + v).join(', '))}</td><td>${pct(w.test.totalReturn)}</td><td>${pct(w.holdTest.totalReturn)}</td></tr>`).join('') +
       `</tbody><tfoot><tr><th scope="row">All test years joined</th><td></td><td>${pct(wf.outOfSample.totalReturn)}</td><td></td></tr></tfoot>` : '<tbody><tr><td>Not enough history for a walk-forward test yet.</td></tr></tbody>';
   };
   form.addEventListener('change', run); form.addEventListener('submit', (e) => { e.preventDefault(); run(); });
