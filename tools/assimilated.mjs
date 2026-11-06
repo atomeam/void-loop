@@ -10,7 +10,7 @@
 //   node tools/assimilated.mjs             write void-live-deploy/assimilated.json
 //   node tools/assimilated.mjs --check     exit 1 when the committed file is not what this writes
 //   node tools/assimilated.mjs --backfill  rewrite domains/assimilated.backfill.json from git (needs the full history)
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -93,11 +93,13 @@ export async function floorsOf(cwd = root) {
   const { tower, towerArgs, learnedOf, fatalityOf } = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tower.js')).href);
   const [inv, ev, fr, rk, sz, tg, ft] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
   const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }));
+  // the evidence also lives one file per floor (void-live-deploy/tower-evidence/, keyed by its id), so a floor measured there is dated too
+  const perFloor = {}; try { for (const f of readdirSync(resolve(cwd, 'void-live-deploy/tower-evidence'))) { const e = f.endsWith('.json') && read(cwd, 'void-live-deploy/tower-evidence/' + f); if (e && e.id) perFloor[e.id] = e; } } catch (_) { /* no per-floor evidence */ }
   // a surpassed floor is dated by its newest head-to-head measure in the evidence
   // what each site taught Verse, as the card's "What each site taught me" says it (skills/tower.js verseTake): its lesson, else Verse's edge
   const taught = (f) => learnedOf(f) || (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) : '');
   const cur = t.floors.find((f) => f.state === 'current');
-  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
+  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => { const dates = JSON.stringify([(ev && ev.floors && ev.floors[f.id]) || {}, perFloor[f.id] || {}]).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
 }
 
 /** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */
