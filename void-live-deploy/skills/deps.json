@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1175,
+ "counted": 1174,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -17,18 +17,18 @@
    "tests": 3
   },
   {
-   "file": "lib/field-kit.js",
-   "skills": 32,
-   "direct": 2,
-   "dependants": 74,
-   "tests": 8
-  },
-  {
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
    "dependants": 74,
    "tests": 4
+  },
+  {
+   "file": "lib/field-kit.js",
+   "skills": 32,
+   "direct": 2,
+   "dependants": 73,
+   "tests": 8
   },
   {
    "file": "lib/load-later.js",
@@ -1371,7 +1371,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 23,
+   "dependants": 22,
    "tests": 2
   },
   {
@@ -1480,18 +1480,11 @@
    "tests": 3
   },
   {
-   "file": "lib/brain-rules.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-strokes.js",
    "skills": 1,
    "direct": 0,
    "dependants": 9,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/brain-synapses.js",
@@ -1596,7 +1589,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 4,
-   "tests": 24
+   "tests": 23
   },
   {
    "file": "lib/converter.js",
@@ -2310,7 +2303,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/tower-art.js",
@@ -6127,7 +6120,6 @@
     "lib/brain-pool.js",
     "lib/brain-trace.js",
     "lib/brain-strokes.js",
-    "lib/brain-rules.js",
     "lib/brain-dialogue.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
@@ -6163,7 +6155,6 @@
     "lib/brain-pool.js",
     "lib/brain-trace.js",
     "lib/brain-strokes.js",
-    "lib/brain-rules.js",
     "lib/brain-dialogue.js",
     "lib/brain-workspace.js"
    ],
@@ -6240,24 +6231,6 @@
     "lib/brain-organs.js",
     "lib/brain-route.js",
     "lib/brain.js",
-    "skills/verse-brain.js"
-   ]
-  },
-  "lib/brain-rules.js": {
-   "imports": [
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-dialogue.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-route.js",
     "skills/verse-brain.js"
    ]
   },
@@ -6362,7 +6335,6 @@
     "lib/brain-organs.js",
     "lib/brain-painter.js",
     "lib/brain-pool.js",
-    "lib/brain-rules.js",
     "lib/brain-strokes.js",
     "lib/brain-synapses.js",
     "lib/brain-trace.js",
@@ -6394,7 +6366,6 @@
     "lib/brain-pool.js",
     "lib/brain-trace.js",
     "lib/brain-strokes.js",
-    "lib/brain-rules.js",
     "lib/brain-dialogue.js"
    ],
    "importedBy": [
@@ -7821,7 +7792,6 @@
     "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
-    "lib/brain-rules.js",
     "lib/field-vector-worker.js",
     "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
@@ -16050,6 +16020,10 @@
     "skills/layer.js",
     "lib/ask-text.js"
    ],
+   "importedBy": []
+  },
+  "skills/groups.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/growth-tree.js": {

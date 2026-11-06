@@ -122,11 +122,25 @@ Each tool is a page of its own, free, with nothing to sign up for and no ads; al
 - Every Verse tool: Every tool Verse has built, each a page of its own and all tied together: colours, chance, time, words and numbers, keys and pictures. Free, private, offline after one visit. https://a-to-mind.com/tools/
 <!-- /tools -->
 
+## Trading bots and arbitrage
+- [Trading bots](https://a-to-mind.com/trading-bots/): three daily long-or-cash bots (Trend 50/200, Breakout 20/10, Dip buyer RSI(2)) backtested in the browser on real BTC-USD and ETH-USD daily candles from Coinbase Exchange, with fees, slippage, max drawdown, buy-and-hold beside them, every trade and a walk-forward out-of-sample test. The bot is free (MIT) and runs on the owner's own computer and exchange account, paper mode first: https://a-to-mind.com/trading-bots/kit/README.md. Past results do not predict future results. Verse never trades, never holds money and never sees an exchange key.
+- [Arbitrage scanner](https://a-to-mind.com/trading-bots/arbitrage/): BTC and ETH price gaps across Coinbase, Kraken, Bitstamp, Gemini and Uniswap v3 on Base, read now from their order books, net of both taker fees and DEX gas. Free view: GET https://a-to-mind.com/api/arbitrage?coin=BTC. Read only.
+- Paid per call over x402 (0.05 USDC on Base, same wallet as the code review): POST https://a-to-mind.com/api/x402/backtest with {"bot":"trend-50-200","pair":"BTC-USD","fee":0.008} (any parameters, dates, every trade, the walk-forward test); POST https://a-to-mind.com/api/x402/arbitrage with {"coin":"ETH","size":5000} (your size, fees, venues and transfer cost). A call without payment answers 402 with what to pay. Catalog: https://a-to-mind.com/api/x402
+
 ## Linking to an answer
 - https://a-to-mind.com/?q=<ask> opens Verse and runs the ask, for example https://a-to-mind.com/?q=weather%20in%20Tokyo
 
 ## Notes for crawlers and agents
-- Agents can pay per call, no account: POST https://a-to-mind.com/api/x402/review with {"code": ...} answers 402 with x402 payment requirements (0.05 USDC on Base, paid into Verse's own wallet); retry with the signed X-PAYMENT header for the AI closer read. Catalog: https://a-to-mind.com/api/x402. Protocol: https://docs.x402.org
+- Agents can pay per call, no account, 0.05 USDC on Base each, paid into Verse's own wallet over x402 (https://docs.x402.org). A POST without payment answers 402 with the payment requirements; retry with the signed X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header. Only work that is done is charged: a refusal or a busy model comes back with paid: false and nothing is settled. GET on each URL also answers the 402. Catalog with prices and input schemas: https://a-to-mind.com/api/x402
+  - POST https://a-to-mind.com/api/x402/review {"code": ...} or {"diff": ...}: code review with the AI closer read
+  - POST https://a-to-mind.com/api/x402/answer {"ask": ...}: a direct answer to a question
+  - POST https://a-to-mind.com/api/x402/fix {"ask": ..., "details": ...}: what a broken automation error means and how to fix it
+  - POST https://a-to-mind.com/api/x402/translate {"text": ..., "to": "es"}: translation between 100 languages
+  - POST https://a-to-mind.com/api/x402/digest {"text": ...} or {"url": ...}: the key points of a transcript or page, with an optional "ask"
+  - POST https://a-to-mind.com/api/x402/appraise {"image": "data:image/png;base64,..."}: what an item in a photo is worth
+  - POST https://a-to-mind.com/api/x402/image {"prompt": ...}: a picture painted from a prompt
+  - POST https://a-to-mind.com/api/x402/backtest {"bot": "trend-50-200", "pair": "BTC-USD"}: a trading bot backtested on real daily candles, your fee, slippage and dates, with a walk-forward out-of-sample test
+  - POST https://a-to-mind.com/api/x402/arbitrage {"coin": "ETH", "size": 5000}: BTC or ETH price gaps across exchanges and Uniswap on Base, net of fees and gas, for your size
 - Everything runs in the browser at https://a-to-mind.com. The one public API is code review: POST https://a-to-mind.com/api/review with {"code": ...} or {"diff": ...} returns findings (free); a Verse Pro key adds the closer read (https://a-to-mind.com/code-review/).
 - The public API is described in OpenAPI 3.1 at https://a-to-mind.com/openapi.json (code review, the MCP endpoint, tools.json, the catalog, and each skill's health: proven, checked, tested or experiment, at /skills/families.json), found from https://a-to-mind.com/.well-known/api-catalog (RFC 9727).
 - Browser agents with WebMCP (Chrome) find Verse's tools declared on the page itself (void_ask, void_stage, void_calculate, ...): each takes one plain-words ask and returns what appeared. The same list is at https://a-to-mind.com/tools.json.
