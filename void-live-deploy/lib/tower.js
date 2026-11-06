@@ -449,5 +449,13 @@ export const outclassLine = (t, lastId = null) => {
 };
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
- *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */
-export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null, ft = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : null, ft && ft.sites ? ft : null];
+ *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card.
+ *  gn is tower.gone.json (tools/tower-alive.mjs): a frontier site whose domain is gone or parked is not a floor at all (owner, 2026-11-06:
+ *  "why are we going against a site we have established isnt there?"). Pure. */
+export const goneHosts = (gn) => Object.keys((gn && gn.gone) || {}).map((h) => String(h).toLowerCase().replace(/^www\./, '')).filter(Boolean);
+export const withoutGone = (fr, gn) => {
+  const gone = goneHosts(gn); if (!gone.length || !fr) return fr;
+  const off = (x) => { const h = hostOf(x && (x.site || x.host)); return !!h && gone.some((g) => h === g || h.endsWith('.' + g)); };
+  return Array.isArray(fr) ? fr.filter((x) => !off(x)) : Array.isArray(fr.sites) ? { ...fr, sites: fr.sites.filter((x) => !off(x)) } : fr;
+};
+export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null, ft = null, gn = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, withoutGone(fr, gn), (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : null, ft && ft.sites ? ft : null];

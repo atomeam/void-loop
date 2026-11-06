@@ -258,6 +258,20 @@
     "host": "random.org",
     "at": "2026-10-27",
     "id": "mvqun67s"
+   },
+   {
+    "target": "feature:random-org-7201fd3d",
+    "feature": "Keno / bingo cards",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw4noftp"
+   },
+   {
+    "target": "feature:random-org-e1ac6f7a",
+    "feature": "Geographic coordinates",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw4nogcv"
    }
   ]
  }
