@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T16:09:52.563Z",
+  "at": "2026-11-06T16:46:34.601Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,63 +34,33 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 91.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of the ted radio hour",
+          "ask": "play the latest episode of hardcore history",
           "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of crime junkie",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
-            "audio"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of npr news now",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
             "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "fast"
+          ],
+          "score": 85.7
         },
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -150,19 +120,10 @@
       }
     },
     "weather": {
-      "score": 94.8,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "wheather in new york",
-          "failed": [
-            "fast",
-            "temp",
-            "close"
-          ],
-          "score": 57.1
-        },
         {
           "ask": "weather",
           "failed": [
@@ -174,9 +135,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -291,7 +253,7 @@
       }
     },
     "sports": {
-      "score": 91.7,
+      "score": 90.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -318,6 +280,13 @@
         },
         {
           "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
@@ -487,7 +456,7 @@
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 86.4
+    "domain": "translate",
+    "score": 89.2
   }
 }
