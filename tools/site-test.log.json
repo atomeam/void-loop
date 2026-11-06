@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-15T06:45:15Z",
-  "passed": 7,
-  "of": 13,
-  "kind": "teach",
-  "key": "teach | yo what does ephemeral mean",
-  "note": "teach V01D \"yo what does ephemeral mean\" (means \"define serendipity\", skill:define): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
- },
- {
   "at": "2026-10-15T06:48:00Z",
   "passed": 11,
   "of": 13,
@@ -4554,5 +4546,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"make a 2d toon dog pls\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T11:27:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1139,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 10303 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
