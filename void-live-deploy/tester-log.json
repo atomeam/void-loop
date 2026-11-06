@@ -3,13 +3,58 @@
  "cases": 92,
  "runsTotal": 300,
  "kinds": {
-  "grow": 73,
   "file": 87,
+  "grow": 72,
   "tighten": 7,
   "none": 40,
-  "visitor": 93
+  "visitor": 94
  },
  "runs": [
+  {
+   "at": "2026-11-06T15:51:51Z",
+   "passed": 88,
+   "of": 95,
+   "kind": "file",
+   "ms": 424,
+   "note": "fix: \"films by Kurosawa\" load 1510 ms > 1200",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "films by Kurosawa",
+     "why": "load 1510 ms > 1200"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo what does ephemeral mean",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "map the heavy lifting for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T15:38:34Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T15:11:51Z",
    "passed": 0,
@@ -260,20 +305,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-06T08:33:20Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T08:07:14Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -327,20 +358,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 63,
-   "passed": 309,
-   "of": 1317,
-   "broken": 41,
-   "brokenOf": 959,
+   "runs": 62,
+   "passed": 290,
+   "of": 1313,
+   "broken": 42,
+   "brokenOf": 984,
    "brokenPassed": 6
   },
   {
    "from": "2026-10-16",
-   "runs": 111,
+   "runs": 110,
    "passed": 2727,
-   "of": 4284,
-   "broken": 48,
-   "brokenOf": 1203,
+   "of": 4259,
+   "broken": 47,
+   "brokenOf": 1178,
    "brokenPassed": 0
   },
   {
@@ -351,10 +382,10 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 126,
-   "passed": 2726,
-   "of": 2958,
-   "ms": 377
+   "runs": 128,
+   "passed": 2814,
+   "of": 3053,
+   "ms": 379
   }
  ],
  "seen": {
@@ -374,7 +405,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T13:33:35Z",
+  "skill:cartoon": "2026-11-06T15:51:51Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -700,6 +731,8 @@
   "skill:ritual-template": "2026-11-06T12:03:25Z",
   "skill:rooms": "2026-11-06T12:03:25Z",
   "skill:rps": "2026-11-06T13:33:35Z",
-  "skill:scores": "2026-11-06T13:33:35Z"
+  "skill:scores": "2026-11-06T13:33:35Z",
+  "skill:heavy-lift-map": "2026-11-06T15:51:51Z",
+  "skill:shuffle": "2026-11-06T15:51:51Z"
  }
 }
