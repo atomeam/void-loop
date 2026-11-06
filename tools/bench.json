@@ -121,7 +121,8 @@
   },
   {
     "ask": "flip a coin",
-    "want": "chance"
+    "want": "chance|skill:coin",
+    "says": "Heads|Tails"
   },
   {
     "ask": "roll a dice",
@@ -1778,7 +1779,8 @@
   },
   {
     "ask": "flip a coin please",
-    "want": "chance"
+    "want": "chance|skill:coin",
+    "says": "Heads|Tails"
   },
   {
     "ask": "random number 1 to 10",
@@ -1952,7 +1954,8 @@
   },
   {
     "ask": "coin flip",
-    "want": "chance"
+    "want": "chance|skill:coin",
+    "says": "Heads|Tails"
   },
   {
     "ask": "pick a number from 1 to 100",
@@ -2143,7 +2146,8 @@
   },
   {
     "ask": "flip 3 coins",
-    "want": "chance"
+    "want": "chance|skill:coin",
+    "says": "Heads|Tails"
   },
   {
     "ask": "random letter",
@@ -2723,7 +2727,7 @@
   },
   {
     "ask": "tell me a riddle",
-    "want": "skill:joke|said"
+    "want": "skill:riddle|skill:joke|said"
   },
   {
     "ask": "tongue twister",
@@ -4036,7 +4040,7 @@
   },
   {
     "ask": "simple interest on 1000 at 5% for 3 years",
-    "want": "calc",
+    "want": "calc|skill:formulas",
     "says": "150"
   },
   {
@@ -5009,7 +5013,7 @@
   {"ask": "set a timer for 5 mins", "want": "timer", "says": null},
   {"ask": "timer 10 min", "want": "timer", "says": null},
   {"ask": "remind me in 20 minutes", "want": "timer|skill:remind", "says": null},
-  {"ask": "flip a coin plz", "want": "chance", "says": null},
+  {"ask": "flip a coin plz", "want": "chance|skill:coin", "says": "Heads|Tails"},
   {"ask": "roll 2 dice", "want": "chance", "says": null},
   {"ask": "pick a random number between 1 and 50", "want": "chance", "says": null},
   {"ask": "whats todays date", "want": "today|calc", "says": null},
@@ -5394,7 +5398,7 @@
   {"ask": "2 1/2 cups in ml", "want": "calc", "says": "591"},
   {"ask": "if i was born in 1990 how old am i", "want": "calc|age", "says": "3[56]"},
   {"ask": "i was born on may 3 1990, how old am i", "want": "calc|age", "says": "3[56]"},
-  {"ask": "flip a coin heads or tails", "want": "chance", "says": null},
+  {"ask": "flip a coin heads or tails", "want": "chance|skill:coin", "says": "Heads|Tails"},
   {"ask": "how many weeks until december 25", "want": "skill:countdown", "says": "weeks"},
   {"ask": "do i need an umbrella today in seattle", "want": "skill:weather", "says": null},
   {"ask": "should i bring a jacket", "want": "skill:weather", "says": null},
@@ -7084,7 +7088,7 @@
   {"ask": "clarify this business idea: a tool that turns customer emails into running automations", "want": "skill:business-clarify"},
   {"ask": "turn this idea into a system plan: weekly status reports that write themselves", "want": "skill:business-clarify"},
   {"ask": "structure this business idea for Verse to own the heavy lifting", "want": "skill:business-clarify"},
-  {"ask": "stopwatch", "want": "skill:stopwatch"},
+  {"ask": "stopwatch", "want": "skill:stopwatch|stopwatch"},
   {"ask": "show stopwatch", "want": "skill:stopwatch"},
   {"ask": "give me a compliment", "want": "skill:compliment"},
   {"ask": "compliment me", "want": "skill:compliment"},
