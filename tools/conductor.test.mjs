@@ -2,7 +2,7 @@
 // are broken, and when Verse writes new probe asks. Run: node --test tools/conductor.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, willDue, lapDue, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
+import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, DAILY, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
 
 const H = 3600000, NOW = Date.parse('2026-10-26T08:00:00Z');
 const iso = (hAgo) => new Date(NOW - hAgo * H).toISOString();
@@ -166,4 +166,19 @@ test('a repair of a loop that is green again is set aside, not handed to the cod
   assert.deepEqual(red.start.map((s) => s.id), ['h1']); assert.equal(red.setAside.length, 0);
   const unwatched = plan({ jobs: [job('h2', 'heal:will.yml')], wf: all(), now: NOW });
   assert.equal(unwatched.setAside.length, 0, 'a loop the conductor does not watch is not judged green');
+});
+
+test('the film and the podcast run every day, and an automerge sweep every hour, whatever GitHub\'s scheduler does (owner, 2026-11-06: "where is my daily verse podcast", "nothing is automatic anymore")', () => {
+  assert.deepEqual(DAILY.map((d) => d.wf).sort(), ['shorts.yml', 'verse-podcast.yml']);
+  const at = (t) => Date.parse('2026-11-06T' + t + 'Z');
+  // the podcast's hour is 13 UTC: not before it, once after it, never twice the same day, never while one runs
+  assert.equal(dailyDue({ exists: true, busy: false, lastRunMs: at('00:00:00') - 20 * H, now: at('12:59:00'), hourUtc: 13 }), false, 'its hour has not come');
+  assert.equal(dailyDue({ exists: true, busy: false, lastRunMs: at('00:00:00') - 20 * H, now: at('13:10:00'), hourUtc: 13 }), true, 'the cron was dropped: the clock starts it');
+  assert.equal(dailyDue({ exists: true, busy: false, lastRunMs: at('13:17:00'), now: at('15:00:00'), hourUtc: 13 }), false, 'it already ran today');
+  assert.equal(dailyDue({ exists: true, busy: false, lastRunMs: at('12:00:00'), now: at('21:00:00'), hourUtc: 13 }), true, 'a run before the hour does not count for today');
+  assert.equal(dailyDue({ exists: true, busy: true, lastRunMs: 0, now: at('16:00:00'), hourUtc: 15 }), false, 'one at a time');
+  assert.equal(dailyDue({ exists: false, busy: false, lastRunMs: 0, now: at('16:00:00'), hourUtc: 15 }), false);
+  assert.equal(sweepDue({ sweptMs: 0, now: NOW }), true, 'never swept');
+  assert.equal(sweepDue({ sweptMs: NOW - 61 * 60000, now: NOW }), true);
+  assert.equal(sweepDue({ sweptMs: NOW - 20 * 60000, now: NOW }), false, 'swept 20 minutes ago');
 });

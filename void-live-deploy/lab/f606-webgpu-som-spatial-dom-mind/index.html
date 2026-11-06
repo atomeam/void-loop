@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --err: 0; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:1000; background:rgba(0,0,20,0.7); padding:8px 12px; border-radius:8px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; z-index:1000; font-size:12px; opacity:0.8; }
+#cards { position:absolute; inset:0; }
+.card {
+  position:absolute; width:48px; height:48px; border-radius:8px;
+  background:hsl(var(--h),70%,50%); opacity:0.85; cursor:grab;
+  display:flex; align-items:center; justify-content:center; font-size:10px;
+  transition:transform 0.1s; box-shadow:0 2px 8px #0008;
+  user-select:none;
+}
+.card:active { cursor:grabbing; }
+canvas#heat { position:absolute; inset:0; pointer-events:none; opacity:0.35; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Self-Organizing Map Spatial DOM Mind · Verse lab</title>
+<meta name="description" content="A previously unused unsupervised local-AI substrate: the Kohonen Self-Organizing Map (SOM).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Self-Organizing Map Spatial DOM Mind · Verse lab">
+<meta property="og:description" content="A previously unused unsupervised local-AI substrate: the Kohonen Self-Organizing Map (SOM).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f606-webgpu-som-spatial-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f606-webgpu-som-spatial-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  F606 SOM Spatial DOM Mind — tilt / move pointer | drag cards | S seal
+  <button id="seal">Seal Genome</button>
+  <button id="reward">Reward</button>
+</div>
+<div id="status">init</div>
+<div id="cards"></div>
+<canvas id="heat"></canvas>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Self-Organizing Map Spatial DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
