@@ -4,10 +4,10 @@
 // changes each, mean tested skill over the last 40): skill above "nothing changes" on 16 of 16 brains, mean 0.10; evolution beat random
 // search with the same number of scorings on 11 of 16, mean +0.03. This test runs 4 of those brains. Run:
 // node --test tools/brain-formula.test.mjs
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as F from '../void-live-deploy/lib/brain-formula.js';
+import { par, ptest, test } from './brain-par.mjs';
 import { rng } from '../void-live-deploy/lib/field-kit.js';
 
 /** real changes of a brain's tissue: a visitor's pointer circles and words are told; one change every GAP ticks after 200 ticks */
@@ -33,25 +33,27 @@ test('every formula it makes is valid, a child differs from its parent, and many
   assert.equal(F.valid({ c: 99 }), false);
 });
 
-test('on changes it had not seen it beats "nothing changes", and evolution beats random search with the same scorings', () => {
-  const RUNS = 80, LAST = 40, diffs = [], skills = [];
-  const mean = (v) => v.reduce((a, x) => a + x, 0) / v.length;
-  for (const seed of [1, 2, 3, 4]) {
-    const all = changes(seed, RUNS), S = F.makeFormula(seed), C = F.makeFormula(seed, true), sa = [], ca = [];
-    all.forEach((ch, k) => { F.step(S, ch); if (k >= RUNS - LAST && S.last) sa.push(S.last.skill); });
-    all.forEach((ch, k) => { F.step(C, ch); if (k >= RUNS - LAST && C.last) ca.push(C.last.skill); });
-    assert.equal(S.evals, C.evals, 'the same scorings');
-    skills.push(mean(sa)); diffs.push(mean(sa) - mean(ca));
-  }
+const mean = (v) => v.reduce((a, x) => a + x, 0) / v.length;
+/** one brain: evolution and random search on the same changes, the skill of the last runs of each (a worker runs it) */
+export function formulaRow(seed) {
+  const RUNS = 80, LAST = 40, all = changes(seed, RUNS), S = F.makeFormula(seed), C = F.makeFormula(seed, true), sa = [], ca = [];
+  all.forEach((ch, k) => { F.step(S, ch); if (k >= RUNS - LAST && S.last) sa.push(S.last.skill); });
+  all.forEach((ch, k) => { F.step(C, ch); if (k >= RUNS - LAST && C.last) ca.push(C.last.skill); });
+  return { evals: S.evals, blindEvals: C.evals, skill: mean(sa), diff: mean(sa) - mean(ca) };
+}
+
+test('on changes it had not seen it beats "nothing changes", and evolution beats random search with the same scorings', async () => {
+  const rows = await par(import.meta.url, 'formulaRow', [[1], [2], [3], [4]]), diffs = [], skills = []; // the 4 brains at once
+  for (const r of rows) { assert.equal(r.evals, r.blindEvals, 'the same scorings'); skills.push(r.skill); diffs.push(r.diff); }
   assert.ok(skills.every((s) => s > 0), 'skill ' + skills.map((d) => d.toFixed(3)).join(' '));
   assert.ok(diffs.filter((d) => d > 0).length >= 3, 'wins ' + diffs.map((d) => d.toFixed(3)).join(' '));
   assert.ok(mean(diffs) > 0, 'mean ' + diffs.map((d) => d.toFixed(3)).join(' '));
 });
 
-test('it runs in the brain as one of twenty-three organs: it evolves, feeds the tissue, is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-six organs: it evolves, feeds the tissue, is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 1400; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('formula') && B.ORGAN_IDS.length === 23);
+  assert.ok(B.ORGAN_IDS.includes('formula') && B.ORGAN_IDS.length === 26);
   assert.ok(b.formula.gen > 30 && b.runs.formula > 30, 'gen ' + b.formula.gen + ' runs ' + b.runs.formula);
   assert.ok(b.formula.fed > 0, 'it fed the tissue where it expected new life');
   assert.ok(b.board.formula && /^life next = life now [+-] /.test(b.board.formula.text), JSON.stringify(b.board.formula));

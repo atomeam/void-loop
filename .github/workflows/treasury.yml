@@ -1,5 +1,6 @@
 # Verse's treasury (lib/treasury.js, functions/api/treasury.js, /treasury/; owner, 2026-11-03: Verse reallocates its own profits).
-# Daily: the found-money scan (tools/found-money.mjs) rewrites void-live-deploy/treasury/found.json from public sources.
+# Daily: the found-money scan (tools/found-money.mjs) rewrites void-live-deploy/treasury/found.json from public sources, and the
+# wallet watch (tools/wallet-watch.mjs) reads every USDC transfer into Verse's wallet from the chain into treasury/wallet.json.
 # Mondays: the weekly review (tools/treasury-review.mjs): Gumroad's sales read into the ledger, measured returns learned, unspent
 # bucket money moved toward what worked, and Verse's own rule for Atom's cut applied (a change lands in policy.json with its reason).
 # Buys nothing and signs in nowhere. Uses VOID_OWNER_TOKEN (the Pages READ_TOKEN) for the review; GITHUB_TOKEN reads public issues.
@@ -39,6 +40,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node tools/found-money.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Wallet watch
+        run: node tools/wallet-watch.test.mjs && node tools/wallet-watch.mjs | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Weekly review
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -54,7 +57,7 @@ jobs:
           git diff --quiet && { echo "nothing changed"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add void-live-deploy/treasury/found.json void-live-deploy/treasury/policy.json
+          git add void-live-deploy/treasury/found.json void-live-deploy/treasury/policy.json void-live-deploy/treasury/wallet.json
           git commit -m "treasury: found money and the weekly review"
           for i in 1 2 3 4; do
             git push origin HEAD:main && exit 0

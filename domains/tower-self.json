@@ -1107,57 +1107,286 @@
     "place": 8,
     "why": "not sized yet, hardness 88, Tranco 158748"
    }
+  },
+  "sipcalculator.in": {
+   "at": "2026-11-05T18:13:42Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "SIP Calculator - Calculate returns for SIP investment",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5.1,
+    "place": 1,
+    "why": "not sized yet, hardness 89, Tranco 218725"
+   }
+  },
+  "colordrop.io": {
+   "at": "2026-11-05T18:13:46Z",
+   "outcome": "covered",
+   "page": "/color/",
+   "topic": "colour codes",
+   "title": "Color Palettes with Hex Codes - ColorDrop",
+   "why": "its job is colour codes, which /color/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5,
+    "place": 2,
+    "why": "not sized yet, hardness 90, Tranco 482468"
+   }
+  },
+  "colourlab.ai": {
+   "at": "2026-11-05T18:13:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional software service for AI-driven color grading in film and video production. Verse does not have any tools for video editing, color)",
+   "title": "The intelligence behind the image — Colourlab",
+   "ease": {
+    "score": 5,
+    "place": 3,
+    "why": "not sized yet, hardness 90, Tranco 431000"
+   }
+  },
+  "heritageunits.com": {
+   "at": "2026-11-05T18:13:55Z",
+   "outcome": "walled",
+   "why": "a sign-in wall",
+   "ease": {
+    "score": 5,
+    "place": 4,
+    "why": "not sized yet, hardness 91, Tranco 482020"
+   }
+  },
+  "cube.community": {
+   "at": "2026-11-05T18:14:02Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a non-profit community organization that hosts VR rhythm game tournaments, archives videos, and offers project hosting services. Verse has no)",
+   "title": "Cube Community",
+   "ease": {
+    "score": 5,
+    "place": 5,
+    "why": "not sized yet, hardness 91, Tranco 439487"
+   }
+  },
+  "doublecounter.gg": {
+   "at": "2026-11-05T18:14:07Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Double Counter — Discord Security Bot · Block Alts, VPNs & Raids",
+   "ease": {
+    "score": 5,
+    "place": 6,
+    "why": "not sized yet, hardness 91, Tranco 76312"
+   }
+  },
+  "colorscheme.ru": {
+   "at": "2026-11-05T18:14:24Z",
+   "outcome": "built",
+   "family": "colour",
+   "id": "colour: colorscheme.ru",
+   "page": "/color/colour-picker-tool/?c=ff5733",
+   "ease": {
+    "score": 4.9,
+    "place": 7,
+    "why": "not sized yet, hardness 92, Tranco 342989"
+   },
+   "words": "the family page's own (the model's were refused: names colorscheme; names colorscheme; says what the page does not do (generate, harmonious, explore, relationships, visu)",
+   "rows": "12/15",
+   "gated": "2026-11-05T18:22:12Z"
+  },
+  "base64.guru": {
+   "at": "2026-11-05T18:14:26Z",
+   "outcome": "covered",
+   "page": "/base64/",
+   "topic": "base64",
+   "title": "Base64",
+   "why": "its job is base64, which /base64/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.9,
+    "place": 8,
+    "why": "not sized yet, hardness 92, Tranco 294125"
+   }
+  },
+  "tm.community": {
+   "at": "2026-11-05T23:49:12Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is for a specific meditation technique and its official app, which is a branded service/organization. Verse does not have a page for meditation)",
+   "title": "The official mobile app for Transcendental Meditation",
+   "ease": {
+    "score": 4.9,
+    "place": 1,
+    "why": "not sized yet, hardness 93, Tranco 475627"
+   }
+  },
+  "diffusionbee.com": {
+   "at": "2026-11-05T23:49:16Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a software download page for a local AI art application. Verse does not have a page for software downloads or a dedicated AI image generation)",
+   "title": "DiffusionBee - Stable Diffusion App for AI Art",
+   "ease": {
+    "score": 4.9,
+    "place": 2,
+    "why": "not sized yet, hardness 93, Tranco 464589"
+   }
+  },
+  "ti84calc.com": {
+   "at": "2026-11-05T23:49:34Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "TI 84 Calculator Online - Free Graphing Calculator Simulator",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.9,
+    "place": 3,
+    "why": "not sized yet, hardness 93, Tranco 410433"
+   }
+  },
+  "color-register.org": {
+   "at": "2026-11-05T23:49:36Z",
+   "outcome": "covered",
+   "page": "/color/",
+   "topic": "colour codes",
+   "title": "The Official Register of Color Names – Name a Digital Color",
+   "why": "its job is colour codes, which /color/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.9,
+    "place": 4,
+    "why": "not sized yet, hardness 93, Tranco 136492"
+   }
+  },
+  "zcashcommunity.com": {
+   "at": "2026-11-05T23:49:44Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a community hub and information portal for a specific cryptocurrency. Verse provides general-purpose tools (finance, news, calculators, etc.))",
+   "title": "Homepage - Zcash Community",
+   "ease": {
+    "score": 4.8,
+    "place": 5,
+    "why": "not sized yet, hardness 94, Tranco 352210"
+   }
+  },
+  "suncommunitynews.com": {
+   "at": "2026-11-05T23:50:07Z",
+   "outcome": "built",
+   "family": "news",
+   "id": "news: suncommunitynews.com",
+   "page": "/news/global-headlines/?sec=world",
+   "ease": {
+    "score": 4.7,
+    "place": 6,
+    "why": "not sized yet, hardness 96, Tranco 70651"
+   },
+   "words": "the family page's own (the model's were refused: says what the page does not do (informed, organized, breaking, around, aggregates))",
+   "rows": "13/15",
+   "gated": "2026-11-05T23:58:16Z"
+  },
+  "united-kiosk.de": {
+   "at": "2026-11-05T23:50:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a digital newsstand and magazine subscription shop. While Verse has a 'news' page, that page is a curated aggregator of headlines from specific)",
+   "title": "Weil Vielfalt mehr ist als Meinung | United Kiosk",
+   "ease": {
+    "score": 4.7,
+    "place": 7,
+    "why": "not sized yet, hardness 97, Tranco 316209"
+   }
+  },
+  "graphjson.com": {
+   "at": "2026-11-05T23:50:26Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "GraphJSON - Event analytics without the analytics stack",
+   "ease": {
+    "score": 4.7,
+    "place": 8,
+    "why": "not sized yet, hardness 97, Tranco 304708"
+   }
+  },
+  "firefox-portal-detection.com": {
+   "at": "2026-11-06T09:46:15Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (7 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 1,
+    "why": "0 controls, 0 KB, Tranco 204"
+   }
+  },
+  "id5-sync.com": {
+   "at": "2026-11-06T09:46:19Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (12 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 2,
+    "why": "0 controls, 0 KB, Tranco 1268"
+   }
+  },
+  "mega.co.nz": {
+   "at": "2026-11-06T09:46:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a cloud storage and encrypted file sharing service. Verse does not have a page for cloud storage, file hosting, or secure data synchronization)",
+   "title": "MEGA: Protect your Online Privacy",
+   "ease": {
+    "score": 99.9,
+    "place": 3,
+    "why": "0 controls, 1 KB, Tranco 572"
+   }
+  },
+  "example.com": {
+   "at": "2026-11-06T09:46:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a placeholder domain for documentation examples and explicitly states it is not a service for testing or monitoring. Since Verse is a)",
+   "title": "Example Domain",
+   "ease": {
+    "score": 99.9,
+    "place": 4,
+    "why": "0 controls, 1 KB, Tranco 177"
+   }
+  },
+  "uisp.com": {
+   "at": "2026-11-06T09:46:45Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides ISP network management software and hardware, including billing, monitoring, and network design tools. Verse has no tool for network)",
+   "title": "UISP Overview - Ubiquiti",
+   "ease": {
+    "score": 99.9,
+    "place": 5,
+    "why": "0 controls, 1 KB, Tranco 2905"
+   }
+  },
+  "feednews.com": {
+   "at": "2026-11-06T09:46:46Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 99.9,
+    "place": 6,
+    "why": "0 controls, 1 KB, Tranco 4672"
+   }
+  },
+  "samsunghealth.com": {
+   "at": "2026-11-06T09:46:50Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a health and wellness platform providing services like activity tracking and fitness monitoring. Verse does not have a page that offers health)",
+   "title": "Samsung Health",
+   "ease": {
+    "score": 99.9,
+    "place": 7,
+    "why": "0 controls, 1 KB, Tranco 3263"
+   }
+  },
+  "netcraze.io": {
+   "at": "2026-11-06T09:46:51Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 99.9,
+    "place": 8,
+    "why": "0 controls, 1 KB, Tranco 444"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-26T07:21:40Z",
-   "line": "Versus: took on no site (also read: 4 not-judged); next heycolor.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-26T07:29:37Z",
-   "line": "Versus: took on convertlive.com (unit converter, /convert/unit-converter/), surpassed 11 of 11 rows, beaten (also read: 3 no-family); next heycolor.com",
-   "built": 1,
-   "queued": 3,
-   "fixed": [],
-   "pages_per_day": 1
-  },
-  {
-   "at": "2026-10-26T07:38:13Z",
-   "line": "Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten (also read: 1 walled, 3 no-family); next heycolor.com",
-   "built": 1,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-26T07:42:05Z",
-   "line": "Versus: took on convertunits.com (unit converter, /convert/unit-converter-2/), surpassed 11 of 11 rows, beaten; next heycolor.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-26T16:56:18Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-26T16:58:53Z",
-   "line": "Versus: took on no site; next supercolorapp.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
   {
    "at": "2026-10-26T22:52:52Z",
    "line": "Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io",
@@ -1461,6 +1690,61 @@
    "fixed": [],
    "pages_per_day": 0,
    "reads_next": "sipcalculator.in",
+   "noop": true
+  },
+  {
+   "at": "2026-11-05T18:18:36Z",
+   "line": "Versus: took on colorscheme.ru (colour, /color/colour-picker-tool/?c=ff5733), surpassed 12 of 15 rows (also read: 3 covered, 3 no-family, 1 walled); next  (the target)",
+   "built": 1,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "tm.community"
+  },
+  {
+   "at": "2026-11-05T18:22:12Z",
+   "line": "Versus: took on colorscheme.ru (colour, /color/colour-picker-tool/?c=ff5733), surpassed 12 of 15 rows; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "tm.community"
+  },
+  {
+   "at": "2026-11-05T23:54:27Z",
+   "line": "Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows (also read: 5 no-family, 2 covered); next  (the target)",
+   "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "uniteforliteracy.com"
+  },
+  {
+   "at": "2026-11-05T23:58:16Z",
+   "line": "Versus: took on suncommunitynews.com (news, /news/global-headlines/?sec=world), surpassed 13 of 15 rows; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "uniteforliteracy.com"
+  },
+  {
+   "at": "2026-11-06T09:47:01Z",
+   "line": "Versus: took on no site (also read: 4 walled, 4 no-family); next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com"
+  },
+  {
+   "at": "2026-11-06T09:49:35Z",
+   "line": "Versus: took on no site; next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com",
    "noop": true
   }
  ]

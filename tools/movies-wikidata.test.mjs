@@ -4,7 +4,8 @@
 //   node --test tools/movies-wikidata.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { wikidataQuery, pickWikidata } from '../void-live-deploy/lib/movies.js';
+import { wikidataQuery, pickWikidata, wikidataGenre } from '../void-live-deploy/lib/movies.js';
+import { parseIntent, similarity } from '../void-live-deploy/lib/movie-intent.js';
 import { lookup, onRequestGet } from '../void-live-deploy/functions/api/movies.js';
 import { movieCard, lookupUrl, LOOKUP_V } from '../void-live-deploy/skills/movie.js';
 
@@ -21,7 +22,7 @@ test('the query asks for films with this exact English label, and no quote reach
 });
 
 test('pickWikidata takes the film of the asked year, or the most recent one, and nothing for another year', () => {
-  assert.deepEqual(pickWikidata(parasite, 'Parasite', 2019), { title: 'Parasite', year: 2019, director: 'Bong Joon-ho', runtime: 132, page: 'https://www.wikidata.org/wiki/Q61448040' });
+  assert.deepEqual(pickWikidata(parasite, 'Parasite', 2019), { title: 'Parasite', year: 2019, director: 'Bong Joon-ho', runtime: 132, genre: '', page: 'https://www.wikidata.org/wiki/Q61448040' });
   assert.equal(pickWikidata(parasite, 'Parasite', 1982).director, 'Charles Band');
   assert.equal(pickWikidata(parasite, 'Parasite', null).year, 2019);
   assert.equal(pickWikidata(parasite, 'Parasite', 1950), null);
@@ -70,4 +71,26 @@ test('the pick asks a new address, so no answer the old lookup cached is read ag
     const ok = await onRequestGet({ request: new Request('https://a-to-mind.com/api/movies?title=Parasite&year=2019&v=2') });
     assert.equal((await ok.json()).verified, true); assert.equal(ok.headers.get('cache-control'), 'public, max-age=86400');
   } finally { globalThis.fetch = real; }
+});
+
+// 2026-11-06, a-to-mind.com: "scary movies from the 90s" gave Scream (1996), The Blair Witch Project, Audition and Candyman, each
+// "Matches 1 of 2 (50%): 1990s. Not a match: scary (horror), the source gives no genre", because the Wikidata answer had no genre.
+// The rows below are what query.wikidata.org returned for "Scream" on 2026-11-06 (trimmed to the fields used).
+const scream = { results: { bindings: [
+  { ...row('Q7438875', '1981'), genres: { value: 'slasher film' } },
+  { ...row('Q27411', '1996', 'Wes Craven', 111), genres: { value: 'mystery film, teen film, slasher film, horror film, comedy film' } },
+] } };
+
+test('the query asks Wikidata for the English genre labels, and the card shows them without the word film', () => {
+  assert.match(wikidataQuery('Scream'), /wdt:P136 \?g\. \?g rdfs:label \?gl/); assert.match(wikidataQuery('Scream'), /GROUP_CONCAT\(DISTINCT \?gl/);
+  assert.equal(wikidataGenre('mystery film, teen film, slasher film, horror film, comedy film'), 'mystery, teen, slasher, horror');
+  assert.equal(wikidataGenre(''), ''); assert.equal(wikidataGenre(undefined), '');
+  assert.equal(pickWikidata(scream, 'Scream', 1996).genre, 'mystery, teen, slasher, horror');
+});
+
+test('iTunes refused: the Wikidata genre reaches the pick, and "scary movies from the 90s" scores Scream (1996) 2 of 2', async () => {
+  const f = await lookup('Scream', 1996, fake({ 'itunes.apple.com': new Error('upstream 403'), 'query.wikidata.org': scream, 'archive.org/advancedsearch': { response: { docs: [] } } }));
+  assert.equal(f.verified, true); assert.equal(f.genre, 'mystery, teen, slasher, horror');
+  const s = similarity(f, parseIntent('scary movies from the 90s'));
+  assert.equal(s.score, 100); assert.equal(s.matched.length, 2); assert.equal(s.missed.length, 0);
 });

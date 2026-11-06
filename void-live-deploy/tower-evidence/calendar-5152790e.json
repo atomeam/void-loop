@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 79,
-   "best": 906,
-   "evidence": "Verse (/calendar/) 79 ms to the load event (median of 3, phone width) vs Google Calendar 906 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "verse": 147,
+   "best": 1283,
+   "evidence": "Verse (/calendar/) 147 ms to the load event (median of 3, phone width) vs Google Calendar 1283 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/calendar/) 3 of 3 loads answered vs Google Calendar 3 of 3 loads answered",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs Google Calendar 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/calendar/) 0 unnamed controls or images vs Google Calendar 0 unnamed controls or images",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs Google Calendar 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Calendar 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "design polish": {
@@ -54,7 +54,7 @@
    "verse": 0,
    "best": 136,
    "evidence": "Verse (/calendar/) 0 design defects vs Google Calendar 136 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Calendar (0 low-contrast texts, 136 small tap targets, layout shift 0.00)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   },
   "accuracy": {
@@ -62,7 +62,7 @@
    "verse": 5,
    "best": 5,
    "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not Google Calendar (the site is not asked)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "of": 5
   },
   "reminders": {
@@ -70,7 +70,7 @@
    "verse": 2,
    "best": 1,
    "evidence": "Verse (/calendar/) 2 of 2 shown vs Google Calendar 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 3,
    "best": 0,
    "evidence": "Verse (/calendar/) 3 of 3 shown vs Google Calendar 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "of": 3,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 2,
    "best": 0,
    "evidence": "Verse (/calendar/) 2 of 2 shown vs Google Calendar 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -100,7 +100,7 @@
    "verse": 20,
    "best": 4,
    "evidence": "Verse (/calendar/) 20 of 21 things a full answer shows vs Google Calendar 4 of 21 things a full answer shows (Verse lacks: notifications; site lacks: a month view, a week view, today, repeating events, invites, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Day / week / month views, Multiple calendars shown together, each with a colour, Recurring events incl. custom rules, Guests with RSVP (yes/no/maybe) and guest list, Location with map link, Tasks on the calendar)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "of": 21,
    "siteRead": true
   },
@@ -109,7 +109,7 @@
    "verse": 7,
    "best": 5.5,
    "evidence": "Verse (/calendar/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs Google Calendar 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T14:50:12.156Z",
+   "at": "2026-11-06T14:33:33.791Z",
    "siteRead": true
   }
  }

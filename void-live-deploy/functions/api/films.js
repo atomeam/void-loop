@@ -4,7 +4,10 @@
 // support desk's rule (payer() in functions/api/support.js): the owner, a Verse Pro key, a Code Review Pro license or a paid
 // account's session. A <video> cannot send a Bearer header, so the list hands each payer a link to each film that is signed and
 // stops working after WATCH_MS; the link streams from R2 with Range, so a film plays at once and seeks, however many people watch.
-//   GET                          (anyone)              -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner, member }
+//   GET [?from=N]                (anyone)              -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner, member, next }
+//                                 one page, newest first; next is the ?from= of the page after it, null at the end (2026-11-06,
+//                                 owner: "films is stopping at 60 ? why ?": the list used to end at the newest 60. Now there is no
+//                                 ceiling: R2 is listed to its last key and each request reads a bounded page, so it never runs out)
 //                                 reviews only for the owner and members (2026-10-15: the films are Verse's ads, so anyone watches)
 //                                 reviews: lib/film-reviews.js (POST one at /api/film-review)
 //   GET ?id=&exp=&sig=           (a signed link)       -> the MP4 (206 for a Range)
@@ -16,7 +19,10 @@ import { payer } from './support.js';
 import { BUY_URL } from '../../lib/review-api.js';
 import { forFilms } from '../../lib/film-reviews.js';
 
-export const WATCH_MS = 6 * 3600e3, LIST_MAX = 60, WORDS_MAX = 6000;
+export const WATCH_MS = 6 * 3600e3, WORDS_MAX = 6000;
+/** a page of films, and how many a request may read to fill one (the unlisted are skipped): bounded work per request, any number of films */
+export const PAGE = 60, SCAN_MAX = 240;
+export const LIST_MAX = PAGE; // the old name: a page now, not a ceiling
 export const ID_RE = /^[a-z0-9][a-z0-9-]{2,95}$/;
 const enc = new TextEncoder();
 const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -63,6 +69,17 @@ async function stream(env, request, id) {
   return new Response(obj.body, { status: 206, headers: { ...h, 'content-range': 'bytes ' + r.offset + '-' + (r.offset + r.length - 1) + '/' + size } });
 }
 
+/** every film in the bucket, newest first. R2 lists at most 1000 keys a call, so the cursor is followed to the last one. */
+export async function storedFilms(env) {
+  const out = []; let cursor;
+  do {
+    const l = await env.FILMS.list({ prefix: 'films/', limit: 1000, ...(cursor ? { cursor } : {}) });
+    for (const o of l.objects || []) if (o.key.endsWith('.mp4')) out.push(o);
+    cursor = l.truncated && l.cursor ? l.cursor : undefined;
+  } while (cursor);
+  return out.sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded));
+}
+
 export async function onRequestGet({ request, env }) {
   if (!env.FILMS) return noStore();
   const q = new URL(request.url).searchParams, now = Date.now();
@@ -74,21 +91,27 @@ export async function onRequestGet({ request, env }) {
   // anyone watches (owner, 2026-10-15: "anyone should be able to at least watch the films those are our ads its how we spread
   // the word"); reviews and the owner's tools stay with the owner and members
   const p = await payer(request, env).catch(() => null);
-  const listed = await env.FILMS.list({ prefix: 'films/', limit: 1000 });
-  const mp4s = (listed.objects || []).filter((o) => o.key.endsWith('.mp4'))
-    .sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded)).slice(0, LIST_MAX);
-  const all = await Promise.all(mp4s.map(async (o) => {
+  const stored = await storedFilms(env);
+  const from = Math.max(0, Math.floor(Number(q.get('from')) || 0)), owner = !!(p && p.owner);
+  const words = async (o) => {
     const id = o.key.slice(6, -4);
     let w = {}; try { const j = await env.FILMS.get('films/' + id + '.json'); if (j) w = JSON.parse(await j.text()); } catch (_) { w = {}; }
     return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now), ...(w.gate === 'pass' ? {} : { unlisted: true }) };
-  }));
+  };
+  // read a page at a time until a page of films that may show is in hand, the scan budget is spent, or the films end
+  const films = []; let at = from;
+  while (at < stored.length && films.length < PAGE && at - from < SCAN_MAX) {
+    const batch = stored.slice(at, at + Math.min(PAGE, SCAN_MAX - (at - from)));
+    at += batch.length;
+    for (const f of await Promise.all(batch.map(words))) if (owner || !f.unlisted) films.push(f);
+  }
+  const next = at < stored.length ? at : null;
   // unlisted until it passes the quality gate (owner, 2026-11-03: "verses videos are bad, its not framed properly the music is bad and
   // they are meaningless to most people"): a film shows to everyone only when its words say gate 'pass' (tools/video-gate.mjs). The
   // rest stay stored and the owner still sees them, marked unlisted, so this is reversible: post the words again with gate 'pass'.
-  const films = p && p.owner ? all : all.filter((f) => !f.unlisted);
   const reviews = p ? await forFilms(env, films.map((f) => f.id), p).catch(() => ({})) : {};
   for (const f of films) f.reviews = reviews[f.id] || null;
-  return good({ films, owner: !!(p && p.owner), member: !!p, buy: BUY_URL, until: new Date(now + WATCH_MS).toISOString() });
+  return good({ films, owner, member: !!p, buy: BUY_URL, until: new Date(now + WATCH_MS).toISOString(), next, ...(owner ? { stored: stored.length } : {}) });
 }
 
 // Only the owner writes; lib/guard.js refuses anyone else before reading a byte of the body (OWNER_WRITES).

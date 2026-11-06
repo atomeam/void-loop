@@ -14,7 +14,7 @@ import { resolve, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { spawnSync } from 'node:child_process';
-import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, DROP, SCALE } from '../void-live-deploy/lib/exam.js';
+import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, mediaLine, DROP, SCALE } from '../void-live-deploy/lib/exam.js';
 import { songAskOf, findTrack } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
 import { compute, money } from '../void-live-deploy/lib/vat.js';
@@ -270,14 +270,18 @@ async function readCard(page, ask) {
   }, ask, { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(2200);
   const obs = await page.evaluate(() => {
-    const card = document.querySelector('.vpage.on') || document.querySelector('.thing') || document.body;
+    // the answer's card, else the thing the ask made or changed (it is picked), else the first thing: an older timer on the
+    // stage is not the answer to "set a timer for 45 seconds" (#2326)
+    const card = document.querySelector('.vpage.on') || document.querySelector('.thing[data-picked]') || document.querySelector('.thing') || document.body;
     let note = '';
     try {
       const log = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]');
       const hit = [...log].reverse().find((e) => e && e.domain === 'void.page');
       note = hit ? String(hit.note || '') : '';
     } catch (_) {}
-    const audio = document.querySelector('audio[src]'), video = document.querySelector('video[src]'), frame = document.querySelector('iframe[src]');
+    // the media is the answer card's own: a card restored on the stage from an earlier ask (it sits before the answer in the page) is not this answer
+    const audio = card.querySelector('audio[src]'), video = card.querySelector('video[src]'), frame = card.querySelector('iframe[src]');
+    if (audio) audio.dataset.examAudio = '1';
     return {
       text: (card.innerText || '').slice(0, 4000),
       note,
@@ -292,7 +296,7 @@ async function readCard(page, ask) {
   });
   if (obs.audio) {
     const played = await page.evaluate(async () => {
-      const a = document.querySelector('audio'); if (!a) return null;
+      const a = document.querySelector('audio[data-exam-audio]'); if (!a) return null;
       a.muted = true;
       try { await a.play(); } catch (e) { return { currentTime: a.currentTime || 0 }; }
       await new Promise((r) => setTimeout(r, 1200));
@@ -350,6 +354,7 @@ export async function runExam({ against = 'live', domains = DOMAINS, holdout = t
         if (cdp) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => {});
         const truth = await truthFor(d, a, obs);
         const judged = judge(d, obs, truth);
+        if (judged.failed.includes('audio') || judged.failed.includes('episode')) process.stdout.write('  media: ' + mediaLine(obs.audio) + '\n');
         rows[d].push({ ...publishRow(d, { ...a, ms: obs.ms, note: obs.note }, judged, a.holdout), holdout: !!a.holdout });
       }
     }

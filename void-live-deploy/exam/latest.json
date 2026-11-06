@@ -1,11 +1,11 @@
 {
-  "at": "2026-11-05T15:05:52.889Z",
+  "at": "2026-11-06T16:09:52.563Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 98.5,
+      "score": 96.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -19,9 +19,11 @@
         {
           "ask": "joue une vidéo des baleines",
           "failed": [
-            "skill"
+            "skill",
+            "loaded",
+            "playable"
           ],
-          "score": 85.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -32,21 +34,14 @@
       }
     },
     "podcasts": {
-      "score": 84.8,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
             "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of serial",
-          "failed": [
-            "episode"
           ],
           "score": 85.7
         },
@@ -89,13 +84,6 @@
             "episode"
           ],
           "score": 57.1
-        },
-        {
-          "ask": "play the podcast",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
         },
         {
           "ask": "play the episode before that",
@@ -162,10 +150,19 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 94.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "wheather in new york",
+          "failed": [
+            "fast",
+            "temp",
+            "close"
+          ],
+          "score": 57.1
+        },
         {
           "ask": "weather",
           "failed": [
@@ -177,10 +174,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -219,7 +215,7 @@
       }
     },
     "recipes": {
-      "score": 95.4,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -227,10 +223,9 @@
           "ask": "recipe",
           "failed": [
             "skill",
-            "method",
             "rival"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "receta de guacamole",
@@ -296,33 +291,19 @@
       }
     },
     "sports": {
-      "score": 89.8,
+      "score": 91.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "mlb scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "premier league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "serie a scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "la liga scores",
           "failed": [
             "board"
           ],
@@ -382,33 +363,10 @@
       }
     },
     "emoji": {
-      "score": 85,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "heart emoji",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "emoji feu",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        },
-        {
-          "ask": "emoji for thank you",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        }
-      ]
+      "fails": []
     },
     "translate": {
       "score": 89.2,
@@ -476,40 +434,10 @@
       ]
     },
     "timers": {
-      "score": 83.3,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "set a timer for 90 seconds",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "add one minute",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "timer for 5",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "set a timer for 45 seconds",
-          "failed": [
-            "mobile",
-            "rival"
-          ],
-          "score": 60
-        }
-      ]
+      "fails": []
     },
     "images": {
       "score": 100,
@@ -552,22 +480,14 @@
       "fails": []
     },
     "code": {
-      "score": 96.7,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "http status 404",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 83.3
+    "domain": "podcasts",
+    "score": 86.4
   }
 }

@@ -71,6 +71,13 @@ export function metaOf(dir, html, specMd) {
 
 /** the rename (AGENTS.md: "Everything a person reads says Verse"): the old name as a word, capital letter only (the lowercase void is the dark stage), in text a person reads. Pure. */
 export const rename = (text) => String(text).replace(/\b(?:Void|V01D)\b/g, 'Verse');
+/** code with every empty catch (`catch (e) {}`, `catch {}`, one holding only a comment) logging what it caught with console.debug, under the
+ * experiment's slug: only a catch right after a try block's closing brace, so the word in a string stays. The drafts swallow errors around optional browser features (BroadcastChannel, storage, sensors), and Verse's review blocks
+ * an empty catch, so each nightly sync PR stopped at the gate. The page behaves the same: debug output shows only when a person opens the console. Pure. */
+export function quietCatches(code, slug = 'lab') {
+  const tag = JSON.stringify('lab ' + slug + ':');
+  return String(code).replace(/(\}\s*)catch\s*(?:\(\s*([A-Za-z_$][\w$]*)\s*\))?\s*\{\s*(?:\/\*[^*]*\*\/\s*)?\}/g, (all, before, v) => before + 'catch (' + (v || 'e') + ') { console.debug(' + tag + ', ' + (v || 'e') + '); }');
+}
 /** html with the old name changed in its text nodes only: never in tags, attributes, scripts, styles or comments (an id or a CSS selector must keep matching). Pure. */
 export function renameMarkup(html) {
   return String(html).replace(/(<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>|<!--[\s\S]*?-->)|>([^<]+)</g, (all, block, text) => (block ? all : '>' + rename(text) + '<'));
@@ -98,7 +105,7 @@ export function unfinished(html) {
 
 /** the draft as a page of Verse: scripts external, head and footer wrapped around it. Pure. meta is metaOf(); needs is needsOf(). */
 export function convertPage(html, meta, needs = needsOf(html)) {
-  const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: rename(x.code) }));
+  const ext = externalize(String(html)), scripts = ext.scripts.map((x) => ({ ...x, code: quietCatches(rename(x.code), meta.slug) }));
   let h = renameMarkup(ext.html);
   const url = SITE + '/lab/' + meta.slug + '/', title = meta.title + ' · Verse lab';
   if (!/<html\b/i.test(h)) h = '<html lang="en">' + h + '</html>';
@@ -123,7 +130,7 @@ export function convertPage(html, meta, needs = needsOf(html)) {
 /** the shared stylesheet and the honest notice for a browser without WebGPU or WebXR: written next to the pages by every import. */
 export const LAB_CSS = `/* /lab/ (tools/lab-import.mjs): the footer every experiment wears, and the notice for a browser that lacks what it needs */
 .vl-bar{position:fixed;left:8px;bottom:8px;z-index:2147483646;font:12px/1.4 system-ui,-apple-system,sans-serif;background:rgba(7,6,11,.78);color:#ecebf5;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:3px 12px;opacity:.6;transition:opacity .2s}
-.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px}.vl-bar a:last-child{margin-right:0}
+.vl-bar:hover,.vl-bar:focus-within{opacity:1}.vl-bar a{color:inherit;margin-right:8px;display:inline-flex;align-items:center;min-height:24px}.vl-bar a:last-child{margin-right:0}
 .vl-sr{position:fixed;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0;padding:0;border:0}
 .vl-note{position:fixed;left:8px;right:8px;top:8px;z-index:2147483647;font:14px/1.45 system-ui,-apple-system,sans-serif;background:#2b1a05;color:#ffe3b0;border:1px solid #b8791b;border-radius:10px;padding:8px 12px}
 .vl-note button{font:inherit;float:right;margin-left:10px;background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:0 10px;cursor:pointer}

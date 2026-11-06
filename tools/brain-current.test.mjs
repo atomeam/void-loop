@@ -4,10 +4,10 @@
 // Measured on 6 real brains (200 lives each, mean food over the last 50 lives): evolved swimmers gathered more than random search with
 // the same scorings on 6 of 6, mean +0.062 (about 20% more); they gathered more than in their first 50 lives on 6 of 6; and more than
 // drifters riding the same flow on 6 of 6 (1.4 to 2.3 times). This test runs 3 of those brains. Run: node --test tools/brain-current.test.mjs
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as K from '../void-live-deploy/lib/brain-current.js';
+import { par, ptest, test } from './brain-par.mjs';
 
 /** the real tissue's life as food, one frame each time the organ runs, while a visitor's pointer circles and words are told */
 function frames(seed, ticks) {
@@ -32,15 +32,17 @@ test('the fluid keeps its mass and its momentum (the steady force sums to nothin
   assert.ok(lo - m1.px / (K.NY) > 0.01 && hi - m1.px / K.NY < -0.01, 'shear ' + lo + ' ' + hi);
 });
 
-test('evolved swimmers gather more life than random search with the same scorings, more than their first lives, and more than drifters', () => {
-  const LIVES = 150, TAIL = 40, rows = [];
-  for (const seed of [1, 2, 3]) {
-    const fr = frames(seed, 1400);
-    const run = (blind) => { const C = K.makeCurrent(seed, blind), fo = [], ga = []; let n = 0; while (C.lives < LIVES) { const f = fr[n++ % fr.length]; for (let s = 0; s < K.SUB; s++) { const r = K.stepCurrent(C, f); if (r) { fo.push(r.food); ga.push(r.gain); } } } return { C, fo, ga }; };
-    const E = run(false), L = run(true);
-    assert.equal(E.C.evals, L.C.evals, 'the same scorings');
-    rows.push({ first: mean(E.fo.slice(0, TAIL)), last: mean(E.fo.slice(-TAIL)), blind: mean(L.fo.slice(-TAIL)), gain: mean(E.ga.slice(-TAIL)), mass: K.moments(E.C.fluid).mass });
-  }
+/** one brain's row: evolved swimmers and random search on that brain's tissue (a worker runs it) */
+export function currentRow(seed) {
+  const LIVES = 150, TAIL = 40, fr = frames(seed, 1400);
+  const run = (blind) => { const C = K.makeCurrent(seed, blind), fo = [], ga = []; let n = 0; while (C.lives < LIVES) { const f = fr[n++ % fr.length]; for (let s = 0; s < K.SUB; s++) { const r = K.stepCurrent(C, f); if (r) { fo.push(r.food); ga.push(r.gain); } } } return { C, fo, ga }; };
+  const E = run(false), L = run(true);
+  return { evals: E.C.evals, blindEvals: L.C.evals, first: mean(E.fo.slice(0, TAIL)), last: mean(E.fo.slice(-TAIL)), blind: mean(L.fo.slice(-TAIL)), gain: mean(E.ga.slice(-TAIL)), mass: K.moments(E.C.fluid).mass };
+}
+
+test('evolved swimmers gather more life than random search with the same scorings, more than their first lives, and more than drifters', async () => {
+  const rows = await par(import.meta.url, 'currentRow', [[1], [2], [3]]); // the 3 brains at once
+  for (const r of rows) { assert.equal(r.evals, r.blindEvals, 'the same scorings'); delete r.evals; delete r.blindEvals; }
   const say = JSON.stringify(rows.map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, Math.round(v * 1000) / 1000]))));
   assert.ok(rows.every((r) => r.last > r.blind), 'evolved over random search ' + say);
   assert.ok(rows.every((r) => r.last > r.first), 'evolved over its first lives ' + say);
@@ -48,10 +50,10 @@ test('evolved swimmers gather more life than random search with the same scoring
   assert.ok(rows.every((r) => Math.abs(r.mass - K.NX * K.NY) < 1), 'the swimmers push the fluid without making or losing mass ' + say);
 });
 
-test('it runs in the brain as one of twenty-three organs: your drag stirs it, it evolves, feeds the tissue, is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-six organs: your drag stirs it, it evolves, feeds the tissue, is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('current') && B.ORGAN_IDS.length === 23);
+  assert.ok(B.ORGAN_IDS.includes('current') && B.ORGAN_IDS.length === 26);
   assert.ok(b.current.lives >= 8 && b.runs.current > 200, 'lives ' + b.current.lives + ' runs ' + b.runs.current);
   assert.ok(b.current.fed > 0, 'it fed the tissue where it swam');
   assert.ok(b.board.current && b.board.current.lives === b.current.lives, JSON.stringify(b.board.current));
