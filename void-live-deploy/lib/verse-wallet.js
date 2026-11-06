@@ -3,6 +3,7 @@
 //
 // The address, in this order (each a receive-only public address; Verse's code never signs, sends or holds a key):
 //   1. VERSE_WALLET_ADDR                 any 0x address set as a Pages variable (for example an address of a wallet Atom made for Verse)
+//      or VERSE_WALLET in lib/verse-wallet-address.js, the same address kept in the repo (public, no Cloudflare step needed)
 //   2. Verse's Coinbase CDP server wallet  made by Verse itself the first time it is needed, once CDP_API_KEY_ID, CDP_API_KEY_SECRET and
 //                                        CDP_WALLET_SECRET are set: POST /platform/v2/evm/accounts named "verse-treasury". The key is
 //                                        generated and kept in Coinbase's secure enclave (docs.cdp.coinbase.com/server-wallets/v2); Verse
@@ -12,6 +13,7 @@
 // amount to the address it was asked for), plus store orders paid in USDC on Base (lib/alt-pay.js already proved those on chain).
 import { verifyUsdcTx } from './alt-pay.js';
 import { USDC_BASE, centsOf } from './x402.js';
+import { VERSE_WALLET } from './verse-wallet-address.js';
 
 const ADDR_RE = /^0x[0-9a-fA-F]{40}$/;
 export const ACCOUNT_NAME = 'verse-treasury';
@@ -71,8 +73,9 @@ export async function cdpAccount(env, fetchImpl = fetch) {
 }
 
 /** Verse's receiving address right now. -> { address, source, note } | null. Makes the CDP account once when its keys are set. */
-export async function walletOf(env, fetchImpl = fetch) {
+export async function walletOf(env, fetchImpl = fetch, repoAddr = VERSE_WALLET) {
   if (ADDR_RE.test(String(env.VERSE_WALLET_ADDR || ''))) return { address: String(env.VERSE_WALLET_ADDR), source: 'set', note: 'Verse\'s wallet address, set on the site' };
+  if (ADDR_RE.test(String(repoAddr || ''))) return { address: String(repoAddr), source: 'set', note: 'Verse\'s wallet address, kept with the site' };
   if (env.DB) {
     await ensureWallet(env);
     const row = await env.DB.prepare("SELECT address FROM void_wallet WHERE id = 'cdp'").first();
