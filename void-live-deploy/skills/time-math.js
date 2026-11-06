@@ -9,7 +9,7 @@
  * stopwatch, the pomodoro and the alarm already exist (worldtime, the page's stopwatch, timer).
  */
 import { parseMeeting, meetingLines, isMeetingCalc, isAgeCalc, parseWeek, weekCard, parseSince, daysSince, ageCard } from '../lib/time-math.js';
-import { isoOf, labelOf, validIso } from '../lib/date-words.js';
+import { isoOf, labelOf, validIso, findDay } from '../lib/date-words.js';
 import { addThing, cardEl, keepOut, localDay } from '../lib/stage-pack.js';
 
 const big = 'font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 4px';
@@ -17,6 +17,7 @@ const big = 'font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 4px';
 function kindOf(text, now = new Date()) {
   if (isMeetingCalc(text)) return { kind: 'meeting-calc' };
   if (isAgeCalc(text)) return { kind: 'age-calc' };
+  { const b = ageCalcBirth(text, now); if (b) return { kind: 'age-calc', birth: b }; }
   let r = parseMeeting(text); if (r) return { kind: 'meeting', r };
   r = parseWeek(text, now); if (r) return { kind: 'week', r };
   r = parseSince(text, now); if (r) return { kind: 'since', r };
@@ -51,12 +52,23 @@ function meetingCalc(api) {
   return 'time-math';
 }
 
-function ageCalc(api, now) {
+// "age calculator born 1990-05-01", "age calculator for may 1 1990" (2026-11-06, docs/GAPS.md: the date was dropped and a model answer said 34,
+// a year short): the calculator with the date already in, answered at once. The year must be said, so the day is never guessed. Pure.
+export function ageCalcBirth(text, now = new Date()) {
+  const m = /^(?:an?\s+|the\s+|open\s+(?:an?\s+|the\s+)?)?age\s+calculator\s*[:,]?\s+(?:for\s+)?(?:(?:someone\s+|a\s+person\s+|me\s+)?(?:born|birthday|dob|date\s+of\s+birth)\s*:?\s+(?:on\s+|in\s+)?)?(.{6,40})$/i.exec(String(text || '').trim().replace(/[?.!]+$/, ''));
+  if (!m || !/\b(?:1[89]|20)\d\d\b/.test(m[1])) return '';
+  const d = findDay(m[1], now, 'past');
+  return d && !d.rest && d.iso <= isoOf(now) ? d.iso : '';
+}
+
+function ageCalc(api, now, birth) {
   const el = api.showPage((p) => { p.innerHTML = '<h2>Age calculator</h2><div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;max-width:320px;margin:10px 0">'
     + '<label for="ac-b">Born</label><input id="ac-b" type="date"></div><div id="ac-out" aria-live="polite" style="font-size:20px;line-height:1.5">pick a birth date</div>'; });
   const inp = el.querySelector('#ac-b'), out = el.querySelector('#ac-out');
   inp.max = isoOf(now);
-  inp.addEventListener('input', () => { const c = validIso(inp.value) ? ageCard(inp.value, isoOf(new Date())) : null; out.textContent = c ? c.line + ' · ' + c.totalDays.toLocaleString() + ' days · next birthday in ' + c.nextBirthdayIn + ' days' : 'pick a birth date'; });
+  const paint = () => { const c = validIso(inp.value) ? ageCard(inp.value, isoOf(new Date())) : null; out.textContent = c ? c.line + ' · ' + c.totalDays.toLocaleString() + ' days · next birthday in ' + c.nextBirthdayIn + ' days' : 'pick a birth date'; };
+  inp.addEventListener('input', paint);
+  if (birth) { inp.value = birth; paint(); }
   return 'time-math';
 }
 
@@ -64,7 +76,7 @@ async function run(text, api) {
   const now = new Date(), k = kindOf(text, now);
   if (!k) return 'none';
   if (k.kind === 'meeting-calc') return meetingCalc(api);
-  if (k.kind === 'age-calc') return ageCalc(api, now);
+  if (k.kind === 'age-calc') return ageCalc(api, now, k.birth);
   if (k.kind === 'since') {
     const th = addThing(api.stage, 'dayssince', { label: k.r.label, start: k.r.start });
     api.stage.save(); api.stage.render();
@@ -84,7 +96,7 @@ async function run(text, api) {
 
 export default {
   name: 'time-math',
-  examples: ['how long is a meeting from 9:30 to 11:15', 'meeting at 9:30 for 45 minutes', 'meeting length calculator', 'what week number is it', 'week number of oct 25', 'age calculator', 'days since I quit coffee', 'days since march 3'],
+  examples: ['how long is a meeting from 9:30 to 11:15', 'meeting at 9:30 for 45 minutes', 'meeting length calculator', 'what week number is it', 'week number of oct 25', 'age calculator', 'age calculator born 1990-05-01', 'days since I quit coffee', 'days since march 3'],
   nearMisses: ['how long is a flight from 9 to 11', 'what week is it in the show', 'week number of pregnancy', 'how old is the universe', 'how old am I if I was born in 1990', 'days since the roman empire fell', 'how many days until christmas', 'what time is it in tokyo', 'set an alarm for 7am'],
   kindOf,
   match(lower, text) { return !!kindOf(text || lower); },
