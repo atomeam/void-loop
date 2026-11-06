@@ -1,7 +1,7 @@
 // lib/autopilot.js and functions/api/autopilot.js: which commits are Verse's own, and the page's API reading only real records.
 //   node tools/autopilot.test.mjs
 import assert from 'node:assert/strict';
-import { kindOf, summarize, startedByHour, incidentsIn, mergedPr } from '../void-live-deploy/lib/autopilot.js';
+import { kindOf, summarize, startedByHour, incidentsIn, mergedPr, boardOf } from '../void-live-deploy/lib/autopilot.js';
 import { readAutopilot, fillFromSnapshot, onRequestGet } from '../void-live-deploy/functions/api/autopilot.js';
 import { snapshot } from './autopilot-snapshot.mjs';
 
@@ -71,6 +71,15 @@ assert.equal(filled.ownCount, 1); assert.equal(filled.deploys, 5); assert.deepEq
 const failedSnap = { at: snap.at, windows: { 1: { sources: { commits: 'HTTP 403', deploys: 'HTTP 403' } } } };
 const kept = fillFromSnapshot(structuredClone(bad), failedSnap, 1);
 assert.equal(kept.ownCount, undefined); assert.equal(kept.snapshotAt, undefined); n++; // a snapshot that did not read GitHub fills nothing in
+
+// the owner's board on /autopilot/: most asked first, bad rows dropped, the rest counted, markup kept as plain text for the page
+t('the owner board keeps real rows, most asked first, and counts the rest', () => {
+  const b = boardOf([{ ask: 'b', count: 2, last: '2026-11-01T00:00:00Z' }, { ask: '<img src=x>', count: 5, last: '2026-11-02' }, { ask: '', count: 9 }, { ask: 'z', count: 0 }, null, { ask: 'c', count: 2, last: '2026-11-03', fallback: 'web' }], 2);
+  assert.deepEqual(b.shown.map((x) => x.ask), ['<img src=x>', 'c']);
+  assert.equal(b.shown[1].fallback, 'web'); assert.equal(b.total, 3); assert.equal(b.more, 1);
+  assert.equal(boardOf([{ ask: 'b', count: 1, last: '2026-11-01T09:00:00Z' }]).shown[0].last, '2026-11-01');
+  assert.deepEqual(boardOf('no'), { shown: [], total: 0, more: 0 });
+});
 
 // the endpoint: with no token and a snapshot, GitHub is not asked at all; the conductor is still read live
 globalThis.caches = { default: { match: async () => null, put: async () => {} } };
