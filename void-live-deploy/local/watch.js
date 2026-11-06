@@ -2,9 +2,11 @@
 // is on, and lets Verse learn from it: the TV player's closed captions (CEA-608, read by the full hls.js build in app.js) are kept here as a
 // running transcript, a still of the screen is taken only when there are no captions or the person asks Verse to look, and radio is heard by
 // Verse's server itself for a few seconds (functions/api/watchalong.js). Nothing of the stream is stored anywhere: Verse keeps only the short
-// notes it writes. Idea notes can be opened as a system blueprint on the main stage so learning becomes buildable work on the site.
+// notes it writes. Idea notes can be opened as a system blueprint on the main stage so learning becomes buildable work on the site; while a station
+// plays, the stage opens over this page with the show still playing in a card beside it (local/stage-dock.js), so the blueprint never ends the show.
 // Everything shown comes from textContent, never markup.
 import { addCue, ideaAskFromNote } from '/lib/watch-along.js';
+import { openStage } from '/local/stage-dock.js';
 
 const $ = (id) => document.getElementById(id);
 const panel = $('watch'), log = $('watch-log'), form = $('watch-form'), input = $('watch-q'), learnBox = $('watch-learn'), hears = $('watch-hears'), learnedList = $('watch-learned');
@@ -83,6 +85,10 @@ function showLearned(notes) {
         a.textContent = ' blueprint on stage';
         a.className = 'w-blueprint';
         a.rel = 'noopener';
+        a.addEventListener('click', (e) => { // a plain click while a station plays keeps the show: the stage opens beside it
+          if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || !now || !now.station || now.state === 'failed') return;
+          if (openStage(a.href, { tv: isTv() })) e.preventDefault();
+        });
         li.append(a);
       }
     }
@@ -113,7 +119,7 @@ async function lately() { // the notes Verse wrote most recently, from anyone's 
 document.addEventListener('local:now', (e) => {
   const d = e.detail || {}, same = now && now.station && d.station && now.station.kind === d.station.kind && now.station.id === d.station.id;
   if (!same) { captions = ''; turns = []; log.textContent = ''; learnedAt = Date.now() - LEARN_MS + 60000; learnedLen = 0; frameOk = true; } // first learn about a minute in
-  now = d; panel.hidden = !d.station || d.state === 'failed'; $('watch-name').textContent = d.name || '';
+  now = d; panel.hidden = !d.station || d.state === 'failed'; $('watch-name').textContent = $('show-name').textContent = d.name || '';
   senseLine(); if (!panel.hidden) lately();
   clearInterval(timer); if (d.state === 'playing') timer = setInterval(learn, 20000);
 });
