@@ -9,6 +9,10 @@
    "calc",
    "convert"
   ],
+  "system-handoff": [
+   "delivery-pack",
+   "system-status"
+  ],
   "my-device": [
    "eat"
   ]
