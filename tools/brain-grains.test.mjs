@@ -5,10 +5,10 @@
 // from the aim, passing in a random direction 0.245, no passing 0.231; fit beat random on 10 of 12 and beat no passing on 11 of 12.
 // On the 3 brains this test runs: fit 0.163 0.113 0.151, random 0.187 0.248 0.265, none 0.209 0.206 0.252, organ gain 1.40 1.98 1.92.
 // Run: node --test tools/brain-grains.test.mjs
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as B from '../void-live-deploy/lib/brain.js';
 import * as K from '../void-live-deploy/lib/brain-grains.js';
+import { par, ptest, test } from './brain-par.mjs';
 
 /** the real brain's focus x, one frame each time the organ runs, while a visitor's pointer circles and words are told */
 function frames(seed, ticks) {
@@ -30,15 +30,17 @@ test('the bed is physics: with no bounce, more grip stops a thrown grain sooner,
   assert.ok(ends.every((x) => x > 0 && x < 1), 'inside the walls');
 });
 
-test('grains that take the gene from the nearer lander land nearer the aim than grains that pass it at random or not at all', () => {
-  const rows = [];
-  for (const seed of [1, 2, 3]) {
-    const fr = frames(seed, 1400);
-    const run = (mode) => { const Bd = K.makeBed(seed, mode), A = { aim: 0.5 }, errs = []; let n = 0; while (Bd.lives < 1500) { const pour = K.steer(A, fr[n++ % fr.length]); for (let k = 0; k < K.SUB; k++) for (const l of K.stepBed(Bd, pour, A.aim)) errs.push(l.err); } return { err: mean(errs.slice(-300)), transfers: Bd.transfers }; };
-    const S = K.makeGrains(seed); let n = 0; while (S.bed.lives < 1500) { const pour = K.steer(S, fr[n++ % fr.length]); for (let k = 0; k < K.SUB; k++) { K.stepBed(S.ctl, pour, S.aim); K.stepBed(S.bed, pour, S.aim); } }
-    const f = run('fit'), r = run('random'), z = run('none');
-    rows.push({ fit: f.err, random: r.err, none: z.err, gain: K.gainOf(S), passed: f.transfers, still: z.transfers });
-  }
+/** one brain's row: the three ways of passing genes, and the organ against its control, on that brain's focus (a worker runs it) */
+export function grainsRow(seed) {
+  const fr = frames(seed, 1400);
+  const run = (mode) => { const Bd = K.makeBed(seed, mode), A = { aim: 0.5 }, errs = []; let n = 0; while (Bd.lives < 1500) { const pour = K.steer(A, fr[n++ % fr.length]); for (let k = 0; k < K.SUB; k++) for (const l of K.stepBed(Bd, pour, A.aim)) errs.push(l.err); } return { err: mean(errs.slice(-300)), transfers: Bd.transfers }; };
+  const S = K.makeGrains(seed); let n = 0; while (S.bed.lives < 1500) { const pour = K.steer(S, fr[n++ % fr.length]); for (let k = 0; k < K.SUB; k++) { K.stepBed(S.ctl, pour, S.aim); K.stepBed(S.bed, pour, S.aim); } }
+  const f = run('fit'), r = run('random'), z = run('none');
+  return { fit: f.err, random: r.err, none: z.err, gain: K.gainOf(S), passed: f.transfers, still: z.transfers };
+}
+
+test('grains that take the gene from the nearer lander land nearer the aim than grains that pass it at random or not at all', async () => {
+  const rows = await par(import.meta.url, 'grainsRow', [[1], [2], [3]]); // the 3 brains at once
   const say = JSON.stringify(rows.map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, r3(v)]))));
   assert.ok(rows.every((r) => r.fit < r.random), 'fit over random passing ' + say);
   assert.ok(rows.every((r) => r.fit < r.none), 'fit over no passing ' + say);
@@ -46,7 +48,7 @@ test('grains that take the gene from the nearer lander land nearer the aim than 
   assert.ok(rows.every((r) => r.passed > 0 && r.still === 0), 'genes pass only where the mode says ' + say);
 });
 
-test('it runs in the brain as one of twenty-three organs: its aim follows the focus, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-three organs: its aim follows the focus, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
   assert.ok(B.ORGAN_IDS.includes('grains') && B.ORGAN_IDS.length === 23);

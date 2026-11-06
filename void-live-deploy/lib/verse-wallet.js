@@ -110,14 +110,12 @@ export async function recordPayment(env, { tx, service, units, network, payTo })
 export async function confirmPayments(env, { max = 5, fetchImpl } = {}) {
   await ensureWallet(env);
   const rows = (await env.DB.prepare("SELECT tx, units, pay_to FROM void_x402 WHERE status = 'settled' ORDER BY at LIMIT ?").bind(max).all()).results || [];
-  let done = 0;
-  for (const r of rows) {
-    const v = await verifyUsdcTx(env, r.tx, r.pay_to, BigInt(r.units), fetchImpl);
-    if (v.retry) continue;
-    await env.DB.prepare('UPDATE void_x402 SET status = ?, checked = ?, why = ? WHERE tx = ?').bind(v.ok ? 'verified' : 'not on chain', new Date().toISOString(), v.ok ? null : String(v.reason).slice(0, 200), r.tx).run();
-    done++;
-  }
-  return done;
+  const checks = await Promise.all(rows.map((r) => verifyUsdcTx(env, r.tx, r.pay_to, BigInt(r.units), fetchImpl).then((v) => ({ r, v }))));
+  const now = new Date().toISOString();
+  const stmts = checks.filter(({ v }) => !v.retry).map(({ r, v }) => env.DB.prepare('UPDATE void_x402 SET status = ?, checked = ?, why = ? WHERE tx = ?')
+    .bind(v.ok ? 'verified' : 'not on chain', now, v.ok ? null : String(v.reason).slice(0, 200), r.tx));
+  if (stmts.length) await env.DB.batch(stmts);
+  return stmts.length;
 }
 
 /** USDC income, totals only: x402 payments read back on chain, and store orders paid in USDC on Base. Pure over rows. */
