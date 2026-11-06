@@ -79,6 +79,9 @@ replace the hand-rolled crypto rail.
       facilitator flow, because standard x402 settlement needs a facilitator (free CDP key, Adam) or a settling key.
       Off behind `X402_ENABLED=on` plus `CRYPTO_USDC_BASE_ADDR`. Next: switch to the CDP facilitator for standard x402
       clients once Adam makes the free CDP key ([x402 docs](https://docs.cdp.coinbase.com/x402/welcome)).
+      **Update 2026-11-06:** standard x402 is live code: `POST /api/x402/review` (lib/x402.js), v1 and v2, settled by PayAI's public
+      facilitator (no key) into Verse's own wallet (lib/verse-wallet.js, docs/treasury.md "Verse's wallet"). The store prototype above
+      stays as it was.
    2. **Stripe MPP / ACP.** Fastest fiat for agents once Stripe is back (step 3): MPP on PaymentIntents, ACP via the Agentic
       Commerce Suite ([MPP](https://stripe.com/blog/machine-payments-protocol), [ACP](https://www.agenticcommerce.dev/)).
    3. **Google AP2.** Slowest: an authorization framework (signed mandates), not a payment rail; v0.2, standardizing at FIDO
