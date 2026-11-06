@@ -1,5 +1,5 @@
 /**
- * monitor-handoff skill — hand off a client-visible monitor for systems Verse owns.
+ * monitor-handoff skill: hand off a client-visible monitor for systems Verse owns.
  * Produces a status card the client can ask for, reducing their work by showing
  * real (never invented) state of monitors, docs, and running automations.
  * "monitor handoff for the onboarding system", "client monitor pack for my automation",
