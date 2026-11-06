@@ -154,3 +154,10 @@ test('the exam reads the thing an ask made or changed, not the first one on the 
     assert.ok(page.includes("if (el.dataset.id === selectedId) el.dataset.picked = '1';"), f + ' marks the picked thing');
   }
 });
+
+test('a picture Verse paints for "generate a picture of a lighthouse" counts as an images answer (skills/image-gen.js)', () => {
+  const o = { text: 'A picture of a lighthouse at night. Painting it. Open the AI image generator with these words to pick another style.', note: 'skill:image-gen', ms: 2600, overflow: false, drawn: true };
+  const j = judge('images', o, { wantPicture: true });
+  assert.equal(j.checks.skill, true); assert.equal(j.checks.picture, true); assert.equal(j.checks.answered, true);
+  assert.equal(judge('images', { ...o, note: 'skill:video-gen' }, { wantPicture: true }).checks.skill, false);
+});

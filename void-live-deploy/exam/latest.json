@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T06:15:52.504Z",
+  "at": "2026-11-06T15:38:14.940Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,17 +34,16 @@
       }
     },
     "podcasts": {
-      "score": 85.6,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of hardcore history",
+          "ask": "play the latest episode of this american life",
           "failed": [
-            "show",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of stuff you should know",
@@ -158,17 +157,17 @@
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -288,13 +287,19 @@
       "measured": 18,
       "fails": [
         {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "scores",
           "failed": [
             "skill",
-            "board",
-            "rival"
+            "board"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "resultado del real madrid",
@@ -446,6 +451,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 85.6
+    "score": 86.4
   }
 }

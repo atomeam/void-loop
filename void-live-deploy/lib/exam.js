@@ -21,7 +21,7 @@ export const ALLOW = Object.freeze({
   units: ['calc', 'convert'],
   maps: ['place'],
   timers: ['timer'],
-  images: ['image', 'draw', 'cartoon'],
+  images: ['image', 'draw', 'cartoon', 'image-gen'],
   prices: ['crypto', 'markets', 'calc'],
   definitions: ['define'],
   wordproblems: ['calc', 'sums'],

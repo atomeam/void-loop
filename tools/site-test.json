@@ -291,6 +291,24 @@
     },
     {
       "ask": "yo draw a cartoon cat"
+    },
+    {
+      "ask": "yo draw me a robot"
+    },
+    {
+      "ask": "draw me a robot pls"
+    },
+    {
+      "ask": "yo make a 2d toon dog"
+    },
+    {
+      "ask": "make a 2d toon dog pls"
+    },
+    {
+      "ask": "yo create a toon style bird"
+    },
+    {
+      "ask": "create a toon style bird pls"
     }
   ],
   "candidates": [],
