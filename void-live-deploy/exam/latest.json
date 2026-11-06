@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T12:33:33.961Z",
+  "at": "2026-11-06T13:04:34.595Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -39,26 +39,26 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of the daily",
           "failed": [
             "audio"
           ],
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of hardcore history",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
-            "show",
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
             "episode"
           ],
           "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of freakonomics radio",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
         },
         {
           "ask": "play the latest episode of crime junkie",
@@ -157,23 +157,25 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -300,6 +302,13 @@
           "score": 83.3
         },
         {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "champions league scores",
           "failed": [
             "board"
@@ -308,13 +317,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
           "failed": [
             "board"
           ],
