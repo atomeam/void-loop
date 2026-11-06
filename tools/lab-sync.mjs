@@ -14,6 +14,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { LAB_DIR, readDrafts, metaOf, hashOf, importDrafts, readCatalog, writeCatalog, brokenMd, needsOf } from './lab-import.mjs';
 import { probe, classify, hasFallback, sourceOf } from './lab-probe.mjs';
+import { applyAll, toolForEntry } from './lab-use-it.mjs';
 import { verdictOf } from './lab-grade.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -47,8 +48,10 @@ export async function sync({ drafts, all = false, only = null, lab = LAB_DIR, lo
   });
   const now = merge(catalog, entries), publish = new Set(entries.filter((e) => e.status !== 'broken').map((e) => e.slug));
   const notice = new Set(now.filter((e) => e.status.startsWith('needs-')).map((e) => e.slug));
-  importDrafts({ drafts, out: lab, only: publish, noticeFor: notice });
+  const bySlug = new Map(now.map((e) => [e.slug, e]));
+  importDrafts({ drafts, out: lab, only: publish, noticeFor: notice, toolFor: (d, meta) => toolForEntry(bySlug.get(meta.slug)) });
   writeCatalog(now, lab);
+  applyAll({ lab, catalog: now }); // every experiment page, old or new, opens the tool its idea became (tools/lab-use-it.mjs)
   fs.writeFileSync(path.join(root, 'domains', 'lab.broken.md'), brokenMd(now));
   fs.rmSync(stage, { recursive: true, force: true });
   const by = {}; for (const e of entries) by[e.status] = (by[e.status] || 0) + 1;

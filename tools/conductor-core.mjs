@@ -34,7 +34,7 @@ export const ROUTES = Object.freeze({
   feature: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   // what Verse heard on TV or radio, and each blueprint, built onto the site (tools/watch-build.mjs queues at most 3 an hour, 6 open).
   // The cap counts every run of the coder today (as member's does), so 24 held every blueprint once the other kinds had used 24 runs;
-  // Adam 2026-11-06: "Raise it now". One a tick, as member: the queue's own limits and the coder's free model budget hold the rest.
+  // Raised 2026-11-06 so queued blueprints build the same day. One a tick, as member: the queue's own limits and the coder's free model budget hold the rest.
   tv: { wf: AGENT, input: 'job', claims: true, cap: 144 },
   review: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   gap: { wf: AGENT, input: 'job', claims: true, cap: 40 },
@@ -150,7 +150,7 @@ export function willDue({ exists, busy, lastRunMs, now }) {
  *  one runs or waits. A run that failed today is not started again until tomorrow: three failures in a row queue a heal: job. Pure. */
 export const DAILY = Object.freeze([
   { wf: 'verse-podcast.yml', hourUtc: 13, what: "today's episode of Verse Out Loud" },
-  { wf: 'shorts.yml', hourUtc: 15, what: "today's film (champion against challenger, the better one posted)" },
+  { wf: 'shorts.yml', hourUtc: 15, what: "today's three films, three formats on trending topics" },
 ]);
 export function dailyDue({ exists, busy, lastRunMs, now, hourUtc }) {
   if (!exists || busy) return false;

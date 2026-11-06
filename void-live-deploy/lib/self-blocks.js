@@ -4,8 +4,10 @@
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
 import { wrongWeakest, weakestSentence, weakestNote } from './weakest.js';
-import { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup } from './ask-same.js';
+import { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup, askIds } from './ask-same.js';
 export { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup };
+// one ask on this card's lists: said again in other words (sameOrDup), and about the same numbered one (askIds: "number 3" and "number 4" are two)
+const oneAsk = (a, b) => askIds(a) === askIds(b) && sameOrDup(a, b);
 
 const day = (t) => String(t || '').slice(0, 10);
 // the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
@@ -63,12 +65,12 @@ export function shortLine(t) {
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
 
-/** the asks with each one said again (sameOrDup) folded into its first telling, which carries how many times it was asked in all. Pure. */
+/** the asks with each one said again (oneAsk) folded into its first telling, which carries how many times it was asked in all. Pure. */
 export function foldAsks(asks) {
   const out = [];
   for (const a of asks || []) {
     const t = uncite(sentence(a && a.ask)); if (!t) continue;
-    const n = Math.max(1, Math.round(+(a && a.times) || 1)), same = out.find((o) => sameOrDup(o.ask, t));
+    const n = Math.max(1, Math.round(+(a && a.times) || 1)), same = out.find((o) => oneAsk(o.ask, t));
     if (same) same.times += n; else out.push({ ...a, ask: t, times: n });
   }
   return out;
@@ -78,7 +80,7 @@ export function foldBuilt(rows) {
   const out = [];
   for (const r of rows || []) {
     if (!r || !sentence(r.ask)) continue;
-    const n = Math.max(1, Math.round(+r.times || 1)), same = out.find((o) => sameOrDup(o.ask, r.ask));
+    const n = Math.max(1, Math.round(+r.times || 1)), same = out.find((o) => oneAsk(o.ask, r.ask));
     if (same) same.times += n; else out.push({ ...r, ask: uncite(sentence(r.ask)), times: n });
   }
   return out;
@@ -281,7 +283,7 @@ export function sinceSection(v, last, now = Date.now(), fam = null) {
   // it stands for, so "What got built" leaves out all of them
   const newer = [];
   for (const r of lastAt > 0 ? recent.filter((r) => Date.parse(r.at) > lastAt) : recent.slice(0, 3)) {
-    const same = r && sentence(r.ask) && newer.find((o) => sameOrDup(o.r.ask, r.ask));
+    const same = r && sentence(r.ask) && newer.find((o) => oneAsk(o.r.ask, r.ask));
     if (same) same.keys.push(buildKey(r)); else if (r) newer.push({ r, keys: [buildKey(r)] });
   }
   const thoughts = lastAt > 0 ? ((v && v.entries) || []).filter((e) => Date.parse(e.at) > lastAt).length : 0;
@@ -292,10 +294,12 @@ export function sinceSection(v, last, now = Date.now(), fam = null) {
     // rise of the built count when an older build was linked since; never a fall. The count can go down only when the record is counted
     // again (an ask said twice merged into one), and that is no ask unbuilt, so it is not shown as one (owner's card, 2026-11-06: "-3 asks built")
     const asked = Array.isArray(f.asked) && f.asked.length ? f.asked : recent, seenAsk = [];
-    for (const a of asked) if (a && Date.parse(a.at) > lastAt && sentence(a.ask) && !seenAsk.some((x) => sameOrDup(x, a.ask))) seenAsk.push(a.ask);
+    for (const a of asked) if (a && Date.parse(a.at) > lastAt && sentence(a.ask) && !seenAsk.some((x) => oneAsk(x, a.ask))) seenAsk.push(a.ask);
     const rise = Number.isFinite(+f.built) && Number.isFinite(+last.built) ? +f.built - +last.built : 0;
     const built = Math.max(seenAsk.length, rise, 0);
-    const moved = [built ? '+' + built + (built === 1 ? ' ask built' : ' asks built') : '', counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
+    // each moved count keeps its counter's name, as "+1 skills" does: "+1 asks built" (the self card check reads that name; a singular here
+    // turned the browser suite red on main, run 42184801438)
+    const moved = [built ? '+' + built + ' asks built' : '', counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
     lines.push({ t: 'p', lead: true, text: (moved.length ? moved.join(' · ') : 'No new counts') + (thoughts ? ' · ' + thoughts + ' new reflection' + (thoughts === 1 ? '' : 's') : '') + ', since you looked ' + ago(lastAt) + ' ago.' });
     // nothing built since only when that count is 0, and then the newest build it means is named, so the line agrees with "What got built"
     if (!newer.length && !built) {

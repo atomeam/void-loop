@@ -54,9 +54,27 @@ export function cleanTake(take) {
   return t;
 }
 
-/** The block under the summary: Verse's take (a few sentences, plain text, labelled as a model's reading) and what Verse can do about it. */
-export function takeHtml(esc, take, asks) {
-  const t = cleanTake(take), a = Array.isArray(asks) ? asks : [];
+// the grounding gate (owner, 2026-11-06, the Treasury card: its take was generic filler about "liquidity and risk mitigation" that no fact on the
+// card held): a take is shown only when it stands on something real the card or Verse holds, and the page passes that ground in
+const STOP = new Set('a an and are as at be been but by can for from has have he her his in into is it its may more most not of on one or other our over she so such than that the their them then these they this those to under was were what when where which while who will with within would also used use'.split(' '));
+/** the plain words of a text, lower case, accents off. Pure. */
+export const words = (s) => String(s || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').match(/[a-z0-9]+/g) || [];
+/** one word without a simple plural ending: treasuries -> treasury, boxes -> box, pages -> page, glass stays glass. Pure. */
+export const singular = (w) => { const s = String(w || '').toLowerCase(); if (s.length > 4 && /ies$/.test(s)) return s.slice(0, -3) + 'y'; if (s.length > 4 && /(?:s|x|z|ch|sh)es$/.test(s)) return s.slice(0, -2); if (s.length > 3 && /[^s]s$/.test(s)) return s.slice(0, -1); return s; };
+const content = (s, skip) => new Set(words(s).filter((w) => w.length >= 4 && !STOP.has(w)).map(singular).filter((w) => !skip.has(w)));
+/** how many content words (four letters or more, not a stop word, not the subject's own name) a take shares with a ground text. Pure. */
+export function sharedWords(take, ground, title = '') {
+  const skip = new Set(words(title).map(singular)), g = content(ground, skip); let n = 0;
+  for (const w of content(take, skip)) if (g.has(w)) n++;
+  return n;
+}
+/** the take when it is grounded in the text it is checked against (two content words or more in common), else ''. Pure. */
+export const groundedTake = (take, ground, title = '') => { const t = cleanTake(take); return t && sharedWords(t, ground, title) >= 2 ? t : ''; };
+
+/** The block under the summary: Verse's take (a few sentences, plain text, labelled as a model's reading) and what Verse can do about it.
+ *  opts.ground: the card's own source text (and Verse's own page, when the term has one); given, a take that stands on none of it is left out. */
+export function takeHtml(esc, take, asks, opts = {}) {
+  const t = opts && typeof opts.ground === 'string' ? groundedTake(take, opts.ground, opts.title) : cleanTake(take), a = Array.isArray(asks) ? asks : [];
   if (!t && !a.length) return '';
   return '<div class="take" style="border-left:2px solid var(--accent, #8ea2ff);padding:2px 0 2px 10px;margin:10px 0 12px">'
     + '<div class="take-label" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#c7d2ff;margin-bottom:3px">Verse’s take <span style="font-weight:400;letter-spacing:0;text-transform:none;color:#8a8fa8">· a model’s reading, not from the source</span></div>'

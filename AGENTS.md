@@ -62,3 +62,4 @@ Every run follows B.I.T.E. (owner, 2026-10-11: brief, implement the smallest use
 - Open an unauthenticated POST endpoint without asking what a stranger could make it do (`docs/RULES.md`).
 - Run two heavy browser jobs at once on one machine (`node tools/heavy.mjs <command>` queues them).
 - Write a rule in the owner's name without the owner's words.
+- Quote the owner in a pull request title or body, a commit message or a PR comment. Say what changed and why in your own plain words.
