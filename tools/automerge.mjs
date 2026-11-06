@@ -74,7 +74,8 @@ function idleEvent() {
   try {
     const ev = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH || '', 'utf8'));
     const wr = ev.workflow_run;
-    return !!(wr && !(wr.pull_requests || []).length && wr.head_branch === 'main');
+    // the suite gate runs on main for a batch of pull requests: its result is never idle (2026-11-06: it was, and nothing merged)
+    return !!(wr && wr.name !== 'Suite on main' && !(wr.pull_requests || []).length && wr.head_branch === 'main');
   } catch (_) { return false; }
 }
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
