@@ -1,16 +1,53 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 287,
+ "runsTotal": 289,
  "kinds": {
   "grow": 70,
-  "file": 90,
+  "file": 91,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 73
+  "visitor": 74
  },
  "runs": [
+  {
+   "at": "2026-11-06T04:49:27Z",
+   "passed": 85,
+   "of": 90,
+   "kind": "file",
+   "ms": 438,
+   "note": "fix: \"longevity trial watch\" load 1233 ms > 1200",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "longevity trial watch",
+     "why": "load 1233 ms > 1200"
+    },
+    {
+     "ask": "send it away",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "flip this card",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-06T04:38:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T04:12:19Z",
    "passed": 0,
@@ -267,47 +304,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-05T14:39:39Z",
-   "passed": 84,
-   "of": 90,
-   "kind": "file",
-   "ms": 373,
-   "note": "fix: \"how much do i need to save a month to have 1 million in 30 years at 7%\" load 1482 ms > 1200",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
-     "why": "load 1482 ms > 1200"
-    },
-    {
-     "ask": "toss it off the screen",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "closer on the figure",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-05T14:29:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -385,10 +381,10 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 96,
-   "passed": 1857,
-   "of": 2042,
-   "ms": 373
+   "runs": 98,
+   "passed": 1942,
+   "of": 2132,
+   "ms": 377
   }
  ],
  "seen": {
@@ -408,7 +404,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-06T03:24:35Z",
+  "skill:cartoon": "2026-11-06T04:49:27Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -705,6 +701,9 @@
   "skill:magic8": "2026-11-06T00:26:03Z",
   "skill:mind-field": "2026-11-06T03:24:35Z",
   "skill:morse": "2026-11-06T03:24:35Z",
-  "skill:music-tools": "2026-11-06T03:24:35Z"
+  "skill:music-tools": "2026-11-06T03:24:35Z",
+  "skill:client-handoff": "2026-11-06T04:49:27Z",
+  "skill:math-quiz": "2026-11-06T04:49:27Z",
+  "skill:my-device": "2026-11-06T04:49:27Z"
  }
 }
