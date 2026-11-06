@@ -582,14 +582,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T05:48:15Z",
-   "subject": "Outcome exam: timers 86.7"
-  },
-  {
-   "at": "2026-11-06T05:48:06Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
    "at": "2026-11-06T05:42:22Z",
    "subject": "Gaps batch 4: phonetic alphabet, invisible characters, final exam grade, SQL formatter and XML to JSON in the page (#2377)"
   },
@@ -606,16 +598,24 @@
    "subject": "Agents pay Verse over MCP, the review Action pays per review, and the listings and grant drafts are ready (#2380)"
   },
   {
+   "at": "2026-11-06T05:40:26Z",
+   "subject": "Fix merge-gate: /life-arb/ gets its hand-off tag; noindex stays in its meta and API so _headers keeps inside Cloudflare's 100 rules…"
+  },
+  {
+   "at": "2026-11-06T05:32:48Z",
+   "subject": "Give /api/arbitrage its explicit limit (main's #2371 added the route without one, so the actions check failed)"
+  },
+  {
    "at": "2026-11-06T05:31:45Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T05:28:56Z",
-   "subject": "Trading bots pages: the fade rule ahead of the visit beacon, and the root page copy matches"
+   "at": "2026-11-06T05:28:32Z",
+   "subject": "Keep churn.json as main has it (a shallow clone wrote an empty hot list)"
   },
   {
-   "at": "2026-11-06T05:26:32Z",
-   "subject": "Page copies: void.html takes the deploy copies' change from #2369"
+   "at": "2026-11-06T05:24:57Z",
+   "subject": "Bring void.html in line with its two deploy copies (main edited the copies in #2336 and #2369)"
   },
   {
    "at": "2026-11-06T05:24:21Z",
@@ -626,20 +626,24 @@
    "subject": "Tower gate: wheel,tournaments measured against their live sites"
   },
   {
+   "at": "2026-11-06T05:23:03Z",
+   "subject": "life-arb: queue Verse jobs in one D1 batch; mark the two escaped innerHTML writes"
+  },
+  {
    "at": "2026-11-06T05:22:02Z",
    "subject": "A replace that misses shows the nearest lines (#2330) (#2372)"
+  },
+  {
+   "at": "2026-11-06T05:21:05Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-11-06T05:21:03Z",
    "subject": "Tower gate: prizes,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T05:20:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-06T05:19:15Z",
-   "subject": "Brain step: faster smell and synapse pass, same state to the bit"
+   "at": "2026-11-06T05:20:28Z",
+   "subject": "Add a private life-arbitrage scan for the owner (/life-arb/)"
   },
   {
    "at": "2026-11-06T05:18:19Z",
@@ -656,10 +660,6 @@
   {
    "at": "2026-11-06T05:17:06Z",
    "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
-  },
-  {
-   "at": "2026-11-06T05:16:56Z",
-   "subject": "Verse code review paid with PayPal, and the PayPal AI Hackathon entry pack (#2370)"
   }
  ],
  "builders": {
@@ -841,8 +841,8 @@
   }
  ],
  "visible": {
-  "day": 23,
-  "week": 174
+  "day": 22,
+  "week": 173
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
