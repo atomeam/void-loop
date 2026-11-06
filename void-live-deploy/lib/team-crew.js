@@ -150,7 +150,7 @@ export function wantsOf(ev = {}) {
       why: 'Verse noted on ' + s(idea.show || idea.station, 60) + ': ' + s(idea.note, 220) + '. Extend the page that already covers it (combine pages); build new only if none fits.',
       done: 'The change is live on a-to-mind.com and links one of: ' + PRODUCTS.map((p) => p.name).join(', ') + '.',
       cite: [{ what: 'Verse\'s TV and radio notes', url: 'https://a-to-mind.com/api/watchalong?kind=idea' }], metric: { id: 'joblive:want-' + key, label: 'the build is live', better: 'up', value: 0 },
-      // one build, not two (owner, 2026-11-06: "the blueprints should just automatically be started and built into verse"): the idea is built
+      // one build, not two (the owner asked on 2026-11-06 for every blueprint to build by itself): the idea is built
       // by the blueprint lane's own tv: job, so the want adopts that job when it exists and files one in that lane when it does not
       target: ('tv:' + slugOf(idea.topic)).slice(0, 40) });
   }

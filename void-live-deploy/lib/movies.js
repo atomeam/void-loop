@@ -26,6 +26,19 @@ export function cardAsk(text) {
   if (!m) return null;
   const title = cleanTitle(m[1]); return title.length >= 1 ? { title, year: cleanYear(m[2]) } : null;
 }
+// Not a film: a show, a live event or broadcast, the sky, or Verse's own films (skills/films.js answers those). Kept to words no common
+// film title starts or turns on, so "where can i watch the birds" still opens the film card.
+const NOT_FILM = /^(?:the\s+)?(?:tv\s+|new\s+|latest\s+)?(?:shows?|series|seasons?|episodes?|news)\b|\b(?:super\s*bowl|nfl|nba|mlb|nhl|wnba|mls|ufc|wwe|f1|formula\s*1|grand\s*prix|olympics|world\s*cup|world\s*series|playoffs?|stanley\s+cup|march\s+madness|debate|eclipse|meteor\s+shower|northern\s+lights|fireworks|vs\.?|versus|season\s+\d+|episode\s+\d+)\b|\blive$|\b(?:your|verse'?s?|our)\s+(?:own\s+)?(?:films?|movies?|videos?|shows?|podcasts?)\b/i;
+/** "where can i stream The Blair Witch Project", "where to watch Nosferatu (1922)" -> { title, year } | null. The ask opens the
+ *  movie card, which carries the legal where-to-watch links. A show, a live event or Verse's own films is not this ask. Pure. */
+export function whereAsk(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const tail = '(?:\\s*\\((\\d{4})\\))?(?:\\s+(?:online|tonight|today|right\\s+now|now|for\\s+free|free|legally))?$';
+  const m = t.match(new RegExp('^(?:where|how)\\s+(?:can|could|do|should)\\s+(?:i|we)\\s+(?:watch|stream|see|rent)\\s+(?:the\\s+(?:movie|film)\\s+)?(.+?)' + tail, 'i'))
+    || t.match(new RegExp('^where\\s+to\\s+(?:watch|stream|rent)\\s+(?:the\\s+(?:movie|film)\\s+)?(.+?)' + tail, 'i'));
+  if (!m || NOT_FILM.test(m[1])) return null;
+  const title = cleanTitle(m[1]); return title.length >= 2 ? { title, year: cleanYear(m[2]), where: true } : null;
+}
 export const cardAskText = (title, year) => 'movie card for ' + cleanTitle(title) + (cleanYear(year) ? ' (' + cleanYear(year) + ')' : '');
 
 /** a model's list ("1. **Talk to Me** (2022) - ...") -> [{ title, year }], at most 6, cleaned, no repeats. Pure. */
