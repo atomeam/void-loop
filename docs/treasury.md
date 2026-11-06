@@ -5,7 +5,7 @@ on the size of the cut: "Let Verse decide". Live at **https://a-to-mind.com/trea
 
 ## Rules
 
-- **Only realized money.** The single source of funds is Gumroad revenue that actually happened: the `/api/gumroad` pings in
+- **Only realized money.** The sources of funds are Gumroad revenue that actually happened and USDC received into Verse's wallet (below). Gumroad: the `/api/gumroad` pings in
   D1 `void_sales`, plus Gumroad's sales API (`GET /v2/sales`) read into the same table when the site has `GUMROAD_ACCESS_TOKEN`.
   Test purchases are not money; refunds and lost disputes take the price back. Gumroad's fees are taken off from its published
   schedule (https://gumroad.com/help/article/66-gumroads-fees): 10% + 50c plus 2.9% + 30c on a direct sale, 30% on Discover.
@@ -25,6 +25,28 @@ on the size of the cut: "Let Verse decide". Live at **https://a-to-mind.com/trea
   API and applies Verse's own rule for Atom's cut: a 5-point step up when the last 30 days covered
   the running costs 3x and the reserve is full, a step down when they did not cover them; always 20-50%, each change written to
   the policy's public history with its reason.
+
+## Verse's wallet (owner, 2026-11-06: "the point is for it to find the money not me, agents can have wallets now")
+
+Agents pay Verse per call in USDC on Base with the open x402 protocol (https://docs.x402.org), into Verse's own wallet:
+`POST /api/x402/review` answers 402 with what to pay (0.05 USDC); the agent signs an EIP-3009 authorization to Verse's address and
+retries; a facilitator verifies it, the closer read runs, the facilitator settles (it broadcasts the transfer and pays the gas), and
+only then is the read given. No settlement, no read, no charge. Catalog: `GET /api/x402`. Code: `lib/x402.js`, `lib/verse-wallet.js`,
+`functions/api/x402/`, tests `tools/x402.test.mjs`.
+
+- **The address**, in order: `VERSE_WALLET_ADDR` (a Pages variable, any receive address); else Verse's own **Coinbase CDP server
+  wallet**, which Verse makes itself (one account, `verse-treasury`) the first time it is needed once `CDP_API_KEY_ID`,
+  `CDP_API_KEY_SECRET` (Ed25519) and `CDP_WALLET_SECRET` are set; the key is generated and kept in Coinbase's enclave and Verse keeps
+  only the address; else the store's `CRYPTO_USDC_BASE_ADDR`. With none, paid calls answer 503 and nothing is charged.
+- **The facilitator**: PayAI's public one by default (exact payments on Base mainnet with no API key or account, 1,000 free
+  settlements: docs.payai.network/x402/facilitators/introduction); `X402_FACILITATOR_URL` swaps it (for example Coinbase's, which
+  takes a CDP key: 1,000 free settlements a month, then $0.001 each, docs.cdp.coinbase.com/x402/seller/facilitator).
+- **Counted only when the chain shows it**: a settled payment is recorded, then read back on Base (5 confirmations, the exact
+  amount to the address it was asked for) on the next ledger read before it counts as realized revenue. Store orders paid in USDC
+  on Base (already proved on chain by `lib/alt-pay.js`) count too. Both go through the same split: Atom's cut first. `/treasury/`
+  shows the wallet's USDC balance read live from the chain (`balanceOf`), never a stored number.
+- **Never**: Verse's code signs nothing, sends nothing, swaps, stakes, lends or trades nothing, and holds no key. The only CDP calls
+  are create-account and get-account-by-name.
 
 ## Found money
 
