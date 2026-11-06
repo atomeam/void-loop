@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
 import * as V from '../void-live-deploy/lib/video-gen.js';
 import * as clip from '../void-live-deploy/functions/api/clip.js';
-import { resetReady as resetStudio } from '../void-live-deploy/functions/api/studio.js';
+import { resetReady as resetStudio, gatewayOf } from '../void-live-deploy/functions/api/studio.js';
 import { cacheReq } from '../void-live-deploy/functions/api/image.js';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
 import { routeAsk, TOOLS, relatedOf } from '../void-live-deploy/lib/toolkit.js';
@@ -24,7 +24,7 @@ const CLIP = 'https://clips.example/a.mp4';
 // the partner model: 'ok' answers like p-video does ({ state, result: { video } }); 'slow' does the same after 20 ms, so parallel asks overlap; 'credits' throws the live error of 2026-10-30
 function world(ai = 'ok', extra = {}) {
   store.clear(); resetGuard(); clip.resetReady(); resetStudio(); const calls = [];
-  const AI = { run: async (model, input) => { calls.push({ model, input }); if (ai === 'credits') throw new Error('2021: Insufficient AI Gateway credits'); if (ai === 'empty') return { state: 'Completed' }; if (ai === 'slow') await new Promise((r) => setTimeout(r, 20)); return { state: 'Completed', result: { video: CLIP } }; } };
+  const AI = { run: async (model, input, opts) => { calls.push({ model, input, opts }); if (ai === 'credits') throw new Error('2021: Insufficient AI Gateway credits'); if (ai === 'empty') return { state: 'Completed' }; if (ai === 'slow') await new Promise((r) => setTimeout(r, 20)); return { state: 'Completed', result: { video: CLIP } }; } };
   return { env: { DB: d1(), AI, SALT: 'test-salt', ...extra }, calls }; // secret-scan: ok (a made-up salt for the test)
 }
 const host = (type = 'video/mp4') => async () => new Response('x', { status: 200, headers: { 'content-type': type } });
@@ -60,6 +60,7 @@ test('no credits: the first visit tests once, stays off with the plain words, an
   const b = await get(env);
   assert.equal(b.on, false); assert.equal(b.why, 'credits'); assert.match(b.say, /turns on when credits are added/); assert.equal(b.checking, false);
   assert.equal(calls.length, 1, 'one test clip, not one per visit'); assert.equal(calls[0].input.duration, 1); assert.equal(calls[0].input.draft, true);
+  assert.deepEqual(calls[0].opts, { gateway: { id: 'default' } }, 'the test clip names a gateway, so the prepaid credits pay for it');
   const spent = env.DB.raw.prepare('SELECT COALESCE(SUM(usd), 0) AS s FROM void_studio_spend').get();
   assert.equal(Number(spent.s), 0, 'a failed clip costs nothing');
   const p = await post(env, { prompt: 'a paper boat' });
@@ -167,4 +168,10 @@ test('the stage card says when Verse last tested the video model, beside the rou
   assert.equal(stateLine({ on: true, clipsLeft: 4, checkedAt: '2026-10-30T17:50:00Z' }, now), 'Video is on. 4 short clips left today for everyone. Verse last tested the video model 10 minutes ago.');
   assert.equal(stateLine({ on: false, say: 'Video is off.' }, now), 'Video is off.', 'no test time, no claim');
   assert.equal(stateLine(null, now), 'Video is off right now.');
+});
+
+test('gatewayOf: the default gateway, or the one AI_GATEWAY names', () => {
+  assert.deepEqual(gatewayOf({}), { gateway: { id: 'default' } });
+  assert.deepEqual(gatewayOf(undefined), { gateway: { id: 'default' } });
+  assert.deepEqual(gatewayOf({ AI_GATEWAY: 'verse' }), { gateway: { id: 'verse' } });
 });
