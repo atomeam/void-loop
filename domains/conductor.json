@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-05T23:54:11.467Z",
+ "updated": "2026-11-06T00:04:01.359Z",
  "last24h": {
-  "ticks": 41,
-  "started": 71,
+  "ticks": 42,
+  "started": 75,
   "requeued": 0,
   "setAside": 3,
   "probes": 6,
@@ -12,84 +12,24 @@
  "broken": [],
  "held": [
   {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mvop0asl",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvoxkk1v",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvw5r04u",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r10b",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r1rz",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r2hk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r36z",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r3w1",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvp4ahwz",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mw1ee0lk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mw1g8ei3",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mw1kno2c",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3b1c",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3biu",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3bx7",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3cbp",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3cpy",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3d38",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
@@ -99,17 +39,17 @@
    "cap": 90
   },
   "day": {
-   "used": 360,
+   "used": 0,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-06T00:00:00.000Z"
+  "room": true,
+  "until": null
  },
  "handed": {
-  "mvbl52gd": 1793867710327,
+  "mvbl52gd": 1793923441359,
   "mva30i2e": 1793917534172,
   "mva30j4u": 1793922851467,
-  "mveb8rsi": 1793867710327,
+  "mveb8rsi": 1793923441359,
   "mw2m8xzi": 1793842419318,
   "mvu167w7": 1793869396869,
   "mveb8svc": 1793843198405,
@@ -145,7 +85,8 @@
   "mw3m1rj1": 1793891238166,
   "mw3p9ue1": 1793893767367,
   "mw3p9uze": 1793902700155,
-  "mw3p9w56": 1793903998452
+  "mw3p9w56": 1793903998452,
+  "mw43w4tf": 1793923441359
  },
  "visitorAt": "2026-11-05T22:16:47Z",
  "visitorFiled": [
@@ -1391,6 +1332,48 @@
     "void-tick.yml"
    ],
    "held": 202,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-06T00:04:01.359Z",
+   "open": 208,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mvop0asl",
+     "kind": "feature",
+     "wf": "verse-job.yml",
+     "score": 112
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mw43w4tf",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 5,
    "warnings": 0
   }
  ]
