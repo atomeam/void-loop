@@ -31,7 +31,7 @@ assert.equal(m.incoming.length, 200); assert.equal(m.transfers_in, 250); assert.
 const m2 = merge(m, incoming([log(500, 0, 5)], W), { address: W, toBlock: 500, balanceUnits: '255', now: 'y' });
 assert.equal(m2.transfers_in, 251); assert.equal(m2.received_units, '255', 'a transfer cut from the list still counts in the total');
 
-// read: resumes after the last block, halves the range when the RPC refuses it, reads the balance
+// read: resumes after the last block, halves the range when the RPC refuses it, reads the balance, moves past a rate limit
 const realFetch = globalThis.fetch;
 const ranges = [];
 globalThis.fetch = async (_u, init) => {
@@ -44,10 +44,20 @@ globalThis.fetch = async (_u, init) => {
   return Response.json({ result: f <= 4000 && 4000 <= to ? [log(4000, 2, 50000)] : [] });
 };
 try {
-  const r = await read({ url: 'https://rpc.test', address: W, prev: { ...a, read_to_block: 2999 }, now: 'n' });
+  const r = await read({ url: 'https://rpc.test', address: W, prev: { ...a, read_to_block: 2999 }, now: 'n', pause: 0 });
   assert.equal(ranges[0][0], 3000, 'starts after the last block read');
   assert.ok(ranges.every(([f, to]) => f >= 3000 && to <= 5000)); assert.equal(r.read_to_block, 5000);
   assert.equal(r.balance_units, '123456'); assert.equal(r.transfers_in, 3); assert.equal(r.incoming[0].block, 4000);
   assert.equal(r.gap, undefined);
+  // a rate limit: asked again after a wait, then the next endpoint; the read finishes there and says which one answered
+  const asked = [], waits = [];
+  const limitedFetch = globalThis.fetch;
+  globalThis.fetch = async (u, init) => { asked.push(u); return u === 'https://a.test' ? Response.json({ error: { message: 'request limit reached' } }) : limitedFetch(u, init); };
+  const r2 = await read({ urls: ['https://a.test', 'https://b.test'], address: W, prev: { ...a, read_to_block: 2999 }, now: 'n', pause: 0, sleep: async (ms) => { waits.push(ms); } });
+  assert.deepEqual(waits, [1500, 3000], 'waits before asking the limited endpoint again');
+  assert.equal(asked.filter((u) => u === 'https://a.test').length, 3); assert.equal(r2.rpc, 'b.test'); assert.equal(r2.transfers_in, 3);
+  // every endpoint limited: the read gives up, and the last record is kept by the caller
+  globalThis.fetch = async () => Response.json({ error: { message: 'request limit reached' } });
+  await assert.rejects(read({ urls: ['https://a.test', 'https://b.test'], address: W, prev: null, now: 'n', pause: 0, sleep: async () => {} }), /request limit/);
 } finally { globalThis.fetch = realFetch; }
 console.log('wallet watch: ok');
