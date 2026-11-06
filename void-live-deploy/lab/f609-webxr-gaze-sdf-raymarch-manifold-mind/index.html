@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#info { position:absolute; top:12px; left:12px; background:rgba(0,0,20,0.7); padding:10px 14px; border-radius:8px; font-size:13px; max-width:320px; pointer-events:none; }
+#portals { position:absolute; inset:0; pointer-events:none; }
+.portal { position:absolute; width:72px; height:48px; background:rgba(40,80,180,0.65); border:1px solid #80c0ff; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; pointer-events:auto; cursor:grab; user-select:none; backdrop-filter:blur(4px); transition:transform 0.1s; }
+.portal:active { cursor:grabbing; }
+#controls { position:absolute; bottom:12px; left:12px; display:flex; gap:8px; }
+button { background:#1a3a6a; color:#c0e0ff; border:1px solid #4080c0; padding:8px 14px; border-radius:6px; cursor:pointer; font-size:13px; }
+button:hover { background:#2a5a9a; }
+#status { font-weight:600; color:#80ffc0; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze SDF Raymarch Manifold Mind · Verse lab</title>
+<meta name="description" content="Ledger ID: F-609 (frontier series)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze SDF Raymarch Manifold Mind · Verse lab">
+<meta property="og:description" content="Ledger ID: F-609 (frontier series)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f609-webxr-gaze-sdf-raymarch-manifold-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f609-webxr-gaze-sdf-raymarch-manifold-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="info">
+  <div>F-609: WebXR Gaze SDF Raymarch Manifold Mind</div>
+  <div id="status">Initializing...</div>
+  <div id="metrics">MLP energy: 0.00 | Hits: 0</div>
+</div>
+<div id="portals"></div>
+<div id="controls">
+  <button id="seal">Seal Mind</button>
+  <button id="xrbtn" style="display:none">Enter XR</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze SDF Raymarch Manifold Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

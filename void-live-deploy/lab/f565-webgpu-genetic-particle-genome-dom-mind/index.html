@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(10,10,20,0.75); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+  button { margin: 4px 4px 0 0; padding: 6px 10px; background: #2a2a4a; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  .card { position: absolute; min-width: 120px; padding: 8px 10px; background: rgba(20,20,40,0.85); border: 1px solid #66f; border-radius: 6px; font-size: 12px; pointer-events: auto; cursor: grab; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.1s; }
+  .card:active { cursor: grabbing; }
+  #status { margin-top: 6px; font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU-Ready Genetic Particle Genome DOM Mind · Verse lab</title>
+<meta name="description" content="Slug: webgpu-genetic-particle-genome-dom-mind">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU-Ready Genetic Particle Genome DOM Mind · Verse lab">
+<meta property="og:description" content="Slug: webgpu-genetic-particle-genome-dom-mind">
+<meta property="og:url" content="https://a-to-mind.com/lab/f565-webgpu-genetic-particle-genome-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f565-webgpu-genetic-particle-genome-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="ui">
+  <div>F565 — Genetic Particle Genome DOM Mind</div>
+  <button id="evolve">Evolve Step</button>
+  <button id="mutate">Mutate Burst</button>
+  <button id="seal">Seal Elites</button>
+  <button id="reset">Reset</button>
+  <div id="status">Init…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU-Ready Genetic Particle Genome DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
