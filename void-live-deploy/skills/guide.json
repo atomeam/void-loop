@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 59
+    "proven": 60
    },
    "from": 6,
    "to": 67
@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 3,
-    "proven": 38
+    "tested": 1,
+    "checked": 2,
+    "proven": 40
    },
    "from": 68,
    "to": 112
@@ -71,9 +71,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 2,
-    "proven": 26
+    "proven": 27
    },
    "from": 156,
    "to": 186
@@ -85,9 +85,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 13
+    "proven": 14
    },
    "from": 187,
    "to": 201
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 5,
+    "tested": 4,
     "checked": 2,
-    "proven": 49
+    "proven": 50
    },
    "from": 361,
    "to": 417
@@ -670,8 +670,10 @@
     "make an image of a sunset over the sea",
     "create a watercolour painting of a fox"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the making things; set down here after it answered true 3 times. Let the stage be the proof.",
+   "glow": 100,
    "n": 25
   },
   {
@@ -2243,8 +2245,10 @@
     "7 times table quiz",
     "multiplication quiz"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the games it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "glow": 100,
    "n": 110
   },
   {
@@ -2258,8 +2262,10 @@
     "split alice, bob, carol and dave into 2 teams",
     "make 3 groups from: ann, ben, cal, dee, eve, fay"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Turn the page when you are done.",
+   "glow": 100,
    "n": 111
   },
   {
@@ -3364,8 +3370,10 @@
     "what is my user agent",
     "what is my screen resolution"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the numbers and money are built on it. The void remembers each asking.",
+   "glow": 100,
    "n": 174
   },
   {
@@ -3824,8 +3832,10 @@
     "pink noise for 30 minutes",
     "brown noise"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the body and mind, this one is trusted enough to be taught. The void remembers each asking.",
+   "glow": 100,
    "n": 201
   },
   {
@@ -7166,8 +7176,10 @@
     "make a client handoff for the invoice flow",
     "business handoff for weekly status reports"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. So it is written.",
+   "glow": 100,
    "n": 390
   },
   {
