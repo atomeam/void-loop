@@ -84,10 +84,10 @@ test('where the next way hangs on where the last stroke ended, the tree guesses 
   assert.ok(Math.min(...shows[0]) >= 0.9, 'place: the orb shows for nearly every stroke ' + say);
 });
 
-ptest(import.meta.url, 'it runs in the brain as one of twenty-seven organs: the stroke memory\'s pieces feed it, it guesses where the next stroke goes, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-eight organs: the stroke memory\'s pieces feed it, it guesses where the next stroke goes, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (const f of visitor(4, 'place', 120)) B.stepBrain(b, f);
-  assert.ok(B.ORGAN_IDS.includes('rules') && B.ORGAN_IDS.length === 27);
+  assert.ok(B.ORGAN_IDS.includes('rules') && B.ORGAN_IDS.length === 28);
   const R = b.rules;
   assert.ok(R.pieces >= 110 && R.scored >= 90 && b.runs.rules === R.fed, 'pieces ' + R.pieces + ' scored ' + R.scored + ' runs ' + b.runs.rules);
   assert.ok(K.sureOf(R) && K.gainOf(R) > 1.5, 'gain ' + K.gainOf(R) + ' ahead ' + K.aheadOf(R));

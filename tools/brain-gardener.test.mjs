@@ -82,7 +82,7 @@ test('in the brain it keeps more patches at the edge of chaos than the same brai
   seeds.forEach((s, i) => assert.ok(on[i].inBand > off[i].inBand, 'seed ' + s + ': ' + on[i].inBand + ' vs ' + off[i].inBand));
   assert.ok(mean(on) > mean(off) + 3, mean(on) + ' vs ' + mean(off));
   const b = on[0], self = b.self;
-  assert.ok(B.ORGAN_IDS.includes('gardener') && B.ORGAN_IDS.length === 27);
+  assert.ok(B.ORGAN_IDS.includes('gardener') && B.ORGAN_IDS.length === 28);
   assert.ok(b.runs > 100, 'runs ' + b.runs);
   assert.match(self, /^Gardener: \d+ of 16 patches at the edge of chaos \(\d+ too still, \d+ too wild\); it tended them \d+ times?\./);
   assert.ok(b.thoughts > 0 && b.acts > 0);

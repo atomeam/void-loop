@@ -23,6 +23,7 @@ export const TECHNIQUES = [
   ['smoothed particle hydrodynamics', /\bsph\b|smoothed[ -]particle/, 'pool'], // F184, F432, F459; many later specs name SPH only as a cluster they branch away from, so it counts only in a draft's name
   ['hopfield memory', /hopfield|associative[ -]memor|attractor[ -]network/, 'strokes'], // the Hopfield drafts: a memory of the visitor's strokes (lib/brain-strokes.js); later specs name Hopfield only as a cluster they branch away from, so it counts only in a draft's name
   ['dla growth', /\bdla\b|diffusion[ -]limited/, 'growth'], // F603: walkers that stick where the visitor points, with an evolved rule (lib/brain-growth.js); later specs name DLA only as a cluster they branch away from, so it counts only in a draft's name
+  ['self-organizing map', /self[ -]organi[sz]ing[ -]map|kohonen|\bsom\b/, 'atlas'], // F606: a map of the visitor's moves whose neighbours are neighbours in the moves (lib/brain-atlas.js); later specs may name SOM only as a cluster they branch away from, so it counts only in a draft's name
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],
@@ -82,10 +83,10 @@ function textOf(dir) {
 export function classify(folder, text) {
   const slug = slugOf(folder), name = slug.replace(/-/g, ' '), body = String(text).toLowerCase().replace(/\[[^\]]*\]\([^)]*\)/g, ' ');
   const inName = TECHNIQUES.filter(([, re]) => re.test(name)).map(([t]) => t), inBody = TECHNIQUES.filter(([, re]) => re.test(body)).map(([t]) => t);
-  const NAMED = ['seal', 'dom embodiment', 'tilt', 'smoothed particle hydrodynamics', 'hopfield memory', 'dla growth'], techniques = [...new Set([...inName, ...inBody])].filter((t) => !NAMED.includes(t) || inName.includes(t));
+  const NAMED = ['seal', 'dom embodiment', 'tilt', 'smoothed particle hydrodynamics', 'hopfield memory', 'dla growth', 'self-organizing map'], techniques = [...new Set([...inName, ...inBody])].filter((t) => !NAMED.includes(t) || inName.includes(t));
   const n = +(folder.match(/^F-?0*(\d+)/) || [])[1];
   if (LEFT[slug]) return { folder, number: n, techniques, organ: null, left: LEFT[slug] };
-  const main = inName.find((t) => !['seal', 'dom embodiment', 'shared pages'].includes(t)) || inBody.find((t) => !['seal', 'dom embodiment', 'shared pages', 'smoothed particle hydrodynamics', 'hopfield memory', 'dla growth'].includes(t));
+  const main = inName.find((t) => !['seal', 'dom embodiment', 'shared pages'].includes(t)) || inBody.find((t) => !['seal', 'dom embodiment', 'shared pages', 'smoothed particle hydrodynamics', 'hopfield memory', 'dla growth', 'self-organizing map'].includes(t));
   if (!main) return { folder, number: n, techniques, organ: null, left: 'no technique the brain could run was found in its name, spec or page' };
   return { folder, number: n, techniques, organ: TECHNIQUES.find(([t]) => t === main)[2], main };
 }

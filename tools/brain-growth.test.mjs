@@ -51,10 +51,10 @@ ptest(import.meta.url, 'the evolved rule covers far more of the trail than class
   for (const r of by('still')) { assert.equal(r.gain, 1, 'one cell: every rule covers it'); assert.equal(r.kept, 0, 'nothing to improve, so no mutant is kept'); }
 });
 
-ptest(import.meta.url, 'it runs in the brain as one of twenty-seven organs: your pointer seeds it, it shows only while it wins, it is kept, and the self says so', () => {
+ptest(import.meta.url, 'it runs in the brain as one of twenty-eight organs: your pointer seeds it, it shows only while it wins, it is kept, and the self says so', () => {
   const b = B.createBrain(7), r = rng(3), f = VISITORS.wander(); B.tell(b, 'river stone light');
   for (let t = 0; t < TICKS; t++) B.stepBrain(b, { over: true, ...f(t, r) });
-  assert.ok(B.ORGAN_IDS.includes('growth') && B.ORGAN_IDS.length === 27);
+  assert.ok(B.ORGAN_IDS.includes('growth') && B.ORGAN_IDS.length === 28);
   const s = X.growthOf(b.growth);
   assert.ok(s.rounds > 100 && s.gain > 1, 'on this slow walk the evolved rule beats the best fixed rule: gain ' + s.gain + ' elite ' + s.elite + ' fixed ' + s.fixed);
   assert.ok(b.runs.growth > 0 && b.growth.fed > 0, 'it took runs and left a little life where its aggregate is ' + b.runs.growth + ' ' + b.growth.fed);

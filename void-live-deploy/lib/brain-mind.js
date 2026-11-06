@@ -36,6 +36,7 @@ import { strokeMemoryOf, loadStrokeMemory } from './brain-strokes.js';
 import { treeOf, loadTree } from './brain-rules.js';
 import { netOf as reflexNetOf, loadNet as loadReflexNet } from './brain-reflex.js';
 import { genomeOf as growthGenomeOf, loadGenome as loadGrowthGenome } from './brain-growth.js';
+import { mapOf as atlasMapOf, loadMap as loadAtlasMap } from './brain-atlas.js';
 import { dialogueOf, loadDialogue } from './brain-dialogue.js';
 import { createRoutes, routesOf, loadRoutes } from './brain-route.js';
 import { createWatch, watchOf, loadWatch } from './brain-watch.js';
@@ -289,7 +290,7 @@ export function loadAsks(b, k) {
 export function knowledgeOf(b) {
   const r2 = (v) => Math.round(v * 1000) / 1000;
   return { v: 1, q: Array.from(b.will.q, r2), hebb: Array.from(b.memory.w, r2), centroids: b.gestures.c.map((c) => c.map(r2)), counts: b.gestures.n.slice(), pref: Array.from(b.mind.pref, r2),
-    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, hearing: b.ear ? countsOf(b.ear) : undefined, painter: b.painter ? programsOf(b.painter) : undefined, garden: b.gardener ? gardenOf(b.gardener) : undefined, grower: b.grower ? grammarsOf(b.grower) : undefined, formula: b.formula ? formulasOf(b.formula) : undefined, current: b.current ? swimmersOf(b.current) : undefined, grains: b.grains ? genesOf(b.grains) : undefined, pool: b.pool ? networkOf(b.pool) : undefined, trace: b.trace ? ruleOf(b.trace) : undefined, strokes: b.strokes ? strokeMemoryOf(b.strokes) : undefined, rules: b.rules ? treeOf(b.rules) : undefined, reflex: b.reflex ? reflexNetOf(b.reflex) : undefined, growth: b.growth ? growthGenomeOf(b.growth) : undefined, dialogue: b.dialogue && b.dialogue.log.length ? dialogueOf(b.dialogue) : undefined, routes: b.routes ? routesOf(b.routes) : undefined, watch: b.watch ? watchOf(b.watch) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES), asks: asksOf(b) };
+    synapses: b.synapses ? Array.from(b.synapses.W, r2) : undefined, creature: b.creature ? b.creature.mean.map(r2) : undefined, hearing: b.ear ? countsOf(b.ear) : undefined, painter: b.painter ? programsOf(b.painter) : undefined, garden: b.gardener ? gardenOf(b.gardener) : undefined, grower: b.grower ? grammarsOf(b.grower) : undefined, formula: b.formula ? formulasOf(b.formula) : undefined, current: b.current ? swimmersOf(b.current) : undefined, grains: b.grains ? genesOf(b.grains) : undefined, pool: b.pool ? networkOf(b.pool) : undefined, trace: b.trace ? ruleOf(b.trace) : undefined, strokes: b.strokes ? strokeMemoryOf(b.strokes) : undefined, rules: b.rules ? treeOf(b.rules) : undefined, reflex: b.reflex ? reflexNetOf(b.reflex) : undefined, growth: b.growth ? growthGenomeOf(b.growth) : undefined, atlas: b.atlas ? atlasMapOf(b.atlas) : undefined, dialogue: b.dialogue && b.dialogue.log.length ? dialogueOf(b.dialogue) : undefined, routes: b.routes ? routesOf(b.routes) : undefined, watch: b.watch ? watchOf(b.watch) : undefined, procedures: b.mind.procedures, episodes: b.mind.episodes.slice(-MAX_EPISODES), asks: asksOf(b) };
 }
 /** put kept knowledge back into a new brain (wrong shapes are ignored, so an old record never breaks a new brain). Returns what was restored. */
 export function loadKnowledge(b, k) {
@@ -317,6 +318,7 @@ export function loadKnowledge(b, k) {
   if (b.rules && loadTree(b.rules, k.rules)) done.push('rules'); // the tree that guesses the way of the next stroke (lib/brain-rules.js)
   if (b.reflex && loadReflexNet(b.reflex, k.reflex)) done.push('reflex'); // the network that follows the pointer (lib/brain-reflex.js)
   if (b.growth && loadGrowthGenome(b.growth, k.growth)) done.push('growth'); // the evolved growth rule, never the trail (lib/brain-growth.js)
+  if (b.atlas && loadAtlasMap(b.atlas, k.atlas)) done.push('atlas'); // the self-organizing map's weights, never a move (lib/brain-atlas.js)
   if (b.dialogue && loadDialogue(b.dialogue, k.dialogue)) done.push('dialogue'); // the conversation orb: the visitor's asks and Verse's answers, on their own device (lib/brain-dialogue.js) // the trace's rule, five numbers (lib/brain-trace.js)
   if (loadAsks(b, k.asks)) done.push('asks'); // what the visitor asks next, their own asks on their own device
   if (Array.isArray(k.procedures)) { const p = k.procedures.filter((x) => x && typeof x.ctx === 'string' && x.genome && typeof x.genome === 'object' && Number.isFinite(x.fitness)).slice(0, MAX_PROCEDURES); if (p.length || !k.procedures.length) { b.mind.procedures = p; done.push('procedures'); } }
