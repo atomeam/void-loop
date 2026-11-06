@@ -1529,15 +1529,20 @@ try {
   }
   // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
   // the evidence is stubbed so three sites are conquered and the target is 4 aspects in. The target is the site tower.target.json names: it stays
-  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here
+  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here.
+  // Since the season (2026-11-06) a site counts only once tower.target.json `passed` names it, so the check serves the served file with `passed`
+  // naming the three it conquers (tools/tower-fixture.mjs): what Versus passed today no longer changes what this check sees
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
-    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture, conquerable } = await import('./tower-fixture.mjs'); const P = await fresh();
     const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
     const served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
     const TARGET = served('tower.target.json').id, tgt = tower([], {}, served('tower.frontier.json'), null, null, null, TARGET).floors.find((f) => f.id === TARGET);
-    const won3 = FLOORS.filter((f) => f.id !== TARGET).slice(0, 3);
+    const won3 = conquerable(FLOORS, { target: TARGET, n: 3 });
     const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
+    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, won3);
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
+    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
       return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
@@ -1557,10 +1562,14 @@ try {
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
-    const all = (f) => passingRows(f, { evidence: 'stub' });
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture } = await import('./tower-fixture.mjs'); const P = await fresh({ phone: true });
+    const all = (f) => passingRows(f, { evidence: 'stub' }), served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
+    // both are conquered in this season: tower.target.json `passed` names them (tools/tower-fixture.mjs), or the season keeps them in the queue
+    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, [travel, FLOORS[0]]);
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
+    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
       return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
@@ -1611,7 +1620,13 @@ try {
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;
     // calculator.net's whole checklist as the gate demands it: its aspects and its journeys with steps and negative controls (docs/GATE-STANDARDS.md)
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), won = passingRows(FLOORS.find((f) => f.id === 'calculator'), { evidence: 'stub' });
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), calc = FLOORS.find((f) => f.id === 'calculator'), won = passingRows(calc, { evidence: 'stub' });
+    // in this season calculator.net is passed (tower.target.json `passed` names it, tools/tower-fixture.mjs), so the full checklist conquers it;
+    // without it the season keeps the site in the queue whatever its evidence says, and the card has nothing to announce
+    const { towerFixture } = await import('./tower-fixture.mjs'), served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
+    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, [calc]);
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
+    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: won } : {} }) }); });
     await P.p.evaluate(() => { window.__towerPollMs = 400; });
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
