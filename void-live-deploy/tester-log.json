@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 86,
- "runsTotal": 296,
+ "runsTotal": 297,
  "kinds": {
   "grow": 70,
   "file": 93,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 79
+  "visitor": 80
  },
  "runs": [
+  {
+   "at": "2026-11-06T07:40:29Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T07:29:39Z",
    "passed": 78,
@@ -301,13 +308,6 @@
      "why": "only \"waking up\" appeared, never the answer"
     }
    ]
-  },
-  {
-   "at": "2026-11-05T18:05:55Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -361,20 +361,20 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 67,
+   "runs": 69,
    "passed": 424,
-   "of": 1201,
-   "broken": 34,
-   "brokenOf": 710,
+   "of": 1251,
+   "broken": 36,
+   "brokenOf": 760,
    "brokenPassed": 22
   },
   {
    "from": "2026-10-16",
-   "runs": 124,
+   "runs": 122,
    "passed": 2727,
-   "of": 4609,
-   "broken": 61,
-   "brokenOf": 1528,
+   "of": 4559,
+   "broken": 59,
+   "brokenOf": 1478,
    "brokenPassed": 0
   },
   {
@@ -385,7 +385,7 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 105,
+   "runs": 106,
    "passed": 2106,
    "of": 2312,
    "ms": 379
