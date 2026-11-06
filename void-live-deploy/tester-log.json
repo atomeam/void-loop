@@ -3,13 +3,20 @@
  "cases": 96,
  "runsTotal": 300,
  "kinds": {
-  "file": 75,
+  "file": 74,
   "grow": 73,
   "tighten": 7,
   "none": 40,
-  "visitor": 105
+  "visitor": 106
  },
  "runs": [
+  {
+   "at": "2026-11-06T21:28:28Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-06T21:11:47Z",
    "passed": 92,
@@ -284,28 +291,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T13:33:35Z",
-   "passed": 91,
-   "of": 94,
-   "kind": "grow",
-   "ms": 386,
-   "note": "new ground passed, kept as a regression case: \"create a toon style bird pls\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -359,9 +344,9 @@
   },
   {
    "from": "2026-10-09",
-   "runs": 58,
-   "passed": 69,
-   "of": 1356,
+   "runs": 57,
+   "passed": 52,
+   "of": 1338,
    "broken": 54,
    "brokenOf": 1284,
    "brokenPassed": 6
@@ -383,7 +368,7 @@
   },
   {
    "from": "2026-10-30",
-   "runs": 144,
+   "runs": 145,
    "passed": 3274,
    "of": 3537,
    "ms": 384

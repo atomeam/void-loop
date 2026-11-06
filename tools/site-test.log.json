@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-15T16:40:07Z",
-  "passed": 17,
-  "of": 18,
-  "kind": "file",
-  "key": "dismiss this | nothing appeared",
-  "note": "fix: \"dismiss this\" nothing appeared"
- },
- {
   "at": "2026-10-15T16:50:11Z",
   "passed": 17,
   "of": 18,
@@ -4965,5 +4957,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"redner a cartoon dragon\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-06T21:28:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1620,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 13202 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
