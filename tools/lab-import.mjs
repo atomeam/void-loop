@@ -211,7 +211,7 @@ export function listed(catalog) {
   return catalog.filter((e) => STATUS_LABEL[e.status]).sort((a, b) => (b.num - a.num) || (a.slug < b.slug ? -1 : 1));
 }
 /** the gallery page at /lab/ from the catalog: plain static cards, no script. Pure.
- *  (owner, 2026-11-06: "the lab experiments all seem pointless"): the tools come first (the job inside each cluster of experiments, made into a page, and
+ *  (the owner asked on 2026-11-06 for a useful lab): the tools come first (the job inside each cluster of experiments, made into a page, and
  *  any experiment tools/lab-grade.mjs grades a tool); the experiments with no job are kept, each at its own address, folded away under them. */
 export function renderGallery(catalog) {
   const rows = listed(catalog), made = rows.filter((e) => e.grade === 'tool'), rest = rows.filter((e) => e.grade !== 'tool');
