@@ -318,6 +318,9 @@
     },
     {
       "ask": "yo render a cartoon dragon"
+    },
+    {
+      "ask": "redner a cartoon dragon"
     }
   ],
   "candidates": [],

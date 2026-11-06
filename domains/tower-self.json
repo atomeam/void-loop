@@ -1468,25 +1468,93 @@
     "place": 8,
     "why": "0 controls, 9 KB, Tranco 662"
    }
+  },
+  "everycom.store": {
+   "at": "2026-11-06T23:26:31Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an e-commerce shop selling electronics and accessories, and Verse does not have a shop or a page for a consumer goods retailer.)",
+   "title": "EveryCom Store",
+   "ease": {
+    "score": 99.9,
+    "place": 1,
+    "why": "0 controls, 1 KB, Tranco 40053"
+   }
+  },
+  "opentv.com": {
+   "at": "2026-11-06T23:26:34Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (105 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.8,
+    "place": 2,
+    "why": "0 controls, 2 KB, Tranco 40107"
+   }
+  },
+  "adnext.mobi": {
+   "at": "2026-11-06T23:26:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a B2B programmatic advertising platform (DSP/SSP/AdX) for advertisers and publishers. Verse does not have a tool for managing digital advertising)",
+   "title": "ADNEXT",
+   "ease": {
+    "score": 99.5,
+    "place": 3,
+    "why": "0 controls, 5 KB, Tranco 40050"
+   }
+  },
+  "juicychat.ai": {
+   "at": "2026-11-06T23:26:48Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 99.4,
+    "place": 4,
+    "why": "0 controls, 6 KB, Tranco 40015"
+   }
+  },
+  "protopage.com": {
+   "at": "2026-11-06T23:26:54Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a personalized start page service with widgets and news feeds. While Verse has 'news' and 'docs and notes', it does not have a tool that combines)",
+   "title": "Protopage - Free Personalized Start Pages",
+   "ease": {
+    "score": 99,
+    "place": 5,
+    "why": "0 controls, 10 KB, Tranco 40011"
+   }
+  },
+  "skybridge.click": {
+   "at": "2026-11-06T23:26:54Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 98.7,
+    "place": 6,
+    "why": "0 controls, 13 KB, Tranco 141"
+   }
+  },
+  "tinyurl.com": {
+   "at": "2026-11-06T23:27:13Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "URL Shortener, Branded Short Links & Analytics | TinyURL",
+   "ease": {
+    "score": 98.6,
+    "place": 7,
+    "why": "0 controls, 14 KB, Tranco 296"
+   }
+  },
+  "adsco.re": {
+   "at": "2026-11-06T23:27:13Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 90.9,
+    "place": 8,
+    "why": "1 controls, 0 KB, Tranco 1949"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-27T08:22:31Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-27T16:00:06Z",
-   "line": "Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com",
-   "built": 0,
-   "queued": 5,
-   "fixed": [],
-   "pages_per_day": 0
-  },
   {
    "at": "2026-10-27T22:34:36Z",
    "line": "Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com",
@@ -1832,6 +1900,25 @@
    "fixed": [],
    "pages_per_day": 2,
    "reads_next": "skybridge.click",
+   "noop": true
+  },
+  {
+   "at": "2026-11-06T23:27:20Z",
+   "line": "Versus: took on no site (also read: 4 no-family, 3 walled, 1 not-judged); the model answered 401 on 1 of 8 reads, so those were not judged; next dalyfeds.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "juicychat.ai"
+  },
+  {
+   "at": "2026-11-06T23:29:54Z",
+   "line": "Versus: took on no site; next dalyfeds.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "juicychat.ai",
    "noop": true
   }
  ]

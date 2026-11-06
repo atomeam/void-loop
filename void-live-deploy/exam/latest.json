@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T20:18:49.888Z",
+  "at": "2026-11-06T22:23:44.767Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -103,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -118,9 +118,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -235,12 +236,19 @@
       }
     },
     "sports": {
-      "score": 92.6,
+      "score": 91.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
           "failed": [
             "board"
           ],
