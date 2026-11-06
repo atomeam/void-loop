@@ -152,6 +152,15 @@ async function arbPage() {
     $('#ar-rows').innerHTML = '<thead><tr><th>Buy on</th><th>Sell on</th><th>Gap at the top</th><th>Fees and gas</th><th>Net</th></tr></thead><tbody>' + r.rows.slice(0, 12).map((x) =>
       `<tr><td>${esc(x.buy)}</td><td>${esc(x.sell)}</td><td>${pct(x.topGap)}</td><td>$${(x.fees + x.gasUsd).toFixed(2)}</td><td class="${x.net >= 0 ? 'up' : 'down'}">${money(x.net)}${x.filled ? '' : ' (book too thin)'}</td></tr>`).join('') + '</tbody>';
     $('#ar-mids').textContent = r.spread ? 'Middle prices: ' + Object.entries(r.spread.mids).map(([k, v]) => k + ' $' + v.toFixed(2)).join(', ') + '. Widest gap ' + pct(r.spread.gap, false) + '.' : '';
+    seen(coin);
+  };
+  const seen = async (coin) => { // the record of past scans (lib/arb-history.js): real rows only, and a plain line when there are none yet
+    let h; try { const res = await fetch('/api/arbitrage?coin=' + coin + '&history=1'); h = await res.json(); if (!res.ok) throw new Error(h.error || res.status); } catch (e) { $('#ar-hist-at').textContent = 'The record could not be read just now (' + String(e.message || e) + ').'; $('#ar-hist').innerHTML = ''; return; }
+    if (!h.scans) { $('#ar-hist-at').textContent = 'No ' + coin + ' scans are on record yet; this one is the first.'; $('#ar-hist').innerHTML = ''; return; }
+    const day = (t) => new Date(t).toLocaleString();
+    $('#ar-hist-at').textContent = h.scans + ' ' + coin + ' scans from ' + day(h.first) + ' to ' + day(h.last) + ': ' + h.cleared + ' had a pair that cleared every cost (' + pct(h.cleared / h.scans, false) + '). The best pair averaged ' + money(h.avgBestNet) + ' on $1,000.' + (h.best ? ' Best seen: buy on ' + h.best.buy + ', sell on ' + h.best.sell + ', ' + money(h.best.net) + ' at ' + day(h.best.at) + '.' : '');
+    $('#ar-hist').innerHTML = '<thead><tr><th>Best pair</th><th>Times best</th><th>Cleared costs</th><th>Best net</th></tr></thead><tbody>' + h.pairs.map((x) =>
+      `<tr><td>${esc(x.buy)} to ${esc(x.sell)}</td><td>${Number(x.times)}</td><td>${Number(x.cleared)}</td><td class="${x.best >= 0 ? 'up' : 'down'}">${money(Number(x.best))}</td></tr>`).join('') + '</tbody>';
   };
   form.addEventListener('submit', (e) => { e.preventDefault(); run(); }); form.addEventListener('change', run);
   $('#ar-csv').addEventListener('click', () => { if (!last) return; const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([scanCsv(last)], { type: 'text/csv' })); a.download = 'arbitrage-' + last.coin + '-' + last.at.slice(0, 19).replace(/:/g, '') + '.csv'; a.click(); });
