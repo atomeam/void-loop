@@ -15,36 +15,36 @@ Seen: what the live answer was, and the day. Batch 1 is in `tools/gaps-batch1.te
 | # | Ask | Seen | Done when | State |
 |---|-----|------|-----------|-------|
 | 1 | remove duplicate lines | 2026-10-30: nothing | the tool named alone opens a box; pasted lines come back without repeats as you type | implemented |
-| 2 | what is my ip address | 2026-11-06: article on proxy auto-config | the card shows the connection's public address, IPv4 or IPv6, and says it is not kept | implemented |
-| 3 | what is my user agent | 2026-11-06: article on an AI agent | the card shows the browser's user agent string, with the browser and its version named | implemented |
-| 4 | what is my screen resolution | 2026-11-06: article on display size | the card shows screen size, window size and pixel ratio, read in the page | implemented |
-| 5 | generate a random color | 2026-11-06: a Python snippet | a colour is picked in the page and shown with its hex code | implemented |
-| 6 | contrast ratio between #000000 and #ffffff | 2026-11-06: nothing | the card shows 21:1 and the four WCAG AA and AAA checks with a sample | implemented |
-| 7 | convert markdown to html: **bold** | 2026-11-06: nothing | the converter opens with the text in it and shows `<strong>bold</strong>` | implemented |
-| 8 | make a barcode for 12345 | 2026-11-06: a Python snippet | a Code 128 barcode is drawn in the page, with a box to change the text | implemented |
-| 9 | spin a wheel with pizza tacos sushi | 2026-11-06: a Python snippet | the wheel opens with three entries: pizza, tacos, sushi | implemented |
-| 10 | random word | 2026-11-06: article on random stimulus | the card gives a common English word and its part of speech | implemented |
-| 11 | generate a random date | 2026-11-06: a Python snippet | the card gives a date, any day from 1970 to this year equally likely, and takes "between 1990 and 2000" | implemented |
-| 12 | fibonacci sequence | 2026-11-06: an article that lists the first terms | the card lists the terms, exactly, and takes "first 50" | implemented |
-| 13 | age calculator born 1990-05-01 | 2026-11-06: "34 years old as of May 2024", wrong today | the age calculator opens with the date filled in and today's age | implemented |
-| 14 | discount 30% off 80 | 2026-11-06: 30% of 80 = 24 | the card says the price after the discount, 56, and the saving, 24 | implemented |
-| 15 | fuel cost for 300 miles at 30 mpg | 2026-11-06: only 300 miles in km | the card says 10 gallons, and the cost when a price per gallon is given | implemented |
-| 16 | make a table from a,b,c | 2026-11-06: raw Markdown pipes in a paragraph | a drawn table, with a box to add rows and copy as CSV or Markdown | implemented |
+| 2 | what is my ip address | 2026-11-06: article on proxy auto-config | the card shows the connection's public address, IPv4 or IPv6, and says it is not kept | verified live 2026-11-06 |
+| 3 | what is my user agent | 2026-11-06: article on an AI agent | the card shows the browser's user agent string, with the browser and its version named | verified live 2026-11-06 |
+| 4 | what is my screen resolution | 2026-11-06: article on display size | the card shows screen size, window size and pixel ratio, read in the page | verified live 2026-11-06 |
+| 5 | generate a random color | 2026-11-06: a Python snippet | a colour is picked in the page and shown with its hex code | verified live 2026-11-06 |
+| 6 | contrast ratio between #000000 and #ffffff | 2026-11-06: nothing | the card shows 21:1 and the four WCAG AA and AAA checks with a sample | verified live 2026-11-06 |
+| 7 | convert markdown to html: **bold** | 2026-11-06: nothing | the converter opens with the text in it and shows `<strong>bold</strong>` | verified live 2026-11-06 |
+| 8 | make a barcode for 12345 | 2026-11-06: a Python snippet | a Code 128 barcode is drawn in the page, with a box to change the text | verified live 2026-11-06 |
+| 9 | spin a wheel with pizza tacos sushi | 2026-11-06: a Python snippet | the wheel opens with three entries: pizza, tacos, sushi | verified live 2026-11-06 |
+| 10 | random word | 2026-11-06: article on random stimulus | the card gives a common English word and its part of speech | verified live 2026-11-06 |
+| 11 | generate a random date | 2026-11-06: a Python snippet | the card gives a date, any day from 1970 to this year equally likely, and takes "between 1990 and 2000" | verified live 2026-11-06 |
+| 12 | fibonacci sequence | 2026-11-06: an article that lists the first terms | the card lists the terms, exactly, and takes "first 50" | verified live 2026-11-06 |
+| 13 | age calculator born 1990-05-01 | 2026-11-06: "34 years old as of May 2024", wrong today | the age calculator opens with the date filled in and today's age | verified live 2026-11-06 |
+| 14 | discount 30% off 80 | 2026-11-06: 30% of 80 = 24 | the card says the price after the discount, 56, and the saving, 24 | verified live 2026-11-06 |
+| 15 | fuel cost for 300 miles at 30 mpg | 2026-11-06: only 300 miles in km | the card says 10 gallons, and the cost when a price per gallon is given | verified live 2026-11-06 |
+| 16 | make a table from a,b,c | 2026-11-06: raw Markdown pipes in a paragraph | a drawn table, with a box to add rows and copy as CSV or Markdown | verified live 2026-11-06 |
 | 17 | alarm at 7am | 2026-11-06: nothing | an alarm card set for 7:00 that rings in the page | implemented |
 | 18 | ring size chart | 2026-11-06: article on industrial back-up rings | a chart of US, UK, EU and Japan ring sizes with inside diameter in mm | open |
 | 19 | country codes list | 2026-11-06: an explanation of the code systems | a searchable list of ISO 3166 codes and calling codes, from the published standard | open |
-| 20 | gas mileage calculator | 2026-11-06: an explanation of mpg | a calculator: distance and fuel in, mpg and L/100 km out | implemented |
+| 20 | gas mileage calculator | 2026-11-06: an explanation of mpg | a calculator: distance and fuel in, mpg and L/100 km out | verified live 2026-11-06 |
 | 21 | currency converter 100 usd to eur | 2026-11-06: "rates change, check a live service" | the amount at a published reference rate, with the rate's date and source | open |
 | 22 | inflation calculator 100 in 1990 | 2026-11-06: "I have no CPI values" | the value today from the published US CPI series, with the series named | open |
 | 23 | how many calories do i burn running 3 miles | 2026-11-06: only 3 miles in km | an estimate from the MET formula with weight asked, the formula shown | open |
-| 24 | times tables quiz | 2026-11-06: a Python script | a quiz in the page: questions, typed answers, a score | implemented |
-| 25 | math quiz | 2026-11-06: article on a Ghana school competition | a quiz in the page with levels and a score | implemented |
+| 24 | times tables quiz | 2026-11-06: a Python script | a quiz in the page: questions, typed answers, a score | verified live 2026-11-06 |
+| 25 | math quiz | 2026-11-06: article on a Ghana school competition | a quiz in the page with levels and a score | verified live 2026-11-06 |
 | 26 | typing speed test | 2026-11-06: an explanation | a passage to type, words per minute and accuracy measured in the page | open |
-| 27 | reaction time test | 2026-11-06: a definition | wait for the colour change, click, see the time in ms over five tries | implemented |
-| 28 | click speed test | 2026-11-06: an explanation | clicks per second over 5 or 10 seconds | implemented |
-| 29 | aim trainer | 2026-11-06: article on aim-trainer games | targets to click, with hits, misses and average time | implemented |
-| 30 | white noise | 2026-11-06: article on the signal | white, pink and brown noise played in the page, with volume and a timer | implemented |
-| 31 | rain sounds | 2026-11-06: article on an album | a rain sound made in the page from filtered noise, said to be made, not recorded | implemented |
+| 27 | reaction time test | 2026-11-06: a definition | wait for the colour change, click, see the time in ms over five tries | verified live 2026-11-06 |
+| 28 | click speed test | 2026-11-06: an explanation | clicks per second over 5 or 10 seconds | verified live 2026-11-06 |
+| 29 | aim trainer | 2026-11-06: article on aim-trainer games | targets to click, with hits, misses and average time | verified live 2026-11-06 |
+| 30 | white noise | 2026-11-06: article on the signal | white, pink and brown noise played in the page, with volume and a timer | verified live 2026-11-06 |
+| 31 | rain sounds | 2026-11-06: article on an album | a rain sound made in the page from filtered noise, said to be made, not recorded | verified live 2026-11-06 |
 | 32 | drum machine | 2026-11-06: an article | a step sequencer with kick, snare and hat drawn from synthesised sounds | open |
 | 33 | periodic table | 2026-11-06: an article | the 118 elements in their grid, each with symbol, number and mass from IUPAC | open |
 | 34 | text to speech hello world | 2026-10-30: a Python snippet | the words are read aloud by the browser's own voice, with a voice and rate to pick | open |
