@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --density: 0.3;
+    --entropy: 0.5;
+    --cx: 50;
+    --cy: 50;
+    --cols: 4;
+    --gap: 12px;
+  }
+  html, body { margin: 0; height: 100%; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #stage {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: var(--gap);
+    height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+    transition: gap 0.3s, grid-template-columns 0.4s;
+  }
+  .card {
+    background: hsl(calc(var(--entropy) * 240), 60%, 30%);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: scale(calc(0.8 + var(--density) * 0.4)) translate(calc((var(--cx) - 50) * 0.2px), calc((var(--cy) - 50) * 0.2px));
+    transition: transform 0.3s, background 0.4s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    cursor: pointer;
+    user-select: none;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 1.1rem; }
+  .card p { margin: 0; font-size: 0.85rem; opacity: 0.8; text-align: center; }
+  #chrome {
+    position: fixed; top: 8px; left: 8px; z-index: 10;
+    background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
+    font-size: 0.8rem; display: flex; gap: 12px; align-items: center;
+  }
+  button { background: #224; color: #aaf; border: 1px solid #446; border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+  button:hover { background: #336; }
+  #status { opacity: 0.7; }
+  canvas#vis { position: fixed; bottom: 8px; right: 8px; width: 160px; height: 120px; border: 1px solid #333; background: #000; pointer-events: none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU CA CSS Grid Living Layout Mind · Verse lab</title>
+<meta name="description" content="A WebGPU compute-shader discrete cellular automaton (4-state rule table, Wireworld-inspired electron/head/tail + conductor) runs on a large grid.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU CA CSS Grid Living Layout Mind · Verse lab">
+<meta property="og:description" content="A WebGPU compute-shader discrete cellular automaton (4-state rule table, Wireworld-inspired electron/head/tail + conductor) runs on a large grid.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f576-webgpu-ca-css-grid-living-layout-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f576-webgpu-ca-css-grid-living-layout-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <span id="status">init</span>
+  <button id="seal">Seal</button>
+  <button id="reset">Reset</button>
+  <button id="inject">Inject</button>
+</div>
+<div id="stage"></div>
+<canvas id="vis" width="160" height="120"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU CA CSS Grid Living Layout Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
