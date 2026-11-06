@@ -1,5 +1,5 @@
 /**
- * delivery-checklist skill — turns a business idea into a concrete checklist of systems,
+ * delivery-checklist skill: turns a business idea into a concrete checklist of systems,
  * automations, tests, and handoff points so Verse owns the heavy lifting.
  * Reuses existing tools first. "delivery checklist for automating client onboarding",
  * "checklist for the invoice reminder system", "make a delivery checklist for my SaaS idea".
@@ -27,12 +27,14 @@ function run(text, api) {
     { what: 'Monitor', how: 'Client-visible status via system-status skill' },
     { what: 'Handoff', how: 'Generate client-handoff card; nothing is sent without confirm line' }
   ];
-  const html = '<h2>Delivery checklist: ' + esc(idea) + '</h2>'
-    + '<p>Concrete steps so Verse owns the heavy lifting. Client keeps the outcome.</p><ol>'
-    + items.map(it => '<li><b>' + esc(it.what) + ':</b> ' + esc(it.how) + '</li>').join('')
-    + '</ol><p class="sub">Reuse existing tools first. Mark rows building in the same commit as the skill.</p>'
-    + '<div class="src">Source: A-to-Mind delivery practice · checklist not a live system</div>';
-  showPage((el) => { el.innerHTML = html; });
+  // one page, every piece of text escaped where it goes in
+  showPage((el) => {
+    el.innerHTML = '<h2>Delivery checklist: ' + esc(idea) + '</h2>'
+      + '<p>Concrete steps so Verse owns the heavy lifting. Client keeps the outcome.</p><ol>'
+      + items.map(it => '<li><b>' + esc(it.what) + ':</b> ' + esc(it.how) + '</li>').join('')
+      + '</ol><p class="sub">Reuse existing tools first. Mark rows building in the same commit as the skill.</p>'
+      + '<div class="src">Source: A-to-Mind delivery practice · checklist not a live system</div>';
+  });
   return 'delivery-checklist';
 }
 
