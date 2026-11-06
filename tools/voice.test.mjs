@@ -413,3 +413,22 @@ test('asks held behind the Versus target come last and carry the site; the hold 
   assert.deepEqual(holdAsks(asks, held, 'nextsite.com'), asks, 'once the target moves on, the hold ends');
   assert.deepEqual(holdAsks(asks, null, 'sycophanthex.com'), asks);
 });
+
+test('asks that name different sites are never one ask (owner\'s self card, 2026-11-06: the ndscalc.ru ask folded into the onlineconverter.com one and showed as neither open nor built)', async () => {
+  const { askRecord } = await import('../void-live-deploy/lib/voice.js');
+  const { sameSites } = await import('../void-live-deploy/lib/ask-same.js');
+  const nds = 'Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru.';
+  const oc = 'Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.';
+  assert.equal(sameSites(nds, oc), false); assert.equal(sameSites(oc, oc.replace('two', 'three')), true); assert.equal(sameSites('no site here', 'nor here'), true);
+  // the window: both said, each its own group
+  const f = followThrough([{ at: '2026-10-31T13:10:00Z', asks: [{ ask: nds }] }, { at: '2026-10-31T10:32:00Z', asks: [{ ask: oc }] }], [], []);
+  assert.deepEqual(f.open.map((g) => g.ask).sort(), [nds, oc].sort());
+  // the all-time record: two open asks in the log stay two, so the ndscalc.ru one is listed as waiting
+  const answered = { links: [], totals: { asked: 2, built: 0, through: '2026-11-01T00:00:00Z', open: [{ ask: oc, times: 7, at: '2026-11-05T00:00:00Z' }, { ask: nds, times: 1, at: '2026-10-31T13:10:00Z' }] } };
+  const r = askRecord([], [], answered);
+  assert.deepEqual(r.open.map((o) => o.ask).sort(), [nds, oc].sort());
+  assert.equal(r.total, 2); assert.equal(r.built, 0);
+  // the same site in nearly the same words is still one ask
+  const again = followThrough([{ at: '2026-10-31T13:10:00Z', asks: [{ ask: nds }, { ask: nds.replace('Identify and implement', 'Find and build') }] }], [], []);
+  assert.equal(again.open.length, 1); assert.equal(again.open[0].times, 2);
+});

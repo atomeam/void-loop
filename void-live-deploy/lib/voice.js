@@ -7,7 +7,7 @@
 import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
-import { sameAsk as sameAskCard, dupAsk, uncite } from './ask-same.js';
+import { sameAsk as sameAskCard, dupAsk, sameSites, uncite } from './ask-same.js';
 import { weakestFamily, wrongWeakest, weakestSentence } from './weakest.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
@@ -139,7 +139,8 @@ export function currentAsks(entries, n = 6) {
 // the entry by its time. Never on a guess. Asks in nearly the same words are one ask, asked n times. Pure.
 const STOP = new Set('the a an and or of to for in on at by with from into that this these those my me i it its is are be as so can could should would will than then when what which who how why not no new more less time each every onto over under about very just also only any all some create implement build make add develop'.split(' '));
 const wordsOf = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
-const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
+// asks that name different sites are two asks however many words they share (lib/ask-same.js sameSites, the rule dupAsk keeps)
+const sameAsk = (a, b) => { if (!sameSites(a, b)) return false; const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
 /** Verse asked (2026-10-17): "a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural
  *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how Verse works underneath
  *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */

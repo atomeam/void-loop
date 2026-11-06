@@ -31,6 +31,10 @@ export const uncite = (t) => tidy(String(t == null ? '' : t).replace(/\s*\[([^\]
 // different sites are never one. The card's lists fold with this and its own sameAsk (sameOrDup).
 const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site|ru)\b/gi;
 const sitesOfAsk = (t) => [...new Set((String(t).match(SITE) || []).map((s) => s.toLowerCase()))].sort().join(' ');
+/** two asks name the same sites (none and none is the same). Two asks that do not are never one ask: dupAsk here and the voice
+ *  record's sameAsk (lib/voice.js) both refuse them, so "ahead of ndscalc.ru" is not folded into "ahead of onlineconverter.com" (owner's
+ *  self card, 2026-11-06: the ndscalc.ru ask showed as neither open nor built). Pure. */
+export const sameSites = (a, b) => sitesOfAsk(a) === sitesOfAsk(b);
 /** an ask's words for comparing: tags out, lower case, letters and digits only. Pure. */
 export const askKey = (t) => uncite(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const targetsOf = (t) => {
@@ -44,7 +48,7 @@ export function dupAsk(a, b) {
   const ka = askKey(a), kb = askKey(b);
   if (!ka || !kb) return false;
   if (ka === kb) return true;
-  if (sitesOfAsk(a) !== sitesOfAsk(b)) return false;
+  if (!sameSites(a, b)) return false;
   const ma = ka.replace(/\d+/g, '#');
   if (ma === kb.replace(/\d+/g, '#') && ma.split(' ').filter((w) => w.length > 2 && !/#/.test(w)).length >= 4) return true;
   const ta = targetsOf(a);
