@@ -296,10 +296,11 @@ export async function crewView(env, now = Date.now()) {
   if (!env || !env.DB) return { ok: false, say: 'no database bound' };
   let wants = [], crew = [], last = null;
   try { wants = (await env.DB.prepare("SELECT * FROM void_team_wants ORDER BY CASE state WHEN 'open' THEN 0 WHEN 'met' THEN 1 ELSE 2 END, filed DESC LIMIT 60").all()).results || []; } catch (_) { wants = []; }
+  const turnMap = (await getState(env, 'next').catch(() => null)) || {}, turns = Object.fromEntries(C.CREW.filter((b) => typeof turnMap[b.slug] === 'number').map((b) => [b.id, turnMap[b.slug]]));
   try {
     const ids = C.CREW.map((b) => b.id);
     crew = ((await env.DB.prepare(`SELECT id, name, about, seen, did, did_at, done, off FROM void_team_agents WHERE id IN (${ids.map(() => '?').join(',')})`).bind(...ids).all()).results || []) // void-review: ok (placeholders only)
-      .filter((a) => !a.off).map((a) => ({ name: a.name, about: a.about, here: now - (a.seen || 0) < C.CREW_AWAY_MS, did: a.did || '', didAt: a.did_at || null, done: a.done || 0 }));
+      .filter((a) => !a.off).map((a) => ({ name: a.name, about: a.about, here: now - (a.seen || 0) < C.CREW_AWAY_MS, did: a.did || '', didAt: a.did_at || null, done: a.done || 0, next: turns[a.id] || null }));
   } catch (_) { crew = []; }
   try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'last'").first(); last = r ? json(r.v) : null; } catch (_) { last = null; }
   const pub = wants.map(C.publicWant);

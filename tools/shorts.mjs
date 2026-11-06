@@ -108,6 +108,7 @@ function voiceTrack(text, dir) {
 export async function render(scene0, out, { voice = true, music, variant = BASE, filmId } = {}) {
   const v = { ...BASE, ...variant }, scene = { ...play(scene0, v), pace: v.pace, style: v.style };
   if (music === undefined) music = v.music;
+  fs.mkdirSync(out, { recursive: true }); // the daily job's first render found no media/shorts and crashed (2026-11-04, 11-05): no film was made
   const dir = fs.mkdtempSync(path.join(out, '.take-'));
   const f = await film(scene, dir);
   const HOLD = 2.6, t = { answer: +(f.answer - f.start).toFixed(2), end: +(f.end - f.start).toFixed(2) };

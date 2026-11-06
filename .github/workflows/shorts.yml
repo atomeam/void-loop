@@ -6,7 +6,7 @@ name: Verse shorts
 
 on:
   schedule:
-    - cron: '23 15 * * *' # daily, about 10 AM ET
+    - cron: '23 15 * * *' # daily, about 10 AM ET (GitHub drops many schedule events here; the conductor starts it once 15:00 UTC has passed with no run today: tools/conductor-core.mjs DAILY)
   workflow_dispatch:
 
 permissions:
@@ -68,7 +68,15 @@ jobs:
           name: verse-shorts
           path: media/shorts/
           retention-days: 14
+      - name: A film was made (a crash is red, not a quiet green)
+        # 2026-11-04 and 11-05: render() crashed before filming (no media/shorts) and the run still showed green, so no film was made
+        # for two days and nobody saw it. A gate fail is fine (kept as the artifact); no film at all is a failure.
+        run: |
+          n=$(ls media/shorts/*.mp4 2>/dev/null | wc -l)
+          echo "films made today: $n" | tee -a "$GITHUB_STEP_SUMMARY"
+          [ "$n" -gt 0 ] || { echo "::error title=No film made::the champion and the challenger both failed before a film existed (see the Film step)"; exit 1; }
       - name: Keep the loop log
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
