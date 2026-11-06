@@ -3,7 +3,7 @@
 // meteor showers. Nothing here writes, calls a model or reaches another service. Run: node --test tools/mcp.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rpc, TOOLS, PROTOCOL, blockedTool } from '../void-live-deploy/lib/mcp.js';
+import { rpc, TOOLS, PROTOCOL, blockedTool, PAID_TOOLS } from '../void-live-deploy/lib/mcp.js';
 import { onRequestPost, onRequestGet } from '../void-live-deploy/functions/api/mcp.js';
 import { LIMITS } from '../void-live-deploy/lib/guard.js';
 import { SKILL_TOOLS } from '../void-live-deploy/lib/mcp-skills.js';
@@ -14,8 +14,8 @@ test('mcp: initialize names Verse and its tools capability; tools/list gives its
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', 'drive_time', ...SKILL_TOOLS.map((s) => s.tool), 'seo_audit', 'readability', 'colour_contrast', 'skill_health', 'skill_discovery']);
-  for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, true); }
+  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', 'drive_time', ...SKILL_TOOLS.map((s) => s.tool), 'seo_audit', 'readability', 'colour_contrast', 'skill_health', 'skill_discovery', ...PAID_TOOLS.map((t) => t.name)]);
+  for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, !/^paid_/.test(t.name), t.name + ': read-only unless it charges'); }
   assert.equal(await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' }), null, 'a notification gets no reply');
   assert.deepEqual((await rpc({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
 });
