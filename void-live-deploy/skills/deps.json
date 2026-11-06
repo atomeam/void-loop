@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1164,
+ "counted": 1167,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -955,6 +955,13 @@
    "tests": 1
   },
   {
+   "file": "lib/list-ops.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/parody.js",
    "skills": 3,
    "direct": 1,
@@ -1238,13 +1245,6 @@
    "file": "lib/handoff.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/list-ops.js",
-   "skills": 2,
-   "direct": 2,
    "dependants": 2,
    "tests": 1
   },
@@ -1890,7 +1890,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/chat-generators.js",
@@ -9109,6 +9109,7 @@
   "lib/list-ops.js": {
    "imports": [],
    "importedBy": [
+    "skills/csv-table.js",
     "skills/list-tools.js",
     "skills/list.js"
    ]
@@ -15099,6 +15100,7 @@
   "skills/csv-table.js": {
    "imports": [
     "lib/note-tools.js",
+    "lib/list-ops.js",
     "lib/stage-pack.js"
    ],
    "importedBy": []
@@ -16427,6 +16429,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/math-quiz.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/media-object.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -16972,6 +16978,10 @@
    "reachedBy": [
     "skills/where-is.js"
    ]
+  },
+  "skills/noise.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/note-tools.js": {
    "imports": [
@@ -17961,6 +17971,10 @@
     "lib/stage-pack.js",
     "lib/stage-math.js"
    ],
+   "importedBy": []
+  },
+  "skills/speed-tests.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/splat-core.js": {
