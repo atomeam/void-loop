@@ -4252,7 +4252,10 @@ try {
     await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
     const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => P.p.$('#whatsnew-bell, [data-showcase="show"]'), 8000);
+    // the home does not paint the away line (#2291); the sparkle on the stage starts the same walkthrough
+    const bell = await P.p.$('#whatsnew-bell');
+    if (bell && await bell.isVisible().catch(() => false)) await bell.click(); else await P.p.click('[data-showcase="show"]');
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
     const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });

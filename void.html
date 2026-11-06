@@ -1353,7 +1353,7 @@
     let sayCount = 0;
     function fitOpenPanels() {
       // the whisper sits in the ask dock, so a new line lifts the dock over a game panel that was fitted a moment earlier
-      // (phone Go: the panel ended 5px inside the dock until the next frame). Fit again in this same turn, before anything reads the layout.
+      // (phone Go: the panel ended inside the dock until the next frame). Fit again in this same turn, before anything reads the layout.
       for (const c of stage.querySelectorAll(':scope > .side-card')) if (typeof c.fitPanel === 'function') c.fitPanel();
     }
     function say(msg) {
@@ -6518,6 +6518,22 @@ say('nothing selected to remove');
             return;
           }
         }
+      }
+      // a sum the page's own calculator already answers ("5 dollars a day for a year", a GPA, compound interest).
+      // The fuzzy vocabulary wait and the walk through every skill file above a match ran past 4 s on a slow link
+      // while the lanes were still loading the index (watchdog #110, verify run 42036332040: 4022 ms, note calc).
+      // Loan payment is not this path: it waits for the loan skill. A skill that also takes the ask replaces the card once the lanes finish.
+      if (!skillsLoaded && wantsCalc(typed.toLowerCase())) {
+        const lowerNow = typed.toLowerCase();
+        if (!quiet) rememberAsk(typed);
+        if (!skillsRunning) takeUndoSnapshot();
+        currentAsk = lastAsk = typed;
+        showCalc(typed).then((src) => { if (src === 'none') reportMiss(typed, 'calc'); });
+        loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'calc' });
+        say('');
+        const calcEl = vpageEl, askNoEarly = askNo;
+        skillsReady.then(() => { if (askNoEarly === askCount && vpageEl === calcEl) return runLearnedSkills(typed, lowerNow); }).catch(() => {});
+        return;
       }
       // "closer on the figure" is zoom-figure, 162nd of 342. Nothing ranked above it takes the phrase. The page still
       // waits for every skill above the match, then for the whole index, so on a loaded runner the site tester only
