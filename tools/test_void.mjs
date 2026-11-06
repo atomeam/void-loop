@@ -11755,6 +11755,20 @@ try {
       rows.every((r) => !r.loadedAtAsk && r.right && r.ms != null && r.ms <= 4000 && r.w !== 'waking up'), JSON.stringify(rows));
   }
 
+  // On a device where the 3D layer cannot load (no WebGL, or skills/figures3d.js not reached), every render tried the import again and said
+  // "3D can't show in this browser" again, so with a figure on the stage that note took the place of the answer to each later ask: a live
+  // check of "send it away" (#2342) read only the 3D note. The note is said once a page load now; the import is still tried on each render.
+  if (want("3D note once: where 3D cannot load, the note shows once and the next ask keeps its own answer")) { const G = await fresh();
+    await G.ctx.route(/\/skills\/figures3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
+    await G.ask('summon a sprite', 900); const w1 = await G.whisper();
+    const figs = (await G.state()).filter((t) => t.kind === 'figure').length;
+    await G.ask('a clock', 900); const w2 = await G.whisper();
+    await G.ask('flip it', 900); const w3 = await G.whisper();
+    const NOTE = "3D can't show in this browser";
+    check('3D note once: with the 3D layer out of reach and a sprite on the stage, "3D can\'t show in this browser" shows once, and the asks after it ("a clock", "flip it") each show their own line, never the 3D note again',
+      figs === 1 && w1 === NOTE && w2 !== NOTE && w3 !== NOTE && !!w3, JSON.stringify({ figs, w1, w2, w3 }));
+  }
+
   if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
     const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
     const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'

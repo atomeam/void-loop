@@ -1305,13 +1305,6 @@
    "tests": 1
   },
   {
-   "file": "lib/follow-ask.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 37,
-   "tests": 1
-  },
-  {
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
@@ -2303,7 +2296,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/tower-art.js",
@@ -2538,6 +2531,13 @@
   },
   {
    "file": "lib/draft.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 28,
+   "tests": 1
+  },
+  {
+   "file": "lib/follow-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 28,
@@ -6019,8 +6019,7 @@
   "lib/brain-dialogue.js": {
    "imports": [
     "lib/brain-organs.js",
-    "lib/brain-workspace.js",
-    "lib/follow-ask.js"
+    "lib/brain-workspace.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -8167,8 +8166,7 @@
   "lib/follow-ask.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js",
-    "lib/brain-dialogue.js"
+    "functions/api/answer.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -8197,15 +8195,7 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js",
-    "lib/brain-everywhere.js",
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain-route.js",
-    "lib/brain.js",
-    "skills/verse-brain.js"
+    "lib/bench-asks.js"
    ]
   },
   "lib/forge-duel.js": {

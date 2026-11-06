@@ -347,5 +347,6 @@
  "my-device": ["device info","my screen size","what browser am i using","what is my ip address","what is my screen resolution","what is my user agent","what os am i using","what's my ip"],
  "noise": ["brown noise","noise machine","pink noise for 30 minutes","play white noise for 1 hour","rain sounds","rain sounds for sleep","white noise"],
  "speed-tests": ["10 second click test","aim test","aim trainer","click speed test","cps test","reaction test","reaction time test"],
- "math-quiz": ["7 times table quiz","addition quiz","division quiz easy","math quiz","maths quiz hard","multiplication quiz","times tables quiz"]
+ "math-quiz": ["7 times table quiz","addition quiz","division quiz easy","math quiz","maths quiz hard","multiplication quiz","times tables quiz"],
+ "groups": ["make 3 groups from: ann, ben, cal, dee, eve, fay","random team generator","secret santa draw","secret santa: ann, ben, cal, dee","split alice, bob, carol and dave into 2 teams"]
 }
