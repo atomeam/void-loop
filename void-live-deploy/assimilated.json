@@ -10,15 +10,183 @@
   }
  },
  "counts": {
-  "sites": 312,
+  "sites": 320,
   "surpassed": 2,
   "passed": 145,
   "assimilated": 21,
   "current": 1,
   "parked": 1,
-  "tried": 142
+  "tried": 150
  },
  "sites": [
+  {
+   "site": "gosuslugi.ru",
+   "url": "https://gosuslugi.ru/",
+   "status": "walled",
+   "outcome": "walled",
+   "at": "2026-11-06T17:40:18Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "learned": "",
+   "ease": {
+    "score": 99.1,
+    "place": 8,
+    "why": "0 controls, 9 KB, Tranco 662"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "kahoot.it",
+   "url": "https://kahoot.it/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-06T17:40:14Z",
+   "page": "",
+   "lane": "",
+   "took": "Enter Game PIN - Kahoot!",
+   "why": "no floor does its job (The website is a game platform entry point (PIN entry for players), which does not match any of the tool-based services provided by Verse. Verse has a)",
+   "learned": "",
+   "ease": {
+    "score": 99.3,
+    "place": 7,
+    "why": "0 controls, 7 KB, Tranco 3202"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "myfritz.net",
+   "url": "https://myfritz.net/",
+   "status": "walled",
+   "outcome": "walled",
+   "at": "2026-11-06T17:40:09Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "a sign-in wall",
+   "learned": "",
+   "ease": {
+    "score": 99.3,
+    "place": 6,
+    "why": "0 controls, 7 KB, Tranco 59"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "disqus.com",
+   "url": "https://disqus.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-06T17:40:04Z",
+   "page": "",
+   "lane": "",
+   "took": "#1 in audience engagement and community growth | Disqus",
+   "why": "no floor does its job (The website provides a complex B2B SaaS platform for community engagement, moderation, and monetization, which does not match any of the simple utility-based)",
+   "learned": "",
+   "ease": {
+    "score": 99.4,
+    "place": 5,
+    "why": "0 controls, 6 KB, Tranco 922"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "dalyfeds.com",
+   "url": "https://dalyfeds.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-06T17:39:51Z",
+   "page": "",
+   "lane": "",
+   "took": "H5 Center",
+   "why": "the model chose news but the site says none of its words",
+   "learned": "",
+   "ease": {
+    "score": 99.7,
+    "place": 4,
+    "why": "0 controls, 3 KB, Tranco 2875"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "slideshare.net",
+   "url": "https://slideshare.net/",
+   "status": "walled",
+   "outcome": "walled",
+   "at": "2026-11-06T17:39:44Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+   "learned": "",
+   "ease": {
+    "score": 99.7,
+    "place": 3,
+    "why": "0 controls, 3 KB, Tranco 557"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "archive.org",
+   "url": "https://archive.org/",
+   "status": "walled",
+   "outcome": "walled",
+   "at": "2026-11-06T17:39:42Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "learned": "",
+   "ease": {
+    "score": 99.8,
+    "place": 2,
+    "why": "0 controls, 2 KB, Tranco 153"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "bttrack.com",
+   "url": "https://bttrack.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-06T17:39:40Z",
+   "page": "",
+   "lane": "",
+   "took": "Tracking API",
+   "why": "no floor does its job (The website provides a tracking API and technical dashboard for advertising/audience data infrastructure, which is a specialized backend service. Verse's)",
+   "learned": "",
+   "ease": {
+    "score": 99.8,
+    "place": 1,
+    "why": "0 controls, 2 KB, Tranco 3268"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
   {
    "site": "netcraze.io",
    "url": "https://netcraze.io/",
