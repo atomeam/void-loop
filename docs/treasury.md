@@ -36,8 +36,9 @@ only then is the read given. No settlement, no read, no charge. Catalog: `GET /a
 
 - **The address**, in order: `VERSE_WALLET_ADDR` (a Pages variable, any receive address); else `VERSE_WALLET` in
   `lib/verse-wallet-address.js` (the same public address kept in the repo, so it ships with the next deploy and needs no Cloudflare
-  or Coinbase account: the path when Atom has a self-custody wallet such as MetaMask or Rabby; not an exchange deposit address,
-  since Kraken, for one, lists no USDC deposits on Base); else Verse's own **Coinbase CDP server
+  or Coinbase account: the path when Atom has a self-custody wallet such as MetaMask or Rabby; not an exchange deposit address
+  with a minimum above the price: Kraken's USDC-on-Base minimum is 2.50 USDC, and its support page "Cryptocurrency deposit fees and
+  minimums" says a deposit below the minimum is marked Failed and lost for good, so every 0.05 USDC call paid there would be lost); else Verse's own **Coinbase CDP server
   wallet**, which Verse makes itself (one account, `verse-treasury`) the first time it is needed once `CDP_API_KEY_ID`,
   `CDP_API_KEY_SECRET` (Ed25519) and `CDP_WALLET_SECRET` are set; the key is generated and kept in Coinbase's enclave and Verse keeps
   only the address; else the store's `CRYPTO_USDC_BASE_ADDR`. With none, paid calls answer 503 and nothing is charged.
