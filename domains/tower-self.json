@@ -1384,6 +1384,90 @@
     "place": 8,
     "why": "0 controls, 1 KB, Tranco 444"
    }
+  },
+  "bttrack.com": {
+   "at": "2026-11-06T17:39:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a tracking API and technical dashboard for advertising/audience data infrastructure, which is a specialized backend service. Verse's)",
+   "title": "Tracking API",
+   "ease": {
+    "score": 99.8,
+    "place": 1,
+    "why": "0 controls, 2 KB, Tranco 3268"
+   }
+  },
+  "archive.org": {
+   "at": "2026-11-06T17:39:42Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.8,
+    "place": 2,
+    "why": "0 controls, 2 KB, Tranco 153"
+   }
+  },
+  "slideshare.net": {
+   "at": "2026-11-06T17:39:44Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.7,
+    "place": 3,
+    "why": "0 controls, 3 KB, Tranco 557"
+   }
+  },
+  "dalyfeds.com": {
+   "at": "2026-11-06T17:39:51Z",
+   "outcome": "no-family",
+   "why": "the model chose news but the site says none of its words",
+   "title": "H5 Center",
+   "ease": {
+    "score": 99.7,
+    "place": 4,
+    "why": "0 controls, 3 KB, Tranco 2875"
+   }
+  },
+  "disqus.com": {
+   "at": "2026-11-06T17:40:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a complex B2B SaaS platform for community engagement, moderation, and monetization, which does not match any of the simple utility-based)",
+   "title": "#1 in audience engagement and community growth | Disqus",
+   "ease": {
+    "score": 99.4,
+    "place": 5,
+    "why": "0 controls, 6 KB, Tranco 922"
+   }
+  },
+  "myfritz.net": {
+   "at": "2026-11-06T17:40:09Z",
+   "outcome": "walled",
+   "why": "a sign-in wall",
+   "ease": {
+    "score": 99.3,
+    "place": 6,
+    "why": "0 controls, 7 KB, Tranco 59"
+   }
+  },
+  "kahoot.it": {
+   "at": "2026-11-06T17:40:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a game platform entry point (PIN entry for players), which does not match any of the tool-based services provided by Verse. Verse has a)",
+   "title": "Enter Game PIN - Kahoot!",
+   "ease": {
+    "score": 99.3,
+    "place": 7,
+    "why": "0 controls, 7 KB, Tranco 3202"
+   }
+  },
+  "gosuslugi.ru": {
+   "at": "2026-11-06T17:40:18Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.1,
+    "place": 8,
+    "why": "0 controls, 9 KB, Tranco 662"
+   }
   }
  },
  "runs": [
