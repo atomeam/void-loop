@@ -35,8 +35,9 @@ function main() {
     git(['config', 'user.email', 'merge-gate@users.noreply.github.com'], dir);
     git(['config', 'user.name', 'merge-gate'], dir);
     const merged = git(['merge', '--no-commit', '--no-ff', base], dir);
+    // every conflicted path of this merge, whatever branch it took (the keep set below must see them all)
+    const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
     if (merged.status !== 0) {
-      const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
       const merging = git(['rev-parse', '-q', '--verify', 'MERGE_HEAD'], dir).status === 0;
       if (!files.length && merging) console.log('merge-gate: main is in, nothing left unmerged');
       else if (!onlyBuildConflicts(files)) {
