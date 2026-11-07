@@ -9,7 +9,7 @@
 export function isMonitorPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:monitor|watch)\s+pack\b/i.test(t)
-    || /set\s+up\s+(?:monitors|watches)\s+for\b/i.test(t)
+    || /^(?:set\s+up|propose|make|generate)\s+(?:a\s+)?(?:monitors?|watch(?:er)?s?)\s+for\b/i.test(t)
     || /^(?:set\s+up|propose|make|generate)\s+(?:a\s+)?(?:monitor|watch)\s+(?:pack|setup|plan)\b/i.test(t)
     || /^(?:what|which)\s+(?:will|does)\s+verse\s+watch\s+for\b/i.test(t);
 }
