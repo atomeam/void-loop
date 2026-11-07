@@ -1,0 +1,23 @@
+{
+ "floor": "my ip",
+ "verse_page": "/ip",
+ "researched": "2026-11-06",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "icanhazip.com": {
+   "url": "https://icanhazip.com/",
+   "scanned": "2026-11-06",
+   "leader": true,
+   "pages": [],
+   "problem": "a nearly empty page (14 characters: a redirect stub, or a page that draws itself with no text)",
+   "features": []
+  }
+ },
+ "gaps": [],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-06",
+  "queued": []
+ }
+}

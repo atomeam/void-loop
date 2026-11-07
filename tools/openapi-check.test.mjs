@@ -25,6 +25,12 @@ assert.match(check({ spec: { paths: { ...spec.paths, '/api/gone': { get: { opera
 assert.match(check({ spec: { paths: { ...spec.paths, '/api/memory': { get: { operationId: 'm' } } } }, routes, catalog }).join('\n'), /both in openapi.json and marked internal/);
 // the catalog lost its pointer
 assert.match(check({ spec, routes, catalog: { linkset: [{}] } }).join('\n'), /service-desc/);
+// a one-segment dynamic route (functions/api/x402/[service].js) is documented by its concrete paths, one by one
+{ const dyn = new Map([...routes, ['/api/x402/{service}', new Set(['get', 'post'])]]);
+  assert.match(check({ spec, routes: dyn, catalog }).join('\n'), /\/api\/x402\/\{service\} is a route but neither/);
+  assert.deepEqual(check({ spec: { paths: { ...spec.paths, '/api/x402/answer': { post: { operationId: 'a' } } } }, routes: dyn, catalog }), []);
+  assert.match(check({ spec: { paths: { ...spec.paths, '/api/x402/answer': { put: { operationId: 'a' } } } }, routes: dyn, catalog }).join('\n'), /no onRequestPut/);
+  assert.match(check({ spec: { paths: { ...spec.paths, '/api/x402/a/b': { post: { operationId: 'a' } } } }, routes: dyn, catalog }).join('\n'), /no function serves \/api\/x402\/a\/b/); }
 // a documented static file answers GET only
 const statics = new Set(['/skills/families.json']);
 assert.deepEqual(check({ spec: { paths: { ...spec.paths, '/skills/families.json': { get: { operationId: 'skillHealth' } } } }, routes, catalog, statics }), []);

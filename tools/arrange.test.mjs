@@ -62,11 +62,13 @@ const fetchFn = async (u) => ({ ok: true, arrayBuffer: async () => ({ path: u, b
 /** a context that records every recording it plays */
 function recorder() {
   const sources = [], param = (o, k) => ({ value: 0, setValueAtTime(v) { if (o[k] == null) o[k] = v; }, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} });
-  const node = () => { const n = { connect() {}, frequency: param({}, 'f'), detune: { value: 0 }, Q: { value: 0 }, threshold: { value: 0 }, knee: { value: 0 }, ratio: { value: 0 }, attack: { value: 0 }, release: { value: 0 } }; n.gain = param(n, 'g'); return n; };
-  const ctx = { sampleRate: RATE, destination: {}, createGain: node, createBiquadFilter: node, createDynamicsCompressor: node, createWaveShaper: node, createOscillator() { return { ...node(), start() {}, stop() {} }; },
+  const node = () => { const n = { connect(d) { n.to = d; return d; }, frequency: param({}, 'f'), detune: { value: 0 }, Q: { value: 0 }, threshold: { value: 0 }, knee: { value: 0 }, ratio: { value: 0 }, attack: { value: 0 }, release: { value: 0 } }; n.gain = param(n, 'g'); return n; };
+  const ctx = { sampleRate: RATE, destination: {}, createGain: node, createBiquadFilter: node, createDynamicsCompressor: node, createWaveShaper: node, createStereoPanner() { const n = node(); n.pan = { value: 0 }; return n; }, createOscillator() { return { ...node(), start() {}, stop() {} }; },
     createBuffer: (c, n) => ({ getChannelData: () => new Float32Array(n) }), decodeAudioData: async (b) => ({ path: b.path, data: pcm(b.bytes) }),
     createBufferSource() { const s = { playbackRate: { value: 1 }, connect(g) { s.g = g; }, start(at) { s.at = at; }, stop(t) { if (s.at == null) throw new Error('InvalidStateError: stop() before start()'); s.off = t; } }; sources.push(s); return s; } };
-  return { ctx, played: () => sources.filter((s) => s.buffer && s.buffer.path).map((s) => ({ path: s.buffer.path, data: s.buffer.data, at: s.at, rate: s.playbackRate.value, gain: s.g.g ?? s.g.gain.value, off: s.off })) };
+  // where a sound lands in the stereo field: follow its gain down the chain to the first panner (none: the middle)
+  const panOf = (n) => { for (let i = 0; n && i < 30; i++, n = n.to) if (n.pan) return n.pan.value; return 0; };
+  return { ctx, played: () => sources.filter((s) => s.buffer && s.buffer.path).map((s) => ({ path: s.buffer.path, data: s.buffer.data, at: s.at, rate: s.playbackRate.value, gain: s.g.g ?? s.g.gain.value, off: s.off, pan: panOf(s.g) })) };
 }
 test('a heavy song on the real instruments: every hit a recording, harder in the climax, the pad on the grand piano', async () => {
   const p = arrange('make a heavy metal song'), { ctx, played } = recorder(), inst = await instrumentsFor(p, ctx, { fetchFn });
@@ -92,6 +94,13 @@ test('a heavy song on the real instruments: every hit a recording, harder in the
   assert.ok(pairs.length > 10 && pairs.every(([a, b]) => a.path !== b.path), 'two chugs in a row never play the same muted take (' + pairs.length + ' pairs)');
   for (const r of [...bass, ...gtr]) assert.ok(r.rate > 0.9 && r.rate < 1.1, r.path + ' plays within 1.5 semitones of its own pitch (rate ' + r.rate.toFixed(3) + ')');
   for (const r of [...bass, ...gtr]) assert.ok(r.off > r.at, r.path + ' is stopped after it starts');
+  // the stereo field (Verse's ears found the first mix mono against real metal): the two takes of the rhythm guitar are one left and one right,
+  // the lead, the bass, the kick and the snare stay in the middle, and the hats and crash sit a little to either side
+  const rhythm = gtr.length - p.melody.length, left = gtr.filter((r) => r.pan < -0.5), right = gtr.filter((r) => r.pan > 0.5);
+  assert.equal(left.length, rhythm / 2, 'one take of every rhythm hit on the left'); assert.equal(right.length, rhythm / 2, 'the other take on the right');
+  assert.equal(gtr.filter((r) => r.pan === 0).length, p.melody.length, 'the lead in the middle');
+  for (const r of [...bass, ...drums.filter((x) => /\/(kick|snare)-/.test(x.path))]) assert.equal(r.pan, 0, r.path + ' in the middle');
+  assert.ok(drums.filter((r) => r.path.includes('/hat-')).every((r) => r.pan > 0) && drums.filter((r) => r.path.includes('/crash-')).every((r) => r.pan < 0), 'the hats right, the crash left');
   const kickAt = (id) => { const s = p.sections.find((x) => x.id === id); return drums.filter((r) => r.path.includes('/kick-') && r.at >= s.fromStep * sp && r.at < (s.fromStep + s.steps) * sp); };
   const loud = (rs) => rs.reduce((a, r) => a + r.gain, 0) / rs.length;
   assert.ok(loud(kickAt('climax')) > loud(kickAt('drop')), 'the climax kicks hit harder than the drop: ' + loud(kickAt('climax')).toFixed(3) + ' vs ' + loud(kickAt('drop')).toFixed(3));

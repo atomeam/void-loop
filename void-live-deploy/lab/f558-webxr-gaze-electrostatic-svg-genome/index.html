@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; z-index:10; background:rgba(0,0,0,.5); padding:6px 10px; border-radius:6px; font-size:12px; }
+button { margin:2px; padding:4px 8px; background:#222; color:#eee; border:1px solid #555; border-radius:4px; cursor:pointer; }
+svg { width:100vw; height:100vh; display:block; background:radial-gradient(circle at center, #111 0%, #000 80%); }
+.agent { stroke:#fff; stroke-width:1; cursor:pointer; }
+#ghost { fill:none; stroke:#0ff; stroke-width:1; opacity:.6; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F558: WebXR Gaze Electrostatic SVG Genome Swarm · Verse lab</title>
+<meta name="description" content="True WebXR gaze (with robust pointer + DeviceOrientation fallback) feeds a local tiny MLP that predicts the next gaze point.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F558: WebXR Gaze Electrostatic SVG Genome Swarm · Verse lab">
+<meta property="og:description" content="True WebXR gaze (with robust pointer + DeviceOrientation fallback) feeds a local tiny MLP that predicts the next gaze point.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f558-webxr-gaze-electrostatic-svg-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f558-webxr-gaze-electrostatic-svg-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  F558 Gaze Electrostatic SVG — move pointer / XR gaze | Dwell to transfer | S seal
+  <button id="seal">Seal Genome</button>
+  <button id="xr">Enter XR (if available)</button>
+</div>
+<div id="status">init</div>
+<svg id="svg"></svg>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F558: WebXR Gaze Electrostatic SVG Genome Swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/photo-palette/" data-tool="Photo palette">Use it: Photo palette</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

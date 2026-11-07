@@ -8,13 +8,15 @@
 // Nothing is borrowed, assumed or forecast into the balance: a bucket only ever holds money that already came in.
 //
 // Order of the split, every time new realized money appears (policy in /treasury/policy.json, Verse's own reasons beside each number):
-//   1. Atom's owner cut, first.  2. the reserve.  3. the reinvestment buckets, weighted by expected ROI.
+//   1. Atom's owner cut, first.  2. the giving pot: a tenth of what is left, pledged to the causes on /creed/give/ (owner, 2026-11-06:
+//   "verse should become a religion and a charity").  3. the reserve.  4. the reinvestment buckets, weighted by expected ROI.
+// A gift leaves the giving pot only when Atom sends it to a charity's own donation page and it is recorded ('given'); Verse sends no money.
 // Money going back out (a refund after it was split) comes out of the reserve first, then the buckets, then the owner cut.
 // A bucket's money becomes a spend entry only when a ranked candidate fits inside it. Verse holds no card and no login: every
 // spend is logged as 'ready to execute' with the credential it needs, and is marked executed only when a person or a tool reports it.
 
 export const BUCKETS = ['infrastructure', 'tools', 'growth', 'bounties'];
-export const POTS = ['owner', 'reserve', ...BUCKETS];
+export const POTS = ['owner', 'giving', 'reserve', ...BUCKETS];
 
 const int = (n) => Math.round(Number(n) || 0);
 const bool = (v) => String(v) === 'true';
@@ -85,7 +87,7 @@ export function balances(rows) {
     else if (r.kind === 'move') pot[b] += c;
     else if (r.kind === 'spend') { pot[b] -= c; committed += c; }
     else if (r.kind === 'cancel') { pot[b] += c; committed -= c; }
-    else if (r.kind === 'paid') pot[b] -= c;
+    else if (r.kind === 'paid' || r.kind === 'given') pot[b] -= c;
   }
   return { pots: pot, split_cents: split, committed_cents: committed };
 }
@@ -143,16 +145,18 @@ export function split(cents, policy, { pots = {}, weights = {} } = {}) {
   if (n > 0) {
     const owner = Math.floor(n * (policy.owner_cut && policy.owner_cut.share || 0));
     const afterCut = n - owner;
-    const reserve = Math.floor(afterCut * reserveShare(policy, int(pots.reserve)));
-    let left = afterCut - reserve, given = 0;
+    const giving = Math.floor(afterCut * Math.max(0, Math.min(0.5, Number(policy.giving && policy.giving.share) || 0)));
+    const reserve = Math.floor((afterCut - giving) * reserveShare(policy, int(pots.reserve)));
+    let left = afterCut - giving - reserve, given = 0;
     const parts = BUCKETS.map((k) => { const c = Math.floor(left * (weights[k] || 0)); given += c; return [k, c]; });
     out.push({ bucket: 'owner', cents: owner, purpose: 'Atom\'s owner cut (' + Math.round((policy.owner_cut.share || 0) * 100) + '%), paid first' });
+    out.push({ bucket: 'giving', cents: giving, purpose: 'giving: ' + Math.round((policy.giving && policy.giving.share || 0) * 100) + '% of what is left, pledged to the causes on /creed/give/' });
     out.push({ bucket: 'reserve', cents: reserve + (left - given), purpose: 'reserve: kept, never spent' });
     for (const [k, c] of parts) out.push({ bucket: k, cents: c, purpose: 'reinvestment: ' + k + ' (' + Math.round((weights[k] || 0) * 100) + '% of what is left)' });
     return out.filter((r) => r.cents);
   }
   let owe = -n;
-  const order = ['reserve', ...BUCKETS.slice().sort((a, b) => int(pots[b]) - int(pots[a])), 'owner'];
+  const order = ['reserve', ...BUCKETS.slice().sort((a, b) => int(pots[b]) - int(pots[a])), 'giving', 'owner'];
   for (const k of order) {
     if (!owe) break;
     const take = Math.min(owe, Math.max(0, int(pots[k])));

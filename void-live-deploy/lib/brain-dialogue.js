@@ -78,6 +78,18 @@ export function answered(D, ask, answer, at) {
   return out;
 }
 
+/** what `ask`, asked at about `at`, builds on, without logging anything: { kind, prior: { ask, at, answer } } or null. The newest entry
+ *  for this ask inside MATCH_MS that is not yet answered gives its own link; an ask the log has not heard yet is recalled as it stands.
+ *  The answer engine sends a follow-up's prior ask and answer with it, so a word like "that" reads in the light of the first ask. Pure. */
+export function builtOn(D, ask, at) {
+  const f = flat(ask); if (!f || !Number.isFinite(at)) return null;
+  let link = null, heardIt = false;
+  for (let i = D.log.length - 1; i >= 0; i--) { const x = D.log[i]; if (at - x.at > MATCH_MS) break; if (x.answer == null && flat(x.ask) === f) { heardIt = true; link = x.link || null; break; } }
+  const r = heardIt ? null : recall(D, ask, at);
+  const kind = link ? link.kind : r ? r.kind : null, p = link ? D.log.find((x) => x.at === link.at) || null : r ? r.entry : null;
+  return kind && p ? { kind, prior: { ask: p.ask, at: p.at, answer: p.answer } } : null;
+}
+
 /** the counts, at time `at`: asks logged, answered, repeats and follow-ups heard, follow-ups kept (answered, not asked again within GAP,
  *  and GAP has passed), the separate days those fell on, and whether the proxy holds (kept follow-ups on 2 or more days). Pure. */
 export function dialogueStats(D, at) {

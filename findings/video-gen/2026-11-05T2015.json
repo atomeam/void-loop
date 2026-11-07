@@ -1,0 +1,30 @@
+{
+ "attempt": "live",
+ "occasion": 16,
+ "at": "2026-11-05T20:15:03.136Z",
+ "family": "make",
+ "skill": "video-gen",
+ "service": "a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI)",
+ "ask": "is AI video on at a-to-mind.com right now, and does the video page serve",
+ "request": [
+  "https://a-to-mind.com/api/clip",
+  "https://a-to-mind.com/video/"
+ ],
+ "status": 200,
+ "ms": 8539,
+ "checksPass": true,
+ "ok": false,
+ "video": "off",
+ "why": "credits",
+ "lastTest": "2026-11-05T15:25:16.916Z",
+ "startedSelfCheck": false,
+ "clipsLeft": 0,
+ "perConnection": 3,
+ "page": {
+  "status": 200,
+  "state": true,
+  "make": true,
+  "handoff": true
+ },
+ "error": ""
+}

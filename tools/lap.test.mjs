@@ -27,6 +27,11 @@ test('lap 1 is an overhaul, most used first', () => {
   const ids = ['skill:zz', 'surface:book', 'surface:home', 'skill:chess'], r = nextStep(null, ids, overhaulWeights(ids));
   assert.equal(r.step.skill, 'surface:home'); assert.match(candidateOf(r.step).title, /^Overhaul surface:home: persona playtest/); assert.match(candidateOf(r.step).title, /wider use/, 'every overhaul asks for wider use (docs/WIDER-USE.md)');
 });
+test('an overhaul ask is never cut, and fits the will title cap', () => {
+  const t = candidateOf({ kind: 'upgrade', lap: 1, skill: 'surface:games' }).title;
+  assert.match(t, /beauty, no cut-off\)$/, 'the whole ask, its last words kept (the wants card showed it cut at "beauty,")');
+  assert.ok(candidateOf({ kind: 'upgrade', lap: 1, skill: 'site:a-very-long-site-name-for-the-test.example.com' }).title.length <= 240);
+});
 test('the only-site line is counts only', () => {
   assert.equal(onlySiteLine({ replaced: 1, partial: 2, missing: 3, categories: 6 }), 'Only site you need: 1 replaced, 2 partial, 3 missing of 6 categories');
 });

@@ -1,0 +1,42 @@
+/* The /trading-bots/ pages: deep space dark mode (docs/design.md), glass panels, one cool key light. */
+:root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #8e94a8; --key: 158 178 255; --teal: 92 232 205; --warm: 255 170 214;
+  --glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%); --line: rgba(255,255,255,.10); --field: rgba(6,8,14,.55);
+  --up: rgb(92 232 205); --down: #ff8a9a; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
+body { min-height: 100vh; overflow-x: hidden; background: radial-gradient(60vmax 38vmax at 50% -12%, rgb(var(--key) / .16), transparent 70%), radial-gradient(40vmax 26vmax at 10% 34%, rgb(92 70 190 / .13), transparent 70%), var(--bg); background-attachment: fixed; }
+a { color: rgb(var(--key)); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; border-radius: 6px; }
+main { max-width: 1040px; margin: 0 auto; padding: 30px 16px 48px; box-sizing: border-box; }
+h1 { font-weight: 280; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 8px; background: linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+h2 { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); margin: 18px 0 10px; }
+h3 { margin: 0 0 6px; font-size: 19px; font-weight: 500; }
+.lead { color: var(--ink-2); max-width: 46em; margin: 0 0 18px; }
+.glass { background: var(--glass); border: 1px solid var(--line); border-radius: 18px; margin: 0 0 18px; padding: 18px; }
+.risk { border-color: rgb(var(--warm) / .45); }
+.risk p { margin: 0; color: var(--ink-2); }
+.tb-note, .muted { color: var(--ink-3); font-size: 14px; }
+#tb-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 12px; }
+.tb-card { background: var(--glass); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+.tb-card p { color: var(--ink-2); margin: 0 0 10px; font-size: 15px; }
+.tb-btn, button { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgb(var(--key) / .6); background: rgb(var(--key) / .14); color: var(--ink); font: inherit; text-decoration: none; cursor: pointer; }
+button:disabled { opacity: .6; }
+form.tb-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+form.tb-form label { display: grid; gap: 4px; font-size: 13px; color: var(--ink-3); }
+select, input { min-height: 44px; box-sizing: border-box; background: var(--field); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; font: inherit; }
+input[type=number] { width: 7em; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+thead th { color: var(--ink-3); font-weight: 500; }
+.tb-scroll { overflow-x: auto; }
+td.up { color: var(--up); } td.down { color: var(--down); }
+.tb-chart { width: 100%; height: auto; display: block; margin: 8px 0 12px; }
+.tb-bot { fill: none; stroke: rgb(var(--teal)); stroke-width: 2; } .tb-hold { fill: none; stroke: rgb(var(--key) / .7); stroke-width: 1.5; }
+.tb-base { stroke: var(--line); stroke-dasharray: 4 4; } .tb-dd { fill: rgb(var(--warm) / .35); } .tb-lab { fill: var(--ink-3); font-size: 12px; }
+.tb-legend { font-size: 13px; color: var(--ink-3); margin: 0; } .k-bot::before, .k-hold::before { content: ''; display: inline-block; width: 14px; height: 3px; margin: 0 6px 3px 0; background: rgb(var(--teal)); } .k-hold::before { background: rgb(var(--key) / .7); } .k-hold { margin-left: 12px; }
+.tb-signal { font-size: 17px; margin: 0 0 6px; }
+pre { background: var(--field); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; font-size: 13px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+ol li, ul li { margin: 0 0 6px; color: var(--ink-2); }
+nav.crumbs { font-size: 14px; color: var(--ink-3); margin: 0 0 12px; } nav.crumbs a { display: inline-block; min-height: 24px; }
+.tb-err { color: var(--down); min-height: 1.2em; margin: 6px 0 0; }
+footer { color: var(--ink-3); font-size: 13px; margin-top: 24px; }

@@ -13,6 +13,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { visibleLine } from '../lib/visible.js';
+import { sameOrDup, uncite } from '../lib/ask-same.js';
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 const TOPN = 3;
@@ -90,7 +91,10 @@ export function cardModel({ will, reflect, self } = {}) {
   // card puts the whole reason in brackets, and brackets inside brackets read as a glitch (owner, 2026-10-19)
   const wants = items(wl).map((w) => ({ text: sentence(w.i_want || w.title), because: sentence(w.because).replace(/\s*\(([^()]*)\)/g, ' · $1').replace(/^\((.*)\)$/, '$1'), kind: sentence(w.kind), ...whyOf([w.source ? 'Where it came from: ' + sentence(w.source) + '.' : '', w.evidence && sentence(w.evidence) !== sentence(w.because) ? 'Evidence: ' + sentence(w.evidence) + '.' : '']) })).filter((w) => w.text).slice(0, MAX);
   const ents = reflect && Array.isArray(reflect.entries) ? reflect.entries : [];
-  const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...(a.held ? { held: sentence(a.held) } : {}), ...(a.held && a.heldFrontier ? { heldFrontier: sentence(a.heldFrontier) } : {}), ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
+  // one ask said in other words is listed once, with no citation tags (owner's self card, 2026-11-06: the images exam three times, "[S1]"
+  // in an ask), so "and N more" and "Show the other N" count asks, not wordings
+  const kept = []; for (const a of items(ak)) if (a.ask && !kept.some((k) => sameOrDup(k.ask, a.ask))) kept.push(a);
+  const asks = kept.map((a) => ({ text: sentence(uncite(a.ask)), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...(a.held ? { held: sentence(a.held) } : {}), ...(a.held && a.heldFrontier ? { heldFrontier: sentence(a.heldFrontier) } : {}), ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from), ...(o.waits ? { waits: sentence(o.waits) } : {}) })).filter((o) => o.text).map((o) => ({ ...o, stream: streamOf(o) })).slice(0, MAX);
   const lapRec = will && will.lap && typeof will.lap === 'object' ? will.lap : null, lastRun = will && will.lastRun && typeof will.lastRun === 'object' ? will.lastRun : null;
   const vis = self && self.visible && Number.isFinite(+self.visible.day) && Number.isFinite(+self.visible.week) ? { day: Math.max(0, Math.round(+self.visible.day)), week: Math.max(0, Math.round(+self.visible.week)) } : null;
@@ -158,7 +162,7 @@ export function changedOf(lap, follow, lastRun) {
     const seen = new Set(); built = [];
     for (const a of [].concat(Array.isArray(follow.recent) ? follow.recent : [], Array.isArray(follow.asked) ? follow.asked : [])) {
       const t = Date.parse(a && a.at), k = sentence(a && a.ask).toLowerCase();
-      if (k && t >= Date.parse(since) && !seen.has(k)) { seen.add(k); built.push(sentence(a.ask)); }
+      if (k && t >= Date.parse(since) && !seen.has(k) && !built.some((b) => sameOrDup(b, a.ask))) { seen.add(k); built.push(sentence(uncite(a.ask))); }
     }
   }
   const run = lastRun && lastRun.title ? { title: sentence(lastRun.title), state: sentence(lastRun.state), shipped: lastRun.shipped === true, at: day(lastRun.at) } : null;
@@ -171,7 +175,7 @@ export function changedLine(c) {
   const nothing = c.upgraded + c.added + (c.built ? c.built.length : 0) === 0;
   if (nothing) return 'Nothing changed this lap yet: no item sent for upgrade, no new feature' + (c.built ? ', no ask of mine built' : '') + '.';
   return 'Lap ' + c.lap + ' so far: ' + [n(c.upgraded, 'item', 'items') + ' sent for upgrade' + (c.recent.length && c.upgraded ? ' (newest: ' + c.recent.join(', ') + ')' : ''), n(c.added, 'new feature', 'new features'),
-    c.built ? n(c.built.length, 'ask of mine built', 'asks of mine built') + (c.built.length ? ': ' + c.built.slice(0, 2).join('; ') + (c.built.length > 2 ? '; …' : '') : '') : ''].filter(Boolean).join(' · ');
+    c.built ? n(c.built.length, 'ask of mine built', 'asks of mine built') + (c.built.length ? ': ' + c.built.slice(0, 2).join('; ') + (c.built.length > 2 ? '; and ' + (c.built.length - 2) + ' more' : '') : '') : ''].filter(Boolean).join(' · ');
 }
 
 /** What comes next and why, from what each picker reads. My will (functions/api/will.js POST): while a will job is queued or building

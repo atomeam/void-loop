@@ -3,7 +3,7 @@
 // there it fills the art box (cover-fit, over Verse's ink plate, under the foil frame). If it is not and the card is an answer or a merged card (never a
 // skill, game or miniature), it paints it ONCE by itself (one POST per subject per page; the server's daily cap, rate limit and kill switch bound the spend) and the plate stays until the picture lands. ?art=button offers a "paint this card" button instead; ?art=off never asks.
 // The picture is kept on the card element (el._vcForge) so a rebuilt frame shows it again, and the saved card picture (lib/card-image.js) includes it.
-import { safeImg } from './art-rules.js';
+import { safeImg, frameTitle } from './art-rules.js';
 import { artSource } from './art-source.js';
 
 export const FORGE_CSS = [
@@ -39,6 +39,7 @@ export function worthy(el, c) {
   const kind = String(c.kindName || '').toLowerCase();
   // a card still loading is never painted ("Repository — looking" painted the word "looking"), nor a fragment of a word ("rt")
   const sk = String(subjectFor(el, c) || '').trim();
+  if (frameTitle(sk)) return false; // a frame word ("Calculated") is not a subject: the image model paints the word itself, misspelt
   if (sk.replace(/[^a-z0-9]/gi, '').length < 3 || /^(?:looking|loading|thinking|searching)\b/i.test(sk) || /\b(?:looking|loading)\b|…$/i.test(String(c.typeLine || ''))) return false;
   return kind !== 'person' && !c.notFound && !!String(c.key || '').trim(); // a Not found card is never painted: a picture would dress a refusal as an answer
 }

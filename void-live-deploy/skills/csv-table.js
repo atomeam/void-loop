@@ -6,7 +6,8 @@
  *   small thumbnail, anything else a card with its name, size and type. The file is read in the page and goes nowhere; only the card is kept.
  * Nothing appears until asked or until something is dropped.
  */
-import { parseCsv, rowsFromAsk, sortedRows } from '../lib/note-tools.js';
+import { parseCsv, rowsFromAsk, sortedRows, mdTable } from '../lib/note-tools.js';
+import { toCsv } from '../lib/list-ops.js';
 import { addThing, cardEl, keepOut } from '../lib/stage-pack.js';
 
 // "csv to table: a,b // 1,2" is list-tools' form (its data table card, tools pack 10) and is left to it: this skill takes "csv table:",
@@ -21,6 +22,18 @@ export function csvIntent(raw) {
   if (!m) return null;
   const rows = rowsFromAsk(m[1]);
   return rows.length ? { rows } : null;
+}
+
+// "make a table from a,b,c", "make a table from name, age, city" (2026-11-06, docs/GAPS.md row 16: the pipes came back as text in a
+// paragraph): the words become the headings and one empty row waits to be typed in. "make a table of the planets" has no list and stays out.
+const HEADS = /^(?:please\s+)?(?:make|build|create|draw|start|give\s+me)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:new\s+)?(?:empty\s+)?table\s+(?:from|with|of|for)\s+(?:(?:the\s+)?(?:columns?|headings?|headers?|fields?)\s*:?\s+)?([^\n:]+)$/i;
+/** the headings an ask names, as rows (headings, then one empty row), or null. Pure. */
+export function headsIntent(raw) {
+  const m = HEADS.exec(String(raw || '').trim().replace(/[.!?]+$/, ''));
+  if (!m || !m[1].includes(',')) return null;
+  const heads = m[1].split(',').map((x) => x.trim().replace(/^and\s+/i, '')).filter(Boolean);
+  if (heads.length < 2 || heads.length > 20 || heads.some((h) => h.length > 40 || h.split(/\s+/).length > 3)) return null; // a heading is a word or three, not a sentence
+  return { rows: [heads, heads.map(() => '')] };
 }
 
 /** a file's size in words: "2.1 KB". Pure. */
@@ -75,7 +88,14 @@ function mountTable(th, stageApi) {
   });
   const foot = document.createElement('div'); foot.className = 'csv-foot'; foot.style.cssText = 'font-size:11px;opacity:.65;margin-top:6px';
   foot.textContent = Math.max(0, rows.length - 1) + ' rows × ' + w + ' columns · tap a heading to sort';
-  el.append(cap, tbl, foot);
+  // add a row, and copy the table as CSV or Markdown (2026-11-06, docs/GAPS.md row 16); the copy is made here and goes to the clipboard only
+  const bar = document.createElement('div'); bar.className = 'csv-bar'; bar.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-top:6px';
+  const btn = (cls, label, go) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.textContent = label; b.style.cssText = 'padding:3px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.28);background:transparent;color:#e8e8e8;cursor:pointer;font:12px system-ui'; b.addEventListener('click', (e) => { e.stopPropagation(); go(b); }); keepOut(b); bar.appendChild(b); return b; };
+  const copy = async (b, text, label) => { let ok = false; try { await navigator.clipboard.writeText(text); ok = true; } catch (_) {} b.textContent = ok ? 'copied' : 'copy failed'; setTimeout(() => { b.textContent = label; }, 1600); };
+  btn('csv-add', '+ row', () => { if (rows.length >= 200) return; rows.push(Array.from({ length: w }, () => '')); th.rows = rows; stageApi.save(); stageApi.render(); });
+  btn('csv-copy', 'copy CSV', (b) => copy(b, toCsv(rows), 'copy CSV'));
+  btn('csv-md', 'copy Markdown', (b) => copy(b, mdTable(rows), 'copy Markdown'));
+  el.append(cap, tbl, bar, foot);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
 }
@@ -143,10 +163,11 @@ if (typeof document !== 'undefined' && !window.__voidDropCard) {
 
 export default {
   name: 'csv-table',
-  examples: ['csv table: name,age ⏎ ann,30 ⏎ bo,25', 'paste csv: item;price ⏎ tea;3 ⏎ cake;5', 'table from csv: a,b ⏎ 1,2', 'show the dropped files', 'drag a file onto the stage'],
-  nearMisses: ['what is a csv file', 'convert this csv to json', 'csv', 'make a table of the planets', 'merge two csv files', 'drop me a line', 'drag the note to the left'],
+  examples: ['csv table: name,age ⏎ ann,30 ⏎ bo,25', 'paste csv: item;price ⏎ tea;3 ⏎ cake;5', 'table from csv: a,b ⏎ 1,2', 'show the dropped files', 'drag a file onto the stage', 'make a table from a,b,c', 'make a table from name, age, city'],
+  nearMisses: ['what is a csv file', 'convert this csv to json', 'csv', 'make a table of the planets', 'merge two csv files', 'drop me a line', 'drag the note to the left', 'make a table from wood', 'build a table with legs, top, and screws for my patio from oak'],
   csvIntent,
-  match(lower, text) { const t = text || lower; return !!csvIntent(t) || SHOW_DROP.test(t.trim()) || HOW_DROP.test(t.trim()); },
+  headsIntent,
+  match(lower, text) { const t = text || lower; return !!csvIntent(t) || !!headsIntent(t) || SHOW_DROP.test(t.trim()) || HOW_DROP.test(t.trim()); },
   async run(text, api) {
     const t = String(text || '').trim(), stageApi = api.stage;
     if (HOW_DROP.test(t)) { api.say('drag a file from your computer onto the stage: a csv becomes a table, other files a card'); return 'csv-table'; }
@@ -159,10 +180,10 @@ export default {
       api.say(made ? made + (made === 1 ? ' card' : ' cards') + ' from the dropped ' + (made === 1 ? 'file' : 'files') + ' · read here, sent nowhere' : 'I could not read that file');
       return 'csv-table';
     }
-    const q = csvIntent(t); if (!q) return 'none';
+    const heads = csvIntent(t) ? null : headsIntent(t), q = csvIntent(t) || heads; if (!q) return 'none';
     const th = addThing(stageApi, 'csvtable', { title: '', rows: q.rows });
     stageApi.select(th.id); stageApi.save(); stageApi.render();
-    api.say('table with ' + Math.max(0, q.rows.length - 1) + ' rows · tap a heading to sort');
+    api.say(heads ? 'table with ' + q.rows[0].length + ' columns · type in the empty row, + row adds another' : 'table with ' + Math.max(0, q.rows.length - 1) + ' rows · tap a heading to sort');
     return 'csv-table';
   },
   stageKinds: {

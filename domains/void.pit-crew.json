@@ -1,7 +1,13 @@
 {
-  "at": "2026-11-05T14:58:41.677Z",
+  "at": "2026-11-07T13:36:02.212Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261106-2342-2",
+      "ask": "Implement the URL hash serialization logic for ndscalc.ru.",
+      "target": "voice:ask-20261106-2342-2"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }

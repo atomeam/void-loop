@@ -269,6 +269,30 @@ export function regionsOf(text, pattern, { pad = 4, max = 6 } = {}) {
   return { hits, lines: lines.length };
 }
 /** replace lines `from`..`to` (1-based, inclusive) with `next`. Pure. */
+/** where "old" nearly is, for a replace that did not match (#2330: laps reached the turn cap on "no match", then read and searched
+ *  the file again to find the lines). The window of the file, as long as "old", that is most like it: a line that is a line
+ *  of "old" (its end spaces set aside) counts 3, a line that holds one of its words of 4 or more letters counts 1. The window
+ *  comes with line numbers as read gives them, up to `max` lines, and says whether "old" is there once its spaces are set
+ *  aside. '' when nothing of "old" is in the file. Pure. */
+export function nearMiss(text, old, { max = 20 } = {}) {
+  const lines = String(text || '').split('\n'), src = String(old || '');
+  const want = new Set(src.split('\n').map((l) => l.trim()).filter(Boolean));
+  const words = [...new Set(src.match(/[A-Za-z_$][\w$-]{3,}/g) || [])];
+  if (!want.size || !lines.length) return '';
+  const score = lines.map((l) => (want.has(l.trim()) ? 3 : words.some((w) => l.includes(w)) ? 1 : 0));
+  const span = Math.max(1, src.split('\n').length);
+  let best = 0, at = 0;
+  for (let i = 0; i < lines.length; i++) {
+    let n = 0; for (let j = i; j < Math.min(lines.length, i + span); j++) n += score[j];
+    if (n > best) { best = n; at = i; }
+  }
+  if (!best) return '';
+  const squash = (x) => x.replace(/\s+/g, ' ').trim();
+  const spaces = squash(text).includes(squash(src)) ? ' It is in the file once spaces and line breaks are set aside.' : '';
+  const from = Math.max(0, at - 1), to = Math.min(lines.length, at + Math.min(span, max) + 1);
+  return 'The nearest lines are ' + (from + 1) + '-' + to + ' (copy the text after each tab).' + spaces + '\n' + lines.slice(from, to).map((l, k) => (from + k + 1) + '\t' + l).join('\n');
+}
+
 export function applyLines(text, from, to, next) {
   const ls = String(text || '').split('\n');
   const a = Math.floor(+from), b = Math.floor(+to);
@@ -447,7 +471,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       } else {
         if (old === '') return path + ' exists: put the exact text to change in "old"';
         const n = was.split(old).length - 1;
-        if (!n) return 'no match: "old" is not in ' + path + ' as written. Read the lines again and copy them exactly, spaces included.';
+        if (!n) { const near = nearMiss(was, old); return 'no match: "old" is not in ' + path + ' as written. ' + (near ? near : 'Read the lines again and copy them exactly, spaces included.'); }
         if (n > 1) return '"old" is in ' + path + ' ' + n + ' times: add lines around it so it is there once';
       }
       const before = new Map([[path, was]]);

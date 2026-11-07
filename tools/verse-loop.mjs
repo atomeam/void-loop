@@ -192,21 +192,34 @@ export function loadState(path) {
 export function saveState(path, s) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, JSON.stringify(s, null, 1) + '\n'); }
 
 /** The loop's own code: a commit to these after the failures began means the streak was not run on the code that runs now. */
-export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js'];
+// The patch guard is the coder's own check too: a guard that refused good code is fixed there (#2386), and that fix resumes the loop.
+export const LOOP_CODE = ['tools/verse-loop.mjs', 'tools/verse-coder.mjs', 'tools/verse-job.mjs', 'void-live-deploy/functions/api/coder.js', 'void-live-deploy/lib/patch-guard.js'];
 
 /** Is the loop paused? From the flag in the state, or (a fresh runner) the open 'Verse loop paused' issue. Paused for
  *  PAUSE_HOURS from the moment it paused, then it resumes by itself: nobody has to close anything. It resumes early when
  *  `changedAt` (the newest commit to LOOP_CODE on main) is after the first failure of the streak: the failures were on code
  *  that no longer runs (2026-10-29: the coder's token-cap fix merged at the same minute the third failure paused the loop
  *  for 6 hours). Pure. */
-export function pauseState({ state = {}, issue = null, now = Date.now(), changedAt = null }) {
+export function pauseState({ state = {}, issue = null, now = Date.now(), changedAt = null, closed = false }) {
   const since = state.pausedAt != null ? state.pausedAt : issue && Date.parse(issue.createdAt) ? Date.parse(issue.createdAt) : null;
   if (since == null) return { paused: false, resume: false };
   const until = since + PAUSE_HOURS * 3600e3;
+  // the pause's issue was closed while the state still held the pause: the issue is the switch, so the state follows it
+  // (2026-11-06: issue #2438 closed at 18:40, yet the saved state kept laps and queue jobs paused until 21:22)
+  if (now < until && state.pausedAt != null && !issue && closed) return { paused: false, resume: true, until, closed: true };
   const ats = (state.last || []).map((l) => Number(l && l.at)).filter((n) => n > 0);
   const began = ats.length ? Math.min(...ats) : since;
   if (now < until && Number(changedAt) > began) return { paused: false, resume: true, until, early: true };
   return now < until ? { paused: true, resume: false, until } : { paused: false, resume: true, until };
+}
+
+/** Was the issue this pause opened closed? `closedIssues` is the closed 'Verse loop paused' issues (gh issue list, or null when gh
+ *  failed: then no, and the pause holds). The pause's own issue is the one opened when it paused, so it counts only if it was
+ *  created no earlier than PAUSE_SKEW before `pausedAt` (an older closed issue is an earlier pause). Pure. */
+export const PAUSE_SKEW = 15 * 60e3;
+export function pauseIssueClosed(closedIssues, pausedAt) {
+  if (!Array.isArray(closedIssues) || pausedAt == null) return false;
+  return closedIssues.some((i) => i && i.title === PAUSE_TITLE && Date.parse(i.createdAt) >= Number(pausedAt) - PAUSE_SKEW);
 }
 
 /** The streak after one lap. A merged PR resets it; a PR closed without merging counts as a failure. Pure. */
@@ -216,10 +229,16 @@ export function recordOutcome(state, outcome, { pr = null, why = '', at = Date.n
   if (outcome === 'shipped' && pr) s.prs.push(pr);
   return s;
 }
+/** A PR another job closed as superseded (tools/automerge.mjs leaves the void-superseded marker: a newer PR carries the same work) was
+ *  replaced, not refused. Issue #2438, 2026-11-06: #2329 was closed as superseded by #2436 and counted as "not merged", the third failure
+ *  that paused the loop for 6 hours. stateOf(url) returns 'SUPERSEDED' for one (prStateOf below); it is dropped and counts for nothing. */
+export const SUPERSEDED_MARK = '<!-- void-superseded -->';
+export const prStateOf = (v) => !v ? null : v.state === 'CLOSED' && (v.comments || []).some((c) => String(c && c.body || '').includes(SUPERSEDED_MARK)) ? 'SUPERSEDED' : v.state;
 export function settlePrs(state, stateOf) {
   const s = { ...state, prs: [] };
   for (const url of state.prs || []) {
     const st = stateOf(url);
+    if (st === 'SUPERSEDED') continue;
     if (st === 'MERGED') s.fails = 0;
     else if (st === 'CLOSED') { s.fails = (s.fails || 0) + 1; s.last = [...(s.last || []), { outcome: 'not merged', why: url }].slice(-BACKOFF_AFTER); }
     else s.prs.push(url);
@@ -350,10 +369,11 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     // the pause: skip until it ends, then resume by itself
     const issue = pauseIssue();
     const ct = state.pausedAt != null || issue ? Number(git('log', '-1', '--first-parent', '--format=%ct', 'HEAD', '--', ...LOOP_CODE).out.trim()) : 0;
-    const p = pauseState({ state, issue, now, changedAt: ct > 0 ? ct * 1000 : null });
+    const closed = state.pausedAt != null && !issue && pauseIssueClosed(ghJson('issue', 'list', '--state', 'closed', '--search', `"${PAUSE_TITLE}" in:title`, '--json', 'number,title,createdAt', '--limit', '5'), state.pausedAt);
+    const p = pauseState({ state, issue, now, changedAt: ct > 0 ? ct * 1000 : null, closed });
     if (p.paused) return done('paused', `${BACKOFF_AFTER} laps in a row failed or did not merge; it resumes by itself at ${new Date(p.until).toISOString()}`);
     if (p.resume) {
-      step(p.early ? 'the loop\'s code changed after the failures began; resuming early' : 'the pause is over; resuming');
+      step(p.closed ? 'the pause\'s issue was closed; resuming' : p.early ? 'the loop\'s code changed after the failures began; resuming early' : 'the pause is over; resuming');
       if (keep) {
         if (issue) gh('issue', 'close', String(issue.number), '--comment', p.early
           ? `Resumed early: the loop's own code changed on main after these failures began, so they were not on the code that runs now (tools/verse-loop.mjs).`
@@ -364,7 +384,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     }
     // the PRs earlier laps opened: merged resets the streak, closed without merging counts
     if (keep && (state.prs || []).length) {
-      state = settlePrs(state, (url) => (ghJson('pr', 'view', url, '--json', 'state') || {}).state);
+      state = settlePrs(state, (url) => prStateOf(ghJson('pr', 'view', url, '--json', 'state,comments')));
       if (state.fails >= BACKOFF_AFTER) { trip(); saveState(statePath, state); return done('paused', 'a loop PR was closed without merging, the last of ' + BACKOFF_AFTER + ' failures in a row'); }
       saveState(statePath, state);
     }

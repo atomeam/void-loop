@@ -7,7 +7,7 @@
 // organs marked imagine, because the learners must never learn from what the brain only imagined.
 // Pure: no DOM, no clock, no Math.random. The visitor's pointer path is kept only as a short ring in memory, never sealed or saved.
 import { episodicPrior, recordEpisode, keyOf, recordProcedure, bestProcedure } from './brain-mind.js';
-import { clamp, laplacian4, idx, mutate, randomGenome, rng } from './field-kit.js';
+import { clamp, idx, mutate, randomGenome, rng } from './field-kit.js';
 import { kuramoto } from './field-resonance.js';
 import { synapses } from './brain-synapses.js';
 import { creature } from './brain-creature.js';
@@ -20,6 +20,12 @@ import { current } from './brain-current.js';
 import { grains } from './brain-grains.js';
 import { pool } from './brain-pool.js';
 import { trace } from './brain-trace.js';
+import { strokes } from './brain-strokes.js';
+import { rules } from './brain-rules.js';
+import { reflex } from './brain-reflex.js';
+import { growth } from './brain-growth.js';
+import { atlas } from './brain-atlas.js';
+import { curves } from './brain-curves.js';
 import { dialogue } from './brain-dialogue.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
 
@@ -274,16 +280,18 @@ const concepts = {
 };
 
 // ---- tissue: Gray-Scott reaction-diffusion fed by everything that lands in the input and memory layers -------------------------------------
+const T_NU = new Float32Array(CELLS), T_NV = new Float32Array(CELLS); // scratch for the next sub and act layers: copied in before they are read, so no state crosses calls
 export function tissueStep(ws, feed, kill, iters = 2, owner = 'tissue', garden = null) { // garden: the gardener's feed and kill offsets per patch (lib/brain-gardener.js)
-  const u = ws.layers.sub, v = ws.layers.act, inp = ws.layers.input, mem = ws.layers.memory, nu = new Float32Array(CELLS), nv = new Float32Array(CELLS);
+  const u = ws.layers.sub, v = ws.layers.act, inp = ws.layers.input, mem = ws.layers.memory, nu = T_NU, nv = T_NV;
   const o = ws.organs.indexOf(owner);
   for (let it = 0; it < iters; it++) {
-    for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
-      const i = y * GW + x, U = u[i], V = v[i], uvv = U * V * V, seed = inp[i] * 0.06 + mem[i] * 0.01, t = garden ? tileOf(x, y) : 0, F = garden ? feed + garden.df[t] : feed, Kl = garden ? kill + garden.dk[t] : kill;
-      nu[i] = clamp(U + 0.2097 * laplacian4(u, x, y, GW, GH) - uvv + F * (1 - U) - seed, 0, 1);
-      nv[i] = clamp(V + 0.105 * laplacian4(v, x, y, GW, GH) + uvv - (Kl + F) * V + seed, 0, 1);
-    }
-    for (let i = 0; i < CELLS; i++) { if (o >= 0 && Math.abs(nv[i] - v[i]) > 0.01) { ws.owner[i] = o; ws.wroteAt[i] = ws.tick; ws.writes[o]++; } }
+    // laplacian4 written out: the same four wrapped neighbours added in the same order, without two modulos per cell per neighbour
+    for (let y = 0; y < GH; y++) { const row = y * GW, up = ((y - 1 + GH) % GH) * GW, dn = ((y + 1) % GH) * GW; for (let x = 0; x < GW; x++) {
+      const i = row + x, xl = row + (x ? x - 1 : GW - 1), xr = row + (x + 1 < GW ? x + 1 : 0), U = u[i], V = v[i], uvv = U * V * V, seed = inp[i] * 0.06 + mem[i] * 0.01, t = garden ? tileOf(x, y) : 0, F = garden ? feed + garden.df[t] : feed, Kl = garden ? kill + garden.dk[t] : kill;
+      nu[i] = clamp(U + 0.2097 * (u[xl] + u[xr] + u[up + x] + u[dn + x] - 4 * U) - uvv + F * (1 - U) - seed, 0, 1);
+      nv[i] = clamp(V + 0.105 * (v[xl] + v[xr] + v[up + x] + v[dn + x] - 4 * V) + uvv - (Kl + F) * V + seed, 0, 1);
+      if (o >= 0 && Math.abs(nv[i] - V) > 0.01) { ws.owner[i] = o; ws.wroteAt[i] = ws.tick; ws.writes[o]++; } // the ownership pass, folded in: v[i] is not written until u.set
+    } }
     u.set(nu); v.set(nv);
   }
   return ws;
@@ -320,7 +328,8 @@ export function swarmStep(b) {
   const tx = b.senses.feat[4] * 0.0004, ty = b.senses.feat[5] * 0.0004;
   for (const i of ids) {
     let ax = 0, ay = 0;
-    for (const j of ids) { if (i === j) continue; let dx = N.x[j] - N.x[i], dy = N.y[j] - N.y[i]; const d = Math.hypot(dx, dy); if (d > rmax || d < 1e-5) continue; const F = plForce(d, rmax, M[N.kind[i]][N.kind[j]]); ax += (dx / d) * F; ay += (dy / d) * F; }
+    // a pair more than rmax apart on either axis is more than rmax apart: skipped before Math.hypot, as the d > rmax test would
+    for (const j of ids) { if (i === j) continue; let dx = N.x[j] - N.x[i], dy = N.y[j] - N.y[i]; if (dx > rmax || dx < -rmax || dy > rmax || dy < -rmax) continue; const d = Math.hypot(dx, dy); if (d > rmax || d < 1e-5) continue; const F = plForce(d, rmax, M[N.kind[i]][N.kind[j]]); ax += (dx / d) * F; ay += (dy / d) * F; }
     ax *= 0.0006; ay *= 0.0006;
     // Physarum: sense the tissue at three points ahead and turn toward the richest
     const h = Math.atan2(N.vy[i], N.vx[i]) || 0, sd = 0.04, sa = 0.5, at = (a) => act[cellOf(N.x[i] + Math.cos(h + a) * sd, N.y[i] + Math.sin(h + a) * sd)];
@@ -434,7 +443,19 @@ const arena = {
   }
 };
 
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, dialogue, will, arena];
+// A deploy serves each /lib/ file on its own, so for a minute a visitor can get this organ list beside a brain made by an older lib/brain.js that
+// does not hold the newest organ's state (site-test issue #2387: "play reversi" threw reading 'queue' seven minutes after the strokes organ
+// shipped). Every organ kept in its own module is wrapped here: without its state in the brain it rests, wants nothing and runs nothing; with
+// its state it is the organ as written (tools/brain-skew.test.mjs). STATE_KEY names the brain key of an organ whose state is not under its id.
+export const STATE_KEY = { hearing: 'ear' };
+const guarded = (o) => {
+  const key = STATE_KEY[o.id] || o.id, has = (b) => !!(b && b[key]);
+  return { ...o, rests: (b) => !has(b) || !!(o.rests && o.rests(b)), want: (b) => (has(b) ? o.want(b) : 0), run: (b, ...rest) => (has(b) ? o.run(b, ...rest) : 0) };
+};
+const OWN = [synapses, creature, hearing, painter, gardener, grower, formula, current, grains, pool, trace, strokes, rules, reflex, growth, atlas, curves, dialogue].map(guarded);
+const own = (id) => OWN.find((o) => o.id === id);
+
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, own('gardener'), rhythm, own('synapses'), own('creature'), own('hearing'), swarm, membrane, own('painter'), own('grower'), own('formula'), own('current'), own('grains'), own('pool'), own('trace'), own('strokes'), own('rules'), own('reflex'), own('growth'), own('atlas'), own('curves'), own('dialogue'), will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };

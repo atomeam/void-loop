@@ -9,6 +9,7 @@ export const BUILD_OUTPUTS = [
   'void-live-deploy/skills/families.json',
   'void-live-deploy/skills/guide.json',
   'void-live-deploy/skills/what.json',
+  'void-live-deploy/skills/first.json',
   'void-live-deploy/skills/bench-alarms.json',
   'void-live-deploy/self.json',
   'void-live-deploy/void.asks.json',

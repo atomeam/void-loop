@@ -24,11 +24,10 @@ test('every feature the hash can pick exists: no face is ever drawn with an unde
   const skins = new Set(), hairs = new Set(); for (let i = 0; i < 400; i++) { const s = faceSvg('s' + i); skins.add(SKIN.find((c) => s.includes(c))); hairs.add(HAIR.find((c) => s.includes(c))); }
   assert.ok(skins.size >= 4 && hairs.size >= 4, JSON.stringify([[...skins], [...hairs]]));
 });
-test("Verse's face is its atom galaxy: three orbits in violet, electric blue and gold round a nucleus, labelled Verse, sized as asked", () => {
+test("Verse's face is its mark (the app icon's V and star on a deep tile, 2026-10-30), labelled Verse, sized as asked", () => {
   const v = verseFace({ size: 56 });
   assert.match(v, /role="img" aria-label="Verse"/); assert.match(v, /width="56" height="56"/);
-  for (const hue of [275, 205, 44]) assert.match(v, new RegExp('hsl\\(' + hue + ' 90% 66%\\)'));
-  assert.equal((v.match(/<ellipse cx="50" cy="50" rx="41" ry="13"/g) || []).length, 6, 'each orbit drawn twice: a glow under a line');
+  assert.match(v, /<path d="M30 34\.4 50 69\.5 70 34\.4"/, 'the V'); assert.match(v, /fill="#fff"\/><\/svg>$/, 'the star last, over the tile');
   assert.doesNotMatch(v, /<script|undefined|NaN/i); assert.equal(verseFace(), verseFace());
   assert.notEqual(v, faceSvg('verse', { size: 56 }), "Verse's mark is not a hashed fighter");
 });

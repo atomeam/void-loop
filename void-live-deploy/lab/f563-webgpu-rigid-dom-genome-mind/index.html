@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.body { position:absolute; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:#fff; user-select:none; cursor:grab; box-shadow:0 4px 12px rgba(0,0,0,.4); transition:box-shadow .15s; }
+.body:active { cursor:grabbing; box-shadow:0 8px 24px rgba(0,0,0,.6); }
+#hud { position:fixed; top:12px; left:12px; background:rgba(0,0,0,.65); padding:10px 14px; border-radius:8px; font-size:13px; z-index:10; max-width:280px; }
+button { margin:4px 4px 0 0; padding:6px 10px; background:#222; color:#eee; border:1px solid #444; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#log { position:fixed; bottom:12px; left:12px; font-size:12px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU-Ready Rigid DOM Competitive Genome Mind · Verse lab</title>
+<meta name="description" content="Slug: webgpu-rigid-dom-genome-mind">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU-Ready Rigid DOM Competitive Genome Mind · Verse lab">
+<meta property="og:description" content="Slug: webgpu-rigid-dom-genome-mind">
+<meta property="og:url" content="https://a-to-mind.com/lab/f563-webgpu-rigid-dom-genome-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f563-webgpu-rigid-dom-genome-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <strong>F563 Rigid DOM Genome Mind</strong><br>
+  Tilt device or drag bodies. High-speed collisions seal & transfer genomes.<br>
+  <button id="seal">Seal</button>
+  <button id="reset">Reset</button>
+  <button id="add">Add Body</button>
+  <div id="status">Gravity: 0, 0.4</div>
+</div>
+<div id="log"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU-Ready Rigid DOM Competitive Genome Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

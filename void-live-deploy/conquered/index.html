@@ -50,9 +50,11 @@
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   async function draw() {
     // the same files and the same arguments the stage's Versus card reads (skills/tower.js load), so this page and the card name one target:
-    // the lock in tower.target.json, then the smallest by rank and weight
-    const [inv, ev, fr, rk, sz, tg] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.size.json'), get('/tower.target.json')]);
-    const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg }));
+    // the lock in tower.target.json, then the smallest by rank and weight; the whole-site crawls (tower.features.json) and the non-sites the
+    // tower settled (tower.target.json `settled`) as the card has them (owner, 2026-11-06: this page said "Not crawled yet" and kept no line for id5-sync.com)
+    const [inv, ev, fr, rk, sz, tg, ft, gn] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json')]);
+    const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn }));
+    t.settled = tg && Array.isArray(tg.settled) ? tg.settled : []; t.target = tg || null; // the history under the target (skills/tower.js historyHtml)
     $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();
     for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('detail').textContent = detailText(f); }; // the card has no detail slot of its own, so the floor's line goes under it
   }

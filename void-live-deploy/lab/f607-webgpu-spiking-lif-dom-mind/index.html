@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 200; --sat: 50%; --sync: 0; }
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; inset:0; z-index:0; }
+#nodes { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.node { position:absolute; width:48px; height:48px; border-radius:8px; background:hsla(var(--hue),var(--sat),60%,0.7); 
+  transform:translate(-50%,-50%) scale(1); transition:transform 0.05s, opacity 0.1s; pointer-events:auto; cursor:grab;
+  box-shadow:0 0 12px hsla(var(--hue),80%,60%,0.4); display:flex; align-items:center; justify-content:center; font-size:10px; }
+.node.spike { transform:translate(-50%,-50%) scale(1.4); background:hsla(calc(var(--hue)+60),90%,70%,0.95); }
+#ui { position:absolute; top:12px; left:12px; z-index:2; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+button { margin:4px; padding:6px 10px; background:#222; color:#eee; border:1px solid #444; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#status { margin-top:6px; font-family:monospace; font-size:11px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Spiking LIF DOM Mind · Verse lab</title>
+<meta name="description" content="A previously unused local-AI substrate: a leaky integrate-and-fire (LIF) spiking neural network.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Spiking LIF DOM Mind · Verse lab">
+<meta property="og:description" content="A previously unused local-AI substrate: a leaky integrate-and-fire (LIF) spiking neural network.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f607-webgpu-spiking-lif-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f607-webgpu-spiking-lif-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="nodes"></div>
+<div id="ui">
+  <div>F607 Spiking LIF DOM Mind</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reward">Reward (R)</button>
+  <button id="reset">Reset</button>
+  <div id="status">loading...</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Spiking LIF DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

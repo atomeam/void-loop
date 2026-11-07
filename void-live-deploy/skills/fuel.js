@@ -68,7 +68,8 @@ function fuelOf(text) {
     else { priceUnit = 'gal'; }
     if (near) priceUnit = near;
   }
-  if (!Number.isFinite(price) || price <= 0 || price > 50) return null;
+  // no price (2026-11-06, docs/GAPS.md row 15: "fuel cost for 300 miles at 30 mpg" got only 300 miles in km): the fuel needed, and a box for the price
+  if (Number.isFinite(price) && (price <= 0 || price > 50)) return null;
   if (!priceUnit) priceUnit = Number.isFinite(lp100) ? 'L' : 'gal';
 
   return { distance, distUnit, mpg, lp100, price, currency, priceUnit, raw };
@@ -91,11 +92,34 @@ function compute(q) {
   return { gallons, liters, cost, perDist };
 }
 
+// the fuel needed from distance and efficiency alone; the cost follows when a price per gallon (or per litre) is typed in the box, worked out here
+function noPrice(q, r, api) {
+  const { showPage, esc } = api;
+  if (!Number.isFinite(r.gallons) || r.gallons <= 0) return 'none';
+  const metric = Number.isFinite(q.lp100), distLabel = q.distUnit === 'km' ? 'km' : (q.distance === 1 ? 'mile' : 'miles');
+  const eff = Number.isFinite(q.mpg) ? (Math.round(q.mpg * 10) / 10) + ' mpg' : (Math.round(q.lp100 * 10) / 10) + ' L/100km';
+  const lead = metric ? qtyFmt(r.liters, 'L') : qtyFmt(r.gallons, 'gal'), other = metric ? qtyFmt(r.gallons, 'gal') : qtyFmt(r.liters, 'L');
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Trip fuel</h2><div class="sub">' + esc(String(q.distance)) + ' ' + esc(distLabel) + ' · ' + esc(eff) + '</div>'
+      + '<div class="fuel-need" style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(lead) + '</div>'
+      + '<ul><li><b>Fuel needed</b> ' + esc(lead + ' (' + other + ')') + '</li></ul>'
+      + '<label style="display:flex;gap:8px;align-items:center;margin:8px 0">Price per ' + (metric ? 'litre' : 'gallon') + ' <input class="fuel-price" type="number" min="0" max="50" step="0.01" inputmode="decimal" placeholder="3.50" aria-label="Price per ' + (metric ? 'litre' : 'gallon') + '" style="width:7em"></label>'
+      + '<div class="fuel-cost" aria-live="polite" style="font-size:24px;line-height:1.5"></div>'
+      + '<p style="color:#8a8a8a">Estimate from the numbers you gave. Real trips vary with traffic, hills, load, and the pump price.</p>'
+      + '<div class="src">Formula: fuel = distance ÷ efficiency (mpg or L/100km); cost = fuel × price · worked out on this device</div>';
+  });
+  const box = el && el.querySelector && el.querySelector('.fuel-price'), out = el && el.querySelector && el.querySelector('.fuel-cost');
+  const paint = () => { if (!box || !out) return; const p = num(box.value); if (!Number.isFinite(p) || p <= 0 || p > 50) { out.textContent = ''; return; } const cost = (metric ? r.liters : r.gallons) * p; out.textContent = moneyFmt(cost, 'USD') + ' for the trip · ' + moneyFmt(cost / q.distance, 'USD') + ' per ' + (q.distUnit === 'km' ? 'km' : 'mile'); };
+  if (box) box.addEventListener('input', paint);
+  return 'fuel';
+}
+
 async function run(text, api) {
   const { showPage, esc } = api;
   const q = fuelOf(text);
   if (!q) return 'none';
   const r = compute(q);
+  if (!Number.isFinite(q.price)) return noPrice(q, r, api);
   if (!Number.isFinite(r.cost)) return 'none';
   const distLabel = q.distUnit === 'km' ? 'km' : (q.distance === 1 ? 'mile' : 'miles');
   const eff = Number.isFinite(q.mpg)
@@ -129,7 +153,8 @@ export default {
     'how much fuel for a 500 mile trip at 30 mpg gas is $3.40',
     'trip fuel 280 miles 32 mpg $3.25/gal',
     'fuel for 400 km at 7 L/100km 1.85 per liter',
-    'gasoline for 180 miles at 35 mpg $3.10 per gallon'
+    'gasoline for 180 miles at 35 mpg $3.10 per gallon',
+    'fuel cost for 300 miles at 30 mpg'
   ],
   nearMisses: [
     'gas stations near me',

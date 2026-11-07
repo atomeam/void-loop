@@ -118,8 +118,7 @@
 # times and takes the median pays it three times. A minute of life fixes the repeats, and a deploy is at most a minute stale
 # (owner, 2026-10-31: /converter/ at 243 ms against 59 ms is the last failing aspect of the floor).
 # an exact path, never /converter/*: that would also match /converter/app.js and drop its four hours to one minute, which makes a
-# repeat load slower, not faster
+# repeat load slower, not faster. No /converter/index.html rule: Pages answers that address with a redirect to /converter/, so the
+# rule never reached a page and only spent one of the 100 (2026-11-06: the CSP rules plus these were 101)
 /converter/
-  Cache-Control: public, max-age=60, stale-while-revalidate=300
-/converter/index.html
   Cache-Control: public, max-age=60, stale-while-revalidate=300

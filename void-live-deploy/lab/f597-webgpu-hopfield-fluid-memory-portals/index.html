@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --entropy: 0.3;
+  --energy: 0.4;
+  --bg1: hsl(220, 40%, calc(8% + var(--energy) * 12%));
+  --bg2: hsl(calc(200 + var(--entropy) * 80), 50%, 12%);
+  --accent: hsl(calc(180 + var(--entropy) * 120), 70%, 55%);
+}
+html, body { margin: 0; height: 100%; overflow: hidden; background: radial-gradient(ellipse at 30% 20%, var(--bg1), var(--bg2)); font-family: system-ui, sans-serif; color: #eee; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+#portals { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+.portal {
+  position: absolute; width: 140px; height: 90px; border-radius: 12px;
+  background: rgba(20, 30, 50, 0.75); border: 1px solid var(--accent);
+  backdrop-filter: blur(4px); padding: 8px; font-size: 12px; color: #ddd;
+  transform: translate(-50%, -50%); pointer-events: auto; cursor: grab;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 calc(var(--energy) * 20px) var(--accent);
+}
+.portal:active { cursor: grabbing; }
+#hud {
+  position: fixed; top: 12px; left: 12px; z-index: 2; font-size: 13px;
+  background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 8px;
+  pointer-events: none;
+}
+#controls { position: fixed; bottom: 12px; left: 12px; z-index: 2; }
+button { margin-right: 8px; padding: 6px 12px; background: #222; color: #eee; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Hopfield Fluid Memory Portals · Verse lab</title>
+<meta name="description" content="A continuous fluid substrate (Canvas2D particle approximation of Navier-Stokes forcing.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Hopfield Fluid Memory Portals · Verse lab">
+<meta property="og:description" content="A continuous fluid substrate (Canvas2D particle approximation of Navier-Stokes forcing.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f597-webgpu-hopfield-fluid-memory-portals/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f597-webgpu-hopfield-fluid-memory-portals/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+<div id="hud">F597 Hopfield Fluid Memory Portals<br>Draw to store · Partial draw recalls · Drag portals</div>
+<div id="controls">
+  <button id="seal">Seal (S)</button>
+  <button id="restore">Restore (R)</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Hopfield Fluid Memory Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/mind-map/" data-tool="Mind map">Use it: Mind map</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

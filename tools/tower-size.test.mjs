@@ -184,3 +184,34 @@ test('a rendered count far under the raw count is a block, not a small site (coi
   const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
   assert.ok(at('is it') < at('random number'), 'the real 9 stands before the blocked 4');
 });
+
+test('the smallest sites are found, not thrown out as shells (owner, 2026-11-06: "the easiest site to assimilate was never even found")', async () => {
+  const { tinyPage, plainRow } = await import('./tower-size.mjs');
+  const { tinyProven } = await import('../void-live-deploy/lib/tower-weight.js');
+  // ismycomputeron.com: one word, nothing to press, is a whole site
+  assert.equal(usable('<html><body><h1>YES</h1></body></html>'), true, 'a one-word answer page');
+  assert.equal(tinyPage('<html><head><meta http-equiv="refresh" content="0;url=https://x.com/"></head><body>Moved</body></html>'), false, 'a redirect stub is not a site');
+  assert.equal(usable('<html><body>It works!</body></html>'), false, 'a default server page is not a site');
+  // icanhazip.com: the home page is your address in plain text
+  const r = plainRow(Buffer.from('34.67.187.248\n'), '2026-11-06');
+  assert.deepEqual([r.controls, r.bytes, r.counted, r.text], [0, 14, 'plain', 13]);
+  assert.equal(plainRow('Not Found'), null); assert.equal(plainRow(''), null);
+  assert.equal(rankableControls(r), 0, 'a plain-text home page ranks at 0 controls');
+  // a rendered page with real words on few scripts is trusted at 0 or 1; a script shell or a row with no text count is not
+  assert.equal(rankableControls({ controls: 0, counted: 'rendered', shell: 'none', text: 3, scripts: 0 }), 0);
+  assert.equal(rankableControls({ controls: 1, counted: 'rendered', shell: 'none', text: 40, scripts: 19 }), null, 'linkedin.com/jobs: 1 control over 19 scripts');
+  assert.equal(rankableControls({ controls: 0, counted: 'rendered', shell: 'none', scripts: 1 }), null, 'measured before the text count: still a shell until read again');
+  assert.equal(tinyProven({ controls: 0, counted: 'rendered', shell: 'wall', text: 30 }), false, 'a bot check is a door');
+});
+
+test('the sweep keeps the smallest real home pages and lays them into the frontier (easiest-sites.mjs --small)', async () => {
+  const { smallPage, sliceOf, mergeSmall } = await import('./easiest-sites.mjs');
+  assert.deepEqual(smallPage({ body: '34.67.187.248\n', type: 'text/plain' }).controls, 0, 'icanhazip.com: plain text');
+  assert.equal(smallPage({ body: '<html><body><h1>YES</h1></body></html>', type: 'text/html' }).bytes, 38, 'ismycomputeron.com: one word');
+  assert.equal(smallPage({ body: '<html><body>It works!</body></html>', type: 'text/html' }), null, 'a default server page');
+  assert.equal(smallPage({ body: '<html><head><meta http-equiv="refresh" content="0;url=/x"></head><body>go</body></html>', type: 'text/html' }), null, 'a redirect stub');
+  assert.equal(smallPage({ body: '<p>' + 'x'.repeat(30000) + '</p>', type: 'text/html' }), null, 'too heavy to be small');
+  assert.deepEqual(sliceOf(999990, 30000, 1000000), { from: 999990, to: 1000000 }); assert.deepEqual(sliceOf(null, 10, 100), { from: 0, to: 10 });
+  const fr = mergeSmall({ sites: [{ site: 'a.com', rank: 5, hardness: 20 }] }, [{ host: 'b.com', rank: 9, controls: 0, bytes: 14, plain: true }, { host: 'www.a.com', rank: 5, controls: 1, bytes: 300 }], '2026-11-06');
+  assert.equal(fr.sites.length, 2); assert.equal(fr.sites[0].controls, 1); assert.equal(fr.sites[1].plain, true);
+});

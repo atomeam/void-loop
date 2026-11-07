@@ -35,6 +35,7 @@
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
   .chips a, .tags a { display: inline-flex; align-items: center; min-height: 30px; padding: 2px 11px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); text-decoration: none; font-size: 14px; }
   .chips a:hover, .tags a:hover { color: var(--ink); border-color: var(--accent); }
+  #count { min-height: 23px; } @media (max-width: 700px) { #count { min-height: 45px; } } /* the count line fills in later: hold its two lines on a phone */
   #count { font-size: 15px; color: var(--soft); margin: 10px 0 6px; }
   #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; min-height: 240px; }
   .combo { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -84,7 +85,7 @@
   <p class="intro">Search emoji combos, kaomoji and text art by tag and copy them. Collect several into one, make fancy text, turn a picture into dot art, and keep combos of your own on this device.</p>
   <p class="hint">Search emoji combos, kaomoji and text art by tag, then copy one, or collect several into one. Everything here works on this device; nothing you type is sent anywhere.</p>
   <form class="box" id="form" role="search"><input id="q" type="search" autocomplete="off" aria-label="Search combos by tag" placeholder="Search a tag: cat, love, birthday" enterkeyhint="search"><button class="go" id="go" type="submit">Search</button></form>
-  <div class="row chips" id="chips" aria-label="Popular tags"></div>
+  <div class="row chips" id="chips" aria-label="Popular tags"><!-- the tags the script picks today, so the cards below do not jump when it fills them in --><a href="?q=love" data-tag="love">love</a><a href="?q=cute" data-tag="cute">cute</a><a href="?q=food" data-tag="food">food</a><a href="?q=happy" data-tag="happy">happy</a><a href="?q=coffee" data-tag="coffee">coffee</a><a href="?q=flower" data-tag="flower">flower</a><a href="?q=heart" data-tag="heart">heart</a><a href="?q=music" data-tag="music">music</a><a href="?q=cat" data-tag="cat">cat</a><a href="?q=fire" data-tag="fire">fire</a><a href="?q=halloween" data-tag="halloween">halloween</a><a href="?q=magic" data-tag="magic">magic</a><a href="?q=night" data-tag="night">night</a><a href="?q=sparkle" data-tag="sparkle">sparkle</a><a href="?q=autumn" data-tag="autumn">autumn</a><a href="?q=cake" data-tag="cake">cake</a><a href="?q=christmas" data-tag="christmas">christmas</a><a href="?q=cool" data-tag="cool">cool</a></div>
   <div id="count" role="status"></div>
   <div class="row"><button type="button" id="savedonly" aria-pressed="false">☆ Saved only</button></div>
   <div id="results"></div>
@@ -127,7 +128,7 @@
   <div class="box" style="margin-top:8px"><input id="mine-tags" type="text" autocomplete="off" aria-label="Tags for your combo, separated by commas" placeholder="Tags, separated by commas"><button type="button" class="go" id="addmine">Add</button></div>
   <div id="minemsg" role="status"></div>
 
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emoji-combos/">Emoji combos</a> <a href="/emojis/">Emoji counts</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emojis/">Emoji counts</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer id="about"></footer>
 </main>
 <div id="status" role="status" aria-live="polite"></div>
@@ -147,7 +148,7 @@
   // the search, the tag chips and the cards
   const stats = catalogStats();
   $('about').textContent = 'The catalog holds ' + stats.combos + ' combos in ' + stats.tags + ' tags, written for Verse (not copied from another site). Your own combos and the ones you save are kept on this device only. Nothing you search, type, collect or draw is sent anywhere, and there is no account.';
-  for (const { tag } of tagCounts().filter((x) => !['kaomoji', 'text', 'art'].includes(x.tag)).slice(0, 18)) { const a = document.createElement('a'); a.href = '?q=' + encodeURIComponent(tag); a.textContent = tag; a.dataset.tag = tag; $('chips').append(a); }
+  $('chips').replaceChildren(); for (const { tag } of tagCounts().filter((x) => !['kaomoji', 'text', 'art'].includes(x.tag)).slice(0, 18)) { const a = document.createElement('a'); a.href = '?q=' + encodeURIComponent(tag); a.textContent = tag; a.dataset.tag = tag; $('chips').append(a); }
   function card(c) {
     const d = document.createElement('div'); d.className = 'combo';
     const pre = document.createElement('pre'); pre.textContent = c.t; if (ART(c.t)) pre.className = 'art'; d.append(pre);
@@ -243,6 +244,6 @@
   render(); onBuild(); renderEmoji(); renderFancy(); drawDots();
   mountRelated($('related'), '/emoji-combos/');
 </script>
-<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // the dictionary opens again with the network cut (sw.js TOOLS)</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // the page opens again with the network cut (sw.js TOOLS)</script>
 </body>
 </html>

@@ -7,7 +7,7 @@
 import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
-import { sameAsk as sameAskCard } from './self-blocks.js';
+import { sameAsk as sameAskCard, dupAsk, sameSites, sitesOf, uncite } from './ask-same.js';
 import { weakestFamily, wrongWeakest, weakestSentence } from './weakest.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
@@ -21,7 +21,7 @@ export const VOICE_SYSTEM = 'You are the language model that writes the status r
   + 'RULES. No persona or feelings: do not simulate an identity, emotions, desires or an inner monologue; never write "I feel", "I want", "I hope", "hunger" or "my will". You are a readout, not a character. '
   + 'Objective language: state facts directly ("Next targeted capability: Go", not "I want to learn Go"). First-person words are allowed only for the system\'s mechanical parts ("My routing is failing"). '
   + 'Be specific: name actual skills, cards, games and asks, with the numbers from the facts. If something is weak, say so; if something should change, say exactly what, so a builder could do it today. '
-  + 'Cite or leave out: every claim must be supported by tags from the facts; list those tags in "evidence". A claim you cannot support with a tag is not written. Use only tags that appear in the facts. '
+  + 'Cite or leave out: every claim must be supported by tags from the facts; list those tags in "evidence" only, never in the text: no square brackets in thoughts, better, weakest, next_game or an ask (the card names the sources under each block). A claim you cannot support with a tag is not written. Use only tags that appear in the facts. '
   + 'It reports; it never makes up a motto, quest or identity; if a fact says something is not written yet, say you do not know it. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"thoughts":"<the state in 2-5 plain sentences>","better":"<what should change, 1-3 sentences>",'
   + '"weakest":"<daily only: the weakest operational area right now, with its numbers, 1-2 sentences>","next_game":"<daily only: the next targeted capability (a game, skill or card) and the tagged reason, one sentence>","next_trick":"<daily only: one new video trick or effect to learn for its own clips (not one in its tricks library), one sentence>",'
@@ -66,7 +66,9 @@ export function parseVoice(text) {
   const out = {
     thoughts: clean(j.thoughts, 1500), better: clean(j.better, 800), weakest: clean(j.weakest, 600), next_game: clean(j.next_game, 400), next_trick: clean(j.next_trick, 400),
     asks: (Array.isArray(j.asks) ? j.asks : []).map((a) => (typeof a === 'string' ? { ask: a, small: false } : a || {}))
-      .map((a) => ({ ask: untag(clean(a.ask, 240)), ...(untag(clean(a.why, 240)).length >= 4 ? { why: untag(clean(a.why, 240)) } : {}), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3)
+      .map((a) => ({ ask: untag(clean(a.ask, 240)), ...(untag(clean(a.why, 240)).length >= 4 ? { why: untag(clean(a.why, 240)) } : {}), small: a.small === true })).filter((a) => a.ask.length >= 4)
+      // one ask said twice in one reply is saved once (owner's card, 2026-11-06: duplicate asks were never merged)
+      .filter((a, i, xs) => !xs.slice(0, i).some((b) => dupAsk(b.ask, a.ask))).slice(0, 3)
       // a why that an earlier ask already gave is no reason for this one (owner's card, 2026-10-29: one reason under three asks)
       .map((a, i, xs) => (a.why && xs.slice(0, i).some((b) => b.why && b.why.toLowerCase() === a.why.toLowerCase()) ? (({ why, ...r }) => r)(a) : a)),
     striking: j.striking === true,
@@ -77,7 +79,9 @@ export function parseVoice(text) {
 
 // the fact tags of the prompt ("[S2]", "[S1, S3]", "[S2 tools/x.mjs]") are for the claims in its thoughts, never part of an ask: an ask that
 // kept one showed twice on the wants card, once with "[S2]" and once without (owner, 2026-10-19). Pure.
-export const untag = (s) => String(s || '').replace(/\s*\[S\d+(?:[,;]\s*S\d+)*(?:\s[^\]]{0,80})?\]/g, '').replace(/\s+([.,;:!?])/g, '$1').trim();
+// The other fact labels the model writes in brackets ("[my will]", "[What I am being built, S2]") go too (owner's card, 2026-11-06); brackets that
+// are not a citation stay (lib/ask-same.js uncite).
+export const untag = (s) => uncite(String(s || '').replace(/\s*\[S\d+(?:[,;]\s*S\d+)*(?:\s[^\]]{0,80})?\]/g, '').replace(/\s+([.,;:!?])/g, '$1').trim());
 /** Asks put behind the site Versus is on (void.asks.json `held`: {words, until, why}; owner, 2026-10-29: every site ever made, smallest
  *  first, so an ask that does not help beat the current target waits). An ask is held while `until` is still the target in
  *  tower.target.json; once that site is beaten and the target moves on, the hold ends by itself. Held asks keep their place on the
@@ -135,7 +139,8 @@ export function currentAsks(entries, n = 6) {
 // the entry by its time. Never on a guess. Asks in nearly the same words are one ask, asked n times. Pure.
 const STOP = new Set('the a an and or of to for in on at by with from into that this these those my me i it its is are be as so can could should would will than then when what which who how why not no new more less time each every onto over under about very just also only any all some create implement build make add develop'.split(' '));
 const wordsOf = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
-const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
+// asks that name different sites are two asks however many words they share (lib/ask-same.js sameSites, the rule dupAsk keeps)
+const sameAsk = (a, b) => { if (!sameSites(a, b)) return false; const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
 /** Verse asked (2026-10-17): "a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural
  *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how Verse works underneath
  *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */
@@ -143,7 +148,8 @@ export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '
 // an ask that names a site (onlineconverter.com) is built only by evidence that names that site: the owner's review (2026-10-30) found
 // "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" marked built by a ledger line about sycophanthex.com whose builder
 // had asked "a LANE_PAGES entry for any new tower" in nearly the same words. Pure.
-const sitesOf = (t) => String(t || '').match(/\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site)\b/gi) || [];
+// the sites an ask names come from lib/ask-same.js sitesOf, the rule the card folds by (2026-11-06: this file's own copy missed .ru, so an
+// ndscalc.ru ask needed no ndscalc.ru in its proof)
 export const sitesIn = (ask, evidence) => { const e = String(evidence || '').toLowerCase(); return sitesOf(ask).every((d) => e.includes(d.toLowerCase())); };
 /** how well one ledger line names this ask. 100 when `asked` is the ask. Else sites, commit ids and long words only that line can carry. Pure. */
 function lineScore(entry, ask) {
@@ -171,15 +177,27 @@ export function lineFor(lines, ask) {
   return scored[0].s > 0 && scored[0].s > scored[1].s ? scored[0].x : null;
 }
 const linesAt = (L, at) => L.filter((e) => e.at === at);
-export function followThrough(entries, ledger, links = []) {
-  const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
+// the evidence an ask was built, read once from the ledger and the links: by id (a ledger `asked` or a link's `ask`) and by words
+const proofOf = (L, links) => {
   const byId = new Map(); for (const x of L) if (x.asked) byId.set(String(x.asked), x);
   for (const k of Array.isArray(links) ? links : []) { const x = k && lineFor(linesAt(L, k.ledgerAt), k.ask || k.words || ''); if (x && k.ask && !byId.has(k.ask)) byId.set(String(k.ask), x); }
+  // a link may name the ask by its words instead of its id (see followThrough)
+  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: lineFor(linesAt(L, k.ledgerAt), k.words), proof: '' })).filter((k) => k.x);
+  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e, proof: String(e.asked) });
+  return { byId, byWords };
+};
+/** the ledger line that built an ask (its words and the ids it was asked under), on followThrough's evidence rule, or undefined. Pure. */
+const hitOf = (ask, ids, ev) => (ids || []).map((id) => ev.byId.get(id)).find(Boolean)
+  || (ev.byWords.find((k) => (k.words.toLowerCase() === String(ask).toLowerCase() || sameAsk(ask, k.words)) && sitesIn(ask, k.proof + ' ' + k.x.what + ' ' + (k.x.show || ''))) || {}).x;
+export function followThrough(entries, ledger, links = []) {
+  const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
+  const ev = proofOf(L, links);
   const groups = [];
   const flat = []; for (const e of entries || []) for (const [i, a] of (e.asks || []).entries()) if (a && a.ask) flat.push({ id: askId(e.at, i), ask: a.ask, at: e.at });
   flat.sort((a, b) => String(a.at).localeCompare(String(b.at))); // oldest first: a group keeps the words it was first asked in
   for (const a of flat) {
-    const g = groups.find((x) => x.ask.toLowerCase() === a.ask.toLowerCase() || sameAsk(x.ask, a.ask));
+    // one ask said again (the same words, nearly the same, or dupAsk: numbers changed, the same named target) is one group
+    const g = groups.find((x) => x.ask.toLowerCase() === a.ask.toLowerCase() || sameAsk(x.ask, a.ask) || dupAsk(x.ask, a.ask));
     if (g) { g.times++; g.ids.push(a.id); g.last = a.at; } else groups.push({ ask: a.ask, ids: [a.id], times: 1, first: a.at, last: a.at });
   }
   // a link may name the ask by its words instead of its id: for an ask that has not reached the voice log yet (it is synced once a
@@ -190,11 +208,9 @@ export function followThrough(entries, ledger, links = []) {
   // A ledger `asked` is the builder naming the ask, so its words count as evidence; a link's words are only the ask copied back
   // (tools/asks-link.mjs links by shared words), so a site the ask names must be in the ledger line itself (2026-10-30: the
   // onlineconverter.com ask showed a sycophanthex.com line as what was built).
-  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: lineFor(linesAt(L, k.ledgerAt), k.words), proof: '' })).filter((k) => k.x);
-  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e, proof: String(e.asked) });
   const built = [], open = [];
   for (const g of groups) {
-    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => (k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) && sitesIn(g.ask, k.proof + ' ' + k.x.what + ' ' + (k.x.show || ''))) || {}).x;
+    const hit = hitOf(g.ask, g.ids, ev);
     (hit ? built : open).push(hit ? { ...g, what: String(hit.what), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
@@ -223,7 +239,14 @@ export function builtAsks(f, ledger, links = []) {
   for (const g of (f && Array.isArray(f.built) ? f.built : [])) add(g.ask, g.builtAt, g.times, g.what);
   for (const k of Array.isArray(links) ? links : []) if (k && typeof k.words === 'string') add(k.words, k.ledgerAt);
   for (const x of all) if (x.asked && !/^ask-\d/.test(String(x.asked))) add(String(x.asked), x.at, 1, x.what);
-  return rows.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  // one ask built by two ledger lines (owner's card, 2026-11-06: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" listed
+  // twice, "17 checked and 6 tested" beside "16 checked and 5 tested") is one row: the newest line, with how many times it was asked in all
+  const out = [];
+  for (const r of rows.sort((a, b) => String(b.at).localeCompare(String(a.at)))) {
+    const same = out.find((o) => o.ask.toLowerCase() === r.ask.toLowerCase() || sameAsk(o.ask, r.ask) || dupAsk(o.ask, r.ask));
+    if (same) same.times += r.times; else out.push(r);
+  }
+  return out;
 }
 /** The one record of Verse's asks, for the self card, the wants card and its own facts alike, so its counts agree with each other
  *  (asked by Verse, 2026-10-29; the self card said "3 waiting" beside "237 of 244 asks": 7 not built). The all-time totals
@@ -233,7 +256,8 @@ export function builtAsks(f, ledger, links = []) {
  *  `totals.open` (a file from before) it falls back to the window. answered: void.asks.json. Pure. */
 export function askRecord(entries, ledger, answered) {
   const f = followThrough(entries, ledger, answered && answered.links);
-  const same = (a, b) => String(a || '').toLowerCase() === String(b || '').toLowerCase() || sameAsk(a, b) || sameAskCard(a, b);
+  const same = (a, b) => String(a || '').toLowerCase() === String(b || '').toLowerCase() || sameAsk(a, b) || sameAskCard(a, b) || dupAsk(a, b);
+  const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [], ev = proofOf(L, answered && answered.links);
   // each window ask's newest mention: when and where it was asked, whether it was called small, the why it gave
   const byId = new Map(); for (const e of entries || []) for (const [i, a] of (e.asks || []).entries()) if (a && a.ask) { const id = askId(e.at, i); if (!byId.has(id) || String(byId.get(id).at) < String(e.at)) byId.set(id, { e, a, id }); }
   const item = (g) => { const m = g.ids.map((id) => byId.get(id)).filter(Boolean).sort((x, y) => String(y.e.at).localeCompare(String(x.e.at)))[0];
@@ -247,16 +271,26 @@ export function askRecord(entries, ledger, answered) {
     return { f, total, built, open };
   }
   const known = (g) => T.open.some((t) => t && same(t.ask, g.ask));
-  let builtSince = 0; const open = [];
+  // the log's open asks with one ask said twice merged first (it counts once), each keeping every id it was asked under
+  const logOpen = [];
   for (const t of T.open) {
     if (!t || !t.ask) continue;
-    if (f.built.some((g) => same(t.ask, g.ask))) { builtSince++; continue; } // answered by a ledger line since the log was read
+    const m = logOpen.find((o) => same(o.ask, t.ask)), ids = Array.isArray(t.ids) ? t.ids.map(String) : [];
+    if (m) { m.times += +t.times || 1; m.ids.push(...ids); m.small = m.small || !!t.small; if (String(t.at || '') > String(m.at || '')) m.at = t.at; } else logOpen.push({ ...t, times: +t.times || 1, ids });
+  }
+  let builtSince = 0; const open = [];
+  for (const t of logOpen) {
+    // answered since the log was read: by an ask in the window the ledger built, or straight from the ledger and the links (its ids, its
+    // words), so the count does not fall back when that reflection leaves the 60-entry window (owner's card, 2026-11-06: "-3 asks built",
+    // the three images exam asks built by id on 2026-11-05 counted open again once their reflections rolled off)
+    if (f.built.some((g) => same(t.ask, g.ask)) || hitOf(t.ask, t.ids, ev)) { builtSince++; continue; }
     const w = f.open.find((g) => same(t.ask, g.ask));
-    if (open.some((o) => same(o.ask, t.ask))) continue;
-    open.push(w ? item(w) : { ask: untag(t.ask), small: !!t.small, kind: t.kind || '', at: t.at || '', times: +t.times || 1 });
+    const o = open.find((x) => same(x.ask, t.ask));
+    if (o) { o.times += t.times; continue; }
+    open.push(w ? { ...item(w), times: Math.max(item(w).times, t.times) } : { ask: untag(t.ask), small: !!t.small, kind: t.kind || '', at: t.at || '', times: t.times });
   }
   const after = (g) => String(g.first || '') > String(T.through) && !known(g); // first asked after the log, and not one it already holds
-  for (const g of f.open.filter(after)) if (!open.some((o) => same(o.ask, g.ask))) open.push(item(g));
+  for (const g of f.open.filter(after)) { const o = open.find((x) => same(x.ask, g.ask)); if (o) o.times += g.times || 1; else open.push(item(g)); }
   const built = +T.built + builtSince + f.built.filter(after).length;
   return { f, total: built + open.length, built, open: order(open) };
 }

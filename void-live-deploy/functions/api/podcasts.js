@@ -5,6 +5,9 @@
 //   ?feed=<https address>      -> { ok, show }     any podcast feed (RSS) read into rows: show, episodes, notes, durations, chapters and transcript links
 //   ?chapters=<https address>  -> { ok, chapters } a chapters file named by a feed (Podcast Namespace JSON)
 //   ?transcript=<https address>[&kind=vtt|srt|json|html|text] -> { ok, lines } a transcript file named by a feed
+//   ?latest=<show name>        -> { ok, show, episode } the newest playable episode of a named show in ONE ask: the directory, the show
+//                                 whose title holds every asked word, then the first 1 MB of its feed (the "play the latest episode of crime
+//                                 junkie" card waited on two asks and a 3 MB feed read, and the outcome exam read it before it was drawn)
 // Audio is never fetched or proxied here: an episode's address goes to the page and the browser streams it from the publisher.
 //
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. This is an open GET that fetches an address a stranger supplies (feed, chapters,
@@ -22,11 +25,12 @@
 //   - the iTunes asks use fixed hosts and paths; the caller picks only a search phrase (100 characters), a two-letter country from a closed
 //     list and a category from a closed list. No model, no token, no database, no write; a failure is never cached.
 import { rateLimited } from './answer.js';
-import { whyNot, parseFeed, parseChapters, parseTranscript, fromItunes, fromChart, fromFyyd, GENRES, COUNTRIES } from '../../lib/podcasts.js';
+import { whyNot, pickShow, parseFeed, parseChapters, parseTranscript, fromItunes, fromChart, fromFyyd, GENRES, COUNTRIES } from '../../lib/podcasts.js';
 
-export const RL_MAX = 20, TTL = 900, MAX_BYTES = 3 * 1024 * 1024, MAX_BYTES_SMALL = 1024 * 1024, TIMEOUT_MS = 8000, MAX_HOPS = 4, SELF_FEED = 'https://a-to-mind.com/podcast/rss.xml';
+export const RL_MAX = 20, TTL = 900, MAX_BYTES = 3 * 1024 * 1024, MAX_BYTES_SMALL = 1024 * 1024, TIMEOUT_MS = 8000, DIR_MS = 3000, MAX_HOPS = 4, SELF_FEED = 'https://a-to-mind.com/podcast/rss.xml';
 const OWN = /(?:^|\.)(?:a-to-mind\.com|pages\.dev|workers\.dev)$/i;
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
+const NAME = /^[\p{L}\p{M}\p{N}\s'’&.,:!?-]{1,100}$/u;
 const cc = new Set(COUNTRIES.map((c) => c[0])), genres = new Set(GENRES.map((g) => String(g[0])));
 
 /** what a request asks: { kind, value } or null when it is none of the six. Pure. */
@@ -37,7 +41,8 @@ export function askIn(url) {
   if (get('transcript')) return { kind: 'transcript', value: get('transcript'), as: /^(?:vtt|srt|json|html|text)$/.test(get('kind')) ? get('kind') : 'text' };
   if (get('id')) return /^\d{1,12}$/.test(get('id')) ? { kind: 'id', value: get('id') } : null;
   if (get('top')) { const c = get('top').toLowerCase(), g = get('genre') || '0'; return cc.has(c) && genres.has(g) ? { kind: 'top', value: c, genre: g } : null; }
-  if (get('q')) return /^[\p{L}\p{M}\p{N}\s'’&.,:!?-]{1,100}$/u.test(get('q')) ? { kind: 'q', value: get('q') } : null;
+  if (get('latest')) return NAME.test(get('latest')) ? { kind: 'latest', value: get('latest') } : null;
+  if (get('q')) return NAME.test(get('q')) ? { kind: 'q', value: get('q') } : null;
   return null;
 }
 /** an address a stranger gave, checked for the fetch: { ok, url } or { ok: false, why }. Pure. */
@@ -72,7 +77,8 @@ export async function safeFetch(raw, { fetchFn = fetch, assets = null, max = MAX
 }
 // Apple's directory answered the Worker badly with no user agent (the live 502 of 28 Oct 2026), so every directory ask names itself
 const UA = 'VerseBot/1.0 (+https://a-to-mind.com/podcasts/)';
-const itunes = async (url, fetchFn) => { const r = await fetchFn(url, { headers: { accept: 'application/json', 'user-agent': UA } }); if (!r.ok) throw new Error('status ' + r.status); return r.json(); };
+// a directory that does not answer in DIR_MS counts as away, so the second directory still answers inside the card's wait (Apple hung, not failed)
+const itunes = async (url, fetchFn) => { const r = await fetchFn(url, { headers: { accept: 'application/json', 'user-agent': UA }, signal: AbortSignal.timeout(DIR_MS) }); if (!r.ok) throw new Error('status ' + r.status); return r.json(); };
 // fyyd.de: a free, keyless second directory, asked only when Apple fails; the answer then carries a note naming its source
 export const FYYD_NOTE = 'Apple did not answer just now, so these shows come from fyyd.de, a second open podcast directory.';
 export const FYYD_HOT_NOTE = 'The Apple chart did not answer just now, so these are the most listened shows on fyyd.de, not a chart of one country.';
@@ -100,6 +106,16 @@ export async function look(ask, { fetchFn = fetch, assets = null } = {}) {
       const show = parseFeed(got.text, got.url, got.cut); if (!show) return { ok: false, kind: 'notfeed', say: 'That address is not a podcast feed with episodes.' };
       return { ok: true, show };
     }
+    if (ask.kind === 'latest') {
+      const found = await look({ kind: 'q', value: ask.value }, { fetchFn, assets }); if (!found.ok) return found;
+      const show = pickShow(found.shows, ask.value);
+      if (!show) return { ok: false, kind: 'missing', say: 'No show called "' + ask.value + '" turned up in the directory.' };
+      const got = await safeFetch(show.feed, { fetchFn, assets, max: MAX_BYTES_SMALL }); if (!got.ok) return got;
+      const feed = parseFeed(got.text, got.url, got.cut), ep = feed && feed.episodes.find((e) => e && /^https:\/\//.test(e.audio || '') && !e.video);
+      if (!ep) return { ok: false, kind: 'notfeed', say: 'The show\'s feed has no episode to play.' };
+      return { ok: true, show: { title: feed.title || show.title, author: feed.author || show.author || '', image: feed.image || show.image || '', feed: show.feed },
+        episode: { id: ep.id, title: ep.title, audio: ep.audio, type: ep.type, pub: ep.pub, dur: ep.dur, image: ep.image || '' }, ...(found.source ? { source: found.source, note: found.note } : {}) };
+    }
     if (ask.kind === 'chapters') { const got = await safeFetch(ask.value, { fetchFn, max: MAX_BYTES_SMALL }); if (!got.ok) return got; return { ok: true, chapters: parseChapters(got.text) }; }
     if (ask.kind === 'transcript') { const got = await safeFetch(ask.value, { fetchFn, max: MAX_BYTES_SMALL }); if (!got.ok) return got; return { ok: true, lines: parseTranscript(got.text, ask.as) }; }
   } catch (_) {}
@@ -107,7 +123,7 @@ export async function look(ask, { fetchFn = fetch, assets = null } = {}) {
 }
 export async function onRequestGet({ request, env, fetchFn = fetch }) {
   const u = new URL(request.url), ask = askIn(request.url);
-  if (!ask) return json({ ok: false, kind: 'missing', say: 'Ask for a search (?q=history), a chart (?top=us), a show (?id=1234 or ?feed=https://…), its chapters or transcript.' }, 400);
+  if (!ask) return json({ ok: false, kind: 'missing', say: 'Ask for a search (?q=history), the newest episode of a show (?latest=radiolab), a chart (?top=us), a show (?id=1234 or ?feed=https://…), its chapters or transcript.' }, 400);
   if (ask.kind === 'feed' || ask.kind === 'chapters' || ask.kind === 'transcript') { const c = checkAddress(ask.value); if (!c.ok) return json({ ok: false, kind: 'refused', say: 'That address cannot be read here (' + c.why + ').' }, 400); }
   const cache = typeof caches !== 'undefined' ? caches.default : null, key = new Request(u.origin + '/__void-podcasts/' + ask.kind + '/' + encodeURIComponent((ask.value + '|' + (ask.genre || '') + (ask.as || '')).toLowerCase()));
   if (cache) { try { const hit = await cache.match(key); if (hit) return json({ ...(await hit.json()), cached: true }, 200, { 'cache-control': 'public, max-age=300' }); } catch (_) {} }

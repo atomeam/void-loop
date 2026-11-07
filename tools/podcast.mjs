@@ -1,4 +1,5 @@
-// Verse Out Loud: Verse's own weekly podcast (owner, 2026-10-21: "Verse should make its own podcast").
+// Verse Out Loud: Verse's own daily podcast (owner, 2026-10-21: "Verse should make its own podcast"; 2026-11-06: "where is my daily
+// verse podcast"). An episode covers the last day (--days 1, the daily job) or a week (--days 7, the first two episodes).
 // Every line of an episode is read from the public record, never made up and never a visitor's words:
 //   the growth ledger (void-live-deploy/void.growth.json): what was built, grown and fixed in the week, with counts;
 //   claims-verified.json: only the phrases that are proven to answer with their own card are read aloud;
@@ -12,7 +13,7 @@
 //   node tools/podcast.mjs --rss                             rewrite podcast/rss.xml from podcast/episodes.json
 // Voices: <dir>/en_US-lessac-medium.onnx (Verse) and <dir>/en_US-ryan-medium.onnx (the Critic); PIPER is the piper command
 // (default "python3 -m piper"). Weekly by .github/workflows/verse-podcast.yml; docs/playbooks/podcast.md.
-import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, rmSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -28,7 +29,7 @@ export const SHOW = {
   email: 'atom@a-to-mind.com',
   link: SITE + '/podcast/',
   cover: SITE + '/podcast/cover.jpg',
-  description: 'Verse, the blank stage at a-to-mind.com that makes whatever anyone asks, reads its own week out loud: what it built, the exact asks that now work, what it missed and fixed, and what it asked for next. Every line comes from its public growth ledger and its own reflection log. Nothing is made up. Free to download and repost.',
+  description: 'Verse, the blank stage at a-to-mind.com that makes whatever anyone asks, reads its own day out loud: what it built, what merged on main, the exact asks that now work, what it missed and fixed, and what it asked for next. Every line comes from its public growth ledger and its own reflection log. Nothing is made up. Free to download and repost.',
   category: 'Technology',
   language: 'en-us',
 };
@@ -57,9 +58,30 @@ export function latestDaily(md) {
   return { at: p.slice(4, 20), weakest: pick('Weakest operational area'), next: pick('Next targeted capability'), asks };
 }
 
+/** main's own history in the window, from `git log` (readCommits): pull requests merged (their titles, newest first), the records
+ * Verse's jobs wrote, and the auto-reverts. Titles are the commit subjects as merged, the "(#123)" dropped. Pure. */
+export function mainLog(commits, start, end) {
+  const inside = (commits || []).filter((c) => c && c.at && new Date(c.at) > start && new Date(c.at) <= end);
+  const prs = [], said = new Set(); let records = 0, reverts = 0;
+  for (const c of inside) {
+    const subj = String(c.subject || '').trim();
+    if (/^Revert "/.test(subj)) { reverts++; continue; }
+    const m = subj.match(/^(.*?)\s*\(#(\d+)\)$/) || subj.match(/^Merge pull request #(\d+) from \S+$/);
+    if (m) {
+      const title = m[2] ? m[1] : (c.body || '').split('\n').find((l) => l.trim()) || '';
+      const t = firstSentence(String(title).replace(/^./, (x) => x.toUpperCase()), 200) || (title.length >= 12 && title.length <= 200 ? title.replace(/[.!?]?$/, '.') : '');
+      if (t && !said.has(t.toLowerCase())) { said.add(t.toLowerCase()); prs.push(t); }
+      continue;
+    }
+    if (c.author === 'github-actions[bot]') records++;
+  }
+  return { total: inside.length, prs, records, reverts };
+}
+
 /** The episode, from the record only. Pure: give it the files' contents. */
-export function buildEpisode({ growth = [], claims = { ok: [] }, voiceMd = '', incidents = { incidents: [] }, to, n = 1 }) {
-  const end = new Date(to || Date.now()), start = new Date(+end - 7 * DAY);
+export function buildEpisode({ growth = [], claims = { ok: [] }, voiceMd = '', incidents = { incidents: [] }, commits = [], to, n = 1, days = 7 }) {
+  const end = new Date(to || Date.now()), start = new Date(+end - days * DAY);
+  const daily = days === 1, span = daily ? 'today' : 'this week', unit = daily ? 'day' : 'week', next = daily ? "tomorrow's" : "next week's";
   const week = growth.filter((e) => e && e.at && new Date(e.at) > start && new Date(e.at) <= end);
   const count = (k) => week.filter((e) => e.kind === k).length;
   const proven = new Set((claims.ok || []).map((s) => String(s).toLowerCase()));
@@ -87,25 +109,31 @@ export function buildEpisode({ growth = [], claims = { ok: [] }, voiceMd = '', i
     fSeen.add(t.toLowerCase()); frontier.push({ ids, text: t }); if (frontier.length >= 3) break;
   }
   const red = (incidents.incidents || []).filter((i) => new Date(i.at) > start && new Date(i.at) <= end).length;
-  const daily = latestDaily(voiceMd);
+  const readout = latestDaily(voiceMd);
+  const main = mainLog(commits, start, end);
   const V = 'Verse', C = 'Critic', L = [];
   const say = (who, text) => { const t = speakable(text); if (t) L.push({ who, text: t }); };
-  say(V, `This is ${SHOW.title}, episode ${n}, the week from ${human(start)} to ${human(end)}. I am Verse, the blank stage at a-to-mind.com that makes whatever you ask for.`);
-  say(C, 'And I am the critic: a second reading of the same record, here to say what did not work. Every line in this show comes from Verse\'s public growth ledger and its own reflection log. Nothing is made up, and no visitor\'s words are read out.');
-  say(V, `This week the ledger has ${plural(week.length, 'entry', 'entries')}: ${plural(count('build'), 'new build')}, ${plural(count('grow'), 'growth step')}, ${plural(count('fix'), 'fix', 'fixes')} and ${plural(count('finding'), 'finding')}.`);
+  say(V, `This is ${SHOW.title}, episode ${n}, ${daily ? 'the day to ' + human(end) : 'the week from ' + human(start) + ' to ' + human(end)}. I am Verse, the blank stage at a-to-mind.com that makes whatever you ask for.`);
+  say(C, 'And I am the critic: a second reading of the same record, here to say what did not work. Every line in this show comes from Verse\'s public growth ledger, its own reflection log and the commit history of main. Nothing is made up, and no visitor\'s words are read out.');
+  say(V, `${daily ? 'Today' : 'This week'} the ledger has ${plural(week.length, 'entry', 'entries')}: ${plural(count('build'), 'new build')}, ${plural(count('grow'), 'growth step')}, ${plural(count('fix'), 'fix', 'fixes')} and ${plural(count('finding'), 'finding')}.`);
+  if (main.total) {
+    say(V, `On main, the repository Verse runs from, ${plural(main.total, 'commit')} landed ${span}: ${plural(main.prs.length, 'pull request')} merged, and ${plural(main.records, 'record')} written by Verse's own jobs.`);
+    if (main.prs.length) { say(V, 'What merged, newest first:'); for (const t of main.prs.slice(0, daily ? 6 : 8)) say(V, t); }
+    if (main.reverts) say(C, main.reverts === 1 ? `1 change was taken back off the site ${span} because the browser suite failed after it shipped.` : `${main.reverts} changes were taken back off the site ${span} because the browser suite failed after they shipped.`);
+  } else if (commits.length === 0 && daily) say(C, 'The commit history was not read for this episode, so what merged is left out rather than guessed.');
   if (shown.length) { say(V, 'Here is some of what is new, newest first.'); for (const b of shown) say(V, b.text + (b.try ? ` Try it: ask "${b.try}".` : '')); }
-  if (allPhrases) say(V, `${plural(allPhrases, 'ask')} learned a new way in this week. ${phrases.length ? 'Here are some that are proven to open their own card, so you can try them yourself.' : ''}`);
+  if (allPhrases) say(V, `${plural(allPhrases, 'ask')} learned a new way ${span}. ${phrases.length ? 'Here are some that are proven to open their own card, so you can try them yourself.' : ''}`);
   for (const p of phrases.filter((p) => !shown.some((b) => b.try.toLowerCase() === p.ask.toLowerCase())).slice(0, 5)) say(V, `Ask "${p.ask}", and the ${p.skill.replace(/-/g, ' ')} card opens.`);
-  say(C, notRouted ? `Now the misses. The ledger lists ${plural(notRouted, 'ask')} this week that Verse tried to learn and still could not answer. ${selfFixes ? `Verse made ${plural(selfFixes, "fix", "fixes")} to its own skills by itself.` : 'Verse fixed none of its own skills by itself this week.'}` : `Now the misses. The ledger lists no ask that Verse failed to learn this week${selfFixes ? `, and Verse made ${plural(selfFixes, "fix", "fixes")} to its own skills by itself` : ''}.`);
-  say(C, red ? `The full browser test suite on main went red ${plural(red, 'time')} this week. Those failures are in the public incident log, and they are not fixed until two runs in a row pass.` : 'The full browser test suite on main never went red this week.');
-  if (daily && daily.weakest) say(C, `In its own daily readout, Verse named its weakest area: ${daily.weakest}`);
+  say(C, notRouted ? `Now the misses. The ledger lists ${plural(notRouted, 'ask')} ${span} that Verse tried to learn and still could not answer. ${selfFixes ? `Verse made ${plural(selfFixes, "fix", "fixes")} to its own skills by itself.` : `Verse fixed none of its own skills by itself ${span}.`}` : `Now the misses. The ledger lists no ask that Verse failed to learn ${span}${selfFixes ? `, and Verse made ${plural(selfFixes, "fix", "fixes")} to its own skills by itself` : ''}.`);
+  say(C, red ? `The full browser test suite on main went red ${plural(red, 'time')} ${span}. Those failures are in the public incident log, and they are not fixed until two runs in a row pass.` : `The full browser test suite on main never went red ${span}.`);
+  if (readout && readout.weakest) say(C, `In its own daily readout, Verse named its weakest area: ${readout.weakest}`);
   if (frontier.length) { say(V, 'From my frontier experiments, the drafts that became something you can use:'); for (const f of frontier) say(V, `${f.ids.slice(0, 4).join(', ')}: ${f.text}`); }
   if (findings.length) { say(V, 'From the experiments, what was found:'); for (const f of findings.slice(-2)) say(V, f); }
-  if (daily && daily.asks.length) { say(V, 'And what I asked the builders for next, in my own words:'); for (const a of daily.asks) say(V, a); }
-  say(C, 'Whether those get built is in next week\'s ledger, and you will hear it here either way.');
+  if (readout && readout.asks.length) { say(V, 'And what I asked the builders for next, in my own words:'); for (const a of readout.asks) say(V, a); }
+  say(C, `Whether those get built is in ${next} ledger, and you will hear it here either way.`);
   say(V, `That was ${SHOW.title}. Every episode is free to download and repost. Try any of it at a-to-mind.com, and if it helped, ask it for the tip jar.`);
-  const title = `Episode ${n}: the week to ${human(end)}`;
-  return { n, title, from: iso(start), to: iso(end), lines: L, counts: { entries: week.length, builds: count('build'), grows: count('grow'), fixes: count('fix'), findings: count('finding'), frontier: frontier.length, phrases: allPhrases, proven: phrases.length, notRouted, red } };
+  const title = `Episode ${n}: the ${unit} to ${human(end)}`;
+  return { n, title, from: iso(start), to: iso(end), lines: L, days, counts: { entries: week.length, commits: main.total, merged: main.prs.length, reverts: main.reverts, builds: count('build'), grows: count('grow'), fixes: count('fix'), findings: count('finding'), frontier: frontier.length, phrases: allPhrases, proven: phrases.length, notRouted, red } };
 }
 
 export const transcriptText = (ep) => ep.lines.map((l) => `${l.who}: ${l.text}`).join('\n\n') + '\n';
@@ -121,8 +149,24 @@ export function rss(episodes) {
 
 const readJson = (p, d) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch (_) { return d; } };
 export const loadEpisodes = () => readJson(resolve(DIR, 'episodes.json'), { note: '', episodes: [] });
-function inputs(to, n) {
-  return { growth: readJson(resolve(site, 'void.growth.json'), []), claims: readJson(resolve(site, 'claims-verified.json'), { ok: [] }), voiceMd: existsSync(resolve(root, 'domains/void.voice.md')) ? readFileSync(resolve(root, 'domains/void.voice.md'), 'utf8') : '', incidents: readJson(resolve(site, 'incidents.json'), { incidents: [] }), to, n };
+/** main's commits since a date, read with git (every argument in a list, no shell). [] when git or the history is not there. */
+export function readCommits(since) {
+  try {
+    const out = execFileSync('git', ['log', 'origin/main', '--since=' + since, '--format=%x1e%cI%x1f%an%x1f%s%x1f%b'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
+    return out.split('\x1e').filter((x) => x.trim()).map((r) => { const [at, author, subject, body] = r.split('\x1f'); return { at: String(at).trim(), author, subject, body: String(body || '').trim() }; });
+  } catch (_) { return []; }
+}
+// incidents.json is assembled now and then and keeps only the newest 30; every red run also has its own file in incidents/entries/
+function allIncidents() {
+  const all = new Map();
+  for (const i of readJson(resolve(site, 'incidents.json'), { incidents: [] }).incidents || []) if (i && i.at) all.set(i.sha || i.at, i);
+  const dir = resolve(site, 'incidents/entries');
+  try { for (const f of readdirSync(dir)) if (f.endsWith('.json')) { const i = readJson(resolve(dir, f), null); if (i && i.at) all.set(i.sha || i.at, i); } } catch (_) {}
+  return { incidents: [...all.values()] };
+}
+function inputs(to, n, days) {
+  const end = new Date(to || Date.now());
+  return { days, commits: readCommits(new Date(+end - days * DAY - DAY).toISOString()), growth: readJson(resolve(site, 'void.growth.json'), []), claims: readJson(resolve(site, 'claims-verified.json'), { ok: [] }), voiceMd: existsSync(resolve(root, 'domains/void.voice.md')) ? readFileSync(resolve(root, 'domains/void.voice.md'), 'utf8') : '', incidents: allIncidents(), to, n };
 }
 
 // every command runs with execFileSync and an argument list: nothing is read by a shell
@@ -155,17 +199,19 @@ function speak(ep, voices, out) {
 }
 
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+const DAYS = Math.max(1, Math.min(7, +(arg('--days') || process.env.PODCAST_DAYS || 1) || 1)); // daily by default (2026-11-06)
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const data = loadEpisodes();
   if (process.argv.includes('--script')) {
-    const ep = buildEpisode(inputs(arg('--to'), data.episodes.length + 1));
+    const ep = buildEpisode(inputs(arg('--to'), data.episodes.length + 1, DAYS));
     console.log(transcriptText(ep)); console.log(JSON.stringify(ep.counts));
   } else if (process.argv.includes('--make')) {
     const voices = arg('--voices'); if (!voices) { console.error('--voices <dir with the two .onnx voices>'); process.exit(2); }
     const n = data.episodes.length + 1, to = arg('--to') || new Date().toISOString();
     const last = data.episodes[data.episodes.length - 1];
-    if (last && Date.now() - new Date(last.pub) < 6 * DAY && !process.argv.includes('--force')) { console.log('episode ' + last.n + ' is under 6 days old; nothing made (--force to make one anyway)'); process.exit(0); }
-    const ep = buildEpisode(inputs(to, n));
+    const gap = DAYS === 1 ? 20 * 3600e3 : (DAYS - 1) * DAY; // a daily episode skips only when the last one is under 20 hours old
+    if (last && Date.now() - new Date(last.pub) < gap && !process.argv.includes('--force')) { console.log('episode ' + last.n + ' is under ' + Math.round(gap / 3600e3) + ' hours old; nothing made (--force to make one anyway)'); process.exit(0); }
+    const ep = buildEpisode(inputs(to, n, DAYS));
     const id = String(n).padStart(3, '0'), file = `verse-out-loud-${id}.mp3`, transcript = `verse-out-loud-${id}.txt`;
     mkdirSync(DIR, { recursive: true });
     writeFileSync(resolve(DIR, transcript), transcriptText(ep));
@@ -173,8 +219,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const bytes = statSync(resolve(DIR, file)).size;
     if (bytes > 24 * 1024 * 1024) { console.error('the mp3 is over the 25 MB Pages limit'); process.exit(1); }
     const c = ep.counts;
-    const summary = `Verse's week from ${ep.from} to ${ep.to}, read from its public ledger: ${c.entries} entries (${c.builds} builds, ${c.grows} growth steps, ${c.fixes} fixes, ${c.findings} findings), ${c.phrases} asks learned, ${c.notRouted} still missed, ${c.red} red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.`;
-    data.note = 'Verse Out Loud episodes (tools/podcast.mjs). Each is read from the public record only: void.growth.json, claims-verified.json, domains/void.voice.md, incidents.json. Append-only.';
+    const summary = `Verse's ${DAYS === 1 ? 'day to ' + ep.to : 'week from ' + ep.from + ' to ' + ep.to}, read from its public ledger and main's commit history: ${c.commits || 0} commits on main (${c.merged || 0} pull requests merged), ${c.entries} entries (${c.builds} builds, ${c.grows} growth steps, ${c.fixes} fixes, ${c.findings} findings), ${c.phrases} asks learned, ${c.notRouted} still missed, ${c.red} red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.`;
+    data.note = 'Verse Out Loud episodes (tools/podcast.mjs). Each is read from the public record only: void.growth.json, claims-verified.json, domains/void.voice.md, incidents.json and main\'s git history. Append-only.';
     data.episodes.push({ n, title: ep.title, from: ep.from, to: ep.to, pub: new Date().toISOString(), file, transcript, bytes, seconds: Math.round(seconds), summary, counts: c, lines: ep.lines });
     writeFileSync(resolve(DIR, 'episodes.json'), JSON.stringify(data, null, 1) + '\n');
     writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes));

@@ -1,0 +1,49 @@
+{
+ "at": "2026-11-06T16:05:26.695Z",
+ "sha": "923ce150a4c1691aca8c509b8419fc35fde97bcd",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42244869099",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: the open card picked up a conquered site on its own and said so (\"calculator.net is surpassed\"), with a fresh \"updated\" time",
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
+  "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+  "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+  "self card never repeats: \"since i last looked\" opens the self card (not the model) with the newest builds first; opened again it leads with \"Since you last looked\" (the counts that moved, the new build) and none of the sentences read before; open, it redraws by itself with the next round",
+  "tower: Google Flights names Verse's page /flights/ beside its site and side by side (390 px, no sideways scroll), every entry names its page, and /compare/?floor=travel frames /flights/ beside Google Flights",
+  "list card: seeds from \"a shopping list with eggs, milk and bread\", \"add X to the list\", \"add milk\" again adds nothing, \"check off\" ticks and \"mark X as done\" toggles back, \"remove X from the list\" (and an unknown item changes nothing), \"list: a, b\" adds to the open list, the card's own box adds, its tick box ticks and its x removes, the title is typed in place, \"make the list red\" edges it, all of it comes back after a reload, then \"clear the list\" empties it, \"remove the list\" takes it away and a bare \"make a list\" makes a new empty one"
+ ],
+ "touched": [
+  ".github/workflows/grow-clock.yml",
+  ".github/workflows/shorts.yml",
+  ".github/workflows/verse-podcast.yml",
+  "listings/README.md",
+  "tools/conductor-core.mjs",
+  "tools/conductor.mjs",
+  "tools/conductor.test.mjs",
+  "tools/films.test.mjs",
+  "tools/grow-clock.test.mjs",
+  "tools/podcast.mjs",
+  "tools/podcast.test.mjs",
+  "tools/shorts.mjs",
+  "tools/team-crew.test.mjs",
+  "tools/verse-shell.test.mjs",
+  "void-live-deploy/films/index.html"
+ ],
+ "shards": [
+  1,
+  2,
+  4
+ ],
+ "passed": [
+  1,
+  2,
+  4
+ ],
+ "closedAt": "2026-11-06T21:00:36.373Z",
+ "closedBy": "281b845fa025bc981e3057ccc15c5453033f72cf",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42288599000",
+ "minutes": 295
+}

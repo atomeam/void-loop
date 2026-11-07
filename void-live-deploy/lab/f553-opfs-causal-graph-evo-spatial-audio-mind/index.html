@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.node { position:absolute; padding:8px 14px; border-radius:12px; background:rgba(40,60,120,0.75); border:1px solid #88aaff; cursor:grab; user-select:none; font-size:13px; min-width:60px; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,0.4); transition:background 0.3s; }
+.node:active { cursor:grabbing; }
+.node.high { background:rgba(80,40,160,0.85); border-color:#cc88ff; }
+#hud { position:fixed; top:12px; left:12px; background:rgba(0,0,0,0.7); padding:10px 14px; border-radius:8px; font-size:12px; z-index:10; max-width:280px; }
+button, input { margin:4px 0; padding:6px 10px; background:#223; color:#fff; border:1px solid #556; border-radius:4px; }
+#log { font-size:11px; max-height:80px; overflow:auto; opacity:0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>OPFS Causal Graph Evolutionary Spatial Audio Mind · Verse lab</title>
+<meta name="description" content="A persistent local causal graph stored in the Origin Private File System (OPFS).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="OPFS Causal Graph Evolutionary Spatial Audio Mind · Verse lab">
+<meta property="og:description" content="A persistent local causal graph stored in the Origin Private File System (OPFS).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f553-opfs-causal-graph-evo-spatial-audio-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f553-opfs-causal-graph-evo-spatial-audio-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <div><strong>F553 Causal Graph Mind</strong></div>
+  <div id="status">Initializing…</div>
+  <input id="concept" placeholder="type concept + Enter" />
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="log"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">OPFS Causal Graph Evolutionary Spatial Audio Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/tuner/" data-tool="Tuner">Use it: Tuner</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -12,6 +12,9 @@ const escRe = (n) => String(n).toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$
 const reOf = (name) => { const n = escRe(name);
   return new RegExp((/-/.test(n) ? '(^|[^a-z0-9-])' + n + '(?![a-z0-9-])|' : '') + 'skills/' + n + '\\.js|^' + n + '(?::| family)|(^|[^a-z0-9-])(?:the )?' + n + ' skill\\b'); };
 const KINDS = /^(?:fix|build|grow|retire|tune|polish)$/;
+// a route the probes saw with no check on its answer is not something built or improved (owner's self card, 2026-11-06: "Verse routes
+// "X" to its Y skill (the answer is not checked) (from my probes)" read as a build). Such lines are left out of this list and counted once.
+export const UNCHECKED = /^Verse routes .+ to its \S+ skill \(the answer is not checked\)/i;
 /** the PR number a ledger line names (its ref, or "(#123)" / "PR #123" in its words), or null. Pure. */
 export function prOf(x) {
   const m = /#(\d{2,6})\b/.exec(String((x && x.ref) || '') + ' ' + String((x && x.what) || ''));
@@ -27,8 +30,9 @@ export function specific(what) {
 }
 /** { families: [{ id, name, skills: [{ name, items }] , n }], across: items, total }: items newest first, each { at, day, kind, depth, what, show, pr }. Pure. */
 export function builtByFamily(ledger, fam, limit = 40) {
-  const L = (Array.isArray(ledger) ? ledger : []).filter((x) => x && typeof x.what === 'string' && x.what.trim() && KINDS.test(String(x.kind || '')))
-    .slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const L0 = (Array.isArray(ledger) ? ledger : []).filter((x) => x && typeof x.what === 'string' && x.what.trim() && KINDS.test(String(x.kind || '')));
+  const L = L0.filter((x) => !UNCHECKED.test(x.what.trim())).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const unchecked = L0.length - L.length;
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   const skills = F.flatMap((f) => (f.skills || []).filter((s) => s && s.name && String(s.name).length > 2).map((s) => ({ fam: f, name: String(s.name), re: reOf(s.name) })));
   // a hardening line with its phrases reads as the phrases themselves; under a skill, only the phrases that open that skill (the whole
@@ -50,7 +54,7 @@ export function builtByFamily(ledger, fam, limit = 40) {
       .sort((a, b) => String(b.items[0].at).localeCompare(String(a.items[0].at)));
     return { id: f.id, name: f.name, skills: sk, n: sk.reduce((k, s) => k + s.items.length, 0) };
   }).filter((f) => f.n);
-  return { families, across: across.slice(0, limit), total: L.length };
+  return { families, across: across.slice(0, limit), total: L.length, unchecked };
 }
 const REPO = 'https://github.com/atomeam/void-loop/pull/';
 const line = (it, esc) => '<li data-depth="' + esc(it.depth || '') + '"><b>' + esc(it.day) + '</b> · ' + esc(it.depth === 'root' ? 'root cause' : it.depth === 'surface' ? 'surface' : it.kind)
@@ -65,5 +69,6 @@ export function builtDetailHtml(r, esc = esc0) {
     h += '</details>';
   }
   if (r.across.length) h += '<details class="vs-sec vs-fam"><summary class="vs-sum"><h4 class="vs-h4">Across Verse <span class="vs-n">' + esc(r.across.length) + '</span></h4></summary><ul class="vs-list vs-detail">' + r.across.map((it) => line(it, esc)).join('') + '</ul></details>';
+  if (r.unchecked) h += '<div class="src">Left out: ' + esc(r.unchecked) + ' probe ' + (r.unchecked === 1 ? 'line that says' : 'lines that say') + ' Verse routes an ask to a skill without a check on the answer; a route is not a build.</div>';
   return h + '<div class="src">Source: void.growth.json (the ledger) and skills/families.json; each line is the ledger\'s own words.</div></details>';
 }

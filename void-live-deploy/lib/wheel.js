@@ -69,6 +69,15 @@ export function askOf(entries) {
 
 // the asks: "spin the wheel", "wheel of names", "spinner wheel", "spin a wheel with pizza, tacos, sushi", "random name picker wheel"
 /** what an ask wants: { entries } (maybe empty, for the starting wheel) or null. Pure. */
+// choices with only spaces between them (2026-11-06, docs/GAPS.md: "spin a wheel with pizza tacos sushi" fell to an article): three to twelve
+// single words, none of them a word that only describes the list ("my friends", "the names"), are split on the spaces. Pure.
+const NOT_A_CHOICE = /^(?:my|the|a|an|of|for|to|some|all|our|your|these|those|their|his|her|names?|friends?|people|options?|choices?|items?|things?|stuff|everyone|family|team|class|students?|kids?)$/i;
+export function spaced(list) {
+  const s = String(list || '').trim();
+  if (/[,\n]/.test(s)) return s;
+  const w = s.split(/\s+/);
+  return w.length >= 3 && w.length <= 12 && w.every((x) => !NOT_A_CHOICE.test(x)) ? w.join(', ') : s;
+}
 export function askWheel(text) {
   const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
   // the wheel page's own stage link: "spin the wheel #<entries in a link>" when its entries do not read back from words (owner via the team, 2026-10-29)
@@ -76,7 +85,7 @@ export function askWheel(text) {
   if (k) { const e = open(k[1]); return e && e.length >= 2 ? { entries: e } : null; }
   if (t.length > 400) return null;
   const m = /^(?:spin|make|create|build)\s+(?:me\s+)?(?:a|the)\s+(?:prize\s+|random\s+|decision\s+)?wheel\s+(?:with|of|for)\s*:?\s+(.+)$/i.exec(t);
-  if (m) { const e = entriesOf(m[1].replace(/\s+(?:and|or)\s+/gi, ', ')); return e.length >= 2 ? { entries: e } : null; }
+  if (m) { const e = entriesOf(spaced(m[1].replace(/\s+(?:and|or)\s+/gi, ', '))); return e.length >= 2 ? { entries: e } : null; }
   if (/^(?:spin\s+(?:the|a)\s+wheel|wheel\s+(?:of|for)\s+names|(?:random\s+)?(?:name|names)\s+(?:picker\s+)?wheel|(?:random\s+)?names?\s+(?:picker|chooser|selector)|(?:spinner|spinning|prize|decision|random|picker)\s+wheel|wheel\s+(?:spinner|picker|decide|of\s+fortune\s+spinner)|spin\s+(?:the|a)\s+wheel\s+(?:of\s+names|to\s+(?:decide|pick|choose)))$/.test(l)) return { entries: [] };
   return null;
 }

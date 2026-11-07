@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, causeOfLap, isNoop, nextOf, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
+import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, keepSeo, swWith, judgeRows, guardOf, reportLine, causeOfLap, isNoop, nextOf, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
 import { FLOORS, LANES, LANE_PAGES, passingRows } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
@@ -185,4 +185,15 @@ test('a read that never returns is cut off and recorded, so the next run moves o
   const at = Date.parse('2026-11-03T00:00:00Z'), frontier = { sites: [{ site: 'stuck.test', hardness: 1 }, { site: 'next.test', hardness: 2 }] };
   const state = { sites: { 'stuck.test': { at: '2026-11-03T00:00:00Z', outcome: 'walled', why: 'not read (the read did not finish in 240 s)' } } };
   assert.deepEqual(pickCandidates(frontier, state, { at, floors: [] }).map((x) => x.host), ['next.test']);
+});
+
+test('a rewritten page keeps the seo block the page had, and a page with none gets none', () => {
+  const seo = '<!-- seo -->\n<link rel="canonical" href="https://a-to-mind.com/news/x/">\n<!-- /seo -->\n';
+  const have = '<html><head><title>a</title>\n' + seo + '</head><body>old</body></html>', want = '<html><head><title>a</title>\n</head><body>new</body></html>';
+  const out = keepSeo(have, want);
+  assert.ok(out.includes('rel="canonical" href="https://a-to-mind.com/news/x/"') && out.includes('<body>new</body>'), out);
+  assert.equal(keepSeo(null, want), want);
+  assert.equal(keepSeo('<head></head>', want), want);
+  const own = want.replace('</head>', '<!-- seo -->mine<!-- /seo -->\n</head>');
+  assert.equal(keepSeo(have, own), own);
 });

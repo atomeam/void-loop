@@ -1,0 +1,49 @@
+{
+ "attempt": "live",
+ "occasion": 2,
+ "at": "2026-11-06T12:15:21.960Z",
+ "family": "make",
+ "skill": "image-gen",
+ "service": "a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them)",
+ "ask": "can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line",
+ "request": [
+  "https://a-to-mind.com/api/image",
+  "https://a-to-mind.com/image/",
+  "https://a-to-mind.com/image/app.js"
+ ],
+ "status": 200,
+ "ms": 1777,
+ "checksPass": true,
+ "ok": false,
+ "left": 149,
+ "page": {
+  "status": 200,
+  "make": true,
+  "pics": true,
+  "app": true,
+  "handoff": false
+ },
+ "script": {
+  "status": 200,
+  "changeIt": true,
+  "sendsChange": true,
+  "shrinks": true
+ },
+ "paint": {
+  "status": 200,
+  "state": "resting",
+  "why": "busy",
+  "sayKnown": true,
+  "painter": null,
+  "w": null,
+  "h": null,
+  "ref": null,
+  "cached": false,
+  "change": null,
+  "img": null
+ },
+ "copy": null,
+ "change": null,
+ "again": null,
+ "error": ""
+}

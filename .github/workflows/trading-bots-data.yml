@@ -1,0 +1,48 @@
+# The daily candles the trading-bot backtests run on (tools/trading-bots-data.mjs): BTC-USD and ETH-USD from Coinbase Exchange's public market
+# data, closed UTC days only, committed to main as void-live-deploy/trading-bots/data/<PAIR>.json. The /trading-bots/ pages and the paid
+# backtest call read those files. It also runs when its own script changes, so the first data is made on the push that adds it.
+# No key, no secret, no trading: it only reads public prices.
+name: Trading bots data
+
+on:
+  schedule:
+    - cron: '17 0 * * *'
+  push:
+    branches: [main]
+    paths: ['tools/trading-bots-data.mjs', '.github/workflows/trading-bots-data.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: trading-bots-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the data files on main
+  actions: write # to start the deploy after a data commit (a GITHUB_TOKEN push starts no workflow by itself)
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the closed daily candles and write the data files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node tools/trading-bots-data.mjs || { echo "::warning title=Trading bots data not refreshed::no pair answered (the reasons are above)"; exit 0; }
+          git add void-live-deploy/trading-bots/data
+          git diff --cached --quiet && { echo "data unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
+          for i in 1 2 3 4; do
+            if git push origin HEAD:main; then gh workflow run deploy.yml --ref main -f after_merge=true || echo "::warning::deploy not started"; exit 0; fi
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

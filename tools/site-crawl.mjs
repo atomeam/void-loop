@@ -328,7 +328,7 @@ function publish(dry) { const s = publishOf(readFiles()); if (!dry) fs.writeFile
 async function floorsNow() {
   const { tower, towerArgs, hostOf } = await import('../void-live-deploy/lib/tower.js');
   const rd = (f) => readJson(path.join(root, 'void-live-deploy', f)) || {};
-  const t = tower(...towerArgs((rd('lap.items.json') || {}).onlySite, { ev: rd('tower.evidence.json'), fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: rd('tower.target.json') }));
+  const t = tower(...towerArgs((rd('lap.items.json') || {}).onlySite, { ev: rd('tower.evidence.json'), fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg: rd('tower.target.json'), gn: rd('tower.gone.json') }));
   return t.floors.map((f) => ({ ...f, host: hostOf(f.url) }));
 }
 

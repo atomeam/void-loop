@@ -1,0 +1,13 @@
+{
+  "name": "verse-trading-bot",
+  "version": "1.0.0",
+  "description": "Verse trading bot and arbitrage scanner: daily long-or-cash strategies and a read-only price-gap scanner you run on your own computer. Paper mode by default.",
+  "type": "module",
+  "main": "bot.mjs",
+  "bin": { "verse-trading-bot": "bot.mjs" },
+  "scripts": { "paper": "node bot.mjs", "live": "node bot.mjs --live", "loop": "node bot.mjs --loop", "arb": "node arb-scan.mjs" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "ccxt": "4.5.88" },
+  "license": "MIT",
+  "homepage": "https://a-to-mind.com/trading-bots/"
+}

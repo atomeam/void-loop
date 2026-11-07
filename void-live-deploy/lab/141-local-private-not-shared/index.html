@@ -47,6 +47,20 @@
   <p id="status">Awaiting local seal. Content is discarded and is not in the hash. A private mark is not a shared memory and not a collective edit.</p>
 
 <script src="app.js"></script>
-<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/notes/" data-tool="Notes">Use it: Notes</a></footer><script src="/lab/use-it.js" defer></script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+body > h1:nth-of-type(1) { color:#8f8f8f }
+#form > label:nth-of-type(1) { color:#757575 }
+body > p:nth-of-type(3) { color:#757575 }
+body > p:nth-of-type(3) > code:nth-of-type(1) { color:#757575 }
+body > p:nth-of-type(4) { color:#757575 }
+#hash { color:#757575 }
+#status { color:#757575 }
+.vl-bar a { color:#717176 }
+a.vl-use { color:#717176 }
+#seal { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+/* end verse design loop */
+</style>
 </body>
 </html>

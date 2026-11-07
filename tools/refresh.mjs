@@ -19,6 +19,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 /** in dependency order: a step reads what the steps above it wrote. */
 export const STEPS = [
   { name: 'index', script: 'skills-index.mjs', write: ['--write'], check: ['--check'], why: 'the routing order the page loads, from skills/order/' },
+  { name: 'first', script: 'first-asks.mjs', write: [], check: ['--check'], why: "skills/first.json, each known ask and the one skill that takes it, so the page answers it before the other skills load; from the index, the skills' examples, the benchmark and the site tester" },
   { name: 'deps', script: 'deps.mjs', write: [], check: ['--check'], why: 'who imports whom, from the files themselves' },
   { name: 'families', script: 'families.mjs', write: [], check: ['--check'], why: 'each skill\'s family and how far it is proven, from the tests and the benchmark' },
   { name: 'guide', script: 'guide.mjs', write: [], check: ['--check'], why: 'the book: one page per skill, game and miniature, from the skills and the families' },

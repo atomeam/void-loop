@@ -78,7 +78,7 @@ export const PAGES = [
   [/\b(?:recipes?|cook(?:ing)?)\b/i, '/recipes/', 'Recipes'],
   [/\b(?:code\s+review|pull\s+requests?)\b/i, '/code-review/', 'Code review'],
   [/\bcalendar\b/i, '/calendar/', 'Calendar'],
-  [/\b(?:films?|movies?)\b/i, '/films/', 'Films'],
+  [/\b(?:films?|movies?)\b/i, '/films/', 'Holovids'],
   [/\b(?:fanfic|fan\s+fiction)\b/i, '/fanfic/', 'Fanfic'],
 ];
 /** the one Verse page that does the thing the note is about: { path, name } or null. Pure. */

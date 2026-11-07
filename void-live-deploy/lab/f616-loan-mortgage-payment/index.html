@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<style>
+:root { --bg:#0f1419; --fg:#e7ecf1; --muted:#8b98a5; --accent:#1d9bf0; --card:#1a2332; --border:#2f3b4a; --good:#00ba7c; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.5; padding:1rem; }
+h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+p.lead { color:var(--muted); margin:0 0 1.2rem; font-size:0.95rem; }
+form, .results, .table-wrap { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; margin:0.6rem 0 0.2rem; font-size:0.85rem; color:var(--muted); }
+input, select { width:100%; padding:0.6rem; border-radius:8px; border:1px solid var(--border); background:#0f1419; color:var(--fg); font-size:1rem; }
+button { background:var(--accent); color:#fff; border:none; padding:0.7rem 1rem; border-radius:8px; font-size:1rem; cursor:pointer; margin:0.4rem 0.4rem 0.4rem 0; }
+button.secondary { background:#2f3b4a; }
+.row { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.row > * { flex:1; min-width:140px; }
+.summary { font-size:1.1rem; margin:0.5rem 0; }
+.summary strong { color:var(--good); }
+table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+th, td { padding:0.4rem 0.5rem; text-align:right; border-bottom:1px solid var(--border); }
+th { text-align:right; color:var(--muted); font-weight:500; }
+td:first-child, th:first-child { text-align:left; }
+.note { font-size:0.8rem; color:var(--muted); margin-top:0.5rem; }
+.error { color:#f4212e; font-size:0.9rem; }
+@media (max-width:600px) { body { padding:0.6rem; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Loan and mortgage payment · Verse lab</title>
+<meta name="description" content="Job: Enter a loan amount, interest rate and term; get the regular payment and a full year-by-year amortization table you can download as CSV or copy.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Loan and mortgage payment · Verse lab">
+<meta property="og:description" content="Job: Enter a loan amount, interest rate and term; get the regular payment and a full year-by-year amortization table you can download as CSV or copy.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f616-loan-mortgage-payment/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f616-loan-mortgage-payment/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Loan and mortgage payment</h1>
+<p class="lead">Amount, rate and years in. Regular payment and a year-by-year table out. Download the schedule as CSV. Nothing leaves this device.</p>
+
+<form id="f">
+  <div class="row">
+    <div>
+      <label for="amount">Loan amount</label>
+      <input id="amount" type="number" min="1" step="100" value="250000" required>
+    </div>
+    <div>
+      <label for="rate">Annual interest rate (%)</label>
+      <input id="rate" type="number" min="0" step="0.01" value="6.5" required>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label for="years">Term (years)</label>
+      <input id="years" type="number" min="1" max="50" step="1" value="30" required>
+    </div>
+    <div>
+      <label for="extra">Extra payment per month (optional)</label>
+      <input id="extra" type="number" min="0" step="10" value="0">
+    </div>
+  </div>
+  <button type="submit">Calculate</button>
+  <button type="button" class="secondary" id="reset">Reset</button>
+</form>
+
+<div class="results" id="results" hidden>
+  <div class="summary" id="summary"></div>
+  <button id="copy">Copy summary</button>
+  <button id="csv" class="secondary">Download CSV</button>
+  <p class="note" id="note"></p>
+</div>
+
+<div class="table-wrap" id="tableWrap" hidden>
+  <h2 style="font-size:1rem;margin:0 0 0.5rem;">Year-by-year</h2>
+  <table id="table">
+    <thead><tr><th>Year</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

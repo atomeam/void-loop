@@ -60,6 +60,25 @@
   .world-filters select { font: inherit; font-size: 15px; color: inherit; background: var(--panel); border: 2px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 44px; max-width: 100%; }
   .world-filters select:focus { outline: none; border-color: var(--accent); }
   .world > button { margin: 10px 0; }
+  /* the stage beside the show (local/stage-dock.js): the real stage in a layer, the playing player as a card beside it (desktop) or under it
+     (phone). Only CSS moves the player, so the video never restarts. */
+  #stage-dock { position: fixed; top: 0; left: 0; right: 0; bottom: var(--bar-h, 0px); z-index: 20; background: #05060c; }
+  #stage-dock iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; background: #05060c; }
+  html.stage-tv #stage-dock iframe { width: calc(100% - var(--show-w)); }
+  #stage-dock .dock-top { position: absolute; left: 10px; top: 10px; display: flex; flex-wrap: wrap; gap: 8px; max-width: calc(100% - 20px); }
+  #stage-dock .dock-top a.btn { background: var(--panel); font-size: 13px; }
+  html.on-stage { --show-w: min(400px, 38vw); }
+  html.on-stage body { overflow: hidden; }
+  html.on-stage #bar { z-index: 23; }
+  .show-head { display: none; }
+  html.stage-tv #screen { position: fixed; z-index: 22; top: 16px; right: 16px; width: calc(var(--show-w) - 32px); margin: 0; border-radius: 16px; background: var(--panel); border-color: #3a3550; box-shadow: 0 18px 50px rgba(0,0,0,.55); }
+  html.stage-tv .show-head { display: flex; gap: 8px; align-items: baseline; padding: 8px 12px; font-size: 14px; } .show-head b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; } .show-head small { color: var(--soft); flex: none; }
+  html.stage-tv #screen video { max-height: 50vh; }
+  @media (max-width: 700px) {
+    html.stage-tv #stage-dock iframe { width: 100%; height: calc(100% - var(--show-h, 0px)); }
+    html.stage-tv #screen { top: auto; right: 8px; left: 8px; bottom: calc(var(--bar-h, 0px) + 8px); width: auto; }
+    html.stage-tv #screen video { max-height: 26vh; max-height: 26dvh; }
+  }
   [hidden] { display: none !important; }
   @media (max-width: 520px) { #bar input[type=range] { display: none; } }
 </style>
@@ -80,7 +99,7 @@
     <button type="button" role="tab" id="tab-radio" aria-controls="radio" aria-selected="true">Radio</button>
     <button type="button" role="tab" id="tab-tv" aria-controls="tv" aria-selected="false">TV</button>
   </div>
-  <div id="screen" hidden><video id="video" controls playsinline aria-label="TV player"></video></div>
+  <div id="screen" hidden><div class="show-head"><b id="show-name"></b><small>still playing</small></div><video id="video" controls playsinline aria-label="TV player"></video></div>
   <section id="watch" aria-labelledby="watch-h" hidden>
     <h2 id="watch-h">Watch with Verse <small id="watch-name" class="hint"></small></h2>
     <p class="hint" id="watch-hears" role="status"></p>

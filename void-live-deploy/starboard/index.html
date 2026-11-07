@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="canonical" href="https://a-to-mind.com/starboard/">
+<title>Starboard · Verse</title>
+<meta name="verse-handoff" content="in: location; out: location, text">
+<meta name="description" content="Starboard: a live race against dalyfeds.com measured on load, then the weather, the news wire, games, PDF and Lab tools on one deck, with no trackers.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Starboard · Verse">
+<meta property="og:description" content="A live race against dalyfeds.com measured on load, then the weather, the news wire, games and tools on one deck, with no trackers.">
+<meta property="og:url" content="https://a-to-mind.com/starboard/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/starboard/ (the tower's counterpart to dalyfeds.com, "H5 Center", 2026-11-06): a live benchmark of both sites from real fetches first,
+     then panels that reuse Verse's own weather, news, games, PDF and Lab tools. Every script and style is same-origin: the page loads no third-party tracker. */
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --good: #5fd39a; --warn: #ff6b7e; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 24px; margin: 0 0 4px; } .lede { color: var(--soft); margin: 0 0 14px; }
+  h2 { font-size: 15px; margin: 22px 0 8px; color: var(--soft); text-transform: uppercase; letter-spacing: .04em; }
+  .panel { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 8px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; } th, td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--soft); font-weight: 500; } td.n { font-variant-numeric: tabular-nums; } .win { color: var(--good); font-weight: 600; }
+  .scroll { overflow-x: auto; }
+  .note { font-size: 13px; color: var(--soft); }
+  .box { display: flex; gap: 8px; } input[type=search] { flex: 1; min-width: 0; font: inherit; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+  input:focus { outline: none; border-color: var(--accent); }
+  button, a.btn { font: inherit; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; background: transparent; color: var(--ink); cursor: pointer; min-height: 40px; text-decoration: none; display: inline-flex; align-items: center; }
+  button.go { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .big { font-size: 36px; font-weight: 300; line-height: 1.1; margin: 6px 0 2px; }
+  ul.wire { list-style: none; margin: 0; padding: 0; } ul.wire li { padding: 7px 0; border-bottom: 1px solid var(--line); } ul.wire li:last-child { border-bottom: 0; }
+  ul.wire a { color: var(--ink); text-decoration: none; } ul.wire a:hover { color: var(--accent); } ul.wire small { color: var(--soft); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .tiles a { display: block; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; color: var(--ink); text-decoration: none; }
+  .tiles a:hover { border-color: var(--accent); } .tiles small { display: block; color: var(--soft); font-size: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<link rel="modulepreload" href="/starboard/app.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/weather.js">
+<!-- seo -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Starboard: a live race and a daily deck with no trackers","url":"https://a-to-mind.com/starboard/","description":"A live benchmark that Verse's server runs each time the page opens: load time, page weight, requests, scripts and the hosts on other sites, for this page and the site it races. Under it, the weather for your place, the top stories of the news wire, games, PDF tools and the Lab's tools, with every file from Verse's own site.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"starboard, h5 center, site speed comparison, page weight test, weather news and games on one page, page without trackers","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/starboard/?place={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Starboard: a live race and a daily deck with no trackers","item":"https://a-to-mind.com/starboard/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Starboard</h1>
+  <p class="lede">The deck Verse built to take on dalyfeds.com: the race measured live, then the weather, the news wire, games and tools, with no trackers on board.</p>
+
+  <h2 id="race">The race, measured now</h2>
+  <div class="panel">
+    <div class="scroll"><table id="bench"><thead><tr><th>Site</th><th>Load</th><th>Page weight</th><th>Requests</th><th>Scripts</th><th>Hosts on other sites</th></tr></thead><tbody><tr><td colspan="6" class="note">Measuring both sites now…</td></tr></tbody></table></div>
+    <p class="note" id="benchHow"></p>
+    <p class="note" id="runner" hidden></p>
+    <div class="row"><button id="rerun" type="button">Load the latest</button><a class="btn" href="/conquered/">Target history on the Tower</a></div>
+  </div>
+
+  <h2 id="weather">Weather</h2>
+  <div class="panel">
+    <form class="box" id="wxForm"><input type="search" id="place" placeholder="A town or city" aria-label="Place for the weather" autocomplete="off"><button class="go" type="submit">Show</button></form>
+    <div id="wx" hidden><div class="big" id="wxTemp"></div><div id="wxWords"></div><div class="note" id="wxMore"></div></div>
+    <p class="note" id="wxNote">Type a place. Verse keeps it on this device only.</p>
+  </div>
+
+  <h2 id="news">News wire</h2>
+  <div class="panel"><ul class="wire" id="wire"><li class="note">Loading the top stories…</li></ul><p class="note"><a href="/news/">All sections on the news page</a></p></div>
+
+  <h2 id="play">Play and tools</h2>
+  <div class="tiles">
+    <a href="/random/">Random picks<small>coins, dice, numbers</small></a>
+    <a href="/random/wheel/">Spin the wheel<small>names or choices</small></a>
+    <a href="/tournaments/">Tournaments<small>brackets that carry the wheel</small></a>
+    <a href="/prizes/">Prizes<small>what the wheel gives</small></a>
+    <a href="/pdf/">PDF tools<small>merge, split, sign, on the device</small></a>
+    <a href="/lab/level/">Spirit level<small>Lab tool</small></a>
+    <a href="/lab/checksum/">Checksums<small>Lab tool</small></a>
+    <a href="/lab/pattern/">Pattern maker<small>Lab tool</small></a>
+    <a href="/lab/photo-palette/">Photo palette<small>Lab tool</small></a>
+    <a href="/lab/dictation/">Dictation<small>Lab tool</small></a>
+    <a href="/lab/mind-map/">Mind map<small>Lab tool</small></a>
+  </div>
+
+  <h2 id="crew">Across Verse</h2>
+  <div class="row"><a class="btn" href="/">Ask Verse</a><a class="btn" href="/conquered/">Tower</a><a class="btn" href="/treasury/">Treasury</a><a class="btn" href="/lab/">Lab</a><a class="btn" href="/tools/">All tools</a></div>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/weather/">Weather</a> <a href="/news/">News</a> <a href="/random/wheel/">Wheel of names</a> <a href="/pdf/">PDF tools</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Starboard measures dalyfeds.com and itself from Verse's server each time you load it, with the scripts not run; the Tower's rendered row comes from a browser run and keeps its date. Weather from Open-Meteo through <a href="/weather/">Verse's weather page</a>, stories from <a href="/news/">Verse's news wire</a>. Every file on this page comes from a-to-mind.com. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module" src="/starboard/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

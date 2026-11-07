@@ -39,8 +39,19 @@ export function loadThree() {
 const mq = (q) => { try { return matchMedia(q).matches; } catch (_) { return false; } };
 export const isPhone = () => mq('(pointer: coarse)') && Math.min(screen.width || 9999, screen.height || 9999) < 760;
 export function motionStill() { let mine = false; try { mine = localStorage.getItem(MOTION_KEY) === 'still'; } catch (_) {} return mq('(prefers-reduced-motion: reduce)') || mine; }
-/** Can this browser draw WebGL at all? (cheap; no three.js needed) */
-export function webglOk() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (_) { return false; } }
+/** Can this browser draw WebGL at all? (no three.js needed). Tested once per page: each test made a new GL context, which cost
+ *  close to a second on a software GPU on every miniature, and counted toward the browser's live-context limit, where the oldest
+ *  context (the shared renderer) is the one the browser drops. The test context is given back at once. */
+let glOk = null;
+export function webglOk() {
+  if (glOk !== null) return glOk;
+  try {
+    const c = document.createElement('canvas'); const gl = c.getContext('webgl2') || c.getContext('webgl');
+    glOk = !!gl;
+    if (gl) { const lose = gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext(); }
+  } catch (_) { glOk = false; }
+  return glOk;
+}
 
 // ---------- detail: low-poly for older hardware (asked by Verse, ask-20261015-0347-2: "a 'low-poly' toggle for 3D miniatures to
 // further optimize the 'smoother 3D on phones' shipment for older hardware") ----------
@@ -106,7 +117,7 @@ export function engine() {
     const env = pmrem.fromScene(room, 0.035).texture;
     room.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); pmrem.dispose();
     const gltf = new lib.GLTFLoader(); gltf.setMeshoptDecoder(lib.MeshoptDecoder);
-    const ktx2 = new lib.KTX2Loader().setTranscoderPath(V + 'addons/libs/basis/').detectSupport(renderer); gltf.setKTX2Loader(ktx2);
+    const ktx2 = new lib.KTX2Loader().setTranscoderPath(V + 'addons/libs/basis/'); gltf.setKTX2Loader(ktx2); // its support is detected before the first model loads (loadGLTF), not here: most cards never load one
     try { const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info'); guard.setGpu(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); } catch (_) {}
     const E = { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, quality: 1, gov: { ema: 0, n: 0, good: 0 }, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy(), lost: false };
     // a lost context (a GPU reset, the driver's watchdog) used to leave every miniature dead until a reload: wait it out, then
@@ -124,6 +135,7 @@ export function engine() {
 /** A glTF/GLB, loaded once per URL; every caller gets its own clone of the scene graph (geometry and materials shared). */
 export async function loadGLTF(url) {
   const E = await engine();
+  if (!E.ktx2Ready) { E.ktx2.detectSupport(E.renderer); E.ktx2Ready = true; }
   if (!E.models.has(url)) E.models.set(url, new Promise((res, rej) => E.gltf.load(url, res, undefined, rej)).catch((e) => { E.models.delete(url); throw e; }));
   const g = await E.models.get(url);
   return { scene: g.scene.clone(true), gltf: g };

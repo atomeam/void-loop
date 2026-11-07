@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 110,
-   "best": 226,
-   "evidence": "Verse (/flights/trip/) 110 ms to the load event (median of 3, phone width) vs tripwaffle.com 226 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "verse": 166,
+   "best": 259,
+   "evidence": "Verse (/flights/trip/) 166 ms to the load event (median of 3, phone width) vs tripwaffle.com 259 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/flights/trip/) 3 of 3 loads answered vs tripwaffle.com 3 of 3 loads answered",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/flights/trip/) 0 px sideways overflow at 390 px vs tripwaffle.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 2,
    "evidence": "Verse (/flights/trip/) 0 unnamed controls or images vs tripwaffle.com 2 unnamed controls or images",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/flights/trip/) 1 (1: the page shows itself again with the network cut) vs tripwaffle.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/flights/trip/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tripwaffle.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "design polish": {
@@ -54,7 +54,7 @@
    "verse": 0,
    "best": 20,
    "evidence": "Verse (/flights/trip/) 0 design defects vs tripwaffle.com 20 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tripwaffle.com (5 low-contrast texts, 15 small tap targets, layout shift 0.01)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   },
   "accuracy": {
@@ -62,7 +62,7 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/flights/trip/) 4 of 4 right against the worked-out answer; judged against the standard, not tripwaffle.com (the site is not asked)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 4
   },
   "paste a confirmation": {
@@ -70,7 +70,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 2,
    "part": true
   },
@@ -79,7 +79,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/flights/trip/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 3,
    "part": true
   },
@@ -88,7 +88,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/flights/trip/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 3,
    "part": true
   },
@@ -97,7 +97,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 2,
    "part": true
   },
@@ -106,7 +106,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/flights/trip/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 1,
    "part": true
   },
@@ -115,7 +115,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/flights/trip/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 2,
    "part": true
   },
@@ -124,7 +124,7 @@
    "verse": 13,
    "best": 1,
    "evidence": "Verse (/flights/trip/) 13 of 13 things a full answer shows vs tripwaffle.com 1 of 13 things a full answer shows (Verse lacks: none; site lacks: paste a confirmation, flights read from text, add a flight by hand, a booking reference, local times, layovers, layover warnings, airport changes, a calendar file, a share link, on this device, no account)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "of": 13,
    "siteRead": true
   },
@@ -133,7 +133,7 @@
    "verse": 9,
    "best": 6,
    "evidence": "Verse (/flights/trip/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs tripwaffle.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T15:08:15.523Z",
+   "at": "2026-11-07T13:34:43.702Z",
    "siteRead": true
   }
  }

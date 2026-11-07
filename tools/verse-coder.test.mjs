@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE, nearMiss } from './verse-coder.mjs';
 import { scanDiff, buildPrompt } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -203,6 +203,7 @@ test('replace swaps exact text with no diff to line up: once, not twice, not mis
     call('check', { name: 'add' }), call('finish', { summary: 'add adds' })]);
   assert.match(r.log[0].result, /does not apply: .*use replace/s, 'a failed diff points at replace');
   assert.match(r.log[1].result, /^no match: "old" is not in src\/add\.mjs/);
+  assert.match(r.log[1].result, /The nearest lines are \d+-\d+[^\n]*\n(\d+\t.*\n)*\d+\t\s*return a - b;/, 'a replace that misses shows where the lines nearly are (#2330)');
   assert.match(r.log[2].result, /is in src\/add\.mjs \d+ times/);
   assert.match(r.log[3].result, /refused: this edit weakens tools\/add\.test\.mjs \(fewer assertions/);
   assert.match(r.log[4].result, /refused: \.github\/workflows\/ci\.yml is a workflow/);
@@ -343,4 +344,17 @@ test('the source holds no key and never force-pushes', () => {
   assert.deepEqual(scanDiff('+++ b/tools/verse-coder.mjs\n' + src.split('\n').map((l) => '+' + l).join('\n')).filter((f) => f.kind !== 'assigned secret'), []);
   assert.ok(!/'push'|git push/.test(src), 'the coder never pushes: the loop does');
   assert.ok(!/gpt-oss/.test(src.replace(/gpt-oss\/i\.test/, '')), 'no gpt-oss model');
+});
+
+test('nearMiss: the lines a missed replace nearly matched, so the next turn copies them instead of reading again (#2330)', () => {
+  const file = ['const a = 1;', 'function f(x) {', '    return x + 1;', '}', 'const b = 2;'].join('\n');
+  const out = nearMiss(file, 'function f(x) {\n  return x + 1;\n}');
+  assert.match(out, /^The nearest lines are 1-5 \(copy the text after each tab\)\. It is in the file once spaces and line breaks are set aside\./);
+  assert.ok(out.includes('3\t    return x + 1;'), 'the file\'s own spaces, after its line number and a tab');
+  assert.match(nearMiss(file, 'return y + 2;'), /The nearest lines are 2-4/, 'a shared word finds the place');
+  assert.ok(!/set aside/.test(nearMiss(file, 'return y + 2;')), 'not there with other spaces either');
+  assert.equal(nearMiss(file, 'zz qq'), '', 'nothing of it in the file');
+  assert.equal(nearMiss(file, ''), '');
+  const long = Array.from({ length: 60 }, (_, i) => 'line ' + i).join('\n');
+  assert.ok(nearMiss(long, Array.from({ length: 40 }, (_, i) => 'line ' + i).join('\n')).split('\n').length <= 23, 'at most max lines and a margin');
 });

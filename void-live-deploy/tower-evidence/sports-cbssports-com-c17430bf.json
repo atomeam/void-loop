@@ -3,18 +3,18 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 108,
-   "best": 7426,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 108 ms to the load event (median of 3, phone width) vs cbssports.com 7426 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "verse": 101,
+   "best": 7129,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 101 ms to the load event (median of 3, phone width) vs cbssports.com 7129 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "reliability": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 3,
-   "best": 2,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs cbssports.com 2 of 3 loads answered",
-   "at": "2026-11-05T14:59:09.630Z",
+   "best": 3,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 loads answered vs cbssports.com 3 of 3 loads answered",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,15 +22,15 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 px sideways overflow at 390 px vs cbssports.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "accessibility": {
    "verdict": "better",
    "verse": 0,
-   "best": 43,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs cbssports.com 43 unnamed controls or images",
-   "at": "2026-11-05T14:59:09.630Z",
+   "best": 40,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 unnamed controls or images vs cbssports.com 40 unnamed controls or images",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 1 (1: the page shows itself again with the network cut) vs cbssports.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs cbssports.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 right against the worked-out answer; judged against the standard, not cbssports.com (the site is not asked)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "of": 3
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
-   "best": 48,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs cbssports.com 48 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), cbssports.com (4 low-contrast texts, 44 small tap targets, layout shift 0.00)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "best": 41,
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 0 design defects vs cbssports.com 41 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), cbssports.com (0 low-contrast texts, 40 small tap targets, layout shift 0.31)",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   },
   "live scores": {
@@ -70,7 +70,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "of": 3,
    "part": true
   },
@@ -79,7 +79,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "of": 3,
    "part": true
   },
@@ -88,7 +88,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "of": 3,
    "part": true
   },
@@ -96,8 +96,8 @@
    "verdict": "better",
    "verse": 18,
    "best": 5,
-   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 18 of 19 things a full answer shows vs cbssports.com 5 of 19 things a full answer shows (Verse lacks: Start/sit and trade comparator; site lacks: the day's games, a day picker, standings, leagues, follow a team, a share link, the source named, delayed data said, no betting, Formula 1, works offline, Live scoreboard, Box scores, Favourites)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 18 of 19 things a full answer shows vs cbssports.com 5 of 19 things a full answer shows (Verse lacks: Start/sit and trade comparator; site lacks: the day's games, a day picker, standings, leagues, match details, follow a team, a share link, delayed data said, no betting, Formula 1, works offline, Live scoreboard, Schedules, Favourites)",
+   "at": "2026-11-07T13:23:14.104Z",
    "of": 19,
    "siteRead": true
   },
@@ -106,7 +106,7 @@
    "verse": 8.5,
    "best": 4.5,
    "evidence": "Verse (/scores/?league=epl&date=2025-05-25) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs cbssports.com 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T14:59:09.630Z",
+   "at": "2026-11-07T13:23:14.104Z",
    "siteRead": true
   }
  }

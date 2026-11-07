@@ -7,6 +7,7 @@
 // Verse never sends, signs or holds crypto; it only reads public chain data. No address or cashtag lives in the repo:
 //   CASHAPP_CASHTAG       Adam's public $cashtag (Pages variable)          -> enables 'cashapp'
 //   CRYPTO_USDC_BASE_ADDR Adam's own receive-only 0x address (Pages var.)  -> enables 'usdc-base'
+//   VERSE_WALLET_ADDR     Verse's own wallet address, used when CRYPTO_USDC_BASE_ADDR is not set
 //   BASE_RPC_URL          optional, defaults to the public https://mainnet.base.org
 // A product opts in with "special": ["cashapp", "usdc-base"] in domains/store.products.json; price is always p.cents.
 export const USDC_BASE = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'; // Circle's native USDC on Base, 6 decimals
@@ -18,7 +19,8 @@ const ADDR_RE = /^0x[0-9a-fA-F]{40}$/, TAG_RE = /^\$?[A-Za-z][A-Za-z0-9_]{0,19}$
 export function railsOf(env = {}) {
   const r = {};
   if (TAG_RE.test(String(env.CASHAPP_CASHTAG || ''))) r.cashapp = { tag: '$' + String(env.CASHAPP_CASHTAG).replace(/^\$/, '') };
-  if (ADDR_RE.test(String(env.CRYPTO_USDC_BASE_ADDR || ''))) r['usdc-base'] = { address: String(env.CRYPTO_USDC_BASE_ADDR).toLowerCase() };
+  const usdcTo = ADDR_RE.test(String(env.CRYPTO_USDC_BASE_ADDR || '')) ? env.CRYPTO_USDC_BASE_ADDR : env.VERSE_WALLET_ADDR; // the store's own address first; else Verse's wallet (lib/verse-wallet.js)
+  if (ADDR_RE.test(String(usdcTo || ''))) r['usdc-base'] = { address: String(usdcTo).toLowerCase() };
   return r;
 }
 // which rails a product can use right now: opted in, fixed price > 0, not unpublished, rail configured

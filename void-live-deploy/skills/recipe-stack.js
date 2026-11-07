@@ -23,7 +23,8 @@ export function parseStep(raw) {
 
 /** the title and steps an ask names, or null when it is not a recipe-stack ask. Pure. */
 export function parseRecipe(text) {
-  const m = /^(?:please\s+)?(?:cook|make|prepare|prep|bake)\s+([^:]{1,40}?)\s*:\s*(.+)$/i.exec(tidy(text));
+  // the colon that starts the steps is never one inside a clock time: "make me a morning routine starting at 6:30" is no recipe (2026-11-06)
+  const m = /^(?:please\s+)?(?:cook|make|prepare|prep|bake)\s+([^:]{1,40}?)\s*(?<!\d):(?!\d)\s*(.+)$/i.exec(tidy(text));
   if (!m) return null;
   const steps = m[2].split(/\s*(?:,|;|->|→|\bthen\b|\band then\b)\s*/i).map(parseStep).filter(Boolean).slice(0, MAX_STEPS);
   return steps.length ? { title: m[1].trim().replace(/^(?:a|an|some|the)\s+/i, '').replace(/^./, (c) => c.toUpperCase()), steps } : null;
@@ -129,7 +130,7 @@ export function ask(lower, text, stageApi) {
 export default {
   name: 'recipe-stack',
   examples: ['cook pasta: boil 10 min then rest 2', 'make rice: simmer 15 min then rest 5 min'],
-  nearMisses: ['cook pasta', 'how do I cook rice', 'add milk to my list'],
+  nearMisses: ['cook pasta', 'how do I cook rice', 'add milk to my list', 'make me a morning routine starting at 6:30'],
   parseRecipe,
   match(lower, text) { return !!parseRecipe(text || lower); },
   async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'recipe-stack' : 'none'; },

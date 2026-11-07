@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:8px; left:8px; z-index:10; background:rgba(0,0,20,0.7); padding:8px 12px; border-radius:8px; font-size:13px; max-width:280px; }
+button { margin:4px 4px 0 0; padding:4px 10px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+.droplet { position:absolute; width:28px; height:28px; border-radius:50%; background:radial-gradient(circle,#8cf,#36a); border:2px solid #adf; pointer-events:auto; cursor:grab; z-index:5; transition:opacity 0.3s; box-shadow:0 0 8px #48f; }
+.droplet:active { cursor:grabbing; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU SPH Elman-RNN Orientation Mind · Verse lab</title>
+<meta name="description" content="A pure-JS Elman recurrent network (true recurrent local model with hidden-state recurrence, not echo-state reservoir, not feedforward MLP, not attention, not NCA)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU SPH Elman-RNN Orientation Mind · Verse lab">
+<meta property="og:description" content="A pure-JS Elman recurrent network (true recurrent local model with hidden-state recurrence, not echo-state reservoir, not feedforward MLP, not attention, not NCA)">
+<meta property="og:url" content="https://a-to-mind.com/lab/f590-webgpu-sph-elman-rnn-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f590-webgpu-sph-elman-rnn-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <strong>F590 SPH Elman-RNN Mind</strong><br>
+  Tilt device or move mouse to drive recurrent control of fluid.<br>
+  Drag droplets to inject momentum.<br>
+  <button id="seal">Seal state</button>
+  <button id="reset">Reset</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU SPH Elman-RNN Orientation Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

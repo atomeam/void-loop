@@ -47,7 +47,8 @@ export function put(type, label, data, fromPage, store = globalThis.localStorage
 export const textOfHandoff = (h) => (!h ? '' : typeof h.data === 'string' ? h.data : h.data.join('\n'));
 
 const css = 'display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:13px;margin:14px 0 4px;';
-const linkCss = 'color:inherit;text-decoration:underline;text-underline-offset:3px;';
+// each link is a 44 px tall tap target (2026-11-06: at 19 px the strip's links were the design polish defects on every ring page, tools/tower-gate.mjs designLook)
+const linkCss = 'color:inherit;text-decoration:underline;text-underline-offset:3px;display:inline-flex;align-items:center;min-height:44px;';
 
 /** the strip: the other pages of the ring, then any send links ({ label, go: () => ({ href, type, data, name }) | null }) */
 export function mountStrip(before, here, sends = []) {

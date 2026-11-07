@@ -160,3 +160,27 @@ test('the latest episode of a named show is that show, not Verse\'s own', () => 
   assert.equal(P.pickShow(shows, 'science vs').title, 'Science Vs');
   assert.equal(P.pickShow(shows, 'radiolab'), null);
 });
+
+test('the newest episode of a named show in one ask: directory, the show whose title holds every word, its feed; a hung Apple is let go', async () => {
+  const u = (q) => 'https://a-to-mind.com/api/podcasts?' + q;
+  assert.deepEqual(askIn(u('latest=crime%20junkie')), { kind: 'latest', value: 'crime junkie' }); assert.equal(askIn(u('latest=' + encodeURIComponent('<script>'))), null);
+  const fetchFn = async (url) => {
+    if (url.startsWith('https://itunes.apple.com/search')) return Response.json({ results: [{ collectionId: 9, collectionName: 'Fixture & Friends Extra', feedUrl: 'https://feeds.example.com/x.xml' }, { collectionId: 1, collectionName: 'Fixture & Friends', artistName: 'Ann', feedUrl: 'https://feeds.example.com/f.xml' }] });
+    if (url === 'https://feeds.example.com/f.xml') return new Response(FEED, { status: 200, headers: { 'content-type': 'application/rss+xml' } });
+    return new Response('nope', { status: 404 }); };
+  const r = await look({ kind: 'latest', value: 'fixture friends' }, { fetchFn });
+  const newest = P.parseFeed(FEED, 'https://feeds.example.com/f.xml').episodes.find((e) => /^https:\/\//.test(e.audio || '') && !e.video);
+  assert.equal(r.ok, true); assert.equal(r.show.title, 'Fixture & Friends'); assert.equal(r.show.feed, 'https://feeds.example.com/f.xml');
+  assert.equal(r.episode.audio, newest.audio, 'the newest playable episode, the shortest matching title'); assert.equal(r.episode.title, newest.title); assert.equal(r.source, undefined);
+  assert.equal((await look({ kind: 'latest', value: 'nobody here' }, { fetchFn })).kind, 'missing');
+  // Apple hangs (no answer at all): the directory ask is let go and the second directory still finds the show
+  const fy = { data: [{ id: 7, title: 'Fixture & Friends', xmlURL: 'https://feeds.example.com/f.xml' }] };
+  const hung = async (url, init) => {
+    // (AbortSignal.timeout's clock does not hold the process open, so the hung ask holds it until it is let go)
+    if (url.startsWith('https://itunes.apple.com/')) return new Promise((_, no) => { const keep = setTimeout(() => {}, 9000); init.signal.addEventListener('abort', () => { clearTimeout(keep); no(init.signal.reason); }); });
+    if (url.startsWith('https://api.fyyd.de/')) return Response.json(fy);
+    return fetchFn(url, init); };
+  const t0 = Date.now(), h = await look({ kind: 'latest', value: 'fixture friends' }, { fetchFn: hung });
+  assert.equal(h.ok, true); assert.equal(h.source, 'fyyd'); assert.equal(h.episode.audio, newest.audio); assert.ok(Date.now() - t0 < 6000, 'a hung directory is let go in seconds');
+  const res = await onRequestGet({ request: new Request(u('latest=fixture%20friends')), env: {}, fetchFn }); assert.equal(res.status, 200); assert.equal((await res.json()).episode.audio, newest.audio);
+});

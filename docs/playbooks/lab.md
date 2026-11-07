@@ -26,3 +26,12 @@
 - The probe taught nothing about touch: it clicks and drags with a mouse. Experiments that need a phone's tilt only show their first frame here.
 
 **What it will not do:** edit an experiment's logic, delete a published page (a page that later breaks stays until a person removes it; the sync says so), or publish a draft it could not open.
+
+## Tools first: the usefulness gate (2026-11-06)
+
+Owner: "the lab experiments all seem pointless can you make them all more useful and meaningful and make grok build better and more useful things". Of 455 drafts, 5 did a job a person has; 450 were demos.
+
+- `tools/lab-grade.mjs` grades a draft **tool** or **toy**: a tool takes the person's own input, gives back something to keep (download, copy, share link, saved work) and its SPEC names the job (`Job:` / `Plain name:`). `IDEAS` maps each toy technique to the one real tool it becomes. `node tools/lab-grade.mjs --drafts <dir>` prints the counts; `--write` writes `void-live-deploy/lab/grades.json`; `--file <index.html>` grades one draft (the lab repo's usefulness workflow runs this).
+- The sync stores `grade` and `idea` on each catalog entry. The gallery (`renderGallery`) lists the Lab's tools first, with how many experiments each came from, then any draft graded a tool; the demos are folded under them, each still at its own address. The sitemap leaves toys out.
+- The Lab's own tools are Verse pages under `void-live-deploy/lab/<name>/` (level, checksum, pattern, photo-palette, dictation, mind-map), in `lib/toolkit.js` TOOLS, `lib/seo.js` PAGES and `skills/open-tool.js` aliases, tested in `tools/lab-tools.test.mjs`. A new one: build the page, add the rows, set its `page` in `IDEAS`.
+- The generator's brief is `drafts/BRIEF.md` in atomeam/a-to-mind.com (a list of jobs to build in order); its `usefulness` workflow writes `drafts/GRADES.md` so the next run reads how its last draft did.

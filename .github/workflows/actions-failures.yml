@@ -1,0 +1,67 @@
+# The GitHub Actions failure reader (asked by Verse: "Automate the extraction of failing job names and error logs from GitHub Actions for
+# commit 814032d5."). Whenever one of the workflows that test a commit of main ends red, this reads that run with its own GITHUB_TOKEN
+# (actions: read): the failed jobs, the step that failed in each, the last 30 lines of that step's log and the lines that name what failed,
+# keys and tokens masked (tools/actions-failure.mjs, lib/actions-failure.js). One file per run in void-live-deploy/incidents/actions/,
+# committed to main like an incident entry (verify.yml skips a commit that only writes incidents/), and folded into the served
+# incidents.json by tools/incident-log.mjs assemble at the next deploy; "failed jobs for commit <sha>" and the incident autopsy show it.
+# workflow_dispatch reads any run (run_id) or every red run of any commit (sha). A log GitHub will not hand over is recorded as not read.
+name: Actions failure reader
+
+on:
+  workflow_run:
+    workflows: [Verse verify, Verse deploy, Verse self-check, Site test, Team gate, Tower gate, MCP live, deploy workers, workflow-lint]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: A workflow run id to read (blank = use sha)
+        required: false
+        default: ''
+      sha:
+        description: A commit (7 to 40 hex characters) whose red runs to read
+        required: false
+        default: ''
+
+permissions:
+  contents: write # the one incidents/actions/<run id>.json commit on main
+  actions: read # the run, its jobs and their logs
+
+jobs:
+  read:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the failed jobs and write them beside the incidents
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id || inputs.run_id }}
+          SHA: ${{ inputs.sha }}
+        run: |
+          read_it() {
+            if printf '%s' "$RUN_ID" | grep -Eq '^[0-9]{1,20}$'; then node tools/actions-failure.mjs record --run "$RUN_ID"
+            elif printf '%s' "$SHA" | grep -Eq '^[0-9a-fA-F]{7,40}$'; then node tools/actions-failure.mjs record --sha "$SHA"
+            else echo "no run id or sha given"; exit 0; fi
+          }
+          read_it
+          [ -d void-live-deploy/incidents/actions ] || { echo "nothing recorded"; exit 0; }
+          git add void-live-deploy/incidents/actions
+          git diff --cached --quiet && { echo "nothing to write"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          msg="Failed jobs read: run ${RUN_ID:-of $SHA} (void-live-deploy/incidents/actions/)"
+          for i in 1 2 3 4; do
+            git commit -q -m "$msg" && git push -q origin HEAD:main && exit 0
+            sleep $((2 ** i)); git fetch -q origin main && git reset -q --hard origin/main
+            read_it # one file per run, so another run's file stays
+            git add void-live-deploy/incidents/actions
+            git diff --cached --quiet && exit 0
+          done
+          echo "::warning title=Failed jobs not recorded::could not push the record to main"

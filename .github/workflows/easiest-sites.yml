@@ -1,9 +1,17 @@
 # Which real sites are the easiest to beat (tools/easiest-sites.mjs): the top of the Tranco ranking, each home page measured once for how much it
 # does. Started by hand; the result is the job log and an artifact (easiest-sites.json). Passive: one GET of each home page.
+# The sweep for the smallest sites of all runs by itself (owner, 2026-11-06: "the easiest site to assimilate was never even found or attempted"):
+# every 6 hours it reads the next 40,000 hosts of the million (--small; tower.sweep.json keeps the place), lays the small ones into the tower's
+# frontier, and starts Tower size on the 60 smallest it found, so they are weighed on a browser and the target moves to the smallest in the same hour.
 name: Easiest sites
 on:
+  schedule:
+    - cron: '11 */6 * * *'
   workflow_dispatch:
     inputs:
+      small:
+        description: sweep this many hosts of the million for the smallest home pages (the scheduled run reads 40000)
+        default: ''
       top:
         description: how many of the top of the list to scan
         default: '5000'
@@ -19,7 +27,7 @@ permissions:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,8 +38,20 @@ jobs:
           TOP: ${{ inputs.top }}
           RANK: ${{ inputs.rank }}
           TOOLS: ${{ inputs.tools }}
+          SMALL: ${{ github.event_name == 'schedule' && '40000' || inputs.small }}
           FRONTIER: void-live-deploy/tower.frontier.json
-        run: if [ -n "$RANK" ]; then node tools/easiest-sites.mjs --rank "$RANK"; elif [ -n "$TOOLS" ]; then node tools/easiest-sites.mjs --tools "$TOOLS"; else node tools/easiest-sites.mjs "$TOP" easiest-sites.json; fi
+        run: if [ -n "$SMALL" ]; then node tools/easiest-sites.mjs --small "$SMALL"; elif [ -n "$RANK" ]; then node tools/easiest-sites.mjs --rank "$RANK"; elif [ -n "$TOOLS" ]; then node tools/easiest-sites.mjs --tools "$TOOLS"; else node tools/easiest-sites.mjs "$TOP" easiest-sites.json; fi
+      - name: Commit the smallest sites found and weigh them
+        if: github.event_name == 'schedule' || inputs.small != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.frontier.json void-live-deploy/tower.sweep.json; if git diff --cached --quiet; then exit 0; fi
+          git commit -q -m "Tower sweep: the smallest home pages found in the next slice of the million"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          hosts=$(tr -d '\n ' < sweep-hosts.txt | cut -c1-1500 | sed 's/,[^,]*$//;s/,$//')
+          if [ -n "$hosts" ]; then gh workflow run tower-size.yml --ref main -f only="$hosts"; else gh workflow run deploy.yml --ref main -f after_merge=true; fi
       - name: Commit the tower's frontier
         if: inputs.tools != ''
         env:

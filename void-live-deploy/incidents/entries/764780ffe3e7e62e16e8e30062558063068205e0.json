@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-06T07:32:43.122Z",
+ "sha": "764780ffe3e7e62e16e8e30062558063068205e0",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42177621429",
+ "suite": "browser suite on main",
+ "checks": [
+  "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+  "list card: seeds from \"a shopping list with eggs, milk and bread\", \"add X to the list\", \"add milk\" again adds nothing, \"check off\" ticks and \"mark X as done\" toggles back, \"remove X from the list\" (and an unknown item changes nothing), \"list: a, b\" adds to the open list, the card's own box adds, its tick box ticks and its x removes, the title is typed in place, \"make the list red\" edges it, all of it comes back after a reload, then \"clear the list\" empties it, \"remove the list\" takes it away and a bare \"make a list\" makes a new empty one",
+  "verse brain: \"show me your brain\" opens one card (no figure), its twenty-six organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
+ ],
+ "touched": [
+  "tools/test_void.mjs"
+ ],
+ "shards": [
+  4
+ ],
+ "passed": [
+  4
+ ],
+ "closedAt": "2026-11-06T20:36:59.163Z",
+ "closedBy": "a8a38bbbee770ae72c8311eacbe93f29025229e8",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42284865098",
+ "minutes": 784
+}

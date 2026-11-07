@@ -46,6 +46,26 @@ test('answer-free: bots answer correctly, only through their live gate, and a ba
   assert.equal(runBot(planOf('who wrote hamlet')), null);
 });
 
+test('answer-free: each absorbed bot (bots/salvaged.js) has one narrow ask that reaches it, and near asks still go to the model', () => {
+  const want = {
+    'check this glassbox claim: tool_capability: Workers AI runs Llama 3.1 8B on its free daily allowance.': 'Glassbox claim: candidate claim · tool_capability · 56/280 characters · UNVERIFIED until a human merges it',
+    'promote glassbox batch {"target":"github:atomeam/glassbox","promote":true,"claims":[]}': 'Glassbox batch: refused: promote is true (a batch never promotes itself; only a human merge does)',
+    'velo endpoint for post_lead': 'POST /_functions/lead · anyone can call it (permissions.json covers .jsw web modules, not HTTP functions) · /_functions-dev/lead runs the saved, unpublished code',
+    'check this link: <a href="/tools/">Tools</a>': 'Link: passes · same tab (the default)',
+    'check breadcrumbs: Docs /docs/ > Guides /docs/guides/ > Install': 'Breadcrumbs: passes · 3 crumbs · current: Install (a span with aria-current="page", not a link)',
+    'check canonical https://a-to-mind.com/tools/ http://www.a-to-mind.com/tools': 'Canonical: fails · use https · www is denied · points at /tools, not /tools/: a canonical names its own page',
+    'copy receipt for hello world': 'Copy receipt: 11 bytes UTF-8 · sha256 b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9',
+    'voice plan: watch competitor pricing for a price drop': 'Voice plan: plan#pricing · Competitor pricing watch · tools http.read, model.call · writes deny · budget 5000 tokens · run: hold (a transcript is data, not a run)',
+    'check run graph: nodes: plan, read, write | edges: plan>read, write>plan': 'Run graph: fails · edge write>plan goes back in time (z 2 to 0)',
+    'are 09:12 and 09:20 in the same bin': '09:12 and 09:20: separate-bins at 15 min · width-sensitive: 5 separate, 15 separate, 60 shared · 3 min from a bin edge · arrow denied: a shared bin is not a cause',
+    'recall gap: Berenstein Bears | Berenstain Bears': 'Recall gap: only in A: berenstein · only in B: berenstain · the gap is not a score, and a difference is not a timeline proof',
+    'check answer block: definition | What is A-to-Mind? | It is a table.': 'Answer block: not quoteable · starts with "It": a block must stand alone · names nothing from the question (A-to-Mind)',
+    'replay run: plan, file.read 612, deny slack.notify, model.call 2280 1c, hold artifact.write': 'Run replay: 5 events · 2 steps, 2892 tok, 1¢ ledger fact · denied: slack.notify · held: artifact.write (waits for a human seal) · writes: none · replay only, nothing runs',
+  };
+  for (const [ask, answer] of Object.entries(want)) { const r = runBot(planOf(ask)); assert.ok(r, ask); assert.equal(r.answer, answer, ask); }
+  for (const ask of ['check this claim: the earth is flat', 'copy this text', 'check this link', 'replay the game', 'what is a breadcrumb', 'are we in the same bin']) assert.equal(planOf(ask).kind, 'llm', ask);
+});
+
 test('answer-free: a research ask goes to OpenAlex through the router, and falls back to the model when it is out', async () => {
   const db = fakeDb(); const env = { DB: db };
   const adapters = { openalex: async (job) => { assert.equal(job.query, 'sea level rise'); return WORKS.results; } };

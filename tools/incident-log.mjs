@@ -172,8 +172,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     console.log('incident-log: shard(s) ' + shardsOf(file).join(',') + ' passed at ' + String(sha || '').slice(0, 7) + ', ' + n + ' incident(s) closed');
   } else if (cmd === 'assemble') {
     const list = readLog();
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs assemble, from incidents.json plus incidents/entries/; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
-    console.log('incident-log: assembled ' + list.length);
+    // the failed GitHub Actions jobs of red runs on main (tools/actions-failure.mjs, one file per run in incidents/actions/; asked by Verse), newest first
+    const { readActions } = await import('./actions-failure.mjs'), actions = readActions();
+    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs assemble, from incidents.json plus incidents/entries/; asked by Verse). Check names and shas only. "actions": the failed jobs of red workflow runs, their failing step and its last lines, keys masked (incidents/actions/, tools/actions-failure.mjs).', incidents: list, actions }, null, 1) + '\n');
+    console.log('incident-log: assembled ' + list.length + ' incident(s), ' + actions.length + ' red run(s) of failed jobs');
   } else if (cmd === 'backfill') {
     const before = readLog(), list = before.map((i) => (Array.isArray(i.touched) ? i : { ...i, touched: touchedBy(i.sha) }));
     save(list, before);

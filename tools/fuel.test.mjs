@@ -12,7 +12,7 @@ test('examples taken, near misses refused, and a few more asks', () => {
   for (const e of fuel.examples) assert.ok(fuel.match(e.toLowerCase(), e), e);
   for (const n of fuel.nearMisses) assert.ok(!fuel.match(n.toLowerCase(), n), n);
   for (const a of ['diesel for 100 km at 50 mpg $4 a gallon', 'petrol for 300 miles at 25 mpg €1.90 per liter']) assert.ok(fuel.match(a.toLowerCase(), a), a);
-  for (const a of ['gas cost for 320 miles at 28 mpg', 'gas cost at 28 mpg $3.59 a gallon', 'fuel for 320 miles $3.59 a gallon', 'how far is 320 miles', 'gas cost for 320 miles at 500 mpg $3.59 a gallon']) assert.ok(!fuel.match(a.toLowerCase(), a), a);
+  for (const a of ['gas cost at 28 mpg $3.59 a gallon', 'fuel for 320 miles $3.59 a gallon', 'how far is 320 miles', 'gas cost for 320 miles at 500 mpg $3.59 a gallon']) assert.ok(!fuel.match(a.toLowerCase(), a), a);
 });
 
 test('miles, mpg and $ a gallon: 320 mi at 28 mpg, $3.59/gal is $41.03, 11.43 gal, $0.13 a mile', async () => {

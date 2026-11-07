@@ -1,17 +1,18 @@
-# Verse Out Loud, Verse's own podcast (owner, 2026-10-21: "Verse should make its own podcast"). Once a week (Monday 14:17 UTC) and
-# on demand (Run workflow; "force" makes one even if the last is under 6 days old), tools/podcast.mjs reads the week from the public
-# record (growth ledger, proven asks, Verse's daily readout, incident log), voices it with Piper (open-source TTS, MIT, runs here:
+# Verse Out Loud, Verse's own podcast (owner, 2026-10-21: "Verse should make its own podcast"; 2026-11-06: "where is my daily verse
+# podcast"). Every day (13:17 UTC, about 8 AM ET; tools/due.mjs starts it when GitHub drops the schedule) and on demand (Run workflow;
+# "force" makes one even if the last is under 20 hours old), tools/podcast.mjs reads the day from the public record (main's commit
+# history, growth ledger, proven asks, Verse's daily readout, incident log), voices it with Piper (open-source TTS, MIT, runs here:
 # no account, no API, no cost; two voices, Verse and the Critic) and ffmpeg, and commits the mp3 (~1 MB), transcript, episodes.json and
-# podcast/rss.xml to main; the deploy puts them on a-to-mind.com/podcast/. About 3 Actions minutes a week. No secrets needed.
+# podcast/rss.xml to main; the deploy puts them on a-to-mind.com/podcast/. About 3 Actions minutes a day. No secrets needed.
 name: Verse Out Loud (podcast)
 
 on:
   schedule:
-    - cron: '17 14 * * 1'
+    - cron: '17 13 * * *'
   workflow_dispatch:
     inputs:
       force:
-        description: 'Make an episode even if the last one is under 6 days old'
+        description: 'Make an episode even if the last one is under 20 hours old'
         type: boolean
         default: false
 
@@ -21,6 +22,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write # to start the deploy after the push (a push with the Actions token starts no workflow)
 
 jobs:
   episode:
@@ -30,16 +32,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0 # the episode reads main's commit history for the day
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      # 2026-11-06: apt-get install ffmpeg hung for 20 minutes on one runner (pip had finished in 11 s) and the job limit cancelled the
+      # episode. Each apt try is cut off at 2.5 minutes, the index is refreshed between tries, and if apt still gives nothing a static
+      # ffmpeg and ffprobe build is fetched instead, so the episode is made whatever the runner's package mirror does.
       - name: Piper and ffmpeg
+        timeout-minutes: 10
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          pip install --quiet piper-tts
-          sudo apt-get install -y -qq ffmpeg > /dev/null
+          timeout 300 pip install --quiet piper-tts
+          for i in 1 2 3; do
+            command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null && break
+            timeout 150 sudo -E apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null || echo "apt try $i gave no ffmpeg"
+            command -v ffmpeg >/dev/null || timeout 120 sudo -E apt-get update -qq || true
+          done
+          if ! command -v ffprobe >/dev/null; then
+            echo "apt gave no ffmpeg: a static build instead"
+            mkdir -p ~/ffmpeg-static && cd ~/ffmpeg-static
+            timeout 180 curl -fsSL -o ff.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+            tar -xJf ff.tar.xz --strip-components=1
+            echo "$HOME/ffmpeg-static" >> "$GITHUB_PATH"
+          fi
       - name: The two voices (cached)
         id: voices
         uses: actions/cache@v4
@@ -58,16 +78,22 @@ jobs:
       - name: Make the episode
         env:
           PIPER: python -m piper
-        run: node tools/podcast.mjs --make --voices ~/piper-voices ${{ inputs.force && '--force' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
+        run: node tools/podcast.mjs --make --days 1 --voices ~/piper-voices ${{ inputs.force && '--force' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Put it on main
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git add void-live-deploy/podcast
           git diff --cached --quiet && { echo "no new episode"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Verse Out Loud: a new episode, read from the week's record"
+          git commit -m "Verse Out Loud: today's episode, read from the day's record"
+          # 2026-11-06: episode 3 reached main but not the site, because a push with the Actions token starts no deploy
           for i in 1 2 3 4; do
-            git push origin HEAD:main && exit 0
-            sleep $((2 ** i)); git pull --rebase origin main
+            if git push origin HEAD:main; then
+              gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
+              exit 0
+            fi
+            sleep $((2 ** i)); git pull --rebase --autostash origin main
           done
           exit 1

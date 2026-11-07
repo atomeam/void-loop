@@ -26,35 +26,48 @@ export function makeSynapses(seed = 1) {
     x: r.next(), y: r.next(), h: r.next() * TAU, spikes: 0, seen: 0, seenAvg: 0 };
 }
 
-const at = (g, x, y) => g[Math.floor((((y % 1) + 1) % 1) * GH) * GW + Math.floor((((x % 1) + 1) % 1) * GW)];
 /** how much living tissue is near (x, y): a Gaussian-weighted mean of the act layer within SMELL cells. */
+// the Gaussian weights and their sum, made once in the same order the sum runs (the same numbers as computing them on every call)
+const SMELL_W = [], SMELL_N = (() => { let n = 0; for (let dy = -SMELL; dy <= SMELL; dy++) for (let dx = -SMELL; dx <= SMELL; dx++) { const w = Math.exp(-(dx * dx + dy * dy) / (SMELL * SMELL)); SMELL_W.push(w); n += w; } return n; })();
+const SM_ROW = new Int32Array(2 * SMELL + 1), SM_COL = new Int32Array(2 * SMELL + 1); // scratch: the wrapped row offset per dy, the wrapped column per dx
 export function smell(g, x, y) {
-  let s = 0, n = 0;
-  for (let dy = -SMELL; dy <= SMELL; dy++) for (let dx = -SMELL; dx <= SMELL; dx++) { const w = Math.exp(-(dx * dx + dy * dy) / (SMELL * SMELL)); s += at(g, x + dx / GW, y + dy / GH) * w; n += w; }
-  return s / n;
+  // the cell at (x + dx / GW, y + dy / GH), wrapped: its row depends on dy only and its column on dx only, so each is wrapped once, not 81 times
+  for (let d = -SMELL; d <= SMELL; d++) { const yy = y + d / GH, xx = x + d / GW; SM_ROW[d + SMELL] = Math.floor((((yy % 1) + 1) % 1) * GH) * GW; SM_COL[d + SMELL] = Math.floor((((xx % 1) + 1) % 1) * GW); }
+  let s = 0, k = 0;
+  for (let r = 0; r <= 2 * SMELL; r++) { const row = SM_ROW[r]; for (let c = 0; c <= 2 * SMELL; c++) s += g[row + SM_COL[c]] * SMELL_W[k++]; }
+  return s / SMELL_N;
 }
 
+const FIRED = new Int32Array(NI); // scratch: the input neurons that fired this millisecond
 /** one millisecond of the eye: sense, spike, learn, turn, move. g is the act layer. */
 export function stepMs(S, g) {
   const { W, v, u, pre, post, elig, fired, r } = S;
   const sl = smell(g, S.x + REACH * Math.cos(S.h + ANT), S.y + REACH * Math.sin(S.h + ANT)), sr = smell(g, S.x + REACH * Math.cos(S.h - ANT), S.y + REACH * Math.sin(S.h - ANT));
   const t = sl + sr + 1e-6, dl = sl / t, dr = sr / t;
-  for (let i = 0; i < NI; i++) { const p = i < G ? dl : dr; fired[i] = r.next() < 0.096 * p * p ? 1 : 0; }
+  let nf = 0; for (let i = 0; i < NI; i++) { const p = i < G ? dl : dr; fired[i] = r.next() < 0.096 * p * p ? 1 : 0; if (fired[i]) FIRED[nf++] = i; }
   for (let j = 0; j < NM; j++) {
-    let I = r.next() < 0.012 ? 14 : 0; for (let i = 0; i < NI; i++) if (fired[i]) I += W[i * NM + j];
+    let I = r.next() < 0.012 ? 14 : 0; for (let f = 0; f < nf; f++) I += W[FIRED[f] * NM + j]; // only the inputs that fired, in the same order
     const n = NI + j; let vv = v[n], uu = u[n];
     vv += 0.5 * (0.04 * vv * vv + 5 * vv + 140 - uu + I); vv += 0.5 * (0.04 * vv * vv + 5 * vv + 140 - uu + I); uu += 0.02 * (0.2 * vv - uu); // Izhikevich RS, two half steps
     fired[n] = 0; if (vv >= 30) { vv = -65; uu += 8; fired[n] = 1; S.spikes++; } v[n] = vv; u[n] = uu;
   }
   for (let i = 0; i < NI; i++) { pre[i] *= 0.951; if (fired[i]) pre[i] += 1; }
   for (let j = 0; j < NM; j++) { post[j] *= 0.951; if (fired[NI + j]) post[j] += 1; }
-  for (let i = 0; i < NI; i++) { const fi = fired[i], row = i * NM; for (let j = 0; j < NM; j++) { let c = elig[row + j] * 0.995; if (fired[NI + j]) c += pre[i]; if (fi) c -= 0.8 * post[j]; elig[row + j] = c; } }
+  // the eye turns and moves on the motor spikes alone, so dopamine is known before the traces are updated: the trace pass and the weight
+  // pass run as one (each weight takes its trace as stored, a float32, exactly as the second pass read it)
   let ml = 0, mr = 0; for (let j = 0; j < G; j++) { ml += fired[NI + j]; mr += fired[NI + G + j]; }
   S.m[0] = S.m[0] * 0.95 + ml; S.m[1] = S.m[1] * 0.95 + mr; S.h += TURN * (S.m[0] - S.m[1]);
   S.x = (S.x + SPEED * Math.cos(S.h) + 1) % 1; S.y = (S.y + SPEED * Math.sin(S.h) + 1) % 1;
   const s = smell(g, S.x, S.y); S.dopa = (s - S.last) * RK; S.last = s; S.seen = s; S.base = S.base * 0.9995 + 0.0005 * S.dopa;
+  const d = S.learn ? (S.dopa - S.base) * LR : 0;
+  for (let i = 0; i < NI; i++) { // the same sums as one loop with both ifs, split so an input that did not fire skips its test
+    const row = i * NM, p = pre[i], fi = fired[i];
+    for (let j = 0; j < NM; j++) {
+      const k = row + j; let c = elig[k] * 0.995; if (fired[NI + j]) c += p; if (fi) c -= 0.8 * post[j]; elig[k] = c;
+      if (d) { const x = W[k] + d * elig[k]; W[k] = x < 0 ? 0 : x > WMAX ? WMAX : x; }
+    }
+  }
   if (S.learn) {
-    const d = (S.dopa - S.base) * LR; if (d) for (let k = 0; k < W.length; k++) { const x = W[k] + d * elig[k]; W[k] = x < 0 ? 0 : x > WMAX ? WMAX : x; }
     if (S.ms % 10 === 0) { const tg = WMAX * 0.5 * NI; for (let j = 0; j < NM; j++) { let tot = 0; for (let i = 0; i < NI; i++) tot += W[i * NM + j]; const f = tg / (tot || 1); for (let i = 0; i < NI; i++) { const x = W[i * NM + j] * f; W[i * NM + j] = x > WMAX ? WMAX : x; } } }
   }
   S.ms++;

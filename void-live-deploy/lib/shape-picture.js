@@ -1,4 +1,4 @@
-// lib/shape-picture.js: "draw a red circle" (and "dessine un cercle rouge", "dibuja un círculo rojo") as a real picture: the ask read
+// lib/shape-picture.js: "draw a red circle" (and "dessine un cercle rouge", "dibuja un círculo rojo", "zeichne einen roten Kreis") as a real picture: the ask read
 // into { shape, color } in English, the shape drawn as SVG for the card and on a canvas for the PNG that goes on to /paint/
 // (lib/image-handoff.js). The draw skill (skills/draw.js) shows it; the stage's one shape gets the same ask in English, so
 // "make the shape blue" still reaches it. Pure except paintShape (a canvas context is passed in). Tests: tools/shape-picture.test.mjs.
@@ -7,18 +7,22 @@
 export const HEX = Object.freeze({ red: '#d6402f', orange: '#ec8a2f', yellow: '#f2cf3a', green: '#3fa556', blue: '#2f6fd6', purple: '#7b47c9', pink: '#e86aa8',
   black: '#111111', white: '#f5f5f5', grey: '#8a8a8a', gray: '#8a8a8a', brown: '#8a5a33', gold: '#d4a72c', teal: '#2a9d8f', cyan: '#3cc7e0' });
 export const SHAPES = Object.freeze(['circle', 'square', 'rectangle', 'triangle', 'star', 'heart', 'oval']);
-// French and Spanish words, to the English ones above (a feminine or plural form reads as its base)
+// French, Spanish and (below) German words, to the English ones above (a feminine or plural form reads as its base)
 const FR_SHAPE = { cercle: 'circle', rond: 'circle', carré: 'square', carre: 'square', rectangle: 'rectangle', triangle: 'triangle', étoile: 'star', etoile: 'star', cœur: 'heart', coeur: 'heart', ovale: 'oval' };
 const FR_COLOR = { rouge: 'red', bleu: 'blue', bleue: 'blue', vert: 'green', verte: 'green', jaune: 'yellow', noir: 'black', noire: 'black', blanc: 'white', blanche: 'white', orange: 'orange', rose: 'pink', violet: 'purple', violette: 'purple', gris: 'grey', grise: 'grey', marron: 'brown', doré: 'gold', dorée: 'gold' };
 const ES_SHAPE = { círculo: 'circle', circulo: 'circle', cuadrado: 'square', rectángulo: 'rectangle', rectangulo: 'rectangle', triángulo: 'triangle', triangulo: 'triangle', estrella: 'star', corazón: 'heart', corazon: 'heart', óvalo: 'oval', ovalo: 'oval' };
 const ES_COLOR = { rojo: 'red', roja: 'red', azul: 'blue', verde: 'green', amarillo: 'yellow', amarilla: 'yellow', negro: 'black', negra: 'black', blanco: 'white', blanca: 'white', naranja: 'orange', rosa: 'pink', morado: 'purple', morada: 'purple', gris: 'grey', marrón: 'brown', marron: 'brown', dorado: 'gold', dorada: 'gold' };
+// German: the colour comes before the shape and takes an ending ("einen roten Kreis", "ein blaues Quadrat", "eine gelbe Raute" is no shape here)
+const DE_SHAPE = { kreis: 'circle', quadrat: 'square', rechteck: 'rectangle', dreieck: 'triangle', stern: 'star', herz: 'heart', oval: 'oval' };
+const DE_COLOR = { rot: 'red', blau: 'blue', grün: 'green', gruen: 'green', gelb: 'yellow', schwarz: 'black', weiß: 'white', weiss: 'white', orange: 'orange', rosa: 'pink', pink: 'pink', lila: 'purple', violett: 'purple', grau: 'grey', braun: 'brown', golden: 'gold' };
 const alt = (o) => Object.keys(o).sort((a, b) => b.length - a.length).join('|');
 const EN_COLOR = alt(HEX), EN_SHAPE = SHAPES.join('|');
 const SIZE = '(?:(big|large|huge|small|little|tiny)\\s+)?';
 const EN = new RegExp('^(?:please\\s+)?(?:can you\\s+)?(?:draw|sketch|paint)\\s+(?:me\\s+)?(?:a|an|one)\\s+' + SIZE + '(' + EN_COLOR + ')\\s+' + SIZE + '(' + EN_SHAPE + ')(?:\\s+please)?\\s*[.!]?$');
 const FR = new RegExp('^(?:s\'il te pla[iî]t\\s+)?dessine(?:[- ]moi)?\\s+(?:un|une)\\s+(?:(grand|grande|petit|petite)\\s+)?(' + alt(FR_SHAPE) + ')\\s+(' + alt(FR_COLOR) + ')\\s*[.!]?$');
 const ES = new RegExp('^(?:por favor\\s+)?dib[uú]ja(?:me)?\\s+(?:un|una)\\s+(?:(gran|grande|pequeño|pequeña)\\s+)?(' + alt(ES_SHAPE) + ')\\s+(' + alt(ES_COLOR) + ')\\s*[.!]?$');
-const sizeOf = (w) => (!w ? 'normal' : /^(?:big|large|huge|grand|grande|gran)$/.test(w) ? 'big' : 'small');
+const DE = new RegExp('^(?:bitte\\s+)?(?:zeichne|male)(?:\\s+mir)?\\s+(?:einen|eine|ein)\\s+(?:(gro(?:ß|ss)(?:en|e|es|er)?|klein(?:en|e|es|er)?)\\s+)?(' + alt(DE_COLOR) + ')(?:n?(?:en|e|es|er)|n)?\\s+(' + alt(DE_SHAPE) + ')(?:\\s+bitte)?\\s*[.!]?$');
+const sizeOf = (w) => (!w ? 'normal' : /^(?:big|large|huge|grand|grande|gran|gro(?:ß|ss)\w*)$/.test(w) ? 'big' : 'small');
 
 /** the ask as { shape, color, hex, size, english } (english: the same ask in English, for the stage), or null. A colour is required:
  *  a plain "draw a circle" stays the stage shape's own ask (skills/shape.js plainShape). Pure. */
@@ -28,6 +32,7 @@ export function shapeAsk(text) {
   if ((m = EN.exec(l))) { color = m[2]; shape = m[4]; size = sizeOf(m[1] || m[3]); }
   else if ((m = FR.exec(l))) { shape = FR_SHAPE[m[2]]; color = FR_COLOR[m[3]]; size = sizeOf(m[1]); }
   else if ((m = ES.exec(l))) { shape = ES_SHAPE[m[2]]; color = ES_COLOR[m[3]]; size = sizeOf(m[1]); }
+  else if ((m = DE.exec(l))) { shape = DE_SHAPE[m[3]]; color = DE_COLOR[m[2]]; size = sizeOf(m[1]); }
   if (!shape || !color || !HEX[color]) return null;
   if (color === 'gray') color = 'grey';
   return { shape, color, hex: HEX[color], size, english: 'draw a ' + (size === 'normal' ? '' : size + ' ') + color + ' ' + shape };

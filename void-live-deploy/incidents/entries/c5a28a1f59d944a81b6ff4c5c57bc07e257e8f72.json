@@ -1,0 +1,25 @@
+{
+ "at": "2026-11-06T05:58:56.706Z",
+ "sha": "c5a28a1f59d944a81b6ff4c5c57bc07e257e8f72",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42168004879",
+ "suite": "browser suite on main",
+ "checks": [
+  "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+  "timer add time: \"add one minute\" after \"set a timer for 90 seconds\" makes that timer 150 s long, its card says 2:30 and 150 seconds and is the picked thing, and no list is made",
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "tools/verse-coder.mjs",
+  "tools/verse-coder.test.mjs"
+ ],
+ "shards": [
+  4
+ ],
+ "passed": [
+  4
+ ],
+ "closedAt": "2026-11-06T06:39:43.193Z",
+ "closedBy": "44265992f306b9f77afc277eef091ba34feaf72a",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42171576930",
+ "minutes": 41
+}

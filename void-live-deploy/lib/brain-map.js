@@ -17,17 +17,17 @@ export const isKey = (t) => OWNER_KEY.test(String(t || ''));
 
 /** the organs by what they do. An organ not named here goes in the last lobe, so a new organ is never left off the map. */
 export const LOBES = [
-  { id: 'feel', name: 'Feeling', note: 'what it senses of you', hue: 196, organs: ['senses', 'synapses', 'hearing'] },
-  { id: 'guess', name: 'Guessing', note: 'what it expects next', hue: 268, organs: ['predictor', 'gestures', 'memory'] },
+  { id: 'feel', name: 'Feeling', note: 'what it senses of you', hue: 196, organs: ['senses', 'synapses', 'hearing', 'atlas'] },
+  { id: 'guess', name: 'Guessing', note: 'what it expects next', hue: 268, organs: ['predictor', 'gestures', 'memory', 'strokes', 'rules', 'reflex', 'curves'] },
   { id: 'words', name: 'Words', note: 'the ideas you give it', hue: 318, organs: ['concepts', 'dialogue'] },
   { id: 'decide', name: 'Deciding', note: 'what it does next', hue: 40, organs: ['will', 'arena'] },
   { id: 'life', name: 'Living tissue', note: 'the surface it thinks on', hue: 150, organs: ['tissue', 'gardener', 'rhythm', 'membrane', 'swarm'] },
   { id: 'flow', name: 'Moving matter', note: 'fluids and grains after its focus', hue: 176, organs: ['current', 'grains', 'pool', 'trace'] },
-  { id: 'make', name: 'Making', note: 'what it builds and evolves', hue: 12, organs: ['painter', 'grower', 'formula', 'creature'] }
+  { id: 'make', name: 'Making', note: 'what it builds and evolves', hue: 12, organs: ['painter', 'grower', 'formula', 'creature', 'growth'] }
 ];
 /** what each organ does, in a few plain words (the full job is in lib/brain-organs.js and its own module) */
 export const ROLE = {
-  senses: 'feels your pointer, tilt and sound', predictor: 'guesses your next move', gestures: 'names how you move', memory: 'expects what comes after a move',
+  senses: 'feels your pointer, tilt and sound', predictor: 'guesses your next move', gestures: 'names how you move', memory: 'expects what comes after a move', strokes: 'finishes a stroke of yours it has seen', rules: 'guesses which way your next stroke goes', reflex: 'pushes three bodies after your pointer and learns how', growth: 'grows where you point, by a rule it evolves', atlas: 'maps how you move, neighbours next to neighbours', curves: 'guesses your next step with learned curves',
   concepts: 'links the words you give it', tissue: 'the living surface', gardener: 'keeps the tissue at the edge of chaos', rhythm: 'keeps it in step',
   membrane: 'wraps what it attends to', swarm: 'particles that feed the tissue', synapses: 'a spiking eye that learns where to look', hearing: 'hears a hum as notes',
   painter: 'rewrites its own look', grower: 'grows a plant toward its focus', formula: 'evolves a formula for its tissue', creature: 'a creature that walks to its thought',

@@ -1,0 +1,42 @@
+{
+ "site": "dalyfeds.com (H5 Center, a game portal page)",
+ "kind": "game portal: a near-empty page of 2 words whose content comes from 3 scripts",
+ "chosen": "2026-11-06",
+ "why": "next in the smallest-first ranking of all sites (fewest controls on the home page, ties to the lighter page): 0 controls, 11 nodes, 267,663 bytes rendered (tower.size.json, 2026-11-06)",
+ "source": [
+  "the site's raw html, 3,109 bytes, title H5 Center, read 2026-11-06",
+  "tower.size.json, the Tower's browser run on 2026-11-06",
+  "https://dalyfeds.com/"
+ ],
+ "rule": "Verse takes on the site with a page of its own: every feature it has, plus one notch, measured live beside it. A number not measured is shown as not measured.",
+ "features": [
+  {
+   "id": "benchmark",
+   "theirs": "no measure of itself",
+   "plus_one": "a live benchmark of both sites on every load: load time, page weight, requests, scripts and tracker hosts",
+   "void": "beats",
+   "progress": "2026-11-06: /starboard/ reads /api/sitebench, which fetches both pages from Verse's server."
+  },
+  {
+   "id": "games",
+   "theirs": "browser games from its scripts",
+   "plus_one": "games and the wheel with no ad scripts",
+   "void": "none",
+   "progress": "2026-11-06: Starboard links the wheel, random picks, tournaments and prizes. A game panel on the page is next."
+  },
+  {
+   "id": "trackers",
+   "theirs": "3 scripts, ad network hosts",
+   "plus_one": "every file from a-to-mind.com",
+   "void": "beats",
+   "progress": "2026-11-06: the page loads only same-origin files; a test checks it."
+  },
+  {
+   "id": "daily panels",
+   "theirs": "none",
+   "plus_one": "weather for your place and the news wire on the same page",
+   "void": "beats",
+   "progress": "2026-11-06: weather from /api/weather, top stories from /api/news."
+  }
+ ]
+}

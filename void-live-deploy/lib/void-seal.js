@@ -1,13 +1,13 @@
-// void-seal — Verse's card art, drawn in the browser from a seed (owner, 2026-10-18: the ink plates "suck"; the art should be epic, the void
-// itself: deep black, light moving through it). Same key, same picture, on every device, with no model and nothing sent anywhere.
-// The picture is a field of light: a seeded flow field (value noise, the field minds' law) traced by a few thousand particles in additive
-// light, a nebula under it, a sacred-geometry lattice and a burning core (the void looking back), star dust, a glitch tear and a bloom.
-// The family's hue tints it; the rarity sets how much light it has (a Mythic burns, a Common glows). The kind picks the core's shape.
+// void-seal — Verse's card art, drawn in the browser from a seed. Same key, same picture, on every device, with no model and nothing sent anywhere.
+// The look (owner, 2026-10-30: "get rid of all the old art lets come up with a moder professional sleek look for everything"): quiet light. A
+// near-black ground in the family's hue, two or three large soft fields of colour like light through frosted glass, one set of hairlines that the
+// seed composes (rings, currents, rays, a band or orbits), a few points of light, a fine grain, and the card's subject as a clean lit icon.
+// The family's hue tints it; the rarity sets how much light it has (a Mythic carries a gold sheen and more lines, a Common is plainest).
 // Pure apart from the canvas it is handed: sealPlan(seed, opts) returns plain numbers (tested), drawSeal(ctx, w, h, plan) draws them.
 
 import { motifsFor, motifPaths, motifHue, GROUNDED } from './card-subject.js';
 
-export const VERSION = 3; // 3: the atom galaxy (2026-10-25)
+export const VERSION = 4; // 4: quiet light (2026-10-30); 3 was the atom galaxy, 2 the flow field
 /** FNV-1a 32-bit of a string. Pure. */
 export function seedOf(s) { let h = 0x811c9dc5; for (const ch of String(s == null ? '' : s)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
 /** a seeded generator (mulberry32). Pure. */
@@ -15,7 +15,7 @@ export function rng(seed) { let a = seed >>> 0 || 1; return () => { a = (a + 0x6
 
 // the light by rarity: particle count, how bright each stroke is, how much bloom, how many lattice rings
 export const LIGHT = { mythic: { n: 1500, a: 0.075, bloom: 0.38, rings: 5, gold: 1 }, rare: { n: 1250, a: 0.065, bloom: 0.32, rings: 4, gold: 0.7 }, uncommon: { n: 1050, a: 0.055, bloom: 0.28, rings: 3, gold: 0.35 }, common: { n: 900, a: 0.05, bloom: 0.24, rings: 2, gold: 0 } };
-// the composition, picked by the seed: where the light gathers and how it moves
+// the composition, picked by the seed: what the hairlines draw
 export const FORMS = ['vortex', 'currents', 'burst', 'rift', 'orbit'];
 // the core's shape by kind: sides of the lattice polygon (0 = an eye), and whether rays burst from it
 const CORE = { Film: [8, 1], Show: [6, 1], Album: [0, 0], Song: [0, 1], Band: [5, 1], Game: [4, 1], Book: [4, 0], Person: [0, 0], Place: [3, 0], Creature: [0, 1], Organisation: [6, 0], Event: [12, 1], Idea: [6, 1], Answer: [0, 1], Skill: [5, 0], Miniature: [4, 1] };
@@ -26,7 +26,7 @@ export function sealPlan(key, { kind = 'Idea', hue = null, rarity = 'common', no
   const seed = seedOf(String(key || '').toLowerCase().trim() + '|' + kind), r = rng(seed), L = LIGHT[rarityKey(rarity)];
   const h = Number.isFinite(+hue) ? ((+hue % 360) + 360) % 360 : Math.floor(r() * 360);
   const [sides, rays] = CORE[kind] || CORE.Idea;
-  // the subject's motif: the card's own short name first ("black hole", "cat": the subject), else the answer's words, else nothing (the burning iris)
+  // the subject's motif: the card's own short name first ("black hole", "cat": the subject), else the answer's words, else nothing (the lines alone)
   const keyWords = String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean), motif = kind === 'Person' ? 'person' : (keyWords.length <= 4 && motifsFor(keyWords)[0]) || (motifsFor(nouns || [])[0]) || motifsFor(keyWords)[0] || '';
   const mh = motifHue(motif), main = mh == null ? h : mh; // a dragon burns red and the sea is blue; the family's hue still tints the nebula and the counter-light
   return {
@@ -36,19 +36,15 @@ export function sealPlan(key, { kind = 'Idea', hue = null, rarity = 'common', no
     field: { scale: 1.6 + r() * 2.2, twist: 0.6 + r() * 1.6, swirl: r() < 0.5 ? 1 : -1, octaves: 3 },
     form: FORMS[Math.floor(r() * FORMS.length)],
     // the card's subject, drawn in light at the core (owner, 2026-10-18: "the art should be of each card's subject"): the answer's words
-    // (lib/card-subject.js subjectOf) mapped to a motif, else the key's own words; none found keeps the burning iris
+    // (lib/card-subject.js subjectOf) mapped to a motif, else the key's own words; none found keeps the lines alone
     motif, grounded: GROUNDED.has(motif),
     core: { x: 0.28 + r() * 0.44, y: 0.38 + r() * 0.24, sides, rays, spin: r() * Math.PI * 2, size: 0.3 + r() * 0.12 },
-    nebula: Array.from({ length: 3 }, () => ({ x: r(), y: r(), r: 0.25 + r() * 0.4, c: Math.floor(r() * 3), a: 0.05 + r() * 0.08 })),
-    tear: null,
+    // the soft fields of light under the lines
+    nebula: Array.from({ length: 3 }, () => ({ x: 0.1 + r() * 0.8, y: r(), r: 0.35 + r() * 0.35, c: Math.floor(r() * 3), a: 0.16 + r() * 0.12 })),
     stars: 140 + Math.floor(r() * 120),
-    // neon vector arcs sweeping round the core and crackling energy at it (owner's example card, 2026-10-18: "purple crackling energy and neon cyan vector lines")
-    arcs: Array.from({ length: 2 + Math.floor(r() * 2) }, () => ({ rx: 0.4 + r() * 0.45, ry: 0.42 + r() * 0.35, rot: r() * Math.PI, a0: r() * Math.PI * 2, len: 1.4 + r() * 1.8, w: 0.7 + r() * 0.9, strands: 3 + Math.floor(r() * 4), gap: 0.025 + r() * 0.03 })),
+    // the points of light: a Mythic has more than a Common
     bolts: { mythic: 7, rare: 5, uncommon: 3, common: 2 }[rarityKey(rarity)],
-    // the atom galaxy (owner, 2026-10-25: "make all card art bigger and better with the updated atom galaxy theme"): a spiral galaxy at the centre,
-    // seen at a slant, and three orbits of an atom round it in violet, electric blue and gold, each with its electron; the seed tilts and turns them
-    galaxy: { arms: 2 + Math.floor(r() * 3), twist: 1.6 + r() * 1.4, tilt: 0.42 + r() * 0.3, rot: r() * Math.PI * 2, spin: r() < 0.5 ? 1 : -1 },
-    orbits: [275, 205, 44].map((hue, k) => ({ hue, rot: [0.08, 0.85, -0.85][k] * (r() < 0.5 ? 1 : -1) + (r() - 0.5) * 0.25, ratio: 0.26 + r() * 0.12, size: 0.86 + r() * 0.2, phase: r() * Math.PI * 2, e: r() * Math.PI * 2 })),
+    lines: { tilt: (r() - 0.5) * 0.9, ratio: 0.3 + r() * 0.25, gap: 6 + r() * 4, rots: Array.from({ length: 6 }, () => (r() - 0.5) * 1.6), at: Array.from({ length: 6 }, () => r() * Math.PI * 2) },
   };
 }
 
@@ -62,97 +58,55 @@ function noise2(seed) {
 const hsl = (h, s, l, a) => 'hsla(' + Math.round(h) + ',' + s + '%,' + l + '%,' + a + ')';
 
 /** draw the plan on a 2D context of w x h. The only impure part: it paints. */
-// The atom galaxy is ONE natural formation (owner, 2026-10-25: "the atom galaxy should look like it naturally formed not just an atom over a galaxy"):
-// no drawn rails and no separate spiral. Three tilted stellar streams ARE the galaxy, wrapped round a blazing nucleus like a polar-ring galaxy, each made
-// of gas (soft puffs whose width and light swell and pinch along the ring), braided dark dust lanes and pinpoint stars thrown off with a Gaussian fall-off.
-// Depth: the back halves of the three streams, then the nucleus, then the front halves, whose dust crosses the core as a dark silhouette. Each "electron"
-// is a star cluster embedded in its stream, a hot core in a knot of micro-stars with a brighter wake of gas trailing behind it along the orbit.
 export function drawSeal(ctx, w, h, p) {
-  const r = rng(p.seed ^ 0x9e3779b9), L = p.light, m = Math.min(w, h), M = Math.max(w, h), cx = w / 2;
+  const r = rng(p.seed ^ 0x9e3779b9), L = p.light, m = Math.min(w, h), M = Math.max(w, h), cx = w / 2, N = noise2(p.seed);
   const msz = p.motif ? Math.min(p.core.size * m * 2.1, h * 0.64) : 0;
-  const cy = msz ? Math.max(msz / 2 + h * 0.06, Math.min(h - msz / 2 - h * 0.06, p.core.y * h)) : h / 2;
-  const form = p.form || 'vortex', gauss = () => { let u = 0; for (let k = 0; k < 4; k++) u += r(); return (u - 2) / 0.58; };
-  const puff = (x, y, rad, hue, sat, lite, a) => { if (a <= 0.002 || rad < 0.5) return; const g = ctx.createRadialGradient(x, y, 0, x, y, rad); g.addColorStop(0, hsl(hue, sat, lite, a)); g.addColorStop(0.45, hsl(hue, sat, lite * 0.8, a * 0.45)); g.addColorStop(1, hsl(hue, sat, lite * 0.6, 0)); ctx.fillStyle = g; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2); };
+  const cy = msz ? Math.max(msz / 2 + h * 0.06, Math.min(h - msz / 2 - h * 0.06, p.core.y * h)) : h * (0.4 + p.core.y * 0.25);
+  const [c0, c1] = p.palette, ln = p.lines || { tilt: 0, ratio: 0.4, gap: 8, rots: [0, 0, 0, 0, 0, 0], at: [0, 0, 0, 0, 0, 0] };
+  const glow = (x, y, rad, hue, sat, lite, a) => { if (a <= 0.002 || rad < 0.5) return; const g = ctx.createRadialGradient(x, y, 0, x, y, rad); g.addColorStop(0, hsl(hue, sat, lite, a)); g.addColorStop(1, hsl(hue, sat, lite, 0)); ctx.fillStyle = g; ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2); };
+  const line = (pts, a, hue) => { ctx.strokeStyle = hsl(hue, 70, 80, a); ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke(); };
+  const ring = (rx, ry, rot, a, hue) => { const c = Math.cos(rot), s = Math.sin(rot), pts = []; for (let i = 0; i <= 96; i++) { const t = i / 96 * Math.PI * 2, x = Math.cos(t) * rx, y = Math.sin(t) * ry; pts.push([cx + x * c - y * s, cy + x * s + y * c]); } line(pts, a, hue); return (t) => { const x = Math.cos(t) * rx, y = Math.sin(t) * ry; return [cx + x * c - y * s, cy + x * s + y * c]; }; };
   ctx.save();
-  // deep space
-  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, M * 0.75); bg.addColorStop(0, hsl(p.hue, 35, 7, 1)); bg.addColorStop(0.45, '#04040a'); bg.addColorStop(1, '#010103');
+  // the ground: near black, the family's hue in it, a touch lighter at the top
+  const bg = ctx.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, hsl(p.hue, 24, 10, 1)); bg.addColorStop(1, hsl(p.hue, 20, 5, 1));
   ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+  // the light: large soft fields of colour
   ctx.globalCompositeOperation = 'lighter';
-  for (const n of p.nebula) puff(n.x * w, n.y * h, n.r * M, p.palette[n.c], 60, 35, n.a * 0.55);
-  for (let i = 0; i < p.stars * 2; i++) { const x = r() * w, y = r() * h, b = r(); ctx.fillStyle = hsl(b < 0.9 ? 220 : [44, 275, 205][i % 3], b < 0.9 ? 25 : 70, 88, 0.15 + b * 0.55); const z = b > 0.97 ? 1.6 : b > 0.85 ? 1 : 0.6; ctx.fillRect(x, y, z, z); }
-  // the three streams: each a ring in its own tilted plane, its width and light varying smoothly round it (a few seeded harmonics: no seam)
-  const Ro = Math.min(M * 0.46, m * 1.02);
-  const streams = (p.orbits || []).map((O, k) => {
-    const c = Math.cos(O.rot), s = Math.sin(O.rot); let rx = Ro * O.size; const ratio = O.ratio * 1.05;
-    rx *= Math.min(1, (w * 0.44) / Math.hypot(rx * c, rx * ratio * s), (h * 0.42) / Math.hypot(rx * s, rx * ratio * c));
-    const ry = rx * ratio, harm = [1, 2, 3, 5].map((f) => ({ f, a: (0.5 / f) * (0.6 + r() * 0.8), ph: r() * Math.PI * 2 })), dharm = [2, 3, 7].map((f) => ({ f, ph: r() * Math.PI * 2 }));
-    const swell = (t) => { let v = 0; for (const q of harm) v += q.a * Math.sin(q.f * t + q.ph); return v; }; // about -1..1
-    const at = (t, off = 0) => { const x = Math.cos(t) * (rx + off), y = Math.sin(t) * (ry + off * ratio); return [cx + x * c - y * s, cy + x * s + y * c]; };
-    const thick = m * (form === 'burst' ? 0.085 : 0.07);
-    return { O, k, at, swell, dharm: dharm, wid: (t) => thick * Math.max(0.25, 1 + 0.75 * swell(t)), lum: (t) => Math.max(0.15, 0.7 + 0.5 * swell(t + 1.3)) };
-  });
-  // a point of a ring is in front when the ring's near side faces us: the lower half of each tilted plane (sin t > 0)
-  const front = (t) => Math.sin(t) > 0;
-  const half = (S, near) => {
-    const { O, at, wid, lum } = S, wake = (t) => { let d = ((O.e - t) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); return d < 0.6 ? 1 - d / 0.6 : 0; }; // the gas trailing behind the cluster
-    ctx.globalCompositeOperation = 'lighter';
-    // gas: overlapping soft puffs scattered across the stream's width
-    const nGas = Math.round(260 + L.n * 0.2);
-    for (let i = 0; i < nGas; i++) { const t = r() * Math.PI * 2; if (front(t) !== near) continue; const wd = wid(t), [x, y] = at(t, gauss() * wd * 0.45), boost = 1 + wake(t) * 1.6;
-      puff(x, y, wd * (0.7 + r() * 1.2), O.hue + (r() - 0.5) * 18, 85, 55, 0.045 * lum(t) * boost * (near ? 1 : 0.75)); }
-    // a brighter spine of finer gas
-    for (let i = 0; i < nGas * 0.6; i++) { const t = r() * Math.PI * 2; if (front(t) !== near) continue; const wd = wid(t), [x, y] = at(t, gauss() * wd * 0.15);
-      puff(x, y, wd * (0.25 + r() * 0.35), O.hue, 75, 72, 0.07 * lum(t) * (1 + wake(t))); }
-    // stars: most tight to the spine, a few flung out as tidal strays
-    const nStars = Math.round(L.n * 1.1);
-    for (let i = 0; i < nStars; i++) { const t = r() * Math.PI * 2; if (front(t) !== near) continue; const stray = r() < 0.06, wd = wid(t), [x, y] = at(t, gauss() * wd * (stray ? 2.6 : 0.55));
-      const b = r(); ctx.fillStyle = hsl(b < 0.6 ? O.hue : 45, b < 0.6 ? 70 : 30, 82 + b * 14, 0.35 + b * 0.6 * lum(t)); const z = b > 0.96 ? 1.5 : b > 0.7 ? 0.9 : 0.5; ctx.fillRect(x, y, z, z); }
-    // dust: two dark braided lanes weaving just inside the stream, thick where the stream swells, broken where it thins
-    ctx.globalCompositeOperation = 'source-over'; ctx.lineCap = 'round';
-    for (let lane = 0; lane < 2; lane++) {
-      const ph = S.dharm[lane].ph, base = lane ? -0.22 : 0.18;
-      for (let k = 0; k < 160; k++) { const t0 = k / 160 * Math.PI * 2, t1 = t0 + Math.PI * 2 / 160 * 1.25; if (front(t0) !== near) continue;
-        const sw = S.swell(t0 * 2.3 + ph); if (sw < 0.25 + lane * 0.12) continue; const wd = wid(t0), wob = Math.sin(t0 * S.dharm[2].f + ph) * 0.18;
-        const [x0, y0] = at(t0, (base + wob) * wd), [x1, y1] = at(t1, (base + Math.sin(t1 * S.dharm[2].f + ph) * 0.18) * wd);
-        ctx.strokeStyle = 'rgba(4,3,8,' + (0.22 + 0.3 * Math.min(1, sw - 0.2)).toFixed(3) + ')'; ctx.lineWidth = Math.max(0.5, wd * (0.06 + 0.12 * (sw - 0.2)));
-        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
-    }
-    // the cluster ("electron"), when it is on this side: a white-hot core in a knot of micro-stars
-    if (front(O.e) === near) { ctx.globalCompositeOperation = 'lighter'; const [ex, ey] = at(O.e), kr = m * 0.034;
-      puff(ex, ey, kr * 2.6, O.hue, 90, 65, 0.35); puff(ex, ey, kr, 50, 30, 96, 0.9);
-      for (let i = 0; i < 22; i++) { const d = Math.abs(gauss()) * kr * 0.9, a = r() * Math.PI * 2; ctx.fillStyle = hsl(50, 40, 92, 0.6 + r() * 0.4); const z = r() < 0.2 ? 1.3 : 0.7; ctx.fillRect(ex + Math.cos(a) * d, ey + Math.sin(a) * d, z, z); } }
-  };
-  for (const S of streams) half(S, false);
-  // the nucleus: a blinding golden-white bulge, slightly flattened, with a warm halo
-  ctx.globalCompositeOperation = 'lighter';
-  const Rn = m * (form === 'burst' ? 0.2 : 0.16);
-  puff(cx, cy, Rn * 2.6, 32, 90, 45, 0.28); puff(cx, cy, Rn * 1.4, 42, 95, 62, 0.55); puff(cx, cy, Rn * 0.7, 48, 100, 82, 0.85); puff(cx, cy, Rn * 0.32, 52, 60, 97, 1);
-  for (let i = 0; i < 260; i++) { const d = Math.abs(gauss()) * Rn * 0.7, a = r() * Math.PI * 2; ctx.fillStyle = hsl(46, 60, 90, 0.4 + r() * 0.5); ctx.fillRect(cx + Math.cos(a) * d, cy + Math.sin(a) * d * 0.8, 0.8, 0.8); }
-  for (const S of streams) half(S, true);
-  // the subject: its motif in light at the heart, a glowing silhouette with a hot edge, over a halo
+  for (const n of p.nebula) glow(n.x * w, n.y * h, n.r * M, p.palette[n.c], 70, 52, n.a * (0.7 + L.bloom));
+  glow(cx, cy, m * 0.7, c0, 80, 60, 0.12 + L.bloom * 0.2);
+  // the hairlines the seed composes
+  ctx.lineWidth = 1; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const form = p.form || 'vortex', many = 10 + L.rings * 3, sparks = [];
+  const nth = (i, n, at) => i % n === at; // integer steps: which lines carry a point of light
+  if (form === 'vortex') { for (let k = 1; k <= many; k++) { const rx = M * 0.04 + k * (M * 0.46 / many); const at = ring(rx, rx * ln.ratio, ln.tilt, 0.05 + 0.2 * (1 - k / many), k % 3 ? c0 : c1); if (nth(k, 4, 0)) sparks.push(at(ln.at[k % 6] + k)); } }
+  else if (form === 'orbit') { for (let k = 0; k < 2 + L.rings; k++) { const rx = M * (0.16 + 0.07 * k); const at = ring(rx, rx * ln.ratio, ln.rots[k % 6], 0.26 - k * 0.025, k % 2 ? c1 : c0); sparks.push(at(ln.at[k % 6])); } }
+  else if (form === 'currents') { const n = 14 + L.rings * 3, sc = p.field.scale; for (let i = 0; i < n; i++) { const y0 = (i + 0.5) / n * h, pts = []; for (let x = -8; x <= w + 8; x += 6) pts.push([x, y0 + N(x / w * sc, y0 / h * sc + i * 0.07, 3) * h * 0.22]); line(pts, 0.04 + 0.16 * Math.exp(-(((y0 - cy) / (h * 0.32)) ** 2)), i % 3 ? c0 : c1); if (nth(i, 5, 2)) sparks.push(pts[Math.floor(pts.length * (0.2 + r() * 0.6))]); } }
+  else if (form === 'burst') { const n = 56 + L.rings * 10; for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2 + ln.tilt, len = m * (0.3 + 0.35 * (N(Math.cos(t) * 2, Math.sin(t) * 2, 2) + 1) / 2), r0 = m * 0.12;
+      line([[cx + Math.cos(t) * r0, cy + Math.sin(t) * r0], [cx + Math.cos(t) * (r0 + len), cy + Math.sin(t) * (r0 + len)]], 0.06 + 0.14 * r(), i % 4 ? c0 : c1); if (nth(i, 17, 5)) sparks.push([cx + Math.cos(t) * (r0 + len), cy + Math.sin(t) * (r0 + len)]); } }
+  else { const t = ln.tilt * 0.6 - 0.35, c = Math.cos(t), s = Math.sin(t), span = Math.hypot(w, h), n = Math.ceil(span / ln.gap); for (let i = -n; i <= n; i++) { const d = i * ln.gap * 0.5, a = 0.02 + 0.24 * Math.exp(-((d / (M * 0.11)) ** 2)); if (a < 0.03) continue;
+      const x0 = cx - c * span - s * d, y0 = cy - s * span + c * d; line([[x0, y0], [x0 + c * span * 2, y0 + s * span * 2]], a, i % 3 ? c0 : c1); if (i === 0) sparks.push([cx, cy]); } }
+  // the points of light
+  for (let i = 0; i < p.bolts; i++) { const [x, y] = sparks[i % Math.max(1, sparks.length)] || [cx + (r() - 0.5) * w * 0.6, cy + (r() - 0.5) * h * 0.6], j = i < sparks.length ? 0 : 1; glow(x + j * (r() - 0.5) * m * 0.3, y, m * 0.05, c0, 90, 70, 0.4); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fillRect(x - 0.75, y - 0.75, 1.5, 1.5); }
+  // a Mythic's gold sheen along the top
+  if (L.gold) { const g = ctx.createLinearGradient(0, 0, 0, h * 0.35); g.addColorStop(0, hsl(44, 90, 70, 0.14 * L.gold)); g.addColorStop(1, hsl(44, 90, 70, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h * 0.35); }
+  // the subject: a clean lit icon on a soft halo
   const paths = p.motif && typeof Path2D === 'function' ? motifPaths(p.motif) : null;
   if (paths) {
-    ctx.globalCompositeOperation = 'lighter';
-    const sz = msz, halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 0.75);
-    halo.addColorStop(0, hsl(p.palette[0], 100, 60, 0.4)); halo.addColorStop(0.5, hsl(p.palette[1], 100, 45, 0.1)); halo.addColorStop(1, hsl(p.palette[1], 100, 40, 0));
-    ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, sz * 0.75, 0, Math.PI * 2); ctx.fill();
+    const sz = msz; glow(cx, cy, sz * 0.72, c0, 90, 62, 0.22);
     ctx.save(); ctx.translate(cx - sz / 2, cy - sz / 2); ctx.scale(sz / 100, sz / 100);
     const shapes = paths.map(([d, f]) => [new Path2D(d), f]);
     ctx.globalCompositeOperation = 'source-over';
-    for (const [P, f] of shapes) if (f !== 'N') { ctx.fillStyle = f === 'I' ? 'rgba(2,2,8,0.92)' : f === 'G' ? 'hsla(44,90%,55%,0.85)' : f === 'R' ? 'hsla(5,75%,48%,0.95)' : hsl(p.palette[0], 60, f === 'L' ? 30 : 16, 0.92); ctx.fill(P); }
-    ctx.globalCompositeOperation = 'lighter';
-    for (const [lw, li, al, bl] of [[5, 60, 0.35, 16], [1.6, 78, 0.9, 6], [0.6, 95, 0.9, 0]]) {
-      ctx.lineJoin = 'round'; ctx.lineWidth = lw; ctx.shadowBlur = bl; ctx.shadowColor = hsl(p.palette[0], 100, 60, 1); ctx.strokeStyle = hsl(p.palette[0], 100, li, al);
-      for (const [P] of shapes) ctx.stroke(P);
-    }
-    ctx.shadowBlur = 0; ctx.restore();
+    const lit = ctx.createLinearGradient(0, 0, 0, 100); lit.addColorStop(0, hsl(c0, 70, 82, 0.96)); lit.addColorStop(1, hsl(c0, 55, 56, 0.96));
+    for (const [P, f] of shapes) if (f !== 'N') { ctx.fillStyle = f === 'I' ? hsl(p.hue, 30, 8, 0.92) : f === 'G' ? 'hsla(44,85%,62%,0.95)' : f === 'R' ? 'hsla(5,75%,56%,0.95)' : f === 'L' ? hsl(c0, 70, 88, 0.96) : lit; ctx.fill(P); }
+    ctx.lineWidth = 100 / Math.max(40, sz) * 1.2; ctx.strokeStyle = hsl(c0, 90, 92, 0.85);
+    for (const [P] of shapes) ctx.stroke(P);
+    ctx.restore();
   }
+  // a fine grain, for a printed finish
   ctx.globalCompositeOperation = 'source-over';
-  // bloom: the picture, blurred, laid over itself in light
-  if (typeof ctx.filter === 'string' && ctx.canvas) {
-    ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = L.bloom * 0.5; ctx.filter = 'blur(' + Math.round(m / 26) + 'px)'; ctx.drawImage(ctx.canvas, 0, 0, w, h); ctx.filter = 'none'; ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-  }
-  const v = ctx.createRadialGradient(w / 2, h / 2, m * 0.35, w / 2, h / 2, M * 0.75); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
+  const grains = Math.max(1800, Math.round(w * h / 26));
+  for (let i = 0; i < grains; i++) { const b = r(); ctx.fillStyle = b < 0.5 ? 'rgba(255,255,255,' + (0.012 + b * 0.05).toFixed(3) + ')' : 'rgba(0,0,0,' + (0.03 + (b - 0.5) * 0.12).toFixed(3) + ')'; ctx.fillRect(r() * w, r() * h, 1, 1); }
+  const v = ctx.createLinearGradient(0, h * 0.55, 0, h); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.35)'); ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
   ctx.restore();
 }
 

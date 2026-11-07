@@ -286,9 +286,14 @@ async function build(planFile, outFile, maxBuilt) {
 }
 
 // ---- apply: the decision onto the tree ----
+/** a rewritten page keeps the seo block (canonical link and ld+json) tools/seo-pages.mjs gave it: the variant is built without one, and a page written without it fails the seo audit until the next refresh */
+export function keepSeo(have, want) {
+  const seo = String(have || '').match(/<!-- seo -->[\s\S]*?<!-- \/seo -->\n?/);
+  return seo && !want.includes('<!-- seo -->') && want.includes('</head>') ? want.replace('</head>', seo[0] + '</head>') : want;
+}
 export function writePages(rows = SELF_SITES) {
   const done = [];
-  for (const r of rows) { const base = baseHtmlOf(r.base); if (!base) continue; const file = path.join(SITE_DIR, r.path, 'index.html'), want = variantHtml(base, r, declOf(base) || handoffLegacy()[r.base] || null); const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+  for (const r of rows) { const base = baseHtmlOf(r.base); if (!base) continue; const file = path.join(SITE_DIR, r.path, 'index.html'), built = variantHtml(base, r, declOf(base) || handoffLegacy()[r.base] || null); const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null, want = keepSeo(have, built);
     if (have !== null && have.replace(SEO_BLOCKS, '') === want.replace(SEO_BLOCKS, '')) continue; fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, want); done.push(r.path); }
   return done;
 }

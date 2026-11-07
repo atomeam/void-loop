@@ -8,6 +8,7 @@
 // It never spends, never sends anything outside, never merges, never posts on X.
 import * as C from './team-crew.js';
 import * as P from './team-priorities.js';
+import { slugOf } from './watch-build.js';
 import { TEAM_KINDS, kindOf } from './team.js';
 import { readStatus } from '../functions/api/status.js';
 import { crewReady, crewWrite } from '../functions/api/team.js';
@@ -112,14 +113,35 @@ async function measureOpen(env, ev, bots, now) {
   await env.DB.prepare("DELETE FROM void_team_wants WHERE state = 'met' AND met_at < ?").bind(now - KEEP_MET_MS).run();
   return out;
 }
+/** the newest job already on a target that is still worth waiting on (queued, building, done or live), or null */
+const adoptable = (env, target) => env.DB.prepare("SELECT id, state FROM void_queue WHERE target = ? AND state IN ('queued', 'building', 'done', 'live') ORDER BY at DESC LIMIT 1").bind(target).first().catch(() => null);
+/** TV and radio idea wants filed before they joined the blueprint lane had a feature: job of their own beside the lane's tv: job for the
+ *  same idea: two builds of one idea. Each open one now waits on the lane's job (its own, still queued, is set aside saying where it went),
+ *  or, when the lane has no job yet, its own job moves into the lane. -> [want keys folded] */
+export async function foldIdeaWants(env, now) {
+  const { results } = await env.DB.prepare("SELECT w.key, w.title, w.job, q.state, q.target FROM void_team_wants w JOIN void_queue q ON q.id = w.job WHERE w.state = 'open' AND w.lane = 'idea' AND q.state = 'queued' AND q.target NOT LIKE 'tv:%'").all();
+  const folded = [], at = new Date(now).toISOString();
+  for (const w of results || []) {
+    const topic = /^Build "(.+)" onto /.exec(String(w.title || '')); if (!topic) continue;
+    const target = ('tv:' + slugOf(topic[1])).slice(0, 40), had = await adoptable(env, target);
+    if (had) {
+      await env.DB.prepare('UPDATE void_queue SET state = ?, note = ?, updated = ? WHERE id = ? AND state = ?').bind('set aside', ('one build, not two: the blueprint lane builds this idea as ' + target + ' (job ' + had.id + ')').slice(0, 300), at, w.job, 'queued').run(); // void-review: ok (at most the open idea wants)
+      await env.DB.prepare('UPDATE void_team_wants SET job = ?, metric = ? WHERE key = ?').bind(had.id, 'joblive:' + had.id, w.key).run(); // void-review: ok (at most the open idea wants)
+    } else await env.DB.prepare('UPDATE void_queue SET target = ?, updated = ? WHERE id = ? AND state = ?').bind(target, at, w.job, 'queued').run(); // void-review: ok (at most the open idea wants)
+    folded.push(w.key);
+  }
+  return folded;
+}
 async function fileWants(env, wants, bots, now) {
   const { results } = await env.DB.prepare('SELECT key, state FROM void_team_wants').all();
   const have = new Set(results.map((r) => r.key)), open = results.filter((r) => r.state === 'open').length, filed = [];
-  for (const w of wants) {
+  for (let w of wants) {
     if (filed.length >= C.FILE_PER_TICK || open + filed.length >= C.MAX_OPEN) break;
     if (have.has(w.key)) continue;
-    const j = C.jobOf(w), at = new Date(now).toISOString(), bot = bots.find((b) => b.lane === w.lane) || C.byLane(w.lane);
-    await env.DB.prepare("INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, 'queued', ?, ?, ?) ON CONFLICT(id) DO UPDATE SET ask = excluded.ask, target = excluded.target, state = 'queued', note = excluded.note, updated = excluded.updated") // void-review: ok (at most FILE_PER_TICK a run)
+    const j = { ...C.jobOf(w) }, at = new Date(now).toISOString(), bot = bots.find((b) => b.lane === w.lane) || C.byLane(w.lane);
+    const had = w.target ? await adoptable(env, w.target) : null;
+    if (had) { j.id = had.id; w = { ...w, metric: { ...w.metric, id: 'joblive:' + had.id } }; } // the lane's own job builds it: no second job
+    else await env.DB.prepare("INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, 'queued', ?, ?, ?) ON CONFLICT(id) DO UPDATE SET ask = excluded.ask, target = excluded.target, state = 'queued', note = excluded.note, updated = excluded.updated") // void-review: ok (at most FILE_PER_TICK a run)
       .bind(j.id, j.ask, j.target, 'wanted by Verse\'s brain · measured by ' + w.metric.label, at, at).run();
     const thread = await crewWrite(env, { c: 'work', by: 'verse', job: j.id, now, body: C.wantPost(w, bot) });
     await env.DB.prepare("INSERT INTO void_team_wants (key, lane, kind, title, label, metric, better, baseline, latest, cite, private, job, thread, state, filed, checked) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'open', ?, ?)") // void-review: ok (at most FILE_PER_TICK a run)
@@ -237,6 +259,14 @@ const TITLES = { 'status-watch': 'probe the key pages and the hourly guards', 's
   'growth': 'draft promos from measured wins', 'tech-radar': 'read the browser release notes' };
 
 /** one run of the crew. -> { at, crew, filed, met, reopened, jobs, ms } */
+// main's state for the leverage score (lib/team-leverage.js): red when a check on main's newest commit failed. -> { red, checks, sha } or null
+export async function mainState(env) {
+  const h = { accept: 'application/vnd.github+json', ...(env.GITHUB_TOKEN ? { authorization: 'Bearer ' + env.GITHUB_TOKEN } : {}) };
+  const cr = json((await get(env, 'https://api.github.com/repos/' + REPO + '/commits/main/check-runs?per_page=100', { headers: h, ms: 8000 })).text);
+  if (!cr || !Array.isArray(cr.check_runs)) return null;
+  const red = cr.check_runs.filter((r) => ['failure', 'timed_out'].includes(r.conclusion)).map((r) => String(r.name || '').slice(0, 80));
+  return { red: red.length > 0, checks: red.slice(0, 8), sha: cr.check_runs[0] ? String(cr.check_runs[0].head_sha || '').slice(0, 12) : '' };
+}
 export async function crewTick(env, now = Date.now()) {
   if (!env || !env.DB) return { ok: false, say: 'no database bound' };
   const t0 = Date.now();
@@ -249,16 +279,17 @@ export async function crewTick(env, now = Date.now()) {
   // the evidence, read together
   const { results: openPages } = await env.DB.prepare("SELECT metric FROM void_team_wants WHERE state = 'open' AND (metric LIKE 'page:%' OR metric LIKE 'link:%')").all();
   const extra = openPages.map((r) => r.metric.replace(/^(page|link):/, '')).filter((p) => p.startsWith('/'));
-  const [ex, tw, st, pr, walk, misses7, sales30, idl] = await Promise.all([
+  const [ex, tw, st, pr, walk, misses7, sales30, idl, sz, main] = await Promise.all([
     readExam(env), get(env, ORIGIN + '/tower.evidence.json', { max: 8e6, ms: 12000 }), readStatus(env, now).catch(() => null),
     probe(env, [...C.KEY_PAGES, ...extra]), isDue('site-operator') ? linkWalk(env, run) : null,
     count(env, 'SELECT COUNT(*) AS n FROM void_misses WHERE last >= ?', new Date(now - 7 * 864e5).toISOString()),
     count(env, 'SELECT COUNT(*) AS n FROM void_sales WHERE verified = 1 AND at >= ?', new Date(now - 30 * 864e5).toISOString()),
-    ideas(env, now),
+    ideas(env, now), get(env, ORIGIN + '/tower.size.json', { max: 4e6, ms: 10000 }), mainState(env).catch(() => null),
   ]);
   const ev = { at: new Date(now).toISOString(), exam: ex.exam, examSrc: ex.src, tower: tw.status === 200 ? json(tw.text) : null, guards: st && st.guards ? st.guards : [], probe: pr,
-    links: walk ? walk.links : [], walk, misses7, sales30, ideas: idl };
+    links: walk ? walk.links : [], walk, misses7, sales30, ideas: idl, size: sz && sz.status === 200 ? json(sz.text) : null, main };
   // Verse's brain: measure, close, file
+  await foldIdeaWants(env, now).catch(() => []);
   const m = await measureOpen(env, ev, bots, now);
   const filed = await fileWants(env, C.wantsOf(ev), bots, now);
   // each due member's own job
@@ -280,14 +311,16 @@ export async function prioritizeRun(env, ev, now, { force = false } = {}) {
   try { jobs = ((await env.DB.prepare("SELECT id, ask, target, state, note, at FROM void_queue WHERE state IN ('queued', 'building') ORDER BY at ASC LIMIT 400").all()).results || []).filter((j) => TEAM_KINDS.includes(kindOf(j.target))); } catch (_) { jobs = []; }
   try { wants = (await env.DB.prepare("SELECT * FROM void_team_wants WHERE state = 'open'").all()).results || []; } catch (_) { wants = []; }
   const override = await getState(env, 'override'), last = await getState(env, 'priorities');
-  const p = P.prioritize(jobs, wants, ev, override, now), week = 'the week of ' + C.weekOf(new Date(now).toISOString()), monday = new Date(now).getUTCDay() === 1;
+  let done = [];
+  try { done = (await env.DB.prepare("SELECT id, ask, target, state, updated FROM void_queue WHERE state IN ('done', 'live') AND updated >= ? ORDER BY updated DESC LIMIT 400").bind(new Date(now - 14 * 864e5).toISOString()).all()).results || []; } catch (_) { done = []; }
+  const p = P.prioritize(jobs, wants, { ...ev, done }, override, now), week = 'the week of ' + C.weekOf(new Date(now).toISOString()), monday = new Date(now).getUTCDay() === 1;
   const why = !last ? 'first ranking' : force ? 'the owner overrode' : monday && last.week !== week ? 'Monday: the new week\'s bets' : last.day !== dayKey(now) ? 'the daily ranking' : last.sig !== p.sig ? 'the evidence moved' : '';
   if (!why) return { changed: false, bets: last.bets.map((b) => b.id) };
   const betsMoved = !last || last.bets.map((b) => b.id).join(' ') !== p.bets.map((b) => b.id).join(' ');
   let brief = last ? last.brief : null;
   if (betsMoved || (monday && last && last.week !== week) || force) brief = await crewWrite(env, { c: 'work', by: 'verse', body: P.briefText(p, week, why), now }); // the pinned brief: posted again only when the bets change
   const lanes = Object.fromEntries(p.ranked.map((r) => [r.id, r.lane]));
-  await setState(env, 'priorities', { at: now, day: dayKey(now), week, why, sig: p.sig, order: p.order.slice(0, 300), lanes, bets: p.bets, ranked: p.ranked.slice(0, 15), brief, wip: P.WIP }, now);
+  await setState(env, 'priorities', { at: now, day: dayKey(now), week, why, sig: p.sig, order: p.order.slice(0, 300), lanes, bets: p.bets, ranked: p.ranked.slice(0, 15), scores: P.scoresOf(p.ranked), busywork: p.busywork, brief, wip: P.WIP }, now);
   return { changed: true, why, bets: p.bets.map((b) => b.id), brief };
 }
 
@@ -296,16 +329,17 @@ export async function crewView(env, now = Date.now()) {
   if (!env || !env.DB) return { ok: false, say: 'no database bound' };
   let wants = [], crew = [], last = null;
   try { wants = (await env.DB.prepare("SELECT * FROM void_team_wants ORDER BY CASE state WHEN 'open' THEN 0 WHEN 'met' THEN 1 ELSE 2 END, filed DESC LIMIT 60").all()).results || []; } catch (_) { wants = []; }
+  const turnMap = (await getState(env, 'next').catch(() => null)) || {}, turns = Object.fromEntries(C.CREW.filter((b) => typeof turnMap[b.slug] === 'number').map((b) => [b.id, turnMap[b.slug]]));
   try {
     const ids = C.CREW.map((b) => b.id);
     crew = ((await env.DB.prepare(`SELECT id, name, about, seen, did, did_at, done, off FROM void_team_agents WHERE id IN (${ids.map(() => '?').join(',')})`).bind(...ids).all()).results || []) // void-review: ok (placeholders only)
-      .filter((a) => !a.off).map((a) => ({ name: a.name, about: a.about, here: now - (a.seen || 0) < C.CREW_AWAY_MS, did: a.did || '', didAt: a.did_at || null, done: a.done || 0 }));
+      .filter((a) => !a.off).map((a) => ({ name: a.name, about: a.about, here: now - (a.seen || 0) < C.CREW_AWAY_MS, did: a.did || '', didAt: a.did_at || null, done: a.done || 0, next: turns[a.id] || null }));
   } catch (_) { crew = []; }
   try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'last'").first(); last = r ? json(r.v) : null; } catch (_) { last = null; }
   const pub = wants.map(C.publicWant);
   let pr = null; try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'priorities'").first(); pr = r ? json(r.v) : null; } catch (_) { pr = null; }
   let ov = null; try { const r = await env.DB.prepare("SELECT v FROM void_team_crew WHERE k = 'override'").first(); ov = r ? json(r.v) : null; } catch (_) { ov = null; }
-  const priv = new Set(wants.filter((w) => w.private).map((w) => w.job)), show = (b) => ({ id: b.id, ask: priv.has(b.id) ? 'a private want (owner only)' : b.ask, lane: b.lane, kind: b.kind, state: b.state, score: b.score, impact: b.impact, effort: b.effort, confidence: b.confidence, drivers: priv.has(b.id) ? ['kept private'] : b.drivers, evidence: priv.has(b.id) ? [] : b.evidence, override: b.override || null });
+  const priv = new Set(wants.filter((w) => w.private).map((w) => w.job)), show = (b) => ({ id: b.id, title: priv.has(b.id) ? 'A private want' : P.titleOf(b), ask: priv.has(b.id) ? 'a private want (owner only)' : b.ask, lane: b.lane, kind: b.kind, state: b.state, score: b.score, impact: b.impact, effort: b.effort, confidence: b.confidence, drivers: priv.has(b.id) ? ['kept private'] : b.drivers, evidence: priv.has(b.id) ? [] : b.evidence, override: b.override || null });
   const priorities = pr ? { at: pr.at, week: pr.week, why: pr.why, brief: pr.brief, wip: pr.wip, bets: pr.bets.map(show), next: pr.ranked.filter((r) => !pr.bets.some((b) => b.id === r.id)).slice(0, 8).map(show), override: ov && now - (ov.at || 0) < P.OVERRIDE_MS ? { pin: ov.pin, drop: ov.drop, at: ov.at } : null } : null;
   return { ok: true, at: new Date(now).toISOString(), crew, priorities, wants: pub, open: pub.filter((w) => w.state === 'open').length, met: pub.filter((w) => w.state === 'met').length,
     lastRun: last ? { at: last.at, run: last.run, filed: (last.filed || []).length, met: (last.met || []).length, jobs: (last.jobs || []).length } : null };

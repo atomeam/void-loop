@@ -7,12 +7,32 @@ import { isIt } from './is-it.js';
 import { STAGE_LANGS, cardText } from '../lib/translate-card.js';
 const LANGS = STAGE_LANGS;
 const LANG_RE = Object.keys(LANGS).join('|');
+// the French way of asking, and its language names: "comment dit-on bonjour en anglais" (the outcome exam asks it)
+const FR_LANGS = {
+  anglais: 'english', français: 'french', francais: 'french', espagnol: 'spanish', allemand: 'german', italien: 'italian',
+  portugais: 'portuguese', japonais: 'japanese', chinois: 'chinese', coréen: 'korean', coreen: 'korean', russe: 'russian',
+  arabe: 'arabic', hindi: 'hindi', néerlandais: 'dutch', neerlandais: 'dutch', turc: 'turkish', polonais: 'polish',
+  suédois: 'swedish', suedois: 'swedish', grec: 'greek', hébreu: 'hebrew', hebreu: 'hebrew', thaï: 'thai', thai: 'thai',
+  vietnamien: 'vietnamese', ukrainien: 'ukrainian', roumain: 'romanian', hongrois: 'hungarian', finnois: 'finnish',
+  danois: 'danish', norvégien: 'norwegian', norvegien: 'norwegian', catalan: 'catalan', croate: 'croatian', serbe: 'serbian',
+  bulgare: 'bulgarian', latin: 'latin', gallois: 'welsh', irlandais: 'irish', swahili: 'swahili', persan: 'persian'
+};
 
 function parse(text) {
   const t = text.trim().replace(/[?!.]+$/, '');
   let m = t.match(new RegExp('^(?:please\\s+)?translate\\s+["“]?(.+?)["”]?\\s+(?:from\\s+(' + LANG_RE + ')\\s+)?(?:to|into|in)\\s+(' + LANG_RE + ')$', 'i'));
   // the translate page's card (lib/translate-card.js cardAsk): its text as base64url, read back only when it is that exact code
   if (m) return { q: cardText(m[1]) ?? m[1], from: m[2], to: m[3] };
+  // "comment dit-on bonjour en anglais", "comment dire bonjour": the words in French, the answer in the language named (English when none is)
+  m = t.match(/^comment\s+(?:dit[- ]on|dire|se\s+dit|on\s+dit)\s+["“]?(.+?)["”]?(?:\s+en\s+([a-zà-ÿ-]+))?$/i);
+  if (m) {
+    const raw = String(m[2] || 'anglais').toLowerCase();
+    const to = FR_LANGS[raw] || (LANGS[raw] ? raw : 'english');
+    return { q: m[1], to };
+  }
+  // no language named ("translate spring"): a word can mean more than one thing and a phrase can be said several ways, so the card asks which
+  m = t.match(/^(?:please\s+)?translate\s+["“]?(.+?)["”]?$/i);
+  if (m && m[1] && !/\s+(?:to|into)\s+\S+$/i.test(m[1])) return { q: m[1], to: null };
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
   // "is it christmas in french": a yes-or-no day question asked for its word in that language (skills/is-it.js), not a phrase to translate
@@ -36,15 +56,30 @@ const POCKET = {
   pt: { hello: 'Olá', 'thank you': 'Obrigado', 'good morning': 'Bom dia' },
   ja: { hello: 'こんにちは', 'thank you': 'ありがとう' },
 };
+// the other direction for the greetings a visitor asks most: a French or Spanish greeting answered in English even when both translators refuse
+const BACK = {
+  english: { bonjour: 'Hello', salut: 'Hi', merci: 'Thank you', 'au revoir': 'Goodbye', "s'il vous plaît": 'Please', oui: 'Yes', non: 'No', 'bonne nuit': 'Good night', 'bonsoir': 'Good evening',
+    hola: 'Hello', gracias: 'Thank you', adiós: 'Goodbye', 'por favor': 'Please', sí: 'Yes', 'buenos días': 'Good morning' },
+};
 export function pocketOf(q, toName) {
-  const code = LANGS[String(toName || '').toLowerCase()];
+  const name = String(toName || '').toLowerCase(), code = LANGS[name], text = String(q || '').trim().toLowerCase();
+  const back = BACK[name];
+  if (back && back[text]) return back[text];
   const table = code && POCKET[code];
-  return table ? table[String(q || '').trim().toLowerCase()] || '' : '';
+  return table ? table[text] || '' : '';
 }
 async function run(text, api) {
   const { showPage, esc } = api;
   const p = parse(text);
   if (!p) return 'none';
+  if (!p.to) { // no language named: ask which, and offer the four most asked for (the full page has all 100)
+    const pick = [['Spanish', 'es'], ['French', 'fr'], ['German', 'de'], ['Japanese', 'ja']];
+    showPage((pg) => { pg.innerHTML = '<h2>“' + esc(p.q) + '”</h2>'
+      + '<div class="sub">No language was named, and “' + esc(p.q) + '” can mean more than one thing, so there is more than one right answer. Which language do you want it in?</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">' + pick.map(([name, code]) => '<a class="g-btn" href="/translate/?q=' + encodeURIComponent(p.q) + '&to=' + code + '">' + name + '</a>').join('') + '</div>'
+      + '<div class="sub">Or pick from 100 languages in <a href="/translate/?q=' + encodeURIComponent(p.q) + '">the translator</a>.</div>'; });
+    return 'translate';
+  }
   const to = LANGS[p.to.toLowerCase()], from = p.from ? LANGS[p.from.toLowerCase()] : 'en';
   const known = pocketOf(p.q, p.to);
   const el = showPage((pg) => { pg.innerHTML = known
@@ -57,13 +92,15 @@ async function run(text, api) {
       out = (g[0] || []).map((s) => s[0]).join('');
     } catch (_) { out = ''; }
     if (!out) {
-      const r = await fetch('https://api.mymemory.translated.net/get?mt=1&q=' + encodeURIComponent(p.q) + '&langpair=' + from + '|' + to).then((x) => x.json());
-      out = r && r.responseStatus === 200 && r.responseData && r.responseData.translatedText; via = 'mymemory';
-      // MyMemory sometimes leaves translatedText empty and puts the answer in matches: take the best-rated one
-      if (!out && r && Array.isArray(r.matches)) {
-        const best = r.matches.filter((x) => x && x.translation && String(x.translation).trim()).sort((a, b) => (+b.match || 0) - (+a.match || 0) || (+b.quality || 0) - (+a.quality || 0))[0];
-        out = best ? String(best.translation).trim() : '';
-      }
+      try {
+        const r = await fetch('https://api.mymemory.translated.net/get?mt=1&q=' + encodeURIComponent(p.q) + '&langpair=' + from + '|' + to).then((x) => x.json());
+        out = r && r.responseStatus === 200 && r.responseData && r.responseData.translatedText; via = 'mymemory';
+        // MyMemory sometimes leaves translatedText empty and puts the answer in matches: take the best-rated one
+        if (!out && r && Array.isArray(r.matches)) {
+          const best = r.matches.filter((x) => x && x.translation && String(x.translation).trim()).sort((a, b) => (+b.match || 0) - (+a.match || 0) || (+b.quality || 0) - (+a.quality || 0))[0];
+          out = best ? String(best.translation).trim() : '';
+        }
+      } catch (_) {} // refused too: the kept greeting below still answers
     }
     if (!out && known) { out = known; via = 'pocket'; }
     if (!api._pageStill(el)) return 'translate';

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: text; out: text">
+<title>Dictation: speech to text with spoken punctuation · Verse lab</title>
+<meta name="description" content="Free online dictation: talk and it types, in 17 languages, with spoken punctuation (say comma, full stop, question mark or new paragraph). The text is kept on your device, copies in one tap, downloads as a .txt and goes straight to the word counter or translate.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Dictation: speech to text · Verse lab">
+<meta property="og:description" content="Talk and it types, with spoken punctuation, kept on your device.">
+<meta property="og:url" content="https://a-to-mind.com/lab/dictation/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tools.css">
+<style> #live { min-height: 1.5em; color: var(--accent); font-style: italic; margin: 6px 0; } textarea { min-height: 260px; } </style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/lab/dictation/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Dictation","url":"https://a-to-mind.com/lab/dictation/","description":"Talk and it types, in 17 languages, with spoken punctuation: say comma, full stop, question mark or new paragraph. The text is kept on your device, copies in one tap, downloads as a .txt and goes on to the word counter or translate.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"speech to text online, dictation online, voice typing, voice to text free, talk to type, dictate with punctuation","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Dictation","item":"https://a-to-mind.com/lab/dictation/"}]}]}</script>
+<!-- /seo -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/lab/dictation/app.js"></script>
+</head>
+<body>
+<main>
+  <h1>Dictation</h1>
+  <p class="lead">Talk, and it types. Say "comma", "full stop", "question mark" or "new paragraph" for the marks.</p>
+  <div class="panel">
+    <div class="row"><button type="button" id="go" class="main" aria-pressed="false">Start talking</button><label for="lang">Language</label><select id="lang"></select></div>
+    <p id="state" class="note" aria-live="polite">Press Start talking and allow the microphone.</p>
+    <p id="nosr" class="note" hidden>This browser has no speech service for web pages. Chrome, Edge and Safari do; in Firefox, your phone keyboard's microphone key types into the box below just the same.</p>
+    <p id="live" aria-live="off"></p>
+    <label for="text" class="sr">Your text</label>
+    <textarea id="text" placeholder="What you say appears here. You can type and fix it here too."></textarea>
+    <div class="row"><span id="count" class="note"></span><button type="button" id="copy">Copy text</button><button type="button" id="txt">Download .txt</button><button type="button" id="clear">Clear</button></div>
+  </div>
+  <p class="note">The text is kept in this browser only. To turn speech into words, Chrome and Edge send the sound to their own speech service; Safari can do it on the device.</p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/lab/mind-map/">Mind map maker</a> <a href="/starboard/">Starboard</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="from">Made from the lab's voice experiments, which listened to steer shapes; this listens to write down what you say. <a href="/lab/">More from the lab</a></p>
+</main>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

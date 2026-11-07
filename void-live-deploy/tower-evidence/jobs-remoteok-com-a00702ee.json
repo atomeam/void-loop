@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 98,
-   "best": 314,
-   "evidence": "Verse (/jobs/tags/) 98 ms to the load event (median of 3, phone width) vs remoteok.com 314 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "verse": 104,
+   "best": 248,
+   "evidence": "Verse (/jobs/tags/) 104 ms to the load event (median of 3, phone width) vs remoteok.com 248 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/jobs/tags/) 3 of 3 loads answered vs remoteok.com 3 of 3 loads answered",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,15 +22,15 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/jobs/tags/) 0 px sideways overflow at 390 px vs remoteok.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "accessibility": {
    "verdict": "better",
    "verse": 0,
-   "best": 44,
-   "evidence": "Verse (/jobs/tags/) 0 unnamed controls or images vs remoteok.com 44 unnamed controls or images",
-   "at": "2026-11-04T15:06:47.528Z",
+   "best": 46,
+   "evidence": "Verse (/jobs/tags/) 0 unnamed controls or images vs remoteok.com 46 unnamed controls or images",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/jobs/tags/) 1 (1: the page shows itself again with the network cut) vs remoteok.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/jobs/tags/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs remoteok.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/jobs/tags/) 4 of 4 right against the worked-out answer; judged against the standard, not remoteok.com (the site is not asked)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "of": 4
   },
   "design polish": {
    "verdict": "better",
-   "verse": 23,
-   "best": 171,
-   "evidence": "Verse (/jobs/tags/) 23 design defects vs remoteok.com 171 design defects: Verse (23 low-contrast texts, 0 small tap targets, layout shift 0.02), remoteok.com (14 low-contrast texts, 157 small tap targets, layout shift 0.03)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "verse": 0,
+   "best": 208,
+   "evidence": "Verse (/jobs/tags/) 0 design defects vs remoteok.com 208 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), remoteok.com (16 low-contrast texts, 192 small tap targets, layout shift 0.03)",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   },
   "tag cloud": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/jobs/tags/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "of": 1,
    "part": true
   },
@@ -79,7 +79,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/jobs/tags/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "of": 1,
    "part": true
   },
@@ -88,7 +88,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/jobs/tags/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "of": 2,
    "part": true
   },
@@ -97,7 +97,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/jobs/tags/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "of": 1,
    "part": true
   },
@@ -106,16 +106,16 @@
    "verse": 11,
    "best": 3,
    "evidence": "Verse (/jobs/tags/) 11 of 11 things a full answer shows vs remoteok.com 3 of 11 things a full answer shows (Verse lacks: none; site lacks: tags, keyword, RSS, share link, saved jobs, alerts, no account, works offline)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "at": "2026-11-06T06:26:42.576Z",
    "of": 11,
    "siteRead": true
   },
   "wider use": {
    "verdict": "better",
    "verse": 10,
-   "best": 3,
-   "evidence": "Verse (/jobs/tags/) 10 of 11 wider-use points (docs/WIDER-USE.md) vs remoteok.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-04T15:06:47.528Z",
+   "best": 3.5,
+   "evidence": "Verse (/jobs/tags/) 10 of 11 wider-use points (docs/WIDER-USE.md) vs remoteok.com 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-06T06:26:42.576Z",
    "siteRead": true
   }
  }

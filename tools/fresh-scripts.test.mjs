@@ -52,6 +52,16 @@ test('page code the worker keeps (a tool page\'s app.js, /lib/, /skills/) also g
   }
 });
 
+test('the shell files (the mark, the app icon, the manifest, verse.css) are asked again and go back marked no-cache', async () => {
+  // 2026-11-06: after the new mark shipped, a returning browser still drew the old oval from /icon.svg in its HTTP cache
+  for (const p of ['/icon.svg', '/icon-192.png', '/manifest.webmanifest', '/verse.css', '/skills/index.json']) {
+    const w = worker(), res = await w.get(p);
+    assert.ok(res, p + ' passed through the worker untouched');
+    assert.deepEqual(w.calls, [{ url: 'https://a-to-mind.com' + p, cache: 'no-cache' }], p);
+    assert.equal(res.headers.get('cache-control'), 'no-cache', p);
+  }
+});
+
 test('offline, a page script falls back to the browser\'s own copy', async () => {
   const w = worker({ offline: true }), res = await w.get('/stopwatch/app.js');
   assert.deepEqual(w.calls.map((c) => c.cache), ['no-cache', 'force-cache']);

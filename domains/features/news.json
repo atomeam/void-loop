@@ -193,7 +193,7 @@
  ],
  "first_page": "News page /news/ for readers who want a calm, ad-free front page. First: \"news\" opens top stories gathered from several open sources (Wikipedia In the news, public RSS from major outlets, Hacker News) with source and age on each, section tabs, topics followed on the device, and a link holding the chosen sections. Will not build: original reporting, comments, video streaming or push alerts.",
  "auto": {
-  "scanned": "2026-10-26",
+  "scanned": "2026-11-05",
   "sites": {
    "allsides.com": {
     "url": "https://www.allsides.com/",
@@ -3140,6 +3140,160 @@
       "verse_evidence": "/news/?sec=world shows \"our\"; not \"mission\", \"journalism\", \"essay\""
      }
     ]
+   },
+   "suncommunitynews.com": {
+    "url": "https://suncommunitynews.com/",
+    "scanned": "2026-11-05",
+    "pages": [
+     "https://suncommunitynews.com/",
+     "https://suncommunitynews.com/news-category/features/29/",
+     "https://suncommunitynews.com/live-content/help-faq/",
+     "https://suncommunitynews.com/news/128758/veterans-family-support-at-operation-valor-horizon/",
+     "https://suncommunitynews.com/live-content/about-us/"
+    ],
+    "method": "model",
+    "features": [
+     {
+      "name": "Newsletter subscription",
+      "detail": "Subscribe to our daily briefing newsletter to receive the latest headlines from The Sun, delivered to your inbox.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"newsletter\", \"subscription\""
+     },
+     {
+      "name": "Submit a news tip",
+      "detail": "News Tip",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"new\"; not \"submit\", \"tip\""
+     },
+     {
+      "name": "Submit an event",
+      "detail": "Submit an event",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"submit\", \"event\""
+     },
+     {
+      "name": "Submit a letter",
+      "detail": "Submit a Letter to the Editor",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"submit\", \"letter\""
+     },
+     {
+      "name": "Submit a press release",
+      "detail": "Press Release",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"press\"; not \"submit\", \"release\""
+     },
+     {
+      "name": "Submit birth announcement",
+      "detail": "Birth Announcement",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"submit\", \"birth\", \"announcement\""
+     },
+     {
+      "name": "Submit public notice",
+      "detail": "Public LLC Notice Public Legal Notice",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"public\"; not \"submit\", \"notice\""
+     },
+     {
+      "name": "Submit classified ad",
+      "detail": "Classified Ad",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"submit\", \"classifi\""
+     },
+     {
+      "name": "Digital LED advertising",
+      "detail": "DIGITAL LED BILLBOARD ADVERTISING",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"digital\"; not \"led\", \"advertis\""
+     },
+     {
+      "name": "Display advertising",
+      "detail": "DISPLAY ADVERTISING",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"display\", \"advertis\""
+     },
+     {
+      "name": "Online advertising",
+      "detail": "ONLINE ADVERTISING",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"advertis\""
+     },
+     {
+      "name": "Programmatic advertising",
+      "detail": "Programmatic Advertising",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"programmatic\", \"advertis\""
+     },
+     {
+      "name": "Promotional swag",
+      "detail": "Promotional Swag",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"promotional\", \"swag\""
+     },
+     {
+      "name": "Website design",
+      "detail": "Website Design",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"website\", \"design\""
+     },
+     {
+      "name": "Print editions",
+      "detail": "PRINT EDITIONS",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"edition\"; not \"print\""
+     },
+     {
+      "name": "UPS shipping services",
+      "detail": "UPS Ship and Drop Off",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"service\"; not \"ups\", \"shipp\""
+     },
+     {
+      "name": "Mobile app access",
+      "detail": "The Sun Community News & Printing app for iOS or Android, and Alexa skill!",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"mobile\", \"access\""
+     },
+     {
+      "name": "Client login",
+      "detail": "Client Login",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"client\", \"login\""
+     },
+     {
+      "name": "Submit a question",
+      "detail": "Submit A Question",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"submit\", \"question\""
+     },
+     {
+      "name": "View poll results",
+      "detail": "View Results",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"view\", \"poll\", \"result\""
+     }
+    ]
    }
   },
   "gaps": [
@@ -3671,6 +3825,84 @@
     "name": "January 2017",
     "sites": [
      "theguardian.com"
+    ]
+   },
+   {
+    "name": "Newsletter subscription",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Submit an event",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Submit a letter",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Submit birth announcement",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Submit classified ad",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Display advertising",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Online advertising",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Programmatic advertising",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Promotional swag",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Website design",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Mobile app access",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Client login",
+    "sites": [
+     "suncommunitynews.com"
+    ]
+   },
+   {
+    "name": "Submit a question",
+    "sites": [
+     "suncommunitynews.com"
     ]
    }
   ],

@@ -86,6 +86,66 @@ if (process.argv[1] === new URL(import.meta.url).pathname && process.argv[2] ===
   for (const s of out.slice(0, 70)) console.log(String(s.controls).padStart(4) + 'c', String(s.bytes).padStart(8) + 'B', String(s.rank).padStart(7), s.host.padEnd(30), s.words + 'w', s.links + 'l', '|', s.title);
   process.exit(0);
 }
+// --small [count]: the sweep for the smallest sites of all (owner, 2026-11-06: "the easiest site to assimilate was never even found or attempted").
+// The tool scan above keeps only hosts named like a tool and pages with a control on them, so a site that is one answer (ismycomputeron.com says
+// YES) or plain text (icanhazip.com answers with your address) could never be found. This reads `count` hosts of the whole million a run, from where
+// the last run stopped (void-live-deploy/tower.sweep.json keeps the place, so the million is read in turn and starts over), one plain GET each, and
+// keeps every home page of at most SMALL_CONTROLS controls and SMALL_BYTES bytes that is a real page (smallPage): those join the tower's frontier
+// with their controls and bytes, so lib/tower.js frontierOf ranks them first, and tools/tower-size.mjs weighs them on a browser next.
+export const SMALL_CONTROLS = 5, SMALL_BYTES = 20000;
+/** a found small home page: { controls, bytes, words, title, plain } or null for a stub, a redirect, a parked or adult page or an empty reply. Pure. */
+export function smallPage({ body = '', type = '', bytes = null } = {}) {
+  const b = String(body), n = Number.isFinite(+bytes) && bytes !== null ? +bytes : Buffer.byteLength(b);
+  if (n > SMALL_BYTES) return null;
+  if (/^text\/plain/i.test(type)) { const t = b.trim(); return t.length >= 2 && t.length <= 400 && !/^(?:ok|error|not found|forbidden|unauthori[sz]ed|bad request|it works!?)\b/i.test(t) && !ADULT.test(t) ? { controls: 0, bytes: n, words: t.split(/\s+/).length, title: t.slice(0, 60), plain: true } : null; }
+  if (!/html/i.test(type)) return null;
+  const f = features(b, n), text = strip(b).replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
+  if (f.controls > SMALL_CONTROLS || text.length < 2 || f.password || f.login) return null;
+  if (/<meta\b[^>]*http-equiv=["']?refresh|<frameset\b|location(?:\.href)?\s*=|location\.replace\(/i.test(b)) return null;
+  if (ADULT.test(text.slice(0, 400)) || /\b(?:domain (?:is )?for sale|buy this domain|parked|coming soon|under construction|account suspended|default web page|welcome to nginx|it works!|index of \/|access denied|forbidden|not found|just a moment|attention required|bad gateway|service unavailable)\b/i.test((f.title + ' ' + text).slice(0, 600))) return null;
+  if (/^(?:ok|test|hello,? world!?|success|placeholder|it works!?|welcome to nginx!?)$/i.test(text)) return null;
+  return { controls: f.controls, bytes: n, words: f.words, title: f.title || text.slice(0, 60), plain: false };
+}
+/** the next slice of the list to read: { from, to } over `total` hosts, starting at the cursor and wrapping to the top. Pure. */
+export const sliceOf = (cursor, count, total) => { const from = Number.isFinite(+cursor) && +cursor >= 0 && +cursor < total ? +cursor : 0; return { from, to: Math.min(total, from + count) }; };
+/** the frontier with the small sites found laid in: one row per host (a new reading replaces the old), the rest kept. Pure. */
+export function mergeSmall(frontier, found, at) {
+  const sites = Array.isArray(frontier && frontier.sites) ? frontier.sites.slice() : [], by = new Map(sites.map((x, i) => [String(x.site || '').replace(/^www\./, ''), i]));
+  for (const x of found) { const host = String(x.host).replace(/^www\./, ''), row = { site: host, rank: x.rank, controls: x.controls, bytes: x.bytes, hardness: null, title: String(x.title || '').replace(/\s+/g, ' ').trim().slice(0, 80), small: at, ...(x.plain ? { plain: true } : {}) }; if (by.has(host)) sites[by.get(host)] = { ...sites[by.get(host)], ...row }; else { by.set(host, sites.length); sites.push(row); } }
+  return { ...(frontier || {}), sites };
+}
+async function getSmall(host, ms = 6000) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  try {
+    const r = await fetch('https://' + host + '/', { signal: ctl.signal, redirect: 'follow', headers: { 'user-agent': 'VerseScout/1 (+https://a-to-mind.com; reads a home page once)', accept: 'text/html,text/plain' } });
+    if (!r.ok) return null; const final = new URL(r.url).hostname.replace(/^www\./, '');
+    if (final !== host.replace(/^www\./, '')) return null; // it sent the visitor to another site: that site is the one to weigh, not this name
+    const len = +r.headers.get('content-length'); if (len > SMALL_BYTES) { ctl.abort(); return null; }
+    const reader = r.body.getReader(), parts = []; let n = 0;
+    for (;;) { const { done, value } = await reader.read(); if (done) break; n += value.length; if (n > SMALL_BYTES) { ctl.abort(); return null; } parts.push(value); }
+    return { body: Buffer.concat(parts).toString('utf8'), type: r.headers.get('content-type') || '', bytes: n };
+  } catch (_) { return null; } finally { clearTimeout(t); }
+}
+if (process.argv[1] === new URL(import.meta.url).pathname && process.argv[2] === '--small') {
+  const count = Math.min(200000, Math.max(100, +process.argv[3] || 30000)), root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+  const SWEEP = path.join(root, 'void-live-deploy', 'tower.sweep.json'), FR = path.join(root, 'void-live-deploy', 'tower.frontier.json'), rd = (f, d) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return d; } };
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tranco-'));
+  execFileSync('curl', ['-sSL', '--max-time', '120', '-o', path.join(dir, 't.zip'), TRANCO]); execFileSync('unzip', ['-o', '-q', path.join(dir, 't.zip'), '-d', dir]);
+  const all = fs.readFileSync(path.join(dir, 'top-1m.csv'), 'utf8').split('\n').map((l) => l.split(',')).filter((r) => r[1]).map((r) => ({ rank: +r[0], host: r[1].trim() }));
+  const sweep = rd(SWEEP, {}), { from, to } = sliceOf(sweep.cursor, count, all.length), rows = all.slice(from, to).filter((r) => !ADULT.test(r.host));
+  console.log('sweeping ranks ' + (from + 1) + ' to ' + to + ' of ' + all.length + ' for the smallest home pages');
+  const found = []; let i = 0, done = 0;
+  await Promise.all(Array.from({ length: 80 }, async () => { while (i < rows.length) { const row = rows[i++], page = await getSmall(row.host); done++; if (done % 5000 === 0) console.error('read ' + done + ' of ' + rows.length + ', ' + found.length + ' small'); const s = page && smallPage(page); if (s) found.push({ ...row, ...s }); } }));
+  found.sort(smallestFirst);
+  const keep = [...(sweep.smallest || []), ...found].reduce((m, x) => m.set(x.host, x), new Map());
+  const smallest = [...keep.values()].sort(smallestFirst).slice(0, 500), at = new Date().toISOString().slice(0, 10);
+  fs.writeFileSync(SWEEP, JSON.stringify({ about: 'The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most ' + SMALL_CONTROLS + ' controls and ' + SMALL_BYTES + ' bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.', source: TRANCO, cursor: to >= all.length ? 0 : to, swept: (sweep.swept || 0) + rows.length, lap: to >= all.length ? (sweep.lap || 0) + 1 : sweep.lap || 0, at, smallest }, null, 1) + '\n');
+  fs.writeFileSync(FR, JSON.stringify(mergeSmall(rd(FR, { sites: [] }), found, at), null, 1) + '\n');
+  fs.writeFileSync(path.join(root, 'sweep-hosts.txt'), found.slice(0, 60).map((x) => x.host).join(',') + '\n');
+  console.log('read ' + rows.length + ', ' + found.length + ' small; the 40 smallest (controls, bytes, rank, host, title):');
+  for (const s of found.slice(0, 40)) console.log(String(s.controls).padStart(3) + 'c', String(s.bytes).padStart(7) + 'B', String(s.rank).padStart(7), s.host.padEnd(30), '|', s.title);
+  process.exit(0);
+}
 if (process.argv[1] === new URL(import.meta.url).pathname) {
   const n = Math.min(100000, Math.max(100, +process.argv[2] || 5000)), outFile = process.argv[3] || 'easiest-sites.json', dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tranco-'));
   execFileSync('curl', ['-sSL', '--max-time', '120', '-o', path.join(dir, 't.zip'), TRANCO]); execFileSync('unzip', ['-o', '-q', path.join(dir, 't.zip'), '-d', dir]);

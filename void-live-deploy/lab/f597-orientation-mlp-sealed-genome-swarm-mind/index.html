@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,.75); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 320px; z-index: 10; }
+  #hud button { margin: 4px 4px 0 0; padding: 4px 10px; background: #222; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  #seal { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1a3a1a; padding: 8px 16px; border-radius: 6px; display: none; font-size: 14px; }
+  .hash { font-family: monospace; font-size: 11px; color: #8f8; word-break: break-all; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>orientation-mlp-sealed-genome-swarm-mind · Verse lab</title>
+<meta name="description" content="A spatial multi-agent mind for The Verse canvas: 16–32 competitive local tiny MLPs (2-hidden-layer, ~40 weights each) control particle agents on a Canvas2D field.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="orientation-mlp-sealed-genome-swarm-mind · Verse lab">
+<meta property="og:description" content="A spatial multi-agent mind for The Verse canvas: 16–32 competitive local tiny MLPs (2-hidden-layer, ~40 weights each) control particle agents on a Canvas2D field.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f597-orientation-mlp-sealed-genome-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f597-orientation-mlp-sealed-genome-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F597 Orientation MLP Genome Swarm</strong><br>
+  Agents: <span id="n">0</span> · Energy: <span id="e">0</span><br>
+  Orientation: <span id="o">awaiting</span><br>
+  <button id="perm">Enable Orientation</button>
+  <button id="reset">Reset Swarm</button>
+  <button id="sealbtn">Seal Transfer</button>
+  <div id="status"></div>
+</div>
+<div id="seal"><span id="sealtext"></span><br><span class="hash" id="hash"></span></div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">orientation-mlp-sealed-genome-swarm-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/checksum/" data-tool="File checksum checker">Use it: File checksum checker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

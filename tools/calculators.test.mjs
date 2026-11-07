@@ -9,8 +9,8 @@ import formulas, { pick, isLibrary, filled } from '../void-live-deploy/skills/fo
 
 const out = (id, given = {}, units = {}, opts = {}) => { const r = run(id, given, units, opts); assert.equal(r.error, '', id + ': ' + r.error); return Object.fromEntries(r.outputs.map((o) => [o.k, o.text])); };
 
-test('the library: 220 hand-built calculators (164, the 21 calculator.net home-page gap-fills in tools/calc-net.test.mjs, the 16 Maths gap-fills in tools/calc-math.test.mjs, the 17 Other gap-fills in tools/calc-other.test.mjs and the Unix time converter) plus the formula library (tools/formulas.test.mjs), in 21 kinds, each id once, each with a formula, inputs and outputs, and each works out with its own defaults', () => {
-  assert.equal(CALCULATORS.filter((c) => !c.def).length, 220); assert.equal(FORMULA_COUNT.before, 220); assert.equal(CATEGORIES.length, 21); assert.equal(BY_ID.size, CALCULATORS.length);
+test('the library: 221 hand-built calculators (164, the gas mileage gap-fill in tools/gaps-batch2.test.mjs, the 21 calculator.net home-page gap-fills in tools/calc-net.test.mjs, the 16 Maths gap-fills in tools/calc-math.test.mjs, the 17 Other gap-fills in tools/calc-other.test.mjs and the Unix time converter) plus the formula library (tools/formulas.test.mjs), in 21 kinds, each id once, each with a formula, inputs and outputs, and each works out with its own defaults', () => {
+  assert.equal(CALCULATORS.filter((c) => !c.def).length, 221); assert.equal(FORMULA_COUNT.before, 221); assert.equal(CATEGORIES.length, 21); assert.equal(BY_ID.size, CALCULATORS.length);
   for (const c of CALCULATORS) {
     assert.ok(CATEGORIES.includes(c.cat), c.id); assert.ok(c.formula && c.inputs.length && c.outputs.length, c.id);
     const r = run(c, {}, {}, { kind: 'length' }); assert.equal(r.error, '', c.id + ': ' + r.error);

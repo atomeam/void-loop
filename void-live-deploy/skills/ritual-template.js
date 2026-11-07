@@ -5,6 +5,8 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { ritualAsk, blocksOf, ritualIcs } from '../lib/ritual.js';
+import { tzName } from '../lib/ics.js';
+const localTz = () => { try { return tzName(Intl.DateTimeFormat().resolvedOptions().timeZone); } catch (_) { return ''; } };
 const hm = (d) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 function saveFile(text, name) {
   const a = document.createElement('a'), u = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
@@ -12,11 +14,12 @@ function saveFile(text, name) {
 }
 function run(text, api) {
   const { showPage, esc } = api, r = ritualAsk(text), now = new Date();
-  const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), b = blocksOf(r, day), ics = ritualIcs(r, day, { now });
+  const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1), b = blocksOf(r, day), tz = localTz(), ics = ritualIcs(r, day, { now, tz });
   const total = r.steps.reduce((s, x) => s + x[1], 0), file = 'verse-' + r.name.replace(/[^a-z0-9]/g, '') + '-routine.ics';
   showPage((el) => {
     el.innerHTML = '<h2>' + esc(r.name.replace(/^\w/, (c) => c.toUpperCase())) + ' routine</h2><p>' + esc(r.steps.length) + ' steps, ' + esc(total) + ' minutes, from ' + esc(hm(b[0].from)) + ' to ' + esc(hm(b[b.length - 1].to)) + ', starting tomorrow and repeating every day.</p>'
       + '<ol data-ritual>' + b.map((x) => '<li>' + esc(hm(x.from)) + ' to ' + esc(hm(x.to)) + ': ' + esc(x.title) + '</li>').join('') + '</ol>'
+      + '<p class="sub" data-ritual-tz>' + (tz ? 'Set in your time zone, ' + esc(tz) + ': each step stays at the time above in Google, Apple or Outlook, daylight saving included.' : 'Your browser named no time zone, so the times are written as plain clock times: each calendar app shows them at the times above.') + '</p>'
       + '<button type="button" class="tr-copy" data-ritual-ics>Download ' + esc(file) + '</button> <span class="sub" data-ritual-said></span>'
       + '<p class="sub">Make your own: <b>ritual template: meditate 10, stretch 15, journal 10 at 6:30am</b>.</p>'
       + '<div class="src">Built on this device as a standard .ics file (RFC 5545); nothing is sent anywhere.</div>';
@@ -28,7 +31,7 @@ function run(text, api) {
 export default {
   name: 'ritual-template',
   about: 'A sequence of habits (morning, evening, workout, or your own) as back-to-back daily calendar events in one .ics file.',
-  examples: ['morning routine as calendar events', 'export my evening routine to my calendar', 'ritual template: meditate 10, stretch 15, journal 10 at 6:30am'],
+  examples: ['morning routine as calendar events', 'export my evening routine to my calendar', 'make me a morning routine starting at 6:30', 'ritual template: meditate 10, stretch 15, journal 10 at 6:30am'],
   nearMisses: ['my morning', 'export my calendar', 'call this my morning', 'morning routine ideas'],
   match(lower, text) { return !!ritualAsk(text || lower); },
   run

@@ -41,7 +41,67 @@ export function countdownOf(text) {
     if (NAMED[w]) return { kind: 'named', label: NAMED[w][0], date: NAMED[w][1] };
     if (realDay(w)) return { kind: 'named', label: c[1] };
   }
-  return null;
+  return pickOf(t);
+}
+// an event countdown that names no date (docs/GAPS.md row 78, 2026-11-06: "event countdown" gave an explanation): a card with a name and
+// a date box that counts down in days, hours, minutes and seconds. "event countdown", "countdown clock", "countdown to a date",
+// "wedding countdown", "countdown to my wedding" (the name is filled in). A bare "countdown" or "countdown timer" stays a timer.
+const EVENTS = 'wedding|birthday|vacation|holiday|trip|retirement|graduation|anniversary|due date|baby|party|launch|exam|concert|moving day|big day';
+const MAKE = '(?:(?:make|create|start|set up|build|give me) )?(?:a |an |my |our )?';
+/** { kind: 'pick', label } for an event countdown with no date named, or null. Pure. */
+export function pickOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^please /, '');
+  if (new RegExp('^' + MAKE + '(?:event|custom|live) countdown(?: (?:timer|clock|generator|maker|widget|page))?$').test(t)
+    || new RegExp('^' + MAKE + 'countdown (?:clock|generator|maker|widget)$').test(t)
+    || new RegExp('^' + MAKE + 'countdown (?:timer |clock )?(?:to|until|till|for) (?:a|an|any|my|our|the) (?:date|day|event)$').test(t)) return { kind: 'pick', label: '' };
+  const m = t.match(new RegExp('^' + MAKE + '(' + EVENTS + ') countdown(?: (?:timer|clock))?$')) || t.match(new RegExp('^' + MAKE + 'countdown (?:timer |clock )?(?:to|until|till|for) (?:my|our|the) (' + EVENTS + ')$'));
+  return m ? { kind: 'pick', label: m[1].replace(/\b\w/g, (c) => c.toUpperCase()) } : null;
+}
+/** whole days, hours, minutes and seconds from now to the target; past: true once it has gone by. Pure. */
+export function partsUntil(targetMs, nowMs = Date.now()) {
+  const ms = targetMs - nowMs, past = ms < 0, s = Math.floor(Math.abs(ms) / 1000);
+  return { past, days: Math.floor(s / 86400), hours: Math.floor(s / 3600) % 24, minutes: Math.floor(s / 60) % 60, seconds: s % 60 };
+}
+/** "12 days, 03:04:05" (or "... ago" once past). Pure. */
+export function partsLine(p) {
+  const two = (n) => String(n).padStart(2, '0');
+  return p.days + (p.days === 1 ? ' day, ' : ' days, ') + two(p.hours) + ':' + two(p.minutes) + ':' + two(p.seconds) + (p.past ? ' ago' : '');
+}
+const KEY = 'verse-event-countdown';
+// a datetime-local value ("2026-12-24T18:00") as local time in ms, or NaN
+const localMs = (v) => { const m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?$/.exec(String(v || '')); return m ? new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0)).getTime() : NaN; };
+const BOX = 'font:15px system-ui;padding:5px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);color:inherit';
+function pickCard(hit, api) {
+  const esc = api.esc || ((x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'));
+  let kept = {};
+  try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
+  const name = hit.label || kept.name || '', when = !hit.label || hit.label === kept.name ? kept.when || '' : '';
+  const el = api.showPage((p) => {
+    p.innerHTML = '<h2>Event countdown</h2>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0">'
+      + '<input class="ec-name" aria-label="Event name" placeholder="Event name" value="' + esc(name) + '" style="' + BOX + ';flex:1 1 160px">'
+      + '<input class="ec-when" type="datetime-local" aria-label="Date and time of the event" value="' + esc(when) + '" style="' + BOX + '"></div>'
+      + '<div class="ec-big" aria-live="off" style="font-size:30px;font-weight:600;line-height:1.2;margin:10px 0 4px;font-variant-numeric:tabular-nums"></div>'
+      + '<p class="ec-say" aria-live="polite" style="min-height:1.4em;margin:4px 0;color:#9a9a9a"></p>'
+      + '<div class="src">Counted in your browser from this device\'s clock · the name and date stay on this device</div>';
+  });
+  const q = (c) => el && el.querySelector && el.querySelector(c), nameEl = q('.ec-name'), whenEl = q('.ec-when'), big = q('.ec-big'), say = q('.ec-say');
+  if (!whenEl || !big) return;
+  let timer = null;
+  const paint = () => {
+    if (timer && el.isConnected === false) { clearInterval(timer); timer = null; return; }
+    const t = localMs(whenEl.value), label = (nameEl && nameEl.value.trim()) || 'the event';
+    if (!isFinite(t)) { big.textContent = ''; if (say) say.textContent = 'Pick the date and time of the event.'; return; }
+    const pr = partsUntil(t);
+    big.textContent = partsLine(pr);
+    if (say) say.textContent = (pr.past ? 'Since ' : 'Until ') + label + ', ' + new Date(t).toLocaleString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + '.';
+  };
+  const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ name: nameEl ? nameEl.value.trim() : '', when: whenEl.value })); } catch (_) {} paint(); };
+  whenEl.addEventListener('input', keep); whenEl.addEventListener('change', keep);
+  if (nameEl) nameEl.addEventListener('input', keep);
+  paint();
+  timer = setInterval(paint, 1000);
+  try { (when ? nameEl : whenEl).focus(); } catch (_) {}
 }
 export function daysUntil(target, now = new Date()) {
   const a = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
@@ -122,6 +182,7 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const hit = countdownOf(text);
   if (!hit) return 'none';
+  if (hit.kind === 'pick') { pickCard(hit, api); return 'countdown'; }
   const now = new Date();
   const target0 = hit.kind === 'newyear' ? newYearDate(now) : namedDate(hit.date || hit.label, now);
   if (!target0) return 'none';
@@ -141,8 +202,8 @@ export default {
   name: 'countdown',
   countdownOf,
   daysUntil,
-  examples: ['days until new year', 'how many days until new year', 'days until january 1', 'days until december 25', 'countdown to christmas', 'how many sleeps until christmas', 'days until my birthday on march 3'],
-  nearMisses: ['what is the new year', 'make a clock', 'when is the next holiday', 'remind me at 5', 'how many days until christmas'],
+  examples: ['days until new year', 'how many days until new year', 'days until january 1', 'days until december 25', 'countdown to christmas', 'how many sleeps until christmas', 'days until my birthday on march 3', 'event countdown', 'wedding countdown'],
+  nearMisses: ['what is the new year', 'what is a countdown', 'countdown timer', 'make a clock', 'when is the next holiday', 'remind me at 5', 'how many days until christmas'],
   match(lower, text) { return !!countdownOf(text); },
   run,
   stageKinds: { countdown: { mount } },

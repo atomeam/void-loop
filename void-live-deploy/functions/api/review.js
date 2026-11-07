@@ -34,10 +34,19 @@ export async function onRequestPost({ request, env }) {
     } catch (_) { return bad(503, 'keys unavailable right now'); }
   }
   if (!b || typeof (b.code || b.diff) !== 'string' || String(b.code || b.diff).trim().length < 8) return bad(400, 'send { code } or { diff }');
-  const q = quick(b);
-  const out = { ok: true, findings: q.findings, lang: q.lang, lines: q.lines, ms: q.ms, tier: 'free', review: 'rules' };
   let a; try { a = await access(request, env); } catch (_) { a = { tier: 'free', note: 'Pro unavailable right now: the instant checks are above' }; }
   if (a.refuse) return bad(401, a.refuse);
+  return reviewWith(b, a, env);
+}
+
+export const reviewOpen = (b) => !!b && typeof (b.code || b.diff) === 'string' && String(b.code || b.diff).trim().length >= 8;
+export { modelsOn };
+
+// The review for a caller whose access is already decided (a: lib/paid-access.js access(), or a paid x402 call from functions/api/x402/).
+// a.spend() runs only after the closer read is written, and if it throws (an x402 payment that does not settle) the read is not given.
+export async function reviewWith(b, a, env) {
+  const q = quick(b);
+  const out = { ok: true, findings: q.findings, lang: q.lang, lines: q.lines, ms: q.ms, tier: 'free', review: 'rules' };
   out.tier = a.tier;
   if (a.tier === 'free') return good({ ...out, ...(a.note ? { note: a.note } : {}), upgrade: 'Verse Code Review Pro adds a closer read by an AI reviewer: ' + BUY_URL });
   if (a.left <= 0) return good({ ...out, note: 'today\'s closer reads are used; the instant checks still run' });

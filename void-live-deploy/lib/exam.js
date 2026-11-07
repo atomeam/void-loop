@@ -21,7 +21,7 @@ export const ALLOW = Object.freeze({
   units: ['calc', 'convert'],
   maps: ['place'],
   timers: ['timer'],
-  images: ['image', 'draw', 'cartoon'],
+  images: ['image', 'draw', 'cartoon', 'image-gen'],
   prices: ['crypto', 'markets', 'calc'],
   definitions: ['define'],
   wordproblems: ['calc', 'sums'],
@@ -247,4 +247,12 @@ export function examWants(latest) {
     why: ('the ' + d + ' exam scored ' + score + ', the lowest; this ask failed ' + (a.failed || []).join(', ')).slice(0, 240),
     weight, source: 'exam:' + d,
   }));
+}
+
+/** one line on the audio the exam read, for a failed audio or episode check: host, the file name, the status, the type and how far it played. Pure. */
+export function mediaLine(a) {
+  if (!a) return 'no audio element on the answer card';
+  let where = String(a.src || '').slice(0, 200);
+  try { const u = new URL(a.src); where = u.host + ', file ' + (u.pathname.split('/').pop() || '').slice(0, 80); } catch (_) {}
+  return where + ' · status ' + (a.status || 0) + ' · ' + (a.type || 'no type') + ' · played ' + Number(a.currentTime || 0).toFixed(1) + ' s';
 }

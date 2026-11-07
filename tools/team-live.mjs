@@ -44,6 +44,15 @@ const team = async (when) => {
   return sh;
 };
 const before = await team('before');
+// who holds what: each seat's job id, kind and leverage, and any overlap (ids, kinds and scores only, never a job's text)
+{
+  const h = await call('GET', '?held');
+  if (h.ok && Array.isArray(h.held)) {
+    console.log('held: ' + h.held.length + ' seat' + (h.held.length === 1 ? '' : 's') + ' on a job, ' + h.building + ' jobs being built in all');
+    for (const r of h.held) console.log('  ' + r.name + ' ' + r.job + ' (' + r.kind + ') leverage ' + (r.leverage ?? 'not ranked') + (r.overlaps ? ' OVERLAPS ' + r.overlaps.name + ' ' + r.overlaps.job : ''));
+    if (h.held.some((r) => r.overlaps)) fail('two seats hold overlapping jobs'); else ok('no two seats hold overlapping jobs');
+  } else console.log('held: not read (' + (h.say || h.status) + ')');
+}
 
 // 2. what waits on the queue (counts by kind only) and the lost #work post
 if (process.argv.includes('--queue')) {

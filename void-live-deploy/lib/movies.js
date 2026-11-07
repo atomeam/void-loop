@@ -26,6 +26,19 @@ export function cardAsk(text) {
   if (!m) return null;
   const title = cleanTitle(m[1]); return title.length >= 1 ? { title, year: cleanYear(m[2]) } : null;
 }
+// Not a film: a show, a live event or broadcast, the sky, or Verse's own films (skills/films.js answers those). Kept to words no common
+// film title starts or turns on, so "where can i watch the birds" still opens the film card.
+const NOT_FILM = /^(?:the\s+)?(?:tv\s+|new\s+|latest\s+)?(?:shows?|series|seasons?|episodes?|news)\b|\b(?:super\s*bowl|nfl|nba|mlb|nhl|wnba|mls|ufc|wwe|f1|formula\s*1|grand\s*prix|olympics|world\s*cup|world\s*series|playoffs?|stanley\s+cup|march\s+madness|debate|eclipse|meteor\s+shower|northern\s+lights|fireworks|vs\.?|versus|season\s+\d+|episode\s+\d+)\b|\blive$|\b(?:your|verse'?s?|our)\s+(?:own\s+)?(?:films?|movies?|videos?|shows?|podcasts?)\b/i;
+/** "where can i stream The Blair Witch Project", "where to watch Nosferatu (1922)" -> { title, year } | null. The ask opens the
+ *  movie card, which carries the legal where-to-watch links. A show, a live event or Verse's own films is not this ask. Pure. */
+export function whereAsk(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const tail = '(?:\\s*\\((\\d{4})\\))?(?:\\s+(?:online|tonight|today|right\\s+now|now|for\\s+free|free|legally))?$';
+  const m = t.match(new RegExp('^(?:where|how)\\s+(?:can|could|do|should)\\s+(?:i|we)\\s+(?:watch|stream|see|rent)\\s+(?:the\\s+(?:movie|film)\\s+)?(.+?)' + tail, 'i'))
+    || t.match(new RegExp('^where\\s+to\\s+(?:watch|stream|rent)\\s+(?:the\\s+(?:movie|film)\\s+)?(.+?)' + tail, 'i'));
+  if (!m || NOT_FILM.test(m[1])) return null;
+  const title = cleanTitle(m[1]); return title.length >= 2 ? { title, year: cleanYear(m[2]), where: true } : null;
+}
 export const cardAskText = (title, year) => 'movie card for ' + cleanTitle(title) + (cleanYear(year) ? ' (' + cleanYear(year) + ')' : '');
 
 /** a model's list ("1. **Talk to Me** (2022) - ...") -> [{ title, year }], at most 6, cleaned, no repeats. Pure. */
@@ -81,28 +94,35 @@ export function pickFile(files) {
   return pick ? pick.name : '';
 }
 export const archiveFileUrl = (id, name) => 'https://archive.org/download/' + encodeURIComponent(id) + '/' + encodeURIComponent(name);
-/** where-to-watch links that are searches on legal services: never a stream. Pure. */
+/** where-to-watch links that are searches on legal services: never a stream. No Internet Archive search: a generic "free films" search next
+ *  to "Not free to stream here" read as "the Archive streams this film and Verse does not" (Adam, 2026-11-06, on The Blair Witch Project).
+ *  A film the Archive holds legally is found and checked by legalArchive, plays on the card, and links its own item page. Pure. */
 // Wikidata, the second source (2026-10-30: iTunes refuses shared cloud addresses, and every well-known pick, "The Grand Budapest Hotel (2014)",
 // "Parasite (2019)", came back "not verified" on a-to-mind.com). Keyless SPARQL: a film is an item labelled with this exact English title that is
-// an instance of film (Q11424) or of a kind of film, with a publication date. It gives the year, the director and the runtime, never a poster.
+// an instance of film (Q11424) or of a kind of film, with a publication date. It gives the year, the director, the runtime and the genres
+// (P136, 2026-11-06: "scary movies from the 90s" scored every pick "Not a match: scary (horror), the source gives no genre"), never a poster.
 export const WIKIDATA = 'https://query.wikidata.org/sparql?format=json&query=';
 /** the SPARQL that finds the films with this English label. The title goes through cleanTitle (no quote or backslash can reach the literal). Pure. */
 export function wikidataQuery(title) {
   const t = cleanTitle(title).replace(/["\\]/g, '');
   // SPARQL, not SQL: t passed cleanTitle, which keeps only letters, digits, spaces and .,:;'’&!?- , so no quote or backslash can end the literal
-  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.' // void-review: ok (SPARQL literal of a cleanTitle value, see above)
-    + ' OPTIONAL { ?f wdt:P57 ?di. ?di rdfs:label ?dl. FILTER(LANG(?dl) = "en") } OPTIONAL { ?f wdt:P2047 ?dur } } GROUP BY ?f LIMIT 10';
+  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) (GROUP_CONCAT(DISTINCT ?gl; separator=", ") AS ?genres) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.' // void-review: ok (SPARQL literal of a cleanTitle value, see above)
+    + ' OPTIONAL { ?f wdt:P57 ?di. ?di rdfs:label ?dl. FILTER(LANG(?dl) = "en") } OPTIONAL { ?f wdt:P2047 ?dur } OPTIONAL { ?f wdt:P136 ?g. ?g rdfs:label ?gl. FILTER(LANG(?gl) = "en") } } GROUP BY ?f LIMIT 10';
 }
 /** the Wikidata row that is this movie: the year within one when it is known, else the most recent film of that name; or null. Pure. */
 export function pickWikidata(json, title, year) {
   const v = (b, k) => (b && b[k] && typeof b[k].value === 'string' ? b[k].value : '');
   const rows = ((json && json.results && json.results.bindings) || []).map((b) => ({
-    id: (v(b, 'f').match(/\/entity\/(Q\d{1,12})$/) || [])[1] || '', year: cleanYear(v(b, 'date').slice(0, 4)), director: cleanTitle(v(b, 'dir')), mins: Math.round(Number(v(b, 'mins'))),
+    id: (v(b, 'f').match(/\/entity\/(Q\d{1,12})$/) || [])[1] || '', year: cleanYear(v(b, 'date').slice(0, 4)), director: cleanTitle(v(b, 'dir')), mins: Math.round(Number(v(b, 'mins'))), genre: wikidataGenre(v(b, 'genres')),
   })).filter((r) => r.id && r.year);
   const y = cleanYear(year);
   const r = y ? rows.find((x) => Math.abs(x.year - y) <= 1) : rows.sort((a, b) => b.year - a.year)[0];
   if (!r) return null;
-  return { title: cleanTitle(title), year: r.year, director: r.director, runtime: r.mins > 0 && r.mins < 1000 ? r.mins : null, page: 'https://www.wikidata.org/wiki/' + r.id };
+  return { title: cleanTitle(title), year: r.year, director: r.director, runtime: r.mins > 0 && r.mins < 1000 ? r.mins : null, genre: r.genre, page: 'https://www.wikidata.org/wiki/' + r.id };
+}
+/** Wikidata's genre labels ("mystery film, teen film, slasher film, horror film") as the card shows them: "mystery, teen, slasher, horror". Pure. */
+export function wikidataGenre(labels) {
+  return cleanTitle(String(labels || '').split(',').map((g) => g.trim().replace(/\s+film$/i, '')).filter(Boolean).slice(0, 4).join(', '));
 }
 
 export function watchLinks(title, year, store) {
@@ -110,6 +130,5 @@ export function watchLinks(title, year, store) {
   const l = [];
   if (store) l.push({ label: 'Apple TV (buy or rent)', url: store });
   l.push({ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=' + q });
-  l.push({ label: 'Internet Archive: free films', url: 'https://archive.org/search?query=' + q + '&and[]=mediatype%3A%22movies%22' });
   return l;
 }

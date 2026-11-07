@@ -15,55 +15,105 @@
 <link rel="canonical" href="https://a-to-mind.com/prizes/">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <style>
-  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#f2c14e; }
+  /* the Verse look (docs/design.md, verse.css): the void lit from above, glass cards, one cool key light, display numerals */
+  :root { color-scheme: dark; --ink:var(--d-ink,#f2f4fb); --soft:var(--d-ink-2,#c3c8d8); --quiet:var(--d-ink-3,#8e94a8); --line:rgba(255,255,255,.10); --key:158 178 255; --accent:rgb(var(--key)); }
   * { box-sizing: border-box; }
-  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #2a2210, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
-  main { max-width:780px; margin:0 auto; padding:20px 14px 40px; }
-  h1 { font-size:22px; margin:6px 0 2px; }
-  h2 { font-size:16px; margin:0 0 8px; }
-  .sub { color:var(--quiet); margin:0 0 14px; font-size:15px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
-  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
-  label { display:block; color:var(--quiet); font-size:12px; }
-  label span { display:block; margin-bottom:3px; }
-  input, select, textarea { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:40px; }
-  input[type=number] { width:7em; }
-  textarea { width:100%; min-height:120px; resize:vertical; line-height:1.4; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; }
-  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
-  button { font:inherit; font-size:14px; background:#1b1824; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:8px 16px; min-height:40px; cursor:pointer; }
-  button:hover { border-color:#4a4434; }
-  button.go { background:var(--accent); color:#1b1505; border-color:var(--accent); font-weight:700; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse 90% 55% at 50% -18%, rgb(var(--key) / .18), transparent 52%), #050505; color:var(--ink); font:16px/1.5 var(--font, system-ui,-apple-system,sans-serif); }
+  main { max-width:960px; margin:0 auto; padding:8px 16px 48px; }
+  /* the bar: the shell's own classes (verse.css .vs-chrome), drawn here because the shell script dresses only its nav pages */
+  .vs-brand { gap:8px; }
+  .vs-brand img { width:26px; height:26px; border-radius:7px; display:block; }
+  .vs-links a[aria-current="page"] { color:var(--ink); }
+  .hero { text-align:center; padding:28px 0 6px; }
+  .eyebrow { display:inline-flex; gap:8px; align-items:center; margin:0; padding:5px 12px 5px 5px; border-radius:999px; font-size:13px; color:var(--soft); background:rgb(255 255 255 / .04); box-shadow:inset 0 0 0 1px rgb(255 255 255 / .09); }
+  .eyebrow img { width:24px; height:24px; border-radius:7px; display:block; }
+  h1 { margin:16px auto 10px; max-width:15ch; font-weight:280; letter-spacing:-.035em; font-size:clamp(36px, 9vw, 62px); line-height:1.02; color:var(--ink); text-wrap:balance; }
+  h1 .accent { font-weight:520; background:linear-gradient(180deg, #e7ecff 15%, rgb(var(--key)) 85%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color:var(--soft); margin:0 auto 18px; max-width:56ch; font-size:16px; text-wrap:pretty; }
+  h2 { font-size:18px; font-weight:600; letter-spacing:-.015em; margin:0 0 10px; }
+  .vh { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  .card { position:relative; background:var(--d-glass, #10121e); box-shadow:var(--d-lift, none); border-radius:18px; padding:18px; margin:14px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; letter-spacing:.02em; }
+  label span { display:block; margin-bottom:4px; }
+  input, select, textarea { font:inherit; font-size:16px; color:var(--ink); background:rgb(6 8 14 / .6); border:1px solid rgb(255 255 255 / .12); border-radius:12px; padding:8px 12px; min-height:44px; }
+  input[type=number] { width:7.5em; }
+  textarea { width:100%; min-height:128px; resize:vertical; line-height:1.45; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; }
+  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  button { font:inherit; font-size:15px; background:rgb(255 255 255 / .06); color:var(--ink); border:1px solid rgb(255 255 255 / .12); border-radius:999px; padding:0 18px; min-height:44px; cursor:pointer; transition:background .2s, border-color .2s; }
+  button:hover { background:rgb(255 255 255 / .10); border-color:rgb(var(--key) / .45); }
   .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
-  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#f3e3b8; background:#1c1b28; border-radius:4px; padding:1px 4px; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:var(--ink); background:rgb(255 255 255 / .07); border-radius:5px; padding:1px 5px; }
   .say { color:var(--quiet); font-size:13px; min-height:1.5em; margin:6px 0 0; overflow-wrap:anywhere; }
-  .spin { display:grid; grid-template-columns:minmax(0,300px) 1fr; gap:14px; align-items:center; }
-  @media (max-width:620px) { .spin { grid-template-columns:1fr; justify-items:center; } }
-  .wheelbox { position:relative; width:100%; max-width:300px; aspect-ratio:1; }
+  /* the stage: the wheel in its own light, the one primary button under it */
+  .stage { display:grid; grid-template-columns:1fr; justify-items:center; gap:18px; margin:8px 0 6px; }
+  @media (min-width:820px) { .stage { grid-template-columns:minmax(0,440px) minmax(0,1fr); align-items:center; justify-items:stretch; gap:40px; } .stage .panel { text-align:left; } }
+  .wheelbox { position:relative; isolation:isolate; width:min(100%, 420px); aspect-ratio:1; justify-self:center; }
+  .wheelbox::before { content:""; position:absolute; inset:2%; z-index:-1; border-radius:50%; box-shadow:0 0 70px 6px rgb(var(--key) / .28), 0 0 160px 20px rgb(var(--key) / .1); pointer-events:none; } /* a shadow glows without widening the page */
   .wheelbox canvas { width:100%; height:100%; display:block; }
-  .pointer { position:absolute; left:50%; top:-4px; transform:translateX(-50%); width:0; height:0; border-left:11px solid transparent; border-right:11px solid transparent; border-top:20px solid #fff; filter:drop-shadow(0 1px 2px #000); }
-  #result { font-size:20px; font-weight:700; min-height:1.6em; margin:4px 0; overflow-wrap:anywhere; }
+  .pointer { position:absolute; left:50%; top:-10px; transform:translateX(-50%); width:34px; height:42px; filter:drop-shadow(0 4px 10px rgb(var(--key) / .55)) drop-shadow(0 1px 1px #000); }
+  .panel { text-align:center; width:100%; max-width:460px; justify-self:center; }
+  .label { margin:0 0 4px; color:var(--quiet); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+  #result { font-size:clamp(22px, 5vw, 30px); font-weight:300; letter-spacing:-.02em; line-height:1.2; min-height:2.4em; margin:0 0 14px; overflow-wrap:anywhere; color:var(--ink); }
+  #result:empty::before { content:"Press Spin to draw a slice"; color:var(--quiet); }
+  button.go { min-height:56px; min-width:min(100%, 240px); padding:0 44px; font-size:18px; font-weight:650; letter-spacing:.01em; color:#07080f; border:0; background:linear-gradient(180deg, #d4ddff, rgb(var(--key)) 70%); box-shadow:0 1px 0 rgb(255 255 255 / .7) inset, 0 12px 34px -10px rgb(var(--key) / .75), 0 2px 6px rgb(0 0 0 / .4); }
+  button.go:hover { background:linear-gradient(180deg, #e4e9ff, rgb(var(--key)) 60%); }
+  button.go:disabled { opacity:.6; cursor:default; }
+  /* three numbers from the wheel above, worked out on the device */
+  .stats { display:grid; grid-template-columns:1fr; gap:12px; margin:22px 0 8px; }
+  @media (min-width:600px) { .stats { grid-template-columns:repeat(3, minmax(0,1fr)); } }
+  .stat { position:relative; margin:0; padding:16px 18px; border-radius:18px; background:var(--d-glass, #10121e); box-shadow:var(--d-lift, none); }
+  .stat::after { content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; background:linear-gradient(180deg, rgb(var(--key) / .45), rgb(255 255 255 / .04) 60%); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+  .stat dt { color:var(--quiet); font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+  .stat dd { margin:0; }
+  .stat .v { display:block; margin:6px 0 2px; font-size:clamp(34px, 7vw, 44px); font-weight:260; letter-spacing:-.035em; line-height:1.05; font-variant-numeric:tabular-nums; background:linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip:text; background-clip:text; color:transparent; overflow-wrap:anywhere; }
+  .stat .h { display:block; color:var(--soft); font-size:13px; }
   .scroll { width:100%; max-width:100%; overflow-x:auto; }
   table { border-collapse:collapse; width:100%; min-width:520px; font-size:14px; }
-  caption { text-align:left; color:var(--quiet); font-size:12px; padding:0 0 6px; }
-  th, td { text-align:right; padding:7px 8px; border-bottom:1px solid #23222f; font-variant-numeric:tabular-nums; }
-  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  caption { text-align:left; color:var(--quiet); font-size:12px; padding:0 0 8px; }
+  th, td { text-align:right; padding:10px 10px; border-bottom:1px solid rgb(255 255 255 / .07); font-variant-numeric:tabular-nums; }
+  th { color:var(--quiet); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; }
   th:first-child, td:first-child { text-align:left; overflow-wrap:anywhere; }
-  tr.top td { color:#fff3c4; }
-  dl.sum { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; margin:10px 0 0; font-size:14px; }
+  #odds tbody td:first-child::before { content:""; display:inline-block; width:10px; height:10px; margin-right:10px; border-radius:3px; vertical-align:-1px; background:var(--dot, #555); box-shadow:0 0 0 1px rgb(255 255 255 / .18) inset; }
+  tbody tr:hover td { background:rgb(255 255 255 / .025); }
+  tr.top td { color:#fff; background:rgb(var(--key) / .12); }
+  tr.top td:first-child { border-radius:10px 0 0 10px; } tr.top td:last-child { border-radius:0 10px 10px 0; }
+  dl.sum { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:0 16px; margin:16px 0 0; font-size:14px; }
+  dl.sum dt, dl.sum dd { padding:9px 0; border-bottom:1px solid rgb(255 255 255 / .06); }
   dl.sum dt { color:var(--quiet); }
-  dl.sum dd { margin:0; font-variant-numeric:tabular-nums; }
-  #drip { font-size:18px; font-weight:600; margin:8px 0 0; }
+  dl.sum dd { margin:0; font-variant-numeric:tabular-nums; color:var(--ink); }
+  /* phones: each slice is a small card, the column names said over each value (the ledger's pattern) */
+  @media (max-width: 600px) {
+    #odds { min-width:0; display:block; }
+    #odds caption { display:block; }
+    #odds thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+    #odds tbody { display:block; }
+    #odds tbody tr { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px 12px; margin:0 0 10px; padding:12px 14px; border:1px solid rgb(255 255 255 / .08); border-radius:14px; background:rgb(255 255 255 / .025); }
+    #odds tbody tr.top { border-color:rgb(var(--key) / .45); background:rgb(var(--key) / .1); }
+    #odds tbody td, #odds tbody tr.top td { display:block; padding:0; border:0; border-radius:0; text-align:left; background:none; }
+    #odds tbody td:first-child { grid-column:1 / -1; font-size:15px; font-weight:500; color:var(--ink); }
+    #odds tbody td[data-h]::before { content:attr(data-h); display:block; margin:0 0 2px; color:var(--quiet); font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; }
+    dl.sum { grid-template-columns:minmax(0,1fr); }
+    dl.sum dt { padding:10px 0 0; border:0; font-size:12px; }
+    dl.sum dd { padding:2px 0 10px; }
+  }
+  #drip { font-size:20px; font-weight:400; letter-spacing:-.01em; margin:10px 0 0; }
   #shareline { overflow-wrap:anywhere; font-size:13px; color:var(--quiet); }
-  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
-  .siblings a { display:inline-block; padding:6px 0; }
-  footer a, #shareline a, .vh-strip a { color:#f3dfa6; }
-  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
-  @media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto; } }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 16px; margin:10px 0 0; }
+  .siblings a { display:inline-flex; align-items:center; min-height:44px; }
+  a { color:rgb(var(--key)); }
+  footer a, #shareline a { color:rgb(var(--key)); }
+  /* the ring strip (lib/handoff.js mountStrip) sets its own colour inline; its links get a whole tap target here */
+  .vh-strip a { display:inline-flex; align-items:center; min-height:44px; }
+  footer { margin-top:26px; color:var(--quiet); font-size:12px; border-top:1px solid rgb(255 255 255 / .07); padding-top:14px; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto; transition:none !important; } }
+  @media (forced-colors: active) { h1 .accent, .stat .v { background:none; color:CanvasText; -webkit-text-fill-color:CanvasText; } .wheelbox::before, .stat::after { display:none; } }
   /* the "Use with" row, drawn like the toolkit's (lib/toolkit.js mountRelated); written into the page because no stage card answers for it yet */
   #related.tk-row { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:14px 0 4px; font-size:13px; }
-  #related .tk-label { color:var(--soft); }
-  #related a { display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid var(--line); border-radius:999px; color:inherit; text-decoration:none; }
-  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  #related .tk-label { color:var(--quiet); }
+  #related a { display:inline-flex; align-items:center; min-height:44px; padding:4px 14px; border:1px solid rgb(255 255 255 / .12); border-radius:999px; color:var(--ink); text-decoration:none; background:rgb(255 255 255 / .03); }
+  #related a:hover { border-color:rgb(var(--key) / .45); }
+  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
@@ -74,12 +124,45 @@
 <!-- /modulepreload -->
 </head>
 <body>
+<header class="vs-chrome">
+  <nav class="vs-app" aria-label="Verse">
+    <a class="vs-brand" href="/"><img src="/icon.svg" width="26" height="26" alt="">Verse</a>
+    <div class="vs-links" style="display:flex;flex:1;min-width:0;overflow-x:auto">
+      <a href="/">Ask</a>
+      <a href="/tools/">Tools</a>
+      <a href="/prizes/" aria-current="page">Prize wheel</a>
+      <a href="/conquered/">Tower</a>
+    </div>
+  </nav>
+</header>
 <main>
-  <h1>Prize wheel &amp; payout odds</h1>
-  <p class="sub" id="lead">Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out.</p>
+  <header class="hero">
+    <p class="eyebrow"><img src="/icon.svg" width="24" height="24" alt="">Verse prize wheel</p>
+    <h1>Prize wheel with the <span class="accent">real</span> odds</h1>
+    <p class="sub" id="lead">Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out.</p>
+  </header>
 
-  <section class="card" aria-labelledby="h-wheel">
-    <h2 id="h-wheel">The wheel</h2>
+  <section aria-labelledby="h-wheel">
+    <h2 id="h-wheel" class="vh">The wheel</h2>
+    <div class="stage">
+      <div class="wheelbox"><canvas id="wheel" width="840" height="840" role="img" aria-label="The prize wheel"></canvas><svg class="pointer" viewBox="0 0 34 42" aria-hidden="true"><defs><linearGradient id="pz-pt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#c8d4ff"/></linearGradient></defs><path d="M3 3h28c1.7 0 2.6 1.9 1.6 3.2L18.6 39.4a2 2 0 0 1-3.2 0L1.4 6.2C.4 4.9 1.3 3 3 3z" fill="url(#pz-pt)" stroke="#07080f" stroke-width="1.5"/></svg></div>
+      <div class="panel">
+        <p class="label">The draw</p>
+        <p id="result" role="status" aria-live="polite"></p>
+        <button type="button" class="go" id="spin">Spin</button>
+        <p class="note">Each spin is drawn with your device's secure random numbers first, then the wheel turns to land on it.</p>
+      </div>
+    </div>
+  </section>
+
+  <dl class="stats" aria-label="This wheel in three numbers, worked out from the slices below">
+    <div class="stat"><dt>House edge</dt><dd><span class="v" id="st-edge"></span><span class="h" id="st-edge-h"></span></dd></div>
+    <div class="stat"><dt>EV per spin</dt><dd><span class="v" id="st-ev"></span><span class="h" id="st-ev-h"></span></dd></div>
+    <div class="stat"><dt>Days to cash out</dt><dd><span class="v" id="st-days"></span><span class="h" id="st-days-h"></span></dd></div>
+  </dl>
+
+  <section class="card" aria-labelledby="h-slices">
+    <h2 id="h-slices">The slices</h2>
     <div class="row">
       <label><span>Preset</span>
         <select id="preset" aria-label="Preset">
@@ -95,14 +178,6 @@
     <label for="slices"><span>Slices, one a line: <code>Label:value:weight</code> (a plain name is worth 1 with weight 1)</span></label>
     <textarea id="slices" spellcheck="false" aria-describedby="slicehelp"></textarea>
     <p class="note" id="slicehelp">Value is what the slice pays (in dollars, points or anything else); weight is how many tickets it has. A slice with weight 10 is ten times as likely as one with weight 1.</p>
-    <div class="spin">
-      <div class="wheelbox"><canvas id="wheel" width="600" height="600" role="img" aria-label="The prize wheel"></canvas><div class="pointer" aria-hidden="true"></div></div>
-      <div>
-        <button type="button" class="go" id="spin">Spin</button>
-        <p id="result" role="status" aria-live="polite"></p>
-        <p class="note">Each spin is drawn with your device's secure random numbers first, then the wheel turns to land on it.</p>
-      </div>
-    </div>
   </section>
 
   <section class="card" aria-labelledby="h-odds">
@@ -179,31 +254,71 @@
   const $ = (id) => document.getElementById(id);
   const st = stateOf(location.search);
   const say = (t) => { $('say').textContent = t; };
-  const COLORS = ['#f2c14e', '#8b7bff', '#3fb68b', '#e5735f', '#4aa3df', '#d97ad8', '#9bc53d', '#f08a4b', '#5bc0be', '#c9a227'];
-  let rot = 0, spinning = false;
+  // the slice colours: Verse's key, teal and warm lights with their deep shades, light and deep in turn so two neighbours never match
+  const COLORS = ['#9eb2ff', '#26306a', '#5ce8cd', '#174e4a', '#ffaad6', '#57264a', '#c3b3ff', '#33296b', '#8fd3ff', '#1d3f66'];
+  const colorAt = (i, n) => COLORS[(i % COLORS.length === 0 && i === n - 1 && n > 1) ? 1 : i % COLORS.length]; // the last slice never matches the first
+  const lum = (h) => { const n = parseInt(h.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const shade = (h, k) => { const n = parseInt(h.slice(1), 16); return 'rgb(' + [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v * k + 5 * (1 - k))).join(',') + ')'; };
+  let rot = 0, spinning = false, won = -1;
 
   const items = () => parseSlices(st.slices);
   const link = () => { const q = queryOf(st); return location.origin + '/prizes/' + (q ? '?' + q : ''); };
   const one = (p) => (p > 0 ? '1 in ' + fmt(1 / p, 1 / p >= 100 ? 0 : 1) : 'never');
 
   function draw() {
-    const c = $('wheel'), g = c.getContext('2d'), s = items(), R = 290, cx = 300, cy = 300;
-    g.clearRect(0, 0, 600, 600);
+    const c = $('wheel'), g = c.getContext('2d'), s = items(), W = c.width, cx = W / 2, cy = W / 2, RIM = W / 2 - 4, R = RIM - 26, rad = (d) => ((d - 90) * Math.PI) / 180;
+    g.clearRect(0, 0, W, W);
+    // the rim: a dark band lit by the key light from above, with one peg at each slice edge
+    const band = g.createLinearGradient(0, 0, 0, W); band.addColorStop(0, '#2a3152'); band.addColorStop(0.5, '#10121f'); band.addColorStop(1, '#07080f');
+    g.beginPath(); g.arc(cx, cy, RIM, 0, Math.PI * 2); g.fillStyle = band; g.fill();
+    g.lineWidth = 2; g.strokeStyle = 'rgba(158,178,255,.55)'; g.stroke();
     const parts = arcs(s.map((x) => ({ label: x.label, weight: x.weight }))).filter((p) => p.end > p.start);
-    if (!parts.length) { g.fillStyle = '#191827'; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fill(); return; }
+    if (!parts.length) { g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fillStyle = '#10121f'; g.fill(); hub(g, cx, cy); return; }
     g.save(); g.translate(cx, cy); g.rotate((rot * Math.PI) / 180);
-    parts.forEach((p, i) => {
-      const a0 = ((p.start - 90) * Math.PI) / 180, a1 = ((p.end - 90) * Math.PI) / 180;
-      g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, R, a0, a1); g.closePath(); g.fillStyle = COLORS[i % COLORS.length]; g.fill();
-      g.strokeStyle = '#0b0a10'; g.lineWidth = 2; g.stroke();
-      if (p.end - p.start > 7) {
-        g.save(); g.rotate((a0 + a1) / 2); g.fillStyle = '#120e05'; g.font = '600 24px system-ui,sans-serif'; g.textAlign = 'right'; g.textBaseline = 'middle';
-        const t = p.label.length > 16 ? p.label.slice(0, 15) + '…' : p.label; g.fillText(t, R - 16, 0); g.restore();
+    const idx = s.map((x, i) => i).filter((i) => s[i].weight > 0);
+    parts.forEach((p, k) => {
+      const i = idx[k] ?? k, col = colorAt(i, s.length), a0 = rad(p.start), a1 = rad(p.end);
+      const fill = g.createRadialGradient(0, 0, R * 0.12, 0, 0, R); fill.addColorStop(0, shade(col, 0.55)); fill.addColorStop(1, col);
+      g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, R, a0, a1); g.closePath(); g.fillStyle = fill; g.fill();
+      g.strokeStyle = 'rgba(5,5,5,.55)'; g.lineWidth = 2; g.stroke();
+      if (i === won) { g.save(); g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, R - 3, a0, a1); g.closePath(); g.strokeStyle = '#fff'; g.lineWidth = 6; g.shadowColor = 'rgba(158,178,255,.9)'; g.shadowBlur = 18; g.stroke(); g.restore(); }
+      if (p.end - p.start > 6) {
+        g.save(); g.rotate((a0 + a1) / 2); g.fillStyle = lum(col) > 0.35 ? '#07080f' : '#f2f4fb'; g.textAlign = 'right'; g.textBaseline = 'middle';
+        const size = Math.max(20, Math.min(34, ((p.end - p.start) / 360) * 2 * Math.PI * R * 0.36)); g.font = '600 ' + size + 'px ui-sans-serif,system-ui,sans-serif';
+        let t = p.label, fs = size; const max = R * 0.62, font = (n) => { g.font = '600 ' + n + 'px ui-sans-serif,system-ui,sans-serif'; };
+        while (fs > 22 && g.measureText(t).width > max) font(fs -= 2); // a long name gets smaller type before it gets cut
+        while (t.length > 1 && g.measureText(t).width > max) t = t.slice(0, -2) + '…';
+        g.fillText(t, R - 22, 0); g.restore();
       }
     });
     g.restore();
-    g.beginPath(); g.arc(cx, cy, 26, 0, Math.PI * 2); g.fillStyle = '#0b0a10'; g.fill();
+    // pegs on the band at each slice edge, turning with the wheel (at most 72, so a long list does not become a solid ring)
+    const edges = parts.length > 1 ? parts.map((p) => p.start).slice(0, 72) : [];
+    for (const d of edges) { const a = rad(d + rot); g.beginPath(); g.arc(cx + Math.cos(a) * (R + 13), cy + Math.sin(a) * (R + 13), 5, 0, Math.PI * 2); g.fillStyle = '#e7ecff'; g.fill(); }
+    // a soft inner shade and the light from above, over the slices
+    const shine = g.createLinearGradient(0, cy - R, 0, cy + R); shine.addColorStop(0, 'rgba(255,255,255,.16)'); shine.addColorStop(0.45, 'rgba(255,255,255,0)'); shine.addColorStop(1, 'rgba(0,0,0,.22)');
+    g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fillStyle = shine; g.fill();
+    hub(g, cx, cy);
     $('wheel').setAttribute('aria-label', 'Prize wheel with ' + s.length + (s.length === 1 ? ' slice' : ' slices'));
+  }
+  // the hub: dark glass with Verse's V (the mark in /icon.svg), which stays still while the wheel turns
+  function hub(g, cx, cy) {
+    const r = 58, glass = g.createLinearGradient(0, cy - r, 0, cy + r); glass.addColorStop(0, '#2a3152'); glass.addColorStop(1, '#07080f');
+    g.save(); g.shadowColor = 'rgba(0,0,0,.6)'; g.shadowBlur = 18; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fillStyle = glass; g.fill(); g.restore();
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.lineWidth = 2; g.strokeStyle = 'rgba(158,178,255,.6)'; g.stroke();
+    const k = 0.2, v = g.createLinearGradient(cx - 20, cy - 20, cx + 20, cy + 20); v.addColorStop(0, '#f2f4fb'); v.addColorStop(1, '#9eb2ff');
+    g.beginPath(); g.moveTo(cx + (154 - 256) * k, cy + (176 - 266) * k); g.lineTo(cx, cy + (356 - 266) * k); g.lineTo(cx + (358 - 256) * k, cy + (176 - 266) * k);
+    g.lineWidth = 48 * k; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = v; g.stroke();
+  }
+  // the three cards: the house edge (what the house keeps of each spin's cost), the expected value, the days a drip takes; all from the state on the page
+  function stats(o, d) {
+    const edge = o.cost > 0 ? (o.cost - o.ev) / o.cost : null;
+    $('st-edge').textContent = edge === null ? 'None' : (edge < 0 ? '−' : '') + pct(Math.abs(edge));
+    $('st-edge-h').textContent = edge === null ? 'Spins cost nothing on this wheel' : edge >= 0 ? 'The house keeps ' + money(o.cost - o.ev) + ' of each ' + money(o.cost) + ' spin on average' : 'This wheel pays back more than a spin costs';
+    $('st-ev').textContent = money(o.ev);
+    $('st-ev-h').textContent = o.top >= 0 ? 'Top prize ' + one(o.rows[o.top].p) + ' a spin' : 'Add a slice to see it';
+    $('st-days').textContent = d.never ? 'Never' : fmt(d.days, 1);
+    $('st-days-h').textContent = d.never ? 'The balance never grows at these settings' : fmt(d.spins, 0) + (d.spins === 1 ? ' spin' : ' spins') + ' to reach ' + money(st.min) + ', one every ' + fmt(st.cd) + ' min';
   }
 
   function render() {
@@ -211,8 +326,9 @@
     $('nhead').textContent = '1+ in ' + fmt(N, 0);
     const body = $('odds').tBodies[0]; body.replaceChildren();
     o.rows.forEach((r, i) => {
-      const tr = document.createElement('tr'); if (i === o.top) tr.className = 'top';
-      for (const v of [r.label, fmt(r.value), fmt(r.weight), pct(r.p), money(r.ev), pct(atLeastOnce(r.p, N))]) { const td = document.createElement('td'); td.textContent = v; tr.append(td); }
+      const tr = document.createElement('tr'); if (i === o.top) tr.className = 'top'; tr.style.setProperty('--dot', colorAt(i, o.rows.length));
+      const heads = ['', 'Value', 'Weight', 'Chance', 'EV per spin', '1+ in ' + fmt(N, 0)];
+      [r.label, fmt(r.value), fmt(r.weight), pct(r.p), money(r.ev), pct(atLeastOnce(r.p, N))].forEach((v, k) => { const td = document.createElement('td'); td.textContent = v; if (heads[k]) td.dataset.h = heads[k]; tr.append(td); });
       body.append(tr);
     });
     const top = o.top >= 0 ? o.rows[o.top] : null, rows = [
@@ -231,9 +347,10 @@
     $('drip').textContent = d.never ? d.text : fmt(d.spins, 0) + (d.spins === 1 ? ' spin' : ' spins') + ' · ' + fmt(d.hours, 1) + ' hours · ' + fmt(d.days, 1) + ' days to reach ' + money(st.min);
     $('dripnote').textContent = d.never ? (st.cd <= 0 ? 'The cooldown has to be more than 0 minutes.' : 'Every slice pays 0 on average, so the balance never grows.') : money(d.perSpin) + ' a spin on average' + (st.refs && st.ref ? ' including ' + st.refs + ' referral' + (st.refs === 1 ? '' : 's') + ' at ' + fmt(st.ref) + '%' : '') + ', one spin every ' + fmt(st.cd) + ' minutes. That is ' + money(d.perSpin * 60 / st.cd) + ' an hour.';
     $('shareline').textContent = link();
+    stats(o, d);
     draw();
   }
-  function commit() { const q = queryOf(st); history.replaceState(null, '', '/prizes/' + (q ? '?' + q : '')); render(); }
+  function commit() { won = -1; const q = queryOf(st); history.replaceState(null, '', '/prizes/' + (q ? '?' + q : '')); render(); }
 
   function fill() {
     $('preset').value = st.preset; $('slices').value = st.slices;
@@ -250,10 +367,10 @@
 
   $('spin').addEventListener('click', () => {
     const s = items(), e = s.map((x) => ({ label: x.label, weight: x.weight }));
-    if (spinning) return; if (!e.some((x) => x.weight > 0)) { $('result').textContent = 'Add a slice with a weight above 0 first.'; return; }
+    if (spinning) return; won = -1; if (!e.some((x) => x.weight > 0)) { $('result').textContent = 'Add a slice with a weight above 0 first.'; return; }
     // the winner first, from crypto.getRandomValues; the turn is planned to land on it
     const i = pick(s, secureRandom());
-    const done = () => { spinning = false; $('spin').disabled = false; $('result').textContent = s[i].label + ' · worth ' + fmt(s[i].value) + ' (' + pct(odds(s).rows[i].p) + ' chance)'; };
+    const done = () => { won = i; draw(); spinning = false; $('spin').disabled = false; $('result').textContent = s[i].label + ' · worth ' + fmt(s[i].value) + ' (' + pct(odds(s).rows[i].p) + ' chance)'; };
     const to = plan(e, i, rot % 360, 5, secureRandom());
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { rot = to; draw(); done(); return; }
     spinning = true; $('spin').disabled = true; $('result').textContent = 'Spinning…';

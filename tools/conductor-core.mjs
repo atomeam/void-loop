@@ -32,8 +32,10 @@ export const ROUTES = Object.freeze({
   voice: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   versus: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   feature: { wf: AGENT, input: 'job', claims: true, cap: 40 },
-  // what Verse heard on TV or radio, built onto the site (tools/watch-build.mjs queues at most one an hour from the watch job)
-  tv: { wf: AGENT, input: 'job', claims: true, cap: 24 },
+  // what Verse heard on TV or radio, and each blueprint, built onto the site (tools/watch-build.mjs queues at most 3 an hour, 6 open).
+  // The cap counts every run of the coder today (as member's does), so 24 held every blueprint once the other kinds had used 24 runs;
+  // Raised 2026-11-06 so queued blueprints build the same day. One a tick, as member: the queue's own limits and the coder's free model budget hold the rest.
+  tv: { wf: AGENT, input: 'job', claims: true, cap: 144 },
   review: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   gap: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   novelty: { wf: AGENT, input: 'job', claims: true, cap: 40 },
@@ -142,6 +144,49 @@ export const WILL_EVERY_H = 1;
 export function willDue({ exists, busy, lastRunMs, now }) {
   return !!exists && !busy && now - (lastRunMs || 0) >= WILL_EVERY_H * H;
 }
+/** the jobs that must run every day whatever GitHub's scheduler does (owner, 2026-11-06: "why did you stop the films ... and where is my
+ *  daily verse podcast", "nothing is automatic anymore"). Their crons were dropped for days: shorts.yml fired 6 hours late or not at all,
+ *  so no film was made. Each tick starts a daily job once its hour (UTC) has come and it has no run since then (any trigger), never while
+ *  one runs or waits. A run that failed today is not started again until tomorrow: three failures in a row queue a heal: job. Pure. */
+export const DAILY = Object.freeze([
+  { wf: 'verse-podcast.yml', hourUtc: 13, what: "today's episode of Verse Out Loud" },
+  { wf: 'shorts.yml', hourUtc: 15, what: "today's three films, three formats on trending topics" },
+]);
+export function dailyDue({ exists, busy, lastRunMs, now, hourUtc }) {
+  if (!exists || busy) return false;
+  const d = new Date(now), slot = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), hourUtc);
+  return now >= slot && (lastRunMs || 0) < slot;
+}
+/** a full automerge sweep (automerge.yml with no pr) at least every SWEEP_EVERY_H: its hourly cron fired a few times a day, and a sweep
+ *  is what sends ready pull requests to the suite gate. sweptMs is when the conductor last started one (its state). Pure. */
+export const SWEEP_EVERY_H = 1;
+export function sweepDue({ sweptMs, now }) {
+  return now - (sweptMs || 0) >= SWEEP_EVERY_H * H;
+}
+/** queue the blueprints not built yet (tools/watch-build.mjs queueBlueprints) at least every BLUEPRINTS_EVERY_H (the owner asked on
+ *  2026-11-06 for every blueprint to build by itself): the watch that also queues them runs a few times a
+ *  day when GitHub drops its cron, so the clock keeps the hour. queuedMs is when the conductor last did it (its state). Pure. */
+export const BLUEPRINTS_EVERY_H = 1;
+export function blueprintsDue({ queuedMs, now }) {
+  return now - (queuedMs || 0) >= BLUEPRINTS_EVERY_H * H;
+}
+/** the calls one coder run can spend: its turn cap (tools/verse-coder.mjs LIMITS.turns). A run started with fewer calls left than this
+ *  gets a 429 partway and lands nothing (run 42284242262, 2026-11-06: started with 11 of 360 left, ended "no model answered"). */
+export const CODER_RUN_CALLS = 30;
+/** is the coder's free model budget (GET /api/coder: { hour:{used,cap}, day:{used,cap}, room, until }) too short for one whole run?
+ *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. spare: a free model
+ *  key outside Cloudflare is set (GROQ, CEREBRAS or GEMINI, the fallbacks in tools/verse-coder.mjs), so the coder answers without this
+ *  budget and is never held for it. Pure. */
+export function coderShort(budget, now, need = CODER_RUN_CALLS, spare = false) {
+  if (spare) return null;
+  if (!budget || typeof budget !== 'object') return null;
+  if (budget.room === false) return { until: budget.until || null };
+  const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);
+  const d = new Date(now);
+  if (left(budget.day) < need) return { until: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1)).toISOString() };
+  if (left(budget.hour) < need) return { until: new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours() + 1)).toISOString() };
+  return null;
+}
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
 export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now }) {
@@ -188,7 +233,7 @@ export function plan({ jobs = [], wf = {}, handed = {}, now, exam }) {
     if (triesOf(j.note) >= MAX_TRIES) { out.setAside.push({ id: j.id, note: withTries(j.note, triesOf(j.note), 'set aside after ' + MAX_TRIES + ' tries') }); continue; }
     const s = wf[r.wf] || {};
     if (!s.exists) { out.held.push({ id: j.id, why: r.wf + ' is not on main yet' }); continue; }
-    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (domains/verse-loop.pause)' }); continue; }
+    if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (' + (s.pausedWhy || 'domains/verse-loop.pause') + ')' }); continue; }
     // the coder's free model calls are used up (functions/api/coder.js GET): a run now ends "no model answered" and spends one of the day's runs
     if (s.noModel) { out.held.push({ id: j.id, why: 'Verse\'s coder has used its free model calls' + (s.noModel.until ? ' until ' + String(s.noModel.until).slice(11, 16) + ' UTC' : '') }); continue; }
     if (taken.has(r.wf) || s.busy || (ALSO_BUSY[r.wf] || []).some((f) => wf[f] && wf[f].busy)) continue;

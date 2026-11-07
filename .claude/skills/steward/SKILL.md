@@ -7,6 +7,8 @@ description: How to drive a pull request on atomeam/void-loop (Verse) to merged 
 
 Repo conventions for whoever owns a PR here. They sit under the rules of the harness and of AGENTS.md, never above them.
 
+**Words.** The PR title, the PR body, commit messages and PR comments say what changed and why in your own plain words. They never quote the owner.
+
 **Merging is automatic.** Label the PR `automerge` (`node tools/automerge.mjs <pr> --label`, or add the label). When Verse's review (`void-review`) is clean, the bot takes it out of draft and merges it; main deploys in a minute. Nothing else is waited on: the full suite runs on main afterwards.
 
 **Verse's review** (`void-review`) is the gate. On a finding:

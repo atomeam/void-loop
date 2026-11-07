@@ -11,7 +11,9 @@ import { fileURLToPath } from 'node:url';
 const site = fileURLToPath(new URL('../void-live-deploy', import.meta.url));
 // pages served by something other than a folder: a dynamic route of the site (the /is-it/ days) or the stage itself
 const SERVED = [/^\/$/, /^\/is-it\/[a-z0-9-]+$/, /^\/g\/?$/];
-const exists = (p) => { const clean = String(p).replace(/[?#].*$/, ''); if (SERVED.some((r) => r.test(clean))) return true; const f = site + clean; return clean.endsWith('/') ? fs.existsSync(f + 'index.html') : fs.existsSync(f + '/index.html') || (fs.existsSync(f) && fs.statSync(f).isFile()); };
+// or a Pages Function that answers the path itself (functions/ip/index.js serves /ip: plain text for curl, a page for people)
+const fn = (clean) => { const b = site + '/functions' + clean.replace(/\/$/, ''); return fs.existsSync(b + '/index.js') || fs.existsSync(b + '.js'); };
+const exists = (p) => { const clean = String(p).replace(/[?#].*$/, ''); if (SERVED.some((r) => r.test(clean)) || (clean !== '/' && fn(clean))) return true; const f = site + clean; return clean.endsWith('/') ? fs.existsSync(f + 'index.html') : fs.existsSync(f + '/index.html') || (fs.existsSync(f) && fs.statSync(f).isFile()); };
 test('every page a floor, a lane, a probe or the tool table names exists as a file', () => {
   const named = new Map(); const add = (p, why) => { if (p && typeof p === 'string' && p.startsWith('/')) named.set(p.replace(/[?#].*$/, ''), (named.get(p.replace(/[?#].*$/, '')) || []).concat(why)); };
   for (const [id, p] of Object.entries(LANE_PAGES)) add(p, 'LANE_PAGES ' + id);

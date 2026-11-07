@@ -42,13 +42,29 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
   assert.equal(stuckDecision(pr({ created_at: '2026-11-04T10:00:00Z' }), [], now).action, 'young');
 });
 
-test('the automerge workflow arms squash auto-merge and keeps the hourly run', () => {
+// 2026-11-06: since the suite gate (#2309) the bot no longer arms GitHub's auto-merge (it would merge on whatever main is, without the
+// suite). It disarms it, and merges one pull request itself with a squash, only after the suite passed on top of current main.
+test('the automerge workflow merges with a squash after the suite gate, and keeps the hourly run', () => {
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
   assert.match(yml, /pull-requests: write/);
   assert.match(yml, /17 \* \* \* \*/);
   assert.match(yml, /STUCK:/);
-  assert.match(src, /enablePullRequestAutoMerge/);
-  assert.match(src, /mergeMethod:SQUASH/);
+  assert.match(src, /disablePullRequestAutoMerge/);
+  assert.match(src, /merge_method=squash/);
+  assert.match(src, /chooseChecked\(rows, mainSha, running, safetyOk\)/, 'the suite gate chooses, and the safety-check runs on its batch');
+  assert.match(src, /const safetyOk = [^]*?safety\(ex, gh,/);
   assert.match(src, /update-branch/);
+});
+
+// 2026-11-06: only 2 of 300 automerge runs were full sweeps. A run on main about no pull request (a deploy, the review of main) took the
+// "sweep" group and replaced the waiting sweep, and the suite gate's own result ("Suite on main", on main, no pull request) was skipped
+// by the job "if" and by idleEvent. So no new batch went to the suite and nothing merged.
+test('a suite gate result sweeps, and an idle run on main never replaces the waiting sweep', () => {
+  const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
+  const group = yml.match(/^\s*group: (.+)$/m)[1];
+  assert.match(group, /head_branch == 'main' && github\.event\.workflow_run\.name != 'Suite on main' && format\('idle-\{0\}', github\.run_id\)\) \|\| 'sweep'/);
+  assert.match(yml, /if: .*github\.event\.workflow_run\.name == 'Suite on main'/);
+  assert.match(src, /wr\.name !== 'Suite on main' && !\(wr\.pull_requests/);
 });

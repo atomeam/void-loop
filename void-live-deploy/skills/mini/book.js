@@ -40,18 +40,25 @@ export default async function build(ctx, data) {
     return f;
   }
 
-  // ---- the cover: dark leather with gold, drawn once
+  // ---- the cover: deep-space cloth, a key-light hairline, the V mark and the title (owner, 2026-10-30: "a modern professional sleek look"), drawn once
   function coverTexture() {
     const c = document.createElement('canvas'); c.width = 512; c.height = Math.round(512 * H / W); const g = c.getContext('2d'), w = c.width, h = c.height;
-    const grad = g.createLinearGradient(0, 0, w, h); grad.addColorStop(0, '#1d2740'); grad.addColorStop(1, '#0e1424'); g.fillStyle = grad; g.fillRect(0, 0, w, h);
-    g.globalAlpha = 0.07; for (let i = 0; i < 1400; i++) { g.fillStyle = i % 2 ? '#fff' : '#000'; g.fillRect(Math.random() * w, Math.random() * h, 2, 2); } g.globalAlpha = 1;
-    const gold = '#d8b45a'; g.strokeStyle = gold; g.lineWidth = 3; g.strokeRect(26, 26, w - 52, h - 52); g.lineWidth = 1.2; g.strokeRect(36, 36, w - 72, h - 72);
-    g.save(); g.translate(w / 2, h * 0.38); g.strokeStyle = gold; g.lineWidth = 2.2;
-    for (let i = 1; i <= 5; i++) { g.beginPath(); g.arc(0, 0, 22 + i * 17, i * 0.9, i * 0.9 + 4.6); g.stroke(); }
-    g.fillStyle = gold; g.beginPath(); g.arc(0, 0, 7, 0, Math.PI * 2); g.fill(); g.restore();
-    g.fillStyle = gold; g.textAlign = 'center'; g.font = '700 74px Georgia, serif'; g.fillText('Verse', w / 2, h * 0.67);
-    g.font = '600 22px Georgia, serif'; g.fillText('THE BOOK', w / 2, h * 0.73);
-    g.font = '13px system-ui, sans-serif'; g.fillText('a-to-mind.com', w / 2, h * 0.91);
+    const grad = g.createLinearGradient(0, 0, 0, h); grad.addColorStop(0, '#161a2a'); grad.addColorStop(1, '#07080d'); g.fillStyle = grad; g.fillRect(0, 0, w, h);
+    const key = g.createRadialGradient(w / 2, -h * 0.1, 0, w / 2, -h * 0.1, h * 0.8); key.addColorStop(0, 'rgba(158,178,255,.20)'); key.addColorStop(1, 'rgba(158,178,255,0)'); g.fillStyle = key; g.fillRect(0, 0, w, h);
+    let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647); // the same cloth grain every time
+    g.globalAlpha = 0.05; for (let i = 0; i < 2400; i++) { g.fillStyle = i % 2 ? '#fff' : '#000'; g.fillRect(rnd() * w, rnd() * h, 1.5, 1.5); } g.globalAlpha = 1;
+    g.strokeStyle = 'rgba(158,178,255,.38)'; g.lineWidth = 1.5; g.beginPath(); if (g.roundRect) g.roundRect(28, 28, w - 56, h - 56, 12); else g.rect(28, 28, w - 56, h - 56); g.stroke();
+    g.save(); g.translate(w / 2, h * 0.36); // the mark: a V of two strokes, one star at its open end (icon.svg)
+    const v = g.createLinearGradient(-60, -50, 60, 60); v.addColorStop(0, '#f2f4fb'); v.addColorStop(1, '#9eb2ff');
+    g.strokeStyle = v; g.lineWidth = 20; g.lineCap = g.lineJoin = 'round'; g.shadowColor = 'rgba(158,178,255,.45)'; g.shadowBlur = 24;
+    g.beginPath(); g.moveTo(-60, -46); g.lineTo(0, 58); g.lineTo(60, -46); g.stroke(); g.shadowBlur = 0;
+    g.fillStyle = '#fff'; g.translate(80, -78); g.beginPath(); g.moveTo(0, -15); g.quadraticCurveTo(2, -2, 15, 0); g.quadraticCurveTo(2, 2, 0, 15); g.quadraticCurveTo(-2, 2, -15, 0); g.quadraticCurveTo(-2, -2, 0, -15); g.fill();
+    g.restore();
+    const sans = 'system-ui, -apple-system, "Segoe UI", sans-serif'; g.textAlign = 'center';
+    if ('letterSpacing' in g) g.letterSpacing = '6px'; g.fillStyle = '#c3c8d8'; g.font = '500 18px ' + sans; g.fillText('THE BOOK OF', w / 2, h * 0.62);
+    if ('letterSpacing' in g) g.letterSpacing = '-2px'; const t = g.createLinearGradient(0, h * 0.64, 0, h * 0.73); t.addColorStop(0, '#ffffff'); t.addColorStop(1, '#9eb2ff');
+    g.fillStyle = t; g.font = '300 86px ' + sans; g.fillText('Verse', w / 2, h * 0.73);
+    if ('letterSpacing' in g) g.letterSpacing = '1px'; g.fillStyle = '#8e94a8'; g.font = '14px ' + sans; g.fillText('a-to-mind.com', w / 2, h * 0.91);
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; return tex;
   }
   function edgeTexture() {
@@ -60,7 +67,7 @@ export default async function build(ctx, data) {
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1, 4); return tex;
   }
   const coverTex = coverTexture(), edgeTex = edgeTexture();
-  const leather = new THREE.MeshStandardMaterial({ color: '#17203a', roughness: 0.62, metalness: 0.05 });
+  const leather = new THREE.MeshStandardMaterial({ color: '#10121c', roughness: 0.62, metalness: 0.05 });
   const coverTop = new THREE.MeshStandardMaterial({ map: coverTex, roughness: 0.55, metalness: 0.08 });
   const endpaper = new THREE.MeshStandardMaterial({ color: '#e9dec2', roughness: 0.9 });
   const edgeMat = new THREE.MeshStandardMaterial({ map: edgeTex, roughness: 0.95 });

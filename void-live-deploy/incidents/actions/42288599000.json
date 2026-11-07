@@ -1,0 +1,58 @@
+{
+ "at": "2026-11-06T21:00:40Z",
+ "sha": "281b845fa025bc981e3057ccc15c5453033f72cf",
+ "runId": 42288599000,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42288599000",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (3)",
+   "id": 128135806547,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42288599000/job/128135806547",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 3 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL phone polish: Agents is fully inside the nav bar and the page is not wider than the screen  -> false",
+    "FAIL the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one  -> [] links 0 "
+   ],
+   "tail": [
+    "pass fix audit: \"audit your fixes\" lists the ledger's fixes with each fixed skill's rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show",
+    "pass terminal: help, skill, skills and tab-complete run without a model, an unknown command goes nowhere, ask --model alone calls the model and marks it, timer hands the page its own ask",
+    "pass Verse cards: a product line kept last and the card frame leave each other in place (no endless loop)",
+    "pass Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
+    "pass stage pack b: \"turn on family gravity\" draws the sticky and the notepad (one family) together until they settle (saved by the stage), leaves the clock where it was, and \"family gravity off\" stops it",
+    "pass stage pack b: with reduced motion the family snaps together at once, with no animation loop",
+    "pass stage pack b: \"shield everything except the clock for 25 minutes\" dims every other thing to 0.15 under a 25:00 focus bar, the clock stays clear, and \"lift the shield\" restores everything and removes the bar",
+    "pass stage pack b: a shield made of words that name no kind is not taken, and when the focus timer ends the shield lifts by itself",
+    "pass stage pack b: \"add soft rain\" and \"add a low drone\" layer a soundscape (a bar names the layers), \"quieter\" and \"only the drone\" and \"mute soundscape\" change it, \"add milk to my list\" still goes to the list, and \"stop the soundscape\" ends it; a bare \"quieter\" with nothing playing makes no sound",
+    "pass stage pack b: an empty stage says so and makes nothing; with things, \"print this stage as a one-page sheet\" downloads a PNG (void-stage-sheet.png), shows it and the Print button calls the print dialog",
+    "pass stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "pass weather page: a newer look wins, and aria-busy waits for it (Paris asked, then Boston: Boston stays drawn when the slower Paris answer lands, and aria-busy clears once Boston is in)",
+    "FAIL the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one  -> [] links 0 ",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass music: \"make me a lullaby\" shows a card with a piano roll and says its key, tempo and bars (an experiment-rated new skill)",
+    "pass music: Play starts the piece (the button reads Stop) and Stop ends it (reads Play)",
+    "pass music: \"Copy the notes\" puts the bar-by-bar notes on the clipboard",
+    "pass music: \"Save as WAV\" downloads a rendered .wav (RIFF/WAVE, seconds of audio)",
+    "pass music: \"play some music\" is not taken (Verse does not play recordings)",
+    "pass music: no page errors",
+    "pass lock explainer miniature: draws real pixels (brass housing and plug, steel pins, springs, the key), poses from the one state (half in, then fully in and turned 60° with every driver pin waiting at the shear line), a remount by key moves the live one, it settles with no redraws, under reduced mo",
+    "pass growth tree miniature: draws real pixels, one branch per ledger entry (5 -> 6, the new one the newest tip), a remount by key moves the live one, the new branch grows in and shows on the canvas, it settles with no redraws while idle, under reduced motion the branch is simply there, and unmountin",
+    "pass Ringer: on the 3D ring, a drag inside the chalk ring aims where it ends and the camera holds still (aiming wins over orbiting, no shot, no pull); a drag on the dirt outside the ring still looks around",
+    "pass 3D timer: \"set a timer for 1 minute\" puts a 3D hourglass beside the timer; leftFraction follows remaining and startedAt (half, paused, done, no duration); a fresh run turns the glass over",
+    "pass miniatures: the glass piggy bank holds half its coins at half (a quarter of them gold growth), fills to the top at the goal, and \"how long to save 50000 if i save 500 a month\" fills one on the answer",
+    "pass chess rules: perft matches the published counts (start, Kiwipete, endgame, promotions) so every move generator rule is right",
+    "pass chess rules: fool’s mate is checkmate, a lone king boxed in is stalemate, en passant takes the pawn, castling moves the rook and is refused through an attacked square, a pawn on the 7th promotes four ways, and Verse finds a back-rank mate",
+    "pass checkers rules: 7 opening moves, a capture is forced, a man keeps jumping (both double-jump routes offered), crowning ends the move, a king steps backward, a side with no move loses, and Verse takes a free man",
+    "107/109 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

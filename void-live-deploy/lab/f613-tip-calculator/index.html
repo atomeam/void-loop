@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --text:#e8eaed; --muted:#9aa0a6; --accent:#7c9cff; --ok:#6ee7b7; --border:#2a2f3a; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+main { max-width: 420px; margin: 2rem auto; padding: 0 1rem; }
+h1 { font-size:1.4rem; margin:0 0 1.2rem; font-weight:600; }
+label { display:block; font-size:0.85rem; color:var(--muted); margin:0.8rem 0 0.3rem; }
+input, select { width:100%; padding:0.75rem; border-radius:8px; border:1px solid var(--border); background:#12141a; color:var(--text); font-size:1rem; }
+input:focus, select:focus { outline:2px solid var(--accent); border-color:transparent; }
+.presets { display:flex; gap:0.5rem; margin:0.5rem 0 1rem; flex-wrap:wrap; }
+.presets button { flex:1; min-width:60px; padding:0.6rem; border-radius:8px; border:1px solid var(--border); background:#12141a; color:var(--text); cursor:pointer; font-size:0.95rem; }
+.presets button.active { background:var(--accent); color:#0f1115; border-color:var(--accent); font-weight:600; }
+.results { background:var(--card); border-radius:12px; padding:1.2rem; margin:1.2rem 0; border:1px solid var(--border); }
+.results div { display:flex; justify-content:space-between; margin:0.4rem 0; font-size:1.05rem; }
+.results .big { font-size:1.35rem; font-weight:600; color:var(--ok); }
+.copy-btn { width:100%; padding:0.85rem; border-radius:8px; border:none; background:var(--accent); color:#0f1115; font-weight:600; font-size:1rem; cursor:pointer; }
+.copy-btn:active { transform:scale(0.98); }
+.note { font-size:0.8rem; color:var(--muted); margin-top:1rem; text-align:center; }
+[aria-live] { position:absolute; left:-9999px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Tip calculator · Verse lab</title>
+<meta name="description" content="Job: Enter a bill amount, tip percent and number of people; see the tip, total and each person's share with optional rounding; copy the summary line.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Tip calculator · Verse lab">
+<meta property="og:description" content="Job: Enter a bill amount, tip percent and number of people; see the tip, total and each person's share with optional rounding; copy the summary line.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f613-tip-calculator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f613-tip-calculator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+<h1>Tip calculator</h1>
+
+<label for="bill">Bill amount</label>
+<input id="bill" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="45">
+
+<label>Tip percent</label>
+<div class="presets" role="group" aria-label="Tip presets">
+  <button type="button" data-tip="15">15%</button>
+  <button type="button" data-tip="18">18%</button>
+  <button type="button" data-tip="20" class="active">20%</button>
+  <button type="button" data-tip="25">25%</button>
+</div>
+<label for="custom">Custom tip %</label>
+<input id="custom" type="number" inputmode="decimal" min="0" step="0.5" placeholder="20" value="20">
+
+<label for="people">Number of people</label>
+<input id="people" type="number" inputmode="numeric" min="1" step="1" value="2">
+
+<label for="round">Rounding</label>
+<select id="round">
+  <option value="none">Exact (to the cent)</option>
+  <option value="cent">Nearest cent per person</option>
+  <option value="dollar">Nearest dollar per person</option>
+</select>
+
+<div class="results" id="results" aria-live="polite">
+  <div><span>Tip</span><span id="tip">—</span></div>
+  <div><span>Total</span><span id="total">—</span></div>
+  <div class="big"><span>Each</span><span id="each">—</span></div>
+</div>
+
+<button class="copy-btn" id="copy">Copy summary</button>
+<div class="note">Saved on this device. Nothing is sent anywhere.</div>
+</main>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

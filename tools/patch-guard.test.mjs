@@ -67,6 +67,30 @@ test('JavaScript that does not parse is rejected, with the parser\'s words', () 
   assert.equal(syntaxError("import { x } from './x.js';\nexport const y = await x();\nexport default y;").error, null);
 });
 
+test('a node script parses as written: shebang, several imports on a line, imports over lines, import attributes (#2386)', () => {
+  const script = [
+    '#!/usr/bin/env node',
+    "import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';",
+    'import {',
+    '  a,',
+    '  b as c,',
+    "} from './x.js';",
+    "import list from './list.json' with { type: 'json' };",
+    "export { a, c }; export * from './y.js';",
+    'export const z = await fs.promises.readFile(path.join(fileURLToPath(import.meta.url), list[0]));',
+  ].join('\n');
+  assert.equal(syntaxError(script).error, null);
+  // a no-op change to such a file is no longer refused
+  assert.equal(guardPatch({ before: script, after: script + '\n// one more line\n', kind: 'js' }).ok, true);
+  // the same file broken is still refused, and the error keeps the file's own line number
+  const broken = script.replace('list[0]));', 'list[0]);;)');
+  const r = guardPatch({ before: script, after: broken, kind: 'js' });
+  assert.equal(r.ok, false);
+  assert.match(r.reasons.join(' '), /does not parse/);
+  // a CommonJS script with only a shebang parses too
+  assert.equal(syntaxError("#!/usr/bin/env node\nconst fs = require('fs');\nconsole.log(fs);").error, null);
+});
+
 test('a function that disappeared is rejected by name', () => {
   const after = ORIGINAL.replace('function logClick(e) { console.log("click", e && e.target); }\n', '').replace('logClick, ', '');
   const r = guardPatch({ before: ORIGINAL, after, kind: 'js' });

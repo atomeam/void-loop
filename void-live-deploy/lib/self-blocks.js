@@ -4,6 +4,10 @@
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
 import { wrongWeakest, weakestSentence, weakestNote } from './weakest.js';
+import { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup, askIds } from './ask-same.js';
+export { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup };
+// one ask on this card's lists: said again in other words (sameOrDup), and about the same numbered one (askIds: "number 3" and "number 4" are two)
+const oneAsk = (a, b) => askIds(a) === askIds(b) && sameOrDup(a, b);
 
 const day = (t) => String(t || '').slice(0, 10);
 // the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
@@ -46,8 +50,11 @@ export function velocityHtml(v, esc, fr = null) {
     + sparkSvg(v.days, 84, 18, { key: 'n', max, cls: 'vs-spark', ticks: true, ...(fr ? { segmentColors: frictionColors(fr) } : {}) }) + '<span class="vs-vel-label">' + esc(velocityLabel(v)) + (fr && fr.total ? '<span class="vs-overdue"> · ' + esc(fr.total) + ' overdue</span>' : '') + '</span></div>';
 }
 // the long lists fold (owner, 2026-10-18: "What I've asked for" and "What got built" read as a monolith): the newest FOLD show, the rest wait behind
-// "show all N"; a folded item is still in the saved text, as one line (its dates and details are marked data-share-skip, lib/card-share.js)
+// "show all N"; a folded item is still in the saved text, as one line (its dates and details are marked data-share-skip, lib/card-share.js;
+// a folded built row also keeps "Built <day>", data-share-short)
 export const FOLD = 5;
+/** a folded built row's line in the saved text: "Built 2026-10-22" (or "Built" with no date). Pure. */
+export const builtShort = (at) => 'Built' + (String(at || '').trim() ? ' ' + String(at).trim() : '');
 export const SHORT = 72; // a folded item's line in the saved text, so a long list still fits the saved card (lib/card-share.js BODY_MAX)
 /** a folded item's one line: its first SHORT characters, cut at a word, with an ellipsis when cut. Pure. */
 export function shortLine(t) {
@@ -58,24 +65,43 @@ export function shortLine(t) {
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
 
-// one ask said twice in other words is one ask (owner, 2026-10-18, "fix this" on a self card listing 'report-to-growth', the Zorbleflux
-// throttle and 'dependency-health' twice each): two asks are the same when they quote the same name, or share most of their words
-const STOP = new Set('a an the to of in on for and or so that this it its my me i as by with from into is be can when which what'.split(' '));
-const quoted = (t) => { const m = /['‘"“]([^'’"”]{3,40})['’"”]/.exec(t); return m ? m[1].toLowerCase().replace(/[\s_-]+/g, '-') : ''; };
-const words = (t) => new Set(String(t).toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w)));
-export function sameAsk(a, b) {
-  const qa = quoted(a), qb = quoted(b);
-  if (qa && qb && qa !== qb) return false;
-  const wa = words(a), wb = words(b); if (Math.min(wa.size, wb.size) < 3) return false; // too few words to call two asks one
-  let n = 0; for (const w of wa) if (wb.has(w)) n++;
-  // the same quoted name with a few more words in common is the same ask; two asks about one skill that want different things are not
-  return n / Math.min(wa.size, wb.size) >= (qa && qb ? 0.4 : 0.7);
-}
-/** the asks with each one said again in other words folded into its first telling, which carries how many times it was asked. Pure. */
+/** the asks with each one said again (oneAsk) folded into its first telling, which carries how many times it was asked in all. Pure. */
 export function foldAsks(asks) {
   const out = [];
-  for (const a of asks || []) { const t = sentence(a && a.ask); if (!t) continue; const same = out.find((o) => sameAsk(o.ask, t)); if (same) same.times++; else out.push({ ...a, ask: t, times: 1 }); }
+  for (const a of asks || []) {
+    const t = uncite(sentence(a && a.ask)); if (!t) continue;
+    const n = Math.max(1, Math.round(+(a && a.times) || 1)), same = out.find((o) => oneAsk(o.ask, t));
+    if (same) same.times += n; else out.push({ ...a, ask: t, times: n });
+  }
   return out;
+}
+/** built rows (follow.recent, newest first) with one ask built twice folded into its newest row, times added up. Pure. */
+export function foldBuilt(rows) {
+  const out = [];
+  for (const r of rows || []) {
+    if (!r || !sentence(r.ask)) continue;
+    const n = Math.max(1, Math.round(+r.times || 1)), same = out.find((o) => oneAsk(o.ask, r.ask));
+    if (same) same.times += n; else out.push({ ...r, ask: uncite(sentence(r.ask)), times: n });
+  }
+  return out;
+}
+/** a commit subject that lists names with bare commas, made a sentence (owner's self card, 2026-11-06: "Tower gate: emoji combos:
+ *  emojigraph.org,emoji combos,sudowrite,..."): the names joined with ", " and "and", and a name that repeats the title before it left out. Pure. */
+export const joinNames = (xs) => (xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]);
+export function shippedLine(t) {
+  const s = sentence(t), g = /^Tower gate:\s*(.+?)\s+measured against (?:their|its) live sites?\.?$/i.exec(s);
+  if (g) {
+    // each comma-separated floor is a bare name ("prizes") or a lane and its site ("sports: flashscore.com"); a bare name that only repeats
+    // a lane's name ("emoji combos: emojigraph.org,emoji combos") is that floor said again, so it is left out
+    const slug = (x) => x.toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const floors = g[1].split(/\s*,\s*/).map((x) => x.trim()).filter(Boolean).map((x) => { const m = /^([^:]+):\s*(.+)$/.exec(x); return m ? { lane: m[1].trim(), name: m[2].trim() } : { name: x }; });
+    const lanes = new Set(floors.filter((f) => f.lane).map((f) => slug(f.lane)));
+    const names = [...new Set(floors.filter((f) => f.lane || !lanes.has(slug(f.name))).map((f) => f.name + (f.lane && slug(f.lane) !== slug(f.name) ? ' (' + f.lane + ')' : '')))];
+    if (!names.length) return s;
+    return 'Tower gate: ' + joinNames(names) + ' measured against ' + (names.length === 1 ? 'its live site' : 'their live sites') + '.';
+  }
+  // any other run of three or more bare-comma names (no space after the commas)
+  return s.replace(/\b([\w.-]+(?:,[\w.-]+){2,})\b/g, (m) => joinNames(m.split(',')));
 }
 
 /** the model's words with each sentence that asks for something already built marked "(built 2026-10-18)": the daily readout is written once a
@@ -117,7 +143,7 @@ export function selfSections(v, now = Date.now(), fam = null) {
   const out = [];
   // the owner's redesign (2026-10-18, "its still ugly"): Verse's own paragraph is a quotation and the only thing open; everything else is a closed
   // block whose heading carries its count; how sure it is of its skills (the page's family bars) sits right under its words
-  const voice = sentence((daily || build || {}).thoughts);
+  const voice = stripCites((daily || build || {}).thoughts);
   // no theatre (owner, 2026-10-19: "is this really Verse thoughts, or is this pretend"): the words are a language model's, prompted to speak as Verse from the
   // facts it was given, and the card says so; what it was given sits under them, and each claim below says where it comes from
   const src = daily || build || {}, label = modelLabel(src.model), given = String(src.given || '').trim();
@@ -130,23 +156,26 @@ export function selfSections(v, now = Date.now(), fam = null) {
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? weakText(daily, fam) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: k === 'weakest' ? weakSource(daily, fam) : (sourceNote(daily, k) || GROW_SOURCE[k]), tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? stripCites(weakText(daily, fam)) : markBuilt(stripCites(daily[k]), v && v.follow && v.follow.asked) }, { t: 'note', text: k === 'weakest' ? weakSource(daily, fam) : (sourceNote(daily, k) || GROW_SOURCE[k]), tight: true }]) });
   if (build) {
     const blocks = [];
-    if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });
-    if (daily) blocks.push({ t: 'p', text: sentence(build.thoughts) }); // without a daily entry these words are already the quotation above
-    if (sentence(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + markBuilt(build.better, v && v.follow && v.follow.asked) });
+    if (sentence(build.shipped)) blocks.push({ t: 'note', text: shippedLine(build.shipped) });
+    if (daily && stripCites(build.thoughts)) blocks.push({ t: 'p', text: stripCites(build.thoughts) }); // without a daily entry these words are already the quotation above
+    if (stripCites(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + markBuilt(stripCites(build.better), v && v.follow && v.follow.asked) });
     if (blocks.length) blocks.push({ t: 'note', text: 'Source: the model, asked right after this shipped, given what shipped and the facts above. A reading of the change, not a measurement.', tight: true });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }
-  const all = foldAsks((v && v.asks) || []), asks = all.slice(0, 12);
-  // the count is every ask not built (/api/reflect follow.open, the same record as "What got built"), never only the ones listed
-  const waiting = v && v.follow && Number.isFinite(+v.follow.open) && +v.follow.open >= all.length ? +v.follow.open : all.length;
+  // every open ask is listed (the fold shows five, "show all N" the rest), so the heading's count and the button's count are the same rows
+  const raw = ((v && v.asks) || []).filter((a) => a && sentence(a.ask)), asks = foldAsks(raw), all = asks;
+  // the count is every ask not built (/api/reflect follow.open, the same record as "What got built"), never only the ones listed, and an ask
+  // merged here (said again in other words) counts once: what the record holds beyond the listed rows, plus the merged rows
+  const waiting = v && v.follow && Number.isFinite(+v.follow.open) && +v.follow.open >= raw.length ? +v.follow.open - (raw.length - all.length) : all.length;
   if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: waiting + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
     text: a.ask, open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.times > 1 ? ' · asked ' + a.times + ' times' : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
   const f = v && v.follow;
   if (f && f.total) {
-    const recent = Array.isArray(f.recent) ? f.recent : [];
+    // one ask built twice (two ledger lines for one ask) is one row: the newest line, with how many times it was asked
+    const recent = foldBuilt(Array.isArray(f.recent) ? f.recent : []);
     const blocks = [{ t: 'spark', velocity: velocity(f.asked, now), friction: friction(v.asks, now) }, { t: 'count', built: f.built, total: f.total }]; // the velocity first: this week at a glance (its friction over it), then the whole count
     // depth pills always present so the aesthetic check has on/off states (owner 2026-10-21: fix remaining failing checks)
     blocks.push({ t: 'depth', counts: [['all', 'All', recent.length], ['root', 'Root cause', recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', recent.filter((r) => r.depth === 'surface').length]] });
@@ -182,8 +211,11 @@ export function sectionHtml(s, esc) {
     if (b.t === 'depth') return '<div class="v-depth" role="group" aria-label="Which builds to show">' + b.counts.map(([k, l, n], i) => '<button type="button" class="tr-copy" data-v-depth="' + k + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + esc(l + ' · ' + n) + '</button>').join(' ') + '</div>';
     if (b.t === 'list') {
       const more = b.items.filter((it) => it.more).length, skip = (it) => (it.more ? ' data-share-skip="1"' : '');
+      // a folded built row's details save as their short form, so the saved text still says it was built and when (owner's self card,
+      // 2026-11-06: with only the ask left, 25 folded built rows read as asks still waiting); the whole words, never a cut line
+      const meta = (it) => (it.more ? ' data-share-short="' + esc(builtShort(it.detail.at)) + '"' : '');
       return '<ul class="' + esc(b.cls) + ' vs-list">' + b.items.map((it) => '<li data-bullet="1"' + (b.cls.includes('v-built') ? ' data-depth="' + esc(it.depth) + '"' : '') + (it.more ? ' data-more="1" hidden' : it.hidden ? ' hidden' : '') + '><details' + (it.open ? ' open' : '') + '><summary>' + esc(it.text) + '</summary>'
-        + (it.detail ? '<div class="v-meta"' + skip(it) + '>' + (sentence(it.detail.ask) === sentence(it.text) ? '' : '<b>I asked:</b> ' + esc(it.detail.ask) + '<br>') + '<b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
+        + (it.detail ? '<div class="v-meta"' + meta(it) + '>' + (sentence(it.detail.ask) === sentence(it.text) ? '' : '<b>I asked:</b> ' + esc(it.detail.ask) + '<br>') + '<b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
         + '</details>' + (it.detail && it.sub ? '<div class="vs-sub"' + skip(it) + '>' + esc(it.sub) + '</div>' : '') + '</li>').join('') + '</ul>'
         + (more ? '<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="' + esc(b.items.length) + '">' + esc('show all ' + b.items.length) + '</button>' : '');
     }
@@ -247,16 +279,38 @@ export function sinceSection(v, last, now = Date.now(), fam = null) {
   const f = (v && v.follow) || {}, recent = Array.isArray(f.recent) ? f.recent : [];
   const counts = famCounts(fam), lastAt = last && Date.parse(last.at);
   const ago = (t) => { const m = Math.max(1, Math.round((now - t) / 60000)); return m < 60 ? m + ' min' : m < 2880 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' days'; };
-  const newer = lastAt > 0 ? recent.filter((r) => Date.parse(r.at) > lastAt) : recent.slice(0, 3);
+  // the builds since the last look, one row per ask (an ask built twice is its newest row), each row keeping the keys of every ledger line
+  // it stands for, so "What got built" leaves out all of them
+  const newer = [];
+  for (const r of lastAt > 0 ? recent.filter((r) => Date.parse(r.at) > lastAt) : recent.slice(0, 3)) {
+    const same = r && sentence(r.ask) && newer.find((o) => oneAsk(o.r.ask, r.ask));
+    if (same) same.keys.push(buildKey(r)); else if (r) newer.push({ r, keys: [buildKey(r)] });
+  }
   const thoughts = lastAt > 0 ? ((v && v.entries) || []).filter((e) => Date.parse(e.at) > lastAt).length : 0;
   const lines = [];
   if (lastAt > 0) {
     const d = (k, a, b) => (Number.isFinite(+a) && Number.isFinite(+b) && +a !== +b ? (+a > +b ? '+' : '') + (+a - +b) + ' ' + k : '');
-    const moved = [d('asks built', f.built, last.built), counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
+    // asks built since: the asks the ledger built after the last look (the same evidence as the list below and "What got built"), or the
+    // rise of the built count when an older build was linked since; never a fall. The count can go down only when the record is counted
+    // again (an ask said twice merged into one), and that is no ask unbuilt, so it is not shown as one (owner's card, 2026-11-06: "-3 asks built")
+    const asked = Array.isArray(f.asked) && f.asked.length ? f.asked : recent, seenAsk = [];
+    for (const a of asked) if (a && Date.parse(a.at) > lastAt && sentence(a.ask) && !seenAsk.some((x) => oneAsk(x, a.ask))) seenAsk.push(a.ask);
+    const rise = Number.isFinite(+f.built) && Number.isFinite(+last.built) ? +f.built - +last.built : 0;
+    const built = Math.max(seenAsk.length, rise, 0);
+    // each moved count keeps its counter's name, as "+1 skills" does: "+1 asks built" (the self card check reads that name; a singular here
+    // turned the browser suite red on main, run 42184801438)
+    const moved = [built ? '+' + built + ' asks built' : '', counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
     lines.push({ t: 'p', lead: true, text: (moved.length ? moved.join(' · ') : 'No new counts') + (thoughts ? ' · ' + thoughts + ' new reflection' + (thoughts === 1 ? '' : 's') : '') + ', since you looked ' + ago(lastAt) + ' ago.' });
+    // nothing built since only when that count is 0, and then the newest build it means is named, so the line agrees with "What got built"
+    if (!newer.length && !built) {
+      const top = recent.find((r) => r && sentence(r.ask));
+      lines.push({ t: 'note', text: 'No ask of mine was built since you looked.' + (top ? ' The newest build is from ' + day(top.at) + ': ' + uncite(sentence(top.ask)).replace(/[.!?]$/, '') + '.' : '') + ' I grow every 10 minutes; this card updates while it is open.' });
+    }
   } else lines.push({ t: 'p', lead: true, text: 'Your first look on this device. Next time this part says what changed since.' });
-  if (newer.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: newer.slice(0, 8).map((r) => ({ key: buildKey(r), text: sentence(r.what) || sentence(r.ask), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + sentence(r.ask) : '') })) });
-  else if (lastAt > 0 && !(+f.built > +last.built)) lines.push({ t: 'note', text: 'Nothing of mine was built since. I grow every 10 minutes; this card updates while it is open.' });
+  const SINCE_MAX = 8, shown = newer.slice(0, SINCE_MAX), hidden = newer.length - shown.length;
+  if (shown.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: shown.map(({ r, keys }) => ({ key: keys[0], keys, text: stripCites(r.what) || uncite(sentence(r.ask)), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + uncite(sentence(r.ask)) : '') })) });
+  // the rows this lead does not show are the ones still listed under "What got built", so the number is exactly those rows
+  if (hidden > 0) lines.push({ t: 'note', text: 'And ' + hidden + ' more, listed under What got built.', tight: true });
   return { id: 'since', title: lastAt > 0 ? 'Since you last looked' : 'Newest', open: true, count: newer.length ? newer.length + ' new' : '', log: false, blocks: lines };
 }
 /** skills and proven skills from skills/families.json ({ families: [{ skills: [{ tier }] }] }), null when unreadable. Pure. */
@@ -272,7 +326,7 @@ export const sinceMark = (v, fam, now = Date.now()) => { const f = (v && v.follo
 /** the whole card body, never the same twice: "Since you last looked" first, then the sections, with the builds the lead already shows left out of
  *  "What got built" and every sentence read before taken out (noRepeats). Returns { sections, shown }. Pure. */
 export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null) {
-  const since = sinceSection(v, last, now, fam), lead = new Set(since.blocks.filter((b) => b.t === 'list').flatMap((b) => b.items.map((it) => it.key)));
+  const since = sinceSection(v, last, now, fam), lead = new Set(since.blocks.filter((b) => b.t === 'list').flatMap((b) => b.items.flatMap((it) => it.keys || [it.key])));
   // the lead's builds leave "What got built", but never all of them: a first look leads with every build there is, and an empty
   // "What got built (2 of 5 asks)" hid what each ask became (its details) with nothing to open
   const f = v && v.follow, left = f && Array.isArray(f.recent) ? f.recent.filter((r) => !lead.has(buildKey(r))) : null;

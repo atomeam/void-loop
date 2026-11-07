@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; z-index: 0; }
+  #stage { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+  .resonator {
+    position: absolute; width: 120px; height: 80px; border-radius: 12px;
+    background: rgba(30,30,50,0.7); border: 1px solid rgba(255,255,255,0.3);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-size: 12px; cursor: grab; pointer-events: auto; user-select: none;
+    backdrop-filter: blur(4px); transition: transform 0.1s;
+  }
+  .resonator:active { cursor: grabbing; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 2; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { margin-right: 8px; padding: 4px 10px; background: #334; color: #fff; border: 1px solid #556; border-radius: 4px; cursor: pointer; }
+  #status { margin-top: 6px; font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Wave Interference Phase DOM Mind · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: A spatial field of circular wave interference whose sources are absolute-positioned DOM Verse resonators (cards).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Wave Interference Phase DOM Mind · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: A spatial field of circular wave interference whose sources are absolute-positioned DOM Verse resonators (cards).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f542-webgpu-wave-interference-phase-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f542-webgpu-wave-interference-phase-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="stage"></div>
+<div id="ui">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Wave Interference Phase DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

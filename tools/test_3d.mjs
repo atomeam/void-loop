@@ -310,7 +310,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const F = await fresh();
     // what Verse asked for, by the entry that built it (GET /api/reflect follow.asked): here every entry has one naming its own time
     const ledgerAts = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')).map((e) => e.at);
-    await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
+    // hold the answer until after the branch is read: the card has to fill in what Verse asked for when it lands late, not only when
+    // it happened to arrive before the touch (the race that made this check flake on main)
+    let releaseReflect;
+    const held = new Promise((resolve) => { releaseReflect = resolve; });
+    await F.ctx.route(/\/api\/reflect(?:\?|$)/, async (rt) => { await held; return rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }); });
     await F.ask('growth');
     // the tree draws while it is on screen, and the card has grown long (friction, the better score, the probes above it): scroll it into view as a visitor would while waiting, or it never draws and this waits for nothing
     const drawn = await until(() => F.p.evaluate(() => { const cv = document.querySelector('.vpage .growth-tree canvas'); if (cv) cv.scrollIntoView({ block: 'center' }); const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
@@ -325,10 +329,17 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // the trunk is one thing to touch: with hundreds of branches, leaves of its neighbours cover some of its length, so try along it until it takes the tap
     if (at && at.pt) for (const pt of [at.pt, ...(at.pts || [])]) { if (!pt) continue; await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); if (await F.p.evaluate((i) => { const s = window.__voidMini.state('growth-tree'); return s && s.selected === i; }, at.trunk)) break; }
     const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
-    const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
+    // a bloom for a day's new skill (void:grew) must not take the branch the reader already touched
+    const stayed = at && await F.p.evaluate(() => { const card = document.querySelector('.vpage');
+      card.dispatchEvent(new CustomEvent('void:grew', { bubbles: true, detail: { kind: 'bloom' } }));
+      const s = document.querySelector('.vpage .growth-picked'), t = window.__voidMini && window.__voidMini.state('growth-tree');
+      return { selected: t ? t.selected : null, text: s ? s.textContent : '' }; });
+    // the reflect answer was held back and lands only now: the readout fills in the ask without another touch
+    if (releaseReflect) releaseReflect();
+    const cause = at && await until(() => F.p.evaluate((w) => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c && c.textContent.includes(w) ? c.textContent : false; }, 'the ask built at ' + trunkAt), 8000);
     check('"growth": touching a branch says what Verse asked for that it built (asked by Verse: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)' && !!stayed && stayed.selected === at.trunk && stayed.text.includes(at.oldest), JSON.stringify({ cause, trunkAt, stayed }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
@@ -711,10 +722,12 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.evaluate(() => { const seen = window.__chessLines = []; const note = () => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }; new MutationObserver(note).observe(document.body, { subtree: true, childList: true, characterData: true }); note(); }); // every change, not a look every 30 ms: a quick search came and went between two looks
     if (ready) { await tap('e2', 0.04); await tap('e4'); }
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
-    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
+    // the line while Verse thinks is read as it happens: not only after the reply lands (a fast search's line can come and go within one mutation batch on a slow runner, and the reply took over 40 s once on CI)
+    const weighingLive = until(() => F.p.evaluate(() => (window.__chessLines || []).find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || false), 40000);
+    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 60000);
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = (await weighingLive) || lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });
@@ -826,26 +839,29 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.setViewportSize({ width: 390, height: 844 });
     await F.ask('play connect 4', 600);
     const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
-    // you keep dropping in column 1; Verse finds its four. The game sets the pace, not a move count: under CI load Verse's search
-    // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
-    // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
-    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when Verse had not blocked it: "You dropped in column 1" as the last line, no reason)
-    for (const end = Date.now() + 90000; key && Date.now() < end;) {
+    // you keep dropping in the far columns and never build a four yourself (stacking one column let you win on the fourth drop
+    // when Verse had not blocked it: "You dropped in column 1" as the last line, no reason)
+    // The game sets the pace, not a wall clock: a fixed whole-game budget killed a live game on a loaded shard (verify ee6e3077:
+    // "won": false with the log mid-game, "found a forced win" as the last reason), so the loop plays to the win and stops only
+    // when the game itself stops moving for 30 s (120 quiet beats; a full column the tap cannot use, or a search that never answers)
+    let turn = 0, discs = 0, still = 0; const COLS = [0, 2, 4, 6];
+    for (; key && still < 120;) {
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
+      const d = await F.p.evaluate((k) => (window.__voidMini.state(k) || {}).discs ?? -1, key).catch(() => -1);
+      still = d === discs ? still + 1 : 0; discs = d;
       if (/Your move/.test(st)) {
         // a full column ignores the tap and the game would wait for you for good (the other way this check went red: Verse had not
         // found its four before column 1 filled): the next tap is in another column anyway
-        const d0 = await F.p.evaluate((k) => window.__voidMini.state(k).discs, key);
         await F.p.evaluate((c) => document.querySelectorAll('.c4-col')[c].click(), COLS[turn % COLS.length]);
-        await until(() => F.p.evaluate(([k, n]) => window.__voidMini.state(k).discs > n, [key, d0]), 2500);
+        await until(() => F.p.evaluate(([k, n]) => window.__voidMini.state(k).discs > n, [key, discs]), 2500);
         turn++; // one column over each move, a full one just skips
         await F.p.waitForTimeout(300);
       } else await F.p.waitForTimeout(250);
     }
     const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
     // when the 3D board never drew, say so and why: the loop above never runs then, and the card's empty log ("Earlier moves (-1)")
-    // read as "no move in 90 s" (verify on 0f1dc25d: the board was not up after 90 s on a loaded shard; it passed on its rerun alone)
+    // read as "no move in 30 s" (verify on 0f1dc25d: the board was not up after 90 s on a loaded shard; it passed on its rerun alone)
     const why = key ? null : await F.p.evaluate(() => { let s = null; try { s = { off: sessionStorage.getItem('void.3d.off'), crash: sessionStorage.getItem('void.3d.crash') }; } catch (_) {}
       return { minis: window.__voidMini ? window.__voidMini.list() : null, wraps: [...document.querySelectorAll('.connect4-view .void-mini')].map((w) => w.dataset.rendered + (w.isConnected ? '' : ' (off the page)')), flat: !!document.querySelector('.lift3d-off'), ...s }; }).catch((e) => String(e));
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };

@@ -14,7 +14,17 @@ test('every fetch on the weather page gives up after a timeout', () => {
 });
 test('aria-busy is set once and always cleared in finally', () => {
   assert.equal((html.match(/setAttribute\('aria-busy', 'true'\)/g) || []).length, 1);
-  assert.match(html, /finally \{ document\.querySelector\('main'\)\.removeAttribute\('aria-busy'\)/);
+  assert.match(html, /finally \{ if \(live\(\)\) document\.querySelector\('main'\)\.removeAttribute\('aria-busy'\)/);
+});
+// a second look asked while the first is out (2026-11-06: Paris asked, then Boston; Boston answered first and cleared aria-busy, then the late
+// Paris answer drew over it): only the newest look draws, writes its status lines and clears aria-busy. The browser check is in
+// tools/test_void.mjs ("weather page: a newer look wins").
+test('only the newest look draws and clears aria-busy', () => {
+  const body = html.slice(html.indexOf('async function look('), html.indexOf('const q = new URLSearchParams'));
+  assert.match(html, /const me = \+\+looking, live = \(\) => me === looking;/);
+  assert.match(body, /if \(!live\(\)\) return;\s*draw\(v\)/, 'a superseded look does not draw');
+  assert.match(body, /catch \(_\) \{\s*if \(!live\(\)\) return;/, 'a superseded look does not show the kept forecast or the retry line');
+  for (const m of body.matchAll(/\$\('status'\)\.textContent = 'No place/g)) assert.match(body.slice(m.index - 14, m.index), /if \(live\(\)\) $/, 'a not-found line only from the newest look');
 });
 test('a hung fetch rejects within the wait (the timeout really aborts)', async () => {
   const t0 = Date.now();

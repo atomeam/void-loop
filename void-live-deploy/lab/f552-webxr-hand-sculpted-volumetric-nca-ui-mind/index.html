@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(10,10,20,0.7); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  .panel {
+    position: absolute; background: rgba(20,30,50,0.85); border: 1px solid #4466aa;
+    border-radius: 10px; padding: 12px; width: 180px; color: #cce; pointer-events: auto;
+    transition: transform 0.4s ease, width 0.4s, height 0.4s; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .panel h3 { margin: 0 0 6px; font-size: 14px; color: #88ccff; }
+  .panel p { margin: 0; font-size: 12px; opacity: 0.85; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand-Sculpted Volumetric NCA UI Mind · Verse lab</title>
+<meta name="description" content="A WebXR (or pointer-proxy) hand-sculpting interface injects activation into a volumetric Neural Cellular Automaton.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand-Sculpted Volumetric NCA UI Mind · Verse lab">
+<meta property="og:description" content="A WebXR (or pointer-proxy) hand-sculpting interface injects activation into a volumetric Neural Cellular Automaton.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f552-webxr-hand-sculpted-volumetric-nca-ui-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f552-webxr-hand-sculpted-volumetric-nca-ui-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>Hand-Sculpted NCA Mind · F552</div>
+  <div id="status">Initializing…</div>
+  <button id="xrbtn" style="display:none;margin-top:6px;">Enter XR</button>
+</div>
+<canvas id="c"></canvas>
+<div id="panels"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand-Sculpted Volumetric NCA UI Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

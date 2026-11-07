@@ -1,0 +1,32 @@
+{
+ "at": "2026-11-06T05:24:21.669Z",
+ "sha": "42ad9480154eac0929911a43d0c9c0cf49cb96fc",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42163966017",
+ "suite": "browser suite on main",
+ "checks": [
+  "void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)",
+  "ui polish: \"written by Verse, from what it knows\" has at least 4.5:1 contrast on its real background (measured from the pixels; it was 5.7:1 in ink-3, now about 9:1)",
+  "poster wins: the source excerpt is a quotation (left rule, darker ground) and Verse's take has a bold bright label, both at AA 4.5:1 or better",
+  "poster wins: a very long answer (desktop) is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar's row at its right edge",
+  "poster wins: a very long answer (phone) is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar's row at its right edge",
+  "Verse card art: an answer with a picture of its subject shows that picture in the art box",
+  "music: \"make a heavy metal song\" shows its form (intro, drop, breakdown, bridge, climax) under the roll, and the rendered song has the drop, breakdown and climax at least 6 dB above the quiet intro and bridge, the climax the loudest, and no clipping"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "docs/treasury.md",
+  "tools/x402.test.mjs",
+  "void-live-deploy/lib/verse-wallet-address.js",
+  "void-live-deploy/lib/verse-wallet.js"
+ ],
+ "shards": [
+  4
+ ],
+ "passed": [
+  4
+ ],
+ "closedAt": "2026-11-06T06:39:43.193Z",
+ "closedBy": "44265992f306b9f77afc277eef091ba34feaf72a",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42171576930",
+ "minutes": 75
+}
