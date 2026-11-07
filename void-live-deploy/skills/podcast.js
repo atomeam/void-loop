@@ -55,7 +55,9 @@ const escH = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&'
 async function playShow(text, api) {
   const asked = latestEpisodeOf(text); if (!asked) return false;
   const { showPage } = api;
-  const el = showPage((p) => { p.dataset.cardKind = 'Podcast'; p.innerHTML = '<h2>Podcast</h2><p class="sub">Finding the latest episode of ' + escH(asked.show) + '…</p>'; });
+  const el = showPage((p) => { p.dataset.cardKind = 'Podcast'; p.setAttribute('aria-busy', 'true'); p.innerHTML = '<h2>Podcast</h2><p class="sub">Finding the latest episode of ' + escH(asked.show) + '…</p>'; });
+  // aria-busy says the card is still being filled: a screen reader waits for the episode, and so does the outcome exam (tools/exam.mjs)
+  const done = () => el.removeAttribute('aria-busy');
   let ep = null, show = null, found = null, one = null;
   try {
     // one ask first (/api/podcasts?latest=: the directory, the show and the newest episode together, cached on the edge); the older two-step
@@ -73,9 +75,10 @@ async function playShow(text, api) {
       if (feed && feed.show && feed.show.title) show = { ...show, title: feed.show.title };
     }
   } catch (_) { ep = null; }
-  if (api._pageStill && !api._pageStill(el)) return true;
+  if (api._pageStill && !api._pageStill(el)) { done(); return true; } // a card left behind is not still loading
   if (!show || !ep) {
     el.innerHTML = '<h2>Podcast</h2><p>No public episode turned up for “' + escH(asked.show) + '”. The directory or the show’s feed did not answer.</p><div class="src">Looked up on <a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple’s podcast directory</a>, then the show’s own RSS.</div>';
+    done();
     return true;
   }
   el.innerHTML = '<h2>Podcast</h2>'
@@ -86,6 +89,7 @@ async function playShow(text, api) {
     + '<div class="src">' + sourceLine(found && found.source) + '</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
   if (btn && audio) btn.addEventListener('click', () => { audio.play().catch(() => {}); });
+  done();
   return true;
 }
 async function run(text, api) {

@@ -14,7 +14,7 @@ import { resolve, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
 import { spawnSync } from 'node:child_process';
-import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, mediaLine, DROP, SCALE } from '../void-live-deploy/lib/exam.js';
+import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, revertAfter, isoWeek, holdoutSlice, askId, mediaLine, DROP, SCALE, FAST_MS } from '../void-live-deploy/lib/exam.js';
 import { songAskOf, findTrack } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
 import { compute, money } from '../void-live-deploy/lib/vat.js';
@@ -269,6 +269,10 @@ async function readCard(page, ask) {
     try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((e) => e && e.ask === q); } catch (_) { return false; }
   }, ask, { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(2200);
+  // a card that is still being filled says so (aria-busy="true", as the podcast and song cards do while their lookup runs): read it when it is
+  // done, not half way. The wait ends at FAST_MS from the ask, so a slow card still fails "fast" and is read as it stands then.
+  const left = FAST_MS - (Date.now() - t0);
+  if (left > 0) await page.waitForFunction(() => { const c = document.querySelector('.vpage.on'); return !c || c.getAttribute('aria-busy') !== 'true'; }, null, { timeout: left, polling: 200 }).catch(() => {});
   const obs = await page.evaluate(() => {
     // the answer's card, else the thing the ask made or changed (it is picked), else the first thing: an older timer on the
     // stage is not the answer to "set a timer for 45 seconds" (#2326)
