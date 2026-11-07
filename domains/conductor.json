@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T01:20:37.264Z",
+ "updated": "2026-11-07T01:29:55.204Z",
  "last24h": {
-  "ticks": 84,
-  "started": 119,
+  "ticks": 85,
+  "started": 120,
   "requeued": 0,
   "setAside": 0,
   "probes": 14,
@@ -17,6 +17,10 @@
   },
   {
    "id": "mw4gkvdn",
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
+  },
+  {
+   "id": "want-exam-translate",
    "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
@@ -85,10 +89,6 @@
   },
   {
    "id": "mvpkt1u7",
-   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
-  },
-  {
-   "id": "mw1xyivk",
    "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   }
  ],
@@ -169,10 +169,11 @@
   "mw5oxcoo": 1794013309503,
   "mw5mm5fm": 1794013873577,
   "mw5oxdvx": 1794013873577,
-  "mw5oxf38": 1794014437264
+  "mw5oxf38": 1794014437264,
+  "mw5oxg6f": 1794014995204
  },
- "sweptAt": 1794011049377,
- "blueprintsAt": 1794011049377,
+ "sweptAt": 1794014995204,
+ "blueprintsAt": 1794014995204,
  "visitorAt": "2026-11-07T01:16:35Z",
  "visitorFiled": [
   "versus:randomarea.com",
@@ -2619,6 +2620,33 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 246,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T01:29:55.204Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "mw5oxg6f",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 246,
    "warnings": 1
