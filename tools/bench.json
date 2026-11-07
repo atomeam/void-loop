@@ -7132,5 +7132,8 @@
   {"ask": "handoff the system: support ticket router", "want": "skill:system-handoff"},
   {"ask": "systems monitor", "want": "skill:systems-monitor"},
   {"ask": "monitor board for client", "want": "skill:systems-monitor"},
-  {"ask": "status of my systems", "want": "skill:systems-monitor"}
+  {"ask": "status of my systems", "want": "skill:systems-monitor"},
+  {"ask": "verify pack for client onboarding", "want": "skill:verify-pack"},
+  {"ask": "set up tests for the invoice reminders", "want": "skill:verify-pack"},
+  {"ask": "what will Verse verify for the support router", "want": "skill:verify-pack"}
 ]
