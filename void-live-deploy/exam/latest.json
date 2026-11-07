@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T18:45:57.085Z",
+  "at": "2026-11-07T19:13:11.612Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,38 +34,16 @@
       }
     },
     "podcasts": {
-      "score": 92.1,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of science vs",
-          "failed": [
-            "fast"
-          ],
-          "score": 85.7
-        },
-        {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -132,17 +110,17 @@
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -257,33 +235,12 @@
       }
     },
     "sports": {
-      "score": 90.7,
+      "score": 93.5,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
           "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
@@ -342,26 +299,10 @@
       "fails": []
     },
     "translate": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "translate spring",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "comment dit-on bonjour en anglais",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        }
-      ]
+      "fails": []
     },
     "units": {
       "score": 93.3,
@@ -460,7 +401,7 @@
     }
   },
   "lowest": {
-    "domain": "translate",
+    "domain": "maps",
     "score": 89.2
   }
 }

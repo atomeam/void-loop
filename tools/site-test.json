@@ -333,6 +333,9 @@
     },
     {
       "ask": "geenrate a toon style dog"
+    },
+    {
+      "ask": "yo draw yourself"
     }
   ],
   "candidates": [],
