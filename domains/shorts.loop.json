@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "news"
+    "formats": "review"
   },
   "trials": [
     {
@@ -65,6 +65,10 @@
             "score": 100,
             "hookScore": 65,
             "failed": []
+          },
+          "outcome": {
+            "views": 2,
+            "clicks": 0
           }
         },
         {
@@ -80,6 +84,10 @@
             "score": 100,
             "hookScore": 80,
             "failed": []
+          },
+          "outcome": {
+            "views": 1,
+            "clicks": 0
           }
         },
         {
@@ -95,6 +103,10 @@
             "score": 100,
             "hookScore": 90,
             "failed": []
+          },
+          "outcome": {
+            "views": 1,
+            "clicks": 0
           }
         }
       ],
@@ -133,6 +145,67 @@
             "harm"
           ],
           "why": "about harm to people (Arrestan): not something to parody or make a trend film of"
+        }
+      ],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261107",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "athletic club - real madrid",
+          "name": "athletic club - real madrid",
+          "film": "20261107-news-athletic-club-real-madrid",
+          "hook": "Why is everyone talking about athletic club - real madrid?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 75,
+            "failed": []
+          }
+        },
+        {
+          "format": "trailer",
+          "label": "Movie-trailer parody",
+          "topic": "Ramayana: Part 1",
+          "name": "Ramayana: Part 1",
+          "film": "20261107-trailer-ramayana-part-1",
+          "hook": "What if Ramayana: Part 1 got a movie trailer?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 90,
+            "failed": []
+          }
+        },
+        {
+          "format": "explainer",
+          "label": "Explainer",
+          "topic": "bayern munich",
+          "name": "FC Bayern Munich",
+          "film": "20261107-explainer-fc-bayern-munich",
+          "hook": "What is FC Bayern Munich, and why now?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": ".xxx",
+          "kinds": [
+            "adult"
+          ],
+          "why": "adult content"
         }
       ],
       "verdict": "waiting"

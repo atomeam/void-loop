@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T13:40:52.244Z",
+ "updated": "2026-11-07T16:52:48.053Z",
  "last24h": {
-  "ticks": 138,
-  "started": 166,
+  "ticks": 148,
+  "started": 180,
   "requeued": 0,
   "setAside": 0,
-  "probes": 19,
+  "probes": 21,
   "errors": 0
  },
  "broken": [],
@@ -95,11 +95,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 32,
    "cap": 90
   },
   "day": {
-   "used": 61,
+   "used": 101,
    "cap": 360
   },
   "room": true,
@@ -108,7 +108,7 @@
  "handed": {
   "mvbl52gd": 1794053788130,
   "mva30i2e": 1794056039227,
-  "mva30j4u": 1794041988538,
+  "mva30j4u": 1794063924615,
   "mveb8rsi": 1794009927410,
   "mvu167w7": 1794032426543,
   "mveb8svc": 1794010489803,
@@ -117,12 +117,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw4ouzj0": 1793977008963,
-  "mw546kng": 1793979670513,
-  "mw546l9r": 1793980389220,
-  "mw546lyb": 1793981031354,
-  "mw546mkf": 1793981864391,
-  "mw56dws5": 1793982627551,
   "mw581zjx": 1793984986901,
   "mw5820j2": 1793985552081,
   "mw5821kh": 1793986114511,
@@ -198,393 +192,105 @@
   "mw6ecuj5": 1794056601412,
   "mw6ecvff": 1794057163962,
   "mw6ecw8s": 1794057726624,
-  "mw6ecx1n": 1794058293221
+  "mw6ecx1n": 1794058293221,
+  "mw6goyga": 1794059980321,
+  "mw6gozar": 1794060544722,
+  "mw6gp04c": 1794061109149,
+  "mw6gp0xs": 1794061673897,
+  "mw6j1y1p": 1794064487966,
+  "mw6j1z2b": 1794065050256,
+  "mw6j205o": 1794065617396,
+  "mw6j21ag": 1794066177286,
+  "mw6lebza": 1794067860613,
+  "mw6leckb": 1794068445175,
+  "mw6led6f": 1794069185480
  },
- "sweptAt": 1794058293221,
- "blueprintsAt": 1794058293221,
- "visitorAt": "2026-11-07T10:40:07Z",
+ "sweptAt": 1794069804763,
+ "blueprintsAt": 1794069804763,
+ "visitorAt": "2026-11-07T16:38:05Z",
  "visitorFiled": [
-  "review:2109",
-  "review:2112",
-  "review:2120",
-  "visit:what-time-is-it",
-  "review:2126",
-  "review:2128",
-  "review:2130",
-  "review:2125",
-  "review:2129",
-  "review:2131",
-  "review:2132",
-  "review:2148",
-  "review:2147",
-  "feature:want-revenue-2026-11",
-  "tv:agricultural-market-tracker",
-  "review:2216",
-  "versus:agechecker.net",
-  "review:2221",
-  "flake:suite-ran-to-the-end",
-  "flake:tower-the-target-tower-target-json",
-  "flake:empty-state-over-a-pure-white-back",
-  "flake:the-owner-s-status-card-opens-by-i",
-  "review:2223",
-  "flake:defences-every-api-route-has-an-ex",
-  "flake:suite-budget-the-whole-suite-ran-p",
-  "versus:bestfonts.pro",
-  "versus:speedtest.sg",
-  "versus:speedtest.com.sg",
-  "versus:jsonline.com",
-  "review:2247",
-  "review:2248",
-  "versus:coreldrawdesign.com",
-  "versus:coloradoan.com",
-  "versus:uphex.com",
-  "versus:timer365.com",
-  "versus:loanwisecalculatoreasy.com",
-  "versus:drawio.com",
-  "visit:convert-5-miles-to-kilometers",
-  "bot:check-country-ag",
-  "bot:country-ag",
-  "bot:check-country-gq",
-  "bot:country-gq",
-  "review:2303",
-  "review:2304",
-  "review:2305",
-  "review:2319",
-  "versus:colorscheme.ru:speed",
-  "versus:colorscheme.ru:journey: do the ma",
-  "versus:colorscheme.ru:journey: share the",
-  "versus:sipcalculator.in",
-  "versus:colordrop.io",
-  "versus:colourlab.ai",
-  "gap:want-exam-maps",
-  "review:2325",
-  "review:2327",
-  "review:2352",
-  "review:2346",
-  "visit:flip-a-coin",
-  "review:2361",
-  "review:2380",
-  "review:2379",
-  "review:2320",
-  "review:2381",
-  "review:2393",
-  "review:2413",
-  "versus:mega.co.nz",
-  "versus:example.com",
-  "versus:uisp.com",
-  "versus:samsunghealth.com",
-  "review:2435",
-  "versus:bttrack.com",
-  "versus:dalyfeds.com",
-  "tv:healthy-snack-alternatives",
-  "tv:irish-pub-locator",
-  "miss:film-metadata",
-  "will:overhaul-site-search-persona-playtest-be",
-  "versus:juicychat.ai",
-  "versus:oneyeard.com",
-  "probe:what-s-my-current-state",
-  "probe:can-i-use-this-for-web4"
+  "versus:syncsketch.dev",
+  "versus:hexen.ai",
+  "versus:fakemailgenerator.com",
+  "versus:opentimestamps.org",
+  "versus:sketch.io",
+  "versus:gmgcolor.com",
+  "flake:will-one-set-aside-job-does-not-st",
+  "versus:koanruler.com",
+  "versus:speedchecker.com",
+  "versus:drawnames.com",
+  "versus:illicitencounters.com",
+  "versus:speedcheckerapi.com",
+  "versus:fasterwheeler.com",
+  "feature:heycolor-com-a5daa3cb",
+  "feature:heycolor-com-d11a6f08",
+  "feature:convertunits-com-491b824a",
+  "gap:se-358423",
+  "visit:what-can-you-do",
+  "visit:capital-of-france",
+  "review:2105",
+  "review:2114",
+  "review:2116",
+  "versus:want-tower-assistant",
+  "review:2139",
+  "tv:relationship-devotion-tool",
+  "review:2162",
+  "review:2163",
+  "review:2164",
+  "review:2165",
+  "review:2169",
+  "review:2178",
+  "review:2185",
+  "versus:unitingchurch.org.au",
+  "versus:hexler.net",
+  "versus:deadlinkchecker.com",
+  "versus:testandcalc.com",
+  "versus:portchecker.co",
+  "versus:custompricecalculator.com",
+  "visit:convert-100-usd-to-eur",
+  "review:2245",
+  "review:2313",
+  "review:2336",
+  "heal:helper-helper-pr-live-79be",
+  "review:2367",
+  "review:2368",
+  "review:2369",
+  "review:2371",
+  "review:2358",
+  "review:2359",
+  "review:2372",
+  "review:2374",
+  "review:2373",
+  "review:2376",
+  "review:2375",
+  "versus:want-tower-social",
+  "feature:isitchristmas-com-e13cdb96",
+  "feature:random-org-7201fd3d",
+  "feature:random-org-e1ac6f7a",
+  "heal:suite-9f52702",
+  "review:2441",
+  "tv:hvac-remote-management",
+  "tv:art-provenance-tracker",
+  "gap:want-exam-translate",
+  "review:2482",
+  "feature:random-org-ea756452",
+  "feature:random-org-9f6f952d",
+  "feature:random-org-ccb2ecd2",
+  "versus:everycom.store",
+  "versus:adnext.mobi",
+  "versus:protopage.com",
+  "versus:tinyurl.com",
+  "versus:want-tower-password",
+  "review:2504",
+  "feature:team-1626",
+  "probe:audit-these-fixes",
+  "versus:share.google",
+  "versus:g.co",
+  "versus:amazon.co.uk",
+  "versus:amazon.de",
+  "versus:live-video.net"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T14:42:35.394Z",
-   "open": 238,
-   "started": [
-    {
-     "id": "mw4gkvdn",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 76
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T14:56:48.963Z",
-   "open": 238,
-   "started": [
-    {
-     "id": "mw4p9cye",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 76
-    },
-    {
-     "id": "mw4ouzj0",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 41
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T15:11:58.247Z",
-   "open": 237,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T15:41:10.513Z",
-   "open": 242,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    },
-    {
-     "id": "mw546kng",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [
-    "verse-podcast.yml",
-    "shorts.yml"
-   ],
-   "sweep": true,
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T15:53:09.220Z",
-   "open": 242,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    },
-    {
-     "id": "mw546l9r",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T16:03:51.354Z",
-   "open": 241,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    },
-    {
-     "id": "mw546lyb",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T16:17:44.391Z",
-   "open": 242,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    },
-    {
-     "id": "mw546mkf",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "held": 12,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T16:30:27.551Z",
-   "open": 241,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    },
-    {
-     "id": "mw56dws5",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T16:41:40.297Z",
-   "open": 240,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "held": 14,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T16:50:58.438Z",
-   "open": 240,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "held": 14,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T17:00:25.859Z",
    "open": 240,
@@ -4112,6 +3818,613 @@
    "started": [
     {
      "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T13:50:11.565Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T13:59:40.321Z",
+   "open": 261,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6goyga",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T14:09:04.722Z",
+   "open": 260,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6gozar",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T14:18:29.149Z",
+   "open": 259,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6gp04c",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T14:27:53.897Z",
+   "open": 259,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6gp0xs",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T14:37:15.735Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T14:46:42.033Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T14:56:03.529Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:05:24.615Z",
+   "open": 262,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "shorts.yml"
+   ],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:14:47.966Z",
+   "open": 262,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6j1y1p",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:24:10.256Z",
+   "open": 261,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6j1z2b",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:33:37.396Z",
+   "open": 260,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6j205o",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:42:57.286Z",
+   "open": 259,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6j21ag",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:52:21.219Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:01:40.463Z",
+   "open": 259,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:11:00.613Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6lebza",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:20:45.175Z",
+   "open": 262,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6leckb",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:33:05.480Z",
+   "open": 261,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6led6f",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:43:24.763Z",
+   "open": 265,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:52:48.053Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
      "kind": "tv",
      "wf": "verse-job.yml",
      "score": 89

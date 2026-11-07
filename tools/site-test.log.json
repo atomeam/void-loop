@@ -1,58 +1,5 @@
 [
  {
-  "at": "2026-10-15T22:07:53Z",
-  "passed": 0,
-  "of": 21,
-  "kind": "file",
-  "key": "hide the sky | nothing appeared",
-  "note": "fix: \"hide the sky\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-15T22:49:16Z",
-  "passed": 0,
-  "of": 21,
-  "kind": "file",
-  "key": "play chess | nothing appeared",
-  "note": "fix: \"play chess\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-15T23:20:00Z",
-  "passed": 0,
-  "of": 21,
-  "kind": "grow",
-  "note": "grew the suite: \"play connect four\""
- },
- {
-  "at": "2026-10-16T01:42:30Z",
-  "passed": 0,
-  "of": 22,
-  "kind": "file",
-  "key": "download the print file | nothing appeared",
-  "note": "fix: \"download the print file\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-16T03:10:24Z",
-  "passed": 0,
-  "of": 22,
-  "kind": "file",
-  "key": "quiz me on this | nothing appeared",
-  "note": "fix: \"quiz me on this\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-16T03:25:28Z",
-  "passed": 0,
-  "of": 22,
-  "kind": "grow",
-  "note": "grew the suite: \"set a timer for 5 minutes\""
- },
- {
-  "at": "2026-10-16T03:41:58Z",
-  "passed": 0,
-  "of": 23,
-  "kind": "grow",
-  "note": "grew the suite: \"what is 17 times 23\""
- },
- {
   "at": "2026-10-16T04:06:43Z",
   "passed": 0,
   "of": 24,
@@ -5213,5 +5160,211 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T16:28:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1116,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 11462 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T16:38:05Z",
+  "passed": 97,
+  "of": 99,
+  "ms": 451,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1116,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 11462 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"style like mickey mouse pls\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T16:50:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1453,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T17:00:10Z",
+  "passed": 97,
+  "of": 100,
+  "ms": 350,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "favorite this",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "versus",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1453,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "refused"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"stlye like mickey mouse\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T17:16:43Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1544,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9952 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T17:44:50Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1496,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8353 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T17:57:22Z",
+  "passed": 90,
+  "of": 101,
+  "ms": 396,
+  "kind": "file",
+  "key": "yo find me a sci-fi film from the 80s | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "put on lofi hip hop pls",
+    "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+   },
+   {
+    "ask": "longevity trial watch",
+    "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+   },
+   {
+    "ask": "yo find me a sci-fi film from the 80s",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "funny cartoon dog pls",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "triangulate: should I open source Verse",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1496,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8353 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"yo find me a sci-fi film from the 80s\" nothing appeared; console: tester: page.waitForSelector: Timeout 15000ms exceeded."
  }
 ]
