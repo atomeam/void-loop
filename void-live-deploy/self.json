@@ -282,6 +282,12 @@
    "date": "2026-11-06",
    "ask": "monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not…",
    "from": "new idea by growth agent; helper/monitor-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "verify-pack skill: propose the tests, checks and verification Verse will own for a process so the client does not do…",
+   "from": "new idea by growth agent; helper/verify-pack"
   }
  ],
  "open": [
@@ -594,88 +600,92 @@
  },
  "commits": [
   {
-   "at": "2026-11-07T14:16:59Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+   "at": "2026-11-07T18:15:52Z",
+   "subject": "growth: a touched branch keeps its reading through a bloom and a late ask"
   },
   {
-   "at": "2026-11-07T14:02:07Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-07T18:12:20Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T13:47:13Z",
-   "subject": "Tower gate: every floor measured against its live site (3 slices)"
+   "at": "2026-11-07T18:08:59Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T13:46:40Z",
-   "subject": "Tower size: how heavy each Versus site really is"
+   "at": "2026-11-07T18:04:59Z",
+   "subject": "Failed jobs read: run 42397454152 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T13:43:29Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+   "at": "2026-11-07T18:03:37Z",
+   "subject": "Incident: the browser suite failed on 1273413c (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-07T13:41:13Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-07T17:58:38Z",
+   "subject": "Site test: fix: \"yo find me a sci-fi film from the 80s\" nothing appeare"
   },
   {
-   "at": "2026-11-07T13:36:37Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-11-07T17:55:32Z",
+   "subject": "Better at heavy lift map, lab, speed tests and 3 more: 18 more ways of asking answered right — new phrases: “map the heavy lifting for…"
   },
   {
-   "at": "2026-11-07T13:36:11Z",
-   "subject": "Site history: the next sites of the queue, each with a cited history"
+   "at": "2026-11-07T17:51:56Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-07T13:36:02Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-11-07T17:49:47Z",
+   "subject": "Fix the void seal check's flake: read the settled skill card, not the mid-rebuild one (#2507)"
   },
   {
-   "at": "2026-11-07T13:35:09Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-11-07T17:49:19Z",
+   "subject": "treasury: found money and the weekly review"
   },
   {
-   "at": "2026-11-07T13:31:54Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+   "at": "2026-11-07T17:48:51Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T13:29:17Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+   "at": "2026-11-07T17:48:45Z",
+   "subject": "Outcome exam: translate 89.2"
   },
   {
-   "at": "2026-11-07T13:21:07Z",
-   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
+   "at": "2026-11-07T17:40:34Z",
+   "subject": "Board: claude/project-thread-xv0wrv shipped (https://github.com/atomeam/void-loop/pull/2488)"
   },
   {
-   "at": "2026-11-07T13:05:12Z",
-   "subject": "Verse Out Loud: today's episode, read from the day's record"
+   "at": "2026-11-07T17:40:18Z",
+   "subject": "Unbidden: turn Gemma's thinking off and accept a reply that comes back parsed (#2488)"
   },
   {
-   "at": "2026-11-07T12:00:50Z",
-   "subject": "Subject eval: 53 of 54 live"
-  },
-  {
-   "at": "2026-11-07T11:55:16Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
-  },
-  {
-   "at": "2026-11-07T11:44:59Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
-  },
-  {
-   "at": "2026-11-07T11:14:41Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-07T11:11:48Z",
-   "subject": "Finding: image-gen checked against the live site (findings/image-gen)"
-  },
-  {
-   "at": "2026-11-07T10:55:38Z",
+   "at": "2026-11-07T17:32:14Z",
    "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-07T17:27:05Z",
+   "subject": "Failed jobs read: run 42395190404 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T17:26:45Z",
+   "subject": "Incident: the browser suite failed on 70e346b1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-07T17:23:09Z",
+   "subject": "Outcome exam: translate 89.2"
+  },
+  {
+   "at": "2026-11-07T17:19:00Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-07T17:12:49Z",
+   "subject": "Mark verify-pack shipped with main SHA 88d65a6 (#2498)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
+   },
    {
     "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
@@ -695,10 +705,6 @@
    {
     "name": "Phone panel and tray drag (cursor, 2026-11-05)",
     "line": "a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands.…"
-   },
-   {
-    "name": "Timers and emoji exam (cursor, 2026-11-05)",
-    "line": "a timer card keeps the length it was set for (1:30 and 90 stay while it ticks), \"timer for 5\" asks minutes or seconds, the hourglass fits a 320px card, heart / feu / thank you answer with an emoji, and a red circle fills red.…"
    }
   ],
   "ladders": [
@@ -853,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 4,
-  "week": 219
+  "day": 9,
+  "week": 224
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

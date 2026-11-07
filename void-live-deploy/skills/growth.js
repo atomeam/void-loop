@@ -389,7 +389,7 @@ function plantTree(el, api, list, { from } = {}) {
   const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what Verse still wants. Touch any of it to read it.';
   said.textContent = hint;
   el.append(slot, when, said);
-  let selected = null, self = null, wants = null, asked = null; // asked: what Verse asked for, by the entry that built it
+  let selected = null, shownEntry = null, self = null, wants = null, asked = null; // asked: what Verse asked for, by the entry that built it; shownEntry: the entry the readout shows
   const at = () => stops[+range.value] || null, today = () => +range.value >= stops.length - 1;
   const showDay = () => { const s = at(); day.textContent = s ? (today() ? 'today, ' : +range.value === 0 ? 'the first change, ' : '') + s.day + ' · ' + s.count + (s.count === 1 ? ' change' : ' changes') : ''; };
   // what is not grown yet shows only today: the think tank's open tracks (faint) and the claim being built (glowing)
@@ -398,25 +398,33 @@ function plantTree(el, api, list, { from } = {}) {
   const mount = () => (queue = (queue || Promise.resolve()).catch(() => {}).then(() => stage.miniature(slot, 'growthtree', { entries: list, until: today() ? null : at() && at().until, tracks: today() && self ? self.tracks : null, building: today() && self ? self.building : null,
     wants: today() ? wants : null, commits: today() && self ? self.commits : null, selected, onPick, onPickGhost, onPickCommit },
     { key: TREE_KEY, place: 'inside', label: 'Verse’s growth as a tree: one branch per change; touch a branch to read it' })));
+  // the readout says the same entry again once what Verse asked for lands, however late it arrives
+  function renderShown() {
+    if (!shownEntry) return;
+    said.style.color = ''; said.innerHTML = entryHtml(api.esc, shownEntry, causeOf(shownEntry, asked));
+  }
   function onPick(index) {
     const e = list[index]; if (!e) return;
-    selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e, causeOf(e, asked));
+    selected = index; shownEntry = e; renderShown();
     mount().then(() => pulse(said)).catch(() => {});
   }
   function onPickGhost(g) {
+    shownEntry = null;
     said.style.color = '';
     said.textContent = g.kind === 'building' ? 'Building now: ' + (g.item ? g.item + ' (' + g.what + ')' : g.what)
       : g.kind === 'want' ? 'A bud, wanted and not grown yet: ' + g.what
       : 'Not grown yet: ' + g.what + ', a track the think tank is working on' + (g.at ? ' (last advanced ' + g.at + ')' : '') + '.';
   }
   function onPickCommit(c) {
+    shownEntry = null;
     said.style.color = ''; said.textContent = 'A new leaf, from the last commits on main (' + String(c.at || '').slice(0, 10) + '): ' + c.subject;
   }
   el.addEventListener('void:grew', () => { // a day's new skill (bloom): the newest grow branch is read, so the tree shows what came in
+    if (selected != null) return; // never take the branch a reader already touched: the bloom is for the card, not over their reading
     let k = -1; list.forEach((e, i) => { if (e && e.kind === 'grow' && (k < 0 || Date.parse(e.at) >= Date.parse(list[k].at))) k = i; });
     if (k >= 0 && today()) onPick(k);
   });
-  range.addEventListener('input', () => { showDay(); selected = null; said.style.color = '#8a8a92'; said.textContent = hint; mount().catch(() => {}); });
+  range.addEventListener('input', () => { showDay(); selected = null; shownEntry = null; said.style.color = '#8a8a92'; said.textContent = hint; mount().catch(() => {}); });
   range.addEventListener('pointerdown', (e) => e.stopPropagation()); // dragging the slider is not dragging the card
   showDay();
   mount().then(() => { // asked about the week: once the tree stands as it was a week ago, grow it to today (at once under reduced motion)
@@ -429,6 +437,7 @@ function plantTree(el, api, list, { from } = {}) {
   const json = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   Promise.all([json('/api/will'), json('/api/reflect')]).then(([will, voice]) => {
     asked = (voice && voice.follow && voice.follow.asked) || null;
+    if (shownEntry) renderShown(); // the branch was read before this answer: fill in what Verse asked for now
     const seen = new Set(), out = [];
     for (const t of [...((will && will.wants) || []).map((w) => w && (w.i_want || w.title)), ...((voice && voice.asks) || []).map((a) => a && a.ask)]) {
       const k = String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); if (!k || seen.has(k)) continue; seen.add(k); out.push(String(t).trim());
