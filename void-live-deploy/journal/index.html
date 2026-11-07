@@ -383,6 +383,8 @@
       const box = $(id); box.replaceChildren();
       if (!list.length) { box.append(el('p', { className: 'empty', textContent: empty || 'Nothing here.' })); return; }
       for (const a of list) box.append(paperCard(a));
+      // the papers are here now, so the hand-off has something to carry (lib/toolkit.js listens for tk:card)
+      try { document.dispatchEvent(new Event('tk:card')); } catch (_) {}
     };
 
     // ---- the reading list: on this device, never sent
