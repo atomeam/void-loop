@@ -15,6 +15,10 @@ test('a drive split uses the calculator for the money and the converter for the 
   assert.equal(shareOf('5 miles in km'), null);
   assert.equal(shareOf('what is 36 / 3'), null);
   assert.equal(shareOf('split 120 between 4 people'), null);
+  const two = shareOf('split a 12 mile drive costing 18 dollars between 2 people');
+  assert.equal(two.people, 2);
+  assert.match(answerOf(two), /\$9 each/);
+  assert.equal(skill.match(two.raw.toLowerCase(), two.raw), true);
   assert.equal(shareOf('unit converter'), null);
   assert.equal(tipOf('split a 90 mile drive costing 36 dollars between 3 people'), null, 'a drive is not a bill split');
   assert.ok(tipOf('split 120 between 4 people'), 'a bill split stays with the tip skill');

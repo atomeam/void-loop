@@ -7,6 +7,8 @@ test('a word problem shows the worked number, and a bare leftover ask says which
   assert.equal(sumOf('a train travels 120 km in 2 hours what is its speed').value, 60);
   assert.equal(sumOf('I have 8 and spend half then find 3 how many do I have').value, 7);
   assert.equal(sumOf('si 4 lápices cuestan 6 cuánto cuestan 10').value, 15);
+  assert.equal(sumOf('400 + 562 + 129').value, 1091);
+  assert.equal(sums.match('400 + 562 + 129', '400 + 562 + 129'), true);
   assert.equal(sumOf('how much is left').kind, 'which');
   assert.equal(sumOf('what is 15% of 80'), null);
   for (const e of sums.examples) assert.ok(sums.match(e.toLowerCase(), e), e);

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1204,
+ "counted": 1206,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -32,9 +32,9 @@
   },
   {
    "file": "lib/load-later.js",
-   "skills": 28,
+   "skills": 29,
    "direct": 23,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
@@ -172,9 +172,9 @@
   },
   {
    "file": "lib/sky-math.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 2,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -385,7 +385,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 14,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/art-source.js",
@@ -1890,7 +1890,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/video-gen.js",
@@ -9871,6 +9871,7 @@
     "skills/games.js",
     "skills/rebuild-map.js",
     "skills/sky-card.js",
+    "skills/skycard.js",
     "skills/time.js",
     "skills/where-is.js"
    ]
@@ -13260,6 +13261,7 @@
     "skills/sky-card.js",
     "skills/sky-world.js",
     "skills/sky.js",
+    "skills/skycard.js",
     "skills/suntimes.js",
     "skills/time.js",
     "skills/where-is.js"
@@ -18009,6 +18011,7 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -18873,6 +18876,7 @@
     "skills/sky-card.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -18882,6 +18886,7 @@
     "skills/night-sky.js"
    ],
    "importedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -18924,6 +18929,12 @@
     "skills/together.js",
     "skills/zoom-figure.js"
    ]
+  },
+  "skills/skycard.js": {
+   "imports": [
+    "skills/sky-card.js"
+   ],
+   "importedBy": []
   },
   "skills/sleep.js": {
    "imports": [],
@@ -19638,6 +19649,10 @@
     "skills/mind-field-mode.js",
     "skills/mind-field.js"
    ]
+  },
+  "skills/verify-pack.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/verse-brain.js": {
    "imports": [
