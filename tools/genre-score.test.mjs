@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { GENRES, OUT, licenseOk, searchUrl, pickFile, creditOf, decode, profileOf, RATE } from './genre-refs.mjs';
+import { GENRES, OUT, licenseOk, searchUrl, pickFile, creditOf, decode, profileOf, RATE, creatorKey, cleanRefs } from './genre-refs.mjs';
 import { refKey, scoreOf, scoreLine, loadRefs, REFS_URL } from '../void-live-deploy/lib/genre-score.js';
 import { averageOf, METRICS } from '../void-live-deploy/lib/rap-ears.js';
 import { arrange } from '../void-live-deploy/lib/arrange.js';
@@ -25,6 +25,7 @@ test('only Creative Commons licences without NonCommercial get in', () => {
 test('the search asks the netlabels for Creative Commons audio with the genre tags, most downloaded first', () => {
   const u = new URL(searchUrl(GENRES[0])), q = u.searchParams.get('q');
   assert.equal(u.origin, 'https://archive.org'); assert.match(q, /collection:netlabels/); assert.match(q, /licenseurl:\*creativecommons\*/); assert.match(q, /subject:"heavy metal"/);
+  assert.match(q, /AND NOT licenseurl:\*by-nc\*/, 'NonCommercial releases are left out of the search itself');
   assert.deepEqual(u.searchParams.getAll('sort[]'), ['downloads desc']); assert.ok(u.searchParams.getAll('fl[]').includes('licenseurl'));
   assert.deepEqual(new Set(GENRES.map((g) => g.id)), new Set(['heavy', 'beat', 'happy', 'rainy', 'dark', 'epic', 'lullaby']), 'every kind of song Verse writes has a genre');
 });
@@ -46,6 +47,23 @@ test('a click track made here, encoded and decoded by ffmpeg, is measured at its
   if (enc.status !== 0) { fs.rmSync(dir, { recursive: true, force: true }); return; } // an ffmpeg with no MP3 encoder: nothing to decode
   const p = profileOf(decode(mp3)); fs.rmSync(dir, { recursive: true, force: true });
   assert.ok(p && Math.abs(p.bpm - 96) <= 1.5, 'heard ' + (p && p.bpm) + ' BPM for 96');
+});
+
+test('a track is a reference for one genre only, a genre holds one track a creator, and the averages are taken again', () => {
+  const t = (id, creator, bpm) => ({ id, creator, profile: { seconds: 60, bpm, lufs: -10 } });
+  const refs = { made: 'x', genres: {
+    lullaby: { label: 'l', tracks: [t('mt008', 'Doc & Lena', 88), t('mt021', 'doc  &  lena', 100), t('vigil', 'Phil', 80)] },
+    heavy: { label: 'h', tracks: [t('gt390', 'Marsh Goblins', 64), t('m1', 'Maelstrom', 106), t('m2', ' MAELSTROM', 140)] },
+    beat: { label: 'b', tracks: [t('gt390', 'Marsh Goblins', 64)] },
+    epic: { label: 'e', tracks: [t('mt008', 'Doc & Lena', 88), t('a', 'unknown', 90), t('b', 'Unknown', 92)] } } };
+  const c = cleanRefs(refs);
+  assert.deepEqual(c.genres.heavy.tracks.map((x) => x.id), ['gt390', 'm1'], 'heavy comes first in GENRES, so it keeps the shared item; Maelstrom counts once');
+  assert.equal(c.genres.beat, undefined, 'a genre left with no track is dropped, never kept empty');
+  assert.deepEqual(c.genres.epic.tracks.map((x) => x.id), ['mt008', 'a', 'b'], 'epic comes before lullaby; two unnamed creators are not the same creator');
+  assert.deepEqual(c.genres.lullaby.tracks.map((x) => x.id), ['mt021', 'vigil'], 'the shared item went to epic; the creator rule is for each genre, so their other track stays');
+  assert.equal(c.genres.heavy.average.bpm, 85, 'the average is the average of the tracks that stay');
+  assert.equal(c.made, 'x'); assert.equal(refs.genres.beat.tracks.length, 1, 'the input is not changed');
+  assert.equal(creatorKey(' Doc  &  Lena '), 'doc & lena'); assert.equal(creatorKey('Various Artists'), '');
 });
 
 const REFS = { genres: { heavy: { label: 'metal and hard rock', tracks: [{ id: 'a' }, { id: 'b' }],
@@ -86,7 +104,11 @@ test('the reference file, once made, holds only real credited tracks whose avera
       assert.ok(licenseOk(t.license), id + ': ' + t.id + ' licence ' + t.license); assert.equal(t.page, 'https://archive.org/details/' + t.id);
       assert.ok(t.title && t.creator && t.file, id + ': ' + t.id + ' is credited'); assert.ok(t.profile && t.profile.seconds >= 4, id + ': ' + t.id + ' was measured');
     }
+    const who = g.tracks.map((t) => creatorKey(t.creator)).filter(Boolean);
+    assert.equal(new Set(who).size, who.length, id + ' holds one track a creator');
     const avg = averageOf(g.tracks.map((t) => t.profile));
     for (const m of METRICS) { const k = m.key.split('.'), a = k.reduce((o, x) => o && o[x], g.average), b = k.reduce((o, x) => o && o[x], avg); assert.equal(a, b, id + ' ' + m.key); }
   }
+  const items = Object.values(refs.genres).flatMap((g) => g.tracks.map((t) => t.id));
+  assert.equal(new Set(items).size, items.length, 'each item is a reference for one genre only');
 });
