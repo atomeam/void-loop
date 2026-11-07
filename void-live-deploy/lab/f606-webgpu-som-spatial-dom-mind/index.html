@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --err: 0; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; top:8px; left:8px; z-index:1000; background:rgba(0,0,20,0.7); padding:8px 12px; border-radius:8px; font-size:13px; }
+#status { position:fixed; bottom:8px; left:8px; z-index:1000; font-size:12px; opacity:0.8; }
+#cards { position:absolute; inset:0; }
+.card {
+  position:absolute; width:48px; height:48px; border-radius:8px;
+  background:hsl(var(--h),70%,50%); opacity:0.85; cursor:grab;
+  display:flex; align-items:center; justify-content:center; font-size:10px;
+  transition:transform 0.1s; box-shadow:0 2px 8px #0008;
+  user-select:none;
+}
+.card:active { cursor:grabbing; }
+canvas#heat { position:absolute; inset:0; pointer-events:none; opacity:0.35; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Self-Organizing Map Spatial DOM Mind · Verse lab</title>
+<meta name="description" content="A previously unused unsupervised local-AI substrate: the Kohonen Self-Organizing Map (SOM).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Self-Organizing Map Spatial DOM Mind · Verse lab">
+<meta property="og:description" content="A previously unused unsupervised local-AI substrate: the Kohonen Self-Organizing Map (SOM).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f606-webgpu-som-spatial-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f606-webgpu-som-spatial-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  F606 SOM Spatial DOM Mind — tilt / move pointer | drag cards | S seal
+  <button id="seal">Seal Genome</button>
+  <button id="reward">Reward</button>
+</div>
+<div id="status">init</div>
+<div id="cards"></div>
+<canvas id="heat"></canvas>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Self-Organizing Map Spatial DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/photo-palette/" data-tool="Photo palette">Use it: Photo palette</a></footer><script src="/lab/use-it.js" defer></script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#cards > div:nth-of-type(1) { color:#36363d }
+#cards > div:nth-of-type(2) { color:#313138 }
+#cards > div:nth-of-type(3) { color:#4c4c57 }
+#cards > div:nth-of-type(4) { color:#3a3a42 }
+#cards > div:nth-of-type(5) { color:#36363d }
+#cards > div:nth-of-type(6) { color:#3a3a42 }
+#cards > div:nth-of-type(7) { color:#4c4c57 }
+#cards > div:nth-of-type(8) { color:#3a3a42 }
+#cards > div:nth-of-type(9) { color:#36363d }
+#cards > div:nth-of-type(10) { color:#3f3f47 }
+#cards > div:nth-of-type(11) { color:#121214 }
+#cards > div:nth-of-type(12) { color:#3f3f47 }
+#cards > div:nth-of-type(13) { color:#36363d }
+#cards > div:nth-of-type(14) { color:#3f3f47 }
+#cards > div:nth-of-type(15) { color:#1b1b1f }
+#cards > div:nth-of-type(16) { color:#43434c }
+#cards > div:nth-of-type(17) { color:#43434c }
+#cards > div:nth-of-type(18) { color:#4c4c57 }
+#cards > div:nth-of-type(19) { color:#484852 }
+#cards > div:nth-of-type(20) { color:#242429 }
+#cards > div:nth-of-type(21) { color:#313138 }
+#cards > div:nth-of-type(22) { color:#28282e }
+#cards > div:nth-of-type(23) { color:#51515c }
+#cards > div:nth-of-type(24) { color:#4c4c57 }
+#cards > div:nth-of-type(25) { color:#4c4c57 }
+#cards > div:nth-of-type(27) { color:#f4f4ff }
+#cards > div:nth-of-type(28) { color:#4c4c57 }
+#cards > div:nth-of-type(29) { color:#36363d }
+#cards > div:nth-of-type(31) { color:#4c4c57 }
+#cards > div:nth-of-type(32) { color:#484852 }
+#cards > div:nth-of-type(33) { color:#313138 }
+#cards > div:nth-of-type(34) { color:#4c4c57 }
+#cards > div:nth-of-type(37) { color:#242429 }
+#cards > div:nth-of-type(38) { color:#43434c }
+#cards > div:nth-of-type(40) { color:#4c4c57 }
+#cards > div:nth-of-type(41) { color:#3a3a42 }
+#cards > div:nth-of-type(42) { color:#36363d }
+#cards > div:nth-of-type(44) { color:#040405 }
+#cards > div:nth-of-type(45) { color:#36363d }
+#cards > div:nth-of-type(46) { color:#36363d }
+#cards > div:nth-of-type(47) { color:#484852 }
+#cards > div:nth-of-type(48) { color:#4c4c57 }
+#cards > div:nth-of-type(49) { color:#313138 }
+#cards > div:nth-of-type(50) { color:#313138 }
+#cards > div:nth-of-type(51) { color:#0d0d0f }
+#cards > div:nth-of-type(52) { color:#3a3a42 }
+#cards > div:nth-of-type(53) { color:#36363d }
+#cards > div:nth-of-type(54) { color:#3a3a42 }
+#cards > div:nth-of-type(55) { color:#161619 }
+#cards > div:nth-of-type(56) { color:#3f3f47 }
+#cards > div:nth-of-type(57) { color:#36363d }
+#cards > div:nth-of-type(58) { color:#3a3a42 }
+#cards > div:nth-of-type(59) { color:#4c4c57 }
+#cards > div:nth-of-type(60) { color:#28282e }
+#cards > div:nth-of-type(61) { color:#36363d }
+#cards > div:nth-of-type(62) { color:#3a3a42 }
+#cards > div:nth-of-type(64) { color:#36363d }
+#seal { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+#reward { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+.vl-note button { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+/* end verse design loop */
+</style>
+</body>
+</html>

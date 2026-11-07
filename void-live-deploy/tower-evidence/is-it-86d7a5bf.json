@@ -1,0 +1,102 @@
+{
+ "id": "is it",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 108,
+   "best": 153,
+   "evidence": "Verse (/is-it/christmas) 108 ms to the load event (median of 3, phone width) vs isitchristmas.com 153 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/is-it/christmas) 0 px sideways overflow at 390 px vs isitchristmas.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/is-it/christmas) 0 unnamed controls or images vs isitchristmas.com 0 unnamed controls or images",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/is-it/christmas) 3 of 3 loads answered vs isitchristmas.com 3 of 3 loads answered",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/is-it/christmas) 1 (1: the page shows itself again with the network cut) vs isitchristmas.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 2,
+   "evidence": "Verse (/is-it/christmas) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs isitchristmas.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "local language": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/is-it/christmas) 1 (1: a German browser gets German) vs isitchristmas.com 0 (1: a German browser gets German)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "big answer": {
+   "verdict": "better",
+   "verse": 205,
+   "best": 160,
+   "evidence": "Verse (/is-it/christmas) 205 px, the largest text on the first screen vs isitchristmas.com 160 px, the largest text on the first screen",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/is-it/christmas) 1 of 1 right against the worked-out answer; judged against the standard, not isitchristmas.com (the site is not asked)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "of": 1
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 1,
+   "evidence": "Verse (/is-it/christmas) 4 of 10 things a full answer shows vs isitchristmas.com 1 of 10 things a full answer shows (Verse lacks: Answer in the visitor's language, Works with JavaScript off, Live crowd of visitors' flags, Turn your own flag, Country legend on hover, RSS feed; site lacks: which day it is about, how long until it, the date itself, Answer in the visitor's language, Works with JavaScript off, Live crowd of visitors' flags, Turn your own flag, Country legend on hover, RSS feed)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "of": 10,
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 3,
+   "evidence": "Verse (/is-it/christmas) 0 design defects vs isitchristmas.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), isitchristmas.com (0 low-contrast texts, 3 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 8.5,
+   "best": 5.5,
+   "evidence": "Verse (/is-it/christmas) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs isitchristmas.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T19:57:22.640Z",
+   "siteRead": true
+  }
+ }
+}

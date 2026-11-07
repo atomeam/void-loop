@@ -258,6 +258,41 @@
     "host": "random.org",
     "at": "2026-10-27",
     "id": "mvqun67s"
+   },
+   {
+    "target": "feature:random-org-7201fd3d",
+    "feature": "Keno / bingo cards",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw4noftp"
+   },
+   {
+    "target": "feature:random-org-e1ac6f7a",
+    "feature": "Geographic coordinates",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw4nogcv"
+   },
+   {
+    "target": "feature:random-org-ea756452",
+    "feature": "Bitmaps and audio noise",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw5fbx8a"
+   },
+   {
+    "target": "feature:random-org-9f6f952d",
+    "feature": "Web widgets",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw5fbxox"
+   },
+   {
+    "target": "feature:random-org-ccb2ecd2",
+    "feature": "Statistics on the generator",
+    "host": "random.org",
+    "at": "2026-11-06",
+    "id": "mw5fby4l"
    }
   ]
  }

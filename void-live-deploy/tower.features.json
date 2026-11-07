@@ -1,6 +1,16 @@
 {
  "about": "Whole-site crawls of the Versus sites (tools/site-crawl.mjs): pages read, page templates, distinct features, and the ones Verse lacks. Generated; do not edit.",
  "sites": {
+  "dalyfeds.com": {
+   "floor": "dalyfeds.com",
+   "pages": 1,
+   "templates": 1,
+   "features": 1,
+   "verse_pages": 0,
+   "verse_features": 1,
+   "missing": [],
+   "crawled": "2026-11-06"
+  },
   "emojigraph.org": {
    "floor": "emoji combos: emojigraph.org",
    "pages": 57,
@@ -17,6 +27,18 @@
     "A page: 🕹️ Concentration Emoji Game"
    ],
    "crawled": "2026-11-04"
+  },
+  "oneyeard.com": {
+   "floor": "oneyeard.com",
+   "pages": 1,
+   "templates": 1,
+   "features": 1,
+   "verse_pages": 0,
+   "verse_features": 0,
+   "missing": [
+    "OPPSSS!!!! Sorry..."
+   ],
+   "crawled": "2026-11-07"
   },
   "onlineconverter.com": {
    "floor": "onlineconverter.com",
@@ -43,6 +65,16 @@
     "Accessibility Menu"
    ],
    "crawled": "2026-11-04"
+  },
+  "protopage.com": {
+   "floor": "protopage.com",
+   "pages": 1,
+   "templates": 1,
+   "features": 0,
+   "verse_pages": 0,
+   "verse_features": 0,
+   "missing": [],
+   "crawled": "2026-11-07"
   }
  }
 }

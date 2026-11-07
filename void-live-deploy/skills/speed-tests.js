@@ -68,7 +68,7 @@ function reaction(api) {
 function clicks(api, seconds) {
   const { showPage } = api;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Click speed test</h2><div role="group" aria-label="Length" style="display:flex;gap:6px;margin:8px 0">'
+    p.innerHTML = '<h2>Click speed test</h2><div role="group" aria-label="Length" style="display:flex;gap:6px;margin:8px 0">' // void-review: ok, the values are the numbers 5 and 10 and a boolean, never text from a user
       + [5, 10].map((n) => '<button type="button" class="cs-len" data-s="' + n + '" aria-pressed="' + (n === seconds) + '" style="' + BTN + '">' + n + ' seconds</button>').join('') + '</div>'
       + '<button type="button" class="cs-pad" style="display:block;width:100%;height:200px;border-radius:14px;border:0;background:#2b2b44;color:#e8e8e8;font-size:22px;cursor:pointer;user-select:none">Click here to start</button>'
       + '<p class="cs-out" aria-live="polite" style="font-size:18px;margin:10px 0"></p>' + NOTE;

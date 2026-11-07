@@ -17,18 +17,40 @@ export const ROWS = [
 ];
 export const SOURCES = [['American: checked bags', 'https://www.aa.com/web/i18n/travel-info/baggage/checked-baggage-policy.html'], ['American: heavy bags', 'https://www.aa.com/web/i18n/travel-info/baggage/oversize-and-overweight-baggage.html'], ['American: carry-on bags', 'https://www.aa.com/web/i18n/travel-info/baggage/carry-on-baggage.html'], ['British Airways: baggage', 'https://www.britishairways.com/content/information/baggage-essentials']];
 
-function run(text, api) {
-  const { showPage, esc } = api;
-  showPage((el) => {
-    el.innerHTML = '<h2>Baggage limits</h2>'
+/** the card's markup: the usual limits, every row of ROWS, the carry-on note, the flights link and every source with the day it was read (pure) */
+export function cardHtml(esc) {
+  return '<h2>Baggage limits</h2>'
       + '<p>Airlines such as American and British Airways allow <b>23 kg (50 lb)</b> a checked bag in economy and <b>32 kg (70 lb)</b> in business or first. Your fare decides how many bags are included, so check it before you pack.</p>' // void-review: ok: fixed text
       + '<table style="border-collapse:collapse;width:100%;font-size:.92em">' + ROWS.map(([a, b, c]) => '<tr><td style="padding:3px 6px 3px 0;vertical-align:top">' + esc(a) + '</td><td style="padding:3px 6px;font-weight:600;vertical-align:top">' + esc(b) + '</td><td style="padding:3px 0;color:#8a8a8a;vertical-align:top">' + esc(c) + '</td></tr>').join('') + '</table>' // void-review: ok: fixed rows, escaped
       + '<p>Neither airline gives a carry-on weight on these pages: they set a size. Check your own airline before you fly.</p>' // void-review: ok: fixed text
       + '<p><a href="/flights/" style="font-weight:600">Find your flight on the flights page →</a></p>'
       + '<div class="src">Source: ' + SOURCES.map(([n, u]) => '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(n) + '</a>').join(' · ') + ' · read 2026-10-30</div>';
-  });
+}
+
+function run(text, api) {
+  const { showPage, esc } = api;
+  showPage((el) => { el.innerHTML = cardHtml(esc); }); // void-review: ok: fixed rows and sources, each escaped
   return 'baggage';
 }
+
+// the daily smoke test runs this (tools/skills-check.mjs; asked by Verse, 2026-10-31: "Address the least-checked skills: video-gen and baggage"):
+// the card itself, not only which asks reach it. Every row and every source is on the card, every source is the airline's own https page,
+// the figures agree with each other (23 kg is 50 lb, 32 kg is 70 lb, 45 kg is 100 lb, 158 cm is 62 in), and lost or packing asks stay off (pure)
+export function suite() {
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const h = cardHtml(esc), kgLb = (kg, lb) => Math.abs(kg * 2.20462 - lb) / lb < 0.02;
+  const pairs = ROWS.flatMap(([, b]) => [...b.matchAll(/(\d+) kg \((\d+) lb\)/g)].map((m) => [+m[1], +m[2]]));
+  const checks = [
+    ['rows', ROWS.every(([a, b, c]) => h.includes(esc(a)) && h.includes(esc(b)) && h.includes(esc(c)))],
+    ['sources', SOURCES.length === 4 && SOURCES.every(([n, u]) => /^https:\/\/www\.(?:aa|britishairways)\.com\//.test(u) && h.includes('href="' + esc(u) + '"') && h.includes(esc(n)))],
+    ['figures', pairs.length === 3 && pairs.every(([kg, lb]) => kgLb(kg, lb)) && Math.abs(158 / 2.54 - 62) < 0.5],
+    ['fare', /Your fare decides/.test(h) && /read 2026-10-30/.test(h)],
+    ['asks', ['checked bag weight limit', 'carry on size limit'].every((a) => MATCH(a)) && !['my luggage is lost', 'pack my bag for a beach trip', 'what is 23 kg in pounds'].some((a) => MATCH(a))],
+  ];
+  const bad = checks.filter(([, ok]) => !ok).map(([n]) => n);
+  return { ok: !bad.length, got: bad.join(', ') };
+}
+const MATCH = (lower) => { const t = String(lower || '').trim(); return BAG.test(t) && ASKS.test(t) && !/\b(?:lost|missing|delayed|damaged|track|pack|packing|list)\b/.test(t); };
 
 export default {
   name: 'baggage',
@@ -45,6 +67,7 @@ export default {
     'pack my bag for a beach trip',
     'my luggage is lost',
   ],
-  match(lower) { const t = String(lower || '').trim(); return BAG.test(t) && ASKS.test(t) && !/\b(?:lost|missing|delayed|damaged|track|pack|packing|list)\b/.test(t); },
+  suite,
+  match: MATCH,
   run,
 };

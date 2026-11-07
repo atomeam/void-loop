@@ -48,8 +48,9 @@ const artLookOf = (m) => { const l = artLook(m); return { artHue: l.hue, artInk:
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
  *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is;
- *  kept: the values were read from the named sources on a date and kept in Verse (a kitchen card), not fetched for this ask */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false, kept = false } = {}) {
+ *  kept: the values were read from the named sources on a date and kept in Verse (a kitchen card), not fetched for this ask;
+ *  filed: for a fetched answer, the one line of what it added (the term and the senses it filed, the Verse page it links), or '' */
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false, kept = false, filed = '' } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -71,7 +72,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
-    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : 'A fact it did not have to be taught: fetched, sourced and dated.') : '',
+    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : addsLine(filed)) : '', // filed: what this card itself added (lib/term-card.js addsFor, data-card-adds), never a generic line; none, no line (owner, 2026-11-06)
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
     keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
@@ -112,7 +113,9 @@ export function chromeHtml(c, esc) {
   const notice = c.notice ? '<div class="vc-notice">' + esc(c.notice) + '</div>' : '';
   const adds = c.adds || kws || badges || notice ? '<div class="vc-adds"' + (badges || notice ? ' data-facts="1"' : '') + '>' + badges + (kws ? '<div class="vc-kws">' + kws + '</div>' : '') + (c.adds ? '<span class="vc-addstext"><b' + trace + '>Adds to Verse</b> ' + esc(c.adds) + '</span>' : '') + notice + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
-  const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: how fresh the source is, 9 if edited today, 1 if a year or more')
+  // a fetched answer's two numbers say what they are in words (owner, 2026-11-06: "P 1" and "R 2" read as nothing): the sources it stands on, and how fresh they are out of 9
+  const said = (v, word, t) => '<span title="' + t + '"><b>' + v + '</b> ' + word + '</span>';
+  const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? said(c.power, c.power === 1 ? 'source' : 'sources', 'power: the sources it stands on') + said(c.toughness, 'of 9 fresh', 'resistance: how fresh the source is, 9 if edited today, 1 if a year or more')
     : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: the real asks that proved it, about 3 more for each tenfold') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';
   const arrows = '<div class="vc-arrows" aria-hidden="true">' + (c.arrowIn ? '<i class="in">\u25bc</i>' : '') + ['r', 'b', 'l'].slice(0, c.arrowsOut).map((d) => '<i class="' + d + '">\u25b6</i>').join('') + '</div>';
   const foot = '<div class="vc-foot"><div class="vc-num">' + (c.rarity ? esc(c.rarity.name) + ' · ' : '') + (c.number ? esc(c.number) + ' · ' : '') + 'Verse' + (c.tested ? ' · tested ' + esc(c.tested) : '') + '</div>' + plate + '</div>';
@@ -125,9 +128,12 @@ export const CARD_CSS = [
   '.vpage.vcard{--h:230;--edge:hsl(var(--h) 30% 46%);padding:0 0 12px!important;border:1px solid transparent!important;border-radius:16px!important;',
   'background:linear-gradient(180deg,hsl(var(--h) 14% 11%),hsl(var(--h) 12% 7%)) padding-box,var(--foil,' + FOIL(null) + ') border-box!important;',
   'box-shadow:0 24px 60px -18px rgba(0,0,0,.75)!important}',
+  // the stage's glass rim (.vpage::before, inset 0) scrolls with a long card's content, so its edge once ran as a bright line through the text
+  // ("written by Verse" read 4.3:1 on it). A card's own foil hairline is its edge, so the card leaves the rim out.
+  '.vpage.vcard::before{content:none}',
   '.vpage.vcard[data-rarity=mythic]{--foil:' + FOIL(RARITY.proven) + '}.vpage.vcard[data-rarity=rare]{--foil:' + FOIL(RARITY.checked) + '}.vpage.vcard[data-rarity=uncommon]{--foil:' + FOIL(RARITY.tested) + '}.vpage.vcard[data-rarity=common]{--foil:' + FOIL(RARITY.experiment) + '}',
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
-  '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 16px 0!important;padding:0;background:none;border:0;border-radius:0;font-weight:650;letter-spacing:-.01em;color:#eef0f6;font-size:20px;line-height:1.2;overflow-wrap:anywhere;min-width:0}',
+  '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 16px 0!important;padding:0;background:none;border:0;border-radius:0;font-weight:650;letter-spacing:-.01em;color:#eef0f6;font-size:20px;line-height:1.2;min-height:36px;overflow-wrap:anywhere;min-width:0}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:12px;font-weight:500;letter-spacing:.14em;color:hsl(var(--h) 40% 72%);white-space:nowrap}',
   '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/10;max-height:min(380px,46vh);margin:10px 12px 0;border:1px solid rgba(255,255,255,.06);border-radius:10px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 50% 40% / .32),transparent 70%),linear-gradient(180deg,hsl(var(--h) 18% 9%),hsl(var(--h) 20% 13%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;max-height:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo::before{content:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:10px 16px 10px;padding:0;background:none;border:0;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:hsl(var(--h) 18% 66%)}',
@@ -136,7 +142,7 @@ export const CARD_CSS = [
   '.vcard{scroll-padding-bottom:84px}.vcard .vc-foot a,.vcard .vc-foot button,.vcard .vc-foot [role=button],.vcard .vc-foot input{pointer-events:auto}.vcard .vc-arrows{pointer-events:none}.vcard .vc-foot{pointer-events:none;position:sticky;bottom:-12px;padding:8px 0 12px;background:linear-gradient(180deg,transparent,hsl(var(--h) 22% 8%) 38%);z-index:2;display:flex;align-items:flex-end;justify-content:space-between;margin:8px 16px 0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 8% 56%)}',
   '.vcard .vc-pt{min-width:58px;text-align:center;padding:3px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;font-size:15px;font-weight:600;letter-spacing:.02em;color:#eef0f6}',
   '.vcard .vc-pt{display:flex;gap:8px;padding:3px 9px}.vcard .vc-pt span{font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 14% 62%);display:flex;align-items:baseline;gap:3px}.vcard .vc-pt b{font-size:15px;color:#eef0f6;letter-spacing:0}',
-  '.vcard .vc-arrows i{position:absolute;font-style:normal;font-size:12px;line-height:1;color:var(--edge);text-shadow:0 0 6px currentColor}.vcard .vc-arrows .in{top:-2px;left:50%;transform:translateX(-50%)}.vcard .vc-arrows .r{right:-1px;top:50%;transform:translateY(-50%)}.vcard .vc-arrows .l{left:-1px;top:50%;transform:translateY(-50%) scaleX(-1)}.vcard .vc-arrows .b{bottom:-3px;left:50%;transform:translateX(-50%) rotate(90deg)}',
+  '.vcard .vc-arrows i{position:absolute;font-style:normal;font-size:12px;line-height:1;color:var(--edge);text-shadow:0 0 6px currentColor}.vcard .vc-arrows .in{top:-2px;left:50%;transform:translateX(-50%)}.vcard .vc-arrows .r{right:0;top:50%;transform:translateY(-50%)}.vcard .vc-arrows .l{left:0;top:50%;transform:translateY(-50%) scaleX(-1)}.vcard .vc-arrows .b{bottom:-3px;left:50%;transform:translateX(-50%) rotate(90deg)}',
   // type-specific layouts (asked by Verse: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique
   // visual hierarchies"): the answer card's kind (card-kinds.js) decides what leads. A Film is a cinema screen: a tall letterboxed art box and an
   // italic centred title. A Place leads with where it is: its type line first, in large caps, then the title, over a shallow horizon. A Person is a
@@ -149,11 +155,12 @@ export const CARD_CSS = [
   '.vcard .vc-foot{position:static!important;background:none!important;padding:8px 0 4px!important;align-items:center;flex-wrap:wrap;gap:6px 10px}',
   '.vcard .vc-route{margin:6px 18px 0;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:0;text-transform:none;color:hsl(var(--h) 14% 70%)!important}',
   // two voices, two looks: the source's excerpt is a quotation (left rule, darker ground, its source line attached); Verse's take is labelled in a bright, bold ink
-  '.vpage.vcard[data-card-extract]>p:not(.vc-route){border-left:2px solid hsl(var(--h) 40% 56%);background:rgba(255,255,255,.03);padding:8px 12px;margin-bottom:0;border-radius:0 8px 0 0;color:#d9dce6}',
-  '.vpage.vcard[data-card-extract]>.src{margin-top:0;padding:4px 12px 8px;border-left:2px solid hsl(var(--h) 40% 56%);background:rgba(255,255,255,.03);border-radius:0 0 8px 0;font-size:11.5px;color:hsl(var(--h) 18% 76%)}',
+  '.vpage.vcard[data-card-extract]>p:not(.vc-route){border-left:3px solid hsl(var(--h) 40% 56%);background:rgba(255,255,255,.03);padding:8px 12px;margin-bottom:0;border-radius:0 8px 0 0;color:#d9dce6}',
+  '.vpage.vcard[data-card-extract]>.src{margin-top:0;padding:4px 12px 8px;border-left:3px solid hsl(var(--h) 40% 56%);background:rgba(255,255,255,.03);border-radius:0 0 8px 0;font-size:11.5px;color:hsl(var(--h) 18% 76%)}',
   '.vcard .take-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:hsl(var(--h) 70% 82%);margin-bottom:3px}',
-  // the read-aloud button shares the title bar's row and right edge, and the title leaves room for it (owner, 2026-10-18)
-  '.vcard>.vread{position:absolute!important;float:none!important;top:12px!important;right:22px!important;margin:0!important;width:32px;height:32px}.vcard .vc-title{padding-right:50px}',
+  // the read-aloud button shares the title bar's row and right edge, and the title leaves room for it (owner, 2026-10-18). The title is at least
+  // as tall as the button (36 px) and the button sits inside its row: 16 px down on a wide screen, 10 px on a phone, where the title's top margin is 8 px
+  '.vcard>.vread{position:absolute!important;float:none!important;top:16px!important;right:22px!important;margin:0!important;width:32px;height:32px}.vcard .vc-title{padding-right:50px}',
   // a very long answer is an accordion (lib/card-sections.js): the first section open, the rest behind one-line summaries; the text stays in the page
   '.vcard .vc-sec{margin:6px 18px 0;border:1px solid rgba(255,255,255,.08);border-radius:10px}.vcard .vc-sec-head{display:block;width:100%;text-align:left;font:inherit;font-size:13px;font-weight:600;color:hsl(var(--h) 40% 84%);background:rgba(255,255,255,.03);border:0;border-radius:10px;padding:8px 12px 8px 30px;cursor:pointer;position:relative}',
   '.vcard .vc-sec-head::before{content:"\\25B8";position:absolute;left:11px;top:8px;transition:none}.vcard .vc-sec-head[aria-expanded=true]::before{content:"\\25BE"}.vcard .vc-sec-head:focus-visible{outline:2px solid hsl(var(--h) 70% 70%);outline-offset:1px}.vcard .vc-sec-body{padding:6px 12px 2px}.vcard .vc-sec-body>*{margin-left:0!important;margin-right:0!important}',
@@ -166,7 +173,7 @@ export const CARD_CSS = [
   '.vpage.vcard[data-poster] .vc-title{margin-top:14px!important;justify-content:flex-start;text-align:left}',
   '.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-share,.vpage.vcard[data-poster] .vc-route,.vpage.vcard[data-poster] .vc-foot,.vpage.vcard[data-poster] .vc-arrows{grid-column:1 / -1}',
   '.vpage.vcard[data-poster]>img,.vpage.vcard>img[data-vc-art-src]{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the picture in the art box: not shown twice
-  '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(60vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vpage.skyc .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vpage.vcard:not(.skyc) .vc-art{max-height:28vh;margin-top:4px}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds:not([data-facts]){height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds[data-facts] .vc-addstext,.vcard .vc-adds[data-facts] .vc-kws{display:block;height:0;margin:0;padding:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
+  '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(60vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard>.vread{top:10px!important}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vpage.skyc .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vpage.vcard:not(.skyc) .vc-art{max-height:28vh;margin-top:4px}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds:not([data-facts]){height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds[data-facts] .vc-addstext,.vcard .vc-adds[data-facts] .vc-kws{display:block;height:0;margin:0;padding:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
   '@media (max-width:520px){.vpage.vcard[data-poster]{grid-template-columns:minmax(0,1fr)}.vpage.vcard[data-poster]>*{grid-column:1}.vpage.vcard[data-poster] .vc-art{grid-row:auto;justify-self:center;width:min(46%,170px);height:auto!important;margin:12px auto 4px!important;overflow:hidden}.vpage.vcard[data-poster] .vc-title{margin:8px 6px 0!important;justify-content:center;text-align:center}.vpage.vcard[data-poster] .vc-type,.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-foot{margin-left:6px}}',
   // a utility card's share bar (data-card-plain): small, quiet and after a thin rule, so the card's own actions lead
   '.vcard-plain .vc-share{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin:14px 0 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}.vcard-plain .vc-share .vc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}',
@@ -183,8 +190,9 @@ export const CARD_CSS = [
   '.vpage.vcard[data-theme=collectible] .vc-art::after{content:"FIGURE";position:absolute;top:8px;right:8px;transform:rotate(5deg);padding:2px 10px;font:700 11px/1.4 system-ui,sans-serif;letter-spacing:.14em;color:#3a1608;background:#ffe27a;border-radius:3px;box-shadow:0 1px 0 rgba(0,0,0,.4)}',
   // plain: a company, a concept, a book: a quiet fact card, no foil, a thin rule
   '.vpage.vcard[data-theme=plain]{--foil:linear-gradient(135deg,#59616f,#2b303a,#59616f,#262b34)!important}.vpage.vcard[data-theme=plain] .vc-art{aspect-ratio:16/5;max-height:92px}',
-  // specimen: an animal, a plant, a dish: a field-guide plate, the art in a ruled frame
-  '.vpage.vcard[data-theme=specimen]{--foil:linear-gradient(135deg,#8fbf7a,#3f6b3a,#c7e2a8,#2e5230)!important}.vpage.vcard[data-theme=specimen] .vc-art{border-style:double;border-width:5px}',
+  // specimen: an animal, a plant, a dish: a field-guide plate, the art in a ruled frame. The rule is an outline drawn inside the box, so a subject photo
+  // still fills the whole art box (a 5px double border took 10px off it once the comic-ink layer's 3px border stopped overriding it, #2336)
+  '.vpage.vcard[data-theme=specimen]{--foil:linear-gradient(135deg,#8fbf7a,#3f6b3a,#c7e2a8,#2e5230)!important}.vpage.vcard[data-theme=specimen] .vc-art{outline:3px double rgba(199,226,168,.5);outline-offset:-7px}',
   '.vpage.vcard[data-kind=place] .vc-art.has-photo{height:auto;aspect-ratio:16/9;max-height:220px}',
   '.vpage.vcard[data-theme=portrait] .vc-art{box-shadow:inset 0 0 0 4px rgba(255,255,255,.12)}.vpage.vcard[data-theme=sleeve] .vc-art{aspect-ratio:1/1;max-height:min(260px,36vh);width:min(260px,70%);margin-left:auto;margin-right:auto}',
 ].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
@@ -240,7 +248,12 @@ export function editedDaysAgo(text, now = Date.now()) {
 // the full page of a skill that has one (owner, 2026-10-25: "why are you not linking the cards to the pages?"): a card from one of these skills
 // carries a link to its page, the one the Versus fights are measured on
 import { SITE_PAGES } from './tool-sites.js';
-export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
+export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 
+  // the Lab's tools open as an open-tool card, whose page link is the tool (skills/open-tool.js sets the card's page)
+  ...Object.fromEntries([['/lab/level/', 'Spirit level'], ['/lab/checksum/', 'File checksum checker'], ['/lab/pattern/', 'Seamless pattern maker'], ['/lab/photo-palette/', 'Palette from a photo'], ['/lab/dictation/', 'Dictation'], ['/lab/mind-map/', 'Mind map maker']].map(([p, n]) => ['lab ' + p, [p, n]])),
+  // Starboard opens as an open-tool card too ("open starboard"), linking the deck
+  'deck /starboard/': ['/starboard/', 'Starboard'],
+  'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
   weather: ['/weather/', 'Weather'], recipe: ['/recipes/', 'Recipes'], calc: ['/calculator/', 'Calculator'], vat: ['/vat/', 'VAT calculator'], 'calc-more': ['/calculator/', 'Calculator'],
   convert: ['/convert/', 'Unit converter'], gradient: ['/color/gradient/', 'Gradient'], wheel: ['/random/wheel/', 'Wheel of names'], coin: ['/random/coin/', 'Coin flip'],
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base64/bases/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
@@ -280,7 +293,7 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined });
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined, filed: el.dataset.cardAdds || '' });
   // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
   const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
   if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);

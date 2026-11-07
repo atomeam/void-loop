@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --completion-hue: 200; --residual-scale: 1; --bg: #0a0a12; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+#cv { position: absolute; inset: 0; display: block; touch-action: none; }
+.chrome { position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,.75); padding: 10px 14px; border-radius: 8px; font-size: 13px; z-index: 10; backdrop-filter: blur(4px); }
+.chrome button { margin: 2px; padding: 4px 10px; background: #222; color: #eee; border: 1px solid #444; border-radius: 4px; cursor: pointer; }
+.chrome button:hover { background: #333; }
+.portal { position: absolute; width: 120px; height: 70px; background: hsla(var(--completion-hue), 60%, 30%, .85); border: 1px solid hsla(var(--completion-hue), 80%, 60%, .9); border-radius: 6px; padding: 6px; font-size: 11px; pointer-events: auto; cursor: grab; z-index: 5; transform: scale(var(--residual-scale)); transition: transform .2s, background .3s; }
+.portal:active { cursor: grabbing; }
+#status { margin-top: 6px; opacity: .8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU-Ready Hopfield Spatial Completion Field · Verse lab</title>
+<meta name="description" content="A spatial canvas where the user draws partial binary patterns that a local Hopfield associative memory completes via energy descent.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU-Ready Hopfield Spatial Completion Field · Verse lab">
+<meta property="og:description" content="A spatial canvas where the user draws partial binary patterns that a local Hopfield associative memory completes via energy descent.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f055-webgpu-hopfield-spatial-completion/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f055-webgpu-hopfield-spatial-completion/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div class="chrome">
+  <div>F055 Hopfield Spatial Completion</div>
+  <button id="store">Store Pattern</button>
+  <button id="recall">Recall</button>
+  <button id="clear">Clear</button>
+  <button id="seal">Seal</button>
+  <div id="status">mem:0 energy:— residual:—</div>
+</div>
+<div id="p0" class="portal">portal 0<br>res: —</div>
+<div id="p1" class="portal">portal 1<br>res: —</div>
+<div id="p2" class="portal">portal 2<br>res: —</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU-Ready Hopfield Spatial Completion Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

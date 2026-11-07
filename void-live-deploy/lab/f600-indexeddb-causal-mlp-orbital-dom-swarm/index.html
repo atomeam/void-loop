@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.agent {
+  position:absolute; width:24px; height:24px; border-radius:50%;
+  background:radial-gradient(circle, #8af 0%, #28f 70%);
+  box-shadow:0 0 12px #4af;
+  transition:transform 0.05s linear;
+  pointer-events:none;
+}
+.agent.best { background:radial-gradient(circle, #fa8 0%, #f82 70%); box-shadow:0 0 16px #fa4; }
+#info { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.7); padding:10px 14px; border-radius:8px; font-size:13px; max-width:320px; }
+#info button { margin:4px 4px 0 0; padding:4px 8px; background:#246; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>IndexedDB Causal MLP Orbital DOM Swarm · Verse lab</title>
+<meta name="description" content="Local tiny MLPs (3-4-1) take DeviceOrientation (beta/gamma) + time as causal input and output angular velocity for a swarm of DOM &quot;satellites&quot; that orbit a center.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="IndexedDB Causal MLP Orbital DOM Swarm · Verse lab">
+<meta property="og:description" content="Local tiny MLPs (3-4-1) take DeviceOrientation (beta/gamma) + time as causal input and output angular velocity for a swarm of DOM &quot;satellites&quot; that orbit a center.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f600-indexeddb-causal-mlp-orbital-dom-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f600-indexeddb-causal-mlp-orbital-dom-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="info">
+  <div>F600: Causal MLP Orbital DOM Swarm</div>
+  <div id="status">Tilt or drag to feed orientation. Click seal to transfer genomes.</div>
+  <button id="seal">Seal & Transfer</button>
+  <button id="reset">Reset Population</button>
+  <div id="stats"></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">IndexedDB Causal MLP Orbital DOM Swarm</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

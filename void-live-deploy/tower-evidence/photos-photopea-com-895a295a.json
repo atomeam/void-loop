@@ -2,12 +2,11 @@
  "id": "photos: photopea.com",
  "rows": {
   "speed": {
-   "verdict": "worse",
-   "verse": 259,
-   "best": 76,
-   "evidence": "Verse (/photos/photopea/) 259 ms to the load event (median of 3, phone width) vs photopea.com 76 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T15:08:22.160Z",
-   "was": "equal-and-better",
+   "verdict": "equal-and-better",
+   "verse": 150,
+   "best": 48,
+   "evidence": "Verse (/photos/photopea/) 150 ms to the load event (median of 3, phone width) vs photopea.com 48 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "reliability": {
@@ -15,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/photos/photopea/) 3 of 3 loads answered vs photopea.com 3 of 3 loads answered",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "mobile": {
@@ -23,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/photos/photopea/) 0 px sideways overflow at 390 px vs photopea.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "accessibility": {
@@ -31,7 +30,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/photos/photopea/) 0 unnamed controls or images vs photopea.com 0 unnamed controls or images",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "offline": {
@@ -39,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/photos/photopea/) 1 (1: the page shows itself again with the network cut) vs photopea.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "sharing": {
@@ -47,7 +46,7 @@
    "verse": 4,
    "best": 1,
    "evidence": "Verse (/photos/photopea/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs photopea.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "accuracy": {
@@ -55,15 +54,15 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/photos/photopea/) 3 of 3 right against the worked-out answer; judged against the standard, not photopea.com (the site is not asked)",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "of": 3
   },
   "design polish": {
    "verdict": "better",
-   "verse": 1,
+   "verse": 0,
    "best": 4,
-   "evidence": "Verse (/photos/photopea/) 1 design defects vs photopea.com 4 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.05), photopea.com (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
-   "at": "2026-11-05T15:08:22.160Z",
+   "evidence": "Verse (/photos/photopea/) 0 design defects vs photopea.com 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.06), photopea.com (0 low-contrast texts, 4 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   },
   "editing": {
@@ -71,7 +70,7 @@
    "verse": 7,
    "best": 7,
    "evidence": "Verse (/photos/photopea/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "of": 7,
    "part": true
   },
@@ -80,7 +79,7 @@
    "verse": 7,
    "best": 7,
    "evidence": "Verse (/photos/photopea/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "of": 7,
    "part": true
   },
@@ -89,7 +88,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/photos/photopea/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "of": 2,
    "part": true
   },
@@ -98,7 +97,7 @@
    "verse": 27,
    "best": 6,
    "evidence": "Verse (/photos/photopea/) 27 of 30 things a full answer shows vs photopea.com 6 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share, Compress with a quality slider, Before and after compare slider, Size saved readout)",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "of": 30,
    "siteRead": true
   },
@@ -107,7 +106,7 @@
    "verse": 9,
    "best": 5,
    "evidence": "Verse (/photos/photopea/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs photopea.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T15:08:22.160Z",
+   "at": "2026-11-07T13:33:31.477Z",
    "siteRead": true
   }
  }

@@ -1,0 +1,40 @@
+{
+ "at": "2026-11-07T18:53:29.323Z",
+ "sha": "36b74e4680f57000562f6f093dfaf6f5060a666b",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42402203734",
+ "suite": "browser suite on main",
+ "checks": [
+  "phone polish: Agents is fully inside the nav bar and the page is not wider than the screen",
+  "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+  "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
+  "suite ran to the end",
+  "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "domains/handoff.md",
+  "domains/void.agents.log.md",
+  "growth/entries/20261107T181404Z-deepseek-v41-flash-1017-a849ccc5.json",
+  "tools/families.mjs",
+  "tools/test_3d.mjs",
+  "void-live-deploy/self.json",
+  "void-live-deploy/sitemap.xml",
+  "void-live-deploy/skills/families.json",
+  "void-live-deploy/skills/growth.js",
+  "void-live-deploy/skills/guide.json",
+  "void-live-deploy/skills/index.json",
+  "void-live-deploy/skills/order/9870-monitor-pack",
+  "void-live-deploy/skills/order/9880-verify-pack",
+  "void-live-deploy/skills/what.json"
+ ],
+ "shards": [
+  3
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-07T20:05:41.712Z",
+ "closedBy": "8ef6f592767f181c3ac0040b9f06934c03d128bf",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42407481613",
+ "minutes": 72
+}

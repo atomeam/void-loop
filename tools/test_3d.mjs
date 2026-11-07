@@ -310,7 +310,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const F = await fresh();
     // what Verse asked for, by the entry that built it (GET /api/reflect follow.asked): here every entry has one naming its own time
     const ledgerAts = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')).map((e) => e.at);
-    await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
+    // hold the answer until after the branch is read: the card has to fill in what Verse asked for when it lands late, not only when
+    // it happened to arrive before the touch (the race that made this check flake on main)
+    let releaseReflect;
+    const held = new Promise((resolve) => { releaseReflect = resolve; });
+    await F.ctx.route(/\/api\/reflect(?:\?|$)/, async (rt) => { await held; return rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }); });
     await F.ask('growth');
     // the tree draws while it is on screen, and the card has grown long (friction, the better score, the probes above it): scroll it into view as a visitor would while waiting, or it never draws and this waits for nothing
     const drawn = await until(() => F.p.evaluate(() => { const cv = document.querySelector('.vpage .growth-tree canvas'); if (cv) cv.scrollIntoView({ block: 'center' }); const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
@@ -325,10 +329,17 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // the trunk is one thing to touch: with hundreds of branches, leaves of its neighbours cover some of its length, so try along it until it takes the tap
     if (at && at.pt) for (const pt of [at.pt, ...(at.pts || [])]) { if (!pt) continue; await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); if (await F.p.evaluate((i) => { const s = window.__voidMini.state('growth-tree'); return s && s.selected === i; }, at.trunk)) break; }
     const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
-    const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
+    // a bloom for a day's new skill (void:grew) must not take the branch the reader already touched
+    const stayed = at && await F.p.evaluate(() => { const card = document.querySelector('.vpage');
+      card.dispatchEvent(new CustomEvent('void:grew', { bubbles: true, detail: { kind: 'bloom' } }));
+      const s = document.querySelector('.vpage .growth-picked'), t = window.__voidMini && window.__voidMini.state('growth-tree');
+      return { selected: t ? t.selected : null, text: s ? s.textContent : '' }; });
+    // the reflect answer was held back and lands only now: the readout fills in the ask without another touch
+    if (releaseReflect) releaseReflect();
+    const cause = at && await until(() => F.p.evaluate((w) => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c && c.textContent.includes(w) ? c.textContent : false; }, 'the ask built at ' + trunkAt), 8000);
     check('"growth": touching a branch says what Verse asked for that it built (asked by Verse: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)' && !!stayed && stayed.selected === at.trunk && stayed.text.includes(at.oldest), JSON.stringify({ cause, trunkAt, stayed }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
@@ -711,10 +722,12 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.evaluate(() => { const seen = window.__chessLines = []; const note = () => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }; new MutationObserver(note).observe(document.body, { subtree: true, childList: true, characterData: true }); note(); }); // every change, not a look every 30 ms: a quick search came and went between two looks
     if (ready) { await tap('e2', 0.04); await tap('e4'); }
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
-    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
+    // the line while Verse thinks is read as it happens: not only after the reply lands (a fast search's line can come and go within one mutation batch on a slow runner, and the reply took over 40 s once on CI)
+    const weighingLive = until(() => F.p.evaluate(() => (window.__chessLines || []).find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || false), 40000);
+    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 60000);
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = (await weighingLive) || lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });

@@ -1300,89 +1300,419 @@
     "place": 8,
     "why": "not sized yet, hardness 97, Tranco 304708"
    }
+  },
+  "firefox-portal-detection.com": {
+   "at": "2026-11-06T09:46:15Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (7 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 1,
+    "why": "0 controls, 0 KB, Tranco 204"
+   }
+  },
+  "id5-sync.com": {
+   "at": "2026-11-06T09:46:19Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (12 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 2,
+    "why": "0 controls, 0 KB, Tranco 1268"
+   }
+  },
+  "mega.co.nz": {
+   "at": "2026-11-06T09:46:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a cloud storage and encrypted file sharing service. Verse does not have a page for cloud storage, file hosting, or secure data synchronization)",
+   "title": "MEGA: Protect your Online Privacy",
+   "ease": {
+    "score": 99.9,
+    "place": 3,
+    "why": "0 controls, 1 KB, Tranco 572"
+   }
+  },
+  "example.com": {
+   "at": "2026-11-06T09:46:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a placeholder domain for documentation examples and explicitly states it is not a service for testing or monitoring. Since Verse is a)",
+   "title": "Example Domain",
+   "ease": {
+    "score": 99.9,
+    "place": 4,
+    "why": "0 controls, 1 KB, Tranco 177"
+   }
+  },
+  "uisp.com": {
+   "at": "2026-11-06T09:46:45Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides ISP network management software and hardware, including billing, monitoring, and network design tools. Verse has no tool for network)",
+   "title": "UISP Overview - Ubiquiti",
+   "ease": {
+    "score": 99.9,
+    "place": 5,
+    "why": "0 controls, 1 KB, Tranco 2905"
+   }
+  },
+  "feednews.com": {
+   "at": "2026-11-06T09:46:46Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 99.9,
+    "place": 6,
+    "why": "0 controls, 1 KB, Tranco 4672"
+   }
+  },
+  "samsunghealth.com": {
+   "at": "2026-11-06T09:46:50Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a health and wellness platform providing services like activity tracking and fitness monitoring. Verse does not have a page that offers health)",
+   "title": "Samsung Health",
+   "ease": {
+    "score": 99.9,
+    "place": 7,
+    "why": "0 controls, 1 KB, Tranco 3263"
+   }
+  },
+  "netcraze.io": {
+   "at": "2026-11-06T09:46:51Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 99.9,
+    "place": 8,
+    "why": "0 controls, 1 KB, Tranco 444"
+   }
+  },
+  "bttrack.com": {
+   "at": "2026-11-06T17:39:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a tracking API and technical dashboard for advertising/audience data infrastructure, which is a specialized backend service. Verse's)",
+   "title": "Tracking API",
+   "ease": {
+    "score": 99.8,
+    "place": 1,
+    "why": "0 controls, 2 KB, Tranco 3268"
+   }
+  },
+  "archive.org": {
+   "at": "2026-11-06T17:39:42Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.8,
+    "place": 2,
+    "why": "0 controls, 2 KB, Tranco 153"
+   }
+  },
+  "slideshare.net": {
+   "at": "2026-11-06T17:39:44Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.7,
+    "place": 3,
+    "why": "0 controls, 3 KB, Tranco 557"
+   }
+  },
+  "dalyfeds.com": {
+   "at": "2026-11-06T17:39:51Z",
+   "outcome": "no-family",
+   "why": "the model chose news but the site says none of its words",
+   "title": "H5 Center",
+   "ease": {
+    "score": 99.7,
+    "place": 4,
+    "why": "0 controls, 3 KB, Tranco 2875"
+   }
+  },
+  "disqus.com": {
+   "at": "2026-11-06T17:40:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a complex B2B SaaS platform for community engagement, moderation, and monetization, which does not match any of the simple utility-based)",
+   "title": "#1 in audience engagement and community growth | Disqus",
+   "ease": {
+    "score": 99.4,
+    "place": 5,
+    "why": "0 controls, 6 KB, Tranco 922"
+   }
+  },
+  "myfritz.net": {
+   "at": "2026-11-06T17:40:09Z",
+   "outcome": "walled",
+   "why": "a sign-in wall",
+   "ease": {
+    "score": 99.3,
+    "place": 6,
+    "why": "0 controls, 7 KB, Tranco 59"
+   }
+  },
+  "kahoot.it": {
+   "at": "2026-11-06T17:40:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a game platform entry point (PIN entry for players), which does not match any of the tool-based services provided by Verse. Verse has a)",
+   "title": "Enter Game PIN - Kahoot!",
+   "ease": {
+    "score": 99.3,
+    "place": 7,
+    "why": "0 controls, 7 KB, Tranco 3202"
+   }
+  },
+  "gosuslugi.ru": {
+   "at": "2026-11-06T17:40:18Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.1,
+    "place": 8,
+    "why": "0 controls, 9 KB, Tranco 662"
+   }
+  },
+  "everycom.store": {
+   "at": "2026-11-06T23:26:31Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an e-commerce shop selling electronics and accessories, and Verse does not have a shop or a page for a consumer goods retailer.)",
+   "title": "EveryCom Store",
+   "ease": {
+    "score": 99.9,
+    "place": 1,
+    "why": "0 controls, 1 KB, Tranco 40053"
+   }
+  },
+  "opentv.com": {
+   "at": "2026-11-06T23:26:34Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (105 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.8,
+    "place": 2,
+    "why": "0 controls, 2 KB, Tranco 40107"
+   }
+  },
+  "adnext.mobi": {
+   "at": "2026-11-06T23:26:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a B2B programmatic advertising platform (DSP/SSP/AdX) for advertisers and publishers. Verse does not have a tool for managing digital advertising)",
+   "title": "ADNEXT",
+   "ease": {
+    "score": 99.5,
+    "place": 3,
+    "why": "0 controls, 5 KB, Tranco 40050"
+   }
+  },
+  "juicychat.ai": {
+   "at": "2026-11-07T09:10:01Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a service for NSFW AI character chatting, and Verse does not have a page for AI chat or roleplay services.)",
+   "title": "NSFW Character AI Chat - JuicyChat.AI",
+   "ease": {
+    "score": 99.4,
+    "place": 1,
+    "why": "0 controls, 6 KB, Tranco 40015"
+   }
+  },
+  "protopage.com": {
+   "at": "2026-11-06T23:26:54Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a personalized start page service with widgets and news feeds. While Verse has 'news' and 'docs and notes', it does not have a tool that combines)",
+   "title": "Protopage - Free Personalized Start Pages",
+   "ease": {
+    "score": 99,
+    "place": 5,
+    "why": "0 controls, 10 KB, Tranco 40011"
+   }
+  },
+  "skybridge.click": {
+   "at": "2026-11-06T23:26:54Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 98.7,
+    "place": 6,
+    "why": "0 controls, 13 KB, Tranco 141"
+   }
+  },
+  "tinyurl.com": {
+   "at": "2026-11-06T23:27:13Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "URL Shortener, Branded Short Links & Analytics | TinyURL",
+   "ease": {
+    "score": 98.6,
+    "place": 7,
+    "why": "0 controls, 14 KB, Tranco 296"
+   }
+  },
+  "adsco.re": {
+   "at": "2026-11-06T23:27:13Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 90.9,
+    "place": 8,
+    "why": "1 controls, 0 KB, Tranco 1949"
+   }
+  },
+  "cloudflareinsights.com": {
+   "at": "2026-11-07T09:10:02Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (41 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 90.9,
+    "place": 2,
+    "why": "1 controls, 0 KB, Tranco 315"
+   }
+  },
+  "1ts21.top": {
+   "at": "2026-11-07T09:10:02Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 90.9,
+    "place": 3,
+    "why": "1 controls, 1 KB, Tranco 80022"
+   }
+  },
+  "oneyeard.com": {
+   "at": "2026-11-07T09:10:06Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provided is a 403 Forbidden error page, which contains no functional tools or content to match against Verse's services.)",
+   "title": "Sorry, This Page Can't Be Accessed",
+   "ease": {
+    "score": 90.8,
+    "place": 4,
+    "why": "1 controls, 2 KB, Tranco 40056"
+   }
+  },
+  "registrar-servers.com": {
+   "at": "2026-11-07T09:10:06Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 90.7,
+    "place": 5,
+    "why": "1 controls, 2 KB, Tranco 127"
+   }
+  },
+  "onetag-sys.com": {
+   "at": "2026-11-07T09:10:07Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (106 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 83.3,
+    "place": 6,
+    "why": "2 controls, 1 KB, Tranco 890"
+   }
+  },
+  "astrumu.io": {
+   "at": "2026-11-07T09:10:28Z",
+   "outcome": "gone",
+   "why": "did not load (page.goto: Timeout 20000ms exceeded.)",
+   "ease": {
+    "score": 83.3,
+    "place": 7,
+    "why": "2 controls, 1 KB, Tranco 179"
+   }
+  },
+  "google.cn": {
+   "at": "2026-11-07T09:10:29Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (41 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 83.2,
+    "place": 8,
+    "why": "2 controls, 1 KB, Tranco 377"
+   }
+  },
+  "milkie.cc": {
+   "at": "2026-11-07T16:40:23Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (60 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.9,
+    "place": 1,
+    "why": "0 controls, 1 KB, Tranco 120104"
+   }
+  },
+  "digitalsogame.com": {
+   "at": "2026-11-07T16:40:26Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (103 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 90.8,
+    "place": 2,
+    "why": "1 controls, 1 KB, Tranco 120024"
+   }
+  },
+  "share.google": {
+   "at": "2026-11-07T16:40:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a URL shortener and redirect service for a specific company's app, which does not match any of the functional tool pages provided in the Verse)",
+   "title": "share.google",
+   "ease": {
+    "score": 76.8,
+    "place": 3,
+    "why": "3 controls, 2 KB, Tranco 523"
+   }
+  },
+  "g.co": {
+   "at": "2026-11-07T16:40:36Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a URL shortening service for a specific company. Verse does not have a page for URL shorteners or link management tools.)",
+   "title": "g.co",
+   "ease": {
+    "score": 76.8,
+    "place": 4,
+    "why": "3 controls, 2 KB, Tranco 770"
+   }
+  },
+  "amazon.co.uk": {
+   "at": "2026-11-07T16:40:41Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a massive e-commerce marketplace. Verse does not have a page for a general shopping service or retail store.)",
+   "title": "Amazon.co.uk",
+   "ease": {
+    "score": 76.7,
+    "place": 5,
+    "why": "3 controls, 4 KB, Tranco 329"
+   }
+  },
+  "amazon.de": {
+   "at": "2026-11-07T16:40:47Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a major e-commerce marketplace. Verse does not have a general shopping or retail page.)",
+   "title": "Amazon.de: Low Prices in Electronics, Books, Sports Equipment & more",
+   "ease": {
+    "score": 76.7,
+    "place": 6,
+    "why": "3 controls, 4 KB, Tranco 379"
+   }
+  },
+  "live-video.net": {
+   "at": "2026-11-07T16:40:51Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a landing page for Amazon Interactive Video Service (IVS), which is a cloud-based live video streaming service. Verse does not have a tool for)",
+   "title": "Amazon.com Property",
+   "ease": {
+    "score": 71.3,
+    "place": 7,
+    "why": "4 controls, 2 KB, Tranco 401"
+   }
+  },
+  "dns.google": {
+   "at": "2026-11-07T16:40:55Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Google Public DNS",
+   "ease": {
+    "score": 66.6,
+    "place": 8,
+    "why": "5 controls, 1 KB, Tranco 384"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-26T16:56:18Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next supercolorapp.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-26T16:58:53Z",
-   "line": "Versus: took on no site; next supercolorapp.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-26T22:52:52Z",
-   "line": "Versus: took on no site (also read: 2 discarded, 5 no-family, 1 not-judged); next hexdb.io",
-   "built": 0,
-   "queued": 5,
-   "fixed": [],
-   "pages_per_day": 2
-  },
-  {
-   "at": "2026-10-27T08:19:58Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); next randomarea.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-27T08:22:31Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-27T16:00:06Z",
-   "line": "Versus: took on no site (also read: 1 not-judged, 5 no-family, 1 discarded, 1 walled); next randomarea.com",
-   "built": 0,
-   "queued": 5,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-27T22:34:36Z",
-   "line": "Versus: took on no site (also read: 1 not-judged, 6 no-family, 1 gone); next randomarea.com",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-27T22:37:12Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-28T22:47:55Z",
-   "line": "Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com",
-   "built": 0,
-   "queued": 2,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-28T22:50:28Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
   {
    "at": "2026-10-29T08:51:03Z",
    "line": "Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com",
@@ -1659,6 +1989,101 @@
    "fixed": [],
    "pages_per_day": 2,
    "reads_next": "uniteforliteracy.com"
+  },
+  {
+   "at": "2026-11-06T09:47:01Z",
+   "line": "Versus: took on no site (also read: 4 walled, 4 no-family); next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com"
+  },
+  {
+   "at": "2026-11-06T09:49:35Z",
+   "line": "Versus: took on no site; next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "bttrack.com",
+   "noop": true
+  },
+  {
+   "at": "2026-11-06T17:40:27Z",
+   "line": "Versus: took on no site (also read: 4 no-family, 4 walled); next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 2,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "skybridge.click"
+  },
+  {
+   "at": "2026-11-06T17:43:01Z",
+   "line": "Versus: took on no site; next id5-sync.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 2,
+   "reads_next": "skybridge.click",
+   "noop": true
+  },
+  {
+   "at": "2026-11-06T23:27:20Z",
+   "line": "Versus: took on no site (also read: 4 no-family, 3 walled, 1 not-judged); the model answered 401 on 1 of 8 reads, so those were not judged; next dalyfeds.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "juicychat.ai"
+  },
+  {
+   "at": "2026-11-06T23:29:54Z",
+   "line": "Versus: took on no site; next dalyfeds.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "juicychat.ai",
+   "noop": true
+  },
+  {
+   "at": "2026-11-07T09:10:37Z",
+   "line": "Versus: took on no site (also read: 2 no-family, 5 walled, 1 gone); next protopage.com (the target)",
+   "built": 0,
+   "queued": 2,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "share.google"
+  },
+  {
+   "at": "2026-11-07T09:13:12Z",
+   "line": "Versus: took on no site; next protopage.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "share.google",
+   "noop": true
+  },
+  {
+   "at": "2026-11-07T16:41:03Z",
+   "line": "Versus: took on no site (also read: 2 walled, 6 no-family); next oneyeard.com (the target)",
+   "built": 0,
+   "queued": 5,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "vivoglobal.com"
+  },
+  {
+   "at": "2026-11-07T16:43:37Z",
+   "line": "Versus: took on no site; next oneyeard.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "vivoglobal.com",
+   "noop": true
   }
  ]
 }
