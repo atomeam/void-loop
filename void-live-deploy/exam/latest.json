@@ -1,198 +1,176 @@
 {
-  "at": "2026-11-07T21:12:25.187Z",
+  "at": "2026-11-07T22:39:21.312Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 39.5,
+      "score": 56.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "play a video of the moon landing",
           "failed": [
-            "skill",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
           "score": 57.1
         },
         {
           "ask": "watch the apollo 11 landing",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "show me a video of cats",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "play a video of the ocean",
           "failed": [
-            "skill",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
           "score": 57.1
         },
         {
           "ask": "play a nature documentary",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "loaded",
-            "playable"
-          ],
-          "score": 28.6
-        },
-        {
-          "ask": "watch a documentary about trains",
-          "failed": [
-            "skill",
             "loaded",
             "playable",
             "topic"
           ],
-          "score": 42.9
+          "score": 57.1
+        },
+        {
+          "ask": "watch a documentary about trains",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play a video of birds",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "show me a video of the eiffel tower",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "play a video about the solar system",
           "failed": [
-            "skill",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
           "score": 57.1
         },
         {
           "ask": "watch a video of a steam train",
           "failed": [
-            "skill",
             "loaded",
             "playable",
             "topic"
           ],
-          "score": 42.9
+          "score": 57.1
         },
         {
           "ask": "play a video of the northern lights",
           "failed": [
-            "skill",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
           "score": 57.1
         },
         {
           "ask": "show me a video about dinosaurs",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "play a video about cooking pasta",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "watch a video of charlie chaplin",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "play a video of jazz music",
           "failed": [
-            "skill",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
           "score": 57.1
         },
         {
           "ask": "find a video about the moon",
           "failed": [
-            "skill",
             "loaded",
-            "playable"
+            "playable",
+            "topic"
           ],
           "score": 57.1
         },
         {
           "ask": "play the trailer",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
             "loaded",
             "playable",
+            "topic",
             "rival"
           ],
-          "score": 25
+          "score": 50
         },
         {
           "ask": "joue une vidéo des baleines",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "loaded",
             "playable"
           ],
-          "score": 28.6
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -203,7 +181,7 @@
       }
     },
     "podcasts": {
-      "score": 51.3,
+      "score": 42.5,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -212,18 +190,20 @@
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of radiolab",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of the daily",
@@ -239,18 +219,20 @@
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of planet money",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of hardcore history",
@@ -267,73 +249,78 @@
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of hidden brain",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of freakonomics radio",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of science vs",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio",
             "episode"
           ],
-          "score": 28.6
+          "score": 57.1
         },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of crime junkie",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of the moth",
           "failed": [
             "skill",
-            "audio"
+            "audio",
+            "show"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "play the latest episode of npr news now",
           "failed": [
             "skill",
             "audio",
+            "show",
             "episode"
           ],
-          "score": 57.1
+          "score": 42.9
         },
         {
           "ask": "play the latest episode of my favorite murder",
@@ -348,12 +335,14 @@
         {
           "ask": "play the podcast",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "audio",
             "show",
             "episode"
           ],
-          "score": 42.9
+          "score": 14.3
         },
         {
           "ask": "play the episode before that",
@@ -393,7 +382,7 @@
       }
     },
     "songs": {
-      "score": 60,
+      "score": 65.5,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -408,12 +397,10 @@
         {
           "ask": "play billie jean by michael jackson",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio"
           ],
-          "score": 42.9
+          "score": 71.4
         },
         {
           "ask": "play imagine by john lennon",
@@ -450,25 +437,13 @@
         {
           "ask": "play hotel california by eagles",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio"
           ],
-          "score": 42.9
+          "score": 71.4
         },
         {
           "ask": "play rolling in the deep by adele",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "audio"
-          ],
-          "score": 42.9
-        },
-        {
-          "ask": "play shape of you by ed sheeran",
           "failed": [
             "skill",
             "audio"
@@ -476,16 +451,24 @@
           "score": 71.4
         },
         {
-          "ask": "play blinding lights by the weeknd",
+          "ask": "play shape of you by ed sheeran",
           "failed": [
             "answered",
             "skill",
             "fast",
+            "audio"
+          ],
+          "score": 42.9
+        },
+        {
+          "ask": "play blinding lights by the weeknd",
+          "failed": [
+            "skill",
             "audio",
             "title",
             "artist"
           ],
-          "score": 14.3
+          "score": 42.9
         },
         {
           "ask": "play lose yourself by eminem",
@@ -498,12 +481,10 @@
         {
           "ask": "play bad guy by billie eilish",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio"
           ],
-          "score": 42.9
+          "score": 71.4
         },
         {
           "ask": "play superstition by stevie wonder",
@@ -542,9 +523,10 @@
           "ask": "play yesterday",
           "failed": [
             "skill",
-            "audio"
+            "audio",
+            "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "play la bamba by ritchie valens",
@@ -572,20 +554,16 @@
       }
     },
     "weather": {
-      "score": 64.8,
+      "score": 74.9,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather in paris",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "temp",
-            "close"
+            "skill"
           ],
-          "score": 28.6
+          "score": 85.7
         },
         {
           "ask": "will it rain tomorrow in london",
@@ -599,7 +577,7 @@
           "failed": [
             "skill"
           ],
-          "score": 85.7
+          "score": 83.3
         },
         {
           "ask": "weather in seattle",
@@ -613,7 +591,7 @@
           "failed": [
             "skill"
           ],
-          "score": 83.3
+          "score": 85.7
         },
         {
           "ask": "weather in london this weekend",
@@ -633,19 +611,19 @@
         {
           "ask": "whats teh weather in london",
           "failed": [
-            "skill"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "wheather in new york",
-          "failed": [
             "answered",
             "skill",
             "fast",
             "temp"
           ],
           "score": 33.3
+        },
+        {
+          "ask": "wheather in new york",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
         },
         {
           "ask": "weather tomorrow in berlin",
@@ -671,23 +649,18 @@
         {
           "ask": "humidity in miami",
           "failed": [
-            "answered",
             "skill",
-            "fast",
-            "temp",
-            "close"
+            "place"
           ],
-          "score": 28.6
+          "score": 66.7
         },
         {
           "ask": "wind speed in chicago",
           "failed": [
-            "answered",
             "skill",
-            "fast",
-            "temp"
+            "place"
           ],
-          "score": 33.3
+          "score": 66.7
         },
         {
           "ask": "do i need an umbrella today in seattle",
@@ -717,12 +690,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "temp"
+            "skill"
           ],
-          "score": 33.3
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -733,7 +703,7 @@
       }
     },
     "directions": {
-      "score": 54.4,
+      "score": 59.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -756,10 +726,12 @@
         {
           "ask": "directions to Penn Station",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "route"
           ],
-          "score": 66.7
+          "score": 33.3
         },
         {
           "ask": "route to the eiffel tower",
@@ -796,12 +768,10 @@
         {
           "ask": "directions to times square",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "route"
           ],
-          "score": 33.3
+          "score": 66.7
         },
         {
           "ask": "get me to the colosseum",
@@ -839,22 +809,18 @@
         {
           "ask": "take me to the statue of liberty",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "route"
           ],
-          "score": 33.3
+          "score": 66.7
         },
         {
           "ask": "directions to pike place market",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "route"
           ],
-          "score": 33.3
+          "score": 66.7
         },
         {
           "ask": "how do I get to the acropolis",
@@ -888,12 +854,10 @@
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "route"
           ],
-          "score": 33.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -904,7 +868,7 @@
       }
     },
     "recipes": {
-      "score": 59.3,
+      "score": 67.6,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -942,12 +906,10 @@
         {
           "ask": "how to cook rice",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "method"
           ],
-          "score": 33.3
+          "score": 66.7
         },
         {
           "ask": "pancake recipe",
@@ -968,29 +930,24 @@
         {
           "ask": "recipe for tomato pasta",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "method"
-          ],
-          "score": 33.3
-        },
-        {
-          "ask": "recipe for oatmeal",
-          "failed": [
             "skill"
           ],
           "score": 83.3
         },
         {
-          "ask": "grilled cheese recipe",
+          "ask": "recipe for oatmeal",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "method"
           ],
-          "score": 33.3
+          "score": 66.7
+        },
+        {
+          "ask": "grilled cheese recipe",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
         },
         {
           "ask": "recipe for chocolate chip cookies",
@@ -1012,19 +969,19 @@
         {
           "ask": "chicken soup recipe",
           "failed": [
+            "skill"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "recipe for salad dressing",
+          "failed": [
             "answered",
             "skill",
             "fast",
             "method"
           ],
           "score": 33.3
-        },
-        {
-          "ask": "recipe for salad dressing",
-          "failed": [
-            "skill"
-          ],
-          "score": 83.3
         },
         {
           "ask": "how to bake banana bread",
@@ -1053,12 +1010,10 @@
         {
           "ask": "receta de guacamole",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "method"
           ],
-          "score": 33.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -1069,7 +1024,7 @@
       }
     },
     "calculator": {
-      "score": 45.6,
+      "score": 52.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -1140,25 +1095,13 @@
         {
           "ask": "add vat to 100",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "number"
           ],
-          "score": 20
+          "score": 60
         },
         {
           "ask": "remove vat from 122",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "number"
-          ],
-          "score": 20
-        },
-        {
-          "ask": "add vat to 50",
           "failed": [
             "skill",
             "number"
@@ -1166,7 +1109,7 @@
           "score": 60
         },
         {
-          "ask": "remove vat from 250",
+          "ask": "add vat to 50",
           "failed": [
             "answered",
             "skill",
@@ -1174,6 +1117,14 @@
             "number"
           ],
           "score": 20
+        },
+        {
+          "ask": "remove vat from 250",
+          "failed": [
+            "skill",
+            "number"
+          ],
+          "score": 60
         },
         {
           "ask": "ндс 22% от 1000",
@@ -1208,12 +1159,10 @@
         {
           "ask": "add vat to 80",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "number"
           ],
-          "score": 20
+          "score": 60
         },
         {
           "ask": "if 3 apples cost 2.40 how much do 7 cost",
@@ -1239,7 +1188,7 @@
       }
     },
     "news": {
-      "score": 70.2,
+      "score": 73.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -1253,10 +1202,9 @@
         {
           "ask": "latest news",
           "failed": [
-            "skill",
-            "mobile"
+            "skill"
           ],
-          "score": 60
+          "score": 80
         },
         {
           "ask": "breaking news",
@@ -1278,10 +1226,9 @@
         {
           "ask": "technology news",
           "failed": [
-            "skill",
-            "mobile"
+            "skill"
           ],
-          "score": 60
+          "score": 80
         },
         {
           "ask": "news about spacex",
@@ -1307,12 +1254,9 @@
         {
           "ask": "what's in the news",
           "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "headline"
+            "skill"
           ],
-          "score": 20
+          "score": 80
         },
         {
           "ask": "headlines",
@@ -1324,10 +1268,9 @@
         {
           "ask": "tech news",
           "failed": [
-            "skill",
-            "mobile"
+            "skill"
           ],
-          "score": 60
+          "score": 80
         },
         {
           "ask": "startup news",
@@ -1339,19 +1282,40 @@
         {
           "ask": "programming news",
           "failed": [
+            "skill"
+          ],
+          "score": 80
+        },
+        {
+          "ask": "news about nasa",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "world news",
+          "failed": [
+            "skill"
+          ],
+          "score": 80
+        },
+        {
+          "ask": "any news",
+          "failed": [
+            "skill"
+          ],
+          "score": 80
+        },
+        {
+          "ask": "and the science ones?",
+          "failed": [
             "answered",
             "skill",
             "fast",
             "headline"
           ],
           "score": 20
-        },
-        {
-          "ask": "and the science ones?",
-          "failed": [
-            "skill"
-          ],
-          "score": 80
         },
         {
           "ask": "actualités",
@@ -1369,10 +1333,146 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 57.4,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "nba scores",
+          "failed": [
+            "skill",
+            "board"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "nfl scores",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "board"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "nhl scores",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "board"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "bundesliga table",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "board"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "la liga scores",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "skill",
+            "board"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "board"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "lakers score",
+          "failed": [
+            "skill",
+            "board"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "celtics score",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "board"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "skill"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "skill",
+            "board"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "board"
+          ],
+          "score": 33.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -1384,10 +1484,12 @@
         {
           "ask": "resultado del real madrid",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "board"
           ],
-          "score": 66.7
+          "score": 33.3
         }
       ],
       "holdout": {
@@ -1406,22 +1508,151 @@
       }
     },
     "emoji": {
-      "score": 100,
-      "of": 6,
-      "measured": 6,
-      "fails": []
-    },
-    "translate": {
-      "score": 100,
-      "of": 6,
-      "measured": 6,
-      "fails": []
-    },
-    "units": {
-      "score": 93.3,
+      "score": 43.3,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "emoji fire",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "folded hands emoji",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "heart emoji",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "3 emojis",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "emoji feu",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 25
+        },
+        {
+          "ask": "emoji for thank you",
+          "failed": [
+            "skill"
+          ],
+          "score": 75
+        }
+      ]
+    },
+    "translate": {
+      "score": 46.7,
+      "of": 6,
+      "measured": 6,
+      "fails": [
+        {
+          "ask": "how do you say thank you in Japanese",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "translate cat to German",
+          "failed": [
+            "skill"
+          ],
+          "score": 75
+        },
+        {
+          "ask": "good morning in French",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "translate spring",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "comment dit-on bonjour en anglais",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 25
+        },
+        {
+          "ask": "translate the board is on the table to Spanish",
+          "failed": [
+            "skill"
+          ],
+          "score": 80
+        }
+      ]
+    },
+    "units": {
+      "score": 65,
+      "of": 6,
+      "measured": 6,
+      "fails": [
+        {
+          "ask": "0 celsius in fahrenheit",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "5 feet 3 inches in cm",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "1 byte in bits",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 60
+        },
         {
           "ask": "convert 2",
           "failed": [
@@ -1429,48 +1660,191 @@
             "rival"
           ],
           "score": 60
+        },
+        {
+          "ask": "5 milles en kilomètres",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 50
         }
       ]
     },
     "maps": {
-      "score": 89.2,
+      "score": 40,
       "of": 6,
       "measured": 6,
       "fails": [
         {
-          "ask": "map of Springfield",
+          "ask": "map of Paris, Texas",
           "failed": [
-            "rival"
+            "skill"
           ],
           "score": 80
         },
         {
-          "ask": "mapa de kioto",
+          "ask": "map of Springfield",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "where is Kyoto",
           "failed": [
             "skill"
           ],
           "score": 75
         },
         {
+          "ask": "mapa de kioto",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 25
+        },
+        {
+          "ask": "map of the louvre",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "patient"
+          ],
+          "score": 20
+        },
+        {
           "ask": "show me Paris on a map",
           "failed": [
+            "answered",
+            "skill",
+            "fast",
             "rival"
+          ],
+          "score": 20
+        }
+      ]
+    },
+    "timers": {
+      "score": 46.7,
+      "of": 6,
+      "measured": 6,
+      "fails": [
+        {
+          "ask": "set a timer for 90 seconds",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 40
+        },
+        {
+          "ask": "a 2 second timer",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 40
+        },
+        {
+          "ask": "add one minute",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "timer for 5",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "temporizador de 3 minutos",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 40
+        },
+        {
+          "ask": "set a timer for 45 seconds",
+          "failed": [
+            "skill"
           ],
           "score": 80
         }
       ]
     },
-    "timers": {
-      "score": 100,
-      "of": 6,
-      "measured": 6,
-      "fails": []
-    },
     "images": {
-      "score": 100,
+      "score": 58.3,
       "of": 6,
       "measured": 6,
-      "fails": []
+      "fails": [
+        {
+          "ask": "draw a red circle",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 40
+        },
+        {
+          "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "picture of a cat",
+          "failed": [
+            "skill"
+          ],
+          "score": 80
+        },
+        {
+          "ask": "image",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "dessine un cercle rouge",
+          "failed": [
+            "skill"
+          ],
+          "score": 80
+        },
+        {
+          "ask": "make the picture bigger",
+          "failed": [
+            "answered",
+            "skill",
+            "fast"
+          ],
+          "score": 40
+        }
+      ]
     },
     "prices": {
       "score": 100,
@@ -1479,7 +1853,7 @@
       "fails": []
     },
     "definitions": {
-      "score": 90,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -1493,28 +1867,44 @@
         {
           "ask": "define zorbleflux",
           "failed": [
-            "skill",
-            "rival"
+            "fast"
+          ],
+          "score": 80
+        }
+      ]
+    },
+    "wordproblems": {
+      "score": 93.3,
+      "of": 6,
+      "measured": 6,
+      "fails": [
+        {
+          "ask": "what is 15 percent of 80",
+          "failed": [
+            "answered",
+            "fast"
           ],
           "score": 60
         }
       ]
     },
-    "wordproblems": {
-      "score": 100,
-      "of": 6,
-      "measured": 6,
-      "fails": []
-    },
     "code": {
-      "score": 100,
+      "score": 96.7,
       "of": 6,
       "measured": 6,
-      "fails": []
+      "fails": [
+        {
+          "ask": "http status 404",
+          "failed": [
+            "skill"
+          ],
+          "score": 80
+        }
+      ]
     }
   },
   "lowest": {
-    "domain": "videos",
-    "score": 39.5
+    "domain": "maps",
+    "score": 40
   }
 }

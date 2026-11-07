@@ -1,0 +1,63 @@
+{
+ "at": "2026-11-07T21:27:50Z",
+ "sha": "880faf2fc756d4954a0472ec8cf90d48edba8f54",
+ "runId": 42413667595,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42413667595",
+ "workflow": "Site test",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test",
+   "id": 128527597076,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42413667595/job/128527597076",
+   "conclusion": "failure",
+   "step": {
+    "number": 12,
+    "name": "Nothing clipped at three window sizes (tools/no-clip.mjs)"
+   },
+   "fails": [
+    "FAIL 1280x800 .tome did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 1280x800 #showcase-bar did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 820x600 .tome did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live skills/films.js has the fix  -> 0 bytes",
+    "FAIL live lib/card-frame.js has the fix  -> 0 bytes",
+    "FAIL live sw.js has the fix  -> 0 bytes",
+    "Error: the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700"
+   ],
+   "tail": [
+    "pass live card returning 740x700 at 96.5%",
+    "pass live card returning 740x700 at 97%",
+    "pass live card returning 740x700 at 98%",
+    "pass live card returning 740x700 at 99%",
+    "pass live card returning 740x700 at 99.5%",
+    "pass live card fresh 390x700 glitch is rare and slow",
+    "pass live card fresh 390x700 at 0%",
+    "pass live card fresh 390x700 at 30%",
+    "pass live card fresh 390x700 at 60%",
+    "pass live card fresh 390x700 at 94.5%",
+    "pass live card fresh 390x700 at 95.5%",
+    "pass live card fresh 390x700 at 96.5%",
+    "pass live card fresh 390x700 at 97%",
+    "pass live card fresh 390x700 at 98%",
+    "pass live card fresh 390x700 at 99%",
+    "pass live card fresh 390x700 at 99.5%",
+    "pass live card returning 390x700 glitch is rare and slow",
+    "pass live card returning 390x700 at 0%",
+    "pass live card returning 390x700 at 30%",
+    "pass live card returning 390x700 at 60%",
+    "pass live card returning 390x700 at 94.5%",
+    "pass live card returning 390x700 at 95.5%",
+    "pass live card returning 390x700 at 96.5%",
+    "pass live card returning 390x700 at 97%",
+    "pass live card returning 390x700 at 98%",
+    "pass live card returning 390x700 at 99%",
+    "pass live card returning 390x700 at 99.5%",
+    "95/98 passed",
+    "Error: the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
