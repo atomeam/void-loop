@@ -53,6 +53,16 @@
     "Accessibility Menu"
    ],
    "crawled": "2026-11-04"
+  },
+  "protopage.com": {
+   "floor": "protopage.com",
+   "pages": 1,
+   "templates": 1,
+   "features": 0,
+   "verse_pages": 0,
+   "verse_features": 0,
+   "missing": [],
+   "crawled": "2026-11-07"
   }
  }
 }
