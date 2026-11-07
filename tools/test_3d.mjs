@@ -839,26 +839,29 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.setViewportSize({ width: 390, height: 844 });
     await F.ask('play connect 4', 600);
     const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
-    // you keep dropping in column 1; Verse finds its four. The game sets the pace, not a move count: under CI load Verse's search
-    // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
-    // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
-    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when Verse had not blocked it: "You dropped in column 1" as the last line, no reason)
-    for (const end = Date.now() + 90000; key && Date.now() < end;) {
+    // you keep dropping in the far columns and never build a four yourself (stacking one column let you win on the fourth drop
+    // when Verse had not blocked it: "You dropped in column 1" as the last line, no reason)
+    // The game sets the pace, not a wall clock: a fixed whole-game budget killed a live game on a loaded shard (verify ee6e3077:
+    // "won": false with the log mid-game, "found a forced win" as the last reason), so the loop plays to the win and stops only
+    // when the game itself stops moving for 30 s (120 quiet beats; a full column the tap cannot use, or a search that never answers)
+    let turn = 0, discs = 0, still = 0; const COLS = [0, 2, 4, 6];
+    for (; key && still < 120;) {
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
+      const d = await F.p.evaluate((k) => (window.__voidMini.state(k) || {}).discs ?? -1, key).catch(() => -1);
+      still = d === discs ? still + 1 : 0; discs = d;
       if (/Your move/.test(st)) {
         // a full column ignores the tap and the game would wait for you for good (the other way this check went red: Verse had not
         // found its four before column 1 filled): the next tap is in another column anyway
-        const d0 = await F.p.evaluate((k) => window.__voidMini.state(k).discs, key);
         await F.p.evaluate((c) => document.querySelectorAll('.c4-col')[c].click(), COLS[turn % COLS.length]);
-        await until(() => F.p.evaluate(([k, n]) => window.__voidMini.state(k).discs > n, [key, d0]), 2500);
+        await until(() => F.p.evaluate(([k, n]) => window.__voidMini.state(k).discs > n, [key, discs]), 2500);
         turn++; // one column over each move, a full one just skips
         await F.p.waitForTimeout(300);
       } else await F.p.waitForTimeout(250);
     }
     const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
     // when the 3D board never drew, say so and why: the loop above never runs then, and the card's empty log ("Earlier moves (-1)")
-    // read as "no move in 90 s" (verify on 0f1dc25d: the board was not up after 90 s on a loaded shard; it passed on its rerun alone)
+    // read as "no move in 30 s" (verify on 0f1dc25d: the board was not up after 90 s on a loaded shard; it passed on its rerun alone)
     const why = key ? null : await F.p.evaluate(() => { let s = null; try { s = { off: sessionStorage.getItem('void.3d.off'), crash: sessionStorage.getItem('void.3d.crash') }; } catch (_) {}
       return { minis: window.__voidMini ? window.__voidMini.list() : null, wraps: [...document.querySelectorAll('.connect4-view .void-mini')].map((w) => w.dataset.rendered + (w.isConnected ? '' : ' (off the page)')), flat: !!document.querySelector('.lift3d-off'), ...s }; }).catch((e) => String(e));
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
