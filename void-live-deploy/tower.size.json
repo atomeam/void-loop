@@ -6157,6 +6157,20 @@
    "weight": 354989,
    "at": "2026-10-30"
   },
+  "healthtechnologygroup.com": {
+   "bytes": 191,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 5,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 9,
+   "shell": "none",
+   "weight": 241,
+   "at": "2026-11-07"
+  },
   "heritageunits.com": {
    "bytes": 3682338,
    "controls": 49,
