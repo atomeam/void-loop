@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<style>
+:root { --bg: #0f1115; --card: #1a1d24; --accent: #5eead4; --text: #e5e7eb; --pin: #fbbf24; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; height: 100dvh; overflow: hidden; }
+#ui { position: fixed; top: 0; left: 0; right: 0; z-index: 10; padding: 8px; background: rgba(15,17,21,.85); backdrop-filter: blur(8px); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+input, button { background: var(--card); color: var(--text); border: 1px solid #333; border-radius: 6px; padding: 8px 12px; font-size: 14px; }
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+#board { position: absolute; inset: 60px 0 0 0; }
+.card { position: absolute; width: 140px; min-height: 60px; background: var(--card); border: 1px solid #333; border-radius: 10px; padding: 10px; font-size: 13px; cursor: grab; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,.4); transition: border-color .15s; }
+.card.pinned { border-color: var(--pin); background: #2a2418; }
+.card:active { cursor: grabbing; }
+#status { font-size: 12px; opacity: .7; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial task board · Verse lab</title>
+<meta name="description" content="Job: Add tasks as floating cards on a 2D canvas. Tilt your device (DeviceOrientation) to steer a local tiny MLP that applies forces to arrange or cluster the cards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial task board · Verse lab">
+<meta property="og:description" content="Job: Add tasks as floating cards on a 2D canvas. Tilt your device (DeviceOrientation) to steer a local tiny MLP that applies forces to arrange or cluster the cards.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f618-orientation-mlp-spatial-taskboard/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f618-orientation-mlp-spatial-taskboard/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <input id="task" placeholder="Add a task…" autofocus>
+  <button id="add">Add</button>
+  <button id="resetModel">Reset model</button>
+  <button id="export">Export JSON</button>
+  <button id="clear">Clear</button>
+  <span id="status">Tilt device to steer · tap to pin</span>
+</div>
+<div id="board"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spatial task board</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
