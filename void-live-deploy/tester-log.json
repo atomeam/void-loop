@@ -1,15 +1,40 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 99,
+ "cases": 100,
  "runsTotal": 300,
  "kinds": {
-  "tighten": 7,
   "file": 68,
   "none": 40,
-  "grow": 68,
-  "visitor": 117
+  "tighten": 5,
+  "grow": 69,
+  "visitor": 118
  },
  "runs": [
+  {
+   "at": "2026-11-07T18:39:20Z",
+   "passed": 99,
+   "of": 101,
+   "kind": "grow",
+   "ms": 336,
+   "note": "new ground passed, kept as a regression case: \"geenrate a toon style dog\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-07T18:30:06Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-07T18:18:15Z",
    "passed": 98,
@@ -347,20 +372,6 @@
      "why": "nothing appeared"
     }
    ]
-  },
-  {
-   "at": "2026-11-06T23:30:30Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T21:28:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -414,11 +425,11 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 85,
+   "runs": 83,
    "passed": 219,
-   "of": 2145,
-   "broken": 73,
-   "brokenOf": 1830,
+   "of": 2093,
+   "broken": 71,
+   "brokenOf": 1778,
    "brokenPassed": 0
   },
   {
@@ -435,9 +446,9 @@
   },
   {
    "from": "2026-10-31",
-   "runs": 164,
-   "passed": 4023,
-   "of": 4333,
+   "runs": 166,
+   "passed": 4122,
+   "of": 4434,
    "ms": 387
   }
  ],
@@ -458,7 +469,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-07T18:18:15Z",
+  "skill:cartoon": "2026-11-07T18:39:20Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -807,6 +818,7 @@
   "skill:toolkit": "2026-11-07T16:38:05Z",
   "skill:tower": "2026-11-07T17:00:10Z",
   "skill:triangulate": "2026-11-07T17:57:22Z",
-  "skill:unkeepable": "2026-11-07T18:18:15Z"
+  "skill:unkeepable": "2026-11-07T18:18:15Z",
+  "skill:uuid": "2026-11-07T18:39:20Z"
  }
 }
