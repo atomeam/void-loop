@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T03:31:42.711Z",
+ "updated": "2026-11-07T03:41:06.623Z",
  "last24h": {
-  "ticks": 94,
-  "started": 117,
+  "ticks": 95,
+  "started": 118,
   "requeued": 0,
   "setAside": 0,
   "probes": 15,
@@ -174,10 +174,11 @@
   "mw5r9988": 1794018922476,
   "mw5tlqe1": 1794021176798,
   "mw5tlqyf": 1794021738429,
-  "mw5tlriz": 1794022302711
+  "mw5tlriz": 1794022302711,
+  "mw5tls45": 1794022866623
  },
- "sweptAt": 1794018922476,
- "blueprintsAt": 1794018922476,
+ "sweptAt": 1794022866623,
+ "blueprintsAt": 1794022866623,
  "visitorAt": "2026-11-07T03:23:49Z",
  "visitorFiled": [
   "versus:copyemojio.com",
@@ -2829,6 +2830,33 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 246,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T03:41:06.623Z",
+   "open": 255,
+   "started": [
+    {
+     "id": "mw5tls45",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 246,
    "warnings": 1
