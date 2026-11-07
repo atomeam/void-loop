@@ -1,95 +1,95 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T21:53:50.801Z",
+ "updated": "2026-11-07T01:01:49.503Z",
  "last24h": {
-  "ticks": 67,
-  "started": 105,
+  "ticks": 82,
+  "started": 116,
   "requeued": 0,
   "setAside": 0,
-  "probes": 11,
+  "probes": 14,
   "errors": 0
  },
  "broken": [],
  "held": [
   {
    "id": "mw4p9cye",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mw4gkvdn",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "want-exam-translate",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvw5r1rz",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvw5r2hk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvw5r36z",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvw5r3w1",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvp4ahwz",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mw1ee0lk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mw1g8ei3",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mw1kno2c",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvwl3b1c",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvwl3biu",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvwl3bx7",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvwl3cbp",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvwl3cpy",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvwl3d38",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
    "id": "mvpkt0sa",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
+  },
+  {
+   "id": "mvpkt1c5",
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
+  },
+  {
+   "id": "mvpkt1u7",
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
+  },
+  {
+   "id": "mw1xyivk",
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   }
  ],
  "coder": {
@@ -99,26 +99,24 @@
    "cap": 90
   },
   "day": {
-   "used": 360,
+   "used": 30,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-07T00:00:00.000Z"
+  "room": true,
+  "until": null
  },
  "handed": {
-  "mvbl52gd": 1793968312020,
-  "mva30i2e": 1793990445306,
+  "mvbl52gd": 1794009927410,
+  "mva30i2e": 1794012175978,
   "mva30j4u": 1793997906493,
-  "mveb8rsi": 1793945056275,
-  "mvu167w7": 1793947060374,
-  "mveb8svc": 1793925233814,
-  "mvfu4evy": 1793930087442,
-  "mvpuq9g6": 1793930699938,
-  "mvpuqaee": 1793933006938,
-  "mvpuqb4r": 1793935659114,
-  "mvvjzso8": 1793937026908,
-  "mw43w4tf": 1793923441359,
-  "mw43w5uw": 1793925233814,
+  "mveb8rsi": 1794009927410,
+  "mvu167w7": 1794010489803,
+  "mveb8svc": 1794010489803,
+  "mvfu4evy": 1794011049377,
+  "mvpuq9g6": 1794011610402,
+  "mvpuqaee": 1794012175978,
+  "mvpuqb4r": 1794012744966,
+  "mvvjzso8": 1794013309503,
   "mw43w6vc": 1793930087442,
   "mw4c2qeu": 1793933006938,
   "mw4c2r3n": 1793935659114,
@@ -158,226 +156,104 @@
   "mw5faya0": 1793999087352,
   "mw5fayvb": 1793999651177,
   "mw5hhjuy": 1794000811806,
-  "mw5hhkli": 1794001465387
+  "mw5hhkli": 1794001465387,
+  "mw5hhlv9": 1794002589774,
+  "mw5i2hso": 1794003710100,
+  "mw5kjw4t": 1794005976965,
+  "mw5kjy5t": 1794007102586,
+  "mw5kjz5i": 1794007660162,
+  "mw5mkhpe": 1794009365321,
+  "mw5mkip6": 1794009927410,
+  "mw5mkjp7": 1794010489803,
+  "mw5mkkpf": 1794011610402,
+  "mw5oxcoo": 1794013309503
  },
- "sweptAt": 1793999087352,
- "blueprintsAt": 1793998524408,
- "visitorAt": "2026-11-06T21:28:28Z",
+ "sweptAt": 1794011049377,
+ "blueprintsAt": 1794011049377,
+ "visitorAt": "2026-11-07T00:20:13Z",
  "visitorFiled": [
-  "review:2105",
-  "review:2109",
-  "review:2112",
-  "review:2120",
-  "visit:what-time-is-it",
-  "review:2126",
-  "review:2128",
-  "review:2130",
-  "review:2125",
-  "review:2129",
-  "review:2131",
-  "review:2132",
-  "review:2148",
-  "review:2147",
-  "feature:want-revenue-2026-11",
-  "will:overhaul-surface-games-persona-playtest-",
-  "tv:agricultural-market-tracker",
-  "review:2216",
-  "versus:agechecker.net",
-  "review:2221",
-  "flake:suite-ran-to-the-end",
-  "flake:tower-the-target-tower-target-json",
-  "flake:empty-state-over-a-pure-white-back",
-  "flake:the-owner-s-status-card-opens-by-i",
-  "review:2223",
-  "flake:defences-every-api-route-has-an-ex",
-  "flake:suite-budget-the-whole-suite-ran-p",
-  "versus:bestfonts.pro",
-  "versus:speedtest.sg",
-  "versus:speedtest.com.sg",
-  "versus:jsonline.com",
-  "review:2247",
-  "review:2248",
-  "versus:coreldrawdesign.com",
-  "versus:coloradoan.com",
-  "versus:uphex.com",
-  "versus:timer365.com",
-  "versus:loanwisecalculatoreasy.com",
-  "versus:drawio.com",
-  "visit:convert-5-miles-to-kilometers",
-  "bot:check-country-ag",
-  "bot:country-ag",
-  "bot:check-country-gq",
-  "bot:country-gq",
-  "review:2303",
-  "review:2304",
-  "review:2305",
-  "review:2319",
-  "versus:colorscheme.ru:speed",
-  "versus:colorscheme.ru:journey: do the ma",
-  "versus:colorscheme.ru:journey: share the",
-  "versus:sipcalculator.in",
-  "versus:colordrop.io",
-  "versus:colourlab.ai",
-  "gap:want-exam-maps",
-  "review:2325",
-  "review:2327",
-  "review:2352",
-  "review:2346",
-  "visit:flip-a-coin",
-  "review:2361",
-  "review:2380",
-  "review:2379",
-  "review:2320",
-  "review:2381",
-  "review:2393",
-  "review:2413",
-  "versus:mega.co.nz",
-  "versus:example.com",
-  "versus:uisp.com",
-  "versus:samsunghealth.com",
-  "review:2435",
-  "versus:bttrack.com",
-  "versus:dalyfeds.com",
-  "tv:healthy-snack-alternatives",
-  "tv:irish-pub-locator",
-  "probe:check-deps-for-leaks",
-  "probe:how-do-i-scale-this",
-  "probe:map-out-the-heavy-lift-for-the-nex",
-  "probe:what-are-my-current-wants"
+  "versus:email-checker.net",
+  "versus:copyemojio.com",
+  "route:dates-sky-tonight-nyc",
+  "versus:kingdraw.cn",
+  "versus:zoopicker.com",
+  "versus:convertytmp3.org",
+  "versus:communitydns.net",
+  "versus:speedtest.ru",
+  "versus:unit.no",
+  "versus:syncsketch.dev",
+  "versus:hexen.ai",
+  "versus:fakemailgenerator.com",
+  "versus:opentimestamps.org",
+  "versus:sketch.io",
+  "versus:gmgcolor.com",
+  "flake:will-one-set-aside-job-does-not-st",
+  "versus:koanruler.com",
+  "versus:speedchecker.com",
+  "versus:drawnames.com",
+  "versus:illicitencounters.com",
+  "versus:speedcheckerapi.com",
+  "versus:fasterwheeler.com",
+  "feature:heycolor-com-a5daa3cb",
+  "feature:heycolor-com-d11a6f08",
+  "feature:convertunits-com-491b824a",
+  "gap:se-358423",
+  "visit:what-can-you-do",
+  "visit:capital-of-france",
+  "review:2114",
+  "review:2116",
+  "versus:want-tower-assistant",
+  "review:2139",
+  "tv:relationship-devotion-tool",
+  "review:2162",
+  "review:2163",
+  "review:2164",
+  "review:2165",
+  "review:2169",
+  "review:2178",
+  "review:2185",
+  "versus:unitingchurch.org.au",
+  "versus:hexler.net",
+  "versus:deadlinkchecker.com",
+  "versus:testandcalc.com",
+  "versus:portchecker.co",
+  "versus:custompricecalculator.com",
+  "visit:convert-100-usd-to-eur",
+  "review:2245",
+  "review:2313",
+  "review:2336",
+  "heal:helper-helper-pr-live-79be",
+  "review:2367",
+  "review:2368",
+  "review:2369",
+  "review:2371",
+  "review:2358",
+  "review:2359",
+  "review:2372",
+  "review:2374",
+  "review:2373",
+  "review:2376",
+  "review:2375",
+  "versus:want-tower-social",
+  "feature:isitchristmas-com-e13cdb96",
+  "feature:random-org-7201fd3d",
+  "feature:random-org-e1ac6f7a",
+  "heal:suite-9f52702",
+  "review:2441",
+  "tv:hvac-remote-management",
+  "tv:art-provenance-tracker",
+  "gap:want-exam-translate",
+  "review:2482",
+  "feature:random-org-ea756452",
+  "feature:random-org-9f6f952d",
+  "feature:random-org-ccb2ecd2",
+  "versus:everycom.store",
+  "versus:adnext.mobi",
+  "versus:protopage.com",
+  "versus:tinyurl.com",
+  "route:tower-verse-tower"
  ],
  "ticks": [
-  {
-   "at": "2026-11-05T22:25:34.172Z",
-   "open": 209,
-   "started": [
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": true,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 202,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-05T23:54:11.467Z",
-   "open": 208,
-   "started": [
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 202,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T00:04:01.359Z",
-   "open": 208,
-   "started": [
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mvop0asl",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 112
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mw43w4tf",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 5,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-06T00:33:53.814Z",
-   "open": 208,
-   "started": [
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 104
-    },
-    {
-     "id": "mvoxkk1v",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 96
-    },
-    {
-     "id": "mveb8svc",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mw43w5uw",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 5,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T01:54:47.442Z",
    "open": 206,
@@ -2163,6 +2039,525 @@
    "sweep": false,
    "blueprints": 0,
    "held": 243,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:03:09.774Z",
+   "open": 251,
+   "started": [
+    {
+     "id": "mw5hhlv9",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 243,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:12:30.317Z",
+   "open": 251,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 243,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:21:50.100Z",
+   "open": 250,
+   "started": [
+    {
+     "id": "mw5i2hso",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 243,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:31:29.405Z",
+   "open": 249,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 244,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:40:52.950Z",
+   "open": 249,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 244,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:50:16.053Z",
+   "open": 249,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 244,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T22:59:36.965Z",
+   "open": 253,
+   "started": [
+    {
+     "id": "mw5kjw4t",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 244,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T23:18:22.586Z",
+   "open": 251,
+   "started": [
+    {
+     "id": "mw5kjy5t",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 244,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T23:27:40.162Z",
+   "open": 254,
+   "started": [
+    {
+     "id": "mw5kjz5i",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 248,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T23:37:02.697Z",
+   "open": 253,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 248,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T23:46:30.733Z",
+   "open": 253,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 248,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-06T23:56:05.321Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "mw5mkhpe",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 249,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:05:27.410Z",
+   "open": 257,
+   "started": [
+    {
+     "id": "mw4p9cye",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 76
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mw5mkip6",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:14:49.803Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 106
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mw5mkjp7",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:24:09.377Z",
+   "open": 257,
+   "started": [
+    {
+     "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 239,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:33:30.402Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "mvpuq9g6",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 82
+    },
+    {
+     "id": "mw5mkkpf",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:42:55.978Z",
+   "open": 255,
+   "started": [
+    {
+     "id": "mvpuqaee",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 82
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:52:24.966Z",
+   "open": 255,
+   "started": [
+    {
+     "id": "mvpuqb4r",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 82
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T01:01:49.503Z",
+   "open": 259,
+   "started": [
+    {
+     "id": "mvvjzso8",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 74
+    },
+    {
+     "id": "mw5oxcoo",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 238,
    "warnings": 1
   }
  ]
