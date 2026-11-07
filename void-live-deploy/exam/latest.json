@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T16:08:55.159Z",
+  "at": "2026-11-07T16:54:14.052Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,12 +34,19 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
             "audio"
           ],
@@ -110,7 +117,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -125,9 +132,11 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp",
+            "close"
           ],
-          "score": 83.3
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -242,7 +251,7 @@
       }
     },
     "sports": {
-      "score": 94.4,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -254,7 +263,42 @@
           "score": 83.3
         },
         {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
           "failed": [
             "board"
           ],
