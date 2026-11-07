@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T07:16:35.491Z",
+ "updated": "2026-11-07T07:25:56.378Z",
  "last24h": {
   "ticks": 105,
   "started": 115,
@@ -89,7 +89,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw4mgme4": 1793949619392,
   "mw4mgnxo": 1793950364016,
   "mw4n3xj1": 1793951324937,
   "mw4ouwnx": 1793952976112,
@@ -152,7 +151,8 @@
   "mw60et8a": 1794032426543,
   "mw60eu92": 1794032987865,
   "mw60ev8u": 1794033548696,
-  "mw60ew8u": 1794034666747
+  "mw60ew8u": 1794034666747,
+  "mw62nds3": 1794036356378
  },
  "sweptAt": 1794034666747,
  "blueprintsAt": 1794034666747,
@@ -240,36 +240,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T07:20:19.392Z",
-   "open": 231,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 97
-    },
-    {
-     "id": "mw4mgme4",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 12,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T07:32:44.016Z",
    "open": 232,
@@ -3050,6 +3020,39 @@
    "setAside": 0,
    "healed": [],
    "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T07:25:56.378Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "want-exam-translate",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 151
+    },
+    {
+     "id": "mw62nds3",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
    "grow": false,
    "will": false,
    "lap": false,
