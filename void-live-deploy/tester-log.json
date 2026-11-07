@@ -3,13 +3,74 @@
  "cases": 99,
  "runsTotal": 300,
  "kinds": {
-  "grow": 72,
+  "grow": 70,
   "tighten": 7,
-  "file": 66,
+  "file": 67,
   "none": 40,
-  "visitor": 115
+  "visitor": 116
  },
  "runs": [
+  {
+   "at": "2026-11-07T17:57:22Z",
+   "passed": 90,
+   "of": 101,
+   "kind": "file",
+   "ms": 396,
+   "note": "fix: \"yo find me a sci-fi film from the 80s\" nothing appeared; console: tester: page.waitForSelector: Timeout 15000ms exceeded.",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+    },
+    {
+     "ask": "set a timer for 5 minutes",
+     "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+    },
+    {
+     "ask": "longevity trial watch",
+     "why": "console: Failed to load resource: the server responded with a status of 503 ()"
+    },
+    {
+     "ask": "yo find me a sci-fi film from the 80s",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "funny cartoon dog pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "triangulate: should I open source Verse",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-07T17:44:50Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-07T17:16:43Z",
    "passed": 0,
@@ -312,47 +373,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T20:45:42Z",
-   "passed": 92,
-   "of": 98,
-   "kind": "file",
-   "ms": 527,
-   "note": "fix: \"show the days until a date\" only \"waking up\" appeared, never the answer",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "flip this card",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "films by Kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo funny cartoon dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-06T20:33:50Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -406,18 +426,18 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 88,
-   "passed": 199,
-   "of": 2209,
-   "broken": 77,
-   "brokenOf": 1924,
+   "runs": 87,
+   "passed": 219,
+   "of": 2194,
+   "broken": 75,
+   "brokenOf": 1879,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-17",
-   "runs": 52,
-   "passed": 2528,
-   "of": 2796
+   "runs": 51,
+   "passed": 2508,
+   "of": 2766
   },
   {
    "from": "2026-10-24",
@@ -427,10 +447,10 @@
   },
   {
    "from": "2026-10-31",
-   "runs": 160,
-   "passed": 3835,
-   "of": 4131,
-   "ms": 387
+   "runs": 162,
+   "passed": 3925,
+   "of": 4232,
+   "ms": 388
   }
  ],
  "seen": {
@@ -450,7 +470,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-07T17:00:10Z",
+  "skill:cartoon": "2026-11-07T17:57:22Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -797,6 +817,7 @@
   "skill:team-chat": "2026-11-07T01:16:35Z",
   "skill:tilt-arena": "2026-11-07T03:23:49Z",
   "skill:toolkit": "2026-11-07T16:38:05Z",
-  "skill:tower": "2026-11-07T17:00:10Z"
+  "skill:tower": "2026-11-07T17:00:10Z",
+  "skill:triangulate": "2026-11-07T17:57:22Z"
  }
 }
