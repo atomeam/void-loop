@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-16T03:10:24Z",
-  "passed": 0,
-  "of": 22,
-  "kind": "file",
-  "key": "quiz me on this | nothing appeared",
-  "note": "fix: \"quiz me on this\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-16T03:25:28Z",
   "passed": 0,
   "of": 22,
@@ -5284,5 +5276,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"stlye like mickey mouse\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T17:16:43Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1544,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9952 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
