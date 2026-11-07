@@ -14,9 +14,9 @@
  "bench_at": "2026-11-07",
  "totals": {
   "experiment": 0,
-  "tested": 9,
+  "tested": 3,
   "checked": 12,
-  "proven": 391
+  "proven": 397
  },
  "families": [
   {
@@ -598,9 +598,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 2,
-    "proven": 40
+    "proven": 41
    },
    "skills": [
     {
@@ -958,11 +958,12 @@
     },
     {
      "name": "speed-tests",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-11-06",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 2
     },
     {
@@ -3616,18 +3617,19 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 6,
+    "tested": 1,
     "checked": 2,
-    "proven": 50
+    "proven": 55
    },
    "skills": [
     {
      "name": "lab",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-11-06",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 1
     },
     {
@@ -3802,10 +3804,12 @@
     },
     {
      "name": "systems-monitor",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 3
     },
     {
@@ -3874,10 +3878,12 @@
     },
     {
      "name": "system-blueprint",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 3
     },
     {
@@ -3892,18 +3898,22 @@
     },
     {
      "name": "system-handoff",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 3
     },
     {
      "name": "heavy-lift-map",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 1
     },
     {
