@@ -9,7 +9,7 @@
 export function isVerifyPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:verify|test|qa)\s+pack\b/i.test(t)
-    || /set\s+up\s+(?:tests|checks|verification)\s+for\b/i.test(t)
+    || /^set\s+up\s+(?:tests|checks|verification)\s+for\b/i.test(t)
     || /^(?:propose|make|generate)\s+(?:a\s+)?(?:verify|test|qa)\s+(?:pack|setup|plan)\b/i.test(t)
     || /^(?:what|which)\s+(?:will|does)\s+verse\s+(?:verify|test|check)\s+for\b/i.test(t);
 }
@@ -79,5 +79,6 @@ export default {
     'what is a test',
     'test the weather',
   ],
+  match(lower, text) { return isVerifyPack(text || lower); },
   run,
 };

@@ -10,16 +10,248 @@
   }
  },
  "counts": {
-  "sites": 343,
+  "sites": 351,
   "surpassed": 2,
   "passed": 145,
   "assimilated": 21,
   "current": 1,
   "parked": 1,
   "nonSites": 1,
-  "tried": 172
+  "tried": 180
  },
  "sites": [
+  {
+   "site": "randomvideochat.me",
+   "url": "https://randomvideochat.me/",
+   "status": "read, not judged yet",
+   "outcome": "not-judged",
+   "at": "2026-11-07T22:15:07Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "the model answered 401",
+   "learned": "",
+   "ease": {
+    "score": 4.5,
+    "place": 8,
+    "why": "not sized yet, hardness 101, Tranco 278950"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "keydifferences.com",
+   "url": "https://keydifferences.com/",
+   "status": "read, not judged yet",
+   "outcome": "not-judged",
+   "at": "2026-11-07T22:15:04Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "the model answered 401",
+   "learned": "",
+   "ease": {
+    "score": 4.5,
+    "place": 7,
+    "why": "not sized yet, hardness 101, Tranco 306443"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "testerhome.com",
+   "url": "https://testerhome.com/",
+   "status": "read, not judged yet",
+   "outcome": "not-judged",
+   "at": "2026-11-07T22:14:57Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "the model answered 401",
+   "learned": "",
+   "ease": {
+    "score": 4.5,
+    "place": 6,
+    "why": "not sized yet, hardness 101, Tranco 441708"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "radicenter.ee",
+   "url": "https://radicenter.ee/",
+   "status": "read, not judged yet",
+   "outcome": "not-judged",
+   "at": "2026-11-07T22:14:39Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "the model answered 401",
+   "learned": "",
+   "ease": {
+    "score": 4.6,
+    "place": 5,
+    "why": "not sized yet, hardness 99, Tranco 102900"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "caffmoscommunity.com",
+   "url": "https://caffmoscommunity.com/",
+   "status": "walled",
+   "outcome": "walled",
+   "at": "2026-11-07T22:14:34Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "a nearly empty page (51 characters: a redirect stub, or a page that draws itself with no text)",
+   "learned": "",
+   "ease": {
+    "score": 4.6,
+    "place": 4,
+    "why": "not sized yet, hardness 99, Tranco 215170"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "ldraw.org",
+   "url": "https://ldraw.org/",
+   "status": "read, not judged yet",
+   "outcome": "not-judged",
+   "at": "2026-11-07T22:14:32Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "the model answered 401",
+   "learned": "",
+   "ease": {
+    "score": 4.6,
+    "place": 3,
+    "why": "not sized yet, hardness 99, Tranco 291274"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "uniteforliteracy.com",
+   "url": "https://uniteforliteracy.com/",
+   "status": "read, not judged yet",
+   "outcome": "not-judged",
+   "at": "2026-11-07T22:14:21Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "the model answered 401",
+   "learned": "",
+   "ease": {
+    "score": 4.6,
+    "place": 2,
+    "why": "not sized yet, hardness 98, Tranco 284167"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "vivoglobal.com",
+   "url": "https://vivoglobal.com/",
+   "status": "walled",
+   "outcome": "walled",
+   "at": "2026-11-07T22:14:19Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+   "learned": "",
+   "ease": {
+    "score": 66.6,
+    "place": 1,
+    "why": "5 controls, 2 KB, Tranco 887"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "flashscore.com",
+   "url": "https://flashscore.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-07T21:36:04Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed flashscore.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "onefootball.com",
+   "url": "https://onefootball.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-07T21:34:56Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed onefootball.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "isitchristmas.com",
+   "url": "https://isitchristmas.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-07T21:34:39Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "Passed isitchristmas.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   },
+   "pageWas": "/is-it/christmas"
+  },
   {
    "site": "dns.google",
    "url": "https://dns.google/",
@@ -187,70 +419,6 @@
    "sources": [
     "domains/tower-self.json"
    ]
-  },
-  {
-   "site": "flashscore.com",
-   "url": "https://flashscore.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-07T16:33:23Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed flashscore.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "onefootball.com",
-   "url": "https://onefootball.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-07T16:32:21Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed onefootball.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "isitchristmas.com",
-   "url": "https://isitchristmas.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-07T16:31:53Z",
-   "page": "",
-   "lane": "",
-   "took": "",
-   "why": "Passed isitchristmas.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   },
-   "pageWas": "/is-it/christmas"
   },
   {
    "site": "wheelroot.com",

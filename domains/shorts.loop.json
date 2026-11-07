@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "review"
+    "formats": "news"
   },
   "trials": [
     {
@@ -154,27 +154,12 @@
       "kind": "formats",
       "films": [
         {
-          "format": "news",
-          "label": "Breaking-news parody",
-          "topic": "athletic club - real madrid",
-          "name": "athletic club - real madrid",
-          "film": "20261107-news-athletic-club-real-madrid",
-          "hook": "Why is everyone talking about athletic club - real madrid?",
-          "source": "Google Trends",
-          "gate": {
-            "pass": true,
-            "score": 100,
-            "hookScore": 75,
-            "failed": []
-          }
-        },
-        {
-          "format": "trailer",
-          "label": "Movie-trailer parody",
-          "topic": "Ramayana: Part 1",
-          "name": "Ramayana: Part 1",
-          "film": "20261107-trailer-ramayana-part-1",
-          "hook": "What if Ramayana: Part 1 got a movie trailer?",
+          "format": "review",
+          "label": "Product-review parody",
+          "topic": "2026 United States elections",
+          "name": "2026 United States elections",
+          "film": "20261107-review-2026-united-states-elections",
+          "hook": "Rating 2026 United States elections like a product: worth it?",
           "source": "Wikipedia",
           "gate": {
             "pass": true,
@@ -184,22 +169,46 @@
           }
         },
         {
-          "format": "explainer",
-          "label": "Explainer",
-          "topic": "bayern munich",
-          "name": "FC Bayern Munich",
-          "film": "20261107-explainer-fc-bayern-munich",
-          "hook": "What is FC Bayern Munich, and why now?",
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "valencia c. f. - real madrid",
+          "name": "valencia c. f. - real madrid",
+          "film": "20261107-lyric-valencia-c-f-real-madrid",
+          "hook": "Is valencia c. f. - real madrid the song of the day?",
           "source": "Google Trends",
+          "gate": {
+            "pass": false,
+            "score": 86,
+            "hookScore": 65,
+            "failed": [
+              "captions"
+            ]
+          }
+        },
+        {
+          "format": "pov",
+          "label": "POV skit",
+          "topic": ".xyz",
+          "name": ".xyz",
+          "film": "20261107-pov-xyz",
+          "hook": "POV: your group chat hears about .xyz",
+          "source": "Wikipedia",
           "gate": {
             "pass": true,
             "score": 100,
-            "hookScore": 85,
+            "hookScore": 65,
             "failed": []
           }
         }
       ],
       "refused": [
+        {
+          "topic": "Ramayana: Part 1",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Ramayana: Part 1\" (20261107)"
+        },
         {
           "topic": ".xxx",
           "kinds": [

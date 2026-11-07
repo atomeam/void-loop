@@ -52,3 +52,46 @@ test('merge-main still stops for a person when the branch moved a skill', () => 
   assert.equal(r.status, 1);
   assert.match(r.stderr, /conflicts need a person: void-live-deploy\/skills\/index\.json/);
 });
+
+// domains/handoff.md and tools/families.mjs are append-mostly: two branches adding a line/skill at the same spot
+// conflict, and merge-main settles them by keeping both sides' new lines instead of stopping for a person
+function textRepo(files) {
+  // files: { path: [base, mainSide, branchSide] }
+  const root = mkdtempSync(join(tmpdir(), 'merge-main-')), sh = (cwd, c) => execSync(c, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  sh(root, 'git init -q --bare -b main origin.git');
+  const clone = (d) => { sh(root, `git clone -q origin.git ${d}`); sh(join(root, d), 'git config user.email t@example.invalid && git config user.name t && git config commit.gpgsign false'); return join(root, d); };
+  const put = (dir, path, text) => { mkdirSync(join(dir, dirname(path)), { recursive: true }); writeFileSync(join(dir, path), text); };
+  const a = clone('a'); sh(a, 'git checkout -q -b main');
+  for (const [p, v] of Object.entries(files)) put(a, p, v[0]);
+  sh(a, 'git add -A && git commit -q -m base && git push -q origin main');
+  const m = clone('m'); sh(m, 'git checkout -q main');
+  for (const [p, v] of Object.entries(files)) put(m, p, v[1]);
+  sh(m, 'git add -A && git commit -q -m "main adds" && git push -q origin main');
+  sh(a, 'git checkout -q -b branch');
+  for (const [p, v] of Object.entries(files)) put(a, p, v[2]);
+  sh(a, 'git add -A && git commit -q -m "branch adds"');
+  return a;
+}
+
+test('merge-main settles an append-collision in domains/handoff.md by keeping both sides\' lines', () => {
+  const base = '# Handoff\n\n## Working on\n\n- claude · x · one · now\n';
+  const mainSide = base + '\n- beam · y · two · now\n';
+  const branchSide = base + '\n- mistrallarge4 · z · three · now\n';
+  const a = textRepo({ 'domains/handoff.md': [base, mainSide, branchSide] });
+  const r = mergeMain(a);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const out = readFileSync(join(a, 'domains/handoff.md'), 'utf8');
+  assert.ok(out.includes('- beam · y · two') && out.includes('- mistrallarge4 · z · three'), 'both lines kept: ' + JSON.stringify(out));
+});
+
+test('merge-main settles an append-collision in tools/families.mjs the same way', () => {
+  const line = (skills) => `  { id: 'self', name: 'Verse itself', skills: [${skills.map((s) => "'" + s + "'").join(', ')}] },\n`;
+  const base = 'export const FAMILIES = [\n' + line(['a', 'b']) + '];\n';
+  const mainSide = 'export const FAMILIES = [\n' + line(['a', 'b', 'c']) + '];\n';
+  const branchSide = 'export const FAMILIES = [\n' + line(['a', 'b', 'd']) + '];\n';
+  const a = textRepo({ 'tools/families.mjs': [base, mainSide, branchSide] });
+  const r = mergeMain(a);
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  const out = readFileSync(join(a, 'tools/families.mjs'), 'utf8');
+  assert.ok(out.includes("'c'") && out.includes("'d'"), 'both skills kept: ' + JSON.stringify(out));
+});

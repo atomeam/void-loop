@@ -47,6 +47,15 @@ const clean = (ask) => String(ask || '').trim().replace(/\s+/g, ' ').replace(/[?
 /** which free resource should take this ask: a bot (with its input), a public API, or the default model. Pure. */
 export function planOf(ask) {
   const a = clean(ask), t = a.toLowerCase();
+  // system-intent pre-router: platform-native intents before narrow keyword bots
+  const raw = String(ask || '');
+  if (/\/team\/join\/vj1-[0-9a-f]{32}/i.test(raw) || /\bvj1-[0-9a-f]{32}\b/i.test(raw)) {
+    const m = raw.match(/vj1-[0-9a-f]{32}/i);
+    return { kind: 'bot', bot: 'team-join', input: m ? m[0] : raw, say: 'Joining team: ' };
+  }
+  if (/what needs (?:to be )?done|do work|what should (?:i|we) work on/i.test(t)) {
+    return { kind: 'api', api: 'work-queue', ids: ['work-queue'], query: t, why: 'platform work queue' };
+  }
   if (!a || a.length > 140 || /\n/.test(String(ask))) return { kind: 'llm', why: a.length > 140 ? 'long ask: the model' : 'default' };
   let m;
   // unit conversion: "3 miles to km", "convert 10 kg into pounds", "what is 100 f in c", "how many feet in 2 miles"
