@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T00:48:20.424Z",
+  "at": "2026-11-07T01:27:55.812Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,17 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 92.9,
+      "score": 91.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of the daily",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the latest episode of serial",
           "failed": [
@@ -53,18 +46,27 @@
           "score": 85.7
         },
         {
-          "ask": "play the latest episode of the ted radio hour",
+          "ask": "play the latest episode of hardcore history",
           "failed": [
-            "audio"
+            "show",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "fast"
           ],
           "score": 85.7
         },
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -124,17 +126,10 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 96.7,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "wheather in new york",
-          "failed": [
-            "fast"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "weather",
           "failed": [
@@ -146,9 +141,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -389,17 +385,10 @@
       "fails": []
     },
     "definitions": {
-      "score": 86.7,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "define spring",
-          "failed": [
-            "fast"
-          ],
-          "score": 80
-        },
         {
           "ask": "etymology of salary",
           "failed": [
@@ -431,7 +420,7 @@
     }
   },
   "lowest": {
-    "domain": "definitions",
-    "score": 86.7
+    "domain": "translate",
+    "score": 89.2
   }
 }
