@@ -1,0 +1,234 @@
+{
+ "floor": "research journal",
+ "verse_page": "/journal/",
+ "researched": "2026-11-07",
+ "source": "hand",
+ "method": "the journal's own pages read by hand on 2026-11-07 (the home page, /articles, /issues, /search, /for-authors/, /special-collections/, /editorial-board/, /policies/ and /about/); each feature marked against Verse's page (/journal/) by the words that page carries, so a builder can check the mark on the live page",
+ "sites": {
+  "ajsonline.org": {
+   "url": "https://ajsonline.org/",
+   "scanned": "2026-11-07",
+   "leader": true,
+   "pages": [
+    "https://ajsonline.org/",
+    "https://ajsonline.org/articles",
+    "https://ajsonline.org/issues",
+    "https://ajsonline.org/search",
+    "https://ajsonline.org/for-authors/",
+    "https://ajsonline.org/special-collections/",
+    "https://ajsonline.org/editorial-board/",
+    "https://ajsonline.org/policies/",
+    "https://ajsonline.org/about/"
+   ],
+   "method": "hand",
+   "features": [
+    {
+     "name": "Latest articles with title, authors, date and volume",
+     "detail": "a heading on / (Latest Research)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"Latest papers\", \"Volume\" and \"DOI\""
+    },
+    {
+     "name": "The abstract of each article",
+     "detail": "a paragraph under each article on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows the abstract of each paper"
+    },
+    {
+     "name": "Browse the article archive",
+     "detail": "the Articles menu and the articles page",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ lists the papers with their DOIs and searches the whole archive"
+    },
+    {
+     "name": "Search articles",
+     "detail": "a heading on /search",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"Search the whole archive\""
+    },
+    {
+     "name": "Issues by volume",
+     "detail": "a heading on /issues",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows the volumes and the papers of each"
+    },
+    {
+     "name": "Special collections by theme",
+     "detail": "a heading on /special-collections/ (Snowball Earth, Metal Isotopes, the Kröner memorial collection)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"Collections\" and eight themed searches"
+    },
+    {
+     "name": "A DOI for each article",
+     "detail": "on every article page",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"DOI 10.2475\""
+    },
+    {
+     "name": "The PDF of each article",
+     "detail": "a download on every article page",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/journal/ links to the publisher's copy, which carries the PDF; Verse hosts none"
+    },
+    {
+     "name": "The reference list of each article",
+     "detail": "on every article page",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/journal/ shows how many references a paper has, not the list"
+    },
+    {
+     "name": "A citation in the journal's style",
+     "detail": "the reference style on /for-authors/ (APA, 7th edition, with examples)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"APA\" and \"BibTeX\" and gives the citation of every paper"
+    },
+    {
+     "name": "The editorial board and the advisory board",
+     "detail": "a heading on /editorial-board/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows the editors, the associate editors and the advisory board"
+    },
+    {
+     "name": "The author guidelines",
+     "detail": "a heading on /for-authors/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"For authors\""
+    },
+    {
+     "name": "What a submission must have",
+     "detail": "a heading on /for-authors/ (Submission Checklist)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"Before you submit\""
+    },
+    {
+     "name": "The kinds of paper and their lengths",
+     "detail": "a table on /for-authors/ (Publication Options)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows the kinds of paper and their free length"
+    },
+    {
+     "name": "Publication units and the fee for a long paper",
+     "detail": "a heading on /for-authors/ (Paper Length): 1 PU per 500 words, 1.5 PU per figure or table, $100 per excess PU",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"publication units\" and works them out on the device"
+    },
+    {
+     "name": "How a paper is judged",
+     "detail": "a heading on /for-authors/ (Evaluation Criteria)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"How a paper is judged\""
+    },
+    {
+     "name": "The order of a manuscript, and the rules for figures and tables",
+     "detail": "headings on /for-authors/ (Manuscript Order, Equations, Tables, Figures)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"The order of a manuscript\" and \"Equations, tables and figures\""
+    },
+    {
+     "name": "How errors and statistics are reported",
+     "detail": "a heading on /for-authors/ (Statistical Terms and Reporting Errors)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"Errors and statistics\""
+    },
+    {
+     "name": "Submit a manuscript",
+     "detail": "a button on every page, into the journal's submission system",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/journal/ shows what a submission must have, but never sends one"
+    },
+    {
+     "name": "Contact the editorial office",
+     "detail": "a link on every page (ajs@yale.edu)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows the editorial office's address"
+    },
+    {
+     "name": "Copyright and permissions, peer review and publication ethics",
+     "detail": "a heading on /policies/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"Peer review\", \"Publication ethics\" and \"Copyright and permissions\""
+    },
+    {
+     "name": "No publication charges within the standard limits",
+     "detail": "a heading on / (Diamond Open Access since 2023)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"diamond open access\""
+    },
+    {
+     "name": "About the journal: founded in 1818",
+     "detail": "a heading on /about/ (the oldest continuously published scientific journal in the United States)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/journal/ shows \"About this journal\" and \"founded in 1818\""
+    },
+    {
+     "name": "An RSS feed of the newest papers",
+     "detail": "a link in the footer of every page",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/journal/ has no feed of its own yet"
+    },
+    {
+     "name": "Links to the journal on other sites",
+     "detail": "a link in the footer of every page (Facebook, X)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/journal/ links to no other site"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "The PDF of each article",
+   "sites": [
+    "ajsonline.org"
+   ]
+  },
+  {
+   "name": "The reference list of each article",
+   "sites": [
+    "ajsonline.org"
+   ]
+  },
+  {
+   "name": "An RSS feed of the newest papers",
+   "sites": [
+    "ajsonline.org"
+   ]
+  },
+  {
+   "name": "Links to the journal on other sites",
+   "sites": [
+    "ajsonline.org"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "",
+  "queued": []
+ }
+}

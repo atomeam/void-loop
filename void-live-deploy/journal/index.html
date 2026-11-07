@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050505">
+<title>Research journal: peer-reviewed papers, and the rules authors work to · Verse</title>
+<meta name="description" content="Peer-reviewed research papers read live from the DOI registry: the latest papers, a search across the whole archive, the volumes, themed collections, a reading list on your device, a citation in APA or BibTeX, and the publication-unit calculator that shows how long a paper is and what it costs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Research journal · Verse">
+<meta property="og:description" content="Peer-reviewed papers read live from the DOI registry: latest, search, volumes, collections, a reading list, citations, and the publication-unit calculator for authors.">
+<meta property="og:url" content="https://a-to-mind.com/journal/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/journal/ (the Versus floor for ajsonline.org, 2026-11-07): the papers are read live from Crossref, the DOI registry,
+     where the journal deposits its own metadata; the rules for authors are worked out on the device. Deep space dark mode, as /stl/
+     (docs/design.md): glass panels with a lit rim, one cool key light. */
+  :root {
+    color-scheme: dark;
+    --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #8e94a8;
+    --key: 158 178 255; --warm: 255 170 214; --teal: 92 232 205;
+    --glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%);
+    --rim: conic-gradient(from 200deg, rgb(var(--key) / .55), rgba(255,255,255,.05) 22%, rgba(var(--warm) / .32) 50%, rgba(255,255,255,.05) 74%, rgba(var(--teal) / .38) 90%, rgb(var(--key) / .55));
+    --lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42);
+    --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.14); --field: rgba(6,8,14,.55);
+    --bad: #ff8a9a; --good: rgb(var(--teal)); --warn: #ffc76b;
+    --accent: rgb(var(--key)); --on-accent: #0b0d16;
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; overflow-x: hidden;
+    background: radial-gradient(60vmax 38vmax at 50% -12%, rgb(var(--key) / .16), transparent 70%), radial-gradient(40vmax 26vmax at 10% 34%, rgb(92 70 190 / .13), transparent 70%),
+      radial-gradient(36vmax 24vmax at 92% 70%, rgb(40 130 170 / .10), transparent 70%), var(--bg); background-attachment: fixed; }
+  a { color: rgb(var(--key)); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; border-radius: 6px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 30px 16px 40px; min-height: 100svh; box-sizing: border-box; }
+  h1 { font-weight: 280; font-size: clamp(30px, 5vw, 44px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 8px;
+    background: linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 10px; }
+  h3 { font-size: 17px; font-weight: 600; margin: 18px 0 4px; letter-spacing: -.01em; }
+  .lead { color: var(--ink-2); max-width: 46em; margin: 0 0 16px; }
+  .glass { position: relative; background: var(--glass); border-radius: 18px; box-shadow: var(--lift); margin: 0 0 18px; padding: 18px; isolation: isolate; }
+  .glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--rim); pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  button { font: inherit; font-size: 14px; color: var(--ink); background: rgba(255,255,255,.04); border: 1px solid var(--line-2); border-radius: 999px; padding: 0 16px; min-height: 40px; cursor: pointer; }
+  button:hover { background: rgba(255,255,255,.08); } button.go { background: rgb(var(--key)); color: var(--on-accent); border-color: transparent; font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  input, select, textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  input[type="search"], input[type="text"] { width: 100%; }
+  label { font-size: 13px; color: var(--ink-2); }
+  .jump { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; scrollbar-width: thin; }
+  .jump a { flex: 0 0 auto; font-size: 13px; color: var(--ink-2); text-decoration: none; border: 1px solid var(--line-2); border-radius: 999px; padding: 7px 13px; min-height: 36px; display: inline-flex; align-items: center; }
+  .jump a:hover { background: rgba(255,255,255,.08); color: var(--ink); }
+  .paper { border-top: 1px solid var(--line); padding: 14px 0 0; margin-top: 14px; }
+  .paper:first-of-type { border-top: 0; margin-top: 6px; padding-top: 0; }
+  .paper a.title { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 17px; letter-spacing: -.01em; }
+  .paper a.title:hover { color: rgb(var(--key)); }
+  .meta { color: var(--ink-3); font-size: 13px; margin: 4px 0 0; }
+  .meta b { color: var(--ink-2); font-weight: 500; }
+  .abstract { color: var(--ink-2); font-size: 14px; margin: 8px 0 0; }
+  .abstract .lbl { color: var(--ink-3); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  .row .btn { min-height: 32px; padding: 0 12px; font-size: 13px; }
+  .cite { margin-top: 10px; padding: 10px 12px; background: var(--field); border: 1px solid var(--line); border-radius: 10px; font-size: 13px; color: var(--ink-2); overflow-wrap: anywhere; }
+  .cite b { color: var(--ink); display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+  .cite pre { margin: 0 0 10px; white-space: pre-wrap; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--ink); }
+  .cite pre:last-child { margin-bottom: 0; }
+  .cite summary { cursor: pointer; color: var(--ink-2); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .grid2 > div { min-width: 0; }
+  .grid2 label { display: block; margin-bottom: 4px; }
+  .grid2 input, .grid2 select { width: 100%; max-width: 100%; }
+  dl.stats { display: grid; grid-template-columns: 1fr auto; margin: 12px 0 0; font-size: 15px; }
+  dl.stats dt, dl.stats dd { padding: 7px 0; border-bottom: 1px solid var(--line); margin: 0; } dl.stats dt { color: var(--ink-2); } dl.stats dd { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  dl.stats dd.bad { color: var(--bad); } dl.stats dd.good { color: var(--good); } dl.stats dd.warn { color: var(--warn); }
+  .work { display: grid; grid-template-columns: 1fr; gap: 2px; }
+  .work dt { color: var(--ink-2); font-size: 14px; }
+  .work dd { margin: 0 0 10px; color: var(--ink-3); font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-2); font-weight: 600; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .scroll { overflow-x: auto; }
+  .note { color: var(--ink-3); font-size: 13px; margin: 10px 0 0; min-height: 1.4em; }
+  .note.bad { color: var(--bad); }
+  .empty { color: var(--ink-3); font-size: 14px; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .list li:last-child { border-bottom: 0; }
+  .list .meta { margin: 2px 0 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .chips button { min-height: 34px; padding: 0 12px; font-size: 13px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  nav#asks { font-size: 13px; color: var(--ink-3); margin: 4px 0 14px; }
+  nav#asks a { margin-right: 10px; }
+  nav#related { font-size: 14px; color: var(--ink-3); margin-top: 20px; } nav#related a { margin-right: 10px; }
+  .tk-label { text-transform: uppercase; letter-spacing: .12em; font-size: 11px; color: var(--ink-3); margin-right: 6px; }
+  footer { font-size: 13px; color: var(--ink-3); margin-top: 18px; text-align: center; } footer a { color: inherit; }
+  [hidden] { display: none !important; }
+</style>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/journal/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Research journal: peer-reviewed papers, and the length of a paper","url":"https://a-to-mind.com/journal/","description":"Peer-reviewed research papers read live from the DOI registry: the newest papers with their abstracts, a search across the whole archive, the volumes, themed collections, a reading list kept on your device, a citation in APA or BibTeX to copy, and the publication-unit calculator that works out how long a paper is and what it costs. The rules for authors, the board and the policies, in plain words.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"peer reviewed research papers, latest earth science papers, search research articles, journal articles online, how long should my paper be, publication unit calculator, apa citation generator, paper length calculator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/journal/?q={words}"},"words-input":"required name=words"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Research journal: peer-reviewed papers, and the length of a paper","item":"https://a-to-mind.com/journal/"}]}]}</script>
+<!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/journal.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Research journal</h1>
+  <p class="lead">Peer-reviewed papers from the American Journal of Science, read live from the DOI registry where the journal deposits its own
+  metadata: the newest papers with their abstracts, a search across the whole archive, the volumes, themed collections, a reading list kept
+  on this device, and a citation in APA or BibTeX. Below them the rules an author works to, and the publication-unit calculator that works
+  out how long a paper is and what it costs.</p>
+
+  <nav class="jump" aria-label="On this page">
+    <a href="#about">About</a><a href="#latest">Latest papers</a><a href="#search">Search</a><a href="#volumes">Volumes</a><a href="#collections">Collections</a>
+    <a href="#reading">Reading list</a><a href="#units">Length of a paper</a><a href="#guidelines">For authors</a><a href="#board">The board</a><a href="#policies">Policies</a>
+  </nav>
+
+  <section class="glass" id="about" aria-label="About this journal">
+    <h2>About this journal</h2>
+    <p class="abstract">The American Journal of Science was founded in 1818 by Benjamin Silliman and is the oldest continuously published
+    scientific journal in the United States. It publishes peer-reviewed research on the structure, composition and evolution of the Earth and
+    the related planetary processes, from around the world, for an international readership of researchers, educators and scientists. It is
+    published by Yale University in New Haven, and it runs on the diamond open access model: most papers carry no publication charge at all,
+    and only a paper that runs over the journal's standard publication-unit limits pays anything. Its print and electronic ISSNs are
+    0002-9599 and 1945-452X.</p>
+    <p class="note">As the journal's own About page states it, read on 7 November 2026.</p>
+  </section>
+
+  <section class="glass" id="latest" aria-label="Latest papers">
+    <h2>Latest papers</h2>
+    <p class="note" id="latestNote" role="status" aria-live="polite">Reading the registry…</p>
+    <div id="latestList"></div>
+    <div class="row"><button type="button" class="go" id="more">Show 20 more</button></div>
+  </section>
+
+  <section class="glass" id="search" aria-label="Search the archive">
+    <h2>Search the archive</h2>
+    <form id="searchForm" autocomplete="off">
+      <label class="vh" for="q">Words to search for</label>
+      <input type="search" id="q" name="q" placeholder="A subject, a place, an author" enterkeyhint="search">
+      <div class="row"><button type="submit" class="go" id="searchGo">Search the whole archive</button>
+        <span class="note" id="searchNote" role="status" aria-live="polite"></span></div>
+    </form>
+    <div id="searchResults"></div>
+  </section>
+
+  <section class="glass" id="volumes" aria-label="Volumes">
+    <h2>Volumes</h2>
+    <p class="note" id="volNote" role="status" aria-live="polite">Reading the registry…</p>
+    <ul class="list" id="volList"></ul>
+    <div id="volPapers"></div>
+  </section>
+
+  <section class="glass" id="collections" aria-label="Collections">
+    <h2>Collections</h2>
+    <p class="note">Curated by subject, each one a live search of the archive. Nothing is written down: the papers behind a collection are the
+    ones the registry holds for that subject today.</p>
+    <div class="chips" id="collectionChips"></div>
+    <p class="note" id="collectionNote" role="status" aria-live="polite"></p>
+    <div id="collectionPapers"></div>
+  </section>
+
+  <section class="glass" id="reading" aria-label="Reading list">
+    <h2>Reading list</h2>
+    <p class="note">Kept on this device, never sent. It opens offline, with the papers as they were when you saved them.</p>
+    <ul class="list" id="readingList"></ul>
+  </section>
+
+  <section class="glass" id="units" aria-label="How long is my paper">
+    <h2>How long is my paper?</h2>
+    <p class="note">Publication units (PU) are the measure the journal's guidelines use: 1 PU for every 500 words of the text, 1.5 PU for every
+    figure and table, the first ten equations as 1 PU and every ten more as 1 PU again, the total rounded up. A long paper (a Science Paper,
+    a Science Review or a Technical Report) is free up to 45 PU and $100 for each PU beyond that; a short one (a Science Note, a Comment, a
+    Reply or an Errata) may be 4 PU at most.</p>
+    <div class="grid2">
+      <div><label for="words">Words (with abstract, notes and references)</label><input type="number" id="words" min="0" step="50" value="6000" inputmode="numeric"></div>
+      <div><label for="figures">Figures</label><input type="number" id="figures" min="0" step="1" value="0" inputmode="numeric"></div>
+      <div><label for="tables">Tables</label><input type="number" id="tables" min="0" step="1" value="0" inputmode="numeric"></div>
+      <div><label for="equations">Equations</label><input type="number" id="equations" min="0" step="1" value="0" inputmode="numeric"></div>
+      <div><label for="kind">Kind of paper</label><select id="kind">
+        <option value="45">Long form: 45 PU free</option>
+        <option value="4">Short form: 4 PU at most</option>
+      </select></div>
+    </div>
+    <dl class="stats" id="puStats"></dl>
+    <p class="note" id="puNote"></p>
+  </section>
+
+  <section class="glass" id="guidelines" aria-label="For authors">
+    <h2>For authors</h2>
+    <p class="note">The journal's own published guidance, read on 7 November 2026 and summarised here; the rules change, so check the journal
+    before you send anything.</p>
+    <h3>Scope</h3>
+    <p class="abstract">Research that expands what is known about the Earth, with an emphasis on the structure, composition and evolution of the
+    planet and on the physical, chemical and biological processes that shaped that evolution. Recent work covers geochemistry, geochronology,
+    geodynamics, geomorphology, basin analysis, Earth history, petrology, tectonics and thermochronology; new directions are welcome.</p>
+    <h3>Before you submit</h3>
+    <ul class="list">
+      <li>Word or PDF for the first submission, 12-point Times New Roman, 1.5 line spacing, line numbers on every page. Review is not started
+      without numbered lines.</li>
+      <li>Files for review must stay under 30 MB. Large files are arranged after acceptance.</li>
+      <li>Abstract under 300 words and standing on its own; at least three keywords; an author-contributions statement; a data and
+      supplementary-information statement where it applies.</li>
+      <li>Author affiliations and ORCID numbers, a statement of original content, and five or more suggested reviewers (and any to avoid, with
+      a reason).</li>
+      <li>Figures as separate files in JPEG, TIFF or PNG at 300 dpi or better; tables as separate Word files made with the Table function; no
+      Excel tables.</li>
+    </ul>
+    <h3>Kinds of paper</h3>
+    <div class="scroll"><table>
+      <thead><tr><th>Kind</th><th>What it is</th><th>How it is offered</th><th>Length and fee</th></tr></thead>
+      <tbody>
+        <tr><td>Science Paper</td><td>Original research, fully documented: question, literature, methods, results, conclusions.</td><td>Open submission</td><td>Free to 45 PU; a fee for each PU above it.</td></tr>
+        <tr><td>Science Review</td><td>Assessment, integration and synthesis of published work.</td><td>By invitation; proposals considered</td><td>Free to 45 PU; a fee for each PU above it.</td></tr>
+        <tr><td>Science Note</td><td>A short piece on new data, a new hypothesis, or an opinion.</td><td>Open submission</td><td>4 PU at most; no fees.</td></tr>
+        <tr><td>Technical Report</td><td>Methods of real use: a procedure, a program, a database.</td><td>Open submission</td><td>Free to 45 PU; a fee for each PU above it.</td></tr>
+        <tr><td>Comment</td><td>A short critical assessment of a recent paper in the journal.</td><td>Open submission</td><td>4 PU at most; no fees.</td></tr>
+        <tr><td>Reply</td><td>The authors' answer to a Comment.</td><td>Usually invited</td><td>4 PU at most; no fees.</td></tr>
+        <tr><td>Errata</td><td>A correction to a paper in the journal.</td><td>As needed</td><td>Usually very brief; no fees.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>How a paper is judged</h3>
+    <p class="abstract">Relevance, generality, originality, progress, accessibility, a clear scientific foundation, integration with other
+    fields, consistency between the results and the claims, and news value for the wider scientific community.</p>
+    <h3>The order of a manuscript</h3>
+    <ol class="list">
+      <li>Title: specific, brief, no unexplained abbreviations.</li>
+      <li>Author list, then affiliations as numbered footnotes, the corresponding author marked with an asterisk.</li>
+      <li>Abstract under 300 words, abbreviations defined, no reference to figures, tables or references.</li>
+      <li>At least three keywords.</li>
+      <li>Main text in numbered sections; three levels of heading are allowed.</li>
+      <li>Acknowledgments, with the funding named.</li>
+      <li>Author contributions, one line for each author.</li>
+      <li>Data and supplementary information: what it is and where it lives.</li>
+      <li>References for every source cited.</li>
+    </ol>
+    <h3>Equations, tables and figures</h3>
+    <p class="abstract">Equations are centred and numbered in parentheses on the right, cited as equation (1) or (eq. 1), and must come from a
+    current Word file. A table is one file per table, built with Word's Table function, with separate cells or lists instead of spaces, tabs or
+    line breaks. Figures are JPEG, TIFF or PNG, never vector, at least 300 dpi, one file each.</p>
+    <h3>Citations and references</h3>
+    <p class="abstract">APA, 7th edition. One author: (Fisher, 1953). Two: (Dewey &amp; Pitman, 1973). Three or more: (Davis et al., 1983).
+    Several citations are sorted alphabetically; unpublished work is cited in the text and left out of the references. Every citation in the text
+    must have a full reference, and every reference a citation in the text.</p>
+    <h3>Errors and statistics</h3>
+    <p class="abstract">Say how each error is estimated and at what level: SE (standard error of the mean) and CI (confidence interval) are
+    named with their level, such as 1SE, 2SE, 68% CI or 98% CI, in the same way throughout. SE is not SD: SE = SD / √n. The Greek sigma is
+    avoided for error levels, because it is used for standard deviation.</p>
+    <h3>Questions about a submission</h3>
+    <p class="abstract">The editorial office of the journal takes the questions about manuscripts, editorial procedures and policies: it sits
+    at Yale University, P.O. Box 208109, New Haven, Connecticut 06520-8109, USA, and its address is ajs@yale.edu.</p>
+  </section>
+
+  <section class="glass" id="board" aria-label="The board">
+    <h2>The board</h2>
+    <p class="note">The editors and the associate editors, with their fields, as the journal lists them (read on 7 November 2026). The board
+    changes; the journal's own page is the current list.</p>
+    <h3>Editors</h3>
+    <ul class="list" id="editors"></ul>
+    <h3>Associate editors</h3>
+    <ul class="list" id="associates"></ul>
+    <h3>Advisory board</h3>
+    <ul class="list" id="advisory"></ul>
+  </section>
+
+  <section class="glass" id="policies" aria-label="Policies">
+    <h2>Policies</h2>
+    <h3>Reading is free, and so is publishing within the limits</h3>
+    <p class="abstract">The journal runs on the diamond open access model: no charge for readers and no charge for authors, as long as a paper
+    stays within the standard publication-unit limits. A paper that runs over them pays $100 for each PU above the limit.</p>
+    <h3>Copyright and permissions</h3>
+    <p class="abstract">Articles carry Creative Commons licences, and the licence each paper carries is shown here beside it. Permissions for
+    older articles, reuse guidance and fair use are handled by the editorial office.</p>
+    <h3>Peer review</h3>
+    <p class="abstract">Every paper is reviewed before it is published. The editors decide on the science and send the paper out; the review
+    is blind, the reviewers are named by the author with five or more suggestions, and the corresponding author hears the decision.</p>
+    <h3>Publication ethics</h3>
+    <p class="abstract">Authors confirm that the content is original, that it is not in review or in press elsewhere, and they disclose any
+    overlap with other publications. Every listed author has agreed to the submission and has a stated contribution. Corrections and
+    retractions come from the authors of the paper they concern.</p>
+    <h3>Conflicts of interest</h3>
+    <p class="abstract">A policy for actual and perceived conflicts of interest in editorial handling, peer review and collections is still being
+    written, and authors are asked to suggest editors who should not handle their paper, with the reason.</p>
+  </section>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/journal/?q=grand+canyon">Papers about the Grand Canyon</a><a href="/journal/?collection=isotopes">Papers about isotopes</a><a href="/journal/?tab=units">How long is my paper?</a><a href="/journal/?tab=guidelines">What do I need to submit?</a><a href="/journal/?tab=volumes">The volumes</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/notes/">Notes</a> <a href="/word-count/">Word counter</a> <a href="/g/">Snippet / Note in a link</a> <a href="/convert/">Unit converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+
+  <footer>The papers are read live from Crossref, the DOI registry, where the journal deposits its own titles, authors, abstracts, dates,
+  volumes and licences; a paper's own DOI link opens the publisher's copy. The rules for authors are the journal's published guidance,
+  summarised here and read on 7 November 2026. Nothing you type here is sent anywhere, and the reading list stays on this device.
+  Made something with the forge? Say "make me a paper" on <a href="/">Verse</a>.</footer>
+</main>
+<script type="module">
+  import { WORKS, FIELDS, PAGE_SIZE, articlesOf, sortNewest, volumesOf, searchOf, apaOf, bibtexOf, pubUnits, puWithoutEquationExtra } from '/lib/journal.js';
+  import { mountRelated } from '/lib/toolkit.js';
+  // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const $ = (id) => document.getElementById(id);
+    const KEY = 'a2m.void.journal.v1', CACHE = 'a2m.void.journal.cache.v1';
+    let store = { saved: [] };
+    try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
+    store.saved = Array.isArray(store.saved) ? store.saved : [];
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    const el = (tag, props, ...kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); e.append(...kids.filter((k) => k != null)); return e; };
+    const say = (id, msg, bad) => { const n = $(id); if (!n) return; n.textContent = msg || ''; n.className = 'note' + (bad ? ' bad' : ''); };
+    mountRelated($('related'), '/journal/'); // the "Use with" row, with the hand-offs the page carries
+
+    // ---- the registry: the papers, read live (the registry answers with CORS open, so the browser asks it itself)
+    const cache = () => { try { return JSON.parse(localStorage.getItem(CACHE) || 'null'); } catch (_) { return null; } };
+    const keepCache = (list) => { try { localStorage.setItem(CACHE, JSON.stringify({ at: Date.now(), list })); } catch (_) {} };
+    async function ask(params) {
+      const url = WORKS + '?' + new URLSearchParams(Object.assign({ rows: PAGE_SIZE, select: FIELDS }, params)).toString();
+      const r = await fetch(url, { headers: { accept: 'application/json' } });
+      if (!r.ok) throw new Error('the registry answered ' + r.status);
+      const j = await r.json();
+      return articlesOf(j);
+    }
+
+    // ---- a paper, drawn as a card: the title, who wrote it, when, where, the abstract, and what a reader can do with it
+    function paperCard(a) {
+      const box = el('div', { className: 'paper' });
+      const t = el('a', { className: 'title', href: a.url, rel: 'noopener noreferrer', target: '_blank', textContent: a.title });
+      const meta = el('p', { className: 'meta' },
+        el('b', { textContent: a.byline || 'the authors' }),
+        el('span', { textContent: ' · ' + (a.dateText || 'no date') + (a.volume ? ' · Volume ' + a.volume : '') + (a.issue ? ' no. ' + a.issue : '') + ' · DOI ' + a.doi }));
+      box.append(t, meta);
+      if (a.paragraphs && a.paragraphs.length) {
+        // the whole abstract, never a cut sentence (owner, 2026-10-21): the first paragraph stands, the rest opens under it
+        box.append(el('p', { className: 'abstract' }, el('span', { className: 'lbl', textContent: 'Abstract' }), el('span', { textContent: ' ' + a.paragraphs[0] })));
+        if (a.paragraphs.length > 1) {
+          const rest = el('details', { className: 'cite' });
+          rest.append(el('summary', { textContent: 'The rest of the abstract (' + (a.paragraphs.length - 1) + ' more paragraph' + (a.paragraphs.length > 2 ? 's' : '') + ')' }));
+          for (const p of a.paragraphs.slice(1)) rest.append(el('p', { className: 'abstract', textContent: p }));
+          box.append(rest);
+        }
+      }
+      const row = el('div', { className: 'row' });
+      const saved = () => store.saved.some((x) => x.doi === a.doi);
+      const save = el('button', { type: 'button', className: 'btn', textContent: saved() ? 'Saved' : 'Save to the reading list' });
+      save.addEventListener('click', () => {
+        if (saved()) store.saved = store.saved.filter((x) => x.doi !== a.doi);
+        else store.saved.unshift(a);
+        keep(); save.textContent = saved() ? 'Saved' : 'Save to the reading list'; listReading();
+      });
+      const cite = el('button', { type: 'button', className: 'btn', textContent: 'Cite: APA and BibTeX' });
+      const boxCite = el('div', { className: 'cite', hidden: true });
+      boxCite.append(el('b', { textContent: 'APA (7th edition)' }), el('pre', { textContent: apaOf(a) }),
+        el('b', { textContent: 'BibTeX' }), el('pre', { textContent: bibtexOf(a) }));
+      const copy = el('button', { type: 'button', className: 'btn', textContent: 'Copy both' });
+      copy.addEventListener('click', async () => {
+        const text = apaOf(a) + '\n\n' + bibtexOf(a);
+        try { await navigator.clipboard.writeText(text); copy.textContent = 'Copied'; } catch (_) { copy.textContent = 'Select and copy it'; }
+        setTimeout(() => { copy.textContent = 'Copy both'; }, 1500);
+      });
+      const details = el('details', { className: 'cite' });
+      details.append(el('summary', { textContent: 'What the registry holds' }),
+        el('pre', { textContent: 'DOI ' + a.doi + '\nPublished ' + (a.date || 'unknown') + '\nVolume ' + (a.volume || '—') + (a.issue ? ', no. ' + a.issue : '') + (a.pages ? ', pages ' + a.pages : '') + '\nReferences ' + a.refs + '\nPapers citing it ' + a.citedBy + (a.licence ? '\nLicence ' + a.licence : '') }));
+      cite.addEventListener('click', () => { boxCite.hidden = !boxCite.hidden; });
+      row.append(save, cite, copy, details);
+      box.append(row, boxCite);
+      return box;
+    }
+    const render = (id, list, empty) => {
+      const box = $(id); box.replaceChildren();
+      if (!list.length) { box.append(el('p', { className: 'empty', textContent: empty || 'Nothing here.' })); return; }
+      for (const a of list) box.append(paperCard(a));
+    };
+
+    // ---- the reading list: on this device, never sent
+    function listReading() {
+      const box = $('readingList'); box.replaceChildren();
+      if (!store.saved.length) { box.append(el('li', { className: 'empty', textContent: 'Nothing saved yet: Save keeps a paper here, on this device, and it opens offline.' })); return; }
+      for (const a of store.saved) {
+        const li = el('li', {}, el('a', { href: a.url, rel: 'noopener noreferrer', target: '_blank', textContent: a.title }));
+        li.append(el('p', { className: 'meta', textContent: (a.byline || '') + ' · ' + (a.dateText || '') + ' · DOI ' + a.doi }));
+        const drop = el('button', { type: 'button', className: 'btn', textContent: 'Remove from the reading list' });
+        drop.addEventListener('click', () => { store.saved = store.saved.filter((x) => x.doi !== a.doi); keep(); listReading(); });
+        li.append(el('div', { className: 'row' }, drop));
+        box.append(li);
+      }
+    }
+    listReading();
+
+    // ---- the latest papers
+    let latest = [], more = PAGE_SIZE;
+    async function loadLatest() {
+      const cached = cache();
+      if (cached && cached.list && cached.list.length && !navigator.onLine) {
+        latest = cached.list; render('latestList', latest.slice(0, more), 'Nothing here yet.'); say('latestNote', 'Offline: showing the papers kept from your last visit (' + new Date(cached.at).toLocaleDateString() + ').');
+        return;
+      }
+      try {
+        const list = await ask({ sort: 'published', order: 'desc' });
+        latest = list; keepCache(list);
+        render('latestList', latest.slice(0, more), 'The registry held no papers.');
+        say('latestNote', latest.length + ' papers read live from the DOI registry.');
+      } catch (e) {
+        const c = cache();
+        if (c && c.list && c.list.length) { latest = c.list; render('latestList', latest.slice(0, more)); say('latestNote', 'The registry did not answer; showing the papers kept from your last visit.', true); }
+        else { render('latestList', []); say('latestNote', 'The registry did not answer: ' + e.message, true); }
+      }
+    }
+    $('more').addEventListener('click', () => { more += PAGE_SIZE; render('latestList', latest.slice(0, more)); if (latest.length <= more) $('more').disabled = true; });
+
+    // ---- the search: the whole archive, asked of the registry
+    async function doSearch(q) {
+      const box = $('searchResults');
+      const query = String(q || '').trim();
+      if (!query) { box.replaceChildren(el('p', { className: 'empty', textContent: 'Type a subject, a place or an author to search the whole archive.' })); say('searchNote', ''); return; }
+      box.replaceChildren(el('p', { className: 'empty', textContent: 'Searching…' }));
+      try {
+        const list = await ask({ 'query.bibliographic': query, sort: 'relevance', order: 'desc', rows: 20 });
+        render('searchResults', list, 'No paper answers that.');
+        say('searchNote', list.length + ' papers for "' + query + '".');
+      } catch (e) {
+        const local = searchOf(latest, query);
+        render('searchResults', local, 'No paper answers that.');
+        say('searchNote', local.length ? local.length + ' of the papers you already loaded.' : 'The registry did not answer: ' + e.message, true);
+      }
+    }
+    $('searchForm').addEventListener('submit', (e) => { e.preventDefault(); doSearch($('q').value); });
+
+    // ---- the volumes, and the papers of one of them
+    let vols = [];
+    async function loadVolumes() {
+      try {
+        const list = await ask({ sort: 'published', order: 'desc', rows: 100 });
+        vols = volumesOf(list);
+        const box = $('volList'); box.replaceChildren();
+        for (const v of vols) {
+          const li = el('li', {});
+          const b = el('button', { type: 'button', className: 'btn', textContent: 'Volume ' + v.volume });
+          b.addEventListener('click', () => showVolume(v));
+          li.append(b, el('span', { className: 'meta', textContent: ' ' + v.count + ' papers here · ' + v.year }));
+          box.append(li);
+        }
+        say('volNote', vols.length + ' volumes in the newest hundred papers.');
+      } catch (e) {
+        say('volNote', 'The registry did not answer: ' + e.message, true);
+      }
+    }
+    async function showVolume(v) {
+      const box = $('volPapers');
+      box.replaceChildren(el('p', { className: 'empty', textContent: 'Reading the volume…' }));
+      const year = v.year || new Date().getFullYear();
+      try {
+        const list = await ask({ filter: 'from-pub-date:' + year + '-01-01,until-pub-date:' + year + '-12-31', sort: 'published', order: 'desc', rows: 100 });
+        const mine = sortNewest(list.filter((a) => a.volume === v.volume));
+        box.replaceChildren(el('h3', { textContent: 'Volume ' + v.volume + ' (' + year + ')' }));
+        if (!mine.length) box.append(el('p', { className: 'empty', textContent: 'The registry did not hold that volume in this year.' }));
+        for (const a of mine) box.append(paperCard(a));
+      } catch (e) { box.replaceChildren(el('p', { className: 'empty', textContent: 'The registry did not answer: ' + e.message })); }
+    }
+
+    // ---- the collections: a subject each, a live search
+    const COLLECTIONS = [
+      { key: 'isotopes', label: 'Isotopes', q: 'stable isotopes geochemistry' },
+      { key: 'carbon', label: 'Deep carbon', q: 'carbon cycle deep carbon' },
+      { key: 'canyon', label: 'Canyons and rivers', q: 'incision canyon river' },
+      { key: 'volcano', label: 'Volcanoes and magmas', q: 'magma volcanism melting' },
+      { key: 'climate', label: 'Past climate', q: 'paleoclimate climate reconstruction' },
+      { key: 'ore', label: 'Ore and minerals', q: 'ore deposit mineralisation' },
+      { key: 'life', label: 'Life in the rocks', q: 'biosphere microbial geobiology' },
+      { key: 'crust', label: 'The crust and the mantle', q: 'crustal mantle geodynamics' },
+    ];
+    async function showCollection(c) {
+      const box = $('collectionPapers');
+      box.replaceChildren(el('p', { className: 'empty', textContent: 'Searching…' }));
+      say('collectionNote', '');
+      try {
+        const list = await ask({ 'query.bibliographic': c.q, sort: 'relevance', order: 'desc', rows: 12 });
+        box.replaceChildren(el('h3', { textContent: c.label }));
+        if (!list.length) box.append(el('p', { className: 'empty', textContent: 'No paper answers that subject yet.' }));
+        for (const a of list) box.append(paperCard(a));
+        say('collectionNote', list.length + ' papers for "' + c.q + '".');
+      } catch (e) { box.replaceChildren(el('p', { className: 'empty', textContent: 'The registry did not answer: ' + e.message })); say('collectionNote', 'The registry did not answer.', true); }
+    }
+    {
+      const chips = $('collectionChips');
+      for (const c of COLLECTIONS) {
+        const b = el('button', { type: 'button', textContent: c.label, title: c.q });
+        b.addEventListener('click', () => { const u = new URL(location.href); u.searchParams.set('collection', c.key); history.replaceState(null, '', u); showCollection(c); });
+        chips.append(b);
+      }
+    }
+
+    // ---- the length of a paper, worked out on the device
+    function units() {
+      const u = pubUnits({ words: +$('words').value || 0, figures: +$('figures').value || 0, tables: +$('tables').value || 0, equations: +$('equations').value || 0, limit: +$('kind').value || 45 });
+      const rows = [
+        ['Words', u.words.toLocaleString() + ' = ' + u.textPU.toFixed(1) + ' PU'],
+        ['Figures and tables', (u.figures + u.tables) + ' = ' + u.figPU.toFixed(1) + ' PU'],
+        ['Equations', u.equations + (u.equations ? ' = ' + u.eqPU + ' PU' + (u.eqExtraPU ? ' + ' + u.eqExtraPU + ' excess PU' : '') : ' = 0 PU')],
+        ['Total length', u.pu + ' PU'],
+        ['Free limit', u.limit + ' PU'],
+        ['Over the limit', u.over ? u.over + ' PU = $' + u.overFee.toLocaleString() : 'none'],
+        ['Excess equation units', u.eqExtraPU ? u.eqExtraPU + ' PU = $' + u.eqFee.toLocaleString() : 'none'],
+        ['Fee', u.fee ? '$' + u.fee.toLocaleString() : '$0'],
+      ];
+      const dl = $('puStats'); dl.replaceChildren();
+      for (const [k, v] of rows) { dl.append(el('dt', { textContent: k }), el('dd', { textContent: v })); }
+      dl.lastChild.className = u.fee ? 'warn' : 'good';
+      const short = u.limit === 4 && u.pu > 4;
+      say('puNote', (short ? 'A short-form paper may be 4 PU at most: this one is ' + u.pu + ' PU. ' : '')
+        + 'The count includes the abstract, the notes, the acknowledgments, the contributions, the data statement, the appendices and the references; figure and table captions are left out. '
+        + 'The total is rounded up to the next whole unit. The guidelines\' own example (8,000 words, 4 figures, 32 equations) prints 23 PU, which leaves out the 3 excess equation units the same rule charges: with them it is ' + puWithoutEquationExtra(u) + ' + ' + u.eqExtraPU + '.');
+    }
+    for (const id of ['words', 'figures', 'tables', 'equations', 'kind']) $(id).addEventListener('input', units);
+    units();
+
+    // ---- the board, as the journal lists it (read 7 November 2026)
+    const EDITORS = [
+      ['Mark T. Brandon', 'Yale University', 'Tectonics, deformation processes, thermochronology, geomorphology, paleotopography'],
+      ['C. Page Chamberlain', 'Stanford University', 'Geochemistry'],
+      ['Louis A. Derry', 'Cornell University', 'Biogeochemistry, isotope geochemistry, elemental cycling, Earth surface processes, paleoceanography'],
+      ['Michael T. Hren', 'University of Connecticut', 'Stable isotopes, geochemistry, paleoclimate, paleotopography, biomarkers'],
+      ['Jun Korenaga', 'Yale University', 'Geodynamics, geophysics, geochemistry'],
+      ['Francis Macdonald', 'University of California, Berkeley', 'Geology, stratigraphy, tectonics, paleoclimate'],
+    ];
+    const ASSOCIATES = [
+      ['Jay J. Ague', 'Yale University', 'Petrology, mineralogy, high-temperature geochemistry, thermodynamics, kinetics'],
+      ['Ethan Baxter', 'Boston College', 'Geochemistry, geochronology, petrology, tectonics'],
+      ['Edward W. Bolton', 'Yale University', 'Reactive transport modeling'],
+      ['Claire E. Bucholz', 'California Institute of Technology', 'Igneous and metamorphic petrology, geochemistry'],
+      ['Don E. Canfield', 'University of Southern Denmark', 'Biogeochemistry, geobiology, microbial ecology'],
+      ['William H. Casey', 'University of California, Davis', 'Solution chemistry, reaction kinetics, aqueous geochemistry'],
+      ['Nadja Drabon', 'Harvard University', 'Sedimentology, stratigraphy, geochronology'],
+      ['Daniel E. Ibarra', 'Brown University', 'Isotopes, paleoclimate, lakes, soils, caves, geochemistry, reactive transport, Quaternary geochronology, surface processes'],
+      ['C. Brenhin Keller', 'Dartmouth College', 'Igneous petrology, geochemistry, geochronology, thermochronology, geoinformatics'],
+      ['Kimberly Lau', 'Pennsylvania State University', 'Isotope geochemistry, Earth history, biogeochemistry'],
+      ['Xian-Hua Li', 'Institute of Geology and Geophysics, Chinese Academy of Sciences', 'Geochronology, igneous petrology and geochemistry, Precambrian geology'],
+      ['Timothy W. Lyons', 'University of California, Riverside', 'Biogeochemistry, geobiology, astrobiology, paleoceanography'],
+      ['Evangelos Moulas', 'Johannes Gutenberg University', 'Petrology, metamorphic processes, thermodynamics in Earth systems, numerical geodynamic modelling'],
+      ['Andreas Mulch', 'Senckenberg Biodiversity and Climate Research Centre', 'Paleoclimate, tectonics, stable isotopes, geology'],
+      ['Jonathan L. Payne', 'Stanford University', 'Paleobiology, carbon cycle, Earth history'],
+      ['Ann Pearson', 'Harvard University', 'Biogeochemistry, organic geochemistry, light stable isotope geochemistry, geomicrobiology, carbon cycle, nitrogen cycle'],
+      ['Brad Sageman', 'Northwestern University', 'Stratigraphy, geochemistry'],
+      ['Zachary Sharp', 'University of New Mexico', 'Stable isotopes'],
+      ['Mark Albert Torres', 'Rice University, Department of Earth, Environmental, and Planetary Sciences', 'Biogeochemistry, surface processes, chemical weathering'],
+      ['Richard J. Walker', 'University of Maryland', 'Trace element and radiogenic isotope geochemistry, mantle geochemistry, early solar system processes'],
+      ['A. Joshua (Josh) West', 'University of Southern California', 'Low-temperature geochemistry, geomorphology, erosion, weathering, carbon cycle, biogeochemistry'],
+      ['Simon A. Wilde', 'Curtin University', 'Geochemistry, geochronology, tectonics, petrology'],
+      ['Matthew J. Winnick', 'University of Massachusetts Amherst', 'Reactive transport modeling, global biogeochemical cycles, chemical weathering, stable isotopes'],
+      ['Robert Wintsch', 'Wesleyan University', 'Structural petrology, geochronology'],
+      ['Guochun Zhao', 'The University of Hong Kong', 'Precambrian geology, metamorphic geology, supercontinents'],
+    ];
+    const ADVISORY = [['Jay J. Ague', 'Yale University'], ['David A. Evans', 'Yale University'], ['Peter Raymond', 'Yale University']];
+    function people(id, rows, withFields) {
+      const box = $(id); box.replaceChildren();
+      for (const [name, where, fields] of rows) {
+        const li = el('li', {}, el('b', { textContent: name }), el('span', { className: 'meta', textContent: ' · ' + where }));
+        if (withFields && fields) li.append(el('p', { className: 'meta', textContent: fields }));
+        box.append(li);
+      }
+    }
+    people('editors', EDITORS, true); people('associates', ASSOCIATES, true); people('advisory', ADVISORY, false);
+
+    // ---- what the link asks for
+    const q = new URLSearchParams(location.search);
+    if (q.get('q')) { $('q').value = q.get('q'); doSearch($('q').value); $('search').scrollIntoView({ block: 'start' }); }
+    else if (q.get('collection')) { const c = COLLECTIONS.find((x) => x.key === q.get('collection')); if (c) { showCollection(c); $('collections').scrollIntoView({ block: 'start' }); } }
+    else if (q.get('tab')) { const t = $(q.get('tab')); if (t) t.scrollIntoView({ block: 'start' }); }
+    if (q.get('vol')) { loadVolumes().then(() => { const v = vols.find((x) => x.volume === q.get('vol')); if (v) showVolume(v); }); }
+
+    loadLatest();
+    loadVolumes();
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

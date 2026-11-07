@@ -107,6 +107,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /prizes/ | An account that keeps your things on every device | partial | wheelofgold.com |
 | 1 | /markets/caps/ | An account that keeps your things on every device | partial | companiesmarketcap.com |
 | 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
+| 1 | /journal/ | An RSS feed of the newest papers | missing | ajsonline.org |
 | 1 | /scores/sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
@@ -123,4 +124,3 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
-| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |

@@ -21,6 +21,70 @@
  },
  "sites": [
   {
+   "site": "flashscore.com",
+   "url": "https://flashscore.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-07T17:17:31Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed flashscore.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "onefootball.com",
+   "url": "https://onefootball.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-07T17:16:22Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed onefootball.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "isitchristmas.com",
+   "url": "https://isitchristmas.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-07T17:15:54Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "Passed isitchristmas.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   },
+   "pageWas": "/is-it/christmas"
+  },
+  {
    "site": "dns.google",
    "url": "https://dns.google/",
    "status": "read, no page family fits it",
@@ -187,70 +251,6 @@
    "sources": [
     "domains/tower-self.json"
    ]
-  },
-  {
-   "site": "flashscore.com",
-   "url": "https://flashscore.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-07T16:33:23Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed flashscore.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "onefootball.com",
-   "url": "https://onefootball.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-07T16:32:21Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed onefootball.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "isitchristmas.com",
-   "url": "https://isitchristmas.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-07T16:31:53Z",
-   "page": "",
-   "lane": "",
-   "took": "",
-   "why": "Passed isitchristmas.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   },
-   "pageWas": "/is-it/christmas"
   },
   {
    "site": "wheelroot.com",

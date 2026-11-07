@@ -79,5 +79,6 @@ export default {
     'what is a test',
     'test the weather',
   ],
+  match(lower, text) { return isVerifyPack(text || lower); },
   run,
 };

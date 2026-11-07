@@ -1226,3 +1226,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-06T23:27:20Z | verse | build | Versus: took on no site (also read: 4 no-family, 3 walled, 1 not-judged); the model answered 401 on 1 of 8 reads, so those were not judged; next dalyfeds.com (the target)
 2026-11-07T09:10:37Z | verse | build | Versus: took on no site (also read: 2 no-family, 5 walled, 1 gone); next protopage.com (the target)
 2026-11-07T16:41:03Z | verse | build | Versus: took on no site (also read: 2 walled, 6 no-family); next oneyeard.com (the target)
+2026-11-07T19:57:54Z | claude | grow | the research journal page reads a peer-reviewed journal's papers live from the DOI registry and works out the rules for authors

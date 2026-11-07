@@ -215,6 +215,33 @@
   "hits": {},
   "surface": []
  },
+ "ajsonline.org": {
+  "url": "https://ajsonline.org/",
+  "scanned": "2026-11-07",
+  "status": 200,
+  "title": "American Journal of Science",
+  "hits": {},
+  "surface": [
+   "For Authors",
+   "Articles",
+   "Latest Articles",
+   "Issues",
+   "Search Articles",
+   "Special Collections",
+   "Editorial Board",
+   "Policies",
+   "Submit a Manuscript",
+   "Browse Articles",
+   "Learn about publication units",
+   "Snowball Earth",
+   "View Collection",
+   "Metal Isotopes in the Earth System",
+   "Alfred Kröner Memorial Collection",
+   "Facebook",
+   "RSS",
+   "↑ Back to Top"
+  ]
+ },
  "aljazeera.com": {
   "url": "https://www.aljazeera.com/",
   "scanned": "2026-10-28",

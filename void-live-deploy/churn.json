@@ -1,251 +1,147 @@
 {
- "at": "2026-11-05T08:58:50.251Z",
+ "at": "2026-11-07T19:07:25.686Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "domains/conductor.json",
-   "changes": 157
-  },
-  {
-   "file": "docs/HANDOFF-GAPS.md",
-   "changes": 54
-  },
-  {
-   "file": "tools/bench.json",
-   "changes": 49
-  },
-  {
-   "file": "domains/growth-inbox.md",
-   "changes": 45
-  },
-  {
-   "file": "tools/handoff-e2e.mjs",
-   "changes": 39
-  },
-  {
-   "file": "domains/tower-self.json",
-   "changes": 38
-  },
-  {
-   "file": "docs/PARITY/github.md",
-   "changes": 34
-  },
-  {
-   "file": "docs/PARITY/hugging-face.md",
-   "changes": 34
-  },
-  {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 34
-  },
-  {
-   "file": "tools/real-pages.mjs",
-   "changes": 34
+   "changes": 111
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 33
+   "changes": 82
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 33
-  },
-  {
-   "file": "tools/families.mjs",
-   "changes": 32
+   "changes": 82
   },
   {
    "file": "domains/handoff.md",
-   "changes": 31
-  },
-  {
-   "file": "void-live-deploy/tools/index.html",
-   "changes": 25
-  },
-  {
-   "file": "void-live-deploy/converter/app.js",
-   "changes": 24
-  },
-  {
-   "file": "void-live-deploy/lib/converter.js",
-   "changes": 24
-  },
-  {
-   "file": "void-live-deploy/lib/guard.js",
-   "changes": 24
-  },
-  {
-   "file": "tools/converter.test.mjs",
-   "changes": 23
-  },
-  {
-   "file": "void-live-deploy/brain/index.html",
-   "changes": 23
-  },
-  {
-   "file": "docs/PARITY/google-search.md",
-   "changes": 22
-  },
-  {
-   "file": "tools/bench.mjs",
-   "changes": 22
-  },
-  {
-   "file": "tools/openapi-check.mjs",
-   "changes": 22
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 22
-  },
-  {
-   "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 22
-  },
-  {
-   "file": "void-live-deploy/lib/tower.js",
-   "changes": 22
-  },
-  {
-   "file": "tools/team.test.mjs",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
-   "changes": 21
-  },
-  {
-   "file": "void-live-deploy/functions/api/team.js",
-   "changes": 20
-  },
-  {
-   "file": "void-live-deploy/sw.js",
-   "changes": 20
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 20
+   "changes": 65
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 20
+   "changes": 64
   },
   {
-   "file": "void-live-deploy/lib/seo.js",
-   "changes": 19
+   "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
+   "changes": 63
   },
   {
-   "file": "docs/TAGTEAM.md",
-   "changes": 18
+   "file": "domains/tower-self.json",
+   "changes": 46
   },
   {
-   "file": "void-live-deploy/skills/verse-brain.js",
-   "changes": 18
+   "file": "void-live-deploy/markets/currency-converter/index.html",
+   "changes": 31
   },
   {
-   "file": "docs/PARITY/README.md",
-   "changes": 17
+   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 29
   },
   {
-   "file": "tools/card-cycle.json",
-   "changes": 17
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 28
   },
   {
-   "file": "tools/grow-self.state.json",
-   "changes": 17
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 28
   },
   {
-   "file": "void-live-deploy/converter/index.html",
-   "changes": 17
+   "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
+   "changes": 28
+  },
+  {
+   "file": "tools/real-pages.mjs",
+   "changes": 26
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
+   "changes": 25
   },
   {
    "file": "void-live-deploy/bots/registry.json",
-   "changes": 16
+   "changes": 22
   },
   {
-   "file": "void-live-deploy/fanfic/index.html",
-   "changes": 16
-  },
-  {
-   "file": "docs/PARITY/onlineconverter.com.md",
-   "changes": 15
-  },
-  {
-   "file": "docs/SALVAGE.md",
-   "changes": 15
-  },
-  {
-   "file": "tools/word-math.golden.json",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/void.asks.json",
-   "changes": 15
-  },
-  {
-   "file": "tools/flakes.json",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/lib/team.js",
-   "changes": 14
+   "file": "docs/PARITY/lichess.md",
+   "changes": 21
   },
   {
    "file": "void-live-deploy/salvage.json",
-   "changes": 14
+   "changes": 21
   },
   {
-   "file": "void-live-deploy/skills/stopwatch.js",
-   "changes": 14
+   "file": "docs/SALVAGE.md",
+   "changes": 20
   },
   {
-   "file": "docs/PARITY/gmail.md",
-   "changes": 13
+   "file": "void-live-deploy/assimilated.json",
+   "changes": 19
   },
   {
    "file": "domains/autosalvage.unified.json",
+   "changes": 18
+  },
+  {
+   "file": "void-live-deploy/lib/guard.js",
+   "changes": 17
+  },
+  {
+   "file": "docs/PARITY/github.md",
+   "changes": 16
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 16
+  },
+  {
+   "file": "tools/salvaged-bots.test.mjs",
+   "changes": 16
+  },
+  {
+   "file": "tools/site-test.json",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/bots/salvaged.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/color/colour-picker-tool/index.html",
+   "changes": 15
+  },
+  {
+   "file": "tools/conductor-core.mjs",
+   "changes": 14
+  },
+  {
+   "file": "tools/families.mjs",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/brain/index.html",
+   "changes": 14
+  },
+  {
+   "file": "docs/PARITY/google-search.md",
    "changes": 13
   },
   {
-   "file": "tools/fanfic.test.mjs",
+   "file": "docs/PARITY/youtube.md",
    "changes": 13
   },
   {
-   "file": "tools/toolkit.test.mjs",
+   "file": "void-live-deploy/team/index.html",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/brain/app.js",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/code-review/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/lib/brain-mind.js",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/lib/brain.js",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tower.size.json",
+   "file": "void-live-deploy/tower.target.json",
    "changes": 13
   }
  ]

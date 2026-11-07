@@ -384,6 +384,21 @@ export const SPECS = {
   '/markets/screener/': async (t) => { await t.clickText('Screen'); await t.p.waitForTimeout(3000); t.ok((await t.p.locator('main tr, main li').count()) > 3, 'the screener returns rows'); },
   '/metronome/': async (t) => { await t.fill('#bpmIn', '90'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(200); t.ok((await t.text('#bpmOut')).trim() === '90', 'tempo set to 90'); await t.click('#play'); await t.p.waitForTimeout(800); t.ok((await t.act()).sound > 0, 'Start makes a click sound'); await t.click('#play'); await t.share('#shareBtn'); },
   '/news/': async (t) => { await t.waitText('#status', /stories/, 20000); t.ok(/\d+ stories/.test(await t.text('#status')), 'real stories loaded: ' + (await t.text('#status'))); },
+  '/journal/': async (t) => {  // the papers come from the DOI registry (live), the length of a paper is worked out here (never live)
+    await t.waitText('#latestNote', /papers read live|registry did not answer|Offline/, 25000);
+    const note = await t.text('#latestNote'), papers = await t.p.locator('#latestList .paper').count();
+    t.ok(/papers read live/.test(note) ? papers >= 5 : /registry did not answer|Offline/.test(note), 'the papers are read from the registry: ' + note.slice(0, 80));
+    if (papers) {
+      const list = await t.p.locator('#latestList').innerText();
+      t.ok(/10\.2475/.test(list), 'each paper carries its DOI'); t.ok(/Volume \d+/.test(list), 'each paper carries its volume');
+      t.ok(/Abstract/.test(list), 'the abstract of each paper is there, whole');
+    }
+    await t.fill('#q', 'canyon'); await t.click('#searchGo'); await t.waitText('#searchNote', /papers for|did not answer/, 20000);
+    t.ok(/papers for|did not answer/.test(await t.text('#searchNote')), 'a search answers with papers or says so: ' + (await t.text('#searchNote')).slice(0, 80));
+    await t.fill('#words', '15000'); await t.fill('#figures', '10'); await t.p.waitForTimeout(400);
+    const pu = (await t.text('#puStats')).replace(/\s+/g, ' ');
+    t.ok(/45 PU/.test(pu), 'the length of a paper is worked out: ' + pu.slice(0, 140));
+  },
   '/team/': async (t) => {  // a visitor: the workspace's channels, agents and waiting jobs from /api/team, the gate instead of messages, a bad key refused
     await t.waitText('#wsline', /jobs? waiting/, 15000); t.ok(/jobs? waiting/.test(await t.text('#wsline')), 'the workspace line reads the API: ' + (await t.text('#wsline')));
     t.ok((await t.p.locator('#chans li').count()) >= 2, '#work and #general are listed'); t.ok(await t.p.locator('#gate').isVisible(), 'a visitor gets the join form, not the messages');
