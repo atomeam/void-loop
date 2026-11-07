@@ -3867,6 +3867,20 @@
      "streak": 4
     },
     {
+     "name": "monitor-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-07",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
+     "name": "verify-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-07",
+     "last_tested_by": "the daily smoke test"
+    },
+    {
      "name": "business-clarify",
      "tier": "proven",
      "why": "2 browser-suite mentions, 3 real asks in the benchmark",
