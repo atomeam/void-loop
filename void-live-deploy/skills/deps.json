@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1206,
+ "counted": 1207,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1130,6 +1130,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-fft.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 0
+  },
+  {
    "file": "lib/rap-kit.js",
    "skills": 2,
    "direct": 0,
@@ -1144,18 +1151,11 @@
    "tests": 2
   },
   {
-   "file": "lib/rap-fft.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 0
-  },
-  {
    "file": "lib/rap-ears.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 7,
-   "tests": 4
+   "dependants": 8,
+   "tests": 5
   },
   {
    "file": "lib/recipes.js",
@@ -1844,6 +1844,13 @@
    "tests": 1
   },
   {
+   "file": "lib/genre-score.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/imgfit.js",
    "skills": 1,
    "direct": 1,
@@ -1925,7 +1932,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/avatar.js",
@@ -2117,7 +2124,7 @@
    "tests": 1
   },
   {
-   "file": "lib/genre-score.js",
+   "file": "lib/genre-master.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -8805,11 +8812,21 @@
     "skills/riddle-gen.js"
    ]
   },
+  "lib/genre-master.js": {
+   "imports": [
+    "lib/rap-ears.js",
+    "lib/genre-score.js"
+   ],
+   "importedBy": [
+    "skills/music.js"
+   ]
+  },
   "lib/genre-score.js": {
    "imports": [
     "lib/rap-ears.js"
    ],
    "importedBy": [
+    "lib/genre-master.js",
     "skills/music.js"
    ]
   },
@@ -12093,6 +12110,7 @@
     "lib/rap-fft.js"
    ],
    "importedBy": [
+    "lib/genre-master.js",
     "lib/genre-score.js",
     "lib/rap-listen.js",
     "lib/rap-song.js"
@@ -12111,6 +12129,7 @@
     "lib/rap-video.js"
    ],
    "reachedBy": [
+    "lib/genre-master.js",
     "lib/genre-score.js",
     "lib/rap-listen.js",
     "lib/rap-song.js",
@@ -17957,7 +17976,8 @@
    "imports": [
     "lib/compose.js",
     "lib/arrange.js",
-    "lib/genre-score.js"
+    "lib/genre-score.js",
+    "lib/genre-master.js"
    ],
    "importedBy": []
   },

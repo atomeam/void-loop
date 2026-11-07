@@ -1,5 +1,5 @@
 {
- "at": "2026-11-07T20:35:22.315Z",
+ "at": "2026-11-07T21:03:53.081Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -10,19 +10,19 @@
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 87
+   "changes": 89
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 87
+   "changes": 89
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 72
+   "changes": 73
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 71
+   "changes": 72
   },
   {
    "file": "domains/handoff.md",
@@ -62,7 +62,7 @@
   },
   {
    "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
-   "changes": 24
+   "changes": 25
   },
   {
    "file": "void-live-deploy/bots/registry.json",
@@ -70,6 +70,10 @@
   },
   {
    "file": "docs/PARITY/lichess.md",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/assimilated.json",
    "changes": 21
   },
   {
@@ -81,12 +85,8 @@
    "changes": 20
   },
   {
-   "file": "void-live-deploy/assimilated.json",
-   "changes": 20
-  },
-  {
    "file": "tools/site-test.json",
-   "changes": 19
+   "changes": 20
   },
   {
    "file": "domains/autosalvage.unified.json",
