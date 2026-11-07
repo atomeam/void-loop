@@ -19,6 +19,16 @@
    "listed": 1,
    "defectsBefore": 10,
    "defectsAfter": 2
+  },
+  {
+   "at": "2026-11-07T10:32:29.633Z",
+   "run": 3,
+   "measured": 30,
+   "clean": 19,
+   "fixed": 10,
+   "listed": 1,
+   "defectsBefore": 100,
+   "defectsAfter": 43
   }
  ],
  "pages": {
@@ -880,6 +890,509 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0.013,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f415-webxr-causal-attention-lattice/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.013,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/free/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.698,
+    "overflow": 105
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.698,
+    "overflow": 105
+   },
+   "rules": 2,
+   "moved": 0,
+   "why": "(a layout shift of 0.698 that no rule fixes: listed for a builder)"
+  },
+  "/jobs/tags/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.012,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/jobs/companies/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.012,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/jobs/categories/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f550-webxr-gaze-predictive-mlp-agents/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f510-webgpu-quantum-walk-observer-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f512-webgpu-entangled-pair-portal-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 314
+   },
+   "state": "clean"
+  },
+  "/lab/f449-orient-mlp-webgpu-pbf-field/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/159-local-sensation-not-claim/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 5,
+    "contrast": 3,
+    "targets": 1,
+    "unstyled": 1,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.029
+  },
+  "/lab/152-local-incubate-not-attest/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 5,
+    "contrast": 3,
+    "targets": 1,
+    "unstyled": 1,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 50
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 50
+   },
+   "rules": 3,
+   "moved": 0.038
+  },
+  "/lab/f0489-orientation-mlp-ising-domain-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 26
+   },
+   "state": "clean"
+  },
+  "/lab/f315-webgpu-softbody-policy-dom-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 4,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 0.09,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.095,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.022
+  },
+  "/lab/169-local-felt-not-attest/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 4,
+    "contrast": 3,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.002,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.073
+  },
+  "/lab/f296-decision-tree-spatial-orbs/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f293-orientation-hybrid-dom-mlp-persistence/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 4,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.18
+  },
+  "/lab/f511-webgpu-memory-palace-evolutionary-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f0487-webgpu-lenia-policy-portal-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f551-orientation-evo-dom-physics-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 5,
+    "contrast": 5,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 5,
+   "moved": 0.003
+  },
+  "/lab/f460-spatial-audio-evolutionary-agents/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 94
+   },
+   "state": "clean"
+  },
+  "/lab/f519-webgpu-vectorfield-policy-dom-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f579-attention-flow-glyph-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 155
+   },
+   "state": "clean"
+  },
+  "/lab/f598-broadcast-sealed-rnn-orientation-dom-swarm/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 3,
+    "contrast": 3,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.027
+  },
+  "/lab/160-local-span-not-clock/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 4,
+    "contrast": 3,
+    "targets": 0,
+    "unstyled": 1,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.027
+  },
+  "/lab/f546-webgpu-self-vision-particle-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f548-webgpu-semantic-embedding-swarm-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.108,
+    "overflow": 69
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.108 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f044-neural-implicit-vector-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 6
+   },
+   "state": "clean"
+  },
+  "/lab/f043-webgpu-compute-nca-pointer-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f606-webgpu-som-spatial-dom-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 63,
+    "contrast": 57,
+    "targets": 3,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 2.293,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 35,
+    "contrast": 32,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 2.055,
+    "overflow": 0
+   },
+   "rules": 60,
+   "moved": 0.023,
+   "why": "(a layout shift of 2.293 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f606-webrtc-sealed-genome-webgpu-swarm-mind/": {
+   "at": "2026-11-07T10:32:29.633Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
     "overflow": 0
    },
    "state": "clean"
