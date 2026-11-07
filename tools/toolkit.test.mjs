@@ -164,7 +164,7 @@ test('the wheel page\'s card opens on the wheel open there: every entry and weig
 });
 
 test('the translate page\'s card translates the text in the box, exactly as typed, between the page\'s own languages; no word in it sends it to another skill', async () => {
-  const C = await import('../void-live-deploy/lib/translate-card.js'), T = (await import('../void-live-deploy/skills/translate.js')).default;
+  const C = await import('../void-live-deploy/lib/translate-card.js'), TM = await import('../void-live-deploy/skills/translate.js'), T = TM.default;
   const texts = ['hello', 'I hate rainy weather, will it rain tomorrow?', 'tip 20% on 50', 'is it christmas in french', 'line one\nline two', 'Zoë’s café 😀 日本', '"quoted" #tag', 'set a timer for 5 minutes', 'what is cat in german'];
   const pairs = [['auto', 'es', undefined, 'spanish'], ['en', 'fr', 'english', 'french'], ['de', 'zh', 'german', 'chinese'], ['auto', 'tl', undefined, 'filipino'], ['af', 'ja', undefined, 'japanese']];
   for (const t of texts) for (const [from, to, fromName, toName] of pairs) {
@@ -176,6 +176,14 @@ test('the translate page\'s card translates the text in the box, exactly as type
   assert.equal(C.cardAsk('hello', 'auto', 'af'), '', 'a language the stage cannot ask for: the example');
   assert.equal(C.cardAsk('x'.repeat(1001), 'auto', 'es'), '', 'past 1000 characters: the example, so a long text does not go in a link');
   assert.equal(T.translateOf('translate #blessed to spanish').q, '#blessed', 'a typed tag is not a card code'); assert.equal(T.translateOf('translate hello to spanish').q, 'hello');
+  assert.deepEqual([T.translateOf('translate spring').q, T.translateOf('translate spring').to], ['spring', null], 'no language named: the card asks which, it does not guess');
+  assert.deepEqual([T.translateOf('comment dit-on bonjour en anglais').q, T.translateOf('comment dit-on bonjour en anglais').to], ['bonjour', 'english'], 'the French way of asking, answered in the language named');
+  assert.deepEqual([T.translateOf('comment dire bonjour').q, T.translateOf('comment dire bonjour').to], ['bonjour', 'english'], 'no language named in French: English, the language the ask is in');
+  assert.equal(T.translateOf('comment dit-on merci en espagnol').to, 'spanish', 'a French language name maps to the stage name');
+  assert.equal(TM.pocketOf('bonjour', 'english'), 'Hello', 'a French greeting is answered in English even when both translators refuse');
+  assert.equal(TM.pocketOf('gracias', 'english'), 'Thank you');
+  assert.equal(await firstSkill('translate spring'), 'translate', 'the stage gives a bare translate ask to the translate skill');
+  assert.equal(await firstSkill('comment dit-on bonjour en anglais'), 'translate', 'and the French phrasing too');
   const src = fs.readFileSync(new URL('../void-live-deploy/translate/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*C\.cardAsk\(\$\('in'\)\.value,\s*state\.from,\s*state\.to\)/, 'the page gives its card the text box and its two languages');
 });

@@ -1,10 +1,10 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 80000,
- "swept": 78388,
+ "cursor": 160000,
+ "swept": 156719,
  "lap": 0,
- "at": "2026-11-06",
+ "at": "2026-11-07",
  "smallest": [
   {
    "rank": 204,
@@ -67,6 +67,15 @@
    "bytes": 796,
    "words": 2,
    "title": "Opera News",
+   "plain": false
+  },
+  {
+   "rank": 120104,
+   "host": "milkie.cc",
+   "controls": 0,
+   "bytes": 850,
+   "words": 1,
+   "title": "Milkie",
    "plain": false
   },
   {
@@ -238,6 +247,24 @@
    "bytes": 498,
    "words": 6,
    "title": "Learn more about Cloudflare Web Analytics",
+   "plain": false
+  },
+  {
+   "rank": 80022,
+   "host": "1ts21.top",
+   "controls": 1,
+   "bytes": 556,
+   "words": 6,
+   "title": "Powered by Trafficshop",
+   "plain": false
+  },
+  {
+   "rank": 120024,
+   "host": "digitalsogame.com",
+   "controls": 1,
+   "bytes": 1132,
+   "words": 21,
+   "title": "Saung Digital",
    "plain": false
   },
   {

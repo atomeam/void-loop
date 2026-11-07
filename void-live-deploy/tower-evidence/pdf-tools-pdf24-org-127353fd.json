@@ -4,9 +4,9 @@
   "speed": {
    "verdict": "worse",
    "verse": 201,
-   "best": 119,
-   "evidence": "Verse (/pdf/suite/) 201 ms to the load event (median of 3, phone width) vs tools.pdf24.org 119 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "best": 142,
+   "evidence": "Verse (/pdf/suite/) 201 ms to the load event (median of 3, phone width) vs tools.pdf24.org 142 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:21:39.392Z",
    "was": "equal-and-better",
    "siteRead": true
   },
@@ -15,7 +15,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/pdf/suite/) 3 of 3 loads answered vs tools.pdf24.org 3 of 3 loads answered",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   },
   "mobile": {
@@ -23,7 +23,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/pdf/suite/) 0 px sideways overflow at 390 px vs tools.pdf24.org 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   },
   "accessibility": {
@@ -31,7 +31,7 @@
    "verse": 0,
    "best": 3,
    "evidence": "Verse (/pdf/suite/) 0 unnamed controls or images vs tools.pdf24.org 3 unnamed controls or images",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   },
   "offline": {
@@ -39,7 +39,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/pdf/suite/) 1 (1: the page shows itself again with the network cut) vs tools.pdf24.org 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   },
   "sharing": {
@@ -47,7 +47,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/pdf/suite/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs tools.pdf24.org 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   },
   "accuracy": {
@@ -55,7 +55,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/pdf/suite/) 3 of 3 right against the worked-out answer; judged against the standard, not tools.pdf24.org (the site is not asked)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "of": 3
   },
   "design polish": {
@@ -63,7 +63,7 @@
    "verse": 0,
    "best": 1,
    "evidence": "Verse (/pdf/suite/) 0 design defects vs tools.pdf24.org 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), tools.pdf24.org (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   },
   "merge and split": {
@@ -71,7 +71,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/pdf/suite/) 2 of 2 shown vs tools.pdf24.org 2 of 2 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -81,7 +81,7 @@
    "verse": 3,
    "best": 2,
    "evidence": "Verse (/pdf/suite/) 3 of 3 shown vs tools.pdf24.org 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "of": 3,
    "part": true,
    "siteRead": true
@@ -91,7 +91,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/pdf/suite/) 1 of 1 shown vs tools.pdf24.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -101,7 +101,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/pdf/suite/) 1 of 1 shown vs tools.pdf24.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -111,7 +111,7 @@
    "verse": 19,
    "best": 13,
    "evidence": "Verse (/pdf/suite/) 19 of 19 things a full answer shows vs tools.pdf24.org 13 of 19 things a full answer shows (Verse lacks: none; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "of": 19,
    "siteRead": true
   },
@@ -120,7 +120,7 @@
    "verse": 7,
    "best": 3.5,
    "evidence": "Verse (/pdf/suite/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs tools.pdf24.org 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T14:55:11.656Z",
+   "at": "2026-11-07T13:21:39.392Z",
    "siteRead": true
   }
  }

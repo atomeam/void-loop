@@ -2,115 +2,105 @@
  "id": "colour",
  "rows": {
   "speed": {
-   "verdict": "better",
-   "verse": 215,
-   "best": 371,
-   "evidence": "Verse (/color/?c=ff5733) 215 ms to the load event (median of 3, phone width) vs color-hex.com 371 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "verdict": "equal-and-better",
+   "verse": 144,
+   "best": 200,
+   "evidence": "Verse (/color/?c=ff5733) 144 ms to the load event (median of 3, phone width) vs the bar (color-hex.com unreachable) 200 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "mobile": {
    "verdict": "equal-and-better",
    "verse": 0,
    "best": 0,
-   "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs color-hex.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "evidence": "Verse (/color/?c=ff5733) 0 px sideways overflow at 390 px vs the bar (color-hex.com unreachable) 0 px sideways overflow at 390 px",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "accessibility": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 0,
-   "best": 2,
-   "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs color-hex.com 2 unnamed controls or images",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "best": 0,
+   "evidence": "Verse (/color/?c=ff5733) 0 unnamed controls or images vs the bar (color-hex.com unreachable) 0 unnamed controls or images",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "reliability": {
-   "verdict": "better",
+   "verdict": "incomplete",
+   "incomplete": true,
    "verse": 3,
-   "best": 1,
-   "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered vs color-hex.com 1 of 3 loads answered",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "best": null,
+   "evidence": "Verse (/color/?c=ff5733) 3 of 3 loads answered; color-hex.com turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "offline": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 1,
-   "best": 0,
-   "evidence": "Verse (/color/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs color-hex.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "best": 1,
+   "evidence": "Verse (/color/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs the bar (color-hex.com unreachable) 1 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "sharing": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 4,
-   "best": 2,
-   "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs color-hex.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "best": 4,
+   "evidence": "Verse (/color/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (color-hex.com unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "accuracy": {
    "verdict": "equal-and-better",
    "verse": 4,
    "best": 4,
-   "evidence": "Verse (/color/?c=ff5733) 4 of 4 right against the worked-out answer; judged against the standard, not color-hex.com (the site is not asked)",
-   "at": "2026-11-06T06:29:07.712Z",
+   "evidence": "Verse (/color/?c=ff5733) 4 of 4 right against the worked-out answer; judged against the standard",
+   "at": "2026-11-07T13:13:29.120Z",
    "of": 4
   },
   "completeness": {
-   "verdict": "better",
+   "verdict": "worse",
    "verse": 18,
-   "best": 13,
-   "evidence": "Verse (/color/?c=ff5733) 18 of 19 things a full answer shows vs color-hex.com 13 of 19 things a full answer shows (Verse lacks: Colour picker; site lacks: tones, text contrast, Colour models on the colour page, Colour name, Palettes that use the colour, Colour picker)",
-   "at": "2026-11-06T06:29:07.712Z",
-   "of": 19,
-   "siteRead": true
+   "best": 19,
+   "evidence": "Verse (/color/?c=ff5733) 18 of 19 things a full answer shows vs the bar (color-hex.com unreachable) 19 of 19 things a full answer shows (Verse lacks: Colour picker)",
+   "at": "2026-11-07T13:13:29.120Z",
+   "was": "better",
+   "of": 19
   },
   "design polish": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 0,
-   "best": 25,
-   "evidence": "Verse (/color/?c=ff5733) 0 design defects vs color-hex.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), color-hex.com (11 low-contrast texts, 14 small tap targets, layout shift 0.00)",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "best": 0,
+   "evidence": "Verse (/color/?c=ff5733) 0 design defects vs the bar (color-hex.com unreachable) 0 design defects",
+   "at": "2026-11-07T13:13:29.120Z"
   },
   "every colour model": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 15,
-   "best": 10,
-   "evidence": "Verse (/color/?c=ff5733) 15 of 15 shown vs color-hex.com 10 of 15 shown (Verse lacks: none; site lacks: HWB, CIELUV, CIELCh, Oklab, OKLCH)",
-   "at": "2026-11-06T06:29:07.712Z",
+   "best": 15,
+   "evidence": "Verse (/color/?c=ff5733) 15 of 15 shown vs the bar (color-hex.com unreachable) 15 of 15 shown (Verse lacks: none)",
+   "at": "2026-11-07T13:13:29.120Z",
    "of": 15,
-   "part": true,
-   "siteRead": true
+   "part": true
   },
   "shades and palettes": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 12,
-   "best": 7,
-   "evidence": "Verse (/color/?c=ff5733) 12 of 12 shown vs color-hex.com 7 of 12 shown (Verse lacks: none; site lacks: tones, split-complementary, tetradic, square, the 16 VGA colours)",
-   "at": "2026-11-06T06:29:07.712Z",
+   "best": 12,
+   "evidence": "Verse (/color/?c=ff5733) 12 of 12 shown vs the bar (color-hex.com unreachable) 12 of 12 shown (Verse lacks: none)",
+   "at": "2026-11-07T13:13:29.120Z",
    "of": 12,
-   "part": true,
-   "siteRead": true
+   "part": true
   },
   "contrast": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 2,
-   "best": 0,
-   "evidence": "Verse (/color/?c=ff5733) 2 of 2 shown vs color-hex.com 0 of 2 shown (Verse lacks: none; site lacks: text contrast, AA and AAA)",
-   "at": "2026-11-06T06:29:07.712Z",
+   "best": 2,
+   "evidence": "Verse (/color/?c=ff5733) 2 of 2 shown vs the bar (color-hex.com unreachable) 2 of 2 shown (Verse lacks: none)",
+   "at": "2026-11-07T13:13:29.120Z",
    "of": 2,
-   "part": true,
-   "siteRead": true
+   "part": true
   },
   "wider use": {
-   "verdict": "better",
-   "verse": 7.5,
-   "best": 7,
-   "evidence": "Verse (/color/?c=ff5733) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs color-hex.com 7 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-06T06:29:07.712Z",
-   "siteRead": true
+   "verdict": "worse",
+   "verse": 7,
+   "best": 11,
+   "evidence": "Verse (/color/?c=ff5733) 7 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (color-hex.com unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:13:29.120Z"
   }
  }
 }

@@ -1,5 +1,127 @@
 [
  {
+  "slug": "f620-pomodoro-task-timer",
+  "num": 620,
+  "title": "Pomodoro task timer",
+  "blurb": "Job: Add tasks, run 25-minute work sessions (or your length) on one of them with short and long breaks, see how many you finished today and per task.",
+  "status": "works",
+  "source": "F620-pomodoro-task-timer",
+  "hash": "66ffdfa04d46",
+  "grade": "tool"
+ },
+ {
+  "slug": "f619-spatial-memory-palace-flashcards",
+  "num": 619,
+  "title": "Spatial Memory Palace Flashcards",
+  "blurb": "Job: Paste front/back card pairs, drag them onto a 2D spatial palace canvas so position aids recall, then study with local SM-2 spaced repetition.",
+  "status": "works",
+  "source": "F619-spatial-memory-palace-flashcards",
+  "hash": "ab575ae612c5",
+  "grade": "tool"
+ },
+ {
+  "slug": "f618-orientation-mlp-spatial-taskboard",
+  "num": 618,
+  "title": "Spatial task board",
+  "blurb": "Job: Add tasks as floating cards on a 2D canvas. Tilt your device (DeviceOrientation) to steer a local tiny MLP that applies forces to arrange or cluster the cards.",
+  "status": "works",
+  "source": "F618-orientation-mlp-spatial-taskboard",
+  "hash": "7778ebdd6d9c",
+  "grade": "tool"
+ },
+ {
+  "slug": "f617-recipe-scaler",
+  "num": 617,
+  "title": "Recipe scaler",
+  "blurb": "Job: Paste a recipe (ingredients with quantities), set the original and desired number of servings, see every quantity scaled to sensible numbers and units, then",
+  "status": "works",
+  "source": "F617-recipe-scaler",
+  "hash": "277947993999",
+  "grade": "tool"
+ },
+ {
+  "slug": "f616-gpa-calculator",
+  "num": 616,
+  "title": "GPA calculator",
+  "blurb": "Job: Enter your courses with credits and grades on a 4.0 letter or percent scale.",
+  "status": "works",
+  "source": "F616-gpa-calculator",
+  "hash": "ead829eb6eaa",
+  "grade": "tool"
+ },
+ {
+  "slug": "f616-loan-mortgage-payment",
+  "num": 616,
+  "title": "Loan and mortgage payment",
+  "blurb": "Job: Enter a loan amount, interest rate and term; get the regular payment and a full year-by-year amortization table you can download as CSV or copy.",
+  "status": "works",
+  "source": "F616-loan-mortgage-payment",
+  "hash": "da4b7556ece1",
+  "grade": "tool"
+ },
+ {
+  "slug": "f615-packing-list-maker",
+  "num": 615,
+  "title": "Packing list maker",
+  "blurb": "Job: Choose trip length, type and conditions to get a suggested packing list you can edit, tick off, save on this device, copy as text or download as CSV.",
+  "status": "works",
+  "source": "F615-packing-list-maker",
+  "hash": "64f5e454cbad",
+  "grade": "tool"
+ },
+ {
+  "slug": "f614-sleep-cycle-calculator",
+  "num": 614,
+  "title": "Sleep cycle calculator",
+  "blurb": "Job: Enter a wake-up time and get recommended bedtimes based on 90-minute sleep cycles (plus a fall-asleep buffer), with the option to download an .ics file for",
+  "status": "works",
+  "source": "F614-sleep-cycle-calculator",
+  "hash": "e96adeea5795",
+  "grade": "tool"
+ },
+ {
+  "slug": "f613-tip-calculator",
+  "num": 613,
+  "title": "Tip calculator",
+  "blurb": "Job: Enter a bill amount, tip percent and number of people; see the tip, total and each person's share with optional rounding; copy the summary line.",
+  "status": "works",
+  "source": "F613-tip-calculator",
+  "hash": "71fbfa8e68d3",
+  "grade": "tool"
+ },
+ {
+  "slug": "f612-bill-splitter",
+  "num": 612,
+  "title": "Bill splitter",
+  "blurb": "Job: Split a group bill by who ordered what items, add shared tax and tip, and get clear per-person totals you can copy or save.",
+  "status": "works",
+  "source": "F612-bill-splitter",
+  "hash": "8419d93bea02",
+  "grade": "tool"
+ },
+ {
+  "slug": "f611-web-audio-spatial-morpher-mind",
+  "num": 611,
+  "title": "web-audio-spatial-morpher-mind",
+  "blurb": "Local tiny Elman-style RNN takes DeviceOrientation + pointer velocity as causal input and controls parameters of a multi-node Web Audio API filter network (Biquad",
+  "status": "works",
+  "source": "F611-web-audio-spatial-morpher-mind",
+  "hash": "d12feaaa8f20",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
+  "slug": "f610-webgpu-kan-spline-dom-manifold-mind",
+  "num": 610,
+  "title": "webgpu-kan-spline-dom-manifold-mind",
+  "blurb": "Local Kolmogorov-Arnold Network whose univariate spline activations are live, draggable DOM/SVG curves.",
+  "status": "works",
+  "source": "F610-webgpu-kan-spline-dom-manifold-mind",
+  "hash": "e0b2b577ef19",
+  "grade": "toy",
+  "idea": "pitch"
+ },
+ {
   "slug": "f609-webxr-gaze-sdf-raymarch-manifold-mind",
   "num": 609,
   "title": "WebXR Gaze SDF Raymarch Manifold Mind",

@@ -5756,8 +5756,8 @@ say('nothing selected to remove');
     const PAID_LEAD = "(?:please\\s+)?(?:(?:i\\s+(?:want|need|would\\s+like)|i'?d\\s+like|can\\s+i|could\\s+i|how\\s+(?:do|can)\\s+i|let\\s+me|give\\s+me|get\\s+me)(?:\\s+to)?(?:\\s+(?:have|get))?\\s+)?";
     const PAID_CORE = [
       "upgrade(?: me| my (?:verse|void)| (?:verse|void)| my account| my plan)?(?: to (?:paid|pro|premium)(?: (?:verse|void))?)?",
-      "(?:the |your )?(?:pricing|prices?|plans?|price list)",
-      "what (?:does|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|verse|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|verse|paid (?:verse|void)|more)",
+      "(?:show (?:me )?(?:the |your )?|the |your )?(?:pricing|prices?|plans?|price list)",
+      "what (?:does|do) (?:void|verse|it|you|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|verse|it|you|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|verse|paid (?:verse|void)|more)",
       "pay(?: for (?:void|paid (?:verse|void)|more|it|the paid (?:version|tier|plan)))?(?: you)?",
       "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: (?:verse|void))?|monthly|the paid (?:version|tier|plan))",
       "subscribe|(?:a |my )?subscription|go pro|(?:void|verse) (?:pro|plus|premium|monthly|yearly|annual)|paid (?:verse|void)|premium|(?:a |the )?paid (?:tier|plan|version)",
@@ -5812,7 +5812,10 @@ say('nothing selected to remove');
     // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
     // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
     // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
-    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|verse|a-to-mind)(?: cost)?)$/; // the name is Verse (owner, 2026-10-14)
+    // The membership line and the services card (skills/services.js servicesOf) must agree on what a price question is: a cost ask
+    // gets both. This pattern is the page's half; tools/price-question.test.mjs pins it against servicesOf so the two cannot drift
+    // apart again (2026-10-25: "how much does Verse cost?" said the line and opened no card). The name is Verse (owner, 2026-10-14).
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|you|a-to-mind) cost|how much (?:is|does|do) (?:void|verse|you|a-to-mind)(?: cost)?)$/;
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
       let svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)
@@ -6661,7 +6664,13 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(lower0); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
-      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) {
+        if (wantsIdentity(lower0)) identityGlow();
+        const canDo = /^what\s+can\s+(you|i|(?:verse|void))\s+do\b/.test(lower0);
+        const lead = wantsIdentity(lower0) ? SELF_LEAD : undefined;
+        const stageLead = canDo ? 'I can put a working thing on this stage: a clock, a timer, a note, a list, a calculator, a shape, a picture, or a page about something. Tap a line, or type your own.' : undefined;
+        showSelfPage(false, null, lead || stageLead); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: canDo && !lead ? 'can-do' : 'self' }); return;
+      }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' });
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
         if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }

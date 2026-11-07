@@ -105,6 +105,10 @@
    "weight": 3698904,
    "at": "2026-10-30"
   },
+  "1ts21.top": {
+   "refused": true,
+   "at": "2026-11-07"
+  },
   "2chan.net": {
    "bytes": 982,
    "controls": 2,
@@ -5506,7 +5510,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-06"
+   "at": "2026-11-07"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6748,7 +6752,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 12,
+   "bytes": 13,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6757,9 +6761,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 11,
-   "weight": 12,
-   "at": "2026-11-06"
+   "text": 12,
+   "weight": 13,
+   "at": "2026-11-07"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -8227,6 +8231,20 @@
    "weight": 828644,
    "at": "2026-11-06"
   },
+  "milkie.cc": {
+   "bytes": 2322745,
+   "controls": 5,
+   "scripts": 6,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 60,
+   "shell": "none",
+   "weight": 2334905,
+   "at": "2026-11-07"
+  },
   "millwallcommunity.org.uk": {
    "bytes": 2940387,
    "controls": 255,
@@ -8809,6 +8827,20 @@
   "onetag-sys.com": {
    "refused": true,
    "at": "2026-11-06"
+  },
+  "oneyeard.com": {
+   "bytes": 180097,
+   "controls": 1,
+   "scripts": 1,
+   "styles": 3,
+   "nodes": 24,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 227,
+   "shell": "none",
+   "weight": 182337,
+   "at": "2026-11-07"
   },
   "online-calculator.com": {
    "bytes": 1173448,

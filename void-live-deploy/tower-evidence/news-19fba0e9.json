@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 145,
-   "best": 595,
-   "evidence": "Verse (/news/?sec=world) 145 ms to the load event (median of 3, phone width) vs BBC News 595 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "verse": 129,
+   "best": 958,
+   "evidence": "Verse (/news/?sec=world) 129 ms to the load event (median of 3, phone width) vs BBC News 958 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs BBC News 3 of 3 loads answered",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,15 +22,15 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 0 px sideways overflow at 390 px vs BBC News 0 px sideways overflow at 390 px",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "accessibility": {
    "verdict": "better",
    "verse": 0,
-   "best": 13,
-   "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs BBC News 13 unnamed controls or images",
-   "at": "2026-11-06T14:44:38.615Z",
+   "best": 15,
+   "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs BBC News 15 unnamed controls or images",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs BBC News 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,15 +46,15 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs BBC News 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
    "best": 30,
-   "evidence": "Verse (/news/?sec=world) 0 design defects vs BBC News 30 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), BBC News (0 low-contrast texts, 30 small tap targets, layout shift 0.01)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "evidence": "Verse (/news/?sec=world) 0 design defects vs BBC News 30 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), BBC News (0 low-contrast texts, 30 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   },
   "accuracy": {
@@ -62,7 +62,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/news/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not BBC News (the site is not asked)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "of": 3
   },
   "breadth of sources": {
@@ -70,7 +70,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs BBC News 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -80,7 +80,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/news/?sec=world) 1 of 1 shown vs BBC News 0 of 1 shown (Verse lacks: none; site lacks: ages)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -90,7 +90,7 @@
    "verse": 2,
    "best": 1,
    "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs BBC News 1 of 2 shown (Verse lacks: none; site lacks: my news)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "at": "2026-11-07T13:31:47.340Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -98,18 +98,18 @@
   "completeness": {
    "verdict": "better",
    "verse": 23,
-   "best": 5,
-   "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs BBC News 5 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, world, science, regions, search, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "best": 6,
+   "evidence": "Verse (/news/?sec=world) 23 of 23 things a full answer shows vs BBC News 6 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, science, regions, search, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
+   "at": "2026-11-07T13:31:47.340Z",
    "of": 23,
    "siteRead": true
   },
   "wider use": {
    "verdict": "better",
-   "verse": 7.5,
+   "verse": 8.5,
    "best": 5.5,
-   "evidence": "Verse (/news/?sec=world) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs BBC News 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-06T14:44:38.615Z",
+   "evidence": "Verse (/news/?sec=world) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs BBC News 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:31:47.340Z",
    "siteRead": true
   }
  }

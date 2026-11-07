@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T20:18:49.888Z",
+  "at": "2026-11-07T19:44:46.827Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -103,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -118,9 +118,11 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp",
+            "close"
           ],
-          "score": 83.3
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -235,12 +237,19 @@
       }
     },
     "sports": {
-      "score": 92.6,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
           "failed": [
             "board"
           ],
@@ -254,7 +263,21 @@
           "score": 83.3
         },
         {
-          "ask": "mls scores",
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -306,26 +329,10 @@
       "fails": []
     },
     "translate": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "translate spring",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "comment dit-on bonjour en anglais",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        }
-      ]
+      "fails": []
     },
     "units": {
       "score": 93.3,
@@ -424,7 +431,7 @@
     }
   },
   "lowest": {
-    "domain": "translate",
+    "domain": "maps",
     "score": 89.2
   }
 }

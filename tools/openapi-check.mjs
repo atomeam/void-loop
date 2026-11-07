@@ -12,6 +12,7 @@ const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/unbidden': "what Verse says first on its own /brain/ page (functions/api/unbidden.js, lib/unbidden.js): GET only, one `after` id, lines written from its own live state at most once per gap for everyone and daily-capped; /brain/ is the only caller",
   '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
   '/api/life-arb': "the owner's private life-arbitrage list for /life-arb/ (functions/api/life-arb.js, lib/life-arb.js): GET and marks are owner only; a keyless scan answers counts per source only, at most every 3 hours, for .github/workflows/life-arb.yml; private by design, so never published",
@@ -107,6 +108,8 @@ export const INTERNAL = {
   '/api/ip': "the my-device card's own address",
   '/api/markets': "the crypto card's price list and the /markets/ page's quotes: a symbol (letters, or a name from a closed list), a range from a closed list of eight and a day in, prices out from four fixed free sources, GET only, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute (functions/api/markets.js, lib/markets.js); the page and the card are the only callers",
   '/api/will': "Verse's will card",
+  '/api/sitebench': "sitebench, measured live (lib/sitebench.js)",
+  '/api/unbidden': "unbidden, the verse's own stream of lines",
   '/api/apibot': "the /bots/ page's relay for the few free APIs that send no CORS header: an id from a closed list, that API's own host only",
 };
 
