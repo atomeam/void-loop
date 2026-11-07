@@ -581,14 +581,45 @@ const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized 
   policy: JSON.parse(fs.readFileSync(path.join(root, 'treasury/policy.json'), 'utf8')),
   entries: [{ at: '2026-11-04T12:00:00Z', kind: 'alloc', bucket: 'owner', cents: 1256, purpose: "Atom's cut of a realized sale", status: 'allocated' }], reviews: [] };
 SPECS['/treasury/'] = async (t) => {
-  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(TREASURY_FIX) }));
+  // Starboard's sponsor split (functions/api/sponsors.js sponsorView): 6 USDC confirmed, half to the house, the rest the visitor pool
+  const fix = { ...TREASURY_FIX, sponsors: { house_bps: 5000, sponsor_cents: 600, house_cents: 300, pool_cents: 300, claimed_cents: 1, paid_out_cents: 0, available_cents: 299, waiting_cents: 0, sponsor_payments: 2, claims: 1, claims_owed: 1, live_tiles: 1, slots: 6, page: '/starboard/#sponsors', rule: 'Sponsor income counts once the chain shows it.' } };
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(fix) }));
   await t.p.reload(); await t.waitText('#balance', /\$/, 10000);
   t.ok((await t.text('#balance')).trim() === '$41.88', 'the balance is the realized money: ' + (await t.text('#balance')));
   t.ok(/\$49\.00 gross/.test(await t.text('#balance-note')) && /\$7\.12 Gumroad fees/.test(await t.text('#balance-note')), 'gross and fees shown');
   t.ok(/\$12\.56/.test(await t.text('#pots')), "Atom's cut has its pot");
   t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
+  await t.waitText('#sponsors', /\$6\.00/, 10000);
+  t.ok(/\$3\.00[\s\S]*50%/.test(await t.text('#sponsors')), 'the house share is shown with its 50%: ' + (await t.text('#sponsors')).slice(0, 120));
+  t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
+};
+// /starboard/: the race against dalyfeds.com, the sponsor grid and the claim wall. The APIs are faked so the numbers on the page are exact
+const BENCH_FIX = { at: '2026-11-06T20:00:00Z', how: 'one fetch of each page and its files from Verse\'s server', rows: [
+  { name: 'Starboard', ok: true, ms: 120, bytes: 40960, requests: 6, scripts: 3, third_party: [] },
+  { name: 'dalyfeds.com', ok: true, ms: 900, bytes: 2097152, requests: 40, scripts: 22, third_party: ['ads.example.net', 'track.example.org'] }] };
+const SPONSORS_FIX = { ok: true, slots: [{ slot: 's1', open: false, free_from: '2026-11-08T00:00:00Z', tile: { id: 'tile:0x' + 'ab'.repeat(32), title: 'Moon Bakery', text: 'Bread baked at night.', url: 'https://moon-bakery.example.com/', ends: '2026-11-08T00:00:00Z' }, views_30d: { people: 3, excluded: 1 } },
+  ...['s2', 's3', 's4', 's5', 's6'].map((slot) => ({ slot, open: true, free_from: '2026-11-06T00:00:00Z' }))],
+  plans: [{ id: 'day', days: 1, price_usdc: '1', buy: '/api/x402/sponsor/day' }, { id: 'week', days: 7, price_usdc: '5', buy: '/api/x402/sponsor/week' }, { id: 'month', days: 30, price_usdc: '15', buy: '/api/x402/sponsor/month' }],
+  split: { house_bps: 5000, sponsor_cents: 600, house_cents: 300, pool_cents: 300, claimed_cents: 0, paid_out_cents: 0, available_cents: 300 }, claim: { usdc: '0.01', window_hours: 24, per_day: 100 }, rule: 'Half goes to the treasury first.' };
+SPECS['/starboard/'] = async (t) => {
+  const fake = (path, body) => t.p.route((u) => u.pathname === path, (r) => (r.request().method() === 'GET' ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }) : r.fallback()));
+  await fake('/api/sitebench', BENCH_FIX); await fake('/api/sponsors', SPONSORS_FIX);
+  await fake('/api/claim', { ok: true, claim_usdc: '0.01', window_hours: 24, per_day: 100, house_bps: 5000, pool_cents: 300, open: true, claims: 0 });
+  await t.p.reload(); await t.waitText('#bench', /dalyfeds\.com/, 10000);
+  const bench = await t.text('#bench');
+  t.ok(/120 ms/.test(bench) && /900 ms/.test(bench) && /2\.00 MB/.test(bench) && /40 KB/.test(bench), 'both sites show the measured numbers: ' + bench.slice(0, 160));
+  t.ok(/2: ads\.example\.net/.test(bench), 'the hosts on other sites are named');
+  await t.waitText('#tiles', /Moon Bakery/, 10000);
+  t.ok((await t.p.locator('#tiles a[rel~="sponsored"][href="https://moon-bakery.example.com/"]').count()) === 1, 'a live tile links out marked sponsored');
+  t.ok(((await t.text('#tiles')).match(/is open/g) || []).length === 5, 'the 5 open tiles say so');
+  t.ok(/15 USDC/.test(await t.text('#plans')) && /\/api\/x402\/sponsor\//.test(await t.text('#plans')), 'the plans and how to buy over x402 are shown');
+  t.ok(/\$3\.00 to the treasury/.test(await t.text('#split')), 'the house share is shown: ' + (await t.text('#split')).slice(0, 120));
+  await t.waitText('#claimRule', /0\.01 USDC/, 10000);
+  await t.fill('#addr', 'not an address'); await t.click('#claimForm button'); await t.waitText('#claimNote', /\S/, 4000);
+  t.ok(/0x and 40 hex/.test(await t.text('#claimNote')), 'a bad address is refused on the page: ' + (await t.text('#claimNote')));
+  t.ok((await t.p.locator('a[href="/treasury/#sponsor-split"]').count()) === 1, 'Starboard links the split on the Treasury');
 };
 // /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
 SPECS['/creed/'] = async (t) => {
