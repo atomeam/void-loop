@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T12:53:59.227Z",
+ "updated": "2026-11-07T13:03:21.412Z",
  "last24h": {
-  "ticks": 133,
-  "started": 158,
+  "ticks": 134,
+  "started": 160,
   "requeued": 0,
   "setAside": 0,
   "probes": 19,
@@ -194,7 +194,8 @@
   "mw6c0ife": 1794052107789,
   "mw6c0iyu": 1794052668707,
   "mw6c0jik": 1794053226312,
-  "mw6c0k2d": 1794053788130
+  "mw6c0k2d": 1794053788130,
+  "mw6ecuj5": 1794056601412
  },
  "sweptAt": 1794054346743,
  "blueprintsAt": 1794054346743,
@@ -3969,6 +3970,41 @@
     "void-tick.yml"
    ],
    "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T13:03:21.412Z",
+   "open": 260,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6ecuj5",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "verse-podcast.yml"
+   ],
    "sweep": false,
    "blueprints": 0,
    "held": 77,
