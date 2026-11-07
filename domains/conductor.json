@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T11:10:55.650Z",
+ "updated": "2026-11-07T11:20:18.707Z",
  "last24h": {
-  "ticks": 123,
-  "started": 144,
+  "ticks": 124,
+  "started": 145,
   "requeued": 0,
   "setAside": 0,
   "probes": 17,
@@ -164,8 +164,8 @@
   "mw69o2oq": 1794049295347,
   "mw69o36z": 1794049855650
  },
- "sweptAt": 1794046479477,
- "blueprintsAt": 1794046479477,
+ "sweptAt": 1794050418707,
+ "blueprintsAt": 1794050418707,
  "visitorAt": "2026-11-07T10:40:07Z",
  "visitorFiled": [
   "review:2109",
@@ -3641,6 +3641,33 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T11:20:18.707Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "want-exam-translate",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 151
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 13,
    "warnings": 1
