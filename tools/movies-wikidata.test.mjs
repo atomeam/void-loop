@@ -94,3 +94,13 @@ test('iTunes refused: the Wikidata genre reaches the pick, and "scary movies fro
   const s = similarity(f, parseIntent('scary movies from the 90s'));
   assert.equal(s.score, 100); assert.equal(s.matched.length, 2); assert.equal(s.missed.length, 0);
 });
+
+test('a title typed in lower case still finds its film: the query asks for its usual capital letters too, and the card shows the label', () => {
+  const q = wikidataQuery('the blair witch project');
+  assert.match(q, /"the blair witch project"@en/); assert.match(q, /"The Blair Witch Project"@en/); assert.match(q, /SAMPLE\(\?l\) AS \?label/);
+  assert.match(wikidataQuery('lord of the rings'), /"Lord of the Rings"@en/);
+  assert.doesNotMatch(wikidataQuery('x" } ; DROP'), /x" \}/);
+  const blair = { results: { bindings: [{ ...row('Q210756', '1999', 'Daniel Myrick', 81), label: { value: 'The Blair Witch Project' } }] } };
+  assert.equal(pickWikidata(blair, 'the blair witch project', null).title, 'The Blair Witch Project');
+  assert.equal(pickWikidata(parasite, 'Parasite', 2019).title, 'Parasite', 'no label in the answer: the asked title');
+});
