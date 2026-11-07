@@ -318,6 +318,12 @@
     },
     {
       "ask": "yo render a cartoon dragon"
+    },
+    {
+      "ask": "redner a cartoon dragon"
+    },
+    {
+      "ask": "yo style like mickey mouse"
     }
   ],
   "candidates": [],

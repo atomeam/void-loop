@@ -97,7 +97,8 @@ async function tick() {
   // the coder's free model budget (GET /api/coder: counts only). Too short for one whole run (fewer calls left than its turn cap, or full):
   // the coder is not started until the window resets, since a run that hits the cap partway lands nothing; unknown: started as before
   const budget = await coderBudget();
-  const short = coderShort(budget, now);
+  // a free model key outside Cloudflare (grow-clock.yml says only whether one is set, never its value): the coder falls back to it
+  const short = coderShort(budget, now, undefined, process.env.VERSE_CODER_SPARE === '1');
   if (short) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = short;
   let exam = null; try { exam = JSON.parse(fs.readFileSync('void-live-deploy/exam/latest.json', 'utf8')); } catch (_) { exam = null; }
   const p = plan({ jobs, wf, handed, now, exam });

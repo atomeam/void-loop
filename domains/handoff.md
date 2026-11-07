@@ -18,8 +18,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - claude · claude/project-thread-xv0wrv · Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) · 2026-11-06 20:40 UTC
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
-- Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
+- Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
+- Cursor cloud agent · helper/what-can-you-do-f90f · "what can you do" answers with the things Verse can put on the stage, on the self page · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/timer-durations-f90f · a timer keeps the length it was set for (90 seconds, add one minute, 45 seconds) and a bare "timer for 5" asks which unit · 2026-11-05 14:05 UTC
 - Cursor cloud agent · helper/family-gaps-f90f · the sixteen short family skills earn proven from a real test and an ask each one answers · 2026-11-05 16:20 UTC
 - Cursor cloud agent · helper/kv-namespace-f90f · only Verse's wrangler binds Verse's KV namespace · 2026-11-05 16:05 UTC
