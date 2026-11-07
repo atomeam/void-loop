@@ -14,6 +14,7 @@ import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -1585,14 +1586,17 @@ try {
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');
-    const nav = await until(() => P.p.evaluate(() => {
+    // the label is read from the shell's own nav (lib/verse-shell.js): a rename of the /agent/ item (Agents -> Envoy, 2026-11-07) must not
+    // silently break this check, so the expected word is currentNav('/agent/'), not a hard-coded one
+    const agentLabel = currentNav('/agent/').label;
+    const nav = await until(() => P.p.evaluate((want) => {
       const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
-      if (!bar || !a || a.textContent !== 'Agents') return null;
+      if (!bar || !a || a.textContent !== want) return null;
       const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
       return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
-    }), 8000);
-    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
-      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    }, agentLabel), 8000);
+    check('phone polish: the current nav item is fully inside the nav bar and the page is not wider than the screen',
+      nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
     await P.p.goto(base + 'compare/');
     const cmp = await until(() => P.p.evaluate(() => {
       const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
@@ -4270,7 +4274,11 @@ try {
     await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
-    const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    // the panel re-places on a 400 ms tick while the step's card lands and grows (skills/showcase.js bar()): read the chip's spot
+    // only once two reads 450 ms apart agree, or the pointer presses where the chip was, misses it, and no ghost appears
+    // (ghost:false on a loaded runner, 2026-11-02..11-06)
+    const chipAt = () => P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    const chip = await until(async () => { const a = await chipAt(); await P.p.waitForTimeout(450); const b = await chipAt(); return a && b && Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1 ? b : null; }, 8000);
     const drop = { x: 320, y: 220 };
     await P.p.mouse.move(chip.x, chip.y); await P.p.mouse.down();
     for (let i = 1; i <= 8; i++) await P.p.mouse.move(chip.x + (drop.x - chip.x) * i / 8, chip.y + (drop.y - chip.y) * i / 8);
@@ -9190,7 +9198,7 @@ try {
     check('opening a lab experiment counts one use: { kind: "used", id } once per browser per day, nothing typed sent',
       JSON.stringify(sent) === JSON.stringify([{ kind: 'used', id: 'attention-7' }]) && !U.errors.length, JSON.stringify(sent) + ' ' + U.errors.join(' | '));
     await U.ctx.close(); }
-  if (want("The lab: every fringe experiment opens from an ask and passes its own self-test")) {
+  if (want("The fringe lab: every fringe experiment opens from an ask and passes its own self-test")) {
     const L = await fresh(); const res = [];
     const lab = [['test my attention', 'attention-7'], ['hold the lamp', 'interval-timing-8'], ['fitts law', 'opt-in-gesture-6'], ['joint simon task', 'human-machine-co-agency-8'],
       ['count the flashes', 'sensory-substitution-7'], ['how sure are they', 'non-lexical-intent-5'], ["simpson's paradox", 'correlation-view-6'], ['when did it start', 'quiet-signal-filter-5'],
@@ -9202,11 +9210,11 @@ try {
       const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
       res.push({ id, ok: !!ok, hook, framed: !!fr });
     }
-    await L.ask('show me the lab', 500);
+    await L.ask('fringe lab', 500);
     const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
     if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
     const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
-    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
+    check('the fringe lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "fringe lab" lists all 12 and a click opens one',
       res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
     await L.ctx.close();
   }
@@ -9730,8 +9738,10 @@ try {
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|MultiVerse|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
-  // A price question is different: the membership sentence stays first, and the services card opens under it.
-  const priceAsks = ['pricing', 'how much does Verse cost?'];
+  // A price question is different: the membership sentence stays first, and the services card opens under it. The list
+  // spans both halves' patterns (pricing words, "what do you cost", "how much does Verse cost", "show me your pricing"):
+  // the 2026-10-14/10-25 flake was one of these matching the line's pattern but not the card's, after the V01D -> Verse rename.
+  const priceAsks = ['pricing', 'how much does Verse cost?', 'what do you cost', 'show me your pricing'];
   const priceGot = [];
   for (const a of priceAsks) {
     await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
@@ -9741,7 +9751,7 @@ try {
     await P.ask('close');
   }
   check('paid: signed out, a price question says the membership line AND opens the services card under it',
-    priceGot[0] === OUT_LINE && priceGot[1] === true && priceGot[2] === OUT_LINE && priceGot[3] === true,
+    priceGot.length === priceAsks.length * 2 && priceGot.every((v, i) => (i % 2 === 0 ? v === OUT_LINE : v === true)),
     JSON.stringify(priceGot).slice(0, 400));
   // Asks a product covers: Verse's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
