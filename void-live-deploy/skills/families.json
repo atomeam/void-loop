@@ -14,9 +14,9 @@
  "bench_at": "2026-11-07",
  "totals": {
   "experiment": 0,
-  "tested": 5,
-  "checked": 12,
-  "proven": 397
+  "tested": 2,
+  "checked": 5,
+  "proven": 407
  },
  "families": [
   {
@@ -26,8 +26,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 60
+    "checked": 0,
+    "proven": 61
    },
    "skills": [
     {
@@ -214,12 +214,12 @@
     },
     {
      "name": "video-gen",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-30",
+     "promoted": "2026-11-07",
      "streak": 8
     },
     {
@@ -599,8 +599,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 2,
-    "proven": 41
+    "checked": 1,
+    "proven": 42
    },
    "skills": [
     {
@@ -755,11 +755,12 @@
     },
     {
      "name": "eightball",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-29"
+     "success_rate": 1,
+     "promoted": "2026-11-07"
     },
     {
      "name": "ringer",
@@ -949,7 +950,7 @@
     {
      "name": "rps",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -994,9 +995,9 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 1,
-    "proven": 19
+    "tested": 0,
+    "checked": 0,
+    "proven": 21
    },
    "skills": [
     {
@@ -1110,11 +1111,12 @@
     },
     {
      "name": "skycard",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-11-07"
     },
     {
      "name": "suntimes",
@@ -1135,11 +1137,12 @@
     },
     {
      "name": "night-sky",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-11-07"
     },
     {
      "name": "place",
@@ -1377,9 +1380,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 2,
-    "proven": 27
+    "tested": 0,
+    "checked": 0,
+    "proven": 30
    },
    "skills": [
     {
@@ -1428,11 +1431,12 @@
     },
     {
      "name": "vat",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-11-05",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 4
     },
     {
@@ -1487,12 +1491,12 @@
     },
     {
      "name": "drive-share",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-04",
+     "promoted": "2026-11-07",
      "streak": 4
     },
     {
@@ -1646,12 +1650,12 @@
     },
     {
      "name": "sums",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-11-04",
+     "promoted": "2026-11-07",
      "streak": 4
     },
     {
@@ -2596,7 +2600,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 23 live findings, 2026-11-06",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 24 live findings, 2026-11-07",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2668,8 +2672,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 101
+    "checked": 0,
+    "proven": 102
    },
    "skills": [
     {
@@ -2846,11 +2850,12 @@
     },
     {
      "name": "tab",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-29",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 19
     },
     {
@@ -3617,9 +3622,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 2,
-    "proven": 55
+    "tested": 2,
+    "checked": 1,
+    "proven": 57
    },
    "skills": [
     {
@@ -3797,10 +3802,12 @@
     },
     {
      "name": "system-status",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07"
     },
     {
      "name": "systems-monitor",
@@ -4103,10 +4110,12 @@
     },
     {
      "name": "about-skill",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 18
     },
     {
