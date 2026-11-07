@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T19:37:20.442Z",
+ "updated": "2026-11-07T19:46:41.330Z",
  "last24h": {
   "ticks": 150,
-  "started": 168,
+  "started": 166,
   "requeued": 0,
   "setAside": 0,
   "probes": 19,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw5d0xyf": 1793994393532,
   "mw5d0yxg": 1793995066695,
   "mw5d0zxp": 1793995644542,
   "mw5fawr5": 1793997032415,
@@ -283,39 +282,6 @@
   "probe:monitor-pack-for-client-onboarding"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T19:46:33.532Z",
-   "open": 248,
-   "started": [
-    {
-     "id": "mw21cj6l",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 92
-    },
-    {
-     "id": "mw5d0xyf",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 52,
-   "warnings": 1
-  },
   {
    "at": "2026-11-06T19:57:46.695Z",
    "open": 247,
@@ -4388,6 +4354,26 @@
   },
   {
    "at": "2026-11-07T19:37:20.442Z",
+   "open": 269,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 264,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T19:46:41.330Z",
    "open": 269,
    "started": [],
    "requeued": 0,
