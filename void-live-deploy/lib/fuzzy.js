@@ -16,7 +16,7 @@
 export const MIN_ONE = 5; // letters for one edit
 export const MIN_TWO = 8; // letters for two edits
 export const MAX_LEN = 20; // longer words are never a slip of a trigger word (a pasted key, a URL part)
-export const PROTECT_AFTER = new Set(['in', 'at', 'near', 'from', 'about', 'of', 'called', 'named', 'says', 'saying']);
+export const PROTECT_AFTER = new Set(['in', 'at', 'near', 'from', 'about', 'of', 'called', 'named', 'says', 'saying', 'de']); // "de": the Spanish "of" ("mapa de kioto": the place name is never a slip of a trigger word)
 // real words a slip could be mistaken for: a typed common word is left alone even when no skill example holds it
 export const COMMON = new Set(('whether where there their these those which while think thing things water waiter father mother other others pairs pair '
   + 'rather later latest letter little light night right write wrote would could should world words about above after again against '
