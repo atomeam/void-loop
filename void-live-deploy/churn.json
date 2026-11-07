@@ -1,5 +1,5 @@
 {
- "at": "2026-11-07T22:36:42.827Z",
+ "at": "2026-11-07T22:42:45.527Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -10,11 +10,11 @@
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 92
+   "changes": 93
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 92
+   "changes": 93
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
@@ -129,6 +129,10 @@
    "changes": 15
   },
   {
+   "file": "void-live-deploy/brain/knows.json",
+   "changes": 15
+  },
+  {
    "file": "docs/HANDOFF-GAPS.md",
    "changes": 14
   },
@@ -137,11 +141,11 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/brain/knows.json",
+   "file": "void-live-deploy/sw.js",
    "changes": 14
   },
   {
-   "file": "void-live-deploy/sw.js",
+   "file": "void-live-deploy/tower.target.json",
    "changes": 14
   },
   {
@@ -158,10 +162,6 @@
   },
   {
    "file": "void-live-deploy/team/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tower.target.json",
    "changes": 13
   }
  ]

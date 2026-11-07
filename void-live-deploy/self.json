@@ -600,6 +600,46 @@
  },
  "commits": [
   {
+   "at": "2026-11-07T22:41:32Z",
+   "subject": "Failed jobs read: run 42421593636 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:39:39Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-11-07T22:39:30Z",
+   "subject": "Outcome exam: maps 40"
+  },
+  {
+   "at": "2026-11-07T22:39:25Z",
+   "subject": "Failed jobs read: run 42421593686 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:37:27Z",
+   "subject": "The journal page opts into the view transition with the beacon, and the hand-off gaps follow it"
+  },
+  {
+   "at": "2026-11-07T22:37:18Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-11-07T22:34:14Z",
+   "subject": "Failed jobs read: run 42420995785 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:34:06Z",
+   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+  },
+  {
+   "at": "2026-11-07T22:31:58Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-07T22:31:45Z",
+   "subject": "Failed jobs read: run 42420995828 (void-live-deploy/incidents/actions/)"
+  },
+  {
    "at": "2026-11-07T22:29:21Z",
    "subject": "The generated files follow main"
   },
@@ -638,46 +678,6 @@
   {
    "at": "2026-11-07T22:14:27Z",
    "subject": "Failed jobs read: run 42419466946 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:14:20Z",
-   "subject": "Failed jobs read: run 42417209240 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:12:19Z",
-   "subject": "Failed jobs read: run 42419466920 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:09:32Z",
-   "subject": "The journal page also does what an author needs: the guidelines, the board, the policies and the publication-unit calculator"
-  },
-  {
-   "at": "2026-11-07T22:09:25Z",
-   "subject": "Incident: the browser suite failed on 7a963d4e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-07T22:04:24Z",
-   "subject": "Site test: fix: \"play connect four\" only \"waking up\" appeared, never th"
-  },
-  {
-   "at": "2026-11-07T21:55:33Z",
-   "subject": "Outcome exam: podcasts 68.9"
-  },
-  {
-   "at": "2026-11-07T21:51:16Z",
-   "subject": "Failed jobs read: run 42416002800 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:50:55Z",
-   "subject": "Incident: the browser suite failed on 223d816f (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-07T21:44:41Z",
-   "subject": "Failed jobs read: run 42416488886 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:43:57Z",
-   "subject": "Failed jobs read: run 42417209258 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 34,
-  "week": 249
+  "day": 35,
+  "week": 250
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -926,6 +926,6 @@
    "random.org"
   ],
   "beaten": 2,
-  "total": 1310
+  "total": 1312
  }
 }
