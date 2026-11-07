@@ -1,7 +1,7 @@
 // tools/baggage-live.mjs: the record of one day's reading of the airline pages, on made-up pages.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { recordOf, ledgerWhat, artifactName, textOf, CHECKS, readPages } from './baggage-live.mjs';
+import { recordOf, ledgerWhat, artifactName, textOf, CHECKS, readPages, exitCodeOf } from './baggage-live.mjs';
 import { ROWS, SOURCES } from '../void-live-deploy/skills/baggage.js';
 import { entryProblem } from './grow.mjs';
 
@@ -52,8 +52,11 @@ test('baggage-live: a figure gone from its page or a page that did not answer is
   assert.match(ledgerWhat(gone), /found 9 of 10 figures/);
   const down = all(); down['British Airways: baggage'] = { status: 403, body: '', ms: 300 };
   const rec = recordOf({ pages: down, at: AT });
-  assert.equal(rec.ok, false); assert.match(rec.error, /^British Airways: baggage: HTTP 403; not found: /);
-  assert.equal(rec.checks.filter((c) => c.source === 'British Airways: baggage').every((c) => !c.found), true, 'a page that did not answer finds nothing');
+  assert.equal(rec.ok, false); assert.equal(rec.error, 'British Airways: baggage: HTTP 403 (3 figures unchecked)');
+  assert.equal(rec.checks.filter((c) => c.source === 'British Airways: baggage').every((c) => !c.found && c.state === 'unchecked'), true, 'a page that did not answer finds nothing, and its figures are unchecked, not gone');
+  assert.equal(rec.gone, 0); assert.equal(rec.unchecked, 3); assert.equal(rec.found, CHECKS.length - 3);
+  assert.match(ledgerWhat(rec), /found 7 of 10 figures, none gone, 3 unchecked/);
+  assert.equal(gone.gone, 1); assert.equal(gone.checks.find((c) => c.figure === '100 lbs / 45 kgs').state, 'gone');
   // a figure written only inside a script is not on the page
   const scripted = all(); scripted['American: heavy bags'] = ok('<script>"100 lbs / 45 kgs"</script><p>Over 53 lbs / 24 kgs to 70 lbs / 32 kgs</p>');
   assert.equal(recordOf({ pages: scripted, at: AT }).checks.find((c) => c.figure === '100 lbs / 45 kgs').found, false);
@@ -69,6 +72,22 @@ test('baggage-live: readPages reads each cited page once, and an unreachable pag
   assert.deepEqual(seen, SOURCES.map(([, u]) => u));
   assert.equal(out['British Airways: baggage'].status, 0); assert.equal(out['British Airways: baggage'].error, 'ECONNRESET');
   assert.equal(out['American: checked bags'].body, 'page');
+});
+
+test('baggage-live: a refusal alone warns, a figure gone is red, nothing answering is red, all found is green', () => {
+  assert.equal(exitCodeOf(recordOf({ pages: all(), at: AT })), 0);
+  // the day-to-day case since 2026-10-31: aa.com refuses the runner, British Airways answers with every figure
+  const aaRefused = all();
+  for (const [n] of SOURCES) if (n.startsWith('American')) aaRefused[n] = { status: 403, body: '', ms: 200 };
+  const r = recordOf({ pages: aaRefused, at: AT });
+  assert.equal(r.ok, false); assert.equal(r.gone, 0); assert.equal(r.unchecked, 7); assert.equal(exitCodeOf(r), 2);
+  // a refusal and a figure gone on a page that answered: the gone figure wins, red
+  aaRefused['British Airways: baggage'] = ok('<div>23kg (50lb)</div><div>32kg (70lb)</div>');
+  const both = recordOf({ pages: aaRefused, at: AT });
+  assert.equal(both.gone, 1); assert.equal(exitCodeOf(both), 1);
+  assert.match(both.error, /American: checked bags: HTTP 403 \(3 figures unchecked\).*not found: 56 x 45 x 25cm \(British Airways: baggage\)/);
+  const none = Object.fromEntries(SOURCES.map(([n]) => [n, { status: 0, body: '', ms: 0, error: 'ENOTFOUND' }]));
+  assert.equal(exitCodeOf(recordOf({ pages: none, at: AT })), 3);
 });
 
 test('baggage: the card\'s own self-test (asked by Verse: "Address the least-checked skills: video-gen and baggage"): every row, every source and figures that agree', async () => {

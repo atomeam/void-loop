@@ -102,23 +102,33 @@ export const archiveFileUrl = (id, name) => 'https://archive.org/download/' + en
 // an instance of film (Q11424) or of a kind of film, with a publication date. It gives the year, the director, the runtime and the genres
 // (P136, 2026-11-06: "scary movies from the 90s" scored every pick "Not a match: scary (horror), the source gives no genre"), never a poster.
 export const WIKIDATA = 'https://query.wikidata.org/sparql?format=json&query=';
+// A person types a title in any case ("where can i stream the blair witch project", 2026-11-06: "Not verified" for a film Wikidata has as
+// "The Blair Witch Project"), and a label match is exact. The query asks for the title as typed and in its usual capital letters.
+const SMALL = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'from', 'in', 'into', 'nor', 'of', 'on', 'or', 'over', 'the', 'to', 'up', 'with']);
+/** "the blair witch project" -> ["the blair witch project", "The blair witch project", "The Blair Witch Project"]: the title as typed, with
+ *  a capital first letter, in title case (small words lower case, apart from the first and the last) and with every word capitalised; no repeats. Pure. */
+export function titleCasings(title) {
+  const t = cleanTitle(title), up = (w) => w.charAt(0).toUpperCase() + w.slice(1), words = t.split(' ');
+  const titled = words.map((w, i) => (i > 0 && i < words.length - 1 && SMALL.has(w.toLowerCase()) ? w.toLowerCase() : up(w))).join(' ');
+  return [...new Set([t, up(t), titled, words.map(up).join(' ')])].filter(Boolean);
+}
 /** the SPARQL that finds the films with this English label. The title goes through cleanTitle (no quote or backslash can reach the literal). Pure. */
 export function wikidataQuery(title) {
-  const t = cleanTitle(title).replace(/["\\]/g, '');
-  // SPARQL, not SQL: t passed cleanTitle, which keeps only letters, digits, spaces and .,:;'’&!?- , so no quote or backslash can end the literal
-  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) (GROUP_CONCAT(DISTINCT ?gl; separator=", ") AS ?genres) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.' // void-review: ok (SPARQL literal of a cleanTitle value, see above)
+  const ls = titleCasings(title).map((c) => '"' + c.replace(/["\\]/g, '') + '"@en').join(' ');
+  // SPARQL, not SQL: each label passed cleanTitle, which keeps only letters, digits, spaces and .,:;'’&!?- , so no quote or backslash can end a literal
+  return 'SELECT ?f (SAMPLE(?l) AS ?label) (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) (GROUP_CONCAT(DISTINCT ?gl; separator=", ") AS ?genres) WHERE { VALUES ?l { ' + ls + ' } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.' // void-review: ok (SPARQL literal of a cleanTitle value, see above)
     + ' OPTIONAL { ?f wdt:P57 ?di. ?di rdfs:label ?dl. FILTER(LANG(?dl) = "en") } OPTIONAL { ?f wdt:P2047 ?dur } OPTIONAL { ?f wdt:P136 ?g. ?g rdfs:label ?gl. FILTER(LANG(?gl) = "en") } } GROUP BY ?f LIMIT 10';
 }
 /** the Wikidata row that is this movie: the year within one when it is known, else the most recent film of that name; or null. Pure. */
 export function pickWikidata(json, title, year) {
   const v = (b, k) => (b && b[k] && typeof b[k].value === 'string' ? b[k].value : '');
   const rows = ((json && json.results && json.results.bindings) || []).map((b) => ({
-    id: (v(b, 'f').match(/\/entity\/(Q\d{1,12})$/) || [])[1] || '', year: cleanYear(v(b, 'date').slice(0, 4)), director: cleanTitle(v(b, 'dir')), mins: Math.round(Number(v(b, 'mins'))), genre: wikidataGenre(v(b, 'genres')),
+    id: (v(b, 'f').match(/\/entity\/(Q\d{1,12})$/) || [])[1] || '', label: cleanTitle(v(b, 'label')), year: cleanYear(v(b, 'date').slice(0, 4)), director: cleanTitle(v(b, 'dir')), mins: Math.round(Number(v(b, 'mins'))), genre: wikidataGenre(v(b, 'genres')),
   })).filter((r) => r.id && r.year);
   const y = cleanYear(year);
   const r = y ? rows.find((x) => Math.abs(x.year - y) <= 1) : rows.sort((a, b) => b.year - a.year)[0];
   if (!r) return null;
-  return { title: cleanTitle(title), year: r.year, director: r.director, runtime: r.mins > 0 && r.mins < 1000 ? r.mins : null, genre: r.genre, page: 'https://www.wikidata.org/wiki/' + r.id };
+  return { title: r.label || cleanTitle(title), year: r.year, director: r.director, runtime: r.mins > 0 && r.mins < 1000 ? r.mins : null, genre: r.genre, page: 'https://www.wikidata.org/wiki/' + r.id };
 }
 /** Wikidata's genre labels ("mystery film, teen film, slasher film, horror film") as the card shows them: "mystery, teen, slasher, horror". Pure. */
 export function wikidataGenre(labels) {

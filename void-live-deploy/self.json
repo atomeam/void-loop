@@ -290,135 +290,7 @@
    "from": "new idea by growth agent; helper/verify-pack"
   }
  ],
- "open": [
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse as a tool inside other AIs",
-   "from": "void.plan.md Next #11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "WebMCP origin trial",
-   "from": "tools.json, navigator.modelContext feature-detected"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything that passes through Verse is input",
-   "from": "void.plan.md Next #14"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13",
-   "waits": "the miss board"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Fix pages that bring buyers",
-   "from": "claude, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Shared Voids, live",
-   "from": "void.plan.md Next #10"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Tasks that keep running after you leave, with an approve card",
-   "from": "void.assimilate.md row 3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "One owner page: board, agent log and live checks",
-   "from": "void.assimilate.md row 9"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything built before becomes a skill",
-   "from": "void.plan.md Next #8"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Clarify business ideas into system plans",
-   "from": "growth, 2026-11-03"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "archive/script_0.js and the English word list are still the top of the salvage queue",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "a country whose capital item has neither an English label nor an English Wikipedia sitelink still fails and stays a fix job",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "the news section chips still scroll sideways on a phone, on purpose",
-   "from": "cursor 2026-11-05"
-  }
- ],
+ "open": [],
  "games": [
   "tictactoe",
   "othello",
@@ -591,13 +463,6 @@
    "last": "2026-10-07"
   }
  ],
- "building": {
-  "at": "2026-10-18T08:58:46Z",
-  "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
- },
  "commits": [
   {
    "at": "2026-11-07T19:51:43Z",
@@ -683,6 +548,18 @@
  "builders": {
   "finished": [
    {
+    "name": "Translate: a bare word asks which language, and the French phrasing answers…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2512. \"translate spring\" now opens a card that says no language was named and asks which one (the exam's ambiguous case), \"comment dit-on bonjour en anglais\" is read as French and…"
+   },
+   {
+    "name": "Growth card: a touched branch keeps its reading through a bloom, and a late…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check…"
+   },
+   {
+    "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
+   },
+   {
     "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
    },
@@ -693,18 +570,6 @@
    {
     "name": "Closer on the figure (cursor, 2026-11-05)",
     "line": "\"closer on the figure\" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292"
-   },
-   {
-    "name": "Blank home, videos keep playing (cursor, 2026-11-05)",
-    "line": "the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was.…"
-   },
-   {
-    "name": "Phone panel and tray drag (cursor, 2026-11-05)",
-    "line": "a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands.…"
-   },
-   {
-    "name": "Timers and emoji exam (cursor, 2026-11-05)",
-    "line": "a timer card keeps the length it was set for (1:30 and 90 stay while it ticks), \"timer for 5\" asks minutes or seconds, the hourglass fits a 320px card, heart / feu / thank you answer with an emoji, and a red circle fills red.…"
    }
   ],
   "ladders": [
