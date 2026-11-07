@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T01:27:55.812Z",
+  "at": "2026-11-07T17:48:42.156Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,39 +34,23 @@
       }
     },
     "podcasts": {
-      "score": 91.3,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of serial",
+          "ask": "play the latest episode of hidden brain",
           "failed": [
-            "episode"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of hardcore history",
-          "failed": [
-            "show",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of science vs",
-          "failed": [
-            "fast"
+            "audio"
           ],
           "score": 85.7
         },
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",

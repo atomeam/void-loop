@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42191745610",
-  "at": "2026-11-06T09:01:05Z",
-  "what": "Verse hardened itself: 18 benchmark ask(s) for my-device, image-gen, groups, client-handoff, math-quiz, noise.  Why these: my-device (no benchmark ask, evidence tier: tested); image-gen (no benchmark ask, evidence tier: tested); groups (no benchmark ask, evidence tier: checked); client-handoff (no benchmark ask, evidence tier: tested); math-quiz (no benchmark ask, evidence tier: tested); noise (no benchmark ask, evidence tier: tested). New phrases: “what is my ip address” now opens my-device; “what is my user agent” now opens my-device; “what is my screen resolution” now opens my-device; “generate a picture of a lighthouse at night” now opens image-gen; “make an image of a sunset over the sea” now opens image-gen; “create a watercolour painting of a fox” now opens image-gen; “random team generator” now opens groups; “split alice, bob, carol and dave into 2 teams” now opens groups; “make 3 groups from: ann, ben, cal, dee, eve, fay” now opens groups; “client handoff for the onboarding automation” now opens client-handoff; “make a client handoff for the invoice flow” now opens client-handoff; “business handoff for weekly status reports” now opens client-handoff; “times tables quiz” now opens math-quiz; “7 times table quiz” now opens math-quiz; “multiplication quiz” now opens math-quiz; “white noise” now opens noise; “pink noise for 30 minutes” now opens noise; “brown noise” now opens noise.",
-  "try": "what is my ip address",
+  "run": "42292448467",
+  "at": "2026-11-06T20:56:43Z",
+  "what": "Verse hardened itself: 18 benchmark ask(s) for heavy-lift-map, lab, speed-tests, system-blueprint, system-handoff, systems-monitor.  Why these: heavy-lift-map (no benchmark ask, evidence tier: tested); lab (no benchmark ask, evidence tier: tested); speed-tests (no benchmark ask, evidence tier: tested); system-blueprint (no benchmark ask, evidence tier: tested); system-handoff (no benchmark ask, evidence tier: tested); systems-monitor (no benchmark ask, evidence tier: tested). New phrases: “map the heavy lifting for client onboarding” now opens heavy-lift-map; “heavy lift map: invoice reminders that run themselves” now opens heavy-lift-map; “what does Verse own for the support ticket router” now opens heavy-lift-map; “verse lab” now opens lab; “vers lab” now opens lab; “the lab” now opens lab; “reaction time test” now opens speed-tests; “reaction test” now opens speed-tests; “click speed test” now opens speed-tests; “blueprint this: late invoice follow-ups for clients” now opens system-blueprint; “turn this into a system: new lead intake from the website form” now opens system-blueprint; “idea to system: sync closed deals from CRM to the finance sheet” now opens system-blueprint; “system handoff for the onboarding automation” now opens system-handoff; “make a system handoff for invoice reminders” now opens system-handoff; “handoff the system: support ticket router” now opens system-handoff; “systems monitor” now opens systems-monitor; “monitor board for client” now opens systems-monitor; “status of my systems” now opens systems-monitor.",
+  "try": "map the heavy lifting for client onboarding",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-04T05:50:41Z",
-    "try": "stopwatch",
-    "closedAt": "2026-11-06T09:00:50Z"
+    "at": "2026-11-06T09:01:05Z",
+    "try": "what is my ip address",
+    "closedAt": "2026-11-06T20:56:29Z"
   }
 }

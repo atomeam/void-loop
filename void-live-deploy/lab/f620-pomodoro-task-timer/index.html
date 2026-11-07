@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4f8cff; --good:#3dd68c; --text:#e8eaed; --muted:#9aa0a6; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a2e36; }
+h1 { margin:0; font-size:1.4rem; }
+.sub { color:var(--muted); font-size:0.85rem; }
+main { max-width:640px; margin:0 auto; padding:1rem; }
+.timer-box { background:var(--card); border-radius:16px; padding:1.5rem; text-align:center; margin-bottom:1rem; }
+#time { font-size:3.5rem; font-variant-numeric:tabular-nums; font-weight:600; margin:0.5rem 0; }
+.ring { width:180px; height:180px; margin:0 auto; position:relative; }
+.ring svg { transform:rotate(-90deg); }
+.ring circle { fill:none; stroke-width:10; }
+.bg { stroke:#2a2e36; }
+.fg { stroke:var(--accent); stroke-linecap:round; transition:stroke-dashoffset 0.3s; }
+.mode { font-size:0.9rem; color:var(--muted); margin-bottom:0.5rem; }
+.controls { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
+button { background:#2a2e36; color:var(--text); border:none; border-radius:8px; padding:0.6rem 1rem; font-size:0.95rem; cursor:pointer; }
+button.primary { background:var(--accent); color:#fff; }
+button.good { background:var(--good); color:#000; }
+button:disabled { opacity:0.5; cursor:not-allowed; }
+.tasks { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+.task { display:flex; align-items:center; gap:0.5rem; padding:0.6rem; border-radius:8px; margin:0.3rem 0; background:#22262e; }
+.task.selected { outline:2px solid var(--accent); }
+.task .name { flex:1; }
+.task .count { color:var(--muted); font-size:0.85rem; min-width:4rem; text-align:right; }
+.add-row { display:flex; gap:0.5rem; margin-bottom:0.5rem; }
+input[type=text], input[type=number] { flex:1; background:#22262e; border:1px solid #3a3f48; color:var(--text); border-radius:8px; padding:0.6rem; font-size:1rem; }
+.tally { background:var(--card); border-radius:12px; padding:1rem; text-align:center; margin-bottom:1rem; }
+.tally strong { font-size:1.8rem; color:var(--good); }
+.export { display:flex; gap:0.5rem; flex-wrap:wrap; justify-content:center; }
+footer { text-align:center; color:var(--muted); font-size:0.75rem; padding:1rem; }
+.warn { color:#ffb74d; font-size:0.8rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Pomodoro task timer · Verse lab</title>
+<meta name="description" content="Job: Add tasks, run 25-minute work sessions (or your length) on one of them with short and long breaks, see how many you finished today and per task.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Pomodoro task timer · Verse lab">
+<meta property="og:description" content="Job: Add tasks, run 25-minute work sessions (or your length) on one of them with short and long breaks, see how many you finished today and per task.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f620-pomodoro-task-timer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f620-pomodoro-task-timer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Pomodoro task timer</h1>
+  <div class="sub">Work sessions tied to your tasks. Stays on this device.</div>
+</header>
+<main>
+  <div class="timer-box">
+    <div class="mode" id="mode">Work · 25 min</div>
+    <div class="ring">
+      <svg width="180" height="180" viewBox="0 0 180 180">
+        <circle class="bg" cx="90" cy="90" r="80"/>
+        <circle class="fg" id="ring" cx="90" cy="90" r="80" stroke-dasharray="502.65" stroke-dashoffset="0"/>
+      </svg>
+      <div id="time" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">25:00</div>
+    </div>
+    <div class="controls">
+      <button id="startBtn" class="primary">Start</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="skipBtn">Skip</button>
+      <button id="breakBtn">Short break</button>
+      <button id="longBtn">Long break</button>
+    </div>
+    <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--muted);">
+      Work <input type="number" id="workLen" value="25" min="1" max="90" style="width:3.5rem"> min ·
+      Short <input type="number" id="shortLen" value="5" min="1" max="30" style="width:3.5rem"> ·
+      Long <input type="number" id="longLen" value="15" min="1" max="60" style="width:3.5rem">
+    </div>
+  </div>
+
+  <div class="tally">
+    Today: <strong id="todayCount">0</strong> pomodoros
+    <div style="font-size:0.8rem;color:var(--muted);margin-top:0.3rem;" id="dateLabel"></div>
+  </div>
+
+  <div class="tasks">
+    <div class="add-row">
+      <input type="text" id="taskInput" placeholder="Add a task…" maxlength="80">
+      <button id="addBtn" class="primary">Add</button>
+    </div>
+    <div id="taskList"></div>
+    <div id="noTasks" style="color:var(--muted);text-align:center;padding:1rem;">No tasks yet. Add one to focus on.</div>
+  </div>
+
+  <div class="export">
+    <button id="copyBtn">Copy summary</button>
+    <button id="downloadBtn">Download .txt</button>
+    <button id="resetToday">Reset today</button>
+  </div>
+  <div id="status" class="warn" style="text-align:center;margin-top:0.5rem;"></div>
+</main>
+<footer>Local only · times use your device clock · no account · nothing sent</footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

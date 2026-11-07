@@ -11,12 +11,12 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-07",
- "bench_at": "2026-11-05",
+ "bench_at": "2026-11-07",
  "totals": {
   "experiment": 0,
-  "tested": 9,
+  "tested": 3,
   "checked": 12,
-  "proven": 391
+  "proven": 397
  },
  "families": [
   {
@@ -120,9 +120,12 @@
      "name": "make",
      "tier": "proven",
      "why": "a self-test, 4 browser-suite mentions, 32 real asks in the benchmark",
+     "failing": [
+      "show me the lab"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.969,
      "streak": 19
     },
     {
@@ -595,9 +598,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 2,
-    "proven": 40
+    "proven": 41
    },
    "skills": [
     {
@@ -955,11 +958,12 @@
     },
     {
      "name": "speed-tests",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-11-06",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 2
     },
     {
@@ -1217,9 +1221,13 @@
      "name": "timer",
      "tier": "proven",
      "why": "a self-test, 6 browser-suite mentions, 34 real asks in the benchmark",
+     "failing": [
+      "set an alarm for 7am",
+      "wake me up at 6:30"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 0.941
     },
     {
      "name": "stopwatch",
@@ -1410,12 +1418,12 @@
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "failing": [
       "what's 7 factorial",
-      "what is 5 factorial",
-      "what is 100 factorial"
+      "what is 20 percent off 59.99",
+      "what is 20% off $85"
      ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.993,
+     "success_rate": 0.982,
      "streak": 19
     },
     {
@@ -1468,9 +1476,12 @@
      "name": "fuel",
      "tier": "proven",
      "why": "a self-test, 10 real asks in the benchmark",
+     "failing": [
+      "gas mileage 300 miles 10 gallons"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.9,
      "promoted": "2026-10-29",
      "streak": 19
     },
@@ -1488,9 +1499,12 @@
      "name": "tip",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
+     "failing": [
+      "what is 15% off 80 dollars"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.972,
      "streak": 19
     },
     {
@@ -3603,18 +3617,19 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 6,
+    "tested": 1,
     "checked": 2,
-    "proven": 50
+    "proven": 55
    },
    "skills": [
     {
      "name": "lab",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-11-06",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 1
     },
     {
@@ -3789,10 +3804,12 @@
     },
     {
      "name": "systems-monitor",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 3
     },
     {
@@ -3861,10 +3878,12 @@
     },
     {
      "name": "system-blueprint",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 3
     },
     {
@@ -3879,18 +3898,22 @@
     },
     {
      "name": "system-handoff",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 3
     },
     {
      "name": "heavy-lift-map",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-07",
      "streak": 1
     },
     {

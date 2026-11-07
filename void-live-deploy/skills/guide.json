@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 2,
-    "proven": 40
+    "proven": 41
    },
    "from": 68,
    "to": 112
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 6,
+    "tested": 1,
     "checked": 2,
-    "proven": 50
+    "proven": 55
    },
    "from": 361,
    "to": 419
@@ -2230,8 +2230,10 @@
     "reaction test",
     "click speed test"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 109
   },
   {
@@ -6707,8 +6709,10 @@
     "vers lab",
     "the lab"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it. Ask, and see.",
+   "glow": 100,
    "n": 362
   },
   {
@@ -6962,7 +6966,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it. Ask, and see.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Ask, and see.",
    "glow": 100,
    "n": 377
   },
@@ -7044,8 +7048,10 @@
     "monitor board for client",
     "status of my systems"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. The void remembers each asking.",
+   "glow": 100,
    "n": 382
   },
   {
@@ -7178,8 +7184,10 @@
     "turn this into a system: new lead intake from the website form",
     "idea to system: sync closed deals from CRM to the finance sheet"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. So it is written.",
+   "glow": 100,
    "n": 390
   },
   {
@@ -7210,8 +7218,10 @@
     "make a system handoff for invoice reminders",
     "handoff the system: support ticket router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. So it is written.",
+   "glow": 100,
    "n": 392
   },
   {
@@ -7225,8 +7235,10 @@
     "heavy lift map: invoice reminders that run themselves",
     "what does Verse own for the support ticket router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "glow": 100,
    "n": 393
   },
   {
@@ -7395,7 +7407,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Ask, and see.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. Turn the page when you are done.",
    "glow": 100,
    "n": 403
   },
@@ -7463,7 +7475,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. So it is written.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. So it is written.",
    "glow": 100,
    "n": 407
   },
@@ -7576,7 +7588,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Turn the page when you are done.",
    "glow": 100,
    "n": 414
   },

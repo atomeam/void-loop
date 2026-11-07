@@ -1624,25 +1624,95 @@
     "place": 8,
     "why": "2 controls, 1 KB, Tranco 377"
    }
+  },
+  "milkie.cc": {
+   "at": "2026-11-07T16:40:23Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (60 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 99.9,
+    "place": 1,
+    "why": "0 controls, 1 KB, Tranco 120104"
+   }
+  },
+  "digitalsogame.com": {
+   "at": "2026-11-07T16:40:26Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (103 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 90.8,
+    "place": 2,
+    "why": "1 controls, 1 KB, Tranco 120024"
+   }
+  },
+  "share.google": {
+   "at": "2026-11-07T16:40:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a URL shortener and redirect service for a specific company's app, which does not match any of the functional tool pages provided in the Verse)",
+   "title": "share.google",
+   "ease": {
+    "score": 76.8,
+    "place": 3,
+    "why": "3 controls, 2 KB, Tranco 523"
+   }
+  },
+  "g.co": {
+   "at": "2026-11-07T16:40:36Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a URL shortening service for a specific company. Verse does not have a page for URL shorteners or link management tools.)",
+   "title": "g.co",
+   "ease": {
+    "score": 76.8,
+    "place": 4,
+    "why": "3 controls, 2 KB, Tranco 770"
+   }
+  },
+  "amazon.co.uk": {
+   "at": "2026-11-07T16:40:41Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a massive e-commerce marketplace. Verse does not have a page for a general shopping service or retail store.)",
+   "title": "Amazon.co.uk",
+   "ease": {
+    "score": 76.7,
+    "place": 5,
+    "why": "3 controls, 4 KB, Tranco 329"
+   }
+  },
+  "amazon.de": {
+   "at": "2026-11-07T16:40:47Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a major e-commerce marketplace. Verse does not have a general shopping or retail page.)",
+   "title": "Amazon.de: Low Prices in Electronics, Books, Sports Equipment & more",
+   "ease": {
+    "score": 76.7,
+    "place": 6,
+    "why": "3 controls, 4 KB, Tranco 379"
+   }
+  },
+  "live-video.net": {
+   "at": "2026-11-07T16:40:51Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a landing page for Amazon Interactive Video Service (IVS), which is a cloud-based live video streaming service. Verse does not have a tool for)",
+   "title": "Amazon.com Property",
+   "ease": {
+    "score": 71.3,
+    "place": 7,
+    "why": "4 controls, 2 KB, Tranco 401"
+   }
+  },
+  "dns.google": {
+   "at": "2026-11-07T16:40:55Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Google Public DNS",
+   "ease": {
+    "score": 66.6,
+    "place": 8,
+    "why": "5 controls, 1 KB, Tranco 384"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-28T22:47:55Z",
-   "line": "Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com",
-   "built": 0,
-   "queued": 2,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
-   "at": "2026-10-28T22:50:28Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
   {
    "at": "2026-10-29T08:51:03Z",
    "line": "Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com",
@@ -1994,6 +2064,25 @@
    "fixed": [],
    "pages_per_day": 0,
    "reads_next": "share.google",
+   "noop": true
+  },
+  {
+   "at": "2026-11-07T16:41:03Z",
+   "line": "Versus: took on no site (also read: 2 walled, 6 no-family); next oneyeard.com (the target)",
+   "built": 0,
+   "queued": 5,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "vivoglobal.com"
+  },
+  {
+   "at": "2026-11-07T16:43:37Z",
+   "line": "Versus: took on no site; next oneyeard.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "vivoglobal.com",
    "noop": true
   }
  ]

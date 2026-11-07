@@ -598,7 +598,7 @@
    "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   },
   {
-   "at": "2026-11-07T14:00:52Z",
+   "at": "2026-11-07T14:02:07Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -854,7 +854,7 @@
  ],
  "visible": {
   "day": 4,
-  "week": 222
+  "week": 219
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
