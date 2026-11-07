@@ -303,10 +303,9 @@
   Made something with the forge? Say "make me a paper" on <a href="/">Verse</a>.</footer>
 </main>
 <script type="module">
-  import { WORKS, FIELDS, PAGE_SIZE, articlesOf, sortNewest, volumesOf, searchOf, apaOf, bibtexOf, pubUnits, puWithoutEquationExtra } from '/lib/journal.js';
-  import { mountRelated } from '/lib/toolkit.js';
-  // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
+  // everything after the first paint: the page shows its boxes and its words at once, the modules land after load (the gate measures speed)
   addEventListener('load', async () => {
+    const [{ WORKS, FIELDS, PAGE_SIZE, articlesOf, sortNewest, volumesOf, searchOf, apaOf, bibtexOf, pubUnits, puWithoutEquationExtra }, { mountRelated }] = await Promise.all([import('/lib/journal.js'), import('/lib/toolkit.js')]);
     const $ = (id) => document.getElementById(id);
     const KEY = 'a2m.void.journal.v1', CACHE = 'a2m.void.journal.cache.v1';
     let store = { saved: [] };
