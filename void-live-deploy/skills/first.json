@@ -308,7 +308,7 @@
  "toolkit": ["all tools","every tool","how many rolls of tape for 200ft","show me your tools","what tools do you have"],
  "boards": ["chan boards","image boards","make a board","open the image boards","text boards","the chans"],
  "sums": ["2026-10-30","400 + 562 + 129","a train travels 120 km in 2 hours what is its speed","if 3 apples cost 2.40 how much do 7 cost"],
- "snippet": ["code","what is 10 factorial","what is 100 factorial","what is 5 factorial","what is 7 factorial","what's 7 factorial","write a python function factorial of n","write a python function reverse that reverses a string"],
+ "snippet": ["code","write a python function factorial of n","write a python function reverse that reverses a string"],
  "music-tools": ["am7 chord","c major scale","circle of fifths","guitar tuner","metronome 120 bpm","music tools","online piano","tap tempo"],
  "pdf-tools": ["combine pdf files","compress pdf","jpg to pdf","merge pdf","pdf to jpg","pdf tools","reorder pdf pages","rotate a pdf","split a pdf"],
  "converter": ["add image to pdf","audio converter","change gif speed","cut mp3","epub to txt","extract audio from video","file converter","merge audio","mix audio","mp3 to mp4","mp4 to mp3","pdf to docx","remove silence from audio"],

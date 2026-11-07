@@ -100,8 +100,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 3,
-    "proven": 44
+    "checked": 2,
+    "proven": 45
    },
    "from": 202,
    "to": 249
@@ -1466,9 +1466,8 @@
     "coin toss"
    ],
    "tier": "proven",
-   "why": "a self-test, 12 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 2 askings, each one answered. The void remembers each asking.",
-   "glow": 100,
+   "why": "a self-test, 12 browser-suite mentions, 8 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 8 askings, each one answered. The void remembers each asking.",
    "n": 70
   },
   {
@@ -3490,9 +3489,9 @@
     "calculator for molar mass"
    ],
    "tier": "proven",
-   "why": "a self-test, 11 real asks in the benchmark",
-   "flavor": "Asked 11 times in earnest, and never once left unanswered. Let the stage be the proof.",
-   "glow": 100,
+   "why": "a self-test, 12 real asks in the benchmark",
+   "flavor": "Asked 12 times in earnest, and never once left unanswered. Let the stage be the proof.",
+   "glow": 91.7,
    "n": 181
   },
   {
@@ -4208,9 +4207,9 @@
     "tell me a riddle",
     "give me a riddle"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
-   "glow": 100,
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. Let the stage be the proof.",
    "n": 221
   },
   {
@@ -4714,7 +4713,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 22 live findings, 2026-11-05",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 23 live findings, 2026-11-06",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 251

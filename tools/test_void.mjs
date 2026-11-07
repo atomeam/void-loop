@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
+import { NAV as SHELL_NAV } from '../void-live-deploy/lib/verse-shell.js';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
@@ -1571,6 +1572,8 @@ try {
     await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
     await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ask('the tower', 1200);
+    // the card can take longer than the ask's wait on a phone runner: wait for its rows, then read them
+    await P.p.waitForSelector('.vpage.on .tower-floor', { timeout: 8000 }).catch(() => {});
     const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
       return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
         every: [...c.querySelectorAll('.tw-links')].every((l) => l.querySelector('.tw-page')), wide: document.documentElement.scrollWidth <= innerWidth }; }).catch((e) => ({ err: String(e) }));
@@ -1584,15 +1587,17 @@ try {
   }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
+    // the nav names its pages itself (lib/verse-shell.js NAV): the check reads the agent page's label there, so a theme rename keeps it true
+    const agentLabel = (SHELL_NAV.find((x) => x.href === '/agent/') || {}).label || '';
     await P.p.goto(base + 'agent/');
-    const nav = await until(() => P.p.evaluate(() => {
+    const nav = await until(() => P.p.evaluate((want) => {
       const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
-      if (!bar || !a || a.textContent !== 'Agents') return null;
+      if (!bar || !a || !want || a.textContent !== want) return null;
       const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
       return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
-    }), 8000);
-    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
-      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    }, agentLabel), 8000);
+    check(`phone polish: the agent page's nav item (${agentLabel}) is fully inside the nav bar and the page is not wider than the screen`,
+      nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
     await P.p.goto(base + 'compare/');
     const cmp = await until(() => P.p.evaluate(() => {
       const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
@@ -7862,7 +7867,7 @@ try {
     gen = 2; const three = await until(async () => { const r = await read(); return r && r.refreshed && /Round three/.test(r.text) ? r : null; }, 14000).catch(() => null);
     check('self card never repeats: "since i last looked" opens the self card (not the model) with the newest builds first; opened again it leads with "Since you last looked" (the counts that moved, the new build) and none of the sentences read before; open, it redraws by itself with the next round',
       !!one && one.lead === 'since' && /Newest/.test(one.head) && /blank stage with one quiet input/.test(one.text) && /Round one/.test(one.text) && loop && loop.note === 'voice'
-        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 asks built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
+        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 ask built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
         && !!three && /Round three/.test(three.text) && !/blank stage with one quiet input/.test(three.text) && !N.errors.length,
       JSON.stringify({ one: one && { ...one, text: one.text.slice(0, 200) }, loop, two: two && { ...two, text: two.text.slice(0, 300) }, three: three && three.text.slice(0, 200), errors: N.errors }));
     await N.ctx.close(); }
@@ -7884,7 +7889,10 @@ try {
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
-    const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
+    // each built ask in words of its own: asks with only the numbers changed, or most words shared, are one ask (lib/ask-same.js, #2405), so
+    // thirty asks that differ only by their number fold into one row (red on main since #2405, 2026-11-06)
+    const L26 = 'abcdefghijklmnopqrstuvwxyz', own = (i) => Array.from({ length: 7 }, (_, k) => 'zo' + L26[Math.floor(i / 26)] + L26[i % 26] + L26[k]).join(' ');
+    const long = (i) => 'built ask number ' + i + ': ' + own(i) + ', ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
     // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
@@ -9197,12 +9205,15 @@ try {
       const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
       res.push({ id, ok: !!ok, hook, framed: !!fr });
     }
+    // "show me the lab" opens the lab page card since the lab skill (owner, 2026-11-06: "i cant find the lab anywhere"); the 12-experiment list stays one ask away
     await L.ask('show me the lab', 500);
+    const labCard = await until(async () => L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return !!pg && (pg.dataset.page === '/lab/' || !!pg.querySelector('a[href="/lab/"]')); }).catch(() => false), 6000);
+    await L.ask('what experiments do you have', 500);
     const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
     if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
     const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
-    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
-      res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
+    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" opens the lab page card; "what experiments do you have" lists all 12 and a click opens one',
+      res.every((r) => r.ok) && !!labCard && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' labCard ' + !!labCard + ' links ' + links.length + ' ' + L.errors.join(' | '));
     await L.ctx.close();
   }
 

@@ -17,6 +17,17 @@ export function onlyBuildConflicts(files) {
   return files.length > 0 && files.every((f) => build.has(f));
 }
 
+/** The checks' exit status. A worktree has no node_modules, so a check that imports a declared package (the Anthropic SDK
+ *  in claude-brain.test.mjs) fails whatever the PR changed. On a red run, install what the lockfile pins once and run again:
+ *  only a failure that survives the install is the PR's (the same rule as skill-safety.mjs). A failed install keeps the red. */
+export function gateStatus(checks, install, log = () => {}) {
+  const first = checks();
+  if (first === 0) return 0;
+  log('merge-gate: a check failed in a worktree with no installed packages; installing what package-lock.json pins and running the checks again');
+  if (install() !== 0) { log('merge-gate: the install failed, so the first result stands'); return first; }
+  return checks();
+}
+
 function git(args, cwd) {
   return spawnSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 20e6 });
 }
@@ -66,11 +77,12 @@ function main() {
     // pull a pre-existing red check into this pull request. Do it even when the merge commit was a no-op.
     git(['reset', '--hard', 'HEAD'], dir);
     git(['clean', '-fd'], dir);
-    const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
+    const checks = () => spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', stdio: 'inherit',
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
-    });
-    process.exit(checks.status ?? 1);
+    }).status ?? 1;
+    const install = () => spawnSync('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], { cwd: dir, encoding: 'utf8', stdio: 'inherit' }).status ?? 1;
+    process.exit(gateStatus(checks, install, (m) => console.log(m)));
   } finally { rm(); }
 }
 

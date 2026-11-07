@@ -11,6 +11,8 @@ export function snippetOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (!t || t.length > 180) return null;
   if (/^(?:code|coding|program(?:ming)?)$/i.test(t)) return { kind: 'which' };
+  // "what is 7 factorial", "factorial of 10": a number to work out, which the page's calculator answers (5,040); the code card is for an ask about the function
+  if (/\b\d+\s*factorial\b|\bfactorial\s+of\s+\d+\b/i.test(t) && !/python|function|funci[oó]n|\bdef\b|\bcode\b|\breturn\b|\bwrite\b|\bimplement/i.test(t)) return null;
   if (/factorial/i.test(t)) return { kind: 'factorial' };
   if (/(?:reverse|invierta|invertir)/i.test(t) && /python|function|funci[oó]n|string|texto|text/i.test(t)) return { kind: 'reverse' };
   return null;
@@ -36,7 +38,7 @@ function run(text, api) {
 export default {
   name: 'snippet',
   examples: ['write a python function factorial of n', 'write a python function reverse that reverses a string', 'code'],
-  nearMisses: ['http status 404', 'what is code', 'dress code', 'zip code 10001', 'country code for france'],
+  nearMisses: ['http status 404', 'what is code', 'dress code', 'zip code 10001', 'country code for france', 'what is 7 factorial', "what's 10 factorial", 'factorial of 5'],
   match(lower, text) { return !!snippetOf(text || lower); },
   run,
 };

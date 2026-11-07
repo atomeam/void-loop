@@ -15,6 +15,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { topicOf } from '../void-live-deploy/lib/tower-topic.js';
+import { overlay, readFloorDir } from './tower-files.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const OUT = 'void-live-deploy/assimilated.json', BACKFILL = 'domains/assimilated.backfill.json', REPO = 'https://github.com/atomeam/void-loop';
@@ -91,7 +92,9 @@ export function fileOf(rows) {
 /** the floors of the tower as the stage reads them, from the published files. */
 export async function floorsOf(cwd = root) {
   const { tower, towerArgs, learnedOf, fatalityOf } = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tower.js')).href);
-  const [inv, ev, fr, rk, sz, tg, ft] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
+  const [inv, agg, fr, rk, sz, tg, ft] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
+  // the evidence as the deploy assembles it: one file per floor in tower-evidence/ wins over the aggregate (tools/tower-files.mjs)
+  const ev = overlay(agg, readFloorDir(resolve(cwd, 'void-live-deploy/tower-evidence')));
   const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }));
   // the evidence also lives one file per floor (void-live-deploy/tower-evidence/, keyed by its id), so a floor measured there is dated too
   const perFloor = {}; try { for (const f of readdirSync(resolve(cwd, 'void-live-deploy/tower-evidence'))) { const e = f.endsWith('.json') && read(cwd, 'void-live-deploy/tower-evidence/' + f); if (e && e.id) perFloor[e.id] = e; } } catch (_) { /* no per-floor evidence */ }
