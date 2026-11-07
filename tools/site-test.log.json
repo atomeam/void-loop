@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-15T22:01:53Z",
-  "passed": 0,
-  "of": 20,
-  "kind": "grow",
-  "note": "grew the suite: \"convert 5 miles to km\""
- },
- {
   "at": "2026-10-15T22:07:53Z",
   "passed": 0,
   "of": 21,
@@ -5202,5 +5195,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"yo style like mickey mouse\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T10:40:07Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1027,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11380 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
