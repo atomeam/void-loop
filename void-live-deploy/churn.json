@@ -1,5 +1,5 @@
 {
- "at": "2026-11-07T18:55:43.724Z",
+ "at": "2026-11-07T20:07:30.726Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -10,23 +10,23 @@
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 85
+   "changes": 87
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 85
-  },
-  {
-   "file": "domains/handoff.md",
-   "changes": 68
+   "changes": 87
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 68
+   "changes": 73
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 67
+   "changes": 72
+  },
+  {
+   "file": "domains/handoff.md",
+   "changes": 69
   },
   {
    "file": "domains/tower-self.json",
@@ -49,23 +49,31 @@
    "changes": 29
   },
   {
-   "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
+   "file": "tools/real-pages.mjs",
    "changes": 28
   },
   {
-   "file": "tools/real-pages.mjs",
-   "changes": 27
+   "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
+   "changes": 28
   },
   {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
    "changes": 25
   },
   {
+   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
+   "changes": 25
+  },
+  {
    "file": "void-live-deploy/bots/registry.json",
-   "changes": 22
+   "changes": 23
   },
   {
    "file": "docs/PARITY/lichess.md",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/assimilated.json",
    "changes": 21
   },
   {
@@ -77,20 +85,12 @@
    "changes": 20
   },
   {
-   "file": "void-live-deploy/assimilated.json",
-   "changes": 20
-  },
-  {
-   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
-   "changes": 20
+   "file": "tools/site-test.json",
+   "changes": 19
   },
   {
    "file": "domains/autosalvage.unified.json",
    "changes": 18
-  },
-  {
-   "file": "tools/site-test.json",
-   "changes": 17
   },
   {
    "file": "void-live-deploy/lib/guard.js",
