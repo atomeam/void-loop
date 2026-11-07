@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T00:42:55.978Z",
+ "updated": "2026-11-07T00:52:24.966Z",
  "last24h": {
-  "ticks": 80,
-  "started": 113,
+  "ticks": 81,
+  "started": 114,
   "requeued": 0,
   "setAside": 0,
-  "probes": 13,
+  "probes": 14,
   "errors": 0
  },
  "broken": [],
@@ -17,10 +17,6 @@
   },
   {
    "id": "mw4gkvdn",
-   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
-  },
-  {
-   "id": "want-exam-translate",
    "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   },
   {
@@ -90,6 +86,10 @@
   {
    "id": "mvpkt1u7",
    "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
+  },
+  {
+   "id": "mw1xyivk",
+   "why": "verse-job.yml is paused (the coder's back-off, #2497, until 06:13 UTC)"
   }
  ],
  "coder": {
@@ -115,7 +115,7 @@
   "mvfu4evy": 1794011049377,
   "mvpuq9g6": 1794011610402,
   "mvpuqaee": 1794012175978,
-  "mvpuqb4r": 1793935659114,
+  "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1793937026908,
   "mw43w6vc": 1793930087442,
   "mw4c2qeu": 1793933006938,
@@ -2487,6 +2487,33 @@
    "setAside": 0,
    "healed": [],
    "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:52:24.966Z",
+   "open": 255,
+   "started": [
+    {
+     "id": "mvpuqb4r",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 82
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
    "grow": false,
    "will": false,
    "lap": false,
