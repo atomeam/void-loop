@@ -482,7 +482,8 @@ test('the calculator\'s card works out the sum in the box (or the sum that gave 
   }
   for (const ms of [0, 500, 90500, 86401000, NaN]) assert.equal(S.timerAsk(ms), '');
   const calc = fs.readFileSync(new URL('../void-live-deploy/calculator/index.html', import.meta.url), 'utf8'), sw = fs.readFileSync(new URL('../void-live-deploy/stopwatch/index.html', import.meta.url), 'utf8');
-  assert.match(calc, /mountRelated\(document\.getElementById\('related'\), '\/calculator\/', \[\], \{ card: \(\) => boxAsk\(ex\.value, hist, done, \{ deg, ans, mem \}\) \}\)/, 'the page gives its card the box and the sum that gave it');
+  assert.match(calc, /mountRelated\(document\.getElementById\('related'\), '\/calculator\/', \[[\s\S]*?\], \{ card: \(\) => boxAsk\(ex\.value, hist, done, \{ deg, ans, mem \}\) \}\)/, 'the page gives its card the box and the sum that gave it');
+  assert.match(calc, /label: 'This VAT sum in Russian', href: \(\) => [^\n]*'\/vat\/\?sum=' [^\n]*&lang=ru' : null/, 'the VAT panel hands its sum to /vat/ in Russian, and only while it is open');
   assert.match(sw, /mountRelated\(document\.getElementById\('related'\), '\/stopwatch\/', \[\], \{ card: \(\) => \(tab === 'cd' \? timerAsk\(cd\.total\) : ''\) \}\)/, 'the countdown gives its card its length');
 });
 

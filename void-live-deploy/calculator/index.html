@@ -82,9 +82,11 @@
   <section id="more" aria-labelledby="mh"><h2 id="mh">VAT, money and health calculators</h2> <!-- void-review: ok: VAT is the word, not a name -->
     <details id="c-vat"><summary>VAT: add it or take it out</summary><div class="form" id="vatform">
       <label>Sum <input class="box" id="va" type="text" inputmode="decimal" value="1000" aria-label="Sum for VAT"></label>
-      <label>Rate (%) <input class="box" id="vr" type="text" inputmode="decimal" value="22" list="vrates" aria-label="VAT rate"></label><datalist id="vrates"><option value="22"><option value="20"><option value="18"><option value="10"><option value="5"><option value="0"></datalist>
+      <label>Rate (%) <input class="box" id="vr" type="text" inputmode="decimal" value="22" list="vrates" aria-label="VAT rate"></label><datalist id="vrates"><option value="22"><option value="20"><option value="18"><option value="10"><option value="7"><option value="5"><option value="0"></datalist>
+      <p class="note" id="vrates-row">Rates <button type="button" data-rate="22">22%</button> <button type="button" data-rate="20">20%</button> <button type="button" data-rate="10">10%</button> <button type="button" data-rate="7">7%</button> <button type="button" data-rate="5">5%</button> <button type="button" data-rate="0">0%</button></p><p class="note" id="vnote"></p>
       <label>The sum is <select id="vm" aria-label="What the sum is"><option value="extract">the total, VAT in it (take VAT out)</option><option value="add">the net, before VAT (add VAT)</option></select></label></div> <!-- void-review: ok: VAT is the word, not a name -->
-      <div class="out" id="vout" aria-live="polite"></div><p class="note" id="vwork"></p>
+      <div class="out" id="vout" aria-live="polite"></div><p class="note" id="vwords"></p><p class="note" id="vwork"></p>
+      <div class="row"><button type="button" id="vcopy">Copy link to this sum</button></div><p class="note" id="vshare">The sum, the rate and the mode ride in the link after the #, which never reaches a server: the link opens this answer again on any device.</p>
       <p class="note">To the kopeck or cent, so net plus VAT is the total exactly. <a id="vlink" href="/vat/">The VAT calculator in Russian, English or German</a>.</p></details> <!-- void-review: ok: VAT is the word, not a name -->
     <details id="c-loan"><summary>Loan, with an amortization schedule and chart</summary><div class="form"><label>Amount <input class="box" id="la" type="text" inputmode="decimal" value="20000"></label><label>Interest rate (% a year) <input class="box" id="lr" type="text" inputmode="decimal" value="7"></label><label>Years <input class="box" id="ly" type="text" inputmode="decimal" value="5"></label><label>Extra each month <input class="box" id="lx" type="text" inputmode="decimal" value="0"></label></div>
       <div class="out" id="lout"></div><div class="chart" id="lchart"></div><div class="row"><button type="button" id="lmonths">Show every month</button></div><div class="tbl" id="ltable"></div></details>
@@ -113,7 +115,7 @@
 <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/base64/bases/">Base converter</a> <a href="/convert/">Unit converter</a> <a href="/random/">Random number</a> <a href="/calculators/">Formula calculators</a> <a href="/vat/">VAT calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav> <!-- void-review: ok: "VAT" is the link text of /vat/, not a name in code -->
   <footer>Worked out on this device, with no third party; it opens offline after one visit. <a href="/">Ask Verse anything</a></footer>
 </main>
-<script>{ const q = new URLSearchParams(location.search), d = document.getElementById('c-' + (q.get('mode') === 'vat' || q.has('vat') ? 'vat' : location.hash.slice(1))); if (d && d.tagName === 'DETAILS') d.open = true; } // a link to a panel shows it open from the first paint</script>
+<script>{ const q = new URLSearchParams(location.search), d = document.getElementById('c-' + (q.get('mode') === 'vat' || q.has('vat') || /^#vat=/.test(location.hash) ? 'vat' : location.hash.slice(1))); if (d && d.tagName === 'DETAILS') d.open = true; } // a link to a panel shows it open from the first paint</script>
 <script type="module">
   // the keypad is in the HTML and paints at once; the calculator's code comes in after the load event (calculator.net reaches its load event in
   // 83 ms and the tower gate times that), so nothing but this page's own bytes stands before it. A sum in the link is still worked out on arrival.
@@ -223,25 +225,39 @@
   // the money and health calculators (lib/calc-panels.js), wired to their panels once the keypad works
   import('/lib/calc-panels.js').then((m) => m.mount()).catch(() => {});
   // the "Use with" row last of all
-  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/', [], { card: () => boxAsk(ex.value, hist, done, { deg, ans, mem }) })).catch(() => {}); // its stage card works out the sum in the box, or the sum that gave the answer in it
+  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/', [
+    // the VAT sum, when the VAT panel is open, carried to the VAT page in Russian (ndscalc.ru's language) with the same sum, rate and mode
+    { label: 'This VAT sum in Russian', href: () => { const g = (id) => document.getElementById(id), d = g('c-vat'), a = g('va') && g('va').value.trim(); return d && d.open && a ? '/vat/?sum=' + encodeURIComponent(a) + '&rate=' + encodeURIComponent(g('vr').value.trim() || '22') + (g('vm').value === 'add' ? '&mode=add' : '') + '&lang=ru' : null; } },
+  ], { card: () => boxAsk(ex.value, hist, done, { deg, ans, mem }) })).catch(() => {}); // its stage card works out the sum in the box, or the sum that gave the answer in it
   });
 </script>
 <script type="module">
   // VAT mode (owner, 2026-11-03: "always combine pages when possible"): the calculator adds VAT to a net sum or takes it out of a total, through
-  // the same kopeck engine as /vat/ (lib/vat.js); /calculator/?mode=vat or #vat opens it, ?vat=add&sum=1000&rate=20 fills it
+  // the same kopeck engine as /vat/ (lib/vat.js); /calculator/?mode=vat or #vat opens it, ?vat=add&sum=1000&rate=20 fills it, and
+  // #vat=add&sum=1000&rate=20 carries the whole state (ndscalc.ru's tower: a result shared and opened again from its link)
   addEventListener('load', async () => {
     const V = await import('/lib/vat.js'), $ = (id) => document.getElementById(id), q = new URLSearchParams(location.search);
     if (q.has('sum')) $('va').value = String(q.get('sum')).slice(0, 40);
     if (V.parseRate(q.get('rate')) != null) $('vr').value = q.get('rate');
     if (q.get('vat') === 'add' || q.get('vat') === 'extract') $('vm').value = q.get('vat');
+    // the whole state in the hash (#vat=extract&sum=1000&rate=22, lib/vat.js hashFromState) wins over the query, and is written back as the sum changes
+    const fill = (st) => { if (!st) return false; $('va').value = st.amount; $('vr').value = String(st.rate); $('vm').value = st.mode; const box = $('c-vat'); if (box) box.open = true; return true; };
+    const fromLink = fill(V.stateFromHash(location.hash)) || q.has('sum') || q.has('vat');
+    if (q.get('mode') === 'vat' || location.hash === '#vat') { const box = $('c-vat'); if (box) box.open = true; }
+    const keep = () => { const h = V.hashFromState({ amount: $('va').value, rate: $('vr').value, mode: $('vm').value }); if (location.hash !== h) try { history.replaceState(null, '', location.pathname + location.search + h); } catch (_) {} };
     const draw = () => {
       const r = V.compute({ amount: $('va').value, rate: $('vr').value, mode: $('vm').value }), m = (n) => V.money(n, 'en');
       $('vout').textContent = r ? 'Net ' + m(r.net) + ' · VAT ' + m(r.vat) + ' · Total ' + m(r.gross) : 'Type a sum and a rate from 0 to 100.';
+      $('vwords').textContent = r ? 'Sum in words: ' + V.moneyWords(r.gross) + '.' : '';
       $('vwork').textContent = r ? V.workingOf(r, 'en').join('; ') : '';
+      $('vnote').textContent = r && V.rateNote(r.rate) ? r.rate + '%: ' + V.rateNote(r.rate) + '.' : '';
       if (r) $('vlink').href = '/vat/' + V.queryFromState({ amount: $('va').value, rate: r.rate, mode: r.mode, lang: 'en' });
     };
-    for (const id of ['va', 'vr', 'vm']) $(id).addEventListener('input', draw);
-    draw();
+    for (const id of ['va', 'vr', 'vm']) $(id).addEventListener('input', () => { draw(); keep(); });
+    for (const b of document.querySelectorAll('#vrates-row button[data-rate]')) b.addEventListener('click', () => { $('vr').value = b.dataset.rate; draw(); keep(); });
+    addEventListener('hashchange', () => { if (fill(V.stateFromHash(location.hash))) draw(); });
+    $('vcopy').addEventListener('click', async () => { keep(); const u = location.href; let ok = false; try { await navigator.clipboard.writeText(u); ok = true; } catch (_) {} $('vcopy').textContent = ok ? 'Link copied' : 'Copy the address bar: the link holds this sum'; setTimeout(() => { $('vcopy').textContent = 'Copy link to this sum'; }, 2400); });
+    draw(); if (fromLink) keep(); // a link that came with a sum keeps it in the hash; a plain visit leaves the address as it is
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

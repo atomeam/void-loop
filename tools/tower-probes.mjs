@@ -1143,6 +1143,17 @@ export const PARTS = Object.freeze({ news: { 'breadth of sources': [['several so
 // them (teams, events, venues, players), lists who was born on this day and says its API is free; the question is a search for Arsenal, which any sports database answers
 // with the club, its league and its sport. Truth worked out by hand, judged on Verse alone.
 const LANE_PROBES = Object.freeze({
+  // emojigraph.org (an emoji encyclopedia; asked by Verse 2026-11-05) against /emojis/dictionary/: the question is one emoji opened from its link, the cat face,
+  // judged on Verse alone (the site's own page for it is not known to the gate). The truth any emoji list agrees on: its name, its code point U+1F431
+  // (Unicode) and its group, Animals & Nature
+  'emoji combos: emojigraph.org': {
+    ask: { verse: '/emojis/dictionary/#e=%F0%9F%90%B1' },
+    truth: [['the cat face', /\u{1F431}/u], ['its name', /\bcat face\b/i], ['its code point', /U\+1F431\b/], ['its group', /Animals & Nature/]],
+    askParts: {}, pageParts: {}, parts: {},
+    facts: [['a search', /\bsearch\b/i], ['groups and subgroups', /\bsubgroups?\b/i], ['keywords', /\bkeywords?\b/i], ['the version it came in', /\bEmoji \d+(?:\.\d+)?\b|\bversion\b/i], ['code points', /\bcode points?\b|U\+[0-9A-F]{4,}/],
+      ['how to write it in HTML, CSS and JavaScript', /\bHTML\b[\s\S]*\bCSS\b|\bJavaScript\b/], ['copy', /\bcopy\b/i], ['similar emoji', /\bsimilar\b/i], ['an emoji keyboard', /emoji keyboard/i], ['a memory game', /memory game/i],
+      ['a link to share', /copy link|\bthe link\b/i], ['nothing sent anywhere', /nothing .{0,60}sent|on this device/i]],
+  },
   // the travel lane (owner, 2026-10-26: "need a flights page"): each site has a page of its own (LANE_PAGES) and the question that page answers. Truths worked out by hand
   // (London to New York is 5,540 km and 3,442 miles; London to Singapore 10,880 km; a 40 minute wait is under 45 minutes; Lisbon's ICAO code is LPPT).
   'travel: tripwaffle.com': {

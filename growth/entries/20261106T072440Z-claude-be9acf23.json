@@ -1,0 +1,1 @@
+{"at":"2026-11-06T07:24:40Z","by":"claude","kind":"build","what":"a test now fails when a tower target has no LANE_PAGES entry or no lib/tool-sites.js row for the same page, and names what to add","asked":"Add a lib/tool-sites.js row and LANE_PAGES entry for any new tower","try":"emoji dictionary cat face"}

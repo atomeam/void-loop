@@ -105,6 +105,22 @@ export function compute({ amount, rate = DEFAULT_RATE, mode = 'extract' } = {}) 
   return { ok: true, mode: add ? 'add' : 'extract', amount: round2(a), rate: r, net: fromKop(k.net), vat: fromKop(k.vat), gross: fromKop(k.gross) };
 }
 
+const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function wordsUnder1000(n) {
+  if (n < 20) return ONES[n];
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? '-' + ONES[n % 10] : '');
+  return ONES[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' ' + wordsUnder1000(n % 100) : '');
+}
+/** a money amount in words, up to 999,999.99: 'one thousand' or 'eight hundred nineteen and 67/100'. Pure. Local: no rate table and no network. */
+export function moneyWords(n) {
+  const x = round2(n);
+  if (!isNum(x) || x < 0 || x >= 1e6) return '';
+  const cents = Math.round(Math.abs(x) * 100), whole = Math.floor(cents / 100), frac = cents % 100;
+  const w = whole < 1000 ? wordsUnder1000(whole) : wordsUnder1000(Math.floor(whole / 1000)) + ' thousand' + (whole % 1000 ? ' ' + wordsUnder1000(whole % 1000) : '');
+  return w + (frac ? ' and ' + String(frac).padStart(2, '0') + '/100' : '');
+}
+
 /** 1234.5 as '1 234,50' (ru) or '1,234.50'. Pure. */
 export function money(n, lang = 'ru') {
   const x = round2(n), [whole, frac] = Math.abs(x).toFixed(2).split('.');
@@ -131,6 +147,38 @@ export function queryFromState({ amount = '', rate = DEFAULT_RATE, mode = 'extra
   if (mode === 'add') q.set('mode', 'add');
   q.set('lang', lang === 'en' ? 'en' : 'ru'); // a shared link opens in the language it was made in
   return '?' + q.toString();
+}
+
+// The Russian VAT rates (ndscalc.ru's job, the calculator's VAT mode): the site's own title names 22%, and the Federal Tax Service's news says
+// "С 1 января 2026 года ставка НДС составляет 22%" (Federal Law 425-FZ). 20% stays for shipments before 2026 and corrections to them, 10% is the
+// reduced rate of the Tax Code (article 164: some food, children's goods, medical goods, books and periodicals), 0% is exports, and 5% and 7% are the
+// special rates a business on the simplified tax system (USN) may choose. A list, never fetched: the sum is worked out on the device.
+export const RU_RATES = Object.freeze([
+  Object.freeze({ rate: 22, note: 'the standard rate from 1 January 2026' }),
+  Object.freeze({ rate: 20, note: 'the standard rate before 2026, for earlier shipments and their corrections' }),
+  Object.freeze({ rate: 10, note: 'the reduced rate: some food, children\'s goods, medical goods, books and periodicals' }),
+  Object.freeze({ rate: 7, note: 'a special rate on the simplified tax system (USN)' }),
+  Object.freeze({ rate: 5, note: 'a special rate on the simplified tax system (USN)' }),
+  Object.freeze({ rate: 0, note: 'exports and the other zero-rated supplies' }),
+]);
+/** what a rate is, in words, or '' for a rate that is not one of Russia's. Pure. */
+export const rateNote = (rate) => (RU_RATES.find((r) => r.rate === Number(rate)) || { note: '' }).note;
+
+// The whole VAT state in a link's hash (owner's tower, ndscalc.ru: "share the result and reopen it from the link"): '#vat=extract&sum=1000&rate=22'.
+// The first key names the panel, so a hash that is not about VAT (#loan) is left alone; the hash never reaches a server.
+/** the hash for a state: always the mode, the sum as typed (spaces out, 40 characters at most) and the rate. Pure. */
+export function hashFromState({ amount = '', rate = DEFAULT_RATE, mode = 'extract' } = {}) {
+  const q = new URLSearchParams(), r = parseRate(rate);
+  q.set('vat', mode === 'add' ? 'add' : 'extract');
+  const a = clean(amount).slice(0, 40); if (a) q.set('sum', a);
+  q.set('rate', String(r == null ? DEFAULT_RATE : r));
+  return '#' + q.toString();
+}
+/** the state a hash carries ({ amount, rate, mode }), or null when the hash is not a VAT one. A rate out of range falls back to the default. Pure. */
+export function stateFromHash(hash) {
+  const h = String(hash || '').replace(/^#/, ''); if (!/^vat=/.test(h)) return null;
+  const q = new URLSearchParams(h), r = parseRate(q.get('rate'));
+  return { amount: q.has('sum') ? String(q.get('sum')).slice(0, 40) : '', rate: r == null ? DEFAULT_RATE : r, mode: q.get('vat') === 'add' ? 'add' : 'extract' };
 }
 
 /** the two lines of working for a compute() result. Pure. */

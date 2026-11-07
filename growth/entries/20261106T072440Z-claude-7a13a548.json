@@ -1,0 +1,1 @@
+{"at":"2026-11-06T07:24:40Z","by":"claude","kind":"build","what":"the VAT panel keeps its sum, rate and mode in the link (#vat=extract&sum=1000&rate=22), so a shared link opens the same sum","asked":"Implement the URL hash serialization logic for ndscalc.ru.","try":"extract VAT 22% from 1000 rubles"}

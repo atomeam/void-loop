@@ -126,6 +126,9 @@ for (const [name, file] of [
   ['emoji-combos', 'emoji-combos.test.mjs'],
   ['trading-bots', 'trading-bots.test.mjs'], // the trading bots, their backtests and the arbitrage scanner (owner, 2026-11-06: "verse can build and sell trading bots too")
   ['emojigraph-lane', 'emojigraph-lane.test.mjs'],
+  ['emoji-dict', 'emoji-dict.test.mjs'], // the emoji dictionary (/emojis/dictionary/, emojigraph.org's tower lane)
+  ['tower-targets', 'tower-targets.test.mjs'], // every tower target has a LANE_PAGES entry and a lib/tool-sites.js row
+  ['vat', 'vat.test.mjs'], // the VAT engine, the Russian rates and the hash state of the calculator's VAT mode (ndscalc.ru)
   ['local-media', 'local-media.test.mjs'],
   ['watch-along', 'watch-along.test.mjs'],
   ['local-stage-dock', 'local-stage-dock.test.mjs'], // a blueprint opened on stage keeps the show playing in a card beside it (owner, 2026-11-06)
