@@ -22,5 +22,10 @@
   "void-live-deploy/lib/tower.js",
   "void-live-deploy/llms.txt",
   "void-live-deploy/self.json"
+ ],
+ "passed": [
+  1,
+  3,
+  4
  ]
 }
