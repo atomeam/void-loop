@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T06:29:47.865Z",
+ "updated": "2026-11-07T06:39:08.696Z",
  "last24h": {
   "ticks": 103,
-  "started": 111,
+  "started": 112,
   "requeued": 0,
   "setAside": 0,
   "probes": 15,
@@ -67,11 +67,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 17,
+   "used": 31,
    "cap": 90
   },
   "day": {
-   "used": 47,
+   "used": 61,
    "cap": 360
   },
   "room": true,
@@ -151,7 +151,8 @@
   "mw5yaeje": 1794030177609,
   "mw5yafh6": 1794030738869,
   "mw60et8a": 1794032426543,
-  "mw60eu92": 1794032987865
+  "mw60eu92": 1794032987865,
+  "mw60ev8u": 1794033548696
  },
  "sweptAt": 1794030738869,
  "blueprintsAt": 1794030738869,
@@ -239,30 +240,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T06:37:40.374Z",
-   "open": 228,
-   "started": [
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 105
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 12,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T06:54:34.638Z",
    "open": 227,
@@ -2965,6 +2942,39 @@
     },
     {
      "id": "mw60eu92",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T06:39:08.696Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "want-exam-translate",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 151
+    },
+    {
+     "id": "mw60ev8u",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
