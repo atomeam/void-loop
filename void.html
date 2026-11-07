@@ -6661,7 +6661,13 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(lower0); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
-      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) {
+        if (wantsIdentity(lower0)) identityGlow();
+        const canDo = /^what\s+can\s+(you|i|(?:verse|void))\s+do\b/.test(lower0);
+        const lead = wantsIdentity(lower0) ? SELF_LEAD : undefined;
+        const stageLead = canDo ? 'I can put a working thing on this stage: a clock, a timer, a note, a list, a calculator, a shape, a picture, or a page about something. Tap a line, or type your own.' : undefined;
+        showSelfPage(false, null, lead || stageLead); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: canDo && !lead ? 'can-do' : 'self' }); return;
+      }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' });
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
         if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }

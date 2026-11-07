@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-06T20:18:49.888Z",
+  "at": "2026-11-07T01:27:55.812Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,16 +34,39 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 91.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the episode before that",
+          "ask": "play the latest episode of serial",
           "failed": [
-            "skill"
+            "episode"
           ],
           "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of hardcore history",
+          "failed": [
+            "show",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "fast"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the episode before that",
+          "failed": [
+            "skill",
+            "audio"
+          ],
+          "score": 71.4
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -103,24 +126,25 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp",
+            "close"
           ],
-          "score": 83.3
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -235,38 +259,10 @@
       }
     },
     "sports": {
-      "score": 92.6,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "scores",
           "failed": [
