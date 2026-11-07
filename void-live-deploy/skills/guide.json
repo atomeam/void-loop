@@ -141,12 +141,12 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 3,
     "checked": 2,
     "proven": 55
    },
    "from": 361,
-   "to": 419
+   "to": 421
   },
   {
    "id": "decide",
@@ -159,8 +159,8 @@
     "checked": 0,
     "proven": 3
    },
-   "from": 420,
-   "to": 423
+   "from": 422,
+   "to": 425
   },
   {
    "id": "safety-play",
@@ -173,31 +173,31 @@
     "checked": 0,
     "proven": 6
    },
-   "from": 424,
-   "to": 430
+   "from": 426,
+   "to": 432
   },
   {
    "id": "minis",
    "name": "3D miniatures",
    "for": "the small 3D things cards carry: a clock whose hands keep time, a board you play on",
    "kind": "minis",
-   "from": 431,
-   "to": 480
+   "from": 433,
+   "to": 482
   },
   {
    "id": "rules",
    "name": "Rule registry",
    "for": "every active router rule, in the order an ask meets them: the first that catches it answers",
    "kind": "rules",
-   "from": 481,
-   "to": 526
+   "from": 483,
+   "to": 528
   },
   {
    "id": "index",
    "name": "Index",
    "kind": "index",
-   "from": 527,
-   "to": 540
+   "from": 529,
+   "to": 542
   }
  ],
  "pages": [
@@ -6663,6 +6663,8 @@
     "proposal",
     "services",
     "delivery-pack",
+    "monitor-pack",
+    "verify-pack",
     "business-clarify",
     "system-blueprint",
     "client-handoff",
@@ -7158,6 +7160,36 @@
   {
    "kind": "skill",
    "chapter": "self",
+   "name": "monitor-pack",
+   "title": "Monitor pack",
+   "line": "Propose the monitors, alerts and status checks Verse will own for a business process so the client does not have to watch it",
+   "examples": [
+    "monitor pack for client onboarding",
+    "set up monitors for the invoice reminders",
+    "what will Verse watch for the support router"
+   ],
+   "tier": "tested",
+   "why": "a self-test",
+   "n": 389
+  },
+  {
+   "kind": "skill",
+   "chapter": "self",
+   "name": "verify-pack",
+   "title": "Verify pack",
+   "line": "Propose the tests, checks and verification Verse will own for a business process or system so the client does not do the heavy testing",
+   "examples": [
+    "verify pack for client onboarding",
+    "set up tests for the invoice reminders",
+    "what will Verse verify for the support router"
+   ],
+   "tier": "tested",
+   "why": "a self-test",
+   "n": 390
+  },
+  {
+   "kind": "skill",
+   "chapter": "self",
    "name": "business-clarify",
    "title": "Business clarify",
    "line": "Capture and clarify a business idea into a system plan that Verse can own the heavy lifting for",
@@ -7170,7 +7202,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. The void remembers each asking.",
    "glow": 100,
-   "n": 389
+   "n": 391
   },
   {
    "kind": "skill",
@@ -7187,7 +7219,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. So it is written.",
    "glow": 100,
-   "n": 390
+   "n": 392
   },
   {
    "kind": "skill",
@@ -7204,7 +7236,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. So it is written.",
    "glow": 100,
-   "n": 391
+   "n": 393
   },
   {
    "kind": "skill",
@@ -7221,7 +7253,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "An old art of the verse itself, tested each day before the sun is up. So it is written.",
    "glow": 100,
-   "n": 392
+   "n": 394
   },
   {
    "kind": "skill",
@@ -7238,7 +7270,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
    "glow": 100,
-   "n": 393
+   "n": 395
   },
   {
    "kind": "skill",
@@ -7255,7 +7287,7 @@
    "why": "a self-test, 14 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. Let the stage be the proof.",
    "glow": 100,
-   "n": 394
+   "n": 396
   },
   {
    "kind": "skill",
@@ -7272,7 +7304,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Let the stage be the proof.",
    "glow": 100,
-   "n": 395
+   "n": 397
   },
   {
    "kind": "skill",
@@ -7289,7 +7321,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
-   "n": 396
+   "n": 398
   },
   {
    "kind": "skill",
@@ -7306,7 +7338,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Keep this page; the verse itself are built on it. So it is written.",
    "glow": 100,
-   "n": 397
+   "n": 399
   },
   {
    "kind": "skill",
@@ -7323,7 +7355,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the verse itself, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
-   "n": 398
+   "n": 400
   },
   {
    "kind": "skill",
@@ -7340,7 +7372,7 @@
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Let the stage be the proof.",
    "glow": 100,
-   "n": 399
+   "n": 401
   },
   {
    "kind": "skill",
@@ -7357,7 +7389,7 @@
    "why": "a self-test, 8 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Of all the verse itself, this one is trusted enough to be taught. So it is written.",
    "glow": 100,
-   "n": 400
+   "n": 402
   },
   {
    "kind": "skill",
@@ -7374,7 +7406,7 @@
    "why": "3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
-   "n": 401
+   "n": 403
   },
   {
    "kind": "skill",
@@ -7391,7 +7423,7 @@
    "why": "a self-test, 9 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Keep this page; the verse itself are built on it. Say the words below and it answers.",
    "glow": 100,
-   "n": 402
+   "n": 404
   },
   {
    "kind": "skill",
@@ -7408,7 +7440,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "An old art of the verse itself, tested each day before the sun is up. Turn the page when you are done.",
    "glow": 100,
-   "n": 403
+   "n": 405
   },
   {
    "kind": "skill",
@@ -7425,7 +7457,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. So it is written.",
    "glow": 100,
-   "n": 404
+   "n": 406
   },
   {
    "kind": "skill",
@@ -7442,7 +7474,7 @@
    "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the verse itself, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
-   "n": 405
+   "n": 407
   },
   {
    "kind": "skill",
@@ -7459,7 +7491,7 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. It has not failed a reader yet.",
    "glow": 100,
-   "n": 406
+   "n": 408
   },
   {
    "kind": "skill",
@@ -7476,7 +7508,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. So it is written.",
    "glow": 100,
-   "n": 407
+   "n": 409
   },
   {
    "kind": "skill",
@@ -7492,7 +7524,7 @@
    "why": "a self-test, 4 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 4 real askings stand behind this page. Turn the page when you are done.",
    "glow": 100,
-   "n": 408
+   "n": 410
   },
   {
    "kind": "skill",
@@ -7509,7 +7541,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Keep this page; the verse itself are built on it. It has not failed a reader yet.",
    "glow": 100,
-   "n": 409
+   "n": 411
   },
   {
    "kind": "skill",
@@ -7526,7 +7558,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
-   "n": 410
+   "n": 412
   },
   {
    "kind": "skill",
@@ -7543,7 +7575,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. It has not failed a reader yet.",
    "glow": 100,
-   "n": 411
+   "n": 413
   },
   {
    "kind": "skill",
@@ -7558,7 +7590,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
-   "n": 412
+   "n": 414
   },
   {
    "kind": "skill",
@@ -7572,7 +7604,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
-   "n": 413
+   "n": 415
   },
   {
    "kind": "skill",
@@ -7589,7 +7621,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Turn the page when you are done.",
    "glow": 100,
-   "n": 414
+   "n": 416
   },
   {
    "kind": "skill",
@@ -7605,7 +7637,7 @@
    "why": "a self-test, 5 browser-suite mentions, 2 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
-   "n": 415
+   "n": 417
   },
   {
    "kind": "skill",
@@ -7622,7 +7654,7 @@
    "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. Turn the page when you are done.",
    "glow": 100,
-   "n": 416
+   "n": 418
   },
   {
    "kind": "skill",
@@ -7639,7 +7671,7 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself.",
    "glow": 100,
-   "n": 417
+   "n": 419
   },
   {
    "kind": "skill",
@@ -7656,7 +7688,7 @@
    "why": "a self-test, 8 browser-suite mentions, 13 real asks in the benchmark",
    "flavor": "Proven 13 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
-   "n": 418
+   "n": 420
   },
   {
    "kind": "skill",
@@ -7673,7 +7705,7 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. It has not failed a reader yet.",
    "glow": 100,
-   "n": 419
+   "n": 421
   },
   {
    "kind": "opener",
@@ -7685,7 +7717,7 @@
     "decision-matrix",
     "triangulate"
    ],
-   "n": 420
+   "n": 422
   },
   {
    "kind": "skill",
@@ -7702,7 +7734,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "An old art of the deciding, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
-   "n": 421
+   "n": 423
   },
   {
    "kind": "skill",
@@ -7719,7 +7751,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the deciding, tested each day before the sun is up. Ask, and see.",
    "glow": 100,
-   "n": 422
+   "n": 424
   },
   {
    "kind": "skill",
@@ -7735,7 +7767,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of all the deciding, this one is trusted enough to be taught.",
    "glow": 100,
-   "n": 423
+   "n": 425
   },
   {
    "kind": "opener",
@@ -7750,7 +7782,7 @@
     "stage-fx",
     "card-play"
    ],
-   "n": 424
+   "n": 426
   },
   {
    "kind": "skill",
@@ -7767,7 +7799,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of all the safety and small delights, this one is trusted enough to be taught. Turn the page when you are done.",
    "glow": 100,
-   "n": 425
+   "n": 427
   },
   {
    "kind": "skill",
@@ -7784,7 +7816,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the safety and small delights. Say the words below and it answers.",
    "glow": 100,
-   "n": 426
+   "n": 428
   },
   {
    "kind": "skill",
@@ -7801,7 +7833,7 @@
    "why": "a self-test, 6 real asks in the benchmark",
    "flavor": "Asked 6 times in earnest, and never once left unanswered. Turn the page when you are done.",
    "glow": 100,
-   "n": 427
+   "n": 429
   },
   {
    "kind": "skill",
@@ -7818,7 +7850,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Of all the safety and small delights, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
-   "n": 428
+   "n": 430
   },
   {
    "kind": "skill",
@@ -7835,7 +7867,7 @@
    "why": "a self-test, 4 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 4 real askings. The void remembers each asking.",
    "glow": 100,
-   "n": 429
+   "n": 431
   },
   {
    "kind": "skill",
@@ -7852,7 +7884,7 @@
    "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
    "flavor": "Keep this page; the safety and small delights are built on it. It has not failed a reader yet.",
    "glow": 100,
-   "n": 430
+   "n": 432
   },
   {
    "kind": "opener",
@@ -7910,7 +7942,7 @@
     "weather",
     "wheel"
    ],
-   "n": 431
+   "n": 433
   },
   {
    "kind": "mini",
@@ -7925,7 +7957,7 @@
    ],
    "owner": "aggravation",
    "ownerPage": 72,
-   "n": 432
+   "n": 434
   },
   {
    "kind": "mini",
@@ -7940,7 +7972,7 @@
    ],
    "owner": "arcade",
    "ownerPage": 86,
-   "n": 433
+   "n": 435
   },
   {
    "kind": "mini",
@@ -7955,7 +7987,7 @@
    ],
    "owner": "battleship",
    "ownerPage": 82,
-   "n": 434
+   "n": 436
   },
   {
    "kind": "mini",
@@ -7970,7 +8002,7 @@
    ],
    "owner": "book",
    "ownerPage": 230,
-   "n": 435
+   "n": 437
   },
   {
    "kind": "mini",
@@ -7982,7 +8014,7 @@
    "examples": [
     "translate hello to spanish"
    ],
-   "n": 436
+   "n": 438
   },
   {
    "kind": "mini",
@@ -7997,7 +8029,7 @@
    ],
    "owner": "calc",
    "ownerPage": 160,
-   "n": 437
+   "n": 439
   },
   {
    "kind": "mini",
@@ -8012,7 +8044,7 @@
    ],
    "owner": "rts",
    "ownerPage": 49,
-   "n": 438
+   "n": 440
   },
   {
    "kind": "mini",
@@ -8027,7 +8059,7 @@
    ],
    "owner": "checkers",
    "ownerPage": 79,
-   "n": 439
+   "n": 441
   },
   {
    "kind": "mini",
@@ -8042,7 +8074,7 @@
    ],
    "owner": "chess",
    "ownerPage": 78,
-   "n": 440
+   "n": 442
   },
   {
    "kind": "mini",
@@ -8057,7 +8089,7 @@
    ],
    "owner": "clock",
    "ownerPage": 141,
-   "n": 441
+   "n": 443
   },
   {
    "kind": "mini",
@@ -8072,7 +8104,7 @@
    ],
    "owner": "connect4",
    "ownerPage": 74,
-   "n": 442
+   "n": 444
   },
   {
    "kind": "mini",
@@ -8087,7 +8119,7 @@
    ],
    "owner": "countdown",
    "ownerPage": 142,
-   "n": 443
+   "n": 445
   },
   {
    "kind": "mini",
@@ -8102,7 +8134,7 @@
    ],
    "owner": "counter",
    "ownerPage": 175,
-   "n": 444
+   "n": 446
   },
   {
    "kind": "mini",
@@ -8114,7 +8146,7 @@
    "examples": [
     "random number between 1 and 100"
    ],
-   "n": 445
+   "n": 447
   },
   {
    "kind": "mini",
@@ -8129,7 +8161,7 @@
    ],
    "owner": "eightball",
    "ownerPage": 87,
-   "n": 446
+   "n": 448
   },
   {
    "kind": "mini",
@@ -8144,7 +8176,7 @@
    ],
    "owner": "fireworks",
    "ownerPage": 84,
-   "n": 447
+   "n": 449
   },
   {
    "kind": "mini",
@@ -8159,7 +8191,7 @@
    ],
    "owner": "forge",
    "ownerPage": 15,
-   "n": 448
+   "n": 450
   },
   {
    "kind": "mini",
@@ -8174,7 +8206,7 @@
    ],
    "owner": "gears",
    "ownerPage": 30,
-   "n": 449
+   "n": 451
   },
   {
    "kind": "mini",
@@ -8189,7 +8221,7 @@
    ],
    "owner": "go",
    "ownerPage": 80,
-   "n": 450
+   "n": 452
   },
   {
    "kind": "mini",
@@ -8204,7 +8236,7 @@
    ],
    "owner": "growth",
    "ownerPage": 370,
-   "n": 451
+   "n": 453
   },
   {
    "kind": "mini",
@@ -8219,7 +8251,7 @@
    ],
    "owner": "heart",
    "ownerPage": 196,
-   "n": 452
+   "n": 454
   },
   {
    "kind": "mini",
@@ -8234,7 +8266,7 @@
    ],
    "owner": "list",
    "ownerPage": 276,
-   "n": 453
+   "n": 455
   },
   {
    "kind": "mini",
@@ -8249,7 +8281,7 @@
    ],
    "owner": "lock",
    "ownerPage": 282,
-   "n": 454
+   "n": 456
   },
   {
    "kind": "mini",
@@ -8264,7 +8296,7 @@
    ],
    "owner": "mancala",
    "ownerPage": 77,
-   "n": 455
+   "n": 457
   },
   {
    "kind": "mini",
@@ -8279,7 +8311,7 @@
    ],
    "owner": "monopoly",
    "ownerPage": 81,
-   "n": 456
+   "n": 458
   },
   {
    "kind": "mini",
@@ -8294,7 +8326,7 @@
    ],
    "owner": "moon",
    "ownerPage": 129,
-   "n": 457
+   "n": 459
   },
   {
    "kind": "mini",
@@ -8309,7 +8341,7 @@
    ],
    "owner": "notepad",
    "ownerPage": 269,
-   "n": 458
+   "n": 460
   },
   {
    "kind": "mini",
@@ -8324,7 +8356,7 @@
    ],
    "owner": "othello",
    "ownerPage": 76,
-   "n": 459
+   "n": 461
   },
   {
    "kind": "mini",
@@ -8336,7 +8368,7 @@
    "examples": [
     "how secure is my password"
    ],
-   "n": 460
+   "n": 462
   },
   {
    "kind": "mini",
@@ -8348,7 +8380,7 @@
    "examples": [
     "count words in ..."
    ],
-   "n": 461
+   "n": 463
   },
   {
    "kind": "mini",
@@ -8358,7 +8390,7 @@
    "line": "Shared helpers for the paper miniatures (notepad, clipboard): handwriting on a page canvas, a sharpened pencil",
    "card": "",
    "examples": [],
-   "n": 462
+   "n": 464
   },
   {
    "kind": "mini",
@@ -8373,7 +8405,7 @@
    ],
    "owner": "motorbody",
    "ownerPage": 31,
-   "n": 463
+   "n": 465
   },
   {
    "kind": "mini",
@@ -8388,7 +8420,7 @@
    ],
    "owner": "savings",
    "ownerPage": 165,
-   "n": 464
+   "n": 466
   },
   {
    "kind": "mini",
@@ -8403,7 +8435,7 @@
    ],
    "owner": "poker",
    "ownerPage": 83,
-   "n": 465
+   "n": 467
   },
   {
    "kind": "mini",
@@ -8415,7 +8447,7 @@
    "examples": [
     "recipe for pancakes"
    ],
-   "n": 466
+   "n": 468
   },
   {
    "kind": "mini",
@@ -8430,7 +8462,7 @@
    ],
    "owner": "rack",
    "ownerPage": 85,
-   "n": 467
+   "n": 469
   },
   {
    "kind": "mini",
@@ -8445,7 +8477,7 @@
    ],
    "owner": "ringer",
    "ownerPage": 88,
-   "n": 468
+   "n": 470
   },
   {
    "kind": "mini",
@@ -8460,7 +8492,7 @@
    ],
    "owner": "savings",
    "ownerPage": 165,
-   "n": 469
+   "n": 471
   },
   {
    "kind": "mini",
@@ -8475,7 +8507,7 @@
    ],
    "owner": "stopwatch",
    "ownerPage": 140,
-   "n": 470
+   "n": 472
   },
   {
    "kind": "mini",
@@ -8490,7 +8522,7 @@
    ],
    "owner": "swarm",
    "ownerPage": 43,
-   "n": 471
+   "n": 473
   },
   {
    "kind": "mini",
@@ -8502,7 +8534,7 @@
    "examples": [
     "color #ff5733"
    ],
-   "n": 472
+   "n": 474
   },
   {
    "kind": "mini",
@@ -8512,7 +8544,7 @@
    "line": "The shared wooden table, board, highlights and piece tweening behind the chess and checkers miniatures",
    "card": "",
    "examples": [],
-   "n": 473
+   "n": 475
   },
   {
    "kind": "mini",
@@ -8527,7 +8559,7 @@
    ],
    "owner": "tictactoe",
    "ownerPage": 75,
-   "n": 474
+   "n": 476
   },
   {
    "kind": "mini",
@@ -8542,7 +8574,7 @@
    ],
    "owner": "timer",
    "ownerPage": 139,
-   "n": 475
+   "n": 477
   },
   {
    "kind": "mini",
@@ -8557,7 +8589,7 @@
    ],
    "owner": "tip",
    "ownerPage": 168,
-   "n": 476
+   "n": 478
   },
   {
    "kind": "mini",
@@ -8572,7 +8604,7 @@
    ],
    "owner": "tower",
    "ownerPage": 364,
-   "n": 477
+   "n": 479
   },
   {
    "kind": "mini",
@@ -8582,7 +8614,7 @@
    "line": "Verse's own body, shown only where Verse shows itself (its self page)",
    "card": "",
    "examples": [],
-   "n": 478
+   "n": 480
   },
   {
    "kind": "mini",
@@ -8597,7 +8629,7 @@
    ],
    "owner": "weather",
    "ownerPage": 122,
-   "n": 479
+   "n": 481
   },
   {
    "kind": "mini",
@@ -8612,7 +8644,7 @@
    ],
    "owner": "wheel",
    "ownerPage": 69,
-   "n": 480
+   "n": 482
   },
   {
    "kind": "opener",
@@ -8973,9 +9005,11 @@
     "speed-tests",
     "math-quiz",
     "groups",
-    "heavy-lift-map"
+    "heavy-lift-map",
+    "monitor-pack",
+    "verify-pack"
    ],
-   "n": 481
+   "n": 483
   },
   {
    "kind": "rules",
@@ -9023,7 +9057,7 @@
      "catches": "draw a circle"
     }
    ],
-   "n": 482
+   "n": 484
   },
   {
    "kind": "rules",
@@ -9071,7 +9105,7 @@
      "catches": "game box"
     }
    ],
-   "n": 483
+   "n": 485
   },
   {
    "kind": "rules",
@@ -9119,7 +9153,7 @@
      "catches": "habit ring for write, walk, sleep"
     }
    ],
-   "n": 484
+   "n": 486
   },
   {
    "kind": "rules",
@@ -9167,7 +9201,7 @@
      "catches": "turn this card into a note"
     }
    ],
-   "n": 485
+   "n": 487
   },
   {
    "kind": "rules",
@@ -9215,7 +9249,7 @@
      "catches": "most skills can be combined"
     }
    ],
-   "n": 486
+   "n": 488
   },
   {
    "kind": "rules",
@@ -9263,7 +9297,7 @@
      "catches": "merge void"
     }
    ],
-   "n": 487
+   "n": 489
   },
   {
    "kind": "rules",
@@ -9311,7 +9345,7 @@
      "catches": "give me five minutes with this"
     }
    ],
-   "n": 488
+   "n": 490
   },
   {
    "kind": "rules",
@@ -9359,7 +9393,7 @@
      "catches": "diff \"make a timer\" and \"make a focus timer for writing\""
     }
    ],
-   "n": 489
+   "n": 491
   },
   {
    "kind": "rules",
@@ -9407,7 +9441,7 @@
      "catches": "most skills can be combined"
     }
    ],
-   "n": 490
+   "n": 492
   },
   {
    "kind": "rules",
@@ -9455,7 +9489,7 @@
      "catches": "pixels to cm at 96 dpi"
     }
    ],
-   "n": 491
+   "n": 493
   },
   {
    "kind": "rules",
@@ -9503,7 +9537,7 @@
      "catches": "recipe for pancakes"
     }
    ],
-   "n": 492
+   "n": 494
   },
   {
    "kind": "rules",
@@ -9551,7 +9585,7 @@
      "catches": "most skills can be combined"
     }
    ],
-   "n": 493
+   "n": 495
   },
   {
    "kind": "rules",
@@ -9599,7 +9633,7 @@
      "catches": "substitute for buttermilk"
     }
    ],
-   "n": 494
+   "n": 496
   },
   {
    "kind": "rules",
@@ -9647,7 +9681,7 @@
      "catches": "csv table: name,age ⏎ ann,30 ⏎ bo,25"
     }
    ],
-   "n": 495
+   "n": 497
   },
   {
    "kind": "rules",
@@ -9695,7 +9729,7 @@
      "catches": "nba scores"
     }
    ],
-   "n": 496
+   "n": 498
   },
   {
    "kind": "rules",
@@ -9743,7 +9777,7 @@
      "catches": "find me work as a designer"
     }
    ],
-   "n": 497
+   "n": 499
   },
   {
    "kind": "rules",
@@ -9791,7 +9825,7 @@
      "catches": "trial watch"
     }
    ],
-   "n": 498
+   "n": 500
   },
   {
    "kind": "rules",
@@ -9839,7 +9873,7 @@
      "catches": "can you 3d print a motor"
     }
    ],
-   "n": 499
+   "n": 501
   },
   {
    "kind": "rules",
@@ -9887,7 +9921,7 @@
      "catches": "group the clock and the note"
     }
    ],
-   "n": 500
+   "n": 502
   },
   {
    "kind": "rules",
@@ -9935,7 +9969,7 @@
      "catches": "download the print file"
     }
    ],
-   "n": 501
+   "n": 503
   },
   {
    "kind": "rules",
@@ -9983,7 +10017,7 @@
      "catches": "explain moon phases"
     }
    ],
-   "n": 502
+   "n": 504
   },
   {
    "kind": "rules",
@@ -10031,7 +10065,7 @@
      "catches": "most skills can be combined"
     }
    ],
-   "n": 503
+   "n": 505
   },
   {
    "kind": "rules",
@@ -10079,7 +10113,7 @@
      "catches": "find me a sci-fi film from the 80s"
     }
    ],
-   "n": 504
+   "n": 506
   },
   {
    "kind": "rules",
@@ -10127,7 +10161,7 @@
      "catches": "play a local audio file"
     }
    ],
-   "n": 505
+   "n": 507
   },
   {
    "kind": "rules",
@@ -10175,7 +10209,7 @@
      "catches": "show me your skill families"
     }
    ],
-   "n": 506
+   "n": 508
   },
   {
    "kind": "rules",
@@ -10223,7 +10257,7 @@
      "catches": "what should I do now"
     }
    ],
-   "n": 507
+   "n": 509
   },
   {
    "kind": "rules",
@@ -10271,7 +10305,7 @@
      "catches": "show the bench"
     }
    ],
-   "n": 508
+   "n": 510
   },
   {
    "kind": "rules",
@@ -10319,7 +10353,7 @@
      "catches": "make me a song"
     }
    ],
-   "n": 509
+   "n": 511
   },
   {
    "kind": "rules",
@@ -10367,7 +10401,7 @@
      "catches": "turn on family gravity"
     }
    ],
-   "n": 510
+   "n": 512
   },
   {
    "kind": "rules",
@@ -10415,7 +10449,7 @@
      "catches": "make me something unkeepable"
     }
    ],
-   "n": 511
+   "n": 513
   },
   {
    "kind": "rules",
@@ -10463,7 +10497,7 @@
      "catches": "forge these"
     }
    ],
-   "n": 512
+   "n": 514
   },
   {
    "kind": "rules",
@@ -10511,7 +10545,7 @@
      "catches": "sudden death in 60 seconds"
     }
    ],
-   "n": 513
+   "n": 515
   },
   {
    "kind": "rules",
@@ -10559,7 +10593,7 @@
      "catches": "mass extinction"
     }
    ],
-   "n": 514
+   "n": 516
   },
   {
    "kind": "rules",
@@ -10607,7 +10641,7 @@
      "catches": "answer in four channels: should we move to Berlin?"
     }
    ],
-   "n": 515
+   "n": 517
   },
   {
    "kind": "rules",
@@ -10655,7 +10689,7 @@
      "catches": "show the undo pile"
     }
    ],
-   "n": 516
+   "n": 518
   },
   {
    "kind": "rules",
@@ -10703,7 +10737,7 @@
      "catches": "export my calendar"
     }
    ],
-   "n": 517
+   "n": 519
   },
   {
    "kind": "rules",
@@ -10751,7 +10785,7 @@
      "catches": "sort these files: app.py, LICENSE, data.csv, logo.png"
     }
    ],
-   "n": 518
+   "n": 520
   },
   {
    "kind": "rules",
@@ -10799,7 +10833,7 @@
      "catches": "spin the wheel"
     }
    ],
-   "n": 519
+   "n": 521
   },
   {
    "kind": "rules",
@@ -10847,7 +10881,7 @@
      "catches": "metronome 120 bpm"
     }
    ],
-   "n": 520
+   "n": 522
   },
   {
    "kind": "rules",
@@ -10895,7 +10929,7 @@
      "catches": "leet hello"
     }
    ],
-   "n": 521
+   "n": 523
   },
   {
    "kind": "rules",
@@ -10943,7 +10977,7 @@
      "catches": "clean up a sprite sheet"
     }
    ],
-   "n": 522
+   "n": 524
   },
   {
    "kind": "rules",
@@ -10991,7 +11025,7 @@
      "catches": "hangman"
     }
    ],
-   "n": 523
+   "n": 525
   },
   {
    "kind": "rules",
@@ -11039,7 +11073,7 @@
      "catches": "word counter"
     }
    ],
-   "n": 524
+   "n": 526
   },
   {
    "kind": "rules",
@@ -11087,12 +11121,12 @@
      "catches": "times tables quiz"
     }
    ],
-   "n": 525
+   "n": 527
   },
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCLIII–CCCLIV",
+   "title": "Rules CCCLIII–CCCLVI",
    "rules": [
     {
      "rank": 353,
@@ -11103,9 +11137,19 @@
      "rank": 354,
      "name": "heavy-lift-map",
      "catches": "map the heavy lifting for client onboarding"
+    },
+    {
+     "rank": 355,
+     "name": "monitor-pack",
+     "catches": "monitor pack for client onboarding"
+    },
+    {
+     "rank": 356,
+     "name": "verify-pack",
+     "catches": "verify pack for client onboarding"
     }
    ],
-   "n": 526
+   "n": 528
   },
   {
    "kind": "index",
@@ -11114,7 +11158,7 @@
    "entries": [
     {
      "name": "About skill",
-     "page": 413
+     "page": 415
     },
     {
      "name": "Accessibility modes",
@@ -11126,7 +11170,7 @@
     },
     {
      "name": "Advice",
-     "page": 425
+     "page": 427
     },
     {
      "name": "Agent fluid memory orbs",
@@ -11138,7 +11182,7 @@
     },
     {
      "name": "Aggravation (3D)",
-     "page": 432
+     "page": 434
     },
     {
      "name": "Air",
@@ -11150,7 +11194,7 @@
     },
     {
      "name": "App",
-     "page": 401
+     "page": 403
     },
     {
      "name": "Appraise",
@@ -11158,7 +11202,7 @@
     },
     {
      "name": "Approve card",
-     "page": 415
+     "page": 417
     },
     {
      "name": "Arcade",
@@ -11166,7 +11210,7 @@
     },
     {
      "name": "Arcade (3D)",
-     "page": 433
+     "page": 435
     },
     {
      "name": "Archive of one",
@@ -11186,7 +11230,7 @@
     },
     {
      "name": "Ask immune",
-     "page": 409
+     "page": 411
     },
     {
      "name": "Attention field mind",
@@ -11226,7 +11270,7 @@
     },
     {
      "name": "Battleship (3D)",
-     "page": 434
+     "page": 436
     },
     {
      "name": "Bench",
@@ -11242,7 +11286,7 @@
     },
     {
      "name": "Book (3D)",
-     "page": 435
+     "page": 437
     },
     {
      "name": "Bookmarks",
@@ -11254,10 +11298,10 @@
     },
     {
      "name": "Bubbles (3D)",
-     "page": 436
+     "page": 438
     }
    ],
-   "n": 527
+   "n": 529
   },
   {
    "kind": "index",
@@ -11266,7 +11310,7 @@
    "entries": [
     {
      "name": "Business clarify",
-     "page": 389
+     "page": 391
     },
     {
      "name": "Busy blocks",
@@ -11282,7 +11326,7 @@
     },
     {
      "name": "Calculator (3D)",
-     "page": 437
+     "page": 439
     },
     {
      "name": "Calendar",
@@ -11298,11 +11342,11 @@
     },
     {
      "name": "Camp (3D)",
-     "page": 438
+     "page": 440
     },
     {
      "name": "Card play",
-     "page": 430
+     "page": 432
     },
     {
      "name": "Cartoon",
@@ -11326,7 +11370,7 @@
     },
     {
      "name": "Checkers (3D)",
-     "page": 439
+     "page": 441
     },
     {
      "name": "Chess",
@@ -11334,11 +11378,11 @@
     },
     {
      "name": "Chess (3D)",
-     "page": 440
+     "page": 442
     },
     {
      "name": "Client handoff",
-     "page": 391
+     "page": 393
     },
     {
      "name": "Clock",
@@ -11346,7 +11390,7 @@
     },
     {
      "name": "Clock (3D)",
-     "page": 441
+     "page": 443
     },
     {
      "name": "Codex",
@@ -11378,7 +11422,7 @@
     },
     {
      "name": "Connect4 (3D)",
-     "page": 442
+     "page": 444
     },
     {
      "name": "Constellation",
@@ -11409,7 +11453,7 @@
      "page": 239
     }
    ],
-   "n": 528
+   "n": 530
   },
   {
    "kind": "index",
@@ -11422,7 +11466,7 @@
     },
     {
      "name": "Countdown (3D)",
-     "page": 443
+     "page": 445
     },
     {
      "name": "Counter",
@@ -11430,7 +11474,7 @@
     },
     {
      "name": "Counter (3D)",
-     "page": 444
+     "page": 446
     },
     {
      "name": "Counterfactual draft",
@@ -11474,11 +11518,11 @@
     },
     {
      "name": "Decide cards",
-     "page": 421
+     "page": 423
     },
     {
      "name": "Decision matrix",
-     "page": 422
+     "page": 424
     },
     {
      "name": "Deep work",
@@ -11498,7 +11542,7 @@
     },
     {
      "name": "Deps",
-     "page": 405
+     "page": 407
     },
     {
      "name": "Dev tools",
@@ -11506,7 +11550,7 @@
     },
     {
      "name": "Dice (3D)",
-     "page": 445
+     "page": 447
     },
     {
      "name": "Different",
@@ -11561,7 +11605,7 @@
      "page": 312
     }
    ],
-   "n": 529
+   "n": 531
   },
   {
    "kind": "index",
@@ -11590,7 +11634,7 @@
     },
     {
      "name": "Eightball (3D)",
-     "page": 446
+     "page": 448
     },
     {
      "name": "Emoji",
@@ -11626,7 +11670,7 @@
     },
     {
      "name": "Family health",
-     "page": 402
+     "page": 404
     },
     {
      "name": "Fanfic",
@@ -11666,7 +11710,7 @@
     },
     {
      "name": "Films",
-     "page": 400
+     "page": 402
     },
     {
      "name": "Fireworks",
@@ -11674,11 +11718,11 @@
     },
     {
      "name": "Fireworks (3D)",
-     "page": 447
+     "page": 449
     },
     {
      "name": "Fix audit",
-     "page": 404
+     "page": 406
     },
     {
      "name": "Flights",
@@ -11702,7 +11746,7 @@
     },
     {
      "name": "Forge (3D)",
-     "page": 448
+     "page": 450
     },
     {
      "name": "Forge table",
@@ -11713,7 +11757,7 @@
      "page": 181
     }
    ],
-   "n": 530
+   "n": 532
   },
   {
    "kind": "index",
@@ -11722,7 +11766,7 @@
    "entries": [
     {
      "name": "Four channels",
-     "page": 410
+     "page": 412
     },
     {
      "name": "Four in a Row",
@@ -11734,7 +11778,7 @@
     },
     {
      "name": "Fringe to skill",
-     "page": 406
+     "page": 408
     },
     {
      "name": "Fuel",
@@ -11758,7 +11802,7 @@
     },
     {
      "name": "Gears (3D)",
-     "page": 449
+     "page": 451
     },
     {
      "name": "Generators fill",
@@ -11774,7 +11818,7 @@
     },
     {
      "name": "Go (3D)",
-     "page": 450
+     "page": 452
     },
     {
      "name": "Goal",
@@ -11806,7 +11850,7 @@
     },
     {
      "name": "Growthtree (3D)",
-     "page": 451
+     "page": 453
     },
     {
      "name": "Guide",
@@ -11838,11 +11882,11 @@
     },
     {
      "name": "Heart (3D)",
-     "page": 452
+     "page": 454
     },
     {
      "name": "Heavy lift map",
-     "page": 393
+     "page": 395
     },
     {
      "name": "Holidays",
@@ -11865,7 +11909,7 @@
      "page": 334
     }
    ],
-   "n": 531
+   "n": 533
   },
   {
    "kind": "index",
@@ -11890,7 +11934,7 @@
     },
     {
      "name": "Incident autopsy",
-     "page": 403
+     "page": 405
     },
     {
      "name": "Intent",
@@ -11906,7 +11950,7 @@
     },
     {
      "name": "Invite",
-     "page": 397
+     "page": 399
     },
     {
      "name": "Is it",
@@ -11958,7 +12002,7 @@
     },
     {
      "name": "List (3D)",
-     "page": 453
+     "page": 455
     },
     {
      "name": "List templates",
@@ -11978,7 +12022,7 @@
     },
     {
      "name": "Local inference",
-     "page": 398
+     "page": 400
     },
     {
      "name": "Local stations",
@@ -11990,7 +12034,7 @@
     },
     {
      "name": "Lock (3D)",
-     "page": 454
+     "page": 456
     },
     {
      "name": "Lorem",
@@ -12017,7 +12061,7 @@
      "page": 77
     }
    ],
-   "n": 532
+   "n": 534
   },
   {
    "kind": "index",
@@ -12026,7 +12070,7 @@
    "entries": [
     {
      "name": "Mancala (3D)",
-     "page": 455
+     "page": 457
     },
     {
      "name": "Map",
@@ -12054,11 +12098,11 @@
     },
     {
      "name": "Memory graph",
-     "page": 416
+     "page": 418
     },
     {
      "name": "Memory preview",
-     "page": 417
+     "page": 419
     },
     {
      "name": "Merge",
@@ -12086,7 +12130,11 @@
     },
     {
      "name": "Miss jobs",
-     "page": 408
+     "page": 410
+    },
+    {
+     "name": "Monitor pack",
+     "page": 389
     },
     {
      "name": "Monopoly",
@@ -12094,7 +12142,7 @@
     },
     {
      "name": "Monopoly (3D)",
-     "page": 456
+     "page": 458
     },
     {
      "name": "Moon",
@@ -12102,7 +12150,7 @@
     },
     {
      "name": "Moon (3D)",
-     "page": 457
+     "page": 459
     },
     {
      "name": "Moontonight",
@@ -12163,19 +12211,19 @@
     {
      "name": "Noise",
      "page": 201
-    },
-    {
-     "name": "Note tools",
-     "page": 343
     }
    ],
-   "n": 533
+   "n": 535
   },
   {
    "kind": "index",
    "chapter": "index",
    "title": "Index N–P",
    "entries": [
+    {
+     "name": "Note tools",
+     "page": 343
+    },
     {
      "name": "Notebook",
      "page": 263
@@ -12186,7 +12234,7 @@
     },
     {
      "name": "Notepad (3D)",
-     "page": 458
+     "page": 460
     },
     {
      "name": "Notes fill",
@@ -12218,7 +12266,7 @@
     },
     {
      "name": "Othello (3D)",
-     "page": 459
+     "page": 461
     },
     {
      "name": "Outline note",
@@ -12234,15 +12282,15 @@
     },
     {
      "name": "Own parts",
-     "page": 412
+     "page": 414
     },
     {
      "name": "Padlock (3D)",
-     "page": 460
+     "page": 462
     },
     {
      "name": "Page (3D)",
-     "page": 461
+     "page": 463
     },
     {
      "name": "Palette",
@@ -12254,7 +12302,7 @@
     },
     {
      "name": "Paper (3D)",
-     "page": 462
+     "page": 464
     },
     {
      "name": "Part",
@@ -12278,7 +12326,7 @@
     },
     {
      "name": "Pentamote (3D)",
-     "page": 463
+     "page": 465
     },
     {
      "name": "Period",
@@ -12286,7 +12334,7 @@
     },
     {
      "name": "Photo scrub",
-     "page": 428
+     "page": 430
     },
     {
      "name": "Photo tools",
@@ -12302,7 +12350,7 @@
     },
     {
      "name": "Piggybank (3D)",
-     "page": 464
+     "page": 466
     },
     {
      "name": "Plan stability",
@@ -12310,18 +12358,14 @@
     },
     {
      "name": "Podcast",
-     "page": 419
+     "page": 421
     },
     {
      "name": "Podcast search",
      "page": 218
-    },
-    {
-     "name": "Pointing arrow",
-     "page": 200
     }
    ],
-   "n": 534
+   "n": 536
   },
   {
    "kind": "index",
@@ -12329,12 +12373,16 @@
    "title": "Index P–R",
    "entries": [
     {
+     "name": "Pointing arrow",
+     "page": 200
+    },
+    {
      "name": "Poker",
      "page": 83
     },
     {
      "name": "Poker (3D)",
-     "page": 465
+     "page": 467
     },
     {
      "name": "Pollen",
@@ -12350,7 +12398,7 @@
     },
     {
      "name": "Pot (3D)",
-     "page": 466
+     "page": 468
     },
     {
      "name": "Pregnancy",
@@ -12382,7 +12430,7 @@
     },
     {
      "name": "Pwcheck",
-     "page": 426
+     "page": 428
     },
     {
      "name": "Qr scan",
@@ -12406,7 +12454,7 @@
     },
     {
      "name": "Rack (3D)",
-     "page": 467
+     "page": 469
     },
     {
      "name": "Rally",
@@ -12422,7 +12470,7 @@
     },
     {
      "name": "Rebuild map",
-     "page": 399
+     "page": 401
     },
     {
      "name": "Recent",
@@ -12467,19 +12515,19 @@
     {
      "name": "Resonant Membrane",
      "page": 56
-    },
-    {
-     "name": "Reversi",
-     "page": 76
     }
    ],
-   "n": 535
+   "n": 537
   },
   {
    "kind": "index",
    "chapter": "index",
    "title": "Index R–S",
    "entries": [
+    {
+     "name": "Reversi",
+     "page": 76
+    },
     {
      "name": "Riddle",
      "page": 221
@@ -12494,7 +12542,7 @@
     },
     {
      "name": "Ringer (3D)",
-     "page": 468
+     "page": 470
     },
     {
      "name": "Riot",
@@ -12522,7 +12570,7 @@
     },
     {
      "name": "Safety kit",
-     "page": 427
+     "page": 429
     },
     {
      "name": "Savings",
@@ -12530,7 +12578,7 @@
     },
     {
      "name": "Savings (3D)",
-     "page": 469
+     "page": 471
     },
     {
      "name": "Scores",
@@ -12558,7 +12606,7 @@
     },
     {
      "name": "Share",
-     "page": 395
+     "page": 397
     },
     {
      "name": "Sheaf check",
@@ -12586,11 +12634,11 @@
     },
     {
      "name": "Similar",
-     "page": 414
+     "page": 416
     },
     {
      "name": "Skill eclipse",
-     "page": 407
+     "page": 409
     },
     {
      "name": "Sky",
@@ -12619,19 +12667,19 @@
     {
      "name": "Sorry",
      "page": 73
-    },
-    {
-     "name": "Soundscape",
-     "page": 341
     }
    ],
-   "n": 536
+   "n": 538
   },
   {
    "kind": "index",
    "chapter": "index",
    "title": "Index S–S",
    "entries": [
+    {
+     "name": "Soundscape",
+     "page": 341
+    },
     {
      "name": "Spanish",
      "page": 214
@@ -12678,7 +12726,7 @@
     },
     {
      "name": "Stage fx",
-     "page": 429
+     "page": 431
     },
     {
      "name": "Stage image",
@@ -12698,7 +12746,7 @@
     },
     {
      "name": "Stakes phase",
-     "page": 411
+     "page": 413
     },
     {
      "name": "Stale work",
@@ -12738,11 +12786,11 @@
     },
     {
      "name": "Stopwatch (3D)",
-     "page": 470
+     "page": 472
     },
     {
      "name": "Store",
-     "page": 394
+     "page": 396
     },
     {
      "name": "Studios",
@@ -12771,13 +12819,9 @@
     {
      "name": "Swarm",
      "page": 43
-    },
-    {
-     "name": "Swarm (3D)",
-     "page": 471
     }
    ],
-   "n": 537
+   "n": 539
   },
   {
    "kind": "index",
@@ -12785,20 +12829,24 @@
    "title": "Index S–T",
    "entries": [
     {
+     "name": "Swarm (3D)",
+     "page": 473
+    },
+    {
      "name": "Swarm mind",
      "page": 52
     },
     {
      "name": "Swatch (3D)",
-     "page": 472
+     "page": 474
     },
     {
      "name": "System blueprint",
-     "page": 390
+     "page": 392
     },
     {
      "name": "System handoff",
-     "page": 392
+     "page": 394
     },
     {
      "name": "System status",
@@ -12814,7 +12862,7 @@
     },
     {
      "name": "Tabletop (3D)",
-     "page": 473
+     "page": 475
     },
     {
      "name": "Task board",
@@ -12874,7 +12922,7 @@
     },
     {
      "name": "Tictactoe (3D)",
-     "page": 474
+     "page": 476
     },
     {
      "name": "Tilt Arena",
@@ -12898,7 +12946,7 @@
     },
     {
      "name": "Timer (3D)",
-     "page": 475
+     "page": 477
     },
     {
      "name": "Tip",
@@ -12906,7 +12954,7 @@
     },
     {
      "name": "Tip (3D)",
-     "page": 476
+     "page": 478
     },
     {
      "name": "Today",
@@ -12923,19 +12971,19 @@
     {
      "name": "Tower",
      "page": 364
-    },
-    {
-     "name": "Tower (3D)",
-     "page": 477
     }
    ],
-   "n": 538
+   "n": 540
   },
   {
    "kind": "index",
    "chapter": "index",
-   "title": "Index T–Y",
+   "title": "Index T–W",
    "entries": [
+    {
+     "name": "Tower (3D)",
+     "page": 479
+    },
     {
      "name": "Translate",
      "page": 215
@@ -12946,7 +12994,7 @@
     },
     {
      "name": "Triangulate",
-     "page": 423
+     "page": 425
     },
     {
      "name": "Type filter",
@@ -12977,6 +13025,10 @@
      "page": 44
     },
     {
+     "name": "Verify pack",
+     "page": 390
+    },
+    {
      "name": "Verse brain",
      "page": 48
     },
@@ -13002,7 +13054,7 @@
     },
     {
      "name": "Void (3D)",
-     "page": 478
+     "page": 480
     },
     {
      "name": "Void breaker",
@@ -13022,7 +13074,7 @@
     },
     {
      "name": "Wants",
-     "page": 418
+     "page": 420
     },
     {
      "name": "Watch",
@@ -13034,11 +13086,11 @@
     },
     {
      "name": "Weather (3D)",
-     "page": 479
+     "page": 481
     },
     {
      "name": "Web4",
-     "page": 396
+     "page": 398
     },
     {
      "name": "Wheel",
@@ -13046,7 +13098,7 @@
     },
     {
      "name": "Wheel (3D)",
-     "page": 480
+     "page": 482
     },
     {
      "name": "Whisper network",
@@ -13071,7 +13123,15 @@
     {
      "name": "Worldtime",
      "page": 132
-    },
+    }
+   ],
+   "n": 541
+  },
+  {
+   "kind": "index",
+   "chapter": "index",
+   "title": "Index W–Z",
+   "entries": [
     {
      "name": "Writing aids",
      "page": 243
@@ -13079,15 +13139,7 @@
     {
      "name": "Yesno",
      "page": 71
-    }
-   ],
-   "n": 539
-  },
-  {
-   "kind": "index",
-   "chapter": "index",
-   "title": "Index Z–Z",
-   "entries": [
+    },
     {
      "name": "Zoom figure",
      "page": 22
@@ -13097,13 +13149,13 @@
      "page": 101
     }
    ],
-   "n": 540
+   "n": 542
   }
  ],
  "index": [
   {
    "name": "About skill",
-   "page": 413
+   "page": 415
   },
   {
    "name": "Accessibility modes",
@@ -13115,7 +13167,7 @@
   },
   {
    "name": "Advice",
-   "page": 425
+   "page": 427
   },
   {
    "name": "Agent fluid memory orbs",
@@ -13127,7 +13179,7 @@
   },
   {
    "name": "Aggravation (3D)",
-   "page": 432
+   "page": 434
   },
   {
    "name": "Air",
@@ -13139,7 +13191,7 @@
   },
   {
    "name": "App",
-   "page": 401
+   "page": 403
   },
   {
    "name": "Appraise",
@@ -13147,7 +13199,7 @@
   },
   {
    "name": "Approve card",
-   "page": 415
+   "page": 417
   },
   {
    "name": "Arcade",
@@ -13155,7 +13207,7 @@
   },
   {
    "name": "Arcade (3D)",
-   "page": 433
+   "page": 435
   },
   {
    "name": "Archive of one",
@@ -13175,7 +13227,7 @@
   },
   {
    "name": "Ask immune",
-   "page": 409
+   "page": 411
   },
   {
    "name": "Attention field mind",
@@ -13215,7 +13267,7 @@
   },
   {
    "name": "Battleship (3D)",
-   "page": 434
+   "page": 436
   },
   {
    "name": "Bench",
@@ -13231,7 +13283,7 @@
   },
   {
    "name": "Book (3D)",
-   "page": 435
+   "page": 437
   },
   {
    "name": "Bookmarks",
@@ -13243,11 +13295,11 @@
   },
   {
    "name": "Bubbles (3D)",
-   "page": 436
+   "page": 438
   },
   {
    "name": "Business clarify",
-   "page": 389
+   "page": 391
   },
   {
    "name": "Busy blocks",
@@ -13263,7 +13315,7 @@
   },
   {
    "name": "Calculator (3D)",
-   "page": 437
+   "page": 439
   },
   {
    "name": "Calendar",
@@ -13279,11 +13331,11 @@
   },
   {
    "name": "Camp (3D)",
-   "page": 438
+   "page": 440
   },
   {
    "name": "Card play",
-   "page": 430
+   "page": 432
   },
   {
    "name": "Cartoon",
@@ -13307,7 +13359,7 @@
   },
   {
    "name": "Checkers (3D)",
-   "page": 439
+   "page": 441
   },
   {
    "name": "Chess",
@@ -13315,11 +13367,11 @@
   },
   {
    "name": "Chess (3D)",
-   "page": 440
+   "page": 442
   },
   {
    "name": "Client handoff",
-   "page": 391
+   "page": 393
   },
   {
    "name": "Clock",
@@ -13327,7 +13379,7 @@
   },
   {
    "name": "Clock (3D)",
-   "page": 441
+   "page": 443
   },
   {
    "name": "Codex",
@@ -13359,7 +13411,7 @@
   },
   {
    "name": "Connect4 (3D)",
-   "page": 442
+   "page": 444
   },
   {
    "name": "Constellation",
@@ -13395,7 +13447,7 @@
   },
   {
    "name": "Countdown (3D)",
-   "page": 443
+   "page": 445
   },
   {
    "name": "Counter",
@@ -13403,7 +13455,7 @@
   },
   {
    "name": "Counter (3D)",
-   "page": 444
+   "page": 446
   },
   {
    "name": "Counterfactual draft",
@@ -13447,11 +13499,11 @@
   },
   {
    "name": "Decide cards",
-   "page": 421
+   "page": 423
   },
   {
    "name": "Decision matrix",
-   "page": 422
+   "page": 424
   },
   {
    "name": "Deep work",
@@ -13471,7 +13523,7 @@
   },
   {
    "name": "Deps",
-   "page": 405
+   "page": 407
   },
   {
    "name": "Dev tools",
@@ -13479,7 +13531,7 @@
   },
   {
    "name": "Dice (3D)",
-   "page": 445
+   "page": 447
   },
   {
    "name": "Different",
@@ -13555,7 +13607,7 @@
   },
   {
    "name": "Eightball (3D)",
-   "page": 446
+   "page": 448
   },
   {
    "name": "Emoji",
@@ -13591,7 +13643,7 @@
   },
   {
    "name": "Family health",
-   "page": 402
+   "page": 404
   },
   {
    "name": "Fanfic",
@@ -13631,7 +13683,7 @@
   },
   {
    "name": "Films",
-   "page": 400
+   "page": 402
   },
   {
    "name": "Fireworks",
@@ -13639,11 +13691,11 @@
   },
   {
    "name": "Fireworks (3D)",
-   "page": 447
+   "page": 449
   },
   {
    "name": "Fix audit",
-   "page": 404
+   "page": 406
   },
   {
    "name": "Flights",
@@ -13667,7 +13719,7 @@
   },
   {
    "name": "Forge (3D)",
-   "page": 448
+   "page": 450
   },
   {
    "name": "Forge table",
@@ -13679,7 +13731,7 @@
   },
   {
    "name": "Four channels",
-   "page": 410
+   "page": 412
   },
   {
    "name": "Four in a Row",
@@ -13691,7 +13743,7 @@
   },
   {
    "name": "Fringe to skill",
-   "page": 406
+   "page": 408
   },
   {
    "name": "Fuel",
@@ -13715,7 +13767,7 @@
   },
   {
    "name": "Gears (3D)",
-   "page": 449
+   "page": 451
   },
   {
    "name": "Generators fill",
@@ -13731,7 +13783,7 @@
   },
   {
    "name": "Go (3D)",
-   "page": 450
+   "page": 452
   },
   {
    "name": "Goal",
@@ -13763,7 +13815,7 @@
   },
   {
    "name": "Growthtree (3D)",
-   "page": 451
+   "page": 453
   },
   {
    "name": "Guide",
@@ -13795,11 +13847,11 @@
   },
   {
    "name": "Heart (3D)",
-   "page": 452
+   "page": 454
   },
   {
    "name": "Heavy lift map",
-   "page": 393
+   "page": 395
   },
   {
    "name": "Holidays",
@@ -13839,7 +13891,7 @@
   },
   {
    "name": "Incident autopsy",
-   "page": 403
+   "page": 405
   },
   {
    "name": "Intent",
@@ -13855,7 +13907,7 @@
   },
   {
    "name": "Invite",
-   "page": 397
+   "page": 399
   },
   {
    "name": "Is it",
@@ -13907,7 +13959,7 @@
   },
   {
    "name": "List (3D)",
-   "page": 453
+   "page": 455
   },
   {
    "name": "List templates",
@@ -13927,7 +13979,7 @@
   },
   {
    "name": "Local inference",
-   "page": 398
+   "page": 400
   },
   {
    "name": "Local stations",
@@ -13939,7 +13991,7 @@
   },
   {
    "name": "Lock (3D)",
-   "page": 454
+   "page": 456
   },
   {
    "name": "Lorem",
@@ -13967,7 +14019,7 @@
   },
   {
    "name": "Mancala (3D)",
-   "page": 455
+   "page": 457
   },
   {
    "name": "Map",
@@ -13995,11 +14047,11 @@
   },
   {
    "name": "Memory graph",
-   "page": 416
+   "page": 418
   },
   {
    "name": "Memory preview",
-   "page": 417
+   "page": 419
   },
   {
    "name": "Merge",
@@ -14027,7 +14079,11 @@
   },
   {
    "name": "Miss jobs",
-   "page": 408
+   "page": 410
+  },
+  {
+   "name": "Monitor pack",
+   "page": 389
   },
   {
    "name": "Monopoly",
@@ -14035,7 +14091,7 @@
   },
   {
    "name": "Monopoly (3D)",
-   "page": 456
+   "page": 458
   },
   {
    "name": "Moon",
@@ -14043,7 +14099,7 @@
   },
   {
    "name": "Moon (3D)",
-   "page": 457
+   "page": 459
   },
   {
    "name": "Moontonight",
@@ -14119,7 +14175,7 @@
   },
   {
    "name": "Notepad (3D)",
-   "page": 458
+   "page": 460
   },
   {
    "name": "Notes fill",
@@ -14151,7 +14207,7 @@
   },
   {
    "name": "Othello (3D)",
-   "page": 459
+   "page": 461
   },
   {
    "name": "Outline note",
@@ -14167,15 +14223,15 @@
   },
   {
    "name": "Own parts",
-   "page": 412
+   "page": 414
   },
   {
    "name": "Padlock (3D)",
-   "page": 460
+   "page": 462
   },
   {
    "name": "Page (3D)",
-   "page": 461
+   "page": 463
   },
   {
    "name": "Palette",
@@ -14187,7 +14243,7 @@
   },
   {
    "name": "Paper (3D)",
-   "page": 462
+   "page": 464
   },
   {
    "name": "Part",
@@ -14211,7 +14267,7 @@
   },
   {
    "name": "Pentamote (3D)",
-   "page": 463
+   "page": 465
   },
   {
    "name": "Period",
@@ -14219,7 +14275,7 @@
   },
   {
    "name": "Photo scrub",
-   "page": 428
+   "page": 430
   },
   {
    "name": "Photo tools",
@@ -14235,7 +14291,7 @@
   },
   {
    "name": "Piggybank (3D)",
-   "page": 464
+   "page": 466
   },
   {
    "name": "Plan stability",
@@ -14243,7 +14299,7 @@
   },
   {
    "name": "Podcast",
-   "page": 419
+   "page": 421
   },
   {
    "name": "Podcast search",
@@ -14259,7 +14315,7 @@
   },
   {
    "name": "Poker (3D)",
-   "page": 465
+   "page": 467
   },
   {
    "name": "Pollen",
@@ -14275,7 +14331,7 @@
   },
   {
    "name": "Pot (3D)",
-   "page": 466
+   "page": 468
   },
   {
    "name": "Pregnancy",
@@ -14307,7 +14363,7 @@
   },
   {
    "name": "Pwcheck",
-   "page": 426
+   "page": 428
   },
   {
    "name": "Qr scan",
@@ -14331,7 +14387,7 @@
   },
   {
    "name": "Rack (3D)",
-   "page": 467
+   "page": 469
   },
   {
    "name": "Rally",
@@ -14347,7 +14403,7 @@
   },
   {
    "name": "Rebuild map",
-   "page": 399
+   "page": 401
   },
   {
    "name": "Recent",
@@ -14411,7 +14467,7 @@
   },
   {
    "name": "Ringer (3D)",
-   "page": 468
+   "page": 470
   },
   {
    "name": "Riot",
@@ -14439,7 +14495,7 @@
   },
   {
    "name": "Safety kit",
-   "page": 427
+   "page": 429
   },
   {
    "name": "Savings",
@@ -14447,7 +14503,7 @@
   },
   {
    "name": "Savings (3D)",
-   "page": 469
+   "page": 471
   },
   {
    "name": "Scores",
@@ -14475,7 +14531,7 @@
   },
   {
    "name": "Share",
-   "page": 395
+   "page": 397
   },
   {
    "name": "Sheaf check",
@@ -14503,11 +14559,11 @@
   },
   {
    "name": "Similar",
-   "page": 414
+   "page": 416
   },
   {
    "name": "Skill eclipse",
-   "page": 407
+   "page": 409
   },
   {
    "name": "Sky",
@@ -14587,7 +14643,7 @@
   },
   {
    "name": "Stage fx",
-   "page": 429
+   "page": 431
   },
   {
    "name": "Stage image",
@@ -14607,7 +14663,7 @@
   },
   {
    "name": "Stakes phase",
-   "page": 411
+   "page": 413
   },
   {
    "name": "Stale work",
@@ -14647,11 +14703,11 @@
   },
   {
    "name": "Stopwatch (3D)",
-   "page": 470
+   "page": 472
   },
   {
    "name": "Store",
-   "page": 394
+   "page": 396
   },
   {
    "name": "Studios",
@@ -14683,7 +14739,7 @@
   },
   {
    "name": "Swarm (3D)",
-   "page": 471
+   "page": 473
   },
   {
    "name": "Swarm mind",
@@ -14691,15 +14747,15 @@
   },
   {
    "name": "Swatch (3D)",
-   "page": 472
+   "page": 474
   },
   {
    "name": "System blueprint",
-   "page": 390
+   "page": 392
   },
   {
    "name": "System handoff",
-   "page": 392
+   "page": 394
   },
   {
    "name": "System status",
@@ -14715,7 +14771,7 @@
   },
   {
    "name": "Tabletop (3D)",
-   "page": 473
+   "page": 475
   },
   {
    "name": "Task board",
@@ -14775,7 +14831,7 @@
   },
   {
    "name": "Tictactoe (3D)",
-   "page": 474
+   "page": 476
   },
   {
    "name": "Tilt Arena",
@@ -14799,7 +14855,7 @@
   },
   {
    "name": "Timer (3D)",
-   "page": 475
+   "page": 477
   },
   {
    "name": "Tip",
@@ -14807,7 +14863,7 @@
   },
   {
    "name": "Tip (3D)",
-   "page": 476
+   "page": 478
   },
   {
    "name": "Today",
@@ -14827,7 +14883,7 @@
   },
   {
    "name": "Tower (3D)",
-   "page": 477
+   "page": 479
   },
   {
    "name": "Translate",
@@ -14839,7 +14895,7 @@
   },
   {
    "name": "Triangulate",
-   "page": 423
+   "page": 425
   },
   {
    "name": "Type filter",
@@ -14870,6 +14926,10 @@
    "page": 44
   },
   {
+   "name": "Verify pack",
+   "page": 390
+  },
+  {
    "name": "Verse brain",
    "page": 48
   },
@@ -14895,7 +14955,7 @@
   },
   {
    "name": "Void (3D)",
-   "page": 478
+   "page": 480
   },
   {
    "name": "Void breaker",
@@ -14915,7 +14975,7 @@
   },
   {
    "name": "Wants",
-   "page": 418
+   "page": 420
   },
   {
    "name": "Watch",
@@ -14927,11 +14987,11 @@
   },
   {
    "name": "Weather (3D)",
-   "page": 479
+   "page": 481
   },
   {
    "name": "Web4",
-   "page": 396
+   "page": 398
   },
   {
    "name": "Wheel",
@@ -14939,7 +14999,7 @@
   },
   {
    "name": "Wheel (3D)",
-   "page": 480
+   "page": 482
   },
   {
    "name": "Whisper network",
@@ -14983,9 +15043,9 @@
   }
  ],
  "totals": {
-  "pages": 540,
+  "pages": 542,
   "chapters": 16,
-  "skills": 412,
+  "skills": 414,
   "games": 16,
   "minis": 49
  }

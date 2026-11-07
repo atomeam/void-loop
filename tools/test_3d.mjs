@@ -310,7 +310,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const F = await fresh();
     // what Verse asked for, by the entry that built it (GET /api/reflect follow.asked): here every entry has one naming its own time
     const ledgerAts = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')).map((e) => e.at);
-    await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
+    // hold the answer until after the branch is read: the card has to fill in what Verse asked for when it lands late, not only when
+    // it happened to arrive before the touch (the race that made this check flake on main)
+    let releaseReflect;
+    const held = new Promise((resolve) => { releaseReflect = resolve; });
+    await F.ctx.route(/\/api\/reflect(?:\?|$)/, async (rt) => { await held; return rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }); });
     await F.ask('growth');
     // the tree draws while it is on screen, and the card has grown long (friction, the better score, the probes above it): scroll it into view as a visitor would while waiting, or it never draws and this waits for nothing
     const drawn = await until(() => F.p.evaluate(() => { const cv = document.querySelector('.vpage .growth-tree canvas'); if (cv) cv.scrollIntoView({ block: 'center' }); const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
@@ -325,10 +329,17 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // the trunk is one thing to touch: with hundreds of branches, leaves of its neighbours cover some of its length, so try along it until it takes the tap
     if (at && at.pt) for (const pt of [at.pt, ...(at.pts || [])]) { if (!pt) continue; await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); if (await F.p.evaluate((i) => { const s = window.__voidMini.state('growth-tree'); return s && s.selected === i; }, at.trunk)) break; }
     const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
-    const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
+    // a bloom for a day's new skill (void:grew) must not take the branch the reader already touched
+    const stayed = at && await F.p.evaluate(() => { const card = document.querySelector('.vpage');
+      card.dispatchEvent(new CustomEvent('void:grew', { bubbles: true, detail: { kind: 'bloom' } }));
+      const s = document.querySelector('.vpage .growth-picked'), t = window.__voidMini && window.__voidMini.state('growth-tree');
+      return { selected: t ? t.selected : null, text: s ? s.textContent : '' }; });
+    // the reflect answer was held back and lands only now: the readout fills in the ask without another touch
+    if (releaseReflect) releaseReflect();
+    const cause = at && await until(() => F.p.evaluate((w) => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c && c.textContent.includes(w) ? c.textContent : false; }, 'the ask built at ' + trunkAt), 8000);
     check('"growth": touching a branch says what Verse asked for that it built (asked by Verse: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)' && !!stayed && stayed.selected === at.trunk && stayed.text.includes(at.oldest), JSON.stringify({ cause, trunkAt, stayed }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
