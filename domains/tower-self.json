@@ -1710,6 +1710,86 @@
     "place": 8,
     "why": "5 controls, 1 KB, Tranco 384"
    }
+  },
+  "vivoglobal.com": {
+   "at": "2026-11-07T22:14:19Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 66.6,
+    "place": 1,
+    "why": "5 controls, 2 KB, Tranco 887"
+   }
+  },
+  "uniteforliteracy.com": {
+   "at": "2026-11-07T22:14:21Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.6,
+    "place": 2,
+    "why": "not sized yet, hardness 98, Tranco 284167"
+   }
+  },
+  "ldraw.org": {
+   "at": "2026-11-07T22:14:32Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.6,
+    "place": 3,
+    "why": "not sized yet, hardness 99, Tranco 291274"
+   }
+  },
+  "caffmoscommunity.com": {
+   "at": "2026-11-07T22:14:34Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (51 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 4.6,
+    "place": 4,
+    "why": "not sized yet, hardness 99, Tranco 215170"
+   }
+  },
+  "radicenter.ee": {
+   "at": "2026-11-07T22:14:39Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.6,
+    "place": 5,
+    "why": "not sized yet, hardness 99, Tranco 102900"
+   }
+  },
+  "testerhome.com": {
+   "at": "2026-11-07T22:14:57Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.5,
+    "place": 6,
+    "why": "not sized yet, hardness 101, Tranco 441708"
+   }
+  },
+  "keydifferences.com": {
+   "at": "2026-11-07T22:15:04Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.5,
+    "place": 7,
+    "why": "not sized yet, hardness 101, Tranco 306443"
+   }
+  },
+  "randomvideochat.me": {
+   "at": "2026-11-07T22:15:07Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.5,
+    "place": 8,
+    "why": "not sized yet, hardness 101, Tranco 278950"
+   }
   }
  },
  "runs": [
