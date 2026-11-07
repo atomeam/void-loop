@@ -10,7 +10,7 @@
 //   node tools/assimilated.mjs             write void-live-deploy/assimilated.json
 //   node tools/assimilated.mjs --check     exit 1 when the committed file is not what this writes
 //   node tools/assimilated.mjs --backfill  rewrite domains/assimilated.backfill.json from git (needs the full history)
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -21,8 +21,8 @@ export const OUT = 'void-live-deploy/assimilated.json', BACKFILL = 'domains/assi
 // the files whose history names the sites, oldest evidence first
 export const SOURCES = ['void-live-deploy/lib/tool-sites.js', 'void-live-deploy/lib/self-sites.js', 'domains/tower-self.json', 'void-live-deploy/lib/tower.js'];
 // how far each outcome got, so a site's row shows the furthest one (a site built and then surpassed reads surpassed)
-const RANK = { surpassed: 6, passed: 5.8, current: 5.5, assimilated: 5, covered: 5, built: 5, 'page built': 5, discarded: 3, 'not-judged': 2, 'no-family': 1, walled: 1, gone: 1, parked: 0 };
-const LABEL = { surpassed: 'surpassed', passed: 'passed, conquering in background', current: 'now assimilating', covered: 'assimilated into an existing page', assimilated: 'assimilated', built: 'assimilated', 'page built': 'assimilated', discarded: 'built, then discarded', 'not-judged': 'read, not judged yet', 'no-family': 'read, no page family fits it', walled: 'walled', gone: 'could not be read', parked: 'gone/parked: the domain no longer serves the site' };
+const RANK = { surpassed: 6, passed: 5.8, current: 5.5, assimilated: 5, covered: 5, built: 5, 'page built': 5, discarded: 3, 'not-judged': 2, 'no-family': 1, walled: 1, gone: 1, parked: 0, 'non-site': 0 };
+const LABEL = { surpassed: 'surpassed', passed: 'passed, conquering in background', current: 'now assimilating', covered: 'assimilated into an existing page', assimilated: 'assimilated', built: 'assimilated', 'page built': 'assimilated', discarded: 'built, then discarded', 'not-judged': 'read, not judged yet', 'no-family': 'read, no page family fits it', walled: 'walled', gone: 'could not be read', parked: 'gone/parked: the domain no longer serves the site', 'non-site': 'settled: a non-site, nothing on it to use' };
 
 const read = (cwd, f) => { try { return JSON.parse(readFileSync(resolve(cwd, f), 'utf8')); } catch (_) { return null; } };
 export const hostOf = (u) => { try { return new URL(/^https?:/.test(u) ? u : 'https://' + u).hostname.replace(/^www\./, ''); } catch (_) { return ''; } };
@@ -52,16 +52,16 @@ export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} 
   for (const f of floors) {
     if (f.state !== 'current' || !f.site) continue;
     const r = row(hostOf(f.url || f.site)); lift(r, 'current'); r.current = true; if (f.page) r.page = f.page; if (f.topic) r.topic = f.topic;
-    r.score = { n: f.n, m: f.m }; r.why = 'the target now: Verse is ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.topic ? ', measured against ' + f.page + ', the page that does its job (' + f.topic + ')' : ''); src(r, 'void-live-deploy/tower.target.json');
+    if (f.at && !r.at) r.at = f.at; r.score = { n: f.n, m: f.m }; r.why = 'the target now: Verse is ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.topic ? ', measured against ' + f.page + ', the page that does its job (' + f.topic + ')' : ''); src(r, 'void-live-deploy/tower.target.json');
   }
   // PASSED (owner, 2026-11-03): the Tower moved on; the open aspects are measured in the background until it is conquered (lib/tower.js)
   for (const f of floors) {
-    if (!f.cleared || f.beaten || !f.site) continue;
+    if (!(f.cleared || f.gateCleared) || f.beaten || f.gateBeaten || !f.site) continue; // a pass from an earlier season (tower.target.json season) stays in the record
     const r = row(hostOf(f.url || f.site)); lift(r, 'passed'); if (f.page) r.page = f.page; if (f.topic) r.topic = f.topic; r.score = { n: f.n, m: f.m };
     r.why = 'Passed ' + f.site + ' (' + f.n + '/' + f.m + ', ' + ((f.missingFeatures || []).length ? 'missing ' + f.missingFeatures.length + ' feature' + (f.missingFeatures.length === 1 ? '' : 's') : 'conquering in background') + ')' + (f.behind && f.behind.length ? '; fixing: ' + f.behind.join(', ') : ''); if (f.at && (!r.at || f.at > r.at)) r.at = f.at; src(r, 'void-live-deploy/tower.target.json');
   }
   for (const f of floors) {
-    if (!f.beaten || !f.site) continue;
+    if (!(f.beaten || f.gateBeaten) || !f.site) continue;
     const r = row(hostOf(f.url || f.site)); lift(r, 'surpassed'); if (f.page) r.page = f.page; if (f.taught || f.learned) r.learned = f.taught || f.learned; r.score = { n: f.n, m: f.m };
     r.why = 'ahead of it on ' + f.n + ' of ' + f.m + ' aspects, measured head to head'; if (f.at && (!r.at || f.at > r.at)) r.at = f.at; src(r, 'void-live-deploy/tower.evidence.json');
   }
@@ -77,7 +77,7 @@ export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} 
   }
   // a rival whose domain is gone or parked (tools/tower-alive.mjs, tower.gone.json: unitingchurch.org.au now 301s to controlhosting.net)
   // counts as nothing: not passed, not assimilated, whatever an older run recorded
-  for (const r of rows.values()) { const g = Object.keys(gone).find((h) => r.site === h || r.site.endsWith('.' + h)); if (g) { r.wasOutcome = r.outcome; r.outcome = 'parked'; r.status = LABEL.parked; r.why = gone[g].why || r.why; src(r, 'void-live-deploy/tower.gone.json'); } }
+  for (const r of rows.values()) { const g = Object.keys(gone).find((h) => r.site === h || r.site.endsWith('.' + h)); if (g) { const o = gone[g].status === 'non-site' ? 'non-site' : 'parked'; r.wasOutcome = r.outcome; r.outcome = o; r.status = LABEL[o]; delete r.current; delete r.score; r.why = gone[g].why || r.why; src(r, 'void-live-deploy/tower.gone.json'); } }
   return [...rows.values()].filter((r) => r.site).sort((a, b) => (b.at || '').localeCompare(a.at || '') || a.site.localeCompare(b.site));
 }
 
@@ -85,7 +85,7 @@ export function historyOf({ sitePages = [], selfSites = [], state = { sites: {} 
 export function fileOf(rows) {
   const n = (f) => rows.filter(f).length;
   return { note: 'Every site Verse has assimilated or tried to, newest first. Generated by tools/assimilated.mjs from lib/tool-sites.js, lib/self-sites.js, domains/tower-self.json, the tower evidence and the git history (domains/assimilated.backfill.json); nothing is typed by hand. ease: the score Versus picked the site by (higher is easier, tools/tower-self.mjs easeOf), recorded from 2026-11-03.',
-    repo: REPO, target: (() => { const c = rows.find((r) => r.current); return c ? { site: c.site, page: c.page, score: c.score || null } : null; })(), counts: { sites: rows.length, surpassed: n((r) => r.outcome === 'surpassed'), passed: n((r) => r.outcome === 'passed'), assimilated: n((r) => RANK[r.outcome] === 5), current: n((r) => r.outcome === 'current'), parked: n((r) => r.outcome === 'parked'), tried: n((r) => (RANK[r.outcome] || 0) < 5 && r.outcome !== 'parked') }, sites: rows };
+    repo: REPO, target: (() => { const c = rows.find((r) => r.current); return c ? { site: c.site, page: c.page, score: c.score || null } : null; })(), counts: { sites: rows.length, surpassed: n((r) => r.outcome === 'surpassed'), passed: n((r) => r.outcome === 'passed'), assimilated: n((r) => RANK[r.outcome] === 5), current: n((r) => r.outcome === 'current'), parked: n((r) => r.outcome === 'parked'), ...(n((r) => r.outcome === 'non-site') ? { nonSites: n((r) => r.outcome === 'non-site') } : {}), tried: n((r) => (RANK[r.outcome] || 0) < 5 && r.outcome !== 'parked' && r.outcome !== 'non-site') }, sites: rows };
 }
 
 /** the floors of the tower as the stage reads them, from the published files. */
@@ -93,11 +93,22 @@ export async function floorsOf(cwd = root) {
   const { tower, towerArgs, learnedOf, fatalityOf } = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tower.js')).href);
   const [inv, ev, fr, rk, sz, tg, ft] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
   const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }));
-  // a surpassed floor is dated by its newest head-to-head measure in the evidence
+  // the evidence also lives one file per floor (void-live-deploy/tower-evidence/, keyed by its id), so a floor measured there is dated too
+  const perFloor = {}; try { for (const f of readdirSync(resolve(cwd, 'void-live-deploy/tower-evidence'))) { const e = f.endsWith('.json') && read(cwd, 'void-live-deploy/tower-evidence/' + f); if (e && e.id) perFloor[e.id] = e; } } catch (_) { /* no per-floor evidence */ }
+  // a surpassed or passed floor is dated by floorAt: its newest head-to-head measure, else the day tower.target.json recorded it passed
   // what each site taught Verse, as the card's "What each site taught me" says it (skills/tower.js verseTake): its lesson, else Verse's edge
   const taught = (f) => learnedOf(f) || (fatalityOf(f) ? 'Verse\'s edge: ' + fatalityOf(f) : '');
   const cur = t.floors.find((f) => f.state === 'current');
-  return (cur ? [{ ...cur }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared).map((f) => { const dates = JSON.stringify((ev && ev.floors && ev.floors[f.id]) || {}).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || []; return { ...f, taught: taught(f), at: dates.length ? dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z' : '' }; }));
+  return (cur ? [{ ...cur, at: tg && tg.id === cur.id && /^20\d\d-\d\d-\d\d$/.test(String(tg.since || '')) ? tg.since + 'T00:00:00Z' : '' }] : []).concat(t.floors.filter((f) => f.beaten || f.cleared || f.gateBeaten || f.gateCleared).map((f) => { return { ...f, taught: taught(f), at: floorAt(f, ev, tg, perFloor) }; }));
+}
+
+/** the date a cleared or beaten floor is shown by: its newest head-to-head measure in the evidence (tower.evidence.json or its own file in
+ * void-live-deploy/tower-evidence/), else the day the tower target recorded it passed. Pure. */
+export function floorAt(f, ev, tg, perFloor = {}) {
+  const dates = JSON.stringify([(ev && ev.floors && ev.floors[f.id]) || {}, (perFloor && perFloor[f.id]) || {}]).match(/20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d/g) || [];
+  if (dates.length) return dates.sort((a, b) => a.localeCompare(b)).at(-1) + 'Z';
+  const p = ((tg && tg.passed) || []).find((x) => x && x.id === f.id);
+  return p && /^20\d\d-\d\d-\d\d$/.test(String(p.at || '')) ? p.at + 'T00:00:00Z' : '';
 }
 
 /** whether a site path ('/convert/', '/calculator/?mode=vat') is a page in the deploy folder. */

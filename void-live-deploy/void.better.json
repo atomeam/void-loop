@@ -1515,5 +1515,155 @@
    "benchTotal": 3353,
    "probeFixes": 9
   }
+ },
+ {
+  "at": "2026-11-06T14:38:47.563Z",
+  "score": 94,
+  "parts": {
+   "self": 98,
+   "asks": 85,
+   "friction": 97,
+   "bench": 99,
+   "probes": 90
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 89
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 98
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 99
+   },
+   {
+    "id": "numbers",
+    "health": 93
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 96
+   },
+   {
+    "id": "sky",
+    "health": 98
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 95
+   },
+   {
+    "id": "words",
+    "health": 98
+   }
+  ],
+  "facts": {
+   "week": 148,
+   "owner": 3,
+   "askedBuilt": 20,
+   "medianLagDays": 0.5,
+   "open": 4,
+   "oldestOpenDays": 1,
+   "skills": 410,
+   "failing": 6,
+   "unsure": 12,
+   "benchScore": 3332,
+   "benchTotal": 3353,
+   "probeFixes": 9
+  }
+ },
+ {
+  "at": "2026-11-07T13:36:02.153Z",
+  "score": 89,
+  "parts": {
+   "self": 97,
+   "asks": 83,
+   "friction": 97,
+   "bench": 99,
+   "probes": 70
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 93
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 99
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 100
+   },
+   {
+    "id": "numbers",
+    "health": 95
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 95
+   },
+   {
+    "id": "sky",
+    "health": 98
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 95
+   },
+   {
+    "id": "words",
+    "health": 98
+   }
+  ],
+  "facts": {
+   "week": 153,
+   "owner": 4,
+   "askedBuilt": 20,
+   "medianLagDays": 0.5,
+   "open": 4,
+   "oldestOpenDays": 1.2,
+   "skills": 412,
+   "failing": 6,
+   "unsure": 9,
+   "benchScore": 3332,
+   "benchTotal": 3353,
+   "probeFixes": 7
+  }
  }
 ]

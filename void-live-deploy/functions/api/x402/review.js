@@ -18,9 +18,17 @@ export async function catalog({ request, env }) {
     protocol: 'x402 (https://docs.x402.org), versions 1 and 2', network: { v1: NET.v1, v2: NET.v2 }, asset: { symbol: 'USDC', address: USDC_BASE },
     facilitator: facilitatorOf(env), pay_to: w ? w.address : null, wallet: w ? w.note : 'not set up yet: paid calls are closed until Verse has a wallet',
     services: Object.entries(SERVICES).map(([id, s]) => ({ id, method: s.method, url: origin + s.path, price_usdc: usdcText(s.units), description: s.description,
-      open: !!w && (id !== 'review' || modelsOn(env)), input: s.input, output: s.output })),
+      open: !!w && (id === 'review' ? modelsOn(env) : id === 'appraise' ? !!(env && env.AI) : true), input: s.input, output: s.output, example: s.example ? s.example.input : undefined })),
   }, 200, { 'cache-control': 'public, max-age=60' });
 }
+
+// A facilitator's Bazaar probe (HEAD, then GET: docs.payai.network/x402/facilitators/bazaar) and any agent that looks first: the 402.
+export async function onRequestGet({ request, env }) {
+  let w = null; try { w = await walletOf(env); } catch (_) {}
+  if (!w) return J({ error: 'Verse has no wallet set up yet, so paid calls are closed; nothing is charged' }, 503);
+  return paymentRequired(requirements('review', w.address, new URL(request.url).origin), 'X-PAYMENT header is required: POST /api/x402/review with { code } or { diff }');
+}
+export const onRequestHead = async (ctx) => { const r = await onRequestGet(ctx); return new Response(null, { status: r.status, headers: r.headers }); };
 
 export async function onRequestPost({ request, env }) {
   const name = 'review';

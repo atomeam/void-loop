@@ -1,0 +1,20 @@
+{
+ "at": "2026-11-06T15:00:00.000Z",
+ "topics": [
+  { "topic": "how to split a dinner bill", "source": "Google Trends", "url": "https://trends.google.com/trending?geo=US" },
+  { "topic": "Diwali", "source": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Diwali", "page": "https://en.wikipedia.org/wiki/Diwali", "title": "Diwali", "description": "Hindu festival of lights", "person": false,
+    "summary": ["Diwali is the Hindu festival of lights, celebrated by Hindus, Jains and Sikhs.", "It usually lasts five days and is celebrated during the Hindu lunisolar months of Ashvin and Kartika.", "Diwali symbolises the spiritual victory of light over darkness.", "People light oil lamps called diyas and set off fireworks."] },
+  { "topic": "Show HN: A tiny synth that fits in a tweet", "source": "Hacker News", "url": "https://news.ycombinator.com/item?id=1" },
+  { "topic": "earthquake today", "source": "Google Trends", "url": "https://trends.google.com/trending?geo=US", "news": "Magnitude 5 earthquake shakes the coast" },
+  { "topic": "Wicked: For Good", "source": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Wicked:_For_Good", "page": "https://en.wikipedia.org/wiki/Wicked:_For_Good", "title": "Wicked: For Good", "description": "2025 film by Jon M. Chu", "person": false,
+    "summary": ["Wicked: For Good is a 2025 American musical fantasy film directed by Jon M. Chu.", "It is the second of a two-part film adaptation of the stage musical Wicked.", "The film continues the story of Elphaba and Glinda in the Land of Oz."] },
+  { "topic": "Taylor Swift", "source": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Taylor_Swift", "page": "https://en.wikipedia.org/wiki/Taylor_Swift", "title": "Taylor Swift", "description": "American singer-songwriter (born 1989)", "person": true,
+    "summary": ["Taylor Alison Swift is an American singer-songwriter.", "Known for her autobiographical songwriting, she is one of the best-selling music artists of all time.", "Swift has won many awards, including 14 Grammy Awards."] },
+  { "topic": "Pumpkin spice", "source": "Google Trends", "url": "https://trends.google.com/trending?geo=US", "page": "https://en.wikipedia.org/wiki/Pumpkin_pie_spice", "title": "Pumpkin pie spice", "description": "Spice mix used in pumpkin pie", "person": false,
+    "summary": ["Pumpkin pie spice is an American spice mix commonly used in pumpkin pie.", "It usually contains cinnamon, nutmeg, ginger and cloves.", "Pumpkin spice lattes made the flavour a symbol of autumn."] },
+  { "topic": "Star Wars", "source": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Star_Wars", "page": "https://en.wikipedia.org/wiki/Star_Wars", "title": "Star Wars", "description": "Epic space opera multimedia franchise", "person": false,
+    "summary": ["Star Wars is an American epic space opera media franchise created by George Lucas.", "It began with the 1977 film, which became a worldwide pop culture phenomenon.", "The franchise has been expanded into films, television series and video games."] },
+  { "topic": "20% off coupon code", "source": "Google Trends", "url": "https://trends.google.com/trending?geo=US" }
+ ],
+ "failed": []
+}

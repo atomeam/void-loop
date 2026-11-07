@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4f8cff; --text:#e8eaed; --muted:#9aa0a6; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); padding:1rem; line-height:1.4; }
+h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+.summary { background:var(--card); padding:1rem; border-radius:12px; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; }
+.gpa { font-size:2rem; font-weight:700; color:var(--accent); }
+.controls { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+button, select, input { font:inherit; padding:0.5rem 0.75rem; border-radius:8px; border:1px solid #333; background:#222; color:var(--text); }
+button { background:var(--accent); color:#fff; border:none; cursor:pointer; }
+button.secondary { background:#333; }
+.course { background:var(--card); padding:0.75rem; border-radius:10px; margin-bottom:0.5rem; display:grid; grid-template-columns:1fr 80px 100px 40px; gap:0.5rem; align-items:center; }
+.course input { width:100%; }
+.bars { margin:1rem 0; }
+.bar-row { display:flex; align-items:center; gap:0.5rem; margin:0.25rem 0; font-size:0.85rem; }
+.bar { height:12px; background:#333; border-radius:6px; flex:1; overflow:hidden; }
+.bar > div { height:100%; background:var(--accent); }
+.note { font-size:0.8rem; color:var(--muted); margin-top:1rem; }
+@media (max-width:600px) { .course { grid-template-columns:1fr 70px 90px 36px; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>GPA calculator · Verse lab</title>
+<meta name="description" content="Job: Enter your courses with credits and grades on a 4.0 letter or percent scale.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="GPA calculator · Verse lab">
+<meta property="og:description" content="Job: Enter your courses with credits and grades on a 4.0 letter or percent scale.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f616-gpa-calculator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f616-gpa-calculator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>GPA calculator</h1>
+<div class="summary">
+  <div>
+    <div class="gpa" id="gpa">0.00</div>
+    <div id="credits">0 credits</div>
+  </div>
+  <div>
+    <button id="copy">Copy summary</button>
+    <button id="csv" class="secondary">Download CSV</button>
+  </div>
+</div>
+<div class="controls">
+  <label>Scale:
+    <select id="scale">
+      <option value="4.0">4.0 letter</option>
+      <option value="percent">Percent (0–100)</option>
+    </select>
+  </label>
+  <button id="add">+ Add course</button>
+  <button id="clear" class="secondary">Clear all</button>
+</div>
+<div id="list"></div>
+<div class="bars" id="bars"></div>
+<p class="note">Standard US 4.0 weighting (A=4, B=3, C=2, D=1, F=0). Percent maps 90–100=4, 80–89=3, 70–79=2, 60–69=1, below=0. Saved only on this device. Not a transcript.</p>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

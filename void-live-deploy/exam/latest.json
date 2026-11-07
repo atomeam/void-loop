@@ -1,11 +1,11 @@
 {
-  "at": "2026-11-06T03:38:49.388Z",
+  "at": "2026-11-07T19:44:46.827Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 98.5,
+      "score": 96.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -19,9 +19,11 @@
         {
           "ask": "joue une vidéo des baleines",
           "failed": [
-            "skill"
+            "skill",
+            "loaded",
+            "playable"
           ],
-          "score": 85.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -32,57 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of crime junkie",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
-            "audio"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of npr news now",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play the podcast",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -148,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -164,9 +119,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -307,13 +263,6 @@
           "score": 83.3
         },
         {
-          "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
           "ask": "yankees score",
           "failed": [
             "board"
@@ -322,6 +271,13 @@
         },
         {
           "ask": "how did the chiefs do",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -373,26 +329,10 @@
       "fails": []
     },
     "translate": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "translate spring",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "comment dit-on bonjour en anglais",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        }
-      ]
+      "fails": []
     },
     "units": {
       "score": 93.3,
@@ -438,33 +378,10 @@
       ]
     },
     "timers": {
-      "score": 86.7,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "set a timer for 90 seconds",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "add one minute",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "set a timer for 45 seconds",
-          "failed": [
-            "mobile",
-            "rival"
-          ],
-          "score": 60
-        }
-      ]
+      "fails": []
     },
     "images": {
       "score": 100,
@@ -507,22 +424,14 @@
       "fails": []
     },
     "code": {
-      "score": 96.7,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "http status 404",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     }
   },
   "lowest": {
-    "domain": "podcasts",
-    "score": 86.4
+    "domain": "maps",
+    "score": 89.2
   }
 }

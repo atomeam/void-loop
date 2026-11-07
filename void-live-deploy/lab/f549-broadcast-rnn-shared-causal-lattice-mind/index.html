@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(10,10,20,0.75); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+  button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 12px; margin: 4px 0; cursor: pointer; border-radius: 4px; }
+  button:hover { background: #3a3a6a; }
+  .card { position: absolute; background: rgba(20,20,40,0.85); border: 1px solid #446; padding: 8px; border-radius: 6px; font-size: 11px; cursor: grab; min-width: 90px; z-index: 5; }
+  .card.dragging { cursor: grabbing; opacity: 0.8; }
+  #status { margin-top: 6px; font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F549: Broadcast RNN Shared Causal Lattice Mind · Verse lab</title>
+<meta name="description" content="A persistent 32×32 causal lattice field (activation + phase) stored in IndexedDB and synchronized across same-origin tabs via BroadcastChannel.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F549: Broadcast RNN Shared Causal Lattice Mind · Verse lab">
+<meta property="og:description" content="A persistent 32×32 causal lattice field (activation + phase) stored in IndexedDB and synchronized across same-origin tabs via BroadcastChannel.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f549-broadcast-rnn-shared-causal-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f549-broadcast-rnn-shared-causal-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <strong>F549 Shared Causal Lattice</strong><br>
+  RNN emits into persistent field<br>
+  <button id="seal">Seal Lattice + Weights</button><br>
+  <button id="reset">Reset Field</button><br>
+  <div id="status">Peers: 0 | Fitness: —</div>
+  <small>Tilt device or move pointer to inject. Open second tab to sync.</small>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F549: Broadcast RNN Shared Causal Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/pattern/" data-tool="Seamless pattern maker">Use it: Seamless pattern maker</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -52,6 +52,19 @@ test('the automerge workflow merges with a squash after the suite gate, and keep
   assert.match(yml, /STUCK:/);
   assert.match(src, /disablePullRequestAutoMerge/);
   assert.match(src, /merge_method=squash/);
-  assert.match(src, /choose\(rows, mainSha, running\)/);
+  assert.match(src, /chooseChecked\(rows, mainSha, running, safetyOk\)/, 'the suite gate chooses, and the safety-check runs on its batch');
+  assert.match(src, /const safetyOk = [^]*?safety\(ex, gh,/);
   assert.match(src, /update-branch/);
+});
+
+// 2026-11-06: only 2 of 300 automerge runs were full sweeps. A run on main about no pull request (a deploy, the review of main) took the
+// "sweep" group and replaced the waiting sweep, and the suite gate's own result ("Suite on main", on main, no pull request) was skipped
+// by the job "if" and by idleEvent. So no new batch went to the suite and nothing merged.
+test('a suite gate result sweeps, and an idle run on main never replaces the waiting sweep', () => {
+  const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
+  const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
+  const group = yml.match(/^\s*group: (.+)$/m)[1];
+  assert.match(group, /head_branch == 'main' && github\.event\.workflow_run\.name != 'Suite on main' && format\('idle-\{0\}', github\.run_id\)\) \|\| 'sweep'/);
+  assert.match(yml, /if: .*github\.event\.workflow_run\.name == 'Suite on main'/);
+  assert.match(src, /wr\.name !== 'Suite on main' && !\(wr\.pull_requests/);
 });

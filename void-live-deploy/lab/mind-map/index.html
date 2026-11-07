@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: text; out: image">
+<title>Mind map maker: an outline into a mind map, SVG or PNG · Verse lab</title>
+<meta name="description" content="Make a mind map by typing an indented outline: the first line goes in the middle and each branch gets its own colour. Download it as SVG or PNG, or copy a link that opens the same map. Free, no account, kept on your device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Mind map maker · Verse lab">
+<meta property="og:description" content="Type an outline, get a mind map as SVG or PNG. No account, kept on your device.">
+<meta property="og:url" content="https://a-to-mind.com/lab/mind-map/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tools.css">
+<style>
+  .split { display: grid; grid-template-columns: minmax(220px, 1fr) 2fr; gap: 12px; }
+  @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
+  #map { border: 1px solid var(--line); border-radius: 12px; overflow: auto; min-height: 260px; display: flex; align-items: center; justify-content: center; }
+  #map img { width: 100%; height: auto; max-height: 70vh; } textarea { font-family: ui-monospace, Menlo, monospace; font-size: 14px; min-height: 300px; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/lab/mind-map/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Mind map maker","url":"https://a-to-mind.com/lab/mind-map/","description":"Type an indented outline and see it as a mind map, the first line in the middle and each branch in its own colour; download it as SVG or PNG, or copy a link that opens the same map. No account, kept on your device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"mind map maker, mind map online free, outline to mind map, make a mind map, mind map png, brainstorm map","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Mind map maker","item":"https://a-to-mind.com/lab/mind-map/"}]}]}</script>
+<!-- /seo -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/lab/mind-map/app.js"></script>
+</head>
+<body>
+<main>
+  <h1>Mind map maker</h1>
+  <p class="lead">Type the main idea on the first line, then indent the branches under it (Tab indents). The map draws as you type.</p>
+  <div class="panel split">
+    <div><label for="text" class="sr">Your outline</label><textarea id="text" spellcheck="true"></textarea><div class="row"><span id="size" class="note"></span><button type="button" id="sample">Example</button></div></div>
+    <div><div id="map" role="img" aria-label="Your mind map"></div>
+      <div class="row"><label><input type="checkbox" id="light"> Light background</label><button type="button" id="svg">Download SVG</button><button type="button" id="png">Download PNG</button><button type="button" id="link">Copy link</button></div></div>
+  </div>
+  <p class="note">The outline is kept in this browser; the link carries the whole outline in its address, so whoever opens it sees the same map. Nothing is uploaded.</p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/notes/">Notes</a> <a href="/lab/dictation/">Dictation</a> <a href="/word-count/">Word counter</a> <a href="/starboard/">Starboard</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="from">Made from the lab's thought-graph experiments, which drew a machine's ideas; this draws yours. <a href="/lab/">More from the lab</a></p>
+</main>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

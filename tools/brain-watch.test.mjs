@@ -87,10 +87,15 @@ test('what Verse decided is read from its will: a will run stuck after 2 tries a
   const o = W.observe({ will: WILL, team: TEAM }, NOW);
   assert.deepEqual(o.map((x) => [x.key, x.ok]), [['will', false], ['team', false]]);
   assert.match(o[0].what, /stuck on "Overhaul surface:ask"/); assert.match(o[0].why, /2 tries, nothing shipped; the last said: idle: no model answered/);
-  assert.equal(o[1].what, '86 jobs wait on the team and no agent is here'); assert.match(o[1].why, /2 agents are on the team, all away/);
+  assert.equal(o[1].what, '86 jobs wait on the team, no agent is here'); assert.match(o[1].why, /2 agents are on the team, all away/);
   const ok = W.observe({ will: { lastRun: { ...WILL.lastRun, tries: 1 } }, team: { ...TEAM, members: [{ name: 'Vibe', state: 'here' }] } }, NOW);
   assert.deepEqual(ok.map((x) => x.ok), [true, true], 'one try, or an agent here, is no break');
   assert.deepEqual(W.observe({ will: {}, team: { waiting: 'x' } }), [], 'nothing read, nothing claimed');
+  // Verse's own coder takes the queue when no agent is here: shipping is no break, and an idle coder is named in the break
+  const coding = W.observe({ will: {}, team: { ...TEAM, coder: { building: 1, shipped24: 3, tried24: 9 } } }, NOW)[0];
+  assert.equal(coding.ok, true); assert.equal(coding.what, "86 jobs waiting: verse's own coder holds 1 and shipped 3 in 24 hours");
+  const idle = W.observe({ will: {}, team: { ...TEAM, coder: { building: 0, shipped24: 0, tried24: 40 } } }, NOW)[0];
+  assert.equal(idle.ok, false); assert.equal(idle.what, "86 jobs wait on the team, no agent is here and Verse's own coder took none in 24 hours"); assert.match(idle.why, /40 coder tries in 24 hours, none shipped/);
   const w = W.createWatch(); W.takeIn(w, o, NOW); assert.deepEqual(W.focusOf(w), ['wants', 'tower', 'team-chat']);
 });
 

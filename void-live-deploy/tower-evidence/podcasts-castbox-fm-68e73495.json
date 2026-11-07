@@ -1,0 +1,116 @@
+{
+ "id": "podcasts: castbox.fm",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 108,
+   "best": 454,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 108 ms to the load event (median of 3, phone width) vs castbox.fm 454 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs castbox.fm 3 of 3 loads answered",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs castbox.fm 0 px sideways overflow at 390 px",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 23,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs castbox.fm 23 unnamed controls or images",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs castbox.fm 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs castbox.fm 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 5,
+   "best": 5,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard, not castbox.fm (the site is not asked)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "of": 5
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 47,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs castbox.fm 47 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), castbox.fm (5 low-contrast texts, 41 small tap targets, layout shift 0.26)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  },
+  "subscriptions": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs castbox.fm 0 of 3 shown (Verse lacks: none; site lacks: follow a show, the shows you follow, new episodes of those shows)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "of": 3,
+   "part": true,
+   "siteRead": true
+  },
+  "playback controls": {
+   "verdict": "better",
+   "verse": 5,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs castbox.fm 0 of 5 shown (Verse lacks: none; site lacks: speed, skip back and forward, a sleep timer, a queue, an audio element that read its length)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "of": 5,
+   "part": true,
+   "siteRead": true
+  },
+  "catalogue": {
+   "verdict": "worse",
+   "verse": 1,
+   "best": 2,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 of 2 shown for the question (Verse lacks: real results from the directory); judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:33:45.281Z",
+   "was": "equal-and-better",
+   "of": 2,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 19,
+   "best": 1,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs castbox.fm 1 of 19 things a full answer shows (Verse lacks: none; site lacks: search any show, paste an RSS link, episode lengths, show notes, follow a show, a new-episodes list, a queue, playback speed, skip back and forward, a sleep timer, a transcript, share, works offline, Search and browse directory, Show pages, Play episodes, Follow shows, Up Next queue)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "of": 19,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7.5,
+   "best": 5.5,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs castbox.fm 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:33:45.281Z",
+   "siteRead": true
+  }
+ }
+}

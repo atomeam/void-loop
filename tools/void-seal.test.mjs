@@ -21,8 +21,11 @@ test('drawing touches only the context it is handed and finishes on a recording 
   const calls = new Map(), grad = { addColorStop() {} };
   const ctx = new Proxy({ canvas: null, filter: 'none' }, { get: (t, k) => (k in t ? t[k] : k.startsWith('create') ? () => grad : (...a) => { calls.set(k, (calls.get(k) || 0) + 1); }), set: (t, k, v) => { t[k] = v; return true; } });
   drawSeal(ctx, 520, 150, sealPlan('incident autopsy', { kind: 'Idea', rarity: 'rare' }));
-  // the atom galaxy is gas and stars (fills, thousands) with dust filaments (strokes, hundreds), 2026-10-25; the old flow field was all strokes
-  assert.ok(calls.get('fillRect') > 3000 && calls.get('stroke') > 100, JSON.stringify([...calls]));
+  // quiet light (2026-10-30) is soft fields and a fine grain (fills, thousands) under a set of hairlines (strokes)
+  assert.ok(calls.get('fillRect') > 1500 && calls.get('stroke') > 0, JSON.stringify([...calls]));
+  for (const form of FORMS) { let st = 0; const p = { ...sealPlan('incident autopsy', { kind: 'Idea', rarity: 'rare' }), form };
+    const c2 = new Proxy({ canvas: null }, { get: (t, k) => (k in t ? t[k] : k.startsWith('create') ? () => grad : k === 'stroke' ? () => { st++; } : () => {}), set: (t, k, v) => { t[k] = v; return true; } });
+    drawSeal(c2, 520, 293, p); assert.ok(st > 0, form + ' draws its lines'); }
 });
 
 test('round 2: the card name picks a recognisable motif (a cat, a black hole, a skyline, a chart, a bowl, a warning, code, a dragon), drawn in its own hue, with its drawing present', async () => {
