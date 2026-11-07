@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: text">
 <meta name="theme-color" content="#050505">
 <title>Research journal: peer-reviewed papers, and the rules authors work to · Verse</title>
 <meta name="description" content="Peer-reviewed research papers read live from the DOI registry: the latest papers, a search across the whole archive, the volumes, themed collections, a reading list on your device, a citation in APA or BibTeX, and the publication-unit calculator that shows how long a paper is and what it costs.">
@@ -314,7 +315,14 @@
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
     const el = (tag, props, ...kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); e.append(...kids.filter((k) => k != null)); return e; };
     const say = (id, msg, bad) => { const n = $(id); if (!n) return; n.textContent = msg || ''; n.className = 'note' + (bad ? ' bad' : ''); };
-    mountRelated($('related'), '/journal/'); // the "Use with" row, with the hand-offs the page carries
+    // ---- the papers on the page, so the hand-off carries the one just read
+    let reading = [];
+    const lastPaper = () => reading[0] || null;
+    mountRelated($('related'), '/journal/', [
+      // the hand-off: the paper just read, carried to the word counter and to the notes as a link that holds it
+      { label: 'Count the words of this abstract', href: () => { const t = lastPaper(); return t ? '/word-count/?t=' + encodeURIComponent(t.abstract.slice(0, 4000)) : ''; } },
+      { label: 'Keep this paper as a note', href: () => { const t = lastPaper(); return t ? '/g/?v=' + encodeURIComponent(t.title + ' — ' + t.doi) : ''; } },
+    ]); // the "Use with" row, with the hand-offs the page carries
 
     // ---- the registry: the papers, read live (the registry answers with CORS open, so the browser asks it itself)
     const cache = () => { try { return JSON.parse(localStorage.getItem(CACHE) || 'null'); } catch (_) { return null; } };
@@ -371,6 +379,7 @@
       box.append(row, boxCite);
       return box;
     }
+    // ---- the papers on the page, so the hand-off carries the one just read
     const render = (id, list, empty) => {
       const box = $(id); box.replaceChildren();
       if (!list.length) { box.append(el('p', { className: 'empty', textContent: empty || 'Nothing here.' })); return; }
@@ -401,7 +410,7 @@
         return;
       }
       try {
-        const list = await ask({ sort: 'published', order: 'desc' });
+        const list = await ask({ sort: 'published', order: 'desc' }); reading = list;
         latest = list; keepCache(list);
         render('latestList', latest.slice(0, more), 'The registry held no papers.');
         say('latestNote', latest.length + ' papers read live from the DOI registry.');
@@ -420,7 +429,7 @@
       if (!query) { box.replaceChildren(el('p', { className: 'empty', textContent: 'Type a subject, a place or an author to search the whole archive.' })); say('searchNote', ''); return; }
       box.replaceChildren(el('p', { className: 'empty', textContent: 'Searching…' }));
       try {
-        const list = await ask({ 'query.bibliographic': query, sort: 'relevance', order: 'desc', rows: 20 });
+        const list = await ask({ 'query.bibliographic': query, sort: 'relevance', order: 'desc', rows: 20 }); reading = list;
         render('searchResults', list, 'No paper answers that.');
         say('searchNote', list.length + ' papers for "' + query + '".');
       } catch (e) {

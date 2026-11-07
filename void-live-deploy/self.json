@@ -600,6 +600,18 @@
  },
  "commits": [
   {
+   "at": "2026-11-07T20:25:28Z",
+   "subject": "The merge gate reads the conflicted paths outside the block they were made in, so every clean merge stopped it"
+  },
+  {
+   "at": "2026-11-07T20:20:47Z",
+   "subject": "Handoff: the research journal page is shipped"
+  },
+  {
+   "at": "2026-11-07T20:01:57Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-07T19:58:21Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"draw yourself"
   },
@@ -666,22 +678,14 @@
   {
    "at": "2026-11-07T19:19:26Z",
    "subject": "Failed jobs read: run 42404325155 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T19:19:08Z",
-   "subject": "Incident: the browser suite failed on 0a1501cf (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-07T19:13:14Z",
-   "subject": "Outcome exam: maps 89.2"
-  },
-  {
-   "at": "2026-11-07T19:09:53Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Research journal: a peer-reviewed journal's papers read live, and the rules…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2519. The Versus floor for ajsonline.org (the American Journal of Science) is now a page of Verse's own at /journal/: the papers are read live from Crossref, the DOI registry, where the…"
+   },
    {
     "name": "Translate: a bare word asks which language, and the French phrasing answers…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2512. \"translate spring\" now opens a card that says no language was named and asks which one (the exam's ambiguous case), \"comment dit-on bonjour en anglais\" is read as French and…"
@@ -701,10 +705,6 @@
    {
     "name": "Savings load (cursor, 2026-11-05)",
     "line": "\"how much do i need to save a month to have 1 million in 30 years at 7%\" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once.…"
-   },
-   {
-    "name": "Closer on the figure (cursor, 2026-11-05)",
-    "line": "\"closer on the figure\" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292"
    }
   ],
   "ladders": [

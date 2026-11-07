@@ -1,32 +1,32 @@
 {
- "at": "2026-11-07T19:07:25.686Z",
+ "at": "2026-11-07T20:35:22.315Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "domains/conductor.json",
-   "changes": 111
+   "changes": 110
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 82
+   "changes": 87
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 82
-  },
-  {
-   "file": "domains/handoff.md",
-   "changes": 65
+   "changes": 87
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 64
+   "changes": 72
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 63
+   "changes": 71
+  },
+  {
+   "file": "domains/handoff.md",
+   "changes": 69
   },
   {
    "file": "domains/tower-self.json",
@@ -34,18 +34,22 @@
   },
   {
    "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 31
+   "changes": 32
   },
   {
    "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
-   "changes": 29
+   "changes": 30
   },
   {
    "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 28
+   "changes": 29
   },
   {
    "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 29
+  },
+  {
+   "file": "tools/real-pages.mjs",
    "changes": 28
   },
   {
@@ -53,16 +57,16 @@
    "changes": 28
   },
   {
-   "file": "tools/real-pages.mjs",
-   "changes": 26
-  },
-  {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
    "changes": 25
   },
   {
+   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
+   "changes": 24
+  },
+  {
    "file": "void-live-deploy/bots/registry.json",
-   "changes": 22
+   "changes": 23
   },
   {
    "file": "docs/PARITY/lichess.md",
@@ -78,6 +82,10 @@
   },
   {
    "file": "void-live-deploy/assimilated.json",
+   "changes": 20
+  },
+  {
+   "file": "tools/site-test.json",
    "changes": 19
   },
   {
@@ -97,11 +105,11 @@
    "changes": 16
   },
   {
-   "file": "tools/salvaged-bots.test.mjs",
+   "file": "tools/families.mjs",
    "changes": 16
   },
   {
-   "file": "tools/site-test.json",
+   "file": "tools/salvaged-bots.test.mjs",
    "changes": 16
   },
   {
@@ -109,19 +117,11 @@
    "changes": 16
   },
   {
-   "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
+   "file": "void-live-deploy/color/colour-picker-tool/index.html",
    "changes": 16
   },
   {
-   "file": "void-live-deploy/color/colour-picker-tool/index.html",
-   "changes": 15
-  },
-  {
    "file": "tools/conductor-core.mjs",
-   "changes": 14
-  },
-  {
-   "file": "tools/families.mjs",
    "changes": 14
   },
   {
@@ -134,6 +134,14 @@
   },
   {
    "file": "docs/PARITY/youtube.md",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/news/global-headlines/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/sw.js",
    "changes": 13
   },
   {
