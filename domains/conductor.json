@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T09:46:40.070Z",
+ "updated": "2026-11-07T09:55:58.335Z",
  "last24h": {
   "ticks": 115,
   "started": 131,
@@ -89,7 +89,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw4ouylb": 1793958599851,
   "mw4ouzj0": 1793977008963,
   "mw546kng": 1793979670513,
   "mw546l9r": 1793980389220,
@@ -157,7 +156,8 @@
   "mw64zfbp": 1794041427771,
   "mw64zg6r": 1794042551524,
   "mw67c3b8": 1794044235354,
-  "mw67c49q": 1794044800070
+  "mw67c49q": 1794044800070,
+  "mw67c55j": 1794045358335
  },
  "sweptAt": 1794042551524,
  "blueprintsAt": 1794042551524,
@@ -245,36 +245,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T09:49:59.851Z",
-   "open": 238,
-   "started": [
-    {
-     "id": "mw4p9cye",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 100
-    },
-    {
-     "id": "mw4ouylb",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 12,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T12:31:52.020Z",
    "open": 237,
@@ -3370,6 +3340,39 @@
     },
     {
      "id": "mw67c49q",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T09:55:58.335Z",
+   "open": 258,
+   "started": [
+    {
+     "id": "want-exam-translate",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 151
+    },
+    {
+     "id": "mw67c55j",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
