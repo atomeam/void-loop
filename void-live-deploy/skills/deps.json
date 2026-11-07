@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1204,
+ "counted": 1208,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -202,7 +202,7 @@
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
@@ -300,14 +300,14 @@
    "file": "lib/flight-sites.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 1
   },
   {
    "file": "lib/job-sites.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 2
   },
   {
@@ -356,7 +356,7 @@
    "file": "lib/tool-sites.js",
    "skills": 8,
    "direct": 2,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 4
   },
   {
@@ -385,7 +385,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 14,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/art-source.js",
@@ -836,6 +836,13 @@
    "tests": 1
   },
   {
+   "file": "lib/local-ask.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 10,
+   "tests": 0
+  },
+  {
    "file": "lib/ics.js",
    "skills": 3,
    "direct": 2,
@@ -843,11 +850,18 @@
    "tests": 1
   },
   {
-   "file": "lib/local-ask.js",
+   "file": "lib/brain-ask.js",
    "skills": 3,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 0
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/converter-ask.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/fincalc.js",
@@ -864,25 +878,11 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-ask.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-bridge.js",
    "skills": 3,
    "direct": 2,
    "dependants": 5,
    "tests": 2
-  },
-  {
-   "file": "lib/converter-ask.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 1
   },
   {
    "file": "lib/generators.js",
@@ -1179,6 +1179,13 @@
    "tests": 1
   },
   {
+   "file": "lib/toolkit.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 18
+  },
+  {
    "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
@@ -1219,13 +1226,6 @@
    "direct": 1,
    "dependants": 3,
    "tests": 1
-  },
-  {
-   "file": "lib/toolkit.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 3,
-   "tests": 18
   },
   {
    "file": "lib/video.js",
@@ -2171,6 +2171,13 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/lore-names.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/media-local.js",
@@ -5073,11 +5080,20 @@
    "imports": [
     "lib/toolkit.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/lore/[[path]].js"
+   ]
   },
   "functions/is-it/[what].js": {
    "imports": [
     "skills/is-it.js"
+   ],
+   "importedBy": []
+  },
+  "functions/lore/[[path]].js": {
+   "imports": [
+    "functions/ip/index.js",
+    "lib/toolkit.js"
    ],
    "importedBy": []
   },
@@ -6182,6 +6198,7 @@
    ],
    "reachedBy": [
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "skills/open-tool.js",
     "skills/toolkit.js"
    ]
@@ -7648,6 +7665,7 @@
    ],
    "reachedBy": [
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "skills/open-tool.js",
     "skills/toolkit.js"
    ]
@@ -8505,6 +8523,7 @@
    ],
    "reachedBy": [
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
@@ -9366,6 +9385,7 @@
    ],
    "reachedBy": [
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
@@ -9886,6 +9906,7 @@
     "functions/api/local.js",
     "functions/api/watchalong.js",
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "skills/local-stations.js",
     "skills/open-tool.js",
     "skills/toolkit.js"
@@ -9907,6 +9928,12 @@
   "lib/loop-share.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/lore-names.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/web-lore.js"
+   ]
   },
   "lib/markdown.js": {
    "imports": [],
@@ -12907,6 +12934,7 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "lib/seo.js",
@@ -14463,6 +14491,7 @@
    ],
    "reachedBy": [
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "lib/duel-rules.js",
     "lib/term-card.js",
     "skills/about-skill.js",
@@ -14484,6 +14513,7 @@
    ],
    "importedBy": [
     "functions/ip/index.js",
+    "functions/lore/[[path]].js",
     "skills/open-tool.js",
     "skills/toolkit.js"
    ]
@@ -19639,6 +19669,10 @@
     "skills/mind-field.js"
    ]
   },
+  "skills/verify-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/verse-brain.js": {
    "imports": [
     "lib/field-stage.js",
@@ -19749,6 +19783,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/web-lore.js": {
+   "imports": [
+    "lib/lore-names.js"
+   ],
+   "importedBy": []
   },
   "skills/web4.js": {
    "imports": [

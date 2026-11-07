@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Web Lore · Verse</title>
+<meta name="description" content="Every site Verse has come across, sorted by what it does, each with its history and the source of every fact. Also as plain text and JSON for scripts and agents.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Web Lore · Verse">
+<meta property="og:description" content="Every site Verse has met, sorted and documented, every fact with its source.">
+<meta property="og:url" content="https://a-to-mind.com/lore/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<link rel="canonical" href="https://a-to-mind.com/lore/">
+<link rel="alternate" type="application/json" href="https://a-to-mind.com/lore.json">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 16px 40px; }
+  h1 { font-size:24px; margin:6px 0 2px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:14px; }
+  .tally { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; min-height:62px; }
+  .tally div { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px 12px; min-width:110px; }
+  .tally b { display:block; font-size:22px; font-weight:500; }
+  .tally span { color:var(--soft); font-size:12px; }
+  input { width:100%; font:inherit; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+  input:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  #shelves { min-height:60vh; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; margin:8px 0; padding:0 12px; }
+  summary { cursor:pointer; padding:10px 0; font-weight:500; }
+  summary span { color:var(--soft); font-weight:400; font-size:13px; }
+  ul { list-style:none; margin:0 0 10px; padding:0; }
+  li { display:flex; flex-wrap:wrap; gap:4px 10px; align-items:baseline; padding:5px 0; border-top:1px solid var(--line); font-size:14px; }
+  li a { color:#cfc6ff; }
+  li .st { color:var(--soft); font-size:12px; }
+  li .doc { color:#9fe0b5; font-size:12px; }
+  .note { color:var(--quiet); font-size:13px; }
+  code { color:#c9b8ff; word-break:break-all; }
+  nav { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:28px 0 0; font-size:14px; }
+  nav span { color:var(--soft); }
+  nav a, .home a { color:var(--ink); display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid #2c2938; border-radius:999px; text-decoration:none; }
+  nav a:hover, nav a:focus-visible { border-color:#a58bff; }
+  .home a { border-color:#a58bff; }
+</style><style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Web Lore</h1>
+  <p class="sub">Every site Verse has come across, sorted by what it does. Each one has its own record with its history, and every fact links the place it came from. A fact no source has given yet is counted, never filled in.</p>
+  <div class="tally" id="tally" aria-live="polite"></div>
+  <label for="find" class="note">Find a site or a category</label>
+  <input id="find" type="search" placeholder="4chan, recipes, translate…" autocomplete="off">
+  <div id="shelves"><p class="note">Reading Web Lore…</p></div>
+  <p class="note">For scripts and agents: <code>curl a-to-mind.com/lore/4chan</code> gives one site as plain text, <code>?format=json</code> gives JSON, and <code>a-to-mind.com/lore.json</code> is every site. You can also ask Verse: "history of 4chan".</p>
+  <nav aria-label="Use with"><span>Use with</span><a href="/conquered/">Versus: the sites Verse takes on</a><a href="/assimilated/">Every site Versus assimilated</a><a href="/ip">Your IP address</a><a href="/lab/">Lab</a><a href="/treasury/">Treasury</a><a href="/tools/">All tools</a></nav>
+  <p class="home"><a href="/">Ask Verse anything</a></p>
+</main>
+<script type="module" src="/lore-page.js"></script>
+</body>
+</html>

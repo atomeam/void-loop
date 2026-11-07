@@ -248,6 +248,56 @@ export function historyHtml(t, esc, n = 5) {
     + (rows.length > n ? '<details><summary style="cursor:pointer;font-size:12px;margin-top:4px">Show all ' + rows.length + '</summary><ol style="list-style:none;margin:4px 0 0;padding:0">' + rows.slice(n).map(li).join('') + '</ol></details>' : '')
     + '<div style="font-size:12px;margin-top:4px"><a href="/assimilated/">Every site Verse has read or built from</a></div></div>';
 }
+// each rival's own history, cited, under its op on the tower and nowhere on Verse's own pages: founding, owners, milestones and archived copies,
+// from Wikidata, Wikipedia and the Wayback Machine (tools/site-history.mjs, written to /history/<slug>.json by tools/parity.mjs). Folded; the
+// body loads when the person opens it (wireHistories), so the card stays light with a thousand ops on it
+export const histSlug = (site) => String(site || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
+export function histHtml(f, esc) {
+  const slug = f && histSlug(f.site);
+  if (!slug) return '';
+  return '<details class="tw-sitehist" data-share-skip data-hist="' + esc(slug) + '" style="margin:-2px 0 6px 10px;font-size:12px"><summary style="cursor:pointer;opacity:.85">History of ' + esc(f.site) + '</summary><div class="tw-hbody" style="margin:4px 0 0 4px"></div></details>';
+}
+/** Fill an opened history from /history/<slug>.json with DOM text only (a source's words never become markup). Known facts first, each with
+ *  its source; facts no source has given yet are counted, not listed. Reopens what was open after a redraw. Pure DOM; fetch is passed in for tests. */
+export function histRender(h, box, doc = document) {
+  const el = (tag, text) => { const e = doc.createElement(tag); if (text != null) e.textContent = text; return e; };
+  const link = (href, text) => { const a = el('a', text); a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; return a; };
+  box.textContent = '';
+  const known = ((h && h.events) || []).filter((e) => !e.u), gaps = ((h && h.events) || []).length - known.length;
+  if (!known.length) { box.appendChild(el('div', 'No history written yet. It is on the queue and fills in on the next history run.')); return; }
+  const ol = el('ol'); ol.style.cssText = 'margin:0;padding-left:18px';
+  for (const e of known) {
+    const li = el('li'); const k = el('b', e.k + ': '); li.appendChild(k);
+    li.appendChild(doc.createTextNode(String(e.t) + ' '));
+    if (e.s && /^https:\/\//.test(e.s)) li.appendChild(link(e.s, '(source)'));
+    ol.appendChild(li);
+  }
+  box.appendChild(ol);
+  if (h.snaps && h.snaps.length) {
+    const p = el('div', 'Archived copies: ');
+    h.snaps.forEach(([y, u], i) => { if (i) p.appendChild(doc.createTextNode(' · ')); if (/^https:\/\//.test(u)) p.appendChild(link(u, String(y))); });
+    box.appendChild(p);
+  }
+  if (gaps) box.appendChild(el('div', gaps + ' more facts have no source yet.'));
+  if (h.slug || box.dataset.slug) { const p = el('div'); const a = el('a', 'Its full record in Web Lore'); a.href = '/lore/' + encodeURIComponent(h.slug || box.dataset.slug); p.appendChild(a); box.appendChild(p); }
+}
+const histCache = new Map(), histOpen = new Set();
+export function wireHistories(root, get = (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null)) {
+  if (!root) return;
+  root.querySelectorAll('.tw-sitehist').forEach((d) => { if (histOpen.has(d.dataset.hist)) d.open = true; });
+  const fill = async (d) => {
+    const slug = d.dataset.hist, box = d.querySelector('.tw-hbody'); box.dataset.slug = slug;
+    if (!histCache.has(slug)) { box.textContent = 'Loading…'; histCache.set(slug, get('/history/' + encodeURIComponent(slug) + '.json')); }
+    histRender(await histCache.get(slug), box);
+  };
+  root.querySelectorAll('.tw-sitehist[open]').forEach(fill);
+  if (root.dataset.histWired) return;
+  root.dataset.histWired = '1';
+  root.addEventListener('toggle', (e) => {
+    const d = e.target; if (!d.classList || !d.classList.contains('tw-sitehist')) return;
+    if (d.open) { histOpen.add(d.dataset.hist); fill(d); } else histOpen.delete(d.dataset.hist);
+  }, true);
+}
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
   const sizeTag = (f) => rk ? '<span class="tw-size" title="' + esc(w.rank) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>' : '';
@@ -280,12 +330,12 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     // epic card picture"): a flat SVG from the same floors, one lit floor per site surpassed and the one being fought glowing on top (lib/tower-art.js)
     + (mini ? '' : '<div class="tw-art-wrap" data-share-skip style="margin:8px auto 4px;max-width:360px">' + towerArtSvg(miniFloors(t)) + '</div>')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) + crawlHtml(cur, esc) : '') + '</div>'
+    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) + crawlHtml(cur, esc) + histHtml(cur, esc) : '') + '</div>'
     + (on || !cur ? '' : actionsHtml(cur, esc)) + (on ? '' : nextHtml(t, esc))
     // the surpassed list folded (owner, 2026-11-03: the card is a compact summary; "the history of each site should be with what each site taught me"):
     // tap it for each site, its links and what it taught; the whole history, with dates, tries and ease, is /assimilated/ (tools/assimilated.mjs)
-    + (on || !passedRows.length ? '' : '<details class="tw-passed"><summary style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Passed (' + passedRows.length + ')</b> · moved on, conquering in the background</summary>' + passedRows.map((f) => '<div class="tw-passrow" style="margin:2px 0 2px 10px;font-size:13px">' + esc(passedLine(f)) + (f.behind && f.behind.length ? ' · fixing: ' + esc(f.behind.join(', ')) : '') + (f.crawled ? ' · crawled ' + f.crawled.pages + ' pages' : '') + '</div>' + links(f)).join('') + '</details>')
-    + (on ? '' : '<details class="tw-won"><summary class="tw-wonhead" style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Conquered (' + won.length + ')</b> · each site and what it taught me</summary>' + (won.length ? won.map((f) => row(f) + links(f) + (learnedOf(f) ? '<div class="tw-taught" style="margin:-2px 0 8px 10px;font-size:12px;opacity:.85">' + esc(learnedOf(f)) + '</div>' : '')).join('') : empty) + '<div style="font-size:12px;margin:4px 0 0 10px"><a href="/assimilated/">The full history: every site, its dates, tries and lessons</a></div></details>')
+    + (on || !passedRows.length ? '' : '<details class="tw-passed"><summary style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Passed (' + passedRows.length + ')</b> · moved on, conquering in the background</summary>' + passedRows.map((f) => '<div class="tw-passrow" style="margin:2px 0 2px 10px;font-size:13px">' + esc(passedLine(f)) + (f.behind && f.behind.length ? ' · fixing: ' + esc(f.behind.join(', ')) : '') + (f.crawled ? ' · crawled ' + f.crawled.pages + ' pages' : '') + '</div>' + links(f) + histHtml(f, esc)).join('') + '</details>')
+    + (on ? '' : '<details class="tw-won"><summary class="tw-wonhead" style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Conquered (' + won.length + ')</b> · each site and what it taught me</summary>' + (won.length ? won.map((f) => row(f) + links(f) + (learnedOf(f) ? '<div class="tw-taught" style="margin:-2px 0 8px 10px;font-size:12px;opacity:.85">' + esc(learnedOf(f)) + '</div>' : '') + histHtml(f, esc)).join('') : empty) + '<div style="font-size:12px;margin:4px 0 0 10px"><a href="/assimilated/">The full history: every site, its dates, tries and lessons</a> · <a href="/lore/">Web Lore: every site Verse has met, sorted and sourced</a></div></details>')
     + takeHtml(t, esc) + lastRow
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
@@ -354,7 +404,7 @@ async function run(text, api) {
     const pick = (f) => { if (!f) return; picked = f.floor; const det = root.querySelector('.tower-detail'); if (det) det.textContent = detailText(f); };
     const draw = (flash) => {
       const keep = root.querySelector('.mk-stack'), was = keep ? keep.scrollTop : -1; // a redraw keeps where the person scrolled to; the first draw centres on the fight
-      root.innerHTML = towerHtml(t, esc, { mini, enter: !root.dataset.drawn, bySize: bySizeOn }); root.dataset.drawn = '1'; stamp.textContent = 'updated ' + clock(); // the VS entrance plays on the first paint only
+      root.innerHTML = towerHtml(t, esc, { mini, enter: !root.dataset.drawn, bySize: bySizeOn }); root.dataset.drawn = '1'; wireHistories(root); stamp.textContent = 'updated ' + clock(); // the VS entrance plays on the first paint only
       if (was >= 0) root.querySelector('.mk-stack').scrollTop = was; else { centerOnYou(root); setTimeout(() => centerOnYou(root), 80); } // again once the card has its size
       if (picked) { const f = t.floors.find((x) => x.floor === picked); if (f) root.querySelector('.tower-detail').textContent = detailText(f); }
       // Versus in 3D (skills/mini/tower.js): the same key moves the live one into the fresh host and hands it the new floors; tapping a floor picks it
@@ -389,5 +439,5 @@ export default {
   examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
   match(lower, text) { return towerOf(text || lower); },
-  run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
+  run, towerOf, towerHtml, histHtml, wireHistories, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
 };

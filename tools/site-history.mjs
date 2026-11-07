@@ -73,7 +73,7 @@ const yearIn = (s) => { const m = /\b(19[6-9]\d|20[0-2]\d)\b/.exec(s); return m 
 
 export async function historyOf(floor) {
   const url = floor.url || '', host = hostOf(url), name = floor.site;
-  const facts = { name, url, slug: slugOf(name), qid: '', article: '', founded: [], founders: [], owners: [], parent: [], ended: [], traffic: [], milestones: [], features: [], controversies: [], redesigns: [], shifts: [], snapshots: [], firstSnapshot: null, summary: null };
+  const facts = { name, url, slug: slugOf(name), qid: '', article: '', founded: [], founders: [], owners: [], parent: [], ended: [], kinds: [], traffic: [], milestones: [], features: [], controversies: [], redesigns: [], shifts: [], snapshots: [], firstSnapshot: null, summary: null };
   // 1. the Wikidata item: by the site's own address; else by a Wikipedia article named like the site whose item lists that address
   let ids = await itemByWebsite(url) || [];
   let ents = await entities(ids);
@@ -94,10 +94,12 @@ export async function historyOf(floor) {
     const src = wdLink(item.id);
     for (const c of claims(item, 'P571')) facts.founded.push({ when: timeOf(c.mainsnak.datavalue.value), src });
     for (const c of claims(item, 'P576')) facts.ended.push({ when: timeOf(c.mainsnak.datavalue.value), src });
-    const refIds = [...new Set(['P112', 'P127', 'P749'].flatMap((p) => claims(item, p).map((c) => c.mainsnak.datavalue.value.id)).filter(Boolean))];
+    const refIds = [...new Set(['P112', 'P127', 'P749', 'P31'].flatMap((p) => claims(item, p).map((c) => c.mainsnak.datavalue.value.id)).filter(Boolean))];
     const refs = await entities(refIds);
     for (const c of claims(item, 'P112')) { const e = refs[c.mainsnak.datavalue.value.id]; const t = enwiki(e); if (t) facts.founders.push({ who: label(e) || t, src: wpLink(t), via: src }); }
     for (const c of claims(item, 'P127')) { const e = refs[c.mainsnak.datavalue.value.id]; const who = label(e); if (who) facts.owners.push({ who, from: timeOf(qual(c, 'P580')), to: timeOf(qual(c, 'P582')), src }); }
+    // what kind of thing Wikidata says the site is (P31, instance of): the category /lore/ files it under
+    for (const c of claims(item, 'P31')) { const k = label(refs[c.mainsnak.datavalue.value.id]); if (k && !facts.kinds.includes(k)) facts.kinds.push(k); }
     for (const c of claims(item, 'P749')) { const e = refs[c.mainsnak.datavalue.value.id]; const who = label(e); if (who) facts.parent.push({ who, src }); }
     const ranks = claims(item, 'P1661').map((c) => ({ rank: +c.mainsnak.datavalue.value.amount, when: timeOf(qual(c, 'P585')) })).filter((r) => r.rank > 0).sort((a, b) => a.rank - b.rank);
     if (ranks.length) facts.traffic.push({ ...ranks[0], src, of: ranks.length });
@@ -150,6 +152,7 @@ export function render(f, floors, date) {
   if (f.summary) L.push('> ' + md(f.summary.text) + ' ([source](' + f.summary.src + '))', '');
   L.push('## Founding', '');
   L.push('- Founded: ' + (f.founded.length ? f.founded.map((x) => x.when + ' ([source](' + x.src + '))').join('; ') : U));
+  if (f.kinds && f.kinds.length) L.push('- Kind: ' + f.kinds.slice(0, 3).map(md).join(', ') + ' ([source](' + wdLink(f.qid) + '))');
   L.push('- Founders (public figures only): ' + (f.founders.length ? f.founders.map((x) => '[' + md(x.who) + '](' + x.src + ') (listed on [Wikidata](' + x.via + '))').join('; ') : U));
   L.push('- First archived copy: ' + (f.firstSnapshot ? f.firstSnapshot.when + ' ([Wayback Machine](' + f.firstSnapshot.src + '))' : U), '');
   L.push('## Ownership', '');
@@ -194,7 +197,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   for (const f of floors) { const s = slugOf(f.site); if (!bySlug.has(s)) bySlug.set(s, []); bySlug.get(s).push(f); }
   let list = [...bySlug.entries()].sort((a, b) => (+b[1].some((f) => f.beaten || (f.n >= 9 && !(f.lost || []).length))) - (+a[1].some((f) => f.beaten || (f.n >= 9 && !(f.lost || []).length))));
   const args = process.argv.slice(2);
-  const only = args.filter((a) => !a.startsWith('--')).map(slugOf);
+  // a flag's value (--max 40) is not a site: reading it as one filtered the whole queue down to a site named "40", so the daily run wrote no history
+  const only = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--max').map(slugOf);
   if (only.length) list = list.filter(([s]) => only.includes(s));
   if (args.includes('--retry-archive')) list = list.filter(([s]) => { try { return /## Archived copies[^\n]*\n\n- unknown/.test(fs.readFileSync(path.join(root, 'docs/HISTORY', s + '.md'), 'utf8')); } catch (_) { return true; } });
   if (args.includes('--missing')) list = list.filter(([s]) => !fs.existsSync(path.join(root, 'docs/HISTORY', s + '.md')));
