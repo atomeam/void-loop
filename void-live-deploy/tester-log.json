@@ -3,13 +3,20 @@
  "cases": 97,
  "runsTotal": 300,
  "kinds": {
-  "grow": 72,
   "file": 70,
+  "grow": 71,
   "tighten": 7,
   "none": 40,
-  "visitor": 111
+  "visitor": 112
  },
  "runs": [
+  {
+   "at": "2026-11-07T10:40:07Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-07T03:23:49Z",
    "passed": 89,
@@ -350,13 +357,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-06T18:32:06Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
@@ -410,21 +410,18 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 53,
+   "runs": 82,
    "passed": 0,
-   "of": 1301,
-   "broken": 53,
-   "brokenOf": 1301,
+   "of": 2031,
+   "broken": 82,
+   "brokenOf": 2031,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-17",
-   "runs": 93,
+   "runs": 63,
    "passed": 2727,
-   "of": 3831,
-   "broken": 30,
-   "brokenOf": 750,
-   "brokenPassed": 0
+   "of": 3081
   },
   {
    "from": "2026-10-24",
@@ -434,7 +431,7 @@
   },
   {
    "from": "2026-10-31",
-   "runs": 154,
+   "runs": 155,
    "passed": 3641,
    "of": 3932,
    "ms": 387
