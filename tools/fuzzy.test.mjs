@@ -54,6 +54,7 @@ assert.equal(correct('convrt 5 miles to km', v).text, 'convert 5 miles to km');
 assert.equal(correct('weather in tokio', v).text, 'weather in tokio', 'the word after "in" is a place: left alone');
 assert.equal(correct('weather in sofia', v).text, 'weather in sofia', 'a place one edit from a trigger word (sofa) stays');
 assert.equal(correct('distance from londn to paris', v).text, 'distance from londn to paris', 'after "from" too');
+assert.equal(correct('mapa de kioto', v).text, 'mapa de kioto', 'after "de" (the Spanish of) too: the place name is never a slip of a trigger word');
 for (const w of PROTECT_AFTER) assert.equal(correct('wether ' + w + ' wether', v).text, 'weather ' + w + ' wether', w);
 assert.equal(correct('a sticky that says "wether"', v).text, 'a sticky that says "wether"', 'quoted');
 assert.equal(correct("call it 'wether' please", v).text, "call it 'wether' please", 'single quotes');

@@ -1,0 +1,30 @@
+{
+ "attempt": "live",
+ "occasion": 23,
+ "at": "2026-11-07T22:14:54.922Z",
+ "family": "make",
+ "skill": "video-gen",
+ "service": "a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI)",
+ "ask": "is AI video on at a-to-mind.com right now, and does the video page serve",
+ "request": [
+  "https://a-to-mind.com/api/clip",
+  "https://a-to-mind.com/video/"
+ ],
+ "status": 404,
+ "ms": 541,
+ "checksPass": false,
+ "ok": false,
+ "video": null,
+ "why": null,
+ "lastTest": null,
+ "startedSelfCheck": false,
+ "clipsLeft": null,
+ "perConnection": 3,
+ "page": {
+  "status": 200,
+  "state": true,
+  "make": true,
+  "handoff": true
+ },
+ "error": "GET /api/clip answered 404"
+}
