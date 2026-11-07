@@ -105,6 +105,22 @@ export function compute({ amount, rate = DEFAULT_RATE, mode = 'extract' } = {}) 
   return { ok: true, mode: add ? 'add' : 'extract', amount: round2(a), rate: r, net: fromKop(k.net), vat: fromKop(k.vat), gross: fromKop(k.gross) };
 }
 
+const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+function wordsUnder1000(n) {
+  if (n < 20) return ONES[n];
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? '-' + ONES[n % 10] : '');
+  return ONES[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' ' + wordsUnder1000(n % 100) : '');
+}
+/** a money amount in words, up to 999,999.99: 'one thousand' or 'eight hundred nineteen and 67/100'. Pure. Local: no rate table and no network. */
+export function moneyWords(n) {
+  const x = round2(n);
+  if (!isNum(x) || x < 0 || x >= 1e6) return '';
+  const cents = Math.round(Math.abs(x) * 100), whole = Math.floor(cents / 100), frac = cents % 100;
+  const w = whole < 1000 ? wordsUnder1000(whole) : wordsUnder1000(Math.floor(whole / 1000)) + ' thousand' + (whole % 1000 ? ' ' + wordsUnder1000(whole % 1000) : '');
+  return w + (frac ? ' and ' + String(frac).padStart(2, '0') + '/100' : '');
+}
+
 /** 1234.5 as '1 234,50' (ru) or '1,234.50'. Pure. */
 export function money(n, lang = 'ru') {
   const x = round2(n), [whole, frac] = Math.abs(x).toFixed(2).split('.');
