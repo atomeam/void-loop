@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T17:48:42.156Z",
+  "at": "2026-11-07T19:13:11.612Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,17 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of hidden brain",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -110,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 96.7,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -125,10 +118,9 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -243,10 +235,31 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 93.5,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -286,26 +299,10 @@
       "fails": []
     },
     "translate": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "translate spring",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "comment dit-on bonjour en anglais",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        }
-      ]
+      "fails": []
     },
     "units": {
       "score": 93.3,
@@ -404,7 +401,7 @@
     }
   },
   "lowest": {
-    "domain": "translate",
+    "domain": "maps",
     "score": 89.2
   }
 }
