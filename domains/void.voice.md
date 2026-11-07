@@ -10,8 +10,9 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-06. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-06; the site has been unreachable since 2026-11-07. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
+- unknown, site unreachable since 2026-11-07 (the asks below are the last ones read, minus any built since)
 - Fix the podcasts exam to resolve failures in audio and episode retrieval. (daily, 2026-11-06) `ask-20261106-2342-3`
 - Implement the URL hash serialization logic for ndscalc.ru. *(small)* (daily, 2026-11-06) `ask-20261106-2342-2`
 - Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic. (daily, 2026-11-06) `ask-20261106-2342-1`

@@ -290,135 +290,7 @@
    "from": "new idea by growth agent; helper/verify-pack"
   }
  ],
- "open": [
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse as a tool inside other AIs",
-   "from": "void.plan.md Next #11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "WebMCP origin trial",
-   "from": "tools.json, navigator.modelContext feature-detected"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything that passes through Verse is input",
-   "from": "void.plan.md Next #14"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13",
-   "waits": "the miss board"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Fix pages that bring buyers",
-   "from": "claude, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Shared Voids, live",
-   "from": "void.plan.md Next #10"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Tasks that keep running after you leave, with an approve card",
-   "from": "void.assimilate.md row 3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "One owner page: board, agent log and live checks",
-   "from": "void.assimilate.md row 9"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything built before becomes a skill",
-   "from": "void.plan.md Next #8"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Clarify business ideas into system plans",
-   "from": "growth, 2026-11-03"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "archive/script_0.js and the English word list are still the top of the salvage queue",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "a country whose capital item has neither an English label nor an English Wikipedia sitelink still fails and stays a fix job",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "the news section chips still scroll sideways on a phone, on purpose",
-   "from": "cursor 2026-11-05"
-  }
- ],
+ "open": [],
  "games": [
   "tictactoe",
   "othello",
@@ -591,14 +463,43 @@
    "last": "2026-10-07"
   }
  ],
- "building": {
-  "at": "2026-10-18T08:58:46Z",
-  "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
- },
  "commits": [
+  {
+   "at": "2026-11-07T19:51:43Z",
+   "subject": "flake + automerge: chess thinking-line read live; append-mostly conflicts settle in merge-gate/merge-main (#2509)"
+  },
+  {
+   "at": "2026-11-07T19:51:04Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-07T19:49:54Z",
+   "subject": "Failed jobs read: run 42406911717 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T19:49:32Z",
+   "subject": "Incident: the browser suite failed on 839683ed (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-07T19:46:42Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-07T19:44:50Z",
+   "subject": "Outcome exam: maps 89.2"
+  },
+  {
+   "at": "2026-11-07T19:44:06Z",
+   "subject": "Failed jobs read: run 42405062843 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T19:42:00Z",
+   "subject": "Fix verify-pack and monitor-pack so the suite stops crashing on them (#2514)"
+  },
+  {
+   "at": "2026-11-07T19:41:21Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
   {
    "at": "2026-11-07T19:35:38Z",
    "subject": "Fix three flaky browser checks by reading their source of truth (#2513)"
@@ -641,42 +542,6 @@
   },
   {
    "at": "2026-11-07T19:03:38Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-07T19:03:24Z",
-   "subject": "translate: a bare word asks which language, and the French phrasing answers (#2512)"
-  },
-  {
-   "at": "2026-11-07T18:57:11Z",
-   "subject": "Failed jobs read: run 42402203734 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T18:53:30Z",
-   "subject": "Incident: the browser suite failed on 36b74e46 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-07T18:48:21Z",
-   "subject": "Paid price asks: the membership line and the services card agree on every price question (#2322)"
-  },
-  {
-   "at": "2026-11-07T18:46:00Z",
-   "subject": "Outcome exam: translate 89.2"
-  },
-  {
-   "at": "2026-11-07T18:45:31Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-11-07T18:43:58Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-07T18:41:13Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"geenrate a to"
-  },
-  {
-   "at": "2026-11-07T18:37:34Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   }
  ],
@@ -859,8 +724,8 @@
   }
  ],
  "visible": {
-  "day": 12,
-  "week": 230
+  "day": 14,
+  "week": 229
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

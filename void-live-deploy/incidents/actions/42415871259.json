@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-07T21:30:42Z",
+ "sha": "8d17c1ab1e18d7b828ef7f790d862413abf85383",
+ "runId": 42415871259,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42415871259",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128534111576,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42415871259/job/128534111576",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/identity/`: a file or API it needs fails: 404 /lib/brain-everywhere.js; dead link: 404 /password-strength/",
+    "- `/image/`: a file or API it needs fails: 404 /image/app.js; a file or API it needs fails: 404 /lib/image-gen.js; a file or API it needs fails: 404 /lib/comments.js",
+    "- `/is-it/april-fools-day`: does not open: answers nothing",
+    "- `/is-it/boxing-day`: does not open: answers nothing",
+    "- `/is-it/christmas`: does not open: answers nothing",
+    "- `/is-it/christmas-eve`: does not open: answers nothing",
+    "- `/is-it/easter`: does not open: answers nothing",
+    "- `/is-it/fathers-day`: does not open: answers nothing",
+    "- `/is-it/friday`: does not open: answers nothing",
+    "- `/is-it/groundhog-day`: does not open: answers nothing",
+    "- `/is-it/halloween`: does not open: answers nothing",
+    "- `/is-it/independence-day`: does not open: answers nothing",
+    "- `/is-it/leap-year`: does not open: answers nothing",
+    "- `/is-it/monday`: does not open: answers nothing",
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "- `/is-it/tuesday`: does not open: answers nothing",
+    "- `/is-it/valentines-day`: does not open: answers nothing",
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

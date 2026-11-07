@@ -38,7 +38,7 @@ function think(s, onProgress) {
       const on = (e) => { if (e.data.id !== id) return; if (e.data.progress) { onProgress && onProgress(e.data.progress); return; } worker.removeEventListener('message', on); res(levelPick(e.data.m, R.legalMoves(s))); };
       worker.addEventListener('message', on);
       worker.postMessage({ id, s, opts });
-    } catch (_) { setTimeout(() => res(R.bestMove(s, { depth: 4, ms: 700 })), 30); } // no module workers: think on the page
+    } catch (_) { setTimeout(() => res(R.bestMove(s, { depth: 4, ms: 700, onDepth: onProgress })), 30); } // no module workers: think on the page, still saying what it is weighing
   });
 }
 const freshState = () => ({ s: R.create(), moves: [], sel: -1 });

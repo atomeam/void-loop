@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-07T21:41:41Z",
+ "sha": "e48c70a18d066078934ef1bbc26c0d787391903a",
+ "runId": 42416477631,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42416477631",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128535559372,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42416477631/job/128535559372",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "- `/kanban/`: a file or API it needs fails: 404 /lib/kanban.js",
+    "- `/kanban/flow/`: a file or API it needs fails: 404 /kanban/flow/app.js",
+    "- `/kanban/quick/`: a file or API it needs fails: 404 /kanban/quick/app.js",
+    "- `/kanban/simple/`: a file or API it needs fails: 404 /kanban/simple/app.js",
+    "- `/kanban/teams/`: a file or API it needs fails: 404 /kanban/teams/app.js",
+    "- `/keep-it-running/`: dead link: 404 /one-time-fix/; dead link: 404 /full-stack-audit/",
+    "- `/lab/checksum/`: a file or API it needs fails: 404 /lab/lab.css",
+    "- `/lab/dictation/`: a file or API it needs fails: 404 /lab/lab.css",
+    "- `/lab/f235-forge-duel/`: a file or API it needs fails: 404 /lab/f235-forge-duel/app.js",
+    "- `/lab/f236-scene-blocker/`: a file or API it needs fails: 404 /lab/f236-scene-blocker/app.js",
+    "- `/lab/level/`: a file or API it needs fails: 404 /lab/lab.css",
+    "- `/lab/mind-map/`: a file or API it needs fails: 404 /lab/lab.css",
+    "- `/lab/pattern/`: a file or API it needs fails: 404 /lab/lab.css",
+    "- `/lab/photo-palette/`: a file or API it needs fails: 404 /lab/lab.css",
+    "- `/learn-to-draw/`: a file or API it needs fails: 404 /learn-to-draw/app.js",
+    "- `/ledger/`: a file or API it needs fails: 404 /ledger/app.js; a file or API it needs fails: 404 /lib/ledger.js",
+    "- `/local/`: a file or API it needs fails: 404 /lib/watch-along.js; a file or API it needs fails: 404 /api/local; a file or API it needs fails: 404 /api/local?world=&offset=0",
+    "- `/markets/`: script error: Failed to fetch dynamically imported module: https://a-to-mind.com/lib/markets-card.js; a file or API it needs fails: 404 /lib/markets-card.js",
+    "- `/metronome/`: a file or API it needs fails: 404 /lib/music-tools.js; a file or API it needs fails: 404 /lib/music-audio.js; a file or API it needs fails: 404 /lib/music-de.js",
+    "- `/music/`: a file or API it needs fails: 404 /lib/member-keep.js; a file or API it needs fails: 404 /lib/music-ui.js; a file or API it needs fails: 404 /lib/music-de.js",
+    "- `/news/`: script error: Failed to fetch dynamically imported module: https://a-to-mind.com/lib/news-card.js; a file or API it needs fails: 404 /lib/member-keep.js; a file or API it needs fails: 404 /lib/news-card.js; a file or API it needs fails: 404 /lib/news.js",
+    "- `/obituaries/`: dead link: 404 /gradient/",
+    "- `/paint/`: dead link: 404 /flip/; dead link: 404 /gradient/",
+    "- `/password/`: a file or API it needs fails: 404 /lib/password.js; a file or API it needs fails: 404 /lib/password-card.js",
+    "- `/pdf/`: a file or API it needs fails: 404 /pdf/app.js",
+    "- `/pdf/editor/`: a file or API it needs fails: 404 /pdf/editor/app.js",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
