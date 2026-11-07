@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-06T23:56:05.321Z",
+ "updated": "2026-11-07T00:05:27.410Z",
  "last24h": {
   "ticks": 77,
   "started": 109,
@@ -12,84 +12,24 @@
  "broken": [],
  "held": [
   {
-   "id": "mw4p9cye",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mw4gkvdn",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "want-exam-translate",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvw5r1rz",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r2hk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r36z",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvw5r3w1",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvp4ahwz",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mw1ee0lk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mw1g8ei3",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mw1kno2c",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3b1c",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3biu",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3bx7",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3cbp",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3cpy",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvwl3d38",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvpkt0sa",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
@@ -99,17 +39,17 @@
    "cap": 90
   },
   "day": {
-   "used": 360,
+   "used": 0,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-07T00:00:00.000Z"
+  "room": true,
+  "until": null
  },
  "handed": {
-  "mvbl52gd": 1793968312020,
+  "mvbl52gd": 1794009927410,
   "mva30i2e": 1793990445306,
   "mva30j4u": 1793997906493,
-  "mveb8rsi": 1793945056275,
+  "mveb8rsi": 1794009927410,
   "mvu167w7": 1793947060374,
   "mveb8svc": 1793925233814,
   "mvfu4evy": 1793930087442,
@@ -117,7 +57,6 @@
   "mvpuqaee": 1793933006938,
   "mvpuqb4r": 1793935659114,
   "mvvjzso8": 1793937026908,
-  "mw43w4tf": 1793923441359,
   "mw43w5uw": 1793925233814,
   "mw43w6vc": 1793930087442,
   "mw4c2qeu": 1793933006938,
@@ -164,7 +103,8 @@
   "mw5kjw4t": 1794005976965,
   "mw5kjy5t": 1794007102586,
   "mw5kjz5i": 1794007660162,
-  "mw5mkhpe": 1794009365321
+  "mw5mkhpe": 1794009365321,
+  "mw5mkip6": 1794009927410
  },
  "sweptAt": 1794007102586,
  "blueprintsAt": 1794007102586,
@@ -252,48 +192,6 @@
   "versus:tinyurl.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T00:04:01.359Z",
-   "open": 208,
-   "started": [
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mvop0asl",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 112
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mw43w4tf",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 5,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T00:33:53.814Z",
    "open": 208,
@@ -2403,6 +2301,51 @@
    "sweep": false,
    "blueprints": 0,
    "held": 249,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:05:27.410Z",
+   "open": 257,
+   "started": [
+    {
+     "id": "mw4p9cye",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 76
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    },
+    {
+     "id": "mw5mkip6",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 5,
    "warnings": 1
   }
  ]
