@@ -33,8 +33,8 @@ test('the cookie is HttpOnly, Secure, SameSite=Lax and scoped to the site', () =
 });
 
 test('the cookie claim is re-checked against D1: active member or trial, paid account, owner; never a stale row', async () => {
-  const rows = { m1: { role: 'member', off: 0, until: 0 }, m2: { role: 'member', off: 0, until: Date.now() - 1 }, m3: { role: 'member', off: 1, until: 0 }, a1: { tier: 'paid' }, a2: { tier: 'free' } };
-  const env = { DB: { prepare: (sql) => ({ bind: (id) => ({ first: async () => (sql.includes('void_team_agents') ? rows[id] || null : sql.includes('void_accounts') ? rows[id] || null : null) }) }) } };
+  const rows = { m1: { role: 'member', off: 0, until: 0 }, m2: { role: 'member', off: 0, until: Date.now() - 1 }, m3: { role: 'member', off: 1, until: 0 }, a1: { tier: 'paid' }, a2: { tier: 'free' }, s1: { status: 'active', until: 0 }, s2: { status: 'past_due', until: Date.now() + 60000 } };
+  const env = { DB: { prepare: (sql) => ({ bind: (id) => ({ first: async () => (sql.includes('void_team_agents') ? rows[id] || null : sql.includes('void_accounts') ? rows[id] || null : sql.includes('void_memberships') ? rows[id] || null : null) }) }) } };
   const now = Date.now();
   const team = (id, exp = now + 60000) => ({ v: 1, k: 'team', id, exp });
   assert.equal(await memberOk(team('m1'), env, now), true, 'active member, no expiry');
@@ -43,6 +43,8 @@ test('the cookie claim is re-checked against D1: active member or trial, paid ac
   assert.equal(await memberOk(team('gone'), env, now), false);
   assert.equal(await memberOk({ v: 1, k: 'acct', id: 'a1', exp: now + 60000 }, env, now), true);
   assert.equal(await memberOk({ v: 1, k: 'acct', id: 'a2', exp: now + 60000 }, env, now), false);
+  assert.equal(await memberOk({ v: 1, k: 'stripe', id: 's1', exp: now + 60000 }, env, now), true, 'active Stripe subscription');
+  assert.equal(await memberOk({ v: 1, k: 'stripe', id: 's2', exp: now + 60000 }, env, now), false, 'past due');
   assert.equal(await memberOk({ v: 1, k: 'owner', id: 'owner', exp: now + 60000 }, env, now), true);
   assert.equal(await memberOk(team('m1', now - 1), env, now), false, 'expired cookie');
   assert.equal(await memberOk(team('m1'), null, now), false, 'no D1: nobody gets in on the claim alone');

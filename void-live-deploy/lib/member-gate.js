@@ -90,6 +90,10 @@ export async function memberOk(payload, env, now = Date.now()) {
       const a = await env.DB.prepare('SELECT tier FROM void_accounts WHERE user_id = ?').bind(payload.id).first();
       return !!a && a.tier === 'paid';
     }
+    if (payload.k === 'stripe') {
+      const m = await env.DB.prepare('SELECT status, until FROM void_memberships WHERE id = ?').bind(payload.id).first();
+      return !!m && (m.status === 'active' || m.status === 'trialing') && (!m.until || Number(m.until) > now);
+    }
   } catch (_) { /* storage down: nobody gets in on a claim alone */ }
   return false;
 }
