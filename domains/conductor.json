@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T06:20:26.543Z",
+ "updated": "2026-11-07T06:29:47.865Z",
  "last24h": {
   "ticks": 103,
-  "started": 110,
+  "started": 111,
   "requeued": 0,
   "setAside": 0,
   "probes": 15,
@@ -67,11 +67,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 17,
    "cap": 90
   },
   "day": {
-   "used": 30,
+   "used": 47,
    "cap": 360
   },
   "room": true,
@@ -150,7 +150,8 @@
   "mw5yadhc": 1794029616267,
   "mw5yaeje": 1794030177609,
   "mw5yafh6": 1794030738869,
-  "mw60et8a": 1794032426543
+  "mw60et8a": 1794032426543,
+  "mw60eu92": 1794032987865
  },
  "sweptAt": 1794030738869,
  "blueprintsAt": 1794030738869,
@@ -238,30 +239,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T06:22:08.419Z",
-   "open": 227,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 97
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 12,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T06:37:40.374Z",
    "open": 228,
@@ -2955,6 +2932,39 @@
     },
     {
      "id": "mw60et8a",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T06:29:47.865Z",
+   "open": 257,
+   "started": [
+    {
+     "id": "mw4gkvdn",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 52
+    },
+    {
+     "id": "mw60eu92",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
