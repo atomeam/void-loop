@@ -594,6 +594,14 @@
  },
  "commits": [
   {
+   "at": "2026-11-07T14:16:59Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+  },
+  {
+   "at": "2026-11-07T14:02:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-07T13:47:13Z",
    "subject": "Tower gate: every floor measured against its live site (3 slices)"
   },
@@ -664,14 +672,6 @@
   {
    "at": "2026-11-07T10:55:38Z",
    "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T10:34:20Z",
-   "subject": "Design loop: 10 pages fixed, 100 -> 43 design defects"
-  },
-  {
-   "at": "2026-11-07T10:24:19Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
