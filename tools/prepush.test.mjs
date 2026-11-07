@@ -75,7 +75,7 @@ test('--staged refuses a commit that carries a conflict marker (the unfinished-m
   const { spawnSync } = await import('node:child_process'), { mkdtempSync, writeFileSync } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
   const dir = mkdtempSync(join(tmpdir(), 'precommit-')), sh = (...a) => spawnSync('git', a, { cwd: dir, encoding: 'utf8' });
   sh('init', '-q'); sh('config', 'user.email', 't@t.test'); sh('config', 'user.name', 't');
-  const tool = new URL('./prepush.mjs', import.meta.url).pathname, run = () => spawnSync(process.execPath, [tool, '--staged'], { cwd: dir, encoding: 'utf8' });
+  const tool = new URL('./prepush.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), run = () => spawnSync(process.execPath, [tool, '--staged'], { cwd: dir, encoding: 'utf8' });
   writeFileSync(join(dir, 'a.md'), 'fine\n'); writeFileSync(join(dir, 'b.json'), '{"ok":1}\n'); sh('add', '-A');
   assert.equal(run().status, 0, run().stderr);
   writeFileSync(join(dir, 'a.md'), 'x\n<<<<<<< HEAD\nmine\n=======\ntheirs\n>>>>>>> origin/main\n'); sh('add', '-A');

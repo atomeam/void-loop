@@ -10,14 +10,14 @@ import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
 import { probeFor } from './tower-probes.mjs';
 
-const root = new URL('..', import.meta.url).pathname;
+const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const colour = () => familiesOf().find((f) => f.id === 'colour');
 
 test('the loop runs without Claude: its workflow and every file it runs or imports name neither Anthropic nor the Claude brain', () => {
   // any mention counts, except a key pattern the secret scan looks for (it finds such keys; it never calls anyone)
   const seen = new Set(['tools/tower-self.test.mjs']), bad = [], CLAUDE = /anthropic|claude-brain/i;
-  const visit = (rel) => {
-    if (seen.has(rel)) return; seen.add(rel); const file = path.join(root, rel); if (!fs.existsSync(file)) return;
+  const visit = (rel0) => {
+    const rel = rel0.replace(/\\/g, '/'); if (seen.has(rel)) return; seen.add(rel); const file = path.join(root, rel); if (!fs.existsSync(file)) return;
     const src = fs.readFileSync(file, 'utf8'), lines = src.split('\n').filter((l) => CLAUDE.test(l) && !(rel === 'tools/secret-scan.mjs' && /\bsk-|style sk-|key/i.test(l))); if (lines.length) bad.push(rel + ': ' + lines[0].trim().slice(0, 80));
     if (/\.(?:mjs|js)$/.test(rel)) for (const m of src.matchAll(/(?:import\s[^'"]*?from\s*|import\s*\(\s*|^import\s*)['"](\.{1,2}\/[^'"]+)['"]/gm)) visit(path.normalize(path.join(path.dirname(rel), m[1])));
   };
