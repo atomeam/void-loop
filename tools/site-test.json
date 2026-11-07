@@ -324,6 +324,12 @@
     },
     {
       "ask": "yo style like mickey mouse"
+    },
+    {
+      "ask": "style like mickey mouse pls"
+    },
+    {
+      "ask": "stlye like mickey mouse"
     }
   ],
   "candidates": [],

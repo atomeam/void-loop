@@ -19,7 +19,8 @@ import * as U from '../../lib/unbidden.js';
 
 const GH = 'https://api.github.com/repos/atomeam/void-loop', GH_TTL = 300;
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
-const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
+// the model's words; Workers AI hands a reply that is JSON back already parsed, so an object is turned back into its JSON text
+const pick = (r) => { const v = r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response)); return v && typeof v === 'object' ? JSON.stringify(v) : String(v || ''); };
 const parse = (v) => { try { return v ? JSON.parse(v) : null; } catch (_) { return null; } };
 
 async function github(origin, path, fetchFn) {
@@ -82,9 +83,9 @@ export async function onRequestGet({ request, env, fetchFn = fetch, now = Date.n
   try {
     const r = await env.AI.run(models('unbidden'), {
       messages: [{ role: 'system', content: U.SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: U.promptOf(facts, U.newFacts(facts, state.sig), recent, go.why, now) }],
-      max_tokens: 260, temperature: 0.8,
+      max_tokens: 400, temperature: 0.8, chat_template_kwargs: { enable_thinking: false }, // Gemma 4 thinks first by default, and its thinking used up the reply
     });
-    out = U.checkSay(redact(String(pick(r))), facts, recent);
+    out = U.checkSay(redact(pick(r)), facts, recent);
   } catch (e) { await recordShortfall(env, 'unbidden', reasonOf(e)); }
   if (!out || !out.ok) {
     // nothing is said for it, and no line is made up: it tries again after the gap (the old signature stays, so the change still counts)

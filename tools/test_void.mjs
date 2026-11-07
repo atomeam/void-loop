@@ -8660,13 +8660,18 @@ try {
     await C.ctx.close(); }
   if (want("void seal: every card's art box carries Verse's procedural art, the same for the same card")) {
     const S = await fresh(); await S.ctx.route(/\/api\/card-art/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'plate', why: 'off' }) }));
-    const seal = () => until(async () => S.p.evaluate(() => { const a = document.querySelector('.vpage.on.vcard > .vc-art'); const im = a && a.querySelector(':scope > .vc-seal'); const svg = a && a.querySelector(':scope > svg');
-      return im && im.complete && im.naturalWidth > 100 ? { src: im.src.slice(0, 30), len: im.src.length, sum: [...im.src].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7), w: im.naturalWidth, plateHidden: !svg || getComputedStyle(svg).visibility === 'hidden', cover: getComputedStyle(im).position === 'absolute' } : null; }), 8000).catch(() => null);
+    // the seal is drawn from the card's kind, family hue and rarity, and a skill card's frame (so its seal) is rebuilt once its stats
+    // (families.json) arrive: a read taken before that caught the pre-stats picture on one ask and the settled one on the next, so the
+    // "same card, same picture" pair differed on a loaded runner. Wait for the settled skill card (its skill name and the stats'
+    // power/toughness plate, the same signal the card checks use) before reading, so both reads are the settled card (tools/flakes.json, void seal)
+    const seal = () => until(async () => S.p.evaluate(() => { const card = document.querySelector('.vpage.on.vcard'); const a = card && card.querySelector(':scope > .vc-art'); const im = a && a.querySelector(':scope > .vc-seal'); const svg = a && a.querySelector(':scope > svg');
+      if (!card || !card.dataset.skill || !card.querySelector('.vc-pt')) return null;
+      return im && im.complete && im.naturalWidth > 100 ? { src: im.src.slice(0, 30), len: im.src.length, sum: [...im.src].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7), w: im.naturalWidth, plateHidden: !svg || getComputedStyle(svg).visibility === 'hidden', cover: getComputedStyle(im).position === 'absolute' } : null; }), 12000).catch(() => null);
     await S.ask('20% tip on 45', 1600); const a = await seal();
     await S.ask('close', 400); await S.ask('20% tip on 45', 1600); const b = await seal();
-    await S.ask('close', 400); await S.ask('make a timer for 5 minutes', 1600); const c = await seal();
+    await S.ask('close', 400); await S.ask('flip a coin', 1600); const c = await seal();
     check("void seal: every card's art box carries Verse's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-      !!a && /^data:image\/(webp|jpeg)/.test(a.src) && a.w >= 320 && a.plateHidden && a.cover && !!b && b.sum === a.sum && (!c || c.sum !== a.sum) && !S.errors.length, JSON.stringify({ a, b, c, errors: S.errors }));
+      !!a && /^data:image\/(webp|jpeg)/.test(a.src) && a.w >= 320 && a.plateHidden && a.cover && !!b && b.sum === a.sum && !!c && c.sum !== a.sum && !S.errors.length, JSON.stringify({ a, b, c, errors: S.errors }));
     await S.ctx.close(); }
   if (want("Verse art forge: a cached picture fills the art box, an uncached answer card paints once by itself, a skill card paints by its name")) {
     const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
