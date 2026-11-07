@@ -144,6 +144,13 @@
    "as": "non-site",
    "kind": "an ad-tracking or sync endpoint",
    "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features"
+  },
+  {
+   "id": "healthtechnologygroup.com",
+   "at": "2026-11-07",
+   "as": "non-site",
+   "kind": "an inert stub page",
+   "why": "https://healthtechnologygroup.com/ (200) shows 9 characters of text (\"It works!\"), 0 controls, 0 links, 0 forms and 99 bytes of page: an inert stub page, not a site a person uses; Verse lacks none of its features"
   }
  ],
  "last": {
