@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T16:43:24.763Z",
+ "updated": "2026-11-07T16:52:48.053Z",
  "last24h": {
   "ticks": 148,
   "started": 180,
@@ -12,6 +12,18 @@
  "broken": [],
  "held": [
   {
+   "id": "mw4p9cye",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "mw4gkvdn",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "want-exam-translate",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
    "id": "mvbl52gd",
    "why": "store-gap.yml reached its 6 runs today"
   },
@@ -20,56 +32,64 @@
    "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r1rz",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r2hk",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r36z",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvw5r3w1",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mvp4ahwz",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw1ee0lk",
+   "why": "verse-job.yml reached its 8 runs today"
   },
   {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw1g8ei3",
+   "why": "verse-job.yml reached its 8 runs today"
   },
   {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw1kno2c",
+   "why": "verse-job.yml reached its 8 runs today"
   },
   {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
+   "id": "mvwl3b1c",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
+   "id": "mvwl3biu",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
+   "id": "mvwl3bx7",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
+   "id": "mvwl3cbp",
+   "why": "verse-job.yml reached its 40 runs today"
   },
   {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
+   "id": "mvwl3cpy",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "mvwl3d38",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
+   "id": "mvpkt0sa",
+   "why": "verse-job.yml reached its 40 runs today"
   }
  ],
  "coder": {
@@ -271,32 +291,6 @@
   "versus:live-video.net"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T16:50:58.438Z",
-   "open": 240,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "held": 14,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T17:00:25.859Z",
    "open": 240,
@@ -4423,6 +4417,33 @@
    "sweep": true,
    "blueprints": 0,
    "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T16:52:48.053Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "want-idea-ac2885447b",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
    "warnings": 1
   }
  ]
