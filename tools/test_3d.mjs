@@ -722,10 +722,12 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.evaluate(() => { const seen = window.__chessLines = []; const note = () => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }; new MutationObserver(note).observe(document.body, { subtree: true, childList: true, characterData: true }); note(); }); // every change, not a look every 30 ms: a quick search came and went between two looks
     if (ready) { await tap('e2', 0.04); await tap('e4'); }
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
-    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
+    // the line while Verse thinks is read as it happens: not only after the reply lands (a fast search's line can come and go within one mutation batch on a slow runner, and the reply took over 40 s once on CI)
+    const weighingLive = until(() => F.p.evaluate(() => (window.__chessLines || []).find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || false), 40000);
+    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 60000);
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = (await weighingLive) || lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });

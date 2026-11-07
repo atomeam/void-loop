@@ -7,6 +7,7 @@
 // compute (translate, answer, the free rules-only code review). --list only checks that every route has a spec.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { execSync } from 'node:child_process';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
 const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
@@ -565,13 +566,16 @@ SPECS['/agent/'] = async (t) => {
   t.ok(/Hi Bob/.test(await t.text('#made')), 'the approved draft lands on the Made shelf');
   await t.p.setViewportSize({ width: 390, height: 844 });
   await t.p.waitForTimeout(200);
-  const nav = await t.p.evaluate(() => {
+  // the expected word comes from the shell's own nav (lib/verse-shell.js): a rename of the /agent/ item (Agents -> Envoy, 2026-11-07)
+  // must not silently break this page check
+  const agentLabel = currentNav('/agent/').label;
+  const nav = await t.p.evaluate((want) => {
     const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
-    if (!bar || !a) return null;
+    if (!bar || !a || a.textContent !== want) return null;
     const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
     return { label: a.textContent, left: Math.round(r.left), right: Math.round(r.right), barL: Math.round(b.left), barR: Math.round(b.right) };
-  });
-  t.ok(nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1, 'at 390 px the current nav item is fully in the bar: ' + JSON.stringify(nav));
+  }, agentLabel);
+  t.ok(nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1, 'at 390 px the current nav item is fully in the bar: ' + JSON.stringify(nav));
   await t.p.setViewportSize({ width: 1200, height: 900 });
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact

@@ -77,6 +77,8 @@ export function answerBrief(bot) {
 export function addressesAsk(ask, result) {
   const text = String(result || '').trim();
   if (text.length < 2) return false;
+  // semantic step-5: refusal boilerplate never addresses the ask, even if it passes word count
+  if (/My sole function is|define the context|I am only able to|as an AI language model/i.test(text)) return false;
   if (!openEnded(ask)) return true;
   const want = new Set(askTerms(ask));
   const novel = new Set(askTerms(text).filter((w) => !want.has(w)));

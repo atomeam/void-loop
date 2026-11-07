@@ -14,6 +14,7 @@ import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -1585,14 +1586,17 @@ try {
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');
-    const nav = await until(() => P.p.evaluate(() => {
+    // the label is read from the shell's own nav (lib/verse-shell.js): a rename of the /agent/ item (Agents -> Envoy, 2026-11-07) must not
+    // silently break this check, so the expected word is currentNav('/agent/'), not a hard-coded one
+    const agentLabel = currentNav('/agent/').label;
+    const nav = await until(() => P.p.evaluate((want) => {
       const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
-      if (!bar || !a || a.textContent !== 'Agents') return null;
+      if (!bar || !a || a.textContent !== want) return null;
       const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
       return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
-    }), 8000);
-    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
-      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    }, agentLabel), 8000);
+    check('phone polish: the current nav item is fully inside the nav bar and the page is not wider than the screen',
+      nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
     await P.p.goto(base + 'compare/');
     const cmp = await until(() => P.p.evaluate(() => {
       const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
@@ -4270,7 +4274,11 @@ try {
     await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
-    const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    // the panel re-places on a 400 ms tick while the step's card lands and grows (skills/showcase.js bar()): read the chip's spot
+    // only once two reads 450 ms apart agree, or the pointer presses where the chip was, misses it, and no ghost appears
+    // (ghost:false on a loaded runner, 2026-11-02..11-06)
+    const chipAt = () => P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    const chip = await until(async () => { const a = await chipAt(); await P.p.waitForTimeout(450); const b = await chipAt(); return a && b && Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1 ? b : null; }, 8000);
     const drop = { x: 320, y: 220 };
     await P.p.mouse.move(chip.x, chip.y); await P.p.mouse.down();
     for (let i = 1; i <= 8; i++) await P.p.mouse.move(chip.x + (drop.x - chip.x) * i / 8, chip.y + (drop.y - chip.y) * i / 8);
@@ -9190,7 +9198,7 @@ try {
     check('opening a lab experiment counts one use: { kind: "used", id } once per browser per day, nothing typed sent',
       JSON.stringify(sent) === JSON.stringify([{ kind: 'used', id: 'attention-7' }]) && !U.errors.length, JSON.stringify(sent) + ' ' + U.errors.join(' | '));
     await U.ctx.close(); }
-  if (want("The lab: every fringe experiment opens from an ask and passes its own self-test")) {
+  if (want("The fringe lab: every fringe experiment opens from an ask and passes its own self-test")) {
     const L = await fresh(); const res = [];
     const lab = [['test my attention', 'attention-7'], ['hold the lamp', 'interval-timing-8'], ['fitts law', 'opt-in-gesture-6'], ['joint simon task', 'human-machine-co-agency-8'],
       ['count the flashes', 'sensory-substitution-7'], ['how sure are they', 'non-lexical-intent-5'], ["simpson's paradox", 'correlation-view-6'], ['when did it start', 'quiet-signal-filter-5'],
@@ -9202,11 +9210,11 @@ try {
       const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
       res.push({ id, ok: !!ok, hook, framed: !!fr });
     }
-    await L.ask('show me the lab', 500);
+    await L.ask('fringe lab', 500);
     const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
     if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
     const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
-    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
+    check('the fringe lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "fringe lab" lists all 12 and a click opens one',
       res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
     await L.ctx.close();
   }

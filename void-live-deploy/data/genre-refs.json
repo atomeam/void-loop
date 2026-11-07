@@ -128,34 +128,6 @@
      }
     },
     {
-     "id": "gt390FandorinProjet2",
-     "title": "01 Marsh Goblins - Tunguska in my heart (Intro)",
-     "creator": "Marsh Goblins",
-     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
-     "page": "https://archive.org/details/gt390FandorinProjet2",
-     "file": "01MarshGoblins-TunguskaInMyHeartintro.mp3",
-     "profile": {
-      "seconds": 60,
-      "bpm": 63.8,
-      "confidence": 0.26,
-      "swing": 0.503,
-      "tight": 52.7,
-      "late": -0.7,
-      "density": 6.78,
-      "lufs": -7.1,
-      "peak": 0.7,
-      "plr": 7.8,
-      "bands": {
-       "sub": -12.7,
-       "low": -5.6,
-       "mid": -3.4,
-       "presence": -7.8,
-       "air": -13.9
-      },
-      "width": -25
-     }
-    },
-    {
      "id": "onmp163",
      "title": "Go deeper",
      "creator": "Zinoeki",
@@ -242,20 +214,20 @@
    ],
    "average": {
     "bands": {
-     "sub": -7.96,
-     "low": -3.8,
-     "mid": -6.26,
-     "presence": -12.52,
-     "air": -17.48
+     "sub": -6.77,
+     "low": -3.35,
+     "mid": -6.97,
+     "presence": -13.7,
+     "air": -18.37
     },
-    "bpm": 77.54,
+    "bpm": 80.97,
     "swing": 0.5,
-    "tight": 26.48,
-    "density": 6.57,
-    "lufs": -10.44,
-    "plr": 11.08,
-    "width": -12.6,
-    "seconds": 300
+    "tight": 19.93,
+    "density": 6.51,
+    "lufs": -11.27,
+    "plr": 11.9,
+    "width": -9.5,
+    "seconds": 240
    }
   },
   "rainy": {
@@ -436,34 +408,6 @@
      }
     },
     {
-     "id": "gt390FandorinProjet2",
-     "title": "01 Marsh Goblins - Tunguska in my heart (Intro)",
-     "creator": "Marsh Goblins",
-     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
-     "page": "https://archive.org/details/gt390FandorinProjet2",
-     "file": "01MarshGoblins-TunguskaInMyHeartintro.mp3",
-     "profile": {
-      "seconds": 60,
-      "bpm": 63.8,
-      "confidence": 0.26,
-      "swing": 0.503,
-      "tight": 52.7,
-      "late": -0.7,
-      "density": 6.78,
-      "lufs": -7.1,
-      "peak": 0.7,
-      "plr": 7.8,
-      "bands": {
-       "sub": -12.7,
-       "low": -5.6,
-       "mid": -3.4,
-       "presence": -7.8,
-       "air": -13.9
-      },
-      "width": -25
-     }
-    },
-    {
      "id": "MNF041_Callejas--Paramo",
      "title": "Páramo 1",
      "creator": "Callejas",
@@ -550,20 +494,20 @@
    ],
    "average": {
     "bands": {
-     "sub": -9.72,
-     "low": -2.98,
-     "mid": -7.98,
-     "presence": -18.96,
-     "air": -31.92
+     "sub": -8.97,
+     "low": -2.33,
+     "mid": -9.12,
+     "presence": -21.75,
+     "air": -36.42
     },
-    "bpm": 76.92,
-    "swing": 0.54,
-    "tight": 40.22,
-    "density": 6.06,
-    "lufs": -12.9,
-    "plr": 11.02,
-    "width": -10.5,
-    "seconds": 300
+    "bpm": 80.2,
+    "swing": 0.55,
+    "tight": 37.1,
+    "density": 5.88,
+    "lufs": -14.35,
+    "plr": 11.83,
+    "width": -6.87,
+    "seconds": 240
    }
   },
   "epic": {
@@ -772,34 +716,6 @@
    ],
    "tracks": [
     {
-     "id": "mt008",
-     "title": "As soon as I close my eyes (I can't recall what my face is like)",
-     "creator": "Doc & Lena Selyanina",
-     "license": "http://creativecommons.org/licenses/by/2.5/",
-     "page": "https://archive.org/details/mt008",
-     "file": "04_-_As_soon_as_I_close_my_eyes_I_cant_recall_what_my_face_is_like.mp3",
-     "profile": {
-      "seconds": 60,
-      "bpm": 88.6,
-      "confidence": 0.02,
-      "swing": 0.615,
-      "tight": 44.3,
-      "late": -3.1,
-      "density": 4.88,
-      "lufs": -17.3,
-      "peak": -0.1,
-      "plr": 17.2,
-      "bands": {
-       "sub": -10.5,
-       "low": -2.2,
-       "mid": -5.3,
-       "presence": -20.8,
-       "air": -35.9
-      },
-      "width": -3.4
-     }
-    },
-    {
      "id": "toulp1",
      "title": "Eternal Truth",
      "creator": "Psychadelik Pedestrian",
@@ -966,52 +882,24 @@
       },
       "width": -3.1
      }
-    },
-    {
-     "id": "mt015",
-     "title": "Alexander's Walk",
-     "creator": "Doc & Lena Selyanina",
-     "license": "http://creativecommons.org/licenses/by/3.0/",
-     "page": "https://archive.org/details/mt015",
-     "file": "02_-_Alexanders_Walk.mp3",
-     "profile": {
-      "seconds": 60,
-      "bpm": 76.3,
-      "confidence": 0,
-      "swing": null,
-      "tight": 48.9,
-      "late": -0.5,
-      "density": 7.12,
-      "lufs": -19.5,
-      "peak": -4.2,
-      "plr": 15.2,
-      "bands": {
-       "sub": -21.8,
-       "low": -12.8,
-       "mid": -0.4,
-       "presence": -17,
-       "air": -27.7
-      },
-      "width": -1.9
-     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -22.58,
-     "low": -7.85,
-     "mid": -2.61,
-     "presence": -23.49,
-     "air": -39.36
+     "sub": -24.72,
+     "low": -7.97,
+     "mid": -2.53,
+     "presence": -25.02,
+     "air": -41.88
     },
-    "bpm": 88.1,
-    "swing": 0.53,
-    "tight": 40.88,
-    "density": 6.43,
-    "lufs": -17,
-    "plr": 14.61,
-    "width": -3.15,
-    "seconds": 480
+    "bpm": 89.98,
+    "swing": 0.51,
+    "tight": 38.97,
+    "density": 6.58,
+    "lufs": -16.53,
+    "plr": 14.08,
+    "width": -3.32,
+    "seconds": 360
    }
   }
  }

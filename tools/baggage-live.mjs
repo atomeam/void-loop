@@ -4,10 +4,14 @@
 // (findings/baggage/<date>T<hhmm>.json: each page's status, each figure found or not, attempt "live" and the occasion number) and
 // as one `finding` line in the growth ledger pointing at it, the way tools/rides-live.mjs records its live call. Success is every
 // page answering and every figure found. A figure that is gone is a real finding: the card says something the airline no longer
-// says, and the job goes red until the card is corrected. No key, no account, no person in the loop; nothing a visitor typed is sent.
+// says, and the job goes red until the card is corrected. A page that refuses to answer (aa.com's edge has answered GitHub's
+// runners 403 every day since 2026-10-31, browser headers or not) is not a figure gone: its figures are recorded as unchecked, the
+// record stays not ok, and the run warns instead of going red, because nothing in the card is wrong and nothing here can fix it.
+// No key, no account, no person in the loop; nothing a visitor typed is sent.
 //   node tools/baggage-live.mjs              read the pages, write the artifact, append the ledger line (the workflow commits both)
 //   node tools/baggage-live.mjs --dry        read the pages and print the record, write nothing
-// Exit 0 when every figure was found, 1 when a page answered without one, 3 when no page could be reached.
+// Exit 0 when every figure was found, 1 when a page answered without one, 2 when every page that answered had all its figures but
+// some page refused, 3 when no page could be reached.
 import { writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,23 +48,37 @@ export function textOf(html) {
 /** The record of one day's reading. Pure: what each page answered goes in, the artifact comes out. */
 export function recordOf({ pages, at = new Date().toISOString(), occasion = 1 }) {
   const pageOut = SOURCES.map(([name, url]) => { const p = pages[name] || {}; return { name, url, status: p.status || 0, ms: Math.round(p.ms || 0), ...(p.error ? { error: String(p.error).slice(0, 120) } : {}) }; });
-  const checks = CHECKS.map((c) => { const p = pages[c.source] || {}; const ok = p.status === 200 && c.re.test(textOf(p.body)); return { row: c.row, source: c.source, figure: c.figure, found: ok }; });
-  const missing = checks.filter((c) => !c.found);
-  const reached = pageOut.filter((p) => p.status === 200).length;
-  const ok = reached === pageOut.length && missing.length === 0;
+  const checks = CHECKS.map((c) => {
+    const p = pages[c.source] || {};
+    const state = p.status !== 200 ? 'unchecked' : c.re.test(textOf(p.body)) ? 'found' : 'gone';
+    return { row: c.row, source: c.source, figure: c.figure, found: state === 'found', state };
+  });
+  const gone = checks.filter((c) => c.state === 'gone');
+  const unchecked = checks.filter((c) => c.state === 'unchecked');
+  const refused = pageOut.filter((p) => p.status !== 200);
+  const ok = refused.length === 0 && gone.length === 0;
   return {
     attempt: 'live', occasion, at, family: 'sky', skill: 'baggage', service: 'the airline pages the baggage card cites (aa.com, britishairways.com)',
     ask: 'are the baggage card\'s figures still on the airlines\' own pages',
-    pages: pageOut, checks, found: checks.length - missing.length, of: checks.length, ok,
-    error: ok ? '' : (reached < pageOut.length ? pageOut.filter((p) => p.status !== 200).map((p) => p.name + ': ' + (p.error || 'HTTP ' + p.status)).join('; ') + (missing.length ? '; ' : '') : '')
-      + (missing.length ? 'not found: ' + missing.map((c) => c.figure + ' (' + c.source + ')').join(', ') : ''),
+    pages: pageOut, checks, found: checks.length - gone.length - unchecked.length, gone: gone.length, unchecked: unchecked.length, of: checks.length, ok,
+    error: ok ? '' : [
+      ...refused.map((p) => p.name + ': ' + (p.error || 'HTTP ' + p.status) + ' (' + unchecked.filter((c) => c.source === p.name).length + ' figures unchecked)'),
+      ...(gone.length ? ['not found: ' + gone.map((c) => c.figure + ' (' + c.source + ')').join(', ')] : []),
+    ].join('; '),
   };
+}
+
+/** The exit code for a record: 0 all found, 1 a figure gone from a page that answered, 2 only refusals, 3 nothing answered. Pure. */
+export function exitCodeOf(rec) {
+  if (!rec.pages.some((p) => p.status === 200)) return 3;
+  if (rec.gone > 0) return 1;
+  return rec.ok ? 0 : 2;
 }
 
 export const artifactName = (rec) => rec.at.slice(0, 13) + rec.at.slice(14, 16) + '.json';
 export const ledgerWhat = (rec) => rec.ok
   ? `baggage checked against the live airline pages${rec.occasion > 1 ? ', occasion ' + rec.occasion : ' for the first time'}: all ${rec.of} figures the card states are still on the pages it cites (${rec.pages.length} pages); attempt live, no key, no person in the loop (artifact findings/baggage/${artifactName(rec)})`
-  : `baggage checked against the live airline pages and found ${rec.found} of ${rec.of} figures (${rec.error.slice(0, 160)}); attempt live, occasion ${rec.occasion} (artifact findings/baggage/${artifactName(rec)})`;
+  : `baggage checked against the live airline pages and found ${rec.found} of ${rec.of} figures${rec.gone ? ', ' + rec.gone + ' gone' : ', none gone'}${rec.unchecked ? ', ' + rec.unchecked + ' unchecked' : ''} (${rec.error.slice(0, 160)}); attempt live, occasion ${rec.occasion} (artifact findings/baggage/${artifactName(rec)})`;
 
 export const nextOccasion = (dir = DIR) => (existsSync(dir) ? readdirSync(dir).filter((f) => /^\d{4}-\d\d-\d\dT\d{4}\.json$/.test(f)).length : 0) + 1;
 
@@ -95,7 +113,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const ref = 'https://github.com/atomeam/void-loop/blob/main/findings/baggage/' + artifactName(rec);
     const g = spawnSync(process.execPath, [join(root, 'tools', 'grow.mjs'), 'finding', ledgerWhat(rec), '--by', 'baggage-live', '--ref', ref], { encoding: 'utf8' });
     if (g.status !== 0) { console.error('baggage-live: the ledger line was not written: ' + (g.stderr || g.stdout).slice(0, 200)); process.exit(1); }
-    console.log('### baggage, live\n\n| What | |\n|:--|:--|\n| pages answered | ' + rec.pages.filter((p) => p.status === 200).length + ' of ' + rec.pages.length + ' |\n| figures found | ' + rec.found + ' of ' + rec.of + ' |\n| occasion | ' + rec.occasion + ' |' + (rec.ok ? '' : '\n| missing | ' + rec.error + ' |'));
+    console.log('### baggage, live\n\n| What | |\n|:--|:--|\n| pages answered | ' + rec.pages.filter((p) => p.status === 200).length + ' of ' + rec.pages.length + ' |\n| figures found | ' + rec.found + ' of ' + rec.of + ' |\n| gone | ' + rec.gone + ' |\n| unchecked (page refused) | ' + rec.unchecked + ' |\n| occasion | ' + rec.occasion + ' |' + (rec.ok ? '' : '\n| missing | ' + rec.error + ' |'));
   }
-  process.exit(!anyReached ? 3 : rec.ok ? 0 : 1);
+  process.exit(anyReached ? exitCodeOf(rec) : 3);
 }
