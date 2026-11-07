@@ -5902,7 +5902,10 @@ say('nothing selected to remove');
         + '<div style="opacity:.7;font-size:12px;margin-top:6px">' + esc(clipLine(String(details).replace(/\s+/g, ' '), 90)) + '</div></details>'; // a one-line glimpse, never the whole paste echoed back (owner, 2026-11-03)
     }
     async function showFix(ask, details) {
-      const title = clipLine(ask, 120), sent = fitPaste(title, String(details || ''));
+      // the title is the paste's first line as given, not the normalized ask: the page's typo and shorthand passes can hand over a
+      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times)
+      const given = String(details || ''), first = given.split('\n')[0].trim();
+      const title = clipLine(first || ask, 120), sent = fitPaste(title, given);
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">working on it…</div>'; });
       say('working on it');
       let j = null;
