@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T19:09:04.668Z",
+ "updated": "2026-11-07T19:18:25.541Z",
  "last24h": {
   "ticks": 149,
-  "started": 170,
+  "started": 169,
   "requeued": 0,
   "setAside": 0,
-  "probes": 20,
+  "probes": 19,
   "errors": 0
  },
  "broken": [],
@@ -20,7 +20,11 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2506, until 23:05 UTC)"
   },
   {
-   "id": "want-exam-translate",
+   "id": "want-exam-maps",
+   "why": "verse-job.yml is paused (the coder's back-off, #2506, until 23:05 UTC)"
+  },
+  {
+   "id": "mw5blphr",
    "why": "verse-job.yml is paused (the coder's back-off, #2506, until 23:05 UTC)"
   },
   {
@@ -85,10 +89,6 @@
   },
   {
    "id": "mvwl3d38",
-   "why": "verse-job.yml is paused (the coder's back-off, #2506, until 23:05 UTC)"
-  },
-  {
-   "id": "mvpkt0sa",
    "why": "verse-job.yml is paused (the coder's back-off, #2506, until 23:05 UTC)"
   }
  ],
@@ -284,33 +284,6 @@
   "review:2512"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T19:17:24.618Z",
-   "open": 245,
-   "started": [
-    {
-     "id": "want-idea-298bf37d16",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 92
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 52,
-   "warnings": 1
-  },
   {
    "at": "2026-11-06T19:33:55.546Z",
    "open": 249,
@@ -4383,6 +4356,26 @@
   },
   {
    "at": "2026-11-07T19:09:04.668Z",
+   "open": 266,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 262,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T19:18:25.541Z",
    "open": 266,
    "started": [],
    "requeued": 0,
