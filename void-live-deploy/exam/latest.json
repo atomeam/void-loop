@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T18:18:05.823Z",
+  "at": "2026-11-07T18:45:57.085Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -34,16 +34,38 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 92.1,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the episode before that",
+          "ask": "play the latest episode of planet money",
           "failed": [
-            "skill"
+            "audio"
           ],
           "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of the ted radio hour",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "fast"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the episode before that",
+          "failed": [
+            "skill",
+            "audio"
+          ],
+          "score": 71.4
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -103,7 +125,7 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -118,10 +140,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -236,12 +257,12 @@
       }
     },
     "sports": {
-      "score": 92.6,
+      "score": 90.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "mlb scores",
+          "ask": "nfl scores",
           "failed": [
             "board"
           ],
@@ -249,6 +270,13 @@
         },
         {
           "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
           "failed": [
             "board"
           ],
@@ -263,6 +291,13 @@
         },
         {
           "ask": "packers score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
           "failed": [
             "board"
           ],
