@@ -1714,14 +1714,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-28T22:47:55Z",
-   "line": "Versus: took on no site (also read: 5 not-judged, 2 no-family, 1 gone); next randomarea.com",
-   "built": 0,
-   "queued": 2,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-28T22:50:28Z",
    "line": "Versus: took on no site; next randomarea.com",
    "built": 0,
@@ -2081,6 +2073,15 @@
    "pages_per_day": 0,
    "reads_next": "share.google",
    "noop": true
+  },
+  {
+   "at": "2026-11-07T16:41:03Z",
+   "line": "Versus: took on no site (also read: 2 walled, 6 no-family); next oneyeard.com (the target)",
+   "built": 0,
+   "queued": 5,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "vivoglobal.com"
   }
  ]
 }
