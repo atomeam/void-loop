@@ -276,6 +276,12 @@
    "date": "2026-11-06",
    "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
    "from": "new idea by growth agent; helper/heavy-lift-map"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not…",
+   "from": "new idea by growth agent; helper/monitor-pack"
   }
  ],
  "open": [
@@ -588,84 +594,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T20:37:57Z",
-   "subject": "Tower gate: dalyfeds.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-07T09:10:37Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 2 no-family, 5 walled, 1 gone); next protopage.com (the target)"
   },
   {
-   "at": "2026-11-06T20:36:59Z",
-   "subject": "Incidents closed: shard(s) 4,5,6 passed on a8a38bbb (void-live-deploy/incidents.json)"
+   "at": "2026-11-07T09:10:32Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
   },
   {
-   "at": "2026-11-06T20:29:45Z",
-   "subject": "Tower gate: dalyfeds.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-07T07:16:57Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-06T20:29:38Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-06T20:28:33Z",
+   "at": "2026-11-07T06:44:16Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
   {
-   "at": "2026-11-06T20:28:03Z",
-   "subject": "Film card answers where-to-watch asks (#2484)"
-  },
-  {
-   "at": "2026-11-06T20:27:48Z",
-   "subject": "Suite gate: a green run counts past merges of unrelated pull requests (#2477)"
-  },
-  {
-   "at": "2026-11-06T20:27:41Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-11-06T20:27:28Z",
-   "subject": "Claude/project thread xv0wrv (#2483)"
-  },
-  {
-   "at": "2026-11-06T20:25:28Z",
-   "subject": "Feature scan: random-number researched by Verse"
-  },
-  {
-   "at": "2026-11-06T20:24:11Z",
-   "subject": "Design loop: check the live ask bar at 390 and 1280 px every 2 hours, with screenshots (#2478)"
-  },
-  {
-   "at": "2026-11-06T20:23:46Z",
-   "subject": "Starboard benchmark page, and theme names for the menu pages (#2479)"
-  },
-  {
-   "at": "2026-11-06T20:23:22Z",
-   "subject": "verse-job: show the coder's turn lines in the job log (#2480)"
-  },
-  {
-   "at": "2026-11-06T20:19:59Z",
-   "subject": "monitor-pack: propose monitors Verse owns so the client watches less (#2482)"
-  },
-  {
-   "at": "2026-11-06T20:18:58Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"yo render a c"
-  },
-  {
-   "at": "2026-11-06T20:18:53Z",
-   "subject": "Outcome exam: translate 89.2"
-  },
-  {
-   "at": "2026-11-06T20:13:03Z",
+   "at": "2026-11-07T06:41:09Z",
    "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
   },
   {
-   "at": "2026-11-06T20:10:40Z",
-   "subject": "Films: give each kept beat its own voice line, so long takes render (#2481)"
+   "at": "2026-11-07T06:31:36Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   },
   {
-   "at": "2026-11-06T20:09:21Z",
-   "subject": "Verse's coder: name a TV job's page files so a blueprint build starts reading (#2475)"
+   "at": "2026-11-07T05:54:47Z",
+   "subject": "Trading bots data: BTC-USD and ETH-USD daily candles from Coinbase Exchange, through yesterday"
   },
   {
-   "at": "2026-11-06T20:06:57Z",
-   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
+   "at": "2026-11-07T04:09:41Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-07T03:25:58Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo style like"
+  },
+  {
+   "at": "2026-11-07T03:01:50Z",
+   "subject": "Design loop: 5 pages fixed, 10 -> 2 design defects"
+  },
+  {
+   "at": "2026-11-07T01:27:59Z",
+   "subject": "Outcome exam: translate 89.2"
+  },
+  {
+   "at": "2026-11-07T01:18:06Z",
+   "subject": "Site test: fix: \"my actions\" console: Failed to load resource: the serv"
+  },
+  {
+   "at": "2026-11-07T01:02:17Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-07T00:48:24Z",
+   "subject": "Outcome exam: definitions 86.7"
+  },
+  {
+   "at": "2026-11-07T00:35:45Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-07T00:22:47Z",
+   "subject": "Failed jobs read: run 42314276976 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T00:22:23Z",
+   "subject": "Incident: the browser suite failed on e0489d2a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-07T00:21:21Z",
+   "subject": "Outcome exam: translate 89.2"
+  },
+  {
+   "at": "2026-11-07T00:10:03Z",
+   "subject": "Failed jobs read: run 42314186054 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T00:09:42Z",
+   "subject": "Site test: fix: \"test me on that\" only \"waking up\" appeared, never the"
   }
  ],
  "builders": {
@@ -847,8 +853,8 @@
   }
  ],
  "visible": {
-  "day": 73,
-  "week": 224
+  "day": 3,
+  "week": 221
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -905,14 +911,15 @@
   "source": "verse"
  },
  "tower": {
-  "target": "dalyfeds.com",
-  "since": "2026-11-06",
+  "target": "protopage.com",
+  "since": "2026-11-07",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1307
+  "total": 1308
  }
 }
