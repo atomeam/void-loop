@@ -12,12 +12,13 @@ const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
-  '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
+  '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
-  '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",
   '/api/selfcheck': "Verse's check of its own pages: the status card reads the newest report, and only the owner's self-check job (tools/self-check.mjs, .github/workflows/self-check.yml) hands one in (functions/api/selfcheck.js)",
   '/api/members': "the /members/ page's own API: what paid Verse gives, and a paid member's ideas (passkey session, paid tier from Gumroad, a daily and monthly limit) queued as member: jobs that may only add (functions/api/members.js, lib/members.js, tools/add-only.mjs)",
+  '/api/sitebench': "the /sitebench/ page's own API (functions/api/sitebench.js): Verse's own sitebench (site-by-site comparison) tool; not a public API",
+  '/api/unbidden': "the /brain/ page's own API (functions/api/unbidden.js): Verse's own unbidden (the Brain's live state and will); not a public API",
   '/api/coder': "Verse's coder thinking on Verse's own model: owner only, the Workers AI shape in and out, under an hourly and daily cap (functions/api/coder.js); tools/verse-coder.mjs is the only caller",
   '/api/studies': "the owner's study panel (/studies.html): owner only, read only, lists Verse's private studies; not a public API (functions/api/studies.js)",
   '/api/studio': "Verse's studio (functions/api/studio.js, lib/studio.js): the public GET is the image models' scoreboard read by /image/ and /video/; every POST (the bench, the judge, a clip) is owner only, inside a neuron cap and a daily dollar cap",
