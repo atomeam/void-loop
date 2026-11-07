@@ -4,12 +4,77 @@
  "runsTotal": 300,
  "kinds": {
   "file": 64,
-  "tighten": 4,
   "none": 35,
+  "tighten": 3,
   "grow": 72,
-  "visitor": 125
+  "visitor": 126
  },
  "runs": [
+  {
+   "at": "2026-11-07T22:01:59Z",
+   "passed": 1,
+   "of": 105,
+   "kind": "file",
+   "ms": 334,
+   "note": "fix: \"play connect four\" only \"waking up\" appeared, never the answer; console: Failed to load resource: the server responded with a status of 404 ()",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "no .voidquest-card"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo automations",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-07T21:50:49Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-07T21:38:38Z",
    "passed": 8,
@@ -379,35 +444,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T17:16:43Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T17:00:10Z",
-   "passed": 97,
-   "of": 100,
-   "kind": "grow",
-   "ms": 350,
-   "note": "new ground passed, kept as a regression case: \"stlye like mickey mouse\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "favorite this",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "versus",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -461,18 +497,18 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 75,
-   "passed": 330,
-   "of": 1920,
-   "broken": 59,
-   "brokenOf": 1478,
+   "runs": 74,
+   "passed": 362,
+   "of": 1904,
+   "broken": 57,
+   "brokenOf": 1428,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-17",
-   "runs": 47,
-   "passed": 2397,
-   "of": 2639
+   "runs": 46,
+   "passed": 2365,
+   "of": 2605
   },
   {
    "from": "2026-10-24",
@@ -482,12 +518,12 @@
   },
   {
    "from": "2026-10-31",
-   "runs": 178,
-   "passed": 4479,
-   "of": 4953,
-   "broken": 1,
-   "brokenOf": 105,
-   "brokenPassed": 8,
+   "runs": 180,
+   "passed": 4480,
+   "of": 5058,
+   "broken": 2,
+   "brokenOf": 210,
+   "brokenPassed": 9,
    "ms": 387
   }
  ],
@@ -508,7 +544,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-07T21:38:38Z",
+  "skill:cartoon": "2026-11-07T22:01:59Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -863,6 +899,7 @@
   "skill:vat": "2026-11-07T19:57:40Z",
   "skill:verify-pack": "2026-11-07T20:48:36Z",
   "skill:verse-brain": "2026-11-07T21:14:01Z",
-  "skill:veto-council": "2026-11-07T21:38:38Z"
+  "skill:veto-council": "2026-11-07T21:38:38Z",
+  "skill:video-gen": "2026-11-07T22:01:59Z"
  }
 }
