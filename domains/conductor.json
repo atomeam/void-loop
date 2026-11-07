@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T04:37:22.778Z",
+ "updated": "2026-11-07T04:46:45.322Z",
  "last24h": {
   "ticks": 98,
-  "started": 114,
+  "started": 113,
   "requeued": 0,
   "setAside": 0,
   "probes": 15,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw4hbd4w": 1793940289677,
   "mw4hbe4i": 1793941053441,
   "mw4hbf2t": 1793942020691,
   "mw4hbfz5": 1793943117006,
@@ -176,10 +175,11 @@
   "mw5tls45": 1794022866623,
   "mw5vxzqx": 1794025117967,
   "mw5vy0oe": 1794025680694,
-  "mw5vy1qn": 1794026242778
+  "mw5vy1qn": 1794026242778,
+  "mw5vy2o3": 1794026805322
  },
- "sweptAt": 1794022866623,
- "blueprintsAt": 1794022866623,
+ "sweptAt": 1794026805322,
+ "blueprintsAt": 1794026805322,
  "visitorAt": "2026-11-07T03:23:49Z",
  "visitorFiled": [
   "versus:copyemojio.com",
@@ -264,36 +264,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T04:44:49.677Z",
-   "open": 215,
-   "started": [
-    {
-     "id": "mw4gkvdn",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 100
-    },
-    {
-     "id": "mw4hbd4w",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 5,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T04:57:33.441Z",
    "open": 214,
@@ -2903,6 +2873,33 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 246,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T04:46:45.322Z",
+   "open": 255,
+   "started": [
+    {
+     "id": "mw5vy2o3",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 246,
    "warnings": 1
