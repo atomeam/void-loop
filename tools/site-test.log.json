@@ -1,21 +1,5 @@
 [
  {
-  "at": "2026-10-15T22:07:53Z",
-  "passed": 0,
-  "of": 21,
-  "kind": "file",
-  "key": "hide the sky | nothing appeared",
-  "note": "fix: \"hide the sky\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-15T22:49:16Z",
-  "passed": 0,
-  "of": 21,
-  "kind": "file",
-  "key": "play chess | nothing appeared",
-  "note": "fix: \"play chess\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-15T23:20:00Z",
   "passed": 0,
   "of": 21,
@@ -5213,5 +5197,54 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T16:28:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1116,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 11462 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T16:38:05Z",
+  "passed": 97,
+  "of": 99,
+  "ms": 451,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1116,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 11462 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"style like mickey mouse pls\" (skill:cartoon)"
  }
 ]

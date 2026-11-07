@@ -1,15 +1,40 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 97,
+ "cases": 98,
  "runsTotal": 300,
  "kinds": {
-  "file": 70,
-  "grow": 71,
+  "grow": 72,
+  "file": 68,
   "tighten": 7,
   "none": 40,
-  "visitor": 112
+  "visitor": 113
  },
  "runs": [
+  {
+   "at": "2026-11-07T16:38:05Z",
+   "passed": 97,
+   "of": 99,
+   "kind": "grow",
+   "ms": 451,
+   "note": "new ground passed, kept as a regression case: \"style like mickey mouse pls\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-07T16:28:15Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-07T10:40:07Z",
    "passed": 0,
@@ -324,39 +349,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T18:57:54Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-06T18:44:31Z",
-   "passed": 92,
-   "of": 96,
-   "kind": "grow",
-   "ms": 387,
-   "note": "new ground passed, kept as a regression case: \"funny cartoon dog pls\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 4 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "are you web4",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -410,18 +402,18 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 82,
-   "passed": 0,
-   "of": 2031,
-   "broken": 82,
-   "brokenOf": 2031,
+   "runs": 91,
+   "passed": 199,
+   "of": 2274,
+   "broken": 80,
+   "brokenOf": 1989,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-17",
-   "runs": 63,
-   "passed": 2727,
-   "of": 3081
+   "runs": 52,
+   "passed": 2528,
+   "of": 2796
   },
   {
    "from": "2026-10-24",
@@ -431,10 +423,10 @@
   },
   {
    "from": "2026-10-31",
-   "runs": 155,
-   "passed": 3641,
-   "of": 3932,
-   "ms": 387
+   "runs": 157,
+   "passed": 3738,
+   "of": 4031,
+   "ms": 388
   }
  ],
  "seen": {
@@ -454,7 +446,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-07T03:23:49Z",
+  "skill:cartoon": "2026-11-07T16:38:05Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -799,6 +791,7 @@
   "skill:system-handoff": "2026-11-07T00:08:31Z",
   "skill:systems-monitor": "2026-11-07T01:16:35Z",
   "skill:team-chat": "2026-11-07T01:16:35Z",
-  "skill:tilt-arena": "2026-11-07T03:23:49Z"
+  "skill:tilt-arena": "2026-11-07T03:23:49Z",
+  "skill:toolkit": "2026-11-07T16:38:05Z"
  }
 }
