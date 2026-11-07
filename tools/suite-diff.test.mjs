@@ -47,3 +47,12 @@ test('no main result to compare with is red, never a guess', () => {
   assert.equal(verdict(done(['a']), null).ok, false);
   assert.equal(verdict(done(['a']), run(['FAIL a'])).ok, false);
 });
+
+test('a batch whose sky test was red is judged with test_void and the sky checks together (2026-11-06: every shard stopped at test_sky)', () => {
+  const sky = ['FAIL the "sunrise and sunset" chip answers  -> The moon tonight', 'FAIL the "next eclipse" chip answers  -> The moon tonight'];
+  const batch = run(['pass a card', '40/40 passed', ...sky]);
+  assert.equal(batch.finished, true);
+  assert.equal(batch.fails.size, 2);
+  assert.equal(verdict(batch, run(['pass a card', '40/40 passed'])).ok, false, 'sky red only with the batch fails it');
+  assert.equal(verdict(batch, run(['pass a card', '40/40 passed', ...sky])).ok, true, 'sky just as red on main alone does not hold it');
+});
