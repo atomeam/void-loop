@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T06:48:27.634Z",
+ "updated": "2026-11-07T06:57:46.747Z",
  "last24h": {
   "ticks": 104,
-  "started": 114,
+  "started": 115,
   "requeued": 0,
   "setAside": 0,
-  "probes": 15,
+  "probes": 14,
   "errors": 0
  },
  "broken": [],
@@ -152,10 +152,11 @@
   "mw5yafh6": 1794030738869,
   "mw60et8a": 1794032426543,
   "mw60eu92": 1794032987865,
-  "mw60ev8u": 1794033548696
+  "mw60ev8u": 1794033548696,
+  "mw60ew8u": 1794034666747
  },
- "sweptAt": 1794030738869,
- "blueprintsAt": 1794030738869,
+ "sweptAt": 1794034666747,
+ "blueprintsAt": 1794034666747,
  "visitorAt": "2026-11-07T03:23:49Z",
  "visitorFiled": [
   "versus:copyemojio.com",
@@ -240,30 +241,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T06:54:34.638Z",
-   "open": 227,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 97
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 12,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T07:09:00.633Z",
    "open": 231,
@@ -3025,6 +3002,39 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T06:57:46.747Z",
+   "open": 255,
+   "started": [
+    {
+     "id": "want-exam-translate",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 151
+    },
+    {
+     "id": "mw60ew8u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 13,
    "warnings": 1
