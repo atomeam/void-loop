@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-16T06:38:50Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "tighten",
-  "note": "load ceiling 1900 -> 1700 ms"
- },
- {
   "at": "2026-10-16T06:45:10Z",
   "passed": 0,
   "of": 25,
@@ -5523,5 +5516,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"draw yourself pls\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T20:08:38Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1422,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 10161 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
