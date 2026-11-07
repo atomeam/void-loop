@@ -1794,14 +1794,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-29T08:51:03Z",
-   "line": "Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com",
-   "built": 0,
-   "queued": 1,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-29T08:53:37Z",
    "line": "Versus: took on no site; next randomarea.com",
    "built": 0,
@@ -2163,6 +2155,16 @@
    "fixed": [],
    "pages_per_day": 0,
    "reads_next": "vivoglobal.com",
+   "noop": true
+  },
+  {
+   "at": "2026-11-07T22:15:11Z",
+   "line": "Versus: took on no site (also read: 2 walled, 6 not-judged); the model answered 401 on 6 of 8 reads, so those were not judged; next oneyeard.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "uniteforliteracy.com",
    "noop": true
   }
  ]
