@@ -1,15 +1,44 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 98,
+ "cases": 99,
  "runsTotal": 300,
  "kinds": {
+  "file": 67,
   "grow": 72,
-  "file": 68,
   "tighten": 7,
   "none": 40,
-  "visitor": 113
+  "visitor": 114
  },
  "runs": [
+  {
+   "at": "2026-11-07T17:00:10Z",
+   "passed": 97,
+   "of": 100,
+   "kind": "grow",
+   "ms": 350,
+   "note": "new ground passed, kept as a regression case: \"stlye like mickey mouse\" (skill:cartoon)",
+   "failed": [
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "versus",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-07T16:50:47Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-07T16:38:05Z",
    "passed": 97,
@@ -335,20 +364,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-06T20:07:32Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-06T19:31:58Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -402,11 +417,11 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 91,
+   "runs": 89,
    "passed": 199,
-   "of": 2274,
-   "broken": 80,
-   "brokenOf": 1989,
+   "of": 2231,
+   "broken": 78,
+   "brokenOf": 1946,
    "brokenPassed": 0
   },
   {
@@ -423,10 +438,10 @@
   },
   {
    "from": "2026-10-31",
-   "runs": 157,
-   "passed": 3738,
-   "of": 4031,
-   "ms": 388
+   "runs": 159,
+   "passed": 3835,
+   "of": 4131,
+   "ms": 387
   }
  ],
  "seen": {
@@ -446,7 +461,7 @@
   "skill:define": "2026-11-05T00:26:50Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-07T16:38:05Z",
+  "skill:cartoon": "2026-11-07T17:00:10Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
@@ -792,6 +807,7 @@
   "skill:systems-monitor": "2026-11-07T01:16:35Z",
   "skill:team-chat": "2026-11-07T01:16:35Z",
   "skill:tilt-arena": "2026-11-07T03:23:49Z",
-  "skill:toolkit": "2026-11-07T16:38:05Z"
+  "skill:toolkit": "2026-11-07T16:38:05Z",
+  "skill:tower": "2026-11-07T17:00:10Z"
  }
 }
