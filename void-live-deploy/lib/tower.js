@@ -390,8 +390,13 @@ export function easeLine(f) {
 /** a frontier site's Verse page: the one built for its host (LANE_PAGES), else the page that already does its job, by topic (lib/tower-topic.js;
  *  owner, 2026-11-03: ndscalc.ru said "no Verse page yet" while /vat/ was live). { page, topic } or {}. Pure. */
 export function frontierPage(x) {
-  if (LANE_PAGES[x.host]) return { page: LANE_PAGES[x.host] };
+  const lane = LANE_PAGES[x.host];
   const t = topicOf(x.title, x.host);
+  // a host page and a topic page for the same folder keep the topic (ndscalc.ru is VAT on the calculator)
+  if (lane) {
+    const same = t && String(t.page).replace(/[?#].*$/, '') === String(lane).replace(/[?#].*$/, '');
+    return same ? { page: lane, topic: t.topic } : { page: lane };
+  }
   return t ? { page: t.page, topic: t.topic } : {};
 }
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
