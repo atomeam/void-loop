@@ -1,20 +1,20 @@
 {
- "at": "2026-11-07T18:38:45.245Z",
+ "at": "2026-11-07T18:55:43.724Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "domains/conductor.json",
-   "changes": 112
+   "changes": 111
   },
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 84
+   "changes": 85
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 84
+   "changes": 85
   },
   {
    "file": "domains/handoff.md",
@@ -22,11 +22,11 @@
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 67
+   "changes": 68
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 66
+   "changes": 67
   },
   {
    "file": "domains/tower-self.json",
@@ -34,19 +34,19 @@
   },
   {
    "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 31
+   "changes": 32
   },
   {
    "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
-   "changes": 29
+   "changes": 30
   },
   {
    "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 28
+   "changes": 29
   },
   {
    "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 28
+   "changes": 29
   },
   {
    "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
@@ -54,7 +54,7 @@
   },
   {
    "file": "tools/real-pages.mjs",
-   "changes": 26
+   "changes": 27
   },
   {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
@@ -78,15 +78,19 @@
   },
   {
    "file": "void-live-deploy/assimilated.json",
-   "changes": 19
+   "changes": 20
   },
   {
    "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
-   "changes": 19
+   "changes": 20
   },
   {
    "file": "domains/autosalvage.unified.json",
    "changes": 18
+  },
+  {
+   "file": "tools/site-test.json",
+   "changes": 17
   },
   {
    "file": "void-live-deploy/lib/guard.js",
@@ -109,16 +113,12 @@
    "changes": 16
   },
   {
-   "file": "tools/site-test.json",
-   "changes": 16
-  },
-  {
    "file": "void-live-deploy/bots/salvaged.js",
    "changes": 16
   },
   {
    "file": "void-live-deploy/color/colour-picker-tool/index.html",
-   "changes": 15
+   "changes": 16
   },
   {
    "file": "tools/conductor-core.mjs",
@@ -138,6 +138,10 @@
   },
   {
    "file": "docs/PARITY/youtube.md",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/news/global-headlines/index.html",
    "changes": 13
   },
   {
