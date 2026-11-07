@@ -9,7 +9,7 @@ import http from 'node:http'; import fs from 'node:fs'; import path from 'node:p
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
 const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
-const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
 // other agents' floors: tested and reported, never edited from here (see domains/handoff.md)
@@ -589,6 +589,26 @@ SPECS['/treasury/'] = async (t) => {
   t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
   await t.waitText('#found', /\S/, 10000);
+};
+// /starboard/: the deck that races dalyfeds.com live (#2479): both race rows from its own benchmark (stubbed, exact numbers), the weather panel for a typed place, and the news wire's top story
+const STARBENCH = { at: '2026-11-07T12:00:00Z', how: 'the test browser, stubbed', rows: [
+  { name: 'a-to-mind.com', ok: true, ms: 400, bytes: 60000, requests: 8, scripts: 4, third_party: [] },
+  { name: 'dalyfeds.com', ok: true, ms: 2600, bytes: 2400000, requests: 90, scripts: 30, third_party: ['googletagmanager.com', 'doubleclick.net'] } ] };
+SPECS['/starboard/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/sitebench', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(STARBENCH) }));
+  await t.p.route((u) => u.pathname === '/api/weather', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, loc: { name: 'Lisbon' }, w: { current: { temperature_2m: 18, apparent_temperature: 17, weather_code: 2 } } }) }));
+  await t.p.route((u) => u.pathname === '/api/news', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ stories: [{ title: 'A deck that races a rival site', link: 'https://example.com/deck', src: 'wire' }] }) }));
+  await t.p.reload();
+  await t.waitText('#bench tbody', /a-to-mind\.com/, 10000);
+  const star = (await t.text('#bench tbody tr:first-child')).replace(/\s+/g, ' '), rival = (await t.text('#bench tbody tr:nth-child(2)')).replace(/\s+/g, ' ');
+  t.ok(/a-to-mind\.com/.test(star) && /400 ms/.test(star) && /59 KB/.test(star), "Verse's own row, measured: " + star.trim());
+  t.ok(/dalyfeds\.com/.test(rival) && /2\.29 MB/.test(rival) && /2: googletagmanager\.com, doubleclick\.net/.test(rival), "the rival's row, measured, its trackers named: " + rival.trim());
+  t.ok(/Measured/.test(await t.text('#benchHow')), 'the note says when the race was measured');
+  await t.clickText('Load the latest'); await t.waitText('#bench tbody', /dalyfeds\.com/, 10000);
+  await t.fill('#place', 'Lisbon'); await t.click('.go');
+  await t.waitText('#wxTemp', /64 °F \/ 18 °C/, 10000);
+  t.ok(/Partly cloudy in Lisbon/.test(await t.text('#wxWords')) && /63 °F \/ 17 °C/.test(await t.text('#wxMore')), 'the weather panel fills from the place: ' + (await t.text('#wxWords')));
+  const top = await t.text('#wire'); t.ok(/A deck that races a rival site/.test(top) && /wire/.test(top), 'the news wire lists the top story');
 };
 // /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
 SPECS['/creed/'] = async (t) => {

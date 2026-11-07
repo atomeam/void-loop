@@ -1,20 +1,254 @@
 [
   {
+    "id": "page:live-check-baggage-the-airline-pages-the-baggage",
+    "from": "page",
+    "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
+    "learned": "2026-11-07: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
+    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-07) did not work",
+    "at": "2026-11-07T18:16:48.050Z",
+    "seen": 1
+  },
+  {
+    "id": "page:digitalsogame-com",
+    "from": "page",
+    "consumed": "digitalsogame.com",
+    "learned": "digitalsogame.com walled: a nearly empty page (103 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "digitalsogame.com was walled",
+    "at": "2026-11-07T16:40:26Z",
+    "seen": 1
+  },
+  {
+    "id": "page:milkie-cc",
+    "from": "page",
+    "consumed": "milkie.cc",
+    "learned": "milkie.cc walled: a nearly empty page (60 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "milkie.cc was walled",
+    "at": "2026-11-07T16:40:23Z",
+    "seen": 1
+  },
+  {
     "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
     "from": "page",
     "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-05: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-05) did not work (credits)",
-    "at": "2026-11-05T07:18:45.902Z",
+    "learned": "2026-11-07: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; why: credits",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-07) did not work (credits)",
+    "at": "2026-11-07T13:29:16.954Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
+    "from": "page",
+    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
+    "learned": "2026-11-07: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"",
+    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-07) did not work",
+    "at": "2026-11-07T11:11:47.904Z",
+    "seen": 1
+  },
+  {
+    "id": "page:google-cn",
+    "from": "page",
+    "consumed": "google.cn",
+    "learned": "google.cn walled: a nearly empty page (41 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "google.cn was walled",
+    "at": "2026-11-07T09:10:29Z",
+    "seen": 1
+  },
+  {
+    "id": "page:astrumu-io",
+    "from": "page",
+    "consumed": "astrumu.io",
+    "learned": "astrumu.io could not be read: did not load (page.goto: Timeout 20000ms exceeded.)",
+    "retain": "astrumu.io was could not be read",
+    "at": "2026-11-07T09:10:28Z",
+    "seen": 1
+  },
+  {
+    "id": "page:onetag-sys-com",
+    "from": "page",
+    "consumed": "onetag-sys.com",
+    "learned": "onetag-sys.com walled: a nearly empty page (106 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "onetag-sys.com was walled",
+    "at": "2026-11-07T09:10:07Z",
+    "seen": 1
+  },
+  {
+    "id": "page:registrar-servers-com",
+    "from": "page",
+    "consumed": "registrar-servers.com",
+    "learned": "registrar-servers.com walled: robots.txt asks robots not to read it",
+    "retain": "registrar-servers.com was walled",
+    "at": "2026-11-07T09:10:06Z",
+    "seen": 1
+  },
+  {
+    "id": "page:1ts21-top",
+    "from": "page",
+    "consumed": "1ts21.top",
+    "learned": "1ts21.top walled: robots.txt asks robots not to read it",
+    "retain": "1ts21.top was walled",
+    "at": "2026-11-07T09:10:02Z",
+    "seen": 1
+  },
+  {
+    "id": "page:cloudflareinsights-com",
+    "from": "page",
+    "consumed": "cloudflareinsights.com",
+    "learned": "cloudflareinsights.com walled: a nearly empty page (41 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "cloudflareinsights.com was walled",
+    "at": "2026-11-07T09:10:02Z",
     "seen": 1
   },
   {
     "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
     "from": "page",
     "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
-    "learned": "2026-11-05: worked; 21 tools listed",
-    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-05) worked",
-    "at": "2026-11-05T00:00:17.276Z",
+    "learned": "2026-11-07: worked; 30 tools listed",
+    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-07) worked",
+    "at": "2026-11-07T00:01:15.286Z",
+    "seen": 1
+  },
+  {
+    "id": "page:adsco-re",
+    "from": "page",
+    "consumed": "adsco.re",
+    "learned": "adsco.re walled: robots.txt asks robots not to read it",
+    "retain": "adsco.re was walled",
+    "at": "2026-11-06T23:27:13Z",
+    "seen": 1
+  },
+  {
+    "id": "page:skybridge-click",
+    "from": "page",
+    "consumed": "skybridge.click",
+    "learned": "skybridge.click walled: robots.txt asks robots not to read it",
+    "retain": "skybridge.click was walled",
+    "at": "2026-11-06T23:26:54Z",
+    "seen": 1
+  },
+  {
+    "id": "page:opentv-com",
+    "from": "page",
+    "consumed": "opentv.com",
+    "learned": "opentv.com walled: a nearly empty page (105 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "opentv.com was walled",
+    "at": "2026-11-06T23:26:34Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-rides-osrm-public-demo-router-router-",
+    "from": "page",
+    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
+    "learned": "2026-11-06: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
+    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-06) worked",
+    "at": "2026-11-06T20:27:41.178Z",
+    "seen": 1
+  },
+  {
+    "id": "page:gosuslugi-ru",
+    "from": "page",
+    "consumed": "gosuslugi.ru",
+    "learned": "gosuslugi.ru walled: a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "gosuslugi.ru was walled",
+    "at": "2026-11-06T17:40:18Z",
+    "seen": 1
+  },
+  {
+    "id": "page:myfritz-net",
+    "from": "page",
+    "consumed": "myfritz.net",
+    "learned": "myfritz.net walled: a sign-in wall",
+    "retain": "myfritz.net was walled",
+    "at": "2026-11-06T17:40:09Z",
+    "seen": 1
+  },
+  {
+    "id": "page:slideshare-net",
+    "from": "page",
+    "consumed": "slideshare.net",
+    "learned": "slideshare.net walled: a nearly empty page (82 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "slideshare.net was walled",
+    "at": "2026-11-06T17:39:44Z",
+    "seen": 1
+  },
+  {
+    "id": "page:archive-org",
+    "from": "page",
+    "consumed": "archive.org",
+    "learned": "archive.org walled: a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "archive.org was walled",
+    "at": "2026-11-06T17:39:42Z",
+    "seen": 1
+  },
+  {
+    "id": "page:netcraze-io",
+    "from": "page",
+    "consumed": "netcraze.io",
+    "learned": "netcraze.io walled: robots.txt asks robots not to read it",
+    "retain": "netcraze.io was walled",
+    "at": "2026-11-06T09:46:51Z",
+    "seen": 1
+  },
+  {
+    "id": "page:feednews-com",
+    "from": "page",
+    "consumed": "feednews.com",
+    "learned": "feednews.com walled: robots.txt asks robots not to read it",
+    "retain": "feednews.com was walled",
+    "at": "2026-11-06T09:46:46Z",
+    "seen": 1
+  },
+  {
+    "id": "page:firefox-portal-detection-com",
+    "from": "page",
+    "consumed": "firefox-portal-detection.com",
+    "learned": "firefox-portal-detection.com walled: a nearly empty page (7 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "firefox-portal-detection.com was walled",
+    "at": "2026-11-06T09:46:15Z",
+    "seen": 1
+  },
+  {
+    "id": "page:colorscheme-ru",
+    "from": "page",
+    "consumed": "colorscheme.ru",
+    "learned": "colorscheme.ru assimilated; Verse's page /color/colour-picker-tool/?c=ff5733",
+    "retain": "colorscheme.ru was assimilated by /color/colour-picker-tool/?c=ff5733",
+    "at": "2026-11-05T18:14:24Z",
+    "seen": 1
+  },
+  {
+    "id": "page:heritageunits-com",
+    "from": "page",
+    "consumed": "heritageunits.com",
+    "learned": "heritageunits.com walled: a sign-in wall",
+    "retain": "heritageunits.com was walled",
+    "at": "2026-11-05T18:13:55Z",
+    "seen": 1
+  },
+  {
+    "id": "page:hexcolorpicker-io",
+    "from": "page",
+    "consumed": "hexcolorpicker.io",
+    "learned": "hexcolorpicker.io could not be read: answered 403",
+    "retain": "hexcolorpicker.io was could not be read",
+    "at": "2026-11-05T09:48:57Z",
+    "seen": 1
+  },
+  {
+    "id": "page:convertunits-com",
+    "from": "page",
+    "consumed": "convertunits.com",
+    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
+    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
+    "at": "2026-11-05T02:31:06Z",
+    "seen": 1
+  },
+  {
+    "id": "page:convertlive-com",
+    "from": "page",
+    "consumed": "convertlive.com",
+    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
+    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
+    "at": "2026-11-05T02:30:05Z",
     "seen": 1
   },
   {
@@ -27,39 +261,12 @@
     "seen": 1
   },
   {
-    "id": "page:live-check-baggage-the-airline-pages-the-baggage",
+    "id": "page:emojigraph-org",
     "from": "page",
-    "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
-    "learned": "2026-11-04: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
-    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-04) did not work",
-    "at": "2026-11-04T20:50:13.093Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-rides-osrm-public-demo-router-router-",
-    "from": "page",
-    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
-    "learned": "2026-11-04: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
-    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-04) worked",
-    "at": "2026-11-04T20:48:43.333Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertunits-com",
-    "from": "page",
-    "consumed": "convertunits.com",
-    "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
-    "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
-    "at": "2026-11-03T14:21:44Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertlive-com",
-    "from": "page",
-    "consumed": "convertlive.com",
-    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
-    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
-    "at": "2026-11-03T14:21:10Z",
+    "consumed": "emojigraph.org",
+    "learned": "emojigraph.org assimilated; Verse's page /emoji-combos/emoji-dictionary/",
+    "retain": "emojigraph.org was assimilated by /emoji-combos/emoji-dictionary/",
+    "at": "2026-11-03T23:37:24Z",
     "seen": 1
   },
   {
