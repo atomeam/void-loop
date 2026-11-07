@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T08:41:04.218Z",
+ "updated": "2026-11-07T08:50:27.771Z",
  "last24h": {
-  "ticks": 109,
-  "started": 121,
+  "ticks": 110,
+  "started": 123,
   "requeued": 0,
   "setAside": 0,
   "probes": 15,
@@ -154,7 +154,8 @@
   "mw62nexd": 1794037487017,
   "mw62nfhb": 1794038048327,
   "mw64zdif": 1794040298353,
-  "mw64zeen": 1794040864218
+  "mw64zeen": 1794040864218,
+  "mw64zfbp": 1794041427771
  },
  "sweptAt": 1794038612754,
  "blueprintsAt": 1794038612754,
@@ -3178,6 +3179,39 @@
     },
     {
      "id": "mw64zeen",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T08:50:27.771Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "want-exam-translate",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 151
+    },
+    {
+     "id": "mw64zfbp",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
