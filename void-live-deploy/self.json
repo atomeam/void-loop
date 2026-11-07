@@ -600,6 +600,10 @@
  },
  "commits": [
   {
+   "at": "2026-11-07T22:09:32Z",
+   "subject": "The journal page also does what an author needs: the guidelines, the board, the policies and the publication-unit calculator"
+  },
+  {
    "at": "2026-11-07T21:31:14Z",
    "subject": "Failed jobs read: run 42415871259 (void-live-deploy/incidents/actions/)"
   },
@@ -674,10 +678,6 @@
   {
    "at": "2026-11-07T21:17:11Z",
    "subject": "Board: versus/ajsonline-page shipped (https://github.com/atomeam/void-loop/pull/2521)"
-  },
-  {
-   "at": "2026-11-07T21:16:32Z",
-   "subject": "Site test: fix: \"play voidquest\" refused: don't know this yet; no .void"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 27,
-  "week": 242
+  "day": 28,
+  "week": 243
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

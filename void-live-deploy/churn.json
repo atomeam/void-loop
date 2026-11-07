@@ -1,5 +1,5 @@
 {
- "at": "2026-11-07T22:08:23.222Z",
+ "at": "2026-11-07T22:17:33.541Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -69,12 +69,12 @@
    "changes": 23
   },
   {
-   "file": "void-live-deploy/bots/registry.json",
+   "file": "void-live-deploy/assimilated.json",
    "changes": 23
   },
   {
-   "file": "void-live-deploy/assimilated.json",
-   "changes": 22
+   "file": "void-live-deploy/bots/registry.json",
+   "changes": 23
   },
   {
    "file": "void-live-deploy/salvage.json",
