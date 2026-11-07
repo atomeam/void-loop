@@ -12,7 +12,6 @@ export const SESSION_MS = SESSION_DAYS * 864e5;
 export { TRIAL_MS };
 
 const GATED = [
-  '/', '/index.html', '/void.html',
   '/team/', '/bots/', '/agent/', '/conquered/', '/tower/', '/tower',
   '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/',
 ];
@@ -25,7 +24,6 @@ const under = (p, base) => p === base || p.startsWith(base.endsWith('/') ? base 
 /** true when this path is a members-only page. Pure. */
 export function gatedPath(pathname) {
   const p = String(pathname || '/').replace(/\/{2,}/g, '/');
-  if (p === '/' || p === '/index.html' || p === '/void.html') return true;
   if (OPEN.some((b) => under(p, b.replace(/\/$/, ''))) || STATIC.some((b) => under(p, b.replace(/\/$/, '')))) return false;
   return GATED.some((b) => b !== '/' && under(p, b.replace(/\/$/, '')));
 }

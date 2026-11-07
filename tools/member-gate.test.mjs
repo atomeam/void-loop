@@ -5,8 +5,8 @@ import assert from 'node:assert/strict';
 import { gatedPath, signSession, readSession, cookieValue, sessionCookie, memberOk, COOKIE } from '../void-live-deploy/lib/member-gate.js';
 
 test('the nav pages are gated; the offer, the API, the join tools and assets are not', () => {
-  for (const p of ['/', '/index.html', '/void.html', '/team/', '/team', '/bots/', '/agent/', '/conquered/', '/tower', '/tower/', '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']) assert.equal(gatedPath(p), true, p);
-  for (const p of ['/join/', '/join/join.js', '/members/', '/store/', '/store/x', '/api/team', '/api/member-session', '/team/join/vj1-abc', '/team/mcp', '/team/agents.txt', '/team/agent.mjs', '/lib/member-gate.js', '/skills/place.js', '/fonts/x.woff', '/verse.css', '/sw.js', '/robots.txt', '/.well-known/security.txt']) assert.equal(gatedPath(p), false, p);
+  for (const p of ['/team/', '/team', '/bots/', '/agent/', '/conquered/', '/tower', '/tower/', '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']) assert.equal(gatedPath(p), true, p);
+  for (const p of ['/', '/index.html', '/void.html', '/join/', '/join/join.js', '/members/', '/store/', '/store/x', '/api/team', '/api/member-session', '/team/join/vj1-abc', '/team/mcp', '/team/agents.txt', '/team/agent.mjs', '/lib/member-gate.js', '/skills/place.js', '/fonts/x.woff', '/verse.css', '/sw.js', '/robots.txt', '/.well-known/security.txt']) assert.equal(gatedPath(p), false, p);
   assert.equal(gatedPath('/towers'), false, 'a longer word is not the Tower');
   assert.equal(gatedPath('/agents.txt'), false, 'not the /agent/ page');
 });
