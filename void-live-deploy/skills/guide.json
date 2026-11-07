@@ -16,8 +16,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 60
+    "checked": 0,
+    "proven": 61
    },
    "from": 6,
    "to": 67
@@ -30,8 +30,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 2,
-    "proven": 41
+    "checked": 1,
+    "proven": 42
    },
    "from": 68,
    "to": 112
@@ -43,9 +43,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 1,
-    "proven": 19
+    "tested": 0,
+    "checked": 0,
+    "proven": 21
    },
    "from": 113,
    "to": 134
@@ -71,9 +71,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 2,
-    "proven": 27
+    "tested": 0,
+    "checked": 0,
+    "proven": 30
    },
    "from": 156,
    "to": 186
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 101
+    "checked": 0,
+    "proven": 102
    },
    "from": 258,
    "to": 360
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 2,
-    "proven": 55
+    "tested": 0,
+    "checked": 1,
+    "proven": 57
    },
    "from": 361,
    "to": 419
@@ -520,7 +520,7 @@
    "tier": "proven",
    "why": "a self-test, 4 browser-suite mentions, 32 real asks in the benchmark",
    "flavor": "Among the making things it is the one a traveller is told to ask for first. The void remembers each asking.",
-   "glow": 100,
+   "glow": 96.9,
    "n": 16
   },
   {
@@ -686,8 +686,9 @@
     "animate a cat chasing yarn",
     "animate waves on a beach at sunset"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Let the stage be the proof.",
    "glow": 100,
    "n": 26
   },
@@ -959,7 +960,7 @@
    ],
    "tier": "proven",
    "why": "1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Let the stage be the proof.",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. Let the stage be the proof.",
    "glow": 100,
    "n": 42
   },
@@ -1044,7 +1045,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 3 askings, each one answered. Let the stage be the proof.",
+   "flavor": "Keep this page; the making things are built on it. Let the stage be the proof.",
    "glow": 100,
    "n": 47
   },
@@ -1331,7 +1332,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the making things are built on it. Let the stage be the proof.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the making things. Let the stage be the proof.",
    "glow": 100,
    "n": 64
   },
@@ -1841,12 +1842,13 @@
    "title": "Magic 8 Ball",
    "line": "The Magic 8 Ball as a thing in the void",
    "examples": [
-    "magic 8 ball should spawn an 8 ball",
-    "magic 8 ball"
+    "magic 8 ball",
+    "shake the 8 ball"
    ],
-   "examplesFrom": "header",
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Of all the games, this one is trusted enough to be taught.",
+   "glow": 100,
    "n": 87,
    "game": {
     "title": "Magic 8 Ball",
@@ -2215,7 +2217,7 @@
     "play rock paper scissors"
    ],
    "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "why": "a self-test, 2 real asks in the benchmark",
    "glow": 100,
    "n": 108
   },
@@ -2548,8 +2550,9 @@
    "line": "A skill of Verse.",
    "examples": [],
    "examplesFrom": "header",
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the sky and earth. So it is written.",
    "glow": 100,
    "n": 127
   },
@@ -2596,8 +2599,9 @@
    "examples": [
     "hide the sky"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the sky and earth; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
    "n": 130
   },
@@ -2763,7 +2767,7 @@
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 34 real asks in the benchmark",
    "flavor": "Asked 34 times in earnest, and never once left unanswered. It has not failed a reader yet.",
-   "glow": 100,
+   "glow": 94.1,
    "n": 139
   },
   {
@@ -3141,7 +3145,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 839 real askings stand behind this page. Ask, and see.",
-   "glow": 99.3,
+   "glow": 98.2,
    "n": 160
   },
   {
@@ -3155,8 +3159,10 @@
     "начислить ндс 5000 20%",
     "ндс 22% от 1000"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the numbers and money. Ask, and see.",
+   "glow": 100,
    "n": 161
   },
   {
@@ -3241,7 +3247,6 @@
    "tier": "proven",
    "why": "a self-test, 10 real asks in the benchmark",
    "flavor": "Of all the numbers and money, this one is trusted enough to be taught. Turn the page when you are done.",
-   "glow": 100,
    "n": 166
   },
   {
@@ -3254,8 +3259,9 @@
     "split a 90 mile drive costing 36 dollars between 3 people",
     "share a 40 km trip that cost 24 dollars 4 ways"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the numbers and money are built on it.",
    "glow": 100,
    "n": 167
   },
@@ -3273,7 +3279,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
    "flavor": "36 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
-   "glow": 100,
+   "glow": 97.2,
    "n": 168
   },
   {
@@ -3541,8 +3547,9 @@
     "a train travels 120 km in 2 hours what is its speed",
     "400 + 562 + 129"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. The void remembers each asking.",
    "glow": 100,
    "n": 184
   },
@@ -5238,12 +5245,12 @@
    "title": "Tab",
    "line": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\", \"draft for me\" (reply, summary, notes, rewrite, proposal: sent to Verse once, said so on the card), and a step for Verse to propose",
    "examples": [
-    "put in the page",
-    "draft for me"
+    "show this tab"
    ],
-   "examplesFrom": "header",
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 3 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Not a boast but a record: 1 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 277
   },
   {
@@ -7033,8 +7040,10 @@
     "system status"
    ],
    "examplesFrom": "header",
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it. The void remembers each asking.",
+   "glow": 100,
    "n": 381
   },
   {
@@ -7135,7 +7144,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 11 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it. The void remembers each asking.",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
    "n": 387
   },
@@ -7571,8 +7580,10 @@
     "play chess",
     "chess"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "1 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
+   "glow": 100,
    "n": 413
   },
   {
@@ -7604,7 +7615,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "flavor": "Proven 2 times over by those who asked, and kept among the verse itself. The void remembers each asking.",
    "glow": 100,
    "n": 415
   },
@@ -8125,8 +8136,8 @@
    "line": "A Magic 8 Ball: glossy black ball, the white \"8\" circle on its back, and on the side facing you a dark window where the answer floats up on the blue triangle",
    "card": "Eightball",
    "examples": [
-    "magic 8 ball should spawn an 8 ball",
-    "magic 8 ball"
+    "magic 8 ball",
+    "shake the 8 ball"
    ],
    "owner": "eightball",
    "ownerPage": 87,
@@ -9160,7 +9171,7 @@
     {
      "rank": 31,
      "name": "tab",
-     "catches": "put in the page"
+     "catches": "show this tab"
     },
     {
      "rank": 32,
