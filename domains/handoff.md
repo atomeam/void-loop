@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- mistrallarge4 · versus/ajsonline-page · /journal/ page: the open-access Earth science journal's own public RSS feed + Crossref search on-device, saved papers; tower lane 'ajsonline.org' -> /journal/ · 2026-11-07 15:10 UTC
 
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
@@ -92,6 +91,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **/journal/ page: the open-access Earth science journal's own public RSS feed + Crossref search on-device, saved papers; tower lane 'ajsonline.org' -> /journal/ (mistrallarge4, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2521.
 - **Translate: a bare word asks which language, and the French phrasing answers (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2512. "translate spring" now opens a card that says no language was named and asks which one (the exam's ambiguous case), "comment dit-on bonjour en anglais" is read as French and answers Hello, and the kept greetings answer in English even when both translators refuse.
 - **Growth card: a touched branch keeps its reading through a bloom, and a late ask fills in (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check holds the answer back until after the touch and fires a bloom while the trunk is selected, so the race is deterministic.
 - **Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) (claude, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2488.
