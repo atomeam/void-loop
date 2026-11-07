@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-16T06:09:19Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
   "at": "2026-10-16T06:26:11Z",
   "passed": 0,
   "of": 25,
@@ -5462,5 +5455,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"yo draw yourself\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T19:16:08Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1210,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11192 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
