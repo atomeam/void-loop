@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-07T21:01:48Z",
+ "sha": "880faf2fc756d4954a0472ec8cf90d48edba8f54",
+ "runId": 42413667588,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42413667588",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128526993959,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42413667588/job/128526993959",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/fix/zapier-422-unprocessable-entity/`: a file or API it needs fails: 404 /api/catalog",
+    "- `/fix/zapier-throttled-429/`: a file or API it needs fails: 404 /api/catalog",
+    "- `/fix/zapier-zap-turned-off-or-held/`: a file or API it needs fails: 404 /api/catalog",
+    "- `/flights/`: a file or API it needs fails: 404 /flights/app.js",
+    "- `/flights/airports/`: a file or API it needs fails: 404 /flights/airports/app.js; a file or API it needs fails: 404 /lib/brain-everywhere.js",
+    "- `/flights/co2/`: a file or API it needs fails: 404 /flights/co2/app.js; a file or API it needs fails: 404 /lib/brain-everywhere.js",
+    "- `/flights/distance/`: a file or API it needs fails: 404 /flights/distance/app.js",
+    "- `/flights/map/`: a file or API it needs fails: 404 /flights/map/app.js",
+    "- `/flights/routes/`: a file or API it needs fails: 404 /flights/routes/app.js",
+    "- `/flights/time/`: a file or API it needs fails: 404 /flights/time/app.js; a file or API it needs fails: 404 /lib/brain-everywhere.js",
+    "- `/flights/trip/`: a file or API it needs fails: 404 /flights/trip/app.js",
+    "- `/g/`: a file or API it needs fails: 404 /lib/gist.js",
+    "- `/generators/`: a file or API it needs fails: 404 /lib/local-ask.js; a file or API it needs fails: 404 /lib/tool-sites.js; a file or API it needs fails: 404 /lib/brain-ask.js; looks unfinished: still says it is loading after the page settled: \"Loading…\"",
+    "- `/generators/chat/`: a file or API it needs fails: 404 /lib/keeper.js; a file or API it needs fails: 404 /lib/character.js; a file or API it needs fails: 404 /generators/chat/app.js; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/generators/forum/`: a file or API it needs fails: 404 /generators/forum/app.js; a file or API it needs fails: 404 /lib/keeper.js; a file or API it needs fails: 404 /lib/comments-ui.js; looks unfinished: still says it is loading after the page settled: \"Loading…\"; not wired into the tools: no \"Us",
+    "- `/generators/make/`: a file or API it needs fails: 404 /lib/comments-ui.js; a file or API it needs fails: 404 /lib/wheel.js; a file or API it needs fails: 404 /lib/merge-rules.js; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/generators/story/`: a file or API it needs fails: 404 /generators/story/app.js; a file or API it needs fails: 404 /lib/story.js; a file or API it needs fails: 404 /lib/keeper.js; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/hosting/`: a file or API it needs fails: 404 /lib/brain-everywhere.js; dead link: 404 /password-strength/",
+    "- `/identity/`: a file or API it needs fails: 404 /lib/brain-everywhere.js; dead link: 404 /password-strength/",
+    "- `/image/`: a file or API it needs fails: 404 /image/app.js; a file or API it needs fails: 404 /lib/comments-ui.js; a file or API it needs fails: 404 /lib/image-handoff.js",
+    "- `/is-it/april-fools-day`: does not open: answers nothing",
+    "- `/is-it/boxing-day`: does not open: answers nothing",
+    "- `/is-it/christmas`: does not open: answers nothing",
+    "- `/is-it/christmas-eve`: does not open: answers nothing",
+    "- `/is-it/easter`: does not open: answers nothing",
+    "- `/is-it/fathers-day`: does not open: answers nothing",
+    "- `/is-it/friday`: does not open: answers nothing",
+    "- `/is-it/groundhog-day`: does not open: answers nothing",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

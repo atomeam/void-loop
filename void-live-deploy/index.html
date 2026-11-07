@@ -2773,10 +2773,12 @@ say('nothing selected to remove');
     // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
     const pageHost = (u) => { try { return /^https?:\/\//i.test(String(u)) ? new URL(u).hostname : ''; } catch (_) { return ''; } };
     // page: the tab the Verse extension read for this ask (title, url, selection, field, text); answered about that page, not the web
-    async function showAnswer(text, page) {
+    async function showAnswer(text, page, heading) {
+      // heading: a short name for the card when the ask itself is too long to be one (a summed-up paste); the ask still goes to the server
+      const head = heading || text;
       // a page sent for an answer left the browser: say so on the card (Adam, 2026-10-09: local by default, flag what leaves)
       const about = page ? (page.title ? '<div class="sub">about: ' + esc(page.title) + '</div>' : '') + '<div class="sub page-sent">this page was sent to a-to-mind.com for this answer · not kept</div>' : '';
-      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<div class="sub">thinking…</div>'; });
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(head) + '</h2>' + about + '<div class="sub">thinking…</div>'; });
       say(page ? 'reading the page' : 'looking up');
       let j = null, sentBefore = false;
       try {
@@ -2797,17 +2799,17 @@ say('nothing selected to remove');
       if (j && j.noAnswer && !page) {
         const g = String(j.guess || '').slice(0, 120);
         el.dataset.notFound = '1';
-        el.innerHTML = '<h2>' + esc(text) + '</h2><p>I could not find \u201c' + esc(String(text).replace(/[?!.]+$/, '').slice(0, 120)) + '\u201d.</p>'
+        el.innerHTML = '<h2>' + esc(head) + '</h2>' + (heading ? '<p>I could not sum that up just now.</p>' : '<p>I could not find \u201c' + esc(String(text).replace(/[?!.]+$/, '').slice(0, 120)) + '\u201d.</p>')
           + (g ? '<p>Did you mean <a href="#" data-ask="' + esc('tell me about ' + g) + '">' + esc(g) + '</a>?</p>' : '')
           + '<p class="thin" style="color:#8a8a8a;font-size:13px">A clue helps: where you saw it, who is in it, what it is.</p>';
         say(''); reportMiss(text, 'none'); return 'answer';
       }
-      if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text, true); }
+      if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(head) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text, true); }
       const srcs = (j.sources || []).filter((s) => /^https:\/\/[^\s"'<>]+$/i.test(String(s.url || ''))).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
-      const flat = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, ''), shown = j.name && flat(j.name).length > 2 && (flat(text).includes(flat(j.name)) || flat(j.name).includes(flat(text))) ? String(j.name) : text; // the thing's own name, cased, when it is what was asked
-      el.innerHTML = '<h2>' + esc(shown) + '</h2>' + about + (j.fuzzy ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">A guess: nothing I read names \u201c' + esc(String(text).slice(0, 80)) + '\u201d exactly.</p>' : '') + fixHtml(j.answer)
+      const flat = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9]+/g, ''), shown = heading ? heading : j.name && flat(j.name).length > 2 && (flat(text).includes(flat(j.name)) || flat(j.name).includes(flat(text))) ? String(j.name) : text; // the thing's own name, cased, when it is what was asked
+      el.innerHTML = '<h2>' + esc(shown) + '</h2>' + about + (j.fuzzy ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">A guess: nothing I read names \u201c' + esc(String(head).slice(0, 80)) + '\u201d exactly.</p>' : '') + fixHtml(j.answer)
         + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Verse' : j.told ? 'from what you told me · written by Verse' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Verse' : 'written by Verse, from what it knows') + '</div>';
       // a real, licensed picture of a real place, animal, event or work (lib/free-pics.js, chosen by the server from the fetched source): the art box shows it, with its credit and an "archive photo" label; never for a character or a person
       if (j.pic && /^https:\/\//i.test(String(j.pic.url || '')) && !page) {
@@ -6590,7 +6592,7 @@ say('nothing selected to remove');
       // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
       const pk = await pasteReady(), paste = pk ? pk.pasteKind(typed) : null;
       { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words
-        if (lp && Date.now() < lp.until && !paste && pk && pk.sumsItUp(typed)) { currentAsk = lp.text; showAnswer(lp.text).then((src) => { if (src === 'none') reportMiss('[paste]', lookedUp()); }); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste summed up' }); return; } }
+        if (lp && Date.now() < lp.until && !paste && pk && pk.sumsItUp(typed)) { currentAsk = lp.text; showAnswer(lp.text, null, pk.summaryHeading ? pk.summaryHeading(lp.text) : 'What you pasted, summed up').then((src) => { if (src === 'none') reportMiss('[paste]', lookedUp()); }); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste summed up' }); return; } }
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js).
       // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
       { const sh = await shareReady(); const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }

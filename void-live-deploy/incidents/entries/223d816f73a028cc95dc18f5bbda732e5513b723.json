@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-07T21:50:54.589Z",
+ "sha": "223d816f73a028cc95dc18f5bbda732e5513b723",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42416002800",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "docs/PARITY/calculator.net.md",
+  "domains/handoff.md",
+  "tools/tower-topic.test.mjs",
+  "tools/vat.test.mjs",
+  "void-live-deploy/calculator/index.html",
+  "void-live-deploy/lib/tower.js",
+  "void-live-deploy/lib/vat.js"
+ ],
+ "shards": [
+  2
+ ]
+}
