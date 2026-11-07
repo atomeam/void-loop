@@ -1,0 +1,24 @@
+fox | sdxl-lightning | 70.5 | 3569ms | 1024x1024 | distorted and melted anatomy of the fox's legs and chest
+fox | schnell | 98 | 1988ms | 1024x1024 | none
+fox | klein-4b | 86.5 | 6014ms | 1024x1024 | unnatural fur texture and slightly distorted facial symmetry
+hands | sdxl-lightning | 48.5 | 3650ms | 1024x1024 | extra and deformed fingers merging into the mug
+hands | schnell | 64 | 2068ms | 1024x1024 | deformed fingers and unnatural hand structure
+hands | klein-4b | 64 | 4751ms | 1024x1024 | extra fingers and merged hands
+sign | sdxl-lightning | 44 | 3750ms | 1024x1024 | garbled and misspelled text
+sign | schnell | 91 | 2373ms | 1024x1024 | slight warping of the letter 'N' and chain attachment
+sign | klein-4b | 64 | 7124ms | 1024x1024 | garbled text 'OPENM'
+astronaut | sdxl-lightning | 78 | 6133ms | 1024x1024 | only one moon visible
+astronaut | schnell | 89 | 2127ms | 1024x1024 | slightly unnatural lighting on the horse
+astronaut | klein-4b | 73.5 | 7880ms | 1024x1024 | only one moon visible
+anime | sdxl-lightning | 93.5 | 4409ms | 1024x1024 | slight anatomical distortion in the arm/shoulder connection
+anime | schnell | 82 | 5004ms | 1024x1024 | garbled text on book and anatomical issues with hand
+anime | klein-4b | 95.5 | 9808ms | 1024x1024 | minor text garble on book cover
+still | sdxl-lightning | 80 | 4155ms | 1024x1024 | duplicated fruit slices and warped fruit shapes
+still | schnell | 98 | 3077ms | 1024x1024 | none
+still | klein-4b | 84.5 | 5598ms | 1024x1024 | warped fruit shapes and merged textures
+market | sdxl-lightning | 75 | 4301ms | 1024x1024 | garbled text and distorted character silhouettes
+market | schnell | 88.5 | 2138ms | 1024x1024 | distorted text on stall signs
+market | klein-4b | 95.5 | 12670ms | 1024x1024 | minor texture noise in dark areas
+robot | sdxl-lightning | 66.5 | 4935ms | 1024x1024 | the robot's hand is a melted, nonsensical shape and the plant is growing out of 
+robot | schnell | 91 | 2277ms | 1024x1024 | slight anatomical merging at the robot's arm and watering can
+robot | klein-4b | 91 | 7901ms | 1024x1024 | water stream physics and connection to spout
