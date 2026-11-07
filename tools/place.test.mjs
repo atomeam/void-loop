@@ -9,14 +9,18 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const KYOTO = { name: 'Kyoto', admin1: 'Kyoto', country: 'Japan', latitude: 35.02107, longitude: 135.75385, population: 1459640 };
 const KYOTO_US = { name: 'Kyoto', admin1: 'Texas', country: 'United States', latitude: 30.1, longitude: -97.2, population: 120 };
 const LOUVRE = { name: 'Louvre', admin1: 'Île-de-France', country: 'France', latitude: 48.86, longitude: 2.336, population: 0 };
-const PLACES = { Kyoto: [KYOTO_US, KYOTO], Louvre: [LOUVRE] };
+const SPRINGFIELD_IL = { name: 'Springfield', admin1: 'Illinois', country: 'United States', latitude: 39.8, longitude: -89.65, population: 114394 };
+const SPRINGFIELD_MO = { name: 'Springfield', admin1: 'Missouri', country: 'United States', latitude: 37.21, longitude: -93.29, population: 169724 };
+const PARIS_FR = { name: 'Paris', admin1: 'Île-de-France', country: 'France', latitude: 48.85, longitude: 2.35, population: 2138551 };
+const PARIS_TX = { name: 'Paris', admin1: 'Texas', country: 'United States', latitude: 33.66, longitude: -95.55, population: 24807 };
+const PLACES = { Kyoto: [KYOTO_US, KYOTO], Louvre: [LOUVRE], kioto: [KYOTO_US, KYOTO], Springfield: [SPRINGFIELD_IL, SPRINGFIELD_MO], Paris: [PARIS_FR, PARIS_TX] };
 const withGeo = async (fn, fail) => { const real = globalThis.fetch, urls = []; globalThis.fetch = async (u) => { urls.push(String(u)); if (fail) throw new Error('offline'); const n = new URL(u).searchParams.get('name'); return { json: async () => (PLACES[n] ? { results: PLACES[n] } : {}) }; }; try { return await fn(urls); } finally { globalThis.fetch = real; } };
 const apiOf = () => { const pages = [], misses = []; return { pages, misses, esc, reportMiss: (t) => misses.push(t), showPage: (fn) => { const el = { innerHTML: '', querySelectorAll: () => [] }; fn(el); pages.push(el); return el; }, _pageStill: () => true }; };
 
 test('examples taken, and the asks it should and should not take', () => {
   for (const e of place.examples) assert.ok(place.match(e.toLowerCase(), e), e);
   for (const n of place.nearMisses || []) assert.ok(!place.match(n.toLowerCase(), n), n); // place.js lists no nearMisses of its own; the hand-written ones follow
-  for (const a of ['show me a street map of Porto', 'where are the Azores', 'neighbourhood around Shibuya', 'take me to Lisbon', 'how can i get to the airport']) assert.ok(place.match(a.toLowerCase(), a), a);
+  for (const a of ['show me a street map of Porto', 'where are the Azores', 'neighbourhood around Shibuya', 'take me to Lisbon', 'how can i get to the airport', 'mapa de kioto', '¿dónde está Kioto?', 'muéstrame Kioto en un mapa']) assert.ok(place.match(a.toLowerCase(), a), a);
   for (const a of ['area of a circle with radius 5', 'area of a 10 by 12 room', 'dependency map', 'where is my phone', 'where are you', 'directions to work', 'how do i get to sleep']) assert.ok(!place.match(a.toLowerCase(), a), a);
   // a question about maps is not a place: "what is a map" is no street map of "what is a"
   for (const a of ['what is a map', "what's a map", 'How to read a map?', 'why is the map wrong', 'which map', 'is it a map', 'map of what is that']) assert.ok(!place.match(a.toLowerCase(), a), a);
@@ -31,8 +35,26 @@ test('run "where is Kyoto": the biggest Kyoto, zoomed for a city of a million, t
     assert.ok(h.includes('<h2>Kyoto</h2><div class="sub">Japan</div>'), h); // admin1 equal to the name is not repeated
     assert.match(h, /bbox=135\.5738\d*,34\.9130\d*,135\.9338\d*,35\.1290\d*&/); // ±0.18 lon, ±0.108 lat
     assert.ok(h.includes('marker=35.02107,135.75385'), h); assert.ok(h.includes('#map=11/35.02107/135.75385'), h);
-    assert.ok(h.includes('Other places with this name: <a href="#" data-alt="0">Kyoto, Texas, United States</a>'), h);
+    assert.ok(h.includes('Several places share this name; others: <a href="#" data-alt="0">Kyoto, Texas, United States</a>'), h);
     assert.ok(!h.includes('Directions:'), h);
+  });
+});
+
+test('run "mapa de kioto": the Spanish map ask reaches Kyoto', async () => {
+  await withGeo(async (urls) => {
+    const api = apiOf(); assert.equal(await place.run('mapa de kioto', api), 'place');
+    assert.ok(urls[0].includes('name=kioto'), urls[0]);
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('<h2>Kyoto</h2>'), h);
+  });
+});
+
+test('an ambiguous name says several places share it, so the reader is asked which', async () => {
+  await withGeo(async () => {
+    const a = apiOf(); assert.equal(await place.run('map of Springfield', a), 'place');
+    assert.match(a.pages[0].innerHTML, /Several places share this name; others:/);
+    const b = apiOf(); assert.equal(await place.run('show me Paris on a map', b), 'place');
+    assert.match(b.pages[0].innerHTML, /Several places share this name; others:/);
   });
 });
 

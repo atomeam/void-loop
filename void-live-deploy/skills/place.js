@@ -5,8 +5,11 @@
 import { placeTries } from '../lib/where.js';
 import { km } from './distance.js';
 function placeOf(text) {
-  const t = text.trim().replace(/[?!.]+$/, '');
+  const t = text.trim().replace(/^[¿¡]+/, '').replace(/[?!.]+$/, '');
   const m = t.match(/^(?:show\s+(?:me\s+)?)?(?:a\s+|the\s+)?(?:street\s+)?map\s+(?:of|for)\s+(.+)$/i)
+    || t.match(/^(?:mu[eé]strame|mostrar|ver)\s+(.+?)\s+en\s+(?:un\s+)?mapa$/i) // Spanish: "muéstrame Kioto en un mapa"
+    || t.match(/^mapa\s+(?:de|del|de\s+la)\s+(.+)$/i) // Spanish: "mapa de kioto"
+    || t.match(/^d[oó]nde\s+(?:est[aá]|queda|se\s+encuentra)\s+(.+)$/i) // Spanish: "¿dónde está Kioto?"
     || t.match(/^where\s+(?:is|are|'s)\s+(.+)$/i)
     || t.match(/^(?:streets|neighbou?rhood|area)\s+(?:around|near|of)\s+(.+)$/i)
     || t.match(/^show\s+(?:me\s+)?(.+?)\s+on\s+(?:a\s+|the\s+)?map$/i)
@@ -99,7 +102,7 @@ function draw(el, r, others, api, dir, route, origin) {
   const alt = others.filter((o) => o !== r).slice(0, 4);
   el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + esc(label(r).split(', ').slice(1).join(', ')) + '</div>'
     + '<iframe title="map" src="' + src + '" style="width:100%;height:340px;border:0;border-radius:10px;margin:8px 0;filter:saturate(.85)" loading="lazy"></iframe>'
-    + (alt.length ? '<div class="sub">Other places with this name: ' + alt.map((o, i) => '<a href="#" data-alt="' + i + '">' + esc(label(o)) + '</a>').join(' · ') + '</div>' : '')
+    + (alt.length ? '<div class="sub">Several places share this name; others: ' + alt.map((o, i) => '<a href="#" data-alt="' + i + '">' + esc(label(o)) + '</a>').join(' · ') + '</div>' : '')
     + (dir ? '<p class="dir-route">' + esc(route || 'Route on openstreetmap.org.') + '</p><p class="dir-links">Directions: <a href="https://www.openstreetmap.org/directions?to=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">Google Maps</a> <span class="sub">(starts from where you are)</span></p>' : '')
     + '<div class="src">Source: <a href="' + big + '" target="_blank" rel="noopener">OpenStreetMap</a></div>';
   el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => {
@@ -152,7 +155,7 @@ async function run(text, api) {
 
 export default {
   name: 'place',
-  examples: ['map of Lisbon', 'where is Kyoto', 'streets around Penn Station', 'Paris map', 'show Tokyo on a map', 'how do I get to Kyoto', 'directions to the Louvre'],
+  examples: ['map of Lisbon', 'where is Kyoto', 'streets around Penn Station', 'Paris map', 'show Tokyo on a map', 'how do I get to Kyoto', 'directions to the Louvre', 'mapa de Kioto'],
   match(lower, text) { return !!(directionsTo(text) || placeOf(text)); },
   run
 };
