@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1205,
+ "counted": 1206,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2401,7 +2401,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/visible.js",
@@ -3483,6 +3483,13 @@
   },
   {
    "file": "lib/join-watch.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/journal.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -9465,6 +9472,10 @@
     "skills/showcase.js",
     "skills/walker.js"
    ]
+  },
+  "lib/journal.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/kanban-ui.js": {
    "imports": [
