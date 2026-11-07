@@ -1,19 +1,5 @@
 [
  {
-  "at": "2026-10-16T05:13:33Z",
-  "passed": 0,
-  "of": 26,
-  "kind": "tighten",
-  "note": "load ceiling 15000 -> 1900 ms"
- },
- {
-  "at": "2026-10-16T05:25:04Z",
-  "passed": 0,
-  "of": 26,
-  "kind": "tighten",
-  "note": "fps floor 1 -> 3"
- },
- {
   "at": "2026-10-16T05:48:40Z",
   "passed": 0,
   "of": 25,
@@ -5392,5 +5378,40 @@
    "failed": []
   },
   "note": "fix: \"film metadata for ikiru pls\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-11-07T18:30:06Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1201,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-07T18:39:20Z",
+  "passed": 99,
+  "of": 101,
+  "ms": 336,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1201,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"geenrate a toon style dog\" (skill:cartoon)"
  }
 ]
