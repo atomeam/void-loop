@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T15:33:37.396Z",
+ "updated": "2026-11-07T15:42:57.286Z",
  "last24h": {
   "ticks": 147,
   "started": 181,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw546kng": 1793979670513,
   "mw546l9r": 1793980389220,
   "mw546lyb": 1793981031354,
   "mw546mkf": 1793981864391,
@@ -204,10 +203,11 @@
   "mw6gp0xs": 1794061673897,
   "mw6j1y1p": 1794064487966,
   "mw6j1z2b": 1794065050256,
-  "mw6j205o": 1794065617396
+  "mw6j205o": 1794065617396,
+  "mw6j21ag": 1794066177286
  },
- "sweptAt": 1794062235735,
- "blueprintsAt": 1794062235735,
+ "sweptAt": 1794066177286,
+ "blueprintsAt": 1794066177286,
  "visitorAt": "2026-11-07T10:40:07Z",
  "visitorFiled": [
   "review:2109",
@@ -292,41 +292,6 @@
   "probe:can-i-use-this-for-web4"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T15:41:10.513Z",
-   "open": 242,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 98
-    },
-    {
-     "id": "mw546kng",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [
-    "verse-podcast.yml",
-    "shorts.yml"
-   ],
-   "sweep": true,
-   "held": 14,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T15:53:09.220Z",
    "open": 242,
@@ -4425,6 +4390,39 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T15:42:57.286Z",
+   "open": 259,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    },
+    {
+     "id": "mw6j21ag",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 77,
    "warnings": 1
