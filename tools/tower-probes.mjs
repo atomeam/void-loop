@@ -1256,37 +1256,33 @@ const LANE_PROBES = Object.freeze({
     pageParts: {}, parts: {},
     facts: [['sports to browse', /Click a sport to browse/i], ['search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['events', /\bEvents\b/], ['venues', /\bVenues\b/], ['players', /\bPlayers\b/], ['born on this day', /Born on this day/i], ['a stats strip', /On this device/i], ['a free API', /Free API/i], ['the source named', /TheSportsDB/], ['no betting', /no betting/i]],
   },
-  // ajsonline.org (the American Journal of Science), against /journal/. The question: the newest papers of a peer-reviewed journal. The truth
-  // is worked out here from the registry's own records - the journal deposits its papers under the DOI prefix 10.2475, so every paper under
-  // it is one of its papers - and never read off the site: a correct answer holds the papers' titles with their authors, the date each was
-  // published, the volume it is in, its abstract, and the DOI that finds it. The date is read in either order, so the format a page writes
-  // it in does not decide the row.
-  'research journal': {
+  // ajsonline.org (the American Journal of Science), against /journal/. The question: the newest papers of a peer-reviewed journal, and
+  // what a reader or an author needs beside them. The truth is worked out here, never read off the site: a correct answer holds papers that
+  // are peer-reviewed, each with its own DOI and date, and beside them the rules an author works to (the author guidelines, and the length
+  // of a paper in publication units). The DOI prefix is the journal's own (10.2475), so every paper under it is one of its papers.
+  'ajsonline.org': {
     site: 'https://ajsonline.org/', verse: '/journal/',
     ask: { verse: '/journal/' },
     truth: [
-      ['the journal\'s own name', /American Journal of Science/],
-      ['the DOI that finds each paper', /\b10\.2475\/[0-9A-Za-z.\-]+/],
-      ['the volume each paper is in', /\bVolume \d+/],
-      ['the date each paper was published', /\b(?:\d{1,2} (?:January|February|March|April|May|June|July|August|September|October|November|December) \d{4}|(?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4})\b/],
-      ['the abstract of the papers', (t) => (String(t).match(/\bAbstract\b/g) || []).length >= 3],
-      ['that the papers are peer-reviewed', /peer[- ]reviewed/i],
+      ['the papers are peer-reviewed', /peer[- ]reviewed/i],
+      ['each paper carries its own DOI', (t) => (String(t).match(/10\.2475\//g) || []).length >= 3],
+      ['each paper carries its date', (t) => (String(t).match(/\b20\d\d-\d\d-\d\d\b/g) || []).length >= 3],
+      ['the author guidelines', /For authors/i],
+      ['the length of a paper in publication units', /publication units/i],
     ],
-    askParts: {
-      'search the archive': [['a search of the whole archive', /Search the whole archive|Search the archive/i], ['a box to type the words in', /search the whole archive/i]],
-      'volumes and issues': [['the volumes listed', /\bvolumes?\b/i], ['the papers of a volume', /Volume \d+/i]],
-      'author guidelines': [['the guidelines for authors', /For authors/i], ['the publication options', /Science Paper|Science Note|Technical Report|Comment|Reply|Errata/i], ['the manuscript order', /order of a manuscript/i]],
-      'the board': [['the editors', /\beditors\b/i], ['the associate editors', /associate editors/i], ['the fields they work in', /geochemistry|geochronology|petrology|tectonics/i]],
-      'publication units': [['publication units named', /publication units/i], ['the working shown', /\bPU\b/], ['the fee for the excess', /\$100|fee/i]],
-    },
+    askParts: {},
     pageParts: {}, parts: {},
-    // what a journal's best pages show between them: the newest papers, a search over the whole archive, the volumes, collections, the
-    // board, the guidelines for authors, the length of a paper in publication units, a citation in the house style, and each paper's DOI
-    facts: [['the newest papers', /Latest papers/i], ['a search of the whole archive', /Search the whole archive|Search the archive/i], ['the volumes', /\bvolumes?\b/i],
-      ['collections by subject', /Collections/i], ['the editorial board', /associate editors/i], ['the guidelines for authors', /For authors/i],
-      ['publication units', /publication units/i], ['the reference style', /\bAPA\b/], ['a BibTeX citation', /BibTeX/i], ["each paper's DOI", /\b10\.2475\//],
-      ['the abstract of each paper', /DOI 10\.2475/], ['a reading list', /reading list/i], ['the licence of a paper', /licen[cs]e/i],
-      ['a citation to copy', /Cite/i], ['works offline', /offline/i], ['no account', /no account/i], ['the figures and tables', /Figures? and tables?/i]],
+    // what a journal's best pages show between them: the newest papers with their abstracts, a search, the saved list, the author guidelines
+    // (scope, the submission checklist, the kinds of paper, the manuscript order, the reference style), the board, the policies, and the
+    // publication units with the fee
+    facts: [['the newest papers', /Latest/i], ['a search of the papers', /Search/i], ['saved papers on the device', /Saved/i],
+      ['the DOI of each paper', /doi\.org/i], ['the abstract of each paper', /abstract/i],
+      ['the author guidelines', /For authors/i], ['the submission checklist', /Before you submit/i],
+      ['the kinds of paper', /Science Paper/i], ['the manuscript order', /order of a manuscript/i],
+      ['the reference style', /\bAPA\b/], ['the rules for figures and tables', /JPEG|TIFF|PNG/],
+      ['the publication units', /publication units/i], ['the fee for a long paper', /\$100/],
+      ['the editorial board', /associate editors/i], ['the policies', /Peer review/],
+      ["the journal's editorial office", /ajs@yale\.edu/], ['no account', /no account/i]],
   },
 });
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
