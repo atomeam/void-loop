@@ -600,8 +600,32 @@
  },
  "commits": [
   {
-   "at": "2026-11-07T18:15:52Z",
-   "subject": "growth: a touched branch keeps its reading through a bloom and a late ask"
+   "at": "2026-11-07T18:37:34Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-07T18:37:21Z",
+   "subject": "growth: a touched branch keeps its reading through a bloom and a late ask (#2511)"
+  },
+  {
+   "at": "2026-11-07T18:35:33Z",
+   "subject": "Failed jobs read: run 42398692773 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T18:35:17Z",
+   "subject": "Incident: the browser suite failed on c3341541 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-07T18:20:12Z",
+   "subject": "Site test: fix: \"film metadata for ikiru pls\" refused: don't know this"
+  },
+  {
+   "at": "2026-11-07T18:18:09Z",
+   "subject": "Outcome exam: translate 89.2"
+  },
+  {
+   "at": "2026-11-07T18:16:48Z",
+   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
   },
   {
    "at": "2026-11-07T18:12:20Z",
@@ -650,38 +674,14 @@
   {
    "at": "2026-11-07T17:40:34Z",
    "subject": "Board: claude/project-thread-xv0wrv shipped (https://github.com/atomeam/void-loop/pull/2488)"
-  },
-  {
-   "at": "2026-11-07T17:40:18Z",
-   "subject": "Unbidden: turn Gemma's thinking off and accept a reply that comes back parsed (#2488)"
-  },
-  {
-   "at": "2026-11-07T17:32:14Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T17:27:05Z",
-   "subject": "Failed jobs read: run 42395190404 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T17:26:45Z",
-   "subject": "Incident: the browser suite failed on 70e346b1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-07T17:23:09Z",
-   "subject": "Outcome exam: translate 89.2"
-  },
-  {
-   "at": "2026-11-07T17:19:00Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-07T17:12:49Z",
-   "subject": "Mark verify-pack shipped with main SHA 88d65a6 (#2498)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Growth card: a touched branch keeps its reading through a bloom, and a late…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check…"
+   },
    {
     "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
@@ -701,10 +701,6 @@
    {
     "name": "Blank home, videos keep playing (cursor, 2026-11-05)",
     "line": "the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was.…"
-   },
-   {
-    "name": "Phone panel and tray drag (cursor, 2026-11-05)",
-    "line": "a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands.…"
    }
   ],
   "ladders": [
@@ -917,7 +913,7 @@
   "source": "verse"
  },
  "tower": {
-  "target": "oneyeard.com",
+  "target": "protopage.com",
   "since": "2026-11-07",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [

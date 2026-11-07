@@ -4162,20 +4162,6 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 13
-    },
-    {
-     "name": "monitor-pack",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-11-07",
-     "last_tested_by": "the daily smoke test"
-    },
-    {
-     "name": "verify-pack",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-11-07",
-     "last_tested_by": "the daily smoke test"
     }
    ]
   },
