@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T17:39:40.142Z",
+ "updated": "2026-11-07T17:49:06.893Z",
  "last24h": {
   "ticks": 148,
-  "started": 176,
+  "started": 175,
   "requeued": 0,
   "setAside": 0,
   "probes": 21,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794012175978,
   "mvpuqb4r": 1794012744966,
   "mvvjzso8": 1794013309503,
-  "mw5822ks": 1793987241757,
   "mw5am4wo": 1793989248311,
   "mw5am5lx": 1793989815865,
   "mw5am6br": 1793991153326,
@@ -203,8 +202,8 @@
   "mw6led6f": 1794069185480,
   "mw6njzvr": 1794071493896
  },
- "sweptAt": 1794069804763,
- "blueprintsAt": 1794069804763,
+ "sweptAt": 1794073746893,
+ "blueprintsAt": 1794073746893,
  "visitorAt": "2026-11-07T17:16:43Z",
  "visitorFiled": [
   "versus:hexen.ai",
@@ -289,32 +288,6 @@
   "versus:live-video.net"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T17:47:21.757Z",
-   "open": 243,
-   "started": [
-    {
-     "id": "mw5822ks",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "held": 238,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T17:56:44.905Z",
    "open": 242,
@@ -4419,6 +4392,26 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 259,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T17:49:06.893Z",
+   "open": 266,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 259,
    "warnings": 1
