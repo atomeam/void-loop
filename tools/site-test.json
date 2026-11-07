@@ -336,6 +336,9 @@
     },
     {
       "ask": "yo draw yourself"
+    },
+    {
+      "ask": "draw yourself pls"
     }
   ],
   "candidates": [],
