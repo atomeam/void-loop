@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T12:35:12.816Z",
+ "updated": "2026-11-07T12:44:39.823Z",
  "last24h": {
-  "ticks": 131,
-  "started": 155,
+  "ticks": 132,
+  "started": 156,
   "requeued": 0,
   "setAside": 0,
-  "probes": 18,
+  "probes": 19,
   "errors": 0
  },
  "broken": [],
@@ -3902,6 +3902,33 @@
    "setAside": 0,
    "healed": [],
    "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 77,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T12:44:39.823Z",
+   "open": 256,
+   "started": [
+    {
+     "id": "want-idea-f167636764",
+     "kind": "tv",
+     "wf": "verse-job.yml",
+     "score": 89
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
    "grow": false,
    "will": false,
    "lap": false,
