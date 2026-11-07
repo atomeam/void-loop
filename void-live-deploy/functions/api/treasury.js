@@ -8,11 +8,13 @@
 //   'executed' { id, actual, return_score }   a ready spend was paid, and later what it actually returned (return_score = actual / expected)
 //   'cancel'   { id, why }              drop a ready spend; its money goes back to its bucket
 //   'paid'     { cents, note }          Atom's owner cut handed over (out of the owner pot)
+//   'given'    { cents, to, note }      a gift Atom sent from the giving pot to a charity's own donation page (to: the charity's name)
 // Verse holds no card, no login and no payment credential: spends are logged as 'ready to execute' with what they need.
 import { ownerOk } from '../../lib/guard.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { realized, balances, bucketWeights, split, queueSpends, review } from '../../lib/treasury.js';
 import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
+import { SERVICES, usdcText } from '../../lib/x402.js';
 
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
 const RECONCILE_MS = 6 * 3600e3;
@@ -97,7 +99,8 @@ async function walletView(env) {
   if (!w) return { address: null, note: 'Verse has no wallet yet: x402 calls stay closed until one exists' };
   const units = await usdcBalance(env, w.address);
   return { address: w.address, source: w.source, note: w.note, network: 'Base', asset: 'USDC', balance_units: units, balance_cents: units == null ? null : Number(BigInt(units) / 10000n),
-    explorer: 'https://basescan.org/address/' + w.address, sells: '/api/x402' };
+    explorer: 'https://basescan.org/address/' + w.address, sells: '/api/x402',
+    services: Object.entries(SERVICES).map(([id, s]) => ({ id, path: s.path, price_usdc: usdcText(s.units), description: s.description })) };
 }
 
 function publicView(policy, s, env) {
@@ -182,6 +185,14 @@ export async function onRequestPost({ request, env }) {
       await env.DB.prepare('INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, ?, ?, ?, ?, ?)').bind('pd:' + now, now, 'paid', 'owner', cents, 'owner cut handed to Atom' + (body.note ? ': ' + String(body.note).slice(0, 200) : ''), 'paid').run();
       return json({ ok: true });
     }
-    return json({ error: 'unknown action', actions: ['reconcile', 'review', 'executed', 'cancel', 'paid'] }, 400);
+    if (body.action === 'given') {
+      const cents = Math.round(Number(body.cents) || 0), to = String(body.to || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 120);
+      if (!(cents > 0) || !to) return json({ error: 'cents > 0 and to' }, 400);
+      const have = balances(await ledger(env)).pots.giving || 0;
+      if (cents > have) return json({ error: 'the giving pot holds ' + have + ' cents' }, 409);
+      await env.DB.prepare('INSERT INTO void_treasury (id, at, kind, bucket, cents, purpose, status) VALUES (?, ?, ?, ?, ?, ?, ?)').bind('gv:' + now, now, 'given', 'giving', cents, 'given to ' + to + (body.note ? ': ' + String(body.note).slice(0, 200) : ''), 'given').run();
+      return json({ ok: true });
+    }
+    return json({ error: 'unknown action', actions: ['reconcile', 'review', 'executed', 'cancel', 'paid', 'given'] }, 400);
   } catch (_) { return json({ error: 'treasury unavailable' }, 503); }
 }

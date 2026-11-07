@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0c10; --card: #161b22; --accent: #58a6ff; --good: #3fb950; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: #e6edf3; font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  #stage { position: relative; width: 100vw; height: 100vh; }
+  .verse-card {
+    position: absolute; width: 92px; height: 68px; border-radius: 10px;
+    background: var(--card); border: 1px solid #30363d; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; font-size: 11px; user-select: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,.4); transition: box-shadow .2s, border-color .2s;
+    pointer-events: none;
+  }
+  .verse-card.pulse { border-color: var(--good); box-shadow: 0 0 18px var(--good); }
+  .verse-card .id { font-weight: 600; color: var(--accent); }
+  .verse-card .fit { font-size: 10px; opacity: .7; }
+  #hud {
+    position: fixed; top: 12px; left: 12px; background: rgba(22,27,34,.85); padding: 10px 14px;
+    border-radius: 8px; font-size: 12px; z-index: 10; max-width: 280px; backdrop-filter: blur(4px);
+  }
+  button {
+    background: #21262d; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px;
+    padding: 6px 12px; cursor: pointer; margin-top: 6px; font-size: 12px;
+  }
+  button:hover { background: #30363d; }
+  #status { margin-top: 6px; opacity: .8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F547: Orientation-MLP Boid DOM Genome Mind · Verse lab</title>
+<meta name="description" content="A swarm of living DOM Verse cards that behave as Reynolds boids (cohesion / separation / alignment).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F547: Orientation-MLP Boid DOM Genome Mind · Verse lab">
+<meta property="og:description" content="A swarm of living DOM Verse cards that behave as Reynolds boids (cohesion / separation / alignment).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f547-orientation-mlp-boid-dom-genome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f547-orientation-mlp-boid-dom-genome/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage"></div>
+<div id="hud">
+  <div><strong>F547 Boid Genome Mind</strong></div>
+  <div id="status">Initializing…</div>
+  <div>Cohesion <span id="coh">0.00</span> · Sep <span id="sep">0.00</span> · Align <span id="ali">0.00</span></div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Weights</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F547: Orientation-MLP Boid DOM Genome Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

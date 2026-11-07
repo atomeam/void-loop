@@ -1,0 +1,63 @@
+{
+ "attempt": "live",
+ "occasion": 3,
+ "at": "2026-11-07T11:11:47.904Z",
+ "family": "make",
+ "skill": "image-gen",
+ "service": "a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them)",
+ "ask": "can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line",
+ "request": [
+  "https://a-to-mind.com/api/image",
+  "https://a-to-mind.com/image/",
+  "https://a-to-mind.com/image/app.js"
+ ],
+ "status": 200,
+ "ms": 9362,
+ "checksPass": true,
+ "ok": false,
+ "left": 157,
+ "page": {
+  "status": 200,
+  "make": true,
+  "pics": true,
+  "app": true,
+  "handoff": false
+ },
+ "script": {
+  "status": 200,
+  "changeIt": true,
+  "sendsChange": true,
+  "shrinks": true
+ },
+ "paint": {
+  "status": 200,
+  "state": "art",
+  "why": null,
+  "sayKnown": false,
+  "painter": "workers-ai",
+  "w": 1024,
+  "h": 1024,
+  "ref": "ac59942d3b7dbd14948d9e56358e8bfc7fef3da0c0606d0c7779ef9c911bb075",
+  "cached": false,
+  "change": null,
+  "img": {
+   "type": "image/jpeg",
+   "bytes": 760580,
+   "w": 1024,
+   "h": 1024,
+   "sha256": "35b2bba72af795d5ccd016ba9353f16a1f21e11f8d819cd148ef9f0fbcf1ff6e"
+  }
+ },
+ "copy": {
+  "ok": false,
+  "tool": null,
+  "type": null,
+  "w": null,
+  "h": null,
+  "bytes": null,
+  "why": "no image tool on the runner (magick, convert, ffmpeg missing or failed)"
+ },
+ "change": null,
+ "again": null,
+ "error": ""
+}

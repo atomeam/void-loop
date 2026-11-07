@@ -1,5 +1,5 @@
 /**
- * podcast skill - Verse Out Loud, Verse's own weekly podcast (owner, 2026-10-21: "Verse should make its own podcast").
+ * podcast skill - Verse Out Loud, Verse's own daily podcast (owner, 2026-10-21: "Verse should make its own podcast").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * The episodes are made by tools/podcast.mjs from the public record only (growth ledger, proven asks, Verse's own daily readout,
  * the incident log) and voiced with Piper, an open-source voice that runs on the CI machine (no account, no cost). The card plays the
@@ -56,8 +56,14 @@ async function playShow(text, api) {
   const asked = latestEpisodeOf(text); if (!asked) return false;
   const { showPage } = api;
   const el = showPage((p) => { p.dataset.cardKind = 'Podcast'; p.innerHTML = '<h2>Podcast</h2><p class="sub">Finding the latest episode of ' + escH(asked.show) + '…</p>'; });
-  let ep = null, show = null, found = null;
+  let ep = null, show = null, found = null, one = null;
   try {
+    // one ask first (/api/podcasts?latest=: the directory, the show and the newest episode together, cached on the edge); the older two-step
+    // path (search, then the whole feed) runs only when that ask itself could not be read
+    one = await fetch('/api/podcasts?latest=' + encodeURIComponent(asked.show)).then((r) => r.json()).catch(() => null);
+    if (one && one.ok && one.episode) { ep = one.episode; show = one.show; found = one; }
+  } catch (_) {}
+  if (!ep && !(one && one.ok === false)) try {
     found = await fetch('/api/podcasts?q=' + encodeURIComponent(asked.show)).then((r) => r.json());
     show = pickShow(found && found.shows, asked.show);
     if (show) {
@@ -75,7 +81,7 @@ async function playShow(text, api) {
   el.innerHTML = '<h2>Podcast</h2>'
     + '<p class="hear-title" style="font-size:1.1em;margin:0 0 2px;overflow-wrap:anywhere"><b>' + escH(ep.title) + '</b></p>'
     + '<p class="hear-artist" style="margin:0 0 8px">' + escH(show.title) + (show.author ? ' · ' + escH(show.author) : '') + '</p>'
-    + '<audio class="hear-audio" controls preload="metadata" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
+    + '<audio class="hear-audio" controls preload="auto" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
     + '<p><button type="button" class="hear-play">Play</button></p>'
     + '<div class="src">' + sourceLine(found && found.source) + '</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
@@ -89,7 +95,7 @@ async function run(text, api) {
   let all = [];
   try { all = (await fetch('/podcast/episodes.json', { cache: 'no-cache' }).then((r) => r.json())).episodes || []; } catch (_) {}
   if (api._pageStill && !api._pageStill(el)) return 'podcast';
-  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the weekly podcast workflow.</p>'; return 'podcast'; }
+  if (!all.length) { el.innerHTML = '<h2>Verse Out Loud</h2><p>No episode yet: the first one is made by the daily podcast workflow.</p>'; return 'podcast'; }
   const show = (n) => {
     const ep = all.find((e) => e.n === n) || all[all.length - 1];
     el.innerHTML = cardHtml(ep, all, esc, location.origin);

@@ -14,6 +14,7 @@
  * Pure: no fetch, no storage. Tests: tools/team-crew.test.mjs.
  */
 
+import { slugOf } from './watch-build.js'; // a TV or radio idea's blueprint job is tv:<slug> (tools/watch-build.mjs queues it)
 export const CREW = Object.freeze([
   { id: 'c7e0000000a1', slug: 'tower-scout', name: 'TowerScout', every: 240, channel: 'tower', lane: 'tower',
     about: 'Crew · runs on Verse\'s clock. Maps rival sites (robots and sitemaps, the whole site), reads the Tower and files the gaps as jobs.' },
@@ -148,7 +149,10 @@ export function wantsOf(ev = {}) {
     want({ key, lane: 'idea', title: 'Build "' + s(idea.topic, 60) + '" onto a-to-mind.com, linked to a paid product',
       why: 'Verse noted on ' + s(idea.show || idea.station, 60) + ': ' + s(idea.note, 220) + '. Extend the page that already covers it (combine pages); build new only if none fits.',
       done: 'The change is live on a-to-mind.com and links one of: ' + PRODUCTS.map((p) => p.name).join(', ') + '.',
-      cite: [{ what: 'Verse\'s TV and radio notes', url: 'https://a-to-mind.com/api/watchalong?kind=idea' }], metric: { id: 'joblive:want-' + key, label: 'the build is live', better: 'up', value: 0 } });
+      cite: [{ what: 'Verse\'s TV and radio notes', url: 'https://a-to-mind.com/api/watchalong?kind=idea' }], metric: { id: 'joblive:want-' + key, label: 'the build is live', better: 'up', value: 0 },
+      // one build, not two (the owner asked on 2026-11-06 for every blueprint to build by itself): the idea is built
+      // by the blueprint lane's own tv: job, so the want adopts that job when it exists and files one in that lane when it does not
+      target: ('tv:' + slugOf(idea.topic)).slice(0, 40) });
   }
   return out;
 }
@@ -180,7 +184,7 @@ export const improved = (better, baseline, value) => num(value) != null && num(b
 /** the build-queue job for a want: { id, target, ask } (the ask cites its source and names its number) */
 export function jobOf(w) {
   const id = 'want-' + w.key;
-  return { id, target: w.kind + ':' + id, ask: s(w.title + '. Why: ' + w.why + ' Done when: ' + w.done + ' Source: ' + w.cite.map((c) => c.url).join(' '), 900) };
+  return { id, target: w.target || w.kind + ':' + id, ask: s(w.title + '. Why: ' + w.why + ' Done when: ' + w.done + ' Source: ' + w.cite.map((c) => c.url).join(' '), 900) };
 }
 /** the #work post that files a want */
 export function wantPost(w, bot) {

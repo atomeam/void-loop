@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #f7f7f5; --card: #fff; --text: #1a1a1a; --muted: #666; --accent: #0d6efd; --done: #6c757d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.4; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 1.5rem; margin: 0 0 8px; }
+  .small { font-size: 0.85rem; color: var(--muted); margin: 0 0 16px; }
+  label { display: block; font-size: 0.9rem; margin: 12px 0 4px; }
+  input, select, button { font: inherit; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; width: 100%; }
+  button { background: var(--accent); color: #fff; border: none; cursor: pointer; }
+  button.secondary { background: #eee; color: var(--text); }
+  button.danger { background: #dc3545; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .row > * { flex: 1; min-width: 120px; }
+  .cats { margin-top: 20px; }
+  .cat { background: var(--card); border-radius: 8px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .cat h2 { font-size: 1rem; margin: 0 0 8px; }
+  .item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid #eee; }
+  .item:last-child { border-bottom: none; }
+  .item input[type=checkbox] { width: auto; }
+  .item span { flex: 1; }
+  .item.done span { text-decoration: line-through; color: var(--done); }
+  .item button { width: auto; padding: 2px 8px; font-size: 0.8rem; background: transparent; color: #dc3545; border: none; }
+  .progress { font-size: 0.9rem; margin: 8px 0; color: var(--muted); }
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121212; --card: #1e1e1e; --text: #eee; --muted: #aaa; --accent: #4d9fff; --done: #888; }
+    input, select { background: #2a2a2a; color: var(--text); border-color: #444; }
+    button.secondary { background: #333; color: var(--text); }
+  }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Packing list maker · Verse lab</title>
+<meta name="description" content="Job: Choose trip length, type and conditions to get a suggested packing list you can edit, tick off, save on this device, copy as text or download as CSV.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Packing list maker · Verse lab">
+<meta property="og:description" content="Job: Choose trip length, type and conditions to get a suggested packing list you can edit, tick off, save on this device, copy as text or download as CSV.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f615-packing-list-maker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f615-packing-list-maker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>Packing list maker</h1>
+  <p class="small">Suggestions based on trip type and conditions. Edit freely. Everything stays on this device. Not a substitute for checking travel requirements.</p>
+
+  <label for="tripName">Trip name</label>
+  <input id="tripName" type="text" placeholder="e.g. Beach week in July">
+
+  <div class="row">
+    <div>
+      <label for="days">Days</label>
+      <input id="days" type="number" min="1" max="60" value="7">
+    </div>
+    <div>
+      <label for="type">Trip type</label>
+      <select id="type">
+        <option value="beach">Beach / vacation</option>
+        <option value="hiking">Hiking / outdoors</option>
+        <option value="city">City / sightseeing</option>
+        <option value="business">Business</option>
+        <option value="winter">Winter / ski</option>
+        <option value="road">Road trip</option>
+      </select>
+    </div>
+    <div>
+      <label for="weather">Weather</label>
+      <select id="weather">
+        <option value="hot">Hot</option>
+        <option value="mild">Mild</option>
+        <option value="cold">Cold</option>
+        <option value="wet">Wet / rainy</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <button id="generate">Generate list</button>
+    <button id="addCustom" class="secondary">Add custom item</button>
+  </div>
+
+  <div id="progress" class="progress"></div>
+  <div id="list" class="cats"></div>
+
+  <div class="row" style="margin-top:20px">
+    <button id="copy" class="secondary">Copy unchecked</button>
+    <button id="copyAll" class="secondary">Copy full list</button>
+    <button id="download" class="secondary">Download CSV</button>
+    <button id="clear" class="danger">Clear all</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

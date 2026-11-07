@@ -291,6 +291,51 @@
     },
     {
       "ask": "yo draw a cartoon cat"
+    },
+    {
+      "ask": "yo draw me a robot"
+    },
+    {
+      "ask": "draw me a robot pls"
+    },
+    {
+      "ask": "yo make a 2d toon dog"
+    },
+    {
+      "ask": "make a 2d toon dog pls"
+    },
+    {
+      "ask": "yo create a toon style bird"
+    },
+    {
+      "ask": "create a toon style bird pls"
+    },
+    {
+      "ask": "yo funny cartoon dog"
+    },
+    {
+      "ask": "funny cartoon dog pls"
+    },
+    {
+      "ask": "yo render a cartoon dragon"
+    },
+    {
+      "ask": "redner a cartoon dragon"
+    },
+    {
+      "ask": "yo style like mickey mouse"
+    },
+    {
+      "ask": "style like mickey mouse pls"
+    },
+    {
+      "ask": "stlye like mickey mouse"
+    },
+    {
+      "ask": "geenrate a toon style dog"
+    },
+    {
+      "ask": "yo draw yourself"
     }
   ],
   "candidates": [],

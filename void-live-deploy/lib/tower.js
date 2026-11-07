@@ -24,6 +24,9 @@ export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'a
 const HAND_FLOORS = [
   // the tutorial floors (2026-10-23): one-trick sites, the first fights, so the climb starts where a whole site can be out-done
   { id: 'is it', site: 'isitchristmas.com', url: 'https://isitchristmas.com/', ask: 'is it christmas?', page: '/is-it/christmas', label: 'Is it…?', glyph: '?', fatality: 'a midnight wave across 36 places and your own flag turning with your pointer, that the site cannot do', extra: ['big answer', 'local language'] },
+  // the smallest site found so far (2026-11-06, owner: "find the easiest site to assimilate"): icanhazip.com's home page is your address as plain text,
+  // 0 interactive elements and about 14 bytes; Verse answers the same way at /ip for curl and also as a page for a person and as JSON
+  { id: 'my ip', site: 'icanhazip.com', url: 'https://icanhazip.com/', ask: 'what is my ip', page: '/ip', label: 'My IP', glyph: '@', fatality: 'the same plain-text address for curl, plus a page a person can read and JSON on ask, from one address, never stored', extra: ['plain text for scripts'] },
   { id: 'coin flip', learned: "a fair coin has to be checkable: every flip from the device's secure random numbers, a real coin's two faces shown one at a time, and the gate learned to find a coin however a site flips it and read a side that is only drawn", site: 'justflipacoin.com', url: 'https://justflipacoin.com/', ask: 'flip a coin', page: '/random/coin/', label: 'Coin flip', glyph: '◐', fatality: 'any real coin ever minted with its real faces, a coin you design yourself, and what it is worth', extra: ['flip animation', 'flip history'] },
   { id: 'random number', learned: "true randomness has to be checkable, not taken on trust: a public draw from the drand beacon that anyone can re-derive from its round, in any base and in columns", site: 'random.org', url: 'https://www.random.org/', ask: 'random number 1-100', page: '/random/?min=1&max=100', label: 'Random number', glyph: '#', fatality: 'no repeats, a list picked from or shuffled, and a link that holds the whole setting', extra: ['range choice', 'true randomness'] },
   { id: 'word count', learned: "a sentence does not end at Mr., U.S. or 3.5, and counting belongs on a page that counts as you type and works offline, not in a one-line answer", site: 'wordcounter.net', url: 'https://wordcounter.net/', ask: 'word count: the quick brown fox', page: '/word-count/', label: 'Word count', glyph: '¶', extra: ['live counting', 'characters and sentences'] },
@@ -228,6 +231,9 @@ export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || [
   'wheelroot.com': '/learn-to-draw/',
   // onlineconverter.com (106 file and unit tools, each an upload to its server) is assimilated by /converter/, the same 106 tools listed with what Verse does on the device (domains/targets/onlineconverter.json)
   'onlineconverter.com': '/converter/',
+  // dalyfeds.com ("H5 Center", a game portal page with three ad scripts) is taken on by /starboard/, a live benchmark of both sites and Verse's own weather, news,
+  // games and tools on one tracker-free page (domains/targets/dalyfeds.json)
+  'dalyfeds.com': '/starboard/',
 });
 // the aspects a lane site's own page is asked about, when they are not its leader's (the leader's extras are for the leader's page): sports: thesportsdb.com, a sports database
 // that browses by sport and searches across all of them, is not asked about live scores
@@ -390,16 +396,20 @@ export function frontierPage(x) {
 // `features` is tower.features.json (tools/site-crawl.mjs; owner, 2026-11-03: "the fact we missed the site does that shows a flaw that we arent
 // actually even looking at the whole sites"): each site's whole-site crawl and the features on it Verse lacks. A site with a missing feature is
 // never conquered (it stays "Passed (missing N)") and the site being assimilated is not passed while one is missing.
-export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null, passedIds = null, features = null) {
+// `season` is the date the tower was cleared (tower.target.json season; owner, 2026-11-06: "clear and reset your damn verse screens", after every
+// fight on it had been a giant page): from then a site counts as surpassed or passed only once tools/tower-target.mjs has passed it again in the
+// season (passedIds), smallest first, so the screen fills from the smallest site up and never shows a giant it reached before the smallest ones.
+// gateBeaten and gateCleared keep what the gate alone says, for tower-target to pass an earned site in its turn.
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null, passedIds = null, features = null, season = null) {
   const crawlOf = (f) => (features && features.sites ? features.sites[hostOf(f.url) || hostOf(f.site)] || null : null);
-  const kept = new Set(passedIds || []); // tower.target.json `passed`: a site the Tower passed stays passed (a later loss files a fix, never a move back)
+  const kept = new Set(passedIds || []), inSeason = (f) => !season || kept.has(f.id); // tower.target.json `passed`: a site the Tower passed stays passed (a later loss files a fix, never a move back)
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
   const under = (m, f) => (m && m[f.id]) || (f.aka && m && m[f.aka]) || undefined;
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...frontierPage(x), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), ...crawlFields(crawlOf(f)), beaten: g.beaten && !f.held && !missOf(crawlOf(f)).length, cleared: !f.held && !(g.beaten && !missOf(crawlOf(f)).length) && ((g.cleared && !missOf(crawlOf(f)).length) || kept.has(f.id) || g.beaten), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), ...crawlFields(crawlOf(f)), gateBeaten: g.beaten && !f.held && !missOf(crawlOf(f)).length, gateCleared: !f.held && ((g.cleared && !missOf(crawlOf(f)).length) || g.beaten), beaten: inSeason(f) && g.beaten && !f.held && !missOf(crawlOf(f)).length, cleared: inSeason(f) && !f.held && !(g.beaten && !missOf(crawlOf(f)).length) && ((g.cleared && !missOf(crawlOf(f)).length) || kept.has(f.id) || g.beaten), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   // the queue ranks on measured rows only (2026-10-29): a loss against the default bar (the site turned the gate away, barRow) stays a loss on the
@@ -423,11 +433,16 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // a site counted by tools/tower-size.mjs (controls and bytes) by its controls, then its bytes; then a site only weighed, by its weight; then an
   // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
   // came. Without it the old order stands.
+  // size is the site's own (2026-11-06: outlook.live.com, #33 of the million and never weighed, stood first as "the easiest site left" because a
+  // lane site took its leader's size, calendar.google.com's 10 controls): a lane site never borrows a weight; only its work left follows the lane
+  // a giant's front door is not its size (2026-11-06: calendar.google.com and docs.google.com read 10 controls, the sign-in landing in front of the
+  // app): a site in the top 1,000 most visited stands behind every smaller one, however few controls its door shows
+  const giant = (f) => (rank && f.tier >= 3 ? 1 : 0);
   const pinned = (f) => (target && f.id === target && !f.held && !f.cleared ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
   const counted = (f) => !!f.size && rankableControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2), a row not rendered, a bot wall or a country picker is not counted
   const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
   const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
-  const queue = all.filter((f) => !f.beaten && !f.cleared).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), past = all.filter((f) => f.cleared), floors = won.concat(past, queue);
+  const queue = all.filter((f) => !f.beaten && !f.cleared).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || giant(a) - giant(b) || tierOf(a) - tierOf(b) || ctrlOf(a) - ctrlOf(b) || lightOf(a) - lightOf(b) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), past = all.filter((f) => f.cleared), floors = won.concat(past, queue);
   // pinned: the target (tower.target.json) stands first because it is the target, not because it is the smallest, so the card says which
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f.cleared ? 'passed' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten && !f.cleared; });
   return { floors, marker: won.length + past.length + 1, beaten: won.length, passed: past.length, total: floors.length, open: true };
@@ -449,5 +464,13 @@ export const outclassLine = (t, lastId = null) => {
 };
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
- *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */
-export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null, ft = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : null, ft && ft.sites ? ft : null];
+ *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card.
+ *  gn is tower.gone.json (tools/tower-alive.mjs): a frontier site whose domain is gone or parked is not a floor at all (owner, 2026-11-06:
+ *  "why are we going against a site we have established isnt there?"). Pure. */
+export const goneHosts = (gn) => Object.keys((gn && gn.gone) || {}).map((h) => String(h).toLowerCase().replace(/^www\./, '')).filter(Boolean);
+export const withoutGone = (fr, gn) => {
+  const gone = goneHosts(gn); if (!gone.length || !fr) return fr;
+  const off = (x) => { const h = hostOf(x && (x.site || x.host)); return !!h && gone.some((g) => h === g || h.endsWith('.' + g)); };
+  return Array.isArray(fr) ? fr.filter((x) => !off(x)) : Array.isArray(fr.sites) ? { ...fr, sites: fr.sites.filter((x) => !off(x)) } : fr;
+};
+export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null, ft = null, gn = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, withoutGone(fr, gn), (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : tg && tg.season ? [] : null, ft && ft.sites ? ft : null, tg && tg.season ? String(tg.season.start || tg.season) : null];

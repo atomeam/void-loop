@@ -1,7 +1,7 @@
 {
- "at": "2026-11-05T13:35:00.099Z",
+ "at": "2026-11-07T12:00:47.438Z",
  "mode": "live",
- "pass": 54,
+ "pass": 53,
  "total": 54,
  "results": [
   {
@@ -97,7 +97,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "\"Bohemian Rhapsody\" is a song by British rock band Queen from their fourth studio album, A"
+    "answer": "\"Bohemian Rhapsody\" is the penultimate song from British rock band Queen's fourth studio a"
    },
    "redirect": "none"
   },
@@ -358,14 +358,14 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": true,
+   "photo": false,
    "api": {
     "name": "World War II",
     "desc": "Global conflict from 1939 to 1945",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [],
     "answer": "World War II, or the Second World War, was a global conflict between two coalitions: the A"
    },
@@ -413,7 +413,7 @@
   },
   {
    "ask": "happy time harry",
-   "ok": true,
+   "ok": false,
    "kind": "Character",
    "title": "Happy Time Harry",
    "theme": "collectible",
@@ -430,7 +430,19 @@
     ],
     "answer": "Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Me"
    },
-   "redirect": "List of Aqua Teen Hunger Force characters"
+   "redirect": "List of Aqua Teen Hunger Force characters",
+   "seen": {
+    "called": 1,
+    "failed": [
+     "http://127.0.0.1:42573/build.json?v=1794052656787 net::ERR_ABORTED",
+     "http://127.0.0.1:42573/ net::ERR_ABORTED"
+    ],
+    "bad": [],
+    "text": "HAPPY TIME HARRY CHARACTER Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Meatwad due to his low pr …  1 OF 9 FRESH Reply to what I said, or correct me Send Kept on this device only. My self card lists it under Correct me."
+   },
+   "problems": [
+    "is missing its \"Adds to Verse\" line"
+   ]
   },
   {
    "ask": "sideshow raheem",
@@ -546,7 +558,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "Rahul Sharad Dravid is an Indian former cricket player who captained and head-coached the "
+    "answer": "Goundamani and Senthil were an Indian comedic duo who were popular in Tamil cinema in the "
    },
    "redirect": "none"
   },
@@ -688,7 +700,7 @@
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature · Show",
+   "kind": "Creature",
    "title": "Blue whale",
    "theme": "specimen",
    "photo": true,
@@ -790,7 +802,7 @@
    "kind": "Food · Band",
    "title": "Orange juice",
    "theme": "specimen",
-   "photo": true,
+   "photo": false,
    "api": {
     "name": "Orange juice",
     "desc": "Juice made from oranges",

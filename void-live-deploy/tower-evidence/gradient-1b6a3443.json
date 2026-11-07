@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 161,
-   "best": 397,
-   "evidence": "Verse (/color/gradient/) 161 ms to the load event (median of 3, phone width) vs colorzilla.com 397 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "verse": 152,
+   "best": 610,
+   "evidence": "Verse (/color/gradient/) 152 ms to the load event (median of 3, phone width) vs colorzilla.com 610 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/color/gradient/) 3 of 3 loads answered vs colorzilla.com 3 of 3 loads answered",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/color/gradient/) 0 px sideways overflow at 390 px vs colorzilla.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 2,
    "evidence": "Verse (/color/gradient/) 0 unnamed controls or images vs colorzilla.com 2 unnamed controls or images",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/color/gradient/) 1 (1: the page shows itself again with the network cut) vs colorzilla.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,15 +46,15 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/color/gradient/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorzilla.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "design polish": {
    "verdict": "better",
-   "verse": 9,
+   "verse": 0,
    "best": 47,
-   "evidence": "Verse (/color/gradient/) 9 design defects vs colorzilla.com 47 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.00), colorzilla.com (28 low-contrast texts, 19 small tap targets, layout shift 0.00)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "evidence": "Verse (/color/gradient/) 0 design defects vs colorzilla.com 47 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), colorzilla.com (28 low-contrast texts, 19 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   },
   "stops with opacity": {
@@ -62,7 +62,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/color/gradient/) 2 of 2 shown vs colorzilla.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -72,7 +72,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/color/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -82,7 +82,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/color/gradient/) 1 of 1 shown vs colorzilla.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "of": 1,
    "part": true,
    "siteRead": true
@@ -92,7 +92,7 @@
    "verse": 15,
    "best": 14,
    "evidence": "Verse (/color/gradient/) 15 of 17 things a full answer shows vs colorzilla.com 14 of 17 things a full answer shows (Verse lacks: Orientation, Colour format; site lacks: conic, text contrast, Colour format)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "of": 17,
    "siteRead": true
   },
@@ -101,7 +101,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/color/gradient/) 2 of 2 right against the worked-out answer; judged against the standard, not colorzilla.com (the site is not asked)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "of": 2
   },
   "wider use": {
@@ -109,7 +109,7 @@
    "verse": 9,
    "best": 4,
    "evidence": "Verse (/color/gradient/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs colorzilla.com 4 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T14:44:46.176Z",
+   "at": "2026-11-07T13:09:40.950Z",
    "siteRead": true
   }
  }

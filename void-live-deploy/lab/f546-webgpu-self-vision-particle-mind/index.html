@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(10,10,20,0.75); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 320px; }
+  button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 6px; }
+  button:hover { background: #3a3a6a; }
+  #status { margin-top: 6px; font-size: 11px; opacity: 0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F546: WebGPU Self-Vision Particle Mind · Verse lab</title>
+<meta name="description" content="A WebGPU compute particle swarm (Canvas2D fallback) whose shared tiny pure-JS MLP controller receives, each frame, a downsampled &quot;retina&quot; of the previous rendered">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F546: WebGPU Self-Vision Particle Mind · Verse lab">
+<meta property="og:description" content="A WebGPU compute particle swarm (Canvas2D fallback) whose shared tiny pure-JS MLP controller receives, each frame, a downsampled &quot;retina&quot; of the previous rendered">
+<meta property="og:url" content="https://a-to-mind.com/lab/f546-webgpu-self-vision-particle-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f546-webgpu-self-vision-particle-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <strong>Verse · F546 Self-Vision Particle Mind</strong><br>
+  Particles observe the frame they just drew and steer themselves.<br>
+  <button id="seal">Seal weights</button>
+  <button id="reset">Reset mind</button>
+  <div id="status">Initializing…</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F546: WebGPU Self-Vision Particle Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

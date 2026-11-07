@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; cursor:crosshair; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; }
+button { background:#224; color:#cef; border:1px solid #46a; padding:6px 12px; margin:4px; cursor:pointer; }
+#status { font-size:12px; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze Predictive MLP Agents · Verse lab</title>
+<meta name="description" content="Interactive spatial canvas where user gaze (WebXR inputSources or pointer proxy) is predicted by per-agent local tiny MLPs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze Predictive MLP Agents · Verse lab">
+<meta property="og:description" content="Interactive spatial canvas where user gaze (WebXR inputSources or pointer proxy) is predicted by per-agent local tiny MLPs.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f550-webxr-gaze-predictive-mlp-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f550-webxr-gaze-predictive-mlp-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="xrBtn">Enter WebXR</button>
+  <button id="resetBtn">Reset Agents</button>
+  <div id="status">Pointer-as-gaze. Move to train predictors.</div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze Predictive MLP Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

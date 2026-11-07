@@ -47,6 +47,13 @@ for (const n of [1, 99, 4900, 123457]) {
   assert.equal(s.reduce((t, r) => t + r.cents, 0), n, 'every cent of ' + n);
   assert.equal((s.find((r) => r.bucket === 'owner') || { cents: 0 }).cents, Math.floor(n * policy.owner_cut.share));
 }
+// giving: a tenth of what is left after Atom's cut, taken after the cut (which stays exact) and before the reserve
+{ const s = split(10000, policy, { weights: w }), g = s.find((r) => r.bucket === 'giving');
+  assert.equal(policy.giving.share, 0.1); assert.equal(g.cents, Math.floor((10000 - Math.floor(10000 * policy.owner_cut.share)) * 0.1));
+  assert.ok(s.findIndex((r) => r.bucket === 'giving') < s.findIndex((r) => r.bucket === 'reserve'), 'giving before the reserve');
+  assert.equal(split(10000, { ...policy, giving: undefined }, { weights: w }).find((r) => r.bucket === 'giving'), undefined, 'no pledge, no pot');
+  const b = balances([{ kind: 'alloc', bucket: 'giving', cents: 700 }, { kind: 'given', bucket: 'giving', cents: 500 }]);
+  assert.equal(b.pots.giving, 200, 'a recorded gift leaves the giving pot'); }
 const full = split(10000, policy, { weights: w, pots: { reserve: policy.reserve.target_cents } });
 assert.ok(full.find((r) => r.bucket === 'reserve').cents < split(10000, policy, { weights: w }).find((r) => r.bucket === 'reserve').cents, 'a full reserve takes less');
 // a refund comes out of the reserve first and never takes a pot below zero

@@ -30,6 +30,7 @@
   .fails li { margin: 4px 0; }
   svg { width: 100%; height: 72px; }
   .note { color: var(--soft); font-size: 14px; }
+  #when { min-height: 42px; } #chart:empty { min-height: 113px; } @media (max-width: 700px) { #when { min-height: 63px; } #chart:empty { min-height: 134px; } } #rows td.wait { height: 100svh; } /* the run line, the chart and the rows fill in from the ledger: hold their space so the table does not jump */
   nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 22px; }
 </style>
 </head>
@@ -41,7 +42,7 @@
   <div id="chart"></div>
   <table>
     <thead><tr><th>Domain</th><th>Public</th><th>Holdout</th><th>Measured</th><th>Failing asks</th></tr></thead>
-    <tbody id="rows"></tbody>
+    <tbody id="rows"><tr><td colspan="5" class="wait">Reading the scores…</td></tr></tbody>
   </table>
   <h2>What failed</h2>
   <div id="fails"></div>

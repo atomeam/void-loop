@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#arena { position:relative; width:100vw; height:100vh; }
+.agent {
+  position:absolute; width:120px; height:80px; border-radius:12px;
+  background:hsl(var(--hue),70%,40%); border:2px solid #fff3;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  font-size:12px; cursor:pointer; user-select:none; transition:transform 0.05s linear;
+  box-shadow:0 4px 12px #0006;
+}
+.agent .id { font-weight:bold; }
+.agent .fit { font-size:10px; opacity:0.8; }
+#ui { position:fixed; top:10px; left:10px; z-index:10; background:#111a; padding:8px; border-radius:8px; font-size:13px; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #445; border-radius:4px; cursor:pointer; }
+button:hover { background:#334; }
+#log { position:fixed; bottom:10px; left:10px; max-width:400px; max-height:100px; overflow:auto; font-size:11px; background:#0008; padding:4px; border-radius:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Multi-Agent Local RNN DOM Competition Mind · Verse lab</title>
+<meta name="description" content="Slug: multiagent-rnn-dom-competition-mind">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Multi-Agent Local RNN DOM Competition Mind · Verse lab">
+<meta property="og:description" content="Slug: multiagent-rnn-dom-competition-mind">
+<meta property="og:url" content="https://a-to-mind.com/lab/f567-multiagent-rnn-dom-competition-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f567-multiagent-rnn-dom-competition-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="seal">Seal to IndexedDB</button>
+  <button id="add">Add Agent</button>
+  <button id="reset">Reset</button>
+  <button id="tilt">Tilt Proxy</button>
+  <button id="absorb">Force Absorb Top→Bottom</button>
+  <div id="status">Agents: 0 | Best fit: 0</div>
+</div>
+<div id="arena"></div>
+<div id="log"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Multi-Agent Local RNN DOM Competition Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -30,7 +30,8 @@
   th { font-size: 12px; color: #a3a0b3; font-weight: 600; }
   .st { white-space: nowrap; font-weight: 600; }
   .st.surpassed { color: #64d19f; } .st.passed { color: #8fd0ff; } .st.assimilated { color: #a58bff; } .st.tried { color: #a3a0b3; }
-  td small { display: block; color: #a3a0b3; }
+  td small { display: block; color: #a3a0b3; } td a { padding-inline: 3px; } /* a short path such as /g/ is still 24 px wide to tap */
+  #rows td.wait { height: 100svh; vertical-align: top; } /* the one "Reading the list…" row holds the space the list takes, so nothing below it jumps */
   @media (max-width: 640px) { thead { display: none; } tr { display: block; border-bottom: 1px solid #2c2938; padding: 6px 0; } td { display: block; border: 0; padding: 2px 4px; } }
 </style><style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
@@ -39,7 +40,7 @@
 <main>
   <nav class="top" aria-label="Versus"><a href="/conquered/">← Versus</a> · <a href="/">Verse</a> · <a href="/tools/">All tools</a> · <a href="/assimilated.json">The list as JSON</a></nav>
   <h1>Assimilated</h1>
-  <p class="lead" id="lead">Every site Verse has assimilated or tried to, newest first. Written by Versus itself after every run.</p>
+  <p class="lead" id="lead">… sites: … conquered (all aspects), … passed (ahead on everything measured, conquering in background), … assimilated into a Verse page, … tried and not taken. Newest first, written by Versus itself after every run. Now assimilating: … (the same target as the Versus card).</p><!-- the same sentence the list fills in, so the page does not jump when it does -->
   <div class="bar">
     <input id="find" type="search" placeholder="Find a site, page or family" aria-label="Find a site, page or family">
     <select id="show" aria-label="Show">
@@ -51,7 +52,7 @@
   </div>
   <table>
     <thead><tr><th>When</th><th>Site</th><th>What came of it</th><th>Verse page</th><th>Ease when picked</th><th>Recorded in</th></tr></thead>
-    <tbody id="rows"><tr><td colspan="6">Reading the list…</td></tr></tbody>
+    <tbody id="rows"><tr><td colspan="6" class="wait">Reading the list…</td></tr></tbody>
   </table>
   <p class="note" id="foot"></p>
   <noscript><p>The list is <a href="/assimilated.json">/assimilated.json</a>.</p></noscript>
