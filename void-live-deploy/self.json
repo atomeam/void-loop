@@ -600,84 +600,84 @@
  },
  "commits": [
   {
+   "at": "2026-11-07T22:18:44Z",
+   "subject": "Failed jobs read: run 42419780856 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:18:10Z",
+   "subject": "The journal page carries the visit beacon, and the hand-off gaps follow it"
+  },
+  {
+   "at": "2026-11-07T22:17:48Z",
+   "subject": "Outcome exam: videos 56.7"
+  },
+  {
+   "at": "2026-11-07T22:17:46Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next oneyeard.com (the target)"
+  },
+  {
+   "at": "2026-11-07T22:16:16Z",
+   "subject": "Failed jobs read: run 42419780861 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:15:11Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 2 walled, 6 not-judged); the model answered 401 on 6 of 8 reads, so…"
+  },
+  {
+   "at": "2026-11-07T22:15:10Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-11-07T22:14:55Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-11-07T22:14:27Z",
+   "subject": "Failed jobs read: run 42419466946 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:14:20Z",
+   "subject": "Failed jobs read: run 42417209240 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T22:12:19Z",
+   "subject": "Failed jobs read: run 42419466920 (void-live-deploy/incidents/actions/)"
+  },
+  {
    "at": "2026-11-07T22:09:32Z",
    "subject": "The journal page also does what an author needs: the guidelines, the board, the policies and the publication-unit calculator"
   },
   {
-   "at": "2026-11-07T21:31:14Z",
-   "subject": "Failed jobs read: run 42415871259 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-07T22:09:25Z",
+   "subject": "Incident: the browser suite failed on 7a963d4e (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-07T21:29:56Z",
-   "subject": "Failed jobs read: run 42415646747 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-07T22:04:24Z",
+   "subject": "Site test: fix: \"play connect four\" only \"waking up\" appeared, never th"
   },
   {
-   "at": "2026-11-07T21:28:42Z",
-   "subject": "Board: helper/ndscalc-lane-f90f shipped (https://github.com/atomeam/void-loop/pull/2294)"
+   "at": "2026-11-07T21:55:33Z",
+   "subject": "Outcome exam: podcasts 68.9"
   },
   {
-   "at": "2026-11-07T21:28:12Z",
-   "subject": "ndscalc.ru is the calculator's VAT mode, worked out on the device (#2294)"
+   "at": "2026-11-07T21:51:16Z",
+   "subject": "Failed jobs read: run 42416002800 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T21:28:05Z",
-   "subject": "Failed jobs read: run 42413667595 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-07T21:50:55Z",
+   "subject": "Incident: the browser suite failed on 223d816f (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-07T21:27:22Z",
-   "subject": "Failed jobs read: run 42415871260 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-07T21:44:41Z",
+   "subject": "Failed jobs read: run 42416488886 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T21:26:39Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-07T21:43:57Z",
+   "subject": "Failed jobs read: run 42417209258 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T21:26:14Z",
-   "subject": "Failed jobs read: run 42415802902 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:25:50Z",
-   "subject": "Failed jobs read: run 42415393923 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:25:42Z",
-   "subject": "Failed jobs read: run 42415646806 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:25:29Z",
-   "subject": "Failed jobs read: run 42415646812 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:24:25Z",
-   "subject": "Failed jobs read: run 42415605452 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:23:50Z",
-   "subject": "Failed jobs read: run 42415258661 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:22:54Z",
-   "subject": "Failed jobs read: run 42415394146 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:22:48Z",
-   "subject": "Failed jobs read: run 42415258742 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:22:38Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-07T21:19:26Z",
-   "subject": "Failed jobs read: run 42414953977 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:17:23Z",
-   "subject": "Four in a Row on a phone: the check plays to the win, and stops only on a stalled game (mv9se6wa) (#2523)"
-  },
-  {
-   "at": "2026-11-07T21:17:11Z",
-   "subject": "Board: versus/ajsonline-page shipped (https://github.com/atomeam/void-loop/pull/2521)"
+   "at": "2026-11-07T21:43:18Z",
+   "subject": "Failed jobs read: run 42415072501 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 243
+  "day": 34,
+  "week": 249
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
