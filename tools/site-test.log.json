@@ -1,20 +1,5 @@
 [
  {
-  "at": "2026-10-15T20:06:20Z",
-  "passed": 0,
-  "of": 18,
-  "kind": "grow",
-  "note": "grew the suite: \"what time is it in tokyo\""
- },
- {
-  "at": "2026-10-15T20:10:35Z",
-  "passed": 0,
-  "of": 19,
-  "kind": "file",
-  "key": "label the clock kitchen | nothing appeared",
-  "note": "fix: \"label the clock kitchen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-15T20:35:25Z",
   "passed": 0,
   "of": 19,
@@ -5089,5 +5074,71 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T01:04:22Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1275,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12084 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T01:16:35Z",
+  "passed": 93,
+  "of": 99,
+  "ms": 399,
+  "kind": "file",
+  "key": "site | console: Failed to load resource: the server responded with ",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "my actions",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "yo draw a cartoon cat",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a low poly dog",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1275,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12084 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"my actions\" console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
