@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1205,
+ "counted": 1208,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -475,7 +475,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 108,
+   "dependants": 109,
    "tests": 2
   },
   {
@@ -587,21 +587,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 108,
+   "dependants": 109,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 108,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 105,
+   "dependants": 106,
    "tests": 9
   },
   {
@@ -1028,7 +1028,7 @@
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 4
   },
   {
@@ -1049,7 +1049,7 @@
    "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 3
   },
   {
@@ -1084,14 +1084,14 @@
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 3
   },
   {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
@@ -1375,17 +1375,17 @@
    "tests": 2
   },
   {
-   "file": "lib/proposal.js",
+   "file": "lib/actions.js",
    "skills": 1,
-   "direct": 1,
+   "direct": 0,
    "dependants": 32,
    "tests": 2
   },
   {
-   "file": "lib/actions.js",
+   "file": "lib/proposal.js",
    "skills": 1,
-   "direct": 0,
-   "dependants": 31,
+   "direct": 1,
+   "dependants": 32,
    "tests": 2
   },
   {
@@ -1420,7 +1420,7 @@
    "file": "lib/automations.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 6
   },
   {
@@ -2401,7 +2401,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/visible.js",
@@ -2428,36 +2428,43 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 101,
+   "dependants": 102,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 100,
+   "dependants": 101,
    "tests": 35
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 9
+  },
+  {
+   "file": "lib/earnings.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 51,
+   "tests": 0
   },
   {
    "file": "lib/code-review.js",
@@ -2465,13 +2472,6 @@
    "direct": 0,
    "dependants": 50,
    "tests": 5
-  },
-  {
-   "file": "lib/earnings.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 50,
-   "tests": 0
   },
   {
    "file": "lib/review-api.js",
@@ -2680,63 +2680,63 @@
    "file": "lib/watch-build.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 24,
    "tests": 2
   },
   {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 21,
    "tests": 3
   },
   {
    "file": "lib/team.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 20,
    "tests": 7
   },
   {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 1
   },
   {
    "file": "lib/team-leverage.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 1
   },
   {
    "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 6
   },
   {
    "file": "lib/brain-dream.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/team-crew.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/team-priorities.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 2
   },
   {
@@ -2937,6 +2937,13 @@
   },
   {
    "file": "lib/inbox-blocks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/member-gate.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -3848,6 +3855,12 @@
    ],
    "importedBy": []
   },
+  "functions/_middleware.js": {
+   "imports": [
+    "lib/member-gate.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/_middleware.js": {
    "imports": [
     "lib/guard.js"
@@ -4298,6 +4311,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
@@ -4443,6 +4457,14 @@
     "lib/media.js",
     "lib/movies.js",
     "functions/api/movies.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/member-session.js": {
+   "imports": [
+    "lib/member-gate.js",
+    "lib/void-me.js",
+    "functions/api/team.js"
    ],
    "importedBy": []
   },
@@ -4851,6 +4873,7 @@
     "lib/automations.js"
    ],
    "importedBy": [
+    "functions/api/member-session.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -5169,6 +5192,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/miss.js",
     "functions/api/team.js",
@@ -5821,6 +5845,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/news.js",
@@ -5894,6 +5919,7 @@
    ],
    "reachedBy": [
     "functions/api/crew.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/team/join/[code].js",
@@ -5920,6 +5946,7 @@
     "functions/api/automations/tick.js",
     "functions/api/crew.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/team/join/[code].js",
@@ -6306,6 +6333,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -8045,6 +8073,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -8913,6 +8942,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -9039,6 +9069,7 @@
     "functions/api/handoff.js",
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/miss.js",
     "functions/api/paypal/index.js",
@@ -9328,6 +9359,7 @@
     "lib/team.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
@@ -9335,12 +9367,14 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
+    "lib/member-gate.js",
     "lib/team-crew-run.js",
     "lib/team-leverage.js",
     "lib/team-priorities.js"
@@ -10168,6 +10202,15 @@
     "skills/dates.js"
    ]
   },
+  "lib/member-gate.js": {
+   "imports": [
+    "lib/team.js"
+   ],
+   "importedBy": [
+    "functions/_middleware.js",
+    "functions/api/member-session.js"
+   ]
+  },
   "lib/member-keep.js": {
    "imports": [],
    "importedBy": []
@@ -10834,6 +10877,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11096,6 +11140,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11222,6 +11267,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11885,6 +11931,7 @@
     "functions/api/handoff.js",
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -12816,6 +12863,7 @@
     "functions/api/crew.js",
     "functions/api/github-events.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/team.js",
     "functions/api/unbidden.js",
@@ -13761,6 +13809,7 @@
     "functions/api/handoff.js",
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -14084,6 +14133,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14108,6 +14158,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14142,6 +14193,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14158,11 +14210,13 @@
     "functions/api/team.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
+    "lib/member-gate.js",
     "lib/team-crew-run.js",
     "lib/team-leverage.js",
     "lib/team-priorities.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
@@ -14170,6 +14224,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14228,6 +14283,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -14782,6 +14838,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -15010,6 +15067,7 @@
     "functions/api/film-review.js",
     "functions/api/films.js",
     "functions/api/gumroad.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/mine.js",
     "functions/api/passkey.js",
@@ -15122,6 +15180,7 @@
     "lib/team-crew.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
@@ -15129,6 +15188,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/team.js",
     "functions/api/unbidden.js",
@@ -15136,6 +15196,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
+    "lib/member-gate.js",
     "lib/team-leverage.js",
     "lib/team-priorities.js",
     "lib/team.js"
@@ -15157,6 +15218,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/team.js",
     "functions/api/unbidden.js",
@@ -15268,6 +15330,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
