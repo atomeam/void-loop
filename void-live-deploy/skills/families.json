@@ -11,7 +11,7 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-07",
- "bench_at": "2026-11-05",
+ "bench_at": "2026-11-07",
  "totals": {
   "experiment": 0,
   "tested": 9,
@@ -120,9 +120,12 @@
      "name": "make",
      "tier": "proven",
      "why": "a self-test, 4 browser-suite mentions, 32 real asks in the benchmark",
+     "failing": [
+      "show me the lab"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.969,
      "streak": 19
     },
     {
@@ -1217,9 +1220,13 @@
      "name": "timer",
      "tier": "proven",
      "why": "a self-test, 6 browser-suite mentions, 34 real asks in the benchmark",
+     "failing": [
+      "set an alarm for 7am",
+      "wake me up at 6:30"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 0.941
     },
     {
      "name": "stopwatch",
@@ -1410,12 +1417,12 @@
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "failing": [
       "what's 7 factorial",
-      "what is 5 factorial",
-      "what is 100 factorial"
+      "what is 20 percent off 59.99",
+      "what is 20% off $85"
      ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.993,
+     "success_rate": 0.982,
      "streak": 19
     },
     {
@@ -1468,9 +1475,12 @@
      "name": "fuel",
      "tier": "proven",
      "why": "a self-test, 10 real asks in the benchmark",
+     "failing": [
+      "gas mileage 300 miles 10 gallons"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.9,
      "promoted": "2026-10-29",
      "streak": 19
     },
@@ -1488,9 +1498,12 @@
      "name": "tip",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
+     "failing": [
+      "what is 15% off 80 dollars"
+     ],
      "last_tested": "2026-11-07",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.972,
      "streak": 19
     },
     {
