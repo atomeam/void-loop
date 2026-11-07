@@ -32,13 +32,21 @@ const liveSquare = new Map(); // th.id -> the newest mount's onSquare: a 3D boar
 function think(s, onProgress) {
   return new Promise((res) => {
     const opts = { depth: 5, ms: 1100 };
+    let done = false;
+    const finish = (m) => { if (done) return; done = true; res(levelPick(m, R.legalMoves(s))); };
+    // no module workers (or a worker that never loaded): search on the page, reporting each depth and honouring the level
+    // exactly as the worker path does, so the card's line says what it is weighing everywhere
+    const onPage = () => setTimeout(() => { if (!done) finish(R.bestMove(s, { depth: 4, ms: 700, onDepth: onProgress })); }, 30);
     try {
       if (!worker) worker = new Worker(new URL('./chess-worker.js', import.meta.url), { type: 'module' });
-      const id = ++seq;
-      const on = (e) => { if (e.data.id !== id) return; if (e.data.progress) { onProgress && onProgress(e.data.progress); return; } worker.removeEventListener('message', on); res(levelPick(e.data.m, R.legalMoves(s))); };
-      worker.addEventListener('message', on);
-      worker.postMessage({ id, s, opts });
-    } catch (_) { setTimeout(() => res(R.bestMove(s, { depth: 4, ms: 700 })), 30); } // no module workers: think on the page
+      const w = worker, id = ++seq;
+      const off = () => { w.removeEventListener('message', on); w.removeEventListener('error', dead); };
+      const on = (e) => { if (e.data.id !== id) return; if (e.data.progress) { onProgress && onProgress(e.data.progress); return; } off(); finish(e.data.m); };
+      const dead = () => { off(); if (worker === w) worker = null; onPage(); }; // a module worker the browser cannot load: think on the page
+      w.addEventListener('message', on);
+      w.addEventListener('error', dead);
+      w.postMessage({ id, s, opts });
+    } catch (_) { onPage(); }
   });
 }
 const freshState = () => ({ s: R.create(), moves: [], sel: -1 });

@@ -714,9 +714,16 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    // The line's own words come from the page's rules module, never a copy here: this check went red on 841418c3 only because
+    // it spelled the name out ("Void is thinking…") and the page had been renamed to V01D (tools/flakes.json, twice on
+    // 2026-10-14). One source, so a rename cannot break the check again.
+    const thinking = (await import(pathToFileURL(path.join(root, 'skills', 'chess-rules.js')).href)).thinkingLine(null, null);
+    const weighingRe = new RegExp('^' + thinking.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ' \\d+ moves? deep · [\\d,]+ positions · leaning \\S+$');
+    const weighAt = lines.findIndex((t) => weighingRe.test(t));
+    const moveAt = lines.map((t) => /Your move/.test(t)).lastIndexOf(true);
+    const weighing = weighAt >= 0 ? lines[weighAt] : null;
     check('chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then "Your move"',
-      !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
+      !!replied && weighAt >= 0 && moveAt > weighAt, JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });
     const shot = await F.p.evaluate(() => [...document.querySelectorAll('.void-mini')].map((m) => m.dataset.kind));
     check('chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Verse answers with a legal move',

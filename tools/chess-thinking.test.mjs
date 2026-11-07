@@ -3,6 +3,7 @@
 // long-running calculations"). bestMove reports each finished depth; thinkingLine words it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { create, play, bestMove, thinkingLine, legalMoves } from '../void-live-deploy/skills/chess-rules.js';
 
 test('the search reports each depth it finishes: deeper each time, more positions, a legal move it leans to', () => {
@@ -20,4 +21,14 @@ test('the line names the depth, the positions and the move in chess notation; wi
   assert.equal(thinkingLine(null, s), 'Verse is thinking…');
   assert.equal(thinkingLine({ depth: 1, nodes: 20, best }, s), 'Verse is thinking… 1 move deep · 20 positions · leaning e5');
   assert.equal(thinkingLine({ depth: 3, nodes: 4812, best }, s), 'Verse is thinking… 3 moves deep · 4,812 positions · leaning e5');
+});
+
+// The card's line must appear whether the search runs in the worker or, where module workers are unavailable, on the page:
+// the fallback in skills/chess.js used to call bestMove with no onDepth, so the line never showed there. Read the source, so
+// a later edit that drops the progress report (or the level) from the fallback is caught here, not in the browser.
+test('the no-worker fallback reports each depth and honours the level, like the worker path', () => {
+  const src = readFileSync(new URL('../void-live-deploy/skills/chess.js', import.meta.url), 'utf8');
+  const fallback = src.slice(src.indexOf('const onPage ='), src.indexOf('try {', src.indexOf('const onPage =')));
+  assert.match(fallback, /bestMove\([^)]*onDepth/, 'the fallback passes onDepth');
+  assert.match(src.slice(src.indexOf('const finish =')), /levelPick\(/, 'both paths pick by the game level');
 });
