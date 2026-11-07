@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T06:01:41.249Z",
+ "updated": "2026-11-07T06:11:03.414Z",
  "last24h": {
   "ticks": 102,
-  "started": 110,
+  "started": 107,
   "requeued": 0,
   "setAside": 0,
   "probes": 15,
@@ -106,7 +106,7 @@
   "until": null
  },
  "handed": {
-  "mvbl52gd": 1794009927410,
+  "mvbl52gd": 1794031863414,
   "mva30i2e": 1794012175978,
   "mva30j4u": 1794020049939,
   "mveb8rsi": 1794009927410,
@@ -265,48 +265,6 @@
   "probe:map-the-dependencies"
  ],
  "ticks": [
-  {
-   "at": "2026-11-06T06:04:16.275Z",
-   "open": 226,
-   "started": [
-    {
-     "id": "mw4gkvdn",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 100
-    },
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "held": 5,
-   "warnings": 0
-  },
   {
    "at": "2026-11-06T06:22:08.419Z",
    "open": 227,
@@ -2963,6 +2921,33 @@
    "at": "2026-11-07T06:01:41.249Z",
    "open": 254,
    "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 246,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T06:11:03.414Z",
+   "open": 254,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    }
+   ],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
