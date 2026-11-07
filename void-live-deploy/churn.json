@@ -1,5 +1,5 @@
 {
- "at": "2026-11-07T22:28:10.574Z",
+ "at": "2026-11-07T22:36:42.827Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -137,6 +137,10 @@
    "changes": 14
   },
   {
+   "file": "void-live-deploy/brain/knows.json",
+   "changes": 14
+  },
+  {
    "file": "void-live-deploy/sw.js",
    "changes": 14
   },
@@ -150,10 +154,6 @@
   },
   {
    "file": "tools/openapi-check.mjs",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/brain/knows.json",
    "changes": 13
   },
   {
