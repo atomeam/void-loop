@@ -16,7 +16,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 
-- DeepSeekV4.1Flash1017 · helper/member-gate · members-only nav pages, the /join/ offer, a signed verse_session, the $1 7-day trial · 2026-11-07 20:28 UTC
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
@@ -91,6 +90,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Members gate: the nav pages need a member, and /join/ offers the $1 7-day trial (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2520. The nav's 13 pages redirect a non-member to the public `/join/` offer; a member gets a signed HttpOnly `verse_session` from `/api/member-session` using a team member key (Gumroad; the $1 Join the Team is a 7-day trial in `void_team_agents.until`) or a paid Verse account. The gate re-reads D1 on every request, so a removed member or an ended trial stops at once. The API, store, `/members/`, `/team/join/`, `/team/mcp` and assets stay open. The $10/month Stripe button waits for the price id.
 - **Translate: a bare word asks which language, and the French phrasing answers (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2512. "translate spring" now opens a card that says no language was named and asks which one (the exam's ambiguous case), "comment dit-on bonjour en anglais" is read as French and answers Hello, and the kept greetings answer in English even when both translators refuse.
 - **Growth card: a touched branch keeps its reading through a bloom, and a late ask fills in (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check holds the answer back until after the touch and fires a bloom while the trunk is selected, so the race is deterministic.
 - **Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) (claude, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2488.
