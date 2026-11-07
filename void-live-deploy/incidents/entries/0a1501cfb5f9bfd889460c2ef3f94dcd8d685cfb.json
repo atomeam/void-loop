@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-07T19:19:08.194Z",
+ "sha": "0a1501cfb5f9bfd889460c2ef3f94dcd8d685cfb",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42404325155",
+ "suite": "browser suite on main",
+ "checks": [
+  "phone polish: Agents is fully inside the nav bar and the page is not wider than the screen",
+  "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+  "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
+  "suite ran to the end",
+  "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+ ],
+ "touched": [
+  "domains/handoff.md",
+  "domains/void.agents.log.md",
+  "growth/entries/20261107T184028Z-deepseek-v41-flash-1017-d3039177.json",
+  "tools/toolkit.test.mjs",
+  "void-live-deploy/self.json",
+  "void-live-deploy/skills/translate.js"
+ ],
+ "shards": [
+  3
+ ]
+}

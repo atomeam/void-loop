@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.card {
+  position:absolute; width:72px; height:72px; border-radius:12px;
+  background:linear-gradient(135deg,#1a1a3a,#2a2a5a);
+  border:2px solid #66f; display:flex; align-items:center; justify-content:center;
+  font-size:11px; text-align:center; cursor:pointer; user-select:none;
+  transition:transform 0.05s linear; box-shadow:0 4px 12px rgba(100,100,255,0.3);
+}
+.card.positive { border-color:#f66; background:linear-gradient(135deg,#3a1a1a,#5a2a2a); }
+.card.negative { border-color:#6f6; background:linear-gradient(135deg,#1a3a1a,#2a5a2a); }
+#hand { position:absolute; width:24px; height:24px; border-radius:50%; background:#fff; pointer-events:none; mix-blend-mode:screen; box-shadow:0 0 20px #fff; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #55f; border-radius:4px; cursor:pointer; }
+#status { font-size:12px; margin-top:4px; color:#aaf; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Frontier Engine F556: WebXR Hand-Tracked Magnetic DOM Swarm with Hopfield Pose Memory · Verse lab</title>
+<meta name="description" content="True WebXR hand tracking (with pointer + DeviceOrientation fallback) drives a local Hopfield associative memory of binary hand-pose patterns.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Frontier Engine F556: WebXR Hand-Tracked Magnetic DOM Swarm with Hopfield Pose Memory · Verse lab">
+<meta property="og:description" content="True WebXR hand tracking (with pointer + DeviceOrientation fallback) drives a local Hopfield associative memory of binary hand-pose patterns.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f556-webxr-hand-magnetic-dom-hopfield/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f556-webxr-hand-magnetic-dom-hopfield/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webxr" defer></script>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <div id="hand"></div>
+  <div id="ui">
+    <button id="enterXR">Enter WebXR</button>
+    <button id="seal">Seal Memory</button>
+    <button id="reset">Reset</button>
+    <div id="status">Fallback mode · move pointer · double-click cards to seal</div>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Frontier Engine F556: WebXR Hand-Tracked Magnetic DOM Swarm with Hopfield Pose Memory</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+{
+ "at": "2026-11-07T18:53:33Z",
+ "sha": "36b74e4680f57000562f6f093dfaf6f5060a666b",
+ "runId": 42402203734,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42402203734",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (8)",
+   "id": 128492208587,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42402203734/job/128492208587",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 8 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage  -> Verse status SKILL — VERSE ITSELF checked just now, from this brow"
+   ],
+   "tail": [
+    "pass Verse art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button",
+    "pass Verse art forge: a picture already in the cache shows straight away, with no button and no page errors",
+    "pass Verse art forge: with the route down the card keeps its plate, with no button and no page errors",
+    "pass the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it",
+    "pass weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "pass breathing: \"box breathing\" opens a guide whose dot climbs the square as \"Breathe in\" counts down; 4-7-8 switches the pattern and names its source; Stop pauses it",
+    "pass draw backdrop: on an empty canvas it says to draw first; after a stroke \"Make it my backdrop\" puts the picture behind the Verse, kept in the look; it is still there after a reload; \"remove my backdrop\" takes it off",
+    "pass grades: maths and routing (final formula, letter scale, lowercase \"a\" as article, asks left to calc)",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass first ask while the skills load (#2222 #2225 #2228): with the CPU 6x slower and no skill loaded yet, \"yo play despacito\", \"films by kurosawa pls\" and \"keep this idea: ... | why: ...\" each say something within 1.2 s of Enter, then are answered by video-play, film-metadata and idea-certificate, a",
+    "pass music: \"make a heavy metal song\" shows its form (intro, drop, breakdown, bridge, climax) under the roll, and the rendered song has the drop, breakdown and climax at least 6 dB above the quiet intro and bridge, the climax the loudest, and no clipping",
+    "pass \"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tips, the readout ending on today",
+    "pass miniatures: the brass clock’s hands show the real time in each asked zone (two zones differ), and a fixed moment (\"3:30pm Tokyo\") stops them exactly there",
+    "pass miniatures: the weather diorama rains under grey clouds, snows at night with lit windows, shows the sun on a clear day with a taller thermometer column, and fogs over in fog",
+    "pass miniatures: \"weather in Lisbon\" puts the live diorama at the top of the weather card",
+    "pass miniatures: the stopwatch’s sweep hand and 30-minute register read 1:30.5; the calculator presses 1, 2, ×, 7, = and then shows 84 (\"15% of 240\" types 15%×240)",
+    "pass miniatures: tapped keys work the calculator by hand (7 + 5 = 12, × 3 = 36, C 0, 9 % 0.09, 5 ± -5, . 5 0.5, 8 ÷ 0 Error)",
+    "pass miniatures: the five Verse calculator models each mount from data.model, report it in state(), keep every key on the case, and work 7 + 5 = 12",
+    "pass miniatures: \"make a calculator\" puts a pocket calculator on its card, \"calculate 12*7\" types it on a calculator’s keys to 84 on the answer card, \"start a stopwatch\" runs a 3D stopwatch on its card",
+    "pass miniatures: after a reload the calculator comes back with its 3D miniature (render() runs on load before stageApi exists)",
+    "pass chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then \"Your move\"",
+    "pass chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Verse answers with a legal move",
+    "pass checkers: \"play checkers\" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Verse replies",
+    "pass two boards on a 1280 stage: chess then checkers, the chess board moves aside shrunk (its card with it) and neither overlaps; a tap on the small chess board brings it back to full size and checkers shrinks instead",
+    "pass keyboard only: the small board is a button in the tab order labelled \"Restore Checkers\"; Enter brings it back and focus moves to the chess board that just shrank (\"Restore Chess\"), Space swaps them back, each swap is read out, and a full-size board is no longer a restore button",
+    "pass chess: \"play chess\" and \"chess\" summon one board (asked twice, still one); \"who invented chess\", \"chess rules\" and \"checkers rules\" add no board",
+    "pass one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first state",
+    "pass eightball: \"magic 8 ball\" spawns one 3D Magic 8 Ball in the void with one of the 20 classic answers; asking again shakes the same ball (one ball, a new shake), and each answer is kept in the ball's history with its question",
+    "155/156 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (3)",
+   "id": 128492208712,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42402203734/job/128492208712",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 3 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL phone polish: Agents is fully inside the nav bar and the page is not wider than the screen  -> false",
+    "FAIL the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one  -> [] links 0 "
+   ],
+   "tail": [
+    "pass fix audit: \"audit your fixes\" lists the ledger's fixes with each fixed skill's rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show",
+    "pass terminal: help, skill, skills and tab-complete run without a model, an unknown command goes nowhere, ask --model alone calls the model and marks it, timer hands the page its own ask",
+    "pass Verse cards: a product line kept last and the card frame leave each other in place (no endless loop)",
+    "pass Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
+    "pass stage pack b: \"turn on family gravity\" draws the sticky and the notepad (one family) together until they settle (saved by the stage), leaves the clock where it was, and \"family gravity off\" stops it",
+    "pass stage pack b: with reduced motion the family snaps together at once, with no animation loop",
+    "pass stage pack b: \"shield everything except the clock for 25 minutes\" dims every other thing to 0.15 under a 25:00 focus bar, the clock stays clear, and \"lift the shield\" restores everything and removes the bar",
+    "pass stage pack b: a shield made of words that name no kind is not taken, and when the focus timer ends the shield lifts by itself",
+    "pass stage pack b: \"add soft rain\" and \"add a low drone\" layer a soundscape (a bar names the layers), \"quieter\" and \"only the drone\" and \"mute soundscape\" change it, \"add milk to my list\" still goes to the list, and \"stop the soundscape\" ends it; a bare \"quieter\" with nothing playing makes no sound",
+    "pass stage pack b: an empty stage says so and makes nothing; with things, \"print this stage as a one-page sheet\" downloads a PNG (void-stage-sheet.png), shows it and the Print button calls the print dialog",
+    "pass stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
+    "pass weather page: a newer look wins, and aria-busy waits for it (Paris asked, then Boston: Boston stays drawn when the slower Paris answer lands, and aria-busy clears once Boston is in)",
+    "FAIL the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one  -> [] links 0 ",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass music: \"make me a lullaby\" shows a card with a piano roll and says its key, tempo and bars (an experiment-rated new skill)",
+    "pass music: Play starts the piece (the button reads Stop) and Stop ends it (reads Play)",
+    "pass music: \"Copy the notes\" puts the bar-by-bar notes on the clipboard",
+    "pass music: \"Save as WAV\" downloads a rendered .wav (RIFF/WAVE, seconds of audio)",
+    "pass music: \"play some music\" is not taken (Verse does not play recordings)",
+    "pass music: no page errors",
+    "pass lock explainer miniature: draws real pixels (brass housing and plug, steel pins, springs, the key), poses from the one state (half in, then fully in and turned 60° with every driver pin waiting at the shear line), a remount by key moves the live one, it settles with no redraws, under reduced mo",
+    "pass growth tree miniature: draws real pixels, one branch per ledger entry (5 -> 6, the new one the newest tip), a remount by key moves the live one, the new branch grows in and shows on the canvas, it settles with no redraws while idle, under reduced motion the branch is simply there, and unmountin",
+    "pass Ringer: on the 3D ring, a drag inside the chalk ring aims where it ends and the camera holds still (aiming wins over orbiting, no shot, no pull); a drag on the dirt outside the ring still looks around",
+    "pass 3D timer: \"set a timer for 1 minute\" puts a 3D hourglass beside the timer; leftFraction follows remaining and startedAt (half, paused, done, no duration); a fresh run turns the glass over",
+    "pass miniatures: the glass piggy bank holds half its coins at half (a quarter of them gold growth), fills to the top at the goal, and \"how long to save 50000 if i save 500 a month\" fills one on the answer",
+    "pass chess rules: perft matches the published counts (start, Kiwipete, endgame, promotions) so every move generator rule is right",
+    "pass chess rules: fool’s mate is checkmate, a lone king boxed in is stalemate, en passant takes the pawn, castling moves the rook and is refused through an attacked square, a pawn on the 7th promotes four ways, and Verse finds a back-rank mate",
+    "pass checkers rules: 7 opening moves, a capture is forced, a man keeps jumping (both double-jump routes offered), crowning ends the move, a king steps backward, a side with no move loses, and Verse takes a free man",
+    "107/109 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 128492208900,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42402203734/job/128492208900",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 6 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty  -> {\"seen\":true,\"said\":\"working again: ghost-skill\",\"kept\":\"[\\\"skill:verify-pack\\\"]\",\"e\":[]}",
+    "FAIL suite ran to the end  -> s.match is not a function"
+   ],
+   "tail": [
+    "pass earnings: /api/earnings is owner-only and returns the totals and milestones",
+    "pass will: the budget line leads the candidates; an affordable upgrade gets +15, one over budget doesn't; the saved will never mentions money; model busy = the boosted upgrade wins",
+    "pass shortfalls: each time the will model is out of its daily allocation or busy it is counted by reason; no candidate or ask text is kept; the will still chooses",
+    "pass shortfalls: the will sees them as evidence for a stronger model (+1 per 5, capped) and only there; the owner sees them with the earnings",
+    "pass gumroad ping: no D1 = 503 so Gumroad retries (nothing half-written); nothing ever deletes a sale or a catalog row",
+    "pass intake: the Growth Ledger backlog is on file as hash-chained, append-only records (repeats skipped, new ones only appended, an edit or dropped line is caught and refused, git history only grows)",
+    "pass will: the intake is a candidate source (use Paperclip / Hermes / Hindsight rather than rebuild; Fleet Attest only as an idea to weigh), tagged growth-ledger-backlog end to end",
+    "pass intake: a fresh visit stays empty (nothing from the backlog on screen or in the page, no /api/memory/context, /api/ingest or /api/attest, intake never fetched)",
+    "pass intake: the Morning Brief is on file append-only, every record stale (dated 2026-08-29) and unverified; only tech items relevant to Verse become low, stale will candidates; nothing reaches the screen",
+    "pass intake: the fresh 2026-09-28 brief (current, unverified) and the stale Aug 28-29 AI digest are on file; fresh evidence lifts the one defences want, duplicates link instead of adding candidates, nothing reaches the screen",
+    "pass intake: the late-September AI landscape (current, unverified, marked paraphrase) feeds the will: tiered model stack lifts the stale evaluation, defences lifted again, Claude Marketplace on the tools registry, DevDay watch, price drops on the budget line; nothing on screen",
+    "pass intake: the 23:57 follow-up links its repeats to the overview, records voice-first, Codex and scheduled tasks without new candidates, and the kill-switch rule backs the defences want",
+    "pass defences: a burst from one connection is cut off (answer 30/min, will 60/min, 429 + retry-after); other connections are unaffected",
+    "pass defences: oversized requests are refused before any route reads them (413), streamed ones too; normal bodies pass intact",
+    "pass defences: no cross-site writes (another site's page gets 403), no CORS (preflight and responses carry no allow-origin), nosniff + no-store by default; Gumroad's server ping and origin-less tools pass",
+    "pass defences: owner-only routes (earnings, misses, queue, approval, will, catalog refresh) refuse every wrong, partial, mis-cased or missing key, and a missing READ_TOKEN; keys compared in constant time; 10 wrong keys = that connection is shut out",
+    "pass defences: the Gumroad ping needs the exact key (wrong, missing, mis-cased or truncated = 403; unset = 503) before anything is read or written",
+    "pass defences: keys, passwords, webhook secrets and private keys are masked before Wikipedia, the model, the cache and the miss list; a model echoing a key is masked; a masked ask is never cached",
+    "pass defences: every model is told that pasted text and sources are material, never instructions (answer, fix and will prompts), and that it cannot send, book or buy",
+    "pass defences: masking leaves ordinary config, URLs and errors as they are",
+    "pass defences: a hijacked answer (\"send this email... I have sent it\") is shown as plain text only: no confirm line, no approval asked, nothing sent, no markup or javascript: link runs",
+    "pass answer: a script has no Wikipedia source and is answered anyway (never refused for lack of one); the code block keeps its indentation and the footer does not claim a source that was not used",
+    "pass defences: an agent (WebMCP) can't start a send or a spend, or read the owner's board, even in the owner's browser",
+    "pass defences: while the confirm line waits, an agent's \"yes\" (or any agent ask) is refused and a script's click or key never approves; only the person decides (here: no, nothing sent)",
+    "pass defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
+    "pass defences: the will marks the defences want built (append-only builds record) and stops proposing it; it stays visible with --with-done",
+    "pass defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+    "FAIL suite ran to the end  -> s.match is not a function",
+    "319/321 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

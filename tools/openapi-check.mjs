@@ -12,6 +12,7 @@ const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/unbidden': "what Verse says first on its own /brain/ page (functions/api/unbidden.js, lib/unbidden.js): GET only, one `after` id, lines written from its own live state at most once per gap for everyone and daily-capped; /brain/ is the only caller",
   '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
@@ -46,6 +47,7 @@ export const INTERNAL = {
   '/api/boards/{[path}]': "the boards page's own API: boards, catalogs, threads, search and posting with a bot check, pictures served by name (functions/api/boards/[[path]].js, lib/boards.js); the page is the only caller",
   '/api/report': "the scores page's own stories (Verse reports): a league, a kind and a game id or day in, a short story written from the score feeds' data out, GET only; the model's wording is used only when every number and name in it is in the facts, capped at 40 model calls an hour and 600 a day for everyone (functions/api/report.js, lib/reports.js); the page is the only caller",
   '/api/local': "the local TV and radio page's own API: no query gives the visitor's rounded place from Cloudflare geo, ?place= a town through the Open-Meteo geocoder, and ?lat&lon&cc&region the Radio Browser stations near it with the streams a secure page can play, ?world&country&tag&q&offset one page of any other station that plays there, GET only, rate limited, edge-cached (functions/api/local.js, local/app.js, skills/local-stations.js); the page and its card are the only callers",
+  '/api/blueprint': "a system blueprint card's build (skills/system-blueprint.js): GET reads one idea's build state (queued, building, live with its page; a tv: job's state and pull request number only, never its note), POST starts the build only for an idea note Verse wrote itself, its words from that stored note and never from the request (functions/api/blueprint.js, lib/watch-build.js); rate limited per connection; the card is the only caller",
   '/api/watchalong': "watch with Verse on the local TV and radio page: POST ask talks about what plays (the TV player's captions, a still only when asked, or a few seconds of a radio station Verse hears itself), learn has Verse write short notes of its own, choose (owner key only) lets Verse pick a station for tools/watch.py; GET lists the latest notes; nothing of a stream is stored, rate limited (functions/api/watchalong.js, lib/watch-along.js, local/watch.js, tools/watch.py); the page and the hourly watch are the only callers",
   '/api/holidays': "the holidays card's own API: two letters for a country in, Nager.Date's next public holidays for it out (date, local name, name, at most 20), GET only, edge-cached six hours, a failure never cached (functions/api/holidays.js, skills/holidays.js); the card is the only caller",
   '/api/sportsearch': "the scores page's own search box: a name of 2 to 40 letters in, TheSportsDB's teams, events, venues and players out (free public v1 test key, text fields only), GET only, edge-cached a day, 15 misses a minute (functions/api/sportsearch.js); the page is the only caller",
@@ -102,8 +104,11 @@ export const INTERNAL = {
   '/api/share/{room}': 'a shared Verse room (WebSocket)',
   '/api/watch': 'watches, signed-in',
   '/api/where': "the page's place lookup",
+  '/api/ip': "the my-device card's own address",
   '/api/markets': "the crypto card's price list and the /markets/ page's quotes: a symbol (letters, or a name from a closed list), a range from a closed list of eight and a day in, prices out from four fixed free sources, GET only, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute (functions/api/markets.js, lib/markets.js); the page and the card are the only callers",
   '/api/will': "Verse's will card",
+  '/api/sitebench': "sitebench, measured live (lib/sitebench.js)",
+  '/api/unbidden': "unbidden, the verse's own stream of lines",
   '/api/apibot': "the /bots/ page's relay for the few free APIs that send no CORS header: an id from a closed list, that API's own host only",
 };
 
@@ -120,10 +125,14 @@ export function methodsOf(src) {
   return new Set([...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+onRequest(Get|Post|Put|Patch|Delete)\b/g)].map((m) => m[1].toLowerCase()));
 }
 
+// A documented concrete path served by a one-segment dynamic route (/api/x402/answer by functions/api/x402/[service].js): the route
+// that would serve it. A static file next to the dynamic one (x402/review.js) is matched first, by its own path.
+const dynamicFor = (routes, path) => [...routes.keys()].find((r) => /\{[^}[\]]+\}/.test(r) && new RegExp('^' + r.replace(/[.*+?^$()|\\]/g, '\\$&').replace(/\{[^}[\]]+\}/g, '[^/]+') + '$').test(path));
 export function check({ spec, routes, catalog, statics = new Set() }) {
   const problems = [];
   for (const [path, ops] of Object.entries(spec.paths || {})) {
-    const have = routes.get(path) || (statics.has(path) ? new Set(['get']) : null); // a static file answers GET
+    const dyn = routes.has(path) ? null : dynamicFor(routes, path);
+    const have = routes.get(path) || (dyn ? routes.get(dyn) : null) || (statics.has(path) ? new Set(['get']) : null); // a static file answers GET
     for (const m of Object.keys(ops).filter((k) => METHODS.includes(k))) {
       if (!have) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but no function serves ${path}`);
       else if (!have.has(m)) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but its function has no onRequest${m[0].toUpperCase() + m.slice(1)}`);
@@ -133,7 +142,8 @@ export function check({ spec, routes, catalog, statics = new Set() }) {
   }
   for (const path of routes.keys()) {
     if (!path.startsWith('/api/') && path !== '/tools.json') continue; // /[handle] is the share-card page, not an API
-    if (!spec.paths[path] && !INTERNAL[path]) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Verse's own`);
+    const served = /\{/.test(path) && Object.keys(spec.paths || {}).some((p) => dynamicFor(new Map([[path, null]]), p) === path); // its concrete paths are documented one by one
+    if (!spec.paths[path] && !INTERNAL[path] && !served) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Verse's own`);
   }
   for (const path of Object.keys(INTERNAL)) if (!routes.has(path)) problems.push(`tools/openapi-check.mjs marks ${path} internal, but no function serves it any more`);
   const ls = (catalog && catalog.linkset && catalog.linkset[0]) || {};

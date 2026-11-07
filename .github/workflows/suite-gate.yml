@@ -1,0 +1,158 @@
+# The full browser suite on current main with the ready pull requests merged into it, before automerge lands them
+# (Atom: no pull request merges unless it is green on top of current main). One run at a time, for up to 8 pull requests
+# (2026-11-06: one 25-minute run per pull request kept 30 waiting for half a day). A pull request that conflicts with the
+# others is left out of the run. Nothing is skipped: the same shards verify.yml runs on main. The result is a check on each
+# pull request's head that names the batch; automerge merges a green batch one by one, and splits a red batch in half.
+# A red shard runs again on main alone, in the same job (2026-11-06): only a check the batch turned red fails it. While main
+# was red, every batch failed on main's own red checks (the run for #2425 failed on the same 10 checks as main's verify run on
+# 923ce15), so nothing merged by itself and all 60 merges before it were made by hand. Nothing is skipped: both runs are the
+# full shard, each inherited red check is named in the shard summary, and verify.yml still reverts and heals main's red.
+name: Suite on main
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: The pull requests to test, merged into current main in this order (one number, or several separated by commas)
+        required: true
+        type: string
+
+concurrency:
+  group: void-suite-gate
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: read
+  actions: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      main: ${{ steps.meta.outputs.main }}
+      prs: ${{ steps.meta.outputs.prs }}
+      shas: ${{ steps.meta.outputs.shas }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: The pull requests and the main they merge into
+        id: meta
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          main=$(git rev-parse origin/main)
+          git checkout -q --detach "$main"
+          prs=""; shas=""
+          for n in $(printf '%s' "$PR" | tr ',' ' '); do
+            case "$n" in ''|*[!0-9]*) echo "skip '$n': not a pull request number"; continue;; esac
+            state=$(gh api "repos/${{ github.repository }}/pulls/$n" --jq .state)
+            [ "$state" = open ] || { echo "#$n is $state: left out"; continue; }
+            git fetch -q origin "pull/$n/head"
+            sha=$(git rev-parse FETCH_HEAD)
+            if git merge --no-edit -q "$sha" >/dev/null 2>&1; then prs="$prs $n"; shas="$shas $sha"; echo "#$n $sha merged into the batch"
+            else git merge --abort || true; echo "#$n conflicts with main or the batch: left out of this run"; fi
+          done
+          [ -n "$prs" ] || { echo "no pull request in this run"; exit 1; }
+          echo "main=$main" >> "$GITHUB_OUTPUT"
+          echo "prs=${prs# }" >> "$GITHUB_OUTPUT"
+          echo "shas=${shas# }" >> "$GITHUB_OUTPUT"
+          echo "### #${prs# } on top of $main" >> "$GITHUB_STEP_SUMMARY"
+
+  suite:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 70 # a red shard runs a second time on main alone (about 15 minutes more)
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.main }}
+          fetch-depth: 0
+      - name: Merge the pull requests into main (the tree the suite judges)
+        env:
+          SHAS: ${{ needs.prepare.outputs.shas }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for sha in $SHAS; do git fetch -q origin "$sha"; git merge --no-edit -q "$sha"; done
+      - name: The full browser suite, shard ${{ matrix.shard }} of 8
+        id: batch
+        continue-on-error: true # a red shard is judged against main alone below, never passed here
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: suite
+          shard: ${{ matrix.shard }}/8
+      - name: Red with the batch? The same shard on main alone
+        if: steps.batch.outcome != 'success'
+        env:
+          MAIN: ${{ needs.prepare.outputs.main }}
+          VOID_SHARD: ${{ matrix.shard }}/8
+          VOID_SKIP_BENCH: '1'
+          PYTHONIOENCODING: utf-8
+        run: |
+          set -uo pipefail
+          cp test-output.txt "$RUNNER_TEMP/batch.txt" 2>/dev/null || : > "$RUNNER_TEMP/batch.txt"
+          merged=$(git rev-parse HEAD)
+          git reset -q --hard "$MAIN"
+          git clean -fdq -e node_modules
+          if ! git diff --quiet "$merged" "$MAIN" -- package.json package-lock.json; then npm ci --no-audit --no-fund; fi
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+          node tools/self-context.mjs
+          node tools/test_void.mjs > "$RUNNER_TEMP/main.txt" 2>&1 || true
+          echo "main alone: $(tail -n 1 "$RUNNER_TEMP/main.txt")"
+      - name: The shard's verdict (a check red only with the batch fails it)
+        if: steps.batch.outcome != 'success'
+        env:
+          VOID_SHARD: ${{ matrix.shard }}/8
+        run: node tools/suite-diff.mjs "$RUNNER_TEMP/batch.txt" "$RUNNER_TEMP/main.txt"
+
+  report:
+    needs: [prepare, suite]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Record the suite on each pull request head, with the batch it ran in
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHAS: ${{ needs.prepare.outputs.shas }}
+          PRS: ${{ needs.prepare.outputs.prs }}
+          MAIN: ${{ needs.prepare.outputs.main }}
+          RESULT: ${{ needs.suite.result }}
+        run: |
+          set -euo pipefail
+          [ -n "$SHAS" ] || { echo "no pull request was tested"; exit 0; }
+          batch=$(for n in $PRS; do printf '#%s ' "$n"; done)
+          if [ "$RESULT" = "success" ]; then conclusion=success; summary="The full browser suite passed on main $MAIN with these pull requests merged into it: no check is red that is not just as red on main alone (each shard's summary names any inherited red check). Nothing was skipped. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; else conclusion=failure; summary="The full browser suite did not pass on main $MAIN with these pull requests merged into it ($RESULT). None of them merges from this run; a batch of several is split and run again."; fi
+          for sha in $SHAS; do
+            gh api --method POST "repos/${{ github.repository }}/check-runs" \
+              -f name=suite-on-main \
+              -f head_sha="$sha" \
+              -f status=completed \
+              -f conclusion="$conclusion" \
+              -f "output[title]=main:$MAIN" \
+              -f "output[summary]=$summary
+          batch: ${batch% }"
+          done
+          echo "### suite-on-main $conclusion for main:$MAIN, batch ${batch% }" >> "$GITHUB_STEP_SUMMARY"
+      - name: Wake automerge
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main # a sweep: a green batch merges every pull request in it

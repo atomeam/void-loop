@@ -1,10 +1,11 @@
 {
- "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason. 2026-11-04: open-tool~stopwatch and palindrome~util are the order files the index had left out; riddle~textgen and rps~video-play already overlapped on main. Lists run 9 (2026-11-04): status~system-status merged into the status-board family; local-stations~media-pick came with #2215 (\"play some music\": media-pick answers it at rank 1410, local-stations' \"play music\" is its radio fallback at 9102). Lists run 10 (2026-11-04): date-calc~time-math are one family now (skills/date-math.js), so the pair is same-family. Lists run 11 (2026-11-04): lib/video.js NOT_VIDEO now leaves \"play draughts/baduk/solar quest/texas holdem/scrabble/rps/3d tic tac toe/hanabi/zorbleflux/the podcast/a local audio file\" to their own skills, so 10 *~video-play pairs are gone (regression test in tools/video.test.mjs). Lists run 12 (2026-11-05): riddle~textgen are one family now (skills/riddle-gen.js), so the pair is same-family (regression test in tools/riddle-gen-family.test.mjs). Lists run 13 (2026-11-05): place~skycard are one family now (skills/where-is.js), so the pair is same-family (regression test in tools/where-is-family.test.mjs).",
+ "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason. 2026-11-04: open-tool~stopwatch and palindrome~util are the order files the index had left out; riddle~textgen and rps~video-play already overlapped on main. Lists run 9 (2026-11-04): status~system-status merged into the status-board family; local-stations~media-pick came with #2215 (\"play some music\": media-pick answers it at rank 1410, local-stations' \"play music\" is its radio fallback at 9102). Lists run 10 (2026-11-04): date-calc~time-math are one family now (skills/date-math.js), so the pair is same-family. Lists run 11 (2026-11-04): lib/video.js NOT_VIDEO now leaves \"play draughts/baduk/solar quest/texas holdem/scrabble/rps/3d tic tac toe/hanabi/zorbleflux/the podcast/a local audio file\" to their own skills, so 10 *~video-play pairs are gone (regression test in tools/video.test.mjs). Lists run 12 (2026-11-05): riddle~textgen are one family now (skills/riddle-gen.js), so the pair is same-family (regression test in tools/riddle-gen-family.test.mjs). Lists run 13 (2026-11-05): place~skycard are one family now (skills/where-is.js), so the pair is same-family (regression test in tools/where-is-family.test.mjs). 2026-11-06 (gaps thread): business-clarify~system-blueprint and system-blueprint~task-diagram are the order file the index had left out (skills/order/9800-system-blueprint came with the idea-protocol work; regenerating the index for my-device brought it in), already overlapping on main. 2026-11-06 (red PRs thread): lab~make, lab~open-tool and lab~place came with #2445 (\"verse lab\" opens the lab); the lab skill routes ahead of them, so \"open the lab\", \"show me the lab\" and \"where is the lab\" open /lab/ by design.",
  "pairs": [
   "about-skill~wants",
   "anneal-ambition~weather",
   "aurora-tonight~calendar",
   "aurora-tonight~weather",
+  "business-clarify~system-blueprint",
   "calendar~constellation",
   "calendar~date-calc",
   "calendar~deadlines",
@@ -44,6 +45,9 @@
   "growth~make",
   "home~room",
   "label~stage-organize",
+  "lab~make",
+  "lab~open-tool",
+  "lab~place",
   "list-templates~template-list",
   "local-stations~media-pick",
   "nightsky~sky",
@@ -62,6 +66,7 @@
   "spanish~translate",
   "stage-export~stage-print",
   "stage-image~util",
+  "system-blueprint~task-diagram",
   "term-orbits~video-play",
   "util~writing-aids",
   "video~video-play"

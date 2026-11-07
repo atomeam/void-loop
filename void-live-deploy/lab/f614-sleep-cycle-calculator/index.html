@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#6ee7b7; --card:#1a1d24; --border:#2a2e37; }
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--fg);line-height:1.5;padding:1rem}
+h1{font-size:1.6rem;margin:0 0 .5rem}
+p{margin:.4rem 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:1rem 0;max-width:480px}
+label{display:block;margin:.6rem 0 .2rem;font-size:.9rem}
+input,select,button{font:inherit;padding:.5rem .7rem;border-radius:8px;border:1px solid var(--border);background:#111;color:var(--fg);width:100%}
+button{background:var(--acc);color:#042;border:none;font-weight:600;cursor:pointer;margin-top:.6rem}
+button:hover{filter:brightness(1.1)}
+.results{margin-top:1rem}
+.bed{padding:.6rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.bed:last-child{border:none}
+.small{font-size:.8rem;opacity:.7}
+.copy,.ics{width:auto;padding:.3rem .6rem;font-size:.8rem;margin:0}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sleep cycle calculator · Verse lab</title>
+<meta name="description" content="Job: Enter a wake-up time and get recommended bedtimes based on 90-minute sleep cycles (plus a fall-asleep buffer), with the option to download an .ics file for">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sleep cycle calculator · Verse lab">
+<meta property="og:description" content="Job: Enter a wake-up time and get recommended bedtimes based on 90-minute sleep cycles (plus a fall-asleep buffer), with the option to download an .ics file for">
+<meta property="og:url" content="https://a-to-mind.com/lab/f614-sleep-cycle-calculator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f614-sleep-cycle-calculator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Sleep cycle calculator</h1>
+<p>Enter when you need to wake up. Get bedtimes that land you at the end of a 90-minute sleep cycle (plus a few minutes to fall asleep). Download a calendar alarm for the bedtime you choose.</p>
+<div class="card">
+  <label for="wake">Wake-up time</label>
+  <input type="time" id="wake" value="07:00">
+  <label for="cycles">Number of cycles (90 min each)</label>
+  <select id="cycles">
+    <option value="4">4 (6 h)</option>
+    <option value="5" selected>5 (7.5 h)</option>
+    <option value="6">6 (9 h)</option>
+  </select>
+  <label for="buffer">Minutes to fall asleep</label>
+  <input type="number" id="buffer" value="15" min="0" max="60">
+  <button id="calc">Calculate bedtimes</button>
+  <div id="out" class="results"></div>
+</div>
+<p class="small">Based on the common 90-minute sleep cycle model. Individual cycles vary. This is not medical advice. Times are local. Saved on this device only.</p>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -2,6 +2,7 @@
 // real brain should generate a never-ending queue of its own real wants and needs ... show the live queue on /team/ and /brain/"). Each want
 // names the evidence it came from and the one number that closes it; a private want (what visitors typed, sales) shows neither. Nothing is
 // sent from here; the week's bets (Verse's own priorities, lib/team-priorities.js) fill every element marked data-crew-bets; the list is read again every minute while the page is seen. Fills every element marked data-crew-wants.
+import { crewNext } from '/lib/team.js';
 const boxes = [...document.querySelectorAll('[data-crew-wants]')], betBoxes = [...document.querySelectorAll('[data-crew-bets]')];
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - (typeof t === 'number' ? t : Date.parse(t))) / 60e3)); return !Number.isFinite(m) ? '' : m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
@@ -29,7 +30,7 @@ function draw(box, j) {
   if (!j || !j.ok) { if (sum) sum.textContent = 'The wants could not be read just now.'; return; }
   if (sum) sum.textContent = j.open + ' open · ' + j.met + ' met' + (j.lastRun ? ' · the crew last ran ' + ago(j.lastRun.at) + ' (run ' + j.lastRun.run + ': ' + j.lastRun.jobs + ' jobs done, ' + j.lastRun.filed + ' wants filed, ' + j.lastRun.met + ' met)' : ' · the crew has not run yet');
   list.replaceChildren(...(j.wants.length ? j.wants.slice(0, 24).map(want) : [node('li', 'No want filed yet: the crew files them from the evidence on its next run.')]));
-  if (crewList) crewList.replaceChildren(...j.crew.map((c) => { const li = node('li'); li.append(node('b', c.name), ' ', node('span', (c.here ? 'here' : 'away') + ' · ' + c.done + ' done', 'wsub'), node('span', c.did ? 'Last: ' + c.did + (c.didAt ? ' (' + ago(c.didAt) + ')' : '') : 'Nothing done yet.', 'wsrc')); return li; }));
+  if (crewList) crewList.replaceChildren(...j.crew.map((c) => { const li = node('li'); li.append(node('b', c.name), ' ', node('span', crewNext(c.next) + ' · ' + c.done + ' done', 'wsub'), node('span', c.did ? 'Last: ' + c.did + (c.didAt ? ' (' + ago(c.didAt) + ')' : '') : 'Nothing done yet.', 'wsrc')); return li; }));
 }
 
 function bets(box, j) {
@@ -38,10 +39,10 @@ function bets(box, j) {
   sum.replaceChildren('Ranked ' + ago(p.at) + ' (' + p.why + '), ' + p.week + '. Impact (revenue, exam-score gain, breakage, Tower easiest-first) ÷ effort × confidence. WIP: ' + p.wip.build + ' build lanes + ' + p.wip.research + ' research lane.');
   if (p.brief) { const a = node('a', ' The pinned brief in #work.'); a.href = '/team/#c=work&t=' + p.brief; sum.append(a); }
   if (p.override && (p.override.pin.length || p.override.drop.length)) sum.append(node('span', ' Owner override: ' + [...p.override.pin.map((x) => x + ' first'), ...p.override.drop.map((x) => x + ' last')].join(', ') + '.', 'wsub'));
-  const row = (b, i) => { const li = node('li'); li.dataset.state = 'bet'; li.append(node('span', i == null ? String(b.score) : 'Bet ' + (i + 1), 'wst'), ' ', node('b', b.id), ' ', node('span', b.ask), node('span', b.lane + ' · score ' + b.score + ' = impact ' + b.impact + ' × confidence ' + b.confidence + ' ÷ effort ' + b.effort + (b.override ? ' · ' + b.override : '') + ' · why: ' + b.drivers.join('; '), 'wsub'));
+  const row = (b, i) => { const li = node('li'); li.dataset.state = 'bet'; li.append(node('span', i == null ? String(b.score) : 'Bet ' + (i + 1), 'wst'), ' ', node('b', b.title || b.id), ' ', node('span', b.ask, 'wask'), node('span', b.lane + ' · score ' + b.score + ' = impact ' + b.impact + ' × confidence ' + b.confidence + ' ÷ effort ' + b.effort + (b.override ? ' · ' + b.override : '') + ' · job ' + b.id + ' · why: ' + b.drivers.join('; '), 'wsub'));
     if (b.evidence && b.evidence.length) { const s = node('span', 'Evidence: ', 'wsrc'); b.evidence.forEach((e, k) => { if (k) s.append(' · '); const a = node('a', e.what); a.href = e.url; a.rel = 'noopener'; s.append(a); }); li.append(s); }
     return li; };
-  list.replaceChildren(...(p.bets.length ? p.bets.map((b, i) => row(b, i)) : [node('li', 'No bet: nothing is on the queue.')]), ...(p.next.length ? [node('li', 'Then, in order: ' + p.next.map((r) => r.id + ' (' + r.score + ')').join(', '), 'wsub')] : []));
+  list.replaceChildren(...(p.bets.length ? p.bets.map((b, i) => row(b, i)) : [node('li', 'No bet: nothing is on the queue.')]), ...(p.next.length ? [node('li', 'Then, in order: ' + p.next.map((r) => (r.title || r.id) + ' (' + r.score + ')').join(' · '), 'wsub')] : []));
 }
 
 async function load() {

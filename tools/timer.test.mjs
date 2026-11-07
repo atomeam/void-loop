@@ -73,9 +73,12 @@ test('timer: "add one minute" grows the timer and the answer names its new lengt
   assert.equal(addMs('add a note'), 0);
   const things = { t1: { id: 't1', kind: 'timer', duration: 90000, remaining: 90000, running: true, startedAt: Date.now() } };
   let said = '';
-  const api = { things: () => things, selected: () => 't1', save() {}, render() {}, say(s) { said = s; } };
+  let picked = 's1'; // the sticky is the picked card, as on the stage after "sticky note buy milk" (watchdog #2324)
+  things.s1 = { id: 's1', kind: 'sticky', text: 'buy milk' };
+  const api = { things: () => things, selected: () => picked, select(id) { picked = id; }, save() {}, render() {}, say(s) { said = s; } };
   assert.equal(askAction('add one minute', 'add one minute', api), 'timer-add');
   assert.equal(things.t1.duration, 150000);
+  assert.equal(picked, 't1', 'the timer the ask changed is the picked thing now');
   assert.match(said, /2:30/); assert.match(said, /150/);
   assert.match(durationLabel(things.t1.duration), /2:30/); assert.match(durationLabel(things.t1.duration), /150/);
   const none = { things: () => ({}), selected: () => null, save() {}, render() {}, say() {} };

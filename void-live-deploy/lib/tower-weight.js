@@ -21,7 +21,12 @@ export function controlsOf(html = '') {
 }
 /** the controls count a ranking may trust, else null: a home page whose html holds fewer than 2 controls is the shell a script builds the page in,
  *  a sign-in wall or a stub, not the page (2026-10-29: linkedin.com/jobs read 1 control over 19 scripts and put the jobs lane first). Pure. */
-export const trustedControls = (row) => { const c = row && row.controls; return c === null || c === undefined || !Number.isFinite(+c) || +c < 2 ? null : +c; };
+// ...unless the page proves it is the page (owner, 2026-11-06: "the easiest site to assimilate was never even found or attempted"): every home page
+// with 0 or 1 controls was read as a shell, so the smallest sites of all (an answer in plain text, one word on a page) stood behind every heavy one.
+// A tiny page is trusted when its home page is plain text (counted 'plain': icanhazip.com answers with your address and nothing else) or when the
+// browser rendered it showing real words (text, its visible characters, at least 2) on at most 5 scripts and it is not a door. Pure.
+export const tinyProven = (row) => !!row && (row.counted === 'plain' || (row.counted === 'rendered' && row.shell === 'none' && row.text !== null && row.text !== undefined && Number.isFinite(+row.text) && +row.text >= 2 && (+row.scripts || 0) <= 5));
+export const trustedControls = (row) => { const c = row && row.controls; if (c === null || c === undefined || !Number.isFinite(+c)) return null; return +c < 2 && !tinyProven(row) ? null : +c; };
 /** the controls count the queue may rank on, else null: a trusted count read on the rendered page of the site itself. A row the browser could not
  *  render (counted 'unrendered') or read without a browser (counted 'html') is a raw-html guess, and a page tools/tower-size.mjs found to be a bot
  *  wall or a country or language picker (shell 'wall' or 'gateway') is a door, not the site: each sorts behind every rendered row, so a failed render

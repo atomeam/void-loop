@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-07T19:49:32.245Z",
+ "sha": "839683edbaeb07503c6f9aa8d0d3099bb5b5dae3",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42406911717",
+ "suite": "browser suite on main",
+ "checks": [
+  "phone polish: Agents is fully inside the nav bar and the page is not wider than the screen",
+  "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+  "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
+  "suite ran to the end",
+  "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage"
+ ],
+ "touched": [
+  "void-live-deploy/agent/index.html",
+  "void-live-deploy/bots/kit.js",
+  "void-live-deploy/bots/registry.json",
+  "void-live-deploy/functions/api/agent.js",
+  "void-live-deploy/lib/agent-answer.js",
+  "void-live-deploy/lib/answer-free.js"
+ ],
+ "shards": [
+  3
+ ]
+}

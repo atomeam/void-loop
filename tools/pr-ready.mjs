@@ -7,8 +7,8 @@
 // Ship now, test after (Adam, 2026-10-09: nothing waits). Ready means, on the PR's current head: the void-review check
 //   passed (Verse's own review, seconds: no bugs or risks in the added lines, .github/workflows/void-review.yml) and no check
 //   that already finished has failed (test-and-deploy, bench). Nothing else is waited on: not the suite, not the benchmark.
-//   The full suite runs on every head of main (verify.yml, verify-main), and a failure there reverts the merge and
-//   redeploys.
+//   The full suite on the merge with current main is the gate in tools/automerge.mjs (tools/suite-gate.mjs): this
+//   function still answers the review. A failure on main after a merge reverts that commit and files a heal job.
 // Verse's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
 //   never blocks: what it has found on this head is reported in `extra`, and a finding Verse missed is a rule to teach
 //   code-review.js (domains/void.frontier.md #1), not a reason to hold a merge.
@@ -19,7 +19,7 @@ export function readiness(gh, repo, pr) {
   const p = gh(`repos/${repo}/pulls/${pr}`);
   if (p.merged) return { state: 'stop', why: 'already merged', merged: true };
   if (p.state !== 'open') return { state: 'stop', why: 'PR is ' + p.state };
-  const sha = p.head.sha, base = { sha, draft: !!p.draft };
+  const sha = p.head.sha, base = { sha, draft: !!p.draft, branch: p.head && p.head.ref }; // branch on every answer: automerge.mjs starts the suite gate on it (2026-11-06: a 'merge' answer had none, so no suite ever started)
   if (p.mergeable_state === 'dirty') return { ...base, state: 'resolve', why: 'conflicts with main (a conflicted PR gets no checks, so main is merged in first)', branch: p.head && p.head.ref };
   // one read for every check on this head (2026-11-04: three reads, one per name, were a third of the bot's API quota)
   const all = gh(`repos/${repo}/commits/${sha}/check-runs?per_page=100`).check_runs || [];

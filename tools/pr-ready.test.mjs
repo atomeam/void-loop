@@ -21,6 +21,7 @@ const thread = (id, extra) => ({ id, user: { login: CR }, original_commit_id: SH
 const reply = (to) => ({ id: 900 + to, in_reply_to_id: to, user: { login: 'atomeam' }, body: 'fixed in the next push' });
 
 ok(R().state === 'merge', 'green CI, clean Verse review, quiet CodeRabbit: merge');
+{ const r = R({ pr: { head: { sha: SHA, ref: 'fix/x' } } }); ok(r.state === 'merge' && r.branch === 'fix/x', 'a ready PR carries its branch, so automerge can start the suite gate on it'); }
 ok(R({ checks: [run('test-and-deploy'), run('void-review', 'failure')] }).state === 'stop', "Verse's review found a bug: stop");
 ok(R({ checks: [run('test-and-deploy'), run('void-review', null, 'in_progress')] }).state === 'wait', "Verse's review still running: wait");
 ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')] }).state === 'merge', 'suite still running: merge, no wait (it runs again on main)');

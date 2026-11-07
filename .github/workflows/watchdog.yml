@@ -1,7 +1,8 @@
 # Verse watchdog: the loop checks itself. Once a day (and on demand) it runs the full suite on main; on Sundays the everyday
 # benchmark and the grown replay too. A daily run is skipped when main has not moved since the last green watchdog run, so a
 # quiet day costs about a minute. If anything fails it opens one issue (or comments on the open one) with the failing run,
-# so the next agent fixes it first; when main is green again it closes that issue. No secrets needed.
+# so the next agent fixes it first; when main is green again it closes that issue. While that issue is open it checks again every 3 hours
+# (when main has moved), so the issue closes within hours of main going green, not the next morning. No secrets needed.
 # (Once a day rather than every six hours: GitHub Free gives a private repo 2,000 Actions minutes a month.)
 name: Verse watchdog
 
@@ -9,6 +10,7 @@ on:
   schedule:
     - cron: '17 10 * * 1-6' # 6:17 AM New York (EDT), Monday to Saturday: full suite
     - cron: '17 10 * * 0'   # Sunday: full suite and the everyday benchmark
+    - cron: '23 */3 * * *'  # while the watchdog issue is open: check main again, so it closes within hours of main going green, not the next morning
   workflow_dispatch:
     inputs:
       bench:
@@ -44,8 +46,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          last=$(gh api "repos/${{ github.repository }}/actions/workflows/watchdog.yml/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].head_sha // ""' || true)
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ github.event.schedule }}" != "17 10 * * 0" ] && [ "$last" = "${{ github.sha }}" ]; then
+          # the head of the last run that really tested and passed: a run that skipped its tests (nothing to re-test) also ends green
+          last=""
+          for r in $(gh api "repos/${{ github.repository }}/actions/workflows/watchdog.yml/runs?branch=main&status=success&per_page=10" --jq '.workflow_runs[] | "\(.id):\(.head_sha)"' || true); do
+            tested=$(gh api "repos/${{ github.repository }}/actions/runs/${r%%:*}/jobs?per_page=30" --jq '[.jobs[] | select(.name == "fast" and .conclusion == "success")] | length' || echo 0)
+            [ "$tested" != "0" ] && { last=${r#*:}; break; }
+          done
+          if [ "${{ github.event.schedule }}" = "23 */3 * * *" ]; then
+            # the recheck: only while a watchdog issue is open, and only on a head of main no finished watchdog run has tested yet
+            open=$(gh api "repos/${{ github.repository }}/issues?labels=watchdog&state=open&per_page=5" --jq 'map(select(.pull_request == null)) | length' || echo 0)
+            tried=""
+            for r in $(gh api "repos/${{ github.repository }}/actions/workflows/watchdog.yml/runs?branch=main&status=completed&per_page=10" --jq '.workflow_runs[] | "\(.id):\(.head_sha)"' || true); do
+              ran=$(gh api "repos/${{ github.repository }}/actions/runs/${r%%:*}/jobs?per_page=30" --jq '[.jobs[] | select(.name == "fast" and (.conclusion == "success" or .conclusion == "failure"))] | length' || echo 0)
+              [ "$ran" != "0" ] && { tried=${r#*:}; break; }
+            done
+            if [ "$open" = "0" ] || [ "$tried" = "${{ github.sha }}" ]; then
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              echo "### recheck: open watchdog issues $open; main ${{ github.sha }} last tested by the watchdog: $tried. Nothing to do" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "run=true" >> "$GITHUB_OUTPUT"
+            fi
+          elif [ "${{ github.event_name }}" = "schedule" ] && [ "${{ github.event.schedule }}" != "17 10 * * 0" ] && [ "$last" = "${{ github.sha }}" ]; then
             echo "run=false" >> "$GITHUB_OUTPUT"
             echo "### main is still ${{ github.sha }}, which the last watchdog run passed: nothing to re-test" >> "$GITHUB_STEP_SUMMARY"
           else
@@ -75,17 +96,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Browser suite (shard ${{ matrix.shard }} of 5 of the full suite)
+      - name: Browser suite (shard ${{ matrix.shard }} of 8 of the full suite)
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/5
+          shard: ${{ matrix.shard }}/8
 
   bench:
     needs: moved

@@ -69,6 +69,9 @@ const wrapEach = (s, a, b) => mapLines(s, (l) => (l.trim() ? a + l + b : l));
 const COMMENT = { python: '# ', py: '# ', ruby: '# ', shell: '# ', bash: '# ', sh: '# ', yaml: '# ', yml: '# ', toml: '# ', perl: '# ', r: '# ', sql: '-- ', lua: '-- ', haskell: '-- ', ada: '-- ', vim: '" ', tex: '% ', latex: '% ', matlab: '% ', lisp: '; ', clojure: '; ', scheme: '; ', asm: '; ', ini: '; ', bat: 'REM ', basic: "' ", vb: "' " };
 const BLOCK = { html: ['<!-- ', ' -->'], xml: ['<!-- ', ' -->'], css: ['/* ', ' */'], markdown: ['<!-- ', ' -->'], md: ['<!-- ', ' -->'] };
 const ADJ = 'amber brave bright calm clever cosmic crisp curious daring eager elegant fierce gentle golden graceful hidden humble jolly keen lively lucky mellow mighty misty nimble noble patient playful polished proud quiet radiant rustic silent silver sleepy smooth snowy solid sparkling steady stormy sunny swift tender tidy velvet vivid warm whimsical wise witty zesty'.split(' ');
+// a random word (2026-11-06, docs/GAPS.md: "random word" fell to an article about randomness): common English nouns and verbs beside ADJ, each said with its part of speech
+const NOUN = 'anchor apple arrow badge balloon basket beach bicycle blanket bottle bridge brush bucket button cabin camera candle canyon castle chair cloud compass cookie crayon desert diamond dragon drum engine feather fence forest garden giraffe glacier guitar hammer harbor helmet island jacket jungle kettle kite ladder lantern lemon library lighthouse magnet map marble meadow mirror mountain needle notebook ocean orchard paddle parrot pencil piano pillow planet pocket puzzle rainbow river rocket saddle scarf shadow shell ship shovel spoon squirrel star sunflower table teapot tiger tower train tunnel umbrella valley violin wagon whistle window wizard'.split(' ');
+const VERB = 'bake balance bounce build carry chase climb collect cook dance dig dive draw dream explore float fly fold gather giggle glide grow hike hop invent jump juggle knit laugh listen march mix paint plant play race read ride roll run sail scribble search sing skate sketch sleep slide smile sneeze splash spin sprint stretch swim swing think travel twirl wander whisper wiggle write'.split(' ');
 const FIRST = 'Alex Avery Blake Casey Dana Drew Eden Emery Finley Harper Jamie Jordan Kai Logan Morgan Noor Parker Quinn Reese Riley Robin Rowan Sam Sasha Skyler Taylor'.split(' ');
 const LAST = 'Archer Bell Brooks Carter Dalton Ellis Fisher Grant Hayes Ingram Jensen Keller Lane Marsh Nolan Ortiz Palmer Quincy Reyes Sutton Tanner Vance Walsh Wells Young Zhang'.split(' ');
 const pick = (list, rng) => list[Math.floor(rng() * list.length) % list.length];
@@ -110,6 +113,173 @@ const SPLIT = { comma: ',', semicolon: ';', pipe: '|', space: ' ', tab: '\t', da
 const JOIN = { comma: ', ', space: ' ', semicolon: '; ', pipe: ' | ', dash: ' - ', slash: ' / ', tab: '\t', nothing: '', newline: '\n' };
 const BRACKETS = { round: '()', paren: '()', parenthes: '()', square: '[]', curly: '{}', brace: '{}', angle: '<>' };
 const FILL = '(?:\\s+(?:of|in|for|on|from|to|these|those|this|that|the|my|following|text|lines?|words|list|paragraphs?|below|here|it|selection|selected|please))*';
+// 2026-11-06 (docs/GAPS.md rows 54 to 58): fancy text. Each is a plain Unicode mapping, worked out here, so the result pastes anywhere that shows Unicode.
+const FLIP = Object.fromEntries([...'abcdefghijklmnopqrstuvwxyz'].map((c, i) => [c, [...'ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz'][i]])
+  .concat([...'ACEFGJLMPTUVWY'].map((c, i) => [c, [...'∀ƆƎℲ⅁ſ˥WԀ⊥∩ΛM⅄'][i]]))
+  .concat([...'HINOSXZ'].map((c) => [c, c]))
+  .concat([...'123456789'].map((c, i) => [c, [...'ƖᄅƐㄣϛ9ㄥ86'][i]]))
+  .concat([['.', '˙'], [',', "'"], ["'", ','], ['?', '¿'], ['!', '¡'], ['(', ')'], [')', '('], ['[', ']'], [']', '['], ['{', '}'], ['}', '{'], ['<', '>'], ['>', '<'], ['_', '‾'], ['&', '⅋'], ['"', '„'], [';', '؛']]));
+/** the text turned upside down: each character flipped (capitals with no flipped form take their small letter's), the order reversed. Pure. */
+export const upsideDown = (s) => Array.from(String(s)).reverse().map((c) => FLIP[c] || FLIP[c.toLowerCase()] || c).join('');
+const SMALL = Object.fromEntries([...'abcdefghijklmnopqrstuvwyz'].map((c, i) => [c, [...'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘꞯʀꜱᴛᴜᴠᴡʏᴢ'][i]]));
+/** small letters as Unicode small capitals; x has none and capitals stay capitals. Pure. */
+export const smallCaps = (s) => Array.from(String(s)).map((c) => SMALL[c] || c).join('');
+/** letters and digits in their circled forms (U+24B6, U+24D0, U+2460, U+24EA). Pure. */
+export const circled = (s) => Array.from(String(s)).map((c) => {
+  const k = c.codePointAt(0);
+  return k >= 65 && k <= 90 ? String.fromCodePoint(0x24b6 + k - 65) : k >= 97 && k <= 122 ? String.fromCodePoint(0x24d0 + k - 97) : k >= 49 && k <= 57 ? String.fromCodePoint(0x2460 + k - 49) : k === 48 ? '⓪' : c;
+}).join('');
+// a 5-row block font (docs/GAPS.md row 60, 2026-11-06: "text art big letters hello" gave nothing): # is a filled cell
+const BIG = {
+  A: [' ### ', '#   #', '#####', '#   #', '#   #'], B: ['#### ', '#   #', '#### ', '#   #', '#### '], C: [' ####', '#    ', '#    ', '#    ', ' ####'],
+  D: ['#### ', '#   #', '#   #', '#   #', '#### '], E: ['#####', '#    ', '#### ', '#    ', '#####'], F: ['#####', '#    ', '#### ', '#    ', '#    '],
+  G: [' ####', '#    ', '#  ##', '#   #', ' ####'], H: ['#   #', '#   #', '#####', '#   #', '#   #'], I: ['###', ' # ', ' # ', ' # ', '###'],
+  J: ['  ###', '   # ', '   # ', '#  # ', ' ##  '], K: ['#   #', '#  # ', '###  ', '#  # ', '#   #'], L: ['#    ', '#    ', '#    ', '#    ', '#####'],
+  M: ['#   #', '## ##', '# # #', '#   #', '#   #'], N: ['#   #', '##  #', '# # #', '#  ##', '#   #'], O: [' ### ', '#   #', '#   #', '#   #', ' ### '],
+  P: ['#### ', '#   #', '#### ', '#    ', '#    '], Q: [' ### ', '#   #', '# # #', '#  # ', ' ## #'], R: ['#### ', '#   #', '#### ', '#  # ', '#   #'],
+  S: [' ####', '#    ', ' ### ', '    #', '#### '], T: ['#####', '  #  ', '  #  ', '  #  ', '  #  '], U: ['#   #', '#   #', '#   #', '#   #', ' ### '],
+  V: ['#   #', '#   #', '#   #', ' # # ', '  #  '], W: ['#   #', '#   #', '# # #', '## ##', '#   #'], X: ['#   #', ' # # ', '  #  ', ' # # ', '#   #'],
+  Y: ['#   #', ' # # ', '  #  ', '  #  ', '  #  '], Z: ['#####', '   # ', '  #  ', ' #   ', '#####'],
+  0: [' ### ', '#  ##', '# # #', '##  #', ' ### '], 1: [' # ', '## ', ' # ', ' # ', '###'], 2: [' ### ', '#   #', '  ## ', ' #   ', '#####'],
+  3: ['#### ', '    #', ' ### ', '    #', '#### '], 4: ['#   #', '#   #', '#####', '    #', '    #'], 5: ['#####', '#    ', '#### ', '    #', '#### '],
+  6: [' ### ', '#    ', '#### ', '#   #', ' ### '], 7: ['#####', '    #', '   # ', '  #  ', '  #  '], 8: [' ### ', '#   #', ' ### ', '#   #', ' ### '],
+  9: [' ### ', '#   #', ' ####', '    #', ' ### '], ' ': ['   ', '   ', '   ', '   ', '   '], '!': ['#', '#', '#', ' ', '#'], '?': [' ### ', '#   #', '  ## ', '     ', '  #  '],
+  '.': [' ', ' ', ' ', ' ', '#'], ',': ['  ', '  ', '  ', ' #', '# '], '-': ['    ', '    ', '####', '    ', '    '], "'": ['#', '#', ' ', ' ', ' '],
+};
+/** the text in 5-row block letters made of █, one banner a line of text, at most 12 characters a banner (longer lines wrap at a space);
+ *  characters the font lacks are left out and returned in `missing`. Pure. */
+export function bigLetters(s) {
+  const missing = new Set(), out = [];
+  const lines = String(s).toUpperCase().split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 12);
+  const wrapped = [];
+  for (const l of lines) { let cur = ''; for (const w of l.split(/\s+/)) { if (cur && (cur + ' ' + w).length > 12) { wrapped.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w; } if (cur) wrapped.push(cur); }
+  for (const l of wrapped.slice(0, 16)) {
+    const glyphs = Array.from(l).map((c) => { if (!BIG[c]) missing.add(c); return BIG[c]; }).filter(Boolean);
+    if (!glyphs.length) continue;
+    for (let r = 0; r < 5; r++) out.push(glyphs.map((g) => g[r]).join(' ').replace(/#/g, '█').replace(/\s+$/, ''));
+    out.push('');
+  }
+  return { text: out.join('\n').replace(/\n+$/, ''), missing: [...missing] };
+}
+/** a long stroke (U+0336) through each character but spaces and line ends. Pure. */
+export const strike = (s) => Array.from(String(s)).map((c) => (/\s/.test(c) ? c : c + '̶')).join('');
+/** combining marks (U+0300 to U+036F) above and below each letter: 1 to 2 a side light, 2 to 5 medium, 6 to 12 heavy. Pure given rng. */
+export function zalgo(s, level = 'medium', rng = Math.random) {
+  const [lo, hi] = level === 'light' ? [1, 2] : level === 'heavy' ? [6, 12] : [2, 5];
+  const mark = (from, to) => String.fromCodePoint(from + Math.floor(rng() * (to - from + 1)));
+  const n = () => lo + Math.floor(rng() * (hi - lo + 1));
+  return Array.from(String(s)).map((c) => {
+    if (/\s/.test(c)) return c;
+    let out = c;
+    for (let i = n(); i > 0; i--) out += mark(0x0300, 0x0315); // above
+    for (let i = n(); i > 0; i--) out += mark(0x0316, 0x0333); // below
+    return out;
+  }).join('');
+}
+// ---- SQL formatter (docs/GAPS.md row 94, 2026-11-06): keywords in capitals outside strings, quoted names and comments; each clause on its own line,
+// the items of SELECT, GROUP BY and ORDER BY one a line, AND and OR under WHERE, a subquery indented. Nothing is run or checked.
+const SQL_KW = new Set(('select from where and or not in is null as on join inner left right full outer cross natural group by order having limit offset union all distinct '
+  + 'insert into values update set delete create table alter drop index view primary key foreign references default case when then else end like ilike between exists '
+  + 'asc desc with returning count sum avg min max coalesce cast intersect except true false if unique check constraint add column using over partition window fetch next rows only top').split(' '));
+const SQL_CLAUSE = [['select'], ['from'], ['where'], ['group', 'by'], ['order', 'by'], ['having'], ['limit'], ['offset'], ['union', 'all'], ['union'], ['intersect'], ['except'],
+  ['insert', 'into'], ['values'], ['update'], ['set'], ['delete', 'from'], ['returning'], ['with'], ['window'], ['left', 'outer', 'join'], ['right', 'outer', 'join'], ['full', 'outer', 'join'],
+  ['inner', 'join'], ['left', 'join'], ['right', 'join'], ['full', 'join'], ['cross', 'join'], ['natural', 'join'], ['join'], ['on']];
+const SQL_LIST = new Set(['select', 'group by', 'order by', 'set', 'returning', 'values']);
+export function formatSql(src) {
+  const toks = String(src || '').match(/'(?:[^']|'')*'?|"(?:[^"]|"")*"?|`[^`]*`?|\[[^\]\n]*\]|--[^\n]*|\/\*[\s\S]*?(?:\*\/|$)|\d+(?:\.\d+)?|[A-Za-z_][\w$]*|<>|!=|<=|>=|\|\||::|\s+|[^\s]/g) || [];
+  const t = toks.filter((x) => !/^\s+$/.test(x));
+  const low = (x) => (/^[A-Za-z_]/.test(x || '') ? x.toLowerCase() : '');
+  const lines = []; let line = '', depth = 0, between = false;
+  const frames = [{ sub: true, clause: '' }];
+  const pad = () => '  '.repeat(depth);
+  const nl = (extra = 0) => { if (line.trim()) lines.push(line.replace(/\s+$/, '')); line = pad() + '  '.repeat(extra); };
+  const FN = new Set(['count', 'sum', 'avg', 'min', 'max', 'coalesce', 'cast']);
+  const put = (s, prev) => { const p = low(prev); const tight = !line.trim() || /[(.]$/.test(line) || /^[,;).]/.test(s) || s === '::' || prev === '::' || (s === '(' && /^[A-Za-z_]/.test(prev || '') && (!SQL_KW.has(p) || FN.has(p))); line += tight ? s : ' ' + s; };
+  let prev = '';
+  for (let i = 0; i < t.length; i++) {
+    const tok = t[i], w = low(tok), f = frames[frames.length - 1];
+    if (/^--|^\/\*/.test(tok)) { put(tok, prev); if (tok.startsWith('--')) nl(); prev = tok; continue; }
+    if (tok === ';') { put(';', prev); nl(); lines.push(''); line = ''; depth = 0; frames.length = 1; frames[0].clause = ''; prev = tok; continue; }
+    if (tok === '(') { const sub = low(t[i + 1]) === 'select' || low(t[i + 1]) === 'with'; put('(', prev); frames.push({ sub, clause: '' }); if (sub) depth += 2; prev = tok; continue; }
+    if (tok === ')') { const g = frames.length > 1 ? frames.pop() : f; if (g.sub) { depth = Math.max(0, depth - 1); nl(); depth = Math.max(0, depth - 1); } put(')', prev); prev = tok; continue; }
+    if (f.sub && w) {
+      const c = SQL_CLAUSE.find((p) => p.every((x, k) => low(t[i + k]) === x));
+      if (c) {
+        const name = c.join(' ');
+        nl(name === 'on' ? 1 : 0); put(c.map((x) => x.toUpperCase()).join(' '), prev); i += c.length - 1; prev = t[i]; f.clause = name; between = false;
+        if (name === 'select' && low(t[i + 1]) === 'distinct') { put('DISTINCT', prev); i++; prev = t[i]; }
+        if (SQL_LIST.has(name) && name !== 'values') nl(1);
+        continue;
+      }
+      if ((w === 'and' || w === 'or') && !between && /^(?:where|having|on)$/.test(f.clause)) { nl(1); put(w.toUpperCase(), prev); prev = tok; continue; }
+      if (w === 'and' && between) between = false;
+      if (w === 'between') between = true;
+    }
+    if (tok === ',' && f.sub && SQL_LIST.has(f.clause) && f.clause !== 'values') { put(',', prev); nl(1); prev = tok; continue; }
+    put(SQL_KW.has(w) ? tok.toUpperCase() : tok, prev); prev = tok;
+  }
+  nl();
+  return lines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+// ---- XML to JSON (docs/GAPS.md row 95, 2026-11-06): a hand-written parser. An element with only text is its text; attributes are "@name";
+// text beside attributes or children is "#text"; a child name met twice is an array; an empty element is null. Values stay strings.
+// A document that does not parse says the line it stops at.
+const XML_ENT = { lt: '<', gt: '>', amp: '&', quot: '"', apos: "'" };
+export function xmlToJson(src) {
+  const s = String(src || ''); let i = 0;
+  const lineAt = (k) => s.slice(0, k).split('\n').length;
+  const fail = (msg, k = i) => { const e = new Error('Line ' + lineAt(k) + ': ' + msg); e.xml = true; throw e; };
+  const decode = (x, at) => x.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);?/gi, (all, e) => {
+    if (e[0] === '#') { const n = e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : +e.slice(1); return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : fail('the character reference ' + all + ' is not a character', at); }
+    return e in XML_ENT ? XML_ENT[e] : fail('the entity ' + all + ' is not one of &lt; &gt; &amp; &quot; &apos;', at);
+  });
+  const ws = () => { while (/\s/.test(s[i] || '')) i++; };
+  const skipMisc = () => { for (;;) { ws(); if (s.startsWith('<?', i)) { const e = s.indexOf('?>', i); if (e < 0) fail('the <? is never closed'); i = e + 2; }
+    else if (s.startsWith('<!--', i)) { const e = s.indexOf('-->', i); if (e < 0) fail('the comment is never closed'); i = e + 3; }
+    else if (/^<!doctype/i.test(s.slice(i, i + 9))) { let d = 0; for (; i < s.length; i++) { if (s[i] === '[') d++; else if (s[i] === ']') d--; else if (s[i] === '>' && d <= 0) { i++; break; } } }
+    else return; } };
+  const NAME = /[A-Za-z_][\w:.-]*/y;
+  const name = () => { NAME.lastIndex = i; const m = NAME.exec(s); if (!m) fail(s[i] ? 'a name was expected, not "' + s[i] + '"' : 'the document ends too soon'); i += m[0].length; return m[0]; };
+  const element = () => {
+    const at = i; i++; const tag = name(), attrs = {}, kids = []; let text = '';
+    for (;;) {
+      ws();
+      if (s.startsWith('/>', i)) { i += 2; return build(attrs, kids, text); }
+      if (s[i] === '>') { i++; break; }
+      if (!s[i]) fail('<' + tag + '> is never closed', at);
+      const a = name(); ws(); if (s[i] !== '=') fail('the attribute ' + a + ' has no = and value'); i++; ws();
+      const q = s[i]; if (q !== '"' && q !== "'") fail('the value of ' + a + ' is not in quotes'); const e = s.indexOf(q, i + 1); if (e < 0) fail('the value of ' + a + ' is never closed');
+      const v = s.slice(i + 1, e); if (v.includes('<')) fail('the value of ' + a + ' has a <'); if ('@' + a in attrs) fail('the attribute ' + a + ' is there twice'); attrs['@' + a] = decode(v, i); i = e + 1;
+    }
+    for (;;) {
+      if (i >= s.length) fail('<' + tag + '> is opened here and never closed', at);
+      if (s.startsWith('</', i)) { const ca = i; i += 2; const c = name(); ws(); if (s[i] !== '>') fail('</' + c + ' has no >'); i++; if (c !== tag) fail('</' + c + '> closes <' + tag + '>, which is opened on line ' + lineAt(at), ca); return build(attrs, kids, text); }
+      if (s.startsWith('<!--', i)) { const e = s.indexOf('-->', i); if (e < 0) fail('the comment is never closed'); i = e + 3; continue; }
+      if (s.startsWith('<![CDATA[', i)) { const e = s.indexOf(']]>', i); if (e < 0) fail('the CDATA section is never closed'); text += s.slice(i + 9, e); i = e + 3; continue; }
+      if (s.startsWith('<?', i)) { const e = s.indexOf('?>', i); if (e < 0) fail('the <? is never closed'); i = e + 2; continue; }
+      if (s[i] === '<') { kids.push([s.slice(i + 1).match(/^[A-Za-z_][\w:.-]*/)?.[0] || '', null]); kids[kids.length - 1][1] = element(); continue; }
+      const e = s.indexOf('<', i), end = e < 0 ? s.length : e; text += decode(s.slice(i, end), i); i = end;
+    }
+  };
+  const build = (attrs, kids, text) => {
+    const tx = kids.length ? text.trim() : text.trim() ? text : '';
+    if (!kids.length && !Object.keys(attrs).length) return tx ? tx.trim() : null;
+    const o = { ...attrs };
+    for (const [k, v] of kids) o[k] = k in o ? (Array.isArray(o[k]) ? [...o[k], v] : [o[k], v]) : v;
+    if (tx.trim()) o['#text'] = tx.trim();
+    return o;
+  };
+  skipMisc();
+  if (s[i] !== '<') fail(i < s.length ? 'the document has to start with an element, like <root>' : 'there is no element here');
+  const rootName = s.slice(i + 1).match(/^[A-Za-z_][\w:.-]*/)?.[0] || '';
+  const root = element();
+  skipMisc();
+  if (i < s.length) fail('there is more after the root element </' + rootName + '>; XML has one root');
+  return { [rootName]: root };
+}
+const xmlTool = (s) => { try { return { text: JSON.stringify(xmlToJson(s), null, 2), note: 'Attributes are "@name", text beside them is "#text", a repeated element is a list, and every value stays a string' }; } catch (e) { if (!e.xml) throw e; return { text: '', note: e.message }; } };
+
 const T = (id, title, heads, fn, o = {}) => ({ id, title, heads: heads.map((h) => new RegExp('^(?:' + h + ')' + FILL + '$')), fn, body: 'text', ...o });
 const LOOSE = '(?!(?:is|was|means|mean|explained|works|vs)\\b)';
 
@@ -154,11 +324,29 @@ export const TOOLS = [
   T('md-bold', 'Bold', ['(?:markdown\\s+|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?)?bold(?:\\s+text)?'], (s) => wrapEach(s, '**', '**')),
   T('md-italic', 'Italic', ['(?:markdown\\s+|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?)?italics?(?:\\s+text)?'], (s) => wrapEach(s, '*', '*')),
   T('md-code', 'Code', ['(?:markdown|inline|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?|as)\\s*code(?:\\s+(?:format|formatting|font))?', 'code\\s+block', 'code\\s+format'], (s) => (lines(s).length > 1 ? '```\n' + s.trim() + '\n```' : '`' + s.trim() + '`')),
+  // "strikethrough text" (with the word text) is the Unicode stroke that pastes anywhere; "strikethrough: hi" stays Markdown's ~~hi~~
+  T('strike', 'Strikethrough text', ['strike[\\s-]?through\\s+(?:text|font|generator|letters)', 'cross(?:ed)?[\\s-]?out\\s+(?:text|letters|words)'], (s) => strike(s), { note: 'a long stroke (U+0336) after each character; it shows where the font supports combining marks' }),
   T('md-strike', 'Strikethrough', ['(?:markdown\\s+|make\\s+(?:it\\s+)?|turn\\s+(?:it\\s+)?(?:in(?:to)?\\s+)?)?strike[\\s-]?(?:through|out)?'], (s) => wrapEach(s, '~~', '~~')),
   T('date', 'Date stamp', ['(?:insert\\s+)?(?:the\\s+|a\\s+|today\\s*s\\s+)?(?:date\\s+stamp|datestamp|date\\s+now|today\\s*s\\s+date)', 'insert\\s+(?:the\\s+|today\\s*s\\s+)?date'], (s, a, c) => stamp('date', c.now) + (s ? ' ' + s : ''), { body: 'opt' }),
   T('iso', 'ISO timestamp', ['(?:insert\\s+)?(?:an?\\s+|the\\s+)?iso\\s+(?:8601\\s+)?(?:time\\s?stamp|stamp|date(?:\\s*time)?)', 'insert\\s+(?:an?\\s+|the\\s+)?iso\\s+(?:time\\s?stamp|date)'], (s, a, c) => stamp('iso', c.now) + (s ? ' ' + s : ''), { body: 'opt', note: 'UTC, ISO 8601' }),
   T('time', 'Time stamp', ['(?:insert\\s+)?(?:the\\s+|a\\s+)?(?:time\\s+stamp|timestamp)', 'insert\\s+(?:the\\s+)?(?:current\\s+)?time'], (s, a, c) => stamp('time', c.now) + (s ? ' ' + s : ''), { body: 'opt', note: 'your local time, 24 hour' }),
   T('adjective', 'Random adjective', ['(?:give\\s+me\\s+)?(?:a\\s+|an\\s+|(?<arg>\\d{1,2})\\s+)?random\\s+adjectives?'], (s, arg, c) => Array.from({ length: Math.min(20, +arg || 1) }, () => pick(ADJ, c.rng)).join('\n'), { body: 'none' }),
+  T('word', 'Random word', ['(?:generate\\s+|give\\s+me\\s+|pick\\s+|get\\s+)?(?:me\\s+)?(?:a\\s+|an\\s+|(?<arg>\\d{1,2})\\s+)?random\\s+(?:english\\s+)?words?(?:\\s+(?:generator|picker))?'],
+    (s, arg, c) => { const all = [...ADJ.map((w) => w + ' (adjective)'), ...NOUN.map((w) => w + ' (noun)'), ...VERB.map((w) => w + ' (verb)')]; return { text: Array.from({ length: Math.min(20, +arg || 1) }, () => pick(all, c.rng)).join('\n'), note: 'from ' + all.length + ' common English words · ask again for another' }; }, { body: 'none' }),
+  T('noun', 'Random noun', ['(?:generate\\s+|give\\s+me\\s+|pick\\s+)?(?:a\\s+|an\\s+|(?<arg>\\d{1,2})\\s+)?random\\s+nouns?'], (s, arg, c) => Array.from({ length: Math.min(20, +arg || 1) }, () => pick(NOUN, c.rng)).join('\n'), { body: 'none' }),
+  T('verb', 'Random verb', ['(?:generate\\s+|give\\s+me\\s+|pick\\s+)?(?:a\\s+|an\\s+|(?<arg>\\d{1,2})\\s+)?random\\s+verbs?'], (s, arg, c) => Array.from({ length: Math.min(20, +arg || 1) }, () => pick(VERB, c.rng)).join('\n'), { body: 'none' }),
+  // a random date (2026-11-06, docs/GAPS.md: "generate a random date" fell to an article): any day between two years, 1970 to this year by default
+  T('randdate', 'Random date', ['(?:generate\\s+|give\\s+me\\s+|pick\\s+|get\\s+)?(?:me\\s+)?(?:a\\s+|(?<arg>\\d{1,2})\\s+)?random\\s+dates?(?:\\s+generator)?(?:\\s+(?:between|from)\\s+(?<arg2>\\d{4}\\s+(?:and|to|-)\\s+\\d{4}))?'],
+    (s, arg, c) => {
+      const yrs = /(\d{4})\D+(\d{4})/.exec(c.head || ''), n = Math.min(20, +((/^\D*?(\d{1,2})\s+random/.exec(c.head || '') || [])[1]) || 1);
+      let a = yrs ? +yrs[1] : 1970, b = yrs ? +yrs[2] : c.now.getFullYear(); if (a > b) [a, b] = [b, a];
+      const t0 = Date.UTC(a, 0, 1), t1 = Date.UTC(b, 11, 31), day = 864e5;
+      const one = () => { const d = new Date(t0 + Math.floor(c.rng() * ((t1 - t0) / day + 1)) * day); return d.toISOString().slice(0, 10) + '  ' + d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }); };
+      return { text: Array.from({ length: n }, one).join('\n'), note: 'any day from Jan 1, ' + a + ' to Dec 31, ' + b + ', each as likely · "random date between 2000 and 2010" picks the years' };
+    }, { body: 'none' }),
+  // the Fibonacci numbers (2026-11-06, docs/GAPS.md: "fibonacci sequence" fell to an article): the first 20, or as many as asked, exact to 300 terms
+  T('fibonacci', 'Fibonacci sequence', ['(?:the\\s+)?(?:first\\s+(?<arg>\\d{1,3})\\s+)?(?:numbers?\\s+(?:of|in)\\s+the\\s+)?fibonacci(?:\\s+(?:sequence|numbers?|series))?(?:\\s+(?:up\\s+to|to)\\s+(?<arg2>\\d{1,3})(?:\\s+(?:terms|numbers))?)?', '(?<arg>\\d{1,3})\\s+fibonacci\\s+numbers'],
+    (s, arg) => { const n = Math.max(1, Math.min(300, +arg || 20)), out = []; let x = 0n, y = 1n; for (let i = 0; i < n; i++) { out.push(x); [x, y] = [y, x + y]; } return { text: out.map((v, i) => 'F' + i + '  ' + v.toString()).join('\n'), note: n + ' terms from F0 = 0; each is the sum of the two before it' }; }, { body: 'none' }),
   T('name', 'Placeholder name', ['(?:give\\s+me\\s+)?(?:a\\s+|an\\s+|(?<arg>\\d{1,2})\\s+)?(?:placeholder|dummy|sample|fake)\\s+names?'], (s, arg, c) => Array.from({ length: Math.min(20, +arg || 1) }, () => pick(FIRST, c.rng) + ' ' + pick(LAST, c.rng)).join('\n'), { body: 'none', note: 'made up, for mock-ups' }),
   T('stats', 'Text statistics', ['(?:text\\s+)?(?:stats|statistics)', 'text\\s+analysis'], (s) => {
     const w = wordsOf(s), sn = sentencesOf(s);
@@ -186,6 +374,8 @@ export const TOOLS = [
   T('ellipsis', 'Ellipsis', ['(?:insert\\s+)?(?:an?\\s+)?ellipsis(?:\\s+character)?'], (s) => (s ? s.replace(/\.{3,}/g, '…') : '…'), { body: 'opt', note: 'U+2026; in a text, ... becomes …' }),
   T('nbsp', 'Non-breaking space', ['(?:insert\\s+)?(?:an?\\s+)?(?:nbsp|non[\\s-]?breaking\\s+space|no[\\s-]?break\\s+space)'], (s) => (s ? s.replace(/ /g, ' ') : ' '), { body: 'opt', note: 'U+00A0; in a text, every space becomes one' }),
   T('html', 'As HTML', ['(?:copy\\s+(?:it\\s+)?as|convert\\s+to|turn\\s+into|make\\s+it)\\s+html', 'html'], toHtml),
+  T('sql', 'SQL, formatted', ['sql\\s+(?:formatter|format|beautifier|beautify|pretty\\s*print(?:er)?|prettifier|prettify)', '(?:format|beautify|prettify|pretty\\s*print|indent)\\s+(?:the\\s+|this\\s+|my\\s+)?sql(?:\\s+query)?'], (b) => ({ text: formatSql(b), note: 'Keywords in capitals, each clause on its own line. The query is not run or checked' })),
+  T('xml-json', 'XML as JSON', ['(?:convert\\s+)?xml\\s+(?:to|into|as)\\s+json(?:\\s+(?:converter|conversion|online|tool))?', '(?:convert|turn|change)\\s+(?:this\\s+)?xml\\s+(?:to|into)\\s+json'], xmlTool),
   T('markdown', 'As Markdown', ['(?:copy\\s+(?:it\\s+)?as|convert\\s+to|turn\\s+into|make\\s+it)\\s+markdown', 'html\\s+to\\s+markdown'], toMarkdown),
   T('plain', 'As plain text', ['(?:copy\\s+(?:it\\s+)?as|paste\\s+as|convert\\s+to|turn\\s+into|make\\s+it)\\s+plain(?:\\s+text)?', 'paste\\s+plain(?:\\s+text)?', 'clear\\s+(?:the\\s+)?formatting', 'strip\\s+(?:the\\s+)?(?:formatting|markdown|html|tags)', 'remove\\s+(?:the\\s+)?(?:formatting|markdown|html\\s+tags)'], toPlain),
   T('unhighlight', 'Highlight removed', ['(?:remove|clear|undo|strip)\\s+(?:the\\s+)?highlight(?:ing|s)?', 'unhighlight'], (s) => s.replace(/<\/?mark\b[^>]*>/gi, '').replace(/==([^=]+)==/g, '$1')),
@@ -251,6 +441,13 @@ export const TOOLS = [
     (s) => { const f = frequency(s, true).slice(0, 10); return { text: f.map(([w, n]) => n + '  ' + w).join('\n'), note: 'little words like "the" and "of" left out; "word frequency" counts every word' }; }),
   T('frequency', 'Word frequency', ['word\\s+(?:frequency|frequencies|counts?)', '(?:count|how\\s+often)\\s+(?:each\\s+)?words?(?:\\s+(?:appears?|occurs?|used))?', 'frequency\\s+of\\s+words', 'frequency'],
     (s) => { const f = frequency(s); return { text: f.slice(0, 200).map(([w, n]) => n + '  ' + w).join('\n'), note: plural(f.length, 'different word') + ', most used first' + (f.length > 200 ? ' (first 200 shown)' : '') }; }),
+  T('big-letters', 'Big block letters', ['(?:text\\s+art\\s+)?(?:big|block|banner)\\s+(?:letters?|text)(?:\\s+(?:generator|maker|font))?', 'ascii\\s+(?:art\\s+)?(?:text|letters|banner)(?:\\s+(?:generator|maker))?', 'text\\s+art\\s+(?:generator|maker)'],
+    (s) => { const r = bigLetters(s); return { text: r.text, note: '5 rows of █, up to 12 characters a row; it copies as plain text' + (r.missing.length ? '. Left out, not in the font: ' + r.missing.join(' ') : '') }; },
+    { forms: [/^(?:make\s+|write\s+|draw\s+|type\s+|spell\s+)?(?:text\s+art\s+)?(?:in\s+)?(?:big|block|banner|ascii)\s+(?:art\s+)?letters?\s+(?:for\s+|of\s+|saying\s+|that\s+says\s+)?(?!(?:generator|maker|font|online|tool)$)(.+)$/, /^(?:text\s+art\s+(?:text\s+|letters\s+)?|ascii\s+art\s+(?:text|letters)\s+)(?:for\s+|of\s+|saying\s+)?(?!(?:(?:big|block|banner)\s+(?:letters?|text))?\s*(?:generator|maker|font|online|tool)?$)(.+)$/, /^(?:write\s+|make\s+|draw\s+)?(.+?)\s+in\s+(?:big|block|ascii|banner)\s+(?:art\s+)?letters$/] }),
+  T('upside-down', 'Upside down', ['(?:turn\\s+|flip\\s+)?upside[\\s-]?down\\s+(?:text|letters|writing|font)', '(?:turn|flip)\\s+(?:the\\s+|my\\s+)?(?:text|letters|words)\\s+upside[\\s-]?down'], (s) => upsideDown(s), { note: 'flipped character by character; letters with no upside-down form are left as they are' }),
+  T('small-caps', 'Small caps', ['small[\\s-]?caps?(?:\\s+(?:text|letters|font|generator))?', 'small\\s+capitals?(?:\\s+(?:text|letters))?'], (s) => smallCaps(s), { note: 'Unicode small capitals; x has no small capital and stays x, and capitals stay capitals' }),
+  T('bubble', 'Bubble text', ['bubble\\s+(?:text|letters|font|writing)', 'circled?\\s+(?:text|letters|font)'], (s) => circled(s), { note: 'circled Unicode letters and numbers; other characters stay as they are' }),
+  T('zalgo', 'Zalgo text', ['(?<arg>light|medium|heavy)?\\s*(?:zalgo|glitch(?:ed|y)?|cursed|creepy)\\s+text(?:\\s+(?<arg2>light|medium|heavy))?', '(?<arg>light|medium|heavy)?\\s*zalgo(?:\\s+(?<arg2>light|medium|heavy))?'], (s, a, c) => zalgo(s, a || 'medium', c.rng), { note: 'combining marks stacked above and below each letter; ask for light or heavy zalgo text for less or more' }),
 ];
 
 const BYID = Object.fromEntries(TOOLS.map((t) => [t.id, t]));

@@ -21,6 +21,9 @@ test('list: adding (and what a bare "add" leaves to the stage), ticking and taki
   assert.equal(addOf('add milk'), 'milk');
   for (const a of ['add a clock', 'add stars', 'add the timer', 'add 5 and 6']) assert.equal(addOf(a), '', a);
   assert.equal(addOf('add glitter', (w) => w === 'glitter'), '', 'words that name a stage thing are not an item');
+  // a length of time is the timer's (#2326: "add one minute" made a list card holding "one minute"); a named list still takes it
+  for (const a of ['add one minute', 'add thirty seconds', 'add two hours']) assert.equal(addOf(a), '', a);
+  assert.equal(addOf('add one minute to the list'), 'one minute');
   assert.equal(checkOf('check off milk'), 'milk');
   assert.equal(checkOf('cross off eggs on the shopping list'), 'eggs');
   assert.equal(checkOf('mark bread as bought'), 'bread');
@@ -47,4 +50,18 @@ test('items that say check, remove, clear or complete still make the list; the a
     assert.ok(wantsCreate(a.toLowerCase(), a), a);
   assert.deepEqual(seedsOf('make a list with Remove weeds, Clear a bed, Water daily'), ['Remove weeds', 'Clear a bed', 'Water daily']);
   for (const a of ['clear the list', 'remove the list', 'check off milk', 'add item eggs', 'mark milk as done', 'empty the list', 'delete the list']) assert.ok(!wantsCreate(a, a), a);
+});
+
+// "remove the list" with no list went on down the slow path (void.html handle: the skills, then an article fallback); while it ran,
+// "make a list" put up a new list, and the late ask removed it and its goal (the list card and list goal browser checks, red on main).
+// The early list block knows there is no list ("no list" from the skill, or none found without it) and says so at once (#2382).
+test('"clear the list" or "remove the list" with no list says so at once and stops, so a later ask keeps its list', async () => {
+  const fs = await import('node:fs'), page = fs.readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  const start = page.indexOf('    async function handle(raw) {'), body = page.slice(start);
+  const early = body.indexOf('if (listClear || listRemove) {'), stop = body.indexOf("if (none) { say('there is no list on the stage'); loopLog({ domain: 'void.surface', ask: typed, score: 'pass', note: 'no-list' }); return; }");
+  const firstAwait = body.indexOf('await ');
+  assert.ok(start > 0 && early > 0 && stop > early, 'the early list block answers "no list" itself');
+  assert.ok(stop < firstAwait, 'and before any await, so no newer ask can run first');
+  assert.ok(body.slice(early, stop).includes("none = d === 'no list'") && body.slice(early, stop).includes('} else none = true;'), 'both ways of finding no list stop there');
+  for (const a of ['clear the list', 'empty list', 'remove the list', 'delete list', 'get rid of the list', 'hide the list.']) assert.ok(wantsRemove(a) || wantsClear(a), a);
 });

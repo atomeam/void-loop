@@ -1,0 +1,7 @@
+{
+  "symbol": "BTC/USD",
+  "exchanges": ["coinbase", "kraken", "bitstamp", "gemini"],
+  "size": 1000,
+  "transferUsd": 0,
+  "fees": { "coinbase": 0.006, "kraken": 0.008, "bitstamp": 0.004, "gemini": 0.012 }
+}

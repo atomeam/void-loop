@@ -23,6 +23,7 @@ const NAMES = {
   'url-encode': ['url encoder', 'url decoder', 'url encode', 'url decode', 'url encoding', 'url decoding', 'url encoder decoder', 'url encode decode', 'percent encoding', 'percent encoder', 'urlencode', 'urldecode'],
   'roman-numerals': ['roman numeral converter', 'roman numerals converter', 'roman numeral translator', 'roman numerals translator'],
   'days-between': ['days between dates', 'days between two dates', 'date difference', 'date duration'],
+  'gas-mileage': ['gas mileage calculator', 'gas mileage', 'mileage calculator', 'fuel mileage calculator', 'car mileage calculator', 'miles per gallon calculator'],
 };
 const NAMED = new Map(Object.entries(NAMES).flatMap(([id, names]) => names.map((n) => [n, id])));
 const N = '(-?\\d{9,16}(?:\\.\\d+)?)', DT = '(\\d{4}-\\d{1,2}-\\d{1,2}(?:[ t]\\d{1,2}:\\d{2}(?::\\d{2})?)?(?: ?(?:z|utc|gmt))?)', EP = '(?:unix|epoch|posix)(?: time(?:stamp)?)?';
@@ -57,6 +58,20 @@ export function filled(text, now = Date.now()) {
     if (m[7]) { if (m[1] === 'simple') return null; given.n = HOW[m[7]]; }
     return { calc: BY_ID.get(m[1] + '-interest'), given };
   }
+  // mpg from what was driven and filled: "mpg for 300 miles on 10 gallons", "gas mileage 420 miles 12 gallons"
+  if ((m = t.match(/^(?:what is (?:my |the )?)?(?:mpg|gas mileage|fuel economy|mileage)(?: for| of)? (\d[\d,]*(?:\.\d+)?) ?(?:miles|mi)(?: on| with| using)? (\d+(?:\.\d+)?) ?(?:gallons|gal)$/))) return { calc: BY_ID.get('gas-mileage'), given: { d: m[1].replace(/,/g, ''), v: m[2] } };
+  // a price with a percent off (2026-11-06, docs/GAPS.md row 14: "discount 30% off 80" answered 30% of 80 = 24, not the price after it):
+  // "30% off 80", "discount 30% off $80", "what is 30 percent off 80", "price after 20% discount on 50", "$80 with 30% off". The card leads with the sale price.
+  const OFF = '(\\d+(?:\\.\\d+)?) ?(?:%|percent)', PRICE = '\\$?(\\d[\\d,]*(?:\\.\\d+)?)(?: dollars)?';
+  if ((m = t.match(new RegExp('^(?:what(?:\'s| is) )?(?:the )?(?:(?:discount|sale price|price) (?:of )?)?' + OFF + ' (?:off|discount)(?: (?:of|on|from))? ' + PRICE + '$')))
+    || (m = t.match(new RegExp('^(?:what is )?(?:the )?(?:sale )?price after (?:an? )?' + OFF + ' (?:discount|off) (?:on|of|from) ' + PRICE + '$')))) {
+    if (+m[1] > 100) return null;
+    return { calc: BY_ID.get('discount'), given: { price: m[2].replace(/,/g, ''), off: m[1] }, lead: 'Sale price' };
+  }
+  if ((m = t.match(new RegExp('^' + PRICE + ' (?:with|at|minus|less) ' + OFF + '(?: off| discount)?$'))) && /%|percent/.test(t) && /off|discount|minus|less/.test(t)) {
+    if (+m[2] > 100) return null;
+    return { calc: BY_ID.get('discount'), given: { price: m[1].replace(/,/g, ''), off: m[2] }, lead: 'Sale price' };
+  }
   return null;
 }
 
@@ -81,9 +96,9 @@ function asked(text) {
 /** whether an ask opens the whole library. Pure. */
 export const isLibrary = (text) => LIBRARY.test(fold(text).trim().replace(/[?.!]+$/, ''));
 
-function card(calc, api, given) {
+function card(calc, api, given, lead) {
   // with the asker's own numbers the full page opens on them too (lib/calculators.js readQuery)
-  const { showPage, esc } = api, r = run(calc, given || {}), href = given ? '/calculators/' + writeQuery({ calc: calc.id, given }) : '/calculators/?calc=' + encodeURIComponent(calc.id);
+  const { showPage, esc } = api, r0 = run(calc, given || {}), r = lead ? { ...r0, outputs: [...r0.outputs].sort((a, b) => (b.label === lead) - (a.label === lead)) } : r0, href = given ? '/calculators/' + writeQuery({ calc: calc.id, given }) : '/calculators/?calc=' + encodeURIComponent(calc.id);
   showPage((p) => {
     p.dataset.page = href; // the full-page link opens this calculator, not the list of all of them
     p.innerHTML = '<h2>' + esc(calc.name) + '</h2><div class="sub">' + esc(calc.cat + ' · ' + calc.formula) + '</div>'
@@ -108,14 +123,14 @@ function library(api) {
 export default {
   name: 'formulas',
   examples: ['pipe surface area calculator', 'ohms law current calculator', 'calculator for molar mass', 'kinetic energy calculator', 'formula calculators',
-    'unix timestamp 1700000000', 'timestamp converter 1700000000', 'epoch converter', 'url encode hello world', 'compound interest 1000 at 5% for 10 years', 'roman numeral converter'],
+    'unix timestamp 1700000000', 'timestamp converter 1700000000', 'epoch converter', 'url encode hello world', 'compound interest 1000 at 5% for 10 years', 'roman numeral converter', 'discount 30% off 80', 'price after 20% discount on 50', 'gas mileage calculator', 'mpg for 300 miles on 10 gallons'],
   nearMisses: ['calculator', 'open a calculator', 'what is 17% of 240', 'how do calculators work', 'calculator watch',
-    'what is unix', 'what is compound interest', 'url of the calculators page', 'encode', 'roman numerals for 1994', 'compound interest on 1000 at 5% for 10 years'],
+    'what is unix', 'what is compound interest', 'url of the calculators page', 'encode', 'roman numerals for 1994', 'compound interest on 1000 at 5% for 10 years', '30% off coupon', '50% off sale near me', 'what is gas mileage', 'mileage reimbursement rate'],
   pick, isLibrary, filled,
   match(lower, text) { const t = text || lower; return isLibrary(t) || !!filled(t) || (!!pick(t) && !OWNED.has(asked(t))); },
   async run(text, api) {
     if (isLibrary(text)) return library(api);
-    const f = filled(text); if (f && f.calc) return card(f.calc, api, f.given);
+    const f = filled(text); if (f && f.calc) return card(f.calc, api, f.given, f.lead);
     const c = pick(text); return c ? card(c, api) : 'none';
   },
 };

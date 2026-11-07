@@ -1,7 +1,7 @@
 # The site tester (tools/site-test.mjs): live a-to-mind.com in headless Chrome, after every deploy and once an hour. It only tests:
 # every non-GET request is answered inside the browser, so nothing is submitted, posted, bought, sent or logged on Verse.
 # Every run ends in one improvement (tools/site-test.log.json): a new failure or a wording Verse missed opens ONE issue labelled
-# site-test (the same title is never opened twice; an open one gets no comment spam), else the suite grows or a limit tightens,
+# site-test (the same title is never opened twice; an open one gets no comment spam; every open one is asked again each run and closed when it passes), else the suite grows or a limit tightens,
 # committed to main as data (suite, seen-set, log: tester-made asks only, never a visitor's words). Screenshots are the artifact.
 name: Site test
 
@@ -60,6 +60,16 @@ jobs:
           [ "$seen" != "0" ] && { echo "already filed: $title"; exit 0; }
           url=$(gh issue create --label site-test --title "$title" --body "Found by the site tester (tools/site-test.mjs) on live a-to-mind.com, run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} (screenshots in its artifact). Fix it with a regression test; for a missed wording, teach the skill the phrase (its examples or match) and keep the case in tools/site-test.json.")
           echo "ISSUE=${url##*/}" >> "$GITHUB_ENV"; echo "TITLE=$title" >> "$GITHUB_ENV"
+      - name: Recheck every open site-test item and close the ones that pass now (tools/site-test-close.mjs)
+        # nothing closed them before (owner, 2026-11-06: "clear the issues for the 10th time"): a fixed bug or a flake stayed open until a
+        # person closed it. A pass on the live site closes the item with this run; one that still fails stays open and the conductor queues
+        # its fix. Before the suite is kept, so a fixed ask that was only a probe is committed as a regression case.
+        timeout-minutes: 6
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/site-test-close.mjs --run "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Verify every "built" claim answers live (the showcase plays only these)
         env:
           CHROME_PATH: /usr/bin/google-chrome

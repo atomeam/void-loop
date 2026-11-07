@@ -1,0 +1,53 @@
+{
+ "floor": "oneyeard.com",
+ "verse_page": null,
+ "source": "auto",
+ "sites": {},
+ "crawl": {
+  "sites": {
+   "oneyeard.com": {
+    "floor": "oneyeard.com",
+    "url": "https://oneyeard.com/",
+    "robots": false,
+    "rendered": 1,
+    "sitemaps": 1,
+    "urls_found": 0,
+    "pages": 1,
+    "fetched": 1,
+    "skipped": {
+     "robots": 0,
+     "failed": 0
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://oneyeard.com/"
+      ],
+      "features": [
+       "section oppsss sorry"
+      ]
+     }
+    ],
+    "features": [
+     {
+      "key": "section oppsss sorry",
+      "name": "OPPSSS!!!! Sorry...",
+      "kind": "section",
+      "templates": [
+       "home"
+      ],
+      "verse": "missing",
+      "found": []
+     }
+    ],
+    "verse_pages": 0,
+    "verse_urls": [],
+    "crawled": "2026-11-07"
+   }
+  },
+  "updated": "2026-11-07"
+ }
+}

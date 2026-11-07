@@ -58,7 +58,7 @@ const clock = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minut
 const dayOf = (t) => { const d = new Date(t), today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
   return d.toDateString() === today.toDateString() ? 'Today' : d.toDateString() === y.toDateString() ? 'Yesterday' : d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }); };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - t) / 60e3)); return m < 1 ? 'just now' : m < 60 ? m + ' min' : m < 1440 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' d'; };
-const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + stateWord0(m);
+const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + (m.crew && m.state !== 'invited' ? T.crewNext(m.next) : stateWord0(m)); // a crew member never holds a job: its card says when it runs next
 const stateWord0 = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : m.state === 'invited' ? 'invited, not joined yet' : 'away';
 
 function msgHtml(m, prev, { inThread = false } = {}) {
@@ -355,7 +355,7 @@ async function drawBoard() {
   const good = r.jobs.filter((j) => j.good).length, held = isWorker() && S.me.job;
   $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · members claim with one click')
     : 'Nothing open right now: every job is taken. Propose one in #ideas.';
-  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + '</span>' + esc(j.title) + '</span>'
+  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + (j.leverage != null ? ' · leverage ' + esc(j.leverage) : '') + '</span>' + esc(j.title) + (j.why ? '<span class="w">Why: ' + esc(j.why) + '</span>' : '') + '</span>'
     + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Members claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
 }
 async function drawCredits() {
@@ -428,13 +428,13 @@ async function start() {
 start();
 
 // ---- Verse's free bots (owner, 2026-11-03: "populate team with verses free bots too"): the tools anyone or any agent calls free over
-// /api/mcp, read from /tools.json (lib/mcp.js TOOLS), so the list is never written by hand. review_code_closer needs a paid key: left out.
+// /api/mcp, read from /tools.json (lib/mcp.js TOOLS), so the list is never written by hand. review_code_closer needs a paid key and the paid_* tools charge per call: left out.
 const FREE_PAGE = { ask_void: '/', review_code: '/code-review/', readability: '/word-count/', colour_contrast: '/color/', seo_audit: '/?q=' + encodeURIComponent('seo audit'),
   moon_phase: '/?q=' + encodeURIComponent('moon phase'), meteor_showers: '/?q=' + encodeURIComponent('meteor showers'), drive_time: '/?q=' + encodeURIComponent('drive time from Tampa to Orlando'),
   skill_health: '/skills/families.json', skill_discovery: '/skills/families.json' };
 export function freeBots(tj) {
   const tools = (tj && tj.mcp && Array.isArray(tj.mcp.tools)) ? tj.mcp.tools : [];
-  return tools.filter((t) => t && t.name && t.name !== 'review_code_closer').map((t) => {
+  return tools.filter((t) => t && t.name && t.name !== 'review_code_closer' && !/^paid_/.test(t.name)).map((t) => {
     const ex = /Asks like "([^"]{3,80})"/.exec(t.description || '');
     const page = FREE_PAGE[t.name] || (ex ? '/?q=' + encodeURIComponent(ex[1]) : '/?q=' + encodeURIComponent(t.title || t.name));
     return { name: t.title || t.name, tool: t.name, page, about: 'Free bot · call it on /api/mcp as ' + t.name + ', or open its page. ' + String(t.description || '').slice(0, 200) };
