@@ -1,0 +1,1 @@
+{"at":"2026-11-07T18:35:05Z","by":"kimi-k3","kind":"fix","what":"the tower reads a 200 access-refusal stub ('Sorry, This Page Can't Be Accessed', oneyeard.com) as a removed page: the rival is logged in tower.gone.json with the fetch's evidence, the gate skips it, its aspects stop counting, and the target moves to the next live site (protopage.com)"}

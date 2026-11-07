@@ -1,6 +1,6 @@
 {
  "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "oneyeard.com",
+ "id": "protopage.com",
  "since": "2026-11-07",
  "n": 0,
  "progressAt": "2026-11-07",
@@ -135,6 +135,11 @@
    "id": "dalyfeds.com",
    "at": "2026-11-07",
    "why": "dalyfeds.com held the Tower since 2026-11-06 (1 day, limit 1) at 7 of 12 aspects ahead, so it gives way and keeps being measured in the background"
+  },
+  {
+   "id": "oneyeard.com",
+   "at": "2026-11-07",
+   "why": "oneyeard.com is gone: https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed"
   }
  ],
  "settled": [
@@ -148,6 +153,6 @@
  ],
  "last": {
   "at": "2026-11-07",
-  "why": "dalyfeds.com held the Tower since 2026-11-06 (1 day, limit 1) at 7 of 12 aspects ahead, so it gives way and keeps being measured in the background"
+  "why": "oneyeard.com is gone: https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed"
  }
 }

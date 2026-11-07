@@ -26,6 +26,26 @@
     "scripts": 0,
     "bytes": 51
    }
+  },
+  "oneyeard.com": {
+   "status": "gone",
+   "since": "2026-11-07T18:26:07.552Z",
+   "checked": "2026-11-07T18:26:07.552Z",
+   "why": "https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed",
+   "final": "https://oneyeard.com/",
+   "kind": "an access-refusal stub page",
+   "shape": {
+    "chars": 227,
+    "sample": "Status Code: 403\n\nOPPSSS!!!! Sorry...\n\nSorry, your access is refused due to security reasons of our server and also our sensitive data.\nPlease go back to the previous page to continue browsing.\n\nGo Ba",
+    "controls": 1,
+    "usable": 0,
+    "links": 1,
+    "forms": 0,
+    "frames": 0,
+    "canvas": 0,
+    "scripts": 1,
+    "bytes": 1698
+   }
   }
  },
  "log": [
@@ -51,6 +71,25 @@
     "canvas": 0,
     "scripts": 0,
     "bytes": 51
+   }
+  },
+  {
+   "at": "2026-11-07T18:26:07.552Z",
+   "rival": "oneyeard.com",
+   "status": "gone",
+   "why": "https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed",
+   "kind": "an access-refusal stub page",
+   "shape": {
+    "chars": 227,
+    "sample": "Status Code: 403\n\nOPPSSS!!!! Sorry...\n\nSorry, your access is refused due to security reasons of our server and also our sensitive data.\nPlease go back to the previous page to continue browsing.\n\nGo Ba",
+    "controls": 1,
+    "usable": 0,
+    "links": 1,
+    "forms": 0,
+    "frames": 0,
+    "canvas": 0,
+    "scripts": 1,
+    "bytes": 1698
    }
   }
  ]
