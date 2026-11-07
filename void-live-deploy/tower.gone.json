@@ -4,14 +4,14 @@
   "unitingchurch.org.au": {
    "status": "parked",
    "since": "2026-11-05T03:43:40.099Z",
-   "checked": "2026-11-07T06:44:13.947Z",
+   "checked": "2026-11-07T11:14:37.200Z",
    "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au",
    "final": "https://controlhosting.net/"
   },
   "id5-sync.com": {
    "status": "non-site",
    "since": "2026-11-06T18:33:06.247Z",
-   "checked": "2026-11-07T06:44:13.947Z",
+   "checked": "2026-11-07T11:14:37.200Z",
    "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features",
    "final": "https://id5-sync.com/",
    "kind": "an ad-tracking or sync endpoint",
