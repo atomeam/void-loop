@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1206,
+ "counted": 1209,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,7 +27,7 @@
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 76,
+   "dependants": 77,
    "tests": 4
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 93,
+   "dependants": 94,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 26,
    "direct": 1,
-   "dependants": 93,
+   "dependants": 94,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 92,
+   "dependants": 93,
    "tests": 5
   },
   {
@@ -90,7 +90,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 2
   },
   {
@@ -125,49 +125,49 @@
    "file": "lib/reactions.js",
    "skills": 18,
    "direct": 1,
-   "dependants": 72,
+   "dependants": 73,
    "tests": 1
   },
   {
    "file": "lib/corrections.js",
    "skills": 17,
    "direct": 0,
-   "dependants": 61,
+   "dependants": 62,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
    "skills": 17,
    "direct": 5,
-   "dependants": 57,
+   "dependants": 58,
    "tests": 6
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 62,
+   "dependants": 63,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 61,
+   "dependants": 62,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 59,
+   "dependants": 60,
    "tests": 4
   },
   {
@@ -209,7 +209,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 48,
+   "dependants": 49,
    "tests": 4
   },
   {
@@ -223,63 +223,63 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 49,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 48,
+   "dependants": 49,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
    "file": "lib/hardened-line.js",
    "skills": 9,
    "direct": 2,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 0
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 1
   },
   {
@@ -475,7 +475,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 108,
+   "dependants": 109,
    "tests": 2
   },
   {
@@ -587,42 +587,42 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 108,
+   "dependants": 109,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 108,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 105,
+   "dependants": 106,
    "tests": 9
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
@@ -1025,6 +1025,13 @@
    "tests": 1
   },
   {
+   "file": "lib/compose.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 40,
+   "tests": 3
+  },
+  {
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
@@ -1032,18 +1039,18 @@
    "tests": 4
   },
   {
-   "file": "lib/compose.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 39,
-   "tests": 3
-  },
-  {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 2
+  },
+  {
+   "file": "lib/pay-share.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 1
   },
   {
    "file": "lib/store-db.js",
@@ -1053,31 +1060,24 @@
    "tests": 3
   },
   {
-   "file": "lib/pay-share.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 36,
-   "tests": 1
-  },
-  {
    "file": "lib/markets.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 5
   },
   {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 33,
+   "dependants": 34,
    "tests": 6
   },
   {
@@ -1130,6 +1130,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-fft.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 0
+  },
+  {
    "file": "lib/rap-kit.js",
    "skills": 2,
    "direct": 0,
@@ -1144,18 +1151,11 @@
    "tests": 2
   },
   {
-   "file": "lib/rap-fft.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 0
-  },
-  {
    "file": "lib/rap-ears.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 7,
-   "tests": 4
+   "dependants": 8,
+   "tests": 5
   },
   {
    "file": "lib/recipes.js",
@@ -1336,50 +1336,57 @@
    "file": "lib/models.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 73,
+   "dependants": 74,
    "tests": 14
   },
   {
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 2
   },
   {
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 1
   },
   {
    "file": "lib/rap.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 5
   },
   {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 2
+  },
+  {
+   "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 32,
+   "tests": 1
   },
   {
    "file": "lib/actions.js",
@@ -1389,24 +1396,17 @@
    "tests": 2
   },
   {
-   "file": "lib/repo-look.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 31,
-   "tests": 1
-  },
-  {
    "file": "lib/free-pics.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 2
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
@@ -1844,6 +1844,13 @@
    "tests": 1
   },
   {
+   "file": "lib/genre-score.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
    "file": "lib/imgfit.js",
    "skills": 1,
    "direct": 1,
@@ -1925,7 +1932,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/avatar.js",
@@ -2117,7 +2124,7 @@
    "tests": 1
   },
   {
-   "file": "lib/genre-score.js",
+   "file": "lib/genre-master.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2401,7 +2408,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/visible.js",
@@ -2428,252 +2435,252 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 101,
+   "dependants": 102,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 100,
+   "dependants": 101,
    "tests": 35
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 9
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 5
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 0
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 6
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 0
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 0
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 1
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 9
   },
   {
    "file": "lib/free-router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 1
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 3
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 0
   },
   {
    "file": "lib/answer-free.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 8
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 2
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 3
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/follow-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
@@ -3489,6 +3496,13 @@
    "tests": 1
   },
   {
+   "file": "lib/journal.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/kanban-ui.js",
    "skills": 0,
    "direct": 0,
@@ -3930,6 +3944,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
+    "functions/api/feed.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
@@ -4186,6 +4201,12 @@
    ],
    "importedBy": []
   },
+  "functions/api/feed.js": {
+   "imports": [
+    "functions/api/answer.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/figurescript.js": {
    "imports": [
     "lib/automation-fix.js",
@@ -4397,6 +4418,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -5238,6 +5260,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -5287,6 +5310,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -5330,6 +5354,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -5368,6 +5393,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -5531,6 +5557,7 @@
     "functions/api/blueprint.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/gen-data.js",
     "functions/api/local.js",
@@ -5640,6 +5667,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -5810,6 +5838,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/crew.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -5959,6 +5988,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -6098,6 +6128,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -6873,6 +6904,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -6966,6 +6998,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7119,6 +7152,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7248,6 +7282,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7315,6 +7350,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7402,6 +7438,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7441,6 +7478,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7482,6 +7520,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -7590,6 +7629,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7715,6 +7755,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -7847,6 +7888,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/feed.js",
     "functions/api/free.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
@@ -7966,6 +8008,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -8038,6 +8081,7 @@
     "functions/api/clip.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/github-events.js",
     "functions/api/hook/[id].js",
@@ -8577,6 +8621,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -8658,6 +8703,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -8700,6 +8746,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -8798,11 +8845,21 @@
     "skills/riddle-gen.js"
    ]
   },
+  "lib/genre-master.js": {
+   "imports": [
+    "lib/rap-ears.js",
+    "lib/genre-score.js"
+   ],
+   "importedBy": [
+    "skills/music.js"
+   ]
+  },
   "lib/genre-score.js": {
    "imports": [
     "lib/rap-ears.js"
    ],
    "importedBy": [
+    "lib/genre-master.js",
     "skills/music.js"
    ]
   },
@@ -8905,6 +8962,7 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/crew.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -8965,6 +9023,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9089,6 +9148,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9270,6 +9330,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9427,6 +9488,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9465,6 +9527,10 @@
     "skills/showcase.js",
     "skills/walker.js"
    ]
+  },
+  "lib/journal.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/kanban-ui.js": {
    "imports": [
@@ -9516,6 +9582,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
@@ -9632,6 +9699,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9704,6 +9772,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9953,6 +10022,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -9994,6 +10064,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10123,6 +10194,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10198,6 +10270,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10247,6 +10320,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10287,6 +10361,7 @@
     "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/gen-data.js",
     "functions/api/generators.js",
@@ -10476,6 +10551,7 @@
     "functions/api/blueprint.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -10625,6 +10701,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10669,6 +10746,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10716,6 +10794,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10752,6 +10831,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -10818,6 +10898,7 @@
     "functions/api/comments.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/figurescript.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -11027,6 +11108,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11083,6 +11165,7 @@
     "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/earnings.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -11212,6 +11295,7 @@
     "functions/api/clip.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -11362,6 +11446,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11398,6 +11483,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11437,6 +11523,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11524,6 +11611,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11629,6 +11717,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11702,6 +11791,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11755,6 +11845,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/jobs.js",
@@ -11816,6 +11907,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -11922,6 +12014,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12083,6 +12176,7 @@
     "lib/rap-fft.js"
    ],
    "importedBy": [
+    "lib/genre-master.js",
     "lib/genre-score.js",
     "lib/rap-listen.js",
     "lib/rap-song.js"
@@ -12101,6 +12195,7 @@
     "lib/rap-video.js"
    ],
    "reachedBy": [
+    "lib/genre-master.js",
     "lib/genre-score.js",
     "lib/rap-listen.js",
     "lib/rap-song.js",
@@ -12241,6 +12336,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12313,6 +12409,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
+    "functions/api/feed.js",
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
@@ -12434,6 +12531,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12472,6 +12570,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12511,6 +12610,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12575,6 +12675,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/film-views.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
@@ -12638,6 +12739,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12719,6 +12821,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -12876,6 +12979,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13089,6 +13193,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/free.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
@@ -13169,6 +13274,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13333,6 +13439,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13648,6 +13755,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13799,6 +13907,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13846,6 +13955,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13886,6 +13996,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -13963,6 +14074,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -14213,6 +14325,7 @@
     "functions/api/comments.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/figurescript.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -14767,6 +14880,7 @@
     "functions/api/comments.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/figurescript.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -14978,6 +15092,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -15039,6 +15154,7 @@
     "functions/api/clip.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/film-views.js",
     "functions/api/gallery.js",
     "functions/api/github-events.js",
@@ -15188,6 +15304,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -15259,6 +15376,7 @@
     "functions/api/clip.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -15389,6 +15507,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -16864,6 +16983,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -16927,6 +17047,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
@@ -17948,7 +18069,8 @@
    "imports": [
     "lib/compose.js",
     "lib/arrange.js",
-    "lib/genre-score.js"
+    "lib/genre-score.js",
+    "lib/genre-master.js"
    ],
    "importedBy": []
   },
@@ -19313,6 +19435,7 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
+    "functions/api/feed.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/local.js",
