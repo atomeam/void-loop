@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T02:44:43.794Z",
+ "updated": "2026-11-07T02:54:09.939Z",
  "last24h": {
-  "ticks": 90,
-  "started": 116,
+  "ticks": 91,
+  "started": 117,
   "requeued": 0,
   "setAside": 0,
   "probes": 14,
@@ -108,7 +108,7 @@
  "handed": {
   "mvbl52gd": 1794009927410,
   "mva30i2e": 1794012175978,
-  "mva30j4u": 1793997906493,
+  "mva30j4u": 1794020049939,
   "mveb8rsi": 1794009927410,
   "mvu167w7": 1794010489803,
   "mveb8svc": 1794010489803,
@@ -2723,6 +2723,33 @@
    "at": "2026-11-07T02:44:43.794Z",
    "open": 254,
    "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 245,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T02:54:09.939Z",
+   "open": 254,
+   "started": [
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
