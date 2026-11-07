@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { pasteKind, sumsItUp, isPasteText, UNCLEAR_LINE } from '../void-live-deploy/lib/paste-kind.js';
+import { pasteKind, sumsItUp, isPasteText, UNCLEAR_LINE, summaryHeading } from '../void-live-deploy/lib/paste-kind.js';
 import { telemetryOf, reportCardOf } from '../void-live-deploy/lib/telemetry.js';
 import telemetryRoute from '../void-live-deploy/skills/telemetry-route.js';
 
@@ -91,4 +91,22 @@ test('the three copies of the page are the same and hold the paste gate', () => 
   assert.match(page, /if \(sc && !\(paste && paste\.kind === 'report'\)\) \{ showSharedCard\(sc\)/);
   assert.match(page, /paste\.kind === 'unclear'\) \{ lastPaste = /);
   assert.match(page, /pk\.sumsItUp\(typed\)/);
+});
+
+// 2026-11-06: "sum it up" after an unclear paste drew the card with the whole paste, line marks and all, as its heading, and the art
+// label read "Picture of Hi Adam, ⏎ Thanks for the call…". The card is named by a short line; the full paste still goes to the server.
+test('a summed-up paste gets a short heading, not the paste itself', () => {
+  for (const t of [DULL, typed(DULL), ADAM, typed(ADAM)]) {
+    const h = summaryHeading(t);
+    assert.match(h, /^What you pasted \(\d+ words\), summed up$/);
+    assert.ok(!h.includes('⏎') && h.length < 50, h);
+  }
+  assert.equal(summaryHeading('hi'), 'What you pasted (1 word), summed up');
+  assert.equal(summaryHeading(''), 'What you pasted, summed up');
+  const page = read('../void.html');
+  const branch = page.split('\n').find((l) => l.includes('pk.sumsItUp(typed)'));
+  assert.ok(branch && /showAnswer\(lp\.text, null, pk\.summaryHeading/.test(branch), 'the sum-it-up branch passes the short heading');
+  assert.match(page, /async function showAnswer\(text, page, heading\)/);
+  assert.ok(!/<h2>' \+ esc\(text\)/.test(page.slice(page.indexOf('async function showAnswer'), page.indexOf('function whenSaid'))), 'showAnswer draws every heading from head');
+  assert.equal(read('../void.html'), read('../void-live-deploy/index.html'));
 });
