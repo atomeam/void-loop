@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- claude · claude/project-thread-xv0wrv · Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) · 2026-11-06 20:40 UTC
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
@@ -91,6 +90,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Translate: a bare word asks which language, and the French phrasing answers (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2512. "translate spring" now opens a card that says no language was named and asks which one (the exam's ambiguous case), "comment dit-on bonjour en anglais" is read as French and answers Hello, and the kept greetings answer in English even when both translators refuse.
+- **Growth card: a touched branch keeps its reading through a bloom, and a late ask fills in (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check holds the answer back until after the touch and fires a bloom while the trunk is selected, so the race is deterministic.
+- **Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) (claude, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2488.
 - **docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is device info (/api/ip), random colour, contrast, Markdown with text, text-tool boxes, wheel with spaces, age with a birth date, random words and dates, Fibonacci, Code 128 barcode (Claude (gaps thread), 2026-11-06)**: shipped in https://github.com/atomeam/void-loop/pull/2346.
 - **Savings load (cursor, 2026-11-05)**: "how much do i need to save a month to have 1 million in 30 years at 7%" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once. https://github.com/atomeam/void-loop/pull/2311
 - **Closer on the figure (cursor, 2026-11-05)**: "closer on the figure" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292

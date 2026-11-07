@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 2,
-    "proven": 40
+    "proven": 41
    },
    "from": 68,
    "to": 112
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 3,
     "checked": 2,
-    "proven": 50
+    "proven": 55
    },
    "from": 361,
    "to": 421
@@ -2230,8 +2230,10 @@
     "reaction test",
     "click speed test"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the games are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 109
   },
   {
@@ -6661,6 +6663,8 @@
     "proposal",
     "services",
     "delivery-pack",
+    "monitor-pack",
+    "verify-pack",
     "business-clarify",
     "system-blueprint",
     "client-handoff",
@@ -6691,9 +6695,7 @@
     "memory-graph",
     "memory-preview",
     "wants",
-    "podcast",
-    "monitor-pack",
-    "verify-pack"
+    "podcast"
    ],
    "n": 361
   },
@@ -6708,8 +6710,10 @@
     "vers lab",
     "the lab"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it. Ask, and see.",
+   "glow": 100,
    "n": 362
   },
   {
@@ -6963,7 +6967,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it. Ask, and see.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Ask, and see.",
    "glow": 100,
    "n": 377
   },
@@ -7045,8 +7049,10 @@
     "monitor board for client",
     "status of my systems"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. The void remembers each asking.",
+   "glow": 100,
    "n": 382
   },
   {
@@ -7154,6 +7160,36 @@
   {
    "kind": "skill",
    "chapter": "self",
+   "name": "monitor-pack",
+   "title": "Monitor pack",
+   "line": "Propose the monitors, alerts and status checks Verse will own for a business process so the client does not have to watch it",
+   "examples": [
+    "monitor pack for client onboarding",
+    "set up monitors for the invoice reminders",
+    "what will Verse watch for the support router"
+   ],
+   "tier": "tested",
+   "why": "a self-test",
+   "n": 389
+  },
+  {
+   "kind": "skill",
+   "chapter": "self",
+   "name": "verify-pack",
+   "title": "Verify pack",
+   "line": "Propose the tests, checks and verification Verse will own for a business process or system so the client does not do the heavy testing",
+   "examples": [
+    "verify pack for client onboarding",
+    "set up tests for the invoice reminders",
+    "what will Verse verify for the support router"
+   ],
+   "tier": "tested",
+   "why": "a self-test",
+   "n": 390
+  },
+  {
+   "kind": "skill",
+   "chapter": "self",
    "name": "business-clarify",
    "title": "Business clarify",
    "line": "Capture and clarify a business idea into a system plan that Verse can own the heavy lifting for",
@@ -7166,7 +7202,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. The void remembers each asking.",
    "glow": 100,
-   "n": 389
+   "n": 391
   },
   {
    "kind": "skill",
@@ -7179,9 +7215,11 @@
     "turn this into a system: new lead intake from the website form",
     "idea to system: sync closed deals from CRM to the finance sheet"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 390
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. So it is written.",
+   "glow": 100,
+   "n": 392
   },
   {
    "kind": "skill",
@@ -7198,7 +7236,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. So it is written.",
    "glow": 100,
-   "n": 391
+   "n": 393
   },
   {
    "kind": "skill",
@@ -7211,9 +7249,11 @@
     "make a system handoff for invoice reminders",
     "handoff the system: support ticket router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 392
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. So it is written.",
+   "glow": 100,
+   "n": 394
   },
   {
    "kind": "skill",
@@ -7226,9 +7266,11 @@
     "heavy lift map: invoice reminders that run themselves",
     "what does Verse own for the support ticket router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 393
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "glow": 100,
+   "n": 395
   },
   {
    "kind": "skill",
@@ -7245,7 +7287,7 @@
    "why": "a self-test, 14 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. Let the stage be the proof.",
    "glow": 100,
-   "n": 394
+   "n": 396
   },
   {
    "kind": "skill",
@@ -7262,7 +7304,7 @@
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Let the stage be the proof.",
    "glow": 100,
-   "n": 395
+   "n": 397
   },
   {
    "kind": "skill",
@@ -7279,7 +7321,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
-   "n": 396
+   "n": 398
   },
   {
    "kind": "skill",
@@ -7296,7 +7338,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Keep this page; the verse itself are built on it. So it is written.",
    "glow": 100,
-   "n": 397
+   "n": 399
   },
   {
    "kind": "skill",
@@ -7313,7 +7355,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the verse itself, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
-   "n": 398
+   "n": 400
   },
   {
    "kind": "skill",
@@ -7330,7 +7372,7 @@
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Let the stage be the proof.",
    "glow": 100,
-   "n": 399
+   "n": 401
   },
   {
    "kind": "skill",
@@ -7347,7 +7389,7 @@
    "why": "a self-test, 8 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Of all the verse itself, this one is trusted enough to be taught. So it is written.",
    "glow": 100,
-   "n": 400
+   "n": 402
   },
   {
    "kind": "skill",
@@ -7364,7 +7406,7 @@
    "why": "3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
-   "n": 401
+   "n": 403
   },
   {
    "kind": "skill",
@@ -7381,7 +7423,7 @@
    "why": "a self-test, 9 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Keep this page; the verse itself are built on it. Say the words below and it answers.",
    "glow": 100,
-   "n": 402
+   "n": 404
   },
   {
    "kind": "skill",
@@ -7396,9 +7438,9 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Ask, and see.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. Turn the page when you are done.",
    "glow": 100,
-   "n": 403
+   "n": 405
   },
   {
    "kind": "skill",
@@ -7415,7 +7457,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. So it is written.",
    "glow": 100,
-   "n": 404
+   "n": 406
   },
   {
    "kind": "skill",
@@ -7432,7 +7474,7 @@
    "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the verse itself, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
-   "n": 405
+   "n": 407
   },
   {
    "kind": "skill",
@@ -7449,7 +7491,7 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. It has not failed a reader yet.",
    "glow": 100,
-   "n": 406
+   "n": 408
   },
   {
    "kind": "skill",
@@ -7464,9 +7506,9 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. So it is written.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. So it is written.",
    "glow": 100,
-   "n": 407
+   "n": 409
   },
   {
    "kind": "skill",
@@ -7482,7 +7524,7 @@
    "why": "a self-test, 4 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 4 real askings stand behind this page. Turn the page when you are done.",
    "glow": 100,
-   "n": 408
+   "n": 410
   },
   {
    "kind": "skill",
@@ -7499,7 +7541,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Keep this page; the verse itself are built on it. It has not failed a reader yet.",
    "glow": 100,
-   "n": 409
+   "n": 411
   },
   {
    "kind": "skill",
@@ -7516,7 +7558,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. Let the stage be the proof.",
    "glow": 100,
-   "n": 410
+   "n": 412
   },
   {
    "kind": "skill",
@@ -7533,7 +7575,7 @@
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. It has not failed a reader yet.",
    "glow": 100,
-   "n": 411
+   "n": 413
   },
   {
    "kind": "skill",
@@ -7548,7 +7590,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
-   "n": 412
+   "n": 414
   },
   {
    "kind": "skill",
@@ -7562,7 +7604,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
-   "n": 413
+   "n": 415
   },
   {
    "kind": "skill",
@@ -7577,9 +7619,9 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Turn the page when you are done.",
    "glow": 100,
-   "n": 414
+   "n": 416
   },
   {
    "kind": "skill",
@@ -7595,7 +7637,7 @@
    "why": "a self-test, 5 browser-suite mentions, 2 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
-   "n": 415
+   "n": 417
   },
   {
    "kind": "skill",
@@ -7612,7 +7654,7 @@
    "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. Turn the page when you are done.",
    "glow": 100,
-   "n": 416
+   "n": 418
   },
   {
    "kind": "skill",
@@ -7629,7 +7671,7 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself.",
    "glow": 100,
-   "n": 417
+   "n": 419
   },
   {
    "kind": "skill",
@@ -7646,7 +7688,7 @@
    "why": "a self-test, 8 browser-suite mentions, 13 real asks in the benchmark",
    "flavor": "Proven 13 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
-   "n": 418
+   "n": 420
   },
   {
    "kind": "skill",
@@ -7663,36 +7705,6 @@
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Among the verse itself it is the one a traveller is told to ask for first. It has not failed a reader yet.",
    "glow": 100,
-   "n": 419
-  },
-  {
-   "kind": "skill",
-   "chapter": "self",
-   "name": "monitor-pack",
-   "title": "Monitor pack",
-   "line": "Propose the monitors, alerts and status checks Verse will own for a business process so the client does not have to watch it",
-   "examples": [
-    "monitor pack for client onboarding",
-    "set up monitors for the invoice reminders",
-    "what will Verse watch for the support router"
-   ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 420
-  },
-  {
-   "kind": "skill",
-   "chapter": "self",
-   "name": "verify-pack",
-   "title": "Verify pack",
-   "line": "Propose the tests, checks and verification Verse will own for a business process or system so the client does not do the heavy testing",
-   "examples": [
-    "verify pack for client onboarding",
-    "set up tests for the invoice reminders",
-    "what will Verse verify for the support router"
-   ],
-   "tier": "tested",
-   "why": "a self-test",
    "n": 421
   },
   {
@@ -11146,7 +11158,7 @@
    "entries": [
     {
      "name": "About skill",
-     "page": 413
+     "page": 415
     },
     {
      "name": "Accessibility modes",
@@ -11182,7 +11194,7 @@
     },
     {
      "name": "App",
-     "page": 401
+     "page": 403
     },
     {
      "name": "Appraise",
@@ -11190,7 +11202,7 @@
     },
     {
      "name": "Approve card",
-     "page": 415
+     "page": 417
     },
     {
      "name": "Arcade",
@@ -11218,7 +11230,7 @@
     },
     {
      "name": "Ask immune",
-     "page": 409
+     "page": 411
     },
     {
      "name": "Attention field mind",
@@ -11298,7 +11310,7 @@
    "entries": [
     {
      "name": "Business clarify",
-     "page": 389
+     "page": 391
     },
     {
      "name": "Busy blocks",
@@ -11370,7 +11382,7 @@
     },
     {
      "name": "Client handoff",
-     "page": 391
+     "page": 393
     },
     {
      "name": "Clock",
@@ -11530,7 +11542,7 @@
     },
     {
      "name": "Deps",
-     "page": 405
+     "page": 407
     },
     {
      "name": "Dev tools",
@@ -11658,7 +11670,7 @@
     },
     {
      "name": "Family health",
-     "page": 402
+     "page": 404
     },
     {
      "name": "Fanfic",
@@ -11698,7 +11710,7 @@
     },
     {
      "name": "Films",
-     "page": 400
+     "page": 402
     },
     {
      "name": "Fireworks",
@@ -11710,7 +11722,7 @@
     },
     {
      "name": "Fix audit",
-     "page": 404
+     "page": 406
     },
     {
      "name": "Flights",
@@ -11754,7 +11766,7 @@
    "entries": [
     {
      "name": "Four channels",
-     "page": 410
+     "page": 412
     },
     {
      "name": "Four in a Row",
@@ -11766,7 +11778,7 @@
     },
     {
      "name": "Fringe to skill",
-     "page": 406
+     "page": 408
     },
     {
      "name": "Fuel",
@@ -11874,7 +11886,7 @@
     },
     {
      "name": "Heavy lift map",
-     "page": 393
+     "page": 395
     },
     {
      "name": "Holidays",
@@ -11922,7 +11934,7 @@
     },
     {
      "name": "Incident autopsy",
-     "page": 403
+     "page": 405
     },
     {
      "name": "Intent",
@@ -11938,7 +11950,7 @@
     },
     {
      "name": "Invite",
-     "page": 397
+     "page": 399
     },
     {
      "name": "Is it",
@@ -12010,7 +12022,7 @@
     },
     {
      "name": "Local inference",
-     "page": 398
+     "page": 400
     },
     {
      "name": "Local stations",
@@ -12086,11 +12098,11 @@
     },
     {
      "name": "Memory graph",
-     "page": 416
+     "page": 418
     },
     {
      "name": "Memory preview",
-     "page": 417
+     "page": 419
     },
     {
      "name": "Merge",
@@ -12118,11 +12130,11 @@
     },
     {
      "name": "Miss jobs",
-     "page": 408
+     "page": 410
     },
     {
      "name": "Monitor pack",
-     "page": 420
+     "page": 389
     },
     {
      "name": "Monopoly",
@@ -12270,7 +12282,7 @@
     },
     {
      "name": "Own parts",
-     "page": 412
+     "page": 414
     },
     {
      "name": "Padlock (3D)",
@@ -12346,7 +12358,7 @@
     },
     {
      "name": "Podcast",
-     "page": 419
+     "page": 421
     },
     {
      "name": "Podcast search",
@@ -12458,7 +12470,7 @@
     },
     {
      "name": "Rebuild map",
-     "page": 399
+     "page": 401
     },
     {
      "name": "Recent",
@@ -12594,7 +12606,7 @@
     },
     {
      "name": "Share",
-     "page": 395
+     "page": 397
     },
     {
      "name": "Sheaf check",
@@ -12622,11 +12634,11 @@
     },
     {
      "name": "Similar",
-     "page": 414
+     "page": 416
     },
     {
      "name": "Skill eclipse",
-     "page": 407
+     "page": 409
     },
     {
      "name": "Sky",
@@ -12734,7 +12746,7 @@
     },
     {
      "name": "Stakes phase",
-     "page": 411
+     "page": 413
     },
     {
      "name": "Stale work",
@@ -12778,7 +12790,7 @@
     },
     {
      "name": "Store",
-     "page": 394
+     "page": 396
     },
     {
      "name": "Studios",
@@ -12830,11 +12842,11 @@
     },
     {
      "name": "System blueprint",
-     "page": 390
+     "page": 392
     },
     {
      "name": "System handoff",
-     "page": 392
+     "page": 394
     },
     {
      "name": "System status",
@@ -13014,7 +13026,7 @@
     },
     {
      "name": "Verify pack",
-     "page": 421
+     "page": 390
     },
     {
      "name": "Verse brain",
@@ -13062,7 +13074,7 @@
     },
     {
      "name": "Wants",
-     "page": 418
+     "page": 420
     },
     {
      "name": "Watch",
@@ -13078,7 +13090,7 @@
     },
     {
      "name": "Web4",
-     "page": 396
+     "page": 398
     },
     {
      "name": "Wheel",
@@ -13143,7 +13155,7 @@
  "index": [
   {
    "name": "About skill",
-   "page": 413
+   "page": 415
   },
   {
    "name": "Accessibility modes",
@@ -13179,7 +13191,7 @@
   },
   {
    "name": "App",
-   "page": 401
+   "page": 403
   },
   {
    "name": "Appraise",
@@ -13187,7 +13199,7 @@
   },
   {
    "name": "Approve card",
-   "page": 415
+   "page": 417
   },
   {
    "name": "Arcade",
@@ -13215,7 +13227,7 @@
   },
   {
    "name": "Ask immune",
-   "page": 409
+   "page": 411
   },
   {
    "name": "Attention field mind",
@@ -13287,7 +13299,7 @@
   },
   {
    "name": "Business clarify",
-   "page": 389
+   "page": 391
   },
   {
    "name": "Busy blocks",
@@ -13359,7 +13371,7 @@
   },
   {
    "name": "Client handoff",
-   "page": 391
+   "page": 393
   },
   {
    "name": "Clock",
@@ -13511,7 +13523,7 @@
   },
   {
    "name": "Deps",
-   "page": 405
+   "page": 407
   },
   {
    "name": "Dev tools",
@@ -13631,7 +13643,7 @@
   },
   {
    "name": "Family health",
-   "page": 402
+   "page": 404
   },
   {
    "name": "Fanfic",
@@ -13671,7 +13683,7 @@
   },
   {
    "name": "Films",
-   "page": 400
+   "page": 402
   },
   {
    "name": "Fireworks",
@@ -13683,7 +13695,7 @@
   },
   {
    "name": "Fix audit",
-   "page": 404
+   "page": 406
   },
   {
    "name": "Flights",
@@ -13719,7 +13731,7 @@
   },
   {
    "name": "Four channels",
-   "page": 410
+   "page": 412
   },
   {
    "name": "Four in a Row",
@@ -13731,7 +13743,7 @@
   },
   {
    "name": "Fringe to skill",
-   "page": 406
+   "page": 408
   },
   {
    "name": "Fuel",
@@ -13839,7 +13851,7 @@
   },
   {
    "name": "Heavy lift map",
-   "page": 393
+   "page": 395
   },
   {
    "name": "Holidays",
@@ -13879,7 +13891,7 @@
   },
   {
    "name": "Incident autopsy",
-   "page": 403
+   "page": 405
   },
   {
    "name": "Intent",
@@ -13895,7 +13907,7 @@
   },
   {
    "name": "Invite",
-   "page": 397
+   "page": 399
   },
   {
    "name": "Is it",
@@ -13967,7 +13979,7 @@
   },
   {
    "name": "Local inference",
-   "page": 398
+   "page": 400
   },
   {
    "name": "Local stations",
@@ -14035,11 +14047,11 @@
   },
   {
    "name": "Memory graph",
-   "page": 416
+   "page": 418
   },
   {
    "name": "Memory preview",
-   "page": 417
+   "page": 419
   },
   {
    "name": "Merge",
@@ -14067,11 +14079,11 @@
   },
   {
    "name": "Miss jobs",
-   "page": 408
+   "page": 410
   },
   {
    "name": "Monitor pack",
-   "page": 420
+   "page": 389
   },
   {
    "name": "Monopoly",
@@ -14211,7 +14223,7 @@
   },
   {
    "name": "Own parts",
-   "page": 412
+   "page": 414
   },
   {
    "name": "Padlock (3D)",
@@ -14287,7 +14299,7 @@
   },
   {
    "name": "Podcast",
-   "page": 419
+   "page": 421
   },
   {
    "name": "Podcast search",
@@ -14391,7 +14403,7 @@
   },
   {
    "name": "Rebuild map",
-   "page": 399
+   "page": 401
   },
   {
    "name": "Recent",
@@ -14519,7 +14531,7 @@
   },
   {
    "name": "Share",
-   "page": 395
+   "page": 397
   },
   {
    "name": "Sheaf check",
@@ -14547,11 +14559,11 @@
   },
   {
    "name": "Similar",
-   "page": 414
+   "page": 416
   },
   {
    "name": "Skill eclipse",
-   "page": 407
+   "page": 409
   },
   {
    "name": "Sky",
@@ -14651,7 +14663,7 @@
   },
   {
    "name": "Stakes phase",
-   "page": 411
+   "page": 413
   },
   {
    "name": "Stale work",
@@ -14695,7 +14707,7 @@
   },
   {
    "name": "Store",
-   "page": 394
+   "page": 396
   },
   {
    "name": "Studios",
@@ -14739,11 +14751,11 @@
   },
   {
    "name": "System blueprint",
-   "page": 390
+   "page": 392
   },
   {
    "name": "System handoff",
-   "page": 392
+   "page": 394
   },
   {
    "name": "System status",
@@ -14915,7 +14927,7 @@
   },
   {
    "name": "Verify pack",
-   "page": 421
+   "page": 390
   },
   {
    "name": "Verse brain",
@@ -14963,7 +14975,7 @@
   },
   {
    "name": "Wants",
-   "page": 418
+   "page": 420
   },
   {
    "name": "Watch",
@@ -14979,7 +14991,7 @@
   },
   {
    "name": "Web4",
-   "page": 396
+   "page": 398
   },
   {
    "name": "Wheel",
