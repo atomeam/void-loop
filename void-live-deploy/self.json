@@ -276,6 +276,12 @@
    "date": "2026-11-06",
    "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
    "from": "new idea by growth agent; helper/heavy-lift-map"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not…",
+   "from": "new idea by growth agent; helper/monitor-pack"
   }
  ],
  "open": [
@@ -580,7 +586,7 @@
   }
  ],
  "building": {
-  "at": "2026-11-06T18:41:16Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -588,84 +594,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-06T20:24:23Z",
-   "subject": "Verse speaks first on its Brain page, from its live state"
+   "at": "2026-11-07T14:16:59Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   },
   {
-   "at": "2026-11-06T20:24:11Z",
-   "subject": "Design loop: check the live ask bar at 390 and 1280 px every 2 hours, with screenshots (#2478)"
+   "at": "2026-11-07T13:59:45Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-06T20:23:46Z",
-   "subject": "Starboard benchmark page, and theme names for the menu pages (#2479)"
+   "at": "2026-11-07T13:47:13Z",
+   "subject": "Tower gate: every floor measured against its live site (3 slices)"
   },
   {
-   "at": "2026-11-06T20:23:22Z",
-   "subject": "verse-job: show the coder's turn lines in the job log (#2480)"
+   "at": "2026-11-07T13:46:40Z",
+   "subject": "Tower size: how heavy each Versus site really is"
   },
   {
-   "at": "2026-11-06T20:19:59Z",
-   "subject": "monitor-pack: propose monitors Verse owns so the client watches less (#2482)"
-  },
-  {
-   "at": "2026-11-06T20:18:58Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"yo render a c"
-  },
-  {
-   "at": "2026-11-06T20:18:53Z",
-   "subject": "Outcome exam: translate 89.2"
-  },
-  {
-   "at": "2026-11-06T20:13:03Z",
+   "at": "2026-11-07T13:43:29Z",
    "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
   },
   {
-   "at": "2026-11-06T20:10:40Z",
-   "subject": "Films: give each kept beat its own voice line, so long takes render (#2481)"
+   "at": "2026-11-07T13:41:13Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-06T20:09:21Z",
-   "subject": "Verse's coder: name a TV job's page files so a blueprint build starts reading (#2475)"
+   "at": "2026-11-07T13:36:37Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-11-06T20:06:57Z",
-   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
+   "at": "2026-11-07T13:36:11Z",
+   "subject": "Site history: the next sites of the queue, each with a cited history"
   },
   {
-   "at": "2026-11-06T20:06:03Z",
-   "subject": "Shorts loop: today's trial and verdicts"
+   "at": "2026-11-07T13:36:02Z",
+   "subject": "Better: today's measure and the pit crew's list (counts only)"
   },
   {
-   "at": "2026-11-06T20:04:00Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-11-07T13:35:09Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-11-06T20:02:16Z",
-   "subject": "Verse loop: the lap's output file goes outside the checkout, so scheduled laps stop skipping (#2476)"
+   "at": "2026-11-07T13:31:54Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   },
   {
-   "at": "2026-11-06T20:00:05Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-07T13:29:17Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   },
   {
-   "at": "2026-11-06T19:58:24Z",
-   "subject": "Assimilated: date a passed site by the day the tower recorded it passed (#2418)"
+   "at": "2026-11-07T13:21:07Z",
+   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
   },
   {
-   "at": "2026-11-06T19:57:27Z",
-   "subject": "Versus checks serve their own tower.target.json, so a moving tower no longer turns main red (#2420)"
+   "at": "2026-11-07T13:05:12Z",
+   "subject": "Verse Out Loud: today's episode, read from the day's record"
   },
   {
-   "at": "2026-11-06T19:56:57Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-11-07T12:00:50Z",
+   "subject": "Subject eval: 53 of 54 live"
   },
   {
-   "at": "2026-11-06T19:56:07Z",
-   "subject": "Films: eight video formats on live trends, a topic gate, every page of /films/ (#2473)"
+   "at": "2026-11-07T11:55:16Z",
+   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
   },
   {
-   "at": "2026-11-06T19:55:31Z",
-   "subject": "Read aloud: a redraw keeps the card's Stop reading state (#2421)"
+   "at": "2026-11-07T11:44:59Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
+  },
+  {
+   "at": "2026-11-07T11:14:41Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-11-07T11:11:48Z",
+   "subject": "Finding: image-gen checked against the live site (findings/image-gen)"
+  },
+  {
+   "at": "2026-11-07T10:55:38Z",
+   "subject": "Site test: visitor pass 14/15"
   }
  ],
  "builders": {
@@ -847,8 +853,8 @@
   }
  ],
  "visible": {
-  "day": 13,
-  "week": 13
+  "day": 4,
+  "week": 219
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -900,19 +906,20 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-06T12:58Z",
+  "line": "People this week: 115 (620 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-07T11:44Z",
   "source": "verse"
  },
  "tower": {
-  "target": "dalyfeds.com",
-  "since": "2026-11-06",
+  "target": "oneyeard.com",
+  "since": "2026-11-07",
+  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
    "justflipacoin.com",
    "random.org"
   ],
   "beaten": 2,
-  "total": 1307
+  "total": 1310
  }
 }
