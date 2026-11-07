@@ -1,27 +1,5 @@
 [
  {
-  "at": "2026-10-16T06:09:19Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
-  "at": "2026-10-16T06:26:11Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
-  "at": "2026-10-16T06:31:32Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "file",
-  "key": "zoom in on the figure | nothing appeared",
-  "note": "fix: \"zoom in on the figure\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-16T06:38:50Z",
   "passed": 0,
   "of": 25,
@@ -5462,5 +5440,88 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"yo draw yourself\" (skill:cartoon)"
+ },
+ {
+  "at": "2026-11-07T19:16:08Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1210,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11192 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T19:44:31Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1149,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8529 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-07T19:57:40Z",
+  "passed": 97,
+  "of": 103,
+  "ms": 398,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "send it away",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "geenrate a toon style dog",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "выделить ндс из 1000",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1149,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8529 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"draw yourself pls\" (skill:cartoon)"
  }
 ]

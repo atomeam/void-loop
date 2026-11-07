@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T19:13:11.612Z",
+  "at": "2026-11-07T19:44:46.827Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -103,24 +103,26 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -235,12 +237,40 @@
       }
     },
     "sports": {
-      "score": 93.5,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
           "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
