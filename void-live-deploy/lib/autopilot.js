@@ -71,3 +71,14 @@ export function incidentsIn(list, sinceMs = 0) {
   const healed = all.filter((i) => i && i.closedAt && Date.parse(i.closedAt) >= sinceMs && Number.isFinite(i.minutes)).map((i) => i.minutes);
   return { open, healed: healed.length, medianMinutes: healed.length ? healed.slice().sort((a, b) => a - b)[Math.floor(healed.length / 2)] : null };
 }
+
+/** the owner's miss board (GET /api/misses rows) -> { shown: [{ ask, count, last, fallback }], total, more }. Pure.
+ *  Only rows with an ask and a count are kept, most asked first; the page writes each value as text, never as markup. */
+export function boardOf(rows, limit = 15) {
+  const all = (Array.isArray(rows) ? rows : [])
+    .filter((r) => r && typeof r.ask === 'string' && r.ask.trim() && Number.isFinite(+r.count) && +r.count > 0)
+    .map((r) => ({ ask: r.ask.trim(), count: +r.count, last: typeof r.last === 'string' ? r.last.slice(0, 10) : '', fallback: typeof r.fallback === 'string' ? r.fallback : '' }))
+    .sort((a, b) => b.count - a.count || (b.last > a.last ? 1 : b.last < a.last ? -1 : 0));
+  const shown = all.slice(0, Math.max(0, limit));
+  return { shown, total: all.length, more: all.length - shown.length };
+}
