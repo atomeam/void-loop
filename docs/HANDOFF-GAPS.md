@@ -604,6 +604,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /lab/pattern/ | color | image | yes | its tag |
 | /lab/photo-palette/ | image | palette | no | its tag |
 | /learn-to-draw/ | - | number | yes | its tag |
+| /life-arb/ | - | - | no | its tag |
 | /limits/ | - | - | no | its tag |
 | /local/ | location | location, url | yes | its tag |
 | /markets/ | text | numbers, table | yes | handoff-types.json |

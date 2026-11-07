@@ -306,6 +306,11 @@
    "sha": "4d01d60f6",
    "file": "domains/tower-self.json"
   },
+  "icanhazip.com": {
+   "at": "2026-11-06T08:01:58Z",
+   "sha": "0d213a115",
+   "file": "void-live-deploy/lib/tower.js"
+  },
   "illicitencounters.com": {
    "at": "2026-11-01T09:37:51Z",
    "sha": "a23b165d9",

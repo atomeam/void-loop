@@ -590,6 +590,28 @@ SPECS['/treasury/'] = async (t) => {
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
   await t.waitText('#found', /\S/, 10000);
 };
+// /life-arb/: the owner's private list. This test device holds a stand-in owner key and the API is faked with two ranked finds, so the
+// ranking, the per-hour tile, the Cash filter and a mark are exact. Without a key the page asks for one and shows nothing.
+const LIFEARB_FIX = { as_of: '2026-11-06T05:00:00Z', count: 2, queued: [], marks: {},
+  sources: { devpost: { state: 'read', count: 1 }, topclassactions: { state: 'read', count: 1 } },
+  gaps: [{ what: 'Resale flips', why: 'Sold prices need an eBay developer key.', ask: 'Create an eBay developer account.' }],
+  opportunities: [
+    { id: 'a1', rank: 1, title: 'Tide Table Hackathon', url: 'https://devpost.com/', category: 'hackathon', deadline: '2099-11-12T00:00:00Z', urgent: true, value_cents: 500000, value_kind: 'prize pool (upper bound)', cost_cents: 0, minutes: 45, minutes_basis: 'estimate for a first entry', per_hour_cents: null, risk: 'low', risk_why: '', who: 'both', evidence: 'Devpost lists $5,000 in prizes.', value_note: '', next_step: 'Register on Devpost.', asks: ['Register on Devpost (needs your yes)'], mark: null },
+    { id: 'b2', rank: 2, title: 'Kettle Settlement', url: 'https://topclassactions.com/', category: 'settlement', deadline: '2099-12-01T00:00:00Z', urgent: false, value_cents: 10000, value_kind: 'cash', cost_cents: 0, minutes: 10, minutes_basis: 'estimate for one claim form', per_hour_cents: 60000, risk: 'medium', risk_why: 'claim only if you qualify', who: 'atom', evidence: 'The post says up to $100 per claim.', value_note: '', next_step: 'Check that you bought one.', asks: [], mark: null }] };
+SPECS['/life-arb/'] = async (t) => {
+  t.ok(!(await t.p.locator('#key').isHidden()) && (await t.p.locator('#opps li').count()) === 0, 'without the owner key it asks for one and lists nothing');
+  await t.p.route((u) => u.pathname === '/api/life-arb', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(r.request().method() === 'GET' ? LIFEARB_FIX : { ok: true }) }));
+  await t.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'test-owner-key'));
+  await t.p.reload(); await t.waitText('#opps', /Tide Table Hackathon/, 10000);
+  t.ok(/^1\s*Tide Table Hackathon/.test((await t.text('#opps li:first-child header')).trim()), 'the urgent find ranks first');
+  t.ok(/\$600\/h/.test(await t.text('#tiles')), 'best cash per hour is the settlement: ' + (await t.text('#tiles')).replace(/\s+/g, ' ').slice(0, 80));
+  t.ok(/eBay developer/.test(await t.text('#gaps')), 'what is not scanned says why');
+  await t.click('#filters [data-show=cash]'); await t.p.waitForTimeout(200);
+  t.ok((await t.p.locator('#opps li.opp').count()) === 1 && /Kettle Settlement/.test(await t.text('#opps')), 'the Cash filter keeps only cash finds');
+  await t.click('#filters [data-show=open]'); await t.p.waitForTimeout(200);
+  await t.p.locator('#opps li.opp').first().getByRole('button', { name: 'Took it' }).click(); await t.p.waitForTimeout(300);
+  t.ok(/^1\b/.test((await t.text('#tiles li:first-child')).trim()), 'a find marked taken leaves the open list');
+};
 // /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
 SPECS['/creed/'] = async (t) => {
   t.ok((await t.p.locator('ol.beliefs li').count()) === 10, 'ten beliefs');
