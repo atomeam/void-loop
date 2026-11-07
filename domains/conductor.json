@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-07T00:14:49.803Z",
+ "updated": "2026-11-07T00:24:09.377Z",
  "last24h": {
-  "ticks": 78,
-  "started": 112,
+  "ticks": 79,
+  "started": 113,
   "requeued": 0,
   "setAside": 0,
   "probes": 13,
@@ -112,7 +112,7 @@
   "mveb8rsi": 1794009927410,
   "mvu167w7": 1794010489803,
   "mveb8svc": 1794010489803,
-  "mvfu4evy": 1793930087442,
+  "mvfu4evy": 1794011049377,
   "mvpuq9g6": 1793930699938,
   "mvpuqaee": 1793933006938,
   "mvpuqb4r": 1793935659114,
@@ -167,8 +167,8 @@
   "mw5mkip6": 1794009927410,
   "mw5mkjp7": 1794010489803
  },
- "sweptAt": 1794007102586,
- "blueprintsAt": 1794007102586,
+ "sweptAt": 1794011049377,
+ "blueprintsAt": 1794011049377,
  "visitorAt": "2026-11-07T00:08:31Z",
  "visitorFiled": [
   "versus:getconverter.org:journey: share t",
@@ -2446,6 +2446,33 @@
    "sweep": false,
    "blueprints": 0,
    "held": 238,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-07T00:24:09.377Z",
+   "open": 257,
+   "started": [
+    {
+     "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 239,
    "warnings": 1
   }
  ]
