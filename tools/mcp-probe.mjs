@@ -53,6 +53,12 @@ await call('skill_swaps', { ask: 'substitute for buttermilk' }, (s, text) => s.p
 await call('skill_eclipse', { ask: 'next eclipse' }, (s, text) => s.path === 'skill_code' && /eclipse/i.test(text) && /20\d\d/.test(text));
 await call('skill_country', { ask: 'capital of australia' }, (s, text) => s.path === 'skill_code' && /Canberra/.test(text));
 await call('skill_define', { ask: 'define serendipity' }, (s, text) => s.path === 'skill_code' && /fortunate|luck|chance/i.test(text) && /wiktionary/.test(text));
+// the world clock (the wants card asks for it by name): Tokyo's place and zone come from Open-Meteo on the server, and the
+// clock it prints must be the time the client's own clock reads in Asia/Tokyo now, to the minute (either side of the call)
+const tokyo = () => new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', minute: '2-digit' }).format(new Date()).replace(/\u202f/g, ' ');
+const before = tokyo();
+await call('skill_worldtime', { ask: 'time in tokyo' }, (s, text) => { const shown = (text.match(/\b\d{1,2}:\d{2}\s?[AP]M\b/) || [''])[0].replace(/\u202f/g, ' ');
+  return s.path === 'skill_code' && /Tokyo/.test(text) && /Asia\/Tokyo/.test(text) && (shown === before || shown === tokyo()); });
 // a paid tool without payment: the x402 MCP transport's PaymentRequired (Verse's wallet on Base, 0.05 USDC), never a charge
 for (const [tool, args] of [['paid_review', { code: 'function f(a) { eval(a) }', lang: 'javascript' }], ['paid_backtest', { bot: 'trend-50-200', pair: 'BTC-USD' }]]) {
   const { r: need, entry } = await exchange(tool, args);
@@ -67,4 +73,4 @@ refused.ok = true; refused.expect = 'refused';
 console.log('ok   skill_swaps refuses an ask it does not take');
 await client.close();
 record.ok = true; save();
-console.log('mcp probe: an MCP client listed and called the tools, and four proven skills by their own code, at ' + URL_);
+console.log('mcp probe: an MCP client listed and called the tools, and five proven skills by their own code, at ' + URL_);
