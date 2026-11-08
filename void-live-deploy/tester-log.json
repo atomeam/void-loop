@@ -3,12 +3,78 @@
  "cases": 103,
  "runsTotal": 300,
  "kinds": {
-  "none": 29,
-  "file": 65,
+  "file": 64,
+  "none": 28,
   "grow": 72,
-  "visitor": 134
+  "visitor": 135,
+  "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-11-08T03:22:45Z",
+   "passed": 9,
+   "of": 105,
+   "kind": "tighten",
+   "ms": 384,
+   "note": "fps floor 5 -> 6",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play connect four",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "set a timer for 5 minutes",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what is 17 times 23",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play reversi",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-08T03:10:37Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-08T02:36:28Z",
    "passed": 0,
@@ -510,35 +576,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-07T21:02:29Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T20:48:36Z",
-   "passed": 101,
-   "of": 104,
-   "kind": "grow",
-   "ms": 387,
-   "note": "new ground passed, kept as a regression case: \"draw yoruself\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 1 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "draw me a robot pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -593,17 +630,17 @@
   {
    "from": "2026-10-11",
    "runs": 73,
-   "passed": 794,
-   "of": 2063,
-   "broken": 44,
-   "brokenOf": 1103,
+   "passed": 880,
+   "of": 2107,
+   "broken": 42,
+   "brokenOf": 1053,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-18",
-   "runs": 34,
-   "passed": 1933,
-   "of": 2121
+   "runs": 32,
+   "passed": 1847,
+   "of": 2027
   },
   {
    "from": "2026-10-25",
@@ -613,12 +650,12 @@
   },
   {
    "from": "2026-11-01",
-   "runs": 193,
-   "passed": 4726,
-   "of": 5583,
-   "broken": 5,
-   "brokenOf": 525,
-   "brokenPassed": 61,
+   "runs": 195,
+   "passed": 4735,
+   "of": 5688,
+   "broken": 6,
+   "brokenOf": 630,
+   "brokenPassed": 70,
    "ms": 387
   }
  ],
@@ -1003,6 +1040,8 @@
   "skill:where-is": "2026-11-08T01:57:49Z",
   "skill:whisper-network": "2026-11-08T01:57:49Z",
   "skill:witness-claims": "2026-11-08T02:22:30Z",
-  "skill:wordladder": "2026-11-08T02:22:30Z"
+  "skill:wordladder": "2026-11-08T02:22:30Z",
+  "skill:tab": "2026-11-08T03:22:45Z",
+  "skill:writing-aids": "2026-11-08T03:22:45Z"
  }
 }
