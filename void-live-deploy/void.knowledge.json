@@ -1,5 +1,41 @@
 [
   {
+    "id": "page:live-check-rides-osrm-public-demo-router-router-",
+    "from": "page",
+    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
+    "learned": "2026-11-07: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
+    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-07) worked",
+    "at": "2026-11-07T18:45:31.410Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-baggage-the-airline-pages-the-baggage",
+    "from": "page",
+    "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
+    "learned": "2026-11-07: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
+    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-07) did not work",
+    "at": "2026-11-07T18:16:48.050Z",
+    "seen": 1
+  },
+  {
+    "id": "page:digitalsogame-com",
+    "from": "page",
+    "consumed": "digitalsogame.com",
+    "learned": "digitalsogame.com walled: a nearly empty page (103 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "digitalsogame.com was walled",
+    "at": "2026-11-07T16:40:26Z",
+    "seen": 1
+  },
+  {
+    "id": "page:milkie-cc",
+    "from": "page",
+    "consumed": "milkie.cc",
+    "learned": "milkie.cc walled: a nearly empty page (60 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "milkie.cc was walled",
+    "at": "2026-11-07T16:40:23Z",
+    "seen": 1
+  },
+  {
     "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
     "from": "page",
     "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
@@ -36,7 +72,7 @@
     "seen": 1
   },
   {
-    "id": "page:live-check-baggage-the-airline-pages-the-baggage",
+    "id": "page:skybridge-click",
     "from": "page",
     "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
     "learned": "2026-11-07: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
