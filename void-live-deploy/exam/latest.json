@@ -1,11 +1,11 @@
 {
-  "at": "2026-11-08T03:46:16.070Z",
+  "at": "2026-11-08T04:56:15.478Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 56.7,
+      "score": 75.5,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -91,77 +91,11 @@
           "score": 57.1
         },
         {
-          "ask": "watch a video of a steam train",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play a video of the northern lights",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "show me a video about dinosaurs",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play a video about cooking pasta",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "watch a video of charlie chaplin",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play a video of jazz music",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "find a video about the moon",
-          "failed": [
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 57.1
-        },
-        {
           "ask": "play the trailer",
           "failed": [
-            "loaded",
-            "playable",
-            "topic",
             "rival"
           ],
-          "score": 50
+          "score": 87.5
         },
         {
           "ask": "joue une vidéo des baleines",
@@ -181,139 +115,23 @@
       }
     },
     "podcasts": {
-      "score": 68.9,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "play the latest episode of this american life",
           "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of radiolab",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the daily",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of serial",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of hardcore history",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
-        },
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of hidden brain",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of freakonomics radio",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of science vs",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of crime junkie",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
             "audio"
           ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of npr news now",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio",
-            "episode"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -380,17 +198,17 @@
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -401,17 +219,10 @@
       }
     },
     "directions": {
-      "score": 97.4,
+      "score": 98.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "directions to springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -505,7 +316,7 @@
       }
     },
     "sports": {
-      "score": 61.1,
+      "score": 63.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -521,10 +332,9 @@
           "ask": "nfl scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "mlb scores",
@@ -586,10 +396,9 @@
           "ask": "mls scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "lakers score",
@@ -635,13 +444,6 @@
             "board"
           ],
           "score": 50
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
         },
         {
           "ask": "scores",
@@ -762,7 +564,7 @@
     }
   },
   "lowest": {
-    "domain": "videos",
-    "score": 56.7
+    "domain": "sports",
+    "score": 63.9
   }
 }
