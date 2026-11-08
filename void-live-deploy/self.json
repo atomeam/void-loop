@@ -600,6 +600,30 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T09:28:44Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next opentv.com (the target)"
+  },
+  {
+   "at": "2026-11-08T09:26:10Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 6 not-judged, 2 walled); the model answered 401 on 6 of 8 reads, so…"
+  },
+  {
+   "at": "2026-11-08T09:26:09Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-11-08T08:17:14Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-08T07:43:55Z",
+   "subject": "Design loop: 7 pages fixed, 42 -> 8 design defects"
+  },
+  {
+   "at": "2026-11-08T06:59:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-08T06:55:17Z",
    "subject": "Design loop: 6 pages fixed, 29 -> 9 design defects"
   },
@@ -654,30 +678,6 @@
   {
    "at": "2026-11-08T04:31:48Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-08T04:27:37Z",
-   "subject": "Failed jobs read: run 42446870088 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T04:06:44Z",
-   "subject": "Failed jobs read: run 42441537336 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T03:53:38Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-08T03:46:19Z",
-   "subject": "Outcome exam: videos 56.7"
-  },
-  {
-   "at": "2026-11-08T03:37:14Z",
-   "subject": "Failed jobs read: run 42441055277 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T03:33:04Z",
-   "subject": "Failed jobs read: run 42441069831 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 14,
-  "week": 253
+  "day": 16,
+  "week": 255
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
