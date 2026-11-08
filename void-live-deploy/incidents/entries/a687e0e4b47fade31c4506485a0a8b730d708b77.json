@@ -1,0 +1,36 @@
+{
+ "at": "2026-11-08T02:33:09.112Z",
+ "sha": "a687e0e4b47fade31c4506485a0a8b730d708b77",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42437690128",
+ "suite": "browser suite on main",
+ "checks": [
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "domains/handoff.md",
+  "tools/bench.json",
+  "tools/checks.mjs",
+  "tools/drive-share.test.mjs",
+  "tools/eightball.test.mjs",
+  "tools/family-asks.test.mjs",
+  "tools/night-sky.test.mjs",
+  "tools/palindrome.test.mjs",
+  "tools/riddle.test.mjs",
+  "tools/rps.test.mjs",
+  "tools/sky-card.test.mjs",
+  "tools/sums.test.mjs",
+  "tools/tab.test.mjs",
+  "tools/video-gen.test.mjs",
+  "void-live-deploy/lib/similar-index.js"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-08T02:51:16.276Z",
+ "closedBy": "8025de0b0e80108706bcaf74d6b9c634afa47cea",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42439051914",
+ "minutes": 18
+}

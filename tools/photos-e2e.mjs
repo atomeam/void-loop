@@ -3,7 +3,7 @@
 //   node tools/heavy.mjs node tools/photos-e2e.mjs
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { readMeta } from '../void-live-deploy/lib/photo-edit.js';
-const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy'), shots = process.env.PHOTOS_SHOTS || os.tmpdir();
+const root = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy'), shots = process.env.PHOTOS_SHOTS || os.tmpdir();
 const TYPES = { '.js': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png' };
 const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p); if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
   fs.readFile(f, (e, d) => { if (e) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(d); }); }).listen(0);

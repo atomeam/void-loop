@@ -1,112 +1,167 @@
 {
-  "at": "2026-11-07T23:03:35.240Z",
+  "at": "2026-11-08T03:46:16.070Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 85.9,
+      "score": 56.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "show me a video of cats",
+          "ask": "play a video of the moon landing",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
+        },
+        {
+          "ask": "watch the apollo 11 landing",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
+        },
+        {
+          "ask": "show me a video of cats",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play a video of the ocean",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a nature documentary",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "watch a documentary about trains",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video of birds",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "show me a video of the eiffel tower",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video about the solar system",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "watch a video of a steam train",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video of the northern lights",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "show me a video about dinosaurs",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video about cooking pasta",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "watch a video of charlie chaplin",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video of jazz music",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
+        },
+        {
+          "ask": "find a video about the moon",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play the trailer",
           "failed": [
+            "loaded",
+            "playable",
             "topic",
             "rival"
           ],
-          "score": 75
+          "score": 50
         },
         {
           "ask": "joue une vidéo des baleines",
@@ -450,7 +505,7 @@
       }
     },
     "sports": {
-      "score": 63.9,
+      "score": 61.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -466,9 +521,10 @@
           "ask": "nfl scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "mlb scores",
@@ -530,9 +586,10 @@
           "ask": "mls scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "lakers score",
@@ -578,6 +635,13 @@
             "board"
           ],
           "score": 50
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
         },
         {
           "ask": "scores",
@@ -639,32 +703,10 @@
       ]
     },
     "maps": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "map of Springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "mapa de kioto",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        },
-        {
-          "ask": "show me Paris on a map",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     },
     "timers": {
       "score": 100,
@@ -720,7 +762,7 @@
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 63.9
+    "domain": "videos",
+    "score": 56.7
   }
 }

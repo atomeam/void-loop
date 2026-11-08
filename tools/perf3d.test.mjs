@@ -16,7 +16,7 @@ await acquireHeavy('3D frame budget (perf3d.test.mjs)'); // one heavy browser jo
 // 350 s a board (11 minutes in all, the longest of the fast checks, measured 2026-10-18 with 485 and 560 frames, 0 shadow passes); 10 still draw 100+
 export const ORBIT_MOVES = 10;
 export const BUDGET = { calls: 60, triangles: 120000, shadowPassesPerOrbitFrame: 0.1, maxDpr: 1.5 };
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const exe = [process.env.VOID_TEST_BROWSER, '/usr/bin/google-chrome', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 if (!exe) { console.log('skip 3D frame budget: no Chrome'); process.exit(0); }
 const T = { '.js': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.ktx2': 'image/ktx2' };

@@ -16,7 +16,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 
-
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
@@ -91,8 +90,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
-- **ndscalc.ru is a lane page on the calculator's VAT mode, worked out on the device, with 20% and 22% and the sum in words (Cursor cloud agent, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2294.
-- **/journal/ page: the open-access Earth science journal's own public RSS feed + Crossref search on-device, saved papers; tower lane 'ajsonline.org' -> /journal/ (mistrallarge4, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2521.
+- **The Tower drops a rival whose page was removed: a 200 access-refusal stub is gone (kimi-k3, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2516. oneyeard.com stood the Tower on "Sorry, This Page Can't Be Accessed" (a 200 served to everyone, smallest-first brought it to the front); tools/tower-alive.mjs now reads a 2xx refusal stub with nothing to use as gone (a real 401/403/429 bot wall stays alive), it is in tower.gone.json with the fetch's evidence, the gate skips it and its aspects stop counting, and tower.target.json moved on to protopage.com. Also in the same branch, main-red upkeep that blocked the ship: the /starboard/ real-pages spec and two Windows path fixes (real-pages.mjs, and the --changed route listing), the morse~translate/films~movie/open-tool~podcast overlap pairs named, an ellipsis-ok on team-priorities' short bet title.
 - **Translate: a bare word asks which language, and the French phrasing answers (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2512. "translate spring" now opens a card that says no language was named and asks which one (the exam's ambiguous case), "comment dit-on bonjour en anglais" is read as French and answers Hello, and the kept greetings answer in English even when both translators refuse.
 - **Growth card: a touched branch keeps its reading through a bloom, and a late ask fills in (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check holds the answer back until after the touch and fires a bloom while the trunk is selected, so the race is deterministic.
 - **Unbidden: Verse speaks first on /brain/ from its live state, in text and in its own voice (`/api/unbidden`) (claude, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2488.

@@ -600,84 +600,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-07T23:34:50Z",
-   "subject": "Failed jobs read: run 42422994736 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:45:17Z",
+   "subject": "Failed jobs read: run 42439747160 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T23:34:03Z",
-   "subject": "Incident: the browser suite failed on 2b19a9d2 (void-live-deploy/incidents.json)"
+   "at": "2026-11-08T02:44:38Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T23:25:27Z",
-   "subject": "Site test: fix: \"play voidquest\" no .voidquest-card; console: Failed to"
+   "at": "2026-11-08T02:44:05Z",
+   "subject": "Revert \"members gate: the members pages need a member; Ask stays free (#2520)\" (#2534)"
   },
   {
-   "at": "2026-11-07T23:15:05Z",
-   "subject": "Maps: same-name places ask which, Spanish map asks answer, the asked spelling stays on the card (#2529)"
+   "at": "2026-11-08T02:42:21Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-07T23:15:03Z",
-   "subject": "Revert \"Four in a Row on a phone: the check plays to the win, and stops only on a stalled game (mv9se6wa) (#2523)\" (#2524)"
+   "at": "2026-11-08T02:41:56Z",
+   "subject": "maps: Spanish map asks work, and an ambiguous name says several places share it (#2518)"
   },
   {
-   "at": "2026-11-07T23:12:22Z",
-   "subject": "Failed jobs read: run 42421593713 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:41:42Z",
+   "subject": "Failed jobs read: run 42439470027 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T23:03:38Z",
-   "subject": "Outcome exam: sports 63.9"
+   "at": "2026-11-08T02:40:58Z",
+   "subject": "Failed jobs read: run 42439470065 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T23:00:30Z",
-   "subject": "Failed jobs read: run 42422994701 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:40:41Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T22:59:26Z",
-   "subject": "Site test: fix: \"what do you get if you merge a pizza and a black hole\""
+   "at": "2026-11-08T02:40:08Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-07T22:58:40Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-08T02:39:14Z",
+   "subject": "Research journal: the papers read live, and the rules for authors (#2519)"
   },
   {
-   "at": "2026-11-07T22:57:49Z",
-   "subject": "Failed jobs read: run 42422994690 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:38:06Z",
+   "subject": "Failed jobs read: run 42439269690 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:54:14Z",
-   "subject": "Failed jobs read: run 42422542550 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:37:37Z",
+   "subject": "Failed jobs read: run 42439269635 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:51:44Z",
-   "subject": "Failed jobs read: run 42422542563 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:36:59Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-07T22:48:06Z",
-   "subject": "Failed jobs read: run 42422095483 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:35:57Z",
+   "subject": "members gate: the members pages need a member; Ask stays free (#2520)"
   },
   {
-   "at": "2026-11-07T22:45:57Z",
-   "subject": "Failed jobs read: run 42422095618 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:35:46Z",
+   "subject": "Failed jobs read: run 42435549133 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:43:20Z",
-   "subject": "Failed jobs read: run 42419466975 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:33:53Z",
+   "subject": "Paid products where the free page leaves off: the stage names them once, after the first answered ask (#2526)"
   },
   {
-   "at": "2026-11-07T22:41:32Z",
-   "subject": "Failed jobs read: run 42421593636 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:33:34Z",
+   "subject": "Failed jobs read: run 42437690128 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:39:39Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
+   "at": "2026-11-08T02:33:25Z",
+   "subject": "Better at verify pack: 3 more ways of asking answered right — new phrases: “verify pack for client onboarding” now opens verify-pack; “set…"
   },
   {
-   "at": "2026-11-07T22:39:30Z",
-   "subject": "Outcome exam: maps 40"
+   "at": "2026-11-08T02:33:09Z",
+   "subject": "Incident: the browser suite failed on a687e0e4 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-07T22:39:25Z",
-   "subject": "Failed jobs read: run 42421593686 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:24:02Z",
+   "subject": "Site test: quality upgrade: weakest answer was \"closer on the figure\" ("
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 27,
-  "week": 245
+  "day": 8,
+  "week": 248
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -917,8 +917,8 @@
   "source": "verse"
  },
  "tower": {
-  "target": "oneyeard.com",
-  "since": "2026-11-07",
+  "target": "protopage.com",
+  "since": "2026-11-08",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",

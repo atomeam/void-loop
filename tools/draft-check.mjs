@@ -5,7 +5,7 @@
 // Prints one line per draft; exit 1 if any fails.
 import fs from 'node:fs'; import path from 'node:path'; import { execFileSync } from 'node:child_process'; import { chromium } from 'playwright-core';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
 let files = process.argv.slice(2);
 if (!files.length) {
   try { files = execFileSync('git', ['diff', '--name-only', '--diff-filter=AM', 'origin/main...HEAD', '--', 'drafts/fringe/'], { cwd: root, encoding: 'utf8' }).split('\n'); } catch (_) { files = []; }

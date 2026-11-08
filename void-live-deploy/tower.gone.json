@@ -4,14 +4,14 @@
   "unitingchurch.org.au": {
    "status": "parked",
    "since": "2026-11-05T03:43:40.099Z",
-   "checked": "2026-11-07T22:37:14.386Z",
+   "checked": "2026-11-07T13:46:36.683Z",
    "why": "https://unitingchurch.org.au/ ends on controlhosting.net, not unitingchurch.org.au",
    "final": "https://controlhosting.net/"
   },
   "id5-sync.com": {
    "status": "non-site",
    "since": "2026-11-06T18:33:06.247Z",
-   "checked": "2026-11-07T22:37:14.386Z",
+   "checked": "2026-11-07T13:46:36.683Z",
    "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features",
    "final": "https://id5-sync.com/",
    "kind": "an ad-tracking or sync endpoint",
@@ -27,23 +27,24 @@
     "bytes": 51
    }
   },
-  "healthtechnologygroup.com": {
-   "status": "non-site",
-   "since": "2026-11-07T22:37:14.386Z",
-   "checked": "2026-11-07T22:37:14.386Z",
-   "why": "https://healthtechnologygroup.com/ (200) shows 9 characters of text (\"It works!\"), 0 controls, 0 links, 0 forms and 99 bytes of page: an inert stub page, not a site a person uses; Verse lacks none of its features",
-   "final": "https://healthtechnologygroup.com/",
-   "kind": "an inert stub page",
+  "oneyeard.com": {
+   "status": "gone",
+   "since": "2026-11-07T18:26:07.552Z",
+   "checked": "2026-11-07T18:26:07.552Z",
+   "why": "https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed",
+   "final": "https://oneyeard.com/",
+   "kind": "an access-refusal stub page",
    "shape": {
-    "chars": 9,
-    "sample": "It works!",
-    "controls": 0,
-    "links": 0,
+    "chars": 227,
+    "sample": "Status Code: 403\n\nOPPSSS!!!! Sorry...\n\nSorry, your access is refused due to security reasons of our server and also our sensitive data.\nPlease go back to the previous page to continue browsing.\n\nGo Ba",
+    "controls": 1,
+    "usable": 0,
+    "links": 1,
     "forms": 0,
     "frames": 0,
     "canvas": 0,
-    "scripts": 0,
-    "bytes": 99
+    "scripts": 1,
+    "bytes": 1698
    }
   }
  },
@@ -73,21 +74,22 @@
    }
   },
   {
-   "at": "2026-11-07T22:37:14.386Z",
-   "rival": "healthtechnologygroup.com",
-   "status": "non-site",
-   "why": "https://healthtechnologygroup.com/ (200) shows 9 characters of text (\"It works!\"), 0 controls, 0 links, 0 forms and 99 bytes of page: an inert stub page, not a site a person uses; Verse lacks none of its features",
-   "kind": "an inert stub page",
+   "at": "2026-11-07T18:26:07.552Z",
+   "rival": "oneyeard.com",
+   "status": "gone",
+   "why": "https://oneyeard.com/ (200) answers an access-refusal stub (\"Status Code: 403 OPPSSS!!!! Sorry... Sorry, your access is refused due to securi\"): 0 usable controls and 227 characters of text — the page has been removed",
+   "kind": "an access-refusal stub page",
    "shape": {
-    "chars": 9,
-    "sample": "It works!",
-    "controls": 0,
-    "links": 0,
+    "chars": 227,
+    "sample": "Status Code: 403\n\nOPPSSS!!!! Sorry...\n\nSorry, your access is refused due to security reasons of our server and also our sensitive data.\nPlease go back to the previous page to continue browsing.\n\nGo Ba",
+    "controls": 1,
+    "usable": 0,
+    "links": 1,
     "forms": 0,
     "frames": 0,
     "canvas": 0,
-    "scripts": 0,
-    "bytes": 99
+    "scripts": 1,
+    "bytes": 1698
    }
   }
  ]

@@ -33,6 +33,6 @@ const exe = process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || (existsS
 const browser = await chromium.launch({ executablePath: exe });
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
 await page.setContent(HTML);
-await page.screenshot({ path: new URL('../void-live-deploy/og.png', import.meta.url).pathname });
+await page.screenshot({ path: new URL('../void-live-deploy/og.png', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1') });
 await browser.close();
 console.log('wrote void-live-deploy/og.png (1200 x 630)');
