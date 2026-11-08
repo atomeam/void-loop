@@ -600,84 +600,80 @@
  },
  "commits": [
   {
-   "at": "2026-11-08T02:45:17Z",
-   "subject": "Failed jobs read: run 42439747160 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T03:33:04Z",
+   "subject": "Failed jobs read: run 42441069831 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-08T02:44:38Z",
+   "at": "2026-11-08T03:32:42Z",
+   "subject": "Incident: the browser suite failed on 1fa1c2b8 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-08T03:24:49Z",
+   "subject": "Site test: fps floor 5 -> 6"
+  },
+  {
+   "at": "2026-11-08T03:15:39Z",
+   "subject": "Outcome exam: sports 64.8"
+  },
+  {
+   "at": "2026-11-08T03:13:53Z",
+   "subject": "Failed jobs read: run 42441537357 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T03:13:36Z",
+   "subject": "Failed jobs read: run 42440145474 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T03:13:05Z",
+   "subject": "Incident: the browser suite failed on b787a450 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-08T03:12:56Z",
+   "subject": "Failed jobs read: run 42441361744 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T03:12:30Z",
+   "subject": "Failed jobs read: run 42441537260 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T03:12:21Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-08T02:44:05Z",
-   "subject": "Revert \"members gate: the members pages need a member; Ask stays free (#2520)\" (#2534)"
+   "at": "2026-11-08T03:11:44Z",
+   "subject": "Failed jobs read: run 42441361787 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-08T02:42:21Z",
+   "at": "2026-11-08T03:10:49Z",
+   "subject": "Failed jobs read: run 42441055278 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T03:09:01Z",
+   "subject": "Failed jobs read: run 42440999632 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T03:06:22Z",
+   "subject": "Tower gate: is it,dalyfeds.com,sports: onefootball.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-08T03:03:17Z",
+   "subject": "Starboard sponsor grid and claim wall, paid over x402 into Verse's wallet (#2489)"
+  },
+  {
+   "at": "2026-11-08T03:01:18Z",
+   "subject": "PDF card: retry the pdf.js read once after a dropped worker fetch (mv95k8m7) (#2515)"
+  },
+  {
+   "at": "2026-11-08T03:01:00Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-08T02:41:56Z",
-   "subject": "maps: Spanish map asks work, and an ambiguous name says several places share it (#2518)"
+   "at": "2026-11-08T02:58:26Z",
+   "subject": "Revert \"Failed jobs read: run 42439747239 (void-live-deploy/incidents/actions/)\" (#2536)"
   },
   {
-   "at": "2026-11-08T02:41:42Z",
-   "subject": "Failed jobs read: run 42439470027 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T02:40:58Z",
-   "subject": "Failed jobs read: run 42439470065 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T02:40:41Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-08T02:40:08Z",
+   "at": "2026-11-08T02:58:13Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-08T02:39:14Z",
-   "subject": "Research journal: the papers read live, and the rules for authors (#2519)"
-  },
-  {
-   "at": "2026-11-08T02:38:06Z",
-   "subject": "Failed jobs read: run 42439269690 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T02:37:37Z",
-   "subject": "Failed jobs read: run 42439269635 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T02:36:59Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-08T02:35:57Z",
-   "subject": "members gate: the members pages need a member; Ask stays free (#2520)"
-  },
-  {
-   "at": "2026-11-08T02:35:46Z",
-   "subject": "Failed jobs read: run 42435549133 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T02:33:53Z",
-   "subject": "Paid products where the free page leaves off: the stage names them once, after the first answered ask (#2526)"
-  },
-  {
-   "at": "2026-11-08T02:33:34Z",
-   "subject": "Failed jobs read: run 42437690128 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T02:33:25Z",
-   "subject": "Better at verify pack: 3 more ways of asking answered right — new phrases: “verify pack for client onboarding” now opens verify-pack; “set…"
-  },
-  {
-   "at": "2026-11-08T02:33:09Z",
-   "subject": "Incident: the browser suite failed on a687e0e4 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-08T02:24:02Z",
-   "subject": "Site test: quality upgrade: weakest answer was \"closer on the figure\" ("
   }
  ],
  "builders": {
@@ -859,8 +855,8 @@
   }
  ],
  "visible": {
-  "day": 8,
-  "week": 248
+  "day": 13,
+  "week": 253
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -917,7 +913,7 @@
   "source": "verse"
  },
  "tower": {
-  "target": "protopage.com",
+  "target": "healthtechnologygroup.com",
   "since": "2026-11-08",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
