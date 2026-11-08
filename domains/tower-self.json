@@ -1916,7 +1916,9 @@
     "place": 7,
     "why": "not sized yet, hardness 103, Tranco 197059"
    },
-   "words": "the family page's own (the model's were refused: says what the page does not do (discover, analyze, manage, precision, create))"
+   "words": "the family page's own (the model's were refused: says what the page does not do (discover, analyze, manage, precision, create))",
+   "rows": "13/15",
+   "gated": "2026-11-08T22:28:19Z"
   },
   "ex-unit.nagoya": {
    "at": "2026-11-08T22:24:33Z",
@@ -1931,15 +1933,6 @@
   }
  },
  "runs": [
-  {
-   "at": "2026-10-31T08:47:23Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next onlineconverter.com (the target)",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "syncsketch.dev"
-  },
   {
    "at": "2026-10-31T08:49:57Z",
    "line": "Versus: took on no site; next onlineconverter.com (the target)",
@@ -2311,6 +2304,15 @@
    "pages_per_day": 0,
    "reads_next": "randomvideochat.me",
    "noop": true
+  },
+  {
+   "at": "2026-11-08T22:28:20Z",
+   "line": "Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows (also read: 5 no-family, 1 walled, 1 covered); next digitalsogame.com (the target)",
+   "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "arcticfoxhaircolor.com"
   }
  ]
 }
