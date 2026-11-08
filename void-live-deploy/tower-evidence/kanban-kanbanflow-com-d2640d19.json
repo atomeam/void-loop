@@ -2,12 +2,11 @@
  "id": "kanban: kanbanflow.com",
  "rows": {
   "speed": {
-   "verdict": "worse",
-   "verse": 235,
-   "best": 232,
-   "evidence": "Verse (/kanban/flow/) 235 ms to the load event (median of 3, phone width) vs kanbanflow.com 232 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-07T13:22:11.927Z",
-   "was": "equal-and-better",
+   "verdict": "equal-and-better",
+   "verse": 95,
+   "best": 230,
+   "evidence": "Verse (/kanban/flow/) 95 ms to the load event (median of 3, phone width) vs kanbanflow.com 230 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "reliability": {
@@ -15,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/kanban/flow/) 3 of 3 loads answered vs kanbanflow.com 3 of 3 loads answered",
-   "at": "2026-11-07T13:22:11.927Z",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "mobile": {
@@ -23,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/kanban/flow/) 0 px sideways overflow at 390 px vs kanbanflow.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-07T13:22:11.927Z",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "accessibility": {
@@ -31,7 +30,7 @@
    "verse": 0,
    "best": 1,
    "evidence": "Verse (/kanban/flow/) 0 unnamed controls or images vs kanbanflow.com 1 unnamed controls or images",
-   "at": "2026-11-07T13:22:11.927Z",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "offline": {
@@ -39,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/kanban/flow/) 1 (1: the page shows itself again with the network cut) vs kanbanflow.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "sharing": {
@@ -47,15 +46,16 @@
    "verse": 3,
    "best": 1,
    "evidence": "Verse (/kanban/flow/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs kanbanflow.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "accuracy": {
-   "verdict": "equal-and-better",
-   "verse": 4,
+   "verdict": "worse",
+   "verse": 0,
    "best": 4,
-   "evidence": "Verse (/kanban/flow/) 4 of 4 right against the worked-out answer; judged against the standard, not kanbanflow.com (the site is not asked)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 0 of 4 right against the worked-out answer (missed: a To do column, a Doing column, a Done column, a way to add a card); judged against the standard, not kanbanflow.com (the site is not asked). The page showed: \"Plan and time tasks on a to-do board (personal kanban) A to-do board that shows where work piles up, for a shop floor, a support queue or a software team. A kanban board that keeps the time you spend:\"",
+   "at": "2026-11-08T13:44:37.814Z",
+   "was": "equal-and-better",
    "of": 4
   },
   "design polish": {
@@ -63,64 +63,65 @@
    "verse": 0,
    "best": 12,
    "evidence": "Verse (/kanban/flow/) 0 design defects vs kanbanflow.com 12 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), kanbanflow.com (7 low-contrast texts, 5 small tap targets, layout shift 0.02)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   },
   "boards and columns": {
-   "verdict": "better",
-   "verse": 2,
+   "verdict": "equal",
+   "verse": 1,
    "best": 1,
-   "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: none; site lacks: columns)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 1 of 2 shown vs kanbanflow.com 1 of 2 shown (Verse lacks: add a column; site lacks: columns)",
+   "at": "2026-11-08T13:44:37.814Z",
    "of": 2,
    "part": true,
    "siteRead": true
   },
   "card details": {
    "verdict": "better",
-   "verse": 3,
+   "verse": 1,
    "best": 0,
-   "evidence": "Verse (/kanban/flow/) 3 of 3 shown vs kanbanflow.com 0 of 3 shown (Verse lacks: none; site lacks: labels, due dates, checklists)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 1 of 3 shown vs kanbanflow.com 0 of 3 shown (Verse lacks: due dates, checklists; site lacks: labels, due dates, checklists)",
+   "at": "2026-11-08T13:44:37.814Z",
    "of": 3,
    "part": true,
    "siteRead": true
   },
   "drag and drop": {
-   "verdict": "better",
-   "verse": 2,
+   "verdict": "equal",
+   "verse": 0,
    "best": 0,
-   "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 0 of 2 shown (Verse lacks: none; site lacks: drag)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 0 of 2 shown vs kanbanflow.com 0 of 2 shown (Verse lacks: drag, keyboard moves; site lacks: drag)",
+   "at": "2026-11-08T13:44:37.814Z",
    "of": 2,
    "part": true,
    "siteRead": true
   },
   "import and export": {
-   "verdict": "equal-and-better",
-   "verse": 2,
+   "verdict": "worse",
+   "verse": 1,
    "best": 2,
-   "evidence": "Verse (/kanban/flow/) 2 of 2 shown vs kanbanflow.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 1 of 2 shown vs kanbanflow.com 2 of 2 shown (Verse lacks: import; site lacks: none)",
+   "at": "2026-11-08T13:44:37.814Z",
+   "was": "equal-and-better",
    "of": 2,
    "part": true,
    "siteRead": true
   },
   "completeness": {
    "verdict": "better",
-   "verse": 20,
+   "verse": 8,
    "best": 5,
-   "evidence": "Verse (/kanban/flow/) 20 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: Columns (lists) you name, add, move and delete; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 8 of 21 things a full answer shows vs kanbanflow.com 5 of 21 things a full answer shows (Verse lacks: columns, due dates, checklists, drag and drop, search, archive, import, keyboard moves, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves; site lacks: columns, cards, labels, due dates, checklists, drag and drop, archive, keyboard moves, on this device, works offline, Several boards, Columns (lists) you name, add, move and delete, Cards with title and description, Drag and drop cards between columns, Keyboard shortcuts and keyboard moves, Coloured labels)",
+   "at": "2026-11-08T13:44:37.814Z",
    "of": 21,
    "siteRead": true
   },
   "wider use": {
    "verdict": "better",
-   "verse": 9.5,
+   "verse": 8.5,
    "best": 3,
-   "evidence": "Verse (/kanban/flow/) 9.5 of 11 wider-use points (docs/WIDER-USE.md) vs kanbanflow.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-07T13:22:11.927Z",
+   "evidence": "Verse (/kanban/flow/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs kanbanflow.com 3 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:44:37.814Z",
    "siteRead": true
   }
  }
