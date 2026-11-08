@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-16T11:56:52Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "file",
-  "key": "label the note groceries | nothing appeared",
-  "note": "fix: \"label the note groceries\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-16T13:06:04Z",
   "passed": 0,
   "of": 25,
@@ -5920,5 +5912,23 @@
    "failed": []
   },
   "note": "fix: \"play voidquest\" no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-11-07T23:50:16Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1143,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 18783 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

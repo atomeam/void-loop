@@ -3,13 +3,20 @@
  "cases": 103,
  "runsTotal": 300,
  "kinds": {
-  "file": 64,
+  "file": 63,
   "none": 34,
   "tighten": 1,
   "grow": 72,
-  "visitor": 129
+  "visitor": 130
  },
  "runs": [
+  {
+   "at": "2026-11-07T23:50:16Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-07T23:22:42Z",
    "passed": 52,
@@ -466,99 +473,81 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T18:39:20Z",
-   "passed": 99,
-   "of": 101,
-   "kind": "grow",
-   "ms": 336,
-   "note": "new ground passed, kept as a regression case: \"geenrate a toon style dog\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-15",
+   "from": "2026-08-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-22",
+   "from": "2026-08-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-29",
+   "from": "2026-08-30",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-05",
+   "from": "2026-09-06",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-12",
+   "from": "2026-09-13",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-19",
+   "from": "2026-09-20",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-26",
+   "from": "2026-09-27",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-03",
+   "from": "2026-10-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-10",
-   "runs": 76,
-   "passed": 602,
-   "of": 2045,
-   "broken": 52,
-   "brokenOf": 1303,
+   "from": "2026-10-11",
+   "runs": 77,
+   "passed": 675,
+   "of": 2105,
+   "broken": 51,
+   "brokenOf": 1278,
    "brokenPassed": 0
   },
   {
-   "from": "2026-10-17",
-   "runs": 39,
-   "passed": 2125,
-   "of": 2339
+   "from": "2026-10-18",
+   "runs": 37,
+   "passed": 2052,
+   "of": 2254
   },
   {
-   "from": "2026-10-24",
+   "from": "2026-10-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-31",
-   "runs": 185,
+   "from": "2026-11-01",
+   "runs": 186,
    "passed": 4532,
    "of": 5268,
    "broken": 4,
