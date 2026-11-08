@@ -2344,6 +2344,8 @@
     "open": [
       {
         "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
+        "at": "2026-10-31T08:49:00Z",
+        "kind": "build",
         "small": false,
         "times": 7,
         "ids": [
@@ -2363,6 +2365,8 @@
       },
       {
         "ask": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
+        "at": "2026-11-06T23:42:00Z",
+        "kind": "daily",
         "small": true,
         "times": 7,
         "ids": [
@@ -2382,6 +2386,8 @@
       },
       {
         "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
+        "at": "2026-11-06T23:42:00Z",
+        "kind": "daily",
         "small": true,
         "times": 6,
         "ids": [
@@ -2401,6 +2407,8 @@
       },
       {
         "ask": "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures.",
+        "at": "2026-11-06T00:06:00Z",
+        "kind": "daily",
         "small": true,
         "times": 4,
         "ids": [
@@ -2420,6 +2428,8 @@
       },
       {
         "ask": "Fix the podcasts exam to resolve failures in audio and episode retrieval.",
+        "at": "2026-11-06T23:42:00Z",
+        "kind": "daily",
         "small": true,
         "times": 2,
         "ids": [
