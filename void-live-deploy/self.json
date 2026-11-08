@@ -600,6 +600,18 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T14:32:02Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-08T14:27:34Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+  },
+  {
+   "at": "2026-11-08T14:15:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-08T14:09:30Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -666,18 +678,6 @@
   {
    "at": "2026-11-08T11:57:10Z",
    "subject": "Traffic: who visited a-to-mind.com, counts only"
-  },
-  {
-   "at": "2026-11-08T11:40:09Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-08T11:36:29Z",
-   "subject": "Design loop: 1 page fixed, 7 -> 3 design defects"
-  },
-  {
-   "at": "2026-11-08T11:27:44Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
