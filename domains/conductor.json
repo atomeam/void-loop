@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T20:10:29.631Z",
+ "updated": "2026-11-08T20:19:53.412Z",
  "last24h": {
   "ticks": 153,
-  "started": 56,
+  "started": 58,
   "requeued": 6,
   "setAside": 1,
   "probes": 3,
@@ -88,7 +88,7 @@
  "handed": {
   "mvbl52gd": 1794146628428,
   "mva30i2e": 1794168629631,
-  "mva30j4u": 1794147189869,
+  "mva30j4u": 1794169193412,
   "mvu167w7": 1794121870584,
   "mveb8rsi": 1794099686462,
   "mveb8svc": 1794100248886,
@@ -199,26 +199,6 @@
   "versus:uniteforliteracy.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T20:14:53.541Z",
-   "open": 269,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 263,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T20:27:44.752Z",
    "open": 270,
@@ -2012,6 +1992,40 @@
     },
     {
      "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T20:19:53.412Z",
+   "open": 269,
+   "started": [
+    {
+     "id": "mvw5r3w1",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mva30j4u",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
