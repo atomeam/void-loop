@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const root = new URL('../void-live-deploy/', import.meta.url).pathname;
+const root = new URL('../void-live-deploy/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const toml = readFileSync(join(root, 'wrangler.toml'), 'utf8');
 const kv = [...toml.matchAll(/\[\[kv_namespaces\]\][^\[]*?binding\s*=\s*"([A-Z0-9_]+)"/g)].map((m) => m[1]);
 const files = (d) => readdirSync(d).flatMap((f) => { const p = join(d, f); return statSync(p).isDirectory() ? files(p) : /\.m?js$/.test(f) ? [p] : []; });

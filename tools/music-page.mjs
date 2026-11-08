@@ -2,7 +2,7 @@
 // the tuner reads a tone, the BPM counter taps and reads a file, the chord finder names and draws chords, the hub lists setlists. Also: no sideways overflow,
 // no console errors, layout shift under 0.05, German on a German browser. Saves screenshots into the directory given. node tools/music-page.mjs <dir>
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy'), out = process.argv[2] || '.';
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy'), out = process.argv[2] || '.';
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const srv = http.createServer((req, res) => { const u = new URL(req.url, 'http://x'); let f = path.join(root, u.pathname); if (f.endsWith('/')) f += 'index.html';
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end('no'); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); });

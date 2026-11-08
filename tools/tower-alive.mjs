@@ -2,7 +2,9 @@
 // rival is measured or counted, its http and https addresses are opened in an ordinary browser and followed through every redirect, the
 // server's, a meta refresh and a script's. A rival whose final page is on another domain (a parked or hosting page), that errors on both, or
 // that shows a parked-domain page is marked gone/parked in void-live-deploy/tower.gone.json with a log entry; the gate skips it and the target
-// moves on to the next site. No human step: a rival that comes back is taken off the list on the next check.
+// moves on to the next site. A 200 whose whole page refuses everyone and carries nothing to use ("Sorry, This Page Can't Be Accessed", owner
+// 2026-11-07: oneyeard.com stood the Tower on one) is gone too: the page was removed (a real 401/403/429 is a bot wall only some visitors meet,
+// and stays alive). No human step: a rival that comes back is taken off the list on the next check.
 //   node tools/tower-alive.mjs            re-check the current target and every LANE_PAGES rival, write tower.gone.json, move a gone target on
 //   node tools/tower-alive.mjs <host>...  check these hosts only and print the verdicts (nothing written)
 //   node tools/tower-alive.mjs --write <host>...  the full re-check plus these hosts, written
@@ -59,7 +61,28 @@ export function nonSiteOf(rival, o) {
   const kind = nonSiteKind(rival, text);
   return { kind, why: o.url + ' (' + o.status + ') shows ' + s.chars + ' character' + (s.chars === 1 ? '' : 's') + ' of text ("' + text.slice(0, 80) + '"), 0 controls, 0 links, 0 forms and ' + (s.bytes || 0) + ' bytes of page: ' + kind + ', not a site a person uses; Verse lacks none of its features' };
 }
-/** both addresses to the verdict. Gone when either ends on another domain or is parked (the domain was handed elsewhere), or when neither loads.
+// An access-refusal stub (owner, 2026-11-07: oneyeard.com stood the Tower on "Sorry, This Page Can't Be Accessed", a 200 whose whole page is
+// "Sorry, your access is refused due to security reasons..." with a back button and nothing to use): the page was removed, so the rival is gone,
+// cleared from monitoring and the aspect counts, and the target moves on to a live site. Only a 2xx answer on the rival's own host counts — a
+// real 401/403/429 refusal is a bot wall and stays alive — and a page a person can still use (a working control or link, a form, a frame, real
+// text) or a challenge still loading is never read as removed.
+export const REFUSED = /sorry,? this page can(?:'|’)t be accessed|(?:your )?access (?:is|was|has been) refused|access denied|you (?:do not|don(?:'|’)t) have (?:permission|authori[sz]ation) to (?:access|view)|safeguard pagebot/i;
+/**
+ * an opened page that is an access-refusal stub: { why } with the evidence, or null. Pure. (a javascript: href is not a link: `usable` in the
+ * shape counts what a person can work.)
+ */
+export function refusedOf(rival, o) {
+  const s = o && o.shape; if (!s || o.error || !(o.status >= 200 && o.status < 300)) return null;
+  let fh = ''; try { fh = new URL(o.final).hostname; } catch (_) {}
+  if (!ownHost(fh, rival)) return null;
+  const text = (String(o.text || '') + ' ' + String(s.sample || '')).replace(/\s+/g, ' ').trim();
+  if (!REFUSED.test(text) || STILL_LOADING.test(text)) return null;
+  const usable = s.usable === undefined ? s.controls : s.usable;
+  if (usable || s.forms || s.frames || !s.chars || s.chars > 500) return null;
+  return { why: o.url + ' (' + o.status + ') answers an access-refusal stub ("' + String(s.sample || '').replace(/\s+/g, ' ').trim().slice(0, 80) + '"): 0 usable controls and ' + s.chars + ' characters of text — the page has been removed' };
+}
+/** both addresses to the verdict. Gone when either ends on another domain or is parked (the domain was handed elsewhere), when neither loads,
+ *  or when every address that loaded is an access-refusal stub (refusedOf).
  *  One scheme erroring while the other serves the real site (emojigraph.org: http 500, https 200) stays alive, with a note. Pure. */
 export function judge(rival, opened, { nonSite = false } = {}) {
   const r = opened.map((o) => ({ o, j: judgeOne(rival, o) }));
@@ -67,6 +90,9 @@ export function judge(rival, opened, { nonSite = false } = {}) {
   if (hijack) return { alive: false, status: 'parked', why: hijack.j.why, final: hijack.o.final || null, checks: r.map((x) => x.j.why) };
   const good = r.find((x) => x.j.ok);
   if (!good) return { alive: false, status: 'gone', why: r.map((x) => x.j.why).join('; '), final: null, checks: r.map((x) => x.j.why) };
+  // an access-refusal stub on every address that loaded (the page removed, the refusal served to anyone at 200): gone, before any non-site read
+  const ref = r.filter((x) => x.j.ok).map((x) => refusedOf(rival, x.o));
+  if (ref.length && ref.every(Boolean)) return { alive: false, status: 'gone', kind: 'an access-refusal stub page', why: ref[0].why, final: good.o.final, checks: r.map((x) => x.j.why), shape: good.o.shape };
   // a non-site is judged on every address that loaded: one with something to use on it (a real page on http, a stub on https) is a site
   const ns = nonSite ? r.filter((x) => x.j.ok).map((x) => nonSiteOf(rival, x.o)) : [];
   if (ns.length && ns.every(Boolean)) return { alive: false, status: 'non-site', kind: ns[0].kind, why: ns[0].why, final: good.o.final, checks: r.map((x) => x.j.why), shape: good.o.shape };
@@ -85,7 +111,9 @@ export async function open(b, url, { settle = 4000, timeout = 30000 } = {}) {
     // the page's shape, for a non-site (nonSiteOf): what there is on it to use, read from the rendered page
     const shape = await p.evaluate(() => {
       const n = (q) => document.querySelectorAll(q).length, t = (document.body ? document.body.innerText : '').trim();
-      return { chars: t.length, sample: t.slice(0, 200), controls: n('a[href],button,input:not([type=hidden]),select,textarea,summary,[role=button],[role=link],[role=textbox],[onclick],[contenteditable=""],[contenteditable=true]'), links: n('a[href]'), forms: n('form'), frames: n('iframe,frame,embed,object'), canvas: n('canvas'), scripts: n('script'), bytes: document.documentElement.outerHTML.length };
+      // what a person can work: a href that only runs script (javascript:history.back()) or points at the page itself (#) is not a real link
+      const realLinks = [...document.querySelectorAll('a[href]')].filter((a) => !/^\s*(?:javascript:|#)/i.test(a.getAttribute('href') || '')).length;
+      return { chars: t.length, sample: t.slice(0, 200), controls: n('a[href],button,input:not([type=hidden]),select,textarea,summary,[role=button],[role=link],[role=textbox],[onclick],[contenteditable=""],[contenteditable=true]'), usable: n('button,input:not([type=hidden]),select,textarea,summary,[role=button],[role=textbox],[onclick],[contenteditable=""],[contenteditable=true]') + realLinks, links: n('a[href]'), forms: n('form'), frames: n('iframe,frame,embed,object'), canvas: n('canvas'), scripts: n('script'), bytes: document.documentElement.outerHTML.length };
     }).catch(() => null);
     return { url, final: p.url(), status, text, shape };
   } catch (e) { return { url, error: String(e && e.message || e).split('\n')[0] }; } finally { await ctx.close().catch(() => {}); }

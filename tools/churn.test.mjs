@@ -82,7 +82,7 @@ test('generated cards and the tower gate\'s record are expected churn, never hot
 });
 
 test('the churn cap holds back only the will\'s own wants: only the will, its writer and its log name churn.json or import lib/churn.js', () => {
-  const root = new URL('..', import.meta.url).pathname, hits = [];
+  const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), hits = [];
   const walk = (d) => { for (const n of readdirSync(d)) { if (n === 'node_modules' || n === '.git' || n === 'archive') continue; const p = d + '/' + n, st = statSync(p);
     if (st.isDirectory()) walk(p); else if (/\.(?:m?js|ya?ml|py|sh)$/.test(n) && st.size < 2e6) { const t = readFileSync(p, 'utf8'); if (/churn\.json|from ['"][./]*(?:lib\/)?churn\.js['"]/.test(t)) hits.push(p.slice(root.length)); } } };
   walk(root + '.github'); walk(root + 'tools'); walk(root + 'void-live-deploy');

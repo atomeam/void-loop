@@ -10,7 +10,7 @@ import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/tool
 import { PAGES } from '../void-live-deploy/lib/seo.js';
 import { rss, rdf, atom, fixtureFor } from './news-fixtures.mjs';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const fake = async (url) => { const x = fixtureFor(String(url)); return new Response(x, { status: 200 }); };
 
 test('every feed is https, belongs to a known source, a known section and language, and each section has several', () => {

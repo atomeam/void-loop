@@ -35,11 +35,10 @@ function main() {
     git(['config', 'user.email', 'merge-gate@users.noreply.github.com'], dir);
     git(['config', 'user.name', 'merge-gate'], dir);
     const merged = git(['merge', '--no-commit', '--no-ff', base], dir);
-    // the paths the merge left in conflict: none when the merge is clean, and the gate below still needs the list (2026-11-07: the list
-    // was read outside the block it was made in, so every clean merge stopped the gate with "files is not defined")
-    let files = [];
+    let conflicted = []; // the paths the merge could not take whole: their settles stay as committed, never put back from ours
     if (merged.status !== 0) {
-      files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
+      const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
+      conflicted = files;
       const merging = git(['rev-parse', '-q', '--verify', 'MERGE_HEAD'], dir).status === 0;
       if (!files.length && merging) console.log('merge-gate: main is in, nothing left unmerged');
       else if (!onlyBuildConflicts(files)) {
@@ -75,7 +74,7 @@ function main() {
     // the generators, so a build output that conflicted is rewritten before we put the tree back. The files the
     // merge itself rewrote (the append-mostly settles, and build outputs taken from ours) stay as committed in the
     // merge commit: resetting them would drop the settle and re-break the very files this branch appends to.
-    const keep = new Set([...APPEND_MOSTLY, ...files]);
+    const keep = new Set([...APPEND_MOSTLY, ...conflicted]);
     for (const args of [
       ['tools/skills-index.mjs', '--write'],
       ['tools/deps.mjs'],

@@ -4,7 +4,7 @@
 // control at least 24 px, layout shift under 0.05, no console errors. Saves screenshots into the directory given.  node tools/heavy.mjs node tools/jobs-page.mjs <dir>
 // The listings are made up (secret-scan: ok).
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy'), out = process.argv[2] || '.';
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy'), out = process.argv[2] || '.';
 fs.mkdirSync(out, { recursive: true });
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const day = (n) => new Date(Date.now() - n * 36e5).toISOString();

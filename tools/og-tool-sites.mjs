@@ -8,7 +8,7 @@ import { TOOL_INFO } from '../void-live-deploy/lib/pdf-ui.js';
 import { slug } from './tool-site-pages.mjs';
 import { ogPage } from './og-frame.mjs';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'og');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy', 'og');
 const KB = { boards: 'Several boards', wip: 'WIP limits', lanes: 'Swimlanes', labels: 'Labels', due: 'Due dates', checklist: 'Checklists', comments: 'Comments', assignee: 'Assignees', archive: 'Archive', filter: 'Search and filter', trello: 'Trello import', timer: 'Timer and Pomodoro', recur: 'Repeating cards', print: 'Print', csv: 'CSV export', share: 'Share link', colour: 'Card colours', templates: 'Templates' };
 // two lines at most under the name, cut after a whole item of the list, never mid-word and with no ellipsis: a longer first sentence ran into
 // the chips (seen when Verse's own compressor's output was compared with the original, 2026-10-26)
