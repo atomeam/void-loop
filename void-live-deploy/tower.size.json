@@ -676,6 +676,20 @@
    "weight": 4180,
    "at": "2026-11-06"
   },
+  "aurashinehub.com": {
+   "bytes": 811931,
+   "controls": 80,
+   "scripts": 22,
+   "styles": 11,
+   "nodes": 187,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 536,
+   "shell": "none",
+   "weight": 857801,
+   "at": "2026-11-08"
+  },
   "autoconvert.co.uk": {
    "bytes": 1037528,
    "controls": 24,
