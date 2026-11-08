@@ -47,6 +47,15 @@ const clean = (ask) => String(ask || '').trim().replace(/\s+/g, ' ').replace(/[?
 /** which free resource should take this ask: a bot (with its input), a public API, or the default model. Pure. */
 export function planOf(ask) {
   const a = clean(ask), t = a.toLowerCase();
+  // system-intent pre-router: platform-native intents before narrow keyword bots
+  const raw = String(ask || '');
+  if (/\/team\/join\/vj1-[0-9a-f]{32}/i.test(raw) || /\bvj1-[0-9a-f]{32}\b/i.test(raw)) {
+    const m = raw.match(/vj1-[0-9a-f]{32}/i);
+    return { kind: 'bot', bot: 'team-join', input: m ? m[0] : raw, say: 'Joining team: ' };
+  }
+  if (/what needs (?:to be )?done|do work|what should (?:i|we) work on/i.test(t)) {
+    return { kind: 'api', api: 'work-queue', ids: ['work-queue'], query: t, why: 'platform work queue' };
+  }
   if (!a || a.length > 140 || /\n/.test(String(ask))) return { kind: 'llm', why: a.length > 140 ? 'long ask: the model' : 'default' };
   let m;
   // unit conversion: "3 miles to km", "convert 10 kg into pounds", "what is 100 f in c", "how many feet in 2 miles"
@@ -73,6 +82,20 @@ export function planOf(ask) {
   if ((m = t.match(/^is (\d{4}-\d\d-\d\d) (?:a )?(?:public |bank )?holiday(?: in| for) ([a-z][a-z .'-]{1,40})$/))) { const code = holidayCode(m[2]); if (code) return { kind: 'bot', bot: 'holiday-' + code, input: m[1], say: m[1] + ' in ' + code.toUpperCase() + ': ' }; }
   if ((m = a.match(/^base64(?: encode)? ["“]?(.{1,100}?)["”]?$/i)) && !/^decode\b/i.test(m[1])) return { kind: 'bot', bot: 'base64-bot', input: m[1], say: 'Base64 of "' + m[1] + '": ' };
   if ((m = t.match(/^(?:convert )?(#[0-9a-f]{6}|#[0-9a-f]{3}) (?:to|in|as) rgb$/))) return { kind: 'bot', bot: 'hex-color', input: m[1], say: m[1] + ' = ' };
+  // the bots absorbed from the owner's other repositories and the first site's drafts (bots/salvaged.js): each answers one narrow ask
+  if ((m = a.match(/^(?:check|vet) (?:this |my |a )?glassbox claim:? (.{3,})$/i))) return { kind: 'bot', bot: 'glassbox-claim', input: m[1], say: 'Glassbox claim: ' };
+  if ((m = a.match(/^(?:check|promote) (?:this |my |the |a )?glassbox batch:? (\{.*\})$/i))) return { kind: 'bot', bot: 'glassbox-promote', input: m[1], say: 'Glassbox batch: ' };
+  if ((m = a.match(/^(?:what is |what's )?(?:the )?(?:wix |velo |wix velo )(?:http )?(?:endpoint|url|route|path) (?:for|of) ((?:get|post|put|delete|options|use)_[\w$]+)$/i))) return { kind: 'bot', bot: 'velo-endpoint', input: m[1], say: '' };
+  if ((m = a.match(/^check (?:this |my |the )?(?:external )?link(?: tag)?:? (<a\s[\s\S]*<\/a>)$/i))) return { kind: 'bot', bot: 'external-link-check', input: m[1], say: 'Link: ' };
+  if ((m = a.match(/^check (?:this |my |the )?breadcrumbs?(?: trail)?:? (.+\s>\s.+)$/i))) return { kind: 'bot', bot: 'breadcrumb-check', input: m[1], say: 'Breadcrumbs: ' };
+  if ((m = a.match(/^check (?:this |my |the )?canonical(?: url| link| tag)?(?: for)?:? (https?:\/\/\S+) (?:(?:->|→|is|=) )?(\S+)$/i))) return { kind: 'bot', bot: 'canonical-check', input: m[1] + ' ' + m[2], say: 'Canonical: ' };
+  if ((m = a.match(/^copy receipt (?:for |of )?:? ?(.{1,120})$/i))) return { kind: 'bot', bot: 'copy-receipt', input: m[1], say: 'Copy receipt: ' };
+  if ((m = a.match(/^(?:voice plan|match (?:this |my )?(?:voice )?transcript)(?: for)?:? (.{3,})$/i))) return { kind: 'bot', bot: 'voice-plan', input: m[1], say: 'Voice plan: ' };
+  if ((m = a.match(/^check (?:this |my |the )?run graph:? (nodes?\s*:.+)$/i))) return { kind: 'bot', bot: 'run-graph-check', input: m[1], say: 'Run graph: ' };
+  if ((m = t.match(/^(?:are |is )?(\d{1,2}:\d\d|\d{1,4}) and (\d{1,2}:\d\d|\d{1,4}) (?:in )?(?:the )?same (?:time )?bin(?: at (\d{1,2})(?: ?min(?:utes?)?)?)?$/))) return { kind: 'bot', bot: 'same-bin', input: m[1] + ' ' + m[2] + (m[3] ? ' at ' + m[3] : ''), say: m[1] + ' and ' + m[2] + ': ' };
+  if ((m = a.match(/^(?:recall gap|compare (?:these |two |my )?recalls?):? ([^|]+\|[^|]+)$/i))) return { kind: 'bot', bot: 'recall-gap', input: m[1], say: 'Recall gap: ' };
+  if ((m = a.match(/^check (?:this |my |an? )?answer block:? (.+\|.+\|.+)$/i))) return { kind: 'bot', bot: 'answer-block-check', input: m[1], say: 'Answer block: ' };
+  if ((m = a.match(/^replay (?:this |my |the |a )?run:? (.{3,})$/i))) return { kind: 'bot', bot: 'run-replay', input: m[1], say: 'Run replay: ' };
   // research: a scholarly ask goes to OpenAlex, the open catalog of papers (keyless, resources/free.json 'openalex')
   if ((m = a.match(/^(?:find |list |search for |search )?(?:some |the )?(?:recent |latest |top |key )?(?:research |scientific |academic |scholarly )?(?:papers|studies|research|articles|journal articles|publications|literature) (?:on|about|regarding|into|for) (.{3,100})$/i))) return { kind: 'api', api: 'search', ids: RESEARCH, query: m[1].trim(), why: 'research ask' };
   return { kind: 'llm', why: 'default' };

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { historyOf, fileOf, firstSeen, hostOf, build } from './assimilated.mjs';
+import { historyOf, fileOf, firstSeen, hostOf, build, floorAt } from './assimilated.mjs';
 
 test('one row per site, at its furthest outcome, with the ease it was picked by and where it is recorded', () => {
   const rows = historyOf({
@@ -58,4 +58,12 @@ test('every page /assimilated/ links to is there: a removed page links to the pa
   const by = Object.fromEntries(rows.map((r) => [r.site, r]));
   assert.equal(by['notepad-plus-plus.org'].page, ''); assert.equal(by['notepad-plus-plus.org'].pageWas, '/text-editor/notepad-plus-plus/');
   assert.equal(by['ndscalc.ru'].page, '/calculator/?mode=vat');
+});
+
+test('a passed floor with no head-to-head measure yet is dated by the day the tower target recorded it passed (icanhazip.com, 2026-11-06)', () => {
+  const tg = { passed: [{ id: 'my ip', at: '2026-11-06', n: 8, m: 13 }] };
+  assert.equal(floorAt({ id: 'my ip' }, { floors: {} }, tg), '2026-11-06T00:00:00Z', 'no evidence: the passed day');
+  assert.equal(floorAt({ id: 'my ip' }, { floors: { 'my ip': { a: { at: '2026-11-06T05:01:02' }, b: { at: '2026-11-05T01:00:00' } } } }, tg), '2026-11-06T05:01:02Z', 'evidence wins: its newest measure');
+  assert.equal(floorAt({ id: 'other' }, null, tg), '', 'no evidence and not passed: no date is made up');
+  assert.equal(floorAt({ id: 'my ip' }, null, { passed: [{ id: 'my ip', at: 'soon' }] }), '', 'a passed entry without a real day gives no date');
 });

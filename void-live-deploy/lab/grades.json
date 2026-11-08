@@ -1,0 +1,4321 @@
+{
+ "044-resonant-echo-portals": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "048-evolving-particle-life-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "141-local-private-not-shared": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "144-local-weak-not-attest": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "145-local-gaze-not-command": {
+  "grade": "toy",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "147-local-quiet-not-boost": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "149-local-intero-not-claim": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "150-local-interval-not-measure": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "151-local-proxy-not-sense": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "152-local-incubate-not-attest": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "153-local-faint-not-promote": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "155-local-optin-not-record": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "156-local-cooccur-not-imply": {
+  "grade": "toy",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "157-local-isolated-not-sequence": {
+  "grade": "toy",
+  "job": "a tool that dates posts to covered events across centuries",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)"
+  ]
+ },
+ "159-local-sensation-not-claim": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "160-local-span-not-clock": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "161-local-map-not-sense": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "162-local-incubate-not-log": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "169-local-felt-not-attest": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "171-webgpu-resonance-agent": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0171-orientation-mlp-ui-controller": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f021-webgpu-reaction-diffusion-local-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f022-webgpu-fluid-mind-morph": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f023-webgpu-evo-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f024-webgpu-volumetric-evo-audio": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f025-webgpu-boids-rl-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f026-pointer-trajectory-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f027-spectral-phase-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f028-competitive-minds-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f029-spatial-attention-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f030-trajectory-memory-field-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f031-resonant-attention-graph-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f032-attention-field-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f033-vector-field-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f034-spectral-resonance-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f035-evo-neural-swarm-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f036-local-evolving-nca-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f037-resonant-voice-lattice-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f038-living-spatial-cards-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f039-webgpu-multichannel-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f040-evolved-neural-spatial-probe-swarm": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f041-local-ai-portal-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f042-predictive-audio-particle-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f043-webgpu-compute-nca-pointer-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f044-neural-implicit-vector-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f045-webgpu-nca-portal-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f046-webgpu-volumetric-thought-injection-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f047-causal-attention-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f048-resonant-spatial-audio-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0481-speech-nca-portal-mind": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0482-webgpu-softbody-policy-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0483-webgpu-wavelet-mlp-dom-morph": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0484-webgpu-photonic-waveguide-mlp-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0485-webxr-hand-reservoir-kuramoto-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0486-spectral-vortex-policy-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0487-webgpu-lenia-policy-portal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0488-orientation-rnn-latticegas-obstacle-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0489-orientation-mlp-ising-domain-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f049-predictive-swarm-residual-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0490-physarum-policy-portal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0491-webrtc-causal-portal-swarm": {
+  "grade": "toy",
+  "idea": "webrtc",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f0492-orientation-knn-svg-morph-swarm": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f050-spectral-resonance-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f051-webgpu-causal-echo-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f052-spatial-causal-portal-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f053-webgpu-softbody-attention-portals": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f054-local-trajectory-embedding-echo": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f055-webgpu-hopfield-spatial-completion": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f172-webgpu-competitive-genome-agents": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f173-webgpu-mlp-orientation-physics": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f174-webxr-hand-mlp-swarm": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f175-webrtc-shared-device-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f176-audio-residual-swarm-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f177-webgpu-probe-swarm-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f178-webgpu-rnn-softbody-dom": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f179-webxr-gaze-rnn-dom-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f180-orientation-causal-mlp-dom-field": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f181-webgpu-compute-genome-physics": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f182-webgpu-spectral-nca-orientation-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f183-webgpu-genetic-softbody-portals": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f184-webgpu-sph-vortex-portals": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f185-sealed-rnn-physical-ui-agents": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f186-trajectory-attention-echo-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f187-webgpu-spectral-fluid-orientation-evo-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f188-webxr-hand-competitive-mlp-dom-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f189-sealed-mlp-dom-agents": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f190-webgpu-orientation-neural-particles": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f191-orientation-mlp-hybrid-agents": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f192-webxr-hand-force-cloth-kernel": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f193-webrtc-indexeddb-sealed-genome-swarm": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f194-webxr-gaze-rnn-hybrid-sculpt": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f195-webgpu-attention-swarm-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f196-deviceorientation-webgpu-springmass-hybrid": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f197-webgpu-neural-kernel-competition-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f198-orientation-mlp-dom-gravity-swarm": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f199-local-rnn-webgpu-causal-particle-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f200-webxr-hand-rnn-dom-physics": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f201-webgpu-multiagent-sealed-genome-competition": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f202-webxr-hand-mlp-dom-chain-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f203-webxr-gaze-webgpu-neural-kernel-idb": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f204-webgpu-softbody-rnn-swarm-audio": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f205-webrtc-orientation-dom-agent-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f206-orientation-mlp-dom-physics-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f207-spoken-sdf-program-synthesis": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f208-orientation-genome-competition-dom": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f209-causal-portal-attention-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f210-compression-oracle-world": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f211-webxr-hand-rnn-dom-curators": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f212-resonant-imagination": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f213-webgpu-neural-kernel-dom-chain": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f214-acoustic-orientation-swarm-dom": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f215-codec-retina-gardener": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f216-webxr-hand-residual-oracle-dom": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f217-audible-synapse-forager": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f218-orientation-rnn-softbody-dom-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f219-webgpu-spatial-attention-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f220-window-spanning-organism": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f221-webgpu-mlp-physics-learner": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f222-screen-grazing-lichen": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f223-webgpu-neural-kernel-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f224-thought-trace-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f225-surprisal-strata": {
+  "grade": "toy",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f226-webxr-gaze-mlp-sealed-agents": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f227-hypervector-dreamer": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f228-orientation-sealed-dom-agents": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f229-webgpu-causal-attention-probes": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f230-orientation-genome-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f231-taste-oracle": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f232-webxr-hand-particle-genome-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f233-panel-play": {
+  "grade": "tool",
+  "job": "Panel Play"
+ },
+ "f234-loop-grid": {
+  "grade": "tool",
+  "job": "Loop Grid"
+ },
+ "f235-forge-duel": {
+  "grade": "tool",
+  "job": "Forge Duel"
+ },
+ "f236-scene-blocker": {
+  "grade": "tool",
+  "job": "Write a short scene in plain text. A local, rule-based director lays out the set, blocks the actors beat by beat, chooses a camera for every"
+ },
+ "f237-spoken-fluid-intent": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f238-resonant-audio-fluid-lattice": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f239-webgpu-gesture-evolved-causal-swarm": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f240-webgpu-neural-dom-policy-arena": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f241-webgpu-memory-consolidation-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f242-acoustic-orientation-crystal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f243-sealed-genome-webrtc-dom-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f244-webxr-hand-neural-softbody": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f245-webgpu-acoustic-softbody-webxr-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f246-webgpu-causal-entanglement-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f247-webxr-gaze-rnn-dom-portals": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f248-webgpu-residual-density-portal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f249-webgpu-recurrent-constraint-dom-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f250-webgpu-intent-flow-hypothesis-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f251-webgpu-mlp-particle-arena": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f252-webxr-hand-mlp-physical-ui-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f253-webgpu-nca-spatial-audio-ui-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f254-orientation-webgpu-sealed-physics-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f255-causal-rnn-sealed-peer-agents": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f256-webxr-gaze-webgpu-constraint-dom-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f257-webgpu-spatial-attention-morph-ui-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f258-webgpu-volumetric-residual-attention-palace": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f259-orient-causal-webgpu-mlp-dom-physics": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f260-orientation-rnn-physical-ui-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f261-webgpu-orientation-nca-portal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f262-webxr-hand-mlp-physics-genome-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f263-webgpu-causal-spectral-portal-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f264-webgpu-mlp-physics-webrtc-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f265-webgpu-intent-rnn-fluid-memory-orbs": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f266-webxr-gaze-persistent-idb-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f267-sealed-mlp-dom-resource-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f268-webgpu-orientation-cloth-dom-anchors": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f269-webgpu-fluid-evolving-audio-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f270-webgpu-nca-llm-steered-morph": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f271-spectral-trajectory-harmonic-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f272-webxr-hand-genome-particle-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f273-causal-rnn-memory-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f274-reservoir-gesture-dom-chain": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f275-webgpu-acoustic-residual-spatial-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f276-webgpu-spatial-concept-graph-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f277-predictive-force-injection-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f278-sealed-genome-multiagent-dom-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f279-deviceorientation-rnn-physical-ui-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f280-webgpu-spectral-causal-portal-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f281-webxr-hand-webgpu-neural-cloth-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f282-speech-rnn-causal-portal-mind": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f283-webxr-gaze-mlp-webgpu-swarm": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f284-predictive-trajectory-residual-morph": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f285-webgpu-softbody-genome-arena": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f286-webrtc-sealed-rnn-orientation-shared-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f287-orientation-mlp-dom-forage-webgpu-field": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f288-webgpu-reservoir-fluid-orientation-morph": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f289-webxr-handgaze-mlp-genome-arena": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f290-self-listening-spectral-agent-arena": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f291-webgpu-neural-foraging-genome-arena": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f292-webgpu-reservoir-trajectory-echo-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f293-orientation-hybrid-dom-mlp-persistence": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f294-webgpu-dom-orb-causal-echo": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f295-deviceorientation-dom-genome-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f296-decision-tree-spatial-orbs": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f297-webgpu-hebbian-kernel-dom-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f298-webgpu-attention-message-graph-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f299-hum-crystal-music-box": {
+  "grade": "tool"
+ },
+ "f300-orient-causal-mlp-physical-dom-agents": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f301-sonar-bat-cartographer": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f302-webxr-hand-rnn-physical-ui-sculptors": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f303-webgpu-hebbian-spatial-memory-morph": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f304-lenia-gait-evolver": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f305-webgpu-orient-genome-competition-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f306-slime-rail-planner": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f307-webgpu-mlp-physics-dom-pushers": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f308-lbm-wing-forge": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f309-webxr-gaze-rnn-idb-orb-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f310-particle-life-dom-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f311-webrtc-sealed-orientation-mlp-dom-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f312-webgpu-attention-wave-sonifier-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f313-webgpu-causal-motion-rnn-hybrid-sculpt": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f313-webgpu-latent-dream-volume-curator": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f314-webgpu-multi-mlp-swarm-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f315-webgpu-softbody-policy-dom-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f315-webgpu-spectral-evo-mind-field": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f316-webxr-hand-sealed-genome-dom-arena": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f317-webxr-hand-rd-dom-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f318-webgpu-online-kmeans-particle-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f319-webgpu-orient-advection-mlp-probes": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f320-orient-rnn-webgpu-softbody-dom-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f321-webgpu-agent-fluid-memory-orbs": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f322-verse-self-mutating-shader-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f323-webgpu-attention-wave-collapse": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f324-deviceorient-idb-webrtc-mlp-orb-arena": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f401-spatial-graph-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f402-webxr-nca-mindscape": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f403-webgpu-thought-gravity": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f404-resonance-seeking-agents": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f405-spectral-resonance-lattice": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f406-predictive-residual-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f407-local-causal-echo-chamber": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f408-webxr-evo-density-morph": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f409-lattice-autopoiesis": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f410-predictive-temporal-echo-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f411-evolving-attention-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f412-webxr-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f414-webgpu-embedding-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f415-webxr-causal-attention-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f416-webgpu-sonified-thought-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f417-local-embedding-morph-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f418-webgpu-causal-fluid-mind": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f419-webgpu-embodied-rnn-morph": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f420-rd-attention-kernel": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f421-webgpu-predictive-spectral-constellation": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f422-webgpu-sequence-transformer-morph": {
+  "grade": "toy",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f423-webgpu-fluid-policy-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f424-local-spatial-token-mind": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f425-webgpu-acoustic-swarm-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f426-acoustic-causal-lattice-orbs": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f427-resonant-neural-membrane": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f428-webgpu-acoustic-attention-orbs": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f429-webgpu-causal-token-swarm-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f430-sealed-genome-competitive-swarm": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f431-webgpu-embedding-cluster-memory-palace": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f432-webgpu-mlp-sph-genome-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f433-webgpu-multiagent-genome-competition": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f434-orient-attention-softbody": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f435-webgpu-density-attractor-ai-audio": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f436-webgpu-causal-intent-attention-cards": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f437-orient-webgpu-mlp-dom": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f438-causal-webgpu-softbody-attention-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f439-webxr-hand-genome-competition": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f440-webgpu-online-learning-spatial-agent": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f441-webgpu-interference-reservoir-morph": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f442-kuramoto-phase-lock-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f443-webgpu-nca-spatial-memory-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f444-webgpu-causal-wave-portal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f445-webgpu-nca-spatial-memory-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f446-webgpu-nca-xr-residual-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f447-webgpu-lbm-evolved-swimmers-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f448-webxr-hand-verlet-genome-portal": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f449-orient-mlp-webgpu-pbf-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f450-orient-mlp-dom-sealed-orb-competition": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f450-webgpu-hdc-spatial-memory-palace": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f451-expression-tree-spatial-evo-mind": {
+  "grade": "toy",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f451-webxr-hand-ising-mlp-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f452-orient-mlp-canvas-agent-persistence": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f453-l-system-spatial-evo-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f454-deviceorient-hebbian-genome-theft": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f455-webgpu-semantic-point-agent-morph": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f456-webgpu-granular-broadcast-genome-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f457-webgpu-spectral-feedback-swarm-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f458-webxr-hand-pbd-mlp-constraint-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f459-webgpu-sph-mlp-agent-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f460-spatial-audio-evolutionary-agents": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f461-webxr-gaze-online-mlp-dom-physics": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f462-preference-evo-orient-spatial-orbs": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f463-hopfield-trajectory-associative-spatial-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f464-competitive-local-mlp-dom-genome-transfer": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f465-webgpu-hebbian-mic-swarm-morph": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f466-webgpu-bayesian-wave-collapse-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f466-webgpu-spectral-cloth-dom-weaver": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f467-webgpu-causal-echo-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f468-webgpu-hebbian-resonance-cavity-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f468-webrtc-expression-agent-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f469-webgpu-evo-particle-spatial-audio-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f470-webgpu-local-attention-reason-morph-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f471-webxr-hand-mlp-genome-competition": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f472-webrtc-idb-shared-occupancy-navigators": {
+  "grade": "toy",
+  "idea": "webrtc",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f473-webgpu-acoustic-nca-spatial-weaver-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f474-webgpu-sdf-recurrent-reasoner-morph-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f475-orient-mlp-genome-auction-lattice": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f476-webgpu-mic-spectral-policy-morph": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f477-webxr-gaze-hebbian-portal-competition": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f478-speech-vector-spatial-recall-mind": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f479-motion-residual-crystal-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f480-orient-mlp-voronoi-territory-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f485-webgpu-lbm-audio-feedback-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f486-orient-rnn-dom-physical-auction-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f487-webgpu-attention-cluster-dom-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f488-orient-reservoir-dom-auction-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f489-mic-spectral-reservoir-css3d-crystal-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f490-causal-bayesian-lattice-verse-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f491-persistent-broadcast-sealed-genome-dom-swarm-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f492-webxr-hand-constraint-mlp-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f493-webgpu-implicit-sculptor-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f494-webgpu-ifs-fractal-policy-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f495-webgpu-ising-orient-domain-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f496-devicemotion-kalman-portal-physics-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f497-webgpu-echo-state-living-dom-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f498-webgpu-wfc-mlp-living-grid-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f499-webgpu-battery-metabolism-particle-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f500-webgpu-amplitude-collapse-portal-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f501-ambient-light-metabolic-swarm-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f501-pressure-tilt-mlp-card-sculptor": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f502-webgpu-kuramoto-phase-dom-orchestra-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f503-lennard-jones-mlp-dom-swarm-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f504-webgpu-poisson-potential-mlp-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f504-webgpu-stable-fluids-mlp-advection-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f505-webgpu-implicit-mind-surface": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f506-tilt-gaze-rnn-tensegrity-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f507-webrtc-rnn-spatial-dom-auction-mind": {
+  "grade": "toy",
+  "idea": "webrtc",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f508-webgpu-spectral-resonance-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f509-webxr-hand-gaze-rnn-sph-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f510-webgpu-quantum-walk-observer-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f511-webgpu-memory-palace-evolutionary-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f511-webxr-lorentz-magnetic-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f512-webgpu-entangled-pair-portal-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f513-mlp-voter-model-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f514-acoustic-swarm-consonance-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f515-webgpu-mlp-auction-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f516-webmidi-local-rnn-spatial-score-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f517-webgpu-gray-scott-mic-spectral-dom-garden-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f518-broadcast-channel-genome-competition-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f518-webgpu-wave-membrane-rnn-pin-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f519-webgpu-vectorfield-policy-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f520-webgpu-ca-rule-policy-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f520-webgpu-sandpile-criticality-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f521-webgpu-embedding-diffusion-cascade-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f522-deviceorientation-causal-genome-dom-agents-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f523-speech-causal-rnn-absorb-dom-agents-mind": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f523-webgpu-pso-pointer-attractor-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f524-webgpu-langtons-ant-mlp-genome-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f525-accel-rnn-verse-probes-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f526-webxr-hand-rnn-grasp-probes-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f527-webgpu-attention-card-weaver-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f528-deviceorientation-decision-tree-dom-agents-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f529-webaudio-harmonic-dom-resonators-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f530-webrtc-reservoir-genome-competition-mind": {
+  "grade": "toy",
+  "idea": "webrtc",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f531-orientation-mlp-sir-lattice-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f532-orientation-mlp-ising-lattice-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f532-webgpu-dem-granular-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f533-webgpu-lenia-mlp-kernel-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f534-webgpu-attention-particle-policy-dom-morph": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f535-webgpu-electrostatic-orientation-mlp-probes-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f536-webgpu-quantum-walk-residual-oracle-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f537-orientation-mlp-lattice-gas-dom-obstacles": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f538-observer-mlp-particle-portal-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f538-webxr-hand-tendril-sealed-genome-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f539-webgpu-sph-orientation-mlp-buoyant-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f540-webgpu-self-attention-vortex-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f541-reservoir-orientation-competitive-dom-agents-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f541-webgpu-camera-flow-mlp-spatial-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f542-webgpu-wave-interference-phase-dom-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f543-orientation-rnn-sealed-dom-agents": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f544-webgpu-sdf-evo-dom-coverage-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f545-devicemotion-hopfield-svg-competitive-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f546-webgpu-self-vision-particle-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f547-orientation-mlp-boid-dom-genome": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f548-webgpu-semantic-embedding-swarm-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f549-broadcast-rnn-shared-causal-lattice-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f549-webgpu-spectral-nca-living-cards-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f550-webxr-gaze-predictive-mlp-agents": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f551-orientation-evo-dom-physics-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f551-webgpu-mic-fluid-spectral-mlp-portals": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f552-webxr-hand-sculpted-volumetric-nca-ui-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f553-opfs-causal-graph-evo-spatial-audio-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f554-competitive-mlp-portal-agents-genome": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f555-webgpu-attention-sdf-portal-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f556-webxr-hand-magnetic-dom-hopfield": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f557-intersection-evo-particle-attention-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f558-webxr-gaze-electrostatic-svg-genome": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f559-webgpu-fft-hopfield-spatial-memory-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f560-webgpu-esrn-spatial-ui-morph-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f561-deviceorientation-lif-spike-audio-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f562-speech-fluid-word-token-mind": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f562-webgpu-rd-attention-spatial-verse": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f563-webgpu-rigid-dom-genome-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f564-webgpu-som-topographic-audio-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f565-adaptive-quadtree-spatial-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f565-webgpu-genetic-particle-genome-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f566-webgpu-sph-orientation-genome-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f567-multiagent-rnn-dom-competition-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f567-webgpu-lattice-gas-dom-flow-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f568-webxr-hand-mlp-spatial-graph-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f569-webgpu-spoken-sdf-causal-morph": {
+  "grade": "toy",
+  "job": "Spoken SDF Causal Morph",
+  "idea": "dictation",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)"
+  ]
+ },
+ "f570-spatial-attention-token-morph-opfs": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f571-peer-spatial-consensus-morph": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f572-ambient-sensor-mlp-living-tiles": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ },
+ "f573-qlearning-spatial-dom-agent-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f574-crosstab-sealed-genome-cssgrid-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f575-speech-nca-dom-garden": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f576-orientation-rnn-svg-ribbons-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f576-webgpu-ca-css-grid-living-layout-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f577-orientation-mlp-wave-equation-echo-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f578-ambient-sensor-mlp-webgpu-sdf-css-paint-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f579-attention-flow-glyph-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f579-webxr-hand-cpm-sealed-cell-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f580-webxr-hand-reservoir-vicsek-flock-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f581-webgpu-lbm-attention-portal-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f582-webgpu-spectral-voice-sdf-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f583-broadcast-indexeddb-pheromone-webgpu-diffusion-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f584-webgpu-voice-driven-nca-ui-sculptor": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f585-webrtc-evo-mlp-forcegraph-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f586-intersection-sealed-dom-swarm-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f586-webgpu-sandpile-local-evo-avalanche-dom-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f587-spatial-audio-genome-dom-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f588-webgpu-reservoir-dom-graph-diffusion-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f589-webgpu-attention-token-spatial-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f590-orientation-evo-cssgrid-agents-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f590-webgpu-sph-elman-rnn-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f591-webgpu-predictive-error-fog-portals-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f592-webxr-hand-electrostatic-dom-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f593-webgpu-gyro-audio-warp-lattice-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f594-webgpu-implicit-neural-sdf-dom-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f595-orientation-decision-tree-clippath-swarm": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f596-webgpu-bandit-svg-path-dom-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f597-orientation-mlp-sealed-genome-swarm-mind": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f597-webgpu-hopfield-fluid-memory-portals": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f598-broadcast-sealed-rnn-orientation-dom-swarm": {
+  "grade": "toy",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f599-webgpu-causal-fourier-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f600-indexeddb-causal-mlp-orbital-dom-swarm": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f601-webgpu-speech-jumpflood-voronoi-mind": {
+  "grade": "toy",
+  "idea": "dictation",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f602-webgpu-rigidbody-constraint-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f603-webgpu-dla-evo-growth-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f604-webgpu-hypervector-binding-spatial-dom-mind": {
+  "grade": "toy",
+  "idea": "mindmap",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f605-webgpu-quadtree-policy-partition-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f605-webxr-hand-mlp-pbd-mind": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f606-webgpu-som-spatial-dom-mind": {
+  "grade": "toy",
+  "idea": "palette",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f606-webrtc-sealed-genome-webgpu-swarm-mind": {
+  "grade": "toy",
+  "job": "a tool for multi-tab local-AI collaboration",
+  "idea": "checksum",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)"
+  ]
+ },
+ "f607-webgpu-spiking-lif-dom-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f608-webgpu-esn-wavefield-dom-portals-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f609-webxr-gaze-sdf-raymarch-manifold-mind": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "f610-webgpu-kan-spline-dom-manifold-mind": {
+  "grade": "toy",
+  "idea": "pitch",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "frontier-orientation-swarm": {
+  "grade": "toy",
+  "idea": "level",
+  "why": [
+   "takes nothing of the person's own (no text, number, file or measured sound to work on)",
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)",
+   "its name is a substrate (mind, lattice, swarm, genome, orb...), not a job"
+  ]
+ },
+ "frontier-webgpu-attention-field": {
+  "grade": "toy",
+  "idea": "pattern",
+  "why": [
+   "gives nothing back to keep (no download, copy, share link or saved work)",
+   "its SPEC names no job in plain words (no \"Job:\" or \"Plain name:\" line)"
+  ]
+ }
+}

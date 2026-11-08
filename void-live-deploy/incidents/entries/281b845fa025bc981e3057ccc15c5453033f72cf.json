@@ -1,0 +1,25 @@
+{
+ "at": "2026-11-06T21:00:36.316Z",
+ "sha": "281b845fa025bc981e3057ccc15c5453033f72cf",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42288599000",
+ "suite": "browser suite on main",
+ "checks": [
+  "phone polish: Agents is fully inside the nav bar and the page is not wider than the screen",
+  "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one"
+ ],
+ "touched": [
+  "tools/movies-where.test.mjs",
+  "void-live-deploy/lib/movies.js",
+  "void-live-deploy/skills/movie.js"
+ ],
+ "shards": [
+  3
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-07T20:05:41.712Z",
+ "closedBy": "8ef6f592767f181c3ac0040b9f06934c03d128bf",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42407481613",
+ "minutes": 1385
+}

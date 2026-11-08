@@ -268,3 +268,14 @@ test('a cartoon look is asked of the answer model, keeps up to 380 characters of
   assert.equal(w.dcalls[0].model, models('answer')); assert.match(a.look, /dyed bright pink.*camouflage cargo shorts.*lightning bolt/); assert.ok(a.look.length > 240 && a.look.length <= LOOK_MAX);
   assert.match(lookOf('Look: a cartoon mouse in the style of disney with big round ears and red shorts and yellow shoes'), /big round ears/, 'a brand in the look is drawn like anything else (owner, 2026-10-25)');
 });
+
+test('a frame word is not a subject (2026-11-06: every sum card is titled "Calculated" and the painter drew the word, misspelt): a plate, no paint, and an old picture is not served', async () => {
+  const { env, calls } = world();
+  for (const s of ['Calculated', 'calculated', 'Converted', 'Answer']) {
+    const j = await (await post(env, s)).json(); assert.deepEqual([s, j.state, j.why], [s, 'plate', 'frame']);
+  }
+  assert.equal(calls.length, 0); assert.equal(rows(env).length, 0);
+  route.resetReady(); await post(env, 'moon'); env.DB.raw.prepare("INSERT INTO void_art (subject, img, day) VALUES ('calculated', ?, '2026-11-01')").run(rows(env)[0].img);
+  const g = await (await get(env, 'Calculated')).json(); assert.deepEqual([g.state, g.why], ['plate', 'frame'], 'the garbled picture already kept is never shown again');
+  assert.equal((await (await post(env, 'calculator')).json()).state, 'art', 'a real subject near the word still paints');
+});

@@ -28,9 +28,15 @@ export const HATE = /\b(nazi\w*|swastika\w*|kkk|white power|genocide|lynch\w*|sl
 /** why a subject gets no painted card: '' when it may be painted, else a short reason. Pure.
  *  Refused: nothing left after folding, a real person (the page says its kind), sexual or hateful words, a brand or artist, anything the keeper
  *  refuses, and anything shaped like a key or a secret (`isSecret(text)` is passed in by the route: redact() and scrubOut() as merge.js uses). */
+// a card's frame word, not its subject (2026-11-06: every calculation card is titled "Calculated", and the painter drew that word as garbled letters,
+// "CAULLATED", one cached picture for every sum): a title that only says what kind of answer the card is gets Verse's own plate, never a painting
+export const FRAME_TITLE = /^(?:calculated|converted|result|results|answer|answers)$/;
+/** whether a folded subject is only a card's frame word (FRAME_TITLE). Pure. */
+export const frameTitle = (v) => FRAME_TITLE.test(subjectKey(v));
 export function refusal(raw, kind = 'answer', isSecret = () => false) {
   const r = rawSubject(raw), k = subjectKey(r);
   if (!k) return 'empty';
+  if (FRAME_TITLE.test(k)) return 'frame';
   if (kindWordOf(kind) === 'person') return 'person';
   if (keeperOf(r)) return 'kept';
   if (isSecret(r)) return 'secret';

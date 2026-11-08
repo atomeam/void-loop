@@ -182,7 +182,11 @@ export function heroHtml(f, esc) {
 export function whyLine(f) {
   if (f.held) return 'held, not beaten: ' + f.held;
   const tc = rankableControls(f.size), bar = (f.barred || []).length;
-  return (tc !== null ? tc + ' controls on its home page, the count that ranks every site smallest first'
+  // controls are what a person can press or fill; elements are every tag on the page (the chip): "0 controls" beside "11 elements" read as a
+  // contradiction (owner's card, 2026-11-06, dalyfeds.com), so the line names both counts from the same reading (lib/tower-weight.js)
+  // the chips count every tag; this line counts only what a person can press or fill, and says so, so "0 controls" beside "11 elements" reads true
+  // without repeating the chips' counts (owner, 2026-10-30)
+  return (tc !== null ? tc + ' control' + (tc === 1 ? '' : 's') + ' to press or fill on its home page (buttons, links and fields; plain text and tags do not count), the count that ranks every site smallest first'
     : f.rank ? 'ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited sites, and not weighed yet' : 'not weighed yet')
     + (bar ? '; ' + bar + ' of its aspects were not measured, because the site turned the gate away' : '')
     + (f.page ? '' : '; Verse has no page for it yet, so that page is built first');
@@ -204,7 +208,45 @@ export function crawlHtml(f, esc) {
   const c = f && f.crawled; if (!c) return f && f.state === 'current' ? '<div class="tw-crawl" style="margin:4px 0 6px 10px;font-size:12px;opacity:.8">Not crawled yet: only its front page has been read.</div>' : '';
   const miss = f.missingFeatures || [];
   return '<div class="tw-crawl" style="margin:4px 0 6px 10px;font-size:12px">Crawled ' + c.pages + ' pages of ' + esc(f.site) + ' (' + c.templates + ' kinds of page, ' + c.features + ' features)' + (c.verse_pages ? '; ' + c.verse_pages + ' of Verse\'s pages read against it' : '') + '. '
-    + (miss.length ? '<details class="tw-missing"><summary style="cursor:pointer"><b>Missing ' + miss.length + ' feature' + (miss.length === 1 ? '' : 's') + '</b> Verse has to build before it can pass</summary><ul style="margin:2px 0 4px 18px;padding:0">' + miss.map((m) => '<li>' + esc(m) + '</li>').join('') + '</ul></details>' : '<b>Verse has every feature found.</b>') + '</div>';
+    // with no Verse page read against it (verse_pages 0), "every feature found" was a claim nothing checked: the only features marked are the
+    // navigation kinds that never block a pass (tools/site-crawl.mjs GENERIC_KINDS; owner's card, 2026-11-06: dalyfeds.com, "no page for it yet")
+    + (miss.length ? '<details class="tw-missing"><summary style="cursor:pointer"><b>Missing ' + miss.length + ' feature' + (miss.length === 1 ? '' : 's') + '</b> Verse has to build before it can pass</summary><ul style="margin:2px 0 4px 18px;padding:0">' + miss.map((m) => '<li>' + esc(m) + '</li>').join('') + '</ul></details>'
+      : c.verse_pages ? '<b>Verse has every feature found.</b>' : '<b>Nothing found blocks a pass</b>, but no Verse page has been read against it yet, so its features are not checked.') + '</div>';
+}
+// the non-sites the tower settled on its way (tower.target.json `settled`, tools/tower-alive.mjs; owner, 2026-11-06: id5-sync.com, an ad-tracker sync
+// endpoint, stood as the site Verse had not beaten): the newest three, each with what it is, so the move past them is on the card. Pure.
+export const settledHtml = (t, esc) => { const s = ((t && t.settled) || []).slice(-3).reverse(); return s.length ? '<div class="tw-settled" style="text-align:center;font-size:12px;opacity:.7;margin:0 0 6px">Settled: ' + s.map((x) => esc(x.id) + ' (' + esc(String(x.kind || 'a non-site').replace(/^an? /, '')) + ', not a site)').join(' · ') + '</div>' : ''; };
+// the sites the tower took on, newest first, with the date and how each one ended (owner, 2026-11-06, on the "Now taking on" card: "this is where
+// the sites history should be"): read from the tower's own ledger, tower.target.json (tools/tower-target.mjs): `passed`, `skipped` (a site that
+// gave way after a day, or was gone), `settled` (a non-site, with the fetch that showed it) and `archived` (an earlier season). Nothing else is
+// a source, so a date is a day: two sites ended on one day are listed in the order the ledger wrote them, the later first. Pure.
+export function historyOf(t) {
+  const tg = (t && t.target) || {}, byId = new Map(((t && t.floors) || []).map((f) => [f.id, f]));
+  const settled = new Map([...(tg.archived || []).flatMap((a) => a.settled || []), ...(tg.settled || [])].map((x) => [x.id, x]));
+  const out = []; let seq = 0;
+  for (const s of [...(tg.archived || []), tg]) {
+    for (const r of s.passed || []) { const f = byId.get(r.id), open = (r.open || []).length;
+      out.push({ id: r.id, site: (f && f.site) || r.id, at: r.at || '', how: f && f.state === 'beaten' ? 'surpassed' : 'passed', why: 'Verse ahead on ' + r.n + ' of ' + r.m + ' aspects' + (open ? '; ' + open + ' still measured in the background' : ''), page: (f && f.page) || '', seq: seq++ }); }
+    for (const r of s.skipped || []) { const f = byId.get(r.id), x = settled.get(r.id);
+      out.push({ id: r.id, site: (f && f.site) || r.id, at: r.at || '', how: x ? 'settled' : /\bgives way\b/.test(r.why || '') ? 'gave way' : 'dropped', why: x ? (String(x.why || '').includes('not a site a person uses') ? String(x.why) : String(x.kind || 'a non-site') + ', not a site a person uses: ' + (x.why || '')) : r.why || '', page: (f && f.page) || '', seq: seq++ }); }
+  }
+  // the ledger keeps days, not times; its last step (tg.last, written by tools/tower-target.mjs advance) names the newest row of its day
+  const lw = (tg.last && tg.last.why) || '', la = (tg.last && tg.last.at) || '';
+  const newest = out.filter((r) => r.at === la && lw.includes(r.id)).sort((a, b) => b.id.length - a.id.length)[0];
+  if (newest) newest.seq = Infinity;
+  return out.sort((a, b) => b.at.localeCompare(a.at) || b.seq - a.seq).map(({ seq: _, ...r }) => r);
+}
+const dayOf = (d) => { const x = new Date(String(d) + 'T12:00:00Z'); return Number.isNaN(+x) ? String(d || '') : x.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }); };
+/** the history under the target: the target on top, then each site it took on before, newest first; five shown, the rest one tap away. Pure. */
+export function historyHtml(t, esc, n = 5) {
+  const cur = t && (t.floors || []).find((f) => f.state === 'current'), rows = historyOf(t), since = t && t.target && t.target.since;
+  if (!cur && !rows.length) return '';
+  const name = (r) => r.page ? '<a href="' + esc(r.page) + '">' + esc(r.site) + '</a>' : esc(r.site);
+  const li = (r) => '<li data-how="' + esc(r.how) + '" style="padding:4px 0;border-bottom:1px solid #221e30"><span style="opacity:.7;font-variant-numeric:tabular-nums">' + esc(dayOf(r.at)) + '</span> · <b>' + name(r) + '</b> · ' + esc(r.how) + '<div style="font-size:11px;opacity:.75;word-break:break-word">' + esc(r.why) + '</div></li>';
+  const top = cur ? '<li data-how="now" style="padding:4px 0;border-bottom:1px solid #221e30"><span style="opacity:.7">' + esc(since ? 'since ' + dayOf(since) : 'now') + '</span> · <b>' + name(cur) + '</b> · taking on now</li>' : '';
+  return '<div class="tw-history" style="margin:6px 0 8px;font-size:13px"><b>History</b> · each site the tower took on, newest first<ol style="list-style:none;margin:4px 0 0;padding:0">' + top + rows.slice(0, n).map(li).join('') + '</ol>'
+    + (rows.length > n ? '<details><summary style="cursor:pointer;font-size:12px;margin-top:4px">Show all ' + rows.length + '</summary><ol style="list-style:none;margin:4px 0 0;padding:0">' + rows.slice(n).map(li).join('') + '</ol></details>' : '')
+    + '<div style="font-size:12px;margin-top:4px"><a href="/assimilated/">Every site Verse has read or built from</a></div></div>';
 }
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
@@ -232,7 +274,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   const empty = '<div class="tw-empty">Nothing surpassed yet. A site counts only when Verse is better than it on every aspect, checked head to head and by scripted journeys.</div>';
   return TW_CSS + GOOD_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-top"><h2 class="tw-head">Versus</h2></div>'
     + '<div class="tw-outclass" style="text-align:center;font-weight:700;font-size:14px;margin:2px 0">' + esc(outclassLine(t)) + '</div><div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (t.passed ? ' · ' + t.passed + ' passed' : '') + (cur ? (cur.pinned ? ' · now taking on: ' : ' · easiest site left: ') + cur.site : '')) + '</div>'
-    + (cur && !on ? heroHtml(cur, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
+    + (cur && !on ? heroHtml(cur, esc) + historyHtml(t, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
     // the card's picture (owner, 2026-11-03: "make the 3d tower on the card 2d but still update with each floor", "make the tower look like an
     // epic card picture"): a flat SVG from the same floors, one lit floor per site surpassed and the one being fought glowing on top (lib/tower-art.js)
@@ -296,7 +338,7 @@ let stale = 0;
 // is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
 let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
-const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; return t; };
+const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; t.settled = tg && Array.isArray(tg.settled) ? tg.settled : []; t.target = tg || null; return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';

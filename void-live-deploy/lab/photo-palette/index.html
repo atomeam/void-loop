@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: image; out: palette">
+<title>Colour palette from a photo: hex codes and shares · Verse lab</title>
+<meta name="description" content="Drop a photo and get its main colours as hex codes, with how much of the picture each one covers: copy them, copy CSS variables, save a swatch card as a PNG, or keep them as the palette every Verse tool uses. The photo never leaves your device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Colour palette from a photo · Verse lab">
+<meta property="og:description" content="The main colours of a photo as hex codes, with each one's share. The photo stays on your device.">
+<meta property="og:url" content="https://a-to-mind.com/lab/photo-palette/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<link rel="stylesheet" href="/lab/tools.css">
+<style>
+  #thumb { max-width: 100%; max-height: 260px; border-radius: 12px; display: block; margin: 0 auto 10px; }
+  #bar { display: flex; height: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); margin: 10px 0; }
+  #swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+  .sw { flex-direction: column; align-items: flex-start; border-radius: 12px; padding: 8px; gap: 2px; min-height: 0; }
+  .sw i { display: block; width: 100%; height: 54px; border-radius: 8px; background: var(--c); border: 1px solid var(--line); }
+  input[type=range] { flex: 1; min-width: 140px; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/lab/photo-palette/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Palette from a photo","url":"https://a-to-mind.com/lab/photo-palette/","description":"Drop a photo and get its main colours as hex codes with how much of the picture each covers: copy them or CSS variables, save a swatch card as a PNG, or keep them as the palette Verse's tools use. The photo stays on your device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"color palette from image, colour palette from a photo, extract colors from image, hex codes from a picture, image color palette generator, palette from photo","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Palette from a photo","item":"https://a-to-mind.com/lab/photo-palette/"}]}]}</script>
+<!-- /seo -->
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/lab/photo-palette/app.js"></script>
+</head>
+<body>
+<main>
+  <h1>Colour palette from a photo</h1>
+  <p class="lead">The main colours of a picture, as hex codes, with how much of it each covers. For a room you are painting, a brand, a slide deck or an outfit.</p>
+  <div id="drop" class="drop" role="button" tabindex="0" aria-label="Choose a photo">Drop a photo here, tap to choose one, or paste it.</div>
+  <input id="pick" type="file" accept="image/*" hidden>
+  <div class="panel">
+    <img id="thumb" alt="Your photo" hidden>
+    <div class="row"><label for="k">Colours</label><input id="k" type="range" min="3" max="10" value="6"><b id="kv">6</b></div>
+    <div id="bar" aria-hidden="true"></div>
+    <div id="swatches"></div>
+    <p id="state" class="note" aria-live="polite">No photo yet.</p>
+    <div class="row">
+      <button type="button" id="hexes" disabled>Copy hex codes</button><button type="button" id="css" disabled>Copy CSS variables</button>
+      <button type="button" id="png" disabled>Download swatch card</button><button type="button" id="keep" class="main" disabled>Use as my palette</button>
+      <a id="open" class="btn" href="/color/">Open in Colour codes</a>
+    </div>
+  </div>
+  <p class="note">The photo is read in this browser and never uploaded. "Use as my palette" keeps the colours on this device for every Verse tool that takes a palette, such as the pattern maker.</p>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/lab/pattern/">Seamless pattern maker</a> <a href="/color/">Colour codes</a> <a href="/color/gradient/">Gradient</a> <a href="/photos/">Photo tools</a> <a href="/starboard/">Starboard</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="from">Made from the lab's colour experiments, which drew palettes of their own; this takes one from your picture. <a href="/lab/">More from the lab</a></p>
+</main>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

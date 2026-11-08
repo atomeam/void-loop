@@ -11,17 +11,17 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
 test('the nav names the shell pages, and the current page is the longest match', () => {
-  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/podcast/', '/treasury/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
-  assert.equal(currentNav('/scoreboard/').label, 'Scoreboard');
-  assert.equal(currentNav('/limits/').label, 'Limits');
+  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
+  assert.equal(currentNav('/scoreboard/').label, 'Star Chart');
+  assert.equal(currentNav('/limits/').label, 'Event Horizon');
   assert.equal(currentNav('/').label, 'Ask');
-  assert.equal(currentNav('/team/').label, 'Team');
-  assert.equal(currentNav('/team/join/abc').label, 'Team');
-  assert.equal(currentNav('/bots/').label, 'Bots');
-  assert.equal(currentNav('/agent').label, 'Agents');
+  assert.equal(currentNav('/team/').label, 'Crew');
+  assert.equal(currentNav('/team/join/abc').label, 'Crew');
+  assert.equal(currentNav('/bots/').label, 'Drones');
+  assert.equal(currentNav('/agent').label, 'Envoy');
   assert.equal(currentNav('/tower/').label, 'Tower');
   assert.equal(currentNav('/conquered/').label, 'Tower');
-  assert.equal(currentNav('/films/').label, 'Films');
+  assert.equal(currentNav('/films/').label, 'Holovids');
   assert.equal(currentNav('/nope'), null);
 });
 

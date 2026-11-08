@@ -112,7 +112,7 @@ export const locsOf = (text) => [...String(text || '').matchAll(/<loc>([^<]*)<\/
 export function build(cwd = root) {
   const fixPages = JSON.parse(readFileSync(resolve(cwd, 'tools/fix-pages.json'), 'utf8'));
   const labFile = resolve(cwd, 'void-live-deploy/lab/catalog.json');
-  const lab = existsSync(labFile) ? JSON.parse(readFileSync(labFile, 'utf8')).filter((e) => e.status !== 'broken').map((e) => e.slug).sort() : [];
+  const lab = existsSync(labFile) ? JSON.parse(readFileSync(labFile, 'utf8')).filter((e) => e.status !== 'broken' && e.grade !== 'toy').map((e) => e.slug).sort() : [];
   const floors = floorPages(FLOORS, (p) => existsSync(resolve(cwd, D + p.slice(1) + 'index.html')));
   return pages({ fixPages, lab, floors }).map((p) => ({ ...p, lastmod: lastmod(p.files, cwd) }));
 }

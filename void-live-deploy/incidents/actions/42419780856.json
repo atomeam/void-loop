@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-07T22:18:30Z",
+ "sha": "2d7c4b550b1060551eb0ea7e1e022d90d424822d",
+ "runId": 42419780856,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42419780856",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128545509266,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42419780856/job/128545509266",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/tuesday`: dead link: 404 /is-it/tuesday.rss; dead link: 404 /is-it/tuesday.json; dead link: 404 /is-it/new-years-day",
+    "- `/is-it/valentines-day`: dead link: 404 /is-it/valentines-day.rss; dead link: 404 /is-it/valentines-day.json; dead link: 404 /is-it/new-years-day",
+    "- `/is-it/wednesday`: dead link: 404 /is-it/wednesday.rss; dead link: 404 /is-it/wednesday.json; dead link: 404 /is-it/new-years-day",
+    "- `/is-it/weekday`: dead link: 404 /is-it/weekday.rss; dead link: 404 /is-it/weekday.json; dead link: 404 /is-it/new-years-day",
+    "- `/jobs/`: a file or API it needs fails: 404 /jobs/app.js",
+    "- `/jobs/alerts/`: a file or API it needs fails: 404 /jobs/alerts/app.js",
+    "- `/jobs/companies/`: a file or API it needs fails: 404 /jobs/companies/app.js",
+    "- `/jobs/europe/`: a file or API it needs fails: 404 /jobs/europe/app.js",
+    "- `/jobs/regions/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/jobs/salary/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/jobs/tags/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/journal/`: does not open: answers nothing",
+    "- `/kanban/`: a file or API it needs fails: 404 /kanban/app.js",
+    "- `/kanban/quick/`: a file or API it needs fails: 404 /kanban/quick/app.js",
+    "- `/kanban/teams/`: a file or API it needs fails: 404 /kanban/teams/app.js",
+    "- `/keep-it-running/`: a file or API it needs fails: 404 /api/catalog",
+    "- `/learn-to-draw/`: a file or API it needs fails: 404 /learn-to-draw/app.js",
+    "- `/local/`: a file or API it needs fails: 404 /local/tv-built.js; a file or API it needs fails: 404 /local/app.js; a file or API it needs fails: 404 /lib/watch-along.js",
+    "- `/markets/`: a file or API it needs fails: 404 /api/markets?s=AAPL&r=1y; a file or API it needs fails: 404 /api/markets?strip=1; a file or API it needs fails: 404 /api/markets?movers=1",
+    "- `/markets/currency-converter/`: a file or API it needs fails: 404 /api/markets?s=AAPL&r=1y; a file or API it needs fails: 404 /api/markets?movers=1; a file or API it needs fails: 404 /api/markets?strip=1",
+    "- `/music/`: a file or API it needs fails: 404 /music/app.js",
+    "- `/news/`: a file or API it needs fails: 404 /api/news?sec=top&lang=en; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-07&json=1; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-07",
+    "- `/news/global-headlines/`: a file or API it needs fails: 404 /api/news?sec=top&lang=en; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-07&json=1; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-07",
+    "- `/password/`: a file or API it needs fails: 404 /lib/password-card.js; a file or API it needs fails: 404 /lib/password.js",
+    "- `/pdf/`: a file or API it needs fails: 404 /pdf/app.js",
+    "- `/pdf/editor/`: a file or API it needs fails: 404 /pdf/editor/app.js",
+    "- `/pdf/merge/`: a file or API it needs fails: 404 /pdf/merge/app.js",
+    "- `/pdf/studio/`: a file or API it needs fails: 404 /pdf/studio/app.js",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

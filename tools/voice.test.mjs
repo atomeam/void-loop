@@ -413,3 +413,55 @@ test('asks held behind the Versus target come last and carry the site; the hold 
   assert.deepEqual(holdAsks(asks, held, 'nextsite.com'), asks, 'once the target moves on, the hold ends');
   assert.deepEqual(holdAsks(asks, null, 'sycophanthex.com'), asks);
 });
+
+test('asks that name different sites are never one ask (owner\'s self card, 2026-11-06: the ndscalc.ru ask folded into the onlineconverter.com one and showed as neither open nor built)', async () => {
+  const { askRecord } = await import('../void-live-deploy/lib/voice.js');
+  const { sameSites } = await import('../void-live-deploy/lib/ask-same.js');
+  const nds = 'Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru.';
+  const oc = 'Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.';
+  assert.equal(sameSites(nds, oc), false); assert.equal(sameSites(oc, oc.replace('two', 'three')), true); assert.equal(sameSites('no site here', 'nor here'), true);
+  // the window: both said, each its own group
+  const f = followThrough([{ at: '2026-10-31T13:10:00Z', asks: [{ ask: nds }] }, { at: '2026-10-31T10:32:00Z', asks: [{ ask: oc }] }], [], []);
+  assert.deepEqual(f.open.map((g) => g.ask).sort(), [nds, oc].sort());
+  // the all-time record: two open asks in the log stay two, so the ndscalc.ru one is listed as waiting
+  const answered = { links: [], totals: { asked: 2, built: 0, through: '2026-11-01T00:00:00Z', open: [{ ask: oc, times: 7, at: '2026-11-05T00:00:00Z' }, { ask: nds, times: 1, at: '2026-10-31T13:10:00Z' }] } };
+  const r = askRecord([], [], answered);
+  assert.deepEqual(r.open.map((o) => o.ask).sort(), [nds, oc].sort());
+  assert.equal(r.total, 2); assert.equal(r.built, 0);
+  // the same site in nearly the same words is still one ask
+  const again = followThrough([{ at: '2026-10-31T13:10:00Z', asks: [{ ask: nds }, { ask: nds.replace('Identify and implement', 'Find and build') }] }], [], []);
+  assert.equal(again.open.length, 1); assert.equal(again.open[0].times, 2);
+});
+
+test('a retired ask leaves the open count (owner\'s self card, 2026-11-06: the three retired "git diff" asks still showed as waiting)', async () => {
+  const { askRecord } = await import('../void-live-deploy/lib/voice.js');
+  const { readFileSync, readdirSync } = await import('node:fs');
+  // the rule: a ledger line that names an ask by id (here a retire) answers the log's open ask that was asked under that id
+  const ask = 'Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed.';
+  const retire = { at: '2026-11-04T00:12:13Z', by: 'cursor', kind: 'retire', what: 'Retired the Nov 1 ask to diff 2e272df9 and 5fa7a921 and list the files that changed.', asked: 'ask-20261101-1930-3' };
+  const answered = (ids) => ({ links: [], totals: { asked: 2, built: 1, through: '2026-11-05T00:00:00Z', open: [{ ask, times: 1, at: '2026-11-01T19:30:00Z', ...(ids ? { ids } : {}) }] } });
+  const r = askRecord([], [retire], answered(['ask-20261101-1930-3']));
+  assert.equal(r.open.length, 0); assert.equal(r.built, 2); assert.equal(r.total, 2);
+  // the record only holds that link when the log's open asks carry the ids they were asked under (tools/asks-link.mjs writes them since #2405);
+  // without them the retire line reaches nothing, which is how main kept the retired asks open
+  assert.equal(askRecord([], [retire], answered(null)).open.length, 1);
+  // the committed record: every open ask carries its ids, and no open ask is one a ledger line already answers by id
+  const rec = JSON.parse(readFileSync(new URL('../void-live-deploy/void.asks.json', import.meta.url), 'utf8'));
+  const ledger = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const dir = new URL('../growth/entries/', import.meta.url);
+  for (const n of readdirSync(dir).filter((n) => n.endsWith('.json'))) ledger.push(JSON.parse(readFileSync(new URL(n, dir), 'utf8')));
+  assert.deepEqual(rec.totals.open.filter((o) => !(Array.isArray(o.ids) && o.ids.length)).map((o) => o.ask), [], 'every open ask in void.asks.json carries its ids (node tools/asks-link.mjs --write)');
+  const byId = new Set(ledger.filter((e) => e && e.asked && /^ask-\d/.test(String(e.asked))).map((e) => String(e.asked)));
+  assert.deepEqual(askRecord([], ledger, rec).open.filter((o) => rec.totals.open.some((t) => t.ask === o.ask && t.ids.some((id) => byId.has(id)))).map((o) => o.ask), []);
+  assert.ok(!askRecord([], ledger, rec).open.some((o) => /git diff between 2e272df9 and 5fa7a921/.test(o.ask)), 'the retired git diff asks are not waiting');
+});
+
+test('the proof that an ask about a site was built names that site, .ru included (one site rule with lib/ask-same.js)', async () => {
+  const { sitesIn } = await import('../void-live-deploy/lib/voice.js');
+  const { sitesOf } = await import('../void-live-deploy/lib/ask-same.js');
+  const ask = 'Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic.';
+  assert.deepEqual(sitesOf(ask), ['ndscalc.ru']);
+  assert.equal(sitesIn(ask, 'sycophanthex.com is a lane page on the tower'), false, 'a line about another site is not its proof');
+  assert.equal(sitesIn(ask, 'ndscalc.ru is a lane page on the tower'), true);
+  assert.equal(sitesIn('Fix the timer skill for 90 seconds', 'anything'), true, 'an ask that names no site needs none');
+});

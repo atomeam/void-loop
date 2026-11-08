@@ -1,9 +1,14 @@
 // The merge gate (Atom: main is never down again). A pull request merges only after the full browser suite
 // has passed on the tree of that pull request merged with current main. One suite run at a time, and one run tests up to
 // BATCH ready pull requests merged together (2026-11-06: one 25-minute run per pull request kept 30 waiting for half a day).
-// A green batch merges one pull request after another; a red batch is split in half until the red one runs alone. A suite
+// A green batch merges one pull request after another; a red batch is split in half until the red one runs alone, also
+// when main moved meanwhile (2026-11-06: main took a hand merge about every 30 minutes, so a red batch of 8 went back
+// whole on each new main and never split, and the bot merged nothing). A suite
 // that passed against an older main still counts when every commit since then only writes the incident
-// record. A red main is reverted by verify.yml, which files one heal job for the commit it took back.
+// record, a bot record, the squash of a pull request in the same run, or the squash of another pull request that shares no
+// file with this one and leaves the suite's own harness alone (2026-11-06: 8 pull requests landed on main during one
+// 45-minute green run, so the run never counted and the bot merged nothing). A red main is reverted by verify.yml, which files
+// one heal job for the commit it took back.
 //   node tools/suite-gate.mjs queue <sha> "<why>"   file that heal job (VOID_OWNER_TOKEN; dry without it)
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
@@ -76,32 +81,59 @@ export function botRecord(files) {
   return files.every((f) => DATA.test(String(f)) && !NOT_DATA.test(String(f)));
 }
 
-/** every commit since the tested main only writes the incident record or another bot record, or is the squash of a pull
- * request in the same batch. Pure. */
-export function driftOk(commits, batch) {
+// the files that make the suite itself: the two workflows that run it and the void-test action, the browser suites, the checks the action runs
+// first, and the dependencies. A pull request that changes one of them changes what "the suite passed" means.
+const HARNESS = /^(\.github\/actions\/|\.github\/workflows\/(suite-gate|verify)\.yml$|tools\/(test_void|test_sky|guard-source|fringe|suite-diff|suite-gate)\.mjs$)|(^|\/)(package(-lock)?\.json|wrangler\.(json|jsonc|toml))$/;
+export const MAX_FOREIGN = 40; // squashes of other pull requests a green run may look past (2026-11-06: 14 landed in the hour of one run)
+
+/** the squash of a pull request outside the batch that shares no file with this pull request (own: its changed files) and
+ * leaves the suite harness alone. Unknown files on either side: false. Pure. */
+export function foreignSquash(files, own) {
+  if (!files || !squashOf(files.subject) || !files.length || !Array.isArray(own) || !own.length) return false;
+  const mine = new Set(own.map(String));
+  return files.every((f) => !mine.has(String(f)) && !HARNESS.test(String(f)));
+}
+
+/** every commit since the tested main only writes the incident record or another bot record, is the squash of a pull
+ * request in the same batch, or (own given: the pull request's changed files) the squash of an unrelated pull request, at most
+ * MAX_FOREIGN of those. verify.yml still runs the whole suite on main after the merge and reverts a commit that breaks it. Pure. */
+export function driftOk(commits, batch, own) {
   if (!Array.isArray(commits)) return false;
   const mates = new Set(batch || []);
   const incident = (files) => (files || []).every((f) => String(f).startsWith('void-live-deploy/incidents/'));
-  return commits.every((files) => incident(files) || botRecord(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject))));
+  let foreign = 0;
+  return commits.every((files) => {
+    if (incident(files) || botRecord(files) || (mates.size > 0 && mates.has(squashOf(files && files.subject)))) return true;
+    return foreignSquash(files, own) && ++foreign <= MAX_FOREIGN;
+  });
 }
 
-/** the suite passed, and either it merged this main, or only incident commits and squashes of its own batch landed since. Pure. */
+/** the suite passed, and either it merged this main, or only the drift driftOk allows landed since (row.files: the pull
+ * request's changed files, or null when unknown). Pure. */
 export function mayMerge(row, mainSha) {
   const suite = row && row.suite;
   if (!suite || suite.name !== CHECK || suite.status !== 'completed' || suite.conclusion !== 'success') return false;
   const tested = recordedMain(suite);
   if (!tested) return false;
   if (sameSha(tested, mainSha)) return true;
-  return driftOk(row.drift, batchOf(suite));
+  return driftOk(row.drift, batchOf(suite), row.files);
+}
+
+/** the newest suite run on this head finished red, against any main (the check sits on the head, so a new push clears it). Pure. */
+function redBefore(row) {
+  const suite = row && row.suite;
+  if (!suite || suite.status !== 'completed' || suite.conclusion === 'success' || suite.conclusion === 'skipped' || suite.conclusion === 'cancelled') return false;
+  return !!recordedMain(suite);
 }
 
 /** a finished failure of the suite against this same main (so far: true when the head or main has not moved). Pure. */
 function redHere(row, mainSha) {
-  const suite = row && row.suite;
-  if (!suite || suite.status !== 'completed' || suite.conclusion === 'success' || suite.conclusion === 'skipped' || suite.conclusion === 'cancelled') return false;
-  const tested = recordedMain(suite);
-  if (!tested) return false;
-  return sameSha(tested, mainSha) || codeUnchanged(row.drift);
+  return redBefore(row) && (sameSha(recordedMain(row.suite), mainSha) || codeUnchanged(row.drift));
+}
+
+/** red alone last time, on an older main: tried again, but after every pull request that has not failed alone. Pure. */
+function redAlone(row) {
+  return redBefore(row) && batchOf(row.suite).length <= 1;
 }
 
 /** the pull request failed the suite alone on this main: do not queue it again until the head or main moves. A red batch of
@@ -110,10 +142,11 @@ export function failedHere(row, mainSha) {
   return redHere(row, mainSha) && batchOf(row.suite).length <= 1;
 }
 
-/** how many pull requests the next suite run takes: half of the red batch the first one was in on this main, else BATCH. Pure. */
+/** how many pull requests the next suite run takes: half of the red batch the first one was in (on any main: the same heads
+ * went red together, and a smaller run only costs time), 1 after a red run alone, else BATCH. Pure. */
 export function batchSize(row, mainSha) {
-  const k = redHere(row, mainSha) ? batchOf(row.suite).length : 0;
-  return k > 1 ? Math.ceil(k / 2) : BATCH;
+  const k = redBefore(row) ? Math.max(1, batchOf(row.suite).length) : 0;
+  return k ? Math.ceil(k / 2) : BATCH;
 }
 
 /**
@@ -123,7 +156,7 @@ export function batchSize(row, mainSha) {
  */
 export function choose(rows, mainSha, running) {
   const ready = (rows || []).filter((r) => r && r.review === 'merge').slice().sort((a, b) => a.number - b.number);
-  const open = ready.filter((r) => !failedHere(r, mainSha));
+  const open = ready.filter((r) => !failedHere(r, mainSha)).sort((a, b) => redAlone(a) - redAlone(b) || a.number - b.number);
   const fresh = open.find((r) => mayMerge(r, mainSha));
   if (fresh) {
     const run = batchOf(fresh.suite), title = recordedMain(fresh.suite);
@@ -133,7 +166,8 @@ export function choose(rows, mainSha, running) {
   }
   if (!open.length) return { pr: ready[0] || null, batch: [], action: 'hold', why: ready.length ? 'the ready pull requests failed the suite on this main' : 'no pull request has a green review' };
   if (running) return { pr: open[0], batch: [open[0]], action: 'wait', why: 'one suite is already running; the next pull request waits' };
-  const batch = open.slice(0, batchSize(open[0], mainSha));
+  const pool = redAlone(open[0]) ? open : open.filter((r) => !redAlone(r)); // one that went red alone never rides in a batch
+  const batch = pool.slice(0, batchSize(open[0], mainSha));
   return { pr: open[0], batch, action: 'queue', why: 'the full suite has not passed on top of current main' + (batch.length > 1 ? ` (one run for ${batch.length} pull requests)` : '') };
 }
 

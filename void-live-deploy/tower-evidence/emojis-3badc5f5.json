@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 124,
-   "best": 408,
-   "evidence": "Verse (/emojis/) 124 ms to the load event (median of 3, phone width) vs emojitracker.com 408 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "verse": 129,
+   "best": 569,
+   "evidence": "Verse (/emojis/) 129 ms to the load event (median of 3, phone width) vs emojitracker.com 569 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/emojis/) 3 of 3 loads answered vs emojitracker.com 3 of 3 loads answered",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/emojis/) 0 px sideways overflow at 390 px vs emojitracker.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 1,
    "evidence": "Verse (/emojis/) 0 unnamed controls or images vs emojitracker.com 1 unnamed controls or images",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/emojis/) 1 (1: the page shows itself again with the network cut) vs emojitracker.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 1,
    "evidence": "Verse (/emojis/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs emojitracker.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,7 +54,7 @@
    "verse": 9,
    "best": 9,
    "evidence": "Verse (/emojis/) 9 of 9 right against the worked-out answer; judged against the standard, not emojitracker.com (the site is not asked)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "of": 9
   },
   "design polish": {
@@ -62,7 +62,7 @@
    "verse": 0,
    "best": 3,
    "evidence": "Verse (/emojis/) 0 design defects vs emojitracker.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.01), emojitracker.com (0 low-contrast texts, 2 small tap targets, layout shift 0.61)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   },
   "completeness": {
@@ -70,16 +70,16 @@
    "verse": 17,
    "best": 0,
    "evidence": "Verse (/emojis/) 17 of 22 things a full answer shows vs emojitracker.com 0 of 22 things a full answer shows (Verse lacks: its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, a share link for it; site lacks: emoji counts, a ranked wall, tap to copy, today, all time, a search, refreshed while open, a closed list, no text to send, works offline, no account, no ads, back to Verse, the picked emoji, named, its Unicode, its UTF-8 bytes, its HTML entity, copied on this device, everyone today, a share link for it, the stage bridge, the copy format picker)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "at": "2026-11-07T13:11:15.216Z",
    "of": 22,
    "siteRead": true
   },
   "wider use": {
    "verdict": "better",
    "verse": 6.5,
-   "best": 4.5,
-   "evidence": "Verse (/emojis/) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs emojitracker.com 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-06T14:24:05.811Z",
+   "best": 5,
+   "evidence": "Verse (/emojis/) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs emojitracker.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:11:15.216Z",
    "siteRead": true
   }
  }

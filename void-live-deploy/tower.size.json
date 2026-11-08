@@ -105,6 +105,10 @@
    "weight": 3698904,
    "at": "2026-10-30"
   },
+  "1ts21.top": {
+   "refused": true,
+   "at": "2026-11-07"
+  },
   "2chan.net": {
    "bytes": 982,
    "controls": 2,
@@ -260,6 +264,20 @@
   "activestudiocommunity.nl": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "adnext.mobi": {
+   "bytes": 5284,
+   "controls": 7,
+   "scripts": 4,
+   "styles": 3,
+   "nodes": 32,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 2190,
+   "shell": "none",
+   "weight": 13604,
+   "at": "2026-11-06"
   },
   "adsco.re": {
    "refused": true,
@@ -5264,6 +5282,10 @@
    "weight": 1633879,
    "at": "2026-10-30"
   },
+  "everycom.store": {
+   "refused": true,
+   "at": "2026-11-06"
+  },
   "ex-unit.nagoya": {
    "bytes": 953037,
    "controls": 51,
@@ -5488,7 +5510,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-06"
+   "at": "2026-11-07"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6135,6 +6157,20 @@
    "weight": 354989,
    "at": "2026-10-30"
   },
+  "healthtechnologygroup.com": {
+   "bytes": 191,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 5,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 9,
+   "shell": "none",
+   "weight": 241,
+   "at": "2026-11-07"
+  },
   "heritageunits.com": {
    "bytes": 3682338,
    "controls": 49,
@@ -6730,7 +6766,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 12,
+   "bytes": 13,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6739,9 +6775,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 11,
-   "weight": 12,
-   "at": "2026-11-06"
+   "text": 12,
+   "weight": 13,
+   "at": "2026-11-07"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -7244,6 +7280,20 @@
    "shell": "none",
    "weight": 902801,
    "at": "2026-10-30"
+  },
+  "juicychat.ai": {
+   "bytes": 995318,
+   "controls": 118,
+   "scripts": 13,
+   "styles": 2,
+   "nodes": 58,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 12239,
+   "shell": "none",
+   "weight": 1021898,
+   "at": "2026-11-06"
   },
   "junit.org": {
    "bytes": 576450,
@@ -8195,6 +8245,20 @@
    "weight": 828644,
    "at": "2026-11-06"
   },
+  "milkie.cc": {
+   "bytes": 2322745,
+   "controls": 5,
+   "scripts": 6,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 60,
+   "shell": "none",
+   "weight": 2334905,
+   "at": "2026-11-07"
+  },
   "millwallcommunity.org.uk": {
    "bytes": 2940387,
    "controls": 255,
@@ -8778,6 +8842,20 @@
    "refused": true,
    "at": "2026-11-06"
   },
+  "oneyeard.com": {
+   "bytes": 180097,
+   "controls": 1,
+   "scripts": 1,
+   "styles": 3,
+   "nodes": 24,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 227,
+   "shell": "none",
+   "weight": 182337,
+   "at": "2026-11-07"
+  },
   "online-calculator.com": {
    "bytes": 1173448,
    "controls": 78,
@@ -8967,6 +9045,20 @@
    "shell": "none",
    "weight": 2090285,
    "at": "2026-10-30"
+  },
+  "opentv.com": {
+   "bytes": 5906880,
+   "controls": 2,
+   "scripts": 6,
+   "styles": 2,
+   "nodes": 22,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 106,
+   "shell": "none",
+   "weight": 5919100,
+   "at": "2026-11-06"
   },
   "opportunitiesforyoungkenyans.co.ke": {
    "bytes": 2032455,
@@ -9637,6 +9729,20 @@
    "shell": "none",
    "weight": 1261406,
    "at": "2026-10-30"
+  },
+  "protopage.com": {
+   "bytes": 1671315,
+   "controls": 2,
+   "scripts": 7,
+   "styles": 3,
+   "nodes": 56,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 449,
+   "shell": "none",
+   "weight": 1685875,
+   "at": "2026-11-06"
   },
   "pureplanetcommunity.nl": {
    "refused": true,

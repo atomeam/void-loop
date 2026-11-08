@@ -623,6 +623,7 @@ test('work --run hands the whole job to a one-shot agent and stops a stuck one, 
   assert.match(p, /newest main in a clean checkout/, 'never an old local branch (Beam\'s first PRs carried a 10-day-old commit)');
   assert.match(p, /a domains\/targets file alone does not finish it/, 'a versus job is the page, not a note about the site');
   assert.match(p, /last line/);
+  assert.match(p, /never quote the owner/, 'a pull request says the change in its own words');
   const lines = [], log = (l) => lines.push(l);
   // the prompt arrives on standard input and in the file the command names
   const echo = await scriptRunJob('node -e "let s=\'\';process.stdin.on(\'data\',d=>s+=d).on(\'end\',()=>{const f=require(\'fs\').readFileSync(process.argv[1],\'utf8\');console.log(s===f?\'same\':\'differs\');console.log(\'https://github.com/atomeam/void-loop/pull/9\')})" {prompt-file}', job, { log });

@@ -2,7 +2,7 @@
 // are broken, and when Verse writes new probe asks. Run: node --test tools/conductor.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, willDue, lapDue, dailyDue, sweepDue, DAILY, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
+import { plan, score, kindOf, triesOf, withTries, routeOf, streakOf, probeDue, growDue, designDue, willDue, lapDue, dailyDue, sweepDue, coderShort, CODER_RUN_CALLS, DAILY, AGENT, LAP, ALSO_BUSY, MAX_TRIES, FIRST } from './conductor-core.mjs';
 
 const H = 3600000, NOW = Date.parse('2026-10-26T08:00:00Z');
 const iso = (hAgo) => new Date(NOW - hAgo * H).toISOString();
@@ -107,6 +107,11 @@ test('the proving pass (grow-self.yml) runs again, at most every 2 hours and nev
   assert.equal(growDue({ exists: true, busy: true, lastRunMs: NOW - 9 * H, now: NOW }), false, 'one at a time');
   assert.equal(growDue({ exists: false, busy: false, lastRunMs: 0, now: NOW }), false);
   // the will: hourly from the clock, whatever started the last run (its own cron comes hours late, a deploy start counts too)
+  assert.equal(designDue({ exists: true, busy: false, lastRunMs: 0, now: NOW }), true, 'never ran');
+  assert.equal(designDue({ exists: true, busy: false, lastRunMs: NOW - 2 * H - 60000, now: NOW }), true);
+  assert.equal(designDue({ exists: true, busy: false, lastRunMs: NOW - 90 * 60000, now: NOW }), false, 'ran 90 minutes ago');
+  assert.equal(designDue({ exists: true, busy: true, lastRunMs: 0, now: NOW }), false, 'one at a time');
+  assert.equal(designDue({ exists: false, busy: false, lastRunMs: 0, now: NOW }), false);
   assert.equal(willDue({ exists: true, busy: false, lastRunMs: NOW - 61 * 60000, now: NOW }), true);
   assert.equal(willDue({ exists: true, busy: false, lastRunMs: NOW - 20 * 60000, now: NOW }), false, 'ran 20 minutes ago');
   assert.equal(willDue({ exists: true, busy: true, lastRunMs: NOW - 9 * H, now: NOW }), false, 'one at a time');
@@ -119,6 +124,26 @@ test('a paused coder (domains/verse-loop.pause) takes no job and says why; the o
   assert.ok(!p.start.some((s) => s.wf === AGENT));
   assert.ok(p.held.some((h) => /paused \(domains\/verse-loop\.pause\)/.test(h.why)));
   assert.equal(p.start.find((s) => s.wf === 'propose-fix.yml').id, 'p1', 'probes are not the coder\'s');
+});
+
+test('the coder\'s own back-off holds its jobs with the reason the conductor read (no claim, no run that answers "paused")', async () => {
+  const jobs = [job('w1', 'will:paint'), job('p1', 'probe:q')];
+  const why = "the coder's back-off, #2386, until 12:08 UTC";
+  const p = plan({ jobs, wf: all({ [AGENT]: { paused: true, pausedWhy: why } }), now: NOW });
+  assert.ok(!p.start.some((s) => s.wf === AGENT));
+  assert.ok(p.held.some((h) => h.id === 'w1' && h.why.includes(why)));
+  const { loopBackoff } = await import('./conductor.mjs');
+  const issue = JSON.stringify([{ number: 2386, title: 'Verse loop paused', createdAt: '2026-11-06T06:08:54Z' }]);
+  const commit = (at) => JSON.stringify([{ commit: { committer: { date: at } } }]);
+  // paused: the issue is open and the loop's code has not changed since
+  assert.match(loopBackoff(Date.parse('2026-11-06T07:20:00Z'), (k) => k === 'issue' ? issue : commit('2026-11-05T01:00:00Z')), /#2386, until 12:08 UTC/);
+  // a fix to the loop's code after the pause began resumes it at once, as the loop itself does
+  assert.equal(loopBackoff(Date.parse('2026-11-06T07:40:00Z'), (k) => k === 'issue' ? issue : commit('2026-11-06T07:30:00Z')), null);
+  // six hours on: over by itself
+  assert.equal(loopBackoff(Date.parse('2026-11-06T12:30:00Z'), (k) => k === 'issue' ? issue : commit('2026-11-05T01:00:00Z')), null);
+  // no issue, or GitHub unreadable: not paused (the run still honours its own pause)
+  assert.equal(loopBackoff(NOW, () => '[]'), null);
+  assert.equal(loopBackoff(NOW, () => { throw new Error('HTTP 403'); }), null);
 });
 
 test('verse-job and verse-loop are one coder: a lap running holds the queue job back, and neither is handed its own repair', () => {
@@ -156,6 +181,22 @@ test('a coder with no free model calls left is not started (no run spent on "no 
   assert.equal(p.start.find((s) => s.wf === 'propose-fix.yml').id, 'p1');
   const base = { exists: true, busy: false, started: false, paused: false, lastRunMs: NOW - 2 * H, now: NOW };
   assert.equal(lapDue({ ...base, noModel: true }), false, 'no lap either');
+});
+
+test('a coder budget too short for one whole run holds the coder until the window resets (run 42284242262 started with 11 calls left)', () => {
+  const at = Date.parse('2026-11-06T20:07:24Z');
+  const b = (hourUsed, dayUsed, room = true) => ({ hour: { used: hourUsed, cap: 90 }, day: { used: dayUsed, cap: 360 }, room, until: null });
+  assert.equal(CODER_RUN_CALLS, 30);
+  assert.deepEqual(coderShort(b(0, 349), at), { until: '2026-11-07T00:00:00.000Z' }, '11 left in the day: held to midnight UTC');
+  assert.deepEqual(coderShort(b(70, 100), at), { until: '2026-11-06T21:00:00.000Z' }, '20 left in the hour: held to the next hour');
+  assert.equal(coderShort(b(60, 330), at), null, 'exactly 30 left in both: started');
+  assert.deepEqual(coderShort({ room: false, until: '2026-11-07T00:00:00.000Z' }, at), { until: '2026-11-07T00:00:00.000Z' }, 'full: held as before');
+  assert.equal(coderShort(null, at), null, 'unknown budget: started as before');
+  assert.equal(coderShort({ room: true }, at), null, 'no counts: started as before');
+  assert.equal(coderShort(b(0, 360, false), at, 30, true), null, 'a spare free model key: started though the budget is spent');
+  const p = plan({ jobs: [job('w1', 'will:paint')], wf: all({ [AGENT]: { noModel: coderShort(b(0, 349), at) } }), now: NOW });
+  assert.ok(!p.start.some((s) => s.wf === AGENT));
+  assert.ok(p.held.some((h) => h.id === 'w1' && /until 00:00 UTC/.test(h.why)));
 });
 
 test('a repair of a loop that is green again is set aside, not handed to the coder; a loop still red keeps its repair (#2252)', () => {

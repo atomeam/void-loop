@@ -81,3 +81,28 @@ test('the negative controls catch a stub, a placeholder, an error page and an em
     assert.ok(negativesOf(t).length > 0, t);
   assert.deepEqual(negativesOf('Stopwatch 00:01.20 Lap 1 00:01.20 Start Stop Reset. Share a link to these laps.'), []);
 });
+
+// ndscalc.ru's two journeys (tools/tower-journeys.mjs) run here on a page that draws exactly what the calculator's VAT mode draws, from the
+// same engine (lib/vat.js): the sums each journey expects are the engine's, and a share link without the sum in it is refused
+test('ndscalc.ru: both journeys have a script, expect what the VAT engine works out, and refuse a share link that drops the sum', async () => {
+  const { SCRIPTS } = await import('./tower-journeys.mjs');
+  const V = await import('../void-live-deploy/lib/vat.js');
+  const f = { id: 'ndscalc.ru', site: 'ndscalc.ru', page: '/calculator/?mode=vat' }, S = SCRIPTS['ndscalc.ru'];
+  assert.ok(S, 'ndscalc.ru has journey scripts');
+  for (const j of journeysOf(f)) assert.equal(typeof S[j], 'function', j);
+  const fakePage = (linkKeepsSum) => {
+    const st = { va: '1000', vr: '22', vm: 'extract' }, steps = [];
+    const text = () => { const r = V.compute({ amount: st.va, rate: st.vr, mode: st.vm }), m = (n) => V.money(n, 'en'); return r ? 'Net ' + m(r.net) + ' · VAT ' + m(r.vat) + ' · Total ' + m(r.gross) : ''; };
+    return { steps, J: {
+      async open(p) { steps.push('open ' + p); const h = /#vat=([^&]+)&sum=([^&]+)&rate=([^&]+)/.exec(p); if (h) Object.assign(st, { vm: h[1], va: h[2], vr: h[3] }); else if (/^\/calculator\//.test(p)) Object.assign(st, { va: '1000', vr: '22', vm: 'extract' }); },
+      async fill(sel, v) { st[sel.slice(1)] = v; steps.push('fill ' + sel); },
+      async select(sel, v) { st[sel.slice(1)] = v; steps.push('select ' + sel); },
+      async click(sel) { steps.push('press ' + sel); },
+      async expect(test, label) { const t = text(); if (!(typeof test === 'function' ? test(t) : test.test(t))) throw new Error('expected ' + label + '; the page showed: ' + t); steps.push('sees ' + label); return t; },
+      async shareLink() { return linkKeepsSum ? '/calculator/?mode=vat#vat=' + st.vm + '&sum=' + st.va + '&rate=' + st.vr : '/calculator/?mode=vat'; },
+    } };
+  };
+  for (const j of journeysOf(f)) { const p = fakePage(true); await S[j](p.J); assert.ok(p.steps.filter((s) => s.startsWith('sees ')).length >= 2, j + ': it checked what the page showed'); }
+  const bad = fakePage(false);
+  await assert.rejects(S['share the result and reopen it from the link'](bad.J), /does not carry the sum and the rate/);
+});

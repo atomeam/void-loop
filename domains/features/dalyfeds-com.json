@@ -1,0 +1,53 @@
+{
+ "floor": "dalyfeds.com",
+ "verse_page": null,
+ "source": "auto",
+ "sites": {},
+ "crawl": {
+  "sites": {
+   "dalyfeds.com": {
+    "floor": "dalyfeds.com",
+    "url": "https://dalyfeds.com/",
+    "robots": true,
+    "rendered": 1,
+    "sitemaps": 0,
+    "urls_found": 0,
+    "pages": 1,
+    "fetched": 2,
+    "skipped": {
+     "robots": 0,
+     "failed": 0
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://dalyfeds.com/"
+      ],
+      "features": [
+       "nav pages"
+      ]
+     }
+    ],
+    "features": [
+     {
+      "key": "nav pages",
+      "name": "Pages of results (next and previous)",
+      "kind": "navigation",
+      "templates": [
+       "home"
+      ],
+      "verse": "has",
+      "found": []
+     }
+    ],
+    "verse_pages": 0,
+    "verse_urls": [],
+    "crawled": "2026-11-06"
+   }
+  },
+  "updated": "2026-11-06"
+ }
+}

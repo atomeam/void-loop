@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Earth science journal · Verse</title>
+<meta name="description" content="The newest peer-reviewed Earth science research, read straight from the public journal feed: title, authors, one-paragraph abstract, date, volume and DOI, with search and saved papers — no ads, no account, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Earth science journal · Verse">
+<meta property="og:description" content="The newest peer-reviewed Earth science research from the public journal feed, with search and saved papers; no ads, no account.">
+<meta property="og:url" content="https://a-to-mind.com/journal/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/verse.css">
+<style>
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --soft: #c3c8d8; --line: rgba(255,255,255,.10); --accent: rgb(158 178 255); --box: rgb(6 8 14 / .55); --tint: rgb(158 178 255 / .16); --fs: 16px; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: var(--fs)/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 780px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { margin: 0 0 8px; font-weight: 280; letter-spacing: -.03em; font-size: clamp(30px, 7.5vw, 44px); line-height: 1.05;
+    background: linear-gradient(180deg, #fff 30%, rgb(158 178 255)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; } }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  input { font: inherit; font-size: 17px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 9px 12px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--accent); color: #07080f; border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  #status { font-size: 13px; color: var(--soft); min-height: 20px; margin: 6px 0; }
+  #list { list-style: none; margin: 0; padding: 0; }
+  .paper { border-top: 1px solid var(--line); padding: 10px 0; }
+  .paper .t { font-weight: 600; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+  .paper .t:hover { text-decoration: underline; }
+  .paper .a { margin: 2px 0 0; font-size: .9em; color: var(--soft); }
+  .paper .m { margin: 2px 0 0; font-size: .8125em; color: var(--soft); display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .paper .m a { color: var(--accent); }
+  .paper .ab { margin: 6px 0 0; font-size: .875em; color: var(--soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .paper .acts { margin: 6px 0 0; display: flex; gap: 8px; }
+  .paper .acts button { min-height: 36px; padding: 4px 12px; font-size: 13px; }
+  .sk { border-top: 1px solid var(--line); padding: 12px 0; }
+  .sk i { display: block; height: 14px; border-radius: 7px; background: var(--line); margin: 0 0 9px; opacity: .7; } .sk i:nth-child(1) { width: 92%; } .sk i:nth-child(2) { width: 60%; } .sk i:nth-child(3) { width: 35%; }
+  #saved { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 10px 0; background: var(--box); }
+  #saved h2 { font-size: 14px; margin: 4px 0 8px; }
+  #saved ul { list-style: none; margin: 0; padding: 0; }
+  #saved li { margin: 6px 0; font-size: .875em; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  #saved li a { color: var(--ink); overflow-wrap: anywhere; }
+  nav#related { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; color: var(--soft); }
+  nav#related a { color: var(--accent); margin-right: 12px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Earth science journal</h1>
+<p class="sub">The newest peer-reviewed Earth science research, read from the journal's own public feed — no ads, no account, nothing sent anywhere.</p>
+<div class="row">
+  <input type="search" id="q" placeholder="Search the research — a word, an author, a DOI…" aria-label="Search the research">
+  <button id="go" class="go">Search</button>
+  <button id="latest" aria-pressed="true">Latest</button>
+  <button id="savedBtn" aria-pressed="false">Saved</button>
+</div>
+<div id="status" role="status"></div>
+<section id="saved" hidden><h2>Saved papers (this device)</h2><ul id="savedList"></ul></section>
+<ul id="list"></ul>
+<nav id="related"><a href="/news/">News</a><a href="/tools/">Tools</a><a href="/">Verse</a></nav>
+</main>
+<script type="module">
+import { papers, searchCrossref, savedList, toggleSave, isSaved, jatsText } from '/lib/journal.js';
+const $ = (id) => document.getElementById(id), list = $('list'), status = $('status'), q = $('q');
+const KEY = 'a2m.verse.journal.saved.v1';
+function render(items, note) {
+  list.textContent = '';
+  status.textContent = note || (items.length ? items.length + ' paper' + (items.length === 1 ? '' : 's') : 'Nothing found.');
+  for (const p of items) {
+    const li = document.createElement('li'); li.className = 'paper';
+    const t = document.createElement('a'); t.className = 't'; t.href = p.url; t.textContent = p.title; t.target = '_blank'; t.rel = 'noopener';
+    const a = document.createElement('p'); a.className = 'a'; a.textContent = p.authors;
+    const m = document.createElement('p'); m.className = 'm';
+    m.append((p.date || '') + (p.volume ? ' · Volume ' + p.volume : ''));
+    if (p.doi) { const doi = document.createElement('a'); doi.href = 'https://doi.org/' + p.doi; doi.textContent = p.doi; doi.target = '_blank'; doi.rel = 'noopener'; m.append(doi); }
+    const ab = document.createElement('p'); ab.className = 'ab'; ab.textContent = jatsText(p.abstract || '');
+    const acts = document.createElement('div'); acts.className = 'acts';
+    const sv = document.createElement('button'); sv.textContent = isSaved(KEY, p.doi) ? 'Saved ✓' : 'Save'; sv.setAttribute('aria-pressed', String(isSaved(KEY, p.doi)));
+    sv.onclick = () => { toggleSave(KEY, p); sv.textContent = isSaved(KEY, p.doi) ? 'Saved ✓' : 'Save'; sv.setAttribute('aria-pressed', String(isSaved(KEY, p.doi))); renderSaved(); };
+    acts.append(sv);
+    li.append(t, a, m, ab, acts); list.append(li);
+  }
+}
+function renderSaved() {
+  const ul = $('savedList'); const rows = savedList(KEY);
+  ul.textContent = '';
+  for (const r of rows) {
+    const li = document.createElement('li');
+    const a = document.createElement('a'); a.href = r.url; a.textContent = r.title; a.target = '_blank'; a.rel = 'noopener';
+    const rm = document.createElement('button'); rm.textContent = 'Remove'; rm.onclick = () => { toggleSave(KEY, r); renderSaved(); };
+    li.append(a, rm); ul.append(li);
+  }
+}
+async function loadLatest() { status.textContent = 'Reading the journal feed…'; try { const r = await papers(); render(r, r.length ? 'Latest ' + r.length + ' papers from the journal feed.' : 'The feed could not be read just now.'); } catch { render([], 'The feed could not be read just now.'); } }
+q.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('go').click(); });
+$('go').onclick = async () => { const s = q.value.trim(); if (!s) return loadLatest(); status.textContent = 'Searching the public research record…'; try { const r = await searchCrossref(s); render(r, r.length ? r.length + ' result' + (r.length === 1 ? '' : 's') + ' for “' + s + '”.' : 'Nothing matched “' + s + '”.'); } catch { render([], 'The search could not be read just now.'); } };
+$('latest').onclick = () => { q.value = ''; $('latest').setAttribute('aria-pressed', 'true'); $('savedBtn').setAttribute('aria-pressed', 'false'); $('saved').hidden = true; loadLatest(); };
+$('savedBtn').onclick = () => { const on = $('saved').hidden; $('saved').hidden = !on; $('savedBtn').setAttribute('aria-pressed', String(on)); $('latest').setAttribute('aria-pressed', String(!on)); renderSaved(); };
+(async () => { const s = new URLSearchParams(location.search).get('q'); if (s) { q.value = s; $('go').click(); } else loadLatest(); })();
+renderSaved();
+</script>
+</body>
+</html>

@@ -199,6 +199,18 @@ async function shape(env, rows, me) {
 }
 
 // ---- the build queue (functions/api/queue.js owns the table; a workspace with no queue simply has no jobs) ----
+/** Verse's own coder (tools/conductor.mjs claims a job, verse-job.yml builds it): how many it holds now and how many it shipped in the last
+ *  24 hours, so "no agent is here" is not read as "nobody takes the jobs" while Verse's own runner does (owner, 2026-11-06). */
+async function coderLane(env, now) {
+  try {
+    const n = async (sql, ...a) => Number(((await env.DB.prepare(sql).bind(...a).first()) || {}).n || 0);
+    const since = new Date(now - 864e5).toISOString();
+    // held: claimed in the last 3 hours (the conductor puts back a job a dead run left building after 3, tools/conductor-core.mjs STALE_H)
+    return { building: await n("SELECT COUNT(*) AS n FROM void_queue WHERE state = 'building' AND note LIKE 'claimed by conductor%' AND updated >= ?", new Date(now - 3 * 3600e3).toISOString()),
+      shipped24: await n("SELECT COUNT(*) AS n FROM void_queue WHERE state IN ('done', 'live') AND note LIKE 'verse-job:%' AND updated >= ?", since),
+      tried24: await n("SELECT COUNT(*) AS n FROM void_queue WHERE note LIKE '%verse-job%' AND updated >= ?", since) };
+  } catch (_) { return null; }
+}
 async function queued(env) {
   try { const { results } = await env.DB.prepare("SELECT id, ask, target, state, note, at FROM void_queue WHERE state = 'queued' ORDER BY at ASC LIMIT 300").all(); return results; } catch (_) { return []; }
 }
@@ -547,7 +559,7 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     const turns = await crewTurns(env, ags);
     const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true, did: T.hideSecrets(a.did || ''), didAt: a.did_at || null, next: turns[a.id] || null } : {}) }));
     const waiting = T.rank(await queued(env), now).length;
-    return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
+    return json({ ok: true, channels: chans, members, waiting, coder: await coderLane(env, now), kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
   if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', role: me.agent.role === 'member' ? 'member' : 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });

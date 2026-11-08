@@ -72,6 +72,11 @@
 <main>
   <h1>Status and autopilot</h1>
   <p class="lede">Is Verse up, and what did it do on its own? Status first: uptime from its own hourly guards, speed timed by your browser, the last deploy and incidents. Then what it did on its own: no person and no Claude session. Every number here is read live from Verse's repository and its own conductor; a source that does not answer says so instead of showing a guess.</p>
+  <section id="owner-board" hidden aria-labelledby="ob-h">
+    <h2 id="ob-h">The board: what people asked that Verse can't answer yet</h2>
+    <div class="panel"><ul class="feed" id="ob-list"></ul><p class="note" id="ob-note" style="margin:6px 0 0"></p></div>
+  </section>
+
   <h2>The review decides</h2>
   <div class="panel" id="verdict">
     <p id="verdict-line">Reading the outcome exam.</p>

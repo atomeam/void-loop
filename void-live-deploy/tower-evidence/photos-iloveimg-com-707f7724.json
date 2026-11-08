@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 167,
-   "best": 246,
-   "evidence": "Verse (/photos/iloveimg/) 167 ms to the load event (median of 3, phone width) vs iloveimg.com 246 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "verse": 189,
+   "best": 336,
+   "evidence": "Verse (/photos/iloveimg/) 189 ms to the load event (median of 3, phone width) vs iloveimg.com 336 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/photos/iloveimg/) 3 of 3 loads answered vs iloveimg.com 3 of 3 loads answered",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/photos/iloveimg/) 0 px sideways overflow at 390 px vs iloveimg.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/photos/iloveimg/) 0 unnamed controls or images vs iloveimg.com 0 unnamed controls or images",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/photos/iloveimg/) 1 (1: the page shows itself again with the network cut) vs iloveimg.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/photos/iloveimg/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs iloveimg.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,15 +54,15 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/photos/iloveimg/) 3 of 3 right against the worked-out answer; judged against the standard, not iloveimg.com (the site is not asked)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "of": 3
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
    "best": 17,
-   "evidence": "Verse (/photos/iloveimg/) 0 design defects vs iloveimg.com 17 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.05), iloveimg.com (0 low-contrast texts, 17 small tap targets, layout shift 0.00)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "evidence": "Verse (/photos/iloveimg/) 0 design defects vs iloveimg.com 17 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.06), iloveimg.com (0 low-contrast texts, 17 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   },
   "editing": {
@@ -70,7 +70,7 @@
    "verse": 7,
    "best": 7,
    "evidence": "Verse (/photos/iloveimg/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "of": 7,
    "part": true
   },
@@ -79,7 +79,7 @@
    "verse": 7,
    "best": 7,
    "evidence": "Verse (/photos/iloveimg/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "of": 7,
    "part": true
   },
@@ -88,7 +88,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/photos/iloveimg/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "of": 2,
    "part": true
   },
@@ -97,7 +97,7 @@
    "verse": 27,
    "best": 7,
    "evidence": "Verse (/photos/iloveimg/) 27 of 30 things a full answer shows vs iloveimg.com 7 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, AVIF, a before and after slider, the size saved, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, works offline, Timeline by date, Duplicate handling, Location privacy on share, Before and after compare slider, Size saved readout)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "of": 30,
    "siteRead": true
   },
@@ -106,7 +106,7 @@
    "verse": 9,
    "best": 7,
    "evidence": "Verse (/photos/iloveimg/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs iloveimg.com 7 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-06T14:45:25.956Z",
+   "at": "2026-11-07T13:32:38.080Z",
    "siteRead": true
   }
  }

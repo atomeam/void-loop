@@ -619,15 +619,15 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       // no second free model (Atom): Gemma answers, and the stronger model is recorded, not called
       would = PAID_MODEL;
       outcome = 'would escalate; paid: ' + (access.model ? 'paid model failed' : access.why);
-      later(recordShortfall(env, 'answer', 'would escalate'));
+      try { await recordShortfall(env, 'answer', 'would escalate'); } catch (_) {}
     }
   }
-  const log = (extra) => later(clefP.then((c) => {
+  const log = async (extra) => { try { await clefP.then((c) => {
     const r = mergeRoute(route, c), rec = { ask, masked, route: r.kind, skill: r.skill, score: r.score, scores: r.scores, ms: route.ms, waited, model, outcome, would, ...extra };
     if (r.by === 'clef' && !(extra && extra.outcome)) rec.outcome = r.kind === 'skill' ? String(outcome).replace(/^(default|skill missed: \w+)/, 'skill missed: ' + r.skill + ' (Clef)') : String(outcome).replace(/^skill missed: \w+/, 'default (Clef: no skill)');
     if (r.unsure) rec.outcome = String(rec.outcome) + '; Clef unsure: ' + r.unsure + ' ' + r.clefP;
     return logRoute(env, rec);
-  }, () => logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra })));
+  }, () => logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra })); } catch (_) {} };
   if (!answer) {
     try {
       const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
@@ -636,7 +636,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       if (!answer) throw new Error('empty');
     } catch (e) {
       // the free allowance ran out (or Gemma is down): the free ceiling isn't a stop, but paying still needs both conditions
-      later(recordShortfall(env, 'answer', String(e && e.message) === 'empty' ? 'empty' : reasonOf(e)));
+      try { await recordShortfall(env, 'answer', String(e && e.message) === 'empty' ? 'empty' : reasonOf(e)); } catch (_) {}
       // the other free LLM tiers Atom has keyed (resources/free.json via lib/free-router.js: per-provider daily share, quota failover)
       const alt = await freeLlm(messages, { env, registry: await loadRegistry(env, request.url) }).catch(() => null);
       if (alt) { const a2 = scrubOut(redact(noThink(String(alt.answer).trim())), env); if (a2) { answer = a2; model = alt.source; outcome += '; default busy, ' + alt.source; } }
@@ -647,7 +647,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       if (!paid) {
         // no paid path: the open-web answer, as with the switch off (for an ask about Verse: its facts)
         const web = own ? await ownBody('') : self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
-        log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
+        await log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });
         if (own) keepCard(web);
         return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, source: self ? 'self' : told ? 'told' : 'open-web:wikipedia', ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
@@ -668,8 +668,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   answer = dropLimits(answer);
   if (!answer && note) answer = noteReading(ask, notePage, noteFacts);
   else if (note || isPaste(ask)) answer = noteFinish(answer, ask, note ? noteFacts : telemetryOf(ask) ? [] : setupFacts(ask)); // the cut line and the real secret names, whatever the model gave; a status report is never answered with secret names (docs/RULES.md, 2026-10-30)
-  if (!answer) { log({ model, outcome: outcome + '; only limits lines' }); return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, route: route.kind, ...nearOut }); }
-  log({ model });
+  if (!answer) { await log({ model, outcome: outcome + '; only limits lines' }); return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, route: route.kind, ...nearOut }); }
+  await log({ model });
   // no claimed write and no filler (lib/answer-honesty.js); then only the sources the answer cited, and whose fetched text holds the
   // sentence that cites them, go on the card (lib/cite.js renumbers the [n] markers to match)
   answer = dropFiller(dropUnbackedActs(answer)) || answer;

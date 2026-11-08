@@ -1,9 +1,9 @@
 {
  "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "id5-sync.com",
- "since": "2026-11-06",
+ "id": "oneyeard.com",
+ "since": "2026-11-07",
  "n": 0,
- "progressAt": "2026-11-06",
+ "progressAt": "2026-11-07",
  "season": {
   "start": "2026-11-06",
   "why": "owner, 2026-11-06: \"clear and reset your damn verse screens\"; every op had been a giant page. From here a site is passed only in its turn, smallest first (fewest controls on its home page, then the lighter page)."
@@ -125,8 +125,36 @@
    "job": "script the journey with steps and negative controls"
   }
  ],
+ "skipped": [
+  {
+   "id": "id5-sync.com",
+   "at": "2026-11-06",
+   "why": "settled id5-sync.com as a non-site (an ad-tracking or sync endpoint): https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features"
+  },
+  {
+   "id": "dalyfeds.com",
+   "at": "2026-11-07",
+   "why": "dalyfeds.com held the Tower since 2026-11-06 (1 day, limit 1) at 7 of 12 aspects ahead, so it gives way and keeps being measured in the background"
+  }
+ ],
+ "settled": [
+  {
+   "id": "id5-sync.com",
+   "at": "2026-11-06",
+   "as": "non-site",
+   "kind": "an ad-tracking or sync endpoint",
+   "why": "https://id5-sync.com/ (200) shows 12 characters of text (\"This is ID5.\"), 0 controls, 0 links, 0 forms and 51 bytes of page: an ad-tracking or sync endpoint, not a site a person uses; Verse lacks none of its features"
+  },
+  {
+   "id": "healthtechnologygroup.com",
+   "at": "2026-11-07",
+   "as": "non-site",
+   "kind": "an inert stub page",
+   "why": "https://healthtechnologygroup.com/ (200) shows 9 characters of text (\"It works!\"), 0 controls, 0 links, 0 forms and 99 bytes of page: an inert stub page, not a site a person uses; Verse lacks none of its features"
+  }
+ ],
  "last": {
-  "at": "2026-11-06",
-  "why": "passed my ip (8/13, conquering in background)"
+  "at": "2026-11-07",
+  "why": "dalyfeds.com held the Tower since 2026-11-06 (1 day, limit 1) at 7 of 12 aspects ahead, so it gives way and keeps being measured in the background"
  }
 }

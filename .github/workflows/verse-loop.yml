@@ -127,8 +127,9 @@ jobs:
             echo "::warning title=Verse loop runs dry::No token to open pull requests."
             DRY=--dry-run
           fi
-          node tools/verse-loop.mjs --once $DRY | tee lap.txt
-          { echo '### Verse loop'; echo; echo '```'; tail -n 20 lap.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          # the lap's output goes outside the checkout: a file in the tree is a local change, and a lap with local changes skips (2026-11-06)
+          node tools/verse-loop.mjs --once $DRY | tee "$RUNNER_TEMP/lap.txt"
+          { echo '### Verse loop'; echo; echo '```'; tail -n 20 "$RUNNER_TEMP/lap.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - name: Keep the loop's memory
         if: always()
         uses: actions/cache/save@v4

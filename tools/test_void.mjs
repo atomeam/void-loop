@@ -14,6 +14,7 @@ import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
 import { parseShard, inShard } from './shard.mjs';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
+import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -1529,15 +1530,20 @@ try {
   }
   // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
   // the evidence is stubbed so three sites are conquered and the target is 4 aspects in. The target is the site tower.target.json names: it stays
-  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here
+  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here.
+  // Since the season (2026-11-06) a site counts only once tower.target.json `passed` names it, so the check serves the served file with `passed`
+  // naming the three it conquers (tools/tower-fixture.mjs): what Versus passed today no longer changes what this check sees
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
-    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture, conquerable } = await import('./tower-fixture.mjs'); const P = await fresh();
     const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
     const served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
     const TARGET = served('tower.target.json').id, tgt = tower([], {}, served('tower.frontier.json'), null, null, null, TARGET).floors.find((f) => f.id === TARGET);
-    const won3 = FLOORS.filter((f) => f.id !== TARGET).slice(0, 3);
+    const won3 = conquerable(FLOORS, { target: TARGET, n: 3 });
     const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
+    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, won3);
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
+    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
       return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
@@ -1557,10 +1563,14 @@ try {
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
-    const all = (f) => passingRows(f, { evidence: 'stub' });
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture } = await import('./tower-fixture.mjs'); const P = await fresh({ phone: true });
+    const all = (f) => passingRows(f, { evidence: 'stub' }), served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
     const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
+    // both are conquered in this season: tower.target.json `passed` names them (tools/tower-fixture.mjs), or the season keeps them in the queue
+    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, [travel, FLOORS[0]]);
     await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
+    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ask('the tower', 1200);
     const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
       return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
@@ -1576,14 +1586,17 @@ try {
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
     const P = await fresh({ phone: true });
     await P.p.goto(base + 'agent/');
-    const nav = await until(() => P.p.evaluate(() => {
+    // the label is read from the shell's own nav (lib/verse-shell.js): a rename of the /agent/ item (Agents -> Envoy, 2026-11-07) must not
+    // silently break this check, so the expected word is currentNav('/agent/'), not a hard-coded one
+    const agentLabel = currentNav('/agent/').label;
+    const nav = await until(() => P.p.evaluate((want) => {
       const bar = document.querySelector('#verse-nav .vs-links'), a = document.querySelector('#verse-nav a[aria-current="page"]');
-      if (!bar || !a || a.textContent !== 'Agents') return null;
+      if (!bar || !a || a.textContent !== want) return null;
       const b = bar.getBoundingClientRect(), r = a.getBoundingClientRect();
       return { label: a.textContent, left: r.left, right: r.right, barL: b.left, barR: b.right, page: document.documentElement.scrollWidth, w: innerWidth };
-    }), 8000);
-    check('phone polish: Agents is fully inside the nav bar and the page is not wider than the screen',
-      nav && nav.label === 'Agents' && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
+    }, agentLabel), 8000);
+    check('phone polish: the current nav item is fully inside the nav bar and the page is not wider than the screen',
+      nav && nav.label === agentLabel && nav.left >= nav.barL - 1 && nav.right <= nav.barR + 1 && nav.page <= nav.w + 1, JSON.stringify(nav));
     await P.p.goto(base + 'compare/');
     const cmp = await until(() => P.p.evaluate(() => {
       const picks = document.querySelectorAll('#pick a[href*="floor="]').length;
@@ -1611,7 +1624,13 @@ try {
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
     const P = await fresh(); let hits = 0, beaten = false;
     // calculator.net's whole checklist as the gate demands it: its aspects and its journeys with steps and negative controls (docs/GATE-STANDARDS.md)
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), won = passingRows(FLOORS.find((f) => f.id === 'calculator'), { evidence: 'stub' });
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), calc = FLOORS.find((f) => f.id === 'calculator'), won = passingRows(calc, { evidence: 'stub' });
+    // in this season calculator.net is passed (tower.target.json `passed` names it, tools/tower-fixture.mjs), so the full checklist conquers it;
+    // without it the season keeps the site in the queue whatever its evidence says, and the card has nothing to announce
+    const { towerFixture } = await import('./tower-fixture.mjs'), served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
+    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, [calc]);
+    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
+    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: won } : {} }) }); });
     await P.p.evaluate(() => { window.__towerPollMs = 400; });
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
@@ -4258,7 +4277,11 @@ try {
     if (bell && await bell.isVisible().catch(() => false)) await bell.click(); else await P.p.click('[data-showcase="show"]');
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
-    const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    // the panel re-places on a 400 ms tick while the step's card lands and grows (skills/showcase.js bar()): read the chip's spot
+    // only once two reads 450 ms apart agree, or the pointer presses where the chip was, misses it, and no ghost appears
+    // (ghost:false on a loaded runner, 2026-11-02..11-06)
+    const chipAt = () => P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    const chip = await until(async () => { const a = await chipAt(); await P.p.waitForTimeout(450); const b = await chipAt(); return a && b && Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1 ? b : null; }, 8000);
     const drop = { x: 320, y: 220 };
     await P.p.mouse.move(chip.x, chip.y); await P.p.mouse.down();
     for (let i = 1; i <= 8; i++) await P.p.mouse.move(chip.x + (drop.x - chip.x) * i / 8, chip.y + (drop.y - chip.y) * i / 8);
@@ -5849,7 +5872,7 @@ try {
       && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
     await F.ctx.close();
   }
-  if (want('verse brain: one workspace that twenty-six organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that twenty-nine organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5920,9 +5943,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its twenty-six organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty-nine organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 26 && a.rows === 26 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 29 && a.rows === 29 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
@@ -8648,13 +8671,18 @@ try {
     await C.ctx.close(); }
   if (want("void seal: every card's art box carries Verse's procedural art, the same for the same card")) {
     const S = await fresh(); await S.ctx.route(/\/api\/card-art/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'plate', why: 'off' }) }));
-    const seal = () => until(async () => S.p.evaluate(() => { const a = document.querySelector('.vpage.on.vcard > .vc-art'); const im = a && a.querySelector(':scope > .vc-seal'); const svg = a && a.querySelector(':scope > svg');
-      return im && im.complete && im.naturalWidth > 100 ? { src: im.src.slice(0, 30), len: im.src.length, sum: [...im.src].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7), w: im.naturalWidth, plateHidden: !svg || getComputedStyle(svg).visibility === 'hidden', cover: getComputedStyle(im).position === 'absolute' } : null; }), 8000).catch(() => null);
+    // the seal is drawn from the card's kind, family hue and rarity, and a skill card's frame (so its seal) is rebuilt once its stats
+    // (families.json) arrive: a read taken before that caught the pre-stats picture on one ask and the settled one on the next, so the
+    // "same card, same picture" pair differed on a loaded runner. Wait for the settled skill card (its skill name and the stats'
+    // power/toughness plate, the same signal the card checks use) before reading, so both reads are the settled card (tools/flakes.json, void seal)
+    const seal = () => until(async () => S.p.evaluate(() => { const card = document.querySelector('.vpage.on.vcard'); const a = card && card.querySelector(':scope > .vc-art'); const im = a && a.querySelector(':scope > .vc-seal'); const svg = a && a.querySelector(':scope > svg');
+      if (!card || !card.dataset.skill || !card.querySelector('.vc-pt')) return null;
+      return im && im.complete && im.naturalWidth > 100 ? { src: im.src.slice(0, 30), len: im.src.length, sum: [...im.src].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7), w: im.naturalWidth, plateHidden: !svg || getComputedStyle(svg).visibility === 'hidden', cover: getComputedStyle(im).position === 'absolute' } : null; }), 12000).catch(() => null);
     await S.ask('20% tip on 45', 1600); const a = await seal();
     await S.ask('close', 400); await S.ask('20% tip on 45', 1600); const b = await seal();
-    await S.ask('close', 400); await S.ask('make a timer for 5 minutes', 1600); const c = await seal();
+    await S.ask('close', 400); await S.ask('flip a coin', 1600); const c = await seal();
     check("void seal: every card's art box carries Verse's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-      !!a && /^data:image\/(webp|jpeg)/.test(a.src) && a.w >= 320 && a.plateHidden && a.cover && !!b && b.sum === a.sum && (!c || c.sum !== a.sum) && !S.errors.length, JSON.stringify({ a, b, c, errors: S.errors }));
+      !!a && /^data:image\/(webp|jpeg)/.test(a.src) && a.w >= 320 && a.plateHidden && a.cover && !!b && b.sum === a.sum && !!c && c.sum !== a.sum && !S.errors.length, JSON.stringify({ a, b, c, errors: S.errors }));
     await S.ctx.close(); }
   if (want("Verse art forge: a cached picture fills the art box, an uncached answer card paints once by itself, a skill card paints by its name")) {
     const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
@@ -9173,7 +9201,7 @@ try {
     check('opening a lab experiment counts one use: { kind: "used", id } once per browser per day, nothing typed sent',
       JSON.stringify(sent) === JSON.stringify([{ kind: 'used', id: 'attention-7' }]) && !U.errors.length, JSON.stringify(sent) + ' ' + U.errors.join(' | '));
     await U.ctx.close(); }
-  if (want("The lab: every fringe experiment opens from an ask and passes its own self-test")) {
+  if (want("The fringe lab: every fringe experiment opens from an ask and passes its own self-test")) {
     const L = await fresh(); const res = [];
     const lab = [['test my attention', 'attention-7'], ['hold the lamp', 'interval-timing-8'], ['fitts law', 'opt-in-gesture-6'], ['joint simon task', 'human-machine-co-agency-8'],
       ['count the flashes', 'sensory-substitution-7'], ['how sure are they', 'non-lexical-intent-5'], ["simpson's paradox", 'correlation-view-6'], ['when did it start', 'quiet-signal-filter-5'],
@@ -9185,11 +9213,11 @@ try {
       const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
       res.push({ id, ok: !!ok, hook, framed: !!fr });
     }
-    await L.ask('show me the lab', 500);
+    await L.ask('fringe lab', 500);
     const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
     if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
     const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
-    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
+    check('the fringe lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "fringe lab" lists all 12 and a click opens one',
       res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
     await L.ctx.close();
   }
@@ -9713,8 +9741,10 @@ try {
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|MultiVerse|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
-  // A price question is different: the membership sentence stays first, and the services card opens under it.
-  const priceAsks = ['pricing', 'how much does Verse cost?'];
+  // A price question is different: the membership sentence stays first, and the services card opens under it. The list
+  // spans both halves' patterns (pricing words, "what do you cost", "how much does Verse cost", "show me your pricing"):
+  // the 2026-10-14/10-25 flake was one of these matching the line's pattern but not the card's, after the V01D -> Verse rename.
+  const priceAsks = ['pricing', 'how much does Verse cost?', 'what do you cost', 'show me your pricing'];
   const priceGot = [];
   for (const a of priceAsks) {
     await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
@@ -9724,7 +9754,7 @@ try {
     await P.ask('close');
   }
   check('paid: signed out, a price question says the membership line AND opens the services card under it',
-    priceGot[0] === OUT_LINE && priceGot[1] === true && priceGot[2] === OUT_LINE && priceGot[3] === true,
+    priceGot.length === priceAsks.length * 2 && priceGot.every((v, i) => (i % 2 === 0 ? v === OUT_LINE : v === true)),
     JSON.stringify(priceGot).slice(0, 400));
   // Asks a product covers: Verse's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.

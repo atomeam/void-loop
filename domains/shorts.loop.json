@@ -1,1 +1,223 @@
-{ "best": null, "trials": [] }
+{
+  "best": {
+    "hook": 0,
+    "pace": 38,
+    "music": "warm",
+    "style": "ink",
+    "scene": "split-dinner-bill",
+    "scores": {},
+    "formats": "news"
+  },
+  "trials": [
+    {
+      "day": "20261106",
+      "knob": "hook",
+      "value": 1,
+      "champion": {
+        "hook": 0,
+        "pace": 38,
+        "music": "warm",
+        "style": "ink",
+        "scene": "split-dinner-bill",
+        "film": "20261106-short-split-dinner-bill-a",
+        "gate": {
+          "pass": true
+        }
+      },
+      "challenger": {
+        "hook": 1,
+        "pace": 38,
+        "music": "warm",
+        "style": "ink",
+        "scene": "split-dinner-bill",
+        "film": "20261106-short-split-dinner-bill-b",
+        "gate": {
+          "pass": true
+        }
+      },
+      "verdict": "waiting",
+      "note": "Recovered on 2026-11-06 from run 42249382478: both films passed the gate and are on /films/; the gate scores were in the run artifact only, so they are not recorded here.",
+      "outcomes": {
+        "champion": {
+          "views": 0,
+          "clicks": 0
+        },
+        "challenger": {
+          "views": 1,
+          "clicks": 0
+        }
+      }
+    },
+    {
+      "day": "20261106",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "pov",
+          "label": "POV skit",
+          "topic": "toulouse fc",
+          "name": "Toulouse FC",
+          "film": "20261106-pov-toulouse-fc",
+          "hook": "POV: your group chat hears about Toulouse FC",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 65,
+            "failed": []
+          },
+          "outcome": {
+            "views": 2,
+            "clicks": 0
+          }
+        },
+        {
+          "format": "countdown",
+          "label": "Top-3 countdown",
+          "topic": "austin simmons",
+          "name": "Austin Simmons",
+          "film": "20261106-countdown-austin-simmons",
+          "hook": "3 facts you missed about Austin Simmons",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 80,
+            "failed": []
+          },
+          "outcome": {
+            "views": 1,
+            "clicks": 0
+          }
+        },
+        {
+          "format": "nature",
+          "label": "Nature-documentary parody",
+          "topic": "zelda switch 2 pro controller",
+          "name": "zelda switch 2 pro controller",
+          "film": "20261106-nature-zelda-switch-2-pro-controller",
+          "hook": "Nature documentary: you discovering zelda switch 2 pro controller?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 90,
+            "failed": []
+          },
+          "outcome": {
+            "views": 1,
+            "clicks": 0
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": "patrick lynch mt lebanon",
+          "kinds": [
+            "harm"
+          ],
+          "why": "about harm to people (Death): not something to parody or make a trend film of"
+        },
+        {
+          "topic": "Ramayana: Part 1",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Ramayana: Part 1\" (20261106)"
+        },
+        {
+          "topic": "Russell Brand",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Russell Brand\" (20261106)"
+        },
+        {
+          "topic": "did the stock market crash today",
+          "kinds": [
+            "harm"
+          ],
+          "why": "about harm to people (crash): not something to parody or make a trend film of"
+        },
+        {
+          "topic": "detención",
+          "kinds": [
+            "harm"
+          ],
+          "why": "about harm to people (Arrestan): not something to parody or make a trend film of"
+        }
+      ],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261107",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "review",
+          "label": "Product-review parody",
+          "topic": "2026 United States elections",
+          "name": "2026 United States elections",
+          "film": "20261107-review-2026-united-states-elections",
+          "hook": "Rating 2026 United States elections like a product: worth it?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 90,
+            "failed": []
+          }
+        },
+        {
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "valencia c. f. - real madrid",
+          "name": "valencia c. f. - real madrid",
+          "film": "20261107-lyric-valencia-c-f-real-madrid",
+          "hook": "Is valencia c. f. - real madrid the song of the day?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": false,
+            "score": 86,
+            "hookScore": 65,
+            "failed": [
+              "captions"
+            ]
+          }
+        },
+        {
+          "format": "pov",
+          "label": "POV skit",
+          "topic": ".xyz",
+          "name": ".xyz",
+          "film": "20261107-pov-xyz",
+          "hook": "POV: your group chat hears about .xyz",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 65,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": "Ramayana: Part 1",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Ramayana: Part 1\" (20261107)"
+        },
+        {
+          "topic": ".xxx",
+          "kinds": [
+            "adult"
+          ],
+          "why": "adult content"
+        }
+      ],
+      "verdict": "waiting"
+    }
+  ]
+}

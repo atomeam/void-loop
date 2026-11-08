@@ -1,0 +1,34 @@
+{
+ "at": "2026-11-07T18:35:16.593Z",
+ "sha": "c3341541d54625c71c2f1fb33c58d92f03ac0f4a",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42398692773",
+ "suite": "browser suite on main",
+ "checks": [
+  "phone polish: Agents is fully inside the nav bar and the page is not wider than the screen",
+  "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "domains/void.agents.log.md",
+  "tools/bench.json",
+  "tools/card-cycle.json",
+  "tools/grow-self.state.json",
+  "void-live-deploy/self.json",
+  "void-live-deploy/sitemap.xml",
+  "void-live-deploy/skills/deps.json",
+  "void-live-deploy/skills/families.json",
+  "void-live-deploy/skills/guide.json",
+  "void-live-deploy/skills/index.json",
+  "void-live-deploy/void.asks.json"
+ ],
+ "shards": [
+  3
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-07T20:05:41.712Z",
+ "closedBy": "8ef6f592767f181c3ac0040b9f06934c03d128bf",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42407481613",
+ "minutes": 90
+}

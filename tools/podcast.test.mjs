@@ -67,3 +67,11 @@ console.log('podcast daily: ok');
   assert.match(step, /ffmpeg-release-amd64-static/, 'a static build when apt gives nothing');
   assert.match(step, /command -v ffprobe/, 'podcast.mjs needs ffprobe as well as ffmpeg');
 }
+{
+  // 2026-11-06: episode 3 reached main and not the site, because a push with the Actions token starts no deploy
+  const wfy = readFileSync(new URL('../.github/workflows/verse-podcast.yml', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+  const put = wfy.slice(wfy.indexOf('- name: Put it on main'));
+  assert.match(put, /git push origin HEAD:main[\s\S]{0,200}gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/, 'the episode push starts the deploy');
+  assert.match(put, /GH_TOKEN: \$\{\{ github\.token \}\}/, 'gh has a token');
+  assert.match(wfy, /permissions:\n  contents: write\n  actions: write/, 'the job may start the deploy');
+}

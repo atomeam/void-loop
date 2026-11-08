@@ -176,12 +176,25 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 /** The second try of each load over the ceiling, made once the pool is done, one at a time (issue #2328). slots: case results; a slow
  * one carries loadRecheck { c, r }, the judge's inputs. timeAlone(path) loads the page alone and returns its ms. The faster of the two
  * loads counts, the case is judged again with it and the same limits, and loadRecheck is removed from every slot. A load that is still
- * over the ceiling alone stays a failure: a slow site stays slow twice. */
+ * over the ceiling alone stays a failure: a slow site stays slow twice.
+ * The load is the page's, not the ask's: every ask case loads the same home page before it types anything, so a run times that page
+ * about 90 times. One of them over the ceiling twice is the network's tail, not a slow page (issue #2364: "longevity trial watch" filed for
+ * a 1233 ms home page load while the run's median home page load was 424 ms; #2328 the same). So the page's median load over the
+ * run counts too: a case fails its load only when the page is slow alone and slow across the run. */
+export const medianLoads = (slots) => {
+  const by = {};
+  for (const s of slots) { const ms = s && (s.loadRecheck ? s.loadRecheck.r.loadMs : s.loadMs); if (!Number.isFinite(ms)) continue;
+    const path = (s.loadRecheck && s.loadRecheck.c.path) || s.path || '/'; (by[path] = by[path] || []).push(ms); }
+  return Object.fromEntries(Object.entries(by).map(([k, v]) => { v.sort((a, b) => a - b); return [k, v[v.length >> 1]]; }));
+};
 export async function recheckSlowLoads(slots, limits = {}, timeAlone) {
+  const median = medianLoads(slots);
   for (let k = 0; k < slots.length; k++) {
     const s = slots[k]; if (!s || !s.loadRecheck) continue;
     const { c, r } = s.loadRecheck; let loadMs = r.loadMs;
     if (limits.loadMs && loadMs > limits.loadMs) { try { loadMs = Math.min(loadMs, await timeAlone(c.path)); } catch (_) {} }
+    const med = median[c.path || '/'];
+    if (limits.loadMs && loadMs > limits.loadMs && Number.isFinite(med) && med <= limits.loadMs) { console.log('ok   ' + (c.ask || c.path) + ' · ' + loadMs + ' ms twice, but the page\'s median load this run is ' + med + ' ms: the network\'s tail, not a slow page'); loadMs = med; }
     const { loadRecheck, ...rest } = s, v = judge(c, { ...r, loadMs }, limits);
     slots[k] = { ...rest, ...v, loadMs };
     if (loadMs !== r.loadMs) console.log((v.ok ? 'ok   ' : 'FAIL ') + (c.ask || c.path) + ' · load again, alone: ' + loadMs + ' ms (first ' + r.loadMs + ' ms beside the other open cases)' + (v.ok ? '' : ' · ' + v.why.join('; ')));
@@ -212,7 +225,7 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     const slowLoad = !!(suite.limits && suite.limits.loadMs && loadMs > suite.limits.loadMs);
     if (c.page) { await p.waitForTimeout(1500); const text = (await p.evaluate(() => document.body.innerText)).slice(0, 1500);
       const v = judge(c, { text, errors, loadMs }, suite.limits);
-      console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); return { ...v, ...meta(c), loadMs, chars: text.trim().length, ...(slowLoad ? { loadRecheck: { c, r: { text, errors, loadMs } } } : {}) }; }
+      console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); return { ...v, ...meta(c), path: c.path, loadMs, chars: text.trim().length, ...(slowLoad ? { loadRecheck: { c, r: { text, errors, loadMs } } } : {}) }; }
     await p.waitForSelector('#input', { timeout: 15000 }); await p.waitForTimeout(800);
     const before = await p.evaluate(() => ({ n: document.querySelectorAll('.thing').length, t: document.body.innerText }));
     await p.fill('#input', c.ask); await p.keyboard.press('Enter');

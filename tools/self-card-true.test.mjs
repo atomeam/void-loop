@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { onRequestGet } from '../void-live-deploy/functions/api/reflect.js';
 import { sinceSection, selfSections, foldAsks, foldBuilt, shippedLine, joinNames } from '../void-live-deploy/lib/self-blocks.js';
-import { dupAsk, sameOrDup, stripCites, uncite } from '../void-live-deploy/lib/ask-same.js';
+import { dupAsk, sameOrDup, stripCites, uncite, askIds } from '../void-live-deploy/lib/ask-same.js';
 import { untag, parseVoice, builtAsks } from '../void-live-deploy/lib/voice.js';
 import { asksOf } from './asks-link.mjs';
 import { changedLine, cardModel, cardHtml } from '../void-live-deploy/skills/wants.js';
@@ -37,7 +37,7 @@ test('1. "Since you last looked" never shows a fall in asks built; it shows the 
     asked: [{ ask: 'Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js', at: '2026-11-06T10:00:00Z', times: 1 }] } };
   const s = sinceSection(v, { at: '2026-11-06T09:00:00Z', built: 246, total: 262 }, now);
   assert.ok(!/-\d+ asks? built/.test(s.blocks[0].text), s.blocks[0].text);
-  assert.match(s.blocks[0].text, /^\+1 ask built/);
+  assert.match(s.blocks[0].text, /^\+1 asks built,/, 'the counter keeps its name, as +1 skills does (the browser check "self card never repeats" reads it)');
   const none = sinceSection({ ...v, follow: { ...v.follow, recent: [], asked: [] } }, { at: '2026-11-06T09:00:00Z', built: 246, total: 262 }, now);
   assert.match(none.blocks[0].text, /^No new counts/);
 });
@@ -70,6 +70,18 @@ test('3. one ask said in other words is one row: the images exam three ways, one
   const list = sec.blocks.find((b) => b.t === 'list');
   assert.equal(list.items.length, 2);
   assert.equal(sec.count, '2 waiting');
+});
+
+test('3. numbered asks stay apart on the card: "number 3" and "number 4" are two asks, a changed count is still one (browser check "void asks batch 4")', () => {
+  const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
+  assert.equal(askIds(long(3)), '3'); assert.equal(askIds('Fix issue #12 on the stage'), '12'); assert.equal(askIds('ask 7: give the map terrain'), '7');
+  assert.equal(askIds('Provide a list of the 17 checked and 6 tested skills'), '', 'a count is not which one');
+  const built = foldBuilt(Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'w', at: '2026-10-18T00:00:00Z', times: 1 })));
+  assert.equal(built.length, 30, 'thirty numbered builds are thirty rows');
+  assert.equal(foldAsks([{ ask: long(1) }, { ask: long(2) }]).length, 2);
+  assert.equal(foldBuilt([{ ask: 'Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status', what: 'a', at: '2026-11-05T10:00:00Z' },
+    { ask: 'Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status', what: 'b', at: '2026-11-04T10:00:00Z' }]).length, 1, 'only the counts changed: one ask');
+  assert.equal(foldBuilt([{ ask: long(4), what: 'a', at: '2026-11-05T10:00:00Z' }, { ask: long(4) + ' [S1]', what: 'b', at: '2026-11-04T10:00:00Z' }]).length, 1, 'the same numbered ask twice: one row');
 });
 
 test('3. asks merge where they are written: within one reply, and in the voice log\'s ids', () => {

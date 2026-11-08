@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { failedJobs, failedStep, cleanLine, stepTail, stepLines, failLines, entryOf, parseActions, failuresFor, actionsHtml, TAIL } from '../void-live-deploy/lib/actions-failure.js';
-import { readRun, readActions, writeEntry } from './actions-failure.mjs';
+import { readRun, readActions, writeEntry, ghGet } from './actions-failure.mjs';
 import skill, { actOf } from '../void-live-deploy/skills/incident-autopsy.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -84,6 +84,22 @@ test('readRun reads the run, its jobs and only the failed jobs\' logs, through t
   assert.match(e.jobs[1].note, /HTTP 403/);
   assert.equal(readRun('7; rm -rf /', get), null);
   assert.equal(readRun(8, () => JSON.stringify({ jobs: [{ id: 1, name: 'ok', conclusion: 'success' }] })), null, 'no failed job, no record');
+});
+
+test('ghGet: a log gh will not print for its colour codes is read once more with the flag gh names; a GitHub refusal is not retried', () => {
+  // run 42184801438 (2026-11-06): every failed job's record said "log not read: the response contains terminal escape sequences"
+  const fail = (msg) => { const e = new Error('Command failed'); e.stderr = msg + '\n'; throw e; };
+  const calls = [];
+  const guard = (cmd, args) => { calls.push(args); if (!args.includes('--allow-escape-sequences')) fail('the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway'); return '\u001b[36mFAIL x\u001b[0m'; };
+  assert.equal(ghGet('repos/a/b/actions/jobs/1/logs', guard), '\u001b[36mFAIL x\u001b[0m');
+  assert.deepEqual(calls, [['api', 'repos/a/b/actions/jobs/1/logs'], ['api', '--allow-escape-sequences', 'repos/a/b/actions/jobs/1/logs']]);
+  const asked = [];
+  const gone = (cmd, args) => { asked.push(args); fail('gh: HTTP 410: Gone'); };
+  assert.deepEqual(ghGet('repos/a/b/actions/jobs/2/logs', gone), { error: 'gh: HTTP 410: Gone' });
+  assert.equal(asked.length, 1, 'a refused log is said, never worked around');
+  const twice = (cmd, args) => fail(args.includes('--allow-escape-sequences') ? 'gh: HTTP 403' : 'pass --allow-escape-sequences to output it anyway');
+  assert.deepEqual(ghGet('p', twice), { error: 'gh: HTTP 403' });
+  assert.equal(ghGet('p', () => 'ok'), 'ok');
 });
 
 test('the store: one file per run, read back newest first; the commit and job filters keep every job name of the run', () => {

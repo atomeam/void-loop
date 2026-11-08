@@ -1,0 +1,113 @@
+{
+ "id": "shopping",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 105,
+   "best": 1027,
+   "evidence": "Verse (/store/) 105 ms to the load event (median of 3, phone width) vs Amazon 1027 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/store/) 3 of 3 loads answered vs Amazon 3 of 3 loads answered",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/store/) 0 px sideways overflow at 390 px vs Amazon 0 px sideways overflow at 390 px",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 45,
+   "evidence": "Verse (/store/) 0 unnamed controls or images vs Amazon 45 unnamed controls or images",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/store/) 1 (1: the page shows itself again with the network cut) vs Amazon 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 2,
+   "evidence": "Verse (/store/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Amazon 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 55,
+   "evidence": "Verse (/store/) 1 design defects vs Amazon 55 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.34), Amazon (9 low-contrast texts, 46 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 5,
+   "best": 5,
+   "evidence": "Verse (/store/) 5 of 5 right against the worked-out answer; judged against the standard, not Amazon (the site is not asked)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "of": 5
+  },
+  "catalogue": {
+   "verdict": "equal-and-better",
+   "verse": 7,
+   "best": 7,
+   "evidence": "Verse (/store/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:35:21.154Z",
+   "of": 7,
+   "part": true
+  },
+  "checkout": {
+   "verdict": "equal-and-better",
+   "verse": 7,
+   "best": 7,
+   "evidence": "Verse (/store/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:35:21.154Z",
+   "of": 7,
+   "part": true
+  },
+  "delivery tracking": {
+   "verdict": "equal-and-better",
+   "verse": 6,
+   "best": 6,
+   "evidence": "Verse (/store/) 6 of 6 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:35:21.154Z",
+   "of": 6,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 23,
+   "best": 2,
+   "evidence": "Verse (/store/) 23 of 23 things a full answer shows vs Amazon 2 of 23 things a full answer shows (Verse lacks: none; site lacks: keyword search, a sort control, a count of what is shown, availability, a 3D preview, the changelog, an order lookup, order codes, license keys, signed downloads, links that last 24 hours, a receipt any time, a cart shared as a link, the cart kept on this device, works offline, no account, no ads, no trackers, the payment provider credited, ask Verse from the page, support the crew)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "of": 23,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7,
+   "best": 4.5,
+   "evidence": "Verse (/store/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs Amazon 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:35:21.154Z",
+   "siteRead": true
+  }
+ }
+}

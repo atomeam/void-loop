@@ -1,6 +1,7 @@
 // tools/tower-alive.mjs: rivals that redirect off their own domain, error out or are parked are dropped; fixture redirects served locally
 import test from 'node:test'; import assert from 'node:assert/strict'; import http from 'node:http'; import fs from 'node:fs';
-import { judge, judgeOne, rivalHost, ownHost, fold, isGone, check } from './tower-alive.mjs';
+import { judge, judgeOne, rivalHost, ownHost, fold, isGone, check, nonSiteOf, nonSiteKind } from './tower-alive.mjs';
+import { settledHtml } from '../void-live-deploy/skills/tower.js';
 import { advance } from './tower-target.mjs';
 import { historyOf, fileOf } from './assimilated.mjs';
 
@@ -51,6 +52,35 @@ test('the repo drops unitingchurch.org.au as parked', () => {
   assert.equal(row.outcome, 'parked');
 });
 
+// the real case (owner, 2026-11-06): the tower stood on id5-sync.com, whose home page is the one line "This is ID5."
+const id5 = (shape = {}) => ({ url: 'https://id5-sync.com/', final: 'https://id5-sync.com/', status: 200, text: '\nThis is ID5.', shape: { chars: 12, sample: 'This is ID5.', controls: 0, links: 0, forms: 0, frames: 0, canvas: 0, scripts: 0, bytes: 64, ...shape } });
+test('id5-sync.com is settled as a non-site with the evidence of the fetch; the target moves on in the same run', () => {
+  const j = judge('id5-sync.com', [id5(), { ...id5(), url: 'http://id5-sync.com/' }], { nonSite: true });
+  assert.equal(j.alive, false); assert.equal(j.status, 'non-site'); assert.equal(j.kind, 'an ad-tracking or sync endpoint');
+  assert.match(j.why, /12 characters of text \("This is ID5\."\), 0 controls, 0 links, 0 forms/); assert.match(j.why, /Verse lacks none of its features/);
+  const gone = fold({}, [{ rival: 'id5-sync.com', ...j }], 't1').gone;
+  assert.equal(gone['id5-sync.com'].status, 'non-site'); assert.equal(gone['id5-sync.com'].shape.controls, 0);
+  const { file, why } = advance({ id: 'id5-sync.com', since: '2026-11-06' }, [{ id: 'dalyfeds.com', n: 0, m: 12 }], '2026-11-06', gone);
+  assert.equal(file.id, 'dalyfeds.com'); assert.match(why, /^settled id5-sync\.com as a non-site/);
+  assert.deepEqual(file.settled.map((x) => x.id), ['id5-sync.com']); assert.ok(!(file.passed || []).some((r) => r.id === 'id5-sync.com'));
+  assert.match(settledHtml(file, (x) => x), /Settled: id5-sync\.com \(ad-tracking or sync endpoint, not a site\)/);
+});
+test('a non-site needs every sign: a link, a control, a form, a frame, more text, a loading screen or no own host keeps it a site', () => {
+  assert.equal(nonSiteOf('id5-sync.com', id5()).kind, 'an ad-tracking or sync endpoint');
+  for (const s of [{ links: 1, controls: 1 }, { controls: 1 }, { forms: 1 }, { frames: 1 }, { canvas: 1 }, { chars: 900 }, { chars: 0, sample: '' }, { sample: 'Loading...' }]) assert.equal(nonSiteOf('id5-sync.com', id5(s)), null, JSON.stringify(s));
+  assert.equal(nonSiteOf('id5-sync.com', { ...id5(), final: 'https://elsewhere.com/' }), null);
+  assert.equal(nonSiteOf('id5-sync.com', { ...id5(), status: 500 }), null);
+  // only a pageless host at the front of the queue is judged this way: icanhazip.com's one line is a service Verse answers at /ip
+  assert.equal(judge('icanhazip.com', [{ url: 'https://icanhazip.com/', final: 'https://icanhazip.com/', status: 200, text: '1.2.3.4', shape: { chars: 7, sample: '1.2.3.4', controls: 0, links: 0, forms: 0, frames: 0, canvas: 0 } }]).alive, true);
+  // a stub on one scheme and a real page on the other is a site
+  assert.equal(judge('id5-sync.com', [id5(), { ...id5({ links: 4, controls: 4, chars: 900 }), url: 'http://id5-sync.com/' }], { nonSite: true }).alive, true);
+});
+test('what a non-site is for, from its host and text', () => {
+  assert.equal(nonSiteKind('firefox-portal-detection.com', 'success'), 'a connectivity check');
+  assert.equal(nonSiteKind('cdn.example.net', 'x'), 'a CDN or asset host');
+  assert.equal(nonSiteKind('quiet-domain.org', 'hello'), 'an inert stub page');
+});
+
 // fixture redirects in a real browser: every *.test host maps to a local server that answers by Host
 const exe = process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome';
 test('browser: server, meta-refresh and script redirects off the domain are caught; the own site passes', { skip: !fs.existsSync(exe) }, async () => {
@@ -65,6 +95,7 @@ test('browser: server, meta-refresh and script redirects off the domain are caug
     if (h === 'meta.test') return page('<meta http-equiv="refresh" content="0;url=' + park + '">wait');
     if (h === 'js.test') return page('<script>setTimeout(function(){location.href="' + park + '"},300)</script>wait');
     if (h === 'err.test') return page('boom', 500);
+    if (h === 'sync.test') return page('This is ID5.');
     page('?', 404);
   });
   await new Promise((r) => srv.listen(0, '127.0.0.1', r)); var port = srv.address().port;
@@ -76,5 +107,7 @@ test('browser: server, meta-refresh and script redirects off the domain are caug
     assert.equal((await check(b, 'err.test', at('err.test'))).status, 'gone');
     assert.equal((await check(b, 'own.test', at('own.test'))).alive, true);
     assert.equal((await check(b, 'own2.test', at('own2.test'))).alive, true);
+    const ns = await check(b, 'sync.test', { ...at('sync.test'), nonSite: true }); assert.equal(ns.status, 'non-site'); assert.equal(ns.shape.controls, 0); assert.equal(ns.shape.chars, 12);
+    assert.equal((await check(b, 'own.test', { ...at('own.test'), nonSite: true })).alive, true);
   } finally { await b.close(); srv.close(); }
 });

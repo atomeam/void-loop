@@ -270,137 +270,27 @@
    "date": "2026-11-04",
    "ask": "system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff)",
    "from": "new idea by growth agent; helper/system-status"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
+   "from": "new idea by growth agent; helper/heavy-lift-map"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not…",
+   "from": "new idea by growth agent; helper/monitor-pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-11-06",
+   "ask": "verify-pack skill: propose the tests, checks and verification Verse will own for a process so the client does not do…",
+   "from": "new idea by growth agent; helper/verify-pack"
   }
  ],
- "open": [
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse as a tool inside other AIs",
-   "from": "void.plan.md Next #11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "WebMCP origin trial",
-   "from": "tools.json, navigator.modelContext feature-detected"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything that passes through Verse is input",
-   "from": "void.plan.md Next #14"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13",
-   "waits": "the miss board"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Fix pages that bring buyers",
-   "from": "claude, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Shared Voids, live",
-   "from": "void.plan.md Next #10"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Tasks that keep running after you leave, with an approve card",
-   "from": "void.assimilate.md row 3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "One owner page: board, agent log and live checks",
-   "from": "void.assimilate.md row 9"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything built before becomes a skill",
-   "from": "void.plan.md Next #8"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Clarify business ideas into system plans",
-   "from": "growth, 2026-11-03"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "archive/script_0.js and the English word list are still the top of the salvage queue",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "a country whose capital item has neither an English label nor an English Wikipedia sitelink still fails and stays a fix job",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "the news section chips still scroll sideways on a phone, on purpose",
-   "from": "cursor 2026-11-05"
-  }
- ],
+ "open": [],
  "games": [
   "tictactoe",
   "othello",
@@ -573,100 +463,101 @@
    "last": "2026-10-07"
   }
  ],
- "building": {
-  "at": "2026-10-18T08:58:46Z",
-  "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
- },
  "commits": [
   {
-   "at": "2026-11-06T16:12:58Z",
-   "subject": "Verse loop: nightly (#2436)"
+   "at": "2026-11-07T19:51:43Z",
+   "subject": "flake + automerge: chess thinking-line read live; append-mostly conflicts settle in merge-gate/merge-main (#2509)"
   },
   {
-   "at": "2026-11-06T16:10:43Z",
-   "subject": "Movie pick: read each film's genre from Wikidata, so the match score can test it (#2437)"
+   "at": "2026-11-07T19:51:04Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T16:10:26Z",
-   "subject": "Morning routine: \"make me a morning routine starting at 6:30\" is a ritual, not a recipe timer (#2439)"
+   "at": "2026-11-07T19:49:54Z",
+   "subject": "Failed jobs read: run 42406911717 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-06T16:10:05Z",
-   "subject": "Podcast: a hung ffmpeg install no longer cancels the daily episode (#2447)"
+   "at": "2026-11-07T19:49:32Z",
+   "subject": "Incident: the browser suite failed on 839683ed (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-06T16:09:56Z",
-   "subject": "Outcome exam: podcasts 86.4"
+   "at": "2026-11-07T19:46:42Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-06T16:08:18Z",
+   "at": "2026-11-07T19:44:50Z",
+   "subject": "Outcome exam: maps 89.2"
+  },
+  {
+   "at": "2026-11-07T19:44:06Z",
+   "subject": "Failed jobs read: run 42405062843 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T19:42:00Z",
+   "subject": "Fix verify-pack and monitor-pack so the suite stops crashing on them (#2514)"
+  },
+  {
+   "at": "2026-11-07T19:41:21Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-07T19:35:38Z",
+   "subject": "Fix three flaky browser checks by reading their source of truth (#2513)"
+  },
+  {
+   "at": "2026-11-07T19:34:52Z",
+   "subject": "team-1626: Envoy Router & Shelf fix (pre-router join/work-queue, semantic refusal check, profit-splitter 40/20/22/18, Made shelf…"
+  },
+  {
+   "at": "2026-11-07T19:32:24Z",
+   "subject": "Shorts loop: today's trial and verdicts"
+  },
+  {
+   "at": "2026-11-07T19:31:41Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-07T19:19:26Z",
+   "subject": "Failed jobs read: run 42404325155 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-07T19:19:08Z",
+   "subject": "Incident: the browser suite failed on 0a1501cf (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-07T19:13:14Z",
+   "subject": "Outcome exam: maps 89.2"
+  },
+  {
+   "at": "2026-11-07T19:09:53Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-07T19:05:53Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo draw yours"
+  },
+  {
+   "at": "2026-11-07T19:05:31Z",
+   "subject": "Incident: the browser suite failed on 724b54d3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-07T19:03:38Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-06T16:06:16Z",
-   "subject": "Failed jobs read: run 42244869099 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-06T16:06:06Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T16:05:43Z",
-   "subject": "Main green: list groceries fills the open list, no-list removes answer at once, list card types over the seeded title (#2426)"
-  },
-  {
-   "at": "2026-11-06T16:05:26Z",
-   "subject": "Incident: the browser suite failed on 923ce150 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-06T16:05:13Z",
-   "subject": "Automerge sweep: safety-check on the chosen batch only, so the sweep reaches the suite gate (#2425)"
-  },
-  {
-   "at": "2026-11-06T16:03:51Z",
-   "subject": "Lab: 475 experiments live at /lab/, 23 waiting for a fix (#2441)"
-  },
-  {
-   "at": "2026-11-06T16:01:42Z",
-   "subject": "Film card: link the Internet Archive only as a checked free film that plays here (#2442)"
-  },
-  {
-   "at": "2026-11-06T16:01:01Z",
-   "subject": "Team jobs: one piece of work to one seat, the highest leverage first, no busywork (#2443)"
-  },
-  {
-   "at": "2026-11-06T15:59:50Z",
-   "subject": "Lab skill: \"verse lab\" opens the lab, and the book (the menu) lists it (#2445)"
-  },
-  {
-   "at": "2026-11-06T15:59:03Z",
-   "subject": "Daily film: the take folder is absolute, so ffmpeg finds the frames (#2446)"
-  },
-  {
-   "at": "2026-11-06T15:52:41Z",
-   "subject": "Site test: fix: \"films by Kurosawa\" load 1510 ms > 1200"
-  },
-  {
-   "at": "2026-11-06T15:44:05Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-06T15:41:39Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-06T15:38:18Z",
-   "subject": "Outcome exam: podcasts 86.4"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Verify reds, the sum and the tray chip (cursor, 2026-11-05)",
-    "line": "a sum the page already knows answers before the skill lanes; a walkthrough chip is placed once the new thing is on the stage, so the drag does not measure it and then watch the bar jump. #2250 stays open until Verse verify and the site…"
+    "name": "Translate: a bare word asks which language, and the French phrasing answers…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2512. \"translate spring\" now opens a card that says no language was named and asks which one (the exam's ambiguous case), \"comment dit-on bonjour en anglais\" is read as French and…"
+   },
+   {
+    "name": "Growth card: a touched branch keeps its reading through a bloom, and a late…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check…"
+   },
+   {
+    "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
    },
    {
     "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
@@ -679,14 +570,6 @@
    {
     "name": "Closer on the figure (cursor, 2026-11-05)",
     "line": "\"closer on the figure\" answers from zoom-figure before the page says waking up, while the rest of the skills are still loading. Nothing else takes the phrase. It is 162nd of 342. https://github.com/atomeam/void-loop/pull/2292"
-   },
-   {
-    "name": "Blank home, videos keep playing (cursor, 2026-11-05)",
-    "line": "the phone home is the void and the ask bar. The wordmark, the heading and the Install line are not shown. Touching, dragging or moving a Verse Short or a video card keeps the clip playing from where it was.…"
-   },
-   {
-    "name": "Phone panel and tray drag (cursor, 2026-11-05)",
-    "line": "a phone Go panel is fitted again when the whisper lifts the ask dock, so How to play ends above the bar; a walkthrough tray chip does not capture the pointer and the panel stays put while it is held, so the drop still lands.…"
    }
   ],
   "ladders": [
@@ -841,8 +724,8 @@
   }
  ],
  "visible": {
-  "day": 49,
-  "week": 201
+  "day": 14,
+  "week": 229
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -894,13 +777,13 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 111 (490 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-06T12:58Z",
+  "line": "People this week: 115 (620 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-07T11:44Z",
   "source": "verse"
  },
  "tower": {
-  "target": "id5-sync.com",
-  "since": "2026-11-06",
+  "target": "oneyeard.com",
+  "since": "2026-11-07",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
@@ -908,6 +791,6 @@
    "random.org"
   ],
   "beaten": 2,
-  "total": 1301
+  "total": 1310
  }
 }

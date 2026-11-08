@@ -64,9 +64,13 @@ export function observe({ rows = null, prs = null, issues = null, will = null, t
       why: stuck ? tries + ' tries, nothing shipped' + (run.why ? '; the last said: ' + clip(run.why, 140) : '') : run.shipped ? 'its last run shipped' : 'fewer than ' + WILL_TRIES + ' tries so far', url: gh(run.pr) });
   }
   if (team && Number.isFinite(+team.waiting) && Array.isArray(team.members)) {
-    const n = Math.max(0, Math.round(+team.waiting)), here = team.members.filter((m) => m && m.state === 'here').length, stuck = n > 0 && !here;
-    out.push({ key: 'team', kind: 'team', ok: !stuck, what: stuck ? n + ' job' + (n === 1 ? '' : 's') + ' wait on the team and no agent is here' : n + ' job' + (n === 1 ? '' : 's') + ' waiting, ' + here + ' agent' + (here === 1 ? '' : 's') + ' here',
-      why: stuck ? team.members.length + ' agent' + (team.members.length === 1 ? ' is' : 's are') + ' on the team, all away' : 'the team is taking jobs', url: '' });
+    // Verse's own coder takes the same queue when no agent is here (/api/team coder: held now, shipped and tried in 24 hours)
+    const cd = team.coder && typeof team.coder === 'object' ? team.coder : null, held = cd ? Math.max(0, Math.round(+cd.building || 0)) : 0, shipped = cd ? Math.max(0, Math.round(+cd.shipped24 || 0)) : 0;
+    const n = Math.max(0, Math.round(+team.waiting)), here = team.members.filter((m) => m && m.state === 'here').length, coding = held + shipped > 0, stuck = n > 0 && !here && !coding;
+    const jobs = n + ' job' + (n === 1 ? '' : 's'), coderSays = 'Verse\'s own coder holds ' + held + ' and shipped ' + shipped + ' in 24 hours';
+    out.push({ key: 'team', kind: 'team', ok: !stuck,
+      what: stuck ? jobs + ' wait on the team, no agent is here' + (cd ? ' and Verse\'s own coder took none in 24 hours' : '') : !here && coding ? jobs + ' waiting: ' + coderSays.replace(/^V/, 'v') : jobs + ' waiting, ' + here + ' agent' + (here === 1 ? '' : 's') + ' here',
+      why: stuck ? team.members.length + ' agent' + (team.members.length === 1 ? ' is' : 's are') + ' on the team, all away' + (cd ? '; ' + Math.max(0, Math.round(+cd.tried24 || 0)) + ' coder tries in 24 hours, none shipped' : '') : !here && coding ? 'no agent is here, so Verse\'s own runner takes the jobs' : 'the team is taking jobs', url: '' });
   }
   return out;
 }

@@ -1,0 +1,40 @@
+{
+ "floor": "protopage.com",
+ "verse_page": null,
+ "source": "auto",
+ "sites": {},
+ "crawl": {
+  "sites": {
+   "protopage.com": {
+    "floor": "protopage.com",
+    "url": "https://protopage.com/",
+    "robots": true,
+    "rendered": 0,
+    "sitemaps": 0,
+    "urls_found": 0,
+    "pages": 1,
+    "fetched": 2,
+    "skipped": {
+     "robots": 0,
+     "failed": 0
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://protopage.com/"
+      ],
+      "features": []
+     }
+    ],
+    "features": [],
+    "verse_pages": 0,
+    "verse_urls": [],
+    "crawled": "2026-11-07"
+   }
+  },
+  "updated": "2026-11-07"
+ }
+}

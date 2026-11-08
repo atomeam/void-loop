@@ -1,0 +1,27 @@
+/* the lab's tools (the good idea inside each cluster of hourly experiments, made into a page a person comes back for): one look, deep space dark */
+:root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --panel: rgba(255,255,255,.04); --accent: #a58bff; --good: #8ae6b6; --bad: #ff8a7e; }
+html, body { margin: 0; background: radial-gradient(ellipse at 50% 0, #1d1830, #07060b 70%) fixed; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; min-height: 100vh; }
+main { max-width: 860px; margin: 0 auto; padding: 18px 16px 72px; }
+h1 { font-size: 24px; margin: 6px 0 2px; }
+.lead { color: var(--soft); margin: 0 0 14px; }
+h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+.panel { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); padding: 14px; margin: 10px 0; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+button.main { background: var(--accent); color: #120f1c; border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: .45; cursor: default; }
+input, select, textarea { font: inherit; font-size: 15px; color: inherit; background: #0b0a10; border: 1px solid var(--line); border-radius: 10px; padding: 7px 9px; min-height: 40px; box-sizing: border-box; }
+textarea { width: 100%; min-height: 200px; line-height: 1.6; resize: vertical; }
+input[type=color] { padding: 2px; width: 48px; }
+label { color: var(--soft); font-size: 14px; }
+.big { font-size: clamp(30px, 9vw, 54px); font-weight: 700; font-variant-numeric: tabular-nums; margin: 4px 0; }
+.note { font-size: 13px; color: var(--soft); }
+.ok { color: var(--good); } .bad { color: var(--bad); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; font-size: 14px; }
+.drop { border: 2px dashed var(--line); border-radius: 14px; padding: 22px 14px; text-align: center; color: var(--soft); cursor: pointer; }
+.drop.over { border-color: var(--accent); color: var(--ink); }
+.from { font-size: 13px; color: var(--soft); margin-top: 22px; }
+.from a, .tk-row a { color: var(--soft); }
+.tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); margin-top: 18px; }
+.tk-ask input { min-height: 34px; font-size: 13px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

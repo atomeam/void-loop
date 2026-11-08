@@ -22,6 +22,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write # to start the deploy after the push (a push with the Actions token starts no workflow)
 
 jobs:
   episode:
@@ -79,14 +80,20 @@ jobs:
           PIPER: python -m piper
         run: node tools/podcast.mjs --make --days 1 --voices ~/piper-voices ${{ inputs.force && '--force' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Put it on main
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git add void-live-deploy/podcast
           git diff --cached --quiet && { echo "no new episode"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Verse Out Loud: today's episode, read from the day's record"
+          # 2026-11-06: episode 3 reached main but not the site, because a push with the Actions token starts no deploy
           for i in 1 2 3 4; do
-            git push origin HEAD:main && exit 0
-            sleep $((2 ** i)); git pull --rebase origin main
+            if git push origin HEAD:main; then
+              gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
+              exit 0
+            fi
+            sleep $((2 ** i)); git pull --rebase --autostash origin main
           done
           exit 1

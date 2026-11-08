@@ -46,7 +46,11 @@ export function advance(old, floors, today, gone = {}) {
     why = 'passed ' + cur.id + ' (' + cur.n + '/' + cur.m + ', conquering in background)';
   }
   // a target whose domain is gone or parked (tools/tower-alive.mjs) gives way at once, logged, and never counts as passed
-  if (!why && old.id && isGone(old.id, gone)) { const g = gone[Object.keys(gone).find((h) => isGone(old.id, { [h]: 1 }))]; skipped.push({ id: old.id, at: today, why: old.id + ' is ' + g.status + ': ' + g.why }); why = skipped[skipped.length - 1].why; }
+  // a non-site (tools/tower-alive.mjs nonSiteOf; owner, 2026-11-06: id5-sync.com, an ad-tracker sync endpoint, stood as the site Verse had not
+  // beaten) is settled: logged on `settled` with the evidence of the fetch, never counted as passed, and the next site takes over in this run
+  const settled = (old.settled || []).slice();
+  for (const [h, g] of Object.entries(gone)) if (g && g.status === 'non-site' && !settled.some((x) => x.id === h)) settled.push({ id: h, at: today, as: 'non-site', kind: g.kind || 'a non-site', why: g.why });
+  if (!why && old.id && isGone(old.id, gone)) { const g = gone[Object.keys(gone).find((h) => isGone(old.id, { [h]: 1 }))]; skipped.push({ id: old.id, at: today, why: g.status === 'non-site' ? 'settled ' + old.id + ' as a non-site (' + (g.kind || 'nothing on it to use') + '): ' + g.why : old.id + ' is ' + g.status + ': ' + g.why }); why = skipped[skipped.length - 1].why; }
   for (let i = passed.length - 1; i >= 0; i--) if (isGone(passed[i].id, gone)) passed.splice(i, 1);
   const st = old.id && !why ? stallCheck(old, floors, today) : { stalled: false };
   if (st.stalled) { skipped.push({ id: old.id, at: today, why: st.why }); why = st.why; }
@@ -69,7 +73,7 @@ export function advance(old, floors, today, gone = {}) {
   const about = 'The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse\'s own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than ' + HOLD_DAYS + ' day (tools/tower-target.mjs).';
   const base = { about, id: next, since: next === old.id ? old.since || today : today, n: next === old.id && st.n !== undefined ? st.n : nf.n || 0, progressAt: next === old.id ? st.progressAt || old.progressAt || today : today };
   if (old.season) base.season = old.season; if (old.archived) base.archived = old.archived;
-  return { file: { ...base, ...(passed.length ? { passed } : {}), ...(background.length ? { background } : {}), ...(skipped.length ? { skipped } : {}), ...(why ? { last: { at: today, why } } : old.last ? { last: old.last } : {}) }, why };
+  return { file: { ...base, ...(passed.length ? { passed } : {}), ...(background.length ? { background } : {}), ...(skipped.length ? { skipped } : {}), ...(settled.length ? { settled: settled.slice(-40) } : {}), ...(why ? { last: { at: today, why } } : old.last ? { last: old.last } : {}) }, why };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   // the evidence the site serves (tools/tower-files.mjs assemble: the aggregate with each floor's own file over it), never the bare aggregate:

@@ -39,6 +39,13 @@ button { font: inherit; padding: 0.5rem 1rem; margin: 0.25rem; }
 <p id="hash" class="refusal">—</p>
 <p class="note">Default-deny external clocks. Uses only local monotonic performance.now() for the mark pair; the numeric delta is computed then immediately discarded before hashing. No Date, no network time, no storage of measurement, no attestation. Static-friendly. Cloudflare-friendly. No token markup.</p>
 <script src="app.js"></script>
-<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/notes/" data-tool="Notes">Use it: Notes</a></footer><script src="/lab/use-it.js" defer></script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+.vl-bar a { color:#717176 }
+a.vl-use { color:#717176 }
+#start { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+/* end verse design loop */
+</style>
 </body>
 </html>

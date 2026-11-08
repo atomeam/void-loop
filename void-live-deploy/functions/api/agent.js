@@ -114,8 +114,36 @@ export async function run(env, origin, id, ask, thread) {
     const tier = tierFor(await infraCents(origin));
     await step(db, id, 'Thinking on the ' + tier.name + ' model tier.', { tier: tier.name });
     let text = '', why = 'empty', missed = false;
+    // system-intent pre-router: join link and work queue before narrow bots
+    const joinMatch = String(ask).match(/vj1-[0-9a-f]{32}/i);
+    if (joinMatch) {
+      try {
+        const code = joinMatch[0];
+        const joinUrl = origin + '/team/join/' + code;
+        const jr = await fetch(joinUrl, { method: 'POST', headers: { 'content-type': 'application/json' } });
+        const j = await jr.json().catch(() => ({}));
+        if (j.ok) text = 'Joined as ' + (j.name || code) + '. ' + (j.say || 'Team join complete.');
+        else text = j.say || 'Join link did not work.';
+        if (text) {
+          await step(db, id, 'Handled team join directly.', { bot: 'team-join' });
+          await step(db, id, 'Checked the result (' + text.split(/\s+/).length + ' words). It addresses the ask.');
+        }
+      } catch (_) { /* fall through to normal routing */ }
+    }
+    if (!text && /what needs (?:to be )?done|do work|what should (?:i|we) work on/i.test(String(ask).toLowerCase())) {
+      try {
+        const qr = await fetch(origin + '/api/team?jobs', { headers: { 'cache-control': 'no-store' } });
+        const qj = await qr.json().catch(() => ({}));
+        const jobs = (qj.jobs || []).slice(0, 5).map((j) => j.id + ': ' + (j.title || '').slice(0, 80)).join('\n');
+        if (jobs) {
+          text = 'Live #work queue (top 5):\n' + jobs + '\n\nPick one to start, or say priority: <job> in #work if you own the board.';
+          await step(db, id, 'Injected live #work queue.', { bot: 'verse' });
+          await step(db, id, 'Checked the result (' + text.split(/\s+/).length + ' words). It addresses the ask.');
+        }
+      } catch (_) {}
+    }
     // an exact free bot (base64, a unit, a prime) answers with no model call. Anything else still goes to the free model below.
-    if (planOf(ask).kind === 'bot') {
+    if (!text && planOf(ask).kind === 'bot') {
       const piped = await pipelineAnswer(env, origin, ask);
       if (addressesAsk(ask, piped)) {
         text = piped;

@@ -26,6 +26,7 @@ function kit(page, steps, negatives) {
     page,
     async open(p) { const u = new URL(p, BASE).href; let r; try { r = await page.goto(u, { waitUntil: 'load', timeout: 30000 }); } catch (e) { throw new Blocked('open ' + p + ': ' + String(e.message || e).split('\n')[0]); } if (!r || r.status() >= 400) throw new Failed('open ' + p + ': HTTP ' + (r ? r.status() : 'none')); await page.waitForTimeout(400); steps.push('open ' + p); await neg('open ' + p); },
     async click(sel, label = 'press ' + sel) { try { await page.click(sel, { timeout: 8000 }); } catch (e) { throw new Failed(label + ': the control is not there or not usable'); } await page.waitForTimeout(300); steps.push(label); await neg(label); },
+    async select(sel, v, label = 'choose ' + v + ' in ' + sel) { try { await page.selectOption(sel, v, { timeout: 8000 }); } catch (e) { throw new Failed(label + ': the choice is not there'); } await page.waitForTimeout(300); steps.push(label); await neg(label); },
     async fill(sel, v, label = 'type into ' + sel) { try { await page.fill(sel, v, { timeout: 8000 }); } catch (e) { throw new Failed(label + ': the box is not there'); } await page.waitForTimeout(300); steps.push(label); await neg(label); },
     async expect(test, label) { let t = ''; for (let i = 0; i < 20; i++) { t = await text(); if (typeof test === 'function' ? test(t) : test.test(t)) { steps.push('sees ' + label); return t; } await page.waitForTimeout(250); } throw new Failed('expected ' + label + '; the page showed: "' + t.replace(/\s+/g, ' ').trim().slice(0, 160) + '"'); },
     /** the link a share or copy-link control makes (clipboard, else the address bar) */
@@ -150,6 +151,26 @@ export const SCRIPTS = {
       const u = await J.shareLink('#share'); if (!/[?&](t|q)=/.test(u)) throw new Failed('the share link does not carry the tool: ' + u);
       await J.open('/word-count/'); await J.open(u);
       await J.expect((t) => /\n\s*Cut MP3\s*\n/.test(t) && /mp3/i.test(t), 'the same tool back from its link');
+    },
+  },
+  // ndscalc.ru (a Russian VAT calculator) against the calculator's VAT mode (/calculator/?mode=vat): its visitors type a sum and a rate, read the
+  // VAT taken out of a total or added to a net sum, and send the answer on. Worked out here, as tools/tower-probes.mjs does: 22% out of 1000 is
+  // 1000 * 22 / 122 = 180.33, net 819.67; 22% on 1000 is 220.00, total 1,220.00; 20% out of 2500 is 416.67, net 2,083.33. The shared sum is not
+  // the page's default (1000 at 22%), so the reopened page can only show it if the link carried it
+  'ndscalc.ru': {
+    'do the main job and see the result': async (J) => {
+      await J.open('/calculator/?mode=vat'); await J.fill('#va', '1000', 'type the sum 1000'); await J.fill('#vr', '22', 'type the rate 22');
+      await J.select('#vm', 'extract', 'choose take VAT out');
+      await J.expect((t) => /\bNet 819[.,]67\b/.test(t) && /\bVAT 180[.,]33\b/.test(t) && /\bTotal 1[,\s\u00a0]?000[.,]00\b/.test(t), 'VAT 180.33 taken out of 1,000.00, net 819.67');
+      await J.select('#vm', 'add', 'choose add VAT');
+      await J.expect((t) => /\bNet 1[,\s\u00a0]?000[.,]00\b/.test(t) && /\bVAT 220[.,]00\b/.test(t) && /\bTotal 1[,\s\u00a0]?220[.,]00\b/.test(t), 'VAT 220.00 added to 1,000.00, total 1,220.00');
+    },
+    'share the result and reopen it from the link': async (J) => {
+      await J.open('/calculator/?mode=vat'); await J.fill('#va', '2500', 'type the sum 2500'); await J.fill('#vr', '20', 'type the rate 20'); await J.select('#vm', 'extract', 'choose take VAT out');
+      await J.expect((t) => /\bVAT 416[.,]67\b/.test(t) && /\bNet 2[,\s\u00a0]?083[.,]33\b/.test(t), 'VAT 416.67 taken out of 2,500.00');
+      const u = await J.shareLink('#vcopy'); if (!/[#&?]sum=2500\b/.test(u) || !/[#&?]rate=20\b/.test(u)) throw new Failed('the share link does not carry the sum and the rate: ' + u);
+      await J.open('/word-count/'); await J.open(u);
+      await J.expect((t) => /\bVAT 416[.,]67\b/.test(t) && /\bNet 2[,\s\u00a0]?083[.,]33\b/.test(t) && /\bTotal 2[,\s\u00a0]?500[.,]00\b/.test(t), 'the same answer back from its link: VAT 416.67 out of 2,500.00 at 20%');
     },
   },
   // password strength (/password/strength/, against howsecureismypassword.net): the password is checked on the device and never put in the

@@ -6,14 +6,15 @@
  * CDN; an in-copyright film gets the trailer and where-to-watch links, never a pirate source. A title no source knows is listed as "not verified".
  * "movie card for <title> (<year>)" opens one movie's card (the ask a row of the pick page runs). Titles are untrusted: lib/movies.js cleans them.
  */
-import { pickAsk, cardAsk, cardAskText, parseSuggestions, cleanTitle, FREE_PICKS } from '../lib/movies.js';
+import { pickAsk, cardAsk, whereAsk, cardAskText, parseSuggestions, cleanTitle, FREE_PICKS } from '../lib/movies.js';
 import { parseIntent, pickPrompt, similarity, similarityWords } from '../lib/movie-intent.js';
 const money = (n, c) => (n ? (c === 'USD' || !c ? '$' : c + ' ') + n.toFixed(2) : '');
 const dayPick = () => FREE_PICKS[Math.floor(Date.now() / 864e5) % FREE_PICKS.length];
 
 // LOOKUP_V names the lookup's answers: before 2026-10-30 a well-known film came back "not verified" (iTunes refused, no second source) and
 // browsers and the edge kept that answer for a day. A new v is a new address, so no answer cached by the old lookup is read again.
-export const LOOKUP_V = 3; // 3, 2026-11-06: the Wikidata answer carries the genres, so a pick's match score can test its genre
+export const LOOKUP_V = 4; // 3, 2026-11-06: the Wikidata answer carries the genres, so a pick's match score can test its genre; 4, the same day:
+// a title typed in lower case finds its film, so no "not verified" cached for an hour by v3 is read again
 export const lookupUrl = (m) => '/api/movies?title=' + encodeURIComponent(m.title) + (m.year ? '&year=' + m.year : '') + '&v=' + LOOKUP_V;
 async function lookup(m) {
   try { const r = await fetch(lookupUrl(m)); if (!r.ok) return { verified: false, title: m.title, year: m.year }; return await r.json(); } catch (_) { return { verified: false, title: m.title, year: m.year }; }
@@ -65,7 +66,9 @@ export async function runCard(m, api) {
   el.dataset.artKind = 'Film';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'movie';
-  artMeta(el, f); el.innerHTML = movieCard(f, esc); wirePlayers(el, f);
+  artMeta(el, f); el.innerHTML = movieCard(f, esc)
+    + (m.where && !f.verified && !f.unreachable ? '<p class="sub">If it is a show and not a film: <a href="#" data-ask="' + esc('show card for ' + cleanTitle(m.title)) + '">show card for ' + esc(m.title) + '</a></p>' : '');
+  wirePlayers(el, f);
   return 'movie';
 }
 
@@ -130,12 +133,12 @@ export async function runPick(api, text = '') {
 
 export default {
   name: 'movie',
-  examples: ['pick a movie to watch with me', 'movie night', 'movie card for Nosferatu (1922)', 'scary movies from the 90s'],
-  nearMisses: ['film metadata for inception', 'watch this for me', 'movie metadata for the matrix', 'how do I film a video', 'pick a color'],
-  match(lower, text) { return pickAsk(text) || !!cardAsk(text) || (text.includes('movie') && (text.includes('from the') || text.includes('in the') || text.includes('genre'))); },
-  run(text, api) { const c = cardAsk(text); return c ? runCard(c, api) : runPick(api, text); },
+  examples: ['pick a movie to watch with me', 'movie night', 'movie card for Nosferatu (1922)', 'scary movies from the 90s', 'where can i stream the blair witch project', 'where to watch Nosferatu (1922)'],
+  nearMisses: ['film metadata for inception', 'watch this for me', 'where can i watch the super bowl', 'where can i watch the show severance', 'movie metadata for the matrix', 'how do I film a video', 'pick a color'],
+  match(lower, text) { return pickAsk(text) || !!cardAsk(text) || !!whereAsk(text) || (text.includes('movie') && (text.includes('from the') || text.includes('in the') || text.includes('genre'))); },
+  run(text, api) { const c = cardAsk(text) || whereAsk(text); return c ? runCard(c, api) : runPick(api, text); },
   suite() {
-    const c = cardAsk('movie card for Talk to Me (2022)');
-    return { ok: pickAsk('pick a movie to watch with me') && !pickAsk('film metadata for x') && c && c.title === 'Talk to Me' && c.year === 2022 && cleanTitle('<b>x</b>') === 'b x b' };
+    const c = cardAsk('movie card for Talk to Me (2022)'), w = whereAsk('where can i stream the blair witch project');
+    return { ok: pickAsk('pick a movie to watch with me') && w && w.title === 'the blair witch project' && !whereAsk('where can i watch the super bowl') && !pickAsk('film metadata for x') && c && c.title === 'Talk to Me' && c.year === 2022 && cleanTitle('<b>x</b>') === 'b x b' };
   },
 };

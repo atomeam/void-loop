@@ -37,7 +37,20 @@ export function dataOf({ title, kind, body, sources, n } = {}) {
 // text gets the full body back from the readable part
 // the code line's body ends at a word, never mid-word ("founded by entrepreneur Har"), and only a source with a real https link rides in it
 export const cutAtWord = (t, n) => { const s = String(t || ''); if (s.length <= n) return s; const cut = s.slice(0, n), sp = cut.search(/\s\S*$/); return (sp > n * 0.5 ? cut.slice(0, sp) : cut).trim(); };
-export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n }); return MARK + b64(JSON.stringify({ ...x, b: cutAtWord(x.b, 200), src: x.src.slice(0, 2) })); };
+// it also ends at a sentence, never inside one (owner, 2026-11-06: the Treasury card's code ended "\na place or location"): its whole sentences up to
+// 200 letters; a first sentence longer than that rides whole up to SENTENCE_MAX; a body with no sentence end that fits there rides whole; a
+// longer run with none rides as no body at all (the readable text above the code still holds it, and parse() takes it from there)
+export const SENTENCE_MAX = 1200;
+export function cutSentence(t, n = 200, max = SENTENCE_MAX) {
+  const s = String(t || '').trim(); if (s.length <= n) return s;
+  const ends = []; const re = /[.!?\u3002\uff01\uff1f]["'\u201d\u2019)\]]*(?=\s|$)|\n/g; let m;
+  while ((m = re.exec(s))) { const at = m[0] === '\n' ? m.index : m.index + m[0].length; if (at > 0) ends.push(at); }
+  const fit = ends.filter((i) => i <= n);
+  if (fit.length) return s.slice(0, fit[fit.length - 1]).trim();
+  if (ends.length && ends[0] <= max) return s.slice(0, ends[0]).trim();
+  return s.length <= max && !ends.length ? s : '';
+}
+export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n }); return MARK + b64(JSON.stringify({ ...x, b: cutSentence(x.b, 200), src: x.src.slice(0, 2) })); };
 /** the text a person copies or saves: readable, then the code. Pure. */
 export function shareText(d) {
   const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n });
@@ -102,7 +115,7 @@ export function readCard(el) {
 /** what the card's picture is drawn from: the frame's own numbers (el._vcard, set by keep) and the card's text. */
 export function imageData(el, d) {
   const c = el._vcard || {}, text = d.b || '';
-  return { art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill, painting: !!el._vcForge, poster: !!el.dataset.poster, sub: (el.querySelector(':scope > .sub:not([hidden])') || {}).textContent || '',
+  return { art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, fetched: !!c.fetched, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill, painting: !!el._vcForge, poster: !!el.dataset.poster, sub: (el.querySelector(':scope > .sub:not([hidden])') || {}).textContent || '',
     // the self card draws its own shape (lib/card-image.js selfLayout): its words, the family bars, each block's heading and first lines; other cards: none
     self: el.classList && el.classList.contains('vc-self') ? selfImage(el) : undefined };
 }

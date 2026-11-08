@@ -83,8 +83,9 @@
     <details id="c-vat"><summary>VAT: add it or take it out</summary><div class="form" id="vatform">
       <label>Sum <input class="box" id="va" type="text" inputmode="decimal" value="1000" aria-label="Sum for VAT"></label>
       <label>Rate (%) <input class="box" id="vr" type="text" inputmode="decimal" value="22" list="vrates" aria-label="VAT rate"></label><datalist id="vrates"><option value="22"><option value="20"><option value="18"><option value="10"><option value="5"><option value="0"></datalist>
+      <p class="note">Rates <button type="button" id="vr20">20%</button> <button type="button" id="vr22">22%</button></p>
       <label>The sum is <select id="vm" aria-label="What the sum is"><option value="extract">the total, VAT in it (take VAT out)</option><option value="add">the net, before VAT (add VAT)</option></select></label></div> <!-- void-review: ok: VAT is the word, not a name -->
-      <div class="out" id="vout" aria-live="polite"></div><p class="note" id="vwork"></p>
+      <div class="out" id="vout" aria-live="polite"></div><p class="note" id="vwords"></p><p class="note" id="vwork"></p>
       <p class="note">To the kopeck or cent, so net plus VAT is the total exactly. <a id="vlink" href="/vat/">The VAT calculator in Russian, English or German</a>.</p></details> <!-- void-review: ok: VAT is the word, not a name -->
     <details id="c-loan"><summary>Loan, with an amortization schedule and chart</summary><div class="form"><label>Amount <input class="box" id="la" type="text" inputmode="decimal" value="20000"></label><label>Interest rate (% a year) <input class="box" id="lr" type="text" inputmode="decimal" value="7"></label><label>Years <input class="box" id="ly" type="text" inputmode="decimal" value="5"></label><label>Extra each month <input class="box" id="lx" type="text" inputmode="decimal" value="0"></label></div>
       <div class="out" id="lout"></div><div class="chart" id="lchart"></div><div class="row"><button type="button" id="lmonths">Show every month</button></div><div class="tbl" id="ltable"></div></details>
@@ -234,13 +235,16 @@
     if (q.has('sum')) $('va').value = String(q.get('sum')).slice(0, 40);
     if (V.parseRate(q.get('rate')) != null) $('vr').value = q.get('rate');
     if (q.get('vat') === 'add' || q.get('vat') === 'extract') $('vm').value = q.get('vat');
+    if (q.get('mode') === 'vat' || location.hash === '#vat') { const box = $('c-vat'); if (box) box.open = true; }
     const draw = () => {
       const r = V.compute({ amount: $('va').value, rate: $('vr').value, mode: $('vm').value }), m = (n) => V.money(n, 'en');
       $('vout').textContent = r ? 'Net ' + m(r.net) + ' · VAT ' + m(r.vat) + ' · Total ' + m(r.gross) : 'Type a sum and a rate from 0 to 100.';
+      $('vwords').textContent = r ? 'Sum in words: ' + V.moneyWords(r.gross) + '.' : '';
       $('vwork').textContent = r ? V.workingOf(r, 'en').join('; ') : '';
       if (r) $('vlink').href = '/vat/' + V.queryFromState({ amount: $('va').value, rate: r.rate, mode: r.mode, lang: 'en' });
     };
     for (const id of ['va', 'vr', 'vm']) $(id).addEventListener('input', draw);
+    for (const [id, rate] of [['vr20', '20'], ['vr22', '22']]) $(id).addEventListener('click', () => { $('vr').value = rate; draw(); });
     draw();
   });
 </script>
