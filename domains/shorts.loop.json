@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "countdown"
+    "formats": "trailer"
   },
   "trials": [
     {
@@ -232,42 +232,42 @@
       "kind": "formats",
       "films": [
         {
+          "format": "nature",
+          "label": "Nature-documentary parody",
+          "topic": "76ers vs bulls",
+          "name": "76ers vs bulls",
+          "film": "20261108-nature-76ers-vs-bulls",
+          "hook": "Nature documentary: you discovering 76ers vs bulls?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 100,
+            "failed": []
+          }
+        },
+        {
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "daniel jones",
+          "name": "daniel jones",
+          "film": "20261108-lyric-daniel-jones",
+          "hook": "Is daniel jones the song of the day?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
           "format": "news",
           "label": "Breaking-news parody",
-          "topic": "cambuur vs psv",
-          "name": "cambuur vs psv",
-          "film": "20261108-news-cambuur-vs-psv",
-          "hook": "Why is everyone talking about cambuur vs psv?",
-          "source": "Google Trends",
-          "gate": {
-            "pass": true,
-            "score": 100,
-            "hookScore": 85,
-            "failed": []
-          }
-        },
-        {
-          "format": "trailer",
-          "label": "Movie-trailer parody",
-          "topic": "inter vs como",
-          "name": "inter vs como",
-          "film": "20261108-trailer-inter-vs-como",
-          "hook": "What if inter vs como got a movie trailer?",
-          "source": "Google Trends",
-          "gate": {
-            "pass": true,
-            "score": 100,
-            "hookScore": 75,
-            "failed": []
-          }
-        },
-        {
-          "format": "explainer",
-          "label": "Explainer",
-          "topic": "epl table",
-          "name": "El Taller",
-          "film": "20261108-explainer-el-taller",
-          "hook": "What is El Taller, and why now?",
+          "topic": "mahomes injury",
+          "name": "mahomes injury",
+          "film": "20261108-news-mahomes-injury",
+          "hook": "Why is everyone talking about mahomes injury?",
           "source": "Google Trends",
           "gate": {
             "pass": true,
@@ -277,15 +277,7 @@
           }
         }
       ],
-      "refused": [
-        {
-          "topic": "motogp",
-          "kinds": [
-            "harm"
-          ],
-          "why": "about harm to people (crashes): not something to parody or make a trend film of"
-        }
-      ],
+      "refused": [],
       "verdict": "waiting"
     }
   ]
