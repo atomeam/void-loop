@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T06:52:25.386Z",
+ "updated": "2026-11-08T07:01:49.997Z",
  "last24h": {
   "ticks": 152,
   "started": 127,
@@ -92,13 +92,24 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2533, until 07:34 UTC)"
   }
  ],
- "coder": null,
+ "coder": {
+  "model": "@cf/google/gemma-4-26b-a4b-it",
+  "hour": {
+   "used": 0,
+   "cap": 90
+  },
+  "day": {
+   "used": 90,
+   "cap": 360
+  },
+  "room": true,
+  "until": null
+ },
  "handed": {
-  "mvbl52gd": 1794099686462,
-  "mva30i2e": 1794099686462,
+  "mvbl52gd": 1794121309997,
+  "mva30i2e": 1794121309997,
   "mva30j4u": 1794100248886,
   "mvu167w7": 1794100248886,
-  "mw60ew8u": 1794034666747,
   "mw62nds3": 1794036356378,
   "mw62nec5": 1794036920897,
   "mw62nexd": 1794037487017,
@@ -152,7 +163,7 @@
   "mw76d612": 1794106474000
  },
  "sweptAt": 1794120745386,
- "blueprintsAt": 1794112880462,
+ "blueprintsAt": 1794121309997,
  "visitorAt": "2026-11-08T06:49:50Z",
  "visitorFiled": [
   "versus:sketch.io",
@@ -237,39 +248,6 @@
   "gap:want-exam-videos"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T06:57:46.747Z",
-   "open": 255,
-   "started": [
-    {
-     "id": "want-exam-translate",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 151
-    },
-    {
-     "id": "mw60ew8u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T07:07:14.725Z",
    "open": 254,
@@ -3445,6 +3423,40 @@
    "blueprints": 0,
    "held": 254,
    "warnings": 2
+  },
+  {
+   "at": "2026-11-08T07:01:49.997Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 254,
+   "warnings": 1
   }
  ]
 }
