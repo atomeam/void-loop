@@ -17,5 +17,8 @@
   "void-live-deploy/skills/families.json",
   "void-live-deploy/skills/guide.json",
   "void-live-deploy/void.growth.json"
+ ],
+ "passed": [
+  2
  ]
 }
