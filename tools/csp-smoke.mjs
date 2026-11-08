@@ -7,7 +7,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '../void-live-deploy');
 export function headerFor(file = path.join(root, '_headers')) {
   const lines = fs.readFileSync(file, 'utf8').split('\n'); const out = {}; let inAll = false;
   for (const l of lines) { if (/^\S/.test(l)) inAll = l.trim() === '/*'; else if (inAll && l.includes(':')) { const i = l.indexOf(':'); out[l.slice(0, i).trim()] = l.slice(i + 1).trim(); } }

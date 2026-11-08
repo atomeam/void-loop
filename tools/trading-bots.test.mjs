@@ -140,7 +140,7 @@ test('page helpers: settings from a link, the held-out window, CSV and a zip tha
 
 test('the written pages are current, carry the risk notice and declare their hand-off', () => {
   for (const [rel, html] of pages()) {
-    const f = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'trading-bots', rel);
+    const f = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy', 'trading-bots', rel);
     assert.equal(fs.readFileSync(f, 'utf8'), html, rel + ' is stale: node tools/trading-bots-pages.mjs');
     assert.match(html, /<meta name="verse-handoff" content="in: [^"]+; out: [^"]+">/); assert.match(html, /never/i);
     assert.doesNotMatch(html, /best (ever|bot)|guarantee|profit(able)? every/i, rel + ' makes no claim the backtest does not show');

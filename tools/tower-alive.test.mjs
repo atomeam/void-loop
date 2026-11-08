@@ -1,6 +1,6 @@
 // tools/tower-alive.mjs: rivals that redirect off their own domain, error out or are parked are dropped; fixture redirects served locally
 import test from 'node:test'; import assert from 'node:assert/strict'; import http from 'node:http'; import fs from 'node:fs';
-import { judge, judgeOne, rivalHost, ownHost, fold, isGone, check, nonSiteOf, nonSiteKind } from './tower-alive.mjs';
+import { judge, judgeOne, rivalHost, ownHost, fold, isGone, check, nonSiteOf, nonSiteKind, refusedOf } from './tower-alive.mjs';
 import { settledHtml } from '../void-live-deploy/skills/tower.js';
 import { advance } from './tower-target.mjs';
 import { historyOf, fileOf } from './assimilated.mjs';
@@ -81,6 +81,33 @@ test('what a non-site is for, from its host and text', () => {
   assert.equal(nonSiteKind('quiet-domain.org', 'hello'), 'an inert stub page');
 });
 
+// the real case (owner, 2026-11-07): the Tower stood on oneyeard.com, whose home page answers 200 with "Sorry, This Page Can't Be Accessed",
+// one javascript: back link and nothing to use — small enough that smallest-first brought it to the front
+const stub = (shape = {}, o = {}) => ({ url: 'https://oneyeard.com/', final: 'https://oneyeard.com/', status: 200, text: 'Sorry, This Page Can\'t Be Accessed\nOPPSSS!!!! Sorry... Sorry, your access is refused due to security reasons of our server and also our sensitive data. Please go back to the previous page to continue browsing. Go Back Safeguard PageBot © 2025', shape: { chars: 196, sample: 'OPPSSS!!!! Sorry... Sorry, your access is refused due to security reasons of our server and also our sensitive data.', controls: 1, usable: 0, links: 1, forms: 0, frames: 0, canvas: 0, scripts: 1, bytes: 1753, ...shape }, ...o });
+test('a 200 access-refusal stub with nothing to use is gone (the page was removed), and the target moves to a live site at once', () => {
+  const j = judge('oneyeard.com', [stub(), { url: 'http://oneyeard.com/', error: 'net::ERR_CONNECTION_TIMED_OUT' }]);
+  assert.equal(j.alive, false); assert.equal(j.status, 'gone'); assert.equal(j.kind, 'an access-refusal stub page');
+  assert.match(j.why, /access-refusal stub/); assert.match(j.why, /page has been removed/);
+  const gone = fold({}, [{ rival: 'oneyeard.com', ...j }], 't1').gone;
+  assert.equal(gone['oneyeard.com'].status, 'gone'); assert.equal(gone['oneyeard.com'].kind, 'an access-refusal stub page');
+  const { file } = advance({ id: 'oneyeard.com', since: '2026-11-07' }, [{ id: 'oneyeard.com', n: 0, m: 8 }, { id: 'live.com', n: 1, m: 9 }], '2026-11-07', gone);
+  assert.equal(file.id, 'live.com'); assert.ok(file.skipped.some((s) => s.id === 'oneyeard.com' && /gone/.test(s.why)));
+  assert.ok(!(file.passed || []).some((r) => r.id === 'oneyeard.com'));
+});
+test('an access-refusal read needs every sign: a usable control, a form, real text, a challenge or a refusal status keeps it a site', () => {
+  assert.ok(refusedOf('oneyeard.com', stub()));
+  for (const [shape, o] of [
+    [{ usable: 2 }], [{ usable: 1, controls: 1 }], [{ forms: 1 }], [{ frames: 1 }], [{ chars: 900 }], [{ chars: 0, sample: '' }],
+    [{}, { text: 'checking your browser... access denied' }],
+    [{}, { status: 403 }], // a real refusal status is a bot wall and stays alive
+  ]) assert.equal(refusedOf('oneyeard.com', stub(shape, o)), null, JSON.stringify([shape, o]));
+  assert.equal(refusedOf('oneyeard.com', stub({}, { final: 'https://elsewhere.com/' })), null);
+  assert.equal(judge('oneyeard.com', [stub({}, { status: 403 })]).alive, true);
+  // a stub on https and a real page on http is a site
+  const real = stub({ usable: 4, controls: 4, links: 4, chars: 900 }, { url: 'http://oneyeard.com/', text: 'The real page' });
+  assert.equal(judge('oneyeard.com', [stub(), real]).alive, true);
+});
+
 // fixture redirects in a real browser: every *.test host maps to a local server that answers by Host
 const exe = process.env.CHROME_PATH || process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome';
 test('browser: server, meta-refresh and script redirects off the domain are caught; the own site passes', { skip: !fs.existsSync(exe) }, async () => {
@@ -96,6 +123,7 @@ test('browser: server, meta-refresh and script redirects off the domain are caug
     if (h === 'js.test') return page('<script>setTimeout(function(){location.href="' + park + '"},300)</script>wait');
     if (h === 'err.test') return page('boom', 500);
     if (h === 'sync.test') return page('This is ID5.');
+    if (h === 'stub.test') return page('<p>OPPSSS!!!! Sorry... Sorry, your access is refused due to security reasons of our server and also our sensitive data. Please go back to the previous page to continue browsing.</p><a class="btn" href="javascript:history.back()">Go Back</a><footer>Safeguard PageBot © 2025</footer>');
     page('?', 404);
   });
   await new Promise((r) => srv.listen(0, '127.0.0.1', r)); var port = srv.address().port;
@@ -109,5 +137,8 @@ test('browser: server, meta-refresh and script redirects off the domain are caug
     assert.equal((await check(b, 'own2.test', at('own2.test'))).alive, true);
     const ns = await check(b, 'sync.test', { ...at('sync.test'), nonSite: true }); assert.equal(ns.status, 'non-site'); assert.equal(ns.shape.controls, 0); assert.equal(ns.shape.chars, 12);
     assert.equal((await check(b, 'own.test', { ...at('own.test'), nonSite: true })).alive, true);
+    const stubbed = await check(b, 'stub.test', at('stub.test'));
+    assert.equal(stubbed.alive, false); assert.equal(stubbed.status, 'gone'); assert.equal(stubbed.kind, 'an access-refusal stub page');
+    assert.equal(stubbed.shape.usable, 0); assert.equal(stubbed.shape.controls, 1); // the javascript: back link counts as a control, never as usable
   } finally { await b.close(); srv.close(); }
 });

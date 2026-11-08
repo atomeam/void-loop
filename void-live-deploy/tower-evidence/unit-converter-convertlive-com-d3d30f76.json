@@ -2,19 +2,20 @@
  "id": "unit converter: convertlive.com",
  "rows": {
   "speed": {
-   "verdict": "equal-and-better",
-   "verse": 149,
-   "best": 724,
-   "evidence": "Verse (/convert/unit-converter/) 149 ms to the load event (median of 3, phone width) vs convertlive.com 724 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "verdict": "unverified",
+   "verse": null,
+   "best": 1187,
+   "evidence": "Verse (/convert/unit-converter/) NaN ms to the load event (median of 3, phone width) vs convertlive.com 1187 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:29:14.977Z",
    "siteRead": true
   },
   "reliability": {
-   "verdict": "equal-and-better",
-   "verse": 3,
+   "verdict": "worse",
+   "verse": 0,
    "best": 3,
-   "evidence": "Verse (/convert/unit-converter/) 3 of 3 loads answered vs convertlive.com 3 of 3 loads answered",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 of 3 loads answered vs convertlive.com 3 of 3 loads answered",
+   "at": "2026-11-08T13:29:14.977Z",
+   "was": "equal-and-better",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +23,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/convert/unit-converter/) 0 px sideways overflow at 390 px vs convertlive.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-05T02:30:05.367Z",
+   "at": "2026-11-08T13:29:14.977Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,23 +31,24 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/convert/unit-converter/) 0 unnamed controls or images vs convertlive.com 0 unnamed controls or images",
-   "at": "2026-11-05T02:30:05.367Z",
+   "at": "2026-11-08T13:29:14.977Z",
    "siteRead": true
   },
   "offline": {
-   "verdict": "better",
-   "verse": 1,
+   "verdict": "equal",
+   "verse": 0,
    "best": 0,
-   "evidence": "Verse (/convert/unit-converter/) 1 (1: the page shows itself again with the network cut) vs convertlive.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 (1: the page shows itself again with the network cut) vs convertlive.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:29:14.977Z",
    "siteRead": true
   },
   "sharing": {
-   "verdict": "better",
-   "verse": 4,
+   "verdict": "worse",
+   "verse": 0,
    "best": 2,
-   "evidence": "Verse (/convert/unit-converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs convertlive.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs convertlive.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:29:14.977Z",
+   "was": "better",
    "siteRead": true
   },
   "accuracy": {
@@ -54,43 +56,45 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/convert/unit-converter/) 1 of 1 right against the worked-out answer; judged against the standard, not convertlive.com (the site is not asked)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "at": "2026-11-03T14:21:10.296Z",
    "of": 1
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
    "best": 180,
-   "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.08)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 design defects vs convertlive.com 180 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), convertlive.com (142 low-contrast texts, 38 small tap targets, layout shift 0.09)",
+   "at": "2026-11-08T13:29:14.977Z",
    "siteRead": true
   },
   "unit breadth": {
-   "verdict": "better",
-   "verse": 21,
+   "verdict": "worse",
+   "verse": 0,
    "best": 13,
-   "evidence": "Verse (/convert/unit-converter/) 21 of 21 shown vs convertlive.com 13 of 21 shown (Verse lacks: none; site lacks: temperature, fuel consumption, frequency, heat, light, electricity, magnetism, radiology)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 of 21 shown vs convertlive.com 13 of 21 shown (Verse lacks: length, temperature, area, volume, weight or mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption, frequency, heat, fluids, light, electricity, magnetism, radiology; site lacks: temperature, fuel consumption, frequency, heat, light, electricity, magnetism, radiology)",
+   "at": "2026-11-08T13:29:14.977Z",
+   "was": "better",
    "of": 21,
    "part": true,
    "siteRead": true
   },
   "both directions": {
-   "verdict": "better",
-   "verse": 2,
+   "verdict": "equal",
+   "verse": 0,
    "best": 0,
-   "evidence": "Verse (/convert/unit-converter/) 2 of 2 shown vs convertlive.com 0 of 2 shown (Verse lacks: none; site lacks: swap, from and to)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 of 2 shown vs convertlive.com 0 of 2 shown (Verse lacks: swap, from and to; site lacks: swap, from and to)",
+   "at": "2026-11-08T13:29:14.977Z",
    "of": 2,
    "part": true,
    "siteRead": true
   },
   "completeness": {
-   "verdict": "better",
-   "verse": 31,
+   "verdict": "worse",
+   "verse": 0,
    "best": 15,
-   "evidence": "Verse (/convert/unit-converter/) 31 of 31 things a full answer shows vs convertlive.com 15 of 31 things a full answer shows (Verse lacks: none; site lacks: common converters, temperature, fuel consumption, frequency, engineering, heat, light, electricity, magnetism, radiology, a swap or reverse control, the formula, precision, Many units per kind, Engineering converters, Heat converters)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "evidence": "Verse (/convert/unit-converter/) 0 of 31 things a full answer shows vs convertlive.com 15 of 31 things a full answer shows (Verse lacks: common converters, length, temperature, area, volume, weight or mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption, frequency, engineering, heat, fluids, light, electricity, magnetism, radiology, a swap or reverse control, the formula, precision, Speed, pressure, energy, power, force, angle, fuel consumption, data storage, Many units per kind, Engineering converters, Heat converters, Fluids converters; site lacks: common converters, temperature, fuel consumption, frequency, engineering, heat, light, electricity, magnetism, radiology, a swap or reverse control, the formula, precision, Many units per kind, Engineering converters, Heat converters)",
+   "at": "2026-11-08T13:29:14.977Z",
+   "was": "better",
    "of": 31,
    "siteRead": true
   },
@@ -99,7 +103,7 @@
    "verse": 7.5,
    "best": 5.5,
    "evidence": "Verse (/convert/unit-converter/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs convertlive.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T02:30:05.367Z",
+   "at": "2026-11-03T14:21:10.296Z",
    "siteRead": true
   }
  }

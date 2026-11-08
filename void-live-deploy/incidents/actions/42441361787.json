@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-08T03:09:39Z",
+ "sha": "822dc55c8e04e0c237833ee47ccb98ef8c71ce43",
+ "runId": 42441361787,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42441361787",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128611089462,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42441361787/job/128611089462",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "- `/is-it/tuesday`: does not open: answers nothing",
+    "- `/is-it/valentines-day`: does not open: answers nothing",
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "- `/keep-it-running/`: dead link: 404 /one-time-fix/; dead link: 404 /full-stack-audit/",
+    "- `/obituaries/`: dead link: 404 /gradient/",
+    "- `/paint/`: dead link: 404 /flip/; dead link: 404 /gradient/",
+    "- `/password/`: dead link: 404 /password-strength/",
+    "- `/prizes/`: dead link: 404 /wheel/; dead link: 404 /flip/",
+    "- `/random/`: dead link: 404 /base-converter/",
+    "- `/random/coin/`: dead link: 404 /flip/",
+    "- `/random/people/`: dead link: 404 /wheel/",
+    "- `/team/`: dead link: 404 /status/; dead link: 404 /tools.json",
+    "- `/tournaments/`: dead link: 404 /flip/; dead link: 404 /wheel/",
+    "- `/under-the-hood/`: dead link: 404 /tools.json",
+    "- `/creed/`: wording: says \"fight\": Verse assimilates: \"Assimilate, never fight. Every site and tool that came before m\"; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/creed/give/`: not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/lab/f615-packing-list-maker/`: light page (off design): background rgb(247, 247, 245)",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

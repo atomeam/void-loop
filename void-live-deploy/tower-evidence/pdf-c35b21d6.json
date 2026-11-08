@@ -1,0 +1,127 @@
+{
+ "id": "pdf",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 117,
+   "best": 262,
+   "evidence": "Verse (/pdf/) 117 ms to the load event (median of 3, phone width) vs ilovepdf.com 262 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/) 3 of 3 loads answered vs ilovepdf.com 3 of 3 loads answered",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/) 0 px sideways overflow at 390 px vs ilovepdf.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/) 0 unnamed controls or images vs ilovepdf.com 0 unnamed controls or images",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/pdf/) 1 (1: the page shows itself again with the network cut) vs ilovepdf.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "equal",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs ilovepdf.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/) 3 of 3 right against the worked-out answer; judged against the standard, not ilovepdf.com (the site is not asked)",
+   "at": "2026-11-02T02:29:15.944Z",
+   "of": 3
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 25,
+   "evidence": "Verse (/pdf/) 0 design defects vs ilovepdf.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), ilovepdf.com (1 low-contrast texts, 24 small tap targets, layout shift 0.00)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  },
+  "merge and split": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/pdf/) 2 of 2 shown vs ilovepdf.com 2 of 2 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "page tools": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 2,
+   "evidence": "Verse (/pdf/) 3 of 3 shown vs ilovepdf.com 2 of 3 shown (Verse lacks: none; site lacks: reorder)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "of": 3,
+   "part": true,
+   "siteRead": true
+  },
+  "images to pdf": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/pdf/) 0 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "was": "equal-and-better",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "compress": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/pdf/) 1 of 1 shown vs ilovepdf.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 15,
+   "best": 13,
+   "evidence": "Verse (/pdf/) 15 of 19 things a full answer shows vs ilovepdf.com 13 of 19 things a full answer shows (Verse lacks: images to PDF, PDF to images, page numbers, watermark; site lacks: delete pages, reorder pages, on this device, no account, ask questions about a PDF, Reorder pages with thumbnails)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "of": 19,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7.5,
+   "best": 6,
+   "evidence": "Verse (/pdf/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs ilovepdf.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:42:10.454Z",
+   "siteRead": true
+  }
+ }
+}

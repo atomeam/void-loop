@@ -19,7 +19,7 @@ await acquireHeavy('converter on a phone and offline (converter-phone.test.mjs)'
 export const TARGET = { host: 'onlineconverter.com', bytes: 11 * 1024, scripts: 0 }; // the Versus card's reading of the target's home page
 export const CRITICAL_GZIP = 12 * 1024;
 const HEAVY = ['/lib/video-write.js', '/lib/audio-write.js', '/lib/mp3-edit.js', '/lib/denoise.js', '/lib/epub-edit.js', '/lib/mp4-repair.js'];
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const exe = [process.env.VOID_TEST_BROWSER, process.env.CHROME_PATH, '/usr/bin/google-chrome', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 if (!exe) { console.log('skip converter on a phone: no Chrome'); process.exit(0); }
 const T = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.wasm': 'application/wasm' };

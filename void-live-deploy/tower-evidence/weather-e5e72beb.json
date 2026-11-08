@@ -2,19 +2,20 @@
  "id": "weather",
  "rows": {
   "speed": {
-   "verdict": "equal-and-better",
-   "verse": 156,
-   "best": 382,
-   "evidence": "Verse (/weather/?q=Boston) 156 ms to the load event (median of 3, phone width) vs weather.gov 382 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "verdict": "unverified",
+   "verse": null,
+   "best": 354,
+   "evidence": "Verse (/weather/?q=Boston) NaN ms to the load event (median of 3, phone width) vs weather.gov 354 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:33:01.657Z",
    "siteRead": true
   },
   "reliability": {
-   "verdict": "equal-and-better",
-   "verse": 3,
+   "verdict": "worse",
+   "verse": 0,
    "best": 3,
-   "evidence": "Verse (/weather/?q=Boston) 3 of 3 loads answered vs weather.gov 3 of 3 loads answered",
-   "at": "2026-11-07T13:11:29.251Z",
+   "evidence": "Verse (/weather/?q=Boston) 0 of 3 loads answered vs weather.gov 3 of 3 loads answered",
+   "at": "2026-11-08T13:33:01.657Z",
+   "was": "equal-and-better",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +23,7 @@
    "verse": 0,
    "best": 600,
    "evidence": "Verse (/weather/?q=Boston) 0 px sideways overflow at 390 px vs weather.gov 600 px sideways overflow at 390 px",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-08T13:33:01.657Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,31 +31,31 @@
    "verse": 0,
    "best": 7,
    "evidence": "Verse (/weather/?q=Boston) 0 unnamed controls or images vs weather.gov 7 unnamed controls or images",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-08T13:33:01.657Z",
    "siteRead": true
   },
   "offline": {
-   "verdict": "better",
-   "verse": 1,
+   "verdict": "equal",
+   "verse": 0,
    "best": 0,
-   "evidence": "Verse (/weather/?q=Boston) 1 (1: the page shows itself again with the network cut) vs weather.gov 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "evidence": "Verse (/weather/?q=Boston) 0 (1: the page shows itself again with the network cut) vs weather.gov 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:33:01.657Z",
    "siteRead": true
   },
   "sharing": {
-   "verdict": "better",
-   "verse": 4,
+   "verdict": "equal",
+   "verse": 0,
    "best": 0,
-   "evidence": "Verse (/weather/?q=Boston) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs weather.gov 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "evidence": "Verse (/weather/?q=Boston) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs weather.gov 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:33:01.657Z",
    "siteRead": true
   },
   "design polish": {
    "verdict": "better",
-   "verse": 1,
+   "verse": 0,
    "best": 66,
-   "evidence": "Verse (/weather/?q=Boston) 1 design defects vs weather.gov 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.66), weather.gov (0 low-contrast texts, 66 small tap targets, layout shift 0.00)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "evidence": "Verse (/weather/?q=Boston) 0 design defects vs weather.gov 66 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), weather.gov (0 low-contrast texts, 66 small tap targets, layout shift 0.00)",
+   "at": "2026-11-08T13:33:01.657Z",
    "siteRead": true
   },
   "accuracy": {
@@ -62,7 +63,7 @@
    "verse": 5,
    "best": 5,
    "evidence": "Verse (/weather/?q=Boston) 5 of 5 right against the worked-out answer; judged against the standard, not weather.gov (the site is not asked)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-03T14:25:06.809Z",
    "of": 5
   },
   "hourly and daily forecast": {
@@ -70,7 +71,7 @@
    "verse": 2,
    "best": 2,
    "evidence": "Verse (/weather/?q=Boston) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-03T14:25:06.809Z",
    "of": 2,
    "part": true
   },
@@ -79,7 +80,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/weather/?q=Boston) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-03T14:25:06.809Z",
    "of": 1,
    "part": true
   },
@@ -88,16 +89,17 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/weather/?q=Boston) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-03T14:25:06.809Z",
    "of": 1,
    "part": true
   },
   "completeness": {
-   "verdict": "better",
-   "verse": 14,
+   "verdict": "worse",
+   "verse": 0,
    "best": 5,
-   "evidence": "Verse (/weather/?q=Boston) 14 of 16 things a full answer shows vs weather.gov 5 of 16 things a full answer shows (Verse lacks: Forecast by city or ZIP, Hazard alerts (watches, warnings); site lacks: conditions now, °F, °C, feels like, humidity, the chance of rain, sunrise and sunset, an hourly forecast, a daily forecast, a share link, 7-day forecast)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "evidence": "Verse (/weather/?q=Boston) 0 of 16 things a full answer shows vs weather.gov 5 of 16 things a full answer shows (Verse lacks: conditions now, °F, °C, feels like, humidity, wind, the chance of rain, sunrise and sunset, an hourly forecast, a daily forecast, alerts, radar, a share link, Forecast by city or ZIP, 7-day forecast, Hazard alerts (watches, warnings); site lacks: conditions now, °F, °C, feels like, humidity, the chance of rain, sunrise and sunset, an hourly forecast, a daily forecast, a share link, 7-day forecast)",
+   "at": "2026-11-08T13:33:01.657Z",
+   "was": "better",
    "of": 16,
    "siteRead": true
   },
@@ -106,7 +108,7 @@
    "verse": 8,
    "best": 2.5,
    "evidence": "Verse (/weather/?q=Boston) 8 of 11 wider-use points (docs/WIDER-USE.md) vs weather.gov 2.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-07T13:11:29.251Z",
+   "at": "2026-11-03T14:25:06.809Z",
    "siteRead": true
   }
  }

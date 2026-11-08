@@ -1,0 +1,63 @@
+{
+ "at": "2026-11-08T04:06:23Z",
+ "sha": "8e6b3dea92d79145e8b60ab9faad20af03e98959",
+ "runId": 42441537336,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42441537336",
+ "workflow": "Site test",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test",
+   "id": 128617384003,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42441537336/job/128617384003",
+   "conclusion": "failure",
+   "step": null,
+   "fails": [
+    "FAIL desktop 11617ms  what can you do  · slow 11617 ms  [can-do]",
+    "FAIL what are you? · 200 ms · console: Failed to load resource: the server responded with a status of 404 ()",
+    "FAIL play voidquest · 5 fps · 193 ms · console: Failed to load resource: the server responded with a status of 404 (); fps 5 < 6",
+    "FAIL what can I buy · 194 ms · console: Failed to load resource: the server responded with a status of 404 ()",
+    "FAIL show me your videos · 1967 ms · console: Failed to load resource: the server responded with a status of 404 (); load 1967 ms > 1200",
+    "FAIL play solarquest · 210 ms · console: Failed to load resource: the server responded with a status of 404 ()",
+    "FAIL play chess · 6 fps · 142 ms · console: Failed to load resource: the server responded with a status of 404 ()",
+    "FAIL my actions · 158 ms · console: Failed to load resource: the server responded with a status of 404 ()",
+    "FAIL update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list · 410 ms · console: Failed to load resource: the server responded with a status of 404 ()",
+    "FAIL air quality in Tokyo · 559 ms · console: Failed to load resource: the server responded with a status of 404 ()"
+   ],
+   "tail": [
+    "pass void-live-deploy/films/index.html word whole at 96.5%",
+    "pass void-live-deploy/films/index.html word whole at 97%",
+    "pass void-live-deploy/films/index.html word whole at 98%",
+    "pass void-live-deploy/films/index.html word whole at 99%",
+    "pass void-live-deploy/films/index.html word whole at 99.5%",
+    "pass void-live-deploy/skills/films.js glitch is rare and slow",
+    "pass void-live-deploy/skills/films.js glitch is rare and slow at 8s",
+    "pass void-live-deploy/skills/films.js glitch is rare and slow at 12s",
+    "pass void-live-deploy/skills/films.js word whole at 0%",
+    "pass void-live-deploy/skills/films.js word whole at 30%",
+    "pass void-live-deploy/skills/films.js word whole at 60%",
+    "pass void-live-deploy/skills/films.js word whole at 94.5%",
+    "pass void-live-deploy/skills/films.js word whole at 95.5%",
+    "pass void-live-deploy/skills/films.js word whole at 96.5%",
+    "pass void-live-deploy/skills/films.js word whole at 97%",
+    "pass void-live-deploy/skills/films.js word whole at 98%",
+    "pass void-live-deploy/skills/films.js word whole at 99%",
+    "pass void-live-deploy/skills/films.js word whole at 99.5%",
+    "FAIL live skills/films.js has the fix  -> 0 bytes",
+    "FAIL live lib/card-frame.js has the fix  -> 0 bytes",
+    "FAIL live sw.js has the fix  -> 0 bytes",
+    "FAIL live card fresh 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card fresh 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card fresh 390x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 390x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "29/38 passed",
+    "Error: the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -7,7 +7,7 @@ import path from 'node:path';
 import { buildSnapshot, SCAN_IDS } from './coins-snapshot.mjs';
 import { scanRows } from '../void-live-deploy/lib/markets.js';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const rows = (n) => Array.from({ length: n }, (_, i) => ({ id: 'c' + i, symbol: 'c' + i, name: 'Coin ' + i, current_price: 100 - i, market_cap: 1e9 - i, market_cap_rank: i + 1, total_volume: 1e7, price_change_percentage_24h_in_currency: 1, price_change_percentage_7d_in_currency: 2, ath_change_percentage: -5, sparkline_in_7d: { price: Array.from({ length: 168 }, (_, k) => 10 + (k % 7)) } }));
 test('the snapshot: dated, sourced, the top 50 and the screener coins; short answers are refused', () => {
   const s = buildSnapshot(rows(50), rows(30), Date.UTC(2026, 9, 26, 5, 41)); assert.equal(s.ok, true); assert.equal(s.day, '2026-10-26'); assert.match(s.source, /CoinGecko/); assert.equal(s.caps.length, 50); assert.equal(s.scan.length, 30); assert.equal(s.caps[0].rank, 1); assert.ok(s.caps[0].spark.length <= 40);

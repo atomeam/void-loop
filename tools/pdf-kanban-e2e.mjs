@@ -1,7 +1,7 @@
 // node tools/pdf-kanban-e2e.mjs [--shots <dir>]: the PDF and Kanban pages in a real browser at phone width: files chosen, tools pressed, downloads read back;
 // cards added, moved by keyboard and pointer, opened, labelled, exported. Run it through node tools/heavy.mjs.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import vm from 'node:vm'; import { chromium } from 'playwright-core';
-const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const shots = process.argv.includes('--shots') ? process.argv[process.argv.indexOf('--shots') + 1] : null; if (shots) fs.mkdirSync(shots, { recursive: true });
 const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png' };
 const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p); if (!f.startsWith(root) || !fs.existsSync(f)) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); }).listen(0, '127.0.0.1');

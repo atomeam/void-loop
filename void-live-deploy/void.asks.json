@@ -2338,9 +2338,9 @@
     }
   ],
   "totals": {
-    "asked": 257,
+    "asked": 258,
     "built": 252,
-    "through": "2026-11-06T00:06:00Z",
+    "through": "2026-11-06T23:42:00Z",
     "open": [
       {
         "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
@@ -2365,44 +2365,44 @@
       },
       {
         "ask": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
-        "at": "2026-11-03T02:18:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 4,
+        "at": "2026-11-06T23:42:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 7,
         "ids": [
-          "ask-20261102-0336-1",
-          "ask-20261102-1244-1",
-          "ask-20261102-1639-1",
-          "ask-20261102-1643-1",
-          "ask-20261102-1943-1",
-          "ask-20261102-1944-1",
-          "ask-20261103-0131-1",
-          "ask-20261103-0211-1",
-          "ask-20261103-0218-1",
-          "ask-20261031-1538-1",
-          "ask-20261031-1554-1",
-          "ask-20261031-1559-1"
+          "ask-20261106-2023-2",
+          "ask-20261106-2026-2",
+          "ask-20261106-2031-2",
+          "ask-20261106-2045-2",
+          "ask-20261106-2109-2",
+          "ask-20261106-2120-2",
+          "ask-20261106-2134-2",
+          "ask-20261106-2140-2",
+          "ask-20261106-2229-2",
+          "ask-20261106-2330-2",
+          "ask-20261106-2342-2",
+          "ask-20261106-2037-2"
         ]
       },
       {
         "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
-        "at": "2026-11-05T23:57:00Z",
-        "kind": "build",
+        "at": "2026-11-06T23:42:00Z",
+        "kind": "daily",
         "small": true,
-        "times": 3,
+        "times": 6,
         "ids": [
-          "ask-20261105-1528-2",
-          "ask-20261105-1530-2",
-          "ask-20261105-1530-3",
-          "ask-20261105-1534-3",
-          "ask-20261105-1537-3",
-          "ask-20261105-1540-3",
-          "ask-20261105-1548-3",
-          "ask-20261105-1555-3",
-          "ask-20261105-1817-3",
-          "ask-20261105-1820-3",
-          "ask-20261105-2353-3",
-          "ask-20261105-2357-3"
+          "ask-20261106-2017-1",
+          "ask-20261106-2023-1",
+          "ask-20261106-2026-1",
+          "ask-20261106-2031-1",
+          "ask-20261106-2037-1",
+          "ask-20261106-2045-1",
+          "ask-20261106-2109-1",
+          "ask-20261106-2120-1",
+          "ask-20261106-2134-1",
+          "ask-20261106-2140-1",
+          "ask-20261106-2229-1",
+          "ask-20261106-2330-1"
         ]
       },
       {
@@ -2410,7 +2410,7 @@
         "at": "2026-11-06T00:06:00Z",
         "kind": "daily",
         "small": true,
-        "times": 5,
+        "times": 4,
         "ids": [
           "ask-20261105-1537-1",
           "ask-20261105-1540-1",
@@ -2427,11 +2427,32 @@
         ]
       },
       {
-        "ask": "Fix the timers exam to correctly handle duration commands and increments.",
+        "ask": "Fix the podcasts exam to resolve failures in audio and episode retrieval.",
+        "at": "2026-11-06T23:42:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 2,
+        "ids": [
+          "ask-20261106-2023-3",
+          "ask-20261106-2026-3",
+          "ask-20261106-2031-3",
+          "ask-20261106-2342-3",
+          "ask-20261106-2037-3",
+          "ask-20261106-2045-3",
+          "ask-20261106-2109-3",
+          "ask-20261106-2120-3",
+          "ask-20261106-2134-3",
+          "ask-20261106-2140-3",
+          "ask-20261106-2229-3",
+          "ask-20261106-2330-3"
+        ]
+      },
+      {
+        "ask": "Develop the local-only calculation logic and static markup for ndscalc.ru that ensures zero data requests leave the browser.",
         "small": false,
         "times": 1,
         "ids": [
-          "ask-20261105-1530-1"
+          "ask-20261106-0859-1"
         ]
       }
     ]

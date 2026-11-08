@@ -1,5 +1,5 @@
 {
- "at": "2026-11-07T12:00:47.438Z",
+ "at": "2026-11-08T12:17:04.737Z",
  "mode": "live",
  "pass": 53,
  "total": 54,
@@ -78,7 +78,7 @@
     "sources": [
      "The Beatles"
     ],
-    "answer": "The Beatles were an English rock band formed in Liverpool in 1960. The band comprised John"
+    "answer": "The Beatles were an English rock band formed in Liverpool in 1960. From 1962 until their d"
    },
    "redirect": "none"
   },
@@ -358,14 +358,14 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": false,
+   "photo": true,
    "api": {
     "name": "World War II",
     "desc": "Global conflict from 1939 to 1945",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [],
     "answer": "World War II, or the Second World War, was a global conflict between two coalitions: the A"
    },
@@ -434,8 +434,8 @@
    "seen": {
     "called": 1,
     "failed": [
-     "http://127.0.0.1:42573/build.json?v=1794052656787 net::ERR_ABORTED",
-     "http://127.0.0.1:42573/ net::ERR_ABORTED"
+     "http://127.0.0.1:35147/build.json?v=1794140027848 net::ERR_ABORTED",
+     "http://127.0.0.1:35147/ net::ERR_ABORTED"
     ],
     "bad": [],
     "text": "HAPPY TIME HARRY CHARACTER Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Meatwad due to his low pr …  1 OF 9 FRESH Reply to what I said, or correct me Send Kept on this device only. My self card lists it under Correct me."
@@ -596,7 +596,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "The Drunk and On Drugs Happy Funtime Hour is a Canadian television sketch comedy series, w"
+    "answer": "Happy Hour is the fifth studio album by experimental music band King Missile, and released"
    },
    "redirect": "none"
   },
@@ -832,7 +832,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "Bread was central to the formation of early human societies. From the Fertile Crescent, wh"
+    "answer": "Bread is a baked food product made from water, flour, and often yeast. It is a staple food"
    },
    "redirect": "none"
   },

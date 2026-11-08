@@ -135,32 +135,47 @@ test('the switch: Clef decides only the skills it won, only when sure; the embed
   assert.equal(clefOn({}), true); assert.equal(clefOn({ VOID_CLEF: 'off' }), false);
 });
 
-test('/api/answer: Clef never holds the answer; its pick reaches the route log after it', async () => {
+test('/api/answer: Clef never writes the answer; the awaited route log carries its pick when quick, the fallback when out (#2499: writes awaited, never dropped)', async () => {
   const { onRequestPost: answer } = await import('../void-live-deploy/functions/api/answer.js');
-  resetRouter();
-  const logged = [], pending = [];
-  let releaseClef;
-  const clefGate = new Promise((r) => { releaseClef = r; });
-  const AI = { run: async (model, input) => {
-    if (model === CLEF_MODEL) { await clefGate; return answer_('timer', { timer: 0.94, none: 0.06 }); }
-    if (input && input.text) return { data: input.text.map(() => [1, 0, 0, 0]) };
-    return { response: 'Five minutes is 300 seconds.' };
-  } };
-  function answer_(choice, probabilities) { return { answers: { skill: { choice, probabilities } } }; }
-  const DB = { prepare: (sql) => ({ bind: (...a) => ({ run: async () => { if (/INSERT INTO void_routes/.test(sql)) logged.push(a); return {}; }, first: async () => null, all: async () => ({ results: [] }) }), run: async () => ({}), first: async () => null }), batch: async () => [] };
-  const req = new Request('https://a-to-mind.com/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: 'count down five minutes for my eggs' }) });
-  const origFetch = globalThis.fetch; globalThis.fetch = async () => new Response('{}', { status: 404 });
-  try {
-    const res = await answer({ request: req, env: { AI, DB }, waitUntil: (p) => pending.push(p) });
-    const j = await res.json();
-    assert.match(j.answer || '', /300 seconds/, 'answered while Clef was still out');
-    assert.equal(logged.length, 0, 'nothing logged before Clef answered');
-    releaseClef(); await Promise.allSettled(pending); await new Promise((r) => setTimeout(r, 20)); await Promise.allSettled(pending);
+  const answer_ = (choice, probabilities) => ({ answers: { skill: { choice, probabilities } } });
+  const run = async (clef) => {
+    resetRouter();
+    const logged = [], pending = [];
+    const AI = { run: async (model, input) => {
+      if (model === CLEF_MODEL) return clef();
+      if (input && input.text) return { data: input.text.map(() => [1, 0, 0, 0]) };
+      return { response: 'Five minutes is 300 seconds.' };
+    } };
+    const DB = { prepare: (sql) => ({ bind: (...a) => ({ run: async () => { if (/INSERT INTO void_routes/.test(sql)) logged.push(a); return {}; }, first: async () => null, all: async () => ({ results: [] }) }), run: async () => ({}), first: async () => null }), batch: async () => [] };
+    const req = new Request('https://a-to-mind.com/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: 'count down five minutes for my eggs' }) });
+    const origFetch = globalThis.fetch; globalThis.fetch = async () => new Response('{}', { status: 404 });
+    try {
+      const res = await answer({ request: req, env: { AI, DB }, waitUntil: (p) => pending.push(p) });
+      const j = await res.json();
+      assert.match(j.answer || '', /300 seconds/, 'the answer never comes from Clef');
+      await Promise.allSettled(pending); await new Promise((r) => setTimeout(r, 20)); await Promise.allSettled(pending);
+      return logged;
+    } finally { globalThis.fetch = origFetch; }
+  };
+  // Clef quick: the awaited log names its pick
+  {
+    const logged = await run(async () => answer_('timer', { timer: 0.94, none: 0.06 }));
     const row = logged.at(-1);
     assert.ok(row, 'the route was logged');
     assert.equal(row[2], 'skill'); assert.equal(row[3], 'timer');
     assert.match(row[5], /skill missed: timer \(Clef\)/);
-  } finally { globalThis.fetch = origFetch; }
+  }
+  // Clef out past its bound: the row logs the fallback route instead, and nothing hangs or is dropped
+  {
+    let releaseClef; const clefGate = new Promise((r) => { releaseClef = r; });
+    const out = run(() => clefGate.then(() => answer_('timer', { timer: 0.94 })));
+    const logged = await out;
+    assert.equal(logged.length, 1, 'one row, written once');
+    assert.notEqual(logged[0][3], 'timer', 'no Clef pick in a row Clef never made');
+    assert.ok(!/\(Clef\)/.test(String(logged[0][5])), 'the row says plainly Clef was not in it');
+    releaseClef(); await new Promise((r) => setTimeout(r, 50));
+    assert.equal(logged.length, 1, 'a late Clef answer never rewrites the row');
+  }
 });
 
 
@@ -223,7 +238,7 @@ test('the will proposes teaching the skill a close none nearly was, unless that 
   const { join } = await import('node:path'); const { tmpdir } = await import('node:os');
   const f = join(mkdtempSync(join(tmpdir(), 'routes-')), 'routes.json');
   writeFileSync(f, JSON.stringify({ total: 4, fallback: 0, skills: {}, close: { weather: [{ ask: 'is it going to pour on my picnic saturday', count: 3, score: 0.66 }], timer: [{ ask: 'set a timer for 5 minutes', count: 1, score: 0.65 }] } }));
-  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [new URL('./will.py', import.meta.url).pathname, '--candidates', '--all'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, VOID_ROUTES_FILE: f, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '' } });
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [new URL('./will.py', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), '--candidates', '--all'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, VOID_ROUTES_FILE: f, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '' } });
   const c = JSON.parse(py.stdout || '[]').filter((x) => x.source === 'router near miss');
   assert.deepEqual(c.map((x) => x.title), ['teach my weather skill "is it going to pour on my picnic saturday"'], 'the timer ask is one the timer skill already answers (tools/covered.mjs)');
   assert.match(c[0].why, /came within 0\.04 of my weather skill .* \(asked 3 times\)/);
@@ -239,11 +254,11 @@ test('a note about my own card is no near miss of the self skill (the 4 asks of 
   const asks = [SELF_NOTE, 'that card is wrong. it cites a source that says nothing about my question and calls itself fetched, sourced and dated.',
     'closer, but it still says "the card" about its own card, and it gives no list of what is fixed and what is still open.',
     'your last answer card leaves out pr #1406 and dates the gemma switch oct 25'];
-  const covered = JSON.parse(spawnSync('node', [new URL('./covered.mjs', import.meta.url).pathname], { input: JSON.stringify([...asks, 'what is artificial intelligence', 'my credit card was charged twice, is that wrong']), encoding: 'utf8', timeout: 60000 }).stdout);
+  const covered = JSON.parse(spawnSync('node', [new URL('./covered.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')], { input: JSON.stringify([...asks, 'what is artificial intelligence', 'my credit card was charged twice, is that wrong']), encoding: 'utf8', timeout: 60000 }).stdout);
   assert.deepEqual(covered, [true, true, true, true, false, false], 'card notes are handled; a plain question and a bank card are not');
   const f = join(mkdtempSync(join(tmpdir(), 'routes-')), 'routes.json');
   writeFileSync(f, JSON.stringify({ total: 8, fallback: 0, skills: {}, close: { self: asks.map((ask) => ({ ask, count: 4, score: 0.62 })), weather: [{ ask: 'is it going to pour on my picnic saturday', count: 3, score: 0.66 }] } }));
-  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [new URL('./will.py', import.meta.url).pathname, '--candidates', '--all'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, VOID_ROUTES_FILE: f, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '' } });
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [new URL('./will.py', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), '--candidates', '--all'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, VOID_ROUTES_FILE: f, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '' } });
   const c = JSON.parse(py.stdout || '[]').filter((x) => x.source === 'router near miss');
   assert.deepEqual(c.map((x) => x.title), ['teach my weather skill "is it going to pour on my picnic saturday"']);
 });

@@ -1,5 +1,5 @@
 {
- "at": "2026-11-06",
+ "at": "2026-11-07",
  "scanned": 551,
  "counts": {
   "unified": 69,
@@ -4383,8 +4383,8 @@
    "kind": "archived part",
    "status": "salvageable",
    "target": "tool",
-   "value": 14.1,
-   "why": "",
+   "value": 8.5,
+   "why": "live code shares its name; check for overlap before migrating",
    "into": null,
    "test": null,
    "pr": null,
@@ -6603,8 +6603,8 @@
    "kind": "github repo",
    "status": "salvageable",
    "target": "tool",
-   "value": 3.6,
-   "why": "Skill that knows how to call opencode_cli headless ",
+   "value": 2.2,
+   "why": "live code shares its name; check for overlap before migrating",
    "into": null,
    "test": null,
    "pr": null,

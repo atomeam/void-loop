@@ -65,6 +65,10 @@
             "score": 100,
             "hookScore": 65,
             "failed": []
+          },
+          "outcome": {
+            "views": 2,
+            "clicks": 0
           }
         },
         {
@@ -80,6 +84,10 @@
             "score": 100,
             "hookScore": 80,
             "failed": []
+          },
+          "outcome": {
+            "views": 1,
+            "clicks": 0
           }
         },
         {
@@ -95,6 +103,10 @@
             "score": 100,
             "hookScore": 90,
             "failed": []
+          },
+          "outcome": {
+            "views": 1,
+            "clicks": 0
           }
         }
       ],
@@ -133,6 +145,76 @@
             "harm"
           ],
           "why": "about harm to people (Arrestan): not something to parody or make a trend film of"
+        }
+      ],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261107",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "review",
+          "label": "Product-review parody",
+          "topic": "2026 United States elections",
+          "name": "2026 United States elections",
+          "film": "20261107-review-2026-united-states-elections",
+          "hook": "Rating 2026 United States elections like a product: worth it?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 90,
+            "failed": []
+          }
+        },
+        {
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "valencia c. f. - real madrid",
+          "name": "valencia c. f. - real madrid",
+          "film": "20261107-lyric-valencia-c-f-real-madrid",
+          "hook": "Is valencia c. f. - real madrid the song of the day?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": false,
+            "score": 86,
+            "hookScore": 65,
+            "failed": [
+              "captions"
+            ]
+          }
+        },
+        {
+          "format": "pov",
+          "label": "POV skit",
+          "topic": ".xyz",
+          "name": ".xyz",
+          "film": "20261107-pov-xyz",
+          "hook": "POV: your group chat hears about .xyz",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 65,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": "Ramayana: Part 1",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Ramayana: Part 1\" (20261107)"
+        },
+        {
+          "topic": ".xxx",
+          "kinds": [
+            "adult"
+          ],
+          "why": "adult content"
         }
       ],
       "verdict": "waiting"

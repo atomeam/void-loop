@@ -15,7 +15,7 @@ import * as commentsRoute from '../void-live-deploy/functions/api/comments.js';
 import { pictureOf } from './tower-gate.mjs';
 import { resetGuard } from '../void-live-deploy/lib/guard.js';
 
-const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const shots = process.argv.includes('--shots') ? process.argv[process.argv.indexOf('--shots') + 1] : null;
 const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.xml': 'application/xml', '.txt': 'text/plain' };
 const store = new Map();

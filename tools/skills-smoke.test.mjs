@@ -5,7 +5,7 @@ import { readFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const root = resolve(new URL('..', import.meta.url).pathname);
+const root = resolve(new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 
 test('the daily smoke test (asked by Verse): skills-check --write records every skill checked and the failing ones, exit 0; the record is what families.mjs reads', () => {
   const out = join(mkdtempSync(join(tmpdir(), 'smoke-')), 'skills-smoke.json');

@@ -3,7 +3,7 @@
 // shakes (history kept to 20, logged, saved), a ball asked again that shakes before it tells, and the 3D miniature handed its answer.
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import sk, { ANSWERS, pick, summonBall } from '../void-live-deploy/skills/eightball.js';
+import sk, { ANSWERS, pick, summonBall, shakeAsk } from '../void-live-deploy/skills/eightball.js';
 
 class El {
   constructor(tag) { this.tagName = tag; this.kids = []; this.on = {}; this.dataset = {}; this.style = {}; this.attrs = {}; this.className = ''; this.title = ''; this._t = ''; }
@@ -21,10 +21,19 @@ function stageOf(extra = {}) {
 const parts = (el) => ({ view: el.kids[0], said: el.kids[1], grip: el.kids[2] });
 const face = (view) => view.kids[0].kids[0].textContent; // the flat ball's blue window
 
-test('not an ask matcher: no examples, every ask refused, run answers none', async () => {
-  assert.deepEqual(sk.examples, []); assert.deepEqual(sk.nearMisses, ['magic 8 ball']);
-  for (const a of [...sk.nearMisses, 'shake the magic 8 ball', 'eightball', 'will it rain? magic 8 ball']) assert.equal(sk.match(a.toLowerCase(), a), false, a);
-  assert.equal(await sk.run('magic 8 ball', {}), 'none'); assert.deepEqual(Object.keys(sk.stageKinds), ['eightball']);
+test('the page keeps "magic 8 ball"; "shake the 8 ball" is this skill and puts one ball up', async () => {
+  assert.deepEqual(sk.nearMisses, ['magic 8 ball']);
+  for (const a of [...sk.nearMisses, 'eightball', 'will it rain? magic 8 ball']) assert.equal(sk.match(a.toLowerCase(), a), false, a);
+  assert.equal(shakeAsk('shake the 8 ball'), true);
+  assert.equal(sk.match('shake the 8 ball', 'shake the 8 ball'), true);
+  assert.equal(await sk.run('magic 8 ball', {}), 'none');
+  globalThis.innerWidth = 1000; globalThis.innerHeight = 800;
+  const things = {}; const summoned = [];
+  const stage = { things: () => things, render() {} };
+  const summon = (k, o) => { const t = { id: 'b', kind: k, ...o }; things.b = t; summoned.push(t); return t; };
+  assert.equal(await sk.run('shake the 8 ball', { stage, summon, say() {} }), 'eightball');
+  assert.equal(summoned.length, 1); assert.equal(summoned[0].kind, 'eightball'); assert.ok(ANSWERS.includes(summoned[0].answer));
+  assert.deepEqual(Object.keys(sk.stageKinds), ['eightball']);
 });
 test('the classic 20 answers (10 yes, 5 non-committal, 5 no), all different, and pick reads them in order', () => {
   assert.deepEqual(ANSWERS, ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes',

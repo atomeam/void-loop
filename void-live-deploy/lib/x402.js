@@ -105,8 +105,9 @@ const b64 = (o) => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
 const unb64 = (s) => JSON.parse(decodeURIComponent(escape(atob(String(s).trim()))));
 
 /** The payment requirements for a service, paying `payTo`, in both protocol shapes. Pure. */
-export function requirements(name, payTo, origin) {
-  const s = SERVICES[name];
+export function requirements(name, payTo, origin) { return requirementsOf(SERVICES[name], payTo, origin); }
+/** The same requirements for a spec that is not in SERVICES (lib/sponsors.js planSpec: a sponsor tile is not a per-call service). Pure. */
+export function requirementsOf(s, payTo, origin) {
   if (!s || !ADDR_RE.test(String(payTo || ''))) return null;
   const to = String(payTo), resource = origin + s.path, mimeType = 'application/json';
   const v1 = { scheme: 'exact', network: NET.v1, maxAmountRequired: String(s.units), resource, description: s.description, mimeType, payTo: to,

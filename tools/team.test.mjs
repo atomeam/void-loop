@@ -473,9 +473,10 @@ test('a key or a join link never sits in a message; a replaced key hears why; ag
 
   // agent.mjs runs as a command whatever the path looks like (Windows: file:///C:/... against C:\...): the real paths are compared
   const dir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'agent-main-')), file = nodePath.join(dir, 'agent.mjs'), link = nodePath.join(dir, 'link.mjs');
-  fs.writeFileSync(file, ''); fs.symlinkSync(file, link);
+  fs.writeFileSync(file, '');
+  let linked = true; try { fs.symlinkSync(file, link); } catch (_) { linked = false; } // Windows without Developer Mode forbids symlinks (EPERM): the link assertion stands down only there and still runs on CI
   assert.equal(isMain(pathToFileURL(file).href, file), true);
-  assert.equal(isMain(pathToFileURL(file).href, link), true, 'a link to the file is the file');
+  if (linked) assert.equal(isMain(pathToFileURL(file).href, link), true, 'a link to the file is the file');
   assert.equal(isMain(pathToFileURL(file).href, nodePath.join(dir, 'other.mjs')), false);
   assert.equal(isMain(pathToFileURL(file).href, undefined), false, 'imported, not run');
   fs.rmSync(dir, { recursive: true, force: true });
@@ -579,7 +580,7 @@ test('over MCP, a read that comes back with a handed job says the job first', as
 
 import { spawn as spawnChild } from 'node:child_process';
 import { createServer } from 'node:http';
-const AGENT = new URL('../void-live-deploy/team/agent.mjs', import.meta.url).pathname;
+const AGENT = new URL('../void-live-deploy/team/agent.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const runAgent = (args, env = {}) => new Promise((res) => {
   const p = spawnChild(process.execPath, [AGENT, ...args], { env: { ...process.env, VERSE_TEAM_KEY: 'vt1.' + 'a'.repeat(12) + '.' + 'b'.repeat(32), ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
   let out = '', err = ''; p.stdout.on('data', (d) => { out += d; }); p.stderr.on('data', (d) => { err += d; });

@@ -1,0 +1,741 @@
+{
+ "site": "www.translatedict.com",
+ "url": "https://www.translatedict.com/",
+ "scanned": "2026-11-08",
+ "status": 200,
+ "assets": [
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 22418,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 12037,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 12037,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 7872,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 2565,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/admgr.yourtango.com",
+   "t": "js",
+   "b": 54,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 5431,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 2105,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ca-pub-",
+   "t": "js",
+   "b": 228257,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63037,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 166751,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 166749,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 524520,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "translate-pa.googleapis.com/supportedLanguages",
+   "t": "js",
+   "b": 31238,
+   "ext": true
+  },
+  {
+   "f": "translate.google.com/element.js",
+   "t": "js",
+   "b": 3604,
+   "ext": true
+  },
+  {
+   "f": "translate.google.com/element.js",
+   "t": "js",
+   "b": 3604,
+   "ext": true
+  },
+  {
+   "f": "translate.googleapis.com/m=el_main",
+   "t": "js",
+   "b": 325300,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 540313,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/m=el_main_css",
+   "t": "css",
+   "b": 22361,
+   "ext": true
+  },
+  {
+   "f": "main.js",
+   "t": "js",
+   "b": 44082
+  },
+  {
+   "f": "rocket-loader.min.js",
+   "t": "js",
+   "b": 12332
+  },
+  {
+   "f": "td-ads.js",
+   "t": "js",
+   "b": 8380
+  },
+  {
+   "f": "main.js",
+   "t": "js",
+   "b": 37458
+  },
+  {
+   "f": "style.css",
+   "t": "css",
+   "b": 23058
+  },
+  {
+   "f": "jquery-migrate.min.js",
+   "t": "js",
+   "b": 13577
+  },
+  {
+   "f": "jquery.min.js",
+   "t": "js",
+   "b": 87553
+  }
+ ],
+ "assetCount": 27,
+ "bytes": 2398546,
+ "html": {
+  "mobile": {
+   "title": "İngilizceye Çevir | Ücretsiz Çevrimiçi Ç",
+   "lang": "tr",
+   "manifest": null,
+   "oembed": true,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 7,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "www.translatedict.com",
+    "www.translatedict.com",
+    "googleads.g.doubleclick.net",
+    "www.translatedict.com",
+    "www.google.com",
+    "www.translatedict.com",
+    "www.translatedict.com",
+    "www.translatedict.com",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "inputTypes": {
+    "email": 1,
+    "text": 7
+   },
+   "selects": 3,
+   "textareas": 2,
+   "forms": 2,
+   "ariaLabels": [
+    "Advertisement",
+    "Bir sorun bildirin",
+    "Clear text",
+    "Copy translation",
+    "Download source text",
+    "Download translation",
+    "Find Song Lyrics",
+    "Good translation",
+    "Language Translate Widget",
+    "Language learning software",
+    "Online translation service",
+    "Poor translation",
+    "Primary Menu",
+    "Reklamcılık",
+    "Source Language",
+    "Speak source text",
+    "Speak translated text",
+    "Swap languages",
+    "Target Language",
+    "Toggle menu",
+    "Zoom source text",
+    "Zoom translated text",
+    "facebook",
+    "linkedin",
+    "whatsapp",
+    "x"
+   ],
+   "roles": {
+    "dialog": 1
+   }
+  },
+  "desktop": {
+   "iframes": [
+    "www.translatedict.com",
+    "www.translatedict.com",
+    "googleads.g.doubleclick.net",
+    "www.translatedict.com",
+    "www.google.com",
+    "www.translatedict.com",
+    "www.translatedict.com",
+    "www.translatedict.com",
+    "googleads.g.doubleclick.net"
+   ],
+   "ariaLabels": [
+    "Bir sorun bildirin",
+    "Clear text",
+    "Copy translation",
+    "Download source text",
+    "Download translation",
+    "Good translation",
+    "Language Translate Widget",
+    "Language learning software",
+    "Online translation service",
+    "Poor translation",
+    "Primary Menu",
+    "Reklamcılık",
+    "Source Language",
+    "Speak source text",
+    "Speak translated text",
+    "Swap languages",
+    "Target Language",
+    "Text to speech",
+    "Toggle menu",
+    "Voice translation app",
+    "Zoom source text",
+    "Zoom translated text",
+    "facebook",
+    "linkedin",
+    "whatsapp",
+    "x"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "About Us",
+   "w": "d"
+  },
+  {
+   "l": "Afrikaans",
+   "w": "md"
+  },
+  {
+   "l": "American",
+   "w": "md"
+  },
+  {
+   "l": "Armenian",
+   "w": "md"
+  },
+  {
+   "l": "Assamese",
+   "w": "md"
+  },
+  {
+   "l": "Australian",
+   "w": "md"
+  },
+  {
+   "l": "Aymara",
+   "w": "md"
+  },
+  {
+   "l": "Basque",
+   "w": "md"
+  },
+  {
+   "l": "Batak Toba",
+   "w": "md"
+  },
+  {
+   "l": "Bengali",
+   "w": "md"
+  },
+  {
+   "l": "Bir sorun bildirin",
+   "w": "md"
+  },
+  {
+   "l": "British",
+   "w": "md"
+  },
+  {
+   "l": "Bulgarian",
+   "w": "md"
+  },
+  {
+   "l": "Chinese",
+   "w": "md"
+  },
+  {
+   "l": "Clear text",
+   "w": "md"
+  },
+  {
+   "l": "Contact Us",
+   "w": "d"
+  },
+  {
+   "l": "Copy translation",
+   "w": "md"
+  },
+  {
+   "l": "Download source text",
+   "w": "md"
+  },
+  {
+   "l": "Download translation",
+   "w": "md"
+  },
+  {
+   "l": "Dutch",
+   "w": "md"
+  },
+  {
+   "l": "Filipino",
+   "w": "md"
+  },
+  {
+   "l": "Finnish",
+   "w": "md"
+  },
+  {
+   "l": "French",
+   "w": "md"
+  },
+  {
+   "l": "German",
+   "w": "md"
+  },
+  {
+   "l": "Greek",
+   "w": "md"
+  },
+  {
+   "l": "Gujarati",
+   "w": "md"
+  },
+  {
+   "l": "Hiligaynon",
+   "w": "md"
+  },
+  {
+   "l": "Icelandic",
+   "w": "md"
+  },
+  {
+   "l": "Indian",
+   "w": "md"
+  },
+  {
+   "l": "Italian",
+   "w": "md"
+  },
+  {
+   "l": "Japanese",
+   "w": "md"
+  },
+  {
+   "l": "Khmer",
+   "w": "md"
+  },
+  {
+   "l": "Kinyarwanda",
+   "w": "md"
+  },
+  {
+   "l": "Korean",
+   "w": "md"
+  },
+  {
+   "l": "Kyrgyz",
+   "w": "md"
+  },
+  {
+   "l": "Language Translate Widget",
+   "w": "md"
+  },
+  {
+   "l": "Lao",
+   "w": "md"
+  },
+  {
+   "l": "Limburgan",
+   "w": "md"
+  },
+  {
+   "l": "Mizo",
+   "w": "md"
+  },
+  {
+   "l": "Nuer",
+   "w": "md"
+  },
+  {
+   "l": "Pashto",
+   "w": "md"
+  },
+  {
+   "l": "Persian",
+   "w": "md"
+  },
+  {
+   "l": "Polish",
+   "w": "md"
+  },
+  {
+   "l": "Punjabi",
+   "w": "md"
+  },
+  {
+   "l": "Romanian",
+   "w": "md"
+  },
+  {
+   "l": "Russian",
+   "w": "md"
+  },
+  {
+   "l": "Samoan",
+   "w": "md"
+  },
+  {
+   "l": "Sepedi",
+   "w": "md"
+  },
+  {
+   "l": "Serbian",
+   "w": "md"
+  },
+  {
+   "l": "Silesian",
+   "w": "md"
+  },
+  {
+   "l": "Slovak",
+   "w": "md"
+  },
+  {
+   "l": "Source Language",
+   "w": "md"
+  },
+  {
+   "l": "Spanish",
+   "w": "md"
+  },
+  {
+   "l": "Speak source text",
+   "w": "md"
+  },
+  {
+   "l": "Speak translated text",
+   "w": "md"
+  },
+  {
+   "l": "Swap languages",
+   "w": "md"
+  },
+  {
+   "l": "Swedish",
+   "w": "md"
+  },
+  {
+   "l": "Tamil",
+   "w": "md"
+  },
+  {
+   "l": "Target Language",
+   "w": "md"
+  },
+  {
+   "l": "Telugu",
+   "w": "md"
+  },
+  {
+   "l": "Text to Speech",
+   "w": "d"
+  },
+  {
+   "l": "Thai",
+   "w": "md"
+  },
+  {
+   "l": "Toggle menu",
+   "w": "m"
+  },
+  {
+   "l": "Translate",
+   "w": "d"
+  },
+  {
+   "l": "TranslateDict",
+   "w": "md"
+  },
+  {
+   "l": "Turkish",
+   "w": "md"
+  },
+  {
+   "l": "Twi",
+   "w": "md"
+  },
+  {
+   "l": "Ukrainian",
+   "w": "md"
+  },
+  {
+   "l": "Voice Translator",
+   "w": "d"
+  },
+  {
+   "l": "Zoom source text",
+   "w": "md"
+  },
+  {
+   "l": "Zoom translated text",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/wp-admin/"
+  ],
+  "sitemaps": [
+   "https://www.translatedict.com/wp-sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "rocket-loader.min.js",
+   "own": true,
+   "mimes": [
+    "application/ecmascript",
+    "application/x-ecmascript",
+    "application/x-javascript",
+    "text/ecmascript",
+    "text/javascript1.0",
+    "text/javascript1.1",
+    "text/javascript1.2",
+    "text/javascript1.3",
+    "text/javascript1.4",
+    "text/javascript1.5",
+    "text/jscript",
+    "text/livescript",
+    "text/x-ecmascript",
+    "text/x-javascript"
+   ]
+  },
+  {
+   "file": "main.js",
+   "own": true,
+   "storage": [
+    "td_favs2@10678"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "langs": 54,
+   "mimes": [
+    "audio/mpeg"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 2
+  },
+  {
+   "file": "style.css",
+   "own": true,
+   "media": [
+    "print"
+   ]
+  },
+  {
+   "file": "jquery.min.js",
+   "own": true,
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "flagcdn.com",
+   "file": "main.js",
+   "at": 96
+  },
+  {
+   "host": "translateing.com",
+   "file": "main.js",
+   "at": 118
+  },
+  {
+   "host": "twitter.com",
+   "file": "main.js",
+   "at": 31642
+  },
+  {
+   "host": "wa.me",
+   "file": "main.js",
+   "at": 32355
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "main.js",
+   "at": 31237
+  },
+  {
+   "host": "www.linkedin.com",
+   "file": "main.js",
+   "at": 31933
+  }
+ ],
+ "thirdParty": [
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "flagcdn.com",
+  "fonts.googleapis.com",
+  "fundingchoicesmessages.google.com",
+  "pagead2.googlesyndication.com",
+  "static.cloudflareinsights.com",
+  "translate-pa.googleapis.com",
+  "translate.google.com",
+  "translate.googleapis.com",
+  "translateing.com",
+  "twitter.com",
+  "wa.me",
+  "www.facebook.com",
+  "www.google-analytics.com",
+  "www.googletagmanager.com",
+  "www.gstatic.com",
+  "www.linkedin.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://fundingchoicesmessages.google.[token]",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?d&id",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&name&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&proto&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&type",
+  "https://pagead2.googlesyndication.com/pagead/ping?e",
+  "https://translate-pa.googleapis.com/v1/translateHtml",
+  "https://translateing.com/chain-config.php?t",
+  "https://www.google-analytics.com/g/collect?_ee&_fv&_nsi&_p&_s&_ss&cid&dl",
+  "https://www.google-analytics.com/g/collect?_et&_eu&_p&_s&cid&dl&dma&dt"
+ ],
+ "storage": {
+  "local": [
+   "google_ama_config",
+   "google_ama_settings"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "style.css"
+  },
+  {
+   "name": "oEmbed for embedding links",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "link[type*=oembed]"
+  },
+  {
+   "name": "API call translate-pa.googleapis.com/v1/translateHtml",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "main.js@27081"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Interface languages: 54 (af, ar, eu, bn, bg, ca)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "main.js@6113"
+  },
+  {
+   "name": "Path kept from crawlers /wp-admin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

@@ -163,7 +163,9 @@ export default {
    },
    {
     "name": "eightball",
-    "examples": []
+    "examples": [
+     "shake the 8 ball"
+    ]
    }
   ],
   "date-math": [

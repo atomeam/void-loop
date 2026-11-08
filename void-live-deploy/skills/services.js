@@ -16,7 +16,9 @@ export function servicesOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
   if (!t) return null;
   if (/^(?:(?:your |the |show (?:me )?(?:your |the )?)?pricing|price list|prices|what do you sell|what do you offer|what(?:'s| is) for sale|what can i buy(?: here)?)$/.test(t)) return { why: 'pricing' };
-  if (/^(?:what does (?:verse|void) cost|how much (?:does (?:verse|void)|is (?:verse|void)|do you) cost|how much is (?:verse|void)|what do you cost)$/.test(t)) return { why: 'cost' };
+  // the same cost phrasings the page's PRICE_QUESTION_RE takes (void.html): a cost ask must get the membership line
+  // AND this card, so the two patterns are kept in step (tools/price-question.test.mjs pins them together)
+  if (/^(?:what (?:does|do) (?:verse|void|you|a-to-mind) cost|how much (?:is|does|do) (?:verse|void|you|a-to-mind)(?: cost)?)$/.test(t)) return { why: 'cost' };
   if (/^(?:(?:can|how do) i hire you|hire you|i(?: want|'d like) to hire you|hire (?:verse|void))$/.test(t)) return { why: 'hire' };
   if (/^(?:fix my automations?|(?:my|our) automations? (?:is |are )?(?:broken?|stopped(?: working)?|down)|repair my automation|my (?:zap|workflow) (?:broke|is broken|stopped working)|fix my zap)$/.test(t)) return { why: 'fix' };
   return null;

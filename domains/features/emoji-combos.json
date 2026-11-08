@@ -701,5 +701,46 @@
    }
   },
   "updated": "2026-11-04"
+ },
+ "re": {
+  "scanned": "2026-11-08",
+  "sites": {
+   "emojigraph.org": {
+    "url": "https://emojigraph.org/",
+    "scanned": "2026-11-08",
+    "features": [
+     {
+      "name": "Language versions: 25 (x-default, en, ar, da, de, el)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "style.0b0acc10ed26.css"
+     },
+     {
+      "name": "Path kept from crawlers /admin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   }
+  }
  }
 }
