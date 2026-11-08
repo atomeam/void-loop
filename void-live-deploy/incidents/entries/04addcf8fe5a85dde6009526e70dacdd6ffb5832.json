@@ -1,0 +1,12 @@
+{
+ "at": "2026-11-08T00:02:37.290Z",
+ "sha": "04addcf8fe5a85dde6009526e70dacdd6ffb5832",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42426738890",
+ "suite": "browser suite on main",
+ "checks": [
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "void-live-deploy/bots/registry.json"
+ ]
+}
