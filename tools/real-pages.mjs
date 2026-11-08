@@ -600,13 +600,18 @@ const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized 
   policy: JSON.parse(fs.readFileSync(path.join(root, 'treasury/policy.json'), 'utf8')),
   entries: [{ at: '2026-11-04T12:00:00Z', kind: 'alloc', bucket: 'owner', cents: 1256, purpose: "Atom's cut of a realized sale", status: 'allocated' }], reviews: [] };
 SPECS['/treasury/'] = async (t) => {
-  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(TREASURY_FIX) }));
+  // Starboard's sponsor split (functions/api/sponsors.js sponsorView): 6 USDC confirmed, half to the house, the rest the visitor pool
+  const fix = { ...TREASURY_FIX, sponsors: { house_bps: 5000, sponsor_cents: 600, house_cents: 300, pool_cents: 300, claimed_cents: 1, paid_out_cents: 0, available_cents: 299, waiting_cents: 0, sponsor_payments: 2, claims: 1, claims_owed: 1, live_tiles: 1, slots: 6, page: '/starboard/#sponsors', rule: 'Sponsor income counts once the chain shows it.' } };
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(fix) }));
   await t.p.reload(); await t.waitText('#balance', /\$/, 10000);
   t.ok((await t.text('#balance')).trim() === '$41.88', 'the balance is the realized money: ' + (await t.text('#balance')));
   t.ok(/\$49\.00 gross/.test(await t.text('#balance-note')) && /\$7\.12 Gumroad fees/.test(await t.text('#balance-note')), 'gross and fees shown');
   t.ok(/\$12\.56/.test(await t.text('#pots')), "Atom's cut has its pot");
   t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
+  await t.waitText('#sponsors', /\$6\.00/, 10000);
+  t.ok(/\$3\.00[\s\S]*50%/.test(await t.text('#sponsors')), 'the house share is shown with its 50%: ' + (await t.text('#sponsors')).slice(0, 120));
+  t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
 };
 // /starboard/: the deck that races dalyfeds.com live (#2479): both race rows from its own benchmark (stubbed, exact numbers), the weather panel for a typed place, and the news wire's top story

@@ -15,6 +15,7 @@ import { ensureStoreTables } from '../../lib/store-db.js';
 import { realized, balances, bucketWeights, split, queueSpends, review } from '../../lib/treasury.js';
 import { walletOf, usdcBalance, confirmPayments, incomeRows, usdcIncome } from '../../lib/verse-wallet.js';
 import { SERVICES, usdcText } from '../../lib/x402.js';
+import { sponsorView } from './sponsors.js';
 
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_treasury (id TEXT PRIMARY KEY, at TEXT NOT NULL, kind TEXT NOT NULL, bucket TEXT, cents INTEGER NOT NULL, purpose TEXT, expected TEXT, actual TEXT, status TEXT, needs TEXT, ref TEXT, data TEXT)';
 const RECONCILE_MS = 6 * 3600e3;
@@ -150,7 +151,10 @@ export async function onRequestGet({ request, env, waitUntil }) {
     if (!s.rows.some((r) => r.id === 'rv:' + weekOf(new Date().toISOString())) && typeof waitUntil === 'function') {
       try { waitUntil(weeklyReview(env, policy).catch(() => null)); } catch (_) {}
     }
-    return json({ ...publicView(policy, s, env), wallet: await walletView(env) }, 200, 'public, max-age=60');
+    // Starboard's sponsor grid and claim wall (lib/sponsors.js): the house share and the visitor pool, from verified sponsor income only
+    let sponsors = null;
+    try { const v = await sponsorView(env); sponsors = { ...v.split, live_tiles: v.slots.filter((g) => g.tile).length, slots: v.slots.length, page: '/starboard/#sponsors', rule: v.rule }; } catch (_) {}
+    return json({ ...publicView(policy, s, env), wallet: await walletView(env), sponsors }, 200, 'public, max-age=60');
   } catch (e) { return json({ error: 'treasury unavailable' }, 503); }
 }
 
