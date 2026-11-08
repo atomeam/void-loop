@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Join Verse</title>
+<meta name="description" content="Join Verse: the $1 Join the Team trial, or a Verse store product, opens Crew, Drones, Envoy, Tower and the other members pages. Ask stays free.">
+<meta name="verse-handoff" content="in: none; out: none">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Join Verse">
+<meta property="og:description" content="The $1 Join the Team trial, or a Verse store product, opens Crew, Drones, Envoy, Tower, Holovids, Out Loud, Hoard, Starboard, Star Chart, Shields, Event Horizon and Assimilate. Ask stays free.">
+<meta property="og:url" content="https://a-to-mind.com/join/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<link rel="canonical" href="https://a-to-mind.com/join/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { --bg: #07060b; --ink: #ecebf5; --dim: #a9a6c4; --line: #2a2740; --panel: rgba(20, 18, 34, .72); --glow: #8f7bff; --ok: #6fe3b0; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, Segoe UI, sans-serif; }
+  body { background:
+    radial-gradient(1px 1px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 73% 9%, #fff6 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 41% 63%, #fff7 50%, transparent 51%), radial-gradient(1px 1px at 88% 71%, #fff5 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 84%, #fff6 50%, transparent 51%), radial-gradient(1px 1px at 60% 36%, #fff4 50%, transparent 51%),
+    radial-gradient(900px 600px at 80% -10%, #2a1d5a55, transparent 70%), radial-gradient(700px 500px at -10% 110%, #123a5a44, transparent 70%), var(--bg);
+    background-attachment: fixed; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 56px; }
+  a { color: #c9bfff; }
+  h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.12; margin: 8px 0 10px; letter-spacing: -.01em; }
+  h2 { font-size: 20px; margin: 30px 0 10px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; backdrop-filter: blur(4px); margin: 14px 0; }
+  .lead { color: var(--dim); max-width: 60ch; }
+  .muted { color: var(--dim); font-size: 14px; }
+  .buy { display: inline-block; margin: 10px 10px 4px 0; padding: 12px 20px; border-radius: 999px; background: linear-gradient(135deg, #6b55ff, #a06bff); color: #fff; font-weight: 600; text-decoration: none; box-shadow: 0 0 24px #7b61ff55; }
+  .buy.off { filter: grayscale(1); opacity: .55; pointer-events: none; }
+  label { display: block; margin-top: 10px; font-size: 14px; color: var(--dim); }
+  input, select { width: 100%; box-sizing: border-box; margin-top: 6px; background: #0d0b18; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
+  input:focus, select:focus { outline: 2px solid var(--glow); outline-offset: 1px; }
+  button { margin-top: 12px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--glow); background: #1a1630; color: var(--ink); font: inherit; cursor: pointer; }
+  button[disabled] { opacity: .5; cursor: default; }
+  .say { min-height: 1.4em; color: var(--ok); }
+  .say.bad { color: #ff9f9f; }
+  ul { margin: 6px 0 0; padding-left: 18px; color: var(--dim); font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Join Verse</h1>
+  <p class="lead"><b>Ask stays free.</b> Crew, Drones, Envoy, Tower, Holovids, Out Loud, Hoard, Starboard, Star Chart, Shields, Event Horizon and Assimilate are for members. One membership opens all of them.</p>
+
+  <section class="panel">
+    <h2>Become a member</h2>
+    <p><b>Join the Team is $1 and runs as a 7-day trial.</b> Any other Verse store product keeps access while the purchase or subscription is active.</p>
+    <a class="buy" href="https://moonbeam846.gumroad.com/l/join-the-team" target="_blank" rel="noopener">Join the Team — $1 trial</a>
+    <a class="buy" href="#" id="monthly">Join the $10/month plan</a>
+    <p class="muted">The $10/month plan is recurring, cancel anytime. The $1 Join the Team trial and the other Verse store products also open the members pages.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Already bought something?</h2>
+    <p class="muted">Paste the license key from your Gumroad receipt. No license key on it? Use the Order ID and the email you paid with.</p>
+    <form id="join">
+      <label for="name">Your name in the team</label>
+      <input id="name" name="name" autocomplete="nickname" maxlength="24" placeholder="e.g. Sam">
+      <label for="product">What did you buy?</label>
+      <select id="product" name="product"><option value="join-the-team">Join the Team — $1 trial</option></select>
+      <label for="license">License key</label>
+      <input id="license" name="license" autocomplete="off" spellcheck="false" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX">
+      <label for="order">or Order ID</label>
+      <input id="order" name="order" autocomplete="off" spellcheck="false" placeholder="Order ID from the receipt">
+      <label for="email">Email you paid with</label>
+      <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+      <button type="submit">Join</button>
+    </form>
+    <p class="say" id="say" role="status"></p>
+  </section>
+
+  <section class="panel">
+    <h2>Already a member?</h2>
+    <p class="muted">Paste your member key, or come back on the device where you joined.</p>
+    <form id="keyform">
+      <label for="key">Member key</label>
+      <input id="key" name="key" autocomplete="off" spellcheck="false" placeholder="vt1.…">
+      <button type="submit">Continue</button>
+    </form>
+    <p class="say" id="keysay" role="status"></p>
+    <p class="muted">Bought MultiVerse and signed in with your Verse account? <a href="/members/">Open MultiVerse</a>.</p>
+  </section>
+
+  <p class="muted">Agents join through a one-time link from the owner at <a href="/team/agents.txt">/team/agents.txt</a>.</p>
+</main>
+<script type="module" src="/join/join.js"></script>
+<script src="/visit.js" defer></script>
+</body>
+</html>

@@ -67,6 +67,11 @@ function mount(th, stageApi) {
   } else flat();
 }
 
+/** "shake the 8 ball" is this skill's own ask. "magic 8 ball" stays the page's chance line, which summons the same ball. */
+export function shakeAsk(text) {
+  return /^(?:please\s+)?shake the (?:magic\s+)?8[\s-]?ball$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
+
 // asked from void.html's chance line: one ball on the stage; asking again shakes it for a new answer
 export function summonBall(stage, summon, answer) {
   const things = stage.things();
@@ -75,11 +80,19 @@ export function summonBall(stage, summon, answer) {
   return summon('eightball', { answer, n: 0, x: Math.max(10, Math.round(innerWidth / 2 - 120)), y: Math.max(40, Math.round(innerHeight / 2 - 220)) });
 }
 
+async function run(text, api) {
+  if (!shakeAsk(text)) return 'none';
+  const answer = pick();
+  if (api && api.stage && api.summon) summonBall(api.stage, api.summon, answer);
+  if (api && api.say) api.say(answer + '. A random pick from the classic 20, not a prediction.');
+  return 'eightball';
+}
+
 export default {
   name: 'eightball',
-  examples: [],
+  examples: ['shake the 8 ball'],
   nearMisses: ['magic 8 ball'], // the page's chance line answers it and summons the ball
-  match() { return false; },
-  run: async () => 'none',
+  match(lower, text) { return shakeAsk(text || lower); },
+  run,
   stageKinds: { eightball: { mount } },
 };

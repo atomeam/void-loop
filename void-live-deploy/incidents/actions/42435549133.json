@@ -1,0 +1,66 @@
+{
+ "at": "2026-11-08T02:35:30Z",
+ "sha": "8971044240144426eb541449381b83bc7802531b",
+ "runId": 42435549133,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42435549133",
+ "workflow": "Site test",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test",
+   "id": 128598633998,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42435549133/job/128598633998",
+   "conclusion": "failure",
+   "step": {
+    "number": 12,
+    "name": "Nothing clipped at three window sizes (tools/no-clip.mjs)"
+   },
+   "fails": [
+    "FAIL 1280x800 zoom 2 did not open: page.waitForFunction: Timeout 30000ms exceeded.",
+    "FAIL 1920x1080 zoom 1.75 did not open: page.waitForFunction: Timeout 30000ms exceeded.",
+    "FAIL 640x400 zoom 1 did not open: page.waitForFunction: Timeout 30000ms exceeded.",
+    "FAIL live skills/films.js has the fix  -> 0 bytes",
+    "FAIL live lib/card-frame.js has the fix  -> 0 bytes",
+    "FAIL live sw.js has the fix  -> 0 bytes",
+    "FAIL live card fresh 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card fresh 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "FAIL live sw.js has the fix  -> 0 bytes",
+    "FAIL live card fresh 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card fresh 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "pass live card fresh 390x700 glitch is rare and slow",
+    "pass live card fresh 390x700 at 0%",
+    "pass live card fresh 390x700 at 30%",
+    "pass live card fresh 390x700 at 60%",
+    "pass live card fresh 390x700 at 94.5%",
+    "pass live card fresh 390x700 at 95.5%",
+    "pass live card fresh 390x700 at 96.5%",
+    "pass live card fresh 390x700 at 97%",
+    "pass live card fresh 390x700 at 98%",
+    "pass live card fresh 390x700 at 99%",
+    "pass live card fresh 390x700 at 99.5%",
+    "pass live card returning 390x700 glitch is rare and slow",
+    "pass live card returning 390x700 at 0%",
+    "pass live card returning 390x700 at 30%",
+    "pass live card returning 390x700 at 60%",
+    "pass live card returning 390x700 at 94.5%",
+    "pass live card returning 390x700 at 95.5%",
+    "pass live card returning 390x700 at 96.5%",
+    "pass live card returning 390x700 at 97%",
+    "pass live card returning 390x700 at 98%",
+    "pass live card returning 390x700 at 99%",
+    "pass live card returning 390x700 at 99.5%",
+    "51/58 passed",
+    "Error: the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
