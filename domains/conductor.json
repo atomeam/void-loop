@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T10:37:32.779Z",
+ "updated": "2026-11-08T10:46:56.963Z",
  "last24h": {
   "ticks": 152,
-  "started": 98,
+  "started": 96,
   "requeued": 3,
   "setAside": 1,
   "probes": 7,
-  "errors": 61
+  "errors": 62
  },
  "broken": [],
  "held": [
@@ -216,39 +216,6 @@
   "gap:want-exam-videos"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T10:42:41.333Z",
-   "open": 260,
-   "started": [
-    {
-     "id": "mw4p9cye",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 77
-    },
-    {
-     "id": "mw69o1oe",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T10:52:06.599Z",
    "open": 259,
@@ -3015,6 +2982,11 @@
   },
   {
    "at": "2026-11-08T10:37:32.779Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T10:46:56.963Z",
    "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
