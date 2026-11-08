@@ -1,11 +1,11 @@
 {
-  "at": "2026-11-08T03:15:35.682Z",
+  "at": "2026-11-08T03:46:16.070Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 78,
+      "score": 56.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -46,89 +46,122 @@
           "score": 57.1
         },
         {
-          "ask": "watch a documentary about trains",
+          "ask": "play a nature documentary",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
+        },
+        {
+          "ask": "watch a documentary about trains",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play a video of birds",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "show me a video of the eiffel tower",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video about the solar system",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "watch a video of a steam train",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video of the northern lights",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "show me a video about dinosaurs",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video about cooking pasta",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "watch a video of charlie chaplin",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play a video of jazz music",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "find a video about the moon",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "play the trailer",
           "failed": [
+            "loaded",
+            "playable",
             "topic",
             "rival"
           ],
-          "score": 75
+          "score": 50
         },
         {
           "ask": "joue une vidéo des baleines",
@@ -148,7 +181,7 @@
       }
     },
     "podcasts": {
-      "score": 70.5,
+      "score": 68.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -276,9 +309,11 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -338,17 +373,16 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
@@ -367,10 +401,17 @@
       }
     },
     "directions": {
-      "score": 98.2,
+      "score": 97.4,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "directions to springfield",
+          "failed": [
+            "rival"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -464,7 +505,7 @@
       }
     },
     "sports": {
-      "score": 64.8,
+      "score": 61.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -472,10 +513,9 @@
           "ask": "nba scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "nfl scores",
@@ -490,28 +530,25 @@
           "ask": "mlb scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "nhl scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "premier league scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "bundesliga table",
@@ -525,28 +562,25 @@
           "ask": "serie a scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "la liga scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "champions league scores",
           "failed": [
             "answered",
-            "fast",
-            "board"
+            "fast"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "mls scores",
@@ -567,6 +601,42 @@
           "score": 50
         },
         {
+          "ask": "celtics score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
           "ask": "nba team celtics",
           "failed": [
             "board"
@@ -577,10 +647,9 @@
           "ask": "scores",
           "failed": [
             "skill",
-            "board",
-            "rival"
+            "board"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "resultado del real madrid",
@@ -693,7 +762,7 @@
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 64.8
+    "domain": "videos",
+    "score": 56.7
   }
 }
