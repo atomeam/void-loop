@@ -1,19 +1,5 @@
 [
  {
-  "at": "2026-10-16T22:51:37Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
-  "at": "2026-10-17T00:06:20Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
   "at": "2026-10-17T01:37:54Z",
   "passed": 0,
   "of": 26,
@@ -6360,5 +6346,94 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"summon a cup\" (skill:figure)"
+ },
+ {
+  "at": "2026-11-08T19:06:25Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1260,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11792 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-08T19:16:35Z",
+  "passed": 0,
+  "of": 106,
+  "ms": 432,
+  "kind": "tighten",
+  "failed": [
+   {
+    "ask": "what are you?",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play voidquest",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "show me your videos",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "my actions",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "air quality in Tokyo",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "put on lofi hip hop pls",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "find the book the left hand of dakrness",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1260,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11792 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fps floor 6 -> 7"
  }
 ]
