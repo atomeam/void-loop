@@ -600,6 +600,30 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T18:28:56Z",
+   "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
+  },
+  {
+   "at": "2026-11-08T17:57:53Z",
+   "subject": "treasury: found money and the weekly review"
+  },
+  {
+   "at": "2026-11-08T17:40:07Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-08T17:14:11Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-11-08T17:11:13Z",
+   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+  },
+  {
+   "at": "2026-11-08T17:08:49Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-08T16:50:27Z",
    "subject": "Tower gate: Versus by itself, Versus: took on no site; next digitalsogame.com (the target)"
   },
@@ -654,30 +678,6 @@
   {
    "at": "2026-11-08T14:06:32Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"summon a cup\""
-  },
-  {
-   "at": "2026-11-08T14:06:25Z",
-   "subject": "Design loop: 2 pages fixed, 9 -> 4 design defects"
-  },
-  {
-   "at": "2026-11-08T14:06:14Z",
-   "subject": "Verse Out Loud: today's episode, read from the day's record"
-  },
-  {
-   "at": "2026-11-08T14:05:24Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
-  },
-  {
-   "at": "2026-11-08T13:54:58Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-11-08T13:54:24Z",
-   "subject": "Site history: the next sites of the queue, each with a cited history"
-  },
-  {
-   "at": "2026-11-08T13:54:00Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
   }
  ],
  "builders": {
