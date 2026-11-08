@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "news"
+    "formats": "countdown"
   },
   "trials": [
     {
@@ -166,6 +166,10 @@
             "score": 100,
             "hookScore": 90,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         },
         {
@@ -198,6 +202,10 @@
             "score": 100,
             "hookScore": 65,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         }
       ],
@@ -215,6 +223,67 @@
             "adult"
           ],
           "why": "adult content"
+        }
+      ],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261108",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "cambuur vs psv",
+          "name": "cambuur vs psv",
+          "film": "20261108-news-cambuur-vs-psv",
+          "hook": "Why is everyone talking about cambuur vs psv?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
+          "format": "trailer",
+          "label": "Movie-trailer parody",
+          "topic": "inter vs como",
+          "name": "inter vs como",
+          "film": "20261108-trailer-inter-vs-como",
+          "hook": "What if inter vs como got a movie trailer?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 75,
+            "failed": []
+          }
+        },
+        {
+          "format": "explainer",
+          "label": "Explainer",
+          "topic": "epl table",
+          "name": "El Taller",
+          "film": "20261108-explainer-el-taller",
+          "hook": "What is El Taller, and why now?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": "motogp",
+          "kinds": [
+            "harm"
+          ],
+          "why": "about harm to people (crashes): not something to parody or make a trend film of"
         }
       ],
       "verdict": "waiting"
