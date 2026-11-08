@@ -1025,14 +1025,14 @@
    "tests": 1
   },
   {
-   "file": "lib/gumroad.js",
+   "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
    "dependants": 41,
    "tests": 4
   },
   {
-   "file": "lib/compose.js",
+   "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
    "dependants": 40,
@@ -1046,14 +1046,14 @@
    "tests": 2
   },
   {
-   "file": "lib/store-db.js",
+   "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
    "dependants": 38,
    "tests": 3
   },
   {
-   "file": "lib/pay-share.js",
+   "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
    "dependants": 37,
@@ -1382,14 +1382,14 @@
    "tests": 2
   },
   {
-   "file": "lib/actions.js",
+   "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 0,
    "dependants": 32,
    "tests": 2
   },
   {
-   "file": "lib/repo-look.js",
+   "file": "lib/actions.js",
    "skills": 1,
    "direct": 1,
    "dependants": 32,
