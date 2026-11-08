@@ -1851,15 +1851,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-30T22:41:15Z",
-   "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows (also read: 7 no-family); next onlineconverter.com (the target)",
-   "built": 1,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "kingdraw.cn"
-  },
-  {
    "at": "2026-10-30T22:44:35Z",
    "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows; next onlineconverter.com (the target)",
    "built": 0,
@@ -2229,6 +2220,15 @@
    "pages_per_day": 0,
    "reads_next": "aurashinehub.com",
    "noop": true
+  },
+  {
+   "at": "2026-11-08T16:47:52Z",
+   "line": "Versus: took on no site (also read: 7 no-family, 1 gone); next digitalsogame.com (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "randomvideochat.me"
   }
  ]
 }
