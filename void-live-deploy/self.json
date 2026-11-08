@@ -600,6 +600,46 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T16:50:27Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site; next digitalsogame.com (the target)"
+  },
+  {
+   "at": "2026-11-08T16:47:53Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 gone); next digitalsogame.com (the target)"
+  },
+  {
+   "at": "2026-11-08T16:47:46Z",
+   "subject": "Versus by itself: no page built, the sites read recorded"
+  },
+  {
+   "at": "2026-11-08T16:28:07Z",
+   "subject": "Outcome exam: videos 56.7"
+  },
+  {
+   "at": "2026-11-08T16:26:45Z",
+   "subject": "Verse routes \"jazz stations near brooklyn\" to its local-stations skill the answer is not checked"
+  },
+  {
+   "at": "2026-11-08T16:20:24Z",
+   "subject": "Shorts loop: today's trial and verdicts"
+  },
+  {
+   "at": "2026-11-08T16:12:03Z",
+   "subject": "Design loop: 6 pages fixed, 25 -> 4 design defects"
+  },
+  {
+   "at": "2026-11-08T14:32:02Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-08T14:27:34Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
+  },
+  {
+   "at": "2026-11-08T14:14:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-08T14:09:30Z",
    "subject": "Tower size: how heavy each Versus site really is"
   },
@@ -638,46 +678,6 @@
   {
    "at": "2026-11-08T13:52:50Z",
    "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-11-08T13:50:57Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-11-08T13:50:12Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-11-08T13:40:52Z",
-   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
-  },
-  {
-   "at": "2026-11-08T12:17:08Z",
-   "subject": "Subject eval: 53 of 54 live"
-  },
-  {
-   "at": "2026-11-08T12:11:05Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
-  },
-  {
-   "at": "2026-11-08T12:00:35Z",
-   "subject": "Site reverse engineering: colour-colorscheme.ru,emoji-combos-emojigraph.org,image-boards-bbs.progrider.org,my-ip,translate-freetranslations…"
-  },
-  {
-   "at": "2026-11-08T11:57:10Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
-  },
-  {
-   "at": "2026-11-08T11:36:29Z",
-   "subject": "Design loop: 1 page fixed, 7 -> 3 design defects"
-  },
-  {
-   "at": "2026-11-08T11:27:44Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-11-08T11:24:23Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 19,
-  "week": 258
+  "day": 23,
+  "week": 262
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
