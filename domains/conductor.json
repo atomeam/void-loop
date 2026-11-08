@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T19:51:45.287Z",
+ "updated": "2026-11-08T20:01:10.272Z",
  "last24h": {
   "ticks": 153,
-  "started": 52,
+  "started": 54,
   "requeued": 7,
   "setAside": 1,
   "probes": 3,
@@ -110,7 +110,8 @@
   "mw7rlnb1": 1794154533659,
   "mw7rlntt": 1794155095898,
   "mw8203uw": 1794156221120,
-  "mw8204i3": 1794167505287
+  "mw8204i3": 1794167505287,
+  "mw82055s": 1794168070272
  },
  "sweptAt": 1794167505287,
  "blueprintsAt": 1794167505287,
@@ -198,26 +199,6 @@
   "versus:uniteforliteracy.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T19:56:01.622Z",
-   "open": 269,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 263,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T20:05:31.423Z",
    "open": 269,
@@ -2001,6 +1982,40 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T20:01:10.272Z",
+   "open": 270,
+   "started": [
+    {
+     "id": "mvw5r3w1",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mw82055s",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 15,
    "warnings": 1
