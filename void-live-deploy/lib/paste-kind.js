@@ -45,3 +45,9 @@ export function pasteKind(raw) {
 const SUM_IT = /^(?:(?:yes|yeah|yep|ok(?:ay)?|sure|please)\b[\s,!.]*)*(?:(?:please\s+)?(?:sum\s+it\s+up|summari[sz]e(?:\s+it)?|(?:a\s+)?summary|tl;?dr|what\s+does\s+it\s+say))?\s*[.!]*$/i;
 /** true when the answer to the unclear line asks for the paste to be summed up. Pure. */
 export const sumsItUp = (raw) => { const t = String(raw || '').trim(); return /\w/.test(t) && t.length <= 40 && SUM_IT.test(t); };
+// The card heading for a summed-up paste (2026-11-06): the heading, the region name and the art label all came from the ask, so they read
+// the whole paste with its line marks. The full paste still goes to /api/answer; the card names it with this short line instead.
+export function summaryHeading(raw) {
+  const n = String(raw || '').replace(/\u23ce/g, ' ').split(/\s+/).filter((w) => /\w/.test(w)).length;
+  return 'What you pasted' + (n ? ' (' + n + (n === 1 ? ' word' : ' words') + ')' : '') + ', summed up';
+}

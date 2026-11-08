@@ -1,0 +1,45 @@
+{
+ "at": "2026-11-08T02:45:29Z",
+ "sha": "84670709ebf11e25bfbedd2d60a0931ebc064bbb",
+ "runId": 42439847897,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42439847897",
+ "workflow": "Team gate",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "gate",
+   "id": 128606525187,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42439847897/job/128606525187",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Check the handed-in jobs"
+   },
+   "fails": [],
+   "tail": [
+    "node: v22.23.4",
+    "npm: 10.9.9",
+    "yarn: 1.22.22",
+    "Run set --",
+    "set --",
+    "if [ \"$DRY\" = \"true\" ]; then set -- --dry; fi",
+    "if [ -n \"$REPLAY\" ]; then set -- \"$@\" \"--replay=$REPLAY\"; fi",
+    "code=0; node tools/team-gate.mjs \"$@\" > out.txt 2>&1 || code=$?",
+    "cat out.txt; cat out.txt >> \"$GITHUB_STEP_SUMMARY\"",
+    "echo \"::notice title=Team gate::$(sed ':a;N;$!ba;s/%/%25/g;s/\\r//g;s/\\n/%0A/g' out.txt)\"",
+    "exit \"$code\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  VOID_OWNER_TOKEN: ***",
+    "  GH_TOKEN: ***",
+    "  DRY: ",
+    "  REPLAY: ",
+    "team gate: GET /api/queue answered HTTP 404",
+    "Notice: team gate: GET /api/queue answered HTTP 404",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

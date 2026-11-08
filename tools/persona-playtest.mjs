@@ -4,10 +4,11 @@
 //   node tools/persona-playtest.mjs [--shots /workspace] [--only chess,monopoly]
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
 import { chromium } from 'playwright-core';
+import { pathToFileURL } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { loadGames } from './completeness.mjs';
 await acquireHeavy('persona playtests (persona-playtest.mjs)');
-const here = path.dirname(new URL(import.meta.url).pathname), root = path.resolve(here, '..', 'void-live-deploy');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), root = path.resolve(here, '..', 'void-live-deploy');
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : null; };
 const shots = arg('--shots'), only = (arg('--only') || '').split(',').filter(Boolean);
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.css': 'text/css' };
@@ -32,7 +33,7 @@ const check = (name, ok, kind) => { if (ok) pass++; else { fail++; topics[kind] 
 const NEEDS_CONTEXT = ['quiz'];
 const games = (await loadGames()).filter((g) => !NEEDS_CONTEXT.includes(g.name)).filter((g) => !only.length || only.includes(g.name));
 for (const g of games) {
-  const mod = (await import(path.join(root, 'skills', g.file))).default; const ask = mod.examples && mod.examples[0]; if (!ask) continue;
+  const mod = (await import(pathToFileURL(path.join(root, 'skills', g.file)).href)).default; const ask = mod.examples && mod.examples[0]; if (!ask) continue;
   for (const per of PERSONAS) {
     const ctx = await browser.newContext({ viewport: per.viewport, hasTouch: !!per.touch, reducedMotion: per.id === 'reader' ? 'reduce' : 'no-preference' });
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));

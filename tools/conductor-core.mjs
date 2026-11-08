@@ -137,6 +137,14 @@ export function growDue({ exists, busy, lastRunMs, now }) {
   return !!exists && !busy && now - (lastRunMs || 0) >= GROW_EVERY_H * H;
 }
 
+/** should the conductor start a design pass (design-loop.yml: it measures the next 30 pages at phone width, fixes what CSS can fix, and
+ *  checks the live ask bar at 390 and 1280 px): its '31 1-23/2 * * *' schedule never fired in the first 4 hours after the file landed
+ *  (0 runs, 2026-11-06), so the clock keeps the 2 hours instead: a run when the last one (any trigger) is 2 hours old, never while one
+ *  runs or waits. Pure. */
+export const DESIGN_EVERY_H = 2;
+export function designDue({ exists, busy, lastRunMs, now }) {
+  return !!exists && !busy && now - (lastRunMs || 0) >= DESIGN_EVERY_H * H;
+}
 /** should the conductor start Verse's will (will.yml) this tick: its '7 * * * *' schedule fired every 4 to 6 hours (75 scheduled runs in
  *  2 weeks, 2026-10-29) and a deploy that automerge starts fires no workflow_run, so the will kept old wants for hours. The clock keeps
  *  the hour instead: a run when the last one (any trigger) is an hour old, never while one runs or waits. Pure. */
@@ -174,8 +182,11 @@ export function blueprintsDue({ queuedMs, now }) {
  *  gets a 429 partway and lands nothing (run 42284242262, 2026-11-06: started with 11 of 360 left, ended "no model answered"). */
 export const CODER_RUN_CALLS = 30;
 /** is the coder's free model budget (GET /api/coder: { hour:{used,cap}, day:{used,cap}, room, until }) too short for one whole run?
- *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. Pure. */
-export function coderShort(budget, now, need = CODER_RUN_CALLS) {
+ *  Returns { until } (the UTC hour or day the short window resets) or null when there is room or the budget is unknown. spare: a free model
+ *  key outside Cloudflare is set (GROQ, CEREBRAS or GEMINI, the fallbacks in tools/verse-coder.mjs), so the coder answers without this
+ *  budget and is never held for it. Pure. */
+export function coderShort(budget, now, need = CODER_RUN_CALLS, spare = false) {
+  if (spare) return null;
   if (!budget || typeof budget !== 'object') return null;
   if (budget.room === false) return { until: budget.until || null };
   const left = (w) => (w && Number.isFinite(w.cap) && Number.isFinite(w.used) ? w.cap - w.used : Infinity);

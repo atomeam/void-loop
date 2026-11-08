@@ -2,7 +2,7 @@
 // so a bot added there gets its page. --check fails when a written page differs from what this would write (tools/trading-bots.test.mjs).
 import fs from 'node:fs'; import path from 'node:path';
 import { BOTS } from '../void-live-deploy/trading-bots/kit/strategy.js';
-const here = path.dirname(new URL(import.meta.url).pathname), dir = path.join(here, '..', 'void-live-deploy', 'trading-bots');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), dir = path.join(here, '..', 'void-live-deploy', 'trading-bots');
 const SITE = 'https://a-to-mind.com';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 

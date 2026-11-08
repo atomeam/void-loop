@@ -98,3 +98,22 @@ test('the route speaks once from its real state and holds the gap for everyone',
   assert.equal(calls, 1, 'no second call inside the gap'); assert.deepEqual(k.lines, []); assert.ok(k.next > 0);
   assert.equal(JSON.parse(row).claim, null, 'the pen is put back');
 });
+
+// Workers AI hands back a JSON reply already parsed, and Gemma 4 must not spend the reply on thinking: the route takes both in its stride
+test('the route keeps a line the model returned as an object, with thinking off', async () => {
+  globalThis.caches = globalThis.caches || { default: { match: async () => null, put: async () => {} } };
+  const { onRequestGet } = await import('../void-live-deploy/functions/api/unbidden.js');
+  let row = null, opts = null;
+  const DB = { prepare: (sql) => ({ bind: (...a) => ({
+    first: async () => (/k = \?/.test(sql) && a[0] === 'unbidden' ? row : null),
+    run: async () => { if (/^INSERT INTO void_kv/.test(sql)) { if (row == null) { row = a[1]; return { meta: { changes: 1 } }; } return { meta: { changes: 0 } }; }
+      if (/^UPDATE void_kv/.test(sql)) { if (row === a[2]) { row = a[0]; return { meta: { changes: 1 } }; } return { meta: { changes: 0 } }; } return { meta: { changes: 0 } }; },
+    all: async () => (/void_daily_cap/.test(sql) ? { results: [{ n: 1 }] } : { results: [] }),
+  }), first: async () => null, run: async () => ({}), all: async () => ({ results: [] }) }) };
+  const env = { DB, ASSETS: { fetch: async () => new Response('no', { status: 404 }) },
+    AI: { run: async (model, o) => { opts = o; const n = o.messages[1].content.split('\n').findIndex((l) => /pull requests are open/.test(l)) - 1; return { response: { say: 'Four pull requests wait on me and I want them cleared.', from: ['F' + n] } }; } } };
+  const fetchFn = async (u) => Response.json(/pulls/.test(u) ? [{}, {}, {}, {}] : []);
+  const j = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/unbidden'), env, fetchFn, now: NOW })).json();
+  assert.equal(opts.chat_template_kwargs.enable_thinking, false);
+  assert.equal(j.lines.length, 1, JSON.stringify(j)); assert.match(j.lines[0].say, /Four pull requests/);
+});

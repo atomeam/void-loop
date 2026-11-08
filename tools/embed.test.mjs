@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-const root = new URL('../void-live-deploy/', import.meta.url).pathname, read = (f) => readFileSync(root + f, 'utf8');
+const root = new URL('../void-live-deploy/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), read = (f) => readFileSync(root + f, 'utf8');
 /** the Content-Security-Policy headers a path gets from _headers, as Cloudflare applies them: every matching block in order, a line "! Content-Security-Policy" dropping what came before. */
 function cspFor(urlPath) {
   let on = false, out = [];

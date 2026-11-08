@@ -1,0 +1,113 @@
+{
+ "id": "music",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 153,
+   "best": 829,
+   "evidence": "Verse (/music/) 153 ms to the load event (median of 3, phone width) vs Spotify 829 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/music/) 3 of 3 loads answered vs Spotify 3 of 3 loads answered",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/music/) 0 px sideways overflow at 390 px vs Spotify 0 px sideways overflow at 390 px",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/music/) 0 unnamed controls or images vs Spotify 0 unnamed controls or images",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/music/) 1 (1: the page shows itself again with the network cut) vs Spotify 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 3,
+   "evidence": "Verse (/music/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Spotify 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 96,
+   "evidence": "Verse (/music/) 0 design defects vs Spotify 96 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Spotify (0 low-contrast texts, 95 small tap targets, layout shift 0.82)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/music/) 3 of 3 right against the worked-out answer; judged against the standard, not Spotify (the site is not asked)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "of": 3
+  },
+  "catalogue": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/music/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:32:47.126Z",
+   "of": 4,
+   "part": true
+  },
+  "playlists": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/music/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:32:47.126Z",
+   "of": 3,
+   "part": true
+  },
+  "recommendations": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/music/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:32:47.126Z",
+   "of": 3,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 16,
+   "best": 1,
+   "evidence": "Verse (/music/) 16 of 16 things a full answer shows vs Spotify 1 of 16 things a full answer shows (Verse lacks: none; site lacks: a metronome, a piano, a tuner, a BPM counter, chords and scales, setlists, a catalogue, recommendations, no account, on your device, songs in the public domain, Playlists, Original music creation, Share links, cards and codes, Downloads)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "of": 16,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 9,
+   "best": 5.5,
+   "evidence": "Verse (/music/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs Spotify 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:32:47.126Z",
+   "siteRead": true
+  }
+ }
+}

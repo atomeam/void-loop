@@ -14,6 +14,10 @@ import { readOrder, indexText, adoptOrder } from './skills-index.mjs';
 import { APPEND_JSON, APPEND_TEXT, INDEX, keyOf } from './records.mjs'; // the append-only records, shared with tools/revert-records.mjs
 
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+// tools/families.mjs conflicts are two branches adding skills to the same family list: the settled text is main's
+// line with the union of both sides' additions (see below); samePrefixWords asks that both sides' lines are the
+// same family statement apart from the skills array.
+function samePrefixWords(a, b) { return String(a).replace(/skills: \[[^\]]*\]/, 'skills: []') === String(b).replace(/skills: \[[^\]]*\]/, 'skills: []'); }
 
 sh('git fetch -q origin main');
 // the families and the book are generated from the tree: after a merge they are written again, and committed if the text moved (two branches that each added a skill leave both stale without a conflict)
@@ -50,7 +54,7 @@ if (conflicted.includes(INDEX)) {
   } catch (e) { console.error('skills/index.json: ' + e.message); } }
 // generated files (families, the book): take main's here, regen() writes them again from the merged tree after the commit
 for (const f of conflicted.filter((x) => GENERATED.includes(x))) { sh(`git checkout --theirs -- ${f}`); sh(`git add ${f}`); }
-const other = conflicted.filter((f) => !GENERATED.includes(f) && !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && !(f === INDEX && indexMerged !== null));
+const other = conflicted.filter((f) => !GENERATED.includes(f) && !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && f !== 'tools/families.mjs' && !(f === INDEX && indexMerged !== null));
 if (other.length) { console.error('conflicts need a person: ' + other.join(', ') + ' (merge left in progress)'); process.exit(1); }
 
 const side = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding: 'utf8' }); } catch (_) { return ''; } };
@@ -72,6 +76,8 @@ for (const f of conflicted) {
     const all = theirs.concat(mine);
     console.log(`${f}: kept main's file and added this branch's ${mine.length} new (${all.length} total)`);
   } else {
+    // append-mostly text (the agent log, the handoff board, tools/families.mjs's skill lists): keep main's text and
+    // append this branch's new lines; a change beyond appending still stops for a person (the `other` filter above)
     const base = side(1, f), ours = side(2, f), theirs = side(3, f);
     const added = (s) => s.startsWith(base) ? s.slice(base.length) : s.split('\n').filter((l) => !base.split('\n').includes(l)).join('\n');
     writeFileSync(f, base + added(theirs).replace(/^\n+/, '') + (added(theirs).endsWith('\n') ? '' : '\n') + added(ours).replace(/^\n+/, ''));

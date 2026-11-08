@@ -106,7 +106,7 @@ import { statusesOf, tellOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
         (t.status === 'needs_yes' ? '<div class="result">' + esc(t.result) + '</div><p><button data-id="' + t.id + '" data-d="yes">Approve</button> <button class="no" data-id="' + t.id + '" data-d="no">Decline</button></p>' : '') +
         '</div>').join('') : 'No tasks yet.';
       const made = j.made || [];
-      $('made').innerHTML = made.length ? made.map((t) => '<div class="card" id="made-' + esc(t.id) + '"><b>' + esc(t.ask) + '</b><div class="result">' + esc(t.result) + '</div><details><summary>Steps</summary><ol class="feed">' + (t.steps || []).map((s) => '<li>' + esc(s.line) + '</li>').join('') + '</ol></details></div>').join('') : 'Finished work lands here.';
+      $('made').innerHTML = made.length ? made.map((t) => '<div class="card" id="made-' + esc(t.id) + '"><div class="result">' + esc(t.result) + '</div><details><summary style="font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer">' + esc(t.ask) + '</summary><ol class="feed">' + (t.steps || []).map((s) => '<li>' + esc(s.line) + '</li>').join('') + '</ol></details></div>').join('') : 'Finished work lands here.';
       $('tier').textContent = 'Model tiers: ' + j.tiers.map((t) => t.name + (t.month_cents ? ' ($' + (t.month_cents / 100).toFixed(2) + '/mo from earnings)' : ' (free)')).join(', ') + '.';
     } catch (_) {}
   }

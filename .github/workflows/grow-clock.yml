@@ -59,6 +59,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          VERSE_CODER_SPARE: ${{ (secrets.GROQ_API_KEY != '' || secrets.CEREBRAS_API_KEY != '' || secrets.GEMINI_API_KEY != '') && '1' || '0' }}
           DRY: ${{ inputs.dry && '--dry' || '' }}
         run: |
           set +e

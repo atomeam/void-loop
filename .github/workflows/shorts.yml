@@ -37,9 +37,20 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Chromium, ffmpeg and fonts
+        # A slow apt mirror once held this step silent for 36 minutes. Each
+        # install now has a time limit, a retry and visible output, and ffmpeg
+        # falls back to a static build when apt does not answer.
+        timeout-minutes: 15
         run: |
-          npx playwright-core install --with-deps chromium
-          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
+          echo 'Acquire::http::Timeout "30"; Acquire::https::Timeout "30"; Acquire::Retries "3";' | sudo tee /etc/apt/apt.conf.d/99void-net >/dev/null
+          for i in 1 2; do timeout 420 npx playwright-core install --with-deps chromium && break; echo "::warning::Chromium install try $i did not finish"; done
+          for i in 1 2; do timeout 240 sudo apt-get install -y -q --no-install-recommends ffmpeg fonts-dejavu-core && break; echo "::warning::apt try $i did not finish"; timeout 120 sudo apt-get update -q || true; done
+          if ! command -v ffmpeg >/dev/null; then
+            echo "::warning::apt gave no ffmpeg; using the static build"
+            curl -fsSL --retry 3 --max-time 180 https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz | tar -xJ -C /tmp
+            sudo install -m 755 /tmp/ffmpeg-*-amd64-static/ffmpeg /tmp/ffmpeg-*-amd64-static/ffprobe /usr/local/bin/
+          fi
+          ffmpeg -version | head -1
           echo "CHROME=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
       - name: Piper voice
         run: |

@@ -8,7 +8,7 @@ import { scanText, GUARDED } from './privacy-scan.mjs';
 import { ownerChecks } from './runtime-guard.mjs';
 import { headerFor } from './csp-smoke.mjs';
 
-const at = (p) => new URL('../' + p, import.meta.url).pathname;
+const at = (p) => new URL('../' + p, import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 test('privacy scan flags personal data by kind, never the value, and passes placeholders', () => {
   const hits = scanText('a: jane.doe@gmail.com\nb: call 412-867-5309\nc: from 81.2.69.160\nd: [email] ops@example.com ask-20261010-0222-1 555-123-4567', 'domains/x.md');
   assert.deepEqual(hits.map((h) => h.kind + h.line), ['email1', 'phone2', 'ipv43']);

@@ -7,11 +7,12 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-const ROOT = new URL('../void-live-deploy/', import.meta.url).pathname;
+const ROOT = new URL('../void-live-deploy/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const FN = join(ROOT, 'functions');
 
 // Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/unbidden': "what Verse says first on its own /brain/ page (functions/api/unbidden.js, lib/unbidden.js): GET only, one `after` id, lines written from its own live state at most once per gap for everyone and daily-capped; /brain/ is the only caller",
   '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
@@ -51,6 +52,7 @@ export const INTERNAL = {
   '/api/holidays': "the holidays card's own API: two letters for a country in, Nager.Date's next public holidays for it out (date, local name, name, at most 20), GET only, edge-cached six hours, a failure never cached (functions/api/holidays.js, skills/holidays.js); the card is the only caller",
   '/api/sportsearch': "the scores page's own search box: a name of 2 to 40 letters in, TheSportsDB's teams, events, venues and players out (free public v1 test key, text fields only), GET only, edge-cached a day, 15 misses a minute (functions/api/sportsearch.js); the page is the only caller",
   '/api/news': "the news page's own API: a section and a language from two closed lists in, grouped headlines from fixed public feeds out, GET only, edge-cached seven minutes (functions/api/news.js, lib/news.js); the page is the only caller",
+  '/api/feed': "the journal page's own CORS-safe feed reader: one closed allow-list of public RSS feeds (functions/api/feed.js), GET only, edge-cached ten minutes, read-capped; /journal/ is the only caller",
   '/api/podcasts': "the podcasts page's own API: a search phrase, a chart, an iTunes id or a public https feed address in, normalised show and episode JSON out, GET only, SSRF-safe fetch with size and time caps, edge-cached 15 minutes (functions/api/podcasts.js, lib/podcasts.js); the page is the only caller",
   '/api/recipes': "the recipes page's own API: a dish, up to three ingredients, an id, or a cuisine or category from TheMealDB's closed lists in, TheMealDB's recipes out, GET only, edge-cached an hour (functions/api/recipes.js, lib/recipes.js); the page is the only caller",
   '/api/recipeimport': "the recipes page's import: a recipe page's address in (GET), only the recipe parsed from its published recipe data out (public names only, redirects checked, 1.5 MB and 8 seconds, edge-cached an hour); or one downsized photo of a recipe card in (POST), the text a vision model read out, 6 a minute, nothing kept (functions/api/recipeimport.js, lib/recipeimport.js, tools/recipeimport.test.mjs); /recipes/ is the only caller",
@@ -106,6 +108,8 @@ export const INTERNAL = {
   '/api/ip': "the my-device card's own address",
   '/api/markets': "the crypto card's price list and the /markets/ page's quotes: a symbol (letters, or a name from a closed list), a range from a closed list of eight and a day in, prices out from four fixed free sources, GET only, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute (functions/api/markets.js, lib/markets.js); the page and the card are the only callers",
   '/api/will': "Verse's will card",
+  '/api/sitebench': "sitebench, measured live (lib/sitebench.js)",
+  '/api/unbidden': "unbidden, the verse's own stream of lines",
   '/api/apibot': "the /bots/ page's relay for the few free APIs that send no CORS header: an id from a closed list, that API's own host only",
 };
 

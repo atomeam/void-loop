@@ -2,11 +2,11 @@
  "id": "music: chordchord.com",
  "rows": {
   "speed": {
-   "verdict": "equal-and-better",
-   "verse": 164,
-   "best": 279,
-   "evidence": "Verse (/chords/) 164 ms to the load event (median of 3, phone width) vs chordchord.com 279 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "verdict": "better",
+   "verse": 230,
+   "best": 249,
+   "evidence": "Verse (/chords/) 230 ms to the load event (median of 3, phone width) vs chordchord.com 249 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/chords/) 3 of 3 loads answered vs chordchord.com 3 of 3 loads answered",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/chords/) 0 px sideways overflow at 390 px vs chordchord.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 1,
    "evidence": "Verse (/chords/) 0 unnamed controls or images vs chordchord.com 1 unnamed controls or images",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/chords/) 1 (1: the page shows itself again with the network cut) vs chordchord.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 4,
    "best": 3,
    "evidence": "Verse (/chords/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs chordchord.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "accuracy": {
@@ -54,7 +54,7 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/chords/) 4 of 4 right against the worked-out answer; judged against the standard, not chordchord.com (the site is not asked)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "of": 4
   },
   "design polish": {
@@ -62,7 +62,7 @@
    "verse": 0,
    "best": 46,
    "evidence": "Verse (/chords/) 0 design defects vs chordchord.com 46 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), chordchord.com (28 low-contrast texts, 17 small tap targets, layout shift 0.24)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   },
   "chord finder": {
@@ -70,7 +70,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "of": 3,
    "part": true
   },
@@ -79,7 +79,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "of": 3,
    "part": true
   },
@@ -88,7 +88,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "of": 3,
    "part": true
   },
@@ -97,7 +97,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/chords/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "of": 3,
    "part": true
   },
@@ -106,7 +106,7 @@
    "verse": 18,
    "best": 5,
    "evidence": "Verse (/chords/) 18 of 18 things a full answer shows vs chordchord.com 5 of 18 things a full answer shows (Verse lacks: none; site lacks: guitar fingerings, a piano keyboard, inversions, a chord named from notes, chords in a key, seventh chords, a transposer, plays the chord, Playlists, Original music creation, Share links, cards and codes, Downloads, No account)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "of": 18,
    "siteRead": true
   },
@@ -115,7 +115,7 @@
    "verse": 8.5,
    "best": 5.5,
    "evidence": "Verse (/chords/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs chordchord.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-06T14:46:05.178Z",
+   "at": "2026-11-07T13:33:18.404Z",
    "siteRead": true
   }
  }

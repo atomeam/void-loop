@@ -1,0 +1,113 @@
+{
+ "id": "photos: squoosh.app",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 160,
+   "best": 100,
+   "evidence": "Verse (/photos/squoosh/) 160 ms to the load event (median of 3, phone width) vs squoosh.app 100 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/photos/squoosh/) 3 of 3 loads answered vs squoosh.app 3 of 3 loads answered",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/photos/squoosh/) 0 px sideways overflow at 390 px vs squoosh.app 0 px sideways overflow at 390 px",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/photos/squoosh/) 0 unnamed controls or images vs squoosh.app 1 unnamed controls or images",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/photos/squoosh/) 1 (1: the page shows itself again with the network cut) vs squoosh.app 1 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 3,
+   "evidence": "Verse (/photos/squoosh/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs squoosh.app 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/photos/squoosh/) 3 of 3 right against the worked-out answer; judged against the standard, not squoosh.app (the site is not asked)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "of": 3
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 8,
+   "evidence": "Verse (/photos/squoosh/) 0 design defects vs squoosh.app 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.06), squoosh.app (6 low-contrast texts, 2 small tap targets, layout shift 0.00)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  },
+  "editing": {
+   "verdict": "equal-and-better",
+   "verse": 7,
+   "best": 7,
+   "evidence": "Verse (/photos/squoosh/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:31:47.453Z",
+   "of": 7,
+   "part": true
+  },
+  "compress and convert": {
+   "verdict": "equal-and-better",
+   "verse": 7,
+   "best": 7,
+   "evidence": "Verse (/photos/squoosh/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:31:47.453Z",
+   "of": 7,
+   "part": true
+  },
+  "metadata and privacy": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/photos/squoosh/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-07T13:31:47.453Z",
+   "of": 2,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 27,
+   "best": 2,
+   "evidence": "Verse (/photos/squoosh/) 27 of 30 things a full answer shows vs squoosh.app 2 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, Timeline by date, Duplicate handling, Location privacy on share, Compress with a quality slider, Before and after compare slider, Size saved readout)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "of": 30,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 9,
+   "best": 5.5,
+   "evidence": "Verse (/photos/squoosh/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs squoosh.app 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-07T13:31:47.453Z",
+   "siteRead": true
+  }
+ }
+}

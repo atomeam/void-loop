@@ -44,9 +44,16 @@ export function pageText(items) {
 
 async function readPdf(buf) {
   const m = await pdfjs();
-  const task = m.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, disableFontFace: true, useSystemFonts: false, stopAtErrors: false });
+  const base = { data: new Uint8Array(buf), isEvalSupported: false, disableFontFace: true, useSystemFonts: false, stopAtErrors: false };
+  let task = m.getDocument(base), doc;
   try {
-    const doc = await task.promise;
+    doc = await task.promise;
+  } catch (_) { // the worker script failed to load this once (a busy machine dropped the fetch): one retry, the same pdf.js; a real bad PDF fails twice and says so
+    try { task.destroy(); } catch (_) {}
+    task = m.getDocument(base);
+    doc = await task.promise;
+  }
+  try {
     const n = Math.min(doc.numPages, MAX_PAGES), pages = [];
     for (let i = 1; i <= n; i++) { const p = await doc.getPage(i); pages.push(pageText((await p.getTextContent()).items)); p.cleanup(); }
     return { pages, total: doc.numPages };

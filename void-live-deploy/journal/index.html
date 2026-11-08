@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Earth science journal · Verse</title>
+<meta name="description" content="The newest peer-reviewed Earth science research, read straight from the public journal feed: title, authors, one-paragraph abstract, date, volume and DOI, with search and saved papers — no ads, no account, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Earth science journal · Verse">
+<meta property="og:description" content="The newest peer-reviewed Earth science research from the public journal feed, with search and saved papers; no ads, no account.">
+<meta property="og:url" content="https://a-to-mind.com/journal/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/verse.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --soft: #c3c8d8; --line: rgba(255,255,255,.10); --accent: rgb(158 178 255); --box: rgb(6 8 14 / .55); --tint: rgb(158 178 255 / .16); --fs: 16px; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: var(--fs)/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 780px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { margin: 0 0 8px; font-weight: 280; letter-spacing: -.03em; font-size: clamp(30px, 7.5vw, 44px); line-height: 1.05;
+    background: linear-gradient(180deg, #fff 30%, rgb(158 178 255)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  @media (forced-colors: active) { h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; } }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  input { font: inherit; font-size: 17px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 9px 12px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--accent); color: #07080f; border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  #status { font-size: 13px; color: var(--soft); min-height: 20px; margin: 6px 0; }
+  #list { list-style: none; margin: 0; padding: 0; }
+  .paper { border-top: 1px solid var(--line); padding: 10px 0; }
+  .paper .t { font-weight: 600; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+  .paper .t:hover { text-decoration: underline; }
+  .paper .a { margin: 2px 0 0; font-size: .9em; color: var(--soft); }
+  .paper .m { margin: 2px 0 0; font-size: .8125em; color: var(--soft); display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .paper .m a { color: var(--accent); }
+  .paper .ab { margin: 6px 0 0; font-size: .875em; color: var(--soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .paper .acts { margin: 6px 0 0; display: flex; gap: 8px; }
+  .paper .acts button { min-height: 36px; padding: 4px 12px; font-size: 13px; }
+  .sk { border-top: 1px solid var(--line); padding: 12px 0; }
+  .sk i { display: block; height: 14px; border-radius: 7px; background: var(--line); margin: 0 0 9px; opacity: .7; } .sk i:nth-child(1) { width: 92%; } .sk i:nth-child(2) { width: 60%; } .sk i:nth-child(3) { width: 35%; }
+  #saved { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 10px 0; background: var(--box); }
+  #saved h2 { font-size: 14px; margin: 4px 0 8px; }
+  #saved ul { list-style: none; margin: 0; padding: 0; }
+  #saved li { margin: 6px 0; font-size: .875em; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  #saved li a { color: var(--ink); overflow-wrap: anywhere; }
+  section { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px; }
+  h2 { font-size: 15px; margin: 0 0 8px; font-weight: 600; }
+  h3 { font-size: 13px; margin: 14px 0 4px; color: var(--soft); font-weight: 600; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .grid2 > div { min-width: 0; }
+  .grid2 label { display: block; font-size: 13px; color: var(--soft); margin-bottom: 4px; }
+  .grid2 input, .grid2 select { width: 100%; box-sizing: border-box; font-size: 15px; color: var(--ink); background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; }
+  dl.stats { display: grid; grid-template-columns: 1fr auto; margin: 10px 0 0; font-size: 15px; }
+  dl.stats dt, dl.stats dd { padding: 6px 0; border-bottom: 1px solid var(--line); margin: 0; }
+  dl.stats dt { color: var(--soft); }
+  dl.stats dd { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  ul.plain { list-style: none; margin: 6px 0; padding: 0; }
+  ul.plain li { font-size: .9375em; color: var(--soft); margin: 5px 0; }
+  ul.plain li b { color: var(--ink); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0; }
+  th, td { text-align: left; padding: 7px 8px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; color: var(--soft); font-weight: 600; }
+  .scroll { overflow-x: auto; }
+  nav#related { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 13px; color: var(--soft); }
+  nav#related a { color: var(--accent); margin-right: 12px; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/journal/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Earth science journal: the newest papers, and what an author needs","url":"https://a-to-mind.com/journal/","description":"The newest peer-reviewed Earth science papers, read live from the journal's own public feed with their abstracts and their DOIs, a search over the public research record, and a saved list kept on your device. Beside them the other half of a journal's job: the author guidelines (scope, the submission checklist, the kinds of paper and their lengths, the order of a manuscript, the rules for equations, tables and figures, the reference style, how errors are reported), the editorial board with its fields, the policies, and the publication-unit calculator that works out how long a paper is and what it costs, on this device.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"peer reviewed research papers, latest earth science papers, search research articles, journal articles online, how long should my paper be, publication unit calculator, paper length calculator, journal author guidelines","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/journal/?q={words}"},"words-input":"required name=words"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Earth science journal: the newest papers, and what an author needs","item":"https://a-to-mind.com/journal/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+<h1>Earth science journal</h1>
+<p class="sub">The newest peer-reviewed Earth science research, read from the journal's own public feed — no ads, no account, nothing sent anywhere.</p>
+<div class="row">
+  <input type="search" id="q" placeholder="Search the research — a word, an author, a DOI…" aria-label="Search the research">
+  <button id="go" class="go">Search</button>
+  <button id="latest" aria-pressed="true">Latest</button>
+  <button id="savedBtn" aria-pressed="false">Saved</button>
+</div>
+<div id="status" role="status"></div>
+<section id="saved" hidden><h2>Saved papers (this device)</h2><ul id="savedList"></ul></section>
+<ul id="list"></ul>
+
+<section id="length" aria-label="How long is my paper">
+<h2>How long is my paper?</h2>
+<p class="note">Publication units (PU) are the measure the journal's guidelines use: 1 PU for every 500 words of the text, 1.5 PU for every figure
+and table, the first ten equations as 1 PU and every ten more as 1 PU again, the total rounded up. A long paper (a Science Paper, a Science
+Review or a Technical Report) is free up to 45 PU and $100 for each PU beyond that; a short one (a Science Note, a Comment, a Reply or an
+Errata) may be 4 PU at most. The working is worked out here, on this device.</p>
+<div class="grid2">
+  <div><label for="puWords">Words (with the abstract, the notes and the references)</label><input type="number" id="puWords" min="0" step="50" value="6000" inputmode="numeric"></div>
+  <div><label for="puFigures">Figures</label><input type="number" id="puFigures" min="0" step="1" value="0" inputmode="numeric"></div>
+  <div><label for="puTables">Tables</label><input type="number" id="puTables" min="0" step="1" value="0" inputmode="numeric"></div>
+  <div><label for="puEquations">Equations</label><input type="number" id="puEquations" min="0" step="1" value="0" inputmode="numeric"></div>
+  <div><label for="puKind">Kind of paper</label><select id="puKind">
+    <option value="45">Long form: 45 PU free</option>
+    <option value="4">Short form: 4 PU at most</option>
+  </select></div>
+</div>
+<dl class="stats" id="puStats"></dl>
+<p class="note" id="puNote"></p>
+</section>
+
+<section id="authors" aria-label="For authors">
+<h2>For authors</h2>
+<p class="note">The journal's own published guidance, read on 7 November 2026 and summarised here; the rules change, so check the journal
+before you send anything.</p>
+<h3>Scope</h3>
+<p class="note">Research that expands what is known about the Earth, with an emphasis on the structure, composition and evolution of the planet
+and on the physical, chemical and biological processes that shaped that evolution. Recent work covers geochemistry, geochronology,
+geodynamics, geomorphology, basin analysis, Earth history, petrology, tectonics and thermochronology; new directions are welcome.</p>
+<h3>Before you submit</h3>
+<ul class="plain">
+  <li>Word or a PDF for the first submission, 12-point Times New Roman, 1.5 line spacing, line numbers on every page. Review is not started without numbered lines.</li>
+  <li>Files for review must stay under 30 MB. Large files are arranged after acceptance.</li>
+  <li>Abstract under 300 words and standing on its own; at least three keywords; an author-contributions statement; a data and supplementary-information statement where it applies.</li>
+  <li>Author affiliations and ORCID numbers, a statement of original content, and five or more suggested reviewers (and any to avoid, with a reason).</li>
+  <li>Figures as separate files in JPEG, TIFF or PNG at 300 dpi or better; tables as separate Word files built with Word's own table tool, never as an Excel sheet.</li>
+</ul>
+<h3>Kinds of paper</h3>
+<div class="scroll"><table>
+  <thead><tr><th>Kind</th><th>What it is</th><th>How it is offered</th><th>Length and fee</th></tr></thead>
+  <tbody>
+    <tr><td>Science Paper</td><td>Original research, fully documented: question, literature, methods, results, conclusions.</td><td>Open submission</td><td>Free to 45 PU; a fee for each PU above it.</td></tr>
+    <tr><td>Science Review</td><td>Assessment, integration and synthesis of published work.</td><td>By invitation; proposals considered</td><td>Free to 45 PU; a fee for each PU above it.</td></tr>
+    <tr><td>Science Note</td><td>A short piece on new data, a new hypothesis, or an opinion.</td><td>Open submission</td><td>4 PU at most; no fees.</td></tr>
+    <tr><td>Technical Report</td><td>Methods of real use: a procedure, a program, a database.</td><td>Open submission</td><td>Free to 45 PU; a fee for each PU above it.</td></tr>
+    <tr><td>Comment</td><td>A short critical assessment of a recent paper in the journal.</td><td>Open submission</td><td>4 PU at most; no fees.</td></tr>
+    <tr><td>Reply</td><td>The authors' answer to a Comment.</td><td>Usually invited</td><td>4 PU at most; no fees.</td></tr>
+    <tr><td>Errata</td><td>A correction to a paper in the journal.</td><td>As needed</td><td>Usually very brief; no fees.</td></tr>
+  </tbody>
+</table></div>
+<h3>How a paper is judged</h3>
+<p class="note">Relevance, generality, originality, progress, accessibility, a clear scientific foundation, integration with other fields,
+consistency between the results and the claims, and news value for the wider scientific community.</p>
+<h3>The order of a manuscript</h3>
+<ol class="plain">
+  <li>Title: specific, brief, no unexplained abbreviations.</li>
+  <li>Author list, then affiliations as numbered footnotes, the corresponding author marked with an asterisk.</li>
+  <li>Abstract under 300 words, abbreviations defined, no reference to figures, tables or references.</li>
+  <li>At least three keywords.</li>
+  <li>Main text in numbered sections; three levels of heading are allowed.</li>
+  <li>Acknowledgments, with the funding named.</li>
+  <li>Author contributions, one line for each author.</li>
+  <li>Data and supplementary information: what it is and where it lives.</li>
+  <li>References for every source cited.</li>
+</ol>
+<h3>Equations, tables and figures</h3>
+<p class="note">Equations are centred and numbered in parentheses on the right, cited as equation (1) or (eq. 1), and must come from a current
+Word file. A table is one file per table, built with Word's own table tool, with separate cells or lists instead of spaces, tabs or line
+breaks. Figures are JPEG, TIFF or PNG, never vector, at least 300 dpi, one file each.</p>
+<h3>Citations and references</h3>
+<p class="note">APA, 7th edition. One author: (Fisher, 1953). Two: (Dewey &amp; Pitman, 1973). Three or more: (Davis et al., 1983). Several
+citations are sorted alphabetically; unpublished work is cited in the text and left out of the references. Every citation in the text must have a
+full reference, and every reference a citation in the text.</p>
+<h3>Errors and statistics</h3>
+<p class="note">Say how each error is estimated and at what level: SE (standard error of the mean) and CI (confidence interval) are named with
+their level, such as 1SE, 2SE, 68% CI or 98% CI, in the same way throughout. SE is not SD: SE = SD / √n. The Greek sigma is avoided for error
+levels, because it is used for standard deviation.</p>
+<h3>Questions about a submission</h3>
+<p class="note">The editorial office of the journal takes the questions about manuscripts, editorial procedures and policies: it sits at Yale
+University, P.O. Box 208109, New Haven, Connecticut 06520-8109, USA, and its address is ajs@yale.edu.</p>
+</section>
+
+<section id="board" aria-label="The board">
+<h2>The board</h2>
+<p class="note">The editors and the associate editors, with their fields, as the journal lists them (read on 7 November 2026). The board
+changes; the journal's own page is the current list.</p>
+<h3>Editors</h3>
+<ul class="plain">
+  <li><b>Mark T. Brandon</b> - Yale University. Tectonics, deformation processes, thermochronology, geomorphology, paleotopography.</li>
+  <li><b>C. Page Chamberlain</b> - Stanford University. Geochemistry.</li>
+  <li><b>Louis A. Derry</b> - Cornell University. Biogeochemistry, isotope geochemistry, elemental cycling, Earth surface processes, paleoceanography.</li>
+  <li><b>Michael T. Hren</b> - University of Connecticut. Stable isotopes, geochemistry, paleoclimate, paleotopography, biomarkers.</li>
+  <li><b>Jun Korenaga</b> - Yale University. Geodynamics, geophysics, geochemistry.</li>
+  <li><b>Francis Macdonald</b> - University of California, Berkeley. Geology, stratigraphy, tectonics, paleoclimate.</li>
+</ul>
+<h3>Associate editors</h3>
+<ul class="plain">
+  <li><b>Jay J. Ague</b> - Yale University. Petrology, mineralogy, high-temperature geochemistry, thermodynamics, kinetics.</li>
+  <li><b>Ethan Baxter</b> - Boston College. Geochemistry, geochronology, petrology, tectonics.</li>
+  <li><b>Edward W. Bolton</b> - Yale University. Reactive transport modeling.</li>
+  <li><b>Claire E. Bucholz</b> - California Institute of Technology. Igneous and metamorphic petrology, geochemistry.</li>
+  <li><b>Don E. Canfield</b> - University of Southern Denmark. Biogeochemistry, geobiology, microbial ecology.</li>
+  <li><b>William H. Casey</b> - University of California, Davis. Solution chemistry, reaction kinetics, aqueous geochemistry.</li>
+  <li><b>Nadja Drabon</b> - Harvard University. Sedimentology, stratigraphy, geochronology.</li>
+  <li><b>Daniel E. Ibarra</b> - Brown University. Isotopes, paleoclimate, lakes, soils, caves, geochemistry, reactive transport, Quaternary geochronology, surface processes.</li>
+  <li><b>C. Brenhin Keller</b> - Dartmouth College. Igneous petrology, geochemistry, geochronology, thermochronology, geoinformatics.</li>
+  <li><b>Kimberly Lau</b> - Pennsylvania State University. Isotope geochemistry, Earth history, biogeochemistry.</li>
+  <li><b>Xian-Hua Li</b> - Institute of Geology and Geophysics, Chinese Academy of Sciences. Geochronology, igneous petrology and geochemistry, Precambrian geology.</li>
+  <li><b>Timothy W. Lyons</b> - University of California, Riverside. Biogeochemistry, geobiology, astrobiology, paleoceanography.</li>
+  <li><b>Evangelos Moulas</b> - Johannes Gutenberg University. Petrology, metamorphic processes, thermodynamics in Earth systems, numerical geodynamic modelling.</li>
+  <li><b>Andreas Mulch</b> - Senckenberg Biodiversity and Climate Research Centre. Paleoclimate, tectonics, stable isotopes, geology.</li>
+  <li><b>Jonathan L. Payne</b> - Stanford University. Paleobiology, carbon cycle, Earth history.</li>
+  <li><b>Ann Pearson</b> - Harvard University. Biogeochemistry, organic geochemistry, light stable isotope geochemistry, geomicrobiology, carbon cycle, nitrogen cycle.</li>
+  <li><b>Brad Sageman</b> - Northwestern University. Stratigraphy, geochemistry.</li>
+  <li><b>Zachary Sharp</b> - University of New Mexico. Stable isotopes.</li>
+  <li><b>Mark Albert Torres</b> - Rice University, Department of Earth, Environmental, and Planetary Sciences. Biogeochemistry, surface processes, chemical weathering.</li>
+  <li><b>Richard J. Walker</b> - University of Maryland. Trace element and radiogenic isotope geochemistry, mantle geochemistry, early solar system processes.</li>
+  <li><b>A. Joshua (Josh) West</b> - University of Southern California. Low-temperature geochemistry, geomorphology, erosion, weathering, carbon cycle, biogeochemistry.</li>
+  <li><b>Simon A. Wilde</b> - Curtin University. Geochemistry, geochronology, tectonics, petrology.</li>
+  <li><b>Matthew J. Winnick</b> - University of Massachusetts Amherst. Reactive transport modeling, global biogeochemical cycles, chemical weathering, stable isotopes.</li>
+  <li><b>Robert Wintsch</b> - Wesleyan University. Structural petrology, geochronology.</li>
+  <li><b>Guochun Zhao</b> - The University of Hong Kong. Precambrian geology, metamorphic geology, supercontinents.</li>
+</ul>
+<h3>Advisory board</h3>
+<ul class="plain">
+  <li><b>Jay J. Ague</b> - Yale University.</li>
+  <li><b>David A. Evans</b> - Yale University.</li>
+  <li><b>Peter Raymond</b> - Yale University.</li>
+</ul>
+</section>
+
+<section id="policies" aria-label="Policies">
+<h2>Policies</h2>
+<h3>Reading is free, and so is publishing within the limits</h3>
+<p class="note">The journal runs on the diamond open access model: no charge for readers and no charge for authors, as long as a paper stays
+within the standard publication-unit limits. A paper that runs over them pays $100 for each PU above the limit.</p>
+<h3>Copyright and permissions</h3>
+<p class="note">Articles carry Creative Commons licences, and the licence each paper carries is shown beside it. Permissions for older
+articles, reuse guidance and fair use are handled by the editorial office.</p>
+<h3>Peer review</h3>
+<p class="note">Every paper is reviewed before it is published. The editors decide on the science and send the paper out; the review is
+blind, the reviewers are named by the author with five or more suggestions, and the corresponding author hears the decision.</p>
+<h3>Publication ethics</h3>
+<p class="note">Authors confirm that the content is original, that it is not in review or in press elsewhere, and they disclose any overlap
+with other publications. Every listed author has agreed to the submission and has a stated contribution. Corrections and retractions come from
+the authors of the paper they concern.</p>
+<h3>Conflicts of interest</h3>
+<p class="note">A policy for actual and perceived conflicts of interest in editorial handling, peer review and collections is still being
+written, and authors are asked to suggest editors who should not handle their paper, with the reason.</p>
+</section>
+
+<!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/journal/?q=grand+canyon">Papers about the Grand Canyon</a><a href="/journal/?q=sand+dunes">Search: sand dunes</a><a href="/journal/?tab=length">How long is my paper?</a><a href="/journal/?tab=authors">What do I need to submit?</a><a href="/journal/?tab=board">The board</a><a href="/journal/?tab=policies">The policies</a></nav>
+<!-- /asks -->
+<nav id="related"><!-- related --><span class="tk-label">Use with</span> <a href="/notes/">Notes</a> <a href="/word-count/">Word counter</a> <a href="/g/">Snippet / Note in a link</a> <a href="/convert/">Unit converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+</main>
+<script type="module">
+const { papers, searchCrossref, savedList, toggleSave, isSaved, jatsText, pubUnits, puWithoutEquationExtra } = await import('/lib/journal.js');
+const { mountRelated } = await import('/lib/toolkit.js');
+const $ = (id) => document.getElementById(id), list = $('list'), status = $('status'), q = $('q');
+const KEY = 'a2m.verse.journal.saved.v1';
+function render(items, note) {
+  list.textContent = '';
+  status.textContent = note || (items.length ? items.length + ' paper' + (items.length === 1 ? '' : 's') : 'Nothing found.');
+  for (const p of items) {
+    const li = document.createElement('li'); li.className = 'paper';
+    const t = document.createElement('a'); t.className = 't'; t.href = p.url; t.textContent = p.title; t.target = '_blank'; t.rel = 'noopener';
+    const a = document.createElement('p'); a.className = 'a'; a.textContent = p.authors;
+    const m = document.createElement('p'); m.className = 'm';
+    m.append((p.date || '') + (p.volume ? ' · Volume ' + p.volume : ''));
+    if (p.doi) { const doi = document.createElement('a'); doi.href = 'https://doi.org/' + p.doi; doi.textContent = p.doi; doi.target = '_blank'; doi.rel = 'noopener'; m.append(doi); }
+    const ab = document.createElement('p'); ab.className = 'ab'; ab.textContent = jatsText(p.abstract || '');
+    const acts = document.createElement('div'); acts.className = 'acts';
+    const sv = document.createElement('button'); sv.textContent = isSaved(KEY, p.doi) ? 'Saved ✓' : 'Save'; sv.setAttribute('aria-pressed', String(isSaved(KEY, p.doi)));
+    sv.onclick = () => { toggleSave(KEY, p); sv.textContent = isSaved(KEY, p.doi) ? 'Saved ✓' : 'Save'; sv.setAttribute('aria-pressed', String(isSaved(KEY, p.doi))); renderSaved(); };
+    acts.append(sv);
+    li.append(t, a, m, ab, acts); list.append(li);
+  }
+}
+function renderSaved() {
+  const ul = $('savedList'); const rows = savedList(KEY);
+  ul.textContent = '';
+  for (const r of rows) {
+    const li = document.createElement('li');
+    const a = document.createElement('a'); a.href = r.url; a.textContent = r.title; a.target = '_blank'; a.rel = 'noopener';
+    const rm = document.createElement('button'); rm.textContent = 'Remove'; rm.onclick = () => { toggleSave(KEY, r); renderSaved(); };
+    li.append(a, rm); ul.append(li);
+  }
+}
+async function loadLatest() { status.textContent = 'Reading the journal feed…'; try { const r = await papers(); render(r, r.length ? 'Latest ' + r.length + ' papers from the journal feed.' : 'The feed could not be read just now.'); } catch { render([], 'The feed could not be read just now.'); } }
+q.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('go').click(); });
+$('go').onclick = async () => { const s = q.value.trim(); if (!s) return loadLatest(); status.textContent = 'Searching the public research record…'; try { const r = await searchCrossref(s); render(r, r.length ? r.length + ' result' + (r.length === 1 ? '' : 's') + ' for “' + s + '”.' : 'Nothing matched “' + s + '”.'); } catch { render([], 'The search could not be read just now.'); } };
+$('latest').onclick = () => { q.value = ''; $('latest').setAttribute('aria-pressed', 'true'); $('savedBtn').setAttribute('aria-pressed', 'false'); $('saved').hidden = true; loadLatest(); };
+$('savedBtn').onclick = () => { const on = $('saved').hidden; $('saved').hidden = !on; $('savedBtn').setAttribute('aria-pressed', String(on)); $('latest').setAttribute('aria-pressed', String(!on)); renderSaved(); };
+(async () => { const s = new URLSearchParams(location.search).get('q'); if (s) { q.value = s; $('go').click(); } else loadLatest(); })();
+renderSaved();
+mountRelated($('related'), '/journal/'); // the "Use with" row, drawn with the page's own links
+{ const tab = new URLSearchParams(location.search).get('tab'); const sec = tab && $(tab); if (sec) sec.scrollIntoView({ block: 'start' }); } // a link to one part of the page
+
+// ---- the length of a paper, worked out on this device (lib/journal.js pubUnits): the journal's own rule, with its working shown
+function units() {
+  const u = pubUnits({ words: +$('puWords').value || 0, figures: +$('puFigures').value || 0, tables: +$('puTables').value || 0, equations: +$('puEquations').value || 0, limit: +$('puKind').value || 45 });
+  const rows = [
+    ['Words', u.words.toLocaleString() + ' = ' + u.textPU.toFixed(1) + ' PU'],
+    ['Figures and tables', (u.figures + u.tables) + ' = ' + u.figPU.toFixed(1) + ' PU'],
+    ['Equations', u.equations + (u.equations ? ' = ' + u.eqPU + ' PU' + (u.eqExtraPU ? ' + ' + u.eqExtraPU + ' excess PU' : '') : ' = 0 PU')],
+    ['Total length', u.pu + ' PU'],
+    ['Free limit', u.limit + ' PU'],
+    ['Over the limit', u.over ? u.over + ' PU = $' + u.overFee.toLocaleString() : 'none'],
+    ['Excess equation units', u.eqExtraPU ? u.eqExtraPU + ' PU = $' + u.eqFee.toLocaleString() : 'none'],
+    ['Fee', u.fee ? '$' + u.fee.toLocaleString() : '$0'],
+  ];
+  const dl = $('puStats'); dl.textContent = '';
+  for (const [k, v] of rows) { const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = k; dd.textContent = v; dl.append(dt, dd); }
+  const short = u.limit === 4 && u.pu > 4;
+  $('puNote').textContent = (short ? 'A short-form paper may be 4 PU at most: this one is ' + u.pu + ' PU. ' : '')
+    + 'The count includes the abstract, the notes, the acknowledgments, the contributions, the data statement, the appendices and the references; figure and table captions are left out. '
+    + 'The total is rounded up to the next whole unit. The guidelines\' own example (8,000 words, 4 figures, 32 equations) prints 23 PU, which leaves out the 3 excess equation units the same rule charges: with them it is '
+    + puWithoutEquationExtra(u) + ' + ' + u.eqExtraPU + '.';
+}
+for (const id of ['puWords', 'puFigures', 'puTables', 'puEquations', 'puKind']) $(id).addEventListener('input', units);
+units();
+</script>
+</body>
+</html>
