@@ -1,0 +1,316 @@
+{
+ "site": "colorscheme.ru",
+ "url": "https://colorscheme.ru/",
+ "scanned": "2026-11-08",
+ "status": 200,
+ "assets": [
+  {
+   "f": "style.css",
+   "t": "css",
+   "b": 67341
+  },
+  {
+   "f": "csd.js",
+   "t": "js",
+   "b": 120232
+  },
+  {
+   "f": "ddos_check.js",
+   "t": "js",
+   "b": 6256
+  },
+  {
+   "f": "ddos_report.js",
+   "t": "js",
+   "b": 3446
+  },
+  {
+   "f": "jquery-1.11.1.min.js",
+   "t": "js",
+   "b": 95790
+  },
+  {
+   "f": "mc.yandex.ru/tag.js",
+   "t": "js",
+   "b": 208597,
+   "ext": true
+  }
+ ],
+ "assetCount": 6,
+ "bytes": 501662,
+ "html": {
+  "mobile": {
+   "title": "ColorScheme.Ru — Цветовой круг он-лайн: ",
+   "lang": "ru",
+   "manifest": null,
+   "appleTouch": true,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "selects": 1,
+   "forms": 1,
+   "accesskeys": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "z",
+    "x",
+    "c",
+    "q",
+    "w"
+   ],
+   "editable": true
+  },
+  "desktop": {}
+ },
+ "robots": {
+  "disallow": [
+   "/feedback.html"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "csd.js",
+   "own": true,
+   "apiPaths": [
+    "/export@54797"
+   ],
+   "flags": [
+    "showSpinner@5904",
+    "showClose@5919"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "ddos_check.js",
+   "own": true,
+   "blobTypes": [
+    "image/png@5718"
+   ],
+   "mimes": [
+    "image/png"
+   ]
+  },
+  {
+   "file": "jquery-1.11.1.min.js",
+   "own": true,
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "assets.colorscheme.ru",
+   "file": "ddos_check.js",
+   "at": 5131
+  },
+  {
+   "host": "colorscheme.ru",
+   "file": "csd.js",
+   "at": 31251
+  },
+  {
+   "host": "colorscheme.ru&quot",
+   "file": "csd.js",
+   "at": 114902
+  },
+  {
+   "host": "connect.mail.ru",
+   "file": "csd.js",
+   "at": 117762
+  },
+  {
+   "host": "money.yandex.ru",
+   "file": "csd.js",
+   "at": 116103
+  },
+  {
+   "host": "twitter.com",
+   "file": "csd.js",
+   "at": 117403
+  },
+  {
+   "host": "vk.com",
+   "file": "csd.js",
+   "at": 117137
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "csd.js",
+   "at": 117262
+  },
+  {
+   "host": "www.odnoklassniki.ru",
+   "file": "csd.js",
+   "at": 117528
+  }
+ ],
+ "thirdParty": [
+  "colorscheme.ru&quot",
+  "connect.mail.ru",
+  "mc.yandex.com",
+  "mc.yandex.ru",
+  "money.yandex.ru",
+  "twitter.com",
+  "vk.com",
+  "www.facebook.com",
+  "www.odnoklassniki.ru"
+ ],
+ "requests": [
+  "https://colorscheme.ru/js/ddos_report.js",
+  "https://mc.yandex.com/watch/4063645/1?browser-info&charset&page-url&redirnss&t&uah&wmode",
+  "https://mc.yandex.com/watch/4063645?browser-info&charset&page-url&t&uah&wmode"
+ ],
+ "storage": {
+  "local": [
+   "_ym4063645:0_reqNum",
+   "_ym4063645_lsid",
+   "_ym_retryReqs",
+   "_ym_synced",
+   "_ym_uid"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Access key 1",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=1]"
+  },
+  {
+   "name": "Access key 2",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=2]"
+  },
+  {
+   "name": "Access key 3",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=3]"
+  },
+  {
+   "name": "Access key 4",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=4]"
+  },
+  {
+   "name": "Access key 5",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=5]"
+  },
+  {
+   "name": "Access key 6",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=6]"
+  },
+  {
+   "name": "Access key c",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=c]"
+  },
+  {
+   "name": "Access key q",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=q]"
+  },
+  {
+   "name": "Access key w",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=w]"
+  },
+  {
+   "name": "Access key x",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=x]"
+  },
+  {
+   "name": "Access key z",
+   "kind": "shortcut",
+   "tag": "observed",
+   "evidence": "[accesskey=z]"
+  },
+  {
+   "name": "Exports as image/png",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "ddos_check.js@5718"
+  },
+  {
+   "name": "API path /export",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "csd.js@54797"
+  },
+  {
+   "name": "Feature flag showClose",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "csd.js@5919"
+  },
+  {
+   "name": "Feature flag showSpinner",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "csd.js@5904"
+  },
+  {
+   "name": "Edit in place",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "[contenteditable]"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym4063645:0_reqNum",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym4063645_lsid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym_retryReqs",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym_synced",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym_uid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Path kept from crawlers /feedback.html",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

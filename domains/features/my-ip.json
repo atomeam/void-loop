@@ -19,5 +19,15 @@
  "auto": {
   "scanned": "2026-11-06",
   "queued": []
+ },
+ "re": {
+  "scanned": "2026-11-08",
+  "sites": {
+   "icanhazip.com": {
+    "url": "https://icanhazip.com/",
+    "scanned": "2026-11-08",
+    "features": []
+   }
+  }
  }
 }
