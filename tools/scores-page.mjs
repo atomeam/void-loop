@@ -10,7 +10,7 @@ import { fakeFeeds, WIKI_BORN } from './scores.fixtures.mjs';
 import { onRequestGet as reportGet } from '../void-live-deploy/functions/api/report.js';
 import { onRequestGet as searchGet } from '../void-live-deploy/functions/api/sportsearch.js';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy'), out = process.argv[2] || '.';
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy'), out = process.argv[2] || '.';
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const feeds = fakeFeeds();
 const srv = http.createServer(async (req, res) => {

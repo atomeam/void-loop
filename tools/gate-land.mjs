@@ -4,7 +4,7 @@
 //   node tools/gate-land.mjs take floors.txt mine.json     the floors this run measured, from the evidence file as it stands
 //   node tools/gate-land.mjs put mine.json                 those rows and icons folded into the evidence file as it stands
 import fs from 'node:fs';
-const FILE = new URL('../void-live-deploy/tower.evidence.json', import.meta.url).pathname;
+const FILE = new URL('../void-live-deploy/tower.evidence.json', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const stamp = (r) => { const t = r && r.at ? Date.parse(r.at) : NaN; return Number.isFinite(t) ? t : -Infinity; };
 
 /** the rows of the named floors, and the icons map, out of an evidence file. Pure. */

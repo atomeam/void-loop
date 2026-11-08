@@ -3,7 +3,7 @@
 // reading mode, language, layout shift, no sideways scroll, and a reload with the network cut. Saves tools/news.shot.png for a person to read.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { askIn, lookNews } from '../void-live-deploy/functions/api/news.js'; import { fixtureFor } from './news-fixtures.mjs';
-const root = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp' };
 const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p); if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); }).listen(0, '127.0.0.1');
 await new Promise((r) => server.once('listening', r));
@@ -30,7 +30,7 @@ await page.locator('.story .more', { hasText: '3 sources' }).click(); ok((await 
 ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'no sideways scroll at 390 px');
 await page.waitForTimeout(400); const cls = await page.evaluate(() => window.__cls); ok(cls < 0.05, 'layout shift ' + cls.toFixed(4));
 ok(await page.evaluate(() => [...document.querySelectorAll('button,a,select,input')].filter((e) => e.offsetParent && !e.closest('#secs') && !e.closest('.story .t') && !e.closest('.also') && !e.closest('.srcs') && !e.closest('footer') && !e.closest('#related') && !e.closest('#asks')).every((e) => { const b = e.getBoundingClientRect(); return b.width >= 40 && b.height >= 40; })), 'controls are at least 40 px');
-await page.screenshot({ path: path.join(path.dirname(new URL(import.meta.url).pathname), 'news.shot.png') });
+await page.screenshot({ path: path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), 'news.shot.png') });
 // search, source filter
 await page.fill('#q', 'budget'); await page.waitForTimeout(300); ok((await page.locator('#list .story').count()) === 2, 'search "budget" keeps 2 rows'); await page.fill('#q', ''); await page.waitForTimeout(300);
 await page.selectOption('#src', 'dw'); ok((await page.locator('#list .story .src').allInnerTexts()).every((s) => s === 'DW') && (await page.locator('#list .story').count()) >= 1, 'the source filter shows only DW'); await page.selectOption('#src', '');
@@ -52,7 +52,7 @@ await page.click('[data-sec=report]'); await page.waitForSelector('#reportBox ar
 ok(reqs.some((u) => /news-report\.js/.test(u)), 'the tab loads its module only now');
 const rep = await page.locator('#reportBox').innerText(); ok(/Verse brief/.test(rep) && /Written by Verse from .+ · \d\d:\d\d/.test(rep) && /According to/.test(rep), 'a brief that names its sources and says Verse wrote it');
 ok(/3 sources/.test(rep) && /BBC News adds|According to NPR, The Guardian|According to .*BBC News/.test(rep), 'the three-outlet quake story has its own summary'); ok(!/\breporter\b/i.test(rep), 'no reporter is implied');
-await page.screenshot({ path: path.join(path.dirname(new URL(import.meta.url).pathname), 'news.report.png') });
+await page.screenshot({ path: path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), 'news.report.png') });
 await page.locator('#reportBox article button', { hasText: 'plain words' }).first().click(); await page.waitForTimeout(300); ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'no sideways scroll on the reports tab');
 await page.click('[data-sec=world]');
 // offline: the service worker keeps the page; the headlines come from the device

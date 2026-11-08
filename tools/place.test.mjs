@@ -45,8 +45,26 @@ test('run "where is Kyoto": the biggest Kyoto, zoomed for a city of a million, t
     assert.ok(h.includes('<h2>Kyoto</h2><div class="sub">Japan</div>'), h); // admin1 equal to the name is not repeated
     assert.match(h, /bbox=135\.5738\d*,34\.9130\d*,135\.9338\d*,35\.1290\d*&/); // ±0.18 lon, ±0.108 lat
     assert.ok(h.includes('marker=35.02107,135.75385'), h); assert.ok(h.includes('#map=11/35.02107/135.75385'), h);
-    assert.ok(h.includes('Other places with this name: <a href="#" data-alt="0">Kyoto, Texas, United States</a>'), h);
+    assert.ok(h.includes('Several places share this name; others: <a href="#" data-alt="0">Kyoto, Texas, United States</a>'), h);
     assert.ok(!h.includes('Directions:'), h);
+  });
+});
+
+test('run "mapa de kioto": the Spanish map ask reaches Kyoto', async () => {
+  await withGeo(async (urls) => {
+    const api = apiOf(); assert.equal(await place.run('mapa de kioto', api), 'place');
+    assert.ok(urls[0].includes('name=kioto'), urls[0]);
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('<h2>Kyoto</h2>'), h);
+  });
+});
+
+test('an ambiguous name says several places share it, so the reader is asked which', async () => {
+  await withGeo(async () => {
+    const a = apiOf(); assert.equal(await place.run('map of Springfield', a), 'place');
+    assert.match(a.pages[0].innerHTML, /Several places share this name; others:/);
+    const b = apiOf(); assert.equal(await place.run('show me Paris on a map', b), 'place');
+    assert.match(b.pages[0].innerHTML, /Several places share this name; others:/);
   });
 });
 

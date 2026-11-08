@@ -38,6 +38,12 @@
   .tiles a { display: block; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; color: var(--ink); text-decoration: none; }
   .tiles a:hover { border-color: var(--accent); } .tiles small { display: block; color: var(--soft); font-size: 12px; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .box input[type=text] { flex: 1; min-width: 0; font: inherit; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+  .spons { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .spons > div { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 64px; }
+  .spons a { color: var(--ink); text-decoration: none; font-weight: 600; } .spons a:hover { color: var(--accent); }
+  .spons .open { border-style: dashed; color: var(--soft); } .spons small { display: block; color: var(--soft); font-size: 12px; margin-top: 4px; }
+  code { font-size: 13px; overflow-wrap: anywhere; }
   [hidden] { display: none !important; }
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
@@ -86,6 +92,20 @@
     <a href="/lab/photo-palette/">Photo palette<small>Lab tool</small></a>
     <a href="/lab/dictation/">Dictation<small>Lab tool</small></a>
     <a href="/lab/mind-map/">Mind map<small>Lab tool</small></a>
+  </div>
+
+  <h2 id="sponsors">Sponsor tiles</h2>
+  <div class="panel">
+    <div class="spons" id="tiles"><p class="note">Reading the sponsor grid…</p></div>
+    <p class="note" id="plans"></p>
+    <p class="note" id="split"></p>
+  </div>
+
+  <h2 id="claim">Claim wall</h2>
+  <div class="panel">
+    <p class="note" id="claimRule">Reading the claim wall…</p>
+    <form class="box" id="claimForm"><input type="text" id="addr" placeholder="0x… your Base address" aria-label="Your Base address for the claim" autocomplete="off" spellcheck="false" maxlength="42"><button class="go" type="submit">Claim</button></form>
+    <p class="note" id="claimNote"></p>
   </div>
 
   <h2 id="crew">Across Verse</h2>

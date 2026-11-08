@@ -3,14 +3,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as H from '../void-live-deploy/lib/stage-pack-h.js';
 
 // the files under test: skills/negative-summons.js, skills/echo-disagrees.js, skills/near-choir.js (loaded below by name) and lib/stage-pack-h.js
 const dir =resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');
 const real = [];
 for (const f of readdirSync(dir).filter((f) => f.endsWith('.js'))) {
-  try { const m = (await import(resolve(dir, f))).default; if (m && m.name && m.match && Array.isArray(m.examples)) real.push(m); } catch (_) {}
+  try { const m = (await import(pathToFileURL(resolve(dir, f)).href)).default; if (m && m.name && m.match && Array.isArray(m.examples)) real.push(m); } catch (_) {}
 }
 
 test('negativeOf takes only "everything except X" shapes', () => {
@@ -113,7 +113,7 @@ test('nearChoir: matchers that also accept come first, then word overlap; the an
 test('the three skills are real, tight and registered', async () => {
   const by = new Map(real.map((s) => [s.name, s]));
   for (const n of ['negative-summons', 'echo-disagrees', 'near-choir']) {
-    const s = (await ({ 'negative-summons': () => import(resolve(dir, 'negative-summons.js')), 'echo-disagrees': () => import(resolve(dir, 'echo-disagrees.js')), 'near-choir': () => import(resolve(dir, 'near-choir.js')) })[n]()).default; // each loaded by its own file name, as well as in the folder scan above
+    const s = (await ({ 'negative-summons': () => import(pathToFileURL(resolve(dir, 'negative-summons.js')).href), 'echo-disagrees': () => import(pathToFileURL(resolve(dir, 'echo-disagrees.js')).href), 'near-choir': () => import(pathToFileURL(resolve(dir, 'near-choir.js')).href) })[n]()).default; // each loaded by its own file name, as well as in the folder scan above
     assert.equal(s.name, n);
     assert.ok(by.get(n), n + ' is also in the folder scan');
     for (const e of s.examples) assert.equal(s.match(e.toLowerCase(), e), true, n + ' takes "' + e + '"');

@@ -488,7 +488,7 @@ export const JOURNEYS = {
 
 async function run() {
   const { chromium } = await import('playwright-core');
-  const b = await chromium.launch({ executablePath: process.env.VOID_TEST_BROWSER || '/usr/bin/google-chrome', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
+  const b = await chromium.launch({ executablePath: process.env.VOID_TEST_BROWSER || process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'] });
   let failed = 0;
   for (const [name, steps] of Object.entries(JOURNEYS)) {
     const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block', timezoneId: 'UTC', locale: 'en-US' }), p = await ctx.newPage(), errors = [], said = [];

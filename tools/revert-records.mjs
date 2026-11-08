@@ -7,6 +7,7 @@
 //   any other conflicted file: exit 1 naming it, the revert left in progress for verify.yml to abort and report.
 // Nothing is committed here. Run from the repository root:  node tools/revert-records.mjs
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
@@ -81,4 +82,4 @@ function main() {
   return 0;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === resolve(new URL(import.meta.url).pathname)) process.exit(main());
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(main());
