@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T07:39:18.949Z",
+ "updated": "2026-11-08T07:48:44.131Z",
  "last24h": {
   "ticks": 152,
-  "started": 124,
+  "started": 123,
   "requeued": 3,
   "setAside": 1,
   "probes": 10,
@@ -67,11 +67,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 17,
    "cap": 90
   },
   "day": {
-   "used": 90,
+   "used": 107,
    "cap": 360
   },
   "room": true,
@@ -82,7 +82,6 @@
   "mva30i2e": 1794121309997,
   "mva30j4u": 1794121870584,
   "mvu167w7": 1794121870584,
-  "mw62nexd": 1794037487017,
   "mw62nfhb": 1794038048327,
   "mw64zdif": 1794040298353,
   "mw64zeen": 1794040864218,
@@ -218,39 +217,6 @@
   "gap:want-exam-videos"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T07:44:47.017Z",
-   "open": 256,
-   "started": [
-    {
-     "id": "want-exam-translate",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 151
-    },
-    {
-     "id": "mw62nexd",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T07:54:08.327Z",
    "open": 255,
@@ -3393,6 +3359,34 @@
      "kind": "gap",
      "wf": "verse-job.yml",
      "score": 175
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T07:48:44.131Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "mvw5r2hk",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 101
     }
    ],
    "requeued": 0,
