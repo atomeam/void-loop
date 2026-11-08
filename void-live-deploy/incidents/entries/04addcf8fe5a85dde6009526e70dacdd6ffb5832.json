@@ -8,5 +8,10 @@
  ],
  "touched": [
   "void-live-deploy/bots/registry.json"
+ ],
+ "passed": [
+  1,
+  3,
+  4
  ]
 }

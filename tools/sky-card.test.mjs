@@ -1,7 +1,7 @@
 // sky card (frontier #21, sky PR C): routing, names, compass, and the card for a pinned moment and place
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import skill, { skyCardOf } from '../void-live-deploy/skills/sky-card.js';
+import skill, { skyCardOf } from '../void-live-deploy/skills/skycard.js';
 import { bodyOf, direction, look, take, card } from '../void-live-deploy/skills/sky-card-rules.js';
 
 test('routes the asks it is for, and none of its near misses', () => {
