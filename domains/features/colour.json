@@ -130,5 +130,236 @@
   },
   "gaps": [],
   "queued": []
+ },
+ "re": {
+  "scanned": "2026-11-08",
+  "sites": {
+   "colorscheme.ru": {
+    "url": "https://colorscheme.ru/",
+    "scanned": "2026-11-08",
+    "features": [
+     {
+      "name": "Access key 1",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=1]"
+     },
+     {
+      "name": "Access key 2",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=2]"
+     },
+     {
+      "name": "Access key 3",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=3]"
+     },
+     {
+      "name": "Access key 4",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=4]"
+     },
+     {
+      "name": "Access key 5",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=5]"
+     },
+     {
+      "name": "Access key 6",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=6]"
+     },
+     {
+      "name": "Access key c",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=c]"
+     },
+     {
+      "name": "Access key q",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=q]"
+     },
+     {
+      "name": "Access key w",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=w]"
+     },
+     {
+      "name": "Access key x",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=x]"
+     },
+     {
+      "name": "Access key z",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[accesskey=z]"
+     },
+     {
+      "name": "Exports as image/png",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "ddos_check.js@5718"
+     },
+     {
+      "name": "API path /export",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "csd.js@54797"
+     },
+     {
+      "name": "Feature flag showClose",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "csd.js@5919"
+     },
+     {
+      "name": "Feature flag showSpinner",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "csd.js@5904"
+     },
+     {
+      "name": "Edit in place",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[contenteditable]"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym4063645:0_reqNum",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym4063645_lsid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym_retryReqs",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym_synced",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym_uid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Path kept from crawlers /feedback.html",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   }
+  }
  }
 }

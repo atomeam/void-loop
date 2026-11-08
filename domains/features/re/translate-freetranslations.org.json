@@ -1,0 +1,577 @@
+{
+ "site": "www.freetranslations.org",
+ "url": "https://www.freetranslations.org/",
+ "scanned": "2026-11-08",
+ "status": 200,
+ "assets": [
+  {
+   "f": "cse.google.com/cse.js",
+   "t": "js",
+   "b": 6226,
+   "ext": true
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 22418,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css2",
+   "t": "css",
+   "b": 11132,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 2108,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 5431,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 2568,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ysmads.-460x68.",
+   "t": "js",
+   "b": 54,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 7827,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ca-pub-",
+   "t": "js",
+   "b": 228255,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63037,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 167493,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 524520,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/osd.js",
+   "t": "js",
+   "b": 61,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "translate.google.com/element.js",
+   "t": "js",
+   "b": 3604,
+   "ext": true
+  },
+  {
+   "f": "translate.googleapis.com/m=el_main",
+   "t": "js",
+   "b": 325300,
+   "ext": true
+  },
+  {
+   "f": "main.js",
+   "t": "js",
+   "b": 45846
+  },
+  {
+   "f": "rocket-loader.min.js",
+   "t": "js",
+   "b": 12332
+  },
+  {
+   "f": "composer.js",
+   "t": "js",
+   "b": 42702
+  },
+  {
+   "f": "style.css",
+   "t": "css",
+   "b": 46247
+  },
+  {
+   "f": "jquery-migrate.min.js",
+   "t": "js",
+   "b": 13577
+  },
+  {
+   "f": "jquery.min.js",
+   "t": "js",
+   "b": 87553
+  },
+  {
+   "f": "www.google.com/cse_element__en.js",
+   "t": "js",
+   "b": 405852,
+   "ext": true
+  },
+  {
+   "f": "www.google.com/default_v6+en.css",
+   "t": "css",
+   "b": 55691,
+   "ext": true
+  },
+  {
+   "f": "www.google.com/default.css",
+   "t": "css",
+   "b": 5578,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 540467,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/m=el_main_css",
+   "t": "css",
+   "b": 22361,
+   "ext": true
+  }
+ ],
+ "assetCount": 27,
+ "bytes": 2680093,
+ "html": {
+  "mobile": {
+   "title": "Free Translation - Online English Transl",
+   "lang": "tr",
+   "manifest": null,
+   "hreflang": [
+    "x-default",
+    "en"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 12,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "www.freetranslations.org",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "www.freetranslations.org",
+    "googleads.g.doubleclick.net",
+    "www.freetranslations.org",
+    "www.google.com",
+    "www.freetranslations.org",
+    "www.freetranslations.org",
+    "www.freetranslations.org",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "inputTypes": {
+    "email": 1,
+    "text": 7
+   },
+   "selects": 4,
+   "textareas": 2,
+   "forms": 2,
+   "ariaLabels": [
+    "Advertisement",
+    "Country",
+    "FreeTranslations",
+    "Good translation",
+    "Language Translate Widget",
+    "Next track",
+    "Online translation service",
+    "Play",
+    "Poor translation",
+    "Previous track",
+    "Report a problem",
+    "Show track list",
+    "Swap languages",
+    "Toggle menu",
+    "facebook",
+    "linkedin",
+    "whatsapp",
+    "x"
+   ],
+   "roles": {
+    "dialog": 1
+   }
+  },
+  "desktop": {
+   "iframes": [
+    "www.freetranslations.org",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "www.freetranslations.org",
+    "googleads.g.doubleclick.net",
+    "www.freetranslations.org",
+    "www.google.com",
+    "www.freetranslations.org",
+    "www.freetranslations.org",
+    "www.freetranslations.org",
+    "googleads.g.doubleclick.net"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "2 How many languages are supported? ▼",
+   "w": "md"
+  },
+  {
+   "l": "4 Can I listen to the pronunciation? ▼",
+   "w": "md"
+  },
+  {
+   "l": "5 Is my text stored or shared? ▼",
+   "w": "md"
+  },
+  {
+   "l": "6 How accurate are the translations? ▼",
+   "w": "md"
+  },
+  {
+   "l": "7 Can I download the audio? ▼",
+   "w": "md"
+  },
+  {
+   "l": "8 Does it work on mobile devices? ▼",
+   "w": "md"
+  },
+  {
+   "l": "About Us",
+   "w": "md"
+  },
+  {
+   "l": "All Language Pairs",
+   "w": "d"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Contact Us",
+   "w": "md"
+  },
+  {
+   "l": "Cookie Policy",
+   "w": "md"
+  },
+  {
+   "l": "Country",
+   "w": "md"
+  },
+  {
+   "l": "FAQ",
+   "w": "md"
+  },
+  {
+   "l": "FT FreeTranslations",
+   "w": "d"
+  },
+  {
+   "l": "Free Online Translator",
+   "w": "md"
+  },
+  {
+   "l": "FreeTranslations",
+   "w": "md"
+  },
+  {
+   "l": "Language Translate Widget",
+   "w": "md"
+  },
+  {
+   "l": "Next track",
+   "w": "d"
+  },
+  {
+   "l": "Play",
+   "w": "md"
+  },
+  {
+   "l": "Previous track",
+   "w": "d"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Report a problem",
+   "w": "md"
+  },
+  {
+   "l": "Show track list",
+   "w": "md"
+  },
+  {
+   "l": "Swap languages",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Service",
+   "w": "md"
+  },
+  {
+   "l": "Text to Speech",
+   "w": "md"
+  },
+  {
+   "l": "Toggle dark mode",
+   "w": "md"
+  },
+  {
+   "l": "Toggle menu",
+   "w": "m"
+  },
+  {
+   "l": "Translate",
+   "w": "d"
+  },
+  {
+   "l": "Voice Translator",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/wp-content/plugins/",
+   "/wp-content/uploads/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "rocket-loader.min.js",
+   "own": true,
+   "mimes": [
+    "application/ecmascript",
+    "application/x-ecmascript",
+    "application/x-javascript",
+    "text/ecmascript",
+    "text/javascript1.0",
+    "text/javascript1.1",
+    "text/javascript1.2",
+    "text/javascript1.3",
+    "text/javascript1.4",
+    "text/javascript1.5",
+    "text/jscript",
+    "text/livescript",
+    "text/x-ecmascript",
+    "text/x-javascript"
+   ]
+  },
+  {
+   "file": "composer.js",
+   "own": true,
+   "storage": [
+    "td_favs2@12909"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "mimes": [
+    "audio/mpeg"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 2
+  },
+  {
+   "file": "style.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "jquery.min.js",
+   "own": true,
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "flagcdn.com",
+   "file": "composer.js",
+   "at": 2
+  },
+  {
+   "host": "translateing.com",
+   "file": "composer.js",
+   "at": 24
+  },
+  {
+   "host": "twitter.com",
+   "file": "composer.js",
+   "at": 36260
+  },
+  {
+   "host": "wa.me",
+   "file": "composer.js",
+   "at": 36971
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "composer.js",
+   "at": 35857
+  },
+  {
+   "host": "www.freetranslations.org",
+   "file": "style.css",
+   "at": 69
+  },
+  {
+   "host": "www.linkedin.com",
+   "file": "composer.js",
+   "at": 36550
+  }
+ ],
+ "thirdParty": [
+  "cse.google.com",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "flagcdn.com",
+  "fonts.googleapis.com",
+  "fundingchoicesmessages.google.com",
+  "googleads.g.doubleclick.net",
+  "lyricfinder.net",
+  "pagead2.googlesyndication.com",
+  "rr1---sn-2imeyn7r.googlevideo.com",
+  "static.cloudflareinsights.com",
+  "tpc.googlesyndication.com",
+  "translate.google.com",
+  "translate.googleapis.com",
+  "translateing.com",
+  "twitter.com",
+  "wa.me",
+  "www.facebook.com",
+  "www.google-analytics.com",
+  "www.google.com",
+  "www.googletagmanager.com",
+  "www.gstatic.com",
+  "www.linkedin.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://fundingchoicesmessages.google.[token]",
+  "https://googleads.g.doubleclick.net/btr/view?ai&cid&ibtr&sigh&template_id&uach_m",
+  "https://googleads.g.doubleclick.net/btr/view?ai&cid&ibtr&sigh&uach_m&vt",
+  "https://googleads.g.doubleclick.net/btr/view?ai&ibtr&sigh&template_id&uach_m",
+  "https://googleads.g.doubleclick.net/pagead/adview?ai&cid&ebtr&sigh&template_id&uach_m&vis",
+  "https://googleads.g.doubleclick.net/pagead/adview?ai&cid&ebtr&sigh&uach_m&vis&vt",
+  "https://googleads.g.doubleclick.net/pagead/adview?ai&ebtr&sigh&template_id&uach_m&vis",
+  "https://lyricfinder.[token]?country&list",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&name&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&proto&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&type",
+  "https://pagead2.googlesyndication.com/pagead/ping?e",
+  "https://pagead2.googlesyndication.com/pcs/activeview?adk&app&avms&bin&bs&co&cr&ffslot",
+  "https://rr1---sn-2imeyn7r.googlevideo.com/videoplayback?acao&clen&cpn&cps&ctier&dur&ei&expire",
+  "https://translateing.com/chain-config.php?t",
+  "https://www.google-analytics.com/g/collect?_ee&_fv&_nsi&_p&_s&_ss&cid&dl",
+  "https://www.google-analytics.com/g/collect?_et&_eu&_p&_s&cid&dl&dma&dt"
+ ],
+ "storage": {
+  "local": [
+   "google_adsense_settings",
+   "google_ama_config",
+   "google_ama_settings"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "style.css"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "composer.js@31724"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Language versions: 2 (x-default, en)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "style.css@16377"
+  },
+  {
+   "name": "Path kept from crawlers /wp-content/plugins/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /wp-content/uploads/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}
