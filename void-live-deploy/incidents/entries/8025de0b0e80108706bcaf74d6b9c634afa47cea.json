@@ -19,6 +19,8 @@
   "void-live-deploy/void.growth.json"
  ],
  "passed": [
-  2
+  1,
+  2,
+  3
  ]
 }
