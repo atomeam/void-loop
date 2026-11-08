@@ -109,6 +109,20 @@
    "refused": true,
    "at": "2026-11-07"
   },
+  "250free.com": {
+   "bytes": 4514,
+   "controls": 3,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 2,
+   "htmlControls": 2,
+   "counted": "rendered",
+   "text": 184,
+   "shell": "none",
+   "weight": 7674,
+   "at": "2026-11-08"
+  },
   "2chan.net": {
    "bytes": 982,
    "controls": 2,
@@ -4515,6 +4529,20 @@
    "weight": 1141062,
    "at": "2026-10-30"
   },
+  "digitalsogame.com": {
+   "bytes": 3974,
+   "controls": 1,
+   "scripts": 1,
+   "styles": 2,
+   "nodes": 20,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 103,
+   "shell": "none",
+   "weight": 6174,
+   "at": "2026-11-08"
+  },
   "disqus.com": {
    "bytes": 4867,
    "controls": 0,
@@ -5524,7 +5552,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-07"
+   "at": "2026-11-08"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6780,7 +6808,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 13,
+   "bytes": 14,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6789,9 +6817,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 12,
-   "weight": 13,
-   "at": "2026-11-07"
+   "text": 13,
+   "weight": 14,
+   "at": "2026-11-08"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -8127,6 +8155,10 @@
   "majorcommunityportal.nl": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "maphill.com": {
+   "refused": true,
+   "at": "2026-11-08"
   },
   "mapledicelounge.nl": {
    "refused": true,
