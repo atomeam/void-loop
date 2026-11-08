@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { check, routeOf, methodsOf, INTERNAL } from './openapi-check.mjs';
 import { matchingProducts } from '../void-live-deploy/functions/api/productsearch.js';
 
-const FN = new URL('../void-live-deploy/functions/', import.meta.url).pathname;
+const FN = new URL('../void-live-deploy/functions/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 assert.equal(routeOf(FN + 'api/hook/[id].js'), '/api/hook/{id}');
 assert.equal(routeOf(FN + 'api/share/index.js'), '/api/share');
 assert.equal(routeOf(FN + 'tools.json.js'), '/tools.json');

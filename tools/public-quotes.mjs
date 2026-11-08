@@ -37,7 +37,7 @@ export function commentsQuoteFree(text, ext) {
 function* walk(dir) { for (const n of readdirSync(dir)) { const p = join(dir, n); if (statSync(p).isDirectory()) yield* walk(p); else yield p; } }
 
 if (process.argv[1] && new URL(import.meta.url).pathname === new URL('file://' + process.argv[1]).pathname) {
-  const root = new URL('../void-live-deploy/', import.meta.url).pathname, dry = process.argv.includes('--dry');
+  const root = new URL('../void-live-deploy/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), dry = process.argv.includes('--dry');
   let files = 0;
   for (const f of walk(root)) {
     const ext = extname(f).toLowerCase(); if (ext !== '.json' && !CODE.has(ext)) continue;

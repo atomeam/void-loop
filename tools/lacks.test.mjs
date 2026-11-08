@@ -112,13 +112,13 @@ test('queue (dry): plain routing gaps become probe jobs within the open limit; a
     { ask: 'fly around', want: 'skill:fly' }, { ask: 'pulse card', want: 'skill:pulse' }, { ask: 'rank pizza, tacos, sushi', want: 'skill:decide-cards' },
     { ask: 'see https://x.test', want: 'skill:fly' }, { ask: 'ok ask', want: 'rm -rf /' }, { ask: 'fly around', want: 'skill:fly' },
   ]));
-  const r = spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname, 'queue', f, '--dry', '--empty-queue'], { encoding: 'utf8', env: { ...process.env, VOID_OWNER_TOKEN: '' } });
+  const r = spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), 'queue', f, '--dry', '--empty-queue'], { encoding: 'utf8', env: { ...process.env, VOID_OWNER_TOKEN: '' } });
   assert.equal(r.status, 0, r.stderr);
   const lines = r.stdout.split('\n').filter((l) => l.startsWith('would queue'));
   const { PROBE_OPEN_MAX } = await import('./probe-asks.mjs');
   assert.equal(lines.length, Math.min(3, PROBE_OPEN_MAX), 'within the open limit, like the probe (three plain gaps here): ' + r.stdout);
   assert.match(lines[0], /probe:fly-around/); assert.doesNotMatch(r.stdout, /https|rm -rf/);
-  assert.equal(spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname, 'queue'], { encoding: 'utf8' }).status, 2);
+  assert.equal(spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), 'queue'], { encoding: 'utf8' }).status, 2);
 });
 
 test('a finished study with strong evidence moves its skill up the plan, never off it', () => {

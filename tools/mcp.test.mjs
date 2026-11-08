@@ -182,7 +182,7 @@ test('mcp skills: the choice is a pure function of the ratings: held back, unpro
 
 test('mcp skills: lib/mcp-skills.js and the names on /code-review/ are in step with the ratings (else: node tools/mcp-skills.mjs)', async () => {
   const { spawnSync } = await import('node:child_process');
-  const r = spawnSync(process.execPath, [new URL('./mcp-skills.mjs', import.meta.url).pathname, '--check'], { encoding: 'utf8' });
+  const r = spawnSync(process.execPath, [new URL('./mcp-skills.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), '--check'], { encoding: 'utf8' });
   assert.equal(r.status, 0, r.stderr || r.stdout);
 });
 

@@ -88,3 +88,24 @@ export function toggleSave(key, paper) {
   try { localStorage.setItem(key, JSON.stringify(rows.slice(0, 200))); } catch (_) {}
   return rows;
 }
+
+// ---- the length of a paper, in the publication units the journal's guidelines use ----
+/**
+ * Publication units (PU): 1 PU for every 500 words of the text, 1.5 PU for every figure and table, the first ten equations as 1 PU and
+ * every ten more as 1 PU again, the whole rounded up. A long paper (a Science Paper, a Science Review or a Technical Report) is free up to
+ * 45 PU and $100 for each PU beyond that; a short one (a Science Note, a Comment, a Reply or an Errata) may be 4 PU at most. The excess
+ * equation units are charged on their own, the way the guidelines' own example charges them on a short paper. Pure.
+ */
+export function pubUnits({ words = 0, figures = 0, tables = 0, equations = 0, limit = 45 } = {}) {
+  const w = Math.max(0, Math.round(Number(words) || 0)), f = Math.max(0, Math.round(Number(figures) || 0));
+  const t = Math.max(0, Math.round(Number(tables) || 0)), e = Math.max(0, Math.round(Number(equations) || 0));
+  const textPU = w / 500, figPU = (f + t) * 1.5;
+  const eqPU = e > 0 ? 1 : 0;                                // the first ten equations count as one unit
+  const eqExtraPU = e > 10 ? Math.ceil((e - 10) / 10) : 0;   // one more for every ten equations past the first ten
+  const pu = Math.ceil(textPU + figPU + eqPU + eqExtraPU);
+  const over = Math.max(0, pu - limit), overFee = over * 100, eqFee = eqExtraPU * 100;
+  return { words: w, figures: f, tables: t, equations: e, textPU, figPU, eqPU, eqExtraPU, pu, limit, over, overFee, eqFee, fee: overFee + eqFee };
+}
+
+/** The same length read as the guidelines' own example reads it: the total without the excess equation units added on top. Pure. */
+export function puWithoutEquationExtra(u) { return Math.ceil(u.textPU + u.figPU + u.eqPU); }

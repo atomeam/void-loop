@@ -1,34 +1,49 @@
 {
-  "at": "2026-11-07T23:03:35.240Z",
+  "at": "2026-11-08T03:15:35.682Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 85.9,
+      "score": 78,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "show me a video of cats",
+          "ask": "play a video of the moon landing",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
+          "score": 57.1
+        },
+        {
+          "ask": "watch the apollo 11 landing",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
+        },
+        {
+          "ask": "show me a video of cats",
+          "failed": [
+            "loaded",
+            "playable",
+            "topic"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play a video of the ocean",
           "failed": [
+            "loaded",
+            "playable",
             "topic"
           ],
-          "score": 85.7
-        },
-        {
-          "ask": "play a nature documentary",
-          "failed": [
-            "topic"
-          ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "watch a documentary about trains",
@@ -101,6 +116,13 @@
           "score": 85.7
         },
         {
+          "ask": "find a video about the moon",
+          "failed": [
+            "topic"
+          ],
+          "score": 85.7
+        },
+        {
           "ask": "play the trailer",
           "failed": [
             "topic",
@@ -126,7 +148,7 @@
       }
     },
     "podcasts": {
-      "score": 68.9,
+      "score": 70.5,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -254,11 +276,9 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio",
-            "episode"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -318,16 +338,17 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
@@ -346,17 +367,10 @@
       }
     },
     "directions": {
-      "score": 97.4,
+      "score": 98.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "directions to springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -450,7 +464,7 @@
       }
     },
     "sports": {
-      "score": 63.9,
+      "score": 64.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -458,41 +472,46 @@
           "ask": "nba scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "nfl scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "mlb scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "nhl scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "premier league scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "bundesliga table",
@@ -506,33 +525,37 @@
           "ask": "serie a scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "la liga scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "champions league scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "mls scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "lakers score",
@@ -544,48 +567,20 @@
           "score": 50
         },
         {
-          "ask": "celtics score",
+          "ask": "nba team celtics",
           "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
+          "score": 83.3
         },
         {
           "ask": "scores",
           "failed": [
             "skill",
-            "board"
+            "board",
+            "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "resultado del real madrid",
@@ -639,32 +634,10 @@
       ]
     },
     "maps": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "map of Springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "mapa de kioto",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        },
-        {
-          "ask": "show me Paris on a map",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     },
     "timers": {
       "score": 100,
@@ -721,6 +694,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 63.9
+    "score": 64.8
   }
 }

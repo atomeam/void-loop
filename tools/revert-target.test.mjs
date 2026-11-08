@@ -195,7 +195,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
 
 test('a red run whose suite never started (a step before it failed) is reported plainly, never a crash, and names no check', async () => {
   const { execFileSync } = await import('node:child_process');
-  const cli = (...a) => execFileSync(process.execPath, [new URL('./revert-target.mjs', import.meta.url).pathname, ...a], { encoding: 'utf8' }).trim();
+  const cli = (...a) => execFileSync(process.execPath, [new URL('./revert-target.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), ...a], { encoding: 'utf8' }).trim();
   const ann = cli('--annotate', '/no/such/test-output.txt');
   assert.match(ann, /^::error title=verify-main did not run the suite::the full suite never ran/);
   const pick = JSON.parse(cli('--pick', 'HEAD', '/no/such/test-output.txt'));

@@ -1,8 +1,9 @@
-// tools/journal.test.mjs — lib/journal.js: the feed and Crossref both normalize to one paper shape, the
-// abstract's JATS tags come out, and the saved list keeps one row per DOI on the device
+// tools/journal.test.mjs - lib/journal.js: the feed and Crossref both normalize to one paper shape, the
+// abstract's JATS tags come out, the saved list keeps one row per DOI on the device, and the length of a
+// paper in the journal's publication units is worked out with its working
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fromRssItem, fromCrossref, jatsText, searchCrossref, toggleSave, savedList, isSaved, parseFeed } from '../void-live-deploy/lib/journal.js';
+import { fromRssItem, fromCrossref, jatsText, searchCrossref, toggleSave, savedList, isSaved, parseFeed, pubUnits, puWithoutEquationExtra } from '../void-live-deploy/lib/journal.js';
 
 const RSS = `<?xml version="1.0"?><rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel>
 <item><media:content type="image/jpeg" url="https://img.example/a.jpg"/><title>  A study of sand  </title><pubDate>Thu, 05 Nov 2026 17:27:25 +0000</pubDate><description>  New mapping of a sand sea. </description><guid>https://doi.org/10.2475/001c.172254</guid><link>https://ajsonline.org/article/172254</link></item>
@@ -64,4 +65,27 @@ test('the saved list keeps one row per DOI, newest first, capped', () => {
   assert.ok(!isSaved(key, '10.1/a'));
   assert.equal(savedList(key).length, 1);
   delete globalThis.localStorage;
+});
+
+test('the length of a paper in publication units, with the journal\'s own examples', () => {
+  // 15,000 words and 10 figures or tables: 30 PU of words and 15 PU of figures, 45 PU, the free limit
+  const one = pubUnits({ words: 15000, figures: 10 });
+  assert.equal(one.textPU, 30); assert.equal(one.figPU, 15); assert.equal(one.pu, 45); assert.equal(one.over, 0); assert.equal(one.fee, 0);
+  // 20,000 words and 12 figures or tables: 58 PU, 13 PU over the limit, $1,300
+  const two = pubUnits({ words: 20000, figures: 12 });
+  assert.equal(two.pu, 58); assert.equal(two.over, 13); assert.equal(two.fee, 1300);
+  // 8,000 words, 4 figures and 32 equations: 23 PU as the guidelines print it, 3 excess equation PU, $300
+  const three = pubUnits({ words: 8000, figures: 4, equations: 32 });
+  assert.equal(puWithoutEquationExtra(three), 23, 'the total the guidelines\' example prints');
+  assert.equal(three.eqPU, 1, 'the first ten equations count as one unit');
+  assert.equal(three.eqExtraPU, 3, 'one more for every ten equations past the first ten');
+  assert.equal(three.over, 0); assert.equal(three.eqFee, 300); assert.equal(three.fee, 300);
+  // a short-form paper may be 4 PU at most
+  const short = pubUnits({ words: 2500, limit: 4 });
+  assert.equal(short.pu, 5); assert.equal(short.over, 1); assert.equal(short.fee, 100);
+  // a table counts like a figure, the total is rounded up, and a number below zero is no number
+  assert.equal(pubUnits({ words: 100, tables: 2 }).pu, 4);
+  assert.equal(pubUnits({ words: 1 }).pu, 1);
+  assert.equal(pubUnits({}).pu, 0);
+  assert.equal(pubUnits({ words: -5, figures: -2 }).pu, 0);
 });

@@ -16,7 +16,7 @@ import { splitHome } from './split-void-page.mjs';
 import { bare } from './design-loop.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const LIVE = (process.env.ASK_BAR_SITE || '').replace(/\/+$/, '');
 const SHOTS = process.env.ASK_BAR_SHOTS || '';
 if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });

@@ -55,19 +55,27 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
     card.style.maxHeight = had;
     const r = fitPanel({ top, content: Math.min(content, Math.max(120, floor - 12 - top)), floor });
     if (Math.abs(r.top - top) > 1 && !(th.scale < 1)) { card.style.top = r.top + 'px'; th.card = { x: parseFloat(card.style.left) || 0, y: r.top }; stageApi.save && stageApi.save(); }
-    // end on the border box the ask bar actually meets. A max-height that is a few pixels short still crosses #dock
-    // (phone 390x800: the Go card ended 5px inside the dock, so steps 3 and 4 scrolled into the bar, #2250).
-    let maxH = r.maxHeight;
-    card.style.maxHeight = maxH + 'px';
+    // end on the border box the ask bar actually meets. The "more" fade is added after the first measure, and on a
+    // phone that fade (or the ask line wrapping under the bar) left the Go card 17px inside the dock, so steps 3 and 4
+    // scrolled into the bar (#2250, verify run 42036332040: card bottom 652, dock top 647).
+    card.style.maxHeight = r.maxHeight + 'px';
     card.style.overflowY = 'auto';
-    const limit = dockTop() - 12, bottom = card.getBoundingClientRect().bottom;
-    if (bottom > limit + 0.5) maxH = Math.max(60, Math.floor((card.offsetHeight || maxH) - (bottom - limit)));
-    if (card.style.maxHeight !== maxH + 'px') card.style.maxHeight = maxH + 'px';
     const more = card.scrollHeight > card.clientHeight + 1;
     card.classList.toggle('scrolls', more); card.classList.toggle('at-end', !more || card.scrollTop + card.clientHeight >= card.scrollHeight - 2);
+    for (let i = 0; i < 3; i++) {
+      const tops = [document.getElementById('dock'), document.getElementById('row')].filter(Boolean).map((e) => e.getBoundingClientRect().top).filter((v) => v > 0 && v < (innerHeight || 900));
+      if (!tops.length) break;
+      const limit = Math.min(...tops) - 12, bottom = card.getBoundingClientRect().bottom;
+      if (bottom <= limit + 0.5) break;
+      const next = Math.max(60, Math.floor((parseFloat(card.style.maxHeight) || card.offsetHeight) - (bottom - limit)));
+      if (Math.abs(next - (parseFloat(card.style.maxHeight) || 0)) < 1) break;
+      card.style.maxHeight = next + 'px';
+    }
   };
   card.addEventListener('scroll', () => card.classList.toggle('at-end', card.scrollTop + card.clientHeight >= card.scrollHeight - 2), { passive: true });
   if (typeof ResizeObserver === 'function') { const ro = new ResizeObserver(() => fit()); ro.observe(card); const d = document.getElementById('dock'); if (d) { ro.observe(d); if (typeof MutationObserver === 'function') new MutationObserver(() => fit()).observe(d, { attributes: true, attributeFilter: ['style'] }); } } // a transform lifts the bar without resizing it (the keyboard inset); a size observer never hears that
+  const whisper = document.getElementById('whisper'); // the line under the bar wraps after the panel's first fit; hear the text, not only the dock's box
+  if (whisper && typeof MutationObserver === 'function') new MutationObserver(() => fit()).observe(whisper, { childList: true, characterData: true, subtree: true });
   if (typeof addEventListener === 'function') { addEventListener('resize', fit); if (window.visualViewport) { window.visualViewport.addEventListener('resize', fit); window.visualViewport.addEventListener('scroll', fit); } }
   card.style.cursor = 'grab';
   card.addEventListener('pointerdown', (e) => {

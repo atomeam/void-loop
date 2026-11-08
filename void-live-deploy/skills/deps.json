@@ -32,9 +32,9 @@
   },
   {
    "file": "lib/load-later.js",
-   "skills": 28,
+   "skills": 29,
    "direct": 23,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
@@ -172,9 +172,9 @@
   },
   {
    "file": "lib/sky-math.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 2,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -1336,8 +1336,8 @@
    "file": "lib/models.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 75,
-   "tests": 15
+   "dependants": 74,
+   "tests": 14
   },
   {
    "file": "lib/ask-same.js",
@@ -1897,7 +1897,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/video-gen.js",
@@ -2577,13 +2577,6 @@
    "direct": 0,
    "dependants": 31,
    "tests": 8
-  },
-  {
-   "file": "lib/ai-gateway.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 30,
-   "tests": 1
   },
   {
    "file": "lib/answer-edge.js",
@@ -3912,7 +3905,6 @@
     "lib/patch-guard.js",
     "lib/code-review.js",
     "lib/models.js",
-    "lib/ai-gateway.js",
     "lib/keeper.js",
     "lib/privacy.js",
     "lib/router.js",
@@ -5247,45 +5239,6 @@
     "lib/photo-edit.js"
    ],
    "importedBy": []
-  },
-  "lib/ai-gateway.js": {
-   "imports": [
-    "lib/models.js"
-   ],
-   "importedBy": [
-    "functions/api/answer.js"
-   ],
-   "reachedBy": [
-    "functions/api/a2a.js",
-    "functions/api/apibot.js",
-    "functions/api/bench.js",
-    "functions/api/blueprint.js",
-    "functions/api/card-art.js",
-    "functions/api/clip.js",
-    "functions/api/daily-art.js",
-    "functions/api/feed.js",
-    "functions/api/gallery.js",
-    "functions/api/image.js",
-    "functions/api/local.js",
-    "functions/api/markets.js",
-    "functions/api/mcp.js",
-    "functions/api/merge.js",
-    "functions/api/news.js",
-    "functions/api/podcasts.js",
-    "functions/api/rapvoice.js",
-    "functions/api/recipeimport.js",
-    "functions/api/recipes.js",
-    "functions/api/repo.js",
-    "functions/api/report.js",
-    "functions/api/scores.js",
-    "functions/api/sing.js",
-    "functions/api/sportsearch.js",
-    "functions/api/translate.js",
-    "functions/api/watchalong.js",
-    "functions/api/weather.js",
-    "functions/api/x402/[service].js",
-    "lib/bench-asks.js"
-   ]
   },
   "lib/ai-generators.js": {
    "imports": [],
@@ -9987,6 +9940,7 @@
     "skills/games.js",
     "skills/rebuild-map.js",
     "skills/sky-card.js",
+    "skills/skycard.js",
     "skills/time.js",
     "skills/where-is.js"
    ]
@@ -10582,7 +10536,6 @@
     "functions/api/watchalong.js",
     "functions/api/will.js",
     "lib/agent-core.js",
-    "lib/ai-gateway.js",
     "lib/approval-core.js",
     "lib/clef.js",
     "lib/review-api.js",
@@ -13414,6 +13367,7 @@
     "skills/sky-card.js",
     "skills/sky-world.js",
     "skills/sky.js",
+    "skills/skycard.js",
     "skills/suntimes.js",
     "skills/time.js",
     "skills/where-is.js"
@@ -18179,6 +18133,7 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19043,6 +18998,7 @@
     "skills/sky-card.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19052,6 +19008,7 @@
     "skills/night-sky.js"
    ],
    "importedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19094,6 +19051,12 @@
     "skills/together.js",
     "skills/zoom-figure.js"
    ]
+  },
+  "skills/skycard.js": {
+   "imports": [
+    "skills/sky-card.js"
+   ],
+   "importedBy": []
   },
   "skills/sleep.js": {
    "imports": [],

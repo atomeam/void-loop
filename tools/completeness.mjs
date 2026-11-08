@@ -8,7 +8,7 @@
 //   expectations  a private, passive study (tools/study-engine.mjs) may add expected features in private memory; only topic counts land here
 //   node tools/completeness.mjs [--write]   prints the table; --write regenerates the table in docs/COMPLETENESS.md
 import fs from 'node:fs'; import path from 'node:path'; import { pathToFileURL } from 'node:url';
-const here = path.dirname(new URL(import.meta.url).pathname), root = path.resolve(here, '..'), skillsDir = path.join(root, 'void-live-deploy', 'skills');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), root = path.resolve(here, '..'), skillsDir = path.join(root, 'void-live-deploy', 'skills');
 
 export const RULES = [
   { id: 'rules-help', need: 'must', label: 'how to play is on the card', has: /rulesLine\(|g-rules|class(Name)?\s*=\s*['"][^'"]*rules|howTo|How to play/i, origin: 'every game card must teach itself' },
