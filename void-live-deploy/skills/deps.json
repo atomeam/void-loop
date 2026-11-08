@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1209,
+ "counted": 1216,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -125,7 +125,7 @@
    "file": "lib/reactions.js",
    "skills": 18,
    "direct": 1,
-   "dependants": 73,
+   "dependants": 76,
    "tests": 1
   },
   {
@@ -1025,6 +1025,13 @@
    "tests": 1
   },
   {
+   "file": "lib/alt-pay.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 43,
+   "tests": 2
+  },
+  {
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
@@ -1037,13 +1044,6 @@
    "direct": 1,
    "dependants": 40,
    "tests": 4
-  },
-  {
-   "file": "lib/alt-pay.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 39,
-   "tests": 2
   },
   {
    "file": "lib/pay-share.js",
@@ -2435,15 +2435,15 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 102,
+   "dependants": 104,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 101,
-   "tests": 35
+   "dependants": 103,
+   "tests": 36
   },
   {
    "file": "lib/pages.js",
@@ -2705,6 +2705,13 @@
    "tests": 7
   },
   {
+   "file": "lib/x402.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 17,
+   "tests": 5
+  },
+  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -2747,13 +2754,6 @@
    "tests": 2
   },
   {
-   "file": "lib/x402.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 13,
-   "tests": 4
-  },
-  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -2761,11 +2761,25 @@
    "tests": 0
   },
   {
+   "file": "lib/verse-wallet-address.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 10,
+   "tests": 5
+  },
+  {
    "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 9,
    "tests": 1
+  },
+  {
+   "file": "lib/verse-wallet.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
   },
   {
    "file": "lib/drive.js",
@@ -2817,25 +2831,11 @@
    "tests": 2
   },
   {
-   "file": "lib/verse-wallet-address.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 4
-  },
-  {
    "file": "lib/status.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
    "tests": 1
-  },
-  {
-   "file": "lib/verse-wallet.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 2
   },
   {
    "file": "lib/arb-venues.js",
@@ -2852,6 +2852,20 @@
    "tests": 0
   },
   {
+   "file": "lib/sponsor-db.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 0
+  },
+  {
+   "file": "lib/sponsors.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/translate-web.js",
    "skills": 0,
    "direct": 0,
@@ -2860,6 +2874,13 @@
   },
   {
    "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
    "dependants": 4,
@@ -3039,6 +3060,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/card-tidy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/daily-photo.js",
@@ -3223,13 +3251,6 @@
    "tests": 1
   },
   {
-   "file": "lib/visits.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/weather.js",
    "skills": 0,
    "direct": 0,
@@ -3368,6 +3389,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/card-stage.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/comments-ui.js",
@@ -4119,6 +4147,16 @@
     "functions/api/productsearch.js"
    ]
   },
+  "functions/api/claim.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/visits.js",
+    "lib/reactions.js",
+    "lib/sponsors.js",
+    "lib/sponsor-db.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/clip.js": {
    "imports": [
     "lib/guard.js",
@@ -4774,6 +4812,18 @@
    ],
    "importedBy": []
   },
+  "functions/api/sponsors.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/visits.js",
+    "lib/reactions.js",
+    "lib/sponsors.js",
+    "lib/sponsor-db.js"
+   ],
+   "importedBy": [
+    "functions/api/treasury.js"
+   ]
+  },
   "functions/api/sportsearch.js": {
    "imports": [
     "functions/api/answer.js",
@@ -4923,7 +4973,8 @@
     "lib/store-db.js",
     "lib/treasury.js",
     "lib/verse-wallet.js",
-    "lib/x402.js"
+    "lib/x402.js",
+    "functions/api/sponsors.js"
    ],
    "importedBy": []
   },
@@ -5055,6 +5106,15 @@
     "functions/api/mcp.js",
     "functions/api/x402/index.js"
    ]
+  },
+  "functions/api/x402/sponsor/[plan].js": {
+   "imports": [
+    "lib/x402.js",
+    "lib/verse-wallet.js",
+    "lib/sponsors.js",
+    "lib/sponsor-db.js"
+   ],
+   "importedBy": []
   },
   "functions/boards/t/[[path]].js": {
    "imports": [
@@ -5258,6 +5318,7 @@
     "functions/api/bench.js",
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
+    "functions/api/claim.js",
     "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/feed.js",
@@ -5276,6 +5337,7 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sing.js",
+    "functions/api/sponsors.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/treasury.js",
@@ -5284,8 +5346,10 @@
     "functions/api/x402/[service].js",
     "functions/api/x402/index.js",
     "functions/api/x402/review.js",
+    "functions/api/x402/sponsor/[plan].js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
+    "lib/sponsor-db.js",
     "skills/shop.js",
     "skills/store.js"
    ]
@@ -7266,6 +7330,12 @@
     "skills/merge.js"
    ]
   },
+  "lib/card-stage.js": {
+   "imports": [
+    "lib/card-tidy.js"
+   ],
+   "importedBy": []
+  },
   "lib/card-subject.js": {
    "imports": [],
    "importedBy": [
@@ -7333,6 +7403,12 @@
     "skills/rally.js",
     "skills/showcase.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/card-tidy.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-stage.js"
    ]
   },
   "lib/character.js": {
@@ -8906,6 +8982,7 @@
     "functions/api/boards/[[path]].js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
+    "functions/api/claim.js",
     "functions/api/clip.js",
     "functions/api/coder.js",
     "functions/api/comments.js",
@@ -8932,6 +9009,7 @@
     "functions/api/routines.js",
     "functions/api/rsvp.js",
     "functions/api/selfcheck.js",
+    "functions/api/sponsors.js",
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
@@ -11159,6 +11237,7 @@
     "functions/api/calshare.js",
     "functions/api/card-art.js",
     "functions/api/catalog.js",
+    "functions/api/claim.js",
     "functions/api/clip.js",
     "functions/api/coder.js",
     "functions/api/comments.js",
@@ -11212,6 +11291,7 @@
     "functions/api/selfcheck.js",
     "functions/api/share/index.js",
     "functions/api/sing.js",
+    "functions/api/sponsors.js",
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
@@ -12384,6 +12464,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/calshare.js",
+    "functions/api/claim.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
@@ -12395,6 +12476,7 @@
     "functions/api/react.js",
     "functions/api/recipeimport.js",
     "functions/api/rsvp.js",
+    "functions/api/sponsors.js",
     "functions/api/studio.js",
     "functions/api/visit.js",
     "lib/autopsy.js",
@@ -12426,6 +12508,7 @@
     "functions/api/sportsearch.js",
     "functions/api/tally.js",
     "functions/api/translate.js",
+    "functions/api/treasury.js",
     "functions/api/voice-reply.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
@@ -13482,6 +13565,30 @@
   "lib/speak.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/sponsor-db.js": {
+   "imports": [
+    "lib/verse-wallet.js"
+   ],
+   "importedBy": [
+    "functions/api/claim.js",
+    "functions/api/sponsors.js",
+    "functions/api/x402/sponsor/[plan].js"
+   ],
+   "reachedBy": [
+    "functions/api/treasury.js"
+   ]
+  },
+  "lib/sponsors.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/claim.js",
+    "functions/api/sponsors.js",
+    "functions/api/x402/sponsor/[plan].js"
+   ],
+   "reachedBy": [
+    "functions/api/treasury.js"
+   ]
   },
   "lib/sprite-sheet.js": {
    "imports": [],
@@ -14987,11 +15094,15 @@
     "lib/verse-wallet.js"
    ],
    "reachedBy": [
+    "functions/api/claim.js",
     "functions/api/mcp.js",
+    "functions/api/sponsors.js",
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/index.js",
-    "functions/api/x402/review.js"
+    "functions/api/x402/review.js",
+    "functions/api/x402/sponsor/[plan].js",
+    "lib/sponsor-db.js"
    ]
   },
   "lib/verse-wallet.js": {
@@ -15003,10 +15114,14 @@
    "importedBy": [
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
-    "functions/api/x402/review.js"
+    "functions/api/x402/review.js",
+    "functions/api/x402/sponsor/[plan].js",
+    "lib/sponsor-db.js"
    ],
    "reachedBy": [
+    "functions/api/claim.js",
     "functions/api/mcp.js",
+    "functions/api/sponsors.js",
     "functions/api/x402/index.js"
    ]
   },
@@ -15065,7 +15180,12 @@
   "lib/visits.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/claim.js",
+    "functions/api/sponsors.js",
     "functions/api/visit.js"
+   ],
+   "reachedBy": [
+    "functions/api/treasury.js"
    ]
   },
   "lib/voice.js": {
@@ -15582,16 +15702,20 @@
     "functions/api/treasury.js",
     "functions/api/x402/[service].js",
     "functions/api/x402/review.js",
+    "functions/api/x402/sponsor/[plan].js",
     "lib/mcp.js",
     "lib/verse-wallet.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
+    "functions/api/claim.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/sponsors.js",
     "functions/api/x402/index.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/a2a.js",
+    "lib/sponsor-db.js",
     "lib/team-mcp.js"
    ]
   },
