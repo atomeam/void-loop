@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T21:34:46.754Z",
+ "updated": "2026-11-08T21:44:10.166Z",
  "last24h": {
   "ticks": 153,
-  "started": 68,
+  "started": 69,
   "requeued": 6,
   "setAside": 1,
   "probes": 3,
-  "errors": 109
+  "errors": 108
  },
  "broken": [],
  "held": [
@@ -204,11 +204,6 @@
   "versus:uniteforliteracy.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T21:43:47.206Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T21:53:07.046Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2103,6 +2098,34 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T21:44:10.166Z",
+   "open": 269,
+   "started": [
+    {
+     "id": "mvp4ahwz",
+     "kind": "feature",
+     "wf": "verse-job.yml",
+     "score": 102
     }
    ],
    "requeued": 0,
