@@ -15,7 +15,7 @@ import { routeOutside } from './fixtures/outside.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 await acquireHeavy('the stage beside the show on /local/ (local-stage-dock.test.mjs)');
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const exe = [process.env.VOID_TEST_BROWSER, process.env.CHROME_PATH, '/usr/bin/google-chrome', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 if (!exe) { console.log('skip the stage beside the show: no Chrome'); process.exit(0); }
 const T = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.wasm': 'application/wasm', '.webp': 'image/webp' };

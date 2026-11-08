@@ -1,12 +1,12 @@
 {
- "at": "2026-11-07T20:35:47.501Z",
+ "at": "2026-11-07T22:28:57.405Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "domains/conductor.json",
-   "changes": 110
+   "changes": 108
   },
   {
    "file": "void-live-deploy/exam/history.json",
@@ -30,23 +30,15 @@
   },
   {
    "file": "domains/tower-self.json",
-   "changes": 46
-  },
-  {
-   "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 32
+   "changes": 43
   },
   {
    "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
    "changes": 30
   },
   {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 29
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 29
+   "file": "void-live-deploy/markets/currency-converter/index.html",
+   "changes": 30
   },
   {
    "file": "tools/real-pages.mjs",
@@ -57,6 +49,14 @@
    "changes": 28
   },
   {
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 27
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 27
+  },
+  {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
    "changes": 25
   },
@@ -65,12 +65,12 @@
    "changes": 25
   },
   {
-   "file": "void-live-deploy/bots/registry.json",
+   "file": "docs/PARITY/lichess.md",
    "changes": 23
   },
   {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 22
+   "file": "void-live-deploy/bots/registry.json",
+   "changes": 23
   },
   {
    "file": "void-live-deploy/assimilated.json",
@@ -93,16 +93,16 @@
    "changes": 18
   },
   {
-   "file": "void-live-deploy/lib/guard.js",
+   "file": "docs/PARITY/github.md",
    "changes": 17
   },
   {
-   "file": "docs/PARITY/github.md",
-   "changes": 16
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 17
   },
   {
-   "file": "docs/PARITY/hugging-face.md",
-   "changes": 16
+   "file": "void-live-deploy/lib/guard.js",
+   "changes": 17
   },
   {
    "file": "tools/families.mjs",

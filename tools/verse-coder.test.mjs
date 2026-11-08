@@ -328,12 +328,12 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
 test('the CLI: no key means exit 4 with the keys it wants; a scripted model runs end to end', () => {
   const s = repo();
   const bare = { PATH: process.env.PATH, HOME: process.env.HOME };
-  let r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname, '--repo', s.work, '--task', 'fix add'], { env: bare, encoding: 'utf8' });
+  let r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), '--repo', s.work, '--task', 'fix add'], { env: bare, encoding: 'utf8' });
   assert.equal(r.status, 4); assert.ok(r.stdout.includes(KEY_NAMES.join(', ')), 'names the keys it wants, exactly as the coder lists them'); assert.doesNotMatch(r.stdout, /GH_MODELS/);
   const script = join(s.dir, 'script.json'), checks = join(s.dir, 'checks.json');
   writeFileSync(script, JSON.stringify([{ tool: 'edit', diff: FIX }, { tool: 'check', name: 'add' }, { tool: 'finish', summary: 'fixed' }]));
   writeFileSync(checks, JSON.stringify(CHECKS));
-  r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname, '--repo', s.work, '--task', 'fix add', '--checks', checks, '--target', 'add'], { env: { ...bare, VERSE_CODER_SCRIPT: script }, encoding: 'utf8' });
+  r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'), '--repo', s.work, '--task', 'fix add', '--checks', checks, '--target', 'add'], { env: { ...bare, VERSE_CODER_SCRIPT: script }, encoding: 'utf8' });
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const last = JSON.parse(r.stdout.trim().split('\n').pop());
   assert.deepEqual([last.outcome, last.files, last.provider], ['done', ['src/add.mjs'], 'script']);

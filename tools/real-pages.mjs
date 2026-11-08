@@ -129,7 +129,7 @@ export const SPECS = {
     await t.links();
   },
   '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
-    const lead = await t.waitText('#lead', /\d+ sites: \d+ surpassed/, 10000); t.ok(/\d+ sites: \d+ surpassed/.test(lead), 'it counts the sites: ' + lead.slice(0, 60));
+    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
     const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
     await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
     const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');

@@ -8,7 +8,7 @@
 // taught phrase never steals an ask), the wording is the tester's own (never a visitor's words), and it is short plain text.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { execFileSync } from 'node:child_process';
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..'), SK = resolve(root, 'void-live-deploy/skills');
@@ -41,7 +41,7 @@ export function taught({ ask, means, skill }, aliases, suite) {
 
 export async function loadSkills() {
   const out = [];
-  for (const n of JSON.parse(readFileSync(resolve(SK, 'index.json'), 'utf8'))) { try { out.push((await import(resolve(SK, n + '.js'))).default); } catch (_) {} }
+  for (const n of JSON.parse(readFileSync(resolve(SK, 'index.json'), 'utf8'))) { try { out.push((await import(pathToFileURL(resolve(SK, n + '.js')).href)).default); } catch (_) {} }
   return out.filter(Boolean);
 }
 

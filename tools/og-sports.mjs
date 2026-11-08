@@ -6,7 +6,7 @@ import { chromium } from 'playwright-core';
 import { shrinkFile } from './shrink-images.mjs';
 import { ogPage } from './og-frame.mjs';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'og');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy', 'og');
 const CARDS = {
   fantasy: { title: 'Fantasy tools', line: 'Your own sheet in, answers out, on your device', chips: ['Compare players', 'Start or sit', 'Trade value', 'Draft board', 'Mock draft', 'Box-score stats'], foot: 'No projections sold, nothing leaves your device.' },
   scores: { title: 'Scores', line: 'Live scores, schedules and standings', chips: ['Premier League', 'La Liga', 'Bundesliga', 'Serie A', 'NBA', 'NFL', 'MLB', 'NHL', 'Formula 1'], foot: 'No ads, no betting. Stories and pictures by Verse.' },
