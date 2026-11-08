@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T07:11:10.584Z",
+ "updated": "2026-11-08T07:20:30.375Z",
  "last24h": {
   "ticks": 152,
-  "started": 128,
+  "started": 127,
   "requeued": 3,
   "setAside": 1,
-  "probes": 11,
+  "probes": 10,
   "errors": 46
  },
  "broken": [],
@@ -248,33 +248,6 @@
   "gap:want-exam-videos"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T07:16:35.491Z",
-   "open": 254,
-   "started": [
-    {
-     "id": "want-exam-translate",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 151
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T07:25:56.378Z",
    "open": 258,
@@ -3448,6 +3421,27 @@
      "score": 70
     }
    ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 254,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T07:20:30.375Z",
+   "open": 263,
+   "started": [],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
