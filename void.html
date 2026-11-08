@@ -472,6 +472,8 @@
       padding: 0 18px;
     }
     #whisper .vc { color: var(--fg); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+#void-offer { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; margin-top: 2px; }
+#void-offer a { color: var(--ink-3); }
     .shape {
       position: absolute;
       user-select: none;
@@ -1194,6 +1196,7 @@
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
+    <div id="void-offer" hidden></div>
     <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
@@ -1334,6 +1337,7 @@
         if (rect) { rect.setAttribute('y', d.fill.y); rect.setAttribute('height', d.fill.h); } } catch (_) {} };
       draw(); addEventListener('void:stage-change', draw);
     })();
+    let offerShown = false; // the paid-products line shows once per load, after the first answered ask
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
       if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
@@ -1344,6 +1348,13 @@
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
       // the day a skill last answered, on this device only (lib/skill-use.js; asked by Verse: a last-used day for every skill): a day, never a word of any ask
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
+      // the paid products where the free page leaves off: after the first answered ask of the load, one muted line with the
+      // three products (Void Monthly, One-Time Fix, Full Stack Audit); static words only, nothing fetched, nothing stored
+      if (!offerShown && attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) {
+        offerShown = true;
+        const offer = document.getElementById('void-offer');
+        if (offer) { offer.hidden = false; offer.innerHTML = 'Made with Verse — <a href="/members/?from=stage">Void Monthly</a> · <a href="/one-time-fix/">One-Time Fix</a> · <a href="/full-stack-audit/">Full Stack Audit</a>'; }
+      }
     }
     let sayCount = 0;
     function fitOpenPanels() {
