@@ -149,6 +149,16 @@
    "listed": 4,
    "defectsBefore": 43,
    "defectsAfter": 9
+  },
+  {
+   "at": "2026-11-08T23:18:41.075Z",
+   "run": 16,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 4,
+   "listed": 2,
+   "defectsBefore": 22,
+   "defectsAfter": 11
   }
  ],
  "pages": {
@@ -6090,6 +6100,442 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/members/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.14,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.14 that no rule fixes: listed for a builder)"
+  },
+  "/fix/n8n-econnrefused-http-request/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/n8n-json-parameter-needs-valid-json/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/zapier-422-unprocessable-entity/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/github-actions-npm-ci-lockfile-out-of-sync/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/power-automate-invalid-template-expression/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/power-automate-connection-needs-fixing/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/github-actions-permission-denied-publickey/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/kanban/quick/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/kanban/simple/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/kanban/flow/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/agent/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.007,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/kanban/teams/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f317-webxr-hand-rd-dom-field/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.007,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f234-loop-grid/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 15
+   },
+   "state": "clean"
+  },
+  "/lab/f501-ambient-light-metabolic-swarm-mind/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 11,
+    "contrast": 0,
+    "targets": 6,
+    "unstyled": 5,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 5,
+    "contrast": 0,
+    "targets": 5,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 6,
+   "moved": 0.098
+  },
+  "/lab/f192-webxr-hand-force-cloth-kernel/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.024
+  },
+  "/lab/f175-webrtc-shared-device-field/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f503-lennard-jones-mlp-dom-swarm-mind/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 355237
+   },
+   "state": "clean"
+  },
+  "/lab/f468-webrtc-expression-agent-field/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f504-webgpu-poisson-potential-mlp-dom-mind/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f502-webgpu-kuramoto-phase-dom-orchestra-mind/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 7,
+    "contrast": 7,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 21
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 6,
+    "contrast": 6,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 21
+   },
+   "rules": 7,
+   "moved": 0.128
+  },
+  "/lab/f320-orient-rnn-webgpu-softbody-dom-arena/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f313-webgpu-causal-motion-rnn-hybrid-sculpt/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.002,
+    "overflow": 4
+   },
+   "state": "listed",
+   "why": "it made the page scroll sideways"
+  },
+  "/lab/f199-local-rnn-webgpu-causal-particle-field/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f233-panel-play/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f222-screen-grazing-lichen/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.019,
+    "overflow": 217
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.033,
+    "overflow": 217
+   },
+   "rules": 2,
+   "moved": 0.128
+  },
+  "/lab/f267-sealed-mlp-dom-resource-arena/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f585-webrtc-evo-mlp-forcegraph-mind/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 8
+   },
+   "state": "clean"
+  },
+  "/lab/f316-webxr-hand-sealed-genome-dom-arena/": {
+   "at": "2026-11-08T23:18:41.075Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.075,
     "overflow": 0
    },
    "state": "clean"
