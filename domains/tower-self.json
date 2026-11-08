@@ -1824,14 +1824,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-30T08:58:34Z",
-   "line": "Versus: took on no site; next randomarea.com",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0
-  },
-  {
    "at": "2026-10-30T22:41:15Z",
    "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows (also read: 7 no-family); next onlineconverter.com (the target)",
    "built": 1,
@@ -2194,6 +2186,16 @@
   {
    "at": "2026-11-08T09:26:10Z",
    "line": "Versus: took on no site (also read: 6 not-judged, 2 walled); the model answered 401 on 6 of 8 reads, so those were not judged; next opentv.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "aurashinehub.com",
+   "noop": true
+  },
+  {
+   "at": "2026-11-08T09:28:43Z",
+   "line": "Versus: took on no site; next opentv.com (the target)",
    "built": 0,
    "queued": 0,
    "fixed": [],
