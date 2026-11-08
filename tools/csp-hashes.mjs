@@ -43,11 +43,28 @@ export function pathsOf(rel) {
 export const VALUE_MAX = 2000;
 /** the repo-relative path of a page file, forward slashes on every platform (Windows' relative() gives backslashes). Pure. */
 const relOf = (f) => relative(root, f).replace(/\\/g, '/');
+/** path prefixes whose CSP is already set in _headers (e.g. /boards/*, /fanfic/*): pages under them get their CSP from there, so
+ *  rules() must not emit a duplicate rule for them. Pure. */
+const headerCSPPrefixes = () => {
+  const text = readFileSync(join(root, '_headers'), 'utf8');
+  const out = [];
+  for (const block of text.split(/\n\n+/)) {
+    const lines = block.trim().split('\n');
+    const p = lines.find((l) => l.startsWith('/'));
+    if (!p || p === '/' || p === '/*') continue;
+    if (!lines.some((l) => l.includes('Content-Security-Policy'))) continue;
+    let pre = p.replace(/\/\*$/, '/'); // /boards/* -> /boards/
+    if (!pre.endsWith('/')) pre += '/';
+    out.push(pre);
+  }
+  return out;
+};
 export function rules() {
+  const cspPrefixes = headerCSPPrefixes();
   const per = [];
   for (const f of pages()) {
     const h = inlineHashes(readFileSync(f, 'utf8')); if (!h.length) continue;
-    for (const p of pathsOf(relOf(f))) per.push({ p, h: h.join(' ') });
+    for (const p of pathsOf(relOf(f))) if (!cspPrefixes.some((pre) => (p + '/').startsWith(pre))) per.push({ p, h: h.join(' ') });
   }
   const dirOf = (p) => (p.match(/^\/([^/]+)\/./) || p.match(/^\/([^/]+)\/$/) || [])[1]; // a directory's own index counts in it: /x/* covers /x/, so a page there with other scripts must stop the sharing
   const allPages = pages().flatMap((f) => pathsOf(relOf(f)));

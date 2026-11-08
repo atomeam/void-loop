@@ -32,6 +32,7 @@ export const LIMITS = {
   sing: { rpm: 20, body: 24000 }, // Verse sings (functions/api/sing.js): GET says whether this visitor may; POST is an ask and up to 2,000 characters of lyrics, which the route reads to 6,000 characters (up to 4 bytes each); owner and paid members only, daily caps in the route (lib/daily-cap.js)
   rapvoice: { rpm: 200, body: 0 }, // GET only: one bar of a rap in, Verse's voice saying it out (functions/api/rapvoice.js), edge-cached a week; a rap asks for every bar at once, so 200 a minute here and 120 new bars a minute and 2,500 a day in all in the route
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
+  feed: { rpm: 30, body: 0 }, // GET only: a feed URL from a closed list in, the feed's own bytes out (functions/api/feed.js), edge-cached ten minutes; 20 misses a minute in the route itself
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   podcasts: { rpm: 30, body: 0 }, // GET only: a search phrase, a chart, an iTunes id or a public https feed address in, normalised JSON out; SSRF-safe fetch, 3 MB and 8 s caps, edge-cached 15 min; 20 misses a minute in the route itself (functions/api/podcasts.js)
   sitebench: { rpm: 20, body: 0 }, // GET only: a site from a closed list of one (lib/sitebench.js TARGETS) in, one row per page out, edge-cached ten minutes (functions/api/sitebench.js)
