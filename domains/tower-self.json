@@ -1722,22 +1722,22 @@
    }
   },
   "uniteforliteracy.com": {
-   "at": "2026-11-07T22:14:21Z",
+   "at": "2026-11-08T09:25:30Z",
    "outcome": "not-judged",
    "why": "the model answered 401",
    "ease": {
     "score": 4.6,
-    "place": 2,
+    "place": 4,
     "why": "not sized yet, hardness 98, Tranco 284167"
    }
   },
   "ldraw.org": {
-   "at": "2026-11-07T22:14:32Z",
+   "at": "2026-11-08T09:25:40Z",
    "outcome": "not-judged",
    "why": "the model answered 401",
    "ease": {
     "score": 4.6,
-    "place": 3,
+    "place": 5,
     "why": "not sized yet, hardness 99, Tranco 291274"
    }
   },
@@ -1752,32 +1752,32 @@
    }
   },
   "radicenter.ee": {
-   "at": "2026-11-07T22:14:39Z",
+   "at": "2026-11-08T09:25:45Z",
    "outcome": "not-judged",
    "why": "the model answered 401",
    "ease": {
     "score": 4.6,
-    "place": 5,
+    "place": 6,
     "why": "not sized yet, hardness 99, Tranco 102900"
    }
   },
   "testerhome.com": {
-   "at": "2026-11-07T22:14:57Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401",
-   "ease": {
-    "score": 4.5,
-    "place": 6,
-    "why": "not sized yet, hardness 101, Tranco 441708"
-   }
-  },
-  "keydifferences.com": {
-   "at": "2026-11-07T22:15:04Z",
+   "at": "2026-11-08T09:26:01Z",
    "outcome": "not-judged",
    "why": "the model answered 401",
    "ease": {
     "score": 4.5,
     "place": 7,
+    "why": "not sized yet, hardness 101, Tranco 441708"
+   }
+  },
+  "keydifferences.com": {
+   "at": "2026-11-08T09:26:06Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 4.5,
+    "place": 8,
     "why": "not sized yet, hardness 101, Tranco 306443"
    }
   },
@@ -1789,6 +1789,36 @@
     "score": 4.5,
     "place": 8,
     "why": "not sized yet, hardness 101, Tranco 278950"
+   }
+  },
+  "aurashinehub.com": {
+   "at": "2026-11-08T09:25:22Z",
+   "outcome": "not-judged",
+   "why": "the model answered 401",
+   "ease": {
+    "score": 98.6,
+    "place": 1,
+    "why": "0 controls, 14 KB, Tranco 200044"
+   }
+  },
+  "maphill.com": {
+   "at": "2026-11-08T09:25:24Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (110 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 90.8,
+    "place": 2,
+    "why": "1 controls, 1 KB, Tranco 160023"
+   }
+  },
+  "250free.com": {
+   "at": "2026-11-08T09:25:27Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 83.3,
+    "place": 3,
+    "why": "2 controls, 1 KB, Tranco 200013"
    }
   }
  },
