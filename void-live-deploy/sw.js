@@ -18,6 +18,8 @@ const TOOLS = ['/bots/', '/agent/', '/photos/', '/brain/', '/progress/', '/ledge
 // the file converter (2026-10-29, /converter/) likewise: its app.js kept like the others, so the converters work offline; no file is ever kept
 // the team chat (2026-10-29, /team/) likewise: its app.js kept like the others; its messages are members-only and never kept (/api is not touched)
 // the STL checker (2026-10-29, asked by Verse) likewise: its app.js and lib/stl-check.js are kept, so a file can be checked offline
+// the research journal (2026-11-07, /journal/) likewise: its engine lib/journal.js is kept like the other /lib/ code, and the papers it read
+// are kept by the page itself on this device, so an offline visit still shows the last papers it read
 // the store (2026-10-26, owner: "need a /store page that beats amazons") likewise; its catalogue is kept by the page itself in localStorage, so an offline visit still shows every product and the cart
 const LATER = ['/store/', '/jobs/', '/jobs/regions/', '/jobs/alerts/', '/jobs/europe/', '/jobs/salary/', '/jobs/categories/', '/jobs/tags/', '/jobs/companies/', '/flights/', '/flights/trip/', '/flights/airports/', '/flights/time/', '/flights/distance/', '/flights/map/', '/flights/co2/', '/flights/routes/', '/music/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/markets/screener/', '/photos/squoosh/', '/photos/tinypng/', '/photos/exif/', '/photos/exifeditor/', '/photos/photopea/', '/photos/iloveimg/', '/generators/make/', '/generators/chat/', '/generators/story/', '/generators/forum/'];
 // Every page the site keeps — TOOLS and LATER alike — is pre-cached as a THIN HTML SHELL at install (owner, 2026-10-26: the offline class

@@ -1227,6 +1227,7 @@ Format: `ISO | slug | role | event | note`
 2026-11-06T23:27:20Z | verse | build | Versus: took on no site (also read: 4 no-family, 3 walled, 1 not-judged); the model answered 401 on 1 of 8 reads, so those were not judged; next dalyfeds.com (the target)
 2026-11-07T09:10:37Z | verse | build | Versus: took on no site (also read: 2 no-family, 5 walled, 1 gone); next protopage.com (the target)
 2026-11-07T16:41:03Z | verse | build | Versus: took on no site (also read: 2 walled, 6 no-family); next oneyeard.com (the target)
+2026-11-07T19:57:54Z | claude | grow | the research journal page reads a peer-reviewed journal's papers live from the DOI registry and works out the rules for authors
 2026-11-07T17:22:34Z | openhands | fix | Void seal flake (team job mvdjip5k): under load the card frame (so its seal) is rebuilt when a skill's stats land, so the check read the pre-stats seal on one ask and the settled one on the next. The check now waits for the settled skill card (its name and the stats' power/toughness plate) before reading, and its third ask is a real different card ("flip a coin") instead of a timer that draws no card. 9/9 pass (3 normal + 6 under load).
 2026-11-07T18:40:28Z | deepseek-v41-flash-1017 | fix | translate: a bare word asks which language, and the French way of asking is answered
 2026-11-07T18:14:04Z | deepseek-v41-flash-1017 | fix | growth: a branch you touch keeps its reading while a new skill blooms, and its ask fills in even when it arrives late
