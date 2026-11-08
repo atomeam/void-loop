@@ -1,15 +1,80 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 103,
+ "cases": 104,
  "runsTotal": 300,
  "kinds": {
-  "none": 24,
+  "none": 22,
   "file": 64,
-  "grow": 72,
-  "visitor": 139,
+  "grow": 73,
+  "visitor": 140,
   "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-11-08T14:03:48Z",
+   "passed": 70,
+   "of": 105,
+   "kind": "grow",
+   "ms": 382,
+   "note": "new ground passed, kept as a regression case: \"summon a cup\" (skill:figure)",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-08T13:52:10Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-08T06:49:50Z",
    "passed": 4,
@@ -460,20 +525,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-07T22:43:50Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-07T22:15:16Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -527,18 +578,18 @@
   },
   {
    "from": "2026-10-11",
-   "runs": 79,
-   "passed": 1431,
-   "of": 2575,
-   "broken": 37,
-   "brokenOf": 928,
+   "runs": 88,
+   "passed": 2066,
+   "of": 3232,
+   "broken": 35,
+   "brokenOf": 878,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-18",
-   "runs": 21,
-   "passed": 1296,
-   "of": 1434
+   "runs": 10,
+   "passed": 661,
+   "of": 727
   },
   {
    "from": "2026-10-25",
@@ -548,9 +599,9 @@
   },
   {
    "from": "2026-11-01",
-   "runs": 200,
-   "passed": 4739,
-   "of": 5793,
+   "runs": 202,
+   "passed": 4809,
+   "of": 5898,
    "broken": 7,
    "brokenOf": 735,
    "brokenPassed": 74,
@@ -591,8 +642,8 @@
   "skill:distance": "2026-10-18T02:53:48Z",
   "skill:draw": "2026-10-18T02:53:48Z",
   "skill:feelings": "2026-10-18T04:03:13Z",
-  "skill:figure": "2026-10-17T08:24:25Z",
-  "skill:figure-can": "2026-10-17T08:24:25Z",
+  "skill:figure": "2026-11-08T14:03:48Z",
+  "skill:figure-can": "2026-11-08T14:03:48Z",
   "skill:figures": "2026-10-17T08:31:36Z",
   "skill:films": "2026-10-17T08:31:36Z",
   "skill:food": "2026-10-17T08:39:02Z",
