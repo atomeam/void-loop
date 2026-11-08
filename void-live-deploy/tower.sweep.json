@@ -1,10 +1,10 @@
 {
  "about": "The sweep for the smallest sites of all (tools/easiest-sites.mjs --small): each run reads the next slice of the Tranco top million from cursor, one plain GET of each home page, and keeps the ones with at most 5 controls and 20000 bytes that are real pages. smallest is the 500 smallest found so far, fewest controls first, then the fewer bytes.",
  "source": "https://tranco-list.eu/top-1m.csv.zip",
- "cursor": 200000,
- "swept": 195976,
+ "cursor": 240000,
+ "swept": 235081,
  "lap": 0,
- "at": "2026-11-07",
+ "at": "2026-11-08",
  "smallest": [
   {
    "rank": 204,
@@ -241,6 +241,15 @@
    "plain": false
   },
   {
+   "rank": 200044,
+   "host": "aurashinehub.com",
+   "controls": 0,
+   "bytes": 14052,
+   "words": 56,
+   "title": "Grabit - Multipurpose eCommerce HTML Template.",
+   "plain": false
+  },
+  {
    "rank": 1949,
    "host": "adsco.re",
    "controls": 1,
@@ -319,6 +328,15 @@
    "bytes": 985,
    "words": 22,
    "title": "astrumu.io",
+   "plain": false
+  },
+  {
+   "rank": 200013,
+   "host": "250free.com",
+   "controls": 2,
+   "bytes": 990,
+   "words": 22,
+   "title": "250free.com",
    "plain": false
   },
   {
