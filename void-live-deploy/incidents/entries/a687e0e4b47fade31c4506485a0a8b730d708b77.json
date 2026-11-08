@@ -22,5 +22,8 @@
   "tools/tab.test.mjs",
   "tools/video-gen.test.mjs",
   "void-live-deploy/lib/similar-index.js"
+ ],
+ "passed": [
+  1
  ]
 }
