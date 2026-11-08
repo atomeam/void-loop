@@ -3,13 +3,20 @@
  "cases": 103,
  "runsTotal": 300,
  "kinds": {
-  "none": 27,
+  "none": 26,
   "file": 63,
   "grow": 72,
-  "visitor": 137,
+  "visitor": 138,
   "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-11-08T04:56:24Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-08T04:27:53Z",
    "passed": 0,
@@ -467,64 +474,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-07T21:38:38Z",
-   "passed": 8,
-   "of": 105,
-   "kind": "file",
-   "ms": 377,
-   "note": "fix: \"play solarquest\" no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 ()",
-   "failed": [
-    {
-     "ask": "what are you?",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play voidquest",
-     "why": "refused: don't know this yet"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "no .voidquest-card"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show me your videos",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "my actions",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "put on lofi hip hop pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "find the book the left hand of dakrness",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -579,17 +528,17 @@
   {
    "from": "2026-10-11",
    "runs": 75,
-   "passed": 1057,
-   "of": 2258,
-   "broken": 40,
-   "brokenOf": 1003,
+   "passed": 1109,
+   "of": 2286,
+   "broken": 39,
+   "brokenOf": 978,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-18",
-   "runs": 28,
-   "passed": 1670,
-   "of": 1826
+   "runs": 27,
+   "passed": 1618,
+   "of": 1773
   },
   {
    "from": "2026-10-25",
@@ -599,7 +548,7 @@
   },
   {
    "from": "2026-11-01",
-   "runs": 197,
+   "runs": 198,
    "passed": 4735,
    "of": 5688,
    "broken": 6,
