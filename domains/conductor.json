@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T16:24:55.898Z",
+ "updated": "2026-11-08T16:34:17.206Z",
  "last24h": {
   "ticks": 152,
-  "started": 53,
+  "started": 52,
   "requeued": 5,
   "setAside": 1,
-  "probes": 3,
+  "probes": 4,
   "errors": 90
  },
  "broken": [],
@@ -75,11 +75,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 30,
+   "used": 41,
    "cap": 90
   },
   "day": {
-   "used": 137,
+   "used": 148,
    "cap": 360
   },
   "room": true,
@@ -90,7 +90,6 @@
   "mva30i2e": 1794146628428,
   "mva30j4u": 1794147189869,
   "mvu167w7": 1794121870584,
-  "mw6led6f": 1794069185480,
   "mw6njzvr": 1794071493896,
   "mveb8rsi": 1794099686462,
   "mveb8svc": 1794100248886,
@@ -198,39 +197,6 @@
   "probe:jazz-stations-near-brooklyn"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T16:33:05.480Z",
-   "open": 261,
-   "started": [
-    {
-     "id": "want-idea-f167636764",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 89
-    },
-    {
-     "id": "mw6led6f",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 77,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T16:43:24.763Z",
    "open": 265,
@@ -2261,6 +2227,34 @@
    "setAside": 0,
    "healed": [],
    "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T16:34:17.206Z",
+   "open": 264,
+   "started": [
+    {
+     "id": "mvw5r3w1",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 102
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
    "grow": false,
    "design": false,
    "will": false,
