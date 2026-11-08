@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-08T03:13:40Z",
+ "sha": "8e6b3dea92d79145e8b60ab9faad20af03e98959",
+ "runId": 42441537357,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42441537357",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128611618651,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42441537357/job/128611618651",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/easter`: does not open: answers nothing",
+    "- `/is-it/fathers-day`: does not open: answers nothing",
+    "- `/is-it/friday`: does not open: answers nothing",
+    "- `/is-it/groundhog-day`: does not open: answers nothing",
+    "- `/is-it/halloween`: does not open: answers nothing",
+    "- `/is-it/independence-day`: does not open: answers nothing",
+    "- `/is-it/leap-year`: does not open: answers nothing",
+    "- `/is-it/monday`: does not open: answers nothing",
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "- `/is-it/tuesday`: does not open: answers nothing",
+    "- `/is-it/valentines-day`: does not open: answers nothing",
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "- `/journal/`: script error: Failed to fetch dynamically imported module: https://a-to-mind.com/lib/toolkit.js; a file or API it needs fails: 404 /lib/self-sites.js",
+    "- `/keep-it-running/`: dead link: 404 /one-time-fix/; dead link: 404 /full-stack-audit/",
+    "- `/lab/f233-panel-play/`: a file or API it needs fails: 404 /lab/f233-panel-play/app.js",
+    "- `/lab/f234-loop-grid/`: a file or API it needs fails: 404 /lab/f234-loop-grid/app.js",
+    "- `/lab/f235-forge-duel/`: a file or API it needs fails: 404 /lab/f235-forge-duel/app.js",
+    "- `/lab/f236-scene-blocker/`: a file or API it needs fails: 404 /lab/f236-scene-blocker/app.js",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

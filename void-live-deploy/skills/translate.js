@@ -31,8 +31,12 @@ function parse(text) {
     return { q: m[1], to };
   }
   // no language named ("translate spring"): a word can mean more than one thing and a phrase can be said several ways, so the card asks which
-  m = t.match(/^(?:please\s+)?translate\s+["“]?(.+?)["”]?$/i);
-  if (m && m[1] && !/\s+(?:to|into)\s+\S+$/i.test(m[1])) return { q: m[1], to: null };
+  m = t.match(/^(?:please\s+)?translate\s+[""]?(.+?)[""]?$/i);
+  if (m && m[1] && !/\s+(?:to|into)\s+\S+$/i.test(m[1])) {
+    // "translate to morse hello": an encode ask (skills/morse.js), not a phrase in another language
+    if (/\bmorse\b/i.test(t)) return null;
+    return { q: m[1], to: null };
+  }
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
   // "is it christmas in french": a yes-or-no day question asked for its word in that language (skills/is-it.js), not a phrase to translate

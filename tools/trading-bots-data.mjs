@@ -4,7 +4,7 @@
 // Run by .github/workflows/trading-bots-data.yml once a day, because this repo's own boxes cannot reach the exchange. Nothing is invented:
 // a pair that does not answer is left as it was, and the step says so.
 import fs from 'node:fs'; import path from 'node:path';
-const here = path.dirname(new URL(import.meta.url).pathname), dir = path.join(here, '..', 'void-live-deploy', 'trading-bots', 'data');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), dir = path.join(here, '..', 'void-live-deploy', 'trading-bots', 'data');
 export const PAIRS = { 'BTC-USD': '2015-07-20', 'ETH-USD': '2016-05-18' };
 const DAY = 86400000, iso = (ms) => new Date(ms).toISOString().slice(0, 10);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

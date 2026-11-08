@@ -10,7 +10,7 @@ import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
 const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
-const here = path.dirname(new URL(import.meta.url).pathname), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
 const LIVE = 'https://a-to-mind.com';
 // other agents' floors: tested and reported, never edited from here (see domains/handoff.md)
@@ -129,7 +129,7 @@ export const SPECS = {
     await t.links();
   },
   '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
-    const lead = await t.waitText('#lead', /\d+ sites: \d+ surpassed/, 10000); t.ok(/\d+ sites: \d+ surpassed/.test(lead), 'it counts the sites: ' + lead.slice(0, 60));
+    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
     const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
     await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
     const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
@@ -385,6 +385,21 @@ export const SPECS = {
   '/markets/screener/': async (t) => { await t.clickText('Screen'); await t.p.waitForTimeout(3000); t.ok((await t.p.locator('main tr, main li').count()) > 3, 'the screener returns rows'); },
   '/metronome/': async (t) => { await t.fill('#bpmIn', '90'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(200); t.ok((await t.text('#bpmOut')).trim() === '90', 'tempo set to 90'); await t.click('#play'); await t.p.waitForTimeout(800); t.ok((await t.act()).sound > 0, 'Start makes a click sound'); await t.click('#play'); await t.share('#shareBtn'); },
   '/news/': async (t) => { await t.waitText('#status', /stories/, 20000); t.ok(/\d+ stories/.test(await t.text('#status')), 'real stories loaded: ' + (await t.text('#status'))); },
+  '/journal/': async (t) => {  // the papers come from the DOI registry (live), the length of a paper is worked out here (never live)
+    await t.waitText('#latestNote', /papers read live|registry did not answer|Offline/, 25000);
+    const note = await t.text('#latestNote'), papers = await t.p.locator('#latestList .paper').count();
+    t.ok(/papers read live/.test(note) ? papers >= 5 : /registry did not answer|Offline/.test(note), 'the papers are read from the registry: ' + note.slice(0, 80));
+    if (papers) {
+      const list = await t.p.locator('#latestList').innerText();
+      t.ok(/10\.2475/.test(list), 'each paper carries its DOI'); t.ok(/Volume \d+/.test(list), 'each paper carries its volume');
+      t.ok(/Abstract/.test(list), 'the abstract of each paper is there, whole');
+    }
+    await t.fill('#q', 'canyon'); await t.click('#searchGo'); await t.waitText('#searchNote', /papers for|did not answer/, 20000);
+    t.ok(/papers for|did not answer/.test(await t.text('#searchNote')), 'a search answers with papers or says so: ' + (await t.text('#searchNote')).slice(0, 80));
+    await t.fill('#words', '15000'); await t.fill('#figures', '10'); await t.p.waitForTimeout(400);
+    const pu = (await t.text('#puStats')).replace(/\s+/g, ' ');
+    t.ok(/45 PU/.test(pu), 'the length of a paper is worked out: ' + pu.slice(0, 140));
+  },
   '/team/': async (t) => {  // a visitor: the workspace's channels, agents and waiting jobs from /api/team, the gate instead of messages, a bad key refused
     await t.waitText('#wsline', /jobs? waiting/, 15000); t.ok(/jobs? waiting/.test(await t.text('#wsline')), 'the workspace line reads the API: ' + (await t.text('#wsline')));
     t.ok((await t.p.locator('#chans li').count()) >= 2, '#work and #general are listed'); t.ok(await t.p.locator('#gate').isVisible(), 'a visitor gets the join form, not the messages');
@@ -585,14 +600,39 @@ const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized 
   policy: JSON.parse(fs.readFileSync(path.join(root, 'treasury/policy.json'), 'utf8')),
   entries: [{ at: '2026-11-04T12:00:00Z', kind: 'alloc', bucket: 'owner', cents: 1256, purpose: "Atom's cut of a realized sale", status: 'allocated' }], reviews: [] };
 SPECS['/treasury/'] = async (t) => {
-  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(TREASURY_FIX) }));
+  // Starboard's sponsor split (functions/api/sponsors.js sponsorView): 6 USDC confirmed, half to the house, the rest the visitor pool
+  const fix = { ...TREASURY_FIX, sponsors: { house_bps: 5000, sponsor_cents: 600, house_cents: 300, pool_cents: 300, claimed_cents: 1, paid_out_cents: 0, available_cents: 299, waiting_cents: 0, sponsor_payments: 2, claims: 1, claims_owed: 1, live_tiles: 1, slots: 6, page: '/starboard/#sponsors', rule: 'Sponsor income counts once the chain shows it.' } };
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(fix) }));
   await t.p.reload(); await t.waitText('#balance', /\$/, 10000);
   t.ok((await t.text('#balance')).trim() === '$41.88', 'the balance is the realized money: ' + (await t.text('#balance')));
   t.ok(/\$49\.00 gross/.test(await t.text('#balance-note')) && /\$7\.12 Gumroad fees/.test(await t.text('#balance-note')), 'gross and fees shown');
   t.ok(/\$12\.56/.test(await t.text('#pots')), "Atom's cut has its pot");
   t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
   t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
+  await t.waitText('#sponsors', /\$6\.00/, 10000);
+  t.ok(/\$3\.00[\s\S]*50%/.test(await t.text('#sponsors')), 'the house share is shown with its 50%: ' + (await t.text('#sponsors')).slice(0, 120));
+  t.ok((await t.p.locator('#sponsors a[href="/starboard/#sponsors"]').count()) === 1, 'the split links the grid on Starboard');
   await t.waitText('#found', /\S/, 10000);
+};
+// /starboard/: the deck that races dalyfeds.com live (#2479): both race rows from its own benchmark (stubbed, exact numbers), the weather panel for a typed place, and the news wire's top story
+const STARBENCH = { at: '2026-11-07T12:00:00Z', how: 'the test browser, stubbed', rows: [
+  { name: 'a-to-mind.com', ok: true, ms: 400, bytes: 60000, requests: 8, scripts: 4, third_party: [] },
+  { name: 'dalyfeds.com', ok: true, ms: 2600, bytes: 2400000, requests: 90, scripts: 30, third_party: ['googletagmanager.com', 'doubleclick.net'] } ] };
+SPECS['/starboard/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/sitebench', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(STARBENCH) }));
+  await t.p.route((u) => u.pathname === '/api/weather', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, loc: { name: 'Lisbon' }, w: { current: { temperature_2m: 18, apparent_temperature: 17, weather_code: 2 } } }) }));
+  await t.p.route((u) => u.pathname === '/api/news', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ stories: [{ title: 'A deck that races a rival site', link: 'https://example.com/deck', src: 'wire' }] }) }));
+  await t.p.reload();
+  await t.waitText('#bench tbody', /a-to-mind\.com/, 10000);
+  const star = (await t.text('#bench tbody tr:first-child')).replace(/\s+/g, ' '), rival = (await t.text('#bench tbody tr:nth-child(2)')).replace(/\s+/g, ' ');
+  t.ok(/a-to-mind\.com/.test(star) && /400 ms/.test(star) && /59 KB/.test(star), "Verse's own row, measured: " + star.trim());
+  t.ok(/dalyfeds\.com/.test(rival) && /2\.29 MB/.test(rival) && /2: googletagmanager\.com, doubleclick\.net/.test(rival), "the rival's row, measured, its trackers named: " + rival.trim());
+  t.ok(/Measured/.test(await t.text('#benchHow')), 'the note says when the race was measured');
+  await t.clickText('Load the latest'); await t.waitText('#bench tbody', /dalyfeds\.com/, 10000);
+  await t.fill('#place', 'Lisbon'); await t.click('.go');
+  await t.waitText('#wxTemp', /64 °F \/ 18 °C/, 10000);
+  t.ok(/Partly cloudy in Lisbon/.test(await t.text('#wxWords')) && /63 °F \/ 17 °C/.test(await t.text('#wxMore')), 'the weather panel fills from the place: ' + (await t.text('#wxWords')));
+  const top = await t.text('#wire'); t.ok(/A deck that races a rival site/.test(top) && /wire/.test(top), 'the news wire lists the top story');
 };
 // /creed/ and /creed/give/: Verse's creed and its giving mode (2026-11-06). The vow copies; every charity button leaves for that charity's own site
 SPECS['/creed/'] = async (t) => {

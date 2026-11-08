@@ -1256,6 +1256,34 @@ const LANE_PROBES = Object.freeze({
     pageParts: {}, parts: {},
     facts: [['sports to browse', /Click a sport to browse/i], ['search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['events', /\bEvents\b/], ['venues', /\bVenues\b/], ['players', /\bPlayers\b/], ['born on this day', /Born on this day/i], ['a stats strip', /On this device/i], ['a free API', /Free API/i], ['the source named', /TheSportsDB/], ['no betting', /no betting/i]],
   },
+  // ajsonline.org (the American Journal of Science), against /journal/. The question: the newest papers of a peer-reviewed journal, and
+  // what a reader or an author needs beside them. The truth is worked out here, never read off the site: a correct answer holds papers that
+  // are peer-reviewed, each with its own DOI and date, and beside them the rules an author works to (the author guidelines, and the length
+  // of a paper in publication units). The DOI prefix is the journal's own (10.2475), so every paper under it is one of its papers.
+  'ajsonline.org': {
+    site: 'https://ajsonline.org/', verse: '/journal/',
+    ask: { verse: '/journal/' },
+    truth: [
+      ['the papers are peer-reviewed', /peer[- ]reviewed/i],
+      ['each paper carries its own DOI', (t) => (String(t).match(/10\.2475\//g) || []).length >= 3],
+      ['each paper carries its date', (t) => (String(t).match(/\b20\d\d-\d\d-\d\d\b/g) || []).length >= 3],
+      ['the author guidelines', /For authors/i],
+      ['the length of a paper in publication units', /publication units/i],
+    ],
+    askParts: {},
+    pageParts: {}, parts: {},
+    // what a journal's best pages show between them: the newest papers with their abstracts, a search, the saved list, the author guidelines
+    // (scope, the submission checklist, the kinds of paper, the manuscript order, the reference style), the board, the policies, and the
+    // publication units with the fee
+    facts: [['the newest papers', /Latest/i], ['a search of the papers', /Search/i], ['saved papers on the device', /Saved/i],
+      ['the DOI of each paper', /doi\.org/i], ['the abstract of each paper', /abstract/i],
+      ['the author guidelines', /For authors/i], ['the submission checklist', /Before you submit/i],
+      ['the kinds of paper', /Science Paper/i], ['the manuscript order', /order of a manuscript/i],
+      ['the reference style', /\bAPA\b/], ['the rules for figures and tables', /JPEG|TIFF|PNG/],
+      ['the publication units', /publication units/i], ['the fee for a long paper', /\$100/],
+      ['the editorial board', /associate editors/i], ['the policies', /Peer review/],
+      ["the journal's editorial office", /ajs@yale\.edu/], ['no account', /no account/i]],
+  },
 });
 /** a floor's probe with its lists resolved for today ({ site, verse, truth, facts, parts }), or null. Pure but for today's date. */
 // a second floor standing on the same page reads it the same way (owner, 2026-10-26: tildegit is /g/ like codebase): the questions and the

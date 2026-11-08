@@ -4271,7 +4271,10 @@ try {
     await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
     const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => P.p.$('#whatsnew-bell, [data-showcase="show"]'), 8000);
+    // the home does not paint the away line (#2291); the sparkle on the stage starts the same walkthrough
+    const bell = await P.p.$('#whatsnew-bell');
+    if (bell && await bell.isVisible().catch(() => false)) await bell.click(); else await P.p.click('[data-showcase="show"]');
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
     // the panel re-places on a 400 ms tick while the step's card lands and grows (skills/showcase.js bar()): read the chip's spot
@@ -11657,7 +11660,7 @@ try {
       const no = ['who wrote the odyssey', 'how do I clear the inbox in gmail', 'what is a void pointer in c and what features does it have', 'what should I build next in my garden', 'what is the will of the people'];
       const misY = yes.filter((a) => !SC.isSelfAsk(a)), misN = no.filter((a) => SC.isSelfAsk(a));
       check('self-grounding: asks about Verse itself are recognised; generic asks that only share a word (inbox, void pointer, next, will) are not', !misY.length && !misN.length, JSON.stringify({ misY, misN }));
-      const dep = new URL('../void-live-deploy', import.meta.url).pathname;
+      const dep = new URL('../void-live-deploy', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
       const ASSETS = { fetch: async (rq) => { const f = path.join(dep, new URL(rq.url).pathname); return fs.existsSync(f) ? new Response(fs.readFileSync(f, 'utf8')) : new Response('', { status: 404 }); } };
       const eS = envOf({ env: { ASSETS } });
       eS.DB.tables.add('void_kv'); eS.DB.kv.set('will', JSON.stringify({ at: '2026-10-03T00:00:00Z', wants: [{ title: 'Learn the light look', i_want: 'I want a light look for my void.', because: 'people keep asking' }] }));

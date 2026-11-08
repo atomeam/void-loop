@@ -1,0 +1,25 @@
+{
+ "at": "2026-11-07T23:34:03.552Z",
+ "sha": "2b19a9d29f860827aa51fe1a238dc568207bae02",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42424385924",
+ "suite": "browser suite on main",
+ "checks": [
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "tools/fuzzy.test.mjs",
+  "tools/place.test.mjs",
+  "void-live-deploy/lib/fuzzy.js",
+  "void-live-deploy/skills/place.js"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-08T00:02:37.395Z",
+ "closedBy": "04addcf8fe5a85dde6009526e70dacdd6ffb5832",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42426738890",
+ "minutes": 29
+}

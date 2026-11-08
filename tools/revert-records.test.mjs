@@ -29,7 +29,7 @@ test('dropEntries keeps every other byte of a mixed-style file', () => {
 // a real jam: a commit adds a ledger line, a bench ask and breaks the page; later merges append after it; then it is reverted
 function repo() {
   const d = mkdtempSync(join(tmpdir(), 'revert-records-')), sh = (c) => execSync(c, { cwd: d, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-  sh('git init -q -b main && git config user.email t@example.invalid && git config user.name t && git config commit.gpgsign false');
+  sh('git init -q -b main && git config user.email t@example.invalid && git config user.name t && git config commit.gpgsign false && git config core.autocrlf false'); // never inherit the machine's autocrlf: fixtures in this repo are LF
   mkdirSync(join(d, 'void-live-deploy'), { recursive: true }); mkdirSync(join(d, 'tools'), { recursive: true });
   const put = (f, t) => writeFileSync(join(d, f), t);
   put(LEDGER, '[\n  {"at": "1", "by": "a", "kind": "build", "what": "base"}\n]\n');

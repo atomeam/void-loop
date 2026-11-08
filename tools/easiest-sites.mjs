@@ -127,7 +127,7 @@ async function getSmall(host, ms = 6000) {
   } catch (_) { return null; } finally { clearTimeout(t); }
 }
 if (process.argv[1] === new URL(import.meta.url).pathname && process.argv[2] === '--small') {
-  const count = Math.min(200000, Math.max(100, +process.argv[3] || 30000)), root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+  const count = Math.min(200000, Math.max(100, +process.argv[3] || 30000)), root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
   const SWEEP = path.join(root, 'void-live-deploy', 'tower.sweep.json'), FR = path.join(root, 'void-live-deploy', 'tower.frontier.json'), rd = (f, d) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (_) { return d; } };
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tranco-'));
   execFileSync('curl', ['-sSL', '--max-time', '120', '-o', path.join(dir, 't.zip'), TRANCO]); execFileSync('unzip', ['-o', '-q', path.join(dir, 't.zip'), '-d', dir]);

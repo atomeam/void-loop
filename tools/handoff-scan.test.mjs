@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { TYPES, parseDecl, declOf, inferTypes, usefulness, scan, legacy, pages, report, builtFrom, buildersOf } from './handoff-scan.mjs';
 
-const site = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const site = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 /** the number of pages in tools/handoff-types.json when the rule started (2026-10-28): it may fall, never rise */
 const LEGACY_AT_START = 85;
 
@@ -64,7 +64,7 @@ test('the scan sees what is built: the BPM counter and the metronome hand each o
 });
 
 test('a call to one of lib/handoff.js\'s link builders counts as a link to its page (the fantasy page sends players to the ring)', () => {
-  const b = buildersOf(fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'lib', 'handoff.js'), 'utf8'));
+  const b = buildersOf(fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy', 'lib', 'handoff.js'), 'utf8'));
   assert.deepEqual(b, { wheelLink: '/random/wheel/', prizesLink: '/prizes/', tournamentsLink: '/tournaments/' });
   const routes = ['/fantasy/', '/random/wheel/', '/prizes/', '/tournaments/'];
   assert.deepEqual(builtFrom('/fantasy/', '', 'href: () => wheelLink(n)', routes, b), ['/random/wheel/']);
@@ -76,5 +76,5 @@ test('a call to one of lib/handoff.js\'s link builders counts as a link to its p
 
 test('docs/HANDOFF-GAPS.md is current (node tools/handoff-scan.mjs --write)', () => {
   const doc = fs.readFileSync(path.join(site, '..', 'docs', 'HANDOFF-GAPS.md'), 'utf8');
-  assert.equal(doc, report(scan()), 'stale: node tools/handoff-scan.mjs --write');
+  assert.equal(doc.replace(/\r\n/g, '\n'), report(scan()).replace(/\r\n/g, '\n'), 'stale: node tools/handoff-scan.mjs --write'); // Windows checks out CRLF; the content is what matters
 });

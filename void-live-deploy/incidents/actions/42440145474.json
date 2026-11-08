@@ -1,0 +1,104 @@
+{
+ "at": "2026-11-08T03:13:09Z",
+ "sha": "b787a450f9d8703ba5c86fa8dc311331718b4a17",
+ "runId": 42440145474,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42440145474",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (4)",
+   "id": 128607423642,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42440145474/job/128607423642",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 4 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL suite ran to the end  -> page.click: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "       - element is visible, enabled and stable",
+    "       - scrolling into view if needed",
+    "       - done scrolling",
+    "       - <input id=\"input\" autocorrect=\"off\" data-1p-ignore=\"\" autocomplete=\"off\" spellcheck=\"false\" data-gramm=\"false\" autocapitalize=\"off\" data-lpignore=\"true\" aria-label=\"Ask Verse\" data-form-type=\"other\" data-gramm_editor=\"false\" writingsuggestions=\"false\" placeholder=\"Ask anything\" data-enable-",
+    "     - retrying click action",
+    "       - waiting 500ms",
+    "       - waiting for element to be visible, enabled and stable",
+    "       - element is visible, enabled and stable",
+    "       - scrolling into view if needed",
+    "       - done scrolling",
+    "       - <input id=\"input\" autocorrect=\"off\" data-1p-ignore=\"\" autocomplete=\"off\" spellcheck=\"false\" data-gramm=\"false\" autocapitalize=\"off\" data-lpignore=\"true\" aria-label=\"Ask Verse\" data-form-type=\"other\" data-gramm_editor=\"false\" writingsuggestions=\"false\" placeholder=\"Ask anything\" data-enable-",
+    "     - retrying click action",
+    "       - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <input id=\"input\" autocorrect=\"off\" data-1p-ignore=\"\" autocomplete=\"off\" spellcheck=\"false\" data-gramm=\"false\" autocapitalize=\"off\" data-lpignore=\"true\" aria-label=\"Ask Verse\" data-form-type=\"other\" data-gramm_editor=\"false\" writingsuggestions=\"false\" placeholder=\"Ask anything\" data-enable-gra",
+    "  - retrying click action",
+    "    - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <div id=\"row\">…</div> from <div id=\"dock\" role=\"search\" aria-label=\"Ask Verse\">…</div> subtree intercepts pointer events",
+    "  - retrying click action",
+    "    - waiting 500ms",
+    "",
+    "44/45 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 128607423815,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42440145474/job/128607423815",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 6 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL fix: \"my Make scenario is broken\" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it  -> my Make scenario is broken",
+    "FAIL store: no product names or prices are hard-coded in the page or the libraries (all from the live catalog)  -> ../void.html",
+    "FAIL defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy  -> feed"
+   ],
+   "tail": [
+    "pass router: /api/routes is owner-only and rolls up skill near-misses, hard asks, would-escalate and the wait; masked asks stay masked; the route has its own limit",
+    "pass router: the will turns routing into wants: a skill near-miss becomes \"learn to handle ...\", a router that keeps falling back is a fix; would-escalate is not counted twice (it reaches the upgrade through void_shortfalls)",
+    "pass router: the will marks the tiered-model-stack want built (append-only builds record) and stops proposing it; still visible with --with-done",
+    "pass router: nothing on the page changes (no router, route or escalation code in void.html; the confirm line checks above still pass)",
+    "pass convert card: with its file failing to load after a reload, the kept converter is missing at first, a \"re-sync converter\" button stands in its place within 2 s, and a tap loads it again: the converter returns with its 5 miles = 8.04672 km and the button goes",
+    "pass cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)",
+    "pass cook-flow: the tap starts a 10 minute timer on the stage",
+    "pass cook-flow: \"how many cups is 500g of flour\" (word maths) ends with the chip too",
+    "pass cook-flow: \"5 miles in km\" gets no timer chip",
+    "pass cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip",
+    "pass cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Verse)",
+    "pass cook-flow: no page errors",
+    "pass telemetry route: a pasted CI report shows \"What is really true now\" with the commit, the pull request, \"Passed 159 of 162\" and what is still failing; \"why is my ci red\" is not taken",
+    "pass telemetry route: a builder's report that quotes a check timeout is read as a developer log, not answered as a broken automation to fix",
+    "pass 3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
+    "pass Ringer miniature: draws real pixels (dirt, chalk ring, 14 glass marbles), poses from the one state (13 in the ring with a hand knuckled down behind the shooter, then 1 knocked out after a shot), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmou",
+    "pass \"growth\": touching a branch says what Verse asked for that it built (asked by Verse: \"link the growth card branches to the growth inbox\"), matched by the entry that built it",
+    "pass \"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch",
+    "pass \"growth\": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will's open want, the last commits as",
+    "pass Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling), a chalk arc fills with the power, the aim line reaches where the shot would stop and the ghost of the shot shows the marble it would hit; letting go fl",
+    "pass 3d: a compile that never settles still draws: with compileAsync hung, \"make a counter\" draws its tally counter within the bound",
+    "pass miniatures: the legal pad writes the note across its ruled lines and rewrites when it changes; \"make a notepad\" puts it on the notepad card and typing in the card rewrites the pad",
+    "pass lift3d: tic-tac-toe, Othello, mancala, Aggravation and Connect Four each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board's centre plays X there and Verse answers",
+    "pass monopoly: \"play monopoly\" stands the property board in 3D in the void with its card separate; Roll moves your pawn and buys nothing for you",
+    "pass poker: \"play poker\" stands the card table in the void with its card separate; your two cards show, Verse's two stay face down",
+    "pass arcade: \"arcade games\" stands the Verse cabinet in 3D, its screen listing every arcade game in lib/ladder.js; picking Dim the Verse puts the cabinet away and opens the game",
+    "pass 3D Pentamote-1: \"pentamote-1\" draws the motor body on its page; the slab is at +0.5 mm a quarter period in and centred at rest, coil 1 glows first and coil 2 next, and it keeps moving",
+    "pass business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step",
+    "453/456 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

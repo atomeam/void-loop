@@ -5,7 +5,7 @@
 // the same check as --try), does the title, kind, sources, "Adds to Verse" line and picture match what the fixture expects.
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { answerFor } from './subject-stub.mjs'; import { offTopic } from './finish.mjs';
-const here = path.dirname(new URL(import.meta.url).pathname), root = path.join(here, '..', 'void-live-deploy');
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), root = path.join(here, '..', 'void-live-deploy');
 const args = process.argv.slice(2), live = args.includes('--live'), outFile = args.includes('--out') ? args[args.indexOf('--out') + 1] : '', only = args.includes('--only') ? args[args.indexOf('--only') + 1].toLowerCase() : '', shots = args.includes('--shots') ? args[args.indexOf('--shots') + 1] : path.join(os.tmpdir(), 'subject-eval');
 const fixtures = JSON.parse(fs.readFileSync(path.join(here, 'fixtures', 'subject-eval.json'), 'utf8')).filter((f) => (live || !f.liveOnly)).filter((f) => !only || only.split('|').some((o) => f.ask.toLowerCase().includes(o)));
 fs.mkdirSync(shots, { recursive: true });

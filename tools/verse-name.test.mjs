@@ -18,7 +18,8 @@ const visible = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?
 // they keep the old title until then (handoff Up for grabs). Every other page, and every new one, must say Verse.
 export const LEGACY = ['anomalous-event-timeline', 'correlation-view', 'interval-timing', 'miss-board', 'private-incubation-log', 'quiet-signal-filter', 'weak-signal-hypothesis-ledger'].map((n) => 'fringe/' + n + '.html');
 test('no published page shows the old name in its title or text', () => {
-  const bad = pages(site).filter((p) => !LEGACY.includes(relative(site, p)) && OLD.test(visible(readFileSync(p, 'utf8')))).map((p) => relative(site, p));
+  const rel = (p) => relative(site, p).replace(/\\/g, '/'); // Windows reports backslashes; LEGACY is written with forward slashes
+  const bad = pages(site).filter((p) => !LEGACY.includes(rel(p)) && OLD.test(visible(readFileSync(p, 'utf8')))).map(rel);
   assert.deepEqual(bad, []);
 });
 test('the store names and describes every product as Verse', () => {

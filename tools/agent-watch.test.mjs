@@ -47,7 +47,7 @@ test('the page uses it: the title, a notification only when turned on, the inbox
   assert.match(html, /id="inbox"/);
   assert.match(html, />Approve</);
   assert.match(html, />Decline</);
-  assert.match(html, /<details><summary>Steps<\/summary>/);
+  assert.match(html, /<details><summary.*<\/summary><ol class="feed">/, 'each finished task on the Made shelf keeps its steps under the ask, collapsed (#2508)');
   assert.match(html, /data-open/);
   assert.match(html, /proactive: true/);
 });
