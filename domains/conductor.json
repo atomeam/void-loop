@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T19:42:21.651Z",
+ "updated": "2026-11-08T19:51:45.287Z",
  "last24h": {
   "ticks": 153,
-  "started": 50,
-  "requeued": 5,
+  "started": 52,
+  "requeued": 7,
   "setAside": 1,
   "probes": 3,
   "errors": 109
@@ -20,82 +20,62 @@
    "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "mvw5r3w1",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvp4ahwz",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1ee0lk",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1g8ei3",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1kno2c",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvwl3b1c",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvwl3biu",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvwl3bx7",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mw5mm5fm",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvwl3cbp",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mvwl3cpy",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvwl3d38",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvpkt0sa",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvpkt1c5",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
-  },
-  {
-   "id": "mvpkt1u7",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
-  },
-  {
-   "id": "mw1xyivk",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
-  },
-  {
-   "id": "mvxmzwi4",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
-  },
-  {
-   "id": "mvxmzx0f",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
-  },
-  {
-   "id": "mvxmzxet",
-   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 63,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -110,7 +90,6 @@
   "mva30i2e": 1794146628428,
   "mva30j4u": 1794147189869,
   "mvu167w7": 1794121870584,
-  "mw6njzvr": 1794071493896,
   "mveb8rsi": 1794099686462,
   "mveb8svc": 1794100248886,
   "mvfu4evy": 1794100810769,
@@ -130,114 +109,95 @@
   "mw7rlmmm": 1794147754981,
   "mw7rlnb1": 1794154533659,
   "mw7rlntt": 1794155095898,
-  "mw8203uw": 1794156221120
+  "mw8203uw": 1794156221120,
+  "mw8204i3": 1794167505287
  },
- "sweptAt": 1794154533659,
- "blueprintsAt": 1794154533659,
- "visitorAt": "2026-11-08T14:03:48Z",
+ "sweptAt": 1794167505287,
+ "blueprintsAt": 1794167505287,
+ "visitorAt": "2026-11-08T19:16:35Z",
  "visitorFiled": [
-  "versus:gmgcolor.com",
-  "flake:will-one-set-aside-job-does-not-st",
-  "review:2130",
-  "review:2125",
-  "review:2129",
-  "review:2131",
-  "review:2132",
-  "review:2148",
-  "review:2147",
-  "tv:agricultural-market-tracker",
-  "review:2216",
-  "versus:agechecker.net",
-  "review:2221",
-  "flake:suite-ran-to-the-end",
-  "flake:tower-the-target-tower-target-json",
-  "flake:empty-state-over-a-pure-white-back",
-  "flake:the-owner-s-status-card-opens-by-i",
-  "review:2223",
-  "flake:defences-every-api-route-has-an-ex",
-  "flake:suite-budget-the-whole-suite-ran-p",
-  "versus:bestfonts.pro",
-  "versus:speedtest.sg",
-  "versus:speedtest.com.sg",
-  "versus:jsonline.com",
-  "review:2247",
-  "review:2248",
-  "versus:coreldrawdesign.com",
-  "versus:coloradoan.com",
-  "versus:uphex.com",
-  "versus:timer365.com",
-  "versus:loanwisecalculatoreasy.com",
-  "versus:drawio.com",
-  "visit:convert-5-miles-to-kilometers",
-  "bot:check-country-ag",
-  "bot:country-ag",
-  "bot:check-country-gq",
-  "bot:country-gq",
-  "review:2303",
-  "review:2304",
-  "review:2305",
-  "review:2319",
-  "versus:colorscheme.ru:speed",
-  "versus:colorscheme.ru:journey: do the ma",
-  "versus:colorscheme.ru:journey: share the",
-  "versus:sipcalculator.in",
-  "versus:colordrop.io",
-  "versus:colourlab.ai",
-  "review:2325",
-  "review:2327",
-  "review:2352",
-  "review:2346",
-  "visit:flip-a-coin",
-  "review:2361",
-  "review:2380",
-  "review:2379",
-  "review:2320",
-  "review:2381",
-  "review:2393",
-  "review:2413",
-  "versus:mega.co.nz",
-  "versus:example.com",
-  "versus:uisp.com",
-  "versus:samsunghealth.com",
-  "review:2435",
-  "versus:bttrack.com",
-  "versus:dalyfeds.com",
-  "tv:healthy-snack-alternatives",
-  "tv:irish-pub-locator",
-  "miss:film-metadata",
-  "will:overhaul-site-search-persona-playtest-be",
-  "versus:juicychat.ai",
-  "versus:oneyeard.com",
-  "review:2511",
-  "review:2302",
-  "review:2315",
-  "review:2519",
-  "review:2485",
-  "probe:what-s-a-good-riddle-for-kids",
-  "probe:predict-my-future",
-  "probe:jazz-stations-near-brooklyn"
+  "feature:convertunits-com-491b824a",
+  "gap:se-358423",
+  "visit:what-can-you-do",
+  "visit:capital-of-france",
+  "review:2105",
+  "review:2109",
+  "review:2112",
+  "review:2114",
+  "review:2116",
+  "review:2120",
+  "visit:what-time-is-it",
+  "review:2126",
+  "review:2128",
+  "versus:want-tower-assistant",
+  "review:2139",
+  "tv:relationship-devotion-tool",
+  "review:2162",
+  "review:2163",
+  "review:2164",
+  "review:2165",
+  "review:2169",
+  "review:2178",
+  "review:2185",
+  "versus:unitingchurch.org.au",
+  "versus:hexler.net",
+  "versus:deadlinkchecker.com",
+  "versus:testandcalc.com",
+  "versus:portchecker.co",
+  "visit:convert-100-usd-to-eur",
+  "review:2245",
+  "review:2313",
+  "review:2336",
+  "review:2367",
+  "review:2368",
+  "review:2369",
+  "review:2371",
+  "review:2358",
+  "review:2359",
+  "review:2372",
+  "review:2374",
+  "review:2373",
+  "review:2376",
+  "review:2375",
+  "versus:want-tower-social",
+  "feature:isitchristmas-com-e13cdb96",
+  "feature:random-org-7201fd3d",
+  "feature:random-org-e1ac6f7a",
+  "review:2441",
+  "tv:hvac-remote-management",
+  "tv:art-provenance-tracker",
+  "review:2482",
+  "feature:random-org-ea756452",
+  "feature:random-org-9f6f952d",
+  "feature:random-org-ccb2ecd2",
+  "versus:everycom.store",
+  "versus:adnext.mobi",
+  "versus:protopage.com",
+  "versus:tinyurl.com",
+  "versus:want-tower-password",
+  "review:2504",
+  "feature:team-1626",
+  "versus:share.google",
+  "versus:g.co",
+  "versus:amazon.co.uk",
+  "versus:amazon.de",
+  "versus:live-video.net",
+  "review:2509",
+  "review:2512",
+  "review:2514",
+  "visit:translate-hello-to-spanish",
+  "gap:want-exam-videos",
+  "versus:want-tower-finance-macrotrends-net",
+  "versus:want-tower-news-allsides-com",
+  "probe:pick-a-magic-8-ball-answer-for-sho",
+  "probe:top-news-in-tech-today",
+  "probe:proverb-for-hard-work",
+  "versus:zpecloud.com",
+  "versus:aurashinehub.com",
+  "versus:pokupon.ua",
+  "versus:uniteforliteracy.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T19:46:41.330Z",
-   "open": 269,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 264,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T19:56:01.622Z",
    "open": 269,
@@ -2009,6 +1969,40 @@
   {
    "at": "2026-11-08T19:42:21.651Z",
    "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T19:51:45.287Z",
+   "open": 271,
+   "started": [
+    {
+     "id": "mvw5r3w1",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mw8204i3",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 2,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 15,
    "warnings": 1
   }
  ]
