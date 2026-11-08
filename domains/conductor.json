@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T21:16:04.199Z",
+ "updated": "2026-11-08T21:25:23.869Z",
  "last24h": {
   "ticks": 153,
-  "started": 64,
+  "started": 66,
   "requeued": 6,
   "setAside": 1,
   "probes": 3,
-  "errors": 110
+  "errors": 109
  },
  "broken": [],
  "held": [
@@ -114,10 +114,11 @@
   "mw82055s": 1794168070272,
   "mw82061g": 1794169758848,
   "mw8ao9eu": 1794170322689,
-  "mw8ao9zz": 1794170885458
+  "mw8ao9zz": 1794170885458,
+  "mw8aoajd": 1794173123869
  },
- "sweptAt": 1794167505287,
- "blueprintsAt": 1794167505287,
+ "sweptAt": 1794173123869,
+ "blueprintsAt": 1794173123869,
  "visitorAt": "2026-11-08T19:16:35Z",
  "visitorFiled": [
   "feature:convertunits-com-491b824a",
@@ -202,11 +203,6 @@
   "versus:uniteforliteracy.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T21:24:16.296Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T21:34:24.808Z",
    "open": 269,
@@ -2076,6 +2072,40 @@
   {
    "at": "2026-11-08T21:16:04.199Z",
    "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T21:25:23.869Z",
+   "open": 271,
+   "started": [
+    {
+     "id": "mvp4ahwz",
+     "kind": "feature",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mw8aoajd",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 15,
    "warnings": 1
   }
  ]
