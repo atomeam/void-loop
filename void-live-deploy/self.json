@@ -600,6 +600,26 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T22:31:43Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows; next…"
+  },
+  {
+   "at": "2026-11-08T22:28:20Z",
+   "subject": "Tower gate: Versus by itself, Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows (also…"
+  },
+  {
+   "at": "2026-11-08T22:25:45Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-11-08T22:24:40Z",
+   "subject": "Versus by itself: colour: colorbook.io, the sites read recorded"
+  },
+  {
+   "at": "2026-11-08T21:48:32Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-08T21:27:45Z",
    "subject": "Verse fixes its proverb skill: learn to handle \"funny proverb about luck\""
   },
@@ -658,26 +678,6 @@
   {
    "at": "2026-11-08T17:08:49Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-08T16:50:27Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next digitalsogame.com (the target)"
-  },
-  {
-   "at": "2026-11-08T16:47:53Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 gone); next digitalsogame.com (the target)"
-  },
-  {
-   "at": "2026-11-08T16:47:46Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
-  },
-  {
-   "at": "2026-11-08T16:28:07Z",
-   "subject": "Outcome exam: videos 56.7"
-  },
-  {
-   "at": "2026-11-08T16:26:45Z",
-   "subject": "Verse routes \"jazz stations near brooklyn\" to its local-stations skill the answer is not checked"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 25,
-  "week": 264
+  "day": 27,
+  "week": 266
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
