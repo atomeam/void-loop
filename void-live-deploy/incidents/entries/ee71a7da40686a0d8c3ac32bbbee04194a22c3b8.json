@@ -1,0 +1,36 @@
+{
+ "at": "2026-11-07T21:42:00.269Z",
+ "sha": "ee71a7da40686a0d8c3ac32bbbee04194a22c3b8",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42415072501",
+ "suite": "browser suite on main",
+ "checks": [
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "domains/handoff.md",
+  "tools/feed.test.mjs",
+  "tools/journal.test.mjs",
+  "tools/merge-gate.mjs",
+  "tools/openapi-check.mjs",
+  "void-live-deploy/brain/knows.json",
+  "void-live-deploy/functions/api/feed.js",
+  "void-live-deploy/journal/index.html",
+  "void-live-deploy/lib/journal.js",
+  "void-live-deploy/lib/seo.js",
+  "void-live-deploy/lib/toolkit.js",
+  "void-live-deploy/lib/tower.js",
+  "void-live-deploy/llms.txt",
+  "void-live-deploy/self.json"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-07T23:34:03.633Z",
+ "closedBy": "2b19a9d29f860827aa51fe1a238dc568207bae02",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42424385924",
+ "minutes": 112
+}

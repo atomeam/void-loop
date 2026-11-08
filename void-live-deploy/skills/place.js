@@ -10,6 +10,7 @@ function placeOf(text) {
     || t.match(/^where\s+(?:is|are|'s)\s+(.+)$/i)
     || t.match(/^(?:streets|neighbou?rhood|area)\s+(?:around|near|of)\s+(.+)$/i)
     || t.match(/^show\s+(?:me\s+)?(.+?)\s+on\s+(?:a\s+|the\s+)?map$/i)
+    || t.match(/^mapa\s+(?:de|del)\s+(.+)$/i)
     || t.match(/^(.+?)\s+(?:street\s+)?map$/i);
   if (!m) return null;
   const p = m[1].replace(/^(the\s+)/i, '').trim();
@@ -32,6 +33,19 @@ function directionsTo(text) {
 }
 
 const label = (r) => r.name + (r.admin1 && r.admin1 !== r.name ? ', ' + r.admin1 : '') + (r.country ? ', ' + r.country : '');
+
+/** same-name places in two or more real regions, with a real town behind the first: the card asks which one, never guesses
+ *  ("map of Springfield" has five cities, "show me Paris on a map" has Texas). A same name whose others are villages
+ *  (Lisbon's are under 10,000 people) still shows the big one straight, with the others offered under it. Pure. */
+export function sameNameSpread(rs) {
+  const list = Array.isArray(rs) ? rs : [];
+  if (list.length < 2 || !list[0] || !list[0].name) return false;
+  const first = String(list[0].name).toLowerCase();
+  const same = list.filter((r) => r && String(r.name).toLowerCase() === first);
+  if (same.length < 2) return false;
+  const regions = new Set(same.map((r) => String((r.admin1 || '') + '|' + (r.country || '')).toLowerCase()));
+  return regions.size >= 2 && same.some((r, i) => i > 0 && Number(r.population) >= 10000);
+}
 
 const kmText = (n) => (n >= 100 ? String(Math.round(n)) : (Math.round(n * 10) / 10).toFixed(1)) + ' km';
 /** the route a directions card says out loud: a road distance when the router answered, otherwise the straight line, otherwise the map's own name. Pure. */
@@ -90,14 +104,16 @@ async function routeFor(origin, r) {
   return routeWords(road, straight);
 }
 
-function draw(el, r, others, api, dir, route, origin) {
+function draw(el, r, others, api, dir, route, origin, asked) {
   const { esc } = api;
   const zoomSpan = r.population > 1000000 ? 0.18 : r.population > 100000 ? 0.08 : 0.03;
   const bbox = [r.longitude - zoomSpan, r.latitude - zoomSpan * 0.6, r.longitude + zoomSpan, r.latitude + zoomSpan * 0.6].join(',');
   const src = 'https://www.openstreetmap.org/export/embed.html?bbox=' + bbox + '&layer=mapnik&marker=' + r.latitude + ',' + r.longitude;
   const big = 'https://www.openstreetmap.org/?mlat=' + r.latitude + '&mlon=' + r.longitude + '#map=' + (zoomSpan > 0.1 ? 11 : zoomSpan > 0.05 ? 13 : 15) + '/' + r.latitude + '/' + r.longitude;
   const alt = others.filter((o) => o !== r).slice(0, 4);
-  el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + esc(label(r).split(', ').slice(1).join(', ')) + '</div>'
+  // the asked spelling, when the answer's name is spelled another way ("mapa de kioto" shows Kyoto): one honest line
+  const sub = asked && !label(r).toLowerCase().includes(String(asked).toLowerCase()) ? 'You asked for ' + esc(asked) + ' — the map shows ' + esc(label(r)) + '.' : label(r).split(', ').slice(1).join(', ');
+  el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + sub + '</div>'
     + '<iframe title="map" src="' + src + '" style="width:100%;height:340px;border:0;border-radius:10px;margin:8px 0;filter:saturate(.85)" loading="lazy"></iframe>'
     + (alt.length ? '<div class="sub">Other places with this name: ' + alt.map((o, i) => '<a href="#" data-alt="' + i + '">' + esc(label(o)) + '</a>').join(' · ') + '</div>' : '')
     + (dir ? '<p class="dir-route">' + esc(route || 'Route on openstreetmap.org.') + '</p><p class="dir-links">Directions: <a href="https://www.openstreetmap.org/directions?to=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">Google Maps</a> <span class="sub">(starts from where you are)</span></p>' : '')
@@ -105,8 +121,8 @@ function draw(el, r, others, api, dir, route, origin) {
   el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => {
     e.preventDefault();
     const next = alt[+a.dataset.alt];
-    if (!dir) { draw(el, next, others, api, dir, '', origin); return; }
-    routeFor(origin, next).then((line) => draw(el, next, others, api, dir, line, origin)).catch(() => draw(el, next, others, api, dir, route, origin));
+    if (!dir) { draw(el, next, others, api, dir, '', origin, asked); return; }
+    routeFor(origin, next).then((line) => draw(el, next, others, api, dir, line, origin, asked)).catch(() => draw(el, next, others, api, dir, route, origin, asked));
   }));
 }
 
@@ -130,6 +146,17 @@ async function run(text, api) {
     catch (_) { down = true; }
   }
   if (!api._pageStill(el)) return 'place';
+  // several real same-name places and the ask named none: ask which, never guess ("map of Springfield", "show me Paris on a map")
+  if (!dir && sameNameSpread(rs)) {
+    const name = rs[0].name, n = String(name).toLowerCase();
+    el.innerHTML = '<h2>Which ' + esc(name) + '?</h2><div class="sub">Several ' + esc(name) + 's — pick one:</div><ul class="place-pick">'
+      + rs.map((r, i) => (String(r.name).toLowerCase() === n ? '<li><a href="#" data-pick="' + i + '">' + esc(label(r)) + '</a></li>' : '')).join('') + '</ul>';
+    el.querySelectorAll('[data-pick]').forEach((a) => a.addEventListener('click', (e) => {
+      e.preventDefault();
+      draw(el, rs[+a.dataset.pick], rs, api, false, '', null, place);
+    }));
+    return 'place';
+  }
   if (!rs.length) {
     el.innerHTML = down
       ? '<h2>' + esc(place) + '</h2><p>The map service didn\'t answer just now. Ask again in a moment.</p>'
@@ -141,7 +168,7 @@ async function run(text, api) {
     const origin = dir ? await originOf() : null;
     const route = dir ? await routeFor(origin, rs[0]) : '';
     if (!api._pageStill(el)) return 'place';
-    draw(el, rs[0], rs, api, !!dir, route, origin);
+    draw(el, rs[0], rs, api, !!dir, route, origin, place);
     return 'place';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';

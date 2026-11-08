@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1215,
+ "counted": 1209,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -32,9 +32,9 @@
   },
   {
    "file": "lib/load-later.js",
-   "skills": 28,
+   "skills": 29,
    "direct": 23,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
@@ -172,9 +172,9 @@
   },
   {
    "file": "lib/sky-math.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 2,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -475,7 +475,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 110,
+   "dependants": 109,
    "tests": 2
   },
   {
@@ -587,21 +587,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 110,
+   "dependants": 109,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 109,
+   "dependants": 108,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 107,
+   "dependants": 106,
    "tests": 9
   },
   {
@@ -1025,18 +1025,18 @@
    "tests": 1
   },
   {
-   "file": "lib/gumroad.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 41,
-   "tests": 4
-  },
-  {
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
    "dependants": 40,
    "tests": 3
+  },
+  {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 40,
+   "tests": 4
   },
   {
    "file": "lib/alt-pay.js",
@@ -1046,18 +1046,18 @@
    "tests": 2
   },
   {
-   "file": "lib/store-db.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 38,
-   "tests": 3
-  },
-  {
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
    "dependants": 37,
    "tests": 1
+  },
+  {
+   "file": "lib/store-db.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 37,
+   "tests": 3
   },
   {
    "file": "lib/markets.js",
@@ -1382,18 +1382,18 @@
    "tests": 2
   },
   {
-   "file": "lib/actions.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 32,
-   "tests": 2
-  },
-  {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
    "dependants": 32,
    "tests": 1
+  },
+  {
+   "file": "lib/actions.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 31,
+   "tests": 2
   },
   {
    "file": "lib/free-pics.js",
@@ -1897,7 +1897,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/video-gen.js",
@@ -2435,50 +2435,50 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 103,
+   "dependants": 102,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 102,
+   "dependants": 101,
    "tests": 35
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 66,
+   "dependants": 65,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 66,
+   "dependants": 65,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 65,
+   "dependants": 64,
    "tests": 9
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 52,
-   "tests": 0
+   "dependants": 51,
+   "tests": 5
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
    "dependants": 51,
-   "tests": 5
+   "tests": 0
   },
   {
    "file": "lib/review-api.js",
@@ -10001,6 +10001,7 @@
     "skills/games.js",
     "skills/rebuild-map.js",
     "skills/sky-card.js",
+    "skills/skycard.js",
     "skills/time.js",
     "skills/where-is.js"
    ]
@@ -13442,6 +13443,7 @@
     "skills/sky-card.js",
     "skills/sky-world.js",
     "skills/sky.js",
+    "skills/skycard.js",
     "skills/suntimes.js",
     "skills/time.js",
     "skills/where-is.js"
@@ -18232,6 +18234,7 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19096,6 +19099,7 @@
     "skills/sky-card.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19105,6 +19109,7 @@
     "skills/night-sky.js"
    ],
    "importedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19147,6 +19152,12 @@
     "skills/together.js",
     "skills/zoom-figure.js"
    ]
+  },
+  "skills/skycard.js": {
+   "imports": [
+    "skills/sky-card.js"
+   ],
+   "importedBy": []
   },
   "skills/sleep.js": {
    "imports": [],

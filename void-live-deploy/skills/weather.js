@@ -8,7 +8,6 @@
  * ("remind me to bring an umbrella in 110 minutes"), timed to the hour before it starts, so a visitor gets a countdown on the
  * stage at once (the remind skill's "remind me at 2pm" is the owner's: it goes to the confirm line and needs the key).
  */
-import { placeTries } from '../lib/where.js';
 const WX = {
   0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
@@ -106,6 +105,7 @@ async function run(text, api) {
   try {
     let loc = null;
     if (place) {
+      const { placeTries } = await import('../lib/where.js'); // the place lookup loads with a weather ask, not with the routing order (owner 2026-10-30)
       for (const q of placeTries(place)) {
         const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
         const r0 = g.results && g.results[0];

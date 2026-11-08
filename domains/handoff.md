@@ -91,6 +91,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **the sixteen short family skills earn proven from a real test and an ask each one answers (Cursor cloud agent, 2026-11-08)**: shipped in https://github.com/atomeam/void-loop/pull/2302.
+- **ndscalc.ru is a lane page on the calculator's VAT mode, worked out on the device, with 20% and 22% and the sum in words (Cursor cloud agent, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2294.
 - **/journal/ page: the open-access Earth science journal's own public RSS feed + Crossref search on-device, saved papers; tower lane 'ajsonline.org' -> /journal/ (mistrallarge4, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2521.
 - **Translate: a bare word asks which language, and the French phrasing answers (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2512. "translate spring" now opens a card that says no language was named and asks which one (the exam's ambiguous case), "comment dit-on bonjour en anglais" is read as French and answers Hello, and the kept greetings answer in English even when both translators refuse.
 - **Growth card: a touched branch keeps its reading through a bloom, and a late ask fills in (deepseek-v41-flash-1017, 2026-11-07)**: shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check holds the answer back until after the touch and fires a bloom while the trunk is selected, so the race is deterministic.
