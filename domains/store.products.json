@@ -146,7 +146,7 @@
    "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
    "tier": "personal",
    "origin": "v01d",
-   "status": "live",
+   "status": "unpublished",
    "published": "2026-10-15",
    "bytes": 20682758,
    "contents": [
@@ -166,6 +166,10 @@
     {
      "at": "2026-10-15T06:08:27.657Z",
      "what": "published by V01D: 11 files, 19.7 MB"
+    },
+    {
+     "at": "2026-11-08T16:59:33.344Z",
+     "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
     }
    ]
   },
@@ -228,7 +232,7 @@
    "license": "Personal and commercial use on sites you own or may test",
    "tier": "commercial",
    "origin": "v01d",
-   "status": "live",
+   "status": "unpublished",
    "published": "2026-10-15",
    "bytes": 26836,
    "contents": [
@@ -242,6 +246,10 @@
     {
      "at": "2026-10-15T06:34:28.905Z",
      "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)"
+    },
+    {
+     "at": "2026-11-08T16:59:33.344Z",
+     "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
     }
    ],
    "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)"
@@ -262,7 +270,7 @@
    "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
    "tier": "personal",
    "origin": "v01d",
-   "status": "live",
+   "status": "unpublished",
    "published": "2026-10-21",
    "bytes": 5650231,
    "contents": [
@@ -277,6 +285,10 @@
     {
      "at": "2026-10-21T22:28:32.773Z",
      "what": "published by Verse: 6 files, 5.4 MB"
+    },
+    {
+     "at": "2026-11-08T16:59:33.344Z",
+     "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
     }
    ]
   }
