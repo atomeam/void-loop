@@ -1,0 +1,129 @@
+{
+ "id": "pdf: codeshack.io",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 109,
+   "best": 232,
+   "evidence": "Verse (/pdf/merge/) 109 ms to the load event (median of 3, phone width) vs codeshack.io 232 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/merge/) 3 of 3 loads answered vs codeshack.io 3 of 3 loads answered",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/merge/) 0 px sideways overflow at 390 px vs codeshack.io 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/merge/) 0 unnamed controls or images vs codeshack.io 0 unnamed controls or images",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/pdf/merge/) 1 (1: the page shows itself again with the network cut) vs codeshack.io 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "worse",
+   "verse": 3,
+   "best": 4,
+   "evidence": "Verse (/pdf/merge/) 3 of 4 (link-preview title, image, description; a share or copy-link control) vs codeshack.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "was": "equal-and-better",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/merge/) 3 of 3 right against the worked-out answer; judged against the standard, not codeshack.io (the site is not asked)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "of": 3
+  },
+  "design polish": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/merge/) 0 design defects vs codeshack.io 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), codeshack.io (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  },
+  "merge and split": {
+   "verdict": "equal",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/pdf/merge/) 1 of 2 shown vs codeshack.io 1 of 2 shown (Verse lacks: split; site lacks: split)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "page tools": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 2,
+   "evidence": "Verse (/pdf/merge/) 0 of 3 shown vs codeshack.io 2 of 3 shown (Verse lacks: rotate, delete pages, reorder; site lacks: rotate)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "was": "better",
+   "of": 3,
+   "part": true,
+   "siteRead": true
+  },
+  "images to pdf": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 1 of 1 shown (Verse lacks: images to PDF; site lacks: none)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "was": "equal-and-better",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "compress": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/merge/) 0 of 1 shown vs codeshack.io 0 of 1 shown (Verse lacks: compress; site lacks: compress)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "equal",
+   "verse": 5,
+   "best": 5,
+   "evidence": "Verse (/pdf/merge/) 5 of 19 things a full answer shows vs codeshack.io 5 of 19 things a full answer shows (Verse lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, PDF to images, page numbers, watermark, no account, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF; site lacks: split, delete pages, reorder pages, rotate, compress, images to PDF, page numbers, no account, works offline, ask questions about a PDF, Split by range, every N pages, or extract, Reorder pages with thumbnails, Rotate pages, Compress PDF)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "of": 19,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7.5,
+   "best": 7,
+   "evidence": "Verse (/pdf/merge/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs codeshack.io 7 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:41:11.624Z",
+   "siteRead": true
+  }
+ }
+}

@@ -1,0 +1,206 @@
+{
+ "site": "emojigraph.org",
+ "url": "https://emojigraph.org/",
+ "scanned": "2026-11-08",
+ "status": 200,
+ "assets": [
+  {
+   "f": "style.0b0acc10ed26.css",
+   "t": "css",
+   "b": 30192
+  },
+  {
+   "f": "web-vitals.54c5aaa57b8a.js",
+   "t": "js",
+   "b": 7214
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 493367,
+   "ext": true
+  }
+ ],
+ "assetCount": 3,
+ "bytes": 530773,
+ "html": {
+  "mobile": {
+   "title": "🤓 Emojigraph - Emoji Universe 👀🧐🤷‍♀️",
+   "lang": "en",
+   "manifest": null,
+   "hreflang": [
+    "x-default",
+    "en",
+    "ar",
+    "da",
+    "de",
+    "el",
+    "es",
+    "fr",
+    "he",
+    "hi",
+    "id",
+    "it",
+    "ja",
+    "ko",
+    "ms",
+    "nb",
+    "nl",
+    "pl",
+    "pt",
+    "ru",
+    "sv",
+    "tr",
+    "uk",
+    "vi",
+    "zh-hans"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "inputTypes": {
+    "text": 1
+   },
+   "selects": 1,
+   "forms": 1,
+   "ariaLabels": [
+    "Twitter link"
+   ],
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "EN",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/admin/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 26,
+  "index": true,
+  "sections": [
+   {
+    "s": "blog.xml",
+    "n": 1
+   },
+   {
+    "s": "emoji_ar.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_categories.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_da.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_de.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_el.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_en.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_es.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_fr.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_he.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_hi.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_id.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_it.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_ja.xml.gz",
+    "n": 1
+   },
+   {
+    "s": "emoji_ko.xml.gz",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "style.0b0acc10ed26.css",
+   "own": true,
+   "media": [
+    "dark"
+   ]
+  }
+ ],
+ "thirdParty": [
+  "www.google-analytics.com",
+  "www.googletagmanager.com"
+ ],
+ "services": [
+  "Google Analytics"
+ ],
+ "requests": [
+  "https://www.google-analytics.com/g/collect?_ee&_eu&_fv&_nsi&_p&_s&_ss&cid"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Language versions: 25 (x-default, en, ar, da, de, el)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "style.0b0acc10ed26.css"
+  },
+  {
+   "name": "Path kept from crawlers /admin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

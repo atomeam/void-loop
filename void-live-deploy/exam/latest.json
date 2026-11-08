@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-08T03:46:16.070Z",
+  "at": "2026-11-08T05:22:21.274Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -401,17 +401,10 @@
       }
     },
     "directions": {
-      "score": 97.4,
+      "score": 98.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "directions to springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -505,7 +498,7 @@
       }
     },
     "sports": {
-      "score": 61.1,
+      "score": 60.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -562,34 +555,36 @@
           "ask": "serie a scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "la liga scores",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "mls scores",
           "failed": [
             "answered",
             "fast",
             "board"
           ],
           "score": 50
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
         },
         {
           "ask": "lakers score",
@@ -635,13 +630,6 @@
             "board"
           ],
           "score": 50
-        },
-        {
-          "ask": "nba team celtics",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
         },
         {
           "ask": "scores",

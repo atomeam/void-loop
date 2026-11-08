@@ -1,0 +1,117 @@
+{
+ "id": "recipes: budgetbytes.com",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 114,
+   "best": 663,
+   "evidence": "Verse (/recipes/?q=pancakes) 114 ms to the load event (median of 3, phone width) vs budgetbytes.com 663 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 2,
+   "evidence": "Verse (/recipes/?q=pancakes) 3 of 3 loads answered vs budgetbytes.com 2 of 3 loads answered",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 0 px sideways overflow at 390 px vs budgetbytes.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 0 unnamed controls or images vs budgetbytes.com 0 unnamed controls or images",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 1 (1: the page shows itself again with the network cut) vs budgetbytes.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs budgetbytes.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "worse",
+   "verse": 1,
+   "best": 5,
+   "evidence": "Verse (/recipes/?q=pancakes) 1 of 5 right against the worked-out answer (missed: flour, an egg, milk, the steps numbered); judged against the standard, not budgetbytes.com (the site is not asked). The page showed: \"Recipes Search by name or by ingredient; every quantity scaled to your servings, one step at a time while you cook, timers to tap, cups to ml. A dozen classics work offline. A dish, or ingredients wit\"",
+   "at": "2026-11-08T13:35:57.524Z",
+   "was": "equal-and-better",
+   "of": 5
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/recipes/?q=pancakes) 0 design defects vs budgetbytes.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), budgetbytes.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  },
+  "search by ingredient": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: search by ingredient)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "scaling": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: servings to scale)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "step mode": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 1 of 1 shown vs budgetbytes.com 0 of 1 shown (Verse lacks: none; site lacks: one step at a time, timers)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 9,
+   "best": 0,
+   "evidence": "Verse (/recipes/?q=pancakes) 9 of 20 things a full answer shows vs budgetbytes.com 0 of 20 things a full answer shows (Verse lacks: the time it takes, a servings scaler, metric and US units, a shopping list, a share link, a history, print, Ingredient search, include and exclude, US / metric, Nutrition facts per serving, Save recipes into collections; site lacks: ingredients, the steps, servings, the time it takes, a servings scaler, metric and US units, a step mode, timers, a shopping list, search by ingredient, a share link, a history, print, works offline, Search by dish name, Ingredient search, include and exclude, Scale servings (1/2x, 1x, 2x), US / metric, Nutrition facts per serving, Save recipes into collections)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "of": 20,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "worse",
+   "verse": 4.5,
+   "best": 7,
+   "evidence": "Verse (/recipes/?q=pancakes) 4.5 of 11 wider-use points (docs/WIDER-USE.md) vs budgetbytes.com 7 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:35:57.524Z",
+   "siteRead": true
+  }
+ }
+}

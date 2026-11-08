@@ -1,0 +1,53 @@
+{
+ "site": "bbs.progrider.org",
+ "url": "https://bbs.progrider.org/",
+ "scanned": "2026-11-08",
+ "status": 525,
+ "blocked": {
+  "kind": "down",
+  "why": "the site answered 525"
+ },
+ "assets": [
+  {
+   "f": "main.css",
+   "t": "css",
+   "b": 8013
+  }
+ ],
+ "assetCount": 1,
+ "bytes": 8013,
+ "html": {
+  "mobile": {
+   "title": "progrider.org | 525: SSL handshake faile",
+   "lang": "en-US",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Click to reveal",
+   "w": "md"
+  },
+  {
+   "l": "cloudflare.com",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}
