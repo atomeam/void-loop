@@ -116,7 +116,7 @@
   "Colour names list"
  ],
  "auto": {
-  "scanned": "2026-11-05",
+  "scanned": "2026-11-08",
   "sites": {
    "colorscheme.ru": {
     "url": "https://colorscheme.ru/",
@@ -126,9 +126,121 @@
     ],
     "method": "heuristic",
     "features": []
+   },
+   "colorbook.io": {
+    "url": "https://colorbook.io/",
+    "scanned": "2026-11-08",
+    "pages": [
+     "https://www.colorbook.io/"
+    ],
+    "method": "model",
+    "features": [
+     {
+      "name": "Create color schemes",
+      "detail": "Create stunning color schemes, check accessibility compliance, and export professional palettes for your design projects.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/color/?c=ff5733 shows \"color\", \"scheme\"; not \"create\""
+     },
+     {
+      "name": "Check accessibility compliance",
+      "detail": "Check accessibility compliance, and export professional palettes for your design projects.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/color/?c=ff5733 shows none of its words; not \"check\", \"accessibility\", \"compliance\""
+     },
+     {
+      "name": "Export professional palettes",
+      "detail": "Create stunning color schemes, check accessibility compliance, and export professional palettes for your design projects.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/color/?c=ff5733 shows \"palette\"; not \"export\", \"professional\""
+     },
+     {
+      "name": "Interactive Color Picker",
+      "detail": "Professional color selection with precise HSL controls and real-time preview.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/color/?c=ff5733 shows \"color\"; not \"interactive\", \"picker\""
+     },
+     {
+      "name": "Universal Color Formats",
+      "detail": "Convert between HEX, RGB, HSL, CMYK and more with instant precision.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/color/?c=ff5733 shows \"color\"; not \"universal\", \"format\""
+     },
+     {
+      "name": "Accessibility Testing",
+      "detail": "WCAG compliance testing with contrast ratios and color blindness simulation.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/color/?c=ff5733 shows none of its words; not \"accessibility\", \"test\""
+     },
+     {
+      "name": "Color Harmonies",
+      "detail": "Generate perfect color schemes and export to Figma, CSS, or professional PDF formats.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/color/?c=ff5733 shows \"color\"; not \"harmony\""
+     },
+     {
+      "name": "Export to Figma",
+      "detail": "Generate perfect color schemes and export to Figma, CSS, or professional PDF formats.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/color/?c=ff5733 shows none of its words; not \"export\", \"figma\""
+     },
+     {
+      "name": "Export to CSS",
+      "detail": "Generate perfect color schemes and export to Figma, CSS, or professional PDF formats.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/color/?c=ff5733 shows \"css\"; not \"export\""
+     },
+     {
+      "name": "Export to PDF",
+      "detail": "Generate perfect color schemes and export to Figma, CSS, or professional PDF formats.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/color/?c=ff5733 shows none of its words; not \"export\", \"pdf\""
+     },
+     {
+      "name": "Discover color inspiration",
+      "detail": "Discover beautiful colors and get inspired.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/color/?c=ff5733 shows \"color\"; not \"discover\", \"inspiration\""
+     }
+    ]
    }
   },
-  "gaps": [],
+  "gaps": [
+   {
+    "name": "Check accessibility compliance",
+    "sites": [
+     "colorbook.io"
+    ]
+   },
+   {
+    "name": "Accessibility Testing",
+    "sites": [
+     "colorbook.io"
+    ]
+   },
+   {
+    "name": "Export to Figma",
+    "sites": [
+     "colorbook.io"
+    ]
+   },
+   {
+    "name": "Export to PDF",
+    "sites": [
+     "colorbook.io"
+    ]
+   }
+  ],
   "queued": []
  },
  "re": {
