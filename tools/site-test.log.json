@@ -1,20 +1,5 @@
 [
  {
-  "at": "2026-10-16T13:06:04Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "file",
-  "key": "play voidquest | nothing appeared",
-  "note": "fix: \"play voidquest\" nothing appeared; no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 (); fps 3 < 5"
- },
- {
-  "at": "2026-10-16T13:54:16Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
   "at": "2026-10-16T14:38:42Z",
   "passed": 0,
   "of": 25,
@@ -5930,5 +5915,97 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-08T00:17:13Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 421,
+   "failed": [
+    {
+     "ask": "translate hello to spanish",
+     "why": [
+      "answer misses /hola/i",
+      "skill article fallback"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-08T00:28:45Z",
+  "passed": 0,
+  "of": 105,
+  "ms": 251,
+  "kind": "file",
+  "key": "is waymo in austin | no skill caught it (it went to the model, which the tester n",
+  "failed": [
+   {
+    "ask": "what are you?",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play voidquest",
+    "why": "no .voidquest-card"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "no .voidquest-card"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "show me your videos",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "my actions",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "air quality in Tokyo",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+    "why": "missing text /News about me/"
+   },
+   {
+    "ask": "put on lofi hip hop pls",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "find the book the left hand of dakrness",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 421,
+   "failed": [
+    {
+     "ask": "translate hello to spanish",
+     "why": [
+      "answer misses /hola/i",
+      "skill article fallback"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"is waymo in austin\" no skill caught it (it went to the model, which the tester never calls); console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]

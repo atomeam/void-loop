@@ -3,13 +3,78 @@
  "cases": 103,
  "runsTotal": 300,
  "kinds": {
-  "file": 63,
-  "none": 34,
+  "none": 33,
   "tighten": 1,
+  "file": 63,
   "grow": 72,
-  "visitor": 130
+  "visitor": 131
  },
  "runs": [
+  {
+   "at": "2026-11-08T00:28:45Z",
+   "passed": 0,
+   "of": 105,
+   "kind": "file",
+   "ms": 251,
+   "note": "fix: \"is waymo in austin\" no skill caught it (it went to the model, which the tester never calls); console: Failed to load resource: the server responded with a status of 404 ()",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "no .voidquest-card"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "no .voidquest-card"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "missing text /News about me/"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-08T00:17:13Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-07T23:50:16Z",
    "passed": 0,
@@ -432,47 +497,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T19:04:57Z",
-   "passed": 96,
-   "of": 102,
-   "kind": "grow",
-   "ms": 413,
-   "note": "new ground passed, kept as a regression case: \"yo draw yourself\" (skill:cartoon)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 4 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 5"
-    },
-    {
-     "ask": "test me on that",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "film meatdata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "monitor pack for client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-07T18:51:55Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -526,18 +550,18 @@
   },
   {
    "from": "2026-10-11",
-   "runs": 77,
-   "passed": 675,
-   "of": 2105,
-   "broken": 51,
-   "brokenOf": 1278,
+   "runs": 76,
+   "passed": 717,
+   "of": 2099,
+   "broken": 49,
+   "brokenOf": 1228,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-18",
-   "runs": 37,
-   "passed": 2052,
-   "of": 2254
+   "runs": 36,
+   "passed": 2010,
+   "of": 2210
   },
   {
    "from": "2026-10-25",
@@ -547,11 +571,11 @@
   },
   {
    "from": "2026-11-01",
-   "runs": 186,
+   "runs": 188,
    "passed": 4532,
-   "of": 5268,
-   "broken": 4,
-   "brokenOf": 420,
+   "of": 5373,
+   "broken": 5,
+   "brokenOf": 525,
    "brokenPassed": 61,
    "ms": 387
   }
@@ -931,6 +955,8 @@
   "skill:veto-council": "2026-11-07T21:38:38Z",
   "skill:video-gen": "2026-11-07T22:01:59Z",
   "skill:void-breaker": "2026-11-07T22:57:43Z",
-  "skill:walker": "2026-11-07T23:22:42Z"
+  "skill:walker": "2026-11-07T23:22:42Z",
+  "skill:wants": "2026-11-08T00:28:45Z",
+  "skill:wheel": "2026-11-08T00:28:45Z"
  }
 }
