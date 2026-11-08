@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T15:47:18.224Z",
+ "updated": "2026-11-08T15:56:42.570Z",
  "last24h": {
   "ticks": 152,
-  "started": 55,
+  "started": 54,
   "requeued": 5,
   "setAside": 1,
   "probes": 4,
-  "errors": 88
+  "errors": 89
  },
  "broken": [],
  "held": [
@@ -203,33 +203,6 @@
   "probe:jazz-stations-near-brooklyn"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T15:52:21.219Z",
-   "open": 258,
-   "started": [
-    {
-     "id": "want-idea-f167636764",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 89
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 77,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T16:01:40.463Z",
    "open": 259,
@@ -2316,6 +2289,11 @@
   },
   {
    "at": "2026-11-08T15:47:18.224Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T15:56:42.570Z",
    "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
