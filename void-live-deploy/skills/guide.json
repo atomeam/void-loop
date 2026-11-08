@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
-    "proven": 57
+    "proven": 58
    },
    "from": 361,
    "to": 421
@@ -7193,8 +7193,10 @@
     "set up tests for the invoice reminders",
     "what will Verse verify for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. The void remembers each asking.",
+   "glow": 100,
    "n": 390
   },
   {
@@ -7210,7 +7212,7 @@
    ],
    "tier": "proven",
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. The void remembers each asking.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
    "n": 391
   },
@@ -7329,7 +7331,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
    "n": 398
   },

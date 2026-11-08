@@ -7147,5 +7147,8 @@
   {"ask": "status of https://example.com", "want": "skill:system-status"},
   {"ask": "tell me about the chess skill", "want": "skill:about-skill"},
   {"ask": "animate a red balloon rising", "want": "skill:video-gen"},
-  {"ask": "show this tab", "want": "skill:tab"}
+  {"ask": "show this tab", "want": "skill:tab"},
+  {"ask": "verify pack for client onboarding", "want": "skill:verify-pack"},
+  {"ask": "set up tests for the invoice reminders", "want": "skill:verify-pack"},
+  {"ask": "what will Verse verify for the support router", "want": "skill:verify-pack"}
 ]

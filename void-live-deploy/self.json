@@ -600,88 +600,92 @@
  },
  "commits": [
   {
-   "at": "2026-11-07T23:15:05Z",
-   "subject": "Maps: same-name places ask which, Spanish map asks answer, the asked spelling stays on the card (#2529)"
+   "at": "2026-11-08T02:24:02Z",
+   "subject": "Site test: quality upgrade: weakest answer was \"closer on the figure\" ("
   },
   {
-   "at": "2026-11-07T23:15:03Z",
-   "subject": "Revert \"Four in a Row on a phone: the check plays to the win, and stops only on a stalled game (mv9se6wa) (#2523)\" (#2524)"
+   "at": "2026-11-08T02:20:51Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T23:12:22Z",
-   "subject": "Failed jobs read: run 42421593713 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:14:50Z",
+   "subject": "Board: helper/family-gaps-f90f shipped (https://github.com/atomeam/void-loop/pull/2302)"
   },
   {
-   "at": "2026-11-07T23:03:38Z",
-   "subject": "Outcome exam: sports 63.9"
+   "at": "2026-11-08T02:14:36Z",
+   "subject": "Sixteen short family skills earn proven from a real ask each (#2302)"
   },
   {
-   "at": "2026-11-07T23:00:30Z",
-   "subject": "Failed jobs read: run 42422994701 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:14:20Z",
+   "subject": "Outcome exam: definitions 90"
   },
   {
-   "at": "2026-11-07T22:59:26Z",
-   "subject": "Site test: fix: \"what do you get if you merge a pizza and a black hole\""
-  },
-  {
-   "at": "2026-11-07T22:58:40Z",
+   "at": "2026-11-08T02:07:34Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-07T22:57:49Z",
-   "subject": "Failed jobs read: run 42422994690 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:59:23Z",
+   "subject": "Site test: fix: \"stlye like mickey mouse\" only \"waking up\" appeared, ne"
   },
   {
-   "at": "2026-11-07T22:54:14Z",
-   "subject": "Failed jobs read: run 42422542550 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:57:56Z",
+   "subject": "Failed jobs read: run 42435371571 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:51:44Z",
-   "subject": "Failed jobs read: run 42422542563 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:57:34Z",
+   "subject": "Incident: the browser suite failed on 89710442 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-07T22:48:06Z",
-   "subject": "Failed jobs read: run 42422095483 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:48:00Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T22:45:57Z",
-   "subject": "Failed jobs read: run 42422095618 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:41:53Z",
+   "subject": "A page sum answers before the skill lanes, and a tray chip stays put (#2301)"
   },
   {
-   "at": "2026-11-07T22:43:20Z",
-   "subject": "Failed jobs read: run 42419466975 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T00:52:20Z",
+   "subject": "Design loop: 8 pages fixed, 49 -> 32 design defects"
   },
   {
-   "at": "2026-11-07T22:41:32Z",
-   "subject": "Failed jobs read: run 42421593636 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T00:30:06Z",
+   "subject": "Site test: fix: \"is waymo in austin\" no skill caught it (it went to the"
   },
   {
-   "at": "2026-11-07T22:39:39Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
+   "at": "2026-11-08T00:20:52Z",
+   "subject": "Outcome exam: sports 54.6"
   },
   {
-   "at": "2026-11-07T22:39:30Z",
-   "subject": "Outcome exam: maps 40"
+   "at": "2026-11-08T00:16:44Z",
+   "subject": "Failed jobs read: run 42426949589 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:39:25Z",
-   "subject": "Failed jobs read: run 42421593686 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T00:09:58Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-07T22:37:18Z",
-   "subject": "Tower size: how heavy each Versus site really is"
+   "at": "2026-11-08T00:06:12Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-07T22:34:14Z",
-   "subject": "Failed jobs read: run 42420995785 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T00:02:54Z",
+   "subject": "Failed jobs read: run 42426738890 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T22:34:06Z",
-   "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
+   "at": "2026-11-08T00:02:37Z",
+   "subject": "Incident: the browser suite failed on 04addcf8 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-08T00:01:43Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "the sixteen short family skills earn proven from a real test and an ask each…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2302."
+   },
    {
     "name": "ndscalc.ru is a lane page on the calculator's VAT mode, worked out on the…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2294."
@@ -701,10 +705,6 @@
    {
     "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
-   },
-   {
-    "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
    }
   ],
   "ladders": [
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 27,
-  "week": 244
+  "day": 3,
+  "week": 242
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -917,8 +917,8 @@
   "source": "verse"
  },
  "tower": {
-  "target": "oneyeard.com",
-  "since": "2026-11-07",
+  "target": "protopage.com",
+  "since": "2026-11-08",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",

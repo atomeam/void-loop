@@ -14,9 +14,9 @@
  "bench_at": "2026-11-07",
  "totals": {
   "experiment": 0,
-  "tested": 2,
+  "tested": 1,
   "checked": 5,
-  "proven": 407
+  "proven": 408
  },
  "families": [
   {
@@ -3622,9 +3622,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 1,
-    "proven": 57
+    "proven": 58
    },
    "skills": [
     {
@@ -3882,10 +3882,12 @@
     },
     {
      "name": "verify-pack",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-07",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-08"
     },
     {
      "name": "business-clarify",
