@@ -1,0 +1,32 @@
+{
+ "site": "icanhazip.com",
+ "url": "https://icanhazip.com/",
+ "scanned": "2026-11-08",
+ "status": 200,
+ "assetCount": 0,
+ "bytes": 0,
+ "html": {
+  "mobile": {
+   "title": "",
+   "lang": "",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   }
+  },
+  "desktop": {}
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

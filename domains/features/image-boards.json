@@ -1279,5 +1279,19 @@
    }
   ],
   "queued": []
+ },
+ "re": {
+  "scanned": "2026-11-08",
+  "sites": {
+   "bbs.progrider.org": {
+    "url": "https://bbs.progrider.org/",
+    "scanned": "2026-11-08",
+    "blocked": {
+     "kind": "down",
+     "why": "the site answered 525"
+    },
+    "features": []
+   }
+  }
  }
 }

@@ -1,0 +1,117 @@
+{
+ "id": "translate: imtranslator.net",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 111,
+   "best": 1057,
+   "evidence": "Verse (/translate/?q=hello&to=es) 111 ms to the load event (median of 3, phone width) vs imtranslator.net 1057 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs imtranslator.net 3 of 3 loads answered",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs imtranslator.net 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs imtranslator.net 1 unnamed controls or images",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs imtranslator.net 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 3,
+   "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs imtranslator.net 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "worse",
+   "verse": 1,
+   "best": 2,
+   "evidence": "Verse (/translate/?q=hello&to=es) 1 of 2 right against the worked-out answer (missed: hola); judged against the standard, not imtranslator.net (the site is not asked). The page showed: \"Translate 100 languages, detected as you type. Documents, a dictionary, other words for any word, formal or informal, websites; listen, speak, read a photo, see them again offline. From Detect languag\"",
+   "at": "2026-11-08T13:32:54.737Z",
+   "was": "equal-and-better",
+   "of": 2
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 2,
+   "evidence": "Verse (/translate/?q=hello&to=es) 0 design defects vs imtranslator.net 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), imtranslator.net (0 low-contrast texts, 1 small tap targets, layout shift 0.18)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  },
+  "language count": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs imtranslator.net 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "speech in and out": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs imtranslator.net 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "camera text": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs imtranslator.net 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 14,
+   "best": 3,
+   "evidence": "Verse (/translate/?q=hello&to=es) 14 of 16 things a full answer shows vs imtranslator.net 3 of 16 things a full answer shows (Verse lacks: Swap languages, Voice input; site lacks: 100 languages, listen, speak, camera, copy, share, a history, saved phrases, works offline, Swap languages, Listen (text to speech), Voice input, Website translation)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "of": 16,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7.5,
+   "best": 3,
+   "evidence": "Verse (/translate/?q=hello&to=es) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs imtranslator.net 3 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:32:54.737Z",
+   "siteRead": true
+  }
+ }
+}
