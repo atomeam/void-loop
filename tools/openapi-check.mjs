@@ -14,6 +14,9 @@ const FN = join(ROOT, 'functions');
 export const INTERNAL = {
   '/api/unbidden': "what Verse says first on its own /brain/ page (functions/api/unbidden.js, lib/unbidden.js): GET only, one `after` id, lines written from its own live state at most once per gap for everyone and daily-capped; /brain/ is the only caller",
   '/api/crew': "Verse's own crew and wants for /team/ and /brain/ (functions/api/crew.js, lib/team-crew-run.js): read only, a few fixed D1 reads, cached 60 s; not a public API",
+  '/api/claim': "Starboard's sponsor claim wall (functions/api/claim.js): a tile is bought over x402 into Verse's wallet and written only after the payment settles; sponsor income counts",
+  '/api/sponsors': "Starboard's sponsor grid (functions/api/sponsors.js): 6 USDC confirmed, half to the house, the rest the visitor pool",
+  '/api/x402/sponsor/{plan}': "Starboard's sponsor split (functions/api/x402/sponsor/[plan].js): part of the sponsor grid and claim wall",
   '/api/agent': "Verse's agent behind /agent/ (functions/api/agent.js): a visitor's own thread by a random id, daily-capped free model tasks; not a public API",
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
   '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",
