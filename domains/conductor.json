@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T07:01:49.997Z",
+ "updated": "2026-11-08T07:11:10.584Z",
  "last24h": {
   "ticks": 152,
-  "started": 127,
+  "started": 128,
   "requeued": 3,
   "setAside": 1,
   "probes": 11,
@@ -108,8 +108,8 @@
  "handed": {
   "mvbl52gd": 1794121309997,
   "mva30i2e": 1794121309997,
-  "mva30j4u": 1794100248886,
-  "mvu167w7": 1794100248886,
+  "mva30j4u": 1794121870584,
+  "mvu167w7": 1794121870584,
   "mw62nds3": 1794036356378,
   "mw62nec5": 1794036920897,
   "mw62nexd": 1794037487017,
@@ -248,33 +248,6 @@
   "gap:want-exam-videos"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T07:07:14.725Z",
-   "open": 254,
-   "started": [
-    {
-     "id": "want-exam-translate",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 151
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T07:16:35.491Z",
    "open": 254,
@@ -3436,6 +3409,40 @@
     },
     {
      "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 254,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T07:11:10.584Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 109
+    },
+    {
+     "id": "mva30j4u",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
