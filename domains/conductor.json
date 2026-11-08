@@ -1,10 +1,10 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T11:24:21.348Z",
+ "updated": "2026-11-08T11:33:44.174Z",
  "last24h": {
   "ticks": 152,
-  "started": 89,
-  "requeued": 3,
+  "started": 90,
+  "requeued": 5,
   "setAside": 1,
   "probes": 7,
   "errors": 66
@@ -82,18 +82,6 @@
   "mva30i2e": 1794121309997,
   "mva30j4u": 1794121870584,
   "mvu167w7": 1794121870584,
-  "mw64zdif": 1794040298353,
-  "mw64zeen": 1794040864218,
-  "mw64zfbp": 1794041427771,
-  "mw64zg6r": 1794042551524,
-  "mw67c3b8": 1794044235354,
-  "mw67c49q": 1794044800070,
-  "mw67c55j": 1794045358335,
-  "mw67c61z": 1794045919454,
-  "mw69o1oe": 1794048161333,
-  "mw69o26m": 1794048726599,
-  "mw69o2oq": 1794049295347,
-  "mw69o36z": 1794049855650,
   "mw6c0ife": 1794052107789,
   "mw6c0iyu": 1794052668707,
   "mw6c0jik": 1794053226312,
@@ -128,10 +116,10 @@
   "mw5mm5fm": 1794103627590,
   "mw76d42k": 1794103627590,
   "mw76d517": 1794104192616,
-  "mw76d612": 1794106474000
+  "mw76d612": 1794137624174
  },
- "sweptAt": 1794124687770,
- "blueprintsAt": 1794125250160,
+ "sweptAt": 1794137624174,
+ "blueprintsAt": 1794137624174,
  "visitorAt": "2026-11-08T06:49:50Z",
  "visitorFiled": [
   "versus:sketch.io",
@@ -216,33 +204,6 @@
   "gap:want-exam-videos"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T11:29:41.777Z",
-   "open": 256,
-   "started": [
-    {
-     "id": "want-exam-translate",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 151
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T11:39:04.944Z",
    "open": 256,
@@ -2882,6 +2843,40 @@
   {
    "at": "2026-11-08T11:24:21.348Z",
    "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T11:33:44.174Z",
+   "open": 263,
+   "started": [
+    {
+     "id": "mvw5r36z",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 101
+    },
+    {
+     "id": "mw76d612",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 41
+    }
+   ],
+   "requeued": 2,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 13,
    "warnings": 1
   }
  ]
