@@ -35,9 +35,11 @@ function main() {
     git(['config', 'user.email', 'merge-gate@users.noreply.github.com'], dir);
     git(['config', 'user.name', 'merge-gate'], dir);
     const merged = git(['merge', '--no-commit', '--no-ff', base], dir);
-    // every conflicted path of this merge, whatever branch it took (the keep set below must see them all)
-    const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
+    // the paths the merge left in conflict: none when the merge is clean, and the gate below still needs the list (2026-11-07: the list
+    // was read outside the block it was made in, so every clean merge stopped the gate with "files is not defined")
+    let files = [];
     if (merged.status !== 0) {
+      files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
       const merging = git(['rev-parse', '-q', '--verify', 'MERGE_HEAD'], dir).status === 0;
       if (!files.length && merging) console.log('merge-gate: main is in, nothing left unmerged');
       else if (!onlyBuildConflicts(files)) {
