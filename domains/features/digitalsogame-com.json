@@ -1,0 +1,40 @@
+{
+ "floor": "digitalsogame.com",
+ "verse_page": null,
+ "source": "auto",
+ "sites": {},
+ "crawl": {
+  "sites": {
+   "digitalsogame.com": {
+    "floor": "digitalsogame.com",
+    "url": "https://digitalsogame.com/",
+    "robots": false,
+    "rendered": 1,
+    "sitemaps": 0,
+    "urls_found": 0,
+    "pages": 1,
+    "fetched": 2,
+    "skipped": {
+     "robots": 0,
+     "failed": 0
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://digitalsogame.com/"
+      ],
+      "features": []
+     }
+    ],
+    "features": [],
+    "verse_pages": 0,
+    "verse_urls": [],
+    "crawled": "2026-11-08"
+   }
+  },
+  "updated": "2026-11-08"
+ }
+}

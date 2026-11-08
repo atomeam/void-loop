@@ -1,0 +1,119 @@
+{
+ "id": "news: aljazeera.com",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 158,
+   "best": 1208,
+   "evidence": "Verse (/news/?sec=world) 158 ms to the load event (median of 3, phone width) vs aljazeera.com 1208 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 2,
+   "evidence": "Verse (/news/?sec=world) 3 of 3 loads answered vs aljazeera.com 2 of 3 loads answered",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "worse",
+   "verse": 37,
+   "best": 0,
+   "evidence": "Verse (/news/?sec=world) 37 px sideways overflow at 390 px vs aljazeera.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:53:07.151Z",
+   "was": "equal-and-better",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 2,
+   "evidence": "Verse (/news/?sec=world) 0 unnamed controls or images vs aljazeera.com 2 unnamed controls or images",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/news/?sec=world) 1 (1: the page shows itself again with the network cut) vs aljazeera.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 3,
+   "evidence": "Verse (/news/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs aljazeera.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 3,
+   "evidence": "Verse (/news/?sec=world) 0 of 3 right against the worked-out answer (missed: headline rows from at least three different sources, at least ten headline rows, each with an age, the sources that answered, three or more); judged against the standard, not aljazeera.com (the site is not asked). The page showed: \"News Headlines from many sources, the source and age on each. Every story links to the source. Works offline with the last headlines. Search the headlines Top stories World UK US Business Technology S\"",
+   "at": "2026-11-08T13:53:07.151Z",
+   "was": "equal-and-better",
+   "of": 3
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 9,
+   "best": 14,
+   "evidence": "Verse (/news/?sec=world) 9 design defects vs aljazeera.com 14 design defects: Verse (0 low-contrast texts, 9 small tap targets, layout shift 0.00), aljazeera.com (1 low-contrast texts, 13 small tap targets, layout shift 0.00)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  },
+  "breadth of sources": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/news/?sec=world) 0 of 1 shown vs aljazeera.com 0 of 1 shown (Verse lacks: five or more sources in the rows; site lacks: several sources)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "freshness": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/news/?sec=world) 0 of 1 shown vs aljazeera.com 1 of 1 shown (Verse lacks: an age on a story; site lacks: none)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "was": "equal-and-better",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "topic following": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 1,
+   "evidence": "Verse (/news/?sec=world) 2 of 2 shown vs aljazeera.com 1 of 2 shown (Verse lacks: none; site lacks: my news)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 20,
+   "best": 4,
+   "evidence": "Verse (/news/?sec=world) 20 of 23 things a full answer shows vs aljazeera.com 4 of 23 things a full answer shows (Verse lacks: story ages, the same story from several sources, Live freshness timestamps; site lacks: top stories, business, technology, science, sport, search, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "of": 23,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7,
+   "best": 2.5,
+   "evidence": "Verse (/news/?sec=world) 7 of 11 wider-use points (docs/WIDER-USE.md) vs aljazeera.com 2.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:53:07.151Z",
+   "siteRead": true
+  }
+ }
+}
