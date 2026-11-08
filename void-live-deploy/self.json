@@ -290,135 +290,7 @@
    "from": "new idea by growth agent; helper/verify-pack"
   }
  ],
- "open": [
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse as a tool inside other AIs",
-   "from": "void.plan.md Next #11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "WebMCP origin trial",
-   "from": "tools.json, navigator.modelContext feature-detected"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything that passes through Verse is input",
-   "from": "void.plan.md Next #14"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13",
-   "waits": "the miss board"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Fix pages that bring buyers",
-   "from": "claude, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Shared Voids, live",
-   "from": "void.plan.md Next #10"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Tasks that keep running after you leave, with an approve card",
-   "from": "void.assimilate.md row 3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "One owner page: board, agent log and live checks",
-   "from": "void.assimilate.md row 9"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything built before becomes a skill",
-   "from": "void.plan.md Next #8"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Clarify business ideas into system plans",
-   "from": "growth, 2026-11-03"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "archive/script_0.js and the English word list are still the top of the salvage queue",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "a country whose capital item has neither an English label nor an English Wikipedia sitelink still fails and stays a fix job",
-   "from": "cursor 2026-11-05"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "the news section chips still scroll sideways on a phone, on purpose",
-   "from": "cursor 2026-11-05"
-  }
- ],
+ "open": [],
  "games": [
   "tictactoe",
   "othello",
@@ -591,14 +463,35 @@
    "last": "2026-10-07"
   }
  ],
- "building": {
-  "at": "2026-10-18T08:58:46Z",
-  "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
- },
  "commits": [
+  {
+   "at": "2026-11-08T02:36:58Z",
+   "subject": "appraise: the compliment's no-number rule stops counting the kept name V01D as a value (mvc3uf8k)"
+  },
+  {
+   "at": "2026-11-08T02:35:57Z",
+   "subject": "members gate: the members pages need a member; Ask stays free (#2520)"
+  },
+  {
+   "at": "2026-11-08T02:35:46Z",
+   "subject": "Failed jobs read: run 42435549133 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T02:33:53Z",
+   "subject": "Paid products where the free page leaves off: the stage names them once, after the first answered ask (#2526)"
+  },
+  {
+   "at": "2026-11-08T02:33:34Z",
+   "subject": "Failed jobs read: run 42437690128 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T02:33:25Z",
+   "subject": "Better at verify pack: 3 more ways of asking answered right — new phrases: “verify pack for client onboarding” now opens verify-pack; “set…"
+  },
+  {
+   "at": "2026-11-08T02:33:09Z",
+   "subject": "Incident: the browser suite failed on a687e0e4 (void-live-deploy/incidents.json)"
+  },
   {
    "at": "2026-11-08T02:24:02Z",
    "subject": "Site test: quality upgrade: weakest answer was \"closer on the figure\" ("
@@ -650,34 +543,6 @@
   {
    "at": "2026-11-08T00:30:06Z",
    "subject": "Site test: fix: \"is waymo in austin\" no skill caught it (it went to the"
-  },
-  {
-   "at": "2026-11-08T00:20:52Z",
-   "subject": "Outcome exam: sports 54.6"
-  },
-  {
-   "at": "2026-11-08T00:16:44Z",
-   "subject": "Failed jobs read: run 42426949589 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T00:09:58Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-08T00:06:12Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-08T00:02:54Z",
-   "subject": "Failed jobs read: run 42426738890 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-08T00:02:37Z",
-   "subject": "Incident: the browser suite failed on 04addcf8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-08T00:01:43Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
   }
  ],
  "builders": {
@@ -859,8 +724,8 @@
   }
  ],
  "visible": {
-  "day": 3,
-  "week": 242
+  "day": 5,
+  "week": 244
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
