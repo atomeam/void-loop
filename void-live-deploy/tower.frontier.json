@@ -6803,6 +6803,24 @@
    "hardness": null,
    "title": "Saung Digital",
    "small": "2026-11-07"
+  },
+  {
+   "site": "healthtechnologygroup.com",
+   "rank": 160004,
+   "controls": 0,
+   "bytes": 191,
+   "hardness": null,
+   "title": "It works! Apache httpd",
+   "small": "2026-11-07"
+  },
+  {
+   "site": "maphill.com",
+   "rank": 160023,
+   "controls": 1,
+   "bytes": 1300,
+   "hardness": null,
+   "title": "maphill.com",
+   "small": "2026-11-07"
   }
  ]
 }

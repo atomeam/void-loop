@@ -600,91 +600,103 @@
  },
  "commits": [
   {
-   "at": "2026-11-07T21:28:42Z",
-   "subject": "Board: helper/ndscalc-lane-f90f shipped (https://github.com/atomeam/void-loop/pull/2294)"
+   "at": "2026-11-08T02:35:57Z",
+   "subject": "members gate: the members pages need a member; Ask stays free (#2520)"
   },
   {
-   "at": "2026-11-07T21:28:12Z",
-   "subject": "ndscalc.ru is the calculator's VAT mode, worked out on the device (#2294)"
+   "at": "2026-11-08T02:35:46Z",
+   "subject": "Failed jobs read: run 42435549133 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T21:28:05Z",
-   "subject": "Failed jobs read: run 42413667595 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:33:53Z",
+   "subject": "Paid products where the free page leaves off: the stage names them once, after the first answered ask (#2526)"
   },
   {
-   "at": "2026-11-07T21:27:22Z",
-   "subject": "Failed jobs read: run 42415871260 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:33:34Z",
+   "subject": "Failed jobs read: run 42437690128 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T21:26:39Z",
+   "at": "2026-11-08T02:33:25Z",
+   "subject": "Better at verify pack: 3 more ways of asking answered right — new phrases: “verify pack for client onboarding” now opens verify-pack; “set…"
+  },
+  {
+   "at": "2026-11-08T02:33:09Z",
+   "subject": "Incident: the browser suite failed on a687e0e4 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-08T02:24:02Z",
+   "subject": "Site test: quality upgrade: weakest answer was \"closer on the figure\" ("
+  },
+  {
+   "at": "2026-11-08T02:20:51Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T21:26:14Z",
-   "subject": "Failed jobs read: run 42415802902 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:14:50Z",
+   "subject": "Board: helper/family-gaps-f90f shipped (https://github.com/atomeam/void-loop/pull/2302)"
   },
   {
-   "at": "2026-11-07T21:25:50Z",
-   "subject": "Failed jobs read: run 42415393923 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:14:36Z",
+   "subject": "Sixteen short family skills earn proven from a real ask each (#2302)"
   },
   {
-   "at": "2026-11-07T21:25:42Z",
-   "subject": "Failed jobs read: run 42415646806 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:14:20Z",
+   "subject": "Outcome exam: definitions 90"
   },
   {
-   "at": "2026-11-07T21:25:29Z",
-   "subject": "Failed jobs read: run 42415646812 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T02:07:34Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-07T21:24:25Z",
-   "subject": "Failed jobs read: run 42415605452 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:59:23Z",
+   "subject": "Site test: fix: \"stlye like mickey mouse\" only \"waking up\" appeared, ne"
   },
   {
-   "at": "2026-11-07T21:23:50Z",
-   "subject": "Failed jobs read: run 42415258661 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:57:56Z",
+   "subject": "Failed jobs read: run 42435371571 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-07T21:22:54Z",
-   "subject": "Failed jobs read: run 42415394146 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T01:57:34Z",
+   "subject": "Incident: the browser suite failed on 89710442 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-07T21:22:48Z",
-   "subject": "Failed jobs read: run 42415258742 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T21:22:38Z",
+   "at": "2026-11-08T01:48:00Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-07T21:19:43Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-08T01:41:53Z",
+   "subject": "A page sum answers before the skill lanes, and a tray chip stays put (#2301)"
   },
   {
-   "at": "2026-11-07T21:19:26Z",
-   "subject": "Failed jobs read: run 42414953977 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-08T00:52:20Z",
+   "subject": "Design loop: 8 pages fixed, 49 -> 32 design defects"
   },
   {
-   "at": "2026-11-07T21:17:23Z",
-   "subject": "Four in a Row on a phone: the check plays to the win, and stops only on a stalled game (mv9se6wa) (#2523)"
+   "at": "2026-11-08T00:30:06Z",
+   "subject": "Site test: fix: \"is waymo in austin\" no skill caught it (it went to the"
   },
   {
-   "at": "2026-11-07T21:17:11Z",
-   "subject": "Board: versus/ajsonline-page shipped (https://github.com/atomeam/void-loop/pull/2521)"
-  },
-  {
-   "at": "2026-11-07T21:16:32Z",
-   "subject": "Site test: fix: \"play voidquest\" refused: don't know this yet; no .void"
-  },
-  {
-   "at": "2026-11-07T21:16:30Z",
-   "subject": "Versus: /journal/ — the open-access Earth science journal on the device (#2521)"
+   "at": "2026-11-08T00:20:52Z",
+   "subject": "Outcome exam: sports 54.6"
   }
  ],
  "builders": {
   "finished": [
    {
+    "name": "the sixteen short family skills earn proven from a real test and an ask each…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2302."
+   },
+   {
+    "name": "ndscalc.ru is a lane page on the calculator's VAT mode, worked out on the…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2294."
+   },
+   {
     "name": "/journal/ page: the open-access Earth science journal's own public RSS feed +…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2521."
+   },
+   {
+    "name": "The journal page also does what an author needs: the author guidelines, the…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2519. Built on the page of PR #2521 (the papers read live, the search, the saved list): this adds the other half of a journal's job - the scope, the submission checklist, the kinds of…"
    },
    {
     "name": "Translate: a bare word asks which language, and the French phrasing answers…",
@@ -693,18 +705,6 @@
    {
     "name": "Growth card: a touched branch keeps its reading through a bloom, and a late…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2511. A bloom for a new skill no longer takes the branch a reader touched, and the readout fills in what Verse asked for even when the reflect answer lands after the touch. The check…"
-   },
-   {
-    "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
-   },
-   {
-    "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
-   },
-   {
-    "name": "Savings load (cursor, 2026-11-05)",
-    "line": "\"how much do i need to save a month to have 1 million in 30 years at 7%\" stays under the site-test load budget. The worker keeps tool pages eight at a time, and the savings patterns are compiled once.…"
    }
   ],
   "ladders": [
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 22,
-  "week": 237
+  "day": 5,
+  "week": 253
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -917,8 +917,8 @@
   "source": "verse"
  },
  "tower": {
-  "target": "oneyeard.com",
-  "since": "2026-11-07",
+  "target": "protopage.com",
+  "since": "2026-11-08",
   "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
    "isitchristmas.com",
@@ -926,6 +926,6 @@
    "random.org"
   ],
   "beaten": 2,
-  "total": 1310
+  "total": 1312
  }
 }

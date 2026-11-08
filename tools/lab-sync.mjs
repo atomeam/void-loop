@@ -20,11 +20,14 @@ import { verdictOf } from './lab-grade.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const REPO = 'https://github.com/atomeam/a-to-mind.com';
 
-/** which drafts to test: new ones, ones whose page or SPEC changed since the catalog, or all / the named ones. Pure. */
-export function pending(drafts, catalog, { all = false, only = null } = {}) {
+// Pages Verse has tuned by hand since their import, which a re-import (a changed draft, or --all) would quietly undo. Only --only names them back in.
+//   f299-hum-crystal-music-box: its sound is rendered and mastered in tone.js (the draft played every note at a fixed low gain, no master stage)
+export const TUNED = new Set(['f299-hum-crystal-music-box']);
+/** which drafts to test: new ones, ones whose page or SPEC changed since the catalog, or all / the named ones; never a TUNED page unless named. Pure. */
+export function pending(drafts, catalog, { all = false, only = null, tuned = TUNED } = {}) {
   const have = new Map(catalog.map((e) => [e.slug, e]));
   return drafts.map((d) => ({ d, meta: metaOf(d.dir, d.html, d.spec), hash: hashOf(d) }))
-    .filter(({ meta, hash }) => (only ? only.has(meta.slug) : all || !have.has(meta.slug) || have.get(meta.slug).hash !== hash));
+    .filter(({ meta, hash }) => (only ? only.has(meta.slug) : !(tuned.has(meta.slug) && have.has(meta.slug)) && (all || !have.has(meta.slug) || have.get(meta.slug).hash !== hash)));
 }
 /** the catalog with the new results merged in by slug (an old entry stays unless replaced). Pure. */
 export function merge(catalog, entries) {
