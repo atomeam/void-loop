@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-07T20:18:35.506Z",
+  "at": "2026-11-08T02:14:17.563Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -103,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 95.8,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -119,10 +119,9 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp",
-            "close"
+            "temp"
           ],
-          "score": 57.1
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -237,17 +236,10 @@
       }
     },
     "sports": {
-      "score": 89.8,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "mlb scores",
           "failed": [
@@ -263,21 +255,7 @@
           "score": 83.3
         },
         {
-          "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
+          "ask": "mls scores",
           "failed": [
             "board"
           ],
@@ -350,32 +328,10 @@
       ]
     },
     "maps": {
-      "score": 89.2,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "map of Springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
-        {
-          "ask": "mapa de kioto",
-          "failed": [
-            "skill"
-          ],
-          "score": 75
-        },
-        {
-          "ask": "show me Paris on a map",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        }
-      ]
+      "fails": []
     },
     "timers": {
       "score": 100,
@@ -431,7 +387,7 @@
     }
   },
   "lowest": {
-    "domain": "maps",
-    "score": 89.2
+    "domain": "definitions",
+    "score": 90
   }
 }
