@@ -9,7 +9,7 @@ import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, relative } from 'node:path';
 
-const root = new URL('../void-live-deploy/', import.meta.url).pathname;
+const root = new URL('../void-live-deploy/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 export const MARK = '# csp-hashes (generated at deploy, tools/csp-hashes.mjs)';
 export const REST = "'self' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com";
 
@@ -41,14 +41,16 @@ export function pathsOf(rel) {
  *  directory's own. Two pages are enough to share (a combined page and its mode, /color/ and /color/gradient/: 2026-11-04 they took
  *  the rules to 101 of 100). A directory whose union would make the header longer than Cloudflare takes (2,000 characters) keeps a rule per page. */
 export const VALUE_MAX = 2000;
+/** the repo-relative path of a page file, forward slashes on every platform (Windows' relative() gives backslashes). Pure. */
+const relOf = (f) => relative(root, f).replace(/\\/g, '/');
 export function rules() {
   const per = [];
   for (const f of pages()) {
     const h = inlineHashes(readFileSync(f, 'utf8')); if (!h.length) continue;
-    for (const p of pathsOf(relative(root, f))) per.push({ p, h: h.join(' ') });
+    for (const p of pathsOf(relOf(f))) per.push({ p, h: h.join(' ') });
   }
   const dirOf = (p) => (p.match(/^\/([^/]+)\/./) || p.match(/^\/([^/]+)\/$/) || [])[1]; // a directory's own index counts in it: /x/* covers /x/, so a page there with other scripts must stop the sharing
-  const allPages = pages().flatMap((f) => pathsOf(relative(root, f)));
+  const allPages = pages().flatMap((f) => pathsOf(relOf(f)));
   const sets = new Map(); // directory -> every inline-script hash of every page under it (a directory's own index counts in it)
   for (const p of allPages) { const d = dirOf(p); if (!d) continue; const e = per.find((x) => x.p === p); const u = sets.get(d) || sets.set(d, new Set()).get(d); if (e) for (const h of e.h.split(' ')) u.add(h); }
   const value = (h) => 'script-src ' + REST + ' ' + h;

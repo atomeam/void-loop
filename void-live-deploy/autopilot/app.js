@@ -1,7 +1,7 @@
 // a-to-mind.com/autopilot/ (and /status/): Verse's status first (lib/status.js, /api/status), then what Verse did on its own, read live (functions/api/autopilot.js, /api/coder, /incidents.json).
 // A source that does not answer says so where its number would be; nothing here is estimated or filled in.
 import { mountRelated } from '/lib/toolkit.js';
-import { incidentsIn } from '/lib/autopilot.js';
+import { incidentsIn, boardOf } from '/lib/autopilot.js';
 import { PROBES, probeSummary } from '/lib/status.js';
 
 const $ = (id) => document.getElementById(id);
@@ -166,5 +166,21 @@ mountRelated($('related'), '/autopilot/', [
   { label: 'Verse Brain', href: () => '/brain/' },
   { label: 'Team chat: give Verse work', href: () => '/team/' },
 ]);
+// the owner's board on the same page as the log and the checks: shown only when this browser holds the owner's token and /api/misses
+// answers it. Anyone else sees nothing here, not even the heading (the section stays hidden).
+async function ownerBoard() {
+  if (!$('owner-board')) return;
+  let tok = '';
+  try { tok = await (await import('/lib/owner-link.js')).ownerLink(); } catch (_) {}
+  if (!tok) return;
+  let rows;
+  try { const r = await fetch('/api/misses', { headers: { authorization: 'Bearer ' + tok }, cache: 'no-store' }); if (r.status !== 200) return; rows = await r.json(); } catch (_) { return; }
+  const b = boardOf(rows), ul = $('ob-list'); ul.textContent = '';
+  if (!b.total) ul.append(line('none', 'note', 'Nothing missed yet.'));
+  for (const x of b.shown) ul.append(line(fmt(x.count) + '\u00d7', null, x.ask + (x.last ? ' \u00b7 last ' + x.last : '') + (x.fallback ? ' \u00b7 ' + x.fallback : '')));
+  $('ob-note').textContent = (b.more ? fmt(b.more) + ' more on the full board. ' : '') + 'Only you see this. Ask Verse "show the board" for every row and the earnings.';
+  $('owner-board').hidden = false;
+}
 loadStatus();
 load();
+ownerBoard();

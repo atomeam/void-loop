@@ -39,7 +39,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Checks (no dependencies needed)
-        run: node --test tools/lab-import.test.mjs
+        run: node --test tools/lab-import.test.mjs tools/hum-crystals.test.mjs
       - name: npm ci
         run: npm ci --no-audit --no-fund
       - name: Playwright version

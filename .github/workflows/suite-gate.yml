@@ -106,6 +106,15 @@ jobs:
         run: |
           set -uo pipefail
           cp test-output.txt "$RUNNER_TEMP/batch.txt" 2>/dev/null || : > "$RUNNER_TEMP/batch.txt"
+          # The action stops at its first red step. When test_sky.mjs was red, test_void.mjs never ran, and a sky check red on main
+          # too failed every batch (2026-11-06: all 8 shards of run 42283490432 stopped at test_sky). So test_void.mjs runs here
+          # once on the batch (its first run, not a retry), test_sky.mjs keeps its first result, and main alone runs both below.
+          sky_red=""
+          if [ ! -s test-output.txt ] && [ -s sky-output.txt ] && grep -q '^FAIL ' sky-output.txt; then
+            sky_red=1
+            node tools/test_void.mjs > "$RUNNER_TEMP/batch.txt" 2>&1 || true
+            grep '^FAIL ' sky-output.txt >> "$RUNNER_TEMP/batch.txt" || true
+          fi
           merged=$(git rev-parse HEAD)
           git reset -q --hard "$MAIN"
           git clean -fdq -e node_modules
@@ -115,6 +124,11 @@ jobs:
           node tools/self-context.mjs
           node tools/test_void.mjs > "$RUNNER_TEMP/main.txt" 2>&1 || true
           echo "main alone: $(tail -n 1 "$RUNNER_TEMP/main.txt")"
+          if [ -n "$sky_red" ]; then
+            node tools/test_sky.mjs > "$RUNNER_TEMP/main-sky.txt" 2>&1 || true
+            grep '^FAIL ' "$RUNNER_TEMP/main-sky.txt" >> "$RUNNER_TEMP/main.txt" || true
+            echo "main alone, sky: $(tail -n 1 "$RUNNER_TEMP/main-sky.txt")"
+          fi
       - name: The shard's verdict (a check red only with the batch fails it)
         if: steps.batch.outcome != 'success'
         env:

@@ -27,10 +27,14 @@ function cardOf(tab, ext0 = {}, sel = null) {
   return { el, head: el.kids[0], body, html: body.innerHTML, q, ext, calls, drags, th, said: q('.tab-said'), foot: q('.tab-foot'), ta: q('.tab-draft'), asks: body.querySelectorAll('.tab-ask button') };
 }
 
-test('not an ask matcher: every ask refused, run answers none, one stage kind', async () => {
-  assert.deepEqual(sk.examples, []); assert.deepEqual(sk.nearMisses, []);
+test('the extension still opens the card; "show this tab" is the one ask, and it summons that card', async () => {
   for (const a of ['tab', 'this tab', 'open a new tab', 'draft a reply']) assert.equal(sk.match(a.toLowerCase(), a), false, a);
-  assert.equal(await sk.run('tab', {}), 'none'); assert.deepEqual(Object.keys(sk.stageKinds), ['tab']);
+  assert.equal(sk.match('show this tab', 'show this tab'), true);
+  assert.equal(await sk.run('tab', {}), 'none');
+  const summoned = [];
+  assert.equal(await sk.run('show this tab', { summon: (k, o) => summoned.push([k, o]), say() {} }), 'tab');
+  assert.deepEqual(summoned, [['tab', { center: true }]]);
+  assert.deepEqual(Object.keys(sk.stageKinds), ['tab']);
 });
 test('no tab yet: just the header, placed and draggable, outlined when selected', () => {
   const c = cardOf(null, {}, 't1');

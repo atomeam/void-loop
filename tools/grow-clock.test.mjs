@@ -29,7 +29,7 @@ test('one conductor tick per run, so a runner is not held for hours, then a disp
   const code = (f) => norm(readFileSync(new URL('./' + f, import.meta.url), 'utf8')).replace(/^\s*\/\/.*$/gm, '');
   assert.match(code('conductor.mjs'), /growDue\(\{[^}]*\}\)[^\n]*start\('grow-self\.yml'\)/, 'the conductor starts the proving pass when it is due (owner, 2026-10-26)');
   assert.match(code('conductor-core.mjs'), /export const GROW_EVERY_H = 2;/, 'at most every 2 hours');
-  assert.deepEqual([...new Set([...y.matchAll(/secrets\.([A-Z_]+)/g)].map((m) => m[1]))], ['VOID_OWNER_TOKEN'], 'the queue token and nothing else');
+  assert.deepEqual([...new Set([...y.matchAll(/secrets\.([A-Z_]+)/g)].map((m) => m[1]))], ['VOID_OWNER_TOKEN', 'GROQ_API_KEY', 'CEREBRAS_API_KEY', 'GEMINI_API_KEY'], 'the queue token, plus the spare-model probes only (#2494: the coder starts on a spare free key when its Cloudflare budget is spent; nothing else)');
   assert.match(y, /permissions:\n  actions: write.*\n  contents: write/);
   assert.match(y, /group: grow-clock\n  cancel-in-progress: false/);
 });

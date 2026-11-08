@@ -26,7 +26,7 @@ test('a file that cannot load here is skipped, and a retired skill is not report
   assert.deepEqual(await unlistedSkills(dir, ['map']), []);
 });
 test('the real index lists every real skill', async () => {
-  const dir = new URL('../void-live-deploy/skills/', import.meta.url).pathname;
+  const dir = new URL('../void-live-deploy/skills/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
   assert.deepEqual(await unlistedSkills(dir), []);
 });
 

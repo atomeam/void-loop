@@ -25,7 +25,7 @@ export function ownerChecks(root) {
   return bad;
 }
 if (import.meta.url === 'file://' + process.argv[1]) {
-  const root = new URL('../void-live-deploy/', import.meta.url).pathname;
+  const root = new URL('../void-live-deploy/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
   const hits = [];
   for (const f of walk(root, (p) => /\/(vendor|models|node_modules)(\/|$)/.test(p))) for (const h of linesWith(readFileSync(f, 'utf8'))) hits.push({ ...h, file: relative(root, f) });
   for (const h of hits) console.log(`${h.kind}  void-live-deploy/${h.file}:${h.line}`);

@@ -8,7 +8,7 @@ import path from 'node:path';
 import { chromium } from 'playwright-core';
 import { runFlows, formatReport } from './a11y-flows.mjs';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.txt': 'text/plain', '.webmanifest': 'application/manifest+json' };
 const server = http.createServer((req, res) => {
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }

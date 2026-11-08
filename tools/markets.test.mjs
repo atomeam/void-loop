@@ -10,7 +10,7 @@ import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP, parseSpark, overlay
 import { routeAsk, TOOLS, RELATED } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 import { NOW, DAYMS, csvFixture, resp, calls, fake } from './markets.fixtures.mjs';
 test('what a typed symbol means: tickers, names, indices, coins, currency pairs, and nothing a stranger could use to pick a host', () => {
   assert.deepEqual([resolve('aapl').sym, resolve('AAPL').kind, resolve('aapl').stooq, resolve('aapl').yahoo], ['AAPL', 'stock', 'aapl.us', 'AAPL']);

@@ -8,7 +8,7 @@
 // 4. wants:       each gap is filed as a want (topic only: game + feature), never studied text or a visitor's words.
 //   node tools/expectations.mjs --game chess --text <private file>   mine, diff, print wants; --learn also adds the general rules
 import fs from 'node:fs'; import path from 'node:path'; import os from 'node:os'; import { pathToFileURL } from 'node:url';
-const here = path.dirname(new URL(import.meta.url).pathname);
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 export const LEARNED = path.join(here, 'completeness-rules.json');
 // feature: words that show a manual expects it, and code that shows Verse has it
 export const VOCAB = {
