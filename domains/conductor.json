@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T16:06:09.864Z",
+ "updated": "2026-11-08T16:15:33.659Z",
  "last24h": {
   "ticks": 152,
   "started": 53,
@@ -90,12 +90,6 @@
   "mva30i2e": 1794146628428,
   "mva30j4u": 1794147189869,
   "mvu167w7": 1794121870584,
-  "mw6gp0xs": 1794061673897,
-  "mw6j1y1p": 1794064487966,
-  "mw6j1z2b": 1794065050256,
-  "mw6j205o": 1794065617396,
-  "mw6j21ag": 1794066177286,
-  "mw6lebza": 1794067860613,
   "mw6leckb": 1794068445175,
   "mw6led6f": 1794069185480,
   "mw6njzvr": 1794071493896,
@@ -115,10 +109,11 @@
   "mw76d517": 1794104192616,
   "mw76d612": 1794137624174,
   "mw7rlm3e": 1794138754412,
-  "mw7rlmmm": 1794147754981
+  "mw7rlmmm": 1794147754981,
+  "mw7rlnb1": 1794154533659
  },
- "sweptAt": 1794146628428,
- "blueprintsAt": 1794146628428,
+ "sweptAt": 1794154533659,
+ "blueprintsAt": 1794154533659,
  "visitorAt": "2026-11-08T14:03:48Z",
  "visitorFiled": [
   "versus:gmgcolor.com",
@@ -203,39 +198,6 @@
   "probe:jazz-stations-near-brooklyn"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T16:11:00.613Z",
-   "open": 263,
-   "started": [
-    {
-     "id": "want-idea-f167636764",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 89
-    },
-    {
-     "id": "mw6lebza",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 77,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T16:20:45.175Z",
    "open": 262,
@@ -2273,6 +2235,42 @@
   {
    "at": "2026-11-08T16:06:09.864Z",
    "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T16:15:33.659Z",
+   "open": 266,
+   "started": [
+    {
+     "id": "mvw5r36z",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mw7rlnb1",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "shorts.yml"
+   ],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 15,
    "warnings": 1
   }
  ]
