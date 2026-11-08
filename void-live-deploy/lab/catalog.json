@@ -1,5 +1,86 @@
 [
  {
+  "slug": "f628-concrete-mulch-volume",
+  "num": 628,
+  "title": "Concrete and mulch volume",
+  "blurb": "Job: Enter the sizes of a slab, footing, column or mulch bed; see the cubic metres or yards and how many bags to buy, with a live drawing of the shape, then copy",
+  "status": "works",
+  "source": "F628-concrete-mulch-volume",
+  "hash": "08a8aa8bcc06",
+  "grade": "tool"
+ },
+ {
+  "slug": "f627-paint-estimator",
+  "num": 627,
+  "title": "Paint estimator",
+  "blurb": "Job: Enter room dimensions, number of doors and windows, coats of paint and coverage.",
+  "status": "works",
+  "source": "F627-paint-estimator",
+  "hash": "23f727e46ff4",
+  "grade": "tool"
+ },
+ {
+  "slug": "f626-flooring-tile-estimator",
+  "num": 626,
+  "title": "Flooring and tile estimator",
+  "blurb": "Job: Enter one or more room sizes, tile size and waste percent.",
+  "status": "works",
+  "source": "F626-flooring-tile-estimator",
+  "hash": "c776727af996",
+  "grade": "tool"
+ },
+ {
+  "slug": "f625-regex-tester",
+  "num": 625,
+  "title": "Regex tester",
+  "blurb": "Job: Paste a regular expression and a block of text; see every match and its capture groups highlighted live, get a plain-English breakdown of what the pattern",
+  "status": "works",
+  "source": "F625-regex-tester",
+  "hash": "ae67bf6f5a85",
+  "grade": "tool"
+ },
+ {
+  "slug": "f624-text-diff",
+  "num": 624,
+  "title": "Text diff",
+  "blurb": "Job: Paste two versions of a text (or two documents) and instantly see what changed line by line and word by word.",
+  "status": "works",
+  "source": "F624-text-diff",
+  "hash": "2786307577d0",
+  "grade": "tool"
+ },
+ {
+  "slug": "f623-orientation-mlp-spatial-card-weaver",
+  "num": 623,
+  "title": "Orientation-MLP Spatial Card Weaver",
+  "blurb": "DeviceOrientationEvent (beta/gamma) plus a short pointer-velocity history form the causal input vector to a pure-JS 3-layer MLP (no external libraries).",
+  "status": "works",
+  "source": "F623-orientation-mlp-spatial-card-weaver",
+  "hash": "d7c55f126be7",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f622-sound-level-meter",
+  "num": 622,
+  "title": "Sound level meter",
+  "blurb": "Job: Turn on the microphone, see the live sound level in dBFS with a peak hold, and copy the reading.",
+  "status": "works",
+  "source": "F622-sound-level-meter",
+  "hash": "8be09ddc07fc",
+  "grade": "tool"
+ },
+ {
+  "slug": "f621-signature-pad",
+  "num": 621,
+  "title": "Signature pad",
+  "blurb": "Job: Draw your signature with a mouse or finger on a clean pad, then download a transparent PNG ready to paste into a form or document.",
+  "status": "works",
+  "source": "F621-signature-pad",
+  "hash": "d15ac1ef70ad",
+  "grade": "tool"
+ },
+ {
   "slug": "f620-pomodoro-task-timer",
   "num": 620,
   "title": "Pomodoro task timer",

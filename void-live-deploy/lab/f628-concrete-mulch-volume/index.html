@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4a9eff; --text:#e8eaed; --muted:#9aa0a6; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+#chrome { padding:12px 16px; background:#16181d; border-bottom:1px solid #2a2e36; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+#chrome h1 { margin:0; font-size:1.1rem; flex:1; }
+button, select, input { font:inherit; padding:6px 10px; border-radius:6px; border:1px solid #3c424c; background:#22262e; color:var(--text); }
+button { background:var(--accent); color:#fff; border:none; cursor:pointer; }
+button.secondary { background:#333; }
+#items { padding:12px; display:flex; flex-direction:column; gap:12px; }
+.item { background:var(--card); border-radius:10px; padding:12px; display:grid; grid-template-columns:1fr 180px; gap:12px; }
+@media (max-width:700px) { .item { grid-template-columns:1fr; } }
+.fields { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; }
+label { display:flex; flex-direction:column; font-size:0.8rem; color:var(--muted); gap:2px; }
+canvas { width:100%; height:160px; background:#111; border-radius:6px; }
+.summary { font-size:0.9rem; margin-top:6px; }
+.total { padding:12px 16px; background:#16181d; border-top:1px solid #2a2e36; font-weight:600; }
+.note { font-size:0.75rem; color:var(--muted); margin-top:4px; }
+#status { font-size:0.8rem; color:var(--muted); margin-left:auto; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Concrete and mulch volume · Verse lab</title>
+<meta name="description" content="Job: Enter the sizes of a slab, footing, column or mulch bed; see the cubic metres or yards and how many bags to buy, with a live drawing of the shape, then copy">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Concrete and mulch volume · Verse lab">
+<meta property="og:description" content="Job: Enter the sizes of a slab, footing, column or mulch bed; see the cubic metres or yards and how many bags to buy, with a live drawing of the shape, then copy">
+<meta property="og:url" content="https://a-to-mind.com/lab/f628-concrete-mulch-volume/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f628-concrete-mulch-volume/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <h1>Concrete and mulch volume</h1>
+  <label>Units
+    <select id="units"><option value="imp">Imperial (ft / cu ft / yd³)</option><option value="met">Metric (m / m³)</option></select>
+  </label>
+  <button id="add">+ Add item</button>
+  <button id="copy" class="secondary">Copy list</button>
+  <button id="csv" class="secondary">Download CSV</button>
+  <button id="txt" class="secondary">Download .txt</button>
+  <span id="status">ready</span>
+</div>
+<div id="items"></div>
+<div class="total" id="total">Total: 0</div>
+<div class="note" style="padding:0 16px 16px">Bag yields are approximate industry averages (60 lb concrete bag ≈ 0.45 cu ft; 80 lb ≈ 0.60 cu ft; mulch bags as labelled). Waste is extra volume ordered. Shapes are simple rectangles or circles only.</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
