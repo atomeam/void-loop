@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T02:07:07.590Z",
+ "updated": "2026-11-08T02:16:32.616Z",
  "last24h": {
   "ticks": 153,
   "started": 152,
@@ -110,7 +110,6 @@
   "mva30i2e": 1794099686462,
   "mva30j4u": 1794100248886,
   "mvu167w7": 1794100248886,
-  "mw5r973u": 1794017238961,
   "mw5r97ts": 1794017799175,
   "mw5r98ir": 1794018360402,
   "mw5r9988": 1794018922476,
@@ -178,7 +177,8 @@
   "mvvjzso8": 1794103068152,
   "mw76d356": 1794103068152,
   "mw5mm5fm": 1794103627590,
-  "mw76d42k": 1794103627590
+  "mw76d42k": 1794103627590,
+  "mw76d517": 1794104192616
  },
  "sweptAt": 1794103627590,
  "blueprintsAt": 1794103627590,
@@ -266,33 +266,6 @@
   "probe:is-45-50-12-25-3-30"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T02:07:18.961Z",
-   "open": 259,
-   "started": [
-    {
-     "id": "mw5r973u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 246,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T02:16:39.175Z",
    "open": 258,
@@ -4017,6 +3990,34 @@
    "sweep": true,
    "blueprints": 0,
    "held": 243,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T02:16:32.616Z",
+   "open": 265,
+   "started": [
+    {
+     "id": "mw76d517",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 250,
    "warnings": 1
   }
  ]
