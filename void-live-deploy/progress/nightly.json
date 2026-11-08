@@ -1,15 +1,15 @@
 {
- "at": "2026-11-07T14:08:16.754Z",
+ "at": "2026-11-08T14:21:34.317Z",
  "share": {
-  "loop": 65,
-  "outside": 914,
-  "bot": 69,
-  "of": 979,
+  "loop": 66,
+  "outside": 939,
+  "bot": 77,
+  "of": 1005,
   "share": 6.6
  },
  "pick": {
   "kind": "exam",
-  "id": "translate",
-  "why": "lowest exam domain translate at 89.2"
+  "id": "videos",
+  "why": "lowest exam domain videos at 56.7"
  }
 }
