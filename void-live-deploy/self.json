@@ -600,6 +600,34 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T21:27:45Z",
+   "subject": "Verse fixes its proverb skill: learn to handle \"funny proverb about luck\""
+  },
+  {
+   "at": "2026-11-08T21:20:14Z",
+   "subject": "Design loop: 8 pages fixed, 43 -> 9 design defects"
+  },
+  {
+   "at": "2026-11-08T20:48:29Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-08T19:54:54Z",
+   "subject": "Design loop: 9 pages fixed, 30 -> 1 design defects"
+  },
+  {
+   "at": "2026-11-08T19:47:54Z",
+   "subject": "Shorts loop: today's trial and verdicts"
+  },
+  {
+   "at": "2026-11-08T19:18:59Z",
+   "subject": "Site test: fps floor 6 -> 7"
+  },
+  {
+   "at": "2026-11-08T19:06:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-08T18:49:15Z",
    "subject": "Finding: rides asked a live routing service (findings/rides)"
   },
@@ -650,34 +678,6 @@
   {
    "at": "2026-11-08T16:26:45Z",
    "subject": "Verse routes \"jazz stations near brooklyn\" to its local-stations skill the answer is not checked"
-  },
-  {
-   "at": "2026-11-08T16:20:24Z",
-   "subject": "Shorts loop: today's trial and verdicts"
-  },
-  {
-   "at": "2026-11-08T16:12:03Z",
-   "subject": "Design loop: 6 pages fixed, 25 -> 4 design defects"
-  },
-  {
-   "at": "2026-11-08T14:55:33Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-08T14:32:02Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-08T14:27:34Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-11-08T14:15:21Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-08T14:09:30Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 22,
-  "week": 261
+  "day": 25,
+  "week": 264
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
