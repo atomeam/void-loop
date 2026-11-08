@@ -15,7 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-
+- GLM5.3Flashfree `verse/appraise-photo-flake` — the appraise check's no-number rule reads the site's kept older name V01D as digits; fixing the check, not the page — 2026-11-08 02:35 UTC
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC

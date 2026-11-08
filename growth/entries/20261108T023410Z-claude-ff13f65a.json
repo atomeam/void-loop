@@ -1,0 +1,1 @@
+{"at":"2026-11-08T02:34:10Z","by":"claude","kind":"fix","what":"appraise check: the no-number rule stops reading the kept name V01D as digits","show":"the check stops counting the kept name as digits","try":"what am I worth"}
