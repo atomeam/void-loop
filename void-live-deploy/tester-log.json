@@ -3,13 +3,65 @@
  "cases": 103,
  "runsTotal": 300,
  "kinds": {
-  "none": 33,
-  "tighten": 1,
-  "file": 63,
+  "none": 32,
+  "file": 64,
   "grow": 72,
-  "visitor": 131
+  "visitor": 132
  },
  "runs": [
+  {
+   "at": "2026-11-08T01:57:49Z",
+   "passed": 96,
+   "of": 105,
+   "kind": "file",
+   "ms": 359,
+   "note": "fix: \"stlye like mickey mouse\" only \"waking up\" appeared, never the answer; console: Failed to load resource: the server responded with a status of 404 ()",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "weather in boston",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "are you web4",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "attention field",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo render a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "only \"waking up\" appeared, never the answer"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-08T01:43:57Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-08T00:28:45Z",
    "passed": 0,
@@ -483,20 +535,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-07T19:44:31Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T19:16:08Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -551,17 +589,17 @@
   {
    "from": "2026-10-11",
    "runs": 76,
-   "passed": 717,
-   "of": 2099,
-   "broken": 49,
-   "brokenOf": 1228,
+   "passed": 794,
+   "of": 2138,
+   "broken": 47,
+   "brokenOf": 1178,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-18",
-   "runs": 36,
-   "passed": 2010,
-   "of": 2210
+   "runs": 34,
+   "passed": 1933,
+   "of": 2121
   },
   {
    "from": "2026-10-25",
@@ -571,9 +609,9 @@
   },
   {
    "from": "2026-11-01",
-   "runs": 188,
-   "passed": 4532,
-   "of": 5373,
+   "runs": 190,
+   "passed": 4628,
+   "of": 5478,
    "broken": 5,
    "brokenOf": 525,
    "brokenPassed": 61,
@@ -957,6 +995,8 @@
   "skill:void-breaker": "2026-11-07T22:57:43Z",
   "skill:walker": "2026-11-07T23:22:42Z",
   "skill:wants": "2026-11-08T00:28:45Z",
-  "skill:wheel": "2026-11-08T00:28:45Z"
+  "skill:wheel": "2026-11-08T00:28:45Z",
+  "skill:where-is": "2026-11-08T01:57:49Z",
+  "skill:whisper-network": "2026-11-08T01:57:49Z"
  }
 }
