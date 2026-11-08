@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 58
+    "proven": 59
    },
    "from": 361,
    "to": 421
@@ -7178,8 +7178,10 @@
     "set up monitors for the invoice reminders",
     "what will Verse watch for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it. It has not failed a reader yet.",
+   "glow": 100,
    "n": 389
   },
   {
@@ -7551,7 +7553,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the verse itself are built on it. It has not failed a reader yet.",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. It has not failed a reader yet.",
    "glow": 100,
    "n": 411
   },
@@ -7717,7 +7719,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. It has not failed a reader yet.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. It has not failed a reader yet.",
    "glow": 100,
    "n": 421
   },
