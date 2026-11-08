@@ -3905,6 +3905,22 @@ try {
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
     await P.ctx.close(); }
+  // the members gate's public offer (/join/): the $1 trial, the license join, and the cookie exchange that opens the nav pages
+  if (want("join: the members offer takes a license and sets the gate cookie, then returns to the page asked for")) { const J = await fresh();
+    const seen = { join: null, session: '' };
+    await J.ctx.route(/\/api\/team\?jobs/, (r) => r.fulfill(json({ ok: true, products: [{ slug: 'join-the-team', name: 'Join the Team' }, { slug: 'yinmj', name: 'Void Monthly' }] })));
+    await J.ctx.route(/\/api\/team$/, (r) => { try { seen.join = JSON.parse(r.request().postData() || '{}'); } catch (_) {} return r.fulfill(json({ ok: true, name: 'Sam', key: 'vt1.0123456789ab.' + 'a'.repeat(32) })); });
+    await J.ctx.route(/\/api\/member-session$/, (r) => { seen.session = r.request().headers().authorization || ''; return r.fulfill(json({ ok: true, signedIn: true, name: 'Sam' })); });
+    await J.p.goto(base + 'join/?next=%2Fsalvage%2F');
+    const text = await J.p.evaluate(() => document.body.innerText);
+    await J.p.fill('#name', 'Sam'); await J.p.fill('#license', 'AAAA-BBBB-CCCC-DDDD');
+    await J.p.click('#join button[type=submit]');
+    await J.p.waitForURL(/\/salvage\//, { timeout: 8000 }).catch(() => {});
+    check('join: the members offer says the $1 7-day trial, sends the license to the team and the member key to the gate cookie, then returns to ?next=',
+      /\$1/.test(text) && /7-day trial/.test(text) && !!seen.join && seen.join.do === 'member' && seen.join.product === 'join-the-team' && seen.join.key === 'AAAA-BBBB-CCCC-DDDD' && seen.join.name === 'Sam'
+        && /^Bearer vt1\.0123456789ab\.a{32}$/.test(seen.session) && /\/salvage\//.test(J.p.url()) && !J.errors.length,
+      JSON.stringify({ text: text.slice(0, 120), seen, url: J.p.url(), errors: J.errors }));
+    await J.ctx.close(); }
   // (2026-10-22: the replies say plainly Verse is a program with no feelings, skills/feelings.js)
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Verse's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
@@ -4271,7 +4287,10 @@ try {
     await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
     const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
-    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => P.p.$('#whatsnew-bell, [data-showcase="show"]'), 8000);
+    // the home does not paint the away line (#2291); the sparkle on the stage starts the same walkthrough
+    const bell = await P.p.$('#whatsnew-bell');
+    if (bell && await bell.isVisible().catch(() => false)) await bell.click(); else await P.p.click('[data-showcase="show"]');
     await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
     const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
     // the panel re-places on a 400 ms tick while the step's card lands and grows (skills/showcase.js bar()): read the chip's spot

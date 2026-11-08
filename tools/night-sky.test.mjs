@@ -7,7 +7,7 @@ import skill, { nightSkyOf, placeFromZone, project, skyColor, starRadius } from 
 test('night sky: opened and closed by the asks people type, not by look-alikes', () => {
   for (const a of ['show me the sky', 'Show the night sky', "what's in the sky tonight", 'what is in the sky right now', 'night sky', 'sky tonight', 'what does the sky look like tonight', 'stargazing'])
     assert.deepEqual(nightSkyOf(a), { show: true }, a);
-  for (const a of ['hide the sky', 'close the night sky', 'back to the void']) assert.deepEqual(nightSkyOf(a), { hide: true }, a);
+  for (const a of ['hide the sky', 'close the night sky', 'close the sky', 'turn off the sky', 'back to the void']) assert.deepEqual(nightSkyOf(a), { hide: true }, a);
   for (const a of ['why is the sky blue', 'sky news', 'skyrim', 'the sky is the limit', 'moon phase tonight', 'show me the stars of the show']) assert.equal(nightSkyOf(a), null, a);
   for (const e of skill.examples) assert.ok(skill.match(e.toLowerCase(), e), e);
   for (const e of skill.nearMisses) assert.ok(!skill.match(e.toLowerCase(), e), e);

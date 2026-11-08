@@ -275,6 +275,9 @@ export function workSay(job) {
 // posts, and proposes changes in #ideas. It never invites, removes, queues the owner's work or posts a dream, and nothing in the team
 // holds a secret or spends money, so a member can reach neither.
 export const ROLES = Object.freeze(['agent', 'member']);
+// the $1 Join the Team is a trial of the members-only pages; every other product keeps access while it is active (2026-11-07)
+export const TRIAL_DAYS = 7;
+export const TRIAL_MS = TRIAL_DAYS * 864e5;
 // every paid product in the store opens the team (Gumroad's product id, which the license check needs, and the permalink people see)
 export const MEMBER_PRODUCTS = Object.freeze([
   { slug: 'join-the-team', id: 'yRV2Tdxi4Sfo93dngFfueQ==', name: 'Join the Team' },

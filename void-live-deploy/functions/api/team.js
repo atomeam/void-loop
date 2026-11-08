@@ -72,7 +72,7 @@ const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, 
 const DAY = 864e5;
 
 const TABLES = [
-  'CREATE TABLE IF NOT EXISTS void_team_agents (id TEXT PRIMARY KEY, name TEXT NOT NULL UNIQUE COLLATE NOCASE, about TEXT NOT NULL DEFAULT \'\', key TEXT NOT NULL, joined INTEGER NOT NULL, seen INTEGER NOT NULL DEFAULT 0, off INTEGER NOT NULL DEFAULT 0, auto INTEGER NOT NULL DEFAULT 1, job TEXT, job_at INTEGER, thread INTEGER, done INTEGER NOT NULL DEFAULT 0, day INTEGER NOT NULL DEFAULT 0, posts INTEGER NOT NULL DEFAULT 0, last_post INTEGER NOT NULL DEFAULT 0, skip TEXT NOT NULL DEFAULT \'\')',
+  'CREATE TABLE IF NOT EXISTS void_team_agents (id TEXT PRIMARY KEY, name TEXT NOT NULL UNIQUE COLLATE NOCASE, about TEXT NOT NULL DEFAULT \'\', key TEXT NOT NULL, joined INTEGER NOT NULL, seen INTEGER NOT NULL DEFAULT 0, off INTEGER NOT NULL DEFAULT 0, auto INTEGER NOT NULL DEFAULT 1, job TEXT, job_at INTEGER, thread INTEGER, done INTEGER NOT NULL DEFAULT 0, day INTEGER NOT NULL DEFAULT 0, posts INTEGER NOT NULL DEFAULT 0, last_post INTEGER NOT NULL DEFAULT 0, skip TEXT NOT NULL DEFAULT \'\', until INTEGER NOT NULL DEFAULT 0)',
   'CREATE TABLE IF NOT EXISTS void_team_channels (code TEXT PRIMARY KEY, title TEXT NOT NULL, about TEXT NOT NULL, created INTEGER NOT NULL, by TEXT NOT NULL, msgs INTEGER NOT NULL DEFAULT 0, last INTEGER NOT NULL DEFAULT 0)',
   'CREATE TABLE IF NOT EXISTS void_team_msgs (id INTEGER PRIMARY KEY AUTOINCREMENT, channel TEXT NOT NULL, thread INTEGER NOT NULL DEFAULT 0, at INTEGER NOT NULL, by TEXT NOT NULL, body TEXT NOT NULL, job TEXT, mentions TEXT NOT NULL DEFAULT \'\', replies INTEGER NOT NULL DEFAULT 0, last_reply INTEGER NOT NULL DEFAULT 0)',
   'CREATE INDEX IF NOT EXISTS void_team_msgs_channel ON void_team_msgs (channel, thread, id)',
@@ -88,7 +88,7 @@ const TABLES = [
 // when the address was last set
 // role: 'agent' (the owner invited it) or 'member' (it bought from the store, lib/team.js MEMBER_PRODUCTS); sale: the keyed hash of that purchase
 // crew (lib/team-crew.js): a house member Verse runs on its own clock, what it last did (public, one line) and when
-const COLUMNS = ["role TEXT NOT NULL DEFAULT 'agent'", "sale TEXT NOT NULL DEFAULT ''", 'crew INTEGER NOT NULL DEFAULT 0', "did TEXT NOT NULL DEFAULT ''", 'did_at INTEGER NOT NULL DEFAULT 0', "hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
+const COLUMNS = ["role TEXT NOT NULL DEFAULT 'agent'", "sale TEXT NOT NULL DEFAULT ''", 'crew INTEGER NOT NULL DEFAULT 0', "did TEXT NOT NULL DEFAULT ''", 'did_at INTEGER NOT NULL DEFAULT 0', "hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0', 'until INTEGER NOT NULL DEFAULT 0'];
 const ready = new WeakSet(); // once per database binding in this isolate
 async function tables(env, now) {
   if (ready.has(env.DB)) return;
@@ -510,18 +510,19 @@ export async function joinMember(env, p, now = Date.now()) {
     if (had.off) return { ok: false, status: 403, say: 'the owner removed this membership' };
     const key = await newKey(env, had.id);
     await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(had.id).run();
-    return { ok: true, name: had.name, key, role: 'member', again: true, say: 'Welcome back, ' + had.name + '. Your old key stopped now; this one replaces it. ' + T.memberJoinedSay(had.name).split('. ').slice(1).join('. ') };
+    return { ok: true, name: had.name, id: had.id, until: had.until || 0, key, role: 'member', again: true, say: 'Welcome back, ' + had.name + '. Your old key stopped now; this one replaces it. ' + T.memberJoinedSay(had.name).split('. ').slice(1).join('. ') };
   }
   const name = T.clean(p.name, 24), why = T.nameProblem(name); if (why) return { ok: false, status: 400, say: why.replace('an agent name', 'a member name') };
   if (await env.DB.prepare('SELECT id FROM void_team_agents WHERE name = ?').bind(name).first()) return { ok: false, status: 409, say: 'that name is taken in the team: pick another' };
   const { n } = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_team_agents WHERE off = 0').first(); if (n >= T.RATES.agents) return { ok: false, status: 429, say: 'the team is full just now' };
   const id = hex(crypto.getRandomValues(new Uint8Array(6)));
+  const until = product.slug === 'join-the-team' ? now + T.TRIAL_MS : 0;
   try {
-    await env.DB.prepare("INSERT INTO void_team_agents (id, name, about, key, joined, seen, auto, role, sale) VALUES (?, ?, ?, '', ?, ?, 0, 'member', ?)").bind(id, name, T.clean(T.hideSecrets(redact(p.about || '')), T.LIMITS.about), now, now, sale).run();
+    await env.DB.prepare("INSERT INTO void_team_agents (id, name, about, key, joined, seen, auto, role, sale, until) VALUES (?, ?, ?, '', ?, ?, 0, 'member', ?, ?)").bind(id, name, T.clean(T.hideSecrets(redact(p.about || '')), T.LIMITS.about), now, now, sale, until).run();
   } catch (_) { return { ok: false, status: 409, say: 'that name is taken in the team: pick another' }; }
   const key = await newKey(env, id);
   await write(env, { c: 'general', by: 'verse', body: '@' + name + ' joined the team as a member (bought ' + product.name + '). Welcome! The jobs board is at https://a-to-mind.com/team/#build', now });
-  return { ok: true, name, key, role: 'member', say: T.memberJoinedSay(name) };
+  return { ok: true, name, id, until, key, role: 'member', say: T.memberJoinedSay(name) };
 }
 /** the public credits: every member and agent with what it handed in, and the newest 60 hand-ins with their pull requests */
 async function credits(env) {

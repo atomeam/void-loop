@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1208,
+ "counted": 1209,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -32,9 +32,9 @@
   },
   {
    "file": "lib/load-later.js",
-   "skills": 28,
+   "skills": 29,
    "direct": 23,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
@@ -172,9 +172,9 @@
   },
   {
    "file": "lib/sky-math.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 2,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -1084,14 +1084,14 @@
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 3
   },
   {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
@@ -1420,7 +1420,7 @@
    "file": "lib/automations.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 20,
    "tests": 6
   },
   {
@@ -1897,7 +1897,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/video-gen.js",
@@ -2467,14 +2467,14 @@
    "tests": 9
   },
   {
-   "file": "lib/code-review.js",
+   "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
    "dependants": 51,
    "tests": 5
   },
   {
-   "file": "lib/earnings.js",
+   "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
    "dependants": 51,
@@ -2687,63 +2687,63 @@
    "file": "lib/watch-build.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 25,
    "tests": 2
   },
   {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18,
+   "dependants": 22,
    "tests": 3
   },
   {
    "file": "lib/team.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 21,
    "tests": 7
   },
   {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 1
   },
   {
    "file": "lib/team-leverage.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 1
   },
   {
    "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 6
   },
   {
    "file": "lib/brain-dream.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/team-crew.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 1
   },
   {
    "file": "lib/team-priorities.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15,
+   "dependants": 16,
    "tests": 2
   },
   {
@@ -2887,7 +2887,21 @@
    "tests": 3
   },
   {
+   "file": "lib/member-gate.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/members.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/stripe.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -3862,6 +3876,12 @@
    ],
    "importedBy": []
   },
+  "functions/_middleware.js": {
+   "imports": [
+    "lib/member-gate.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/_middleware.js": {
    "imports": [
     "lib/guard.js"
@@ -4319,6 +4339,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
@@ -4465,6 +4486,14 @@
     "lib/media.js",
     "lib/movies.js",
     "functions/api/movies.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/member-session.js": {
+   "imports": [
+    "lib/member-gate.js",
+    "lib/void-me.js",
+    "functions/api/team.js"
    ],
    "importedBy": []
   },
@@ -4805,6 +4834,25 @@
    ],
    "importedBy": []
   },
+  "functions/api/stripe/checkout.js": {
+   "imports": [
+    "lib/stripe.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/stripe/claim.js": {
+   "imports": [
+    "lib/member-gate.js",
+    "lib/stripe.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/stripe/webhook.js": {
+   "imports": [
+    "lib/stripe.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/studies.js": {
    "imports": [
     "lib/guard.js",
@@ -4873,6 +4921,7 @@
     "lib/automations.js"
    ],
    "importedBy": [
+    "functions/api/member-session.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
@@ -5191,6 +5240,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/miss.js",
     "functions/api/team.js",
@@ -5850,6 +5900,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/news.js",
@@ -5923,6 +5974,7 @@
    ],
    "reachedBy": [
     "functions/api/crew.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/team/join/[code].js",
@@ -5949,6 +6001,7 @@
     "functions/api/automations/tick.js",
     "functions/api/crew.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/team/join/[code].js",
@@ -6337,6 +6390,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -8089,6 +8143,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -8971,6 +9026,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -9098,6 +9154,7 @@
     "functions/api/handoff.js",
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/miss.js",
     "functions/api/paypal/index.js",
@@ -9389,6 +9446,7 @@
     "lib/team.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
@@ -9396,12 +9454,15 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
+    "functions/api/stripe/claim.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
+    "lib/member-gate.js",
     "lib/team-crew-run.js",
     "lib/team-leverage.js",
     "lib/team-priorities.js"
@@ -9940,6 +10001,7 @@
     "skills/games.js",
     "skills/rebuild-map.js",
     "skills/sky-card.js",
+    "skills/skycard.js",
     "skills/time.js",
     "skills/where-is.js"
    ]
@@ -10238,6 +10300,16 @@
    "reachedBy": [
     "skills/calendar-fill.js",
     "skills/dates.js"
+   ]
+  },
+  "lib/member-gate.js": {
+   "imports": [
+    "lib/team.js"
+   ],
+   "importedBy": [
+    "functions/_middleware.js",
+    "functions/api/member-session.js",
+    "functions/api/stripe/claim.js"
    ]
   },
   "lib/member-keep.js": {
@@ -10915,6 +10987,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11179,6 +11252,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11306,6 +11380,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -11977,6 +12052,7 @@
     "functions/api/handoff.js",
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -12919,6 +12995,7 @@
     "functions/api/crew.js",
     "functions/api/github-events.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/team.js",
     "functions/api/unbidden.js",
@@ -13366,6 +13443,7 @@
     "skills/sky-card.js",
     "skills/sky-world.js",
     "skills/sky.js",
+    "skills/skycard.js",
     "skills/suntimes.js",
     "skills/time.js",
     "skills/where-is.js"
@@ -13869,6 +13947,7 @@
     "functions/api/handoff.js",
     "functions/api/hook/[id].js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/paypal/index.js",
     "functions/api/paypal/review.js",
@@ -14022,6 +14101,14 @@
     "lib/rap-video.js",
     "lib/rap-voice.js",
     "skills/rap.js"
+   ]
+  },
+  "lib/stripe.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/stripe/checkout.js",
+    "functions/api/stripe/claim.js",
+    "functions/api/stripe/webhook.js"
    ]
   },
   "lib/studio-card.js": {
@@ -14196,6 +14283,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14220,6 +14308,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14254,6 +14343,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
@@ -14270,11 +14360,13 @@
     "functions/api/team.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
+    "lib/member-gate.js",
     "lib/team-crew-run.js",
     "lib/team-leverage.js",
     "lib/team-priorities.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
@@ -14282,7 +14374,9 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
+    "functions/api/stripe/claim.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
     "lib/automations-run.js"
@@ -14341,6 +14435,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -14896,6 +14991,7 @@
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/mcp/server-card.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -15125,6 +15221,7 @@
     "functions/api/film-review.js",
     "functions/api/films.js",
     "functions/api/gumroad.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/mine.js",
     "functions/api/passkey.js",
@@ -15238,6 +15335,7 @@
     "lib/team-crew.js"
    ],
    "reachedBy": [
+    "functions/_middleware.js",
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
@@ -15245,13 +15343,16 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
+    "functions/api/stripe/claim.js",
     "functions/api/team.js",
     "functions/api/unbidden.js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
+    "lib/member-gate.js",
     "lib/team-leverage.js",
     "lib/team-priorities.js",
     "lib/team.js"
@@ -15273,6 +15374,7 @@
     "functions/api/github-events.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/team.js",
     "functions/api/unbidden.js",
@@ -15386,6 +15488,7 @@
     "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/member-session.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
@@ -18131,6 +18234,7 @@
     "skills/time.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -18995,6 +19099,7 @@
     "skills/sky-card.js"
    ],
    "reachedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19004,6 +19109,7 @@
     "skills/night-sky.js"
    ],
    "importedBy": [
+    "skills/skycard.js",
     "skills/where-is.js"
    ]
   },
@@ -19046,6 +19152,12 @@
     "skills/together.js",
     "skills/zoom-figure.js"
    ]
+  },
+  "skills/skycard.js": {
+   "imports": [
+    "skills/sky-card.js"
+   ],
+   "importedBy": []
   },
   "skills/sleep.js": {
    "imports": [],
