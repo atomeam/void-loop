@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T02:54:34.000Z",
+ "updated": "2026-11-08T03:07:39.181Z",
  "last24h": {
   "ticks": 152,
   "started": 149,
-  "requeued": 1,
+  "requeued": 2,
   "setAside": 1,
-  "probes": 14,
+  "probes": 13,
   "errors": 25
  },
  "broken": [],
@@ -178,8 +178,8 @@
   "mw76d517": 1794104192616,
   "mw76d612": 1794106474000
  },
- "sweptAt": 1794103627590,
- "blueprintsAt": 1794103627590,
+ "sweptAt": 1794107259181,
+ "blueprintsAt": 1794107259181,
  "visitorAt": "2026-11-08T02:36:28Z",
  "visitorFiled": [
   "versus:opentimestamps.org",
@@ -264,26 +264,6 @@
   "visit:translate-hello-to-spanish"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T03:03:32.822Z",
-   "open": 254,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": true,
-   "will": true,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 245,
-   "warnings": 1
-  },
   {
    "at": "2026-11-07T03:12:56.798Z",
    "open": 258,
@@ -3929,6 +3909,27 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 250,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-08T03:07:39.181Z",
+   "open": 261,
+   "started": [],
+   "requeued": 1,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 250,
    "warnings": 1
