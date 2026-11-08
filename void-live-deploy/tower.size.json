@@ -14547,6 +14547,20 @@
    "shell": "none",
    "weight": 560296,
    "at": "2026-10-30"
+  },
+  "zpecloud.com": {
+   "bytes": 3193599,
+   "controls": 9,
+   "scripts": 4,
+   "styles": 5,
+   "nodes": 20,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 668,
+   "shell": "none",
+   "weight": 3201799,
+   "at": "2026-11-08"
   }
  }
 }

@@ -2,19 +2,20 @@
  "id": "search",
  "rows": {
   "speed": {
-   "verdict": "equal-and-better",
-   "verse": 126,
-   "best": 332,
-   "evidence": "Verse 126 ms to the load event (median of 3, phone width) vs Google Search 332 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-07T13:37:43.096Z",
+   "verdict": "unverified",
+   "verse": null,
+   "best": 288,
+   "evidence": "Verse NaN ms to the load event (median of 3, phone width) vs Google Search 288 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:54:00.333Z",
    "siteRead": true
   },
   "reliability": {
-   "verdict": "equal-and-better",
-   "verse": 3,
+   "verdict": "worse",
+   "verse": 0,
    "best": 3,
-   "evidence": "Verse 3 of 3 loads answered vs Google Search 3 of 3 loads answered",
-   "at": "2026-11-07T13:37:43.096Z",
+   "evidence": "Verse 0 of 3 loads answered vs Google Search 3 of 3 loads answered",
+   "at": "2026-11-08T13:54:00.333Z",
+   "was": "equal-and-better",
    "siteRead": true
   },
   "mobile": {
@@ -22,15 +23,15 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse 0 px sideways overflow at 390 px vs Google Search 0 px sideways overflow at 390 px",
-   "at": "2026-11-07T13:37:43.096Z",
+   "at": "2026-11-08T13:54:00.333Z",
    "siteRead": true
   },
   "accessibility": {
    "verdict": "better",
    "verse": 0,
-   "best": 8,
-   "evidence": "Verse 0 unnamed controls or images vs Google Search 8 unnamed controls or images",
-   "at": "2026-11-07T13:37:43.096Z",
+   "best": 1,
+   "evidence": "Verse 0 unnamed controls or images vs Google Search 1 unnamed controls or images",
+   "at": "2026-11-08T13:54:00.333Z",
    "siteRead": true
   },
   "offline": {
@@ -38,15 +39,15 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs Google Search 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-07T13:37:43.096Z",
+   "at": "2026-11-08T13:54:00.333Z",
    "siteRead": true
   },
   "sharing": {
-   "verdict": "better",
-   "verse": 4,
+   "verdict": "equal",
+   "verse": 0,
    "best": 0,
-   "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Search 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-07T13:37:43.096Z",
+   "evidence": "Verse 0 of 4 (link-preview title, image, description; a share or copy-link control) vs Google Search 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:54:00.333Z",
    "siteRead": true
   },
   "design polish": {
@@ -54,15 +55,15 @@
    "verse": 0,
    "best": 1,
    "evidence": "Verse 0 design defects vs Google Search 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Google Search (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-   "at": "2026-11-07T13:37:43.096Z",
+   "at": "2026-11-08T13:54:00.333Z",
    "siteRead": true
   },
   "wider use": {
-   "verdict": "better",
+   "verdict": "equal",
    "verse": 5.5,
-   "best": 5,
-   "evidence": "Verse 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs Google Search 5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-07T13:37:43.096Z",
+   "best": 5.5,
+   "evidence": "Verse 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs Google Search 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-03T14:54:05.858Z",
    "siteRead": true
   }
  }
