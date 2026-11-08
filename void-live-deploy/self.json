@@ -600,6 +600,42 @@
  },
  "commits": [
   {
+   "at": "2026-11-08T00:06:12Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-08T00:02:54Z",
+   "subject": "Failed jobs read: run 42426738890 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-08T00:02:37Z",
+   "subject": "Incident: the browser suite failed on 04addcf8 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-08T00:01:43Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-11-08T00:01:22Z",
+   "subject": "Verse's will: today's three wants (domains/void.will.md)"
+  },
+  {
+   "at": "2026-11-07T23:58:27Z",
+   "subject": "Design loop: 2 pages fixed, 3 -> 0 design defects"
+  },
+  {
+   "at": "2026-11-07T23:52:49Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-07T23:46:12Z",
+   "subject": "Bot factory: new bots that passed their probes (#2530)"
+  },
+  {
+   "at": "2026-11-07T23:44:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-07T23:34:50Z",
    "subject": "Failed jobs read: run 42422994736 (void-live-deploy/incidents/actions/)"
   },
@@ -642,42 +678,6 @@
   {
    "at": "2026-11-07T22:57:49Z",
    "subject": "Failed jobs read: run 42422994690 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:54:14Z",
-   "subject": "Failed jobs read: run 42422542550 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:51:44Z",
-   "subject": "Failed jobs read: run 42422542563 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:48:06Z",
-   "subject": "Failed jobs read: run 42422095483 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:45:57Z",
-   "subject": "Failed jobs read: run 42422095618 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:43:20Z",
-   "subject": "Failed jobs read: run 42419466975 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:41:32Z",
-   "subject": "Failed jobs read: run 42421593636 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-07T22:39:39Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-07T22:39:30Z",
-   "subject": "Outcome exam: maps 40"
-  },
-  {
-   "at": "2026-11-07T22:39:25Z",
-   "subject": "Failed jobs read: run 42421593686 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 27,
-  "week": 242
+  "day": 0,
+  "week": 239
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
