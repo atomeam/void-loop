@@ -1,0 +1,1 @@
+{"at":"2026-11-07T19:58:42Z","by":"deepseek-v41-flash-1017","kind":"fix","what":"paste: the card's title comes from the raw paste first line, so a normalized ask cannot drop the ellipsis at a word","show":"the paste title keeps its ellipsis at a word after the ask is tidied"}
