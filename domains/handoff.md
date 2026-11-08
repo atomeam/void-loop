@@ -22,6 +22,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/what-can-you-do-f90f · "what can you do" answers with the things Verse can put on the stage, on the self page · 2026-11-05 15:20 UTC
 - Cursor cloud agent · helper/timer-durations-f90f · a timer keeps the length it was set for (90 seconds, add one minute, 45 seconds) and a bare "timer for 5" asks which unit · 2026-11-05 14:05 UTC
+- Cursor cloud agent · helper/family-gaps-f90f · the sixteen short family skills earn proven from a real test and an ask each one answers · 2026-11-05 16:20 UTC
 - Cursor cloud agent · helper/kv-namespace-f90f · only Verse's wrangler binds Verse's KV namespace · 2026-11-05 16:05 UTC
 - Cursor cloud agent · helper/selfcheck-edge-f90f · the page-check report is kept in the edge cache, so Verse writes no KV · 2026-11-05 15:55 UTC
 - Cursor cloud agent · helper/range-diff-f90f · the diff between two commits lists the files, the failed jobs at each end, and the assertion lines from the earlier log · 2026-11-05 15:40 UTC
