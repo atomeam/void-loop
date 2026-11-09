@@ -1,7 +1,6 @@
-// Humble copy (owner, 2026-11-09: "find any other part where verse is tooting its own horn and remove it, we never do that, first of all we
-// arent shit"). Verse never brags: no win counts, no "conquered", "surpassed" or "outclassed" rivals, no "the best" or "better than X" about
+// Humble copy (house rule, 2026-11-09). Verse never brags: no win counts, no "conquered", "surpassed" or "outclassed" rivals, no "the best" or "better than X" about
 // itself, no "look what I made". This scans the copy people see (the site's pages, skills, libraries, text files) with comments taken out,
-// so the owner's own words quoted in a comment are history, not copy. A word that is a game's own rule ("beat the level") or a data key
+// so a note in a comment is history, not copy. A word that is a game's own rule ("beat the level") or a data key
 // ('surpassed' as an outcome id, the /conquered/ path) is not a boast and is not matched; anything else that matches has to be rewritten
 // or named in ALLOW with the reason. Run: node tools/humble-copy.mjs (exit 1 on a boast); node --test tools/humble-copy.test.mjs.
 import { readFileSync, readdirSync, statSync } from 'node:fs';

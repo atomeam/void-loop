@@ -272,7 +272,7 @@ export function promosOf(tower, max = 3) {
   }
   wins.sort((a, b) => b.at - a.at || b.x - a.x);
   return wins.slice(0, max).map((w) => {
-    // plain, no rival named and no "x faster than" (owner, 2026-11-09: "find any other part where verse is tooting its own horn and remove it"); the measure (w.x, w.best) stays on the row
+    // plain, no rival named and no "x faster than" (house rule: Verse never brags); the measure (w.x, w.best) stays on the row
     const text = 'Free, no signup: a ' + topicOf(w.f, w.page) + ' that loads in ' + w.verse + ' ms at phone width (median of 3). Try it: https://a-to-mind.com' + w.page;
     return { page: w.page, floor: w.f, text, intent: 'https://x.com/intent/post?text=' + encodeURIComponent(text) };
   });

@@ -59,7 +59,7 @@ export function factLines(facts = {}) {
   const out = [], n = (v) => (Number.isInteger(v) && v >= 0 ? v : null);
   const skills = n(facts.skills), beaten = n(facts.surpassed);
   if (skills != null) out.push('I have ' + skills.toLocaleString('en') + ' skill' + (skills === 1 ? '' : 's') + ' right now. Ask for anything.');
-  // humble (owner, 2026-11-09: "find any other part where verse is tooting its own horn and remove it"): the count stays in facts, the bubble points to what you can do
+  // humble (house rule: Verse never brags): the count stays in facts, the bubble points to what you can do
   if (beaten != null) out.push('I learn from other good sites. Say "tower" to see which ones and what I am working on.');
   const learned = String(facts.learned || '').replace(/\s+/g, ' ').trim();
   // a ledger line is something that shipped. It is "learned" only when an exam score rose (facts.examUp); a sentence with no exam behind it does not claim learning.

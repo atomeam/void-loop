@@ -1,4 +1,4 @@
-// Verse never brags (owner, 2026-11-09: "find any other part where verse is tooting its own horn and remove it, we never do that").
+// Verse never brags (house rule, 2026-11-09).
 // Run: node --test tools/humble-copy.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -9,7 +9,7 @@ test('the site copy has no boasts (rewrite one plainly, or name a real non-boast
   assert.deepEqual(hits.map((h) => h.file + ':' + h.line + ' [' + h.id + '] ' + h.hit), []);
 });
 
-test('it catches the boasts the owner named', () => {
+test('it catches the boasts the house rule names', () => {
   for (const s of ['"I\'ve surpassed 7 sites so far."', "'Verse has conquered calculator.net'", "'Reading the conquered ledger'", "'Verse outclassed it'",
     "'every tool Verse has surpassed'", "'Every defeated target is here'", "'Beaten in every way'", "'9x faster than flashscore.com'",
     "'Verse is the best'", "'I made 3 new things while you were away'", "'Everything I made'", "'an awe-inspiring Verse'", "'I built this: a counter'",
@@ -18,7 +18,7 @@ test('it catches the boasts the owner named', () => {
 
 test('a game rule, a data key, a path or a comment is not a boast', () => {
   for (const s of ["'Beat the level to unlock the next one'", "if (r.outcome === 'surpassed') k = 'surpassed';", "'<a href=\"/conquered/\">Versus</a>'",
-    "// owner: \"find the site to conquer and get to work now\"", "/* the floors Verse has surpassed */", "<!-- conquered sites under it -->",
+    "// the next site to conquer, from the frontier", "/* the floors Verse has surpassed */", "<!-- conquered sites under it -->",
     "'You win! Four in a row'", "'the greatest common divisor'", "'1 can crushed tomatoes'", "'https://a-to-mind.com/conquered/'"]) assert.deepEqual(boastsIn(s), [], s);
 });
 

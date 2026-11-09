@@ -62,7 +62,7 @@
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const kind = (r) => (r.outcome === 'surpassed' ? 'surpassed' : r.outcome === 'passed' ? 'passed' : /^(assimilated|built|page built)$/.test(r.outcome) ? 'assimilated' : 'tried');
   const day = (at) => (at ? String(at).slice(0, 10) : '');
-  // humble words for the rows (owner, 2026-11-09: "find any other part where verse is tooting its own horn and remove it"): the data's outcome stays
+  // plain words for the rows (house rule: Verse never brags); the data's outcome stays
   const said = (s) => ({ surpassed: 'every aspect matched', 'passed, conquering in background': 'measured ahead, still being checked' })[s] || s;
   const safePage = (p) => (/^\/[\w\-./?=&%]*$/.test(p || '') ? p : '');
   let data = null;

@@ -453,7 +453,7 @@ export async function nudge(stageApi, note) {
   const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode === 'recent') old.remove(); // something new outranks the recent sparkle
   if (!note) return steps.length;
   if (note.querySelector('.showcase-pill')) note.textContent = '';
-  pill(stageApi, note, steps, 'New: ', true); // plain, not a boast (owner, 2026-11-09: "we never do that")
+  pill(stageApi, note, steps, 'New: ', true); // plain, not a boast (house rule)
   bell(stageApi, steps);
   return steps.length;
 }
