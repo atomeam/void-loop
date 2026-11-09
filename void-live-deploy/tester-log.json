@@ -3,13 +3,85 @@
  "cases": 104,
  "runsTotal": 300,
  "kinds": {
-  "none": 22,
-  "file": 64,
+  "file": 63,
+  "none": 20,
   "grow": 73,
-  "visitor": 140,
-  "tighten": 1
+  "visitor": 142,
+  "tighten": 2
  },
  "runs": [
+  {
+   "at": "2026-11-08T23:08:27Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 13/15"
+  },
+  {
+   "at": "2026-11-08T19:16:35Z",
+   "passed": 0,
+   "of": 106,
+   "kind": "tighten",
+   "ms": 432,
+   "note": "fps floor 6 -> 7",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-08T19:06:25Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-08T14:03:48Z",
    "passed": 70,
@@ -402,129 +474,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T23:22:42Z",
-   "passed": 52,
-   "of": 105,
-   "kind": "file",
-   "ms": 406,
-   "note": "fix: \"play voidquest\" no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 ()",
-   "failed": [
-    {
-     "ask": "what are you?",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play voidquest",
-     "why": "no .voidquest-card"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "no .voidquest-card"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show me your videos",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "my actions",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "put on lofi hip hop pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "find the book the left hand of dakrness",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-07T23:13:07Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-07T22:57:43Z",
-   "passed": 0,
-   "of": 105,
-   "kind": "file",
-   "ms": 344,
-   "note": "fix: \"what do you get if you merge a pizza and a black hole\" only \"waking up\" appeared, never the answer; console: Failed to load resource: the server responded with a status of 404 ()",
-   "failed": [
-    {
-     "ask": "what are you?",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play voidquest",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show me your videos",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "my actions",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "put on lofi hip hop pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "find the book the left hand of dakrness",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -579,17 +528,17 @@
   {
    "from": "2026-10-11",
    "runs": 88,
-   "passed": 2066,
-   "of": 3232,
-   "broken": 35,
-   "brokenOf": 878,
+   "passed": 2252,
+   "of": 3366,
+   "broken": 32,
+   "brokenOf": 802,
    "brokenPassed": 0
   },
   {
    "from": "2026-10-18",
-   "runs": 10,
-   "passed": 661,
-   "of": 727
+   "runs": 7,
+   "passed": 475,
+   "of": 517
   },
   {
    "from": "2026-10-25",
@@ -599,11 +548,11 @@
   },
   {
    "from": "2026-11-01",
-   "runs": 202,
+   "runs": 205,
    "passed": 4809,
-   "of": 5898,
-   "broken": 7,
-   "brokenOf": 735,
+   "of": 6004,
+   "broken": 8,
+   "brokenOf": 841,
    "brokenPassed": 74,
    "ms": 386
   }
@@ -644,8 +593,8 @@
   "skill:feelings": "2026-10-18T04:03:13Z",
   "skill:figure": "2026-11-08T14:03:48Z",
   "skill:figure-can": "2026-11-08T14:03:48Z",
-  "skill:figures": "2026-10-17T08:31:36Z",
-  "skill:films": "2026-10-17T08:31:36Z",
+  "skill:figures": "2026-11-08T19:16:35Z",
+  "skill:films": "2026-11-08T19:16:35Z",
   "skill:food": "2026-10-17T08:39:02Z",
   "skill:forge": "2026-10-17T08:39:02Z",
   "skill:fuel": "2026-10-17T08:39:02Z",

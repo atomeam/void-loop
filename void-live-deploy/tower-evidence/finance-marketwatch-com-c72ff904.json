@@ -1,0 +1,119 @@
+{
+ "id": "finance: marketwatch.com",
+ "rows": {
+  "speed": {
+   "verdict": "unverified",
+   "verse": null,
+   "best": 571,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) NaN ms to the load event (median of 3, phone width) vs marketwatch.com 571 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 3 loads answered vs marketwatch.com 1 of 3 loads answered",
+   "at": "2026-11-08T13:50:35.040Z",
+   "was": "better",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs marketwatch.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:50:35.040Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 23,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs marketwatch.com 23 unnamed controls or images",
+   "at": "2026-11-08T13:50:35.040Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 (1: the page shows itself again with the network cut) vs marketwatch.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 3,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs marketwatch.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "was": "better",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not marketwatch.com (the site is not asked)",
+   "at": "2026-11-03T02:24:29.000Z",
+   "of": 3
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 28,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs marketwatch.com 28 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), marketwatch.com (3 low-contrast texts, 24 small tap targets, layout shift 0.23)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "siteRead": true
+  },
+  "live quotes": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 2 shown vs marketwatch.com 0 of 2 shown (Verse lacks: a price with its move in percent, the source named; site lacks: a price with its move in percent, the source named)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "charts": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 2 shown vs marketwatch.com 0 of 2 shown (Verse lacks: ranges from 1D to Max, a hover readout; site lacks: ranges from 1D to Max, a hover readout)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "watchlists": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 2 shown vs marketwatch.com 0 of 2 shown (Verse lacks: a watchlist, kept on the device; site lacks: a watchlist, kept on the device)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "worse",
+   "verse": 0,
+   "best": 6,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 of 21 things a full answer shows vs marketwatch.com 6 of 21 things a full answer shows (Verse lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article, Links, Stock Market News, Sources & Further Reading; site lacks: the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Sources & Further Reading)",
+   "at": "2026-11-08T13:50:35.040Z",
+   "was": "better",
+   "of": 21,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7,
+   "best": 6.5,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 7 of 11 wider-use points (docs/WIDER-USE.md) vs marketwatch.com 6.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-03T02:24:29.000Z",
+   "siteRead": true
+  }
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "id": "color canon",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 126,
+   "best": 233,
+   "evidence": "Verse (/color/) 126 ms to the load event (median of 3, phone width) vs colorcanon.com 233 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/color/) 3 of 3 loads answered vs colorcanon.com 3 of 3 loads answered",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/color/) 0 px sideways overflow at 390 px vs colorcanon.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/color/) 0 unnamed controls or images vs colorcanon.com 0 unnamed controls or images",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/color/) 1 (1: the page shows itself again with the network cut) vs colorcanon.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 2,
+   "evidence": "Verse (/color/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorcanon.com 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7,
+   "best": 4.5,
+   "evidence": "Verse (/color/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs colorcanon.com 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 5,
+   "evidence": "Verse (/color/) 0 design defects vs colorcanon.com 5 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), colorcanon.com (0 low-contrast texts, 5 small tap targets, layout shift 0.03)",
+   "at": "2026-11-08T13:32:19.028Z",
+   "siteRead": true
+  }
+ }
+}

@@ -28,4 +28,10 @@ fetch('/podcast/episodes.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   document.querySelectorAll('section').forEach(s=>{const a=s.querySelector('audio');s.querySelectorAll('.line').forEach(p=>p.onclick=()=>{a.currentTime=+p.dataset.t;a.play().catch(()=>{})})});
   if(want){const s=document.getElementById('ep'+want); if(s) s.scrollIntoView();}
 }).catch(()=>{document.getElementById('eps').textContent='The episode list could not load; the RSS feed has them all.'});
-</script></body></html>
+</script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+body > main:nth-of-type(1) > p:nth-of-type(1) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+/* end verse design loop */
+</style>
+</body></html>
