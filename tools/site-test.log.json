@@ -1,59 +1,5 @@
 [
  {
-  "at": "2026-10-17T10:10:51Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
-  "at": "2026-10-17T10:26:08Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
-  "at": "2026-10-17T10:32:13Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "file",
-  "key": "hide the sky pls | nothing appeared",
-  "note": "fix: \"hide the sky pls\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-17T11:03:56Z",
-  "passed": 13,
-  "of": 25,
-  "kind": "file",
-  "key": "show me the night sky | load # ms > #",
-  "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
- },
- {
-  "at": "2026-10-17T11:11:24Z",
-  "passed": 20,
-  "of": 25,
-  "kind": "file",
-  "key": "play voidquest | fps # < #",
-  "note": "fix: \"play voidquest\" fps 1 < 5"
- },
- {
-  "at": "2026-10-17T11:17:08Z",
-  "passed": 16,
-  "of": 25,
-  "kind": "file",
-  "key": "play chess | fps # < #",
-  "note": "fix: \"play chess\" fps 2 < 5"
- },
- {
-  "at": "2026-10-17T11:23:07Z",
-  "passed": 13,
-  "of": 25,
-  "kind": "file",
-  "key": "what can I buy | load # ms > #",
-  "note": "fix: \"what can I buy\" load 1244 ms > 1200"
- },
- {
   "at": "2026-10-17T11:28:39Z",
   "passed": 14,
   "of": 25,
@@ -7176,5 +7122,181 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"help me launch the newsletter by the end of the month\" (skill:intent)"
+ },
+ {
+  "at": "2026-11-09T15:10:07Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1001,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-09T15:19:59Z",
+  "passed": 107,
+  "of": 112,
+  "ms": 330,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 6 < 7"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 7"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo style like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "geenrate a toon style dog",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1001,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"already built\" (skill:inventory)"
+ },
+ {
+  "at": "2026-11-09T15:34:38Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 964,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9087 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T15:44:57Z",
+  "passed": 109,
+  "of": 113,
+  "ms": 326,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 6 < 7"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 7"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 964,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9087 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"how much is my watch worth\" (skill:appraise)"
+ },
+ {
+  "at": "2026-11-09T15:57:10Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1035,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T16:25:40Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1509,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9096 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T16:36:16Z",
+  "passed": 111,
+  "of": 114,
+  "ms": 396,
+  "kind": "file",
+  "key": "play voidquest | fps # < #",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 6 < 7"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 7"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1509,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9096 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"play voidquest\" fps 6 < 7"
  }
 ]

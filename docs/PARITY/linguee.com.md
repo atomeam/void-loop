@@ -7,19 +7,20 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 - Live scan: 2026-10-28, HTTP 200, page title "Linguee / Dictionary for German, French, Spanish, and more"
 - History: [docs/HISTORY/linguee.com.md](../HISTORY/linguee.com.md)
 
-**Match: 50%**: 8 have, 0 partial, 1 missing, 7 unreviewed, of 16 features.
+**Match: 53%**: 9 have, 0 partial, 1 missing, 7 unreviewed, of 17 features.
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Translate typed text | Translate | have | its live page (2026-10-28): "nd more Look up in Linguee Suggest as a translation of "" Copy Translator Write Dictionary EN Open menu Transl" | void-live-deploy/translate/index.html:115 `textarea id="in" placeholder="Type to translate" maxlength="5000" rows="4" spellcheck="tru` |
-| Detect the language automatically | Translate | have | every site of this kind offers it | void-live-deploy/translate/index.html:100 `"sub" id="sub">100 languages, detected as you type. Documents, a dictionary, other words f` |
-| Swap the two languages | Translate | have | every site of this kind offers it | void-live-deploy/translate/index.html:106 `button" id="swap" aria-label="Swap languages" title="Swap languages">⇄</button>` |
-| Copy the translation | Translate | have | its live page (2026-10-28): "Linguee Suggest as a translation of "" Copy Translator Write Dictionary EN Open menu Translator Translate tex" | void-live-deploy/translate/index.html:139 `button type="button" id="copy">Copy</button>` |
-| Other ways to say a word or phrase | Translate | have | studied by hand: linguee.com offers this (https://www.linguee.com/) | void-live-deploy/translate/index.html:591 `const alts = (ok && j.alternatives) // []; list.replaceChildren();` |
-| Dictionary meanings and examples | Dictionary | have | its live page (2026-10-28): "Linguee / Dictionary for German, French, Spanish, and more Look up in Linguee Suggest as a translation of """ | void-live-deploy/translate/index.html:142 `how common each is, examples">Dictionary</button>` |
-| Example sentences in context | Dictionary | have | studied by hand: linguee.com offers this (https://www.linguee.com/) | void-live-deploy/translate/index.html:142 `tions and how common each is, examples">Dictionary</button>` |
-| Translate a document (PDF, Word, slides) | Documents | have | its live page (2026-10-28): "slator to instantly translate texts and documents Try DeepL Translator Translate as you type World-leading qua" | void-live-deploy/translate/index.html:205 `nst docs = () => import('/lib/translate-docs.js');` |
-| Rewrite or improve your own writing | Writing | missing | its live page (2026-10-28): "as a translation of "" Copy Translator Write Dictionary EN Open menu Translator Translate texts with the worl" | no sign of it in the source of /translate/ |
+| Translate typed text | Translate | have | its live page (2026-10-28): "nd more Look up in Linguee Suggest as a translation of "" Copy Translator Write Dictionary EN Open menu Transl" | void-live-deploy/translate/index.html:124 `textarea id="in" placeholder="Type to translate" maxlength="5000" rows="4" spellcheck="tru` |
+| Detect the language automatically | Translate | have | every site of this kind offers it | void-live-deploy/translate/index.html:109 `"sub" id="sub">100 languages, detected as you type. Documents, a dictionary, other words f` |
+| Swap the two languages | Translate | have | every site of this kind offers it | void-live-deploy/translate/index.html:115 `button" id="swap" aria-label="Swap languages" title="Swap languages">⇄</button>` |
+| Copy the translation | Translate | have | its live page (2026-10-28): "Linguee Suggest as a translation of "" Copy Translator Write Dictionary EN Open menu Translator Translate tex" | void-live-deploy/translate/index.html:149 `button type="button" id="copy">Copy</button>` |
+| Other ways to say a word or phrase | Translate | have | studied by hand: linguee.com offers this (https://www.linguee.com/) | void-live-deploy/translate/index.html:611 `const alts = (ok && j.alternatives) // []; list.replaceChildren();` |
+| Dictionary meanings and examples | Dictionary | have | its live page (2026-10-28): "Linguee / Dictionary for German, French, Spanish, and more Look up in Linguee Suggest as a translation of """ | void-live-deploy/translate/index.html:152 `how common each is, examples">Dictionary</button>` |
+| Example sentences in context | Dictionary | have | studied by hand: linguee.com offers this (https://www.linguee.com/) | void-live-deploy/translate/index.html:152 `tions and how common each is, examples">Dictionary</button>` |
+| Translate a document (PDF, Word, slides) | Documents | have | its live page (2026-10-28): "slator to instantly translate texts and documents Try DeepL Translator Translate as you type World-leading qua" | void-live-deploy/translate/index.html:225 `nst docs = () => import('/lib/translate-docs.js');` |
+| Rewrite or improve your own writing | Writing | have | its live page (2026-10-28): "as a translation of "" Copy Translator Write Dictionary EN Open menu Translator Translate texts with the worl" | void-live-deploy/translate/index.html:168 `"writeD"><summary id="writeS">Improve your writing</summary>` |
+| Verb conjugation tables | Dictionary | missing | studied by hand: linguee.com offers this (https://www.linguee.com/) | no sign of it in the source of /translate/ |
 | Look up in Linguee | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Open menu | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Press Information | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

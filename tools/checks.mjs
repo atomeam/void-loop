@@ -58,6 +58,10 @@ const ONLY_WHEN = {
   // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
   'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
   // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
+  // the features /notes/, /translate/ and /calendar/ took from their rivals, in a real browser at desktop and phone width (tools/*-rivals-e2e.mjs)
+  'notes-rivals-e2e.mjs': /void-live-deploy\/(?:notes\/|lib\/(?:notes|note-extras|note-organise)\.js$)|notes-rivals/,
+  'calendar-rivals-e2e.mjs': /void-live-deploy\/(?:calendar\/|lib\/(?:calendar|cal-booking)\.js$)|calendar-rivals/,
+  'translate-rivals-e2e.mjs': /void-live-deploy\/(?:translate\/|functions\/api\/translate\.js$|lib\/translate-[a-z]+\.js$)|translate-rivals/,
   'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy|shape-picture)|skills\/(?:draw|image|shape)\.js)|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
@@ -73,7 +77,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs', 'notes-rivals-e2e.mjs', 'translate-rivals-e2e.mjs', 'calendar-rivals-e2e.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -90,6 +94,8 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipW
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
+  ['humble-copy', 'humble-copy.test.mjs'],
+  ['log-only', 'log-only.test.mjs'],
   ['handoff-scan', 'handoff-scan.test.mjs'],
   ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
@@ -106,6 +112,8 @@ for (const [name, file] of [
   ['wiped-files', 'wiped-files.test.mjs'],
   ['translate', 'translate.test.mjs'],
   ['translate-extras', 'translate-extras.test.mjs'],
+  ['translate-rivals', 'translate-rivals.test.mjs'],
+  ['translate-rivals-page', 'translate-rivals-e2e.mjs'],
   ['parity', 'parity.test.mjs'],
   ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
@@ -143,6 +151,8 @@ for (const [name, file] of [
   ['job-board', 'job-board.test.mjs'],
   ['lane-pages', 'lane-pages.test.mjs'],
   ['calendar', 'calendar.test.mjs'],
+  ['calendar-rivals', 'calendar-rivals.test.mjs'],
+  ['calendar-rivals-page', 'calendar-rivals-e2e.mjs'],
   ['generators', 'generators.test.mjs'],
   ['listgen', 'listgen.test.mjs'],
   ['image-gen', 'image-gen.test.mjs'],
@@ -159,6 +169,8 @@ for (const [name, file] of [
   ['daily-art', 'daily-art.test.mjs'],
   ['daily-photo', 'daily-photo.test.mjs'],
   ['notes', 'notes.test.mjs'],
+  ['note-organise', 'note-organise.test.mjs'],
+  ['notes-rivals', 'notes-rivals-e2e.mjs'],
   ['chat-notes', 'chat-notes.test.mjs'],
   ['note-extras', 'note-extras.test.mjs'],
   ['chat-calendar', 'chat-calendar.test.mjs'],
@@ -307,6 +319,7 @@ for (const [name, file] of [
   ['autofix', 'automation-fix.test.mjs'],
   ['overrides', 'review-overrides.test.mjs'],
   ['offer', 'review-offer.test.mjs'],
+  ['stage offer', 'stage-offer.test.mjs'],
   ['targets', 'targets.test.mjs'],
   ['releasenotes', 'releasenotes.test.mjs'],
   ['intent', 'intent.test.mjs'],
@@ -550,6 +563,7 @@ for (const [name, file] of [
   ['tower-size', 'tower-size.test.mjs'],
   ['history-coverage', 'history-coverage.test.mjs'],
   ['tower-target', 'tower-target.test.mjs'],
+  ['tower-rules', 'tower-rules.test.mjs'], // the tower rules (docs/TOWER-RULES.md): any change to the tower keeps every rule
   ['site-crawl', 'site-crawl.test.mjs'],
   ['emoji-link', 'emoji-link.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
@@ -590,6 +604,7 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['helper-pr', 'helper-pr.test.mjs'],
   ['systems-monitor', 'systems-monitor.test.mjs'],
   ['system-blueprint', 'system-blueprint.test.mjs'],
   ['client-handoff', 'client-handoff.test.mjs'],
