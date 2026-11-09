@@ -351,6 +351,9 @@
     },
     {
       "ask": "make a vase"
+    },
+    {
+      "ask": "play sorry"
     }
   ],
   "candidates": [],
