@@ -2110,16 +2110,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-31T21:54:18Z",
-   "line": "Versus: took on no site; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "koanruler.com",
-   "noop": true
-  },
-  {
    "at": "2026-11-01T09:37:56Z",
    "line": "Versus: took on no site (also read: 7 no-family, 1 discarded); next ndscalc.ru (the target)",
    "built": 0,
@@ -2487,6 +2477,16 @@
    "fixed": [],
    "pages_per_day": 1,
    "reads_next": "unitpay.ru"
+  },
+  {
+   "at": "2026-11-09T21:06:00Z",
+   "line": "Versus: took on no site; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "unitpay.ru",
+   "noop": true
   }
  ]
 }
