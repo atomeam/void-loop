@@ -70,6 +70,9 @@ export function squashOf(subject) {
 
 /** the bot that writes Verse's records straight to main (tower evidence, site tests, exams, findings, treasury). */
 export const RECORD_BOT = 'github-actions[bot]';
+// the workflows that commit as verse-bot (free-pics-probe.yml, autosalvage.yml, live-revert.yml) write records too: on 2026-11-09
+// one weekly "Free pictures probe" commit (domains/free-pics.probe.json) made a green run on 99093cb stale, and #2563 waited a run
+export const RECORD_BOTS = Object.freeze([RECORD_BOT, 'verse-bot']);
 const DATA = /\.(json|jsonl|md|txt|log|csv|xml|png|jpe?g|webp|gif|ico)$/i; // records and the screenshots and icons they cite
 const NOT_DATA = /^(\.github\/|void-live-deploy\/(lib|skills)\/)|(^|\/)(package(-lock)?\.json|wrangler\.(json|jsonc|toml))$/;
 
@@ -77,7 +80,7 @@ const NOT_DATA = /^(\.github\/|void-live-deploy\/(lib|skills)\/)|(^|\/)(package(
  * and that is not the squash of a pull request. About 7 land an hour (2026-11-06: 127 of 173 bot commits in a day), and a
  * suite run takes about 30 minutes, so without this a green run almost never found main unmoved. Pure. */
 export function botRecord(files) {
-  if (!files || files.author !== RECORD_BOT || squashOf(files.subject) || !files.length) return false;
+  if (!files || !RECORD_BOTS.includes(files.author) || squashOf(files.subject) || !files.length) return false;
   return files.every((f) => DATA.test(String(f)) && !NOT_DATA.test(String(f)));
 }
 
