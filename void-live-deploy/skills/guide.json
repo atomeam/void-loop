@@ -4127,8 +4127,7 @@
    "line": "Check if a word or phrase is a palindrome",
    "examples": [
     "palindrome check for a man a plan a canal panama",
-    "check if kayak is a palindrome",
-    "palindromes for racing"
+    "check if kayak is a palindrome"
    ],
    "tier": "checked",
    "why": "a self-test, 2 real asks in the benchmark",
@@ -7211,7 +7210,7 @@
     "structure this business idea for Verse to own the heavy lifting"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
    "n": 391
