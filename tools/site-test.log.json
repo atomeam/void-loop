@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-17T07:32:11Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "file",
-  "key": "zoom in | nothing appeared",
-  "note": "fix: \"zoom in\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-17T07:42:31Z",
   "passed": 0,
   "of": 25,
@@ -6738,5 +6730,23 @@
    ]
   },
   "note": "fix: \"geenrate a toon style dog\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-11-09T02:24:09Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1106,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12142 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
