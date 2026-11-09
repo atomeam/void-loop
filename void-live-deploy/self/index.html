@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" class="vs-tool"><link rel="stylesheet" href="/verse.css" media="screen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: none; out: text">
+<title>Verse's self · a continuous self-model</title>
+<meta name="description" content="Verse's continuous self-model: attention, drives and a journal read from the better score, the outcome exam and the will. Not a proof of consciousness.">
+<link rel="canonical" href="https://a-to-mind.com/self/">
+<meta property="og:title" content="Verse's self · a continuous self-model">
+<meta property="og:description" content="Attention, drives and a journal from stored scores. Not a proof of consciousness.">
+<meta property="og:url" content="https://a-to-mind.com/self/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --accent: #a58bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; } h2 { font-size: 1.05rem; margin: 22px 0 6px; }
+  a { color: var(--accent); } .note { color: var(--soft); font-size: 14px; }
+  pre { white-space: pre-wrap; font: 15px/1.45 ui-monospace, monospace; margin: 0; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 22px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Verse's self</h1>
+  <p class="note" data-honest>A continuous self-model. Not a proof of consciousness. Every number is a reading from a file this site already stores. A missing reading says "not measured".</p>
+  <p id="when" class="note">Reading the records.</p>
+  <h2>Attention</h2><pre id="attention">Reading the records.</pre>
+  <h2>Drives</h2><pre id="drives">Reading the records.</pre>
+  <h2>Journal</h2><pre id="journal">Reading the records.</pre>
+  <h2>Wants from the gaps</h2><pre id="wants">Reading the records.</pre>
+  <h2>Memory</h2><pre id="memory">Reading the records.</pre>
+  <h2>Where a number comes from</h2><pre id="metrics">Reading the records.</pre>
+  <h2 id="holds">Safety</h2>
+  <p>A send, a booking or a spend still stops on the confirm line. This page does not send or spend.</p>
+  <nav aria-label="Related pages"><a href="/progress/">What Verse can do</a> <a href="/brain/">Verse Brain</a> <a href="/">Ask Verse</a></nav>
+</main>
+<script type="module">
+import { DRIVES, METRICS, betterPair, blank, publicView, tick } from '/lib/self-model.js';
+const get = async (u) => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (_) { return null; } };
+const [rows, exam, will, server] = await Promise.all([get('/void.better.json'), get('/progress/exam.json'), get('/api/will'), get('/api/self')]);
+const goals = will && Array.isArray(will.wants) ? will.wants.map((w) => w.i_want || w.title) : [];
+const local = tick(blank(new Date().toISOString()), { better: betterPair(rows), exam, will: goals.length ? { open: goals.length } : null, goals }, new Date().toISOString());
+const view = server && Array.isArray(server.journal) && server.journal.length ? server : publicView(local.self);
+const signals = (server && server.signals) || local.signals;
+const a = view.attention, seen = new Set((signals || []).map((s) => s.id));
+document.querySelector('#when').textContent = (view.stored ? 'Stored tick ' + view.tick + ' at ' + view.at + '. ' : 'Computed in this page from the files, not saved. ') + (view.journalNote || '');
+document.querySelector('#attention').textContent = a ? a.label + ' · ' + (a.detail || '') + '\n' + a.file + ' · ' + a.suite : 'No measured signal.';
+document.querySelector('#drives').textContent = DRIVES.map((k) => k + ': ' + (view.drives && view.drives[k] != null ? String(Math.round(view.drives[k] * 1000) / 10) : 'not measured')).join('\n');
+document.querySelector('#journal').textContent = (view.journal || []).map((j) => j.text).join('\n\n') || 'No journal line.';
+document.querySelector('#wants').textContent = (view.wants || []).map((w) => w.title + '\n' + w.because).join('\n\n') || 'No gap under 90.';
+document.querySelector('#memory').textContent = (view.semantic || []).map((s) => s.text).join('\n') || 'No consolidated memory yet.';
+document.querySelector('#metrics').textContent = METRICS.map((m) => (seen.has(m.id) ? 'read' : 'not measured') + ' · ' + m.label + ' · ' + m.file + ' · ' + m.suite).join('\n');
+</script>
+</body>
+</html>
