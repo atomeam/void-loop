@@ -2,7 +2,7 @@
 // stage or other pages, and lives on /log/ only, linked quietly from the footer). It draws what the self card used to carry (since you last
 // looked, what Verse asked for, what got built with its week line, the growth readout, the family bars), the ledger skill by skill, the weekly
 // chart and the tester trend, and the sites Versus tried. Nothing here is new data: every block reads the same files and /api/reflect as before.
-// logHtml is pure (data in, escaped HTML out); drawLog fetches, mounts and wires the folds, the Root cause / Surface toggle and the week line.
+// verseLogHtml is pure (data in, escaped HTML out); drawVerseLog fetches, mounts and wires the folds, the Root cause / Surface toggle and the week line.
 import * as SB from './self-blocks.js';
 
 export const LOG_PATH = '/log/';
@@ -23,7 +23,7 @@ export function sitesHtml(a, esc) {
 }
 
 /** the whole log body: { sections } from SB.selfCard (the stage keeps only the words section), then the ledger, the charts and the sites. Pure. */
-export function logHtml({ v = null, last = null, fam = null, now = Date.now(), built = '', progress = '', tester = '', sites = '' } = {}, esc) {
+export function verseLogHtml({ v = null, last = null, fam = null, now = Date.now(), built = '', progress = '', tester = '', sites = '' } = {}, esc) {
   let h = '';
   if (v && Array.isArray(v.entries)) {
     const { sections } = SB.selfCard(v, last, new Set(), now, fam);
@@ -34,15 +34,15 @@ export function logHtml({ v = null, last = null, fam = null, now = Date.now(), b
 
 const esc0 = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 /** fetch, draw and wire the log into el. Returns what it drew. */
-export async function drawLog(el, { esc = esc0, fetchJson = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null) } = {}) {
+export async function drawVerseLog(el, { esc = esc0, fetchJson = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null) } = {}) {
   const kept = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (_) { return d; } };
   const [v, fam, led, tl, a] = await Promise.all(['/api/reflect', '/skills/families.json', '/void.growth.json', '/tester-log.json', '/assimilated.json'].map(fetchJson));
   const last = kept(LAST_KEY, null);
   let built = '', progress = '', tester = '';
   try { const BD = await import('./built-detail.js'); if (led) built = BD.builtDetailHtml(BD.builtByFamily(led, fam), esc); } catch (_) {}
   try { const PC = await import('./progress-chart.js'); if (led) progress = PC.progressHtml(PC.weekly(led), esc); if (tl && PC.testerHtml) tester = PC.testerHtml(tl, esc); } catch (_) {}
-  const body = logHtml({ v, last, fam, built, progress, tester, sites: sitesHtml(a, esc) }, esc);
-  el.innerHTML = body || '<p class="sub">Nothing logged yet.</p>'; // void-review: ok: logHtml escapes every value with esc
+  const body = verseLogHtml({ v, last, fam, built, progress, tester, sites: sitesHtml(a, esc) }, esc);
+  el.innerHTML = body || '<p class="sub">Nothing logged yet.</p>'; // void-review: ok: verseLogHtml escapes every value with esc
   if (v && v.follow) try { localStorage.setItem(LAST_KEY, JSON.stringify(SB.sinceMark(v, fam))); } catch (_) {}
   if (fam) try { const m = await import('./skill-confidence.js'); const slot = el.querySelector('[data-v-conf]'); if (slot) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); } catch (_) {} // void-review: ok: sureHtml escapes every name
   wire(el, esc);

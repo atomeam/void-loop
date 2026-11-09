@@ -2985,16 +2985,7 @@ say('nothing selected to remove');
         el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
       };
       wire();
-      // the growth velocity keeps up (asked by Verse: "updating in real time"): while this card is open, a stage change (a build landing puts things on the
-      // stage) reads /api/reflect again and redraws the week's line in place, at most once a minute (lib/self-blocks.js VELOCITY_EVERY); no timer, and
-      // the listener lets go the first time it finds the card closed
-      if (SB && el.querySelector('.vs-velocity')) { let velAt = 0, velBusy = false;
-        const onStage = async () => { if (vpageEl !== el) return removeEventListener('void:stage-change', onStage);
-          if (velBusy || Date.now() - velAt < SB.VELOCITY_EVERY) return; velBusy = true; velAt = Date.now();
-          try { const nv = await fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), box = vpageEl === el && el.querySelector('.vs-velocity');
-            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc, SB.friction(nv.asks)); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
-          velBusy = false; };
-        addEventListener('void:stage-change', onStage); }
+      // the growth velocity and its live redraw are on the log page now (lib/verse-log.js)
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Verse, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
       const conf = (fam) => import('/lib/skill-confidence.js').then((m) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc

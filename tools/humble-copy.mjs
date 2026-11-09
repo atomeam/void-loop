@@ -33,6 +33,7 @@ export const BOASTS = [
 /** ALLOW: [file, boast id, a piece of the matched line, why]. Keep it small and explicit. */
 export const ALLOW = [
   ['assimilated/index.html', 'conquer', "'passed, conquering in background':", 'the old data label (tools/assimilated.mjs LABEL) as a key, mapped to plain words for the page'],
+  ['lib/verse-log.js', 'conquer', "'passed, conquering in background':", 'the same old data label as a key, mapped to plain words on the log page'],
   ['lib/autopsy.js', 'i-made', 'look what i made', 'what a person may type to open the walkthrough, matched, never shown'],
 ];
 
