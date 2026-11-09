@@ -9726,7 +9726,11 @@ try {
   // every block of the self card but the lead starts closed (owner, 2026-10-18) and "Newest" leads it (2026-10-19): the card is read as a reader
   // reads it, each block opened by its heading, so what sits in a closed block is still checked as shown text
   const selfOpened = () => t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
-  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await selfOpened(); return /I am strong at sums and thin on places/.test(pg) && /Log/.test(pg) && !/What got built/i.test(pg); }, 4000); check('voice: Verse says what it thinks of itself, in its own words, with a quiet link to its log (what it asked for and built is on /log/)', ok, (await selfOpened()).slice(0, 600)); }
+  // the card's body needs three round trips before the words are there (/api/reflect, the self-blocks import, families.json -
+  // void.html drawVoice), so the deadline is a loaded runner's, not a fast machine's: the words are the assertion, not the pace
+  // (main's voice flake, 2026-10-25; the same lesson as the asks-after-the-title wait, 2026-10-19). The activity that used to
+  // sit on this card now lives on /log/; the stage card still waits on that same chain before its words and the log link exist.
+  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await selfOpened(); return /I am strong at sums and thin on places/.test(pg) && /Log/.test(pg) && !/What got built/i.test(pg); }, 12000); check('voice: Verse says what it thinks of itself, in its own words, with a quiet link to its log (what it asked for and built is on /log/)', ok, (await selfOpened()).slice(0, 600)); }
   { const TL = await t.p.context().newPage(); await TL.goto(base + 'log/');
     const logText = () => TL.evaluate(() => { const pg = document.querySelector('#log'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
     const ok = await until(async () => { const pg = await logText(); return /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 6000);
