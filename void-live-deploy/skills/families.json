@@ -11,10 +11,10 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-09",
- "bench_at": "2026-11-08",
+ "bench_at": "2026-11-09",
  "totals": {
   "experiment": 0,
-  "tested": 0,
+  "tested": 1,
   "checked": 5,
   "proven": 409
  },
@@ -1145,12 +1145,9 @@
      "name": "night-sky",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "failing": [
-      "turn off the sky"
-     ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.667,
+     "success_rate": 1,
      "promoted": "2026-11-07"
     },
     {
@@ -1267,7 +1264,7 @@
      "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
      "failing": [
       "days until july 4",
-      "how many days until january 1st"
+      "countdown to chirstmas"
      ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
@@ -1405,9 +1402,12 @@
      "name": "baseconv",
      "tier": "proven",
      "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
+     "failing": [
+      "1010 binary to decimal"
+     ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.889,
      "promoted": "2026-10-29",
      "streak": 15
     },
@@ -1436,11 +1436,12 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "failing": [
+      "what day is 2026-10-30",
       "2026-10-30"
      ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.999,
+     "success_rate": 0.998,
      "streak": 21
     },
     {
@@ -1485,9 +1486,12 @@
      "name": "savings",
      "tier": "proven",
      "why": "a self-test, 9 browser-suite mentions, 13 real asks in the benchmark",
+     "failing": [
+      "if i save 200 a month how much in 5 years"
+     ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.923,
      "streak": 21
     },
     {
@@ -1521,7 +1525,7 @@
      ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.833,
+     "success_rate": 0.861,
      "streak": 21
     },
     {
@@ -1665,12 +1669,9 @@
      "name": "sums",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
-     "failing": [
-      "400 + 562 + 129"
-     ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.667,
+     "success_rate": 1,
      "promoted": "2026-11-07",
      "streak": 6
     },
@@ -2742,9 +2743,12 @@
      "name": "notes-fill",
      "tier": "proven",
      "why": "a self-test, 5 real asks in the benchmark",
+     "failing": [
+      "add a note: buy milk"
+     ],
      "last_tested": "2026-11-09",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "promoted": "2026-10-29",
      "streak": 13
     },
@@ -3632,7 +3636,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
     "proven": 59
    },
@@ -3950,6 +3954,13 @@
      "success_rate": 1,
      "promoted": "2026-11-07",
      "streak": 3
+    },
+    {
+     "name": "ownership-map",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-09",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "store",

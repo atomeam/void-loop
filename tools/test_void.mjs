@@ -2375,7 +2375,7 @@ try {
   // stage pack c (owner, 2026-10-18): the codex files a card and finds it, the echo chamber replays it, a capsule keeps the stage behind a
   // hashed word, and a whisper surfaces once on the next touch. All device-local (lib/stage-pack-c.js).
   if (want('stage pack c: codex, echo chamber, time capsule, whisper network')) { const L = await fresh();
-    const card = () => L.p.$$eval('.vpage', (es) => (es.length ? es[es.length - 1].innerText : '')).catch(() => '');
+    const card = () => L.p.$$eval('.vpage', (es) => { const cur = es.find((e) => e.classList.contains('on')) || es[0]; return cur ? cur.innerText : ''; }).catch(() => '');
     const store = (k) => L.p.evaluate((key) => localStorage.getItem(key) || '', k);
     await L.ask('make a clock', 500); await L.ask('what did you do today', 700);
     await L.ask('file this in the codex', 700); const filedCard = await card(); const codexRaw = await store('a2m.void.codex.v1');

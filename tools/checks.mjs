@@ -611,6 +611,7 @@ for (const [name, file] of [
   ['system-handoff', 'system-handoff.test.mjs'],
   ['monitor-pack', 'monitor-pack.test.mjs'],
   ['verify-pack', 'verify-pack.test.mjs'],
+  ['ownership-map', 'ownership-map.test.mjs'],
   ['verse-runs', 'verse-runs.test.mjs'],
   ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],
