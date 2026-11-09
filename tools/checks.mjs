@@ -60,6 +60,7 @@ const ONLY_WHEN = {
   // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
   // the features /notes/, /translate/ and /calendar/ took from their rivals, in a real browser at desktop and phone width (tools/*-rivals-e2e.mjs)
   'notes-rivals-e2e.mjs': /void-live-deploy\/(?:notes\/|lib\/(?:notes|note-extras|note-organise)\.js$)|notes-rivals/,
+  'translate-rivals-e2e.mjs': /void-live-deploy\/(?:translate\/|functions\/api\/translate\.js$|lib\/translate-[a-z]+\.js$)|translate-rivals/,
   'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy|shape-picture)|skills\/(?:draw|image|shape)\.js)|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
@@ -75,7 +76,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs', 'notes-rivals-e2e.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs', 'notes-rivals-e2e.mjs', 'translate-rivals-e2e.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -108,6 +109,8 @@ for (const [name, file] of [
   ['wiped-files', 'wiped-files.test.mjs'],
   ['translate', 'translate.test.mjs'],
   ['translate-extras', 'translate-extras.test.mjs'],
+  ['translate-rivals', 'translate-rivals.test.mjs'],
+  ['translate-rivals-page', 'translate-rivals-e2e.mjs'],
   ['parity', 'parity.test.mjs'],
   ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
