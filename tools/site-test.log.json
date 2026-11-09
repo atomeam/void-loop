@@ -1,19 +1,5 @@
 [
  {
-  "at": "2026-10-17T12:21:39Z",
-  "passed": 19,
-  "of": 27,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"draw a line\" (skill:shape)"
- },
- {
-  "at": "2026-10-17T13:52:50Z",
-  "passed": 26,
-  "of": 28,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"show the days until a date\" (skill:show-countdown)"
- },
- {
   "at": "2026-10-17T14:29:51Z",
   "passed": 19,
   "of": 29,
@@ -7378,5 +7364,70 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T18:34:54Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1078,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9934 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T18:45:49Z",
+  "passed": 108,
+  "of": 114,
+  "ms": 464,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 6 < 7"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 7"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "redner a cartoon dragon",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1078,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9934 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"set a goal of 10 on the list\" (skill:list)"
  }
 ]

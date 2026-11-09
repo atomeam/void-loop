@@ -369,6 +369,9 @@
     },
     {
       "ask": "how much is my watch worth"
+    },
+    {
+      "ask": "set a goal of 10 on the list"
     }
   ],
   "candidates": [],

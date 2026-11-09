@@ -1,15 +1,56 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 112,
+ "cases": 113,
  "runsTotal": 300,
  "kinds": {
-  "grow": 79,
+  "grow": 78,
   "file": 49,
-  "visitor": 168,
+  "visitor": 169,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T18:45:49Z",
+   "passed": 108,
+   "of": 114,
+   "kind": "grow",
+   "ms": 464,
+   "note": "new ground passed, kept as a regression case: \"set a goal of 10 on the list\" (skill:list)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 6 < 7"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 7"
+    },
+    {
+     "ask": "show the days until a date",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "redner a cartoon dragon",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T18:34:54Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T17:42:23Z",
    "passed": 0,
@@ -265,51 +306,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T12:22:50Z",
-   "passed": 102,
-   "of": 109,
-   "kind": "grow",
-   "ms": 350,
-   "note": "new ground passed, kept as a regression case: \"turn this idea into a system plan: weekly status reports that write themselves\" (skill:idea-to-system)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 1 < 7"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 1 < 7"
-    },
-    {
-     "ask": "yo find me a sci-fi film from the 80s",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fat burning heart rate for a 35 year old",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T12:08:14Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -363,9 +359,9 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 53,
-   "passed": 2458,
-   "of": 2727
+   "runs": 51,
+   "passed": 2413,
+   "of": 2672
   },
   {
    "from": "2026-10-19",
@@ -381,13 +377,13 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 245,
-   "passed": 5703,
-   "of": 7544,
+   "runs": 247,
+   "passed": 5811,
+   "of": 7658,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
-   "ms": 386
+   "ms": 387
   }
  ],
  "seen": {
@@ -452,8 +448,8 @@
   "skill:layer": "2026-11-09T16:36:16Z",
   "skill:light-look": "2026-11-09T17:32:00Z",
   "skill:link": "2026-11-09T17:32:00Z",
-  "skill:list": "2026-10-17T09:49:14Z",
-  "skill:loan": "2026-10-17T09:49:14Z",
+  "skill:list": "2026-11-09T18:45:49Z",
+  "skill:loan": "2026-11-09T18:45:49Z",
   "skill:local-inference": "2026-10-17T09:57:04Z",
   "skill:lock": "2026-10-17T09:57:04Z",
   "skill:magnetize": "2026-10-17T10:04:20Z",
