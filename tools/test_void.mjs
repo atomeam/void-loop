@@ -664,7 +664,7 @@ try {
     const bubble = await until(() => P.p.$eval('#stage .walker-bubble', (b) => (b.hidden ? '' : b.textContent)).catch(() => ''), 3000);
     const inside = await P.p.evaluate(() => { const b = document.querySelector('#stage .walker-bubble').getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(), w = document.querySelector('#stage .walker').getBoundingClientRect(); return b.left >= s.left && b.right <= s.right && b.bottom <= w.top && b.width > 40; });
     const m = /^I have ([\d,]+) skills? right now/.exec(bubble || '');
-    const trueLine = /^I have [\d,]+ skills? right now\. Ask for anything\.$|^I(?:'ve| haven't) surpassed|^The last thing (?:I learned|that shipped): .{4,}\.$|^“.+\.”$|^Verse by A-to-Mind does whatever anyone asks/.test(bubble || '') && (!m || Number(m[1].replace(/,/g, '')) === skillsN);
+    const trueLine = /^I have [\d,]+ skills? right now\. Ask for anything\.$|^I learn from other good sites\. Say "tower"|^The last thing (?:I learned|that shipped): .{4,}\.$|^“.+\.”$|^Verse by A-to-Mind does whatever anyone asks/.test(bubble || '') && (!m || Number(m[1].replace(/,/g, '')) === skillsN);
     if (process.env.VOID_SHOTS) await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'walker.png') }).catch(() => {});
     await P.p.waitForTimeout(4300);
     const gone = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);
@@ -4042,9 +4042,9 @@ try {
     const seenAfterFirst = await seen();
     verified = ['sticky note buy milk', 'make a counter']; // the live check ran: the counter answers now
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
-    const second = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
+    const second = await until(async () => { const t = await note(); return /New: /.test(t) ? t : ''; }, 6000) || await note();
     check('look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered',
-      !/I built this/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I built this: a counter you can tap \(and 1 more\)/.test(second),
+      !/New: /.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /New: a counter you can tap \(and 1 more\)/.test(second),
       JSON.stringify({ first, seenAfterFirst, second }));
     await P.ctx.close();
   }
@@ -4061,13 +4061,13 @@ try {
     await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
     const note = () => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    const first = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
+    const first = await until(async () => { const t = await note(); return /New: /.test(t) ? t : ''; }, 6000) || await note();
     // opened (show me, then Done): the next visit does not offer the same things as new (an ignored line comes back: #1209)
     await P.p.click('[data-showcase="show"]'); await P.p.waitForTimeout(800);
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
     const second = await note();
     check('look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it',
-      /I built this: a counter you can tap \(and 1 more\)/.test(first) && !/I built this/.test(second), JSON.stringify({ first, second }));
+      /New: a counter you can tap \(and 1 more\)/.test(first) && !/New: /.test(second), JSON.stringify({ first, second }));
     await P.ctx.close();
   }
   if (want("look what I made: a small animated icon on the stage starts the walkthrough, no typing")) { // asked by Verse
@@ -4140,7 +4140,7 @@ try {
     const later = { bell: !!(await P.p.$('#whatsnew-bell')), line: await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '') };
     await P.ask("what's new", 1500); const replay = !!(await P.p.$('#showcase-bar'));
     check('look what I made: Clear list clears the builds and they stay cleared: the walkthrough and the sparkle go at once, a reload shows neither, and "what\'s new" does not replay them',
-      bell === '2' && !now.bar && !now.bell && !later.bell && !/Recently built|I built this/.test(later.line) && !replay && !P.errors.length, JSON.stringify({ bell, now, later, replay, errors: P.errors }));
+      bell === '2' && !now.bar && !now.bell && !later.bell && !/Recently built|New: /.test(later.line) && !replay && !P.errors.length, JSON.stringify({ bell, now, later, replay, errors: P.errors }));
     await P.ctx.close();
   }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
@@ -4215,7 +4215,7 @@ try {
     await ledger(P.ctx); await P.p.waitForTimeout(500);
     r.before = await note(P);
     await P.p.mouse.move(220, 220);
-    r.pill = await until(async () => ((await note(P)).includes('I built this: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
+    r.pill = await until(async () => ((await note(P)).includes('New: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
     await P.p.click('[data-showcase="show"]');
     r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
     await P.p.click('[data-showcase="next"]');
@@ -4229,12 +4229,12 @@ try {
     r.reload = await note(P);
     await P.ask("what's new", 1500); r.typed = await barText(P); r.typedSaid = await P.p.$eval('#whisper', (e) => e.textContent).catch(() => '');
     await P.ask('show me everything you made', 1500); r.all = await barText(P);
-    check('look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor\'s first move brings "I made 3 new things while you were away · show me"; "show me" puts the newest (a paper sticky) on the stage with "1 of 3", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; "what\'s new" afterwards replays nothing and says so with the count; "show me everything you made" walks all 4 by name',
+    check('look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor\'s first move brings "New: sticky notes look like real paper (and 2 more) · show me"; "show me" puts the newest (a paper sticky) on the stage with "1 of 3", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; "what\'s new" afterwards replays nothing and says so with the count; "show me everything you made" walks all 4 by name',
       !r.firstBefore && !r.firstAfter && r.firstSeen && !r.before && /show me$/.test(r.pill)
         && /^1 of 3 · Built while you were away sticky notes look like real paper/.test(r.s1) && /^2 of 3 .*a counter you can tap/.test(r.s2)
         && /the growth page/.test(r.s3) && r.s3kinds === 'counter'
         && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-11T00:00:00Z'
-        && !/I made/.test(r.reload) && !r.typed && /nothing new since you last looked.*for all 4/.test(r.typedSaid) && /^1 of 4 · Everything I made/.test(r.all) && !P.errors.length,
+        && !/New: /.test(r.reload) && !r.typed && /nothing new since you last looked.*for all 4/.test(r.typedSaid) && /^1 of 4 · Everything so far/.test(r.all) && !P.errors.length,
       JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
   // the walkthrough says what Verse's own upgrades did, and its previews are Verse's asks, not yours (owner, 2026-10-20: "it should be saying the
@@ -4311,7 +4311,7 @@ try {
     await P.ctx.route(/\/api\/miss(?:\?|$)/, (r) => { try { misses.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} r.fulfill({ status: 204, body: '' }); });
     const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    await until(async () => /I built this/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
+    await until(async () => /New: /.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
     await P.p.click('[data-showcase="show"]');
     const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
     await P.p.click('[data-showcase="next"]');
