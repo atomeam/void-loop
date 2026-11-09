@@ -12,5 +12,15 @@
  ],
  "touched": [
   "domains/growth-inbox.md"
- ]
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-09T21:16:48.344Z",
+ "closedBy": "0a823c576cf8ddaddaf9043dd2f42a9395832857",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42697854936",
+ "minutes": 61
 }

@@ -1,0 +1,116 @@
+{
+ "id": "colour: colorbook.io",
+ "rows": {
+  "speed": {
+   "verdict": "better",
+   "verse": 247,
+   "best": 307,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 247 ms to the load event (median of 3, phone width) vs colorbook.io 307 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 3 of 3 loads answered vs colorbook.io 3 of 3 loads answered",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 0 px sideways overflow at 390 px vs colorbook.io 0 px sideways overflow at 390 px",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 0 unnamed controls or images vs colorbook.io 0 unnamed controls or images",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 1 (1: the page shows itself again with the network cut) vs colorbook.io 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 2,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colorbook.io 2 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7,
+   "best": 3,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 7 of 11 wider-use points (docs/WIDER-USE.md) vs colorbook.io 3 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 4 of 4 right against the worked-out answer; judged against the standard, not colorbook.io (the site is not asked)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "of": 4
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 60,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 0 design defects vs colorbook.io 60 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), colorbook.io (50 low-contrast texts, 10 small tap targets, layout shift 0.00)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "siteRead": true
+  },
+  "every colour model": {
+   "verdict": "better",
+   "verse": 15,
+   "best": 4,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 15 of 15 shown vs colorbook.io 4 of 15 shown (Verse lacks: none; site lacks: decimal, HSV or HSB, HWB, CIE XYZ, CIE Yxy, CIELab, CIELUV, CIELCh, Hunter Lab, Oklab, OKLCH)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "of": 15,
+   "part": true,
+   "siteRead": true
+  },
+  "shades and palettes": {
+   "verdict": "better",
+   "verse": 12,
+   "best": 2,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 12 of 12 shown vs colorbook.io 2 of 12 shown (Verse lacks: none; site lacks: shades, tints, tones, monochromatic, analogous, split-complementary, tetradic, square, the 16 VGA colours, a random colour)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "of": 12,
+   "part": true,
+   "siteRead": true
+  },
+  "contrast": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 2 of 2 shown vs colorbook.io 2 of 2 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 18,
+   "best": 9,
+   "evidence": "Verse (/color/colour-management/?c=ff5733) 18 of 19 things a full answer shows vs colorbook.io 9 of 19 things a full answer shows (Verse lacks: Colour picker; site lacks: HSV or HSB, CIE Lab, shades, tints, tones, analogous, a colour name, Colour models on the colour page, Colour name, Shades and tints)",
+   "at": "2026-11-09T21:10:02.194Z",
+   "of": 19,
+   "siteRead": true
+  }
+ }
+}

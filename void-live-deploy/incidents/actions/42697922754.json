@@ -1,0 +1,57 @@
+{
+ "at": "2026-11-09T21:30:40Z",
+ "sha": "bd18dbef95a0656d147a15e8e162d80699ee181b",
+ "runId": 42697922754,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42697922754",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (5)",
+   "id": 129434620037,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42697922754/job/129434620037",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 5 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Verse)  -> {\"src\":{\"open\":true,\"line\":\"Source reliability: 27 skills answer from outside "
+   ],
+   "tail": [
+    "pass poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text  (healed on a second run alone)",
+    "pass poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half",
+    "pass poster wins: a text-only card has one seal, centred and filling the whole art window (never in a corner over dead space)",
+    "pass poster wins: a very long answer (desktop) is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar's row at its right edge",
+    "pass poster wins: a very long answer (phone) is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar's row at its right edge",
+    "pass poster wins: on a skill card (desktop) the stats chip touches no text, the rarity and collector row included",
+    "pass poster wins: on a skill card (phone) the stats chip touches no text, the rarity and collector row included",
+    "pass void seal: every card's art box carries Verse's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "pass the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has s",
+    "pass the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital, and more to ask), ← turns back to the title page",
+    "pass the book: ← from the title page swings the cover shut over the pages (the book stays up), and → or a tap opens it again",
+    "pass the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "pass the book: every proven skill in the Making things chapter opens with its own line of lore under the title, no two alike (asked by Verse)",
+    "pass the book: touching \"make a clock\" on the clock page closes the book (the stage is bright again) and puts a clock on the stage",
+    "pass the book: \"the book at chess\" opens on the Chess page, Esc shuts the cover and leaves the book up, and Esc again takes it away (the clock stays on the stage)",
+    "pass the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page",
+    "pass the book on a 390 px phone: one page at a time, the tome fits the screen, the prompt says swipe, and a swipe left turns to page 2",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass 3D dice (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D padlock (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D swatch (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D wheel (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D bubbles (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D pot (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass 3D page (a tool card's figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it",
+    "pass Ringer: \"play marbles\" stands the ring in the void (14 marbles, 13 to knock out); Flick rolls it from the card's state until everything stops (the hand lifts away while it rolls and comes back to aim), and the card says how the shot went",
+    "pass collector detail: a cat arrives at the light tier, zooming in on it re-meshes it finer twice (more triangles each step), and zooming out returns the light mesh (same triangle count) with the same seed",
+    "pass connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
+    "128/129 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
