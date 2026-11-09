@@ -168,3 +168,51 @@ test('the route: a change needs a picture still kept here, a readable small copy
   assert.equal(cap.why, 'cap', 'no free-painter fallback for a change'); assert.equal(calls.length, 1);
   assert.equal((await post(env, { prompt: 'a fox ' + ' '.repeat(2100) })).status, 400, 'only a change carries a big body');
 });
+
+test('"Fill in my words": the ask names the idea, the style and the language; the answer comes back as one clean prompt line', () => {
+  const [system, user] = I.wordsAskOf('a fox', 'painting', false);
+  assert.match(system, /40 to 70 words/); assert.match(system, /in English/); assert.match(system, /no real people/);
+  assert.match(user, /^Idea: a fox\nStyle: /);
+  assert.equal(I.wordsAskOf('a fox', 'none', true)[1], 'Idea: a fox'); assert.match(I.wordsAskOf('a fox', 'none', true)[0], /in German/);
+  assert.equal(I.wordsOutOf('Description: "A red fox in fresh snow at dawn."'), 'A red fox in fresh snow at dawn.');
+  assert.equal(I.wordsOutOf('  \n '), '');
+  assert.ok(I.wordsOutOf('x'.repeat(5000)).length <= I.PROMPT_MAX, 'never longer than a typed prompt');
+});
+const LONG = 'A red fox curled in fresh snow under pine trees at dawn, soft pink light on the snow, breath in the cold air, painted in warm oils';
+function wordsWorld(answer = { response: LONG }) {
+  const w = world(); w.env.AI = { run: async (model, input) => { w.calls.push({ model, input }); if (answer === 'fail') throw new Error('down'); return answer; } };
+  return w;
+}
+test('the route: "Fill in my words" asks the free text model once, gives back the fuller line, caches it, and counts words apart from pictures', async () => {
+  const { env, calls } = wordsWorld();
+  const r = await (await post(env, { act: 'words', prompt: 'a fox in snow', style: 'painting' })).json();
+  assert.equal(r.state, 'words'); assert.equal(r.words, LONG);
+  assert.equal(calls.length, 1); assert.ok(Array.isArray(calls[0].input.messages), 'a text model call, not a painter call');
+  assert.equal(calls[0].input.messages[1].content.startsWith('Idea: a fox in snow'), true);
+  const again = await (await post(env, { act: 'words', prompt: 'a fox in snow', style: 'painting' })).json();
+  assert.equal(again.cached, true); assert.equal(calls.length, 1);
+  assert.equal(env.DB.raw.prepare("SELECT n FROM void_image_days WHERE k = 'w'").get().n, 1);
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS c FROM void_image_days WHERE k = 'ai'").get().c, 0, 'no picture counted');
+});
+test('the route: "Fill in my words" refuses what a prompt refuses, before and after the model, and rests when nothing fuller comes back', async () => {
+  const { env, calls } = wordsWorld();
+  assert.equal((await (await post(env, { act: 'words', prompt: '   ' })).json()).why, 'empty');
+  assert.equal((await (await post(env, { act: 'words', prompt: 'a topless woman' })).json()).state, 'refused');
+  assert.equal(calls.length, 0, 'a refused idea never reaches the model');
+  const bad = wordsWorld({ response: 'A nude woman lying on a bed in soft warm light, painted in oils with deep shadows and rich red colours all around her' });
+  assert.equal((await (await post(bad.env, { act: 'words', prompt: 'a woman on a bed' })).json()).state, 'refused', 'the answer goes through the refusals too');
+  const short = wordsWorld({ response: 'fox' });
+  const s = await (await post(short.env, { act: 'words', prompt: 'a fox in snow' })).json();
+  assert.equal(s.state, 'resting'); assert.equal(s.why, 'words');
+  const down = wordsWorld('fail');
+  assert.equal((await (await post(down.env, { act: 'words', prompt: 'a fox in snow' })).json()).why, 'words');
+  const off = world(); delete off.env.AI;
+  assert.equal((await (await post(off.env, { act: 'words', prompt: 'a fox in snow' })).json()).why, 'off');
+});
+test('the route: "Fill in my words" has its own day cap per connection', async () => {
+  const { env } = wordsWorld();
+  await post(env, { act: 'words', prompt: 'a fox in snow' });
+  env.DB.raw.prepare("UPDATE void_image_days SET n = ? WHERE k LIKE 'w:%'").run(I.WORDS_PER_CONN);
+  const r = await post(env, { act: 'words', prompt: 'a cat on a roof' });
+  assert.equal(r.status, 429); assert.equal((await r.json()).why, 'wordsmine');
+});

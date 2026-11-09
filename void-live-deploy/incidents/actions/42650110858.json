@@ -1,0 +1,50 @@
+{
+ "at": "2026-11-09T16:03:36Z",
+ "sha": "7e7fee56ba4113071e5b48a1bd36dcc1524d3981",
+ "runId": 42650110858,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42650110858",
+ "workflow": "Verse deploy",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test-and-deploy",
+   "id": 129273873572,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42650110858/job/129273873572",
+   "conclusion": "failure",
+   "step": {
+    "number": 15,
+    "name": "Smoke check the deployment"
+   },
+   "fails": [
+    "Error: https://ccda03e9.a-to-mind.pages.dev failed: /tools.json HTTP 404, 16138 bytes, 0 tools; /api/answer HTTP 404, 16138 bytes"
+   ],
+   "tail": [
+    "Run echo \"Deployment: $URL\"",
+    "echo \"Deployment: $URL\"",
+    "# the deploy uploads its own copy of the page (tools/public-quotes.mjs takes the owner's quoted words out of it), so the check compares with that copy, not the repo's void.html (which differs from it by those words: every deploy since 2026-10-18 failed here)",
+    "for i in 1 2 3 4 5 6; do",
+    "  code=$(curl -s -o page.html -w '%{http_code}' \"$URL/\") || code=000",
+    "  if [ \"$code\" = \"200\" ] && cmp -s page.html void-live-deploy/index.html; then echo \"served index.html matches the deployed copy\"; break; fi",
+    "  echo \"attempt $i: HTTP $code\"; sleep 10",
+    "  [ \"$i\" = 6 ] && { echo \"::error::deployment did not serve the deployed page\"; exit 1; }",
+    "done",
+    "# the whole site, not just the page: /tools.json (100+ tools) and a real /api/answer answer (the Functions bundle) on this deployment",
+    "node tools/pages-guard.mjs check \"$URL\"",
+    "echo \"### Deployed 7e7fee56ba4113071e5b48a1bd36dcc1524d3981 to main: $URL\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  CF_READY: true",
+    "  URL: https://ccda03e9.a-to-mind.pages.dev",
+    "Deployment: https://ccda03e9.a-to-mind.pages.dev",
+    "served index.html matches the deployed copy",
+    "pages-guard: https://ccda03e9.a-to-mind.pages.dev attempt 1: /tools.json HTTP 404, 16138 bytes, 0 tools; /api/answer HTTP 404, 16138 bytes",
+    "pages-guard: https://ccda03e9.a-to-mind.pages.dev attempt 2: /tools.json HTTP 404, 16138 bytes, 0 tools; /api/answer HTTP 404, 16138 bytes",
+    "Error: https://ccda03e9.a-to-mind.pages.dev failed: /tools.json HTTP 404, 16138 bytes, 0 tools; /api/answer HTTP 404, 16138 bytes",
+    "pages-guard: https://ccda03e9.a-to-mind.pages.dev attempt 3: /tools.json HTTP 404, 16138 bytes, 0 tools; /api/answer HTTP 404, 16138 bytes",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

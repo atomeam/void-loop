@@ -47,17 +47,14 @@ test('next un-surpassed: skips surpassed floors and follows the size order', () 
   const fl = [{ id: 'a', beaten: true }, { id: 'b', beaten: false }, { id: 'c', beaten: false }, { id: 'd', beaten: false }];
   assert.deepEqual(nextUnsurpassed(fl, { a: null, b: 10, c: 5000, d: null }, {}, 2).map((f) => f.id), ['d', 'c']);
 });
-test('the card: no size column without a list; with one, a size per row and a By size view, smallest first', () => {
+test('the card has no size view: size never orders the climb (docs/TOWER-RULES.md rule 2); the size list itself still renders for a page that wants it', async () => {
+  const { sizeListHtml } = await import('../void-live-deploy/skills/tower.js');
   const t = tower([], {}, null, null);
-  assert.doesNotMatch(towerHtml(t, esc), /tw-sortbtn|tw-size/);
   const ranks = Object.fromEntries(t.floors.map((f, i) => [f.id, i % 5 ? 1000 + i : null]));
   t.rank = { list: { date: 'd' }, ranks, order: {} };
-  const h = towerHtml(t, esc, { lang: 'en' });
-  assert.match(h, /class="tw-sortbtn" aria-pressed="false"[^>]*>By size</); assert.match(h, /class="tw-size"/);
-  const v = towerHtml(t, esc, { bySize: true, lang: 'en' });
-  assert.match(v, /aria-pressed="true"/); assert.match(v, /<ol class="tw-sizelist"/);
-  assert.equal((v.match(/<li data-id=/g) || []).length, t.floors.length);
-  assert.match(v.split('<li data-id=')[1], /unranked/, 'unranked first');
-  assert.match(towerHtml(t, esc, { bySize: true, lang: 'de-DE' }), /Nach Grösse/);
+  assert.doesNotMatch(towerHtml(t, esc, { lang: 'en' }), /tw-sortbtn|By size|smallest/);
+  const v = sizeListHtml(t, esc, 'en');
+  assert.match(v, /<ol class="tw-sizelist"/); assert.equal((v.match(/<li data-id=/g) || []).length, t.floors.length);
+  assert.match(sizeListHtml(t, esc, 'de-DE'), /Nach Grösse/);
   assert.equal(readBySize(), false, 'no storage here: the default, no throw');
 });
