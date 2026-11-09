@@ -1,1 +1,0 @@
-{"at":"2026-11-09T08:32:06Z","by":"grok-bot","kind":"fix","what":"lists run 14: the seven early fringe pages say Verse in their titles and text, each draft has a window.__name check hook with a selftest, and tools/verse-name.test.mjs has no exceptions left"}

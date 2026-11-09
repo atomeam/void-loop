@@ -1,1 +1,0 @@
-{"at":"2026-11-09T08:32:07Z","by":"grok-bot","kind":"fix","what":"a-to-mind.com's APIs stop vanishing after bot commits: Cloudflare Pages Git builds published the repo root with no Functions over the real site; a root wrangler.toml now makes them publish nothing (tools/pages-git-off.test.mjs)","ref":"https://github.com/atomeam/void-loop/pull/2560"}
