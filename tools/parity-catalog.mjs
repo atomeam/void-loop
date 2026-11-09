@@ -639,8 +639,8 @@ export const CATALOG = {
   '/journal/': [
     ['latest', 'Papers', 'The newest papers, with title, date and volume', T('latest articles'), T('Latest'), null, 'core'],
     ['abstract', 'Papers', "The abstract of each paper", T('abstract'), T('abstract'), null, 'core'],
-    ['authors', 'Papers', 'The authors of each paper', T('author'), null, T('authors'), 'core'],
-    ['volume', 'Papers', 'The volume each paper is in', T('volume'), null, T('Volume '), 'core'],
+    ['authors', 'Papers', 'The authors of each paper', T('author'), T('p\\.authors'), null, 'core'],
+    ['volume', 'Papers', 'The volume each paper is in', T('volume'), T('Volume '), null, 'core'],
     ['date', 'Papers', 'The date each paper was published', T('published'), T('pubDate'), null, 'core'],
     ['doi', 'Papers', 'The DOI that finds each paper', T('\\bdoi\\b'), T('doi\\.org'), null, 'core'],
     ['search', 'Papers', 'Search the papers', T('search articles'), T('Search'), null, 'core'],

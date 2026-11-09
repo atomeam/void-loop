@@ -8,9 +8,13 @@
 export const FEED = 'https://ajsonline.org/feed';
 /** Crossref's public search (no key, polite pool). */
 export const CROSSREF = 'https://api.crossref.org/works';
+/** The journal's own ISSN (Crossref's registry): the records under it are the journal's papers, each with its authors, abstract and volume. */
+export const ISSN = '0002-9599';
 /** The feed read through Verse's own edge: /api/journal-proxies it with the right CORS header server-side,
  * so the page works even where the journal's feed does not send CORS headers. Falls back to the feed itself. */
 export const FEED_VIA = '/api/feed?u=' + encodeURIComponent(FEED);
+/** The Crossref fields every reader asks for, so a paper carries the same shape whichever route read it. */
+const SELECT = 'DOI,title,author,abstract,published,issued,volume,link,URL,type';
 
 /** One RSS <item> block (string) -> one paper shape. Pure; works on the raw XML so it runs in Node tests too. */
 export function fromRssItem(xml) {
@@ -29,15 +33,18 @@ export function fromRssItem(xml) {
   };
 }
 
+/** A Crossref date-parts array ([2026, 9, 8]) -> an ISO day, zero-padded, so every route shows one date shape. Pure. */
+const isoDate = (dp) => { const a = dp && dp[0]; return a && a[0] ? [a[0], String(a[1] || 1).padStart(2, '0'), String(a[2] || 1).padStart(2, '0')].join('-') : ''; };
+
 /** Crossref work -> the same shape. Pure. */
 export function fromCrossref(w) {
   const authors = (w.author || []).map((a) => [a.given, a.family].filter(Boolean).join(' ')).join(', ');
   return {
     title: (w.title || [''])[0],
-    url: (w.link && w.link[0] && w.link[0].URL) || ('https://doi.org/' + (w.DOI || '')),
+    url: (w.link && w.link[0] && w.link[0].URL) || w.URL || ('https://doi.org/' + (w.DOI || '')),
     authors,
     abstract: w.abstract || '',
-    date: w.published && w.published['date-parts'] && w.published['date-parts'][0] ? w.published['date-parts'][0].join('-') : (w.issued && w.issued['date-parts'] && w.issued['date-parts'][0] ? w.issued['date-parts'][0].join('-') : ''),
+    date: isoDate(w.published && w.published['date-parts']) || isoDate(w.issued && w.issued['date-parts']),
     volume: w.volume || '',
     doi: w.DOI || '',
     image: '',
@@ -67,9 +74,28 @@ export function parseFeed(xml) {
   return items.map(fromRssItem).filter((p) => p.title && p.url);
 }
 
+/** The journal's newest papers from Crossref, its own DOI registry: the records under its ISSN, newest first, each already
+ * carrying its authors, abstract and volume. The journal's RSS feed names no volume or author per item, so this is the route
+ * the page reads first; the feed is the fallback when the registry does not answer. Pure apart from the fetch. */
+export async function latestByIssn({ rows = 20, fetchImpl = fetch, issn = ISSN } = {}) {
+  const u = CROSSREF + '?filter=issn:' + encodeURIComponent(issn) + '&sort=published&order=desc&rows=' + rows + '&select=' + SELECT;
+  const r = await fetchImpl(u, { headers: { accept: 'application/json' } });
+  if (!r.ok) throw new Error('registry ' + r.status);
+  const j = await r.json();
+  const items = (j.message && j.message.items) || [];
+  return items.map(fromCrossref).filter((p) => p.title && p.doi);
+}
+
+/** The newest papers: Crossref by the journal's ISSN first (authors, abstract and volume on every paper), the journal's own
+ * feed as the fallback. Throws only when neither answers, so the page can say so plainly. Pure apart from the fetches. */
+export async function latest({ rows = 20, fetchImpl = fetch } = {}) {
+  try { const byIssn = await latestByIssn({ rows, fetchImpl }); if (byIssn.length) return byIssn; } catch (_) {}
+  return papers(fetchImpl);
+}
+
 /** Search the public research record (Crossref). Pure apart from the fetch. */
 export async function searchCrossref(query, { rows = 25, fetchImpl = fetch } = {}) {
-  const u = CROSSREF + '?query.bibliographic=' + encodeURIComponent(query) + '&rows=' + rows + '&select=DOI,title,author,abstract,published,issued,volume,link';
+  const u = CROSSREF + '?query.bibliographic=' + encodeURIComponent(query) + '&rows=' + rows + '&select=' + SELECT;
   const r = await fetchImpl(u, { headers: { accept: 'application/json' } });
   if (!r.ok) throw new Error('search ' + r.status);
   const j = await r.json();
