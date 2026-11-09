@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T21:34:06.653Z",
+ "updated": "2026-11-09T21:43:29.430Z",
  "last24h": {
   "ticks": 149,
-  "started": 91,
+  "started": 89,
   "requeued": 3,
   "setAside": 2,
   "probes": 12,
@@ -113,7 +113,6 @@
   "mveb8rsi": 1794207506673,
   "mveb8svc": 1794186086054,
   "mw8ao9zz": 1794206381857,
-  "mw8aob4n": 1794173686754,
   "mvfu4evy": 1794188905640,
   "mvpuq9g6": 1794191729678,
   "mvpuqaee": 1794205814254,
@@ -252,40 +251,6 @@
   "versus:want-tower-finance"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T21:34:46.754Z",
-   "open": 270,
-   "started": [
-    {
-     "id": "mvp4ahwz",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 102
-    },
-    {
-     "id": "mw8aob4n",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 15,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T21:44:10.166Z",
    "open": 269,
@@ -3185,6 +3150,27 @@
   },
   {
    "at": "2026-11-09T21:34:06.653Z",
+   "open": 293,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 285,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T21:43:29.430Z",
    "open": 293,
    "started": [],
    "requeued": 0,
