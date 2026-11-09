@@ -1,0 +1,60 @@
+{
+ "at": "2026-11-09T00:34:01Z",
+ "sha": "311c94a82677312a08fba517be1798694390141e",
+ "runId": 42539905967,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42539905967",
+ "workflow": "Verse deploy",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test-and-deploy",
+   "id": 128912285182,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42539905967/job/128912285182",
+   "conclusion": "failure",
+   "step": {
+    "number": 15,
+    "name": "The live domain serves this deploy"
+   },
+   "fails": [
+    "Error: a-to-mind.com/skills/index.json is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it",
+    "Error: a-to-mind.com/skills/sorry.js is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it",
+    "Error: a-to-mind.com/tower.size.json is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it",
+    "Error: a-to-mind.com/tower.target.json is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it"
+   ],
+   "tail": [
+    "attempt 2: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "attempt 3: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "attempt 4: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "attempt 5: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "attempt 6: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "attempt 7: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "attempt 8: a-to-mind.com/skills/sorry.js HTTP 404, 0 bytes",
+    "Error: a-to-mind.com/skills/sorry.js is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it",
+    "",
+    "attempt 1: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 2: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 3: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 4: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 5: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 6: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 7: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "attempt 8: a-to-mind.com/tower.size.json HTTP 404, 0 bytes",
+    "Error: a-to-mind.com/tower.size.json is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it",
+    "",
+    "attempt 1: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 2: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 3: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 4: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 5: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 6: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 7: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "attempt 8: a-to-mind.com/tower.target.json HTTP 404, 0 bytes",
+    "Error: a-to-mind.com/tower.target.json is not serving this deploy (311c94a82677312a08fba517be1798694390141e): the production domain is behind or something else answers it",
+    "",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "news"
+    "formats": "trailer"
   },
   "trials": [
     {
@@ -166,6 +166,10 @@
             "score": 100,
             "hookScore": 90,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         },
         {
@@ -198,6 +202,10 @@
             "score": 100,
             "hookScore": 65,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         }
       ],
@@ -217,6 +225,59 @@
           "why": "adult content"
         }
       ],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261108",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "nature",
+          "label": "Nature-documentary parody",
+          "topic": "76ers vs bulls",
+          "name": "76ers vs bulls",
+          "film": "20261108-nature-76ers-vs-bulls",
+          "hook": "Nature documentary: you discovering 76ers vs bulls?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 100,
+            "failed": []
+          }
+        },
+        {
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "daniel jones",
+          "name": "daniel jones",
+          "film": "20261108-lyric-daniel-jones",
+          "hook": "Is daniel jones the song of the day?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "mahomes injury",
+          "name": "mahomes injury",
+          "film": "20261108-news-mahomes-injury",
+          "hook": "Why is everyone talking about mahomes injury?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [],
       "verdict": "waiting"
     }
   ]

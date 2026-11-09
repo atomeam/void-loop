@@ -1,0 +1,57 @@
+{
+ "at": "2026-11-09T00:49:50Z",
+ "sha": "e47837f963b11a355a2297b2ad794b44935763d3",
+ "runId": 42540248484,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42540248484",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (4)",
+   "id": 128913352129,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42540248484/job/128913352129",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 4 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL suite ran to the end  -> page.click: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "       - element is visible, enabled and stable",
+    "       - scrolling into view if needed",
+    "       - done scrolling",
+    "       - <input id=\"input\" autocorrect=\"off\" data-1p-ignore=\"\" autocomplete=\"off\" spellcheck=\"false\" data-gramm=\"false\" autocapitalize=\"off\" data-lpignore=\"true\" aria-label=\"Ask Verse\" data-form-type=\"other\" data-gramm_editor=\"false\" writingsuggestions=\"false\" placeholder=\"Ask anything\" data-enable-",
+    "     - retrying click action",
+    "       - waiting 500ms",
+    "       - waiting for element to be visible, enabled and stable",
+    "       - element is visible, enabled and stable",
+    "       - scrolling into view if needed",
+    "       - done scrolling",
+    "       - <input id=\"input\" autocorrect=\"off\" data-1p-ignore=\"\" autocomplete=\"off\" spellcheck=\"false\" data-gramm=\"false\" autocapitalize=\"off\" data-lpignore=\"true\" aria-label=\"Ask Verse\" data-form-type=\"other\" data-gramm_editor=\"false\" writingsuggestions=\"false\" placeholder=\"Ask anything\" data-enable-",
+    "     - retrying click action",
+    "       - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <input id=\"input\" autocorrect=\"off\" data-1p-ignore=\"\" autocomplete=\"off\" spellcheck=\"false\" data-gramm=\"false\" autocapitalize=\"off\" data-lpignore=\"true\" aria-label=\"Ask Verse\" data-form-type=\"other\" data-gramm_editor=\"false\" writingsuggestions=\"false\" placeholder=\"Ask anything\" data-enable-gra",
+    "  - retrying click action",
+    "    - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <div id=\"row\">…</div> from <div id=\"dock\" role=\"search\" aria-label=\"Ask Verse\">…</div> subtree intercepts pointer events",
+    "  - retrying click action",
+    "    - waiting 500ms",
+    "",
+    "44/45 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --muted:#888; --del:#ff6b6b; --ins:#51cf66; --chg:#ffd43b; --border:#333; --accent:#4dabf7; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, -apple-system, sans-serif; padding:12px; }
+h1 { font-size:1.4rem; margin:0 0 8px; font-weight:600; }
+p.lead { color:var(--muted); margin:0 0 16px; font-size:0.95rem; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+@media (max-width:700px) { .row { grid-template-columns:1fr; } }
+label { display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px; }
+textarea { width:100%; min-height:180px; background:#1a1d24; color:var(--fg); border:1px solid var(--border); border-radius:8px; padding:10px; font:14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; resize:vertical; }
+.controls { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; align-items:center; }
+button { background:var(--accent); color:#000; border:0; border-radius:6px; padding:8px 14px; font-weight:600; cursor:pointer; font-size:0.9rem; }
+button.secondary { background:#333; color:var(--fg); }
+button:active { transform:scale(0.98); }
+#view { background:#1a1d24; border:1px solid var(--border); border-radius:8px; padding:10px; min-height:120px; overflow:auto; font:13px/1.4 ui-monospace, monospace; white-space:pre-wrap; word-break:break-word; }
+.eq { color:#aaa; }
+.del { background:rgba(255,107,107,0.25); color:#ffc9c9; text-decoration:line-through; }
+.ins { background:rgba(81,207,102,0.25); color:#b2f2bb; }
+.line-del { background:rgba(255,107,107,0.12); }
+.line-ins { background:rgba(81,207,102,0.12); }
+.line-chg { background:rgba(255,212,59,0.08); }
+.status { font-size:0.8rem; color:var(--muted); margin-top:8px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Text diff · Verse lab</title>
+<meta name="description" content="Job: Paste two versions of a text (or two documents) and instantly see what changed line by line and word by word.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Text diff · Verse lab">
+<meta property="og:description" content="Job: Paste two versions of a text (or two documents) and instantly see what changed line by line and word by word.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f624-text-diff/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f624-text-diff/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Text Diff</h1>
+<p class="lead">Paste two versions. See every line and word that changed. Copy a patch or share a link.</p>
+
+<div class="row">
+  <div>
+    <label for="a">Original</label>
+    <textarea id="a" placeholder="Paste the original text…"></textarea>
+  </div>
+  <div>
+    <label for="b">Revised</label>
+    <textarea id="b" placeholder="Paste the revised text…"></textarea>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="diffBtn">Show differences</button>
+  <button id="copyPatch" class="secondary">Copy patch</button>
+  <button id="download" class="secondary">Download .diff</button>
+  <button id="share" class="secondary">Copy share link</button>
+  <button id="clear" class="secondary">Clear</button>
+</div>
+
+<div id="view">Differences appear here.</div>
+<div class="status" id="status">Ready. Both texts are kept only on this device.</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
