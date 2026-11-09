@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T16:52:50.084Z",
+ "updated": "2026-11-09T17:02:37.431Z",
  "last24h": {
-  "ticks": 153,
-  "started": 90,
+  "ticks": 152,
+  "started": 91,
   "requeued": 5,
   "setAside": 2,
   "probes": 9,
-  "errors": 72
+  "errors": 70
  },
  "broken": [],
  "held": [
@@ -157,7 +157,8 @@
   "mw9en1tx": 1794239673382,
   "mw9h3p7c": 1794242045251,
   "mw9h3pqx": 1794242608047,
-  "mw9h3qb3": 1794243170084
+  "mw9h3qb3": 1794243170084,
+  "mw9h3qvn": 1794243757431
  },
  "sweptAt": 1794242045251,
  "blueprintsAt": 1794242045251,
@@ -245,16 +246,6 @@
   "probe:what-s-a-good-movie-for-a-rainy-da"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T16:53:01.894Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T17:02:27.874Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T17:11:52.817Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2915,6 +2906,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 268,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T17:02:37.431Z",
+   "open": 280,
+   "started": [
+    {
+     "id": "mw9h3qvn",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 267,
    "warnings": 1
   }
  ]
