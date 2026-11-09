@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-09T04:10:21Z",
+ "sha": "4f8bf48caa8f6c2c868ce6ebb385cf4e14272866",
+ "runId": 42560115778,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42560115778",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128974465502,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42560115778/job/128974465502",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/generators/forum/`: a file or API it needs fails: 404 /lib/comments-ui.js; a file or API it needs fails: 404 /lib/comments.js; looks unfinished: still says it is loading after the page settled: \"Loading…\"; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/generators/make/`: a file or API it needs fails: 404 /lib/listgen.js; a file or API it needs fails: 404 /generators/make/app.js; a file or API it needs fails: 404 /lib/comments-ui.js; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/generators/story/`: a file or API it needs fails: 404 /generators/story/app.js; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/hosting/`: dead link: 404 /password-strength/",
+    "- `/identity/`: dead link: 404 /password-strength/",
+    "- `/image/`: a file or API it needs fails: 404 /lib/comments-ui.js; a file or API it needs fails: 404 /lib/comments.js",
+    "- `/is-it/april-fools-day`: does not open: answers nothing",
+    "- `/is-it/boxing-day`: does not open: answers nothing",
+    "- `/is-it/christmas`: does not open: answers nothing",
+    "- `/is-it/christmas-eve`: does not open: answers nothing",
+    "- `/is-it/easter`: does not open: answers nothing",
+    "- `/is-it/fathers-day`: does not open: answers nothing",
+    "- `/is-it/friday`: does not open: answers nothing",
+    "- `/is-it/groundhog-day`: does not open: answers nothing",
+    "- `/is-it/halloween`: does not open: answers nothing",
+    "- `/is-it/independence-day`: does not open: answers nothing",
+    "- `/is-it/leap-year`: does not open: answers nothing",
+    "- `/is-it/monday`: does not open: answers nothing",
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

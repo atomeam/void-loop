@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-09T08:29:20Z",
+ "sha": "ffc6cbfaa2a3467ac113de37b1c5f392f373b309",
+ "runId": 42585955747,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42585955747",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 129055718376,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42585955747/job/129055718376",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "- `/is-it/tuesday`: does not open: answers nothing",
+    "- `/is-it/valentines-day`: does not open: answers nothing",
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "- `/keep-it-running/`: a file or API it needs fails: 404 /api/catalog; dead link: 404 /one-time-fix/; dead link: 404 /full-stack-audit/",
+    "- `/local/`: a file or API it needs fails: 404 /api/local; a file or API it needs fails: 404 /api/local?world=&offset=0",
+    "- `/markets/currency-converter/`: a file or API it needs fails: 404 /api/markets?strip=1; a file or API it needs fails: 404 /api/markets?s=AAPL&r=1y; a file or API it needs fails: 404 /api/markets?movers=1",
+    "- `/markets/screener/`: a file or API it needs fails: 404 /api/markets?scan=1",
+    "- `/news/global-headlines/`: a file or API it needs fails: 404 /api/news?sec=top&lang=en; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-09; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-09&json=1",
+    "- `/obituaries/`: dead link: 404 /gradient/",
+    "- `/paint/`: dead link: 404 /flip/; dead link: 404 /gradient/",
+    "- `/password/`: dead link: 404 /password-strength/",
+    "- `/podcast/`: does not open: answers nothing",
+    "- `/prizes/`: dead link: 404 /wheel/; dead link: 404 /flip/",
+    "- `/random/`: dead link: 404 /base-converter/",
+    "- `/random/coin/`: dead link: 404 /flip/",
+    "- `/random/people/`: dead link: 404 /wheel/",
+    "- `/scores/`: a file or API it needs fails: 404 /api/scores?league=epl&date=2026-11-09",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

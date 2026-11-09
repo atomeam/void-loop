@@ -13,6 +13,8 @@ const STATIONS = [
   { name: 'Dry Tortugas Nursery', file: 'AtlanticOcean_Florida_FloridaKeys_DryTortugasNursery.txt' },
   { name: 'Carysfort Reef', file: 'AtlanticOcean_Florida_FloridaKeys_CarysfortReef.txt' },
   { name: 'Looe Key Reef', file: 'AtlanticOcean_Florida_FloridaKeys_LooeKeyReef.txt' },
+  { name: 'Eastern Dry Rocks', file: 'AtlanticOcean_Florida_FloridaKeys_EasternDryRocks.txt' },
+  { name: 'Tavernier Nurseries', file: 'AtlanticOcean_Florida_FloridaKeys_TavernierNurseries.txt' },
 ];
 const YEARS = [2023, 2024, 2025, 2026];
 
