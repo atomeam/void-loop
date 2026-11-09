@@ -70,10 +70,12 @@ export function readRegion(ws, layer, rect = {}) {
   for (let y = Math.max(0, y0); y < Math.min(GH, y1); y++) for (let x = Math.max(0, x0); x < Math.min(GW, x1); x++) { const i = y * GW + x, v = g[i]; s += v; n++; if (v > mx) { mx = v; mi = i; } }
   return { mean: n ? s / n : 0, max: Math.max(0, mx), at: { x: ((mi % GW) + 0.5) / GW, y: (Math.floor(mi / GW) + 0.5) / GH } };
 }
+let REGION_OF = null; // each cell's region, made on first use (the same formula as cell by cell)
 /** the mean of a layer in each of the REGIONS_X x REGIONS_Y regions. */
 export function regionMeans(ws, layer) {
   const g = ws.layers[layer], out = new Float32Array(REGIONS_X * REGIONS_Y), cnt = new Float32Array(REGIONS_X * REGIONS_Y);
-  for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) { const r = Math.floor(y * REGIONS_Y / GH) * REGIONS_X + Math.floor(x * REGIONS_X / GW); out[r] += g[y * GW + x]; cnt[r]++; }
+  if (!REGION_OF) REGION_OF = Int32Array.from({ length: GW * GH }, (_, i) => Math.floor(Math.floor(i / GW) * REGIONS_Y / GH) * REGIONS_X + Math.floor((i % GW) * REGIONS_X / GW));
+  for (let i = 0; i < GW * GH; i++) { const r = REGION_OF[i]; out[r] += g[i]; cnt[r]++; } // the same cells in the same order (y, then x)
   for (let r = 0; r < out.length; r++) out[r] /= cnt[r] || 1;
   return out;
 }

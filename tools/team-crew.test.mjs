@@ -88,7 +88,7 @@ test('the crew reads: links, sitemaps, feeds, sections, promos with a real measu
   assert.equal(C.rivalOf('sports: flashscore.com'), 'flashscore.com'); assert.equal(C.rivalOf('maps'), '');
   assert.deepEqual(C.rotate([1, 2, 3, 4, 5], 2, 2), [5, 1]);
   const p = C.promosOf(TOWER);
-  assert.equal(p.length, 1); assert.match(p[0].text, /calculator page loads in 100 ms, 9x faster/); assert.ok(p[0].intent.startsWith('https://x.com/intent/post?text='));
+  assert.equal(p.length, 1); assert.match(p[0].text, /calculator page that loads in 100 ms at phone width/); assert.doesNotMatch(p[0].text, /faster than|\dx /, 'no boast against a rival'); assert.ok(p[0].intent.startsWith('https://x.com/intent/post?text='));
   for (const b of C.CREW) assert.ok(T.NAME_RE.test(b.name) && /^[0-9a-f]{12}$/.test(b.id) && T.CODE_RE.test(b.channel) && !T.RESERVED.includes(b.channel), b.name);
 });
 

@@ -29,6 +29,14 @@ const ctl = (s) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, 
 export const cleanGoal = (s) => ctl(s).replace(/\s+/g, ' ').trim().slice(0, GOAL_MAX).trim();
 export const planPrompt = (goal) => 'Goal: ' + goal;
 
+/** the goal of a plan ask ("make a plan to learn guitar" -> "learn guitar"), else null. Pure.
+ *  These asks used to fall through the router to Gemma + Wikipedia and answer nothing (bench.misses, w46). */
+export function planAskOf(ask) {
+  const m = String(ask || '').trim().match(/^(?:make|create|build|come up with|help me|give me|write)\s+(?:(?:make|create|build|write)\s+)?(?:me\s+)?(?:a|an)?\s*plan\s+(?:to|for|on|about|of)\s+(.+)/i);
+  const goal = m ? cleanGoal(m[1]) : '';
+  return goal.length >= PLAN_MIN ? goal : null;
+}
+
 // the list ask (skills/list.js) splits on commas, "and", "&" and new lines: a step keeps them out so it stays one item
 const cleanStep = (s) => ctl(s).replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').replace(/^["'`]+|["'`.]+$/g, '').replace(/[,;]+/g, ' ')
   .replace(/\s*&\s*|\s+and\s+/gi, ' + ').replace(/\s+/g, ' ').trim().slice(0, STEP_MAX).trim();

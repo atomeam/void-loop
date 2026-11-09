@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "trailer"
+    "formats": "pov"
   },
   "trials": [
     {
@@ -244,6 +244,10 @@
             "score": 100,
             "hookScore": 100,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         },
         {
@@ -259,6 +263,10 @@
             "score": 100,
             "hookScore": 85,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         },
         {
@@ -274,10 +282,89 @@
             "score": 100,
             "hookScore": 85,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         }
       ],
       "refused": [],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261109",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "trailer",
+          "label": "Movie-trailer parody",
+          "topic": "sp 500",
+          "name": "S&P 500",
+          "film": "20261109-trailer-s-p-500",
+          "hook": "What if S&P 500 got a movie trailer?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 100,
+            "failed": []
+          }
+        },
+        {
+          "format": "explainer",
+          "label": "Explainer",
+          "topic": "Scene (2026 film)",
+          "name": "Scene",
+          "film": "20261109-explainer-scene",
+          "hook": "What is Scene, and why now?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
+          "format": "countdown",
+          "label": "Top-3 countdown",
+          "topic": "Russell Brand",
+          "name": "Russell Brand",
+          "film": "20261109-countdown-russell-brand",
+          "hook": "3 facts you missed about Russell Brand",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 80,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": ".xxx",
+          "kinds": [
+            "adult"
+          ],
+          "why": "adult content"
+        },
+        {
+          "topic": ".xyz",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \".xyz\" (20261107)"
+        },
+        {
+          "topic": "russell brand movies",
+          "kinds": [
+            "harm"
+          ],
+          "why": "about harm to people (Sentenced): not something to parody or make a trend film of"
+        }
+      ],
       "verdict": "waiting"
     }
   ]

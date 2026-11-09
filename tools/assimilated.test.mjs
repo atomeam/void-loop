@@ -38,7 +38,7 @@ test('the real list: every site Versus by itself read and every lane page is in 
   for (const r of j.sites) { assert.ok(r.sources.length, r.site + ' names where it is recorded'); assert.match(r.at, /^20\d\d-\d\d-\d\dT/, r.site + ' has a date'); }
   assert.ok(j.counts.surpassed >= 2 && j.counts.assimilated >= 1);
   const page = readFileSync(new URL('../void-live-deploy/assimilated/index.html', import.meta.url), 'utf8');
-  assert.match(page, /fetch\('\/assimilated\.json'/); assert.match(readFileSync(new URL('../void-live-deploy/conquered/index.html', import.meta.url), 'utf8'), /href="\/assimilated\/"/, 'Versus links to it');
+  assert.match(page, /fetch\('\/assimilated\.json'/); assert.doesNotMatch(readFileSync(new URL('../void-live-deploy/conquered/index.html', import.meta.url), 'utf8'), /href="\/assimilated\/"/, 'Versus shows the rivals, not Verse\'s own attempt log (docs/TOWER-RULES.md rule 10); the log stays at /assimilated/ and in the sitemap');
 });
 
 test('the card\'s target is the history\'s target, with its page by topic and its score; a site covered by an existing page counts as assimilated', () => {

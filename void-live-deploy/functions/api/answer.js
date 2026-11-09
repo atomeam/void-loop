@@ -33,7 +33,7 @@ import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '.
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
-import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
+import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM, PLAN_MIN, planAskOf } from '../../lib/plan.js';
 import { cleanTake } from '../../skills/take.js';
 import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
 import { capAll, cap as dayCap } from '../../lib/daily-cap.js';
@@ -628,6 +628,28 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     if (r.unsure) rec.outcome = String(rec.outcome) + '; Clef unsure: ' + r.unsure + ' ' + r.clefP;
     return logRoute(env, rec);
   }, () => logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra })); } catch (_) {} };
+  // Plan asks ("make a plan to learn guitar"): the planner answers with steps, never Gemma + Wikipedia
+  // (these fell through the router and answered nothing; bench.misses w46). Any model trouble falls through.
+  const planGoal = planAskOf(ask);
+  let planResult = null;
+  if (planGoal && !answer) {
+    try {
+      const pr = await env.AI.run(MODEL, { messages: [{ role: 'system', content: PLAN_SYSTEM }, { role: 'user', content: planPrompt(planGoal) }], max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+      const said = scrubOut(redact(noThink(pick(pr))), env);
+      const parsed = parsePlan(said);
+      if (parsed && parsed.length >= PLAN_MIN) {
+        const learn = clefOn(env) ? await clefYesNo(env, planGoal, LEARN_ASK) : null;
+        const steps = withLearnStep(parsed, learn && learn.yes === true ? learn : null);
+        const offered = parseTimer(said), daily = offered ? await clefYesNo(env, planGoal, PRACTICE_ASK) : null;
+        const timer = offered && keepTimer(offered, daily);
+        planResult = { steps, timer: timer && timer > 0 ? timer : undefined, practice: timer && daily && daily.yes === true ? true : undefined, learn: steps.length !== parsed.length ? true : undefined, note: parseNote(said) };
+      }
+    } catch (_) { /* Gemma answers instead */ }
+  }
+  if (planResult) {
+    await log({ model: MODEL, outcome: 'plan:skill' });
+    return Response.json({ goal: planGoal, steps: planResult.steps, timer: planResult.timer, practice: planResult.practice, learn: planResult.learn, note: planResult.note, model: MODEL, route: 'skill', ...nearOut });
+  }
   if (!answer) {
     try {
       const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });

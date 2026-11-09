@@ -176,6 +176,8 @@ test('a green run merges past the records the bot writes straight to main, and p
   assert.equal(botRecord(bot('Empty', [])), false, 'a commit with no files says nothing');
   assert.equal(botRecord(Object.assign(['void-live-deploy/tester-log.json'], { subject: 'Site test', author: 'someone' })), false, 'only the record bot');
   assert.equal(botRecord(['void-live-deploy/tester-log.json']), false, 'no author line (an older log): not a record');
+  assert.equal(botRecord(Object.assign(['domains/free-pics.probe.json'], { subject: 'Free pictures probe: what each source answered', author: 'verse-bot' })), true, 'verse-bot\'s records are records too');
+  assert.equal(botRecord(Object.assign(['void-live-deploy/lib/x.js'], { subject: 'Upkeep', author: 'verse-bot' })), false, 'verse-bot\'s code is still code');
   assert.equal(driftOk([...recs, squash(55, ['void.html'])], [4]), false, 'a pull request from outside the batch is still real drift');
 });
 

@@ -66,10 +66,10 @@ test('the bubble says only what the page counted: lines for the numbers it has, 
   assert.deepEqual(factLines({}), []);
   const l = factLines({ skills: 284, surpassed: 7, learned: 'the unit converter does every kind.', motto: 'You name it, Verse learns it.', about: 'Verse does whatever anyone asks.' });
   assert.equal(l.length, 5);
-  assert.match(l[0], /^I have 284 skills right now/); assert.match(l[1], /surpassed 7 sites so far/); assert.match(l[2], /^The last thing that shipped: the unit converter does every kind\.$/);
+  assert.match(l[0], /^I have 284 skills right now/); assert.match(l[1], /^I learn from other good sites\. Say "tower" to see which ones/); assert.doesNotMatch(l.join(' '), /surpassed|so far/, 'no boast count'); assert.match(l[2], /^The last thing that shipped: the unit converter does every kind\.$/);
   assert.match(l[3], /^“You name it, Verse learns it\.”$/); assert.equal(l[4], 'Verse does whatever anyone asks.');
   assert.deepEqual(factLines({ skills: -1, surpassed: 1.5 }), [], 'not a count: no line');
-  assert.match(factLines({ surpassed: 0 })[0], /haven't surpassed a site yet/);
+  assert.match(factLines({ surpassed: 0 })[0], /^I learn from other good sites/);
   assert.match(factLines({ skills: 1 })[0], /1 skill right now/);
   assert.equal(pickLine([]), "Give me a moment: I'm still counting.");
   assert.equal(pickLine(['a', 'b', 'c'], () => 0), 'a'); assert.equal(pickLine(['a', 'b', 'c'], () => 0.99), 'c');

@@ -145,7 +145,7 @@ async function frontOfQueue(k) {
     const { tower, towerArgs } = await import('../void-live-deploy/lib/tower.js'), { overlay, readFloorDir } = await import('./tower-files.mjs');
     const rd = (f) => { try { return JSON.parse(fs.readFileSync(path.join(SITE, f), 'utf8')); } catch (_) { return null; } };
     const tg = rd('tower.target.json') || {}, ev = overlay(rd('tower.evidence.json') || { floors: {} }, readFloorDir());
-    const t = tower(...towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg, ft: rd('tower.features.json'), gn: rd('tower.gone.json') }));
+    const t = tower(...towerArgs((rd('lap.items.json') || {}).onlySite || [], { ev, fr: rd('tower.frontier.json'), rk: rd('tower.rank.json'), sz: rd('tower.size.json'), tg, ft: rd('tower.features.json'), gn: rd('tower.gone.json'), pa: rd('parity.json') }));
     return t.floors.filter((f) => !f.beaten && !f.cleared).slice(0, k);
   } catch (e) { console.log('::warning::the queue could not be read: ' + String(e && e.message || e).slice(0, 160)); return []; }
 }

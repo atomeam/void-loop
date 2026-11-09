@@ -1,6 +1,6 @@
 # heycolor.com: history
 
-Every line cites its source. "Unknown" means no source was found yet; nothing here is guessed. Written by `node tools/site-history.mjs` on 2026-10-28 from Wikidata, Wikipedia and the Wayback Machine; a person may add cited lines (press, the site's own blog) under **Added by hand**, which the tool never overwrites.
+Every line cites its source. "Unknown" means no source was found yet; nothing here is guessed. Written by `node tools/site-history.mjs` on 2026-11-09 from Wikidata, Wikipedia and the Wayback Machine; a person may add cited lines (press, the site's own blog) under **Added by hand**, which the tool never overwrites.
 
 - Site: heycolor.com (https://heycolor.com/)
 - Floors: paint (Verse page /paint/)

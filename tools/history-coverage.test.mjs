@@ -10,11 +10,15 @@ import { slugOf } from './site-history.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = (f) => path.join(root, 'void-live-deploy', f);
 const rd = (f) => { try { return JSON.parse(fs.readFileSync(site(f), 'utf8')); } catch (_) { return null; } };
 
-test('every frontier site is in the queue: none is dropped', () => {
-  const t = tower([], {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json')), ids = new Set(t.floors.map((f) => f.id));
-  const missing = frontierOf(rd('tower.frontier.json')).filter((x) => !ids.has(x.host));
-  assert.deepEqual(missing.map((x) => x.host), [], 'a frontier site left the queue');
-  assert.ok(t.floors.length >= FLOORS.length + frontierOf(rd('tower.frontier.json')).length);
+// a frontier site is a candidate, not a floor, until it is a real studied site (docs/TOWER-RULES.md rule 1): none is dropped silently, each one is
+// in the queue or kept in t.notFloors with the reason it is not a floor
+test('every frontier site is in the queue or kept as a candidate with its reason: none is dropped', () => {
+  const t = tower([], {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json'), null, null, null, null, rd('parity.json')), ids = new Set(t.floors.map((f) => f.id));
+  const kept = new Map((t.notFloors || []).map((x) => [x.host, x]));
+  const missing = frontierOf(rd('tower.frontier.json')).filter((x) => !ids.has(x.host) && !kept.has(x.host));
+  assert.deepEqual(missing.map((x) => x.host), [], 'a frontier site left the queue without a reason');
+  for (const x of kept.values()) assert.ok(x.why, x.host + ' is kept with its reason');
+  assert.ok(t.floors.length + kept.size >= FLOORS.length + frontierOf(rd('tower.frontier.json')).length);
 });
 
 test('a beaten floor has a cited history file', () => {
