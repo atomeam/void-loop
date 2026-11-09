@@ -17,7 +17,11 @@ import { EVERY_MIN, EVERY_MAX } from './automations.js';
 const UNIT = { minute: 1, minutes: 1, min: 1, mins: 1, hour: 60, hours: 60, hr: 60, hrs: 60, day: 1440, days: 1440 };
 const ID = '([a-z0-9][a-z0-9-]{1,38}[a-z0-9])';
 const KEEP = new RegExp('^keep\\s+(?:my\\s+|the\\s+)?(?:automation\\s+|rule\\s+)?' + ID + '(?:\\s+automation|\\s+rule)?\\s+(?:running|going|on)(?:\\s+(?:every|each)\\s+(\\d+|other|an?)?\\s*(minutes?|mins?|hours?|hrs?|days?))?$', 'i');
-const STOP = new RegExp('^(?:stop\\s+keeping|stop\\s+running|switch\\s+off|turn\\s+off)\\s+(?:my\\s+|the\\s+)?(?:automation\\s+|rule\\s+)?' + ID + '$', 'i');
+// "stop keeping <automation>" / "stop running <automation>" name one, so they stop it. "switch off" and "turn off" are ordinary
+// stage asks that almost never mean an automation ("turn off the sky" is night-sky, "turn off the minimap" is the minimap, "turn off
+// the alarm" is the alarm), so they stop a rule only when they name it: "turn off the automation digest". Without that, the whole
+// stage's off asks were read as stopping a rule called sky, lights, timer… and never reached the skill that answers them (2026-11-09).
+const STOP = new RegExp('^(?:(?:stop\\s+keeping|stop\\s+running)\\s+(?:my\\s+|the\\s+)?(?:automation\\s+|rule\\s+)?' + ID + '|(?:switch\\s+off|turn\\s+off)\\s+(?:my\\s+|the\\s+)?(?:automation\\s+|rule\\s+)' + ID + ')$', 'i');
 
 /** Minutes between runs from "every 2 hours" parts; clamped to what the clock allows. Pure. */
 export function everyOf(n, unit) {
@@ -31,7 +35,7 @@ export function keepAsk(text) {
   let m = KEEP.exec(t);
   if (m) return { toolName: 'automation.keep', args: { id: m[1].toLowerCase(), every: everyOf(m[2], m[3]), on: true } };
   m = STOP.exec(t);
-  if (m) return { toolName: 'automation.keep', args: { id: m[1].toLowerCase(), every: 0, on: false } };
+  if (m) return { toolName: 'automation.keep', args: { id: (m[1] || m[2]).toLowerCase(), every: 0, on: false } };
   return null;
 }
 

@@ -4,7 +4,7 @@
  * "is racecar a palindrome", "palindrome check for a man a plan a canal panama", "check if kayak is a palindrome".
  */
 export function phraseOf(text) {
-  const m = /^(?:please\s+)?(?:is\s+(.+?)\s+a\s+palindrome|palindrome\s+(?:check\s+)?(?:for|of)\s+(.+)|check\s+if\s+(.+?)\s+is\s+a\s+palindrome)(?:\s+please)?$/i.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const m = /^(?:please\s+)?(?:is\s+(.+?)\s+a\s+palindrome|palindromes?\s+(?:check\s+)?(?:for|of)\s+(.+)|check\s+if\s+(.+?)\s+is\s+a\s+palindrome)(?:\s+please)?$/i.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
   return m ? (m[1] || m[2] || m[3]).trim() : null;
 }
 
@@ -30,7 +30,7 @@ function run(text, api) {
 
 export default {
   name: 'palindrome',
-  examples: ['palindrome check for a man a plan a canal panama', 'check if kayak is a palindrome'],
+  examples: ['palindrome check for a man a plan a canal panama', 'check if kayak is a palindrome', 'palindromes for racing'],
   nearMisses: ['what is a palindrome', 'palindrome examples', 'make a palindrome'],
   match(lower, text) { return isPalindromeAsk(text); },
   run,
