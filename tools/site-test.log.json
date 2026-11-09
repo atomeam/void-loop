@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-17T11:28:39Z",
-  "passed": 14,
-  "of": 25,
-  "kind": "file",
-  "key": "test me on that | nothing appeared",
-  "note": "fix: \"test me on that\" nothing appeared"
- },
- {
   "at": "2026-10-17T11:36:13Z",
   "passed": 19,
   "of": 25,
@@ -7298,5 +7290,23 @@
    ]
   },
   "note": "fix: \"play voidquest\" fps 6 < 7"
+ },
+ {
+  "at": "2026-11-09T16:48:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1750,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9197 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
