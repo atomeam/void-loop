@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T21:51:18Z",
-  "passed": 32,
-  "of": 34,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
- },
- {
   "at": "2026-10-17T22:05:31Z",
   "passed": 34,
   "of": 35,
@@ -7528,6 +7521,24 @@
      "ask": "what can you do",
      "why": [
       "slow 18949 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T20:42:38Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 630,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9782 ms"
      ]
     }
    ]
