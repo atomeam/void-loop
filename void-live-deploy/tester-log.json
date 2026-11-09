@@ -3,13 +3,78 @@
  "cases": 107,
  "runsTotal": 300,
  "kinds": {
-  "file": 59,
   "none": 12,
+  "file": 58,
   "grow": 76,
-  "visitor": 151,
+  "visitor": 152,
   "tighten": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T08:37:49Z",
+   "passed": 0,
+   "of": 109,
+   "kind": "none",
+   "ms": 233,
+   "note": "nothing left to improve this run (add candidates)",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T08:25:56Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T08:13:28Z",
    "passed": 0,
@@ -492,71 +557,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-08T14:03:48Z",
-   "passed": 70,
-   "of": 105,
-   "kind": "grow",
-   "ms": 382,
-   "note": "new ground passed, kept as a regression case: \"summon a cup\" (skill:figure)",
-   "failed": [
-    {
-     "ask": "what are you?",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play voidquest",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show me your videos",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "my actions",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "put on lofi hip hop pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "find the book the left hand of dakrness",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-08T13:52:10Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -610,11 +610,11 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 77,
+   "runs": 75,
    "passed": 2520,
-   "of": 3279,
-   "broken": 17,
-   "brokenOf": 425,
+   "of": 3229,
+   "broken": 15,
+   "brokenOf": 375,
    "brokenPassed": 0
   },
   {
@@ -631,11 +631,11 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 220,
+   "runs": 222,
    "passed": 4955,
-   "of": 6652,
-   "broken": 13,
-   "brokenOf": 1382,
+   "of": 6761,
+   "broken": 14,
+   "brokenOf": 1491,
    "brokenPassed": 135,
    "ms": 387
   }
@@ -686,10 +686,10 @@
   "skill:goal": "2026-11-09T02:11:21Z",
   "skill:grades": "2026-11-09T04:20:51Z",
   "skill:group": "2026-11-09T08:13:28Z",
-  "skill:growth": "2026-10-17T09:03:23Z",
+  "skill:growth": "2026-11-09T08:37:49Z",
   "skill:heart": "2026-10-17T09:09:31Z",
   "skill:deadlines": "2026-11-09T08:13:28Z",
-  "skill:family-health": "2026-10-17T09:09:31Z",
+  "skill:family-health": "2026-11-09T08:37:49Z",
   "skill:home": "2026-10-17T09:09:31Z",
   "skill:image": "2026-10-17T09:15:36Z",
   "skill:incident": "2026-10-17T09:15:36Z",
