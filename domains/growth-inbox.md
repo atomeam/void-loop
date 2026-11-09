@@ -88,3 +88,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped d93f7ca | 2026-11-06 | heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less | new idea by growth agent; helper/heavy-lift-map |
 | shipped d822a9f8 | 2026-11-06 | monitor-pack skill: propose the monitors, alerts and status checks Verse will own for a process so the client does not watch dashboards | new idea by growth agent; helper/monitor-pack |
 | shipped 88d65a6 | 2026-11-06 | verify-pack skill: propose the tests, checks and verification Verse will own for a process so the client does not do the heavy testing | new idea by growth agent; helper/verify-pack |
+| building | 2026-11-09 | client-status-pack skill: package current status of systems Verse owns into a client-ready handoff (ownership, live status, monitors, we own the heavy lifting) | new idea by growth agent; helper/client-status-pack |
