@@ -4647,10 +4647,10 @@ say('nothing selected to remove');
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
       if (!SKY.lib) { warmSky(); return; }
       skyView();
-      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move)
+      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed with a weight that grows with the frame's gap (lib/star-parallax.js smoothedSpeed: the fixed half-blend here let a starved estimate crawl back at half the speed while the eye flew flat out, so on a loaded machine the streak could stay under its floor the whole move); a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move
         const t = Math.min(0.25, dt);
-        SKY.vx = SKY.vx * 0.5 + 0.5 * (SKY.near.ox - was.ox) / t; SKY.vy = SKY.vy * 0.5 + 0.5 * (SKY.near.oy - was.oy) / t;
-        SKY.zr = SKY.zr * 0.5 + 0.5 * Math.log(SKY.cam.z / (prev.z || 1)) / t;
+        SKY.vx = SKY.lib.smoothedSpeed(SKY.vx, (SKY.near.ox - was.ox) / t, dt); SKY.vy = SKY.lib.smoothedSpeed(SKY.vy, (SKY.near.oy - was.oy) / t, dt);
+        SKY.zr = SKY.lib.smoothedSpeed(SKY.zr, Math.log(SKY.cam.z / (prev.z || 1)) / t, dt);
       }
       SKY.at = now; SKY.fresh = true; kickStars();
     });
