@@ -8156,6 +8156,20 @@
    "refused": true,
    "at": "2026-10-29"
   },
+  "man.fyi": {
+   "bytes": 5702,
+   "controls": 5531,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 12,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 15825,
+   "shell": "none",
+   "weight": 7822,
+   "at": "2026-11-09"
+  },
   "maphill.com": {
    "refused": true,
    "at": "2026-11-08"
@@ -12588,6 +12602,20 @@
    "shell": "none",
    "weight": 733420,
    "at": "2026-10-30"
+  },
+  "tsundere.pw": {
+   "bytes": 1245,
+   "controls": 0,
+   "scripts": 1,
+   "styles": 2,
+   "nodes": 18,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 398,
+   "shell": "none",
+   "weight": 3425,
+   "at": "2026-11-09"
   },
   "turkishexporter.com.tr": {
    "refused": true,
