@@ -39,7 +39,7 @@ export const ASKS = [
   { ask: 'translate hello to spanish', skill: /translate/, good: /hola/i },
   { ask: 'what can you do', skill: /self|menu|guide|voice/, good: /ask|clock|weather|anything|verse/i },
   { ask: 'who is the president of the United States', skill: /answer|article|self/, good: /president|united states/i },
-  { ask: 'capital of France', skill: /country|answer|article|calc/, good: /paris/i },
+  { ask: 'capital of France', skill: /country|answer|article/, good: /paris/i },
   { ask: 'how many ounces in a cup', skill: /calc|convert/, good: /\b8\b/ },
   { ask: 'set a timer for 5 minutes', skill: /timer|time/, good: /5:00|5 min|timer/i },
   { ask: "what's the date today", skill: /today|clock|dates|time|calc/, good: /monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d{4}/i },

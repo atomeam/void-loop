@@ -77,3 +77,5 @@ Open work:
 - 2026-11-08T16:39Z verse-loop (verse): fix openapi; all checks green; branch loop/20261108-163930
 
 - 2026-11-09T01:51Z verse-loop (verse): groom docs/NEXT.md; all checks green; branch loop/20261109-015137
+
+- 2026-11-09T06:34Z verse-loop (verse): task, Queue job mw1g8ei3 (visit: capital-of-france): A visitor ask; all checks green; branch loop/20261109-063418
