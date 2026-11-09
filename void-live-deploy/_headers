@@ -84,12 +84,9 @@
 /humans.txt
   Content-Type: text/plain; charset=utf-8
 
-/.well-known/gpc.json
-  Content-Type: application/json; charset=utf-8
-  Access-Control-Allow-Origin: *
-  Cache-Control: public, max-age=86400
-
-/.well-known/agent-card.json
+# gpc.json and agent-card.json share one rule (lists run 14, 2026-11-09: /journal/'s CSP rule took the total to 101 of
+# Cloudflare's 100); gpc.json's cache drops from a day to five minutes, which only means fresher
+/.well-known/*.json
   Content-Type: application/json; charset=utf-8
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=300
