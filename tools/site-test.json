@@ -372,6 +372,9 @@
     },
     {
       "ask": "set a goal of 10 on the list"
+    },
+    {
+      "ask": "which skill family is unhealthy"
     }
   ],
   "candidates": [],
