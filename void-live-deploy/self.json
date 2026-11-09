@@ -600,6 +600,14 @@
  },
  "commits": [
   {
+   "at": "2026-11-09T14:47:28Z",
+   "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner, main's…"
+  },
+  {
+   "at": "2026-11-09T14:41:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-09T14:40:56Z",
    "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner"
   },
@@ -670,14 +678,6 @@
   {
    "at": "2026-11-09T13:48:25Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-09T13:40:52Z",
-   "subject": "forethinkers: living figures Q6, 1 GB AX630C boards ship and speech fits 1 GB; stock 0.5B mind rated 4 GB, slimming levers recorded +…"
-  },
-  {
-   "at": "2026-11-09T13:36:24Z",
-   "subject": "Site test: visitor pass 14/15"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 17,
-  "week": 283
+  "day": 18,
+  "week": 284
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
