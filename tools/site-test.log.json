@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T22:05:31Z",
-  "passed": 34,
-  "of": 35,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"is unwrap risky in rust\" (skill:technical-context)"
- },
- {
   "at": "2026-10-17T22:18:36Z",
   "passed": 36,
   "of": 36,
@@ -7544,5 +7537,16 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T21:10:20Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 912,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
  }
 ]
