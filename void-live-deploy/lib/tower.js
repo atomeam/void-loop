@@ -217,6 +217,7 @@ export function selfLanes(lanes, rows) {
 export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
   'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
+  'ndscalc.ru': '/calculator/?mode=vat', // the calculator's VAT mode is ndscalc.ru's page (#2294 said so in its test, not here; lists run 15)
   'sports: thesportsdb.com': '/scores/sports/', emojis: '/emojis/', // emojitracker.com's own page (2026-10-30: the floor came with /emojis/ but no row here, so the lane-page ratchet failed on main)
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
