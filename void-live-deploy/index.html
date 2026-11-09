@@ -472,7 +472,10 @@
       padding: 0 18px;
     }
     #whisper .vc { color: var(--fg); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-#void-offer { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; margin-top: 2px; }
+/* the offer line sits in the dock's bottom padding, out of flow: showing it never lifts the ask bar (a lifted bar covered the bottom of a
+   tall kept card, its Show more, where no click reached it: main's shard 4, 2026-11-08); only its links take the pointer */
+#void-offer { position: absolute; left: 0; right: 0; bottom: calc(1px + env(safe-area-inset-bottom, 0px)); margin: 0; text-align: center; font-size: var(--fs-xs); line-height: 1.4; color: var(--ink-3); letter-spacing: .01em; pointer-events: none; }
+#void-offer a { pointer-events: auto; }
 #void-offer a { color: var(--ink-3); }
     .shape {
       position: absolute;
@@ -1378,9 +1381,6 @@
       offer.textContent = 'Made with Verse — ';
       links.forEach((a, i) => { if (i) offer.append(' · '); offer.append(a); });
       offer.hidden = false;
-      // the line sits under the ask bar, so showing it lifts the bar: measure the dock again, or an open card's bottom
-      // (its Show more, its last row) stays under the bar where no click reaches it (main's shard 4, 2026-11-08)
-      dockSpace();
     }
     let sayCount = 0;
     function fitOpenPanels() {

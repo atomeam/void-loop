@@ -1,12 +1,36 @@
 {
  "changelog": [
   {
+   "at": "2026-11-09T13:30:00.000Z",
+   "id": "remix-kit",
+   "name": "Verse Remix Kit",
+   "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again",
+   "price": "Free · pay what you want",
+   "status": "live"
+  },
+  {
+   "at": "2026-11-09T13:30:00.000Z",
+   "id": "site-tester",
+   "name": "Verse Site Tester",
+   "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again",
+   "price": "Free · pay what you want",
+   "status": "live"
+  },
+  {
+   "at": "2026-11-09T13:30:00.000Z",
+   "id": "v01d-forge-printables",
+   "name": "VERSE Forge Printables (10 STLs)",
+   "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again",
+   "price": "Free · pay what you want",
+   "status": "live"
+  },
+  {
    "at": "2026-11-08T16:59:33.344Z",
    "id": "remix-kit",
    "name": "Verse Remix Kit",
    "what": "unpublished automatically: unreachable: Unexpected end of JSON input",
    "price": "Free · pay what you want",
-   "status": "unpublished"
+   "status": "live"
   },
   {
    "at": "2026-11-08T16:59:33.344Z",
@@ -14,7 +38,7 @@
    "name": "Verse Site Tester",
    "what": "unpublished automatically: unreachable: Unexpected end of JSON input",
    "price": "Free · pay what you want",
-   "status": "unpublished"
+   "status": "live"
   },
   {
    "at": "2026-11-08T16:59:33.344Z",
@@ -22,7 +46,7 @@
    "name": "VERSE Forge Printables (10 STLs)",
    "what": "unpublished automatically: unreachable: Unexpected end of JSON input",
    "price": "Free · pay what you want",
-   "status": "unpublished"
+   "status": "live"
   },
   {
    "at": "2026-11-03T18:22:38.982Z",
@@ -38,7 +62,7 @@
    "name": "Verse Remix Kit",
    "what": "published by Verse: 6 files, 5.4 MB",
    "price": "Free · pay what you want",
-   "status": "unpublished"
+   "status": "live"
   },
   {
    "at": "2026-10-15T06:34:28.905Z",
@@ -46,7 +70,7 @@
    "name": "Verse Site Tester",
    "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)",
    "price": "Free · pay what you want",
-   "status": "unpublished"
+   "status": "live"
   },
   {
    "at": "2026-10-15T06:08:38.111Z",
@@ -62,7 +86,7 @@
    "name": "VERSE Forge Printables (10 STLs)",
    "what": "published by V01D: 11 files, 19.7 MB",
    "price": "Free · pay what you want",
-   "status": "unpublished"
+   "status": "live"
   }
  ]
 }

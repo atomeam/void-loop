@@ -22,7 +22,7 @@ test('the line names the three products from the live store, with their pages', 
   assert.match(html, /a\.textContent = p\.name\.trim\(\)/, 'each name goes in as text');
   assert.ok(!/offer\.innerHTML\s*=/.test(html), 'nothing is written into the line as HTML');
   assert.match(html, /if \(!links\.length\) return;/, 'no live product = the line stays hidden');
-  assert.match(html, /offer\.hidden = false;[\s\S]{0,300}dockSpace\(\);/, 'showing the line measures the dock again, so no card ends under the ask bar');
+  assert.match(html, /#void-offer \{ position: absolute;[^}]*pointer-events: none; \}/, 'the line is out of the dock\'s flow, so showing it never lifts the ask bar over a card');
 });
 
 test('both deploy copies carry the same line (the page and its copies are one)', () => {

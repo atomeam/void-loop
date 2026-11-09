@@ -2,6 +2,7 @@
 // so a bot added there gets its page. --check fails when a written page differs from what this would write (tools/trading-bots.test.mjs).
 import fs from 'node:fs'; import path from 'node:path';
 import { BOTS } from '../void-live-deploy/trading-bots/kit/strategy.js';
+import { blockRules, withBlock } from './design-loop.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), dir = path.join(here, '..', 'void-live-deploy', 'trading-bots');
 const SITE = 'https://a-to-mind.com';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -141,7 +142,14 @@ npm install &amp;&amp; node arb-scan.mjs --every 30</pre><div class="row"><butto
 `;
 }
 
-export function pages() { return [['index.html', hubHtml()], ['arbitrage/index.html', arbHtml()], ...Object.keys(BOTS).map((id) => [id + '/index.html', botHtml(id)])]; }
+// the design loop (tools/design-loop.mjs) keeps its measured fixes in one marked block per page; a page written again here keeps
+// the block the page on disk carries, so writing the pages never undoes a kept fix and the page stays current (main's red, 2026-11-09)
+function keptBlock(rel, html) {
+  let cur = ''; try { cur = fs.readFileSync(path.join(dir, rel), 'utf8'); } catch (_) {}
+  const rules = blockRules(cur);
+  return Object.keys(rules).length ? withBlock(html, rules) : html;
+}
+export function pages() { return [['index.html', hubHtml()], ['arbitrage/index.html', arbHtml()], ...Object.keys(BOTS).map((id) => [id + '/index.html', botHtml(id)])].map(([rel, html]) => [rel, keptBlock(rel, html)]); }
 
 if (import.meta.url === 'file://' + path.resolve(process.argv[1] || '')) {
   const check = process.argv.includes('--check'); let bad = 0;
