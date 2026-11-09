@@ -1,0 +1,21 @@
+{
+ "at": "2026-11-09T13:59:46.301Z",
+ "sha": "99093cb5e8aebaf828c6c5969adb2f38fda14e1f",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42627602594",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fix: \"my Make scenario is broken\" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it",
+  "store: no product names or prices are hard-coded in the page or the libraries (all from the live catalog)",
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+ ],
+ "touched": [
+  "domains/forethinkers/index.md",
+  "domains/forethinkers/run-log.md",
+  "domains/forethinkers/tracks/living-figures.md",
+  "domains/void.growth.md"
+ ],
+ "shards": [
+  4
+ ]
+}
