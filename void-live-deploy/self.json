@@ -600,92 +600,88 @@
  },
  "commits": [
   {
-   "at": "2026-11-09T15:14:08Z",
-   "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner, main's…"
+   "at": "2026-11-09T16:58:48Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-11-09T15:10:50Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-09T16:53:10Z",
+   "subject": "Open an automerge pull request for every helper push, and repair it if it fails. (redo of #2314) (#2575)"
   },
   {
-   "at": "2026-11-09T14:58:37Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"help me launc"
+   "at": "2026-11-09T16:53:06Z",
+   "subject": "Notes, translate and calendar: rival features assimilated (sorting, archive, colours, imports; improve writing; booking links, insights…"
   },
   {
-   "at": "2026-11-09T14:56:36Z",
-   "subject": "Image and video: a real edit in the image live check, Fill in my words, video via the AI Gateway (redo of #2355 off main) (#2566)"
+   "at": "2026-11-09T16:53:02Z",
+   "subject": "answer: plan asks (make a plan to learn X) answer with steps, not Gemma + Wikipedia (want-misses-2026-w46) (#2586)"
   },
   {
-   "at": "2026-11-09T14:56:31Z",
-   "subject": "Suite gate: verse-bot's data-only commits are records too, so they don't stale a green run (#2571)"
+   "at": "2026-11-09T16:52:57Z",
+   "subject": "sky: the star streak survives a loaded machine - gap-honest speed smoothing (flake:fly-stars-move-after-d-is-held-in) (#2588)"
   },
   {
-   "at": "2026-11-09T14:49:01Z",
-   "subject": "Outcome exam: sports 88.9"
+   "at": "2026-11-09T16:52:51Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-11-09T14:47:50Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-09T16:51:33Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   },
   {
-   "at": "2026-11-09T14:47:28Z",
-   "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner, main's…"
+   "at": "2026-11-09T16:40:32Z",
+   "subject": "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
   },
   {
-   "at": "2026-11-09T14:41:18Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-09T16:38:46Z",
+   "subject": "Failed jobs read: run 42651143149 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-09T14:40:56Z",
-   "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner"
+   "at": "2026-11-09T16:38:35Z",
+   "subject": "Site test: fix: \"play voidquest\" fps 6 < 7"
   },
   {
-   "at": "2026-11-09T14:30:23Z",
-   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on d31b1d2b (void-live-deploy/incidents.json)"
+   "at": "2026-11-09T16:38:27Z",
+   "subject": "Incident: the browser suite failed on 5d0b0cf0 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-09T14:29:37Z",
+   "at": "2026-11-09T16:36:56Z",
+   "subject": "Design loop: 8 pages fixed, 46 -> 0 design defects"
+  },
+  {
+   "at": "2026-11-09T16:21:54Z",
+   "subject": "Outcome exam: definitions 90"
+  },
+  {
+   "at": "2026-11-09T16:20:50Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-09T16:13:34Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-09T14:28:49Z",
-   "subject": "Subject eval: 53 of 54 live"
+   "at": "2026-11-09T16:12:53Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-09T14:23:20Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+   "at": "2026-11-09T16:05:06Z",
+   "subject": "Brain step: about 25% faster, the same state to the bit (#2358)"
   },
   {
-   "at": "2026-11-09T14:19:58Z",
-   "subject": "system-handoff: 'hand off the automation' and 'package the status handoff' are the same package (redo of #2303 off main) (#2567)"
+   "at": "2026-11-09T16:04:28Z",
+   "subject": "Log page: Verse's activity lives on /log/ only (#2589)"
   },
   {
-   "at": "2026-11-09T14:19:54Z",
-   "subject": "merge-main: settle and restage the parity inventories and histories after a merge (redo of #2417 off main) (#2565)"
+   "at": "2026-11-09T16:03:51Z",
+   "subject": "Failed jobs read: run 42650110858 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-09T14:19:50Z",
-   "subject": "Conversation orb: an ask that points back follows the ask before it (redo of #2359 off main) (#2564)"
-  },
-  {
-   "at": "2026-11-09T14:18:38Z",
-   "subject": "Tower gate: is it,shopping,sports: onefootball.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-09T14:18:34Z",
-   "subject": "Outcome exam: sports 89.8"
-  },
-  {
-   "at": "2026-11-09T14:12:03Z",
-   "subject": "Main green: /api/feed limit, stage offer from the live store, fix ask kept after a paste (#2563)"
+   "at": "2026-11-09T16:00:28Z",
+   "subject": "Failed jobs read: run 42649752825 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
   "finished": [
-   {
-    "name": "Lists run 15 (grok-bot, 2026-11-09): every Russian VAT rate on /vat/ finishes…",
-    "line": "/vat/ and lib/vat.js offer 22, 20, 18, 10, the simplified-tax 7 and 5, and 0% (tools/vat.test.mjs; checked in Chromium at /vat/?sum=1070&rate=7: VAT 70,00); the sum and rate already rode in the link and the page was already offline, so…"
-   },
    {
     "name": "Lists run 14 (took over #2561, opened as 'run 15'; main's red /journal/…",
     "line": "the a-to-mind.com outage (empty 404s on /tools.json, /api/ and /?q= after bot pushes, 2026-11-07 20:00 UTC on) was Cloudflare Pages Git builds publishing the repo root with no Functions over production…"
@@ -705,6 +701,10 @@
    {
     "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
+   },
+   {
+    "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
    }
   ],
   "ladders": [
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 20,
-  "week": 286
+  "day": 27,
+  "week": 293
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -917,15 +917,14 @@
   "source": "verse"
  },
  "tower": {
-  "target": "tsundere.pw",
+  "target": "flightconnections.com",
   "since": "2026-11-09",
-  "page": "my page for it is not built yet: it still needs a page, named for it in LANE_PAGES in lib/tower.js",
   "next": [
-   "isitchristmas.com",
-   "justflipacoin.com",
-   "random.org"
+   "heycolor.com",
+   "nameunit.com",
+   "emojicombos.com"
   ],
   "beaten": 2,
-  "total": 1319
+  "total": 1277
  }
 }
