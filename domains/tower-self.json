@@ -1786,12 +1786,13 @@
    }
   },
   "randomvideochat.me": {
-   "at": "2026-11-07T22:15:07Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401",
+   "at": "2026-11-08T22:23:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a random 1v1 video chat service for meeting strangers, which is a social networking/communication service that Verse does not have a page)",
+   "title": "Free 1v1 Video Chat with Girls | Random Video Calls, No Sign-Up",
    "ease": {
     "score": 4.5,
-    "place": 8,
+    "place": 1,
     "why": "not sized yet, hardness 101, Tranco 278950"
    }
   },
@@ -1847,28 +1848,91 @@
     "place": 3,
     "why": "0 controls, 15 KB, Tranco 240006"
    }
+  },
+  "typo3.community": {
+   "at": "2026-11-08T22:23:50Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a community hub and support portal for a specific open-source CMS, which is a service/community site rather than a standalone utility tool like)",
+   "title": "Home of the TYPO3 Community — Collaboration, Sharing, and Open Source - TYPO3 Co",
+   "ease": {
+    "score": 4.5,
+    "place": 2,
+    "why": "not sized yet, hardness 101, Tranco 142287"
+   }
+  },
+  "counterscope.ae": {
+   "at": "2026-11-08T22:23:52Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (46 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 4.5,
+    "place": 3,
+    "why": "not sized yet, hardness 102, Tranco 353394"
+   }
+  },
+  "calculatorian.com": {
+   "at": "2026-11-08T22:23:55Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "Calculatorian - It Starts Here!",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.5,
+    "place": 4,
+    "why": "not sized yet, hardness 102, Tranco 275560"
+   }
+  },
+  "freevisitorcounters.com": {
+   "at": "2026-11-08T22:24:01Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides visitor counters for websites, which is a web development widget/service. None of the Verse pages offered are designed to generate or)",
+   "title": "100% Free Visitor Counter for your Homepage / Website",
+   "ease": {
+    "score": 4.5,
+    "place": 5,
+    "why": "not sized yet, hardness 102, Tranco 175641"
+   }
+  },
+  "younit.kr": {
+   "at": "2026-11-08T22:24:05Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional IT services and maintenance company specializing in server management, PHP upgrades, and emergency troubleshooting. Verse provides)",
+   "title": "IT문제를 빠르게 해결하는 유엔아이티",
+   "ease": {
+    "score": 4.4,
+    "place": 6,
+    "why": "not sized yet, hardness 103, Tranco 292609"
+   }
+  },
+  "colorbook.io": {
+   "at": "2026-11-08T22:24:14Z",
+   "outcome": "built",
+   "family": "colour",
+   "id": "colour: colorbook.io",
+   "page": "/color/colour-management/?c=ff5733",
+   "ease": {
+    "score": 4.4,
+    "place": 7,
+    "why": "not sized yet, hardness 103, Tranco 197059"
+   },
+   "words": "the family page's own (the model's were refused: says what the page does not do (discover, analyze, manage, precision, create))",
+   "rows": "13/15",
+   "gated": "2026-11-08T22:31:42Z"
+  },
+  "ex-unit.nagoya": {
+   "at": "2026-11-08T22:24:33Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a product page for a WordPress plugin that provides various website management and enhancement features. Verse does not have a page for web)",
+   "title": "VK All in One Expansion Unit | WordPress Plugin",
+   "ease": {
+    "score": 4.4,
+    "place": 8,
+    "why": "not sized yet, hardness 104, Tranco 158733"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-31T08:47:23Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next onlineconverter.com (the target)",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "syncsketch.dev"
-  },
-  {
-   "at": "2026-10-31T08:49:57Z",
-   "line": "Versus: took on no site; next onlineconverter.com (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "syncsketch.dev",
-   "noop": true
-  },
   {
    "at": "2026-10-31T15:56:49Z",
    "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
@@ -2230,6 +2294,24 @@
    "pages_per_day": 0,
    "reads_next": "randomvideochat.me",
    "noop": true
+  },
+  {
+   "at": "2026-11-08T22:28:20Z",
+   "line": "Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows (also read: 5 no-family, 1 walled, 1 covered); next digitalsogame.com (the target)",
+   "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "arcticfoxhaircolor.com"
+  },
+  {
+   "at": "2026-11-08T22:31:42Z",
+   "line": "Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows; next digitalsogame.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "arcticfoxhaircolor.com"
   }
  ]
 }
