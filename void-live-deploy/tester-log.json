@@ -3,13 +3,20 @@
  "cases": 114,
  "runsTotal": 300,
  "kinds": {
-  "grow": 72,
+  "grow": 71,
   "file": 49,
-  "visitor": 175,
+  "visitor": 176,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T21:35:54Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T21:10:20Z",
    "passed": 0,
@@ -300,36 +307,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T15:19:59Z",
-   "passed": 107,
-   "of": 112,
-   "kind": "grow",
-   "ms": 330,
-   "note": "new ground passed, kept as a regression case: \"already built\" (skill:inventory)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo style like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -383,9 +360,9 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 43,
-   "passed": 2197,
-   "of": 2417
+   "runs": 42,
+   "passed": 2161,
+   "of": 2381
   },
   {
    "from": "2026-10-19",
@@ -401,7 +378,7 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 255,
+   "runs": 256,
    "passed": 6027,
    "of": 7888,
    "broken": 14,
