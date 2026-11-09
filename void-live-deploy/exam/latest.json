@@ -1,50 +1,14 @@
 {
-  "at": "2026-11-09T01:31:43.023Z",
+  "at": "2026-11-09T02:15:09.323Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 82.6,
+      "score": 96.9,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play a video of the moon landing",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 14.3
-        },
-        {
-          "ask": "watch the apollo 11 landing",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 14.3
-        },
-        {
-          "ask": "show me a video of cats",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "loaded",
-            "playable",
-            "topic"
-          ],
-          "score": 14.3
-        },
         {
           "ask": "play the trailer",
           "failed": [
@@ -70,16 +34,103 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 78.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the episode before that",
+          "ask": "play the latest episode of radiolab",
           "failed": [
-            "skill"
+            "audio"
           ],
           "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of serial",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of hidden brain",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the moth",
+          "failed": [
+            "audio"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "play the latest episode of npr news now",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
+        },
+        {
+          "ask": "play the podcast",
+          "failed": [
+            "episode"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the episode before that",
+          "failed": [
+            "skill",
+            "audio",
+            "episode"
+          ],
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -265,7 +316,7 @@
       }
     },
     "sports": {
-      "score": 51.9,
+      "score": 54.6,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -283,20 +334,18 @@
           "failed": [
             "answered",
             "fast",
-            "team",
             "board"
           ],
-          "score": 33.3
+          "score": 50
         },
         {
           "ask": "mlb scores",
           "failed": [
             "answered",
             "fast",
-            "team",
             "board"
           ],
-          "score": 33.3
+          "score": 50
         },
         {
           "ask": "nhl scores",
@@ -416,10 +465,9 @@
           "ask": "scores",
           "failed": [
             "skill",
-            "board",
-            "rival"
+            "board"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "resultado del real madrid",
@@ -452,20 +500,10 @@
       "fails": []
     },
     "translate": {
-      "score": 90,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "translate spring",
-          "failed": [
-            "answered",
-            "fast",
-            "rival"
-          ],
-          "score": 40
-        }
-      ]
+      "fails": []
     },
     "units": {
       "score": 93.3,
@@ -543,6 +581,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 51.9
+    "score": 54.6
   }
 }
