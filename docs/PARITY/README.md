@@ -10,7 +10,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 17 | /notes/ | Edit together in real time | missing | anotepad.com, simplenote.com, docs.zoho.com, onenote.com, evernote.com, notion.so, Google Docs |
 | 17 | /calendar/ | Events added from your email | missing | calendar.online, teamup.com, any.do, cozi.com, proton.me, outlook.live.com, Google Calendar |
 | 16 | /translate/ | A browser extension | partial | imtranslator.net, systransoft.com, itranslate.com, translate.yandex.com, deepl.com, Google Translate |
-| 16 | /translate/ | An account that keeps your things on every device | partial | translate.com, systransoft.com, mymemory.translated.net, deepl.com, randomtranslator.com, Google Translate |
+| 16 | /translate/ | An account that keeps your things on every device | partial | translate.com, systransoft.com, mymemory.translated.net, deepl.com, Google Translate, randomtranslator.com |
 | 16 | /markets/ | Historical prices to download | missing | stooq.com, tradingview.com, marketwatch.com, google.com, macrotrends.net, Yahoo Finance |
 | 16 | /news/ | Newsletters and alerts | missing | rnz.co.nz, channelnewsasia.com, france24.com, dw.com, euronews.com, aljazeera.com, theguardian.com, BBC News and 3 more |
 | 16 | /news/ | The same story from several sides | missing | rnz.co.nz, channelnewsasia.com, france24.com, dw.com, euronews.com, aljazeera.com, theguardian.com, BBC News and 3 more |
@@ -20,7 +20,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 12 | /news/ | Fact checks and explainers | missing | france24.com, euronews.com, aljazeera.com, theguardian.com, BBC News, npr.org, apnews.com |
 | 12 | /news/ | Reader comments | missing | rnz.co.nz, channelnewsasia.com, france24.com, euronews.com, theguardian.com, BBC News, npr.org |
 | 11 | /scores/ | Goal and score alerts | missing | onefootball.com, 365scores.com, fotmob.com, flashscore.com, livescore.com, ESPN |
-| 10 | /podcasts/ | Hosts, guests and credits | missing | podcastindex.org, listennotes.com, podchaser.com, podbean.com, Apple Podcasts |
+| 10 | /podcasts/ | Hosts, guests and credits | missing | podchaser.com, podbean.com, Apple Podcasts, podcastindex.org, listennotes.com |
 | 9 | /notes/ | A public API | missing | anotepad.com, simplenote.com, evernote.com, notion.so |
 | 9 | /markets/ | Discussion and ideas from other investors | missing | stockanalysis.com, investing.com, tradingview.com, Yahoo Finance |
 | 9 | /markets/ | Price alerts | missing | stockanalysis.com, investing.com, tradingview.com, Yahoo Finance |
@@ -102,11 +102,11 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /jobs/categories/ | An account that keeps your things on every device | partial | remotive.com |
 | 1 | /jobs/tags/ | An account that keeps your things on every device | partial | remoteok.com |
 | 1 | /g/ | An account that keeps your things on every device | partial | codebasehq.com |
-| 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
 | 1 | /random/people/ | An account that keeps your things on every device | partial | randomuser.me |
-| 1 | /prizes/ | An account that keeps your things on every device | partial | wheelofgold.com |
 | 1 | /markets/caps/ | An account that keeps your things on every device | partial | companiesmarketcap.com |
 | 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
+| 1 | /prizes/ | An account that keeps your things on every device | partial | wheelofgold.com |
+| 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
 | 1 | /scores/sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |

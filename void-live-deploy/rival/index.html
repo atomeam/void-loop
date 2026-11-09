@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A rival on the tower: its history, its features and what Verse still lacks</title>
+<meta name="description" content="One page per site on the Versus tower: the site's own cited history, every feature its study found, and what Verse still lacks against it, with evidence.">
+<link rel="canonical" href="https://a-to-mind.com/rival/">
+<meta property="og:title" content="A rival on the tower"><meta property="og:description" content="The site's own history, its features, and what Verse still lacks against it."><meta property="og:image" content="https://a-to-mind.com/og.png"><meta property="og:url" content="https://a-to-mind.com/rival/">
+<style>
+  :root{color-scheme:dark}body{margin:0;background:#050505;color:#f2f4fb;font:16px/1.5 ui-sans-serif,system-ui,sans-serif}
+  main{max-width:760px;margin:0 auto;padding:16px}a{color:rgb(158 178 255)}h1{font-size:26px;margin:8px 0 4px}h2{font-size:16px;margin:22px 0 6px;color:#c3c8d8}
+  .sub{color:#c3c8d8;margin:0 0 8px}.chips{display:flex;flex-wrap:wrap;gap:6px}.chips span{padding:4px 10px;border:1px solid rgba(255,255,255,.14);border-radius:999px;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px}td,th{text-align:left;padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}td.s{white-space:nowrap}
+  td.s[data-s=have]{color:#8fe3a8}td.s[data-s=missing]{color:#ff8f8f}td.s[data-s=partial],td.s[data-s=unreviewed]{color:#ffd27a}.ev{color:#8e94a8;font-size:12px;overflow-wrap:anywhere}
+  ul{padding-left:20px}#pick a{display:inline-flex;min-height:44px;align-items:center;margin:0 8px 8px 0}
+</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/rival-page.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <p class="sub"><a href="/">Verse</a> · <a href="/conquered/">Versus</a></p>
+  <div id="out"><p class="sub">Reading the rival's page…</p></div>
+  <p class="sub" style="font-size:12px;opacity:.7">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. Every history line cites its source; nothing is guessed.</p>
+</main>
+<script type="module">
+import { rivalPageHtml, rivalListHtml } from '/lib/rival-page.js';
+const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
+const slug = (new URLSearchParams(location.search).get('site') || '').toLowerCase().replace(/[^a-z0-9.-]/g, '');
+const out = document.getElementById('out');
+if (!slug) { const idx = await get('/rivals/index.json'); out.innerHTML = rivalListHtml(idx, esc); }
+else {
+  const [r, h] = await Promise.all([get('/rivals/' + slug + '.json'), get('/history/' + slug + '.json')]);
+  out.innerHTML = r ? rivalPageHtml(r, h, esc) : '<p>No rival named ' + esc(slug) + ' on the tower. <a href="/rival/">Every rival</a></p>';
+  if (r) document.title = r.site + ': its history, its features and what Verse still lacks';
+}
+</script>
+</body>
+</html>

@@ -551,6 +551,7 @@ for (const [name, file] of [
   ['tower-size', 'tower-size.test.mjs'],
   ['history-coverage', 'history-coverage.test.mjs'],
   ['tower-target', 'tower-target.test.mjs'],
+  ['tower-rules', 'tower-rules.test.mjs'], // the tower rules (docs/TOWER-RULES.md): any change to the tower keeps every rule
   ['site-crawl', 'site-crawl.test.mjs'],
   ['emoji-link', 'emoji-link.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],

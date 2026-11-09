@@ -4,6 +4,8 @@ Owner rule, 2026-10-28: any agent can edit any file, Claude's included; note suc
 
 **Strategy:** read [docs/STRATEGY.md](STRATEGY.md) (owner directive, monetization first, with guardrails) before picking work.
 
+**Tower rules:** any change to the Versus tower (lib/tower.js, skills/tower.js, tools/tower-target.mjs, /conquered/, /rival/) keeps [docs/TOWER-RULES.md](TOWER-RULES.md); `tools/tower-rules.test.mjs` enforces each rule and fails the build. Verse's own attempt log for the tower is `attemptLogOf(t)` in skills/tower.js (data in tower.target.json) and belongs on Verse's one activity page, never on the card.
+
 **Next work:** the prioritized list of every open track is [docs/NEXT.md](NEXT.md).
 
 **Top priority:** Verse must do everything Grok Bot and Claude do, and better. See the capability checklist at item 0 of [docs/NEXT.md](NEXT.md).
