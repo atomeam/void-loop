@@ -1930,6 +1930,93 @@
     "place": 8,
     "why": "not sized yet, hardness 104, Tranco 158733"
    }
+  },
+  "tsundere.pw": {
+   "at": "2026-11-09T10:12:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a silent musical tracklist/album playback experience, which does not match any of the provided Verse tool pages (utility, productivity, or)",
+   "title": "Fripp Don't Interact",
+   "ease": {
+    "score": 99.9,
+    "place": 1,
+    "why": "0 controls, 1 KB, Tranco 320058"
+   }
+  },
+  "man.fyi": {
+   "at": "2026-11-09T10:12:54Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (92 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 90.4,
+    "place": 2,
+    "why": "1 controls, 6 KB, Tranco 320043"
+   }
+  },
+  "trafflink.xyz": {
+   "at": "2026-11-09T10:12:59Z",
+   "outcome": "gone",
+   "why": "did not load (page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://trafflink.xyz/)",
+   "ease": {
+    "score": 83.3,
+    "place": 3,
+    "why": "2 controls, 1 KB, Tranco 320010"
+   }
+  },
+  "arcticfoxhaircolor.com": {
+   "at": "2026-11-09T10:13:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a brand shop and content hub for hair dye products. Verse does not have a page for an e-commerce shop or a brand-specific service.)",
+   "title": "Homepage | Arctic Fox - Dye For A Cause",
+   "ease": {
+    "score": 4.3,
+    "place": 4,
+    "why": "not sized yet, hardness 105, Tranco 318028"
+   }
+  },
+  "hexcol.com": {
+   "at": "2026-11-09T10:13:11Z",
+   "outcome": "covered",
+   "page": "/color/",
+   "topic": "colour codes",
+   "title": "Hexcol.com - Color codes",
+   "why": "its job is colour codes, which /color/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.3,
+    "place": 5,
+    "why": "not sized yet, hardness 105, Tranco 308739"
+   }
+  },
+  "junit.org": {
+   "at": "2026-11-09T10:13:16Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a project page for a Java testing framework (JUnit). Verse provides tools for developers (like an encoder or a Perl test report viewer), but it)",
+   "title": "JUnit",
+   "ease": {
+    "score": 4.3,
+    "place": 6,
+    "why": "not sized yet, hardness 105, Tranco 49979"
+   }
+  },
+  "ipcalc.co": {
+   "at": "2026-11-09T10:13:17Z",
+   "outcome": "gone",
+   "why": "did not load (page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://ipcalc.co/)",
+   "ease": {
+    "score": 4.3,
+    "place": 7,
+    "why": "not sized yet, hardness 106, Tranco 96102"
+   }
+  },
+  "cashconverters.co.uk": {
+   "at": "2026-11-09T10:13:28Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a retail and pawnbroking service for buying and selling second-hand goods and providing personal finance solutions. Verse does not have a page)",
+   "title": "Buy & Sell Second-hand Goods | Pawnbroking | Cash Converters",
+   "ease": {
+    "score": 4.3,
+    "place": 8,
+    "why": "not sized yet, hardness 106, Tranco 72465"
+   }
   }
  },
  "runs": [
