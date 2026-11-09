@@ -2023,19 +2023,98 @@
     "place": 8,
     "why": "not sized yet, hardness 106, Tranco 72465"
    }
+  },
+  "timeclockwizard.com": {
+   "at": "2026-11-09T21:01:23Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "Free Online Time Clock: Time Tracking & Scheduling App for Employees",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.3,
+    "place": 1,
+    "why": "not sized yet, hardness 106, Tranco 69704"
+   }
+  },
+  "slightlydifferent.co.nz": {
+   "at": "2026-11-09T21:01:34Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional service offering web design, ecommerce, and hosting. Verse does not have a page for professional services like web development or)",
+   "title": "Slightly Different · Websites that work, built in New Zealand",
+   "ease": {
+    "score": 4.3,
+    "place": 2,
+    "why": "not sized yet, hardness 107, Tranco 159096"
+   }
+  },
+  "hexrom.com": {
+   "at": "2026-11-09T21:01:41Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a repository for downloading ROMs and emulators, which is a service for digital content distribution/piracy that Verse does not provide a page)",
+   "title": "Download Roms - HexRom",
+   "ease": {
+    "score": 4.3,
+    "place": 3,
+    "why": "not sized yet, hardness 107, Tranco 108207"
+   }
+  },
+  "colorlib.com": {
+   "at": "2026-11-09T21:01:47Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a marketplace/repository for WordPress themes and HTML website templates. Verse does not have a tool for browsing, searching, or providing)",
+   "title": "WordPress Themes & Website Templates - Colorlib",
+   "ease": {
+    "score": 4.3,
+    "place": 4,
+    "why": "not sized yet, hardness 107, Tranco 3744"
+   }
+  },
+  "steamcommunity.com": {
+   "at": "2026-11-09T21:01:51Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a gaming community platform for social interaction, game reviews, and player guides. None of the available Verse pages provide social networking)",
+   "title": "Steam Community",
+   "ease": {
+    "score": 4.3,
+    "place": 5,
+    "why": "not sized yet, hardness 107, Tranco 421"
+   }
+  },
+  "unitpay.ru": {
+   "at": "2026-11-09T21:02:37Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON",
+   "ease": {
+    "score": 4.2,
+    "place": 6,
+    "why": "not sized yet, hardness 108, Tranco 176282"
+   }
+  },
+  "united-hoster.de": {
+   "at": "2026-11-09T21:02:46Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial web hosting and cloud service provider for SMEs. Verse does not have a page that offers cloud hosting, server infrastructure, or)",
+   "title": "Cloud für kleine & mittelständische Unternehmen (KMU) - united hoster GmbH",
+   "ease": {
+    "score": 4.2,
+    "place": 7,
+    "why": "not sized yet, hardness 109, Tranco 337143"
+   }
+  },
+  "confirmation.community": {
+   "at": "2026-11-09T21:03:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a knowledge base and support community for a specific financial auditing service. Verse has no page for providing specialized business support)",
+   "title": "",
+   "ease": {
+    "score": 4.2,
+    "place": 8,
+    "why": "not sized yet, hardness 109, Tranco 279084"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-31T21:51:44Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "koanruler.com",
-   "noop": true
-  },
   {
    "at": "2026-10-31T21:54:18Z",
    "line": "Versus: took on no site; next ndscalc.ru (the target)",
@@ -2405,6 +2484,15 @@
    "pages_per_day": 1,
    "reads_next": "timeclockwizard.com",
    "noop": true
+  },
+  {
+   "at": "2026-11-09T21:03:24Z",
+   "line": "Versus: took on no site (also read: 1 covered, 6 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next  (the target)",
+   "built": 0,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "unitpay.ru"
   }
  ]
 }
