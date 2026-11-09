@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --accent:#4a9eff; --panel:#1a1d24; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--fg); }
+.controls { padding:1rem; background:var(--panel); display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; }
+.controls label { display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; }
+.controls input[type=number], .controls input[type=range] { width:5rem; }
+textarea { width:100%; min-height:120px; padding:0.75rem; background:#12141a; color:var(--fg); border:1px solid #333; border-radius:6px; font:1rem/1.4 system-ui,sans-serif; resize:vertical; }
+.viewport { position:relative; height:60vh; overflow:hidden; background:#000; border-top:1px solid #333; }
+.scroll { position:absolute; left:0; right:0; top:0; padding:2rem 1.5rem; white-space:pre-wrap; font-weight:500; line-height:1.4; transition:transform 0.05s linear; }
+.scroll.mirror { transform:scaleX(-1); }
+.actions { padding:0.75rem 1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+button { background:var(--accent); color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font:inherit; }
+button:disabled { opacity:0.5; }
+button.secondary { background:#333; }
+.full { position:fixed; inset:0; z-index:10; background:#000; }
+.full .scroll { padding:8vh 8vw; }
+@media (max-width:600px) { .viewport { height:50vh; } .controls { font-size:0.85rem; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Teleprompter · Verse lab</title>
+<meta name="description" content="Job: Paste a script, set scroll speed, font size and optional mirror mode, then run it full-screen while speaking.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Teleprompter · Verse lab">
+<meta property="og:description" content="Job: Paste a script, set scroll speed, font size and optional mirror mode, then run it full-screen while speaking.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f635-teleprompter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f635-teleprompter/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div class="controls" id="controls">
+  <label>Speed <input type="number" id="wpm" min="40" max="300" value="140"> WPM</label>
+  <label>Font <input type="range" id="font" min="24" max="120" value="48"> <span id="fontVal">48px</span></label>
+  <label><input type="checkbox" id="mirror"> Mirror</label>
+  <button id="play">Play</button>
+  <button id="pause" disabled>Pause</button>
+  <button id="fs">Full screen</button>
+</div>
+<textarea id="script" placeholder="Paste your script here…"></textarea>
+<div class="viewport" id="viewport">
+  <div class="scroll" id="scroll">Your script will appear here when you press Play.</div>
+</div>
+<div class="actions">
+  <button id="copy">Copy script</button>
+  <button id="download" class="secondary">Download .txt</button>
+  <button id="share" class="secondary">Share link</button>
+  <span id="status" style="margin-left:auto;font-size:0.85rem;opacity:0.7"></span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Teleprompter</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

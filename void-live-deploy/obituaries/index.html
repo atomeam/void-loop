@@ -100,7 +100,8 @@
     parity = (par && par.sites) || {};
     all = (t.floors || []).filter((f) => hasMemorial(f)).map((f) => { const slug = siteSlug(f.site); return Object.assign(f, { slug, status: obituaryStatus(f, parity[slug] || null) }); });
     const won = all.filter((f) => f.status.beaten).length;
-    $('tally').textContent = all.length + ' sites: ' + won + ' with every feature matched, ' + (all.length - won) + ' in progress.';
+    // the honesty check reads this tally and the won badge by these words: a site is named beaten only when obituary.js says so
+    $('tally').textContent = all.length + ' memorials: ' + won + ' beaten in every way, ' + (all.length - won) + ' in progress.';
     render();
   }
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
@@ -136,18 +137,18 @@
       const s = f.status;
       const card = el('section', 'card');
       card.appendChild(el('h2', '', f.site + ' (' + f.id + ')'));
-      card.appendChild(el('span', 'badge ' + (s.beaten ? 'won' : 'wip'), s.beaten ? 'Every feature matched' : 'In progress: ' + s.pct + '% of its features matched'));
+      card.appendChild(el('span', 'badge ' + (s.beaten ? 'won' : 'wip'), s.beaten ? 'Beaten in every way' : 'In progress: ' + s.pct + '% of its features matched'));
       if (!s.beaten) {
         const m = el('div', 'meter'); m.setAttribute('role', 'img'); m.setAttribute('aria-label', s.pct + '% matched'); const bar = el('i'); bar.style.width = s.pct + '%'; m.appendChild(bar); card.appendChild(m);
-        card.appendChild(el('p', 'note', 'Still to match: ' + s.why.join(', ') + '.'));
+        card.appendChild(el('p', 'note', 'Not beaten yet: ' + s.why.join(', ') + '.'));
         if (s.gaps.length) { const ul = el('ul', 'gaps'); for (const g of s.gaps.slice(0, 8)) ul.appendChild(el('li', '', g)); if (s.gaps.length > 8) ul.appendChild(el('li', '', 'and ' + (s.gaps.length - 8) + ' more')); card.appendChild(ul); }
       }
       const obit = el('div', 'obit');
-      obit.appendChild(el('p', '', 'What it gave: ' + (f.learned || (f.site + ' serves its users, and Verse learns from how it works.'))));
+      obit.appendChild(el('p', '', 'The Legacy: ' + (f.learned || (f.site + ' serves its users, and Verse learns from how it works.'))));
       obit.appendChild(el('p', '', s.beaten
         ? 'The Verse page: ' + (f.page || '/') + ', measured on ' + f.n + ' of ' + f.m + ' aspects against the original.'
         : 'The Verse page: ' + (f.page || '/') + ', measured on ' + f.n + ' of ' + f.m + ' aspects against the original, with ' + s.pct + '% of its features so far.'));
-      obit.appendChild(el('p', '', 'Thanks: ' + f.site + ' showed how its corner of the web can work. Visit it at ' + f.site + '.'));
+      obit.appendChild(el('p', '', 'Our Tribute: ' + f.site + ' showed how its corner of the web can work. Visit it at ' + f.site + '.'));
       if (f.page) { const p = el('p', '', 'Lineage: ' + f.site + ' to '); p.appendChild(link(f.page, 'Verse studio')); p.appendChild(document.createTextNode('.')); obit.appendChild(p); }
       const inv = el('p', '', 'Feature inventory: '); inv.appendChild(link(REPO + 'docs/PARITY/' + f.slug + '.md', 'every feature of ' + f.site + ', compared')); obit.appendChild(inv);
       card.appendChild(obit);

@@ -1,5 +1,175 @@
 [
  {
+  "slug": "f642-orientation-reservoir-lattice-portals",
+  "num": 642,
+  "title": "Orientation Reservoir Lattice Portals",
+  "blurb": "DeviceOrientationEvent stream is windowed into a short history vector that drives a frozen random reservoir (Echo State Network, no recurrent training).",
+  "status": "works",
+  "source": "F642-orientation-reservoir-lattice-portals",
+  "hash": "e96f07e94cdb",
+  "grade": "tool"
+ },
+ {
+  "slug": "f641-subscription-tracker",
+  "num": 641,
+  "title": "Subscription tracker",
+  "blurb": "A practical offline tool to track recurring subscriptions, calculate spending, and export reminders.",
+  "status": "works",
+  "source": "F641-subscription-tracker",
+  "hash": "e571e3794ed7",
+  "grade": "tool"
+ },
+ {
+  "slug": "f640-webgpu-audio-classifier-dom-morph",
+  "num": 640,
+  "title": "WebGPU Audio Classifier DOM Morph",
+  "blurb": "Microphone AnalyserNode feeds 128-bin spectrum into a tiny local rule-based classifier (energy ratios of low/mid/high bands + variance).",
+  "status": "broken",
+  "needs": [
+   "webgpu"
+  ],
+  "error": "pageerror: Cannot read properties of undefined (reading 'length')",
+  "source": "F640-webgpu-audio-classifier-dom-morph",
+  "hash": "56736de19845",
+  "grade": "tool"
+ },
+ {
+  "slug": "f639-label-name-tag-sheet",
+  "num": 639,
+  "title": "Label and name tag sheet",
+  "blurb": "Job: Paste names, pick a label size, get a printable sheet of name tags or labels to download as PNG.",
+  "status": "works",
+  "source": "F639-label-name-tag-sheet",
+  "hash": "959d7aacb862",
+  "grade": "tool"
+ },
+ {
+  "slug": "f638-meme-maker",
+  "num": 638,
+  "title": "Meme maker",
+  "blurb": "A single offline page that turns any picture the person already has into a classic meme.",
+  "status": "works",
+  "source": "F638-meme-maker",
+  "hash": "7d14dfc8e265",
+  "grade": "tool"
+ },
+ {
+  "slug": "f637-morse-code",
+  "num": 637,
+  "title": "Morse code translator",
+  "blurb": "A single offline page that turns plain text into International Morse code and back.",
+  "status": "works",
+  "source": "F637-morse-code",
+  "hash": "ef9e8100ff80",
+  "grade": "tool"
+ },
+ {
+  "slug": "f636-webgpu-wave-dom-riders",
+  "num": 636,
+  "title": "WebGPU Wave Equation DOM Riders",
+  "blurb": "A previously unused WebGPU compute kernel solves a discrete 2D wave equation on a height field (second-order central differences, damping, reflective boundaries).",
+  "status": "works",
+  "source": "F636-webgpu-wave-dom-riders",
+  "hash": "c931462a0263",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f635-teleprompter",
+  "num": 635,
+  "title": "Teleprompter",
+  "blurb": "Job: Paste a script, set scroll speed, font size and optional mirror mode, then run it full-screen while speaking.",
+  "status": "works",
+  "source": "F635-teleprompter",
+  "hash": "db41ffd5741d",
+  "grade": "tool"
+ },
+ {
+  "slug": "f634-scoreboard",
+  "num": 634,
+  "title": "Scoreboard",
+  "blurb": "Job: Enter the players and their scores for each round of any game.",
+  "status": "works",
+  "source": "F634-scoreboard",
+  "hash": "6ab795c64534",
+  "grade": "tool"
+ },
+ {
+  "slug": "f633-raffle-name-draw",
+  "num": 633,
+  "title": "Raffle and name draw",
+  "blurb": "A fair, checkable name draw and raffle tool for parties, classrooms, or giveaways. Paste the names, set the number of prizes, and draw.",
+  "status": "works",
+  "source": "F633-raffle-name-draw",
+  "hash": "b67d9648350c",
+  "grade": "tool"
+ },
+ {
+  "slug": "f632-seating-chart",
+  "num": 632,
+  "title": "Seating chart",
+  "blurb": "A practical event seating planner. Add guests and define tables. Mark pairs that should sit together or stay apart.",
+  "status": "works",
+  "source": "F632-seating-chart",
+  "hash": "c3dfa3ed0604",
+  "grade": "tool"
+ },
+ {
+  "slug": "f631-chore-rota",
+  "num": 631,
+  "title": "Chore rota",
+  "blurb": "A practical household chore rota generator. Add people and chores. Instantly see a multi-week rotating schedule where assignments cycle fairly.",
+  "status": "works",
+  "source": "F631-chore-rota",
+  "hash": "4844d67688bf",
+  "grade": "tool"
+ },
+ {
+  "slug": "f630-time-card",
+  "num": 630,
+  "title": "Time card",
+  "blurb": "A practical weekly timesheet tool. Enter clock-in, clock-out and breaks for each day of the week. Set an overtime threshold.",
+  "status": "works",
+  "source": "F630-time-card",
+  "hash": "fe25170c6cd3",
+  "grade": "tool"
+ },
+ {
+  "slug": "f630-webxr-hand-mlp-constraint-dom-swarm",
+  "num": 630,
+  "title": "WebXR Hand-Tracked Constraint DOM Swarm Mind",
+  "blurb": "True WebXR hand tracking (with robust pointer + DeviceOrientation fallback) provides joint positions as causal input to a local tiny MLP.",
+  "status": "broken",
+  "needs": [
+   "webxr"
+  ],
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F630-webxr-hand-mlp-constraint-dom-swarm",
+  "hash": "5d8a09f2ca49",
+  "grade": "toy",
+  "idea": "level"
+ },
+ {
+  "slug": "f629-orientation-rnn-webgpu-intent-field",
+  "num": 629,
+  "title": "Orientation RNN WebGPU Intent Field",
+  "blurb": "Job: Tilt your phone or move the mouse; a local tiny RNN predicts your next intent from orientation and pointer history, then a WebGPU compute field (or Canvas2D",
+  "status": "works",
+  "source": "F629-orientation-rnn-webgpu-intent-field",
+  "hash": "81c824680a51",
+  "grade": "tool"
+ },
+ {
+  "slug": "f629-trip-fuel-cost",
+  "num": 629,
+  "title": "Trip fuel cost",
+  "blurb": "Job: Enter the distance, your vehicle's fuel use and the price.",
+  "status": "works",
+  "source": "F629-trip-fuel-cost",
+  "hash": "ac0f29fc1875",
+  "grade": "tool"
+ },
+ {
   "slug": "f628-concrete-mulch-volume",
   "num": 628,
   "title": "Concrete and mulch volume",
@@ -1840,6 +2010,17 @@
   "hash": "807297c642f0",
   "grade": "toy",
   "idea": "pitch"
+ },
+ {
+  "slug": "f0493-webgpu-echo-state-portal-mind",
+  "num": 493,
+  "title": "WebGPU Echo-State Network Spatial Portal Mind",
+  "blurb": "A local Echo State Network (fixed random reservoir + trainable output weights) running in pure JavaScript receives continuous DeviceOrientation (or pointer proxy)",
+  "status": "works",
+  "source": "F0493-webgpu-echo-state-portal-mind",
+  "hash": "d03c379f075d",
+  "grade": "toy",
+  "idea": "level"
  },
  {
   "slug": "f493-webgpu-implicit-sculptor-mind",

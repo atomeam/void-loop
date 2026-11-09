@@ -332,6 +332,21 @@ export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null
   const f = v && v.follow, left = f && Array.isArray(f.recent) ? f.recent.filter((r) => !lead.has(buildKey(r))) : null;
   const rest = left ? { ...v, follow: { ...f, recent: left.length ? left : f.recent } } : v;
   const r = noRepeats([since].concat(selfSections(rest, now, fam)), seen);
+  // the build list stays on /log/. The on/off pills also ride in the words section, which is all the stage card draws,
+  // so the pressed pill (sunk, violet) is on the card the aesthetic check reads. A click opens /log/ on that filter.
+  const words = r.sections.find((s) => s.id === 'words');
+  const depth = ((r.sections.find((s) => s.id === 'built') || {}).blocks || []).find((b) => b.t === 'depth');
+  if (words && depth) words.blocks = words.blocks.concat([{ t: 'depth', counts: depth.counts }]);
   return { sections: r.sections, shown: r.shown };
 }
 const buildKey = (r) => String((r && r.at) || '') + '|' + String((r && r.ask) || '');
+// a depth pill on the stage has no build list under it (that list is on /log/): open the log on the filter the pill names
+if (typeof document !== 'undefined') document.addEventListener('click', (e) => {
+  const b = e.target && e.target.closest && e.target.closest('[data-v-depth]');
+  if (!b || b.closest('#log')) return;
+  const page = b.closest('.vpage');
+  if (page && page.querySelector('.v-built')) return; // the list is on this card: its own handler filters it
+  const k = b.getAttribute('data-v-depth');
+  if (k !== 'all' && k !== 'root' && k !== 'surface') return;
+  location.assign('/log/#depth=' + k);
+});

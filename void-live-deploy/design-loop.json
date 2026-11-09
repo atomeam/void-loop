@@ -219,22 +219,22 @@
    "listed": 5,
    "defectsBefore": 46,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-09T18:41:36.266Z",
+   "run": 24,
+   "measured": 30,
+   "clean": 22,
+   "fixed": 4,
+   "listed": 4,
+   "defectsBefore": 9,
+   "defectsAfter": 1
   }
  ],
  "pages": {
   "/lab/f594-webgpu-implicit-neural-sdf-dom-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -243,11 +243,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.053
+   "state": "clean"
   },
   "/lab/f197-local-embedding-morph-field/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -260,7 +259,7 @@
    "state": "clean"
   },
   "/lab/f417-local-embedding-morph-field/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -273,7 +272,7 @@
    "state": "clean"
   },
   "/lab/f277-predictive-force-injection-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -286,21 +285,21 @@
    "state": "clean"
   },
   "/lab/f573-qlearning-spatial-dom-agent-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.254,
+    "cls": 0.159,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.254 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.159 that no rule fixes: listed for a builder)"
   },
   "/lab/f258-webgpu-volumetric-residual-attention-palace/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -308,13 +307,23 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 0
+    "overflow": 15
    },
-   "state": "listed",
-   "why": "it made the page scroll sideways"
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 6
+   },
+   "rules": 1,
+   "moved": 0.013
   },
   "/lab/f0171-orientation-mlp-ui-controller/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -327,7 +336,7 @@
    "state": "clean"
   },
   "/lab/frontier-orientation-swarm/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -340,7 +349,7 @@
    "state": "clean"
   },
   "/lab/f266-webxr-gaze-persistent-idb-field/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -353,7 +362,7 @@
    "state": "clean"
   },
   "/lab/f0490-physarum-policy-portal-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 2,
     "contrast": 0,
@@ -361,26 +370,23 @@
     "unstyled": 1,
     "empty": 0,
     "cls": 0,
-    "overflow": 225
+    "overflow": 228
    },
-   "state": "listed",
-   "why": "it made the page scroll sideways"
-  },
-  "/lab/f200-webgpu-causal-fluid-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
-   "before": {
-    "defects": 0,
+   "state": "fixed",
+   "after": {
+    "defects": 1,
     "contrast": 0,
-    "targets": 0,
+    "targets": 1,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 9
+    "overflow": 224
    },
-   "state": "clean"
+   "rules": 1,
+   "moved": 0.01
   },
-  "/lab/f418-webgpu-causal-fluid-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+  "/lab/f200-webgpu-causal-fluid-mind/": {
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -392,8 +398,21 @@
    },
    "state": "clean"
   },
+  "/lab/f418-webgpu-causal-fluid-mind/": {
+   "at": "2026-11-09T18:41:36.266Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 3
+   },
+   "state": "clean"
+  },
   "/lab/f525-accel-rnn-verse-probes-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -406,15 +425,15 @@
    "state": "clean"
   },
   "/lab/f608-webgpu-esn-wavefield-dom-portals-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
-    "defects": 6,
+    "defects": 5,
     "contrast": 5,
     "targets": 0,
-    "unstyled": 1,
+    "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 0
+    "overflow": 21
    },
    "state": "fixed",
    "after": {
@@ -426,11 +445,11 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.032
+   "rules": 1,
+   "moved": 0
   },
   "/lab/f472-webrtc-idb-shared-occupancy-navigators/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -443,18 +462,8 @@
    "state": "clean"
   },
   "/lab/f0488-orientation-rnn-latticegas-obstacle-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
-    "defects": 2,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 1,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 1,
     "contrast": 0,
     "targets": 1,
@@ -463,11 +472,11 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.01
+   "state": "listed",
+   "why": "the defects did not go down (1 -> 1)"
   },
   "/lab/f552-webxr-hand-sculpted-volumetric-nca-ui-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -480,7 +489,7 @@
    "state": "clean"
   },
   "/lab/f028-competitive-minds-field/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -493,18 +502,18 @@
    "state": "clean"
   },
   "/lab/f524-webgpu-langtons-ant-mlp-genome-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 3.288,
-    "overflow": 54
+    "cls": 3.139,
+    "overflow": 47
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 3.288 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 3.139 that no rule fixes: listed for a builder)"
   },
   "/lab/161-local-map-not-sense/": {
    "at": "2026-11-07T03:00:05.882Z",
@@ -521,7 +530,7 @@
    "why": "the defects did not go down (1 -> 1)"
   },
   "/lab/f442-kuramoto-phase-lock-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -534,7 +543,7 @@
    "state": "clean"
   },
   "/lab/f224-thought-trace-lattice/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -547,7 +556,7 @@
    "state": "clean"
   },
   "/lab/f-300-kuramoto-phase-lock-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -560,7 +569,7 @@
    "state": "clean"
   },
   "/lab/f043-predictive-residual-lattice/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -573,7 +582,7 @@
    "state": "clean"
   },
   "/lab/f406-predictive-residual-lattice/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -586,20 +595,7 @@
    "state": "clean"
   },
   "/lab/f197-webgpu-fluid-policy-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
-   "before": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "clean"
-  },
-  "/lab/f423-webgpu-fluid-policy-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -611,8 +607,21 @@
    },
    "state": "clean"
   },
+  "/lab/f423-webgpu-fluid-policy-mind/": {
+   "at": "2026-11-09T18:41:36.266Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
   "/lab/048-evolving-particle-life-mind/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 1,
     "contrast": 1,
@@ -620,24 +629,34 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 226
+    "overflow": 298
    },
-   "state": "listed",
-   "why": "it made the page scroll sideways"
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 298
+   },
+   "rules": 1,
+   "moved": 0.025
   },
   "/lab/f178-webgpu-rnn-softbody-dom/": {
-   "at": "2026-11-06T22:25:10.004Z",
+   "at": "2026-11-09T18:41:36.266Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.268,
-    "overflow": 6
+    "cls": 0.267,
+    "overflow": 7
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.268 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.267 that no rule fixes: listed for a builder)"
   },
   "/lab/f318-webgpu-online-kmeans-particle-mind/": {
    "at": "2026-11-06T22:25:10.004Z",
@@ -9095,6 +9114,32 @@
    },
    "state": "listed",
    "why": "no rule fixes it (a layout shift of 0.106 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f187-lattice-autopoiesis/": {
+   "at": "2026-11-09T18:41:36.266Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f409-lattice-autopoiesis/": {
+   "at": "2026-11-09T18:41:36.266Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 18
+   },
+   "state": "clean"
   }
  }
 }

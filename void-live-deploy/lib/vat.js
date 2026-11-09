@@ -65,7 +65,7 @@ export function vatFromGross(grossKop, bp) {
 // had pointed these names at the kopeck engine (compute(net, rate) with BigInt kopecks, DEFAULT_RATE 2200n), so the page's compute({ amount,
 // rate, mode }) got an error object, every ask parse returned null and tools/vat.test.mjs could not load. They are the first version's API
 // again (a63b9e775), and compute now goes through the kopeck engine below, so net + vat = gross to the kopeck.
-export const RATES = Object.freeze([22, 20, 18, 10, 5, 0]);
+export const RATES = Object.freeze([22, 20, 18, 10, 7, 5, 0]); // every Russian rate: 22 (from 2026), 20 and 18 (earlier years), 10, the simplified-tax 7 and 5, and 0
 export const DEFAULT_RATE = 22;
 export const MODES = Object.freeze(['extract', 'add']);
 
