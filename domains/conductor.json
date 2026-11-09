@@ -1,15 +1,21 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T15:54:33.382Z",
+ "updated": "2026-11-09T16:04:00.989Z",
  "last24h": {
   "ticks": 153,
   "started": 93,
   "requeued": 5,
   "setAside": 1,
   "probes": 9,
-  "errors": 74
+  "errors": 73
  },
- "broken": [],
+ "broken": [
+  {
+   "wf": "deploy.yml",
+   "fails": 3,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42650110858"
+  }
+ ],
  "held": [
   {
    "id": "mvbl52gd",
@@ -245,11 +251,6 @@
   "review:2585"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T15:56:42.570Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T16:06:09.864Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2902,6 +2903,29 @@
    "sweep": false,
    "blueprints": 0,
    "held": 270,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T16:04:00.989Z",
+   "open": 278,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 269,
    "warnings": 1
   }
  ]
