@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T23:06:05Z",
-  "passed": 33,
-  "of": 40,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"find a rumble video about bitcoin\" (skill:video)"
- },
- {
   "at": "2026-10-17T23:19:19Z",
   "passed": 39,
   "of": 41,
@@ -7598,6 +7591,24 @@
      "ask": "what can you do",
      "why": [
       "slow 8465 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T22:59:18Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 650,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16396 ms"
      ]
     }
    ]
