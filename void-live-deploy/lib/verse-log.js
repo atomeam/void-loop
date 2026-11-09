@@ -56,6 +56,13 @@ function wire(el, esc) {
     b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'show the newest ' + SB.FOLD : 'show all ' + n; const ul = b.previousElementSibling; if (ul) fold(ul); }));
   el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const ul = el.querySelector('.v-built'); if (!ul) return;
     el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
+  // a stage pill opens /log/#depth=root (or surface, or all): show that filter, with the build list open
+  const depthHash = typeof location !== 'undefined' && /^#depth=(all|root|surface)$/.exec(location.hash || '');
+  if (depthHash) {
+    const built = el.querySelector('.vs-sec[data-sec=built]'); if (built) built.open = true;
+    const pill = el.querySelector('[data-v-depth="' + depthHash[1] + '"]');
+    if (pill && pill.getAttribute('aria-pressed') !== 'true') pill.click();
+  }
   // the week line keeps up: a stage change or the tab coming back reads /api/reflect again, at most once a minute (SB.VELOCITY_EVERY)
   if (!el.querySelector('.vs-velocity')) return;
   let at = 0, busy = false;

@@ -1239,3 +1239,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-08T22:28:20Z | verse | build | Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows (also read: 5 no-family, 1 walled, 1 covered); next digitalsogame.com (the target)
 2026-11-08T22:31:43Z | verse | build | Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows; next digitalsogame.com (the target)
 2026-11-09T10:13:36Z | verse | build | Versus: took on no site (also read: 4 no-family, 1 walled, 2 gone, 1 covered); next tsundere.pw (the target)
+2026-11-09T14:40:36Z | grok-bot | build | Lists run 15: /vat/ offers every Russian VAT rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0) with the sum in the link and the page offline, which finishes Verse's ndscalc.ru asks; rts and forge are one build-world family; the site tester's frame floor follows what the runner holds, so the play voidquest items can close

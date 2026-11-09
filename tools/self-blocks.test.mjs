@@ -217,4 +217,6 @@ test('selfCard: a build the lead shows is not listed again under "What got built
   assert.equal(sections[0].id, 'since');
   assert.deepEqual(sections[0].blocks.find((b) => b.t === 'list').items.map((it) => it.text), ['built 2', 'built 3']);
   assert.deepEqual(sections.find((s) => s.id === 'built').blocks.find((b) => b.t === 'list').items.map((it) => it.text), ['ask 0', 'ask 1']);
+  const depth = (id) => sections.find((s) => s.id === id).blocks.find((b) => b.t === 'depth');
+  assert.deepEqual(depth('words').counts, depth('built').counts, 'the stage words keep the same on/off pills the log filters with');
 });

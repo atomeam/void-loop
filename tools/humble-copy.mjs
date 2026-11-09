@@ -35,6 +35,7 @@ export const ALLOW = [
   ['assimilated/index.html', 'conquer', "'passed, conquering in background':", 'the old data label (tools/assimilated.mjs LABEL) as a key, mapped to plain words for the page'],
   ['lib/verse-log.js', 'conquer', "'passed, conquering in background':", 'the same old data label as a key, mapped to plain words on the log page'],
   ['lib/autopsy.js', 'i-made', 'look what i made', 'what a person may type to open the walkthrough, matched, never shown'],
+  ['obituaries/index.html', 'beat-rivals', 'in every way', 'the memorial status the honesty check reads: said only when obituary.js marks every feature matched, beside how many are still in progress'],
 ];
 
 /** the text with comments taken out: block, HTML and line comments (a line comment needs a space or start before //, so https:// stays). Pure. */

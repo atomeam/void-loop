@@ -113,9 +113,9 @@ async function runShows(api) {
 
 export default {
   name: 'media-pick',
-  examples: ['pick something to listen to with me', 'pick a song', 'play a song', 'play some music', 'pick something to watch', 'music card for Hey Jude by The Beatles', 'pick a tv show', 'show card for Severance (2022)', 'best sci-fi movies 2024'],
+  examples: ['pick something to listen to with me', 'pick a song', 'play a song', 'play some music', 'pick something to watch', 'music card for Hey Jude by The Beatles', 'pick a tv show', 'show card for Severance (2022)', 'best sci-fi movies 2024', 'is there a movie like inception'],
   nearMisses: ['pick a color', 'film metadata for inception', 'what should we play', 'pick a movie to watch with me', 'how do I listen to my heart'],
-  match(lower, text) { return !!pickKind(text) || !!musicCardAsk(text) || !!showCardAsk(text) || /best .* movies \d{4}/i.test(text); },
+  match(lower, text) { return !!pickKind(text) || !!musicCardAsk(text) || !!showCardAsk(text) || /best .* movies \d{4}/i.test(text) || /is there a movie like .*/i.test(text); },
   run(text, api) {
     const c = musicCardAsk(text); if (c) return runCard(c, api);
     const sc = showCardAsk(text); if (sc) return runShowCard(sc, api);

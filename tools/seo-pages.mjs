@@ -47,10 +47,11 @@ export function withRelated(html, path) {
 export function moreTools(html) {
   const listed = new Set([...withoutBlock(html, MORE).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1].split('?')[0]));
   // MORE_PAGES: pages of their own that no tool row reaches yet, linked here so none is an orphan (tools/seo-audit.mjs); the stage card lists them too
-  // one line per name: a page Verse built twice for two sites (lib/self-sites.js, /convert/unit-converter/ and -2/) is one tool to a reader
-  const names = new Set([...withoutBlock(html, MORE).matchAll(/href="\/[^"]*">([^<]*)</g)].map((m) => m[1].toLowerCase()));
+  // a page Verse built twice for two sites (lib/self-sites.js, /convert/unit-converter/ and -2/) shares its name: the second is linked as
+  // "<name> · page 2" rather than left out (lists run 15, 2026-11-09: left out, /color/colour-management/ and -2/ were orphans to tools/seo-audit.mjs)
+  const names = new Map(); for (const m of withoutBlock(html, MORE).matchAll(/href="\/[^"]*">([^<]*)</g)) { const k = m[1].toLowerCase(); names.set(k, (names.get(k) || 0) + 1); }
   const extra = [...Object.entries(TOOLS), ...MORE_PAGES].filter(([p], i, a) => p !== '/tools/' && !listed.has(p) && a.findIndex((x) => x[0] === p) === i)
-    .filter(([, name]) => { const k = String(name).toLowerCase(); if (names.has(k)) return false; names.add(k); return true; });
+    .map(([p, name]) => { const k = String(name).toLowerCase(), n = (names.get(k) || 0) + 1; names.set(k, n); return [p, n > 1 ? name + ' · page ' + n : name]; });
   // each with the same "Open here" button as the hand-written rows, and the searches people make for it (lib/seo.js asks) for the page's find box
   const asks = new Map(PAGES.map((g) => [g.path, (g.asks || []).join(' ')]));
   return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li' + (asks.get(p) ? ' data-find="' + esc(asks.get(p)) + '"' : '') + '><a href="' + esc(p) + '">' + esc(name)

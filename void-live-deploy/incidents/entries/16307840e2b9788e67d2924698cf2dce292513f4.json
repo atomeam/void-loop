@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-09T17:45:45.282Z",
+ "sha": "16307840e2b9788e67d2924698cf2dce292513f4",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42662296533",
+ "suite": "browser suite on main",
+ "checks": [
+  "obituaries: every memorial shows an honest status and keeps its homage text",
+  "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off"
+ ],
+ "touched": [
+  "tools/keep-going.test.mjs",
+  "void-live-deploy/lib/keep-going.js"
+ ],
+ "shards": [
+  3
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-09T19:17:16.291Z",
+ "closedBy": "a841e248d57d31a1922aa3902b9500d7e0bf6fdf",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42678803228",
+ "minutes": 92
+}

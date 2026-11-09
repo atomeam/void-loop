@@ -78,3 +78,15 @@ test("vat skill is registered and matches VAT asks", () => {
   assert.ok(vatSkill.match("remove vat from 100", "remove vat from 100"));
   assert.ok(vatSkill.examples.length > 0);
 });
+
+// lists run 15 (2026-11-09, Verse's ndscalc.ru asks: "every Russian rate"): the simplified-tax 7% sits beside 5% in the rates the page offers
+import { RATES as RU_RATES, compute as vatCompute } from '../void-live-deploy/lib/vat.js';
+import { readFileSync as readVat } from 'node:fs';
+import { test as vatTest } from 'node:test';
+import vatAssert from 'node:assert/strict';
+vatTest('every Russian VAT rate is offered: 22, 20, 18, 10, the simplified-tax 7 and 5, and 0', () => {
+  vatAssert.deepEqual([...RU_RATES], [22, 20, 18, 10, 7, 5, 0]);
+  vatAssert.match(readVat(new URL('../void-live-deploy/vat/app.js', import.meta.url), 'utf8'), /const rates = \[22, 20, 18, 10, 7, 5, 0\]/);
+  const r = vatCompute({ amount: '1070', rate: 7, mode: 'extract' });
+  vatAssert.equal(Math.round(r.vat * 100), 7000, '7% VAT out of 1070 is 70.00');
+});
