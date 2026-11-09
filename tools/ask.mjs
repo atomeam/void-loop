@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => { let p = decodeURIComponent(new 
   if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
   fs.readFile(f, (e, d) => { if (e) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(d); }); }).listen(0);
 await new Promise((r) => server.once('listening', r));
-const exe = [process.env.CHROME_PATH, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p)) || process.env.CHROME_PATH || undefined; // the same chain the browser suite uses (tools/test_void.mjs): on this machine no CHROME_PATH is set, and without one of these playwright-core's own browser dies at the first navigation
+const exe = process.env.CHROME_PATH || (fs.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
 await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
