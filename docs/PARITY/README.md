@@ -24,9 +24,12 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 9 | /notes/ | A public API | missing | anotepad.com, simplenote.com, evernote.com, notion.so |
 | 9 | /markets/ | Discussion and ideas from other investors | missing | stockanalysis.com, investing.com, tradingview.com, Yahoo Finance |
 | 9 | /markets/ | Price alerts | missing | stockanalysis.com, investing.com, tradingview.com, Yahoo Finance |
-| 9 | /translate/ | Rewrite or improve your own writing | missing | translator.eu, linguee.com, reverso.net, deepl.com |
 | 9 | /calendar/ | Shopping and to-do lists | missing | calendar.online, any.do, cozi.com, Google Calendar |
 | 8 | /markets/ | An account that keeps your things on every device | partial | stockanalysis.com, marketwatch.com, google.com |
+| 7 | /translate/ | A spelling suggestion for what was typed (did you mean) | missing | translate.yandex.com, Google Translate |
+| 7 | /notes/ | Nested checklists | missing | simplenote.com, notion.so |
+| 7 | /translate/ | Translate offline with downloaded languages | missing | itranslate.com, Google Translate |
+| 7 | /translate/ | Type in Latin letters and get the other script | missing | translate.yandex.com, Google Translate |
 | 7 | /scores/ | Watch games live | missing | cbssports.com, ESPN |
 | 6 | /flights/ | A price calendar and graph | missing | Google Flights |
 | 6 | /kanban/ | A public API | missing | Trello |
@@ -52,10 +55,15 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
 | 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, stockanalysis.com, barchart.com, investing.com, tradingview.com |
 | 4 | /books/ | An account that keeps your things on every device | missing | squibler.io, inkfluenceai.com, sudowrite.com, novelcrafter.com |
+| 3 | /notes/ | A passcode lock on the notes | missing | standardnotes.com, simplenote.com, evernote.com |
 | 3 | /scores/ | An account that keeps your things on every device | partial | onefootball.com, cbssports.com, besoccer.com |
 | 3 | /books/ | Share a link to what you made or found | missing | squibler.io, inkfluenceai.com, novelcrafter.com |
+| 2 | /notes/ | A drawing in a note | missing | onenote.com, evernote.com |
+| 2 | /notes/ | A Markdown source view and preview | missing | standardnotes.com, simplenote.com |
+| 2 | /notes/ | A reminder on a note at a time or place | missing | onenote.com, evernote.com |
 | 2 | /generators/ | Dark mode | missing | behindthename.com, rangen.co.uk |
 | 2 | /notes/ | End-to-end encryption | missing | standardnotes.com, notepad.pw |
+| 2 | /translate/ | Verb conjugation tables | missing | linguee.com, reverso.net |
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
@@ -116,11 +124,3 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /weather/ | Climate records | missing | weather.gov |
 | 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
 | 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
-| 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
-| 1 | /convert/ | Currency | missing | unitconverters.net |
-| 1 | /calendar/ | Dark mode | missing | calendar.online |
-| 1 | /pdf/suite/ | Dark mode | missing | tools.pdf24.org |
-| 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
-| 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
-| 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
-| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |
