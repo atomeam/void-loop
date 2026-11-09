@@ -1,15 +1,61 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 108,
+ "cases": 109,
  "runsTotal": 300,
  "kinds": {
-  "none": 9,
-  "file": 56,
-  "grow": 77,
-  "visitor": 156,
+  "none": 6,
+  "file": 54,
+  "grow": 78,
+  "visitor": 160,
   "tighten": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T14:12:44Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T14:00:21Z",
+   "passed": 108,
+   "of": 110,
+   "kind": "grow",
+   "ms": 358,
+   "note": "new ground passed, kept as a regression case: \"picture of a cat\" (skill:image)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 2 < 7"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 7"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T13:49:59Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T13:19:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T12:50:35Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T12:22:50Z",
    "passed": 102,
@@ -349,143 +395,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 404 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-09T02:04:20Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T01:53:28Z",
-   "passed": 44,
-   "of": 108,
-   "kind": "grow",
-   "ms": 395,
-   "note": "new ground passed, kept as a regression case: \"play sorry\" (skill:games)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "how much do i need to save a month to have 1 million in 30 years at 7%",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "draw a line",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "living spatial cards mind",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bluesky feed of jay.bsky.team",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bench icon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "drag friction",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "which games do you know",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "what do you get if you merge a pizza and a black hole",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T01:43:24Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-09T01:13:41Z",
-   "passed": 85,
-   "of": 107,
-   "kind": "grow",
-   "ms": 368,
-   "note": "new ground passed, kept as a regression case: \"make a vase\" (skill:forge)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 5 < 7"
-    },
-    {
-     "ask": "keep this idea: a stage that remembers | why: it makes coming back feel like hom",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "films by Kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film metadata for Ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo film metadata for ikiru",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo find me a sci-fi film from the 80s",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "find me a sci-fi film from the 80s pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo films by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "films by kurosawa pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "film metadata for ikiru pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T01:03:02Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -539,11 +448,11 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 71,
+   "runs": 66,
    "passed": 2593,
-   "of": 3178,
-   "broken": 10,
-   "brokenOf": 250,
+   "of": 3053,
+   "broken": 5,
+   "brokenOf": 125,
    "brokenPassed": 0
   },
   {
@@ -560,9 +469,9 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 227,
-   "passed": 5057,
-   "of": 6870,
+   "runs": 232,
+   "passed": 5165,
+   "of": 6980,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -620,8 +529,8 @@
   "skill:deadlines": "2026-11-09T08:13:28Z",
   "skill:family-health": "2026-11-09T08:37:49Z",
   "skill:home": "2026-10-17T09:09:31Z",
-  "skill:image": "2026-10-17T09:15:36Z",
-  "skill:incident": "2026-10-17T09:15:36Z",
+  "skill:image": "2026-11-09T14:00:21Z",
+  "skill:incident": "2026-11-09T14:00:21Z",
   "skill:intent": "2026-10-17T09:22:52Z",
   "skill:inventory": "2026-10-17T09:22:52Z",
   "skill:invite": "2026-10-17T09:22:52Z",

@@ -145,7 +145,7 @@ export default [
   "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
   "tier": "personal",
   "origin": "v01d",
-  "status": "unpublished",
+  "status": "live",
   "published": "2026-10-15",
   "bytes": 20682758,
   "contents": [
@@ -211,7 +211,7 @@ export default [
   "license": "Personal and commercial use on sites you own or may test",
   "tier": "commercial",
   "origin": "v01d",
-  "status": "unpublished",
+  "status": "live",
   "published": "2026-10-15",
   "bytes": 26836,
   "contents": [
@@ -239,7 +239,7 @@ export default [
   "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
   "tier": "personal",
   "origin": "v01d",
-  "status": "unpublished",
+  "status": "live",
   "published": "2026-10-21",
   "bytes": 5650231,
   "contents": [

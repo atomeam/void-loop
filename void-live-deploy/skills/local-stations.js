@@ -44,9 +44,9 @@ async function run(text, api) {
 
 export default {
   name: 'local-stations',
-  examples: ['local radio', 'radio stations near me', 'local tv stations', 'tv stations in denver', 'local radio in boston', 'what radio stations are near me', 'boston radio stations'],
+  examples: ['local radio', 'radio stations near me', 'local tv stations', 'tv stations in denver', 'local radio in boston', 'what radio stations are near me', 'boston radio stations', 'top hits in london right now'],
   nearMisses: ['what is a radio', 'radio button', 'play the radio edit of hey ya', 'local news', 'tv shows', 'internet radio stations'],
-  match(lower, text) { return localAsk(text || lower) !== null || (/(jazz|rock|pop|blues|classical)\s+stations?\s+near\s+/i.test(text || lower)); },
+  match(lower, text) { return localAsk(text || lower) !== null || (/(jazz|rock|pop|blues|classical)\s+stations?\s+near\s+/i.test(text || lower)) || (/top hits in\s+.+/i.test(text || lower)); },
   run,
   suite() {
     const ok = localAsk('local radio').kind === 'radio' && localAsk('tv stations in denver').place === 'denver' && localAsk('local tv').kind === 'tv'
