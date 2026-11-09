@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T22:02:16.309Z",
+ "updated": "2026-11-09T22:11:39.172Z",
  "last24h": {
   "ticks": 149,
-  "started": 87,
+  "started": 86,
   "requeued": 3,
   "setAside": 2,
-  "probes": 12,
+  "probes": 13,
   "errors": 50
  },
  "broken": [],
@@ -17,6 +17,10 @@
   },
   {
    "id": "mw9rbqfa",
+   "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
+  },
+  {
+   "id": "mw9tfw6c",
    "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
   },
   {
@@ -85,10 +89,6 @@
   },
   {
    "id": "mvxmzyw6",
-   "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
-  },
-  {
-   "id": "mvqun4oo",
    "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
   }
  ],
@@ -165,8 +165,8 @@
   "mw9oo23m": 1794255929924,
   "mw9oo2qf": 1794256494373
  },
- "sweptAt": 1794258289373,
- "blueprintsAt": 1794258289373,
+ "sweptAt": 1794262299172,
+ "blueprintsAt": 1794262299172,
  "visitorAt": "2026-11-09T21:35:54Z",
  "visitorFiled": [
   "review:2147",
@@ -251,34 +251,6 @@
   "versus:united-hoster.de"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T22:02:52.106Z",
-   "open": 269,
-   "started": [
-    {
-     "id": "mvp4ahwz",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 102
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 15,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T22:12:14.611Z",
    "open": 269,
@@ -3174,6 +3146,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 285,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T22:11:39.172Z",
+   "open": 294,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 286,
    "warnings": 1
   }
  ]
