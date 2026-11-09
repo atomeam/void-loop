@@ -98,13 +98,9 @@ Verse sets up `you@yourdomain.com` for a creator in minutes and charges for the 
 1. Upload the first paid pack (VoidQuest minis STL/3MF zip) to R2 `store/voidquest-minis-v1.zip` and list it on Gumroad too.
 2. Stripe on (Adam, above). 3. Order emails through the Email Service binding. 4. Connect onboarding (phase 2).
 
-## Wishlist rows (for `docs/wishlist.md`, which lands with #721)
+## Wishlist rows
 
-| # | Item | Free path (do this first) | Paid cost (cited) | Value | Why this rank | From |
-| --- | --- | --- | --- | --- | --- | --- |
-| 12 | Verse's own store (phase 1 live) | Gumroad stays the checkout (merchant of record, Discover buyers); our page, cart, signed downloads (R2 10 GB free, no egress) and license keys cost $0 | Stripe Checkout 2.9% + 30¢ ([stripe.com/pricing](https://stripe.com/pricing)) once Stripe's business profile is done; Stripe Tax extra | high: each sale keeps ~7% more | free today; Stripe is a dashboard step, not a purchase | Adam |
-| 13 | Creator store platform (multi-seller, Connect) | passkeys and `/@handle` pages already built; Stripe-hosted Express onboarding | $2 per monthly active seller + 0.25% + 25¢ per payout ([Connect](https://stripe.com/connect/pricing)); we charge 5% | high: a product others pay for | waits on 12's Stripe step | Adam |
-| 14 | Business email for creators | Cloudflare Email Routing, free ([docs](https://developers.cloudflare.com/email-routing/)); only the domain costs (~$10/yr) | none needed | medium: $15 setup or $3/mo | free path covers it; also gives Adam atom@a-to-mind.com | Adam |
+The store, creator platform and business email rows are in `docs/wishlist.md` (rows 15 to 17) since lists run 14 (2026-11-09).
 
 ## Self-made products: auto-publish (Adam, 2026-10-15)
 Verse's own products go on sale automatically when the price is within the set range, they carry no trademarks, their files are tested, and each gets a public log entry. Anything outside the range stays a hidden draft. Recorded in domains/void.decisions.json (adam-20261015-store-autopublish).

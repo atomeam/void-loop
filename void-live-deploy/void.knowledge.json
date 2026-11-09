@@ -1,47 +1,83 @@
 [
   {
+    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
+    "from": "page",
+    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
+    "learned": "2026-11-09: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; error: GET /api/clip answered 404",
+    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-09) did not work",
+    "at": "2026-11-09T07:06:28.513Z",
+    "seen": 1
+  },
+  {
+    "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
+    "from": "page",
+    "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
+    "learned": "2026-11-09: worked; 30 tools listed",
+    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-09) worked",
+    "at": "2026-11-09T00:46:18.090Z",
+    "seen": 1
+  },
+  {
+    "id": "page:counterscope-ae",
+    "from": "page",
+    "consumed": "counterscope.ae",
+    "learned": "counterscope.ae walled: a nearly empty page (46 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "counterscope.ae was walled",
+    "at": "2026-11-08T22:23:52Z",
+    "seen": 1
+  },
+  {
     "id": "page:live-check-rides-osrm-public-demo-router-router-",
     "from": "page",
     "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
-    "learned": "2026-11-07: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
-    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-07) worked",
-    "at": "2026-11-07T18:45:31.410Z",
+    "learned": "2026-11-08: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
+    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-08) worked",
+    "at": "2026-11-08T18:49:14.893Z",
     "seen": 1
   },
   {
     "id": "page:live-check-baggage-the-airline-pages-the-baggage",
     "from": "page",
     "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
-    "learned": "2026-11-07: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
-    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-07) did not work",
-    "at": "2026-11-07T18:16:48.050Z",
+    "learned": "2026-11-08: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403 (3 figures unchecked); American: heavy bags: H…",
+    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-08) did not work",
+    "at": "2026-11-08T18:28:56.034Z",
     "seen": 1
   },
   {
-    "id": "page:digitalsogame-com",
+    "id": "page:ldraw-org",
     "from": "page",
-    "consumed": "digitalsogame.com",
-    "learned": "digitalsogame.com walled: a nearly empty page (103 characters: a redirect stub, or a page that draws itself with no text)",
-    "retain": "digitalsogame.com was walled",
-    "at": "2026-11-07T16:40:26Z",
+    "consumed": "ldraw.org",
+    "learned": "ldraw.org could not be read: did not load (page.goto: Timeout 20000ms exceeded.)",
+    "retain": "ldraw.org was could not be read",
+    "at": "2026-11-08T16:47:05Z",
     "seen": 1
   },
   {
-    "id": "page:milkie-cc",
+    "id": "page:convertlive-com",
     "from": "page",
-    "consumed": "milkie.cc",
-    "learned": "milkie.cc walled: a nearly empty page (60 characters: a redirect stub, or a page that draws itself with no text)",
-    "retain": "milkie.cc was walled",
-    "at": "2026-11-07T16:40:23Z",
+    "consumed": "convertlive.com",
+    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
+    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
+    "at": "2026-11-08T13:29:14Z",
     "seen": 1
   },
   {
-    "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
+    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
     "from": "page",
-    "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
-    "learned": "2026-11-07: did not work; asked \"is AI video on at a-to-mind.com right now, and does the video page serve\"; error: GET /api/clip answered 404",
-    "retain": "video-gen depends on a-to-mind.com /api/clip and /video/ (the partner video model behind them on Workers AI); its newest live check (2026-11-07) did not work",
-    "at": "2026-11-07T22:14:54.922Z",
+    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
+    "learned": "2026-11-08: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"; error: the paint: answered 405 no state",
+    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-08) did not work",
+    "at": "2026-11-08T11:22:47.018Z",
+    "seen": 1
+  },
+  {
+    "id": "page:maphill-com",
+    "from": "page",
+    "consumed": "maphill.com",
+    "learned": "maphill.com walled: a nearly empty page (110 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "maphill.com was walled",
+    "at": "2026-11-08T09:25:24Z",
     "seen": 1
   },
   {
@@ -63,24 +99,6 @@
     "seen": 1
   },
   {
-    "id": "page:live-check-rides-osrm-public-demo-router-router-",
-    "from": "page",
-    "consumed": "live check: rides (OSRM public demo router (router.project-osrm.org))",
-    "learned": "2026-11-07: worked; asked \"how long is the drive from SFO to Union Square, San Francisco right now\"; answer {\"minutes\":21,\"km\":23.2}",
-    "retain": "rides depends on OSRM public demo router (router.project-osrm.org); its newest live check (2026-11-07) worked",
-    "at": "2026-11-07T18:45:31.410Z",
-    "seen": 1
-  },
-  {
-    "id": "page:skybridge-click",
-    "from": "page",
-    "consumed": "live check: baggage (the airline pages the baggage card cites (aa.com, britishairways.com))",
-    "learned": "2026-11-07: did not work; asked \"are the baggage card's figures still on the airlines' own pages\"; 4 pages answered 403/200; error: American: checked bags: HTTP 403; American: heavy bags: HTTP 403; American: car…",
-    "retain": "baggage depends on the airline pages the baggage card cites (aa.com, britishairways.com); its newest live check (2026-11-07) did not work",
-    "at": "2026-11-07T18:16:48.050Z",
-    "seen": 1
-  },
-  {
     "id": "page:digitalsogame-com",
     "from": "page",
     "consumed": "digitalsogame.com",
@@ -96,15 +114,6 @@
     "learned": "milkie.cc walled: a nearly empty page (60 characters: a redirect stub, or a page that draws itself with no text)",
     "retain": "milkie.cc was walled",
     "at": "2026-11-07T16:40:23Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
-    "from": "page",
-    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
-    "learned": "2026-11-07: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"",
-    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-07) did not work",
-    "at": "2026-11-07T11:11:47.904Z",
     "seen": 1
   },
   {
@@ -159,15 +168,6 @@
     "learned": "cloudflareinsights.com walled: a nearly empty page (41 characters: a redirect stub, or a page that draws itself with no text)",
     "retain": "cloudflareinsights.com was walled",
     "at": "2026-11-07T09:10:02Z",
-    "seen": 1
-  },
-  {
-    "id": "page:live-check-mcp-https-a-to-mind-com-api-mcp",
-    "from": "page",
-    "consumed": "live check: mcp (https://a-to-mind.com/api/mcp)",
-    "learned": "2026-11-07: worked; 30 tools listed",
-    "retain": "mcp depends on https://a-to-mind.com/api/mcp; its newest live check (2026-11-07) worked",
-    "at": "2026-11-07T00:01:15.286Z",
     "seen": 1
   },
   {
@@ -294,15 +294,6 @@
     "learned": "convertunits.com surpassed: Passed convertunits.com (12/14, conquering in background); Verse's page /convert/unit-converter-2/",
     "retain": "convertunits.com was surpassed by /convert/unit-converter-2/",
     "at": "2026-11-05T02:31:06Z",
-    "seen": 1
-  },
-  {
-    "id": "page:convertlive-com",
-    "from": "page",
-    "consumed": "convertlive.com",
-    "learned": "convertlive.com surpassed: Passed convertlive.com (12/14, conquering in background); Verse's page /convert/unit-converter/",
-    "retain": "convertlive.com was surpassed by /convert/unit-converter/",
-    "at": "2026-11-05T02:30:05Z",
     "seen": 1
   },
   {
