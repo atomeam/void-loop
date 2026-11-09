@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
+.rider { position:absolute; width:72px; height:48px; background:rgba(80,120,255,0.7); border:2px solid #88f; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; cursor:pointer; user-select:none; transition:transform 0.05s; pointer-events:auto; }
+.rider.reward { background:rgba(255,180,80,0.9); }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:6px; font-size:13px; z-index:10; }
+button { margin:2px; padding:4px 8px; background:#224; color:#cef; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Wave Equation DOM Riders · Verse lab</title>
+<meta name="description" content="A previously unused WebGPU compute kernel solves a discrete 2D wave equation on a height field (second-order central differences, damping, reflective boundaries).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Wave Equation DOM Riders · Verse lab">
+<meta property="og:description" content="A previously unused WebGPU compute kernel solves a discrete 2D wave equation on a height field (second-order central differences, damping, reflective boundaries).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f636-webgpu-wave-dom-riders/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f636-webgpu-wave-dom-riders/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F636 Wave Riders · <span id="status">init</span></div>
+  <button id="seal">Seal genome</button>
+  <button id="reset">Reset</button>
+  <div id="info">Tilt / move pointer to drive waves. Click riders to reward.</div>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Wave Equation DOM Riders</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
