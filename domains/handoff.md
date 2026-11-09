@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/fix-source-reliability-rows-76a6 · phone crowd keeps an answer card one column wide, so Words and the world and the film poster fit · 2026-11-09 22:30 UTC
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
@@ -90,6 +89,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - parallel agent · store-phase1 · Verse's own store: docs/store.md, /store page, /api/store (checkout handoff, Stripe webhook, signed downloads, license keys, receipt, order lookup), Gumroad fallback · 2026-10-15 05:10 UTC
 
 ## Just finished
+
+- **Phone answer cards stay one column wide (Cursor cloud agent, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2615. Two open cards on a phone were about 180px wide, so the Words and the world ratings row scrolled sideways and the film poster failed the same squeeze. A crowd that includes an answer card uses one column at 520px and under.
 
 - **suite-on-main: kept cards were the first .vpage, so sky chips, review and draw read the old card; the newest answer is first, a closing card leaves at once, and the crowd layout does not rewrite a card's saved place (Cursor cloud agent, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2578.
 - **Lists run 15 (grok-bot, 2026-11-09): every Russian VAT rate on /vat/ finishes Verse's 16 ndscalc.ru asks, rts and forge are one build-world family, and the site tester's frame floor follows what its runner holds**: /vat/ and lib/vat.js offer 22, 20, 18, 10, the simplified-tax 7 and 5, and 0% (tools/vat.test.mjs); the sum and rate already rode in the link and the page was already offline, so those 16 queued asks are built (domains/void.decisions.json, tools/asks-link.json). skills/build-world.js is rts and forge at order 0112 (tools/build-world-family.test.mjs). tools/site-test.mjs raises the fps floor one step only after 10 steady runs and lowers it to what the slow cases hold when it fails in 8 of 10, ignoring outage runs; it is 1 now so the play-voidquest items can close (tools/site-test.test.mjs). A page built twice is linked from /tools/ as its name plus page 2, so the second page is not an orphan, and every self-built lane page uses its family page's real-pages spec. Generated cards stay out of the pull request; the deploy writes them.
