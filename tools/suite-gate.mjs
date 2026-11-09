@@ -1,11 +1,9 @@
 // The merge gate (Atom: main is never down again). A pull request merges only after the full browser suite
 // has passed on the tree of that pull request merged with current main. One suite run at a time, and one run tests up to
 // BATCH ready pull requests merged together (2026-11-06: one 25-minute run per pull request kept 30 waiting for half a day).
-// A green batch merges one pull request after another; a red batch is split in half on its own members until the red
-// one runs alone, also when main moved meanwhile (2026-11-06: main took a hand merge about every 30 minutes, so a red
-// batch of 8 went back whole on each new main and never split, and the bot merged nothing). A pull request that was
-// not in the red batch is not added to the half (2026-11-09: the next run took the oldest 8, including ones that
-// conflicted, and the innocent ones in the red batch stayed red). A suite
+// A green batch merges one pull request after another; a red batch is split in half until the red one runs alone, also
+// when main moved meanwhile (2026-11-06: main took a hand merge about every 30 minutes, so a red batch of 8 went back
+// whole on each new main and never split, and the bot merged nothing). A suite
 // that passed against an older main still counts when every commit since then only writes the incident
 // record, a bot record, the squash of a pull request in the same run, or the squash of another pull request that shares no
 // file with this one and leaves the suite's own harness alone (2026-11-06: 8 pull requests landed on main during one
@@ -154,26 +152,6 @@ export function batchSize(row, mainSha) {
   return k ? Math.ceil(k / 2) : BATCH;
 }
 
-/** the next run when open pull requests failed together: the first half of the smallest such batch, and no pull request
- * that was not in it. A full batch of the oldest ready ones used to ride along (2026-11-09: a red batch of 9 was followed
- * by another 8, four of which could not merge, and the innocent ones stayed red). Null when nothing failed as a group. Pure. */
-export function bisectOpen(open) {
-  const groups = new Map();
-  for (const r of open || []) {
-    if (!redBefore(r) || redAlone(r)) continue;
-    const nums = batchOf(r.suite);
-    if (nums.length <= 1) continue;
-    const key = nums.join(',');
-    let g = groups.get(key);
-    if (!g) groups.set(key, g = { nums, rows: [] });
-    g.rows.push(r);
-  }
-  if (!groups.size) return null;
-  const best = [...groups.values()].sort((a, b) => a.nums.length - b.nums.length || a.nums[0] - b.nums[0])[0];
-  const members = best.rows.slice().sort((a, b) => a.number - b.number);
-  return members.slice(0, Math.ceil(members.length / 2));
-}
-
 /**
  * one action. rows: [{ number, review: 'merge', suite, drift }]. running: a suite is already in progress.
  * -> { pr, batch, action: 'merge'|'queue'|'wait'|'hold', why }. pr is the first of batch. merge: batch is the pull
@@ -191,8 +169,6 @@ export function choose(rows, mainSha, running) {
   }
   if (!open.length) return { pr: ready[0] || null, batch: [], action: 'hold', why: ready.length ? 'the ready pull requests failed the suite on this main' : 'no pull request has a green review' };
   if (running) return { pr: open[0], batch: [open[0]], action: 'wait', why: 'one suite is already running; the next pull request waits' };
-  const half = bisectOpen(open);
-  if (half && half.length) return { pr: half[0], batch: half, action: 'queue', why: 'a red batch is split in half (' + half.map((r) => '#' + r.number).join(' ') + ')' };
   const pool = redAlone(open[0]) ? open : open.filter((r) => !redAlone(r)); // one that went red alone never rides in a batch
   const batch = pool.slice(0, batchSize(open[0], mainSha));
   return { pr: open[0], batch, action: 'queue', why: 'the full suite has not passed on top of current main' + (batch.length > 1 ? ` (one run for ${batch.length} pull requests)` : '') };
