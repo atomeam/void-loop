@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T07:35:56.200Z",
+ "updated": "2026-11-09T07:45:17.344Z",
  "last24h": {
   "ticks": 154,
   "started": 73,
@@ -131,10 +131,11 @@
   "mvpuqb4r": 1794206381857,
   "mvvjzso8": 1794206945891,
   "mw8wj9t3": 1794207506673,
-  "mw8wjbjy": 1794209190487
+  "mw8wjbjy": 1794209190487,
+  "mw8wjcf5": 1794210317344
  },
- "sweptAt": 1794205814254,
- "blueprintsAt": 1794205814254,
+ "sweptAt": 1794210317344,
+ "blueprintsAt": 1794210317344,
  "visitorAt": "2026-11-09T04:20:51Z",
  "visitorFiled": [
   "versus:fasterwheeler.com",
@@ -219,34 +220,6 @@
   "review:2546"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T07:39:18.949Z",
-   "open": 263,
-   "started": [
-    {
-     "id": "want-exam-videos",
-     "kind": "gap",
-     "wf": "verse-job.yml",
-     "score": 175
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T07:48:44.131Z",
    "open": 263,
@@ -2160,6 +2133,34 @@
   {
    "at": "2026-11-09T07:35:56.200Z",
    "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T07:45:17.344Z",
+   "open": 270,
+   "started": [
+    {
+     "id": "mw8wjcf5",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 260,
    "warnings": 1
   }
  ]
