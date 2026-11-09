@@ -472,11 +472,6 @@
       padding: 0 18px;
     }
     #whisper .vc { color: var(--fg); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-/* the offer line sits in the dock's bottom padding, out of flow: showing it never lifts the ask bar (a lifted bar covered the bottom of a
-   tall kept card, its Show more, where no click reached it: main's shard 4, 2026-11-08); only its links take the pointer */
-#void-offer { position: absolute; left: 0; right: 0; bottom: calc(1px + env(safe-area-inset-bottom, 0px)); margin: 0; text-align: center; font-size: var(--fs-xs); line-height: 1.4; color: var(--ink-3); letter-spacing: .01em; pointer-events: none; }
-#void-offer a { pointer-events: auto; }
-#void-offer a { color: var(--ink-3); }
     .shape {
       position: absolute;
       user-select: none;
@@ -1199,7 +1194,6 @@
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
-    <div id="void-offer" hidden></div>
     <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
@@ -1340,7 +1334,6 @@
         if (rect) { rect.setAttribute('y', d.fill.y); rect.setAttribute('height', d.fill.h); } } catch (_) {} };
       draw(); addEventListener('void:stage-change', draw);
     })();
-    let offerShown = false; // the paid-products line shows once per load, after the first answered ask
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
       if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
@@ -1351,36 +1344,6 @@
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
       // the day a skill last answered, on this device only (lib/skill-use.js; asked by Verse: a last-used day for every skill): a day, never a word of any ask
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
-      // the paid products where the free page leaves off: after the first answered ask of the load, one muted line with the
-      // three products (the membership, the one-time fix, the full stack audit) and their pages. Their names come from the live
-      // store (/api/catalog, read once the first ask is answered, never on arrival), never typed here, so a rename in the store
-      // follows; nothing stored. No live name = that link is left out; no live product at all = the line stays hidden.
-      if (!offerShown && attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) {
-        offerShown = true;
-        showOffer().catch(() => {});
-      }
-    }
-    const OFFER_LINKS = [ // [which store product, its page]; the membership is the store's unlock (lib/gumroad.js isUnlock)
-      [(g, p) => g.isUnlock(p), '/members/?from=stage'],
-      [(g, p) => p.slug === 'eozcma', '/one-time-fix/'],
-      [(g, p) => p.slug === 'full-stack-audit', '/full-stack-audit/'],
-    ];
-    async function showOffer() {
-      const offer = document.getElementById('void-offer');
-      if (!offer) return;
-      const { g, products } = await storeCatalog();
-      if (!g) return;
-      const live = products.filter((p) => p && p.available !== false && typeof p.name === 'string' && p.name.trim());
-      const links = [];
-      for (const [is, href] of OFFER_LINKS) {
-        const p = live.find((x) => is(g, x));
-        if (!p) continue;
-        const a = document.createElement('a'); a.href = href; a.textContent = p.name.trim(); links.push(a);
-      }
-      if (!links.length) return;
-      offer.textContent = 'Made with Verse — ';
-      links.forEach((a, i) => { if (i) offer.append(' · '); offer.append(a); });
-      offer.hidden = false;
     }
     let sayCount = 0;
     function fitOpenPanels() {
