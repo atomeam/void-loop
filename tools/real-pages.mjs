@@ -112,7 +112,7 @@ export const SPECS = {
     await t.p.goto(t.p.url().split('?')[0] + '?floor=' + encodeURIComponent(id)); const who = await t.waitText('#who', /side by side/, 10000);
     t.ok(/^Verse and \S+, side by side$/.test(who.trim()), 'the floor opens as Verse beside its site: ' + who.slice(0, 60));
     t.ok(/^https?:\/\//.test(await t.p.getAttribute('#so', 'href') || ''), 'the rival site opens from a real link');
-    const st = await t.waitText('#st', /aspects ahead|surpassed/, 15000); t.ok(/\d+ of \d+ aspects ahead|surpassed/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
+    const st = await t.waitText('#st', /aspects ahead|every aspect matched/, 15000); t.ok(/\d+ of \d+ aspects ahead|every aspect matched/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
   },
   '/conquered/': async (t) => {
     const m = (await t.p.locator('body').innerText()); t.ok(/\d+ of \d+ aspects verified/.test(m), 'the current floor shows its measured aspects'); // the card names the current floor and its verified aspects (docs/TOWER-RULES.md)
@@ -135,10 +135,10 @@ export const SPECS = {
     t.ok(/flightconnections\.com/.test(await t.text('#title')), 'its name is the heading');
   },
   '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
-    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
+    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
     const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
     await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
-    const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
+    const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'every aspect matched'), 'Every aspect matched shows only those sites (' + st.length + ')');
     await t.links();
   },
   '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece

@@ -90,6 +90,7 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipW
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
+  ['humble-copy', 'humble-copy.test.mjs'],
   ['handoff-scan', 'handoff-scan.test.mjs'],
   ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
