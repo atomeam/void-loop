@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T07:07:45.970Z",
+ "updated": "2026-11-09T07:17:06.432Z",
  "last24h": {
   "ticks": 154,
-  "started": 73,
+  "started": 72,
   "requeued": 6,
   "setAside": 1,
   "probes": 3,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 78,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -109,7 +109,7 @@
   "mvbl52gd": 1794207506673,
   "mva30i2e": 1794191729678,
   "mva30j4u": 1794205814254,
-  "mvu167w7": 1794186086054,
+  "mvu167w7": 1794208626432,
   "mveb8rsi": 1794207506673,
   "mveb8svc": 1794186086054,
   "mw76d612": 1794137624174,
@@ -218,40 +218,6 @@
   "review:2546"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T07:11:10.584Z",
-   "open": 263,
-   "started": [
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 109
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 254,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T07:20:30.375Z",
    "open": 263,
@@ -2174,6 +2140,34 @@
   {
    "at": "2026-11-09T07:07:45.970Z",
    "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T07:17:06.432Z",
+   "open": 272,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 111
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 260,
    "warnings": 1
   }
  ]
