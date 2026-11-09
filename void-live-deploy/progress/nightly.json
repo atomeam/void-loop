@@ -1,15 +1,15 @@
 {
- "at": "2026-11-08T14:21:34.317Z",
+ "at": "2026-11-09T17:37:59.970Z",
  "share": {
-  "loop": 66,
-  "outside": 939,
-  "bot": 77,
-  "of": 1005,
-  "share": 6.6
+  "loop": 70,
+  "outside": 963,
+  "bot": 81,
+  "of": 1033,
+  "share": 6.8
  },
  "pick": {
   "kind": "exam",
-  "id": "videos",
-  "why": "lowest exam domain videos at 56.7"
+  "id": "definitions",
+  "why": "lowest exam domain definitions at 90"
  }
 }
