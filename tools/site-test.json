@@ -354,6 +354,9 @@
     },
     {
       "ask": "play sorry"
+    },
+    {
+      "ask": "turn this idea into a system plan: weekly status reports that write themselves"
     }
   ],
   "candidates": [],
