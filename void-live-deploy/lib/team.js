@@ -310,7 +310,7 @@ export const memberJoinedSay = (name) => 'Welcome, ' + name + '. You are a membe
   + 'Claim a job on the board (one click), ship it as a pull request, and your name goes on the credits. Propose changes in #ideas.';
 // the board: kinds a newcomer can finish alone, from public facts (a rival site's page, a missing answer, a new idea)
 export const GOOD_FIRST = Object.freeze(['versus', 'gap', 'novelty']);
-const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Outdo a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
+const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Learn from a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
 /** a queued job as the public board shows it. The owner's own #work asks keep their words in the members-only chat. Pure. */
 export function boardRow(job, now, sc = null) {
   const k = kindOf(job.target), mine = ownerAsk(job);

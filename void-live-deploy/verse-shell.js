@@ -40,6 +40,17 @@ function ensureChrome() {
   nav.append(brand, links, k);
   header.append(nav);
   document.body.prepend(header);
+  // the one quiet link to Verse's own log (/log/): what it did and when lives there and nowhere else
+  if (!document.getElementById('verse-foot')) {
+    const foot = document.createElement('footer');
+    foot.id = 'verse-foot';
+    foot.style.cssText = 'margin:32px auto 16px;text-align:center;font-size:12px;opacity:.6';
+    const log = document.createElement('a');
+    log.href = '/log/';
+    log.textContent = 'Log';
+    foot.append(log);
+    document.body.append(foot);
+  }
 }
 
 const reduce = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) { return false; } };

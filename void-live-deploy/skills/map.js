@@ -16,7 +16,7 @@ const MAP = [
   { n: 8, p: 'Slack ops log', f: 'void.agents.log.md today; later a "what are the agents doing" page', s: 'log live' },
   { n: 9, p: 'HomeBase / dashboards', f: 'board + agent log + live checks on one summoned page', s: 'partly (board)' },
   { n: 10, p: 'Player Two', f: '"play a game" — a small game on the stage', s: 'live (eight games)' },
-  { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, better than the source', s: 'live / weather ready' },
+  { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, with the source named', s: 'live / weather ready' },
   { n: 12, p: 'Calculation page', f: 'percentages, units, dates, currency', s: 'live (2026-09-25)' },
   { n: 13, p: 'Entering your own Verse', f: 'silent entry on first keep; personal look saved per browser; public surface stays plain', s: 'live (2026-09-25)' },
 ];

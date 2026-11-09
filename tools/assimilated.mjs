@@ -91,8 +91,8 @@ export function fileOf(rows) {
 /** the floors of the tower as the stage reads them, from the published files. */
 export async function floorsOf(cwd = root) {
   const { tower, towerArgs, learnedOf, fatalityOf } = await import(pathToFileURL(resolve(cwd, 'void-live-deploy/lib/tower.js')).href);
-  const [inv, ev, fr, rk, sz, tg, ft] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
-  const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }));
+  const [inv, ev, fr, rk, sz, tg, ft, gn, pa] = ['lap.items.json', 'tower.evidence.json', 'tower.frontier.json', 'tower.rank.json', 'tower.size.json', 'tower.target.json', 'tower.features.json', 'tower.gone.json', 'parity.json'].map((f) => read(cwd, 'void-live-deploy/' + f));
+  const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn, pa }));
   // the evidence also lives one file per floor (void-live-deploy/tower-evidence/, keyed by its id), so a floor measured there is dated too
   const perFloor = {}; try { for (const f of readdirSync(resolve(cwd, 'void-live-deploy/tower-evidence'))) { const e = f.endsWith('.json') && read(cwd, 'void-live-deploy/tower-evidence/' + f); if (e && e.id) perFloor[e.id] = e; } } catch (_) { /* no per-floor evidence */ }
   // a surpassed or passed floor is dated by floorAt: its newest head-to-head measure, else the day tower.target.json recorded it passed

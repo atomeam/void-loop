@@ -16,7 +16,9 @@ const hostKey = (f) => hostOf(f.url) || hostOf(f.site);
  *  changed. A served file with no season gets the target's own day as one, so the check always runs the season path the live card runs. */
 export function seasonTarget(served, floors) {
   const s = served || {}, day = String((s.season && (s.season.start || s.season)) || s.since || '2026-11-06');
-  return { ...s, season: s.season || { start: day }, passed: floors.map((f) => ({ id: f.id, at: day, n: 0, m: 0, open: [] })) };
+  const list = floors.map((f) => ({ id: f.id, at: day, n: 0, m: 0, open: [] }));
+  // `assimilated` is what lib/tower.js towerArgs reads (docs/TOWER-RULES.md); `passed` is kept for an older served file
+  return { ...s, season: s.season || { start: day }, passed: list, assimilated: list };
 }
 
 /** the served tower.features.json without the crawl rows of `floors`, or null when nothing is served. Pure. */

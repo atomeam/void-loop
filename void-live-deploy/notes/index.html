@@ -98,6 +98,21 @@
   footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
   #related, #asks { margin-top: 14px; }
   #trash li { border-top: 1px solid var(--line); padding: 4px 0; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; } #trash li span { flex: 1 1 160px; overflow-wrap: anywhere; } #fr input { flex: 1 1 140px; }
+  /* from Simplenote and Google Keep: sort, archive, a colour per note, focus mode and text size (lib/note-organise.js) */
+  .layout > * { min-width: 0; } #sortRow select { min-width: 0; width: 100%; }
+  #sortRow { display: flex; gap: 6px; align-items: center; margin: 8px 0 0; } #sortRow select { flex: 1 1 auto; min-height: 40px; font-size: 14px; padding: 4px 10px; border-radius: 999px; }
+  #tagTools { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; font-size: 13px; color: var(--soft); align-items: center; } #tagTools button { min-height: 36px; padding: 2px 12px; }
+  #list li[data-color] button { border-left: 6px solid var(--nc); border-radius: 4px 8px 8px 4px; }
+  #doc[data-color] { background: color-mix(in srgb, var(--nc) 16%, var(--box)); border-color: color-mix(in srgb, var(--nc) 55%, var(--line)); }
+  #colors { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0 0; }
+  #colors button { width: 30px; height: 30px; min-width: 30px; min-height: 30px; padding: 0; border-radius: 50%; background: var(--sw, var(--box)); border: 2px solid var(--line); position: relative; }
+  #colors button[aria-checked="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+  #colors button[data-c=""]:after { content: ""; position: absolute; inset: 5px; border-top: 2px solid var(--soft); transform: rotate(-45deg) translateY(6px); }
+  #arcBtn[aria-pressed="true"], #focusBtn[aria-pressed="true"] { background: var(--accent); }
+  .body h3 { font-size: 18px; }
+  html.focus #side, html.focus #sub, html.focus #title, html.focus #asks, html.focus #lab-here, html.focus #related, html.focus #keys, html.focus .srcs, html.focus footer, html.focus main > .row:first-of-type { display: none !important; }
+  html.focus .layout { grid-template-columns: 1fr !important; max-width: 760px; margin-left: auto; margin-right: auto; }
+  #doc .body { font-size: calc(17px * var(--fs, 1)); } #dtitle { font-size: calc(24px * var(--fs, 1)); }
   @media print { html, body { background: #fff; color: #000; } main > *:not(.layout) { display: none !important; } .layout { display: block; } .layout > :not(#doc) { display: none !important; } #bar, .status, #hist, .row, #tools, #sharedCard, #meta, #links, #cmts, #cmNew, #filters, #slash, #tblbar, #fr, #trash { display: none !important; } #dtitle, .body { border: 0; } }
 </style>
 <!-- seo -->
@@ -115,7 +130,8 @@
   <div class="row" style="margin-top:0">
     <button type="button" class="go" id="newBtn" data-w="newDoc">New note</button>
     <select id="tplSel" aria-label="Start from a template" data-wal="tpl"><option value="">Start from a template</option><option value="meeting">Meeting</option><option value="trip">Trip</option><option value="shopping">Shopping list</option><option value="weekly">Weekly plan</option></select>
-    <button type="button" id="importBtn" data-w="importFile">Import .md or .txt</button><input type="file" id="file" accept=".md,.markdown,.txt,text/plain,text/markdown" hidden>
+    <button type="button" id="importBtn" data-w="importFile" title="Markdown or text files, a Verse backup, a Simplenote export (notes.json) or Google Keep notes from Takeout (.json)">Import notes</button><input type="file" id="file" accept=".md,.markdown,.txt,.json,text/plain,text/markdown,application/json" multiple hidden>
+    <button type="button" id="bakBtn" title="Every note, the archive and the trash in one .json file you can import again">Back up all notes</button>
   </div>
   <div class="note" id="say" role="status"></div>
 
@@ -128,7 +144,9 @@
   <div class="layout">
     <section class="pane" id="side" aria-label="Notes">
       <form id="sf" role="search" onsubmit="return false"><label class="vh" for="sq" id="sqL" data-w="search">Search all notes</label><input type="search" id="sq" placeholder="Search all notes" data-wph="searchPh" maxlength="100" autocomplete="off"></form>
-      <div id="filters" role="group" aria-label="Show"><button type="button" id="fAll" aria-pressed="true" data-w="all">All</button><button type="button" id="fPin" aria-pressed="false" data-w="pinnedF">Pinned</button><span id="tagchips" style="display:contents"></span></div>
+      <div id="filters" role="group" aria-label="Show"><button type="button" id="fAll" aria-pressed="true" data-w="all">All</button><button type="button" id="fPin" aria-pressed="false" data-w="pinnedF">Pinned</button><button type="button" id="fArc" aria-pressed="false">Archive</button><span id="tagchips" style="display:contents"></span></div>
+      <div id="sortRow"><label for="sortSel" class="vh">Sort notes</label><select id="sortSel" aria-label="Sort notes"></select></div>
+      <div id="tagTools" hidden><span id="tagName"></span><button type="button" id="tagRen">Rename tag</button><button type="button" class="bad" id="tagDel">Remove tag</button></div>
       <ul id="list"></ul>
       <div class="note" id="count"></div>
     </section>
@@ -153,7 +171,8 @@
       <div id="dtitle" contenteditable="true" role="textbox" aria-label="Title" data-wal="titlePh" data-ph="Title" spellcheck="true"></div>
       <div class="body" id="body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Note" data-ph="Start writing…" spellcheck="true"></div>
       <div class="status"><span id="words">0 words</span><span id="saved" data-w="saved">Saved on this device</span></div>
-      <div id="meta"><button type="button" id="pinBtn" aria-pressed="false" data-w="pin">Pin</button><label class="vh" for="tagsIn" data-w="tagsLabel">Tags</label><input id="tagsIn" maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></div>
+      <div id="meta"><button type="button" id="pinBtn" aria-pressed="false" data-w="pin">Pin</button><button type="button" id="arcBtn" aria-pressed="false">Archive</button><button type="button" id="copyBtn" title="A new note with the same words">Make a copy</button><label class="vh" for="tagsIn" data-w="tagsLabel">Tags</label><input id="tagsIn" maxlength="120" placeholder="Tags: travel, work" data-wph="tagsPh" autocomplete="off"></div>
+      <div id="colors" role="radiogroup" aria-label="Note colour"></div>
       <form id="cmNew" hidden onsubmit="return false" aria-label="New comment"><p class="note">Comment on <q id="cmQ"></q></p><label class="vh" for="cmT">Your comment</label><textarea id="cmT" rows="2" maxlength="2000" placeholder="Your comment"></textarea>
         <div class="row"><button type="submit" class="go" id="cmSave">Comment</button><button type="button" id="cmCancel">Cancel</button></div></form>
       <section id="cmts" hidden aria-labelledby="cmH"><h2 id="cmH">Comments</h2><ul id="cmList"></ul></section>
@@ -166,6 +185,9 @@
         <button type="button" id="htmlBtn" data-w="exportHtml">Export .html</button>
         <button type="button" id="txtBtn" data-w="exportTxt">Export .txt</button>
         <button type="button" id="printBtn" data-w="print">Print</button>
+        <button type="button" id="focusBtn" aria-pressed="false" title="Only the note: the list and the rest of the page step aside (Ctrl+Shift+F)">Focus mode</button>
+        <button type="button" id="sizeDn" aria-label="Smaller text" title="Smaller text">A−</button><button type="button" id="sizeUp" aria-label="Larger text" title="Larger text">A+</button>
+        <label style="display:inline-flex;gap:6px;align-items:center;font-size:14px"><input type="checkbox" id="chkBottom" style="min-height:0;width:18px;height:18px" checked> Ticked items to the bottom</label>
         <button type="button" id="frBtn" aria-expanded="false" aria-controls="fr" data-w="fr">Find and replace</button>
         <button type="button" id="trashBtn" aria-expanded="false" aria-controls="trash" data-w="trash">Trash</button>
         <button type="button" class="bad" id="delBtn" data-w="del">Delete</button>
@@ -187,7 +209,7 @@
   <div id="slash" role="listbox" aria-label="Insert a block" data-wal="slash" hidden></div>
   <div id="tblbar" role="toolbar" aria-label="Table" data-wal="tbl" hidden><button type="button" data-t="row" data-w="addRow">Row +</button><button type="button" data-t="col" data-w="addCol">Column +</button><button type="button" data-t="up" data-w="sortUp">Sort A-Z</button><button type="button" data-t="down" data-w="sortDown">Sort Z-A</button><button type="button" class="bad" data-t="del" data-w="delTable">Remove table</button></div>
 
-  <p class="note" id="keys" data-w="keys">Ctrl+B bold, Ctrl+I italic, Ctrl+U underline, Ctrl+K link, Ctrl+Alt+1 and 2 headings, Ctrl+Shift+7 and 8 lists, Ctrl+/ searches, Ctrl+Alt+N is a new note</p>
+  <p class="note" id="keys" data-w="keys">Ctrl+B bold, Ctrl+I italic, Ctrl+U underline, Ctrl+K link, Ctrl+Alt+1 and 2 headings, Ctrl+Shift+7 and 8 lists, Ctrl+/ searches, Ctrl+Alt+N is a new note, Ctrl+Shift+F focus mode. Start a line with # , ## , - , 1. , [] or > to make a heading, a list, a checklist or a quote. Search takes tag:work, is:pinned, is:archived, is:checklist and color:mint.</p>
 
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread">Shopping list: milk, eggs, bread</a><a href="/notes/?q=note%3A%20buy%20milk">Buy milk</a><a href="/notes/?q=note%3A%20Packing%20-%20passport%2C%20charger%2C%20socks">Packing: passport, charger, socks</a><a href="/notes/?q=note%3A%20Meeting%20-%20agenda%2C%20minutes%2C%20actions">Meeting: agenda, minutes, actions</a><a href="/notes/?q=note%3A%20call%20mum%20on%20Sunday">Call mum on Sunday</a></nav>
@@ -202,7 +224,7 @@
 <script type="module">
   // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, N, X] = await Promise.all([import('/lib/toolkit.js'), import('/lib/notes.js'), import('/lib/note-extras.js')]);
+    const [{ mountRelated }, N, X] = await Promise.all([import('/lib/toolkit.js'), import('/lib/notes.js'), import('/lib/note-extras.js')]), O = await import('/lib/note-organise.js');
     const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = N.wordsFor(lang);
     const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
     if (de) {
@@ -217,6 +239,9 @@
     try { store = N.load(localStorage.getItem(N.KEY)); } catch (_) {}
     store = X.purgeTrash(store, Date.now());
     const keep = () => { try { localStorage.setItem(N.KEY, JSON.stringify(store)); $('saved').textContent = W.saved; } catch (_) { $('saved').textContent = '—'; } };
+    const PREFS = 'a2m.void.notes.prefs'; let prefs = { sort: 'modified-new', bottom: true, size: 1, focus: false };
+    try { prefs = { ...prefs, ...JSON.parse(localStorage.getItem(PREFS) || '{}') }; } catch (_) {}
+    const keepPrefs = () => { try { localStorage.setItem(PREFS, JSON.stringify(prefs)); } catch (_) {} };
     const say = (t) => { $('say').textContent = t || ''; };
     const cur = () => store.docs.find((d) => d.id === store.cur);
     const put = (d) => { store.docs = N.withDoc(store.docs, d); };
@@ -226,13 +251,15 @@
     let query = '', filter = 'all';
     function drawList() {
       const ul = $('list'); ul.replaceChildren();
-      const docs = X.filterDocs(N.sorted(store.docs), filter), pins = new Set(store.docs.filter((d) => d.pinned).map((d) => d.id)), res = query ? N.search(docs, query) : docs.map((d) => ({ id: d.id, title: N.titleOf(d), snippet: N.toText(d.html).replace(/\s+/g, ' ').slice(0, 90) }));
+      const P = O.parseQuery(query), ops = P.tags.length + P.is.length + P.colors.length > 0, words = P.words.join(' ');
+      let pool = O.sortDocs(store.docs, prefs.sort); pool = ops && P.is.includes('archived') ? pool : O.inView(pool, filter); pool = O.applyOperators(filter === 'archive' ? pool : X.filterDocs(pool, filter), P);
+      const docs = pool, pins = new Set(store.docs.filter((d) => d.pinned).map((d) => d.id)), res = words ? N.search(docs, words).sort((a, b) => b.score - a.score) : docs.map((d) => ({ id: d.id, title: N.titleOf(d), snippet: N.toText(d.html).replace(/\s+/g, ' ').slice(0, 90) }));
       for (const r of res) {
         const li = el('li'), b = el('button'); b.type = 'button'; if (r.id === store.cur) b.setAttribute('aria-current', 'true');
-        const t = el('span', 't'), s = el('span', 's'); t.innerHTML = query ? N.mark(r.title, query) : ''; if (!query) t.textContent = (pins.has(r.id) ? '\u2605 ' : '') + r.title; s.innerHTML = N.mark(r.snippet || '', query);
+        const t = el('span', 't'), s = el('span', 's'); t.innerHTML = words ? N.mark(r.title, words) : ''; if (!words) t.textContent = (pins.has(r.id) ? '\u2605 ' : '') + r.title; s.innerHTML = N.mark(r.snippet || '', words); const dd = store.docs.find((x) => x.id === r.id); if (dd && dd.color) { li.dataset.color = dd.color; li.style.setProperty('--nc', O.colorOf(dd.color).hex); } // void-review: ok, N.mark escapes the text before marking it
         b.append(t, s); b.addEventListener('click', () => open(r.id)); li.append(b); ul.append(li);
       }
-      if (!res.length) ul.append(el('li', 'note', query ? W.noMatch : W.none));
+      if (!res.length) ul.append(el('li', 'note', query ? W.noMatch : filter === 'archive' ? (de ? 'Nichts archiviert' : 'Nothing archived. Archive keeps a note out of the list without deleting it.') : W.none));
       $('count').textContent = query ? res.length + ' ' + W.found : docs.length + ' ' + (docs.length === 1 && !de ? 'note' : W.notes);
     }
     $('sq').addEventListener('input', () => { query = $('sq').value.trim(); drawList(); });
@@ -347,7 +374,7 @@
     $('bar').addEventListener('click', (e) => { const b = e.target.closest('button[data-cmd]'); if (!b) return; $('body').focus(); CMD[b.dataset.cmd](); changed(); });
     $('body').addEventListener('click', (e) => { // a checkbox is the left edge of a checklist item
       const li = e.target.closest && e.target.closest('li.chk'); if (!li || e.target !== li) return;
-      if (e.clientX - li.getBoundingClientRect().left < 32) { li.classList.toggle('done'); changed(); }
+      if (e.clientX - li.getBoundingClientRect().left < 32) { li.classList.toggle('done'); if (prefs.bottom !== false) { const ul = li.parentElement; if (li.classList.contains('done')) ul.append(li); else { const first = [...ul.children].find((x) => x.classList.contains('done')); if (first) ul.insertBefore(li, first); } } changed(); }
     });
     addEventListener('keydown', (e) => {
       const m = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
@@ -363,11 +390,50 @@
     function drawFilters() {
       const chips = $('tagchips'); chips.replaceChildren();
       for (const t of X.tagCounts(store.docs).slice(0, 12)) { const b = el('button', '', '#' + t.tag); b.type = 'button'; b.setAttribute('aria-pressed', String(filter === '#' + t.tag)); b.addEventListener('click', () => setFilter('#' + t.tag)); chips.append(b); }
-      $('fAll').setAttribute('aria-pressed', String(filter === 'all')); $('fPin').setAttribute('aria-pressed', String(filter === 'pinned'));
+      $('fAll').setAttribute('aria-pressed', String(filter === 'all')); $('fPin').setAttribute('aria-pressed', String(filter === 'pinned')); $('fArc').setAttribute('aria-pressed', String(filter === 'archive'));
+      const tg = /^#/.test(filter) ? filter.slice(1) : ''; $('tagTools').hidden = !tg; $('tagName').textContent = tg ? '#' + tg + ':' : '';
     }
     function setFilter(f) { filter = filter === f && f !== 'all' ? 'all' : f; drawFilters(); drawList(); }
-    $('fAll').addEventListener('click', () => setFilter('all')); $('fPin').addEventListener('click', () => setFilter('pinned'));
-    function drawMeta(d) { $('pinBtn').setAttribute('aria-pressed', String(!!d.pinned)); $('pinBtn').textContent = d.pinned ? W.unpin : W.pin; $('tagsIn').value = (d.tags || []).join(', '); drawFilters(); }
+    $('fAll').addEventListener('click', () => setFilter('all')); $('fPin').addEventListener('click', () => setFilter('pinned')); $('fArc').addEventListener('click', () => setFilter('archive'));
+    // ---- Simplenote and Google Keep: sort orders, archive, colours, a copy, tags renamed everywhere, backups, line starts, focus and size ----
+    for (const o of O.SORTS) { const x = el('option', '', 'Sort: ' + o.label); x.value = o.key; $('sortSel').append(x); }
+    $('sortSel').value = prefs.sort; $('sortSel').addEventListener('change', () => { prefs.sort = $('sortSel').value; keepPrefs(); drawList(); });
+    for (const c of O.COLORS) { const b = el('button'); b.type = 'button'; b.dataset.c = c.key; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', c.label); b.title = c.label; if (c.hex) b.style.setProperty('--sw', c.hex);
+      b.addEventListener('click', () => setMeta({ color: c.key || undefined })); $('colors').append(b); }
+    $('arcBtn').addEventListener('click', () => { const d = cur(); if (!d) return; const on = !d.archived; setMeta({ archived: on || undefined }); say(on ? (de ? 'Archiviert: nicht mehr in der Liste, unter Archiv zu finden' : 'Archived: out of the list, kept under Archive') : (de ? 'Wieder in der Liste' : 'Back in the list')); });
+    $('copyBtn').addEventListener('click', () => { flush(); const d = cur(); if (!d) return; const c = O.copyOf(d, now()); put(c); store.cur = c.id; keep(); show(c); say(de ? 'Kopie angelegt' : 'Copy made'); });
+    $('tagRen').addEventListener('click', () => { const t = filter.slice(1), to = prompt(de ? 'Neuer Name für #' + t : 'New name for #' + t, t); if (to == null || !to.trim()) return; flush(); store.docs = O.renameTag(store.docs, t, to, now()); keep(); filter = '#' + (X.parseTags(to)[0] || t); const d = cur(); if (d) drawMeta(d); drawList(); });
+    $('tagDel').addEventListener('click', () => { const t = filter.slice(1); if (!confirm((de ? '#' + t + ' von allen Notizen entfernen? Die Notizen bleiben.' : 'Remove #' + t + ' from every note? The notes stay.'))) return; flush(); store.docs = O.renameTag(store.docs, t, '', now()); keep(); filter = 'all'; const d = cur(); if (d) drawMeta(d); drawList(); });
+    const applySize = () => { document.documentElement.style.setProperty('--fs', String(prefs.size)); };
+    $('sizeUp').addEventListener('click', () => { prefs.size = Math.min(1.6, Math.round((prefs.size + .1) * 10) / 10); applySize(); keepPrefs(); });
+    $('sizeDn').addEventListener('click', () => { prefs.size = Math.max(.8, Math.round((prefs.size - .1) * 10) / 10); applySize(); keepPrefs(); });
+    const setFocus = (on) => { prefs.focus = on; document.documentElement.classList.toggle('focus', on); $('focusBtn').setAttribute('aria-pressed', String(on)); keepPrefs(); };
+    $('focusBtn').addEventListener('click', () => setFocus(!prefs.focus));
+    addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'F' || e.key === 'f')) { e.preventDefault(); setFocus(!prefs.focus); } });
+    applySize(); if (prefs.focus) setFocus(true);
+    $('chkBottom').checked = prefs.bottom !== false; $('chkBottom').addEventListener('change', () => { prefs.bottom = $('chkBottom').checked; keepPrefs(); });
+    $('bakBtn').addEventListener('click', () => { flush(); give('notes-backup-' + new Date().toISOString().slice(0, 10) + '.json', 'application/json', O.backup(store, now())); say(de ? 'Sicherung geladen: alle Notizen in einer Datei' : 'Backup saved: every note in one file'); });
+    // a new line after a ticked item must not carry its grey strike (the browser copies the computed look into the new block)
+    $('body').addEventListener('input', (e) => {
+      if (e.inputType !== 'insertParagraph') return; const s = getSelection(); let n = s && s.anchorNode; n = n && (n.nodeType === 1 ? n : n.parentElement); if (!n || !$('body').contains(n)) return;
+      const blk = n.closest('li,p,div,h1,h2,h3,blockquote') || n; if (blk.closest('li.chk.done')) return;
+      for (const x of [...blk.querySelectorAll('font,strike')]) x.replaceWith(...x.childNodes);
+      let up = n; while (up && up !== blk && /^(?:FONT|STRIKE)$/.test(up.tagName)) { const p = up.parentElement; up.replaceWith(...up.childNodes); up = p; }
+    });
+    // a line that starts with "# ", "- ", "1. ", "[] " or "> " becomes that block once its space is typed
+    $('body').addEventListener('input', (e) => {
+      if (e.inputType !== 'insertText' || e.data !== ' ') return; const s = getSelection(); if (!s || !s.isCollapsed || !s.anchorNode || s.anchorNode.nodeType !== 3) return;
+      const n = s.anchorNode, blk = n.parentElement && n.parentElement.closest('p,div,h1,h2,h3,li,blockquote'); if (!blk || !$('body').contains(blk) || /^(?:LI|PRE)$/.test(blk.tagName) && blk.closest('ul,ol')) return;
+      if (blk === $('body') ? n.previousSibling && n.previousSibling.nodeName !== 'BR' : n !== blk.firstChild) return; // only at the start of a line
+      const ls = O.lineStart(n.data.slice(0, s.anchorOffset)); if (!ls) return;
+      const r = document.createRange(); r.setStart(n, 0); r.setEnd(n, ls.strip); r.deleteContents(); if (!n.data) n.parentNode.insertBefore(document.createElement('br'), n);
+      const k = ls.block; if (/^h[1-3]$/.test(k)) ex('formatBlock', k); else if (k === 'ul') ex('insertUnorderedList'); else if (k === 'ol') ex('insertOrderedList'); else if (k === 'todo') todo(); else if (k === 'quote') ex('formatBlock', 'blockquote');
+      changed();
+    });
+    function drawMeta(d) { $('pinBtn').setAttribute('aria-pressed', String(!!d.pinned)); $('pinBtn').textContent = d.pinned ? W.unpin : W.pin;
+      $('arcBtn').setAttribute('aria-pressed', String(!!d.archived)); $('arcBtn').textContent = d.archived ? (de ? 'Aus dem Archiv' : 'Unarchive') : (de ? 'Archivieren' : 'Archive');
+      if (d.color) { $('doc').dataset.color = d.color; $('doc').style.setProperty('--nc', O.colorOf(d.color).hex); } else { delete $('doc').dataset.color; $('doc').style.removeProperty('--nc'); }
+      for (const b of $('colors').children) b.setAttribute('aria-checked', String(b.dataset.c === (d.color || ''))); $('tagsIn').value = (d.tags || []).join(', '); drawFilters(); }
     function setMeta(patch) { flush(); const d = cur(); if (!d) return; put({ ...d, ...patch, updated: now() }); keep(); drawMeta(cur()); drawList(); }
     $('pinBtn').addEventListener('click', () => setMeta({ pinned: !(cur() || {}).pinned }));
     $('tagsIn').addEventListener('change', () => setMeta({ tags: X.parseTags($('tagsIn').value) }));
@@ -459,7 +525,9 @@
     $('mdBtn').addEventListener('click', out(N.exportMd, '.md', 'text/markdown')); $('htmlBtn').addEventListener('click', out(N.exportHtml, '.html', 'text/html')); $('txtBtn').addEventListener('click', out(N.exportTxt, '.txt', 'text/plain'));
     $('printBtn').addEventListener('click', () => { flush(); print(); });
     $('importBtn').addEventListener('click', () => $('file').click());
-    $('file').addEventListener('change', async () => { let n = 0; flush(); for (const f of [...$('file').files]) { const r = N.importText(f.name, await f.text()); const d = blank(r); n++; } $('file').value = ''; keep(); show(cur()); say(n + ' ' + W.imported); });
+    $('file').addEventListener('change', async () => { let n = 0; flush(); for (const f of [...$('file').files]) { const t = await f.text();
+        if (/\.json$/i.test(f.name) || f.type === 'application/json') { const b = O.readBackup(t, now()); if (b.kind === 'unknown') { say(f.name + (de ? ': keine Notizen darin' : ': no notes Verse can read in it')); continue; } for (const d of b.docs) { put(d); store.cur = d.id; n++; } continue; }
+        const r = N.importText(f.name, t); const d = blank(r); n++; } $('file').value = ''; keep(); show(cur()); say(n + ' ' + W.imported); });
     $('shareBtn').addEventListener('click', async () => {
       flush(); const url = N.shareLink(cur(), location.origin);
       try { await navigator.clipboard.writeText(url); say(W.copied); } catch (_) { say(url); try { history.replaceState(null, '', url); } catch (_2) {} }

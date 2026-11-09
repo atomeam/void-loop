@@ -272,7 +272,8 @@ export function promosOf(tower, max = 3) {
   }
   wins.sort((a, b) => b.at - a.at || b.x - a.x);
   return wins.slice(0, max).map((w) => {
-    const text = 'Free, no signup: Verse\'s ' + topicOf(w.f, w.page) + ' loads in ' + w.verse + ' ms, ' + w.x + 'x faster than ' + (rivalOf(w.f) || 'the best site we measured') + ' (phone width, median of 3). https://a-to-mind.com' + w.page;
+    // plain, no rival named and no "x faster than" (house rule: Verse never brags); the measure (w.x, w.best) stays on the row
+    const text = 'Free, no signup: a ' + topicOf(w.f, w.page) + ' that loads in ' + w.verse + ' ms at phone width (median of 3). Try it: https://a-to-mind.com' + w.page;
     return { page: w.page, floor: w.f, text, intent: 'https://x.com/intent/post?text=' + encodeURIComponent(text) };
   });
 }
