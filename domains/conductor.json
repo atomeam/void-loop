@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T02:35:29.678Z",
+ "updated": "2026-11-09T02:44:51.393Z",
  "last24h": {
-  "ticks": 153,
+  "ticks": 154,
   "started": 65,
   "requeued": 8,
   "setAside": 0,
   "probes": 2,
-  "errors": 107
+  "errors": 108
  },
  "broken": [],
  "held": [
@@ -2087,6 +2087,11 @@
    "sweep": true,
    "blueprints": 0,
    "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:44:51.393Z",
+   "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
  ]
