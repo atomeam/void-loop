@@ -62,32 +62,32 @@
   ],
   "champion": {
     "weights": {
-      "centre": 5.9,
-      "three": 5.7,
-      "two": 1.8,
-      "theirThree": 7.3,
-      "theirTwo": 2.2
+      "centre": 3.7,
+      "three": 7.1,
+      "two": 1.9,
+      "theirThree": 5.8,
+      "theirTwo": 1.1
     },
-    "vsCard": 0.375,
-    "since": "2026-11-07",
-    "last": "2026-11-08",
-    "days": 29,
+    "vsCard": 0.425,
+    "since": "2026-11-09",
+    "last": "2026-11-09",
+    "days": 30,
     "tried": [
       {
-        "score": 0.45,
+        "score": 0.3875,
         "kept": false
       },
       {
-        "score": 0.5375,
-        "kept": false
+        "score": 0.65,
+        "kept": true
       },
       {
-        "score": 0.4375,
+        "score": 0.5125,
         "kept": false
       }
     ]
   },
-  "played": "2026-11-08",
+  "played": "2026-11-09",
   "history": [
     {
       "date": "2026-10-11",
@@ -233,6 +233,11 @@
       "date": "2026-11-08",
       "rating": 1609,
       "vsCard": 0.375
+    },
+    {
+      "date": "2026-11-09",
+      "rating": 1609,
+      "vsCard": 0.425
     }
   ]
 }
