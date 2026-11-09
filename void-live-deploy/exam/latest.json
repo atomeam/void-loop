@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T02:39:53.228Z",
+  "at": "2026-11-09T03:04:45.775Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -380,7 +380,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -394,10 +394,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -505,10 +504,135 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 63.9,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "nba scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "nfl scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "nhl scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "bundesliga table",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "la liga scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "lakers score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "celtics score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "how did the chiefs do",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "packers score",
+          "failed": [
+            "answered",
+            "fast",
+            "board"
+          ],
+          "score": 50
+        },
         {
           "ask": "scores",
           "failed": [
@@ -587,13 +711,40 @@
       "fails": []
     },
     "prices": {
-      "score": 100,
+      "score": 73.3,
       "of": 6,
       "measured": 6,
-      "fails": []
+      "fails": [
+        {
+          "ask": "bitcoin price",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "how much is ethereum",
+          "failed": [
+            "skill",
+            "rival"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "precio del bitcoin",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "rival"
+          ],
+          "score": 20
+        }
+      ]
     },
     "definitions": {
-      "score": 90,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -607,18 +758,26 @@
         {
           "ask": "define zorbleflux",
           "failed": [
-            "skill",
-            "rival"
+            "fast"
           ],
-          "score": 60
+          "score": 80
         }
       ]
     },
     "wordproblems": {
-      "score": 100,
+      "score": 93.3,
       "of": 6,
       "measured": 6,
-      "fails": []
+      "fails": [
+        {
+          "ask": "what is 15 percent of 80",
+          "failed": [
+            "answered",
+            "fast"
+          ],
+          "score": 60
+        }
+      ]
     },
     "code": {
       "score": 100,
