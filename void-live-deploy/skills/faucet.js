@@ -1,0 +1,16 @@
+/** faucet: "credits", "claim credits", "faucet". Balance, next claim and the ledger feed. Glass card. */
+const WHEN = /^(?:credits|claim credits|faucet)$/i;
+const tok = () => { try { return (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } };
+const pow = async (ch, bits) => { const enc = new TextEncoder(); for (let n = 0; ; n++) { const h = new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(ch + ':' + n))); let z = 0; for (const x of h) { if (x === 0) { z += 8; continue; } z += Math.clz32(x) - 24; break; } if (z >= bits) return String(n); } };
+function run(_text, api) {
+  api.showPage((el) => {
+    el.innerHTML = '<div style="background:rgba(18,17,28,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:14px"><h2>Credits</h2><p>Internal credits from the ledger. Not money.</p><p id="cr-bal">Reading the ledger…</p><p id="cr-say" role="status"></p><p><button type="button" id="cr-go" style="min-height:44px">Claim daily credit</button> <a href="/prizes/#h-credits" style="display:inline-flex;align-items:center;min-height:44px">Prize page</a></p><ul id="cr-feed"></ul></div>';
+    const bal = el.querySelector('#cr-bal'), feed = el.querySelector('#cr-feed'), say = el.querySelector('#cr-say');
+    const paint = (j, me) => { bal.textContent = me && me.ok ? 'Balance ' + me.balance + '. Next daily claim: ' + (me.nextDaily || 'now') + '.' : (j && j.ok ? 'Claims recorded: ' + j.claims + '. Sign in to see your balance.' : 'The ledger could not be read.'); feed.replaceChildren(); for (const row of (j && j.feed) || []) { const li = document.createElement('li'); li.textContent = row.name + ' · ' + row.kind + ' · ' + row.amount; feed.append(li); } if (!j || !(j.feed || []).length) { const li = document.createElement('li'); li.textContent = 'No claims yet.'; feed.append(li); } };
+    const load = async () => { const j = await fetch('/api/credits/latest', { cache: 'no-store' }).then((r) => r.json()).catch(() => null); const t = tok(); const me = t ? await fetch('/api/credits/claim', { headers: { authorization: 'Bearer ' + t }, cache: 'no-store' }).then((r) => r.json()).catch(() => null) : null; paint(j, me); return j; };
+    el.querySelector('#cr-go').addEventListener('click', async () => { const t = tok(); if (!t) { say.textContent = 'Sign in on the stage first.'; return; } const j = await load(); if (!j || !j.challenge) { say.textContent = j && j.turnstile ? 'Finish the check on the prize page.' : 'The ledger could not be read.'; return; } say.textContent = 'Checking…'; const r = await fetch('/api/credits/claim', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + t }, body: JSON.stringify({ kind: 'daily', challenge: j.challenge, work: await pow(j.challenge, j.bits || 12) }) }); const out = await r.json().catch(() => ({})); say.textContent = out.error || (out.ok ? 'Recorded. Balance ' + out.balance + '.' : 'Refused.'); await load(); });
+    load();
+  });
+  return 'faucet';
+}
+export default { name: 'faucet', examples: ['credits', 'claim credits', 'faucet'], nearMisses: ['gpa with A 4 credits', 'prize wheel odds', 'crypto faucet', 'wheel of gold'], match(lower) { return WHEN.test(String(lower || '').trim()); }, run };
