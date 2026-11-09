@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T16:24:42.478Z",
+ "updated": "2026-11-09T16:34:05.251Z",
  "last24h": {
   "ticks": 153,
-  "started": 91,
+  "started": 90,
   "requeued": 5,
   "setAside": 2,
   "probes": 10,
@@ -112,7 +112,6 @@
   "mvu167w7": 1794208626432,
   "mveb8rsi": 1794207506673,
   "mveb8svc": 1794186086054,
-  "mw7rlntt": 1794155095898,
   "mw8203uw": 1794156221120,
   "mw8204i3": 1794167505287,
   "mw82055s": 1794168070272,
@@ -156,10 +155,11 @@
   "mw9emynl": 1794237965154,
   "mw9emzn0": 1794238529595,
   "mw9en0lw": 1794239093875,
-  "mw9en1tx": 1794239673382
+  "mw9en1tx": 1794239673382,
+  "mw9h3p7c": 1794242045251
  },
- "sweptAt": 1794237965154,
- "blueprintsAt": 1794237965154,
+ "sweptAt": 1794242045251,
+ "blueprintsAt": 1794242045251,
  "visitorAt": "2026-11-09T15:57:10Z",
  "visitorFiled": [
   "review:2109",
@@ -244,40 +244,6 @@
   "review:2590"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T16:24:55.898Z",
-   "open": 265,
-   "started": [
-    {
-     "id": "mvw5r36z",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 102
-    },
-    {
-     "id": "mw7rlntt",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 15,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T16:34:17.206Z",
    "open": 264,
@@ -2920,6 +2886,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 270,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T16:34:05.251Z",
+   "open": 283,
+   "started": [
+    {
+     "id": "mw9h3p7c",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 269,
    "warnings": 1
   }
  ]
