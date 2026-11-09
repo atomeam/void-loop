@@ -70,14 +70,13 @@ function put(els, area, fixed) {
     el.dataset.tidy = '1'; el.classList.add(fixed ? 'placed' : 'card-glide'); el.style.boxSizing = 'border-box';
     if (!media(el)) el.style.transform = 'none';
     el.style.translate = ''; el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.width = m.w + 'px'; el.style.maxHeight = m.h + 'px';
-    const th = el.dataset.id && bag[el.dataset.id];
-    if (th && !th.pinned) { th.x = x; th.y = y; }
+    // the picture moves; the saved place (th.x) stays, so a key nudge is not measured from a spot the crowd drew
   }
 }
 function later() { for (const ms of [80, 500, 1100]) setTimeout(() => requestAnimationFrame(layout), ms); }
 function onDown(e) {
   const el = e.target && e.target.closest && e.target.closest('.vpage');
-  if (!el || e.button > 0 || e.target.closest('input, textarea, select, a, button, [contenteditable="true"]')) return;
+  if (!el || e.button > 0 || e.target.closest('input, textarea, select, a, button, canvas, svg, .vdraw, [contenteditable="true"]')) return; // a stroke on the draw card is not a flick
   const sx = e.clientX, sy = e.clientY;
   let lastX = sx, lastY = sy, lastT = performance.now(), vx = 0, vy = 0, moved = false, origin = null;
   const move = (ev) => {

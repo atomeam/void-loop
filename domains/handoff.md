@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · box/redo-2318 · suite-on-main: kept cards were the first .vpage, so sky chips, review and draw read the old card; the newest answer is first, a closing card leaves at once, and the crowd layout does not rewrite a card's saved place · 2026-11-09 17:40 UTC
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
