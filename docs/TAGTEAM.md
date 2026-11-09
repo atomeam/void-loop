@@ -79,3 +79,5 @@ Open work:
 - 2026-11-09T01:51Z verse-loop (verse): groom docs/NEXT.md; all checks green; branch loop/20261109-015137
 
 - 2026-11-09T11:36Z grok-bot (lists run 14): took over #2561 (opened as "run 15" at 4:02 AM ET, merge gate red) and relabelled it run 14; fixed main's red checks since 2026-11-07 in it: /journal/ gets <meta name="verse-handoff" content="in: text; out: url"> (handoff-scan, HANDOFF-GAPS.md regenerated) and the two /.well-known/ JSON header rules share one (_headers was 101 of Cloudflare's 100 with the CSP rules). A new page needs its handoff tag, and every new _headers rule costs one of 100. #2560 (root wrangler.toml) still open; its suite-on-main red was the batch run on red main.
+
+- 2026-11-09T13:10Z verse-loop (verse): task, Queue job mvwl3biu (versus: hexen.ai): Versus: hexen.ai (Hex; all checks green; branch loop/20261109-131044
