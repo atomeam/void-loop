@@ -865,7 +865,7 @@
      "link": "https://github.com/atomeam/void-loop/issues/2522"
     },
     {
-     "what": "main's stale generated cards: skills/first.json, the SEO pages and the parity docs",
+     "what": "main's red checks: stale skills/first.json, SEO pages and parity docs regenerated; seo-audit (9 orphans over 8: a page Verse built twice for two sites was left off /tools/, now linked as 'page 2', 7 orphans) and doc-drift (docs/MAP.md named a parity file that is not generated)",
      "list": "site tester / green foundation",
      "status": "built"
     }
