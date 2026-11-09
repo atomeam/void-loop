@@ -7,13 +7,17 @@
  */
 export function isProposalPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:proposal|client\s+proposal|sow|statement\s+of\s+work)\s+(?:pack|package|for)\b/i.test(t)
-    || /^(?:make|generate|create|write)\s+(?:a\s+)?(?:client\s+)?proposal\b/i.test(t)
-    || /^(?:proposal\s+pack|pack\s+a\s+proposal)\b/i.test(t);
+  if (/^(?:proposal|client\s+proposal|sow|statement\s+of\s+work)\s+(?:pack|package|for)\b/i.test(t)) return true;
+  if (/^(?:proposal\s+pack|pack\s+a\s+proposal)\b/i.test(t)) return true;
+  // "make a client proposal …" is this pack. A pasted customer request ("make a proposal from this",
+  // "write a proposal for this request") stays with the proposal skill, which is asked after this one.
+  if (/^(?:make|generate|create|write)\s+(?:a\s+)?client\s+proposal\b/i.test(t)) return true;
+  const named = /^(?:make|generate|create|write)\s+(?:a\s+)?proposal\s+for\s+(?!this\b|that\b|it\b|the\s+(?:following|request|email|message)\b)(\S(?:.*\S)?)$/i.exec(t);
+  return !!(named && named[1].length >= 3);
 }
 
 export function subjectOf(text) {
-  const m = String(text || '').match(/\b(?:for|of|about|:)\s+(?:the\s+|my\s+|a\s+)?(.+)/i);
+  const m = String(text || '').match(/\b(?:for|of|about|:)\s+(.+)/i);
   const s = m ? m[1].trim() : '';
   return s.length >= 3 ? s.slice(0, 160) : 'the idea';
 }
@@ -63,6 +67,8 @@ export default {
     'what is a proposal',
     'client handoff for the automation',
     'clarify this business idea',
+    'make a proposal from this',
+    'write a proposal for this request',
   ],
   match(lower, text) { return isProposalPack(text || lower); },
   run,
