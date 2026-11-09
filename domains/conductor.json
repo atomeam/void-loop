@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T23:46:11.017Z",
+ "updated": "2026-11-09T23:55:34.649Z",
  "last24h": {
   "ticks": 148,
-  "started": 87,
+  "started": 88,
   "requeued": 3,
   "setAside": 2,
   "probes": 14,
-  "errors": 45
+  "errors": 44
  },
  "broken": [],
  "held": [
@@ -170,7 +170,8 @@
   "mw9thyv5": 1794264553719,
   "mw9vvff9": 1794266841715,
   "mw9vvg2p": 1794267408112,
-  "mw9vvgpo": 1794267971017
+  "mw9vvgpo": 1794267971017,
+  "mw9vvhf3": 1794268534649
  },
  "sweptAt": 1794266276278,
  "blueprintsAt": 1794266276278,
@@ -258,11 +259,6 @@
   "heal:helper-credits-faucet-e39c"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T23:55:31.404Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T00:04:55.933Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3220,6 +3216,34 @@
    "started": [
     {
      "id": "mw9vvgpo",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 290,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T23:55:34.649Z",
+   "open": 295,
+   "started": [
+    {
+     "id": "mw9vvhf3",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
