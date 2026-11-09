@@ -1,0 +1,17 @@
+{
+ "at": "2026-11-09T21:16:48.264Z",
+ "sha": "0a823c576cf8ddaddaf9043dd2f42a9395832857",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42697854936",
+ "suite": "browser suite on main",
+ "checks": [
+  "family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Verse)",
+  "poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text"
+ ],
+ "touched": [
+  "tools/test_void.mjs",
+  "void-live-deploy/index.html",
+  "void-live-deploy/lib/card-stage.js",
+  "void-live-deploy/void.html",
+  "void.html"
+ ]
+}
