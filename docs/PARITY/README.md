@@ -5,7 +5,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | Score | Verse page | Feature | Status | Original sites that have it |
 | --- | --- | --- | --- | --- |
 | 18 | /calendar/ | An account that keeps your things on every device | partial | calendar.online, teamup.com, timetreeapp.com, cozi.com, proton.me, calendar.yahoo.com, Google Calendar, any.do |
-| 17 | /calendar/ | Booking pages for appointments | missing | calendar.online, teamup.com, proton.me, calendar.zoho.com, outlook.live.com, Google Calendar, any.do |
 | 17 | /markets/ | Earnings and economic calendars | missing | barchart.com, investing.com, tradingview.com, marketwatch.com, google.com, stockanalysis.com, Yahoo Finance |
 | 17 | /notes/ | Edit together in real time | missing | anotepad.com, simplenote.com, docs.zoho.com, onenote.com, evernote.com, notion.so, Google Docs |
 | 17 | /calendar/ | Events added from your email | missing | calendar.online, teamup.com, cozi.com, proton.me, outlook.live.com, Google Calendar, any.do |
@@ -17,16 +16,25 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 15 | /notes/ | An account that keeps your things on every device | partial | anotepad.com, simplenote.com, evernote.com, notion.so, Google Docs |
 | 15 | /news/ | Live pages for breaking stories | missing | rnz.co.nz, channelnewsasia.com, france24.com, dw.com, euronews.com, aljazeera.com, theguardian.com, BBC News and 2 more |
 | 14 | /notes/ | Writing help (summarise, rewrite) | missing | anotepad.com, evernote.com, notion.so, Google Docs |
+| 13 | /calendar/ | A colour on a single event | missing | teamup.com, outlook.live.com, Google Calendar |
+| 13 | /calendar/ | A default event length and reminder | missing | calendar.zoho.com, outlook.live.com, Google Calendar |
+| 13 | /calendar/ | Hide weekends in the week and month views | missing | calendar.zoho.com, outlook.live.com, Google Calendar |
+| 13 | /calendar/ | Working hours that others see | missing | calendar.zoho.com, outlook.live.com, Google Calendar |
 | 12 | /news/ | Fact checks and explainers | missing | france24.com, euronews.com, aljazeera.com, theguardian.com, BBC News, npr.org, apnews.com |
+| 12 | /calendar/ | Focus time blocks | missing | outlook.live.com, Google Calendar |
+| 12 | /calendar/ | Out of office that declines invites | missing | outlook.live.com, Google Calendar |
 | 12 | /news/ | Reader comments | missing | rnz.co.nz, channelnewsasia.com, france24.com, euronews.com, theguardian.com, BBC News, npr.org |
 | 11 | /scores/ | Goal and score alerts | missing | 365scores.com, fotmob.com, livescore.com, onefootball.com, flashscore.com, ESPN |
 | 10 | /podcasts/ | Hosts, guests and credits | missing | podchaser.com, podbean.com, Apple Podcasts, podcastindex.org, listennotes.com |
 | 9 | /notes/ | A public API | missing | anotepad.com, simplenote.com, evernote.com, notion.so |
 | 9 | /markets/ | Discussion and ideas from other investors | missing | investing.com, tradingview.com, stockanalysis.com, Yahoo Finance |
 | 9 | /markets/ | Price alerts | missing | investing.com, tradingview.com, stockanalysis.com, Yahoo Finance |
-| 9 | /translate/ | Rewrite or improve your own writing | missing | translator.eu, linguee.com, reverso.net, deepl.com |
 | 9 | /calendar/ | Shopping and to-do lists | missing | calendar.online, cozi.com, Google Calendar, any.do |
 | 8 | /markets/ | An account that keeps your things on every device | partial | marketwatch.com, google.com, stockanalysis.com |
+| 7 | /translate/ | A spelling suggestion for what was typed (did you mean) | missing | translate.yandex.com, Google Translate |
+| 7 | /notes/ | Nested checklists | missing | simplenote.com, notion.so |
+| 7 | /translate/ | Translate offline with downloaded languages | missing | itranslate.com, Google Translate |
+| 7 | /translate/ | Type in Latin letters and get the other script | missing | translate.yandex.com, Google Translate |
 | 7 | /scores/ | Watch games live | missing | cbssports.com, ESPN |
 | 6 | /flights/ | A price calendar and graph | missing | Google Flights |
 | 6 | /kanban/ | A public API | missing | Trello |
@@ -52,10 +60,15 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
 | 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, barchart.com, investing.com, tradingview.com, stockanalysis.com |
 | 4 | /books/ | An account that keeps your things on every device | missing | squibler.io, inkfluenceai.com, sudowrite.com, novelcrafter.com |
+| 3 | /notes/ | A passcode lock on the notes | missing | standardnotes.com, simplenote.com, evernote.com |
 | 3 | /scores/ | An account that keeps your things on every device | partial | cbssports.com, onefootball.com, besoccer.com |
 | 3 | /books/ | Share a link to what you made or found | missing | squibler.io, inkfluenceai.com, novelcrafter.com |
+| 2 | /notes/ | A drawing in a note | missing | onenote.com, evernote.com |
+| 2 | /notes/ | A Markdown source view and preview | missing | standardnotes.com, simplenote.com |
+| 2 | /notes/ | A reminder on a note at a time or place | missing | onenote.com, evernote.com |
 | 2 | /generators/ | Dark mode | missing | behindthename.com, rangen.co.uk |
 | 2 | /notes/ | End-to-end encryption | missing | standardnotes.com, notepad.pw |
+| 2 | /translate/ | Verb conjugation tables | missing | linguee.com, reverso.net |
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |
 | 1 | /flights/trip/ | A price calendar and graph | missing | tripwaffle.com |
 | 1 | /flights/time/ | A price calendar and graph | missing | clock7.com |
@@ -111,16 +124,3 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
-| 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
-| 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
-| 1 | /weather/ | Climate records | missing | weather.gov |
-| 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
-| 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
-| 1 | /convert/unit-converter-2/ | Currency | missing | convertunits.com |
-| 1 | /convert/ | Currency | missing | unitconverters.net |
-| 1 | /pdf/suite/ | Dark mode | missing | tools.pdf24.org |
-| 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
-| 1 | /bpm/ | Dark mode | missing | anotherproducer.com |
-| 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
-| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |
-| 1 | /calendar/ | Dark mode | missing | calendar.online |
