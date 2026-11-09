@@ -600,6 +600,34 @@
  },
  "commits": [
   {
+   "at": "2026-11-09T15:14:08Z",
+   "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner, main's…"
+  },
+  {
+   "at": "2026-11-09T15:10:50Z",
+   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-09T14:58:37Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"help me launc"
+  },
+  {
+   "at": "2026-11-09T14:56:36Z",
+   "subject": "Image and video: a real edit in the image live check, Fill in my words, video via the AI Gateway (redo of #2355 off main) (#2566)"
+  },
+  {
+   "at": "2026-11-09T14:56:31Z",
+   "subject": "Suite gate: verse-bot's data-only commits are records too, so they don't stale a green run (#2571)"
+  },
+  {
+   "at": "2026-11-09T14:49:01Z",
+   "subject": "Outcome exam: sports 88.9"
+  },
+  {
+   "at": "2026-11-09T14:47:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-09T14:47:28Z",
    "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner, main's…"
   },
@@ -650,34 +678,6 @@
   {
    "at": "2026-11-09T14:12:03Z",
    "subject": "Main green: /api/feed limit, stage offer from the live store, fix ask kept after a paste (#2563)"
-  },
-  {
-   "at": "2026-11-09T14:02:33Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"picture of a"
-  },
-  {
-   "at": "2026-11-09T14:00:09Z",
-   "subject": "Failed jobs read: run 42627602594 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-09T13:59:46Z",
-   "subject": "Incident: the browser suite failed on 99093cb5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-09T13:56:10Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
-  },
-  {
-   "at": "2026-11-09T13:51:37Z",
-   "subject": "Free pictures probe: what each source answered"
-  },
-  {
-   "at": "2026-11-09T13:49:00Z",
-   "subject": "Outcome exam: podcasts 73.6"
-  },
-  {
-   "at": "2026-11-09T13:48:25Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 18,
-  "week": 284
+  "day": 20,
+  "week": 286
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
