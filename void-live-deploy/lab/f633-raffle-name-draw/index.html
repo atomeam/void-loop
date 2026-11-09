@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8ea; --accent:#7aa2ff; --card:#1a1d24; --border:#2a2e38; --good:#4ade80; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1.2rem 1rem; border-bottom:1px solid var(--border); }
+h1 { margin:0; font-size:1.4rem; }
+.sub { color:#999; font-size:0.9rem; margin-top:0.3rem; }
+main { max-width:720px; margin:0 auto; padding:1rem; display:grid; gap:1rem; }
+label { display:block; font-weight:600; margin-bottom:0.3rem; }
+textarea, input[type=number], input[type=text] { width:100%; background:var(--card); color:var(--fg); border:1px solid var(--border); border-radius:8px; padding:0.6rem; font:inherit; }
+textarea { min-height:140px; resize:vertical; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; }
+button { background:var(--accent); color:#000; border:0; border-radius:8px; padding:0.7rem 1rem; font-weight:600; cursor:pointer; }
+button.secondary { background:#333; color:var(--fg); }
+button:disabled { opacity:0.5; cursor:not-allowed; }
+.actions { display:flex; flex-wrap:wrap; gap:0.5rem; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+.winners { font-size:1.1rem; }
+.winner { background:#222; border-left:3px solid var(--good); padding:0.4rem 0.6rem; margin:0.3rem 0; border-radius:4px; }
+.seed { font-family:ui-monospace,monospace; background:#111; padding:0.4rem 0.6rem; border-radius:6px; word-break:break-all; }
+.remaining { font-size:0.85rem; color:#aaa; max-height:120px; overflow:auto; }
+.note { font-size:0.8rem; color:#888; }
+@media (max-width:600px) { .row { grid-template-columns:1fr; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Raffle and name draw · Verse lab</title>
+<meta name="description" content="A fair, checkable name draw and raffle tool for parties, classrooms, or giveaways. Paste the names, set the number of prizes, and draw.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Raffle and name draw · Verse lab">
+<meta property="og:description" content="A fair, checkable name draw and raffle tool for parties, classrooms, or giveaways. Paste the names, set the number of prizes, and draw.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f633-raffle-name-draw/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f633-raffle-name-draw/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Raffle and name draw</h1>
+  <div class="sub">Paste names, draw winners without repeats, keep the seed so anyone can check the result.</div>
+</header>
+<main>
+  <div>
+    <label for="names">Names (one per line)</label>
+    <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;..."></textarea>
+  </div>
+  <div class="row">
+    <div>
+      <label for="count">How many winners?</label>
+      <input type="number" id="count" min="1" value="1">
+    </div>
+    <div>
+      <label for="seed">Seed (leave blank for random)</label>
+      <input type="text" id="seed" placeholder="auto">
+    </div>
+  </div>
+  <div class="actions">
+    <button id="draw">Draw winners</button>
+    <button id="reset" class="secondary">Reset pool</button>
+    <button id="copy" class="secondary" disabled>Copy results</button>
+    <button id="csv" class="secondary" disabled>Download CSV</button>
+  </div>
+  <div class="card" id="result" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+      <strong>Winners</strong>
+      <span class="note" id="when"></span>
+    </div>
+    <div class="winners" id="winners"></div>
+    <div style="margin-top:0.8rem;">
+      <div class="note">Seed (re-enter this exact seed with the same names to get the same order)</div>
+      <div class="seed" id="showSeed"></div>
+    </div>
+    <div style="margin-top:0.8rem;">
+      <div class="note">Remaining in pool</div>
+      <div class="remaining" id="remaining"></div>
+    </div>
+  </div>
+  <p class="note">Everything stays on this device. Same seed + same names always produces the same draw order. No network, no account.</p>
+</main>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

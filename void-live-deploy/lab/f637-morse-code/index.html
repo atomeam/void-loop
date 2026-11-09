@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --dim:#888; --card:#1a1d24; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+main { max-width: 640px; margin: 0 auto; padding: 1rem 1rem 3rem; }
+h1 { font-size:1.6rem; margin:0.5rem 0 0.2rem; }
+p.job { color:var(--dim); margin:0 0 1.2rem; }
+label { display:block; font-weight:600; margin:1rem 0 0.3rem; }
+textarea, input[type=range] { width:100%; background:var(--card); color:var(--fg); border:1px solid #333; border-radius:8px; padding:0.6rem; font: inherit; }
+textarea { min-height:6rem; resize:vertical; }
+.row { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.6rem 0; }
+button { background:#222; color:var(--fg); border:1px solid #444; border-radius:8px; padding:0.55rem 0.9rem; font:inherit; cursor:pointer; }
+button.primary { background:var(--acc); color:#000; border:none; font-weight:600; }
+button:disabled { opacity:0.5; }
+.out { background:var(--card); border-radius:8px; padding:0.8rem; min-height:4rem; white-space:pre-wrap; word-break:break-all; font-family: ui-monospace, monospace; }
+.light { width:80px; height:80px; border-radius:50%; background:#222; margin:1rem auto; border:3px solid #333; transition:background 0.05s; }
+.light.on { background:var(--acc); box-shadow:0 0 30px var(--acc); }
+.note { font-size:0.85rem; color:var(--dim); margin-top:1.5rem; }
+.speed { display:flex; align-items:center; gap:0.6rem; }
+#speedval { min-width:3rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Morse code translator · Verse lab</title>
+<meta name="description" content="A single offline page that turns plain text into International Morse code and back.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Morse code translator · Verse lab">
+<meta property="og:description" content="A single offline page that turns plain text into International Morse code and back.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f637-morse-code/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f637-morse-code/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+<h1>Morse code translator</h1>
+<p class="job">Type text to get Morse you can hear and see blink. Or type dots and dashes to get the text back. Nothing leaves your device.</p>
+
+<label for="text">Text</label>
+<textarea id="text" placeholder="Type or paste a message…"></textarea>
+<div class="row">
+<button class="primary" id="toMorse">To Morse</button>
+<button id="copyText">Copy text</button>
+<button id="share">Copy share link</button>
+</div>
+
+<label for="morse">Morse</label>
+<div class="out" id="morseOut" aria-live="polite">—</div>
+<div class="row">
+<button class="primary" id="play">Play</button>
+<button id="toText">To text</button>
+<button id="copyMorse">Copy Morse</button>
+</div>
+
+<div class="light" id="light" aria-hidden="true"></div>
+
+<label>Speed <span id="speedval">15</span> WPM</label>
+<div class="speed">
+<input type="range" id="speed" min="5" max="30" value="15">
+</div>
+
+<p class="note">Standard International Morse. Timing follows the usual dit/dah ratios. Phone speakers and screens vary. Last message is kept on this device.</p>
+</main>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
