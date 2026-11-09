@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T06:39:41.857Z",
+ "updated": "2026-11-09T06:49:05.891Z",
  "last24h": {
   "ticks": 154,
-  "started": 70,
+  "started": 72,
   "requeued": 6,
   "setAside": 1,
-  "probes": 2,
-  "errors": 110
+  "probes": 3,
+  "errors": 109
  },
  "broken": [],
  "held": [
@@ -35,11 +35,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 18,
+   "used": 48,
    "cap": 90
   },
   "day": {
-   "used": 78,
+   "used": 108,
    "cap": 360
   },
   "room": true,
@@ -68,7 +68,8 @@
   "mvfu4evy": 1794188905640,
   "mvpuq9g6": 1794191729678,
   "mvpuqaee": 1794205814254,
-  "mvpuqb4r": 1794206381857
+  "mvpuqb4r": 1794206381857,
+  "mvvjzso8": 1794206945891
  },
  "sweptAt": 1794205814254,
  "blueprintsAt": 1794205814254,
@@ -156,11 +157,6 @@
   "review:2546"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T06:43:01.466Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T06:52:25.386Z",
    "open": 263,
@@ -2082,6 +2078,40 @@
    "setAside": 0,
    "healed": [],
    "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T06:49:05.891Z",
+   "open": 269,
+   "started": [
+    {
+     "id": "mvwl3b1c",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mvvjzso8",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 79
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
    "grow": false,
    "design": false,
    "will": false,
