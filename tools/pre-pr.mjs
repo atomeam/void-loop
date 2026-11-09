@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { generatedTouched, BUILD_OUTPUTS } from './generated.mjs';
 import { APPEND_JSON, APPEND_TEXT } from './records.mjs';
 import { COMMON } from './collide.mjs';
+import { addedCheckLines } from './checks-list.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
@@ -20,7 +21,7 @@ const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxB
 /** the most changed lines one pull request may carry (owner, 2026-11-04: "only open easily clearable ones"). */
 export const MAX_LINES = 400;
 // written by a run, one small file each, or appended by every bot: never what makes a PR hard to review or land
-const NOT_COUNTED = [/^growth\/entries\//, /^void-live-deploy\/incidents\/entries\//, /^void-live-deploy\/tower-evidence\//, /^void-live-deploy\/skills\/order\//, /(^|\/)package-lock\.json$/];
+const NOT_COUNTED = [/^growth\/entries\//, /^void-live-deploy\/incidents\/entries\//, /^void-live-deploy\/tower-evidence\//, /^void-live-deploy\/skills\/order\//, /^tools\/checks\.d\//, /^docs\/map\.d\//, /(^|\/)package-lock\.json$/];
 /** files every PR may share with another open PR: the shared ledgers and the records tools/merge-main.mjs merges by keeping both sides. */
 export const SHARED_OK = [...new Set([...COMMON, ...APPEND_JSON, ...APPEND_TEXT, 'docs/MAP.md'])];
 
@@ -58,9 +59,11 @@ export function overlapping(files, prs, self = null, ok = SHARED_OK) {
 }
 
 /** every refusal for this branch, as lines to print; empty when it may open. Pure apart from what it is handed. */
-export function refusals({ behind, files, numstat, prs, self, max = MAX_LINES }) {
+export function refusals({ behind, files, numstat, prs, self, max = MAX_LINES, checkDiff = '' }) {
   const out = [];
   if (behind > 0) out.push('this branch is ' + behind + ' commit(s) behind main. Bring main in first (node tools/merge-main.mjs).');
+  const added = addedCheckLines(checkDiff);
+  if (added.length) out.push('rule: check-list-is-one-file\nfile: tools/checks.mjs\nfix: add tools/checks.d/<name>.chk (line 1 the name, line 2 the script). Do not add a line to the list.');
   const generated = generatedTouched(files);
   if (generated.length) out.push('these are written at deploy, from their own sources. Take them out of the commit:\n  ' + generated.join('\n  ') +
     '\nsources: skills/order/ (the index), growth/entries/ (the ledger), incidents/entries/ (one file per suite run), tower-evidence/ (one file per floor). Then node tools/refresh.mjs on the deploy, not in the pull request.');
@@ -87,12 +90,13 @@ function main() {
   if (behind === null) { console.error('pre-pr: fetch origin main first (git fetch origin main)'); process.exit(2); }
   const files = branchFiles();
   const numstat = git(['diff', '--numstat', 'origin/main...HEAD']);
+  const checkDiff = git(['diff', '-U0', 'origin/main...HEAD', '--', 'tools/checks.mjs']);
   if (!files || numstat.status !== 0) { console.error('pre-pr: could not read the diff against origin/main'); process.exit(2); }
   const prs = process.env.PRE_PR_OFFLINE === '1' ? null : openPrs();
   const branch = String(git(['rev-parse', '--abbrev-ref', 'HEAD']).stdout || '').trim();
   const head = process.env.PRE_PR_BRANCH || branch;
   const self = args.includes('--pr') ? Number(args[args.indexOf('--pr') + 1]) : (prs || []).find((p) => p.head === head)?.number ?? null;
-  const out = refusals({ behind, files, numstat: numstat.stdout, prs, self });
+  const out = refusals({ behind, files, numstat: numstat.stdout, prs, self, checkDiff: checkDiff.stdout || '' });
   if (out.length) { for (const o of out) console.error('pre-pr: ' + o); process.exit(1); }
   console.log('pre-pr: on top of main, ' + diffSize(numstat.stdout).lines + ' changed lines (at most ' + MAX_LINES + '), no build output, ' + (prs ? 'no file another open PR changes' : 'open PRs not checked (gh could not list them)'));
   if (args.includes('--check-only')) return;
