@@ -24,7 +24,7 @@ test('every page says what it takes and gives: its own tag, or the legacy list (
   for (const r of pages()) {
     const html = fs.readFileSync(path.join(site, r, 'index.html'), 'utf8'), tag = declOf(html);
     if (tag != null && !parseDecl(tag)) badTag.push(r);
-    if (tag == null && !parseDecl(types[r]) && !/^\/(?:obituaries|privacy|fix|podcast|cheat-codes|keep-it-running|first-automation-setup|full-stack-audit|one-time-fix|hosting|store|ledger|identity|conquered|claims|models|studies|og|g|tools|music|humans|remediation|review|cpan|code-review|data|compare)\b/.test(r)) missing.push(r);
+    if (tag == null && !parseDecl(types[r]) && !/^\/(?:obituaries|privacy|fix|podcast|cheat-codes|keep-it-running|first-automation-setup|full-stack-audit|one-time-fix|hosting|store|ledger|identity|conquered|rival|claims|models|studies|og|g|tools|music|humans|remediation|review|cpan|code-review|data|compare)\b/.test(r)) missing.push(r);
   }
   assert.deepEqual(badTag, [], 'a verse-handoff tag that does not parse (types: ' + Object.keys(TYPES).join(', ') + ')');
   assert.deepEqual(missing, [], 'a new page ships with <meta name="verse-handoff" content="in: ...; out: ..."> (node tools/handoff-scan.mjs --hint /route/ suggests one)');

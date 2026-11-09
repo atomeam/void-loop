@@ -127,6 +127,15 @@ test('rule 8: every floor has its rival page, kept current by the deploy and the
   for (const wf of ['deploy.yml', 'tower-gate.yml']) assert.match(fs.readFileSync(path.join(ROOT, '.github', 'workflows', wf), 'utf8'), /node tools\/rival-pages\.mjs/, wf + ' regenerates the rival pages');
 });
 
+test('rule 8: a rival page shows only cited facts, escapes what it reads, and names the rival in plain text', async () => {
+  const { rivalPageHtml, historyRows, rivalTitle } = await import('../void-live-deploy/lib/rival-page.js');
+  const h = { events: [{ k: 'Founding', t: 'Founded: unknown (no source found yet)', u: 1 }, { k: 'Launch', t: 'Launched in 2009', s: 'https://en.wikipedia.org/wiki/X' }, { k: 'Bad', t: 'no link', s: 'javascript:alert(1)' }] };
+  assert.deepEqual(historyRows(h).map((x) => x.text), ['Launched in 2009', 'no link']); assert.equal(historyRows(h)[1].source, '', 'only an https source is linked');
+  const html = rivalPageHtml({ site: '<b>x</b>', features: [{ feature: '<img src=x>', area: 'a', status: 'missing', original: 'o', verse: 'v' }], lacks: [{ feature: 'f', status: 'missing' }], match: {} }, h, esc);
+  assert.doesNotMatch(html, /<img|<b>x/); assert.doesNotMatch(html, /unknown \(no source/); assert.match(html, /Launched in 2009/);
+  assert.equal(rivalTitle({ site: 'flightconnections.com' }), 'flightconnections.com');
+});
+
 test('rule 9: a combined Verse page carries the union of its rivals\' features and is assimilated only when all its rivals are', () => {
   const idx = rd('rivals/index.json');
   for (const [page, g] of Object.entries(idx.pages)) {

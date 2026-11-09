@@ -15,29 +15,14 @@
   td.s[data-s=have]{color:#8fe3a8}td.s[data-s=missing]{color:#ff8f8f}td.s[data-s=partial],td.s[data-s=unreviewed]{color:#ffd27a}.ev{color:#8e94a8;font-size:12px;overflow-wrap:anywhere}
   ul{padding-left:20px}#pick a{display:inline-flex;min-height:44px;align-items:center;margin:0 8px 8px 0}
 </style>
-
-<!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/lib/rival-page.js">
-<!-- /modulepreload -->
 </head>
 <body>
 <main>
   <p class="sub"><a href="/">Verse</a> · <a href="/conquered/">Versus</a></p>
+  <h1 id="title">Every rival on the tower</h1>
   <div id="out"><p class="sub">Reading the rival's page…</p></div>
   <p class="sub" style="font-size:12px;opacity:.7">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. Every history line cites its source; nothing is guessed.</p>
 </main>
-<script type="module">
-import { rivalPageHtml, rivalListHtml } from '/lib/rival-page.js';
-const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
-const slug = (new URLSearchParams(location.search).get('site') || '').toLowerCase().replace(/[^a-z0-9.-]/g, '');
-const out = document.getElementById('out');
-if (!slug) { const idx = await get('/rivals/index.json'); out.innerHTML = rivalListHtml(idx, esc); }
-else {
-  const [r, h] = await Promise.all([get('/rivals/' + slug + '.json'), get('/history/' + slug + '.json')]);
-  out.innerHTML = r ? rivalPageHtml(r, h, esc) : '<p>No rival named ' + esc(slug) + ' on the tower. <a href="/rival/">Every rival</a></p>';
-  if (r) document.title = r.site + ': its history, its features and what Verse still lacks';
-}
-</script>
+<script type="module" src="/rival/main.js"></script>
 </body>
 </html>

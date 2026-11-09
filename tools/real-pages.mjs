@@ -128,6 +128,12 @@ export const SPECS = {
     await t.share('#copyLink', async (p) => /6\s?000,00/.test(await p.locator('#grossValue').innerText()));
     await t.links();
   },
+  '/rival/': async (t) => { // every rival on the tower (rivals/index.json, tools/rival-pages.mjs), then one rival's own page: its history, what Verse lacks, every feature
+    await t.waitText('#out', /features across/, 10000); const n = await t.p.locator('#out a[href^="/rival/?site="]').count(); t.ok(n > 100, n + ' rivals listed');
+    await t.p.goto(new URL('/rival/?site=flightconnections.com', t.p.url()).href); const h = await t.waitText('#out', /What Verse still lacks/, 10000);
+    t.ok(/Its history/.test(h) && /Every feature, with evidence/.test(h), 'a rival page carries its history and its features');
+    t.ok(/flightconnections\.com/.test(await t.text('#title')), 'its name is the heading');
+  },
   '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
     const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
     const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
