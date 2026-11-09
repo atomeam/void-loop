@@ -1,6 +1,5 @@
 // What Notes takes from Simplenote and Google Keep, so one page carries the features of every notes app that does the same job: the six sort orders (Simplenote), tag:, is: and color:
 // in search (Simplenote's tag:), renaming and removing a tag everywhere (Simplenote), an archive (Keep), a colour per note (Keep), a copy of
-// in search (Simplenote's tag:), renaming and removing a tag everywhere (Simplenote), an archive (Keep), a colour per note (Keep), a copy of
 // a note (Keep), a backup of every note and its import, which also reads Simplenote's and Google Keep's own exports, and the line starts
 // that turn into a heading, a list, a checklist or a quote as you type (Simplenote's Markdown, Keep). The pure half; the page wires it up.
 // Tests: tools/note-organise.test.mjs (rules), tools/notes-rivals-e2e.mjs (the page in a real browser).
