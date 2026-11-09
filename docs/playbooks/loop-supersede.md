@@ -13,7 +13,7 @@ For each older loop pull request it reads `compare/main...<head>` for that pull 
 `loopCovers` in `tools/merge-policy.mjs` keeps a file when every added run of lines already sits together on main or in the newer patch, and a pure deletion is already gone from main or deleted by the newer patch. A missing patch, a compare with no `files` array, or a thrown check does not count as contained.
 
 - Contained: the bot comments `<!-- void-superseded -->` and closes the older pull request.
-- Not contained: the bot comments `<!-- void-carry -->` once, names the missing paths, and includes the missing patch (cut at 4000 characters). The pull request stays open and can still merge.
+- Not contained: the bot comments `<!-- void-carry -->` once, names the missing paths, and includes the missing patch (cut at 4000 characters). The pull request stays open and can still merge. The sweep adds the automerge label if it is missing. A pull request the owner opened on `helper/*` is eligible either way.
 
 ## How to tell it worked
 
