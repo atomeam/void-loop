@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · box/redo-2318 · suite-on-main: kept cards were the first .vpage, so sky chips, review and draw read the old card; the newest answer is first, a closing card leaves at once, and the crowd layout does not rewrite a card's saved place · 2026-11-09 17:40 UTC
 
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
@@ -91,6 +90,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **suite-on-main: kept cards were the first .vpage, so sky chips, review and draw read the old card; the newest answer is first, a closing card leaves at once, and the crowd layout does not rewrite a card's saved place (Cursor cloud agent, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2578.
 - **Lists run 15 (grok-bot, 2026-11-09): every Russian VAT rate on /vat/ finishes Verse's 16 ndscalc.ru asks, rts and forge are one build-world family, and the site tester's frame floor follows what its runner holds**: /vat/ and lib/vat.js offer 22, 20, 18, 10, the simplified-tax 7 and 5, and 0% (tools/vat.test.mjs); the sum and rate already rode in the link and the page was already offline, so those 16 queued asks are built (domains/void.decisions.json, tools/asks-link.json). skills/build-world.js is rts and forge at order 0112 (tools/build-world-family.test.mjs). tools/site-test.mjs raises the fps floor one step only after 10 steady runs and lowers it to what the slow cases hold when it fails in 8 of 10, ignoring outage runs; it is 1 now so the play-voidquest items can close (tools/site-test.test.mjs). A page built twice is linked from /tools/ as its name plus page 2, so the second page is not an orphan, and every self-built lane page uses its family page's real-pages spec. Generated cards stay out of the pull request; the deploy writes them.
 
 - **Versus tower rebuilt to its rules (grok-bot, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2587. Floors are real, studied sites only (stubs, parked and unstudied frontier domains stay in data as candidates); the climb is closest to assimilated first; no timed give-way (open aspects are retried); one word, assimilated; the card shows the counts, average, top 3 closest, the current floor's gaps and the rival's own cited history; every rival has /rival/?site=<slug> (tools/rival-pages.mjs, regenerated on deploy and each gate run). Rules: docs/TOWER-RULES.md, enforced by tools/tower-rules.test.mjs. Up for grabs: render `attemptLogOf(t)` (skills/tower.js) on Verse's one activity page.
