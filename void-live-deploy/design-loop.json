@@ -179,6 +179,16 @@
    "listed": 5,
    "defectsBefore": 8,
    "defectsAfter": 1
+  },
+  {
+   "at": "2026-11-09T08:22:18.656Z",
+   "run": 19,
+   "measured": 30,
+   "clean": 21,
+   "fixed": 5,
+   "listed": 4,
+   "defectsBefore": 13,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -7303,6 +7313,455 @@
    },
    "state": "listed",
    "why": "no rule fixes it (a layout shift of 0.644 that no rule fixes: listed for a builder)"
+  },
+  "/video/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.243,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.243 that no rule fixes: listed for a builder)"
+  },
+  "/lab/mind-map/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0
+  },
+  "/generators/chat/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.027,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/one-time/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/creed/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/markets/screener/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.014,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/markets/caps/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.029,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/dictation/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.27,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.27 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f625-regex-tester/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 4,
+    "contrast": 0,
+    "targets": 4,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.052,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.035,
+    "overflow": 0
+   },
+   "rules": 4,
+   "moved": 0.2
+  },
+  "/lab/f620-pomodoro-task-timer/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.001
+  },
+  "/trading-bots/arbitrage/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.002,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/checksum/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.088
+  },
+  "/lab/photo-palette/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/assimilated/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 60
+   },
+   "state": "clean"
+  },
+  "/creed/give/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/generators/make/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/cpan/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f619-spatial-memory-palace-flashcards/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 1610
+   },
+   "state": "clean"
+  },
+  "/lab/pattern/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.01,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.085,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.085,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0
+  },
+  "/vat/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.039,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fantasy/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.02,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/code-review/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.018,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/level/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/image/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.014,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/word-count/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/journal/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/learn-to-draw/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.101,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.101 that no rule fixes: listed for a builder)"
+  },
+  "/emojis/everywhere/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.191,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.191 that no rule fixes: listed for a builder)"
+  },
+  "/identity/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 37
+   },
+   "state": "clean"
   }
  }
 }
