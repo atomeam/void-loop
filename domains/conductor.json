@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T23:55:31.404Z",
+ "updated": "2026-11-09T00:04:55.933Z",
  "last24h": {
   "ticks": 154,
-  "started": 77,
+  "started": 76,
   "requeued": 6,
   "setAside": 1,
   "probes": 3,
-  "errors": 102
+  "errors": 103
  },
  "broken": [],
  "held": [
@@ -216,34 +216,6 @@
   "versus:uniteforliteracy.com"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T23:55:41.361Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw5blphr",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 89
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 86,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T00:05:05.365Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2327,6 +2299,11 @@
   },
   {
    "at": "2026-11-08T23:55:31.404Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:04:55.933Z",
    "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
