@@ -77,7 +77,7 @@ function run(text, api) {
     `<p><strong>We own the heavy lifting.</strong> Client work is reduced to outcomes and approvals.</p>`,
     `<div class="src">Source: A-to-Mind ownership practice</div>`
   ].join('');
-  el.innerHTML = html;
+  el.innerHTML = html; // void-review: ok (every interpolated value is passed through esc)
   return 'ownership-map';
 }
 
