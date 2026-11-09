@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T01:01:26.054Z",
+ "updated": "2026-11-09T01:10:49.463Z",
  "last24h": {
-  "ticks": 154,
-  "started": 82,
+  "ticks": 153,
+  "started": 74,
   "requeued": 7,
-  "setAside": 1,
+  "setAside": 0,
   "probes": 3,
-  "errors": 101
+  "errors": 102
  },
  "broken": [],
  "held": [
@@ -164,98 +164,6 @@
   "gap:want-misses-2026-w46"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T01:01:26.462Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw4gkvdn",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 54
-    },
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:10:48.886Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw6mr7ai",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 126
-    },
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 108
-    },
-    {
-     "id": "mveb8svc",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 1,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T01:20:10.769Z",
    "open": 267,
@@ -2323,6 +2231,11 @@
    "sweep": false,
    "blueprints": 0,
    "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:10:49.463Z",
+   "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
  ]
