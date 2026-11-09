@@ -75,3 +75,5 @@ Open work:
 - 2026-11-07T14:13Z verse-loop (verse): fix openapi; all checks green; branch loop/20261107-141305
 
 - 2026-11-08T16:39Z verse-loop (verse): fix openapi; all checks green; branch loop/20261108-163930
+
+- 2026-11-09T01:51Z verse-loop (verse): groom docs/NEXT.md; all checks green; branch loop/20261109-015137

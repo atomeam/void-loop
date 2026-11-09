@@ -1,0 +1,29 @@
+{
+ "at": "2026-11-09T07:51:08.213Z",
+ "sha": "621c97b1196a87b2c858ed2060426beab560f625",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42579831884",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fix: \"my Make scenario is broken\" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it",
+  "store: no product names or prices are hard-coded in the page or the libraries (all from the live catalog)",
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+  "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "domains/forethinkers/experiments/florida-heat-dose-2023-2026.csv",
+  "domains/forethinkers/experiments/heat-dose.mjs",
+  "domains/forethinkers/index.md",
+  "domains/forethinkers/run-log.md",
+  "domains/forethinkers/tracks/planet-restoration.md",
+  "domains/void.growth.md"
+ ],
+ "shards": [
+  2,
+  4
+ ],
+ "passed": [
+  2
+ ]
+}

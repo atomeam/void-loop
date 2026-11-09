@@ -348,6 +348,12 @@
     },
     {
       "ask": "movie night"
+    },
+    {
+      "ask": "make a vase"
+    },
+    {
+      "ask": "play sorry"
     }
   ],
   "candidates": [],

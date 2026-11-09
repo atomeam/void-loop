@@ -1,0 +1,53 @@
+{
+ "floor": "tsundere.pw",
+ "verse_page": null,
+ "source": "auto",
+ "sites": {},
+ "crawl": {
+  "sites": {
+   "tsundere.pw": {
+    "floor": "tsundere.pw",
+    "url": "https://tsundere.pw/",
+    "robots": true,
+    "rendered": 1,
+    "sitemaps": 0,
+    "urls_found": 0,
+    "pages": 1,
+    "fetched": 2,
+    "skipped": {
+     "robots": 0,
+     "failed": 0
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://tsundere.pw/"
+      ],
+      "features": [
+       "content video"
+      ]
+     }
+    ],
+    "features": [
+     {
+      "key": "content video",
+      "name": "Video",
+      "kind": "content",
+      "templates": [
+       "home"
+      ],
+      "verse": "missing",
+      "found": []
+     }
+    ],
+    "verse_pages": 0,
+    "verse_urls": [],
+    "crawled": "2026-11-09"
+   }
+  },
+  "updated": "2026-11-09"
+ }
+}

@@ -215,3 +215,10 @@ Picked living figures (least recently advanced with printing, 2026-10-21 14:07; 
 Picked printing (least recently advanced, 2026-10-21 14:07). Found printed micro planetaries that already carry figure-scale torque (Mashimo lab, IEEE RA-L Aug 2026; Endo and Fujikawa, ROBOMECH 2024), derived that a 15 mm printed stator behind 48:1 needs about 0.33 A, and found the binding limit in 16 CFR 1500.53(e): a 4 in-lbf grip torque, about 300 times the arm's working torque. Next is open question 8, a printed slip clutch at the arm root. The fused-body slice test is committed as `experiments/3mf-fuse-test.mjs` and waits for slicer libraries on the box.
 
 [think-tank] Summon the arm-drive card: motor, printed gearbox, slip clutch, arm, each with its dated source.
+
+## 2026-11-09 02:11 ET cycle: planet restoration, open questions 4 and 6
+
+Picked planet restoration (least recently advanced, 2026-10-28 14:15). Refreshed the NOAA heat table through 7 Nov 2026 and added Eastern Dry Rocks and the Tavernier nurseries: 2026 reached 81 to 97% of each reef's 2023 peak dose. Tied the first field outcome to it: at Eastern Dry Rocks (97% of 2023) nearly all 2025-26 elkhorn outplants died and some bleached staghorn lived (Coral Restoration Foundation, about 26 Oct 2026), which sets the baseline for the Dry Tortugas Flonduran split. Found the Shedd and CRF high- versus average-tolerance staghorn plots at Dry Tortugas as the live test of question 6 (>90% alive at eight months, CRF 9 Jul 2026). Corrected Dry Tortugas days at DHW 8 or more from 59 to 70. Neither post-summer split is public yet. Added a growth-board row (reef heat ruler card). No earlier forethinkers branches or open PRs to fold in.
+
+[think-tank] Summon the reef heat ruler: this summer against 2023 at six Florida reefs, with the dated outcome lines.
+
