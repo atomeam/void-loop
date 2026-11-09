@@ -14,6 +14,15 @@ import { readableTextOf, subjectKey } from '../void-live-deploy/lib/art-rules.js
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const base = () => process.env.VOID_URL || 'https://a-to-mind.com';
 const outDir = resolve(root, 'tools/.art-text-scan');
+/** a void_art subject row -> { subject, kind } for /api/card-art (prefixes cartoonN/posterN/backdropN). Pure. */
+export function partsOf(stored) {
+  const s = String(stored || '').trim();
+  let m;
+  if ((m = /^(cartoon\d*)\s+(.+)$/i.exec(s))) return { subject: m[2], kind: 'cartoon', key: s };
+  if ((m = /^(poster\d*)\s+(.+)$/i.exec(s))) return { subject: m[2], kind: 'poster', key: s };
+  if ((m = /^(backdrop\d*)\s+(.+)$/i.exec(s))) return { subject: m[2], kind: 'backdrop', key: s };
+  return { subject: s, kind: 'skill', key: s };
+}
 
 /** OCR a jpeg/png buffer via tools/art-text-ocr.py (RapidOCR). */
 import { spawnSync } from 'node:child_process';
@@ -27,8 +36,12 @@ function ocrWords(buf) {
   return readableTextOf((r.stdout || '').split(/\n/));
 }
 
-async function fetchArt(k) {
-  const r = await fetch(base() + '/api/card-art?key=' + encodeURIComponent(k) + '&kind=skill', {
+async function fetchArt(stored) {
+  const { subject, kind } = partsOf(stored);
+  // rows already carry cartoon/poster/backdrop prefixes: ask with kind=skill and the stored key so the route looks up that exact row
+  const key = kind === 'skill' ? stored : subject;
+  const knd = kind === 'skill' ? 'skill' : kind;
+  const r = await fetch(base() + '/api/card-art?key=' + encodeURIComponent(key) + '&kind=' + encodeURIComponent(knd), {
     headers: { 'user-agent': 'VerseArtTextScan/1.0' },
     signal: AbortSignal.timeout(60000),
   });
@@ -56,7 +69,8 @@ async function main() {
   const max = mi >= 0 ? Math.max(1, +a[mi + 1] || 10) : 10;
   const { out } = plan(known());
   const file = a.includes('--file') ? a[a.indexOf('--file') + 1] : '';
-  const list = file ? readFileSync(file, 'utf8').split(/\n/).map((l) => subjectKey(l.replace(/[-_]+/g, ' '))).filter(Boolean) : out;
+  // --file is exact void_art subject keys (one per line). Without it, walk the skill index (many may still be unpainted).
+  const list = file ? readFileSync(file, 'utf8').split(/\n/).map((l) => l.trim()).filter(Boolean) : out;
   console.log('scanning ' + list.length + ' cards at ' + base());
   const flagged = [], clean = [], missing = [];
   for (const k of list) {
@@ -83,10 +97,11 @@ async function main() {
   for (const f of flagged) {
     if (n >= max) break;
     for (let tries = 0; tries < 4; tries++) {
+      const p = partsOf(f.key);
       const r = await fetch(base() + '/api/card-art', {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'user-agent': 'VerseArtTextScan/1.0' },
-        body: JSON.stringify({ subject: f.key, kind: 'skill', rarity: 'common', again: true }),
+        body: JSON.stringify({ subject: p.subject, kind: p.kind, rarity: 'common', again: true }),
         signal: AbortSignal.timeout(60000),
       }).catch(() => null);
       if (!r) { console.log('skip  ' + f.key + ' (no answer)'); break; }
