@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T08:41:36.253Z",
+ "updated": "2026-11-09T08:51:01.462Z",
  "last24h": {
   "ticks": 154,
-  "started": 70,
+  "started": 71,
   "requeued": 6,
   "setAside": 1,
   "probes": 4,
-  "errors": 114
+  "errors": 113
  },
  "broken": [],
  "held": [
@@ -132,10 +132,11 @@
   "mvvjzso8": 1794206945891,
   "mw8wj9t3": 1794207506673,
   "mw8wjbjy": 1794209190487,
-  "mw8wjcf5": 1794210317344
+  "mw8wjcf5": 1794210317344,
+  "mw90kckz": 1794214261462
  },
- "sweptAt": 1794210317344,
- "blueprintsAt": 1794210317344,
+ "sweptAt": 1794214261462,
+ "blueprintsAt": 1794214261462,
  "visitorAt": "2026-11-09T08:37:49Z",
  "visitorFiled": [
   "versus:drawnames.com",
@@ -220,11 +221,6 @@
   "gap:want-misses-2026-w46"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T08:44:58.087Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T08:54:21.888Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2090,6 +2086,34 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 260,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T08:51:01.462Z",
+   "open": 273,
+   "started": [
+    {
+     "id": "mw90kckz",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 260,
    "warnings": 1
