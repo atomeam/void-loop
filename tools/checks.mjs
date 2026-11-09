@@ -94,6 +94,8 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipW
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
+  ['humble-copy', 'humble-copy.test.mjs'],
+  ['log-only', 'log-only.test.mjs'],
   ['handoff-scan', 'handoff-scan.test.mjs'],
   ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
@@ -561,6 +563,7 @@ for (const [name, file] of [
   ['tower-size', 'tower-size.test.mjs'],
   ['history-coverage', 'history-coverage.test.mjs'],
   ['tower-target', 'tower-target.test.mjs'],
+  ['tower-rules', 'tower-rules.test.mjs'], // the tower rules (docs/TOWER-RULES.md): any change to the tower keeps every rule
   ['site-crawl', 'site-crawl.test.mjs'],
   ['emoji-link', 'emoji-link.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
