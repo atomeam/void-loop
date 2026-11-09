@@ -434,6 +434,20 @@
     "host": "convertunits.com",
     "at": "2026-11-02",
     "id": "mvz9eg2g"
+   },
+   {
+    "target": "feature:convertunits-com-fd227592",
+    "feature": "calculate days in month",
+    "host": "convertunits.com",
+    "at": "2026-11-09",
+    "id": "mw9akgd6"
+   },
+   {
+    "target": "feature:unitconverters-net-a1eba45d",
+    "feature": "Sound converter",
+    "host": "unitconverters.net",
+    "at": "2026-11-09",
+    "id": "mw9akgsx"
    }
   ]
  }
