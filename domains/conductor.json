@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T18:50:04.020Z",
+ "updated": "2026-11-09T18:59:30.169Z",
  "last24h": {
   "ticks": 149,
-  "started": 96,
+  "started": 97,
   "requeued": 5,
   "setAside": 2,
   "probes": 10,
-  "errors": 59
+  "errors": 58
  },
  "broken": [],
  "held": [
@@ -162,7 +162,8 @@
   "mw9jhqm3": 1794246051511,
   "mw9jhro6": 1794246615970,
   "mw9jhssb": 1794247176496,
-  "mw9jhtt1": 1794250204020
+  "mw9jhtt1": 1794250204020,
+  "mw9mhy9a": 1794250770169
  },
  "sweptAt": 1794250204020,
  "blueprintsAt": 1794250204020,
@@ -250,11 +251,6 @@
   "review:2597"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T18:55:05.912Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T19:04:29.224Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3086,6 +3082,34 @@
    "sweep": true,
    "blueprints": 0,
    "held": 269,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T18:59:30.169Z",
+   "open": 285,
+   "started": [
+    {
+     "id": "mw9mhy9a",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 272,
    "warnings": 1
   }
  ]
