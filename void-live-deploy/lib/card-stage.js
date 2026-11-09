@@ -48,12 +48,13 @@ function layout() {
   try {
     const area = areaOf();
     const pages = [...document.querySelectorAll('.vpage')].filter((el) => el.offsetWidth > 2 || el.classList.contains('kept'));
-    if (pages.length >= 2) put(pages, area, true);
     const things = [...document.querySelectorAll('#stage > .thing')].filter((el) => el.offsetWidth > 2 && el.style.display !== 'none');
-    if (things.length >= 6) put(things, area, false);
+    // a kept card and a thing on the stage share one grid, or the card (z-index above the stage) covers the thing's buttons
+    if (pages.length >= 2) put([...pages, ...things], area);
+    else if (things.length >= 6) put(things, area);
   } catch (_) {}
 }
-function put(els, area, fixed) {
+function put(els, area) {
   const stage = document.getElementById('stage');
   const s0 = stage ? stage.getBoundingClientRect() : { left: 0, top: 0 };
   const bag = api && api.things ? api.things() : {};
@@ -66,7 +67,8 @@ function put(els, area, fixed) {
   const moves = tidy(cards, area);
   for (const c of cards) {
     const m = moves[c.id]; if (!m) continue;
-    const el = c.el, x = fixed ? m.x : Math.round(m.x - s0.left), y = fixed ? m.y : Math.round(m.y - s0.top);
+    const el = c.el, fixed = el.classList.contains('vpage');
+    const x = fixed ? m.x : Math.round(m.x - s0.left), y = fixed ? m.y : Math.round(m.y - s0.top);
     el.dataset.tidy = '1'; el.classList.add(fixed ? 'placed' : 'card-glide'); el.style.boxSizing = 'border-box';
     if (!media(el)) el.style.transform = 'none';
     el.style.translate = ''; el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.width = m.w + 'px'; el.style.maxHeight = m.h + 'px';
