@@ -1,0 +1,16 @@
+# Not Verse's deploy config: that is void-live-deploy/wrangler.toml, uploaded by .github/workflows/deploy.yml (wrangler pages deploy,
+# working directory void-live-deploy). This file exists only for the Cloudflare Pages Git integration on the "a-to-mind" project.
+#
+# Why (lists run 15, 2026-11-09): since about 2026-11-07 20:00 UTC the project also builds every push to main from GitHub. Those builds
+# publish the repo root as the site with no build step: no Functions (every /api/*, /tools.json and /team/mcp route answered an empty
+# 404), none of the generated cards, and the repo's own files (docs, drafts) served as the site. Each one replaced
+# production until the next Actions deploy put the real site back: a-to-mind.com lost its APIs 2026-11-09 07:51-08:18 UTC and at
+# every bot commit before that, and /api/reflect read "site unreachable since 2026-11-07".
+#
+# Pages reads this file from the repo root before a Git build. Its output directory never exists, so a Git build fails at
+# "Validating asset output directory" and publishes nothing; the direct uploads from Actions are not affected (wrangler reads
+# void-live-deploy/wrangler.toml, the one in its working directory). tools/pages-git-off.test.mjs keeps it that way.
+# To retire it: turn off automatic deployments for the Git connection (Pages project > Settings > Builds), then delete this file.
+name = "a-to-mind"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "void-live-deploy/.pages-git-build-off"
