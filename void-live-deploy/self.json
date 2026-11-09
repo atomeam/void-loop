@@ -600,6 +600,22 @@
  },
  "commits": [
   {
+   "at": "2026-11-09T14:40:56Z",
+   "subject": "Lists run 15: every Russian VAT rate (ndscalc.ru asks built), build-world family, the site tester's fps floor follows its runner"
+  },
+  {
+   "at": "2026-11-09T14:30:23Z",
+   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,7,8 passed on d31b1d2b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-09T14:29:37Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T14:28:49Z",
+   "subject": "Subject eval: 53 of 54 live"
+  },
+  {
    "at": "2026-11-09T14:23:20Z",
    "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
   },
@@ -662,26 +678,14 @@
   {
    "at": "2026-11-09T13:36:24Z",
    "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T13:35:02Z",
-   "subject": "Verse routes \"top hits in london right now\" to its local-stations skill the answer is not checked"
-  },
-  {
-   "at": "2026-11-09T13:23:12Z",
-   "subject": "Feature scan: unit-converter,word-count researched by Verse"
-  },
-  {
-   "at": "2026-11-09T13:21:00Z",
-   "subject": "Outcome exam: sports 89.8"
-  },
-  {
-   "at": "2026-11-09T13:10:46Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists run 15 (grok-bot, 2026-11-09): every Russian VAT rate on /vat/ finishes…",
+    "line": "/vat/ and lib/vat.js offer 22, 20, 18, 10, the simplified-tax 7 and 5, and 0% (tools/vat.test.mjs; checked in Chromium at /vat/?sum=1070&rate=7: VAT 70,00); the sum and rate already rode in the link and the page was already offline, so…"
+   },
    {
     "name": "Lists run 14 (took over #2561, opened as 'run 15'; main's red /journal/…",
     "line": "the a-to-mind.com outage (empty 404s on /tools.json, /api/ and /?q= after bot pushes, 2026-11-07 20:00 UTC on) was Cloudflare Pages Git builds publishing the repo root with no Functions over production…"
@@ -701,10 +705,6 @@
    {
     "name": "Unbidden: Verse speaks first on /brain/ from its live state, in text and in…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2488."
-   },
-   {
-    "name": "docs/GAPS.md, 100 asks Verse was seen to fail on, built in batches: batch 1 is…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2346."
    }
   ],
   "ladders": [
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 16,
-  "week": 282
+  "day": 17,
+  "week": 283
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
