@@ -3,7 +3,8 @@
 // Run: node --test tools/build-world-family.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { existsSync } from 'node:fs';
+import { readOrder } from './skills-index.mjs';
 import fam from '../void-live-deploy/skills/build-world.js';
 import rts from '../void-live-deploy/skills/rts.js';
 import forge from '../void-live-deploy/skills/forge.js';
@@ -29,7 +30,8 @@ test('the old names are kept as parts, the family takes one place in the index a
   assert.equal(typeof forge.forgeOf, 'function', 'forgeOf stays on the forge member');
   assert.ok(fam.stageKinds && Object.keys(forge.stageKinds || {}).every((k) => k in fam.stageKinds), 'the forge stage kinds come along');
   assert.equal(typeof fam.decorate, 'function', 'the rts decorator still runs');
-  const index = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8'));
+  // skills/order/ is what the deploy writes into index.json; the committed index is not part of this pull request
+  const index = readOrder();
   assert.ok(index.includes('build-world'));
   assert.ok(!index.includes('rts') && !index.includes('forge'));
   assert.ok(index.indexOf('build-world') === index.indexOf('intent') + 1, 'the family sits where rts sat, right after intent');
