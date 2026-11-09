@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-17T08:05:32Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "file",
-  "key": "switch my void to dark | nothing appeared",
-  "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-17T08:11:24Z",
   "passed": 0,
   "of": 25,
@@ -6829,5 +6821,23 @@
    ]
   },
   "note": "fix: \"put on lofi hip hop pls\" no skill caught it (it went to the model, which the tester never calls); console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-11-09T07:34:10Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1046,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9107 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
