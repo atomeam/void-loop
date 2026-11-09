@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T23:19:44.858Z",
+  "at": "2026-11-09T23:52:12.129Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,10 +34,24 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -103,7 +117,7 @@
       }
     },
     "weather": {
-      "score": 97.4,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -118,9 +132,11 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp",
+            "close"
           ],
-          "score": 85.7
+          "score": 57.1
         }
       ],
       "holdout": {
