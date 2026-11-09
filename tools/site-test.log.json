@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T21:02:03Z",
-  "passed": 21,
-  "of": 32,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
- },
- {
   "at": "2026-10-17T21:21:26Z",
   "passed": 32,
   "of": 33,
@@ -7511,5 +7504,23 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"which skill family is unhealthy\" (skill:incident-autopsy)"
+ },
+ {
+  "at": "2026-11-09T19:48:09Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 454,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11936 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
