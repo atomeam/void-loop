@@ -8,6 +8,11 @@ name: Video-gen live
 
 on:
   workflow_dispatch:
+    inputs:
+      probe:
+        description: 'Test the video model now with the owner key (one 1 second draft clip inside PROBE_DAILY_USD), for example after credits are added'
+        type: boolean
+        default: false
   schedule:
     - cron: '41 */6 * * *'
 
@@ -29,6 +34,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Test the video model now (owner key, only when asked)
+        if: github.event_name == 'workflow_dispatch' && inputs.probe
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN
+        run: |
+          [ -n "$READ_TOKEN" ] || { echo "::warning title=No owner key::VOID_OWNER_TOKEN is not set, so the test waits for the 6 hour self-check"; exit 0; }
+          code=$(curl -sS -m 120 -o probe.json -w '%{http_code}' -H "Authorization: Bearer $READ_TOKEN" 'https://a-to-mind.com/api/clip?probe=1') || code=000
+          echo "probe answered $code"
+          jq -c '{ok, state, model, error}' probe.json 2>/dev/null || head -c 400 probe.json
+          echo "probe: $code $(jq -c '{state, model}' probe.json 2>/dev/null)" >> "$GITHUB_STEP_SUMMARY"
       - name: Read the live video route and page once and write the finding
         id: check
         run: |

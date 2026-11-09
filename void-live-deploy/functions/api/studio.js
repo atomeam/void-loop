@@ -105,6 +105,9 @@ async function reserve(env, who, usd, cap) {
   return Number(r && r.meta && r.meta.changes) === 1;
 }
 const refund = (env, who, usd) => env.DB.prepare('UPDATE void_studio_spend SET usd = MAX(0, usd - ?), n = MAX(0, n - 1) WHERE day = ? AND who = ?').bind(usd, dayOf(), who).run();
+// Partner video models bill to the account's prepaid AI Gateway credits, and Cloudflare reads those credits only for a call that names a
+// gateway (developers.cloudflare.com/ai-gateway/features/unified-billing). 'default' is made by Cloudflare on the first call; AI_GATEWAY names another.
+export const gatewayOf = (env) => ({ gateway: { id: String((env && env.AI_GATEWAY) || 'default').slice(0, 64) } });
 /** one clip from a partner video model, counted against `who`'s daily dollar cap */
 export async function makeVideo(env, b, who, cap) {
   const prompt = cleanLine(b.prompt, 600); if (!prompt) return { state: 'refused', why: 'empty' };
@@ -113,7 +116,7 @@ export async function makeVideo(env, b, who, cap) {
   if (!(await reserve(env, who, ask.usd, cap))) { const used = await spentToday(env, who).catch(() => cap); return { state: 'resting', why: 'cap', left: Math.max(0, Math.round((cap - used) * 1000) / 1000) }; }
   const t0 = Date.now();
   try {
-    const r = await timed(env.AI.run(VIDEO_MODELS[ask.model], videoInputOf(ask, prompt, image)), VIDEO_MS, ask.model);
+    const r = await timed(env.AI.run(VIDEO_MODELS[ask.model], videoInputOf(ask, prompt, image), gatewayOf(env)), VIDEO_MS, ask.model);
     const url = videoUrlOf(r);
     if (!url) return { state: 'failed', ...ask, ms: Date.now() - t0, why: 'no video in the answer: ' + (r && typeof r === 'object' ? JSON.stringify(r).slice(0, 200) : typeof r) };
     return { state: 'video', ...ask, url, ms: Date.now() - t0 };
