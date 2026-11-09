@@ -1,29 +1,5 @@
 [
  {
-  "at": "2026-10-17T11:11:24Z",
-  "passed": 20,
-  "of": 25,
-  "kind": "file",
-  "key": "play voidquest | fps # < #",
-  "note": "fix: \"play voidquest\" fps 1 < 5"
- },
- {
-  "at": "2026-10-17T11:17:08Z",
-  "passed": 16,
-  "of": 25,
-  "kind": "file",
-  "key": "play chess | fps # < #",
-  "note": "fix: \"play chess\" fps 2 < 5"
- },
- {
-  "at": "2026-10-17T11:23:07Z",
-  "passed": 13,
-  "of": 25,
-  "kind": "file",
-  "key": "what can I buy | load # ms > #",
-  "note": "fix: \"what can I buy\" load 1244 ms > 1200"
- },
- {
   "at": "2026-10-17T11:28:39Z",
   "passed": 14,
   "of": 25,
@@ -7250,5 +7226,77 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"how much is my watch worth\" (skill:appraise)"
+ },
+ {
+  "at": "2026-11-09T15:57:10Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1035,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T16:25:40Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1509,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9096 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T16:36:16Z",
+  "passed": 111,
+  "of": 114,
+  "ms": 396,
+  "kind": "file",
+  "key": "play voidquest | fps # < #",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 6 < 7"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 7"
+   },
+   {
+    "ask": "stlye like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1509,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9096 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"play voidquest\" fps 6 < 7"
  }
 ]
