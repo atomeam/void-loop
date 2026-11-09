@@ -237,7 +237,7 @@ export async function check(site = SITE, write = true) {
       // the store's own API not answering (a site outage, an empty 404 while a deploy is missing its Functions) says nothing about
       // this product's download: it is reported and the product stays as it is. On 2026-11-08 an outage answered every product with
       // an empty body ("Unexpected end of JSON input") and three good free products were unpublished for it.
-      const r = await fetch(site + '/api/store/free', { method: 'POST', body: JSON.stringify({ id: p.id }) }).then((r) => r.json()).catch((e) => { down = e.message; return null; });
+      const r = await fetch(site + '/api/store/free', { method: 'POST', body: JSON.stringify({ id: p.id }) }).then((r) => r.json()).catch((e) => { down = e.message; return null; }); // void-review: ok: one signed link per product is the check itself (a handful of free products, one at a time on purpose)
       if (!r) throw new Error('the store did not answer (' + down + ')');
       const url = r.items && r.items[0] && r.items[0].downloads[0] && r.items[0].downloads[0].url;
       if (!url) why = 'no signed link (' + (r.error || 'unknown') + ')';
