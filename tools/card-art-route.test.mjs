@@ -25,11 +25,17 @@ async function formOf(o) {
   const t = await new Response(o.multipart.body, { headers: { 'content-type': o.multipart.contentType } }).formData();
   return { prompt: t.get('prompt'), width: +t.get('width'), height: +t.get('height'), multipart: true };
 }
-function world({ reply = { image: JPEG }, fail = false, ai = true, extra = {}, scene = '', directFail = false } = {}) {
+function world({ reply = { image: JPEG }, fail = false, ai = true, extra = {}, scene = '', directFail = false, vision = 'NO' } = {}) {
   store.clear(); route.resetReady();
-  const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ART_POLLINATIONS: '0', ...extra }; // Pollinations is tested on its own, with a fake fetch
-  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge') || model === models('answer')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
-  return { env, calls, dcalls };
+  const calls = [], dcalls = [], vcalls = [], env = { DB: d1(), SALT: 'test-salt', ART_POLLINATIONS: '0', ...extra }; // Pollinations is tested on its own, with a fake fetch
+  if (ai) env.AI = { run: async (model, o) => {
+    const parts = o && o.messages && o.messages[0] && o.messages[0].content;
+    const visionAsk = Array.isArray(parts) && parts.some((p) => p && p.type === 'image_url');
+    if (visionAsk) { vcalls.push({ model, o }); return { response: vision }; } // the text-in-art gate (lib/art-rules.js TEXT_GATE_ASK)
+    if (model === models('merge') || model === models('answer')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; }
+    calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply;
+  } };
+  return { env, calls, dcalls, vcalls };
 }
 const post = (env, subject, kind = 'answer', rarity = 'common', ip = '1.1.1.1') => route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ subject, kind, rarity }) }) });
 const get = (env, key, kind = 'answer') => route.onRequestGet({ env, request: new Request('https://x/api/card-art?key=' + encodeURIComponent(key) + '&kind=' + kind) });
