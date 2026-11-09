@@ -1533,7 +1533,7 @@ try {
   // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here.
   // Since the season (2026-11-06) a site counts only once tower.target.json `passed` names it, so the check serves the served file with `passed`
   // naming the three it conquers (tools/tower-fixture.mjs): what Versus passed today no longer changes what this check sees
-  if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
+  if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) { // section name kept so shard hashing stays stable
     const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture, conquerable } = await import('./tower-fixture.mjs'); const P = await fresh();
     const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
     const served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
@@ -1545,20 +1545,21 @@ try {
     await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
     await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
-      return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
-        struck: all[1] && getComputedStyle(all[1].querySelector('.tw-name')).textDecorationLine, head: (c.querySelector('.tw-score') || {}).textContent, name: (c.querySelector('.tw-head') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
+    const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = c.querySelector('.tw-cur');
+      return { order: all.map((b) => b.dataset.state), current: cur && cur.dataset.id, won: cur ? [...cur.querySelectorAll('li[data-v="won"]')].length : 0, items: cur ? [...cur.querySelectorAll('li')].length : 0,
+        head: (c.querySelector('.tw-score') || {}).textContent, name: (c.querySelector('.tw-head') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
     // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
-    check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && (v.head || '').replace(/ · \d+ passed/, '') === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site /* a passed site (6fbae31da) adds its own ' · N passed' count from the served record */
-        && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
+    // docs/TOWER-RULES.md: one word, assimilated; the counts are assimilated, the current floor and floors remaining
+    check('tower: the target (tower.target.json) is the current floor with its aspects (4 won), the three assimilated listed, the card headed "Versus" and the counts "3 assimilated · current floor: <target>"',
+      JSON.stringify(v.order) === JSON.stringify(['beaten', 'beaten', 'beaten']) && v.current === tgt.id && v.won === 4 && v.items >= 9 && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && new RegExp('^3 assimilated · current floor: ' + tgt.site.replace(/\./g, '\\.') + ': \\d+% assimilated · \\d+ floors remaining$').test(v.head || '')
+        && !/FINAL BOSS|YOU ARE HERE|LOCKED|surpassed|outclassed|conquer/i.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
-    check('tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\.').test(saved.b || '') && /Conquered: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    check('tower: a saved or copied tower card says the current floor (4 of N aspects verified) and what is assimilated, and no announcement twice',
+      new RegExp('Current floor: ' + tgt.site.replace(/\./g, '\\.') + ': \\d+% assimilated; 4 of \\d+ aspects verified\\.').test(saved.b || '') && /Assimilated: /.test(saved.b || '') && ((saved.b || '').match(/Current floor: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
@@ -1636,8 +1637,9 @@ try {
     await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
     const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
     const before = await line(); beaten = true;
-    const after = await until(async () => { const r = await line(); return r && /calculator\.net is surpassed/.test(r.live) ? r : null; }, 6000);
-    check('tower: the open card picked up a conquered site on its own and said so ("calculator.net is surpassed"), with a fresh "updated" time', !!before && !!after && /calculator\.net\s*surpassed/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    const after = await until(async () => { const r = await line(); return r && /calculator\.net is assimilated/.test(r.live) ? r : null; }, 6000);
+    // no Verse dates on the card (docs/TOWER-RULES.md): no "updated" time
+    check('tower: the open card picked up an assimilated site on its own and said so ("calculator.net is assimilated"), with no "updated" time on the card', !!before && !!after && /calculator\.net\s*assimilated/.test(after.first) && !after.stamp && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
     await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(800); const open = await P.p.$('.vpage.on.tower-card'), h1 = hits; await P.p.waitForTimeout(1500);
     check('tower: once the card is closed (Escape) it stops polling', !open && hits - h1 <= 1, JSON.stringify({ open: !!open, h1, hits }));
     await P.ctx.close();
