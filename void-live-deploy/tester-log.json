@@ -3,13 +3,20 @@
  "cases": 114,
  "runsTotal": 300,
  "kinds": {
-  "grow": 75,
+  "grow": 74,
   "file": 49,
-  "visitor": 172,
+  "visitor": 173,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T20:15:19Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T19:48:09Z",
    "passed": 0,
@@ -350,13 +357,6 @@
      "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-09T14:42:54Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -410,9 +410,9 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 46,
-   "passed": 2295,
-   "of": 2519
+   "runs": 45,
+   "passed": 2263,
+   "of": 2486
   },
   {
    "from": "2026-10-19",
@@ -428,7 +428,7 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 252,
+   "runs": 253,
    "passed": 6027,
    "of": 7888,
    "broken": 14,
