@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T14:12:08.252Z",
+ "updated": "2026-11-09T14:21:42.244Z",
  "last24h": {
   "ticks": 154,
-  "started": 88,
+  "started": 87,
   "requeued": 5,
   "setAside": 1,
   "probes": 8,
@@ -150,10 +150,11 @@
   "mw99zdn2": 1794230070603,
   "mw99zeo5": 1794230631223,
   "mw99zfn1": 1794231195167,
-  "mw99zglq": 1794231837405
+  "mw99zglq": 1794231837405,
+  "mw9ceb57": 1794234102244
  },
- "sweptAt": 1794230070603,
- "blueprintsAt": 1794230070603,
+ "sweptAt": 1794234102244,
+ "blueprintsAt": 1794234102244,
  "visitorAt": "2026-11-09T14:00:21Z",
  "visitorFiled": [
   "gap:se-358423",
@@ -238,40 +239,6 @@
   "review:2563"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T14:13:09.869Z",
-   "open": 265,
-   "started": [
-    {
-     "id": "mvw5r36z",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 101
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 15,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T14:22:34.981Z",
    "open": 265,
@@ -2731,6 +2698,34 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 270,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T14:21:42.244Z",
+   "open": 280,
+   "started": [
+    {
+     "id": "mw9ceb57",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 270,
    "warnings": 1
