@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T12:04:10.027Z",
+  "at": "2026-11-09T14:18:30.657Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,7 +34,7 @@
       }
     },
     "podcasts": {
-      "score": 93.7,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -62,13 +62,11 @@
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio",
             "episode"
           ],
-          "score": 28.6
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -117,23 +115,25 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -144,17 +144,10 @@
       }
     },
     "directions": {
-      "score": 97.4,
+      "score": 98.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "directions to springfield",
-          "failed": [
-            "rival"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
@@ -248,10 +241,59 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "la liga scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -371,7 +413,7 @@
     }
   },
   "lowest": {
-    "domain": "definitions",
-    "score": 90
+    "domain": "sports",
+    "score": 89.8
   }
 }

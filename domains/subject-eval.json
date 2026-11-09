@@ -1,5 +1,5 @@
 {
- "at": "2026-11-08T12:17:04.737Z",
+ "at": "2026-11-09T14:28:46.781Z",
  "mode": "live",
  "pass": 53,
  "total": 54,
@@ -78,7 +78,7 @@
     "sources": [
      "The Beatles"
     ],
-    "answer": "The Beatles were an English rock band formed in Liverpool in 1960. From 1962 until their d"
+    "answer": "The Beatles were an English rock band formed in Liverpool in 1960. The band comprised John"
    },
    "redirect": "none"
   },
@@ -434,8 +434,8 @@
    "seen": {
     "called": 1,
     "failed": [
-     "http://127.0.0.1:35147/build.json?v=1794140027848 net::ERR_ABORTED",
-     "http://127.0.0.1:35147/ net::ERR_ABORTED"
+     "http://127.0.0.1:39339/build.json?v=1794234350818 net::ERR_ABORTED",
+     "http://127.0.0.1:39339/ net::ERR_ABORTED"
     ],
     "bad": [],
     "text": "HAPPY TIME HARRY CHARACTER Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Meatwad due to his low pr …  1 OF 9 FRESH Reply to what I said, or correct me Send Kept on this device only. My self card lists it under Correct me."
