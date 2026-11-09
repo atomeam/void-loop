@@ -3,13 +3,78 @@
  "cases": 107,
  "runsTotal": 300,
  "kinds": {
-  "none": 16,
-  "file": 61,
+  "file": 62,
+  "none": 14,
   "grow": 76,
-  "visitor": 145,
+  "visitor": 146,
   "tighten": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T02:11:21Z",
+   "passed": 0,
+   "of": 109,
+   "kind": "file",
+   "ms": 503,
+   "note": "fix: \"geenrate a toon style dog\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "refused: don't know this yet"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "no .voidquest-card"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "missing text /News about me/"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T02:04:20Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T01:53:28Z",
    "passed": 44,
@@ -492,51 +557,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-08T02:36:28Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-08T02:22:30Z",
-   "passed": 98,
-   "of": 105,
-   "kind": "file",
-   "ms": 417,
-   "note": "quality upgrade: weakest answer was \"closer on the figure\" (14 chars)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 4 < 5"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 1 < 5"
-    },
-    {
-     "ask": "send it away",
-     "why": "only \"waking up\" appeared, never the answer"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo draw yourself",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "proof-carrying claims",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "word ladder from cat to dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -590,11 +610,11 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 83,
+   "runs": 81,
    "passed": 2322,
-   "of": 3285,
-   "broken": 26,
-   "brokenOf": 650,
+   "of": 3235,
+   "broken": 24,
+   "brokenOf": 600,
    "brokenPassed": 0
   },
   {
@@ -611,11 +631,11 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 211,
+   "runs": 213,
    "passed": 4955,
-   "of": 6325,
-   "broken": 10,
-   "brokenOf": 1055,
+   "of": 6434,
+   "broken": 11,
+   "brokenOf": 1164,
    "brokenPassed": 135,
    "ms": 387
   }
@@ -663,7 +683,7 @@
   "skill:fuel": "2026-11-09T01:13:41Z",
   "skill:games": "2026-11-09T01:53:28Z",
   "skill:gears": "2026-11-09T01:53:28Z",
-  "skill:goal": "2026-10-17T08:50:25Z",
+  "skill:goal": "2026-11-09T02:11:21Z",
   "skill:grades": "2026-10-17T08:50:25Z",
   "skill:group": "2026-10-17T09:03:23Z",
   "skill:growth": "2026-10-17T09:03:23Z",
@@ -768,7 +788,7 @@
   "skill:type-filter": "2026-10-17T22:05:31Z",
   "skill:web4": "2026-10-17T22:18:36Z",
   "skill:movie": "2026-11-09T00:50:13Z",
-  "skill:media-pick": "2026-10-17T08:44:50Z",
+  "skill:media-pick": "2026-11-09T02:11:21Z",
   "skill:music": "2026-10-17T08:50:25Z",
   "skill:pick-for-me": "2026-10-17T09:15:36Z",
   "skill:vector-field-mind": "2026-10-17T09:43:30Z",
