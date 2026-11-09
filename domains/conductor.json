@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T16:43:28.047Z",
+ "updated": "2026-11-09T16:52:50.084Z",
  "last24h": {
   "ticks": 153,
   "started": 90,
@@ -112,7 +112,6 @@
   "mvu167w7": 1794208626432,
   "mveb8rsi": 1794207506673,
   "mveb8svc": 1794186086054,
-  "mw8203uw": 1794156221120,
   "mw8204i3": 1794167505287,
   "mw82055s": 1794168070272,
   "mw82061g": 1794169758848,
@@ -157,7 +156,8 @@
   "mw9en0lw": 1794239093875,
   "mw9en1tx": 1794239673382,
   "mw9h3p7c": 1794242045251,
-  "mw9h3pqx": 1794242608047
+  "mw9h3pqx": 1794242608047,
+  "mw9h3qb3": 1794243170084
  },
  "sweptAt": 1794242045251,
  "blueprintsAt": 1794242045251,
@@ -245,34 +245,6 @@
   "probe:what-s-a-good-movie-for-a-rainy-da"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T16:43:41.120Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw8203uw",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 256,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T16:53:01.894Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2905,6 +2877,34 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 268,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T16:52:50.084Z",
+   "open": 281,
+   "started": [
+    {
+     "id": "mw9h3qb3",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
    "design": false,
    "will": false,
    "lap": false,
