@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T20:16:04.027Z",
+ "updated": "2026-11-09T20:25:29.924Z",
  "last24h": {
   "ticks": 149,
   "started": 97,
@@ -75,11 +75,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 30,
+   "used": 60,
    "cap": 90
   },
   "day": {
-   "used": 284,
+   "used": 314,
    "cap": 360
   },
   "room": true,
@@ -145,7 +145,8 @@
   "mw9mhz9v": 1794251388552,
   "mw9mi1d5": 1794251949456,
   "mw9oo0ty": 1794254779631,
-  "mw9oo1gs": 1794255364027
+  "mw9oo1gs": 1794255364027,
+  "mw9oo23m": 1794255929924
  },
  "sweptAt": 1794254207931,
  "blueprintsAt": 1794254207931,
@@ -233,40 +234,6 @@
   "probe:top-news-in-tech"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T20:19:53.412Z",
-   "open": 269,
-   "started": [
-    {
-     "id": "mvw5r3w1",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 102
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 15,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T20:29:18.848Z",
    "open": 269,
@@ -3153,6 +3120,40 @@
     },
     {
      "id": "mw9oo1gs",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T20:25:29.924Z",
+   "open": 289,
+   "started": [
+    {
+     "id": "mw9p82c2",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mw9oo23m",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
