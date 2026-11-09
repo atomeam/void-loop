@@ -2594,7 +2594,11 @@ try {
     reachable = false;
     await R.ask('tell me about glimberwock', 400);
     await until(async () => /nothing was looked up/.test(await R.page()), 6000);
-    const pg2 = await R.page(), last = await R.p.evaluate(() => { const l = window.voidRefusals || []; return l[l.length - 1] || null; });
+    // the page says it first: showAnswer resolves 'none' before reportMiss dispatches the miss and pushes the refusal object
+    // (void.html), so the data lands a beat after the text and is polled for the way the page is (main's refusal flakes, 2026-10-22 and 10-24)
+    const last = await until(async () => { const x = await R.p.evaluate(() => { const l = window.voidRefusals || []; return l[l.length - 1] || null; }); return x && x.kind === 'lookup' && JSON.stringify(x.sources_checked) === '[]' ? x : false; }, 6000);
+    await until(() => missed.includes('unreached'), 4000);
+    const pg2 = await R.page();
     check('refusal object: every "I cannot" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from "no such thing"',
       /don't know this yet/.test(pg) && /Missing: what this is .*Looked in Wikipedia and Wiktionary\. Noted as miss:tell-me-about-blorptangle\./.test(pg)
       && obj && obj.cannot === true && obj.kind === 'knowledge' && obj.id === 'cannot:knowledge:tell-me-about-quuxblarf' && JSON.stringify(obj.sources_checked) === '["wikipedia","wiktionary"]'
