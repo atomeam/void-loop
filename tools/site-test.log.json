@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T08:44:50Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
   "at": "2026-10-17T08:50:25Z",
   "passed": 0,
   "of": 25,
@@ -6979,6 +6972,24 @@
      "ask": "what can you do",
      "why": [
       "slow 10637 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T09:18:22Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1194,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8667 ms"
      ]
     }
    ]
