@@ -3,13 +3,62 @@
  "cases": 112,
  "runsTotal": 300,
  "kinds": {
+  "grow": 80,
   "file": 49,
-  "grow": 81,
-  "visitor": 166,
+  "visitor": 167,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T17:32:00Z",
+   "passed": 106,
+   "of": 114,
+   "kind": "file",
+   "ms": 492,
+   "note": "fix: \"play chess\" fps 1 < 7",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 7"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 1 < 7"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "swarm mind",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "favorite this",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "draw me a robot pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "stlye like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "already built",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T17:16:32Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T16:48:51Z",
    "passed": 0,
@@ -261,20 +310,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T09:18:22Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T08:50:03Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -328,9 +363,9 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 56,
-   "passed": 2517,
-   "of": 2803
+   "runs": 54,
+   "passed": 2482,
+   "of": 2753
   },
   {
    "from": "2026-10-19",
@@ -346,9 +381,9 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 242,
-   "passed": 5597,
-   "of": 7430,
+   "runs": 244,
+   "passed": 5703,
+   "of": 7544,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -415,8 +450,8 @@
   "skill:joke": "2026-11-09T15:44:57Z",
   "skill:label": "2026-11-09T16:36:16Z",
   "skill:layer": "2026-11-09T16:36:16Z",
-  "skill:light-look": "2026-10-17T09:43:30Z",
-  "skill:link": "2026-10-17T09:49:14Z",
+  "skill:light-look": "2026-11-09T17:32:00Z",
+  "skill:link": "2026-11-09T17:32:00Z",
   "skill:list": "2026-10-17T09:49:14Z",
   "skill:loan": "2026-10-17T09:49:14Z",
   "skill:local-inference": "2026-10-17T09:57:04Z",
