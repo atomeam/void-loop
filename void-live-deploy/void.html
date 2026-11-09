@@ -1349,12 +1349,38 @@
       // the day a skill last answered, on this device only (lib/skill-use.js; asked by Verse: a last-used day for every skill): a day, never a word of any ask
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
       // the paid products where the free page leaves off: after the first answered ask of the load, one muted line with the
-      // three products (Void Monthly, One-Time Fix, Full Stack Audit); static words only, nothing fetched, nothing stored
+      // three products (the membership, the one-time fix, the full stack audit) and their pages. Their names come from the live
+      // store (/api/catalog, read once the first ask is answered, never on arrival), never typed here, so a rename in the store
+      // follows; nothing stored. No live name = that link is left out; no live product at all = the line stays hidden.
       if (!offerShown && attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) {
         offerShown = true;
-        const offer = document.getElementById('void-offer');
-        if (offer) { offer.hidden = false; offer.innerHTML = 'Made with Verse — <a href="/members/?from=stage">Void Monthly</a> · <a href="/one-time-fix/">One-Time Fix</a> · <a href="/full-stack-audit/">Full Stack Audit</a>'; }
+        showOffer().catch(() => {});
       }
+    }
+    const OFFER_LINKS = [ // [which store product, its page]; the membership is the store's unlock (lib/gumroad.js isUnlock)
+      [(g, p) => g.isUnlock(p), '/members/?from=stage'],
+      [(g, p) => p.slug === 'eozcma', '/one-time-fix/'],
+      [(g, p) => p.slug === 'full-stack-audit', '/full-stack-audit/'],
+    ];
+    async function showOffer() {
+      const offer = document.getElementById('void-offer');
+      if (!offer) return;
+      const { g, products } = await storeCatalog();
+      if (!g) return;
+      const live = products.filter((p) => p && p.available !== false && typeof p.name === 'string' && p.name.trim());
+      const links = [];
+      for (const [is, href] of OFFER_LINKS) {
+        const p = live.find((x) => is(g, x));
+        if (!p) continue;
+        const a = document.createElement('a'); a.href = href; a.textContent = p.name.trim(); links.push(a);
+      }
+      if (!links.length) return;
+      offer.textContent = 'Made with Verse — ';
+      links.forEach((a, i) => { if (i) offer.append(' · '); offer.append(a); });
+      offer.hidden = false;
+      // the line sits under the ask bar, so showing it lifts the bar: measure the dock again, or an open card's bottom
+      // (its Show more, its last row) stays under the bar where no click reaches it (main's shard 4, 2026-11-08)
+      dockSpace();
     }
     let sayCount = 0;
     function fitOpenPanels() {
@@ -5914,10 +5940,12 @@ say('nothing selected to remove');
         + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ', ' + details.length.toLocaleString() + ' characters' + (cut ? ' (the start and the end were read; ' + cut.toLocaleString() + ' from the middle were left out)' : ', all read') + '</summary>'
         + '<div style="opacity:.7;font-size:12px;margin-top:6px">' + esc(clipLine(String(details).replace(/\s+/g, ' '), 90)) + '</div></details>'; // a one-line glimpse, never the whole paste echoed back (owner, 2026-11-03)
     }
-    async function showFix(ask, details) {
+    async function showFix(ask, details, answers) {
       // the title is the paste's first line as given, not the normalized ask: the page's typo and shorthand passes can hand over a
-      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times)
-      const given = String(details || ''), first = given.split('\n')[0].trim();
+      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times).
+      // A paste that answers "paste what it shows" (answers = true) keeps the ask it answers as its title: that ask names the tool
+      // ("my Make scenario is broken"), and the model reads the ask and the paste apart (the paste's first line is in the details).
+      const given = String(details || ''), first = answers ? '' : given.split('\n')[0].trim();
       const title = clipLine(first || ask, 120), sent = fitPaste(title, given);
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">working on it…</div>'; });
       say('working on it');
@@ -5948,7 +5976,7 @@ say('nothing selected to remove');
       if (!fx) return false;
       if (pendingFix) {
         const pf = pendingFix; pendingFix = null;
-        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full); return true; }
+        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full, true); return true; }
       }
       if (!fx.isFixAsk(full)) return false;
       currentAsk = text; lastAsk = text;
