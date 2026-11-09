@@ -399,67 +399,67 @@
     },
     "ask-20261031-1324-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261031-1532-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261031-1538-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261031-1554-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261031-1559-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261103-0222-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261105-1440-2": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261105-1451-2": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-1936-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-1936-3": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-1955-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-2017-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-2017-2": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-2037-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-2037-2": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-0859-1": {
       "decision": "built",
-      "why": "lists run 15 (2026-11-09): built: /vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12, ask-20261103-2357-1) and now offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
+      "why": "lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it"
     },
     "ask-20261106-1936-2": {
       "decision": "built",

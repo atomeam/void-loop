@@ -15,11 +15,96 @@
   "passed": 146,
   "assimilated": 23,
   "current": 1,
-  "parked": 3,
+  "parked": 2,
   "nonSites": 1,
-  "tried": 195
+  "tried": 196
  },
  "sites": [
+  {
+   "site": "onefootball.com",
+   "url": "https://onefootball.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-09T14:17:31Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed onefootball.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "amazon.com",
+   "url": "https://amazon.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-09T14:15:57Z",
+   "page": "/store/",
+   "lane": "",
+   "took": "",
+   "why": "Passed Amazon (13/20, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 20
+   }
+  },
+  {
+   "site": "isitchristmas.com",
+   "url": "https://isitchristmas.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-09T14:15:25Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "Passed isitchristmas.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   },
+   "pageWas": "/is-it/christmas"
+  },
+  {
+   "site": "flashscore.com",
+   "url": "https://flashscore.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-09T13:47:09Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed flashscore.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
   {
    "site": "cashconverters.co.uk",
    "url": "https://cashconverters.co.uk/",
@@ -203,70 +288,6 @@
     ],
     "at": "2026-11-09"
    }
-  },
-  {
-   "site": "flashscore.com",
-   "url": "https://flashscore.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T08:46:00Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed flashscore.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "onefootball.com",
-   "url": "https://onefootball.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T08:44:45Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed onefootball.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "isitchristmas.com",
-   "url": "https://isitchristmas.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T08:44:16Z",
-   "page": "",
-   "lane": "",
-   "took": "",
-   "why": "Passed isitchristmas.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   },
-   "pageWas": "/is-it/christmas"
   },
   {
    "site": "colorbook.io",
@@ -1180,27 +1201,6 @@
    "score": {
     "n": 13,
     "m": 15
-   }
-  },
-  {
-   "site": "amazon.com",
-   "url": "https://amazon.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:53:21Z",
-   "page": "/store/",
-   "lane": "",
-   "took": "",
-   "why": "Passed Amazon (13/20, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 20
    }
   },
   {
@@ -2796,13 +2796,13 @@
   {
    "site": "250free.com",
    "url": "https://250free.com/",
-   "status": "gone/parked: the domain no longer serves the site",
-   "outcome": "parked",
+   "status": "walled",
+   "outcome": "walled",
    "at": "2026-11-08T09:25:27Z",
    "page": "",
    "lane": "",
    "took": "",
-   "why": "https://250free.com/ ends on www.ionos.com, not 250free.com",
+   "why": "a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
    "learned": "",
    "ease": {
     "score": 83.3,
@@ -2811,10 +2811,8 @@
    },
    "first": null,
    "sources": [
-    "domains/tower-self.json",
-    "void-live-deploy/tower.gone.json"
-   ],
-   "wasOutcome": "walled"
+    "domains/tower-self.json"
+   ]
   },
   {
    "site": "maphill.com",

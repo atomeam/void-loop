@@ -843,7 +843,7 @@
    "note": "Run 15 of the lists routine. The ndscalc.ru asks were left to Claude's #2413 in run 14; #2413 was closed as stale at 2026-11-09 12:59 UTC without the VAT work, so this run built the one piece missing on main (the 7% simplified-tax rate; the sum in the link and the offline page were already there). Counts use tools/asks-link.mjs groups; the 16 drop to 0 when this run's ledger line folds into void.growth.json and the deploy's asks step writes the links from the new tools/asks-link.json rule.",
    "items": [
     {
-     "what": "V01D's 16 ndscalc.ru ask groups (98 asks): every Russian VAT rate on /vat/ (22, 20, 18, 10, 7, 5, 0), the sum in the link, the page offline",
+     "what": "V01D's 16 ndscalc.ru ask groups (98 asks): every Russian VAT rate (22, 20, 18, 10, 7, 5, 0) on the calculator's VAT mode (ndscalc.ru's page, back in LANE_PAGES) and /vat/, the sum in the link, the page offline",
      "list": "V01D asks",
      "status": "built"
     },
@@ -865,7 +865,7 @@
      "link": "https://github.com/atomeam/void-loop/issues/2522"
     },
     {
-     "what": "main's red checks: stale skills/first.json, SEO pages and parity docs regenerated; seo-audit (9 orphans over 8: a page Verse built twice for two sites was left off /tools/, now linked as 'page 2', 7 orphans) and doc-drift (docs/MAP.md named a parity file that is not generated)",
+     "what": "main's red checks: stale skills/first.json, SEO pages and parity docs regenerated; seo-audit (9 orphans over 8: a page Verse built twice for two sites was left off /tools/, now linked as 'page 2', 7 orphans) and doc-drift (docs/MAP.md named a parity file that is not generated); tower-topic (ndscalc.ru missing from LANE_PAGES), real-pages-list (self-built pages get their family's spec) and parity (colorbook.io history)",
      "list": "site tester / green foundation",
      "status": "built"
     }

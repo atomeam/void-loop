@@ -384,7 +384,7 @@
     {
       "match": "ndscalc",
       "ledgerAt": "2026-11-09T14:39:31Z",
-      "why": "/vat/ is ndscalc.ru's page (the calculator's VAT mode, passed 10/12) and offers every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09)"
+      "why": "ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09)"
     }
   ],
   "extra": [

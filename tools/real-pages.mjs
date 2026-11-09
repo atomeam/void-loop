@@ -9,6 +9,7 @@ import http from 'node:http'; import fs from 'node:fs'; import path from 'node:p
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
+import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
@@ -512,6 +513,9 @@ SPECS['/emojis/everywhere/'] = async (t) => {
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
 SPECS['/color/colour-picker-tool/'] = SPECS['/color/']; // the family page, copied for the Versus floor
 SPECS['/news/global-headlines/'] = SPECS['/news/']; // the family page, copied for the Versus floor
+// every page the tower-self loop builds from a family page (lib/self-sites.js) is tested as that family page, so a new lane page never lands
+// without a spec (lists run 15: /color/colour-management/ came with none and real-pages-list went red on main)
+for (const r of SELF_SITES) if (r && r.path && r.base && !SPECS[r.path] && SPECS[r.base]) SPECS[r.path] = SPECS[r.base];
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
 const LEDGER_FIX = [

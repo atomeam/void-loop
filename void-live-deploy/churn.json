@@ -1,83 +1,103 @@
 {
- "at": "2026-11-07T22:42:45.527Z",
+ "at": "2026-11-09T14:47:42.432Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
-   "file": "domains/conductor.json",
-   "changes": 108
-  },
-  {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 93
+   "changes": 115
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 93
+   "changes": 115
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 76
+   "changes": 101
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 75
+   "changes": 98
   },
   {
    "file": "domains/handoff.md",
-   "changes": 73
+   "changes": 81
   },
   {
-   "file": "domains/tower-self.json",
-   "changes": 46
-  },
-  {
-   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
-   "changes": 32
-  },
-  {
-   "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 32
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 29
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 29
-  },
-  {
-   "file": "tools/real-pages.mjs",
-   "changes": 28
+   "file": "domains/conductor.json",
+   "changes": 77
   },
   {
    "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
-   "changes": 28
+   "changes": 53
+  },
+  {
+   "file": "domains/tower-self.json",
+   "changes": 51
+  },
+  {
+   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 40
+  },
+  {
+   "file": "void-live-deploy/markets/currency-converter/index.html",
+   "changes": 38
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter-2/index.html",
+   "changes": 35
+  },
+  {
+   "file": "void-live-deploy/convert/unit-converter/index.html",
+   "changes": 35
+  },
+  {
+   "file": "tools/real-pages.mjs",
+   "changes": 30
+  },
+  {
+   "file": "tools/site-test.json",
+   "changes": 29
   },
   {
    "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
    "changes": 28
   },
   {
+   "file": "void-live-deploy/color/colour-picker-tool/index.html",
+   "changes": 26
+  },
+  {
+   "file": "void-live-deploy/assimilated.json",
+   "changes": 25
+  },
+  {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
    "changes": 25
   },
   {
-   "file": "void-live-deploy/assimilated.json",
+   "file": "docs/PARITY/lichess.md",
    "changes": 24
   },
   {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 23
+   "file": "void-live-deploy/bots/registry.json",
+   "changes": 24
   },
   {
-   "file": "void-live-deploy/bots/registry.json",
-   "changes": 23
+   "file": "void-live-deploy/news/global-headlines/index.html",
+   "changes": 24
   },
   {
    "file": "void-live-deploy/salvage.json",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/design-loop.json",
+   "changes": 21
+  },
+  {
+   "file": "void-live-deploy/tower.target.json",
    "changes": 21
   },
   {
@@ -85,32 +105,24 @@
    "changes": 20
   },
   {
-   "file": "tools/site-test.json",
-   "changes": 20
+   "file": "docs/PARITY/github.md",
+   "changes": 19
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 19
+  },
+  {
+   "file": "void-live-deploy/lib/guard.js",
+   "changes": 19
   },
   {
    "file": "domains/autosalvage.unified.json",
    "changes": 18
   },
   {
-   "file": "void-live-deploy/color/colour-picker-tool/index.html",
-   "changes": 18
-  },
-  {
-   "file": "docs/PARITY/github.md",
+   "file": "void-live-deploy/tower.gone.json",
    "changes": 17
-  },
-  {
-   "file": "docs/PARITY/hugging-face.md",
-   "changes": 17
-  },
-  {
-   "file": "void-live-deploy/lib/guard.js",
-   "changes": 17
-  },
-  {
-   "file": "tools/families.mjs",
-   "changes": 16
   },
   {
    "file": "tools/salvaged-bots.test.mjs",
@@ -121,15 +133,23 @@
    "changes": 16
   },
   {
-   "file": "void-live-deploy/news/global-headlines/index.html",
-   "changes": 16
+   "file": "docs/PARITY/google-search.md",
+   "changes": 15
   },
   {
    "file": "tools/conductor-core.mjs",
    "changes": 15
   },
   {
-   "file": "void-live-deploy/brain/knows.json",
+   "file": "tools/families.mjs",
+   "changes": 15
+  },
+  {
+   "file": "tools/openapi-check.mjs",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/sw.js",
    "changes": 15
   },
   {
@@ -137,31 +157,31 @@
    "changes": 14
   },
   {
+   "file": "docs/PARITY/gmail.md",
+   "changes": 14
+  },
+  {
+   "file": "docs/PARITY/youtube.md",
+   "changes": 14
+  },
+  {
+   "file": "docs/TAGTEAM.md",
+   "changes": 14
+  },
+  {
    "file": "void-live-deploy/brain/index.html",
    "changes": 14
   },
   {
-   "file": "void-live-deploy/sw.js",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/tower.target.json",
-   "changes": 14
-  },
-  {
-   "file": "docs/PARITY/google-search.md",
-   "changes": 13
-  },
-  {
-   "file": "docs/PARITY/youtube.md",
-   "changes": 13
-  },
-  {
-   "file": "tools/openapi-check.mjs",
-   "changes": 13
-  },
-  {
    "file": "void-live-deploy/team/index.html",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/tower.size.json",
+   "changes": 14
+  },
+  {
+   "file": "domains/growth-inbox.md",
    "changes": 13
   }
  ]
