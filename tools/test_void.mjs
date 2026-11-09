@@ -7659,9 +7659,16 @@ try {
       await P.p.setViewportSize({ width: w, height: 800 });
       const home = await P.p.evaluate(() => { const h = document.querySelector('h1'), r = h && h.getBoundingClientRect(); return { ph: document.getElementById('input').placeholder, hero: !!(r && (r.width >= 2 || r.height >= 2)), nav: !!document.getElementById('verse-nav'), install: !!document.getElementById('verse-install') }; });
       check('blank home at ' + w + ': the void and the ask bar', home.ph === 'Ask anything' && !home.hero && !home.nav && !home.install, JSON.stringify(home));
-      await P.ask('timer 5 min', 800); await P.ask('draw a cat', 1200); await P.ask('weather in Tokyo', 1200); await P.p.waitForTimeout(600);
+      await P.ask('timer 5 min', 800); await P.ask('draw a cat', 1200); await P.ask('weather in Tokyo', 1200); await P.ask('how are you different', 900); await P.p.waitForTimeout(1300);
       const three = await named(P.p);
       check('three asks at ' + w + ' (' + pt + ') leave the timer, the cat and the weather open together', three.n >= 3 && three.timer && three.cat && three.weather && !P.errors.length, JSON.stringify(three));
+      const cols = await P.p.evaluate(() => {
+        const row = document.getElementById('row').getBoundingClientRect();
+        const pages = [...document.querySelectorAll('.vpage')].map((el) => el.getBoundingClientRect()).filter((r) => r.width > 2 && r.height > 2);
+        const lefts = pages.map((r) => Math.round(r.left));
+        return { n: pages.length, w: pages.map((r) => Math.round(r.width)), lefts, one: pages.length >= 2 && lefts.every((x) => Math.abs(x - lefts[0]) < 12) && pages.every((r) => r.width > innerWidth * 0.7 && r.bottom <= row.top + 1) };
+      });
+      if (w <= 520) check('answer cards at ' + w + ' stay one column, clear of the ask bar', cols.one && !P.errors.length, JSON.stringify(cols));
       await P.ctx.close();
       const Q = phone ? await fresh({ phone: true }) : await fresh();
       await Q.p.setViewportSize({ width: w, height: 800 });
