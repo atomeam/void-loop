@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T01:10:49.463Z",
+ "updated": "2026-11-09T01:20:12.847Z",
  "last24h": {
   "ticks": 153,
-  "started": 74,
+  "started": 72,
   "requeued": 7,
   "setAside": 0,
   "probes": 3,
-  "errors": 102
+  "errors": 103
  },
  "broken": [],
  "held": [
@@ -164,40 +164,6 @@
   "gap:want-misses-2026-w46"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T01:20:10.769Z",
-   "open": 267,
-   "started": [
-    {
-     "id": "mvfu4evy",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mw6nk172",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 41
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T01:29:41.594Z",
    "open": 266,
@@ -2235,6 +2201,11 @@
   },
   {
    "at": "2026-11-09T01:10:49.463Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:20:12.847Z",
    "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
