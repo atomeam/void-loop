@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --bg:#0d0d0f; --fg:#e8e4dc; --accent:#7ec8e3; --card:#1a1a1e; }
+* { box-sizing:border-box; margin:0; }
+body { background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; height:100vh; }
+#chrome { position:fixed; top:8px; left:8px; right:8px; z-index:100; display:flex; gap:12px; align-items:center; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; backdrop-filter:blur(4px); }
+button { background:#222; color:var(--fg); border:1px solid #444; padding:4px 10px; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#status { font-variant-numeric:tabular-nums; opacity:.8; }
+#canvas { position:absolute; inset:0; z-index:0; }
+#svg { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.card { position:absolute; width:140px; min-height:80px; background:var(--card); border:1px solid #333; border-radius:8px; padding:10px; cursor:grab; z-index:2; box-shadow:0 4px 12px rgba(0,0,0,.4); transition:box-shadow .15s; user-select:none; }
+.card:active { cursor:grabbing; }
+.card h3 { font-size:13px; margin-bottom:4px; color:var(--accent); }
+.card p { font-size:12px; opacity:.85; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-MLP Spatial Card Weaver · Verse lab</title>
+<meta name="description" content="DeviceOrientationEvent (beta/gamma) plus a short pointer-velocity history form the causal input vector to a pure-JS 3-layer MLP (no external libraries).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-MLP Spatial Card Weaver · Verse lab">
+<meta property="og:description" content="DeviceOrientationEvent (beta/gamma) plus a short pointer-velocity history form the causal input vector to a pure-JS 3-layer MLP (no external libraries).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f623-orientation-mlp-spatial-card-weaver/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f623-orientation-mlp-spatial-card-weaver/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <div>F623 Card Weaver — tilt device or move pointer · click card to reward</div>
+  <button id="seal">Seal Genome</button>
+  <button id="restore">Restore</button>
+  <button id="reset">Reset</button>
+  <span id="status">init</span>
+</div>
+<canvas id="canvas"></canvas>
+<svg id="svg"></svg>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-MLP Spatial Card Weaver</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a> <a class="vl-use" href="/lab/level/" data-tool="Spirit level">Use it: Spirit level</a></footer><script src="/lab/use-it.js" defer></script>
+</body>
+</html>
