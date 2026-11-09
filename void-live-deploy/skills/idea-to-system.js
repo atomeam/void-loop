@@ -1,6 +1,6 @@
 /**
  * idea-to-system skill: the "turn my idea into a system" family (convergence, owner 2026-10-15: "most skills can be combined";
- * lists run 15, 2026-11-09). business-clarify (a vague business idea becomes a plan card: problem, systems, automations, handoff)
+ * lists run 14, 2026-11-09). business-clarify (a vague business idea becomes a plan card: problem, systems, automations, handoff)
  * and system-blueprint (an idea becomes a buildable system plan that builds into Verse) both took "structure this business idea for
  * Verse to own the heavy lifting", so tools/skill-overlap.mjs listed them as a merge candidate. One routing entry at
  * business-clarify's rank (9500); business-clarify is asked first, as it sat first (system-blueprint was at 9800, with nothing between

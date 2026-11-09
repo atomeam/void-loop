@@ -1,4 +1,4 @@
-// The idea-to-system family (skills/idea-to-system.js, lists run 15, 2026-11-09): business-clarify and system-blueprint are one routing
+// The idea-to-system family (skills/idea-to-system.js, lists run 14, 2026-11-09): business-clarify and system-blueprint are one routing
 // entry, every old ask still reaches the member that answered it, both old names stay as parts, and the family sits at
 // business-clarify's old rank (9500). Run: node --test tools/idea-to-system-family.test.mjs
 import test from 'node:test';

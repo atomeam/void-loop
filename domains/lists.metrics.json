@@ -760,8 +760,8 @@
    ]
   },
   {
-   "at": "2026-11-09T09:05:00Z",
-   "run": 15,
+   "at": "2026-11-09T11:36:00Z",
+   "run": 14,
    "closed": 8,
    "touched": 9,
    "pct_blocked": 0,
@@ -772,13 +772,13 @@
    "median_basis": "days from queued to built over the 8 items: 0 (live 404s, timer asks), 3 (idea-to-system pair, podcasts asks), 5 (onlineconverter asks), 6 (site-test close list), 19 (fringe titles), 25 (store wishlist rows); median 4",
    "asks_open_start": 29,
    "asks_open_end": 16,
-   "note": "Run 14 (2026-11-09 12:25 AM ET) failed before any branch or PR, so nothing was left to finish. The live site's empty 404s on /tools.json, /api/* and /?q= were Cloudflare Pages Git builds of every bot push (since 2026-11-07 20:00 UTC) publishing the repo root with no Functions over production; #2560 makes those builds publish nothing, beside #2559 (API pause plus rollback). The same outage was the podcasts exam ask (and the videos exam drop). Counts use tools/asks-link.mjs groups; the 16 left are ndscalc.ru, in #2413.",
+   "note": "Run 14 of the lists routine. The 12:25 AM ET attempt failed before any branch or PR; the 4:02 AM ET retry opened #2561 (labelled run 15) and its merge gate went red on checks that were red on main itself since 2026-11-07 (/journal/ without a handoff tag; _headers at 101 of 100 rules), which is also why the routine's runs since 2026-11-05 could not land. This run took #2561 over, relabelled it run 14 and fixed main's red checks in it. The live site's empty 404s on /tools.json, /api/* and /?q= were Cloudflare Pages Git builds of every bot push (since 2026-11-07 20:00 UTC) publishing the repo root with no Functions over production; #2559 (merged) turns those builds off and rolls back automatically, #2560 makes them publish nothing. Counts use tools/asks-link.mjs groups; the 16 left are ndscalc.ru, in Claude's open #2413.",
    "items": [
     {
-     "what": "live site: Pages Git builds no longer replace production (root wrangler.toml, tools/pages-git-off.test.mjs)",
+     "what": "green foundation: the live empty 404s (Cloudflare Pages Git builds publishing the repo root, fixed and auto-healed by #2559, #2560 adds a root wrangler.toml) and main's two red checks since 2026-11-07 (/journal/ had no verse-handoff tag, so handoff-scan and HANDOFF-GAPS.md failed; its CSP rule took _headers to 101 of Cloudflare's 100 rules, so privacy-guard failed): /journal/ declares in: text (its ?q= search), out: url (DOI links), the two /.well-known/ JSON rules share one, HANDOFF-GAPS.md regenerated",
      "list": "site tester / live incident",
      "status": "built",
-     "link": "https://github.com/atomeam/void-loop/pull/2560"
+     "link": "https://github.com/atomeam/void-loop/pull/2559"
     },
     {
      "what": "seven early fringe pages say Verse, each draft has a window.__name hook with a selftest; verse-name LEGACY empty",
@@ -817,7 +817,7 @@
      "what": "podcasts exam asks (2 wordings): the cause was the live outage",
      "list": "V01D asks",
      "status": "built",
-     "link": "https://github.com/atomeam/void-loop/pull/2560"
+     "link": "https://github.com/atomeam/void-loop/pull/2559"
     },
     {
      "what": "ndscalc.ru asks (16 wordings): VAT mode passed 10/12; the rest is in Claude's open PR",

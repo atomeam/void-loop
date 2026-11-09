@@ -100,7 +100,7 @@ Verse sets up `you@yourdomain.com` for a creator in minutes and charges for the 
 
 ## Wishlist rows
 
-The store, creator platform and business email rows are in `docs/wishlist.md` (rows 15 to 17) since lists run 15 (2026-11-09).
+The store, creator platform and business email rows are in `docs/wishlist.md` (rows 15 to 17) since lists run 14 (2026-11-09).
 
 ## Self-made products: auto-publish (Adam, 2026-10-15)
 Verse's own products go on sale automatically when the price is within the set range, they carry no trademarks, their files are tested, and each gets a public log entry. Anything outside the range stays a hidden draft. Recorded in domains/void.decisions.json (adam-20261015-store-autopublish).
