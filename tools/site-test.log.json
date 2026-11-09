@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T23:19:19Z",
-  "passed": 39,
-  "of": 41,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
- },
- {
   "at": "2026-10-17T23:49:12Z",
   "passed": 41,
   "of": 42,
@@ -7609,6 +7602,24 @@
      "ask": "what can you do",
      "why": [
       "slow 16396 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T23:24:31Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 676,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
      ]
     }
    ]

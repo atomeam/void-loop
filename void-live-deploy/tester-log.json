@@ -3,13 +3,20 @@
  "cases": 115,
  "runsTotal": 300,
  "kinds": {
-  "grow": 68,
+  "grow": 67,
   "file": 49,
-  "visitor": 179,
+  "visitor": 180,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T23:24:31Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T22:59:18Z",
    "passed": 0,
@@ -289,28 +296,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T16:36:16Z",
-   "passed": 111,
-   "of": 114,
-   "kind": "file",
-   "ms": 396,
-   "note": "fix: \"play voidquest\" fps 6 < 7",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -364,9 +349,9 @@
   },
   {
    "from": "2026-10-12",
-   "runs": 38,
-   "passed": 2030,
-   "of": 2227
+   "runs": 37,
+   "passed": 1991,
+   "of": 2186
   },
   {
    "from": "2026-10-19",
@@ -382,7 +367,7 @@
   },
   {
    "from": "2026-11-02",
-   "runs": 260,
+   "runs": 261,
    "passed": 6138,
    "of": 8004,
    "broken": 14,
