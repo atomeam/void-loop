@@ -5552,7 +5552,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-08"
+   "at": "2026-11-09"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6808,7 +6808,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 14,
+   "bytes": 15,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6817,9 +6817,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 13,
-   "weight": 14,
-   "at": "2026-11-08"
+   "text": 14,
+   "weight": 15,
+   "at": "2026-11-09"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -9602,6 +9602,20 @@
    "shell": "none",
    "weight": 3165116,
    "at": "2026-10-30"
+  },
+  "pokupon.ua": {
+   "bytes": 1165281,
+   "controls": 335,
+   "scripts": 10,
+   "styles": 47,
+   "nodes": 4037,
+   "routes": 8,
+   "htmlControls": 320,
+   "counted": "rendered",
+   "text": 14663,
+   "shell": "none",
+   "weight": 1229651,
+   "at": "2026-11-09"
   },
   "politicalcompass.org": {
    "bytes": 3956203,
@@ -12498,6 +12512,20 @@
   "tradukka.com": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "trafflink.xyz": {
+   "bytes": 4530,
+   "controls": 3,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 2,
+   "htmlControls": 2,
+   "counted": "rendered",
+   "text": 190,
+   "shell": "none",
+   "weight": 7690,
+   "at": "2026-11-09"
   },
   "translate.com": {
    "bytes": 945597,
