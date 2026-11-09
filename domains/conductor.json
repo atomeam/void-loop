@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T15:26:05.154Z",
+ "updated": "2026-11-09T15:35:29.595Z",
  "last24h": {
   "ticks": 153,
-  "started": 90,
+  "started": 91,
   "requeued": 5,
   "setAside": 1,
   "probes": 9,
-  "errors": 77
+  "errors": 76
  },
  "broken": [],
  "held": [
@@ -154,7 +154,8 @@
   "mw9cebzl": 1794234667948,
   "mw9cecyj": 1794235252971,
   "mw9ceds5": 1794236764431,
-  "mw9emynl": 1794237965154
+  "mw9emynl": 1794237965154,
+  "mw9emzn0": 1794238529595
  },
  "sweptAt": 1794237965154,
  "blueprintsAt": 1794237965154,
@@ -242,11 +243,6 @@
   "probe:explain-recursion-in-python"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T15:28:26.578Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T15:37:52.532Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2830,6 +2826,34 @@
    "sweep": true,
    "blueprints": 0,
    "held": 272,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T15:35:29.595Z",
+   "open": 280,
+   "started": [
+    {
+     "id": "mw9emzn0",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 270,
    "warnings": 1
   }
  ]
