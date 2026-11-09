@@ -2,7 +2,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { checkStl, guard, priceOk, priceFor, trademarkHits, originOk, sync, readCatalog, glb, forgeFiles } from './store-publish.mjs';
+import { checkStl, guard, priceOk, priceFor, trademarkHits, originOk, sync, readCatalog, glb, forgeFiles, check } from './store-publish.mjs';
+import http from 'node:http';
 import { STORE_PRODUCTS } from '../void-live-deploy/lib/store.js';
 import { storeMoments, plan } from './clips.mjs';
 
@@ -49,4 +50,19 @@ test('store-publish: each published product becomes an ad clip, filmed on its ow
   assert.equal(m.length, 1); assert.equal(m[0].url, '/store/#v01d-clips-pack');
   assert.ok(storeMoments().length >= 0);
   if (storeMoments().length) { assert.ok(plan('2026-10-16', {}, 3).some((e) => e.moment.startsWith('store-')), 'a new product gets a slot'); assert.ok(!plan('2026-10-16', {}, 1)[0].moment.startsWith('store-'), 'a one-clip day stays on performance'); }
+});
+
+// the download check (tools/store-publish.mjs check): a store that does not answer is an outage, never the product's fault
+// (2026-11-08: an empty body from the store API unpublished three good free products); a store that answers "no link" still unpublishes
+test('store-publish check: an outage leaves products as they are; a store that refuses the link still fails them', async () => {
+  const live = readCatalog().products.filter((p) => p.status === 'live' && p.files && !p.cents && p.published && p.log).map((p) => p.id);
+  const serve = (body) => new Promise((ok) => { const s = http.createServer((q, r) => { r.writeHead(body ? 200 : 404); r.end(body); }).listen(0, '127.0.0.1', () => ok(s)); });
+  const quiet = console.log; console.log = () => {};
+  try {
+    const down = await serve(''), refused = await serve('{"ok":false,"error":"not a free download"}');
+    const a = await check('http://127.0.0.1:' + down.address().port, false), b = await check('http://127.0.0.1:' + refused.address().port, false);
+    down.close(); refused.close();
+    assert.deepEqual(a, [], 'an empty answer from the store unpublishes nothing');
+    assert.deepEqual(b, live, 'a store that answers without a signed link fails every live free product');
+  } finally { console.log = quiet; }
 });
