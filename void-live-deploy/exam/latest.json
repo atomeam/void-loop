@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T22:19:04.059Z",
+  "at": "2026-11-09T22:47:24.332Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -39,7 +39,7 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of planet money",
+          "ask": "play the latest episode of the ted radio hour",
           "failed": [
             "audio"
           ],
@@ -110,25 +110,24 @@
       }
     },
     "weather": {
-      "score": 96.7,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp",
-            "close"
+            "skill"
           ],
-          "score": 57.1
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -236,10 +235,66 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 88.9,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "la liga scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "nba team celtics",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -367,7 +422,7 @@
     }
   },
   "lowest": {
-    "domain": "definitions",
-    "score": 90
+    "domain": "sports",
+    "score": 88.9
   }
 }

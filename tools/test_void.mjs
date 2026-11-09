@@ -133,6 +133,10 @@ const watchdog = setInterval(() => {
 watchdog.unref();
 // Poll instead of guessing a delay: the shared box is often busy, fixed sleeps flake.
 const until = async (fn, ms = 4000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
+// A page promise that may never settle (a rAF wait on a throttled or stuck renderer pends forever, and one hung await stalled
+// the whole suite until the 300 s watchdog said "no check finished": main's check-timeout flakes of 2026-10-18 ran in the same
+// minutes as the fly-stars ones). Race it against a cap and sample what is there; the abandoned evaluate dies with the page's context.
+const capped = (p, ms = 4000) => Promise.race([p, new Promise((res) => setTimeout(res, ms))]);
 // After a reload or a goto: the page's skills are in (void.html sets data-skills="ready" on <html> once every module has
 // loaded and the kept things are rendered), then a short settle. Replaces guessed 1.5 s waits: quicker on a fast machine,
 // and right on a slow one, where the skills took longer than the guess (suite speed, 2026-10-16).
@@ -6294,8 +6298,9 @@ try {
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
       // a slow frame draws the streak one frame after the move it shows (void.html's drawStars runs skyTick), so D stays held
       // for two more frames and the streak drawn for the last move is sampled too (main's verify, 2026-10-30: x jumped to -181
-      // in one capped step and the hold ended before the next draw)
-      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {});
+      // in one capped step and the hold ended before the next draw); capped: a throttled renderer never fires the frame, and an
+      // unbounded await here stalled the suite to the 300 s watchdog - the max() sampling above already kept the best frame seen
+      await capped(page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {}));
       const v = await stars(page); streak = Math.max(streak, v.streak.dx); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
     await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
@@ -9721,12 +9726,21 @@ try {
   // every block of the self card but the lead starts closed (owner, 2026-10-18) and "Newest" leads it (2026-10-19): the card is read as a reader
   // reads it, each block opened by its heading, so what sits in a closed block is still checked as shown text
   const selfOpened = () => t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
-  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await selfOpened(); return /I am strong at sums and thin on places/.test(pg) && /Log/.test(pg) && !/What got built/i.test(pg); }, 4000); check('voice: Verse says what it thinks of itself, in its own words, with a quiet link to its log (what it asked for and built is on /log/)', ok, (await selfOpened()).slice(0, 600)); }
+  // the card's body needs three round trips before the words are there (/api/reflect, the self-blocks import, families.json -
+  // void.html drawVoice), so the deadline is a loaded runner's, not a fast machine's: the words are the assertion, not the pace
+  // (main's voice flake, 2026-10-25; the same lesson as the asks-after-the-title wait, 2026-10-19). The activity that used to
+  // sit on this card now lives on /log/; the stage card still waits on that same chain before its words and the log link exist.
+  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await selfOpened(); return /I am strong at sums and thin on places/.test(pg) && /Log/.test(pg) && !/What got built/i.test(pg); }, 12000); check('voice: Verse says what it thinks of itself, in its own words, with a quiet link to its log (what it asked for and built is on /log/)', ok, (await selfOpened()).slice(0, 600)); }
   { const TL = await t.p.context().newPage(); await TL.goto(base + 'log/');
     const logText = () => TL.evaluate(() => { const pg = document.querySelector('#log'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
     const ok = await until(async () => { const pg = await logText(); return /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 6000);
     check('log page: what Verse has asked for and how many of its asks were built', ok, (await logText()).slice(0, 600));
-    const v = await TL.evaluate(() => { const pg = document.querySelector('#log'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.vs-sec[data-sec=asked] .v-asks details')] : []; if (d[0]) { d[0].closest('details.vs-sec').open = true; d[0].open = true; } return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
+    // the bar and the asks come with the log body (lib/self-blocks.js selfCard, drawn by lib/verse-log.js), but that body
+    // lands in one innerHTML only after the log's fetches and imports, so a single read can land on "Reading the log…".
+    // The drawn state is polled for; what the page says is still decided by the assertion below (the reflection-card flake,
+    // 2026-10-25; the bar moved here with the log page).
+    let v = { now: null, max: null, w: '', asks: 0, meta: '' };
+    await until(async () => { const x = await TL.evaluate(() => { const pg = document.querySelector('#log'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.vs-sec[data-sec=asked] .v-asks details')] : []; if (d[0]) { d[0].closest('details.vs-sec').open = true; d[0].open = true; } return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; }); if (x.asks > 0 && x.now !== null && x.meta) v = x; return v.asks > 0 && v.now !== null && v.w !== ''; }, 12000);
     check('log page: what got built shows as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet', v.now === '2' && v.max === '5' && v.w === '40%' && v.asks > 0 && /Asked (in my daily reflection|after a build)/.test(v.meta) && /not built yet/.test(v.meta), JSON.stringify(v));
     await TL.close(); }
   } // CORE
@@ -12256,6 +12270,7 @@ try {
     const eUp = await until(() => E.p.$eval('.sph-card[data-sph="echo"] .ec-text', (e) => e.textContent.length > 0).catch(() => false), 15000);
     const eCard = await E.p.$eval('.sph-card[data-sph="echo"]', (e) => e.innerText).catch(() => '');
     const eCalls = eBodies.filter((b) => /counter-view/.test(b)).length, firstCalls = eBodies.filter((b) => /sea salty/.test(b) && !/counter-view/.test(b)).length;
+    await until(async () => /First answer/.test(await E.page()), 8000); // the answer page's .on lands one rAF after it mounts (void.html), and a loaded runner's frame is late: the echo card is not rAF-gated, so it can be up while the page is still mounting
     const pageBefore = await E.page();
     await E.p.click('.sph-card[data-sph="echo"] .ec-keep').catch(() => {});
     await E.p.waitForTimeout(300);
@@ -12282,15 +12297,14 @@ try {
     const C = await fresh();
     let choirNet = 0;
     await C.ask('make a clock', 500);
-    await C.ctx.route(/\/api\//, (r) => { choirNet++; return r.fulfill({ status: 204, body: '' }); });
+    await C.ctx.route(/\/api\//, (r) => { if (!/card-art/.test(r.request().url())) choirNet++; return r.fulfill({ status: 204, body: '' }); }); // a skill's own card art is that skill's (see below), and a busy machine paints the clock's art late: it is not the choir's network
     await C.ask('what almost answered that', 800);
     const cUp = await until(() => C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => /you might have meant/.test(e.innerText)).catch(() => false), 20000);
     const cCard = await C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => e.innerText).catch(() => '');
     const cBtns = await C.p.$$eval('.sph-card[data-sph="near-choir"] .nc-go', (b) => b.map((x) => x.getAttribute('data-ask'))).catch(() => []);
     const choirCalls = choirNet; // the choir itself: none. The tapped skill's own card may paint its art (/api/card-art), which is that skill's, not the choir's
     await C.p.click('.sph-card[data-sph="near-choir"] .nc-go').catch(() => {});
-    await C.p.waitForTimeout(500);
-    const recent = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')[0]);
+    const recent = await until(async () => { const a = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')[0]); return a === cBtns[0] ? a : false; }, 5000); // the tap logs its ask the frame it runs: a loaded frame is late, so poll instead of guessing 500 ms
     check('stage pack h: "what almost answered that" lists up to 3 other skills for the last ask ("make a clock") as "you might have meant", one tap each runs that skill\'s first example; no network call; "choir practice near me" does not open it',
       cUp && /for: make a clock/.test(cCard) && cBtns.length >= 1 && cBtns.length <= 3 && recent === cBtns[0] && choirCalls === 0 && (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0 && !C.errors.length,
       JSON.stringify({ cUp, cCard: cCard.slice(0, 200), cBtns, recent, choirCalls, choirNet, errs: C.errors }));
