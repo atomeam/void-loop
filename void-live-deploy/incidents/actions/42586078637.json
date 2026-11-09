@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-09T08:32:03Z",
+ "sha": "21d07097b418a4f2643ca1a1fd72e2ed8871ea20",
+ "runId": 42586078637,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42586078637",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 129056838863,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42586078637/job/129056838863",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "- `/is-it/tuesday`: does not open: answers nothing",
+    "- `/is-it/valentines-day`: does not open: answers nothing",
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "- `/jobs/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/jobs/alerts/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/jobs/companies/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/jobs/regions/`: a file or API it needs fails: 404 /api/jobs",
+    "- `/journal/`: a file or API it needs fails: 404 /api/feed?u=https%3A%2F%2Fajsonline.org%2Ffeed",
+    "- `/keep-it-running/`: a file or API it needs fails: 404 /api/catalog; dead link: 404 /one-time-fix/; dead link: 404 /full-stack-audit/",
+    "- `/local/`: a file or API it needs fails: 404 /api/local; a file or API it needs fails: 404 /api/local?world=&offset=0",
+    "- `/markets/caps/`: a file or API it needs fails: 404 /api/markets?caps=1",
+    "- `/markets/screener/`: a file or API it needs fails: 404 /api/markets?scan=1",
+    "- `/news/global-headlines/`: a file or API it needs fails: 404 /api/news?sec=top&lang=en; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-09; a file or API it needs fails: 404 /api/daily-art?kind=news&key=top&day=2026-11-09&json=1",
+    "- `/obituaries/`: dead link: 404 /gradient/",
+    "- `/paint/`: dead link: 404 /flip/; dead link: 404 /gradient/",
+    "- `/password/`: dead link: 404 /password-strength/",
+    "- `/podcast/`: does not open: answers nothing",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
