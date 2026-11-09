@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T09:42:56.522Z",
+  "at": "2026-11-09T12:04:10.027Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,10 +34,24 @@
       }
     },
     "podcasts": {
-      "score": 95.2,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -130,10 +144,17 @@
       }
     },
     "directions": {
-      "score": 98.2,
+      "score": 97.4,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "directions to springfield",
+          "failed": [
+            "rival"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "cómo llego al museo del prado",
           "failed": [
