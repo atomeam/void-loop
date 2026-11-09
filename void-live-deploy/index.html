@@ -1175,6 +1175,7 @@
     #void-anchor svg{width:16px;height:16px;display:block}
     @media (max-width:700px){#void-anchor{right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));opacity:.22}}
     .vpage.kept,.vpage.placed{opacity:1;filter:none;z-index:40}
+    .vpage.on{z-index:60}
     .vpage.kept:not(:has(video,audio,iframe)),.vpage.placed:not(:has(video,audio,iframe)),.vpage.on.placed:not(:has(video,audio,iframe)){transform:none}
     .thing,.vpage{touch-action:none}
     .thing :is(input,textarea,select,a,button),.vpage :is(input,textarea,select,a,button){touch-action:manipulation}
@@ -1930,10 +1931,12 @@ Object.values(things).forEach((th) => {
         if (th.locked) { selectedId = th.id; return; } // a locked card (skills/label.js, skills/stage-arrange.js) stays where it is: picked, never dragged or thrown
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
-        const origX = th.x, origY = th.y;
+        let origX = th.x, origY = th.y;
         const sk = stageKinds[th.kind]; // optional hooks a skill can react with; anything can still be thrown
         let cur = null, vx = 0, vy = 0, lastX = e.clientX, lastY = e.clientY, lastT = performance.now();
         const begin = () => {
+          if (el.isConnected) { origX = el.offsetLeft; origY = el.offsetTop; th.x = origX; th.y = origY; } // the crowd draws the picture (lib/card-stage.js) without moving the saved spot; the hand starts where the picture is
+          for (const node of stage.querySelectorAll(':scope > .thing[data-id]')) { const t = things[node.dataset.id]; if (t && t !== th) { t.x = node.offsetLeft; t.y = node.offsetTop; } } // render() mounts from the saved spot, which would pull the crowd off the picture a drop is aimed at
           selectedId = th.id;
           const media = holdsMedia(el);
           if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; if (media && el.isConnected) stage.appendChild(el); } // to the front (render order = z-order)
@@ -1972,10 +1975,12 @@ Object.values(things).forEach((th) => {
           const w = cur.offsetWidth || 40, h = cur.offsetHeight || 40;
           const verdict = releaseToss({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: stage.clientHeight });
           const speed = Math.hypot(vx, vy);
-          if (!verdict.gone && speed >= 0.62 && window.__cardCoast) { // a real flick that is not already a hard toss: slide, and leave only if the slide runs off
+          if (!verdict.gone && speed >= 0.62 && window.__cardCoast) { // a slide, not a throw: releaseToss already decided a hard toss
+            try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {} // where it was let go, before the slide: a drop onto another card merges and is not then thrown away
+            if (!things[th.id] || !cur.isConnected) return;
             const room = Math.max(80, Math.min(stage.clientHeight, dockSpace() - stage.getBoundingClientRect().top));
             const land = window.__cardCoast({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: room });
-            if (land.off) verdict.gone = true;
+            if (land.off) verdict.gone = true; // a slide that runs off still leaves
             else if (window.__glideCard && (Math.abs(land.x - th.x) > 3 || Math.abs(land.y - th.y) > 3)) { window.__glideCard(cur, th, land); return; }
           }
           if (!verdict.gone) { // a slow drop sets it back down
