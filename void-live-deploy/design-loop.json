@@ -169,6 +169,36 @@
    "listed": 3,
    "defectsBefore": 31,
    "defectsAfter": 15
+  },
+  {
+   "at": "2026-11-09T06:31:09.094Z",
+   "run": 18,
+   "measured": 30,
+   "clean": 21,
+   "fixed": 4,
+   "listed": 5,
+   "defectsBefore": 8,
+   "defectsAfter": 1
+  },
+  {
+   "at": "2026-11-09T08:22:18.656Z",
+   "run": 19,
+   "measured": 30,
+   "clean": 21,
+   "fixed": 5,
+   "listed": 4,
+   "defectsBefore": 13,
+   "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-09T10:26:00.757Z",
+   "run": 20,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 2,
+   "listed": 4,
+   "defectsBefore": 6,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -6792,18 +6822,8 @@
    "state": "clean"
   },
   "/lab/157-local-isolated-not-sequence/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-09T06:31:09.094Z",
    "before": {
-    "defects": 7,
-    "contrast": 0,
-    "targets": 6,
-    "unstyled": 1,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6812,8 +6832,7 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 7,
-   "moved": 0.051
+   "state": "clean"
   },
   "/lab/f231-taste-oracle/": {
    "at": "2026-11-09T01:06:50.730Z",
@@ -6866,31 +6885,1301 @@
    "state": "clean"
   },
   "/lab/f198-orientation-mlp-dom-gravity-swarm/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-09T06:31:09.094Z",
    "before": {
-    "defects": 15,
-    "contrast": 3,
-    "targets": 6,
-    "unstyled": 6,
-    "empty": 0,
-    "cls": 0.004,
-    "overflow": 2
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 9,
-    "contrast": 3,
+    "defects": 11,
+    "contrast": 5,
     "targets": 6,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.008,
-    "overflow": 2
+    "cls": 0.011,
+    "overflow": 0
    },
-   "rules": 9,
-   "moved": 0.131
+   "state": "listed",
+   "why": "the defects did not go down (11 -> 11)"
   },
   "/lab/f189-sealed-mlp-dom-agents/": {
    "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f616-loan-mortgage-payment/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 31
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 31
+   },
+   "rules": 2,
+   "moved": 0.004
+  },
+  "/first-automation-setup/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/keep-it-running/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/make-connection-error/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/zapier-zap-turned-off-or-held/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/n8n-webhook-404-not-registered/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/random/coin/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.147,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.147 that no rule fixes: listed for a builder)"
+  },
+  "/books/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 3,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0
+  },
+  "/generators/forum/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.04,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/jobs/salary/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/jobs/regions/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/password/strength/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.015,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/flights/airports/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/flights/distance/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/scoreboard/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.339,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.339 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f626-flooring-tile-estimator/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 2,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.165,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.165,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0,
+   "why": "(a layout shift of 0.165 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f613-tip-calculator/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/jobs/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/flights/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f193-webrtc-indexeddb-sealed-genome-swarm/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 4
+   },
+   "state": "clean"
+  },
+  "/lab/f615-packing-list-maker/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.032,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.002
+  },
+  "/generators/story/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.101,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.101 that no rule fixes: listed for a builder)"
+  },
+  "/pdf/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/autopilot/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.057,
+    "overflow": 172
+   },
+   "state": "clean"
+  },
+  "/lab/f612-bill-splitter/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.053,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/audit/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/privacy/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f235-forge-duel/": {
+   "at": "2026-11-09T06:31:09.094Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.644,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.644 that no rule fixes: listed for a builder)"
+  },
+  "/video/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.243,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.243 that no rule fixes: listed for a builder)"
+  },
+  "/lab/mind-map/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0
+  },
+  "/generators/chat/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.027,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/one-time/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/creed/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/markets/screener/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.014,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/markets/caps/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.029,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/dictation/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.27,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.27 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f625-regex-tester/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 4,
+    "contrast": 0,
+    "targets": 4,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.052,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.035,
+    "overflow": 0
+   },
+   "rules": 4,
+   "moved": 0.2
+  },
+  "/lab/f620-pomodoro-task-timer/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 2,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.001
+  },
+  "/trading-bots/arbitrage/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.002,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/checksum/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.088
+  },
+  "/lab/photo-palette/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/assimilated/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 60
+   },
+   "state": "clean"
+  },
+  "/creed/give/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/generators/make/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/cpan/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f619-spatial-memory-palace-flashcards/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 1610
+   },
+   "state": "clean"
+  },
+  "/lab/pattern/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.01,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.085,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.085,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0
+  },
+  "/vat/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.039,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fantasy/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.02,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/code-review/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.018,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/level/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/image/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.014,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/word-count/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/journal/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/learn-to-draw/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.101,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.101 that no rule fixes: listed for a builder)"
+  },
+  "/emojis/everywhere/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.191,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.191 that no rule fixes: listed for a builder)"
+  },
+  "/identity/": {
+   "at": "2026-11-09T08:22:18.656Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 37
+   },
+   "state": "clean"
+  },
+  "/g/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/stl/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/colour-management/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.024,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/colour-picker-tool/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.024,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/converter/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/rap/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/trend-50-200/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/breakout-20-10/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/dip-rsi2/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/local/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.508,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.508 that no rule fixes: listed for a builder)"
+  },
+  "/random/wheel/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/time/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.093,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/music/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/tuner/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/brain/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.428,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.428 that no rule fixes: listed for a builder)"
+  },
+  "/scores/sports/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.024,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/calculators/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.036,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/store/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 0.373,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.019,
+   "why": "(a layout shift of 0.373 that no rule fixes: listed for a builder)"
+  },
+  "/store/receipt/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 0.377,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.019,
+   "why": "(a layout shift of 0.377 that no rule fixes: listed for a builder)"
+  },
+  "/starboard/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.119,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.119 that no rule fixes: listed for a builder)"
+  },
+  "/base64/bases/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/paint/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.09,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/resize-image/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/generators/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.012,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/gradient/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 2,
+    "cls": 0.002,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it"
+  },
+  "/prizes/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/piano/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/bpm/": {
+   "at": "2026-11-09T10:26:00.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
