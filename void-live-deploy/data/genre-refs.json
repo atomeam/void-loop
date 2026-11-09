@@ -1,5 +1,5 @@
 {
- "made": "2026-11-02",
+ "made": "2026-11-09",
  "source": "Internet Archive netlabels (archive.org/details/netlabels), Creative Commons, no NonCommercial licence",
  "tool": "tools/genre-refs.mjs",
  "genres": {
@@ -69,24 +69,192 @@
       },
       "width": -25
      }
+    },
+    {
+     "id": "Robot_After_All_Volume_1",
+     "title": "B.E.A.S.M. - Intro",
+     "creator": "B.E.A.S.M.",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+     "page": "https://archive.org/details/Robot_After_All_Volume_1",
+     "file": "01-B.E.A.S.M._-_Intro.mp3",
+     "profile": {
+      "seconds": 49.3,
+      "bpm": 111.2,
+      "confidence": 0.3,
+      "swing": 0.533,
+      "tight": 27.9,
+      "late": -2.5,
+      "density": 5.74,
+      "lufs": -13.9,
+      "peak": 0.3,
+      "plr": 14.1,
+      "bands": {
+       "sub": -8.3,
+       "low": -2.8,
+       "mid": -6.5,
+       "presence": -10.9,
+       "air": -17
+      },
+      "width": -7.1
+     }
+    },
+    {
+     "id": "AMR047",
+     "title": "Intro",
+     "creator": "Dreddup",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/AMR047",
+     "file": "01_Intro.mp3",
+     "profile": {
+      "seconds": 51.6,
+      "bpm": 82.8,
+      "confidence": 0.28,
+      "swing": 0.545,
+      "tight": 47.6,
+      "late": 1.5,
+      "density": 6.42,
+      "lufs": -17.3,
+      "peak": -3.7,
+      "plr": 13.6,
+      "bands": {
+       "sub": -2.5,
+       "low": -4.4,
+       "mid": -11.4,
+       "presence": -30.4,
+       "air": -44.2
+      },
+      "width": -49.3
+     }
+    },
+    {
+     "id": "lift_muzak-NKSprod39",
+     "title": "101. Joviator - Lifting Down Megamix",
+     "creator": "Joviator",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/fr/",
+     "page": "https://archive.org/details/lift_muzak-NKSprod39",
+     "file": "101-lift_muzak-joviator_lifting_down_megamix-NKSintl.mp3",
+     "profile": {
+      "seconds": 47.8,
+      "bpm": 98.4,
+      "confidence": 0.1,
+      "swing": 0.588,
+      "tight": 37.2,
+      "late": -0.2,
+      "density": 4.91,
+      "lufs": -11.7,
+      "peak": 0.6,
+      "plr": 12.4,
+      "bands": {
+       "sub": -10.9,
+       "low": -4.2,
+       "mid": -4.3,
+       "presence": -8.7,
+       "air": -15.5
+      },
+      "width": -10.9
+     }
+    },
+    {
+     "id": "laconia002_coldcolours",
+     "title": "Still",
+     "creator": "Cold Colours",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/laconia002_coldcolours",
+     "file": "laconia002_coldcolours_01_Still_128.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 90.3,
+      "confidence": 0.13,
+      "swing": 0.537,
+      "tight": 44.7,
+      "late": -10.6,
+      "density": 3.82,
+      "lufs": -11.3,
+      "peak": 0.3,
+      "plr": 11.6,
+      "bands": {
+       "sub": -14.2,
+       "low": -1.7,
+       "mid": -6,
+       "presence": -15.7,
+       "air": -25.4
+      },
+      "width": -8.5
+     }
+    },
+    {
+     "id": "AMR056",
+     "title": "demons of the road the mechanical legion",
+     "creator": "Sadolust",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/us/",
+     "page": "https://archive.org/details/AMR056",
+     "file": "01_demons_of_the_road_the_mechanical_legion.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 107.3,
+      "confidence": 0.2,
+      "swing": 0.615,
+      "tight": 35.8,
+      "late": 0,
+      "density": 3.6,
+      "lufs": -15.7,
+      "peak": -8.7,
+      "plr": 7,
+      "bands": {
+       "sub": -27.7,
+       "low": -5.1,
+       "mid": -2.9,
+       "presence": -7.5,
+       "air": -27.7
+      },
+      "width": -4.3
+     }
+    },
+    {
+     "id": "gt461Deafness-BrokenLife",
+     "title": "Apraxia",
+     "creator": "deafness",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt461Deafness-BrokenLife",
+     "file": "01.Apraxia.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 67.2,
+      "confidence": 0.02,
+      "swing": 0.572,
+      "tight": 56.9,
+      "late": -3.1,
+      "density": 8.75,
+      "lufs": -24.2,
+      "peak": -0.6,
+      "plr": 23.5,
+      "bands": {
+       "sub": -0.1,
+       "low": -18.1,
+       "mid": -26.2,
+       "presence": -44.9,
+       "air": -58.7
+      },
+      "width": -16.2
+     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -12.75,
-     "low": -4.5,
-     "mid": -4.3,
-     "presence": -7.6,
-     "air": -16.5
+     "sub": -11.15,
+     "low": -5.66,
+     "mid": -8.24,
+     "presence": -16.66,
+     "air": -27.69
     },
-    "bpm": 84.5,
-    "swing": 0.62,
-    "tight": 42.15,
-    "density": 5.43,
-    "lufs": -9.15,
-    "plr": 9.05,
-    "width": -13.9,
-    "seconds": 120
+    "bpm": 90.78,
+    "swing": 0.58,
+    "tight": 41.8,
+    "density": 5.51,
+    "lufs": -14.05,
+    "plr": 12.54,
+    "width": -15.51,
+    "seconds": 448.7
    }
   },
   "beat": {
@@ -210,24 +378,389 @@
       },
       "width": -12.7
      }
+    },
+    {
+     "id": "rfl009",
+     "title": "rfl009-gosprom-01_-_broadway",
+     "creator": "Gosprom",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+     "page": "https://archive.org/details/rfl009",
+     "file": "rfl009-gosprom-01_-_broadway.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 92.1,
+      "confidence": 0.24,
+      "swing": 0.643,
+      "tight": 31.7,
+      "late": -0.5,
+      "density": 5.8,
+      "lufs": -8.9,
+      "peak": 0.6,
+      "plr": 9.5,
+      "bands": {
+       "sub": -15.4,
+       "low": -2.5,
+       "mid": -4.7,
+       "presence": -13.2,
+       "air": -18
+      },
+      "width": -12.7
+     }
+    },
+    {
+     "id": "2018-12-06_Plagiat_RespecteLaPuissancePapale_AudioSources",
+     "title": "Plagiat - Respecte La Pusisance Papale - Audio Sources and Sessions",
+     "creator": "Plagiat",
+     "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+     "page": "https://archive.org/details/2018-12-06_Plagiat_RespecteLaPuissancePapale_AudioSources",
+     "file": "Bass_ 1-11.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 92.3,
+      "confidence": 0.13,
+      "swing": 0.579,
+      "tight": 42.3,
+      "late": 2.7,
+      "density": 5.5,
+      "lufs": -32.4,
+      "peak": -14,
+      "plr": 18.4,
+      "bands": {
+       "sub": -2.2,
+       "low": -4.4,
+       "mid": -15.2,
+       "presence": -40,
+       "air": -53.9
+      },
+      "width": -60
+     }
+    },
+    {
+     "id": "onmp200",
+     "title": "House music is the answer",
+     "creator": "Oilboy's aftersun",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/onmp200",
+     "file": "101_Oilboys_aftersun_House_music_is_the_answer.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 62.5,
+      "confidence": 0.11,
+      "swing": 0.495,
+      "tight": 9.3,
+      "late": -0.5,
+      "density": 6.53,
+      "lufs": -9.8,
+      "peak": 1,
+      "plr": 10.8,
+      "bands": {
+       "sub": -4.5,
+       "low": -2.6,
+       "mid": -12,
+       "presence": -18.4,
+       "air": -18.3
+      },
+      "width": -11.6
+     }
+    },
+    {
+     "id": "20k135",
+     "title": "Luv thru the wind",
+     "creator": "True Type",
+     "license": "http://creativecommons.org/licenses/publicdomain/",
+     "page": "https://archive.org/details/20k135",
+     "file": "20k135-true-type-01-luv-thru-the-wind.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 96.3,
+      "confidence": 0.21,
+      "swing": 0.557,
+      "tight": 39.3,
+      "late": -3.5,
+      "density": 6.47,
+      "lufs": -7.2,
+      "peak": 4,
+      "plr": 11.2,
+      "bands": {
+       "sub": -10,
+       "low": -2.2,
+       "mid": -6,
+       "presence": -14.1,
+       "air": -22.8
+      },
+      "width": -21.7
+     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -6.77,
-     "low": -3.35,
-     "mid": -6.97,
-     "presence": -13.7,
-     "air": -18.37
+     "sub": -7.4,
+     "low": -3.14,
+     "mid": -8.22,
+     "presence": -17.56,
+     "air": -23.31
     },
-    "bpm": 80.97,
-    "swing": 0.5,
-    "tight": 19.93,
-    "density": 6.51,
-    "lufs": -11.27,
-    "plr": 11.9,
-    "width": -9.5,
-    "seconds": 240
+    "bpm": 83.39,
+    "swing": 0.54,
+    "tight": 25.29,
+    "density": 6.29,
+    "lufs": -12.92,
+    "plr": 12.19,
+    "width": -18,
+    "seconds": 480
+   }
+  },
+  "happy": {
+   "id": "happy",
+   "label": "dance and pop",
+   "subjects": [
+    "dance",
+    "electropop",
+    "pop",
+    "house"
+   ],
+   "tracks": [
+    {
+     "id": "mt006",
+     "title": "Nein Absolut Nicht",
+     "creator": "Doc",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/mt006",
+     "file": "01_-_Nein_Absolut_Nicht.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 60,
+      "confidence": 0.4,
+      "swing": 0.537,
+      "tight": 18.6,
+      "late": 3.4,
+      "density": 4.98,
+      "lufs": -11.7,
+      "peak": 0.3,
+      "plr": 12,
+      "bands": {
+       "sub": -10.4,
+       "low": -1.9,
+       "mid": -6.9,
+       "presence": -13.9,
+       "air": -18.3
+      },
+      "width": -8.9
+     }
+    },
+    {
+     "id": "m3d049_baudOfPassion_by_xik",
+     "title": "synchronized to your eyes",
+     "creator": "x|k",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/us/",
+     "page": "https://archive.org/details/m3d049_baudOfPassion_by_xik",
+     "file": "m3d049_bopMix_01_synchronizedToYourEyes_by_xik.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 70,
+      "confidence": 0.29,
+      "swing": 0.497,
+      "tight": 6.5,
+      "late": -6.5,
+      "density": 7,
+      "lufs": -11.6,
+      "peak": 0.5,
+      "plr": 12.1,
+      "bands": {
+       "sub": -5.9,
+       "low": -1.8,
+       "mid": -12.2,
+       "presence": -19,
+       "air": -20.1
+      },
+      "width": -60
+     }
+    },
+    {
+     "id": "tranzcd004Va-TranzmitterCompilationvolume3",
+     "title": "01.1- Leseux - He Surfs In The House",
+     "creator": "Tranzmitter Netlabel",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/br/",
+     "page": "https://archive.org/details/tranzcd004Va-TranzmitterCompilationvolume3",
+     "file": "01-Leseux-HeSurfsInTheHouse.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 61.5,
+      "confidence": 0.47,
+      "swing": 0.501,
+      "tight": 38.3,
+      "late": -4.8,
+      "density": 5.2,
+      "lufs": -10.8,
+      "peak": 1,
+      "plr": 11.8,
+      "bands": {
+       "sub": -10.2,
+       "low": -2.1,
+       "mid": -6.1,
+       "presence": -14.7,
+       "air": -19.8
+      },
+      "width": -12.7
+     }
+    },
+    {
+     "id": "MNF033_AFM--Sometimes_EP",
+     "title": "Kerfuffle",
+     "creator": "AFM",
+     "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+     "page": "https://archive.org/details/MNF033_AFM--Sometimes_EP",
+     "file": "01_AFM_-_Kerfuffle.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 62,
+      "confidence": 0.27,
+      "swing": 0.493,
+      "tight": 6.9,
+      "late": 0.4,
+      "density": 5.5,
+      "lufs": -10.2,
+      "peak": 0,
+      "plr": 10.2,
+      "bands": {
+       "sub": -6.3,
+       "low": -1.8,
+       "mid": -10.9,
+       "presence": -19.1,
+       "air": -17.6
+      },
+      "width": -17.9
+     }
+    },
+    {
+     "id": "BLUnderwood_Geo_Sync_Deluxe",
+     "title": "Geo-Sync Deluxe",
+     "creator": "BLUnderwood",
+     "license": "http://creativecommons.org/licenses/by/3.0/",
+     "page": "https://archive.org/details/BLUnderwood_Geo_Sync_Deluxe",
+     "file": "01_Geo_Sync_Deluxe.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 62,
+      "confidence": 0.27,
+      "swing": 0.491,
+      "tight": 9.3,
+      "late": 9.8,
+      "density": 4.95,
+      "lufs": -12.5,
+      "peak": -0.1,
+      "plr": 12.5,
+      "bands": {
+       "sub": -8.1,
+       "low": -1.9,
+       "mid": -7.2,
+       "presence": -21.3,
+       "air": -25.2
+      },
+      "width": -6.8
+     }
+    },
+    {
+     "id": "MNF022_DCM--Elevacion",
+     "title": "Osc 3",
+     "creator": "DCM",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+     "page": "https://archive.org/details/MNF022_DCM--Elevacion",
+     "file": "01_DCM_-_Osc_3.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 62.5,
+      "confidence": 0.32,
+      "swing": 0.466,
+      "tight": 31.2,
+      "late": -9.1,
+      "density": 7.57,
+      "lufs": -12.9,
+      "peak": 0.1,
+      "plr": 13.1,
+      "bands": {
+       "sub": -8,
+       "low": -1.1,
+       "mid": -14.3,
+       "presence": -20.4,
+       "air": -17.7
+      },
+      "width": -12.3
+     }
+    },
+    {
+     "id": "nqa056",
+     "title": "Tough Love",
+     "creator": "BUL!M!ATRON!",
+     "license": "http://creativecommons.org/licenses/by-sa/2.5/",
+     "page": "https://archive.org/details/nqa056",
+     "file": "01_BULIMIATRON_-_Tough_Love.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 67.7,
+      "confidence": 0.3,
+      "swing": 0.573,
+      "tight": 40,
+      "late": -7.6,
+      "density": 6.78,
+      "lufs": -7,
+      "peak": -1.5,
+      "plr": 5.5,
+      "bands": {
+       "sub": -11.1,
+       "low": -2.7,
+       "mid": -5.4,
+       "presence": -12.4,
+       "air": -14.2
+      },
+      "width": -60
+     }
+    },
+    {
+     "id": "MNF041_Callejas--Paramo",
+     "title": "Páramo 1",
+     "creator": "Callejas",
+     "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+     "page": "https://archive.org/details/MNF041_Callejas--Paramo",
+     "file": "01_Callejas_-_Páramo_1.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 62,
+      "confidence": 0.36,
+      "swing": 0.488,
+      "tight": 19,
+      "late": -6.8,
+      "density": 3.95,
+      "lufs": -14,
+      "peak": -0.2,
+      "plr": 13.8,
+      "bands": {
+       "sub": -4.3,
+       "low": -2.6,
+       "mid": -11.2,
+       "presence": -24.6,
+       "air": -31.8
+      },
+      "width": -8.1
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -8.04,
+     "low": -1.99,
+     "mid": -9.27,
+     "presence": -18.17,
+     "air": -20.59
+    },
+    "bpm": 63.46,
+    "swing": 0.51,
+    "tight": 21.23,
+    "density": 5.74,
+    "lufs": -11.34,
+    "plr": 11.38,
+    "width": -23.34,
+    "seconds": 480
    }
   },
   "rainy": {
@@ -351,24 +884,136 @@
       },
       "width": -11.2
      }
+    },
+    {
+     "id": "kahvicollection1",
+     "title": "forward and back",
+     "creator": "vae",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/",
+     "page": "https://archive.org/details/kahvicollection1",
+     "file": "kahvi001_vae-forwardandback.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 61.4,
+      "confidence": 0.07,
+      "swing": 0.563,
+      "tight": 30.8,
+      "late": 1.1,
+      "density": 5.17,
+      "lufs": -22.4,
+      "peak": -3.7,
+      "plr": 18.6,
+      "bands": {
+       "sub": -11,
+       "low": -3.6,
+       "mid": -4,
+       "presence": -15.8,
+       "air": -13.1
+      },
+      "width": -12.6
+     }
+    },
+    {
+     "id": "gt422Naugolnik-ExoticPassion",
+     "title": "Разговор ветра",
+     "creator": "Íàóãîëüíèê",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt422Naugolnik-ExoticPassion",
+     "file": "1..mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 92.3,
+      "confidence": 0.02,
+      "swing": null,
+      "tight": 39.6,
+      "late": -4.4,
+      "density": 9.77,
+      "lufs": -22.1,
+      "peak": -7.5,
+      "plr": 14.7,
+      "bands": {
+       "sub": -18.7,
+       "low": -6.5,
+       "mid": -1.2,
+       "presence": -47.5,
+       "air": -54.4
+      },
+      "width": -1.2
+     }
+    },
+    {
+     "id": "mia062",
+     "title": "X O",
+     "creator": "Ceptual",
+     "license": "http://creativecommons.org/licenses/by-nd/2.5/",
+     "page": "https://archive.org/details/mia062",
+     "file": "mia062_01_ceptual_-_X_O.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 116.9,
+      "confidence": 0.16,
+      "swing": 0.55,
+      "tight": 33.6,
+      "late": -3.7,
+      "density": 5.7,
+      "lufs": -13.1,
+      "peak": 0,
+      "plr": 13.1,
+      "bands": {
+       "sub": -15.6,
+       "low": -1.7,
+       "mid": -5.3,
+       "presence": -31.6,
+       "air": -44.7
+      },
+      "width": -5.1
+     }
+    },
+    {
+     "id": "gt450FieldExperience",
+     "title": "Forest, Square Lison, a Raven",
+     "creator": "Flavien Gillié",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt450FieldExperience",
+     "file": "01FlavienGilli-ForestSquareLisonARaven.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 74.4,
+      "confidence": 0.12,
+      "swing": 0.457,
+      "tight": 51.6,
+      "late": 5.5,
+      "density": 4.2,
+      "lufs": -24.1,
+      "peak": -0.4,
+      "plr": 23.6,
+      "bands": {
+       "sub": -3,
+       "low": -3.8,
+       "mid": -11.3,
+       "presence": -21,
+       "air": -36.1
+      },
+      "width": -11.1
+     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -10.3,
-     "low": -3.75,
-     "mid": -6.12,
-     "presence": -17.65,
-     "air": -22.87
+     "sub": -11.19,
+     "low": -3.82,
+     "mid": -5.79,
+     "presence": -23.31,
+     "air": -29.97
     },
-    "bpm": 104.48,
-    "swing": 0.54,
-    "tight": 20.65,
-    "density": 5.61,
-    "lufs": -15,
-    "plr": 13.55,
-    "width": -10.57,
-    "seconds": 240
+    "bpm": 95.36,
+    "swing": 0.53,
+    "tight": 29.78,
+    "density": 5.91,
+    "lufs": -17.71,
+    "plr": 15.53,
+    "width": -9.04,
+    "seconds": 480
    }
   },
   "dark": {
@@ -405,34 +1050,6 @@
        "air": -37.9
       },
       "width": -10.8
-     }
-    },
-    {
-     "id": "MNF041_Callejas--Paramo",
-     "title": "Páramo 1",
-     "creator": "Callejas",
-     "license": "https://creativecommons.org/licenses/by-sa/4.0/",
-     "page": "https://archive.org/details/MNF041_Callejas--Paramo",
-     "file": "01_Callejas_-_Páramo_1.mp3",
-     "profile": {
-      "seconds": 60,
-      "bpm": 62,
-      "confidence": 0.36,
-      "swing": 0.488,
-      "tight": 19,
-      "late": -6.8,
-      "density": 3.95,
-      "lufs": -14,
-      "peak": -0.2,
-      "plr": 13.8,
-      "bands": {
-       "sub": -4.3,
-       "low": -2.6,
-       "mid": -11.2,
-       "presence": -24.6,
-       "air": -31.8
-      },
-      "width": -8.1
      }
     },
     {
@@ -490,24 +1107,164 @@
       },
       "width": -8.5
      }
+    },
+    {
+     "id": "mt008",
+     "title": "As soon as I close my eyes (I can't recall what my face is like)",
+     "creator": "Doc & Lena Selyanina",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/mt008",
+     "file": "04_-_As_soon_as_I_close_my_eyes_I_cant_recall_what_my_face_is_like.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 88.6,
+      "confidence": 0.02,
+      "swing": 0.615,
+      "tight": 44.3,
+      "late": -3.1,
+      "density": 4.88,
+      "lufs": -17.3,
+      "peak": -0.1,
+      "plr": 17.2,
+      "bands": {
+       "sub": -10.5,
+       "low": -2.2,
+       "mid": -5.3,
+       "presence": -20.8,
+       "air": -35.9
+      },
+      "width": -3.4
+     }
+    },
+    {
+     "id": "mt001",
+     "title": "Subtonal",
+     "creator": "Electroteque",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/mt001",
+     "file": "02_-_Electroteque_-_Subtonal.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 110,
+      "confidence": 0.12,
+      "swing": 0.413,
+      "tight": 12.4,
+      "late": 7,
+      "density": 6.5,
+      "lufs": -17.5,
+      "peak": -1.4,
+      "plr": 16.1,
+      "bands": {
+       "sub": -11.1,
+       "low": -1.2,
+       "mid": -8.5,
+       "presence": -18.2,
+       "air": -24.2
+      },
+      "width": -4.4
+     }
+    },
+    {
+     "id": "gt253Razxca-Unreleased1999-2010",
+     "title": "004 AGWEK",
+     "creator": "razxca",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt253Razxca-Unreleased1999-2010",
+     "file": "004Agwek.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 72.5,
+      "confidence": 0.98,
+      "swing": 0.537,
+      "tight": 49.2,
+      "late": -0.4,
+      "density": 7.8,
+      "lufs": -7.9,
+      "peak": 0,
+      "plr": 7.9,
+      "bands": {
+       "sub": -4.7,
+       "low": -1.8,
+       "mid": -23.4,
+       "presence": -42,
+       "air": -48.4
+      },
+      "width": -4.4
+     }
+    },
+    {
+     "id": "bof065",
+     "title": "A Dream of Beauty is an Illusion in a Life of Loss",
+     "creator": "Scott Lawlor",
+     "license": "http://creativecommons.org/licenses/by/3.0/",
+     "page": "https://archive.org/details/bof065",
+     "file": "03_a_dream_of_Beauty_is_an_illusion_in_a_life_of_loss.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 75.8,
+      "confidence": 0.03,
+      "swing": null,
+      "tight": 49.4,
+      "late": -4.6,
+      "density": 6.92,
+      "lufs": -23.1,
+      "peak": -8.6,
+      "plr": 14.5,
+      "bands": {
+       "sub": -8.4,
+       "low": -1.4,
+       "mid": -9.1,
+       "presence": -33.2,
+       "air": -48.8
+      },
+      "width": 0
+     }
+    },
+    {
+     "id": "AMR100",
+     "title": "Shock Therapy",
+     "creator": "Rose Red",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/us/",
+     "page": "https://archive.org/details/AMR100",
+     "file": "1-01RoseRed-ShockTherapy.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 82.3,
+      "confidence": 0.03,
+      "swing": 0.561,
+      "tight": 50.2,
+      "late": 4.7,
+      "density": 6.02,
+      "lufs": -14.3,
+      "peak": -0.6,
+      "plr": 13.7,
+      "bands": {
+       "sub": -31.2,
+       "low": -2.2,
+       "mid": -4,
+       "presence": -31.4,
+       "air": -56
+      },
+      "width": 6.1
+     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -8.97,
-     "low": -2.33,
-     "mid": -9.12,
-     "presence": -21.75,
-     "air": -36.42
+     "sub": -12.19,
+     "low": -1.94,
+     "mid": -9.45,
+     "presence": -26,
+     "air": -40.9
     },
-    "bpm": 80.2,
+    "bpm": 86,
     "swing": 0.55,
-    "tight": 37.1,
-    "density": 5.88,
-    "lufs": -14.35,
-    "plr": 11.83,
-    "width": -6.87,
-    "seconds": 240
+    "tight": 41.86,
+    "density": 6.46,
+    "lufs": -15.44,
+    "plr": 12.86,
+    "width": -3.19,
+    "seconds": 480
    }
   },
   "epic": {
@@ -604,34 +1361,6 @@
      }
     },
     {
-     "id": "mt008",
-     "title": "As soon as I close my eyes (I can't recall what my face is like)",
-     "creator": "Doc & Lena Selyanina",
-     "license": "http://creativecommons.org/licenses/by/2.5/",
-     "page": "https://archive.org/details/mt008",
-     "file": "04_-_As_soon_as_I_close_my_eyes_I_cant_recall_what_my_face_is_like.mp3",
-     "profile": {
-      "seconds": 60,
-      "bpm": 88.6,
-      "confidence": 0.02,
-      "swing": 0.615,
-      "tight": 44.3,
-      "late": -3.1,
-      "density": 4.88,
-      "lufs": -17.3,
-      "peak": -0.1,
-      "plr": 17.2,
-      "bands": {
-       "sub": -10.5,
-       "low": -2.2,
-       "mid": -5.3,
-       "presence": -20.8,
-       "air": -35.9
-      },
-      "width": -3.4
-     }
-    },
-    {
      "id": "AMR045",
      "title": "Dark Ages",
      "creator": "Upheaval",
@@ -686,24 +1415,108 @@
       },
       "width": -3.6
      }
+    },
+    {
+     "id": "mia063",
+     "title": "Intro",
+     "creator": "Muhr",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/mia063",
+     "file": "mia063_01_muhr_-_intro.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 98.7,
+      "confidence": 0.01,
+      "swing": 0.534,
+      "tight": 37.4,
+      "late": 4.1,
+      "density": 5.23,
+      "lufs": -15.7,
+      "peak": -5,
+      "plr": 10.7,
+      "bands": {
+       "sub": -5.6,
+       "low": -3.1,
+       "mid": -6.5,
+       "presence": -19.7,
+       "air": -33.8
+      },
+      "width": -6.7
+     }
+    },
+    {
+     "id": "dlnet010",
+     "title": "Secret History",
+     "creator": "Henry Flower",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/",
+     "page": "https://archive.org/details/dlnet010",
+     "file": "four.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 102.2,
+      "confidence": 0.14,
+      "swing": 0.602,
+      "tight": 34.8,
+      "late": 1.9,
+      "density": 7.37,
+      "lufs": -16.3,
+      "peak": -4.3,
+      "plr": 12,
+      "bands": {
+       "sub": -25.3,
+       "low": -2.6,
+       "mid": -3.5,
+       "presence": -44.1,
+       "air": -66.7
+      },
+      "width": -11.8
+     }
+    },
+    {
+     "id": "dlnet018",
+     "title": "So Long Friend",
+     "creator": "Cam Butler",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/",
+     "page": "https://archive.org/details/dlnet018",
+     "file": "four.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 102.7,
+      "confidence": 0.09,
+      "swing": 0.502,
+      "tight": 34.4,
+      "late": -6.9,
+      "density": 4.62,
+      "lufs": -8.5,
+      "peak": 0.7,
+      "plr": 9.2,
+      "bands": {
+       "sub": -22.5,
+       "low": -4.1,
+       "mid": -2.5,
+       "presence": -14,
+       "air": -30.4
+      },
+      "width": -8.9
+     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -12.68,
-     "low": -3.67,
-     "mid": -5.08,
-     "presence": -17.27,
-     "air": -30.77
+     "sub": -14.87,
+     "low": -3.7,
+     "mid": -4.71,
+     "presence": -20.07,
+     "air": -34.95
     },
-    "bpm": 86.98,
-    "swing": 0.57,
-    "tight": 41.13,
-    "density": 4.83,
-    "lufs": -16.72,
-    "plr": 14.72,
-    "width": -5.5,
-    "seconds": 360
+    "bpm": 92.11,
+    "swing": 0.55,
+    "tight": 38.64,
+    "density": 5.16,
+    "lufs": -15.44,
+    "plr": 12.88,
+    "width": -7.13,
+    "seconds": 480
    }
   },
   "lullaby": {
@@ -882,24 +1695,80 @@
       },
       "width": -3.1
      }
+    },
+    {
+     "id": "tou246",
+     "title": "Tonight (original mix)",
+     "creator": "Redmann",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/tou246",
+     "file": "tou246a.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 67.5,
+      "confidence": 0.23,
+      "swing": 0.478,
+      "tight": 13.1,
+      "late": -2,
+      "density": 6.05,
+      "lufs": -10.4,
+      "peak": 0.5,
+      "plr": 10.9,
+      "bands": {
+       "sub": -13.7,
+       "low": -2.8,
+       "mid": -3.9,
+       "presence": -16.2,
+       "air": -22.3
+      },
+      "width": -8
+     }
+    },
+    {
+     "id": "tou241",
+     "title": "Ethereal (original mix)",
+     "creator": "Marc Burt",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/tou241",
+     "file": "tou241a.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 66.5,
+      "confidence": 0.11,
+      "swing": 0.453,
+      "tight": 28.3,
+      "late": 1.3,
+      "density": 4.52,
+      "lufs": -14.4,
+      "peak": -0.1,
+      "plr": 14.3,
+      "bands": {
+       "sub": -18.8,
+       "low": -2.9,
+       "mid": -4.2,
+       "presence": -12.6,
+       "air": -13.7
+      },
+      "width": -5.1
+     }
     }
    ],
    "average": {
     "bands": {
-     "sub": -24.72,
-     "low": -7.97,
-     "mid": -2.53,
-     "presence": -25.02,
-     "air": -41.88
+     "sub": -22.6,
+     "low": -6.69,
+     "mid": -2.91,
+     "presence": -22.36,
+     "air": -35.91
     },
-    "bpm": 89.98,
-    "swing": 0.51,
-    "tight": 38.97,
-    "density": 6.58,
-    "lufs": -16.53,
-    "plr": 14.08,
-    "width": -3.32,
-    "seconds": 360
+    "bpm": 84.24,
+    "swing": 0.5,
+    "tight": 34.4,
+    "density": 6.25,
+    "lufs": -15.5,
+    "plr": 13.71,
+    "width": -4.12,
+    "seconds": 480
    }
   }
  }
