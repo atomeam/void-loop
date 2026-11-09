@@ -399,67 +399,67 @@
     },
     "ask-20261031-1324-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261031-1532-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261031-1538-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261031-1554-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261031-1559-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261103-0222-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261105-1440-2": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261105-1451-2": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-1936-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-1936-3": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-1955-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-2017-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-2017-2": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-2037-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-2037-2": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-0859-1": {
       "decision": "queued",
-      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) is Claude's open PR #2413, claimed, so this run left it to that PR"
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
     },
     "ask-20261106-1936-2": {
       "decision": "built",

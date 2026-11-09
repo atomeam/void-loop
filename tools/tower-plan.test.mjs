@@ -24,16 +24,16 @@ test('negative controls: no block, a line without an id, an unknown id and a rep
   const bad = problems(p, ['paint']);
   assert.ok(bad.some((b) => /not a tower floor: no such floor/.test(b)) && bad.some((b) => /named twice: paint/.test(b)), bad.join('; '));
 });
-test('the card names the easiest site left as its target, says why, and lists the next easiest, from the gate ; the hand plan no longer picks the target', () => {
+test('the card names the current floor and lists the next floors from the gate, closest first; the hand plan does not pick the floor', () => {
   const plan = parsePlan(md), t = tower(); t.plan = plan;
   const cur = t.floors.find((f) => f.state === 'current'), html = towerHtml(t, esc, { now: 0 });
-  assert.ok(html.includes('>' + t.beaten + ' surpassed · easiest site left: ' + esc(cur.site)));
-  assert.match(html, /Why this one: /); assert.match(html, /class="tw-next"[^>]*><b[^>]*>Up next<\/b>/); assert.doesNotMatch(html, /tw-plan/);
+  assert.ok(html.includes(t.beaten + ' assimilated · current floor: ' + esc(cur.site)));
+  assert.match(html, /class="tw-next"><b>Next floors<\/b>/); assert.doesNotMatch(html, /tw-plan|easiest site left/);
   const f = FLOORS.find((x) => x.id === plan.next[0].id), t2 = tower([], { [f.id]: passingRows(f) });
   assert.equal(t2.floors.find((x) => x.id === f.id).state, 'beaten');
 });
 test('no plan file: the card still names the gate\'s current site in the score line', () => {
   const t = tower(), cur = t.floors.find((f) => f.state === 'current');
   assert.doesNotMatch(towerHtml(t, esc, { now: 0 }), /tw-plan/);
-  assert.ok(towerHtml(t, esc, { now: 0 }).includes(t.beaten + ' surpassed · easiest site left: ' + cur.site));
+  assert.ok(towerHtml(t, esc, { now: 0 }).includes(t.beaten + ' assimilated · current floor: ' + cur.site));
 });

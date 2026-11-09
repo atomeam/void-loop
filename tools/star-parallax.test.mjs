@@ -3,7 +3,7 @@
 // Run: node --test tools/star-parallax.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FAR, NEAR, DRIFT, STREAK_MAX, layerView, placeAxis, streakOf } from '../void-live-deploy/lib/star-parallax.js';
+import { FAR, NEAR, DRIFT, STREAK_MAX, layerView, placeAxis, streakOf, smoothedSpeed } from '../void-live-deploy/lib/star-parallax.js';
 import { HOME, zoomAt, fly } from '../void-live-deploy/lib/stage-camera.js';
 
 const W = 1280, H = 800;
@@ -66,4 +66,21 @@ test('the near stars streak only when moving fast, pointing back where they came
   assert.equal(streakOf(0, 0, 0.3).warp, 0); assert.ok(streakOf(0, 0, 3).warp > 0 && streakOf(0, 0, 300).warp <= 0.22);
   assert.equal(streakOf(0, 0, -5).warp, 0, 'zooming out is no warp');
   assert.deepEqual(streakOf(-9000, 0, 9, { still: true }), { dx: 0, dy: 0, warp: 0 });
+});
+
+test('the sky speed estimate is honest about the frame gap: one slow frame lands the full speed (main\'s fly-stars flake, 2026-10-18)', () => {
+  const FULL = NEAR.pan * 900; // the near layer's true speed at full flight (px/s)
+  // a one-second frame on a loaded machine: the first event lands the full speed (the fixed half-blend restored only half, and the next gap ate it back under the streak floor)
+  assert.ok(smoothedSpeed(0, FULL, 1) > 0.95 * FULL, 'a one-second frame gets its speed: ' + smoothedSpeed(0, FULL, 1));
+  assert.ok(smoothedSpeed(0, FULL, 10) > 0.95 * FULL, 'any longer frame too (the step is capped, the speed is not)');
+  // at 60 fps it eases in like the old blend and settles on the true speed
+  let v = 0; for (let i = 0; i < 60; i++) v = smoothedSpeed(v, FULL, 1 / 60);
+  assert.ok(Math.abs(v - FULL) < 0.05 * FULL, '60 fps settles on the true speed: ' + v);
+  // so the streak shows on that first move after a starved gap: over the floor, under the cap
+  const s = streakOf(-smoothedSpeed(0, FULL, 1), 0);
+  assert.ok(s.dx >= 1.5 && s.dx <= STREAK_MAX, JSON.stringify(s));
+  // a frame with no gap keeps the old estimate
+  assert.equal(smoothedSpeed(180, FULL, 0), 180);
+  assert.equal(smoothedSpeed(180, FULL, -1), 180);
+  assert.equal(smoothedSpeed(180, 'no'), 180);
 });

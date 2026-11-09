@@ -4,7 +4,7 @@
  * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
  * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
  * it used to stop at five). One at a time, so a thousand is as easy to page through as three; Done ends it whenever you like. A returning
- * visitor also gets one quiet line on their first touch, "I made 1,204 new things while you were away · show me" (the true count) (nudge below,
+ * visitor also gets one quiet line on their first touch, "New: <the newest thing> (and 1,203 more) · show me" (the true count) (nudge below,
  * called by the page); a first visit gets nothing, so the empty page stays empty.
  * Each step runs the change's own ask through the stage (stageApi.ask), so the actual card or thing appears; a small bar
  * above the ask box says "1 of 3", the change in plain words, and Next → (takes that step's things away and runs the next),
@@ -453,7 +453,7 @@ export async function nudge(stageApi, note) {
   const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode === 'recent') old.remove(); // something new outranks the recent sparkle
   if (!note) return steps.length;
   if (note.querySelector('.showcase-pill')) note.textContent = '';
-  pill(stageApi, note, steps, 'I built this: ', true);
+  pill(stageApi, note, steps, 'New: ', true); // plain, not a boast (house rule)
   bell(stageApi, steps);
   return steps.length;
 }
@@ -489,9 +489,9 @@ export function bell(stageApi, steps, { recent = false } = {}) {
   if (typeof document === 'undefined' || !steps || !steps.length || document.getElementById('whatsnew-bell')) return null;
   const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell'; b.dataset.showcase = 'show';
   const n = steps.length; b.dataset.count = String(n); b.dataset.mode = recent ? 'recent' : 'new';
-  b.setAttribute('aria-label', recent ? 'Recently built: ' + n.toLocaleString('en') + (n === 1 ? ' thing' : ' things') + ' Verse made this week: show me'
-    : (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
-  b.title = recent ? 'Recently built: tap to see what Verse made this week' : 'What\'s new: tap to see what Verse made';
+  b.setAttribute('aria-label', recent ? 'Recently built: ' + n.toLocaleString('en') + (n === 1 ? ' thing' : ' things') + ' built this week: show me'
+    : (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' since you were last here: show me');
+  b.title = recent ? 'Recently built: tap to see what was built this week' : 'What\'s new: tap to see it';
   b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:80;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
     + '.whatsnew-bell svg{width:20px;height:20px;animation:wn-spin 6s linear infinite}.whatsnew-bell b{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:#ff6a3d;color:#fff;font:700 11px/17px system-ui,sans-serif;text-align:center;padding:0 4px;box-sizing:border-box}'
     + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
@@ -513,14 +513,14 @@ async function run(text, api) {
   const say = (m) => api.say(cat + m);
   const stageApi = api.stage;
   let list = [];
-  try { list = await ledger(); } catch (_) { say("can't read what I made just now"); return 'none'; }
+  try { list = await ledger(); } catch (_) { say("can't read what's new just now"); return 'none'; }
   const V = await verifiedSet();
   // everything, asked for by name: every playable build, whether or not this device has been shown it (never on its own)
   if (everythingOf(text)) {
     const all = whatsNew(sinceLast(list), { verified: V }).steps;
     if (!all.length) { say('nothing to show yet'); return 'none'; }
     markShown(all);
-    start(stageApi, all, { label: 'Everything I made' });
+    start(stageApi, all, { label: 'Everything so far' });
     return 'showcase';
   }
   const floor = read(SEEN_KEY);

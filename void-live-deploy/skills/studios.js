@@ -17,7 +17,7 @@ export const STUDIOS = Object.freeze([
   { page: '/hosting/', say: ['web hosting sizing', 'hosting sizer', 'hosting and domain studio'] },
   { page: '/tournaments/', say: ['tournament scorer', 'tournament scoring', 'score my tournament', 'score a tournament'] },
   { page: '/prizes/', say: ['prize wheel odds', 'prize wheel odds and payout calculator'] },
-  { page: '/obituaries/', say: ['obituaries', 'obituaries and lineage'], label: 'Obituaries & Lineage', what: 'a respectful archive of every tool Verse has surpassed: their history, their contribution, and the studio that carries their work forward' },
+  { page: '/obituaries/', say: ['obituaries', 'obituaries and lineage'], label: 'Obituaries & Lineage', what: 'the sites Verse learns from: each one\'s own cited history, what it gave the web, and the Verse page that grew from it' },
 ]);
 
 const norm = (s) => String(s || '').toLowerCase().replace(/[?!.]+$/, '').replace(/&/g, 'and').replace(/\s+/g, ' ').trim();
