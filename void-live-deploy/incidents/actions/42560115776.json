@@ -1,0 +1,66 @@
+{
+ "at": "2026-11-09T04:36:09Z",
+ "sha": "4f8bf48caa8f6c2c868ce6ebb385cf4e14272866",
+ "runId": 42560115776,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42560115776",
+ "workflow": "Site test",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test",
+   "id": 128974465246,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42560115776/job/128974465246",
+   "conclusion": "failure",
+   "step": {
+    "number": 12,
+    "name": "Nothing clipped at three window sizes (tools/no-clip.mjs)"
+   },
+   "fails": [
+    "FAIL 1280x800 .tome did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 1280x800 #showcase-bar did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 820x600 .tome did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 820x600 #showcase-bar did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 390x700 .tome did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 390x700 #showcase-bar did not open: page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL 1920x1080 zoom 1 did not open: page.waitForFunction: Timeout 30000ms exceeded.",
+    "FAIL 1366x768 zoom 1 did not open: page.waitForFunction: Timeout 30000ms exceeded.",
+    "FAIL 1280x720 zoom 1 did not open: page.waitForFunction: Timeout 30000ms exceeded.",
+    "FAIL 1280x600 zoom 1 did not open: page.waitForFunction: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "pass void-live-deploy/films/index.html word whole at 96.5%",
+    "pass void-live-deploy/films/index.html word whole at 97%",
+    "pass void-live-deploy/films/index.html word whole at 98%",
+    "pass void-live-deploy/films/index.html word whole at 99%",
+    "pass void-live-deploy/films/index.html word whole at 99.5%",
+    "pass void-live-deploy/skills/films.js glitch is rare and slow",
+    "pass void-live-deploy/skills/films.js glitch is rare and slow at 8s",
+    "pass void-live-deploy/skills/films.js glitch is rare and slow at 12s",
+    "pass void-live-deploy/skills/films.js word whole at 0%",
+    "pass void-live-deploy/skills/films.js word whole at 30%",
+    "pass void-live-deploy/skills/films.js word whole at 60%",
+    "pass void-live-deploy/skills/films.js word whole at 94.5%",
+    "pass void-live-deploy/skills/films.js word whole at 95.5%",
+    "pass void-live-deploy/skills/films.js word whole at 96.5%",
+    "pass void-live-deploy/skills/films.js word whole at 97%",
+    "pass void-live-deploy/skills/films.js word whole at 98%",
+    "pass void-live-deploy/skills/films.js word whole at 99%",
+    "pass void-live-deploy/skills/films.js word whole at 99.5%",
+    "FAIL live skills/films.js has the fix  -> 0 bytes",
+    "FAIL live lib/card-frame.js has the fix  -> 0 bytes",
+    "FAIL live sw.js has the fix  -> 0 bytes",
+    "FAIL live card fresh 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 1280x800 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card fresh 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 740x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card fresh 390x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "FAIL live card returning 390x700 opened  -> page.waitForSelector: Timeout 30000ms exceeded.",
+    "29/38 passed",
+    "Error: the book or the self card hides text or leaves the window at one of 1280x800, 820x600, 390x700",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
