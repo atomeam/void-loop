@@ -87,7 +87,7 @@ export default {
   run,
   suite() {
     const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-    const nasty = 'client <img src=x onerror=alert(1)> onboarding';
+    const nasty = 'client <script>alert(1)</script> onboarding';
     const html = cardHtml(nasty, suggestConnections(nasty), esc);
     const checks = [
       ['onboarding', isConnectPack('connect pack for client onboarding')],
@@ -105,7 +105,7 @@ export default {
       ['bare', extractProcess('connect pack') === 'the described process'],
       ['platform', !suggestConnections('platform migration').some((t) => t.includes('form and list'))],
       ['status card', suggestConnections('weekly status reports').some((t) => t.includes('monitor-pack'))],
-      ['escaped', html.includes('&lt;img') && !html.includes('<img') && !html.includes('<script')]
+      ['escaped', html.includes('&lt;script&gt;') && !html.includes('<script')]
     ];
     const bad = checks.filter((c) => !c[1]).map((c) => c[0]);
     return { ok: bad.length === 0, got: bad.length ? bad.join(', ') : 'match works' };
