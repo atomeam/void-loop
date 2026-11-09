@@ -2021,15 +2021,6 @@
  },
  "runs": [
   {
-   "at": "2026-10-31T15:56:49Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "mail-tester.com"
-  },
-  {
    "at": "2026-10-31T15:59:22Z",
    "line": "Versus: took on no site; next ndscalc.ru (the target)",
    "built": 0,
@@ -2399,6 +2390,15 @@
    "fixed": [],
    "pages_per_day": 1,
    "reads_next": "arcticfoxhaircolor.com"
+  },
+  {
+   "at": "2026-11-09T10:13:36Z",
+   "line": "Versus: took on no site (also read: 4 no-family, 1 walled, 2 gone, 1 covered); next tsundere.pw (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "timeclockwizard.com"
   }
  ]
 }

@@ -1238,3 +1238,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-08T16:47:53Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 gone); next digitalsogame.com (the target)
 2026-11-08T22:28:20Z | verse | build | Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows (also read: 5 no-family, 1 walled, 1 covered); next digitalsogame.com (the target)
 2026-11-08T22:31:43Z | verse | build | Versus: took on colorbook.io (colour, /color/colour-management/?c=ff5733), surpassed 13 of 15 rows; next digitalsogame.com (the target)
+2026-11-09T10:13:36Z | verse | build | Versus: took on no site (also read: 4 no-family, 1 walled, 2 gone, 1 covered); next tsundere.pw (the target)
