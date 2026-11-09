@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T13:14:30.603Z",
+ "updated": "2026-11-09T13:23:51.223Z",
  "last24h": {
   "ticks": 154,
-  "started": 86,
+  "started": 88,
   "requeued": 5,
   "setAside": 1,
   "probes": 7,
-  "errors": 88
+  "errors": 87
  },
  "broken": [],
  "held": [
@@ -75,11 +75,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 26,
+   "used": 56,
    "cap": 90
   },
   "day": {
-   "used": 164,
+   "used": 194,
    "cap": 360
   },
   "room": true,
@@ -127,7 +127,8 @@
   "mw97n4si": 1794226692478,
   "mw97n5l7": 1794227253962,
   "mw97n6dz": 1794228380151,
-  "mw99zdn2": 1794230070603
+  "mw99zdn2": 1794230070603,
+  "mw99zeo5": 1794230631223
  },
  "sweptAt": 1794230070603,
  "blueprintsAt": 1794230070603,
@@ -215,11 +216,6 @@
   "probe:best-sci-fi-books-2024"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T13:16:51.216Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T13:26:11.351Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2615,6 +2611,40 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T13:23:51.223Z",
+   "open": 279,
+   "started": [
+    {
+     "id": "mvwl3cbp",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 103
+    },
+    {
+     "id": "mw99zeo5",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 15,
    "warnings": 1
