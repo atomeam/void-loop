@@ -235,10 +235,11 @@ export function nextJobs({ order, floors, files, max = 3 }) {
   }
   return out;
 }
-/** the tower's queue order as floor ids: the unbeaten ones as the climb meets them, then the conquered ones (their gaps come last) */
+/** the tower's queue order as floor ids: the unbeaten ones as the climb meets them (closest first), then the assimilated ones (their gaps come last) */
 function towerOrder() {
   let ev = {}; try { ev = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'tower.evidence.json'), 'utf8')).floors || {}; } catch (_) {}
-  const all = tower([], ev, null).floors; return [...all.filter((f) => !f.beaten), ...all.filter((f) => f.beaten)].map((f) => f.id);
+  let pa = null; try { pa = JSON.parse(fs.readFileSync(path.join(root, 'void-live-deploy', 'parity.json'), 'utf8')); } catch (_) {} // the studies set the closest-first order (docs/TOWER-RULES.md rule 2)
+  const all = tower([], ev, null, null, null, null, null, null, null, null, pa).floors; return [...all.filter((f) => !f.beaten), ...all.filter((f) => f.beaten)].map((f) => f.id);
 }
 async function queueJobs(files, floors, { max = 3, dry = false } = {}) {
   const tok = process.env.VOID_OWNER_TOKEN || process.env.VOID_MISSES_TOKEN, H = { authorization: 'Bearer ' + tok, 'content-type': 'application/json', 'user-agent': 'a2m-feature-scan/1.0' };

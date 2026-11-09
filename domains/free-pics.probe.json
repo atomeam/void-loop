@@ -1,5 +1,5 @@
 {
- "at": "2026-11-02T13:27:22.826Z",
+ "at": "2026-11-09T13:51:05.903Z",
  "note": "one polite request per source; no keys, no picture bytes",
  "sources": {
   "commons": {
@@ -8,7 +8,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 937,
+   "ms": 602,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -69,7 +69,7 @@
    "why": "",
    "query": "moon",
    "status": 200,
-   "ms": 279,
+   "ms": 355,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -123,140 +123,11 @@
   },
   "loc": {
    "name": "Library of Congress",
-   "state": "works",
+   "state": "rate limited (429)",
    "why": "",
-   "query": "baseball",
-   "status": 200,
-   "ms": 716,
-   "via": "primary",
+   "status": 403,
    "rate": {},
-   "topKeys": [
-    "breadcrumbs",
-    "content",
-    "context",
-    "description",
-    "expert_resources",
-    "facet_trail",
-    "facet_views",
-    "facets",
-    "featured_items",
-    "form_facets",
-    "image_url",
-    "manifest",
-    "next",
-    "next_sibling",
-    "options",
-    "pages",
-    "pagination",
-    "portal",
-    "portal_label",
-    "previous",
-    "previous_sibling",
-    "results",
-    "search",
-    "shards",
-    "site_type",
-    "timestamp",
-    "title",
-    "type",
-    "views"
-   ],
-   "resultShape": {
-    "path": "$.breadcrumbs",
-    "n": 3,
-    "keys": [
-     "Library of Congress"
-    ],
-    "rights": {}
-   },
-   "found": 7,
-   "accepted": 4,
-   "refused": {
-    "a logo, sponsor or advertising category": 1,
-    "no \"no known restrictions\" statement": 1,
-    "its words suggest children, a school or something unsuitable": 1
-   },
-   "licenceShapes": [
-    {
-     "licRaw": "PUBLIC DOMAIN",
-     "licVersion": "",
-     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
-     "own": false,
-     "hasAuthor": true,
-     "hasSourcePage": true,
-     "thumbHost": "tile.loc.gov",
-     "taken": "1911-01-01"
-    },
-    {
-     "licRaw": "PUBLIC DOMAIN",
-     "licVersion": "",
-     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
-     "own": false,
-     "hasAuthor": false,
-     "hasSourcePage": true,
-     "thumbHost": "tile.loc.gov",
-     "taken": "1915-01-01"
-    },
-    {
-     "licRaw": "PUBLIC DOMAIN",
-     "licVersion": "",
-     "licUrl": "https://www.loc.gov/rr/print/res/rights.html",
-     "own": false,
-     "hasAuthor": false,
-     "hasSourcePage": true,
-     "thumbHost": "tile.loc.gov",
-     "taken": "1913-01-01"
-    }
-   ],
-   "rightsFields": {
-    "access_restricted": "false",
-    "unrestricted": "true",
-    "item.rights_advisory": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\"",
-    "item.rights_information": "\"No known restrictions on publication. For more information, see George Grantham Bain Collection - Rights and Restrictions Information https://www.loc.gov/rr/print/res/274_bain.html\""
-   },
-   "itemKeys": [
-    "call_number",
-    "contributors",
-    "control_number",
-    "created",
-    "created_published",
-    "created_published_date",
-    "creators",
-    "date",
-    "digital_id",
-    "display_offsite",
-    "format",
-    "formats",
-    "genre",
-    "id",
-    "language",
-    "link",
-    "marc",
-    "medium",
-    "medium_brief",
-    "mediums",
-    "modified",
-    "notes",
-    "number_former_id",
-    "other_control_numbers",
-    "part_of",
-    "repository",
-    "reproduction_number",
-    "resource_links",
-    "rights_advisory",
-    "rights_information",
-    "service_low",
-    "service_medium",
-    "sort_date",
-    "source_collection",
-    "source_created",
-    "source_modified",
-    "subject_headings",
-    "subjects",
-    "summary",
-    "thumb_gallery",
-    "title"
-   ]
+   "error": "loc answered 429"
   },
   "met": {
    "name": "The Met Collection",
@@ -264,7 +135,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 368,
+   "ms": 159,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -314,7 +185,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 304,
+   "ms": 326,
    "via": "primary",
    "rate": {
     "x-ratelimit-limit": "60",
@@ -388,7 +259,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 585,
+   "ms": 875,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -529,7 +400,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 287,
+   "ms": 626,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -553,9 +424,9 @@
     }
    },
    "found": 10,
-   "accepted": 9,
+   "accepted": 8,
    "refused": {
-    "a non-commercial or no-derivatives licence": 1
+    "a non-commercial or no-derivatives licence": 2
    },
    "licenceShapes": [
     {
@@ -586,7 +457,7 @@
      "hasAuthor": false,
      "hasSourcePage": true,
      "thumbHost": "archive.org",
-     "taken": "2009-09-16"
+     "taken": "2009-09-19"
     }
    ]
   }

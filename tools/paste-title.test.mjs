@@ -12,7 +12,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const page = readFileSync(resolve(root, 'void-live-deploy/void.html'), 'utf8');
 
 test('the paste card title is the raw paste first line, not the normalized ask', () => {
-  assert.match(page, /const given = String\(details \|\| ''\), first = given\.split\('\\n'\)\[0\]\.trim\(\);/,
+  assert.match(page, /const given = String\(details \|\| ''\), first = answers \? '' : given\.split\('\\n'\)\[0\]\.trim\(\);/,
     'showFix reads the first line of the paste as given');
   assert.match(page, /const title = clipLine\(first \|\| ask, 120\)/,
     'the title is that line (the ask only when there is no paste at all)');
@@ -21,4 +21,10 @@ test('the paste card title is the raw paste first line, not the normalized ask',
 test('a long title still ends at a whole sentence past 40% of the room, or at a word with an ellipsis', () => {
   assert.match(page, /ends\[ends\.length - 1\] > n \* 0\.4/, 'the owner’s whole-sentence cut is kept');
   assert.match(page, /\+ '\\u2026'/, 'a word cut still carries the ellipsis');
+});
+
+test('a paste that answers "paste what it shows" keeps the ask it answers as its title', () => {
+  assert.match(page, /async function showFix\(ask, details, answers\)/, 'showFix knows when the paste answers an ask');
+  assert.match(page, /showFix\(pf\.ask, full, true\)/, 'the waiting fix ask passes itself as the title');
+  assert.match(page, /showFix\(full\.split\('\\n'\)\[0\], full\)/, 'a paste on its own still titles itself');
 });

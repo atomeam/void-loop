@@ -160,7 +160,7 @@ export async function publish(opts, files) {
   if (old) Object.assign(old, row); else cat.products.push(row);
   sync(cat);
   if (paid) fs.appendFileSync(QUEUE, JSON.stringify({ at: now, id: row.id, need: 'needs Gumroad listing', price: row.wouldBe, file: key, note: 'No Gumroad API key: Adam lists it by hand (or Stripe checkout takes it once on).' }) + '\n');
-  if (!opts.noClip) fs.appendFileSync(CLIP_QUEUE, JSON.stringify({ at: now, id: row.id, name: row.name, hook: opts.hook || 'I made this and put it in my store', caption: (opts.blurb || '').slice(0, 160), ...(opts.clipAsk ? { ask: opts.clipAsk } : {}) }) + '\n');
+  if (!opts.noClip) fs.appendFileSync(CLIP_QUEUE, JSON.stringify({ at: now, id: row.id, name: row.name, hook: opts.hook || 'New in the store', caption: (opts.blurb || '').slice(0, 160), ...(opts.clipAsk ? { ask: opts.clipAsk } : {}) }) + '\n');
   if (!opts.noInbox) toInbox(row, files.length, readCatalog());
   return { row, zip: zf };
 }
@@ -232,15 +232,19 @@ export async function check(site = SITE, write = true) {
   const cat = readCatalog(), now = new Date().toISOString(), failed = [];
   for (const p of cat.products) {
     if (p.status !== 'live' || !p.files || p.cents) continue;
-    let why = '';
+    let why = '', down = '';
     try {
-      const r = await fetch(site + '/api/store/free', { method: 'POST', body: JSON.stringify({ id: p.id }) }).then((r) => r.json());
+      // the store's own API not answering (a site outage, an empty 404 while a deploy is missing its Functions) says nothing about
+      // this product's download: it is reported and the product stays as it is. On 2026-11-08 an outage answered every product with
+      // an empty body ("Unexpected end of JSON input") and three good free products were unpublished for it.
+      const r = await fetch(site + '/api/store/free', { method: 'POST', body: JSON.stringify({ id: p.id }) }).then((r) => r.json()).catch((e) => { down = e.message; return null; }); // void-review: ok: one signed link per product is the check itself (a handful of free products, one at a time on purpose)
+      if (!r) throw new Error('the store did not answer (' + down + ')');
       const url = r.items && r.items[0] && r.items[0].downloads[0] && r.items[0].downloads[0].url;
       if (!url) why = 'no signed link (' + (r.error || 'unknown') + ')';
       else { const d = await fetch(url, { headers: { range: 'bytes=0-3' } }); if (!d.ok) why = 'download answered ' + d.status; else { const b = new Uint8Array(await d.arrayBuffer()); if (!b.length) why = 'download was empty'; } }
     } catch (e) { why = 'unreachable: ' + e.message; }
-    console.log((why ? '✗ ' : '✓ ') + p.id + (why ? ': ' + why : ''));
-    if (why && p.published && p.log) { p.status = 'unpublished'; p.log.push({ at: now, what: 'unpublished automatically: ' + why }); failed.push(p.id); }
+    console.log((why ? '✗ ' : '✓ ') + p.id + (why ? ': ' + why : '') + (down ? ' (left as it is: the store itself did not answer)' : ''));
+    if (why && !down && p.published && p.log) { p.status = 'unpublished'; p.log.push({ at: now, what: 'unpublished automatically: ' + why }); failed.push(p.id); }
   }
   if (failed.length && write) sync(cat);
   return failed;

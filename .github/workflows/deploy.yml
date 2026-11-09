@@ -110,6 +110,7 @@ jobs:
           node tools/growth-fold.mjs --keep # the entries PRs left in growth/entries/ join the served ledger now; growth-fold.yml commits the fold on main
           node tools/incident-log.mjs assemble || true # one file per suite run, folded into the served incidents.json
           node tools/tower-files.mjs assemble || true # one file per floor, folded into the served tower.evidence.json
+          node tools/rival-pages.mjs || echo "::warning::rival-pages did not run" # every rival's page (/rival/), from the studies and the floors as served (docs/TOWER-RULES.md rule 8)
           node tools/refresh.mjs --keep-going || echo "::warning title=A generated card is stale::tools/refresh.mjs could not regenerate every step; the live site may show an older card"
           node tools/public-ledger.mjs # the served ledger leaves out what Verse studies (tools/private.mjs); the repo's stays append-only
           node tools/public-quotes.mjs # only Verse's words are served: the owner's quoted words leave every served comment and JSON file (the repo keeps them)

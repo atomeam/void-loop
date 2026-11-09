@@ -472,8 +472,6 @@
       padding: 0 18px;
     }
     #whisper .vc { color: var(--fg); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-#void-offer { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; margin-top: 2px; }
-#void-offer a { color: var(--ink-3); }
     .shape {
       position: absolute;
       user-select: none;
@@ -1196,7 +1194,6 @@
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
-    <div id="void-offer" hidden></div>
     <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
@@ -1337,7 +1334,6 @@
         if (rect) { rect.setAttribute('y', d.fill.y); rect.setAttribute('height', d.fill.h); } } catch (_) {} };
       draw(); addEventListener('void:stage-change', draw);
     })();
-    let offerShown = false; // the paid-products line shows once per load, after the first answered ask
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
       if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
@@ -1348,13 +1344,6 @@
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
       // the day a skill last answered, on this device only (lib/skill-use.js; asked by Verse: a last-used day for every skill): a day, never a word of any ask
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
-      // the paid products where the free page leaves off: after the first answered ask of the load, one muted line with the
-      // three products (Void Monthly, One-Time Fix, Full Stack Audit); static words only, nothing fetched, nothing stored
-      if (!offerShown && attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) {
-        offerShown = true;
-        const offer = document.getElementById('void-offer');
-        if (offer) { offer.hidden = false; offer.innerHTML = 'Made with Verse — <a href="/members/?from=stage">Void Monthly</a> · <a href="/one-time-fix/">One-Time Fix</a> · <a href="/full-stack-audit/">Full Stack Audit</a>'; }
-      }
     }
     let sayCount = 0;
     function fitOpenPanels() {
@@ -2928,15 +2917,16 @@ say('nothing selected to remove');
         const plain = '<p>' + esc(w.thoughts || '') + '</p>';
         if (!SB) return plain;
         try {
-          if (typeof SB.selfCard !== 'function') return SB.selfHtml(SB.selfSections(vv), esc);
-          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam);
-          bodyOf.shown = r.shown; return SB.selfHtml(r.sections, esc);
+          // the stage keeps Verse's words only; what it did and when (since you last looked, asks, builds, numbers) is on its log page, /log/ (lib/verse-log.js)
+          const words = (ss) => ss.filter((s) => s.id === 'words');
+          if (typeof SB.selfCard !== 'function') return SB.selfHtml(words(SB.selfSections(vv)), esc);
+          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam), w = words(r.sections);
+          bodyOf.shown = r.shown; return w.length ? SB.selfHtml(w, esc) : '<p class="sub">Nothing new from me since you last read this.</p>';
         } catch (_) { return plain; } };
       let h = '<h2>What I think of myself</h2><div data-v-body>' + bodyOf(v, fam0) + '</div>';
-      // what's built and improved, skill by skill, from the ledger itself (owner, 2026-10-21: "i need to see in better detail what is built or improved for everything in Verse")
-      try { const [BD, led] = await Promise.all([import('/lib/built-detail.js'), fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null))]); if (vpageEl !== el) return; if (BD && led) h += BD.builtDetailHtml(BD.builtByFamily(led, fam0), esc); } catch (_) {}
-      try { const PC = await import('/lib/progress-chart.js'); if (vpageEl !== el) return; const led2 = await fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null)); if (led2) h += PC.progressHtml(PC.weekly(led2), esc); const tl = await fetch('/tester-log.json').then((r) => (r.ok ? r.json() : null)).catch(() => null); if (tl && PC.testerHtml) h += PC.testerHtml(tl, esc); } catch (_) {}
-      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
+      // what was built and when, skill by skill, the weekly chart and the tester trend are on the log page (/log/), linked here quietly
+      h += '<p class="sub vs-loglink"><a href="/log/">Log</a>: what was built and when, and the numbers behind this card.</p>';
+      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); } catch (_) {}
       // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
@@ -2946,7 +2936,7 @@ say('nothing selected to remove');
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to Verse" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
         + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></details>';
-      el.innerHTML = h + '<div data-v-pulse></div>' + (h.includes('data-v-conf') ? '' : '<div data-v-conf></div>') + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      el.innerHTML = h + (owner ? '<div data-v-pulse></div>' : '') + '<div class="src">Source: my reflections</div>';
       mountCorrect(el, said); mountPulse(el);
       // the long lists show their newest five; "show all N" unfolds the rest (owner, 2026-10-18), and the Root cause / Surface filter keeps to that fold
       const wire = () => {
@@ -2958,16 +2948,7 @@ say('nothing selected to remove');
         el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
       };
       wire();
-      // the growth velocity keeps up (asked by Verse: "updating in real time"): while this card is open, a stage change (a build landing puts things on the
-      // stage) reads /api/reflect again and redraws the week's line in place, at most once a minute (lib/self-blocks.js VELOCITY_EVERY); no timer, and
-      // the listener lets go the first time it finds the card closed
-      if (SB && el.querySelector('.vs-velocity')) { let velAt = 0, velBusy = false;
-        const onStage = async () => { if (vpageEl !== el) return removeEventListener('void:stage-change', onStage);
-          if (velBusy || Date.now() - velAt < SB.VELOCITY_EVERY) return; velBusy = true; velAt = Date.now();
-          try { const nv = await fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), box = vpageEl === el && el.querySelector('.vs-velocity');
-            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc, SB.friction(nv.asks)); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
-          velBusy = false; };
-        addEventListener('void:stage-change', onStage); }
+      // the growth velocity and its live redraw are on the log page now (lib/verse-log.js)
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Verse, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
       const conf = (fam) => import('/lib/skill-confidence.js').then((m) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc
@@ -2978,7 +2959,7 @@ say('nothing selected to remove');
         const box = vpageEl === el && el.querySelector('[data-v-body]'), now = JSON.stringify([nv, nf]);
         if (!box || !nv || !Array.isArray(nv.entries) || now === was) return;
         was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(nf || fam0); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
-        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(nv, nf || fam0))); } catch (_) {}
+        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); } catch (_) {}
       });
     }
     // every data card keeps itself current while it is open (owner, 2026-10-19: "all cards should constantly update"): update() runs every
@@ -4621,10 +4602,10 @@ say('nothing selected to remove');
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
       if (!SKY.lib) { warmSky(); return; }
       skyView();
-      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move)
+      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed with a weight that grows with the frame's gap (lib/star-parallax.js smoothedSpeed: the fixed half-blend here let a starved estimate crawl back at half the speed while the eye flew flat out, so on a loaded machine the streak could stay under its floor the whole move); a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move
         const t = Math.min(0.25, dt);
-        SKY.vx = SKY.vx * 0.5 + 0.5 * (SKY.near.ox - was.ox) / t; SKY.vy = SKY.vy * 0.5 + 0.5 * (SKY.near.oy - was.oy) / t;
-        SKY.zr = SKY.zr * 0.5 + 0.5 * Math.log(SKY.cam.z / (prev.z || 1)) / t;
+        SKY.vx = SKY.lib.smoothedSpeed(SKY.vx, (SKY.near.ox - was.ox) / t, dt); SKY.vy = SKY.lib.smoothedSpeed(SKY.vy, (SKY.near.oy - was.oy) / t, dt);
+        SKY.zr = SKY.lib.smoothedSpeed(SKY.zr, Math.log(SKY.cam.z / (prev.z || 1)) / t, dt);
       }
       SKY.at = now; SKY.fresh = true; kickStars();
     });
@@ -5914,10 +5895,12 @@ say('nothing selected to remove');
         + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ', ' + details.length.toLocaleString() + ' characters' + (cut ? ' (the start and the end were read; ' + cut.toLocaleString() + ' from the middle were left out)' : ', all read') + '</summary>'
         + '<div style="opacity:.7;font-size:12px;margin-top:6px">' + esc(clipLine(String(details).replace(/\s+/g, ' '), 90)) + '</div></details>'; // a one-line glimpse, never the whole paste echoed back (owner, 2026-11-03)
     }
-    async function showFix(ask, details) {
+    async function showFix(ask, details, answers) {
       // the title is the paste's first line as given, not the normalized ask: the page's typo and shorthand passes can hand over a
-      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times)
-      const given = String(details || ''), first = given.split('\n')[0].trim();
+      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times).
+      // A paste that answers "paste what it shows" (answers = true) keeps the ask it answers as its title: that ask names the tool
+      // ("my Make scenario is broken"), and the model reads the ask and the paste apart (the paste's first line is in the details).
+      const given = String(details || ''), first = answers ? '' : given.split('\n')[0].trim();
       const title = clipLine(first || ask, 120), sent = fitPaste(title, given);
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">working on it…</div>'; });
       say('working on it');
@@ -5948,7 +5931,7 @@ say('nothing selected to remove');
       if (!fx) return false;
       if (pendingFix) {
         const pf = pendingFix; pendingFix = null;
-        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full); return true; }
+        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full, true); return true; }
       }
       if (!fx.isFixAsk(full)) return false;
       currentAsk = text; lastAsk = text;
