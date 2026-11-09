@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T12:36:53.684Z",
+ "updated": "2026-11-09T12:46:20.151Z",
  "last24h": {
   "ticks": 154,
-  "started": 81,
+  "started": 82,
   "requeued": 5,
   "setAside": 1,
   "probes": 6,
-  "errors": 92
+  "errors": 91
  },
  "broken": [],
  "held": [
@@ -145,7 +145,8 @@
   "mw959njw": 1794223856992,
   "mw97n3ro": 1794226129818,
   "mw97n4si": 1794226692478,
-  "mw97n5l7": 1794227253962
+  "mw97n5l7": 1794227253962,
+  "mw97n6dz": 1794228380151
  },
  "sweptAt": 1794226129818,
  "blueprintsAt": 1794226129818,
@@ -233,11 +234,6 @@
   "probe:search-for-podcats-on-stoicism"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T12:39:24.157Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T12:48:46.531Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2526,6 +2522,34 @@
    "healed": [],
    "probe": false,
    "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 265,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T12:46:20.151Z",
+   "open": 274,
+   "started": [
+    {
+     "id": "mw97n6dz",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
    "design": false,
    "will": false,
    "lap": false,
