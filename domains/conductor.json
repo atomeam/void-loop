@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T08:22:48.894Z",
+ "updated": "2026-11-09T08:32:11.648Z",
  "last24h": {
   "ticks": 154,
   "started": 69,
@@ -220,11 +220,6 @@
   "review:2546"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T08:26:14.532Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T08:35:36.392Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2068,6 +2063,11 @@
   },
   {
    "at": "2026-11-09T08:22:48.894Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T08:32:11.648Z",
    "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
