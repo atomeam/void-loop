@@ -1,0 +1,1 @@
+{"at":"2026-11-09T03:27:59Z","by":"openhands","kind":"fix","what":"a plain turn off X or switch off X is the thing's own skill again, so asks like \"turn off the sky\" and \"turn off the minimap\" reach their skill instead of being read as stopping an automation called X","show":"a turn off ask reaches the thing's own skill again","try":"turn off the sky"}
