@@ -2339,30 +2339,9 @@
   ],
   "totals": {
     "asked": 258,
-    "built": 252,
+    "built": 255,
     "through": "2026-11-06T23:42:00Z",
     "open": [
-      {
-        "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
-        "at": "2026-10-31T08:49:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 7,
-        "ids": [
-          "ask-20261030-1921-1",
-          "ask-20261030-1940-1",
-          "ask-20261030-1949-1",
-          "ask-20261030-1950-1",
-          "ask-20261030-2212-1",
-          "ask-20261030-1844-1",
-          "ask-20261031-0054-1",
-          "ask-20261031-0124-1",
-          "ask-20261031-0147-1",
-          "ask-20261031-0154-1",
-          "ask-20261031-0705-1",
-          "ask-20261031-0849-1"
-        ]
-      },
       {
         "ask": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
         "at": "2026-11-06T23:42:00Z",
@@ -2403,48 +2382,6 @@
           "ask-20261106-2140-1",
           "ask-20261106-2229-1",
           "ask-20261106-2330-1"
-        ]
-      },
-      {
-        "ask": "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures.",
-        "at": "2026-11-06T00:06:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 4,
-        "ids": [
-          "ask-20261105-1537-1",
-          "ask-20261105-1540-1",
-          "ask-20261105-1548-1",
-          "ask-20261105-1555-1",
-          "ask-20261105-1817-1",
-          "ask-20261105-1820-1",
-          "ask-20261105-2353-1",
-          "ask-20261105-2357-1",
-          "ask-20261106-0006-2",
-          "ask-20261105-1509-1",
-          "ask-20261105-1524-1",
-          "ask-20261105-1528-1"
-        ]
-      },
-      {
-        "ask": "Fix the podcasts exam to resolve failures in audio and episode retrieval.",
-        "at": "2026-11-06T23:42:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 2,
-        "ids": [
-          "ask-20261106-2023-3",
-          "ask-20261106-2026-3",
-          "ask-20261106-2031-3",
-          "ask-20261106-2342-3",
-          "ask-20261106-2037-3",
-          "ask-20261106-2045-3",
-          "ask-20261106-2109-3",
-          "ask-20261106-2120-3",
-          "ask-20261106-2134-3",
-          "ask-20261106-2140-3",
-          "ask-20261106-2229-3",
-          "ask-20261106-2330-3"
         ]
       },
       {

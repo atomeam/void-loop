@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1215,
+ "counted": 1220,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,7 +27,7 @@
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 77,
+   "dependants": 78,
    "tests": 4
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 94,
+   "dependants": 95,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 26,
    "direct": 1,
-   "dependants": 94,
+   "dependants": 95,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 26,
    "direct": 0,
-   "dependants": 93,
+   "dependants": 94,
    "tests": 5
   },
   {
@@ -90,7 +90,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 59,
+   "dependants": 60,
    "tests": 2
   },
   {
@@ -125,49 +125,49 @@
    "file": "lib/reactions.js",
    "skills": 18,
    "direct": 1,
-   "dependants": 76,
+   "dependants": 77,
    "tests": 1
   },
   {
    "file": "lib/corrections.js",
    "skills": 17,
    "direct": 0,
-   "dependants": 62,
+   "dependants": 63,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
    "skills": 17,
    "direct": 5,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 6
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 64,
+   "dependants": 65,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 62,
+   "dependants": 63,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 60,
+   "dependants": 61,
    "tests": 4
   },
   {
@@ -209,7 +209,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 4
   },
   {
@@ -223,63 +223,63 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 49,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 48,
+   "dependants": 49,
    "tests": 1
   },
   {
    "file": "lib/hardened-line.js",
    "skills": 9,
    "direct": 2,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 0
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 1
   },
   {
@@ -426,8 +426,8 @@
    "file": "lib/calendar.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 13,
-   "tests": 6
+   "dependants": 14,
+   "tests": 7
   },
   {
    "file": "lib/match-history.js",
@@ -475,7 +475,7 @@
    "file": "lib/telemetry.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 109,
+   "dependants": 110,
    "tests": 2
   },
   {
@@ -587,21 +587,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 109,
+   "dependants": 110,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 108,
+   "dependants": 109,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 106,
+   "dependants": 107,
    "tests": 9
   },
   {
@@ -735,7 +735,7 @@
    "skills": 4,
    "direct": 1,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/lineage.js",
@@ -743,6 +743,13 @@
    "direct": 0,
    "dependants": 7,
    "tests": 1
+  },
+  {
+   "file": "lib/obituary.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 2
   },
   {
    "file": "lib/tower-journeys.js",
@@ -791,7 +798,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 32
+   "tests": 33
   },
   {
    "file": "lib/field-cards.js",
@@ -1343,8 +1350,15 @@
    "file": "lib/ask-same.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 2
+  },
+  {
+   "file": "lib/follow-ask.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 39,
+   "tests": 1
   },
   {
    "file": "lib/story.js",
@@ -1407,7 +1421,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 31,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/brain-workspace.js",
@@ -1704,6 +1718,13 @@
    "tests": 3
   },
   {
+   "file": "lib/notes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 4
+  },
+  {
    "file": "lib/rap-song.js",
    "skills": 1,
    "direct": 0,
@@ -1781,11 +1802,11 @@
    "tests": 3
   },
   {
-   "file": "lib/notes.js",
+   "file": "lib/note-extras.js",
    "skills": 1,
-   "direct": 1,
+   "direct": 0,
    "dependants": 3,
-   "tests": 3
+   "tests": 1
   },
   {
    "file": "lib/rules-engine.js",
@@ -1861,13 +1882,6 @@
    "file": "lib/news-week.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/note-extras.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 2,
    "tests": 1
   },
@@ -2488,17 +2502,17 @@
    "tests": 6
   },
   {
-   "file": "lib/shortfall.js",
+   "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
    "dependants": 43,
    "tests": 0
   },
   {
-   "file": "lib/persona.js",
+   "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 0
   },
   {
@@ -2512,7 +2526,7 @@
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 9
   },
   {
@@ -2608,13 +2622,6 @@
   },
   {
    "file": "lib/draft.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 30,
-   "tests": 1
-  },
-  {
-   "file": "lib/follow-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 30,
@@ -2817,18 +2824,18 @@
    "tests": 4
   },
   {
+   "file": "lib/translate-langs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 2
+  },
+  {
    "file": "lib/wiki-look.js",
    "skills": 0,
    "direct": 0,
    "dependants": 7,
    "tests": 1
-  },
-  {
-   "file": "lib/translate-langs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 2
   },
   {
    "file": "lib/status.js",
@@ -2874,6 +2881,13 @@
   },
   {
    "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-write.js",
    "skills": 0,
    "direct": 0,
    "dependants": 4,
@@ -3062,6 +3076,13 @@
    "tests": 2
   },
   {
+   "file": "lib/built-detail.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/daily-photo.js",
    "skills": 0,
    "direct": 0,
@@ -3167,6 +3188,13 @@
    "tests": 1
   },
   {
+   "file": "lib/progress-chart.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/propose-fix.js",
    "skills": 0,
    "direct": 0,
@@ -3200,6 +3228,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
+  },
+  {
+   "file": "lib/self-blocks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 4
   },
   {
    "file": "lib/sing.js",
@@ -3356,11 +3391,11 @@
    "tests": 1
   },
   {
-   "file": "lib/built-detail.js",
+   "file": "lib/cal-booking.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/calc-panels.js",
@@ -3615,7 +3650,7 @@
    "tests": 1
   },
   {
-   "file": "lib/obituary.js",
+   "file": "lib/note-organise.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3685,13 +3720,6 @@
    "tests": 1
   },
   {
-   "file": "lib/progress-chart.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/pw-handover.js",
    "skills": 0,
    "direct": 0,
@@ -3755,6 +3783,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rival-page.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/rule-propose.js",
    "skills": 0,
    "direct": 0,
@@ -3767,13 +3802,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
-  },
-  {
-   "file": "lib/self-blocks.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 4
   },
   {
    "file": "lib/seo.js",
@@ -3851,6 +3879,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/verse-log.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/will-schema.js",
@@ -4942,6 +4977,7 @@
     "lib/translate-langs.js",
     "lib/translate-words.js",
     "lib/translate-web.js",
+    "lib/translate-write.js",
     "functions/api/appraise.js",
     "functions/api/answer.js"
    ],
@@ -5650,6 +5686,7 @@
     "lib/rap.js",
     "lib/self-context.js",
     "lib/term-card.js",
+    "lib/verse-log.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -5743,7 +5780,8 @@
     "functions/api/x402/[service].js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
-    "lib/self-context.js"
+    "lib/self-context.js",
+    "lib/verse-log.js"
    ]
   },
   "lib/ask-text.js": {
@@ -5947,6 +5985,7 @@
     "lib/self-context.js",
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
+    "lib/verse-log.js",
     "skills/incident-autopsy.js",
     "skills/repo.js",
     "skills/routine.js",
@@ -6068,6 +6107,7 @@
     "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -6206,6 +6246,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -6358,7 +6399,8 @@
   "lib/brain-dialogue.js": {
    "imports": [
     "lib/brain-organs.js",
-    "lib/brain-workspace.js"
+    "lib/brain-workspace.js",
+    "lib/follow-ask.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -6923,6 +6965,14 @@
    "imports": [
     "lib/voice.js"
    ],
+   "importedBy": [
+    "lib/verse-log.js"
+   ]
+  },
+  "lib/cal-booking.js": {
+   "imports": [
+    "lib/calendar.js"
+   ],
    "importedBy": []
   },
   "lib/calc-more.js": {
@@ -7003,6 +7053,7 @@
    "importedBy": [
     "functions/api/icsfeed.js",
     "lib/agenda.js",
+    "lib/cal-booking.js",
     "lib/calshare.js",
     "lib/chat-calendar.js",
     "lib/ritual.js",
@@ -7079,6 +7130,7 @@
     "lib/duel-rules.js",
     "lib/self-context.js",
     "lib/term-card.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -7366,6 +7418,7 @@
     "lib/skill-confidence.js",
     "lib/term-card.js",
     "lib/tome.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -7836,6 +7889,7 @@
     "lib/built-detail.js",
     "lib/fix-audit.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -8661,7 +8715,8 @@
   "lib/follow-ask.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "lib/brain-dialogue.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -8692,7 +8747,15 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain-route.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/forge-duel.js": {
@@ -9108,6 +9171,7 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/term-card.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9228,6 +9292,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9410,6 +9475,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9568,6 +9634,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9681,6 +9748,7 @@
     "lib/self-context.js",
     "lib/story.js",
     "lib/term-card.js",
+    "lib/verse-log.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/wiki-look.js",
@@ -9779,6 +9847,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -9852,6 +9921,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -10466,6 +10536,7 @@
     "lib/self-context.js",
     "lib/story.js",
     "lib/term-card.js",
+    "lib/verse-log.js",
     "lib/video-gen.js",
     "lib/voice.js",
     "lib/wiki-look.js",
@@ -11036,6 +11107,7 @@
     "lib/shared-routines.js",
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/incident-autopsy.js",
     "skills/repo.js",
@@ -11048,11 +11120,19 @@
     "lib/notes.js"
    ],
    "importedBy": [
-    "lib/chat-notes.js"
+    "lib/chat-notes.js",
+    "lib/note-organise.js"
    ],
    "reachedBy": [
     "skills/notes-fill.js"
    ]
+  },
+  "lib/note-organise.js": {
+   "imports": [
+    "lib/notes.js",
+    "lib/note-extras.js"
+   ],
+   "importedBy": []
   },
   "lib/note-tools.js": {
    "imports": [],
@@ -11092,12 +11172,23 @@
    "importedBy": [
     "lib/chat-notes.js",
     "lib/note-extras.js",
+    "lib/note-organise.js",
     "skills/notes-fill.js"
    ]
   },
   "lib/obituary.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/tower.js",
+    "skills/tower.js"
+   ],
+   "reachedBy": [
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "skills/cartoon.js",
+    "skills/studios.js",
+    "skills/walker.js"
+   ]
   },
   "lib/observations.js": {
    "imports": [],
@@ -11692,7 +11783,8 @@
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
     "lib/bench-asks.js",
-    "lib/built-detail.js"
+    "lib/built-detail.js",
+    "lib/verse-log.js"
    ]
   },
   "lib/photo-ask.js": {
@@ -11989,6 +12081,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -12051,7 +12144,9 @@
   },
   "lib/progress-chart.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/verse-log.js"
+   ]
   },
   "lib/proposal.js": {
    "imports": [],
@@ -12496,6 +12591,7 @@
     "lib/fix-audit.js",
     "lib/flip-card.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -12776,6 +12872,10 @@
     "skills/ritual-template.js"
    ]
   },
+  "lib/rival-page.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/router.js": {
    "imports": [
     "lib/automation-fix.js",
@@ -12914,6 +13014,7 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/term-card.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -13015,7 +13116,9 @@
     "lib/weakest.js",
     "lib/ask-same.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/verse-log.js"
+   ]
   },
   "lib/self-context.js": {
    "imports": [
@@ -13320,6 +13423,7 @@
     "lib/weakest.js"
    ],
    "importedBy": [
+    "lib/verse-log.js",
     "skills/growth.js"
    ],
    "reachedBy": [
@@ -13525,6 +13629,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -13867,6 +13972,7 @@
     "lib/built-detail.js",
     "lib/game-health.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/arcade.js",
@@ -14493,6 +14599,7 @@
     "lib/shared-routines.js",
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/incident-autopsy.js",
     "skills/repo.js",
@@ -14765,7 +14872,8 @@
     "lib/gate-badge.js",
     "lib/tower-controls.js",
     "lib/tower-journeys.js",
-    "lib/tower-weight.js"
+    "lib/tower-weight.js",
+    "lib/obituary.js"
    ],
    "external": [
     ", "
@@ -14854,7 +14962,8 @@
    "importedBy": [
     "functions/api/translate.js",
     "lib/translate-extras.js",
-    "lib/translate-words.js"
+    "lib/translate-words.js",
+    "lib/translate-write.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
@@ -14874,6 +14983,19 @@
    ]
   },
   "lib/translate-words.js": {
+   "imports": [
+    "lib/translate-langs.js"
+   ],
+   "importedBy": [
+    "functions/api/translate.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/api/sing.js",
+    "functions/api/x402/[service].js"
+   ]
+  },
+  "lib/translate-write.js": {
    "imports": [
     "lib/translate-langs.js"
    ],
@@ -14932,6 +15054,15 @@
     "lib/vat-ask.js",
     "skills/vat.js"
    ]
+  },
+  "lib/verse-log.js": {
+   "imports": [
+    "lib/self-blocks.js",
+    "lib/built-detail.js",
+    "lib/progress-chart.js",
+    "lib/skill-confidence.js"
+   ],
+   "importedBy": []
   },
   "lib/verse-runs.js": {
    "imports": [
@@ -15050,6 +15181,7 @@
     "lib/shared-routines.js",
     "lib/team-crew-run.js",
     "lib/team-mcp.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/incident-autopsy.js",
     "skills/repo.js",
@@ -15208,7 +15340,8 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/verse-log.js"
    ]
   },
   "lib/void-me.js": {
@@ -15426,6 +15559,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/growth-tree.js",
@@ -15629,6 +15763,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -17112,6 +17247,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/growth-tree.js",
@@ -17176,6 +17312,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -19769,6 +19906,7 @@
    "imports": [
     "lib/tower-art.js",
     "lib/tower.js",
+    "lib/obituary.js",
     "lib/gate-badge.js",
     "lib/avatar.js",
     "lib/tower-rank.js",
