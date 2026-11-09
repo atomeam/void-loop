@@ -21,8 +21,8 @@ const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxB
 export const MAX_LINES = 400;
 // written by a run, one small file each, or appended by every bot: never what makes a PR hard to review or land
 const NOT_COUNTED = [/^growth\/entries\//, /^void-live-deploy\/incidents\/entries\//, /^void-live-deploy\/tower-evidence\//, /^void-live-deploy\/skills\/order\//, /(^|\/)package-lock\.json$/];
-/** files every PR may share with another open PR: the shared ledgers and the records tools/merge-main.mjs merges by keeping both sides. */
-export const SHARED_OK = [...new Set([...COMMON, ...APPEND_JSON, ...APPEND_TEXT, 'docs/MAP.md'])];
+/** files every PR may share with another open PR: the shared ledgers, the records tools/merge-main.mjs merges by keeping both sides, the map, and the skill-family list (one added skill; merge-main.mjs and the merge gate settle it). */
+export const SHARED_OK = [...new Set([...COMMON, ...APPEND_JSON, ...APPEND_TEXT, 'docs/MAP.md', 'tools/families.mjs'])];
 
 /** commits on `upstream` that `head` does not have. Null when git cannot say. */
 export function behindCount(upstream = 'origin/main', head = 'HEAD', run = git) {
