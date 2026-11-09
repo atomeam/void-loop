@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-17T09:15:36Z",
-  "passed": 0,
-  "of": 25,
-  "kind": "none",
-  "note": "nothing left to improve this run (add candidates)"
- },
- {
   "at": "2026-10-17T09:22:52Z",
   "passed": 0,
   "of": 25,
@@ -7059,5 +7052,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"turn this idea into a system plan: weekly status reports that write themselves\" (skill:idea-to-system)"
+ },
+ {
+  "at": "2026-11-09T12:50:35Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1480,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
