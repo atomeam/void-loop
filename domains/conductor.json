@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T10:06:10.775Z",
+ "updated": "2026-11-09T10:15:31.127Z",
  "last24h": {
   "ticks": 154,
-  "started": 76,
+  "started": 77,
   "requeued": 7,
   "setAside": 1,
   "probes": 5,
-  "errors": 105
+  "errors": 104
  },
  "broken": [],
  "held": [
@@ -138,7 +138,8 @@
   "mw90kefi": 1794215389222,
   "mw90kfd0": 1794215954093,
   "mw92wsjm": 1794218207826,
-  "mw92wtgz": 1794218770775
+  "mw92wtgz": 1794218770775,
+  "mw92wuds": 1794219331127
  },
  "sweptAt": 1794218207826,
  "blueprintsAt": 1794218207826,
@@ -226,11 +227,6 @@
   "gap:want-misses-2026-w46"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T10:09:22.205Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T10:18:48.042Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2284,6 +2280,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 261,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T10:15:31.127Z",
+   "open": 275,
+   "started": [
+    {
+     "id": "mw92wuds",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 265,
    "warnings": 1
   }
  ]
