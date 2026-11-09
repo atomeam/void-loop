@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T21:52:55.999Z",
+ "updated": "2026-11-09T22:02:16.309Z",
  "last24h": {
   "ticks": 149,
-  "started": 88,
+  "started": 87,
   "requeued": 3,
   "setAside": 2,
   "probes": 12,
@@ -251,34 +251,6 @@
   "versus:united-hoster.de"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T21:53:32.813Z",
-   "open": 269,
-   "started": [
-    {
-     "id": "mvp4ahwz",
-     "kind": "feature",
-     "wf": "verse-job.yml",
-     "score": 102
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 15,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T22:02:52.106Z",
    "open": 269,
@@ -3172,6 +3144,27 @@
    "probe": false,
    "grow": false,
    "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 285,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T22:02:16.309Z",
+   "open": 293,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
    "will": false,
    "lap": false,
    "revived": [
