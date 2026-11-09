@@ -192,6 +192,29 @@ export default {
     ]
    }
   ],
+  "build-world": [
+   {
+    "name": "rts",
+    "examples": [
+     "start a camp",
+     "gather wood",
+     "build a hut",
+     "how are we doing",
+     "everyone gather stone"
+    ]
+   },
+   {
+    "name": "forge",
+    "examples": [
+     "forge history",
+     "what can you make",
+     "make me a rocket",
+     "make a vase",
+     "3d print a bottle",
+     "forge a lighthouse"
+    ]
+   }
+  ],
   "time": [
    {
     "name": "timer",
@@ -747,6 +770,28 @@ export default {
      "print view of the stage",
      "print the stage on A4",
      "use letter paper for printing"
+    ]
+   }
+  ],
+  "idea-to-system": [
+   {
+    "name": "business-clarify",
+    "examples": [
+     "clarify this business idea: a tool that turns customer emails into running automations",
+     "turn this idea into a system plan: weekly status reports that write themselves",
+     "structure this business idea for Verse to own the heavy lifting",
+     "make this idea a system plan: client onboarding that runs itself"
+    ]
+   },
+   {
+    "name": "system-blueprint",
+    "examples": [
+     "blueprint this: late invoice follow-ups for clients",
+     "turn this into a system: new lead intake from the website form",
+     "idea to system: sync closed deals from CRM to the finance sheet",
+     "map this idea: slack alert when a support ticket sits over 24 hours",
+     "system blueprint for weekly ops metrics without copy-paste",
+     "system plan for: automate client onboarding"
     ]
    }
   ]
