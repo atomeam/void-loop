@@ -133,6 +133,10 @@ const watchdog = setInterval(() => {
 watchdog.unref();
 // Poll instead of guessing a delay: the shared box is often busy, fixed sleeps flake.
 const until = async (fn, ms = 4000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
+// A page promise that may never settle (a rAF wait on a throttled or stuck renderer pends forever, and one hung await stalled
+// the whole suite until the 300 s watchdog said "no check finished": main's check-timeout flakes of 2026-10-18 ran in the same
+// minutes as the fly-stars ones). Race it against a cap and sample what is there; the abandoned evaluate dies with the page's context.
+const capped = (p, ms = 4000) => Promise.race([p, new Promise((res) => setTimeout(res, ms))]);
 // After a reload or a goto: the page's skills are in (void.html sets data-skills="ready" on <html> once every module has
 // loaded and the kept things are rendered), then a short settle. Replaces guessed 1.5 s waits: quicker on a fast machine,
 // and right on a slow one, where the skills took longer than the guess (suite speed, 2026-10-16).
@@ -6283,8 +6287,9 @@ try {
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
       // a slow frame draws the streak one frame after the move it shows (void.html's drawStars runs skyTick), so D stays held
       // for two more frames and the streak drawn for the last move is sampled too (main's verify, 2026-10-30: x jumped to -181
-      // in one capped step and the hold ended before the next draw)
-      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {});
+      // in one capped step and the hold ended before the next draw); capped: a throttled renderer never fires the frame, and an
+      // unbounded await here stalled the suite to the 300 s watchdog - the max() sampling above already kept the best frame seen
+      await capped(page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {}));
       const v = await stars(page); streak = Math.max(streak, v.streak.dx); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
     await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
