@@ -18,7 +18,7 @@ import { readiness, resolveMain } from './pr-ready.mjs';
 import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
-import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
+import { eligible, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
@@ -123,17 +123,60 @@ function noteStuck(p, why) {
     console.log(`#${p.number}: stuck, said why (${why})`);
   } catch (e) { console.log(`#${p.number}: could not comment: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
 }
-for (const row of superseded(prs)) {
-  const body = '<!-- void-superseded -->\nThis `' + row.ref + '` pull request is superseded by #' + row.keep + ', which is newer. Closing it so the same bot work is not merged twice.';
+// An older loop/* pull request is closed only when this says the newer one, or main, already has its
+// changes (2026-11-09: #2598 closed #2569, and hexen.ai's feature note was on neither). A diff that
+// cannot be read keeps the older pull request open.
+const compared = new Map();
+function compareFiles(sha) {
+  if (!sha) return null;
+  if (compared.has(sha)) return compared.get(sha);
+  const v = gh(`repos/${repo}/compare/main...${sha}`);
+  // no files array means the compare could not be read (an error, or a diff too big to list). An empty
+  // array is a real answer: the branch adds nothing main lacks.
+  if (!v || !Array.isArray(v.files)) { compared.set(sha, null); return null; }
+  const files = v.files.map((f) => ({ path: f.filename, patch: f.patch || '', truncated: f.patch == null && f.status !== 'unchanged' }));
+  compared.set(sha, files);
+  return files;
+}
+function mainTextOf(path) {
+  try { return ex('git', ['show', 'HEAD:' + path]); }
+  catch (_) { return ''; }
+}
+function loopCoverage(old, keep) {
+  try {
+    const older = compareFiles(old && old.head && old.head.sha);
+    const newer = compareFiles(keep && keep.head && keep.head.sha);
+    if (!older || !newer) return { ok: false, missing: ['(could not read the diff)'], patch: '' };
+    const mainText = {};
+    for (const f of older) mainText[f.path] = mainTextOf(f.path);
+    return loopCovers(older, newer, mainText);
+  } catch (_) { return { ok: false, missing: ['(could not read the diff)'], patch: '' }; }
+}
+const plan = superseded(prs, loopCoverage);
+for (const row of plan.close) {
+  const body = '<!-- void-superseded -->\nThis `' + row.ref + '` pull request is superseded by #' + row.keep + ', which is newer and already contains its changes (or main does). Closing it so the same bot work is not merged twice.';
   try {
     run(['api', '-X', 'POST', `repos/${repo}/issues/${row.number}/comments`, '--input', '-'], JSON.stringify({ body }));
     run(['api', '-X', 'PATCH', `repos/${repo}/pulls/${row.number}`, '-f', 'state=closed']);
     console.log('closed #' + row.number + ', superseded by #' + row.keep);
   } catch (e) { console.log('#' + row.number + ': could not close the superseded pull request: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
+const CARRY_MARK = '<!-- void-carry -->';
+for (const row of plan.carry) {
+  const files = row.missing.length ? row.missing.join(', ') : 'its diff';
+  const patch = row.patch ? '\n\n```diff\n' + row.patch.slice(0, 4000) + (row.patch.length > 4000 ? '\n…' : '') + '\n```' : '';
+  const body = CARRY_MARK + '\nThis `' + row.ref + '` pull request is older than #' + row.keep + ', but neither #' + row.keep + ' nor main contains its changes (' + files + '). It stays open so that work can still merge. Missing delta:' + patch;
+  try {
+    const comments = gh(`repos/${repo}/issues/${row.number}/comments?per_page=100`) || [];
+    if (!comments.some((c) => String(c.body || '').includes(CARRY_MARK))) {
+      run(['api', '-X', 'POST', `repos/${repo}/issues/${row.number}/comments`, '--input', '-'], JSON.stringify({ body }));
+    }
+    console.log('kept #' + row.number + ' open: #' + row.keep + ' does not contain ' + files);
+  } catch (e) { console.log('#' + row.number + ': could not record the missing delta: ' + String(e.stderr || e.message || e).slice(0, 200)); }
+}
 let merged = 0;
 const ready = [];
-const closed = new Set(superseded(prs).map((r) => r.number));
+const closed = new Set(plan.close.map((r) => r.number));
 // A sweep reads the oldest pull requests first and stops reading after SWEEP_MS, so it always reaches the suite gate inside
 // the job's 15 minute limit (automerge.yml), with time left for the safety-check of the batch. The pull requests it did not read wait for the next sweep. (2026-11-06)
 const SWEEP_MS = +(process.env.AUTOMERGE_SWEEP_MS || 200e3), sweepStart = Date.now();

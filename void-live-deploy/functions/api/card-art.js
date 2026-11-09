@@ -26,7 +26,7 @@ import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { leadPhoto, PHOTO_ASK } from '../../lib/wiki-look.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind, drawableLook, undirected } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt, LOOK_SYSTEM, lookPrompt, lookOf, lookParts, spellingOf, cartoonPrompt, keyOfKind, sizeOfKind, drawableLook, undirected, TEXT_GATE_ASK, textGateYes } from '../../lib/art-rules.js';
 
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
@@ -81,6 +81,18 @@ export async function direct(env, key, kind, family, take = '', ask = [DIRECTOR_
     return clean(scrubOut(redact(String(pick(r))), env), isSecret);
   } catch (_) { return ''; }
 }
+/** vision gate: true when the painting shows readable writing (lib/art-rules.js TEXT_GATE_ASK). Fail-open on a slow or empty vision call so a vision outage does not stop every paint. */
+export async function textInArt(env, img, ask = TEXT_GATE_ASK) {
+  if (!env || !env.AI || !img) return false;
+  try {
+    const r = await Promise.race([
+      env.AI.run(models('vision'), { messages: [{ role: 'user', content: [{ type: 'text', text: ask }, { type: 'image_url', image_url: { url: img } }] }], max_tokens: 8, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' }),
+      new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS + 4000)),
+    ]);
+    return textGateYes(scrubOut(redact(String(pick(r))), env));
+  } catch (_) { return false; }
+}
+
 // a cartoon's look (lib/art-rules.js LOOK_SYSTEM): { look, why } where why says, when there is no look, what happened: 'error <name>', 'empty'
 // (the reply had no text), 'unknown' or 'refused' (the cleaned reply failed lookOf), with the reply's first words cleaned to plain letters, so a
 // builder can see it (the art-look workflow). The reply is the model's words about the subject, never what a person typed.
@@ -212,6 +224,20 @@ export async function onRequestPost({ request, env }) {
     if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
   } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }
   if (!img) return plate('busy'); // nothing usable: nothing is kept
+  // readable writing on the painting (misspelt mottos, carved tablets): drop it, never keep it; one quiet retry with the fixed no-text template, then the plate
+  if (kind !== 'cartoon' && await textInArt(env, img)) {
+    await noteMiss(env, 'text in art');
+    const retry = artPrompt(key, kind, rarity), slow2 = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
+    let img2 = '';
+    try {
+      if (!overWorkers) {
+        try { img2 = imageOf(await asImage(await Promise.race([paintOnce(env, models('art'), retry, size), slow2()]))); } catch (_) {}
+        if (!img2 && models('art') !== ART_FALLBACK) { try { img2 = imageOf(await asImage(await Promise.race([paintOnce(env, ART_FALLBACK, retry, size), slow2()]))); } catch (_) {} }
+      }
+      if (!img2 && pollOn(env)) { try { img2 = await pollinations(env, retry, key, undefined, size); } catch (_) {} }
+    } catch (_) { img2 = ''; }
+    if (img2 && !(await textInArt(env, img2))) img = img2; else { await noteMiss(env, 'text in art again'); return plate('text'); }
+  }
   const told = kind === 'cartoon' ? { look, lookWhy: seen.why, lookFrom: seen.source || 'text model', ...(seen.photoWhy ? { photoWhy: seen.photoWhy } : {}), ...(seen.name ? { name: seen.name } : {}) } : {};
   // a cartoon painted without a look because the look failed (no photo, and the text model erred or said nothing; 'unknown' is an answer and is kept) is a guess at the subject: shown once, never kept, so the next ask tries
   // again instead of serving the guess for ever (2026-10-24: the kept "dimebag darrel" was a smiling stranger in a blue shirt, painted when the look timed out)
