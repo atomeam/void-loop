@@ -758,6 +758,74 @@
      "link": "lists run 10"
     }
    ]
+  },
+  {
+   "at": "2026-11-09T09:05:00Z",
+   "run": 15,
+   "closed": 8,
+   "touched": 9,
+   "pct_blocked": 0,
+   "top_block": "none this run (the ndscalc.ru asks are claimed by Claude's open PR #2413, left to it, not blocked)",
+   "dup_rate": 0.9,
+   "dup_basis": "26 of the 29 open ask groups at the start were rewordings of another: ndscalc.ru 15 of 16, onlineconverter.com 7 (all twins of the ask retired in run 9), timer 3 of 4, podcasts 1 of 2",
+   "median_days": 4,
+   "median_basis": "days from queued to built over the 8 items: 0 (live 404s, timer asks), 3 (idea-to-system pair, podcasts asks), 5 (onlineconverter asks), 6 (site-test close list), 19 (fringe titles), 25 (store wishlist rows); median 4",
+   "asks_open_start": 29,
+   "asks_open_end": 16,
+   "note": "Run 14 (2026-11-09 12:25 AM ET) failed before any branch or PR, so nothing was left to finish. The live site's empty 404s on /tools.json, /api/* and /?q= were Cloudflare Pages Git builds of every bot push (since 2026-11-07 20:00 UTC) publishing the repo root with no Functions over production; #2560 makes those builds publish nothing, beside #2559 (API pause plus rollback). The same outage was the podcasts exam ask (and the videos exam drop). Counts use tools/asks-link.mjs groups; the 16 left are ndscalc.ru, in #2413.",
+   "items": [
+    {
+     "what": "live site: Pages Git builds no longer replace production (root wrangler.toml, tools/pages-git-off.test.mjs)",
+     "list": "site tester / live incident",
+     "status": "built",
+     "link": "https://github.com/atomeam/void-loop/pull/2560"
+    },
+    {
+     "what": "seven early fringe pages say Verse, each draft has a window.__name hook with a selftest; verse-name LEGACY empty",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "convergence: business-clarify + system-blueprint into skills/idea-to-system.js, aliases kept (tools/idea-to-system-family.test.mjs)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "store, creator platform and business email rows moved into docs/wishlist.md (15-17)",
+     "list": "handoff Up for grabs / wishlist",
+     "status": "built"
+    },
+    {
+     "what": "site-test issues to close (#1022-#1196): all closed",
+     "list": "handoff Up for grabs",
+     "status": "duplicate",
+     "link": "lists run 6 (all 80 site-test issues closed)"
+    },
+    {
+     "what": "timer duration asks (4 wordings)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/2307"
+    },
+    {
+     "what": "onlineconverter.com two-aspects asks (7 wordings)",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "ask-20261031-1310-1"
+    },
+    {
+     "what": "podcasts exam asks (2 wordings): the cause was the live outage",
+     "list": "V01D asks",
+     "status": "built",
+     "link": "https://github.com/atomeam/void-loop/pull/2560"
+    },
+    {
+     "what": "ndscalc.ru asks (16 wordings): VAT mode passed 10/12; the rest is in Claude's open PR",
+     "list": "V01D asks",
+     "status": "queued",
+     "link": "https://github.com/atomeam/void-loop/pull/2413"
+    }
+   ]
   }
  ]
 }

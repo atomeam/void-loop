@@ -14,9 +14,9 @@ const pages = (d, out = []) => { for (const n of readdirSync(d)) { const p = joi
 /** the text a person sees: tags, scripts and styles removed. Pure. */
 const visible = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<!--[\s\S]*?-->/g, ' ').replace(/<[^>]+>/g, ' ');
 
-// the first seven fringe pages predate the drafts' window.__name check hook, so draft-check refuses any edit to them until a hook is added;
-// they keep the old title until then (handoff Up for grabs). Every other page, and every new one, must say Verse.
-export const LEGACY = ['anomalous-event-timeline', 'correlation-view', 'interval-timing', 'miss-board', 'private-incubation-log', 'quiet-signal-filter', 'weak-signal-hypothesis-ledger'].map((n) => 'fringe/' + n + '.html');
+// the first seven fringe pages predated the drafts' window.__name check hook and kept the old title until lists run 15 (2026-11-09) gave
+// each a hook and the new name. Every page, and every new one, must say Verse; LEGACY stays as the (empty) list of exceptions.
+export const LEGACY = [];
 test('no published page shows the old name in its title or text', () => {
   const rel = (p) => relative(site, p).replace(/\\/g, '/'); // Windows reports backslashes; LEGACY is written with forward slashes
   const bad = pages(site).filter((p) => !LEGACY.includes(rel(p)) && OLD.test(visible(readFileSync(p, 'utf8')))).map(rel);
