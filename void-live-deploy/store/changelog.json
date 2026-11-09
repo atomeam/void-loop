@@ -1,6 +1,30 @@
 {
  "changelog": [
   {
+   "at": "2026-11-08T16:59:33.344Z",
+   "id": "remix-kit",
+   "name": "Verse Remix Kit",
+   "what": "unpublished automatically: unreachable: Unexpected end of JSON input",
+   "price": "Free · pay what you want",
+   "status": "unpublished"
+  },
+  {
+   "at": "2026-11-08T16:59:33.344Z",
+   "id": "site-tester",
+   "name": "Verse Site Tester",
+   "what": "unpublished automatically: unreachable: Unexpected end of JSON input",
+   "price": "Free · pay what you want",
+   "status": "unpublished"
+  },
+  {
+   "at": "2026-11-08T16:59:33.344Z",
+   "id": "v01d-forge-printables",
+   "name": "VERSE Forge Printables (10 STLs)",
+   "what": "unpublished automatically: unreachable: Unexpected end of JSON input",
+   "price": "Free · pay what you want",
+   "status": "unpublished"
+  },
+  {
    "at": "2026-11-03T18:22:38.982Z",
    "id": "v01d-clips-pack",
    "name": "Verse Clips Pack (10 shorts)",
@@ -14,7 +38,7 @@
    "name": "Verse Remix Kit",
    "what": "published by Verse: 6 files, 5.4 MB",
    "price": "Free · pay what you want",
-   "status": "live"
+   "status": "unpublished"
   },
   {
    "at": "2026-10-15T06:34:28.905Z",
@@ -22,7 +46,7 @@
    "name": "Verse Site Tester",
    "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)",
    "price": "Free · pay what you want",
-   "status": "live"
+   "status": "unpublished"
   },
   {
    "at": "2026-10-15T06:08:38.111Z",
@@ -38,7 +62,7 @@
    "name": "VERSE Forge Printables (10 STLs)",
    "what": "published by V01D: 11 files, 19.7 MB",
    "price": "Free · pay what you want",
-   "status": "live"
+   "status": "unpublished"
   }
  ]
 }

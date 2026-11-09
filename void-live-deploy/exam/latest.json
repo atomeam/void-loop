@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-08T05:22:21.274Z",
+  "at": "2026-11-08T16:28:04.539Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -373,24 +373,26 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 95.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
+            "temp",
             "rival"
           ],
-          "score": 83.3
+          "score": 66.7
         },
         {
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -498,138 +500,37 @@
       }
     },
     "sports": {
-      "score": 60.2,
+      "score": 92.6,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "nba scores",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "nfl scores",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
           "ask": "mlb scores",
           "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "nhl scores",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "premier league scores",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "bundesliga table",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "serie a scores",
-          "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
-        },
-        {
-          "ask": "la liga scores",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
+          "score": 83.3
         },
         {
           "ask": "champions league scores",
           "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
+          "score": 83.3
         },
         {
           "ask": "mls scores",
           "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
-        {
-          "ask": "lakers score",
-          "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
+          "score": 83.3
         },
         {
-          "ask": "celtics score",
+          "ask": "nba team celtics",
           "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
-        },
-        {
-          "ask": "yankees score",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
+          "score": 83.3
         },
         {
           "ask": "scores",
