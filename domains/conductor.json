@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T01:48:25.640Z",
+ "updated": "2026-11-09T01:57:50.582Z",
  "last24h": {
-  "ticks": 154,
-  "started": 68,
+  "ticks": 153,
+  "started": 65,
   "requeued": 7,
   "setAside": 0,
-  "probes": 3,
-  "errors": 105
+  "probes": 2,
+  "errors": 106
  },
  "broken": [],
  "held": [
@@ -147,68 +147,6 @@
   "review:2546"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T01:48:27.351Z",
-   "open": 263,
-   "started": [
-    {
-     "id": "mvpuqb4r",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 84
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 244,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:57:48.152Z",
-   "open": 267,
-   "started": [
-    {
-     "id": "mvvjzso8",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 76
-    },
-    {
-     "id": "mw76d356",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 243,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T02:07:07.590Z",
    "open": 266,
@@ -2155,6 +2093,11 @@
    "blueprints": 0,
    "held": 5,
    "warnings": 2
+  },
+  {
+   "at": "2026-11-09T01:57:50.582Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
   }
  ]
 }
