@@ -146,7 +146,7 @@
    "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
    "tier": "personal",
    "origin": "v01d",
-   "status": "unpublished",
+   "status": "live",
    "published": "2026-10-15",
    "bytes": 20682758,
    "contents": [
@@ -170,6 +170,10 @@
     {
      "at": "2026-11-08T16:59:33.344Z",
      "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
+    },
+    {
+     "at": "2026-11-09T13:30:00.000Z",
+     "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again"
     }
    ]
   },
@@ -232,7 +236,7 @@
    "license": "Personal and commercial use on sites you own or may test",
    "tier": "commercial",
    "origin": "v01d",
-   "status": "unpublished",
+   "status": "live",
    "published": "2026-10-15",
    "bytes": 26836,
    "contents": [
@@ -250,6 +254,10 @@
     {
      "at": "2026-11-08T16:59:33.344Z",
      "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
+    },
+    {
+     "at": "2026-11-09T13:30:00.000Z",
+     "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again"
     }
    ],
    "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)"
@@ -270,7 +278,7 @@
    "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
    "tier": "personal",
    "origin": "v01d",
-   "status": "unpublished",
+   "status": "live",
    "published": "2026-10-21",
    "bytes": 5650231,
    "contents": [
@@ -289,6 +297,10 @@
     {
      "at": "2026-11-08T16:59:33.344Z",
      "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
+    },
+    {
+     "at": "2026-11-09T13:30:00.000Z",
+     "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again"
     }
    ]
   }
