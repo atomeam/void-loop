@@ -178,17 +178,17 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 15,
+   "direct": 15,
+   "dependants": 15,
+   "tests": 1
+  },
+  {
    "file": "lib/where.js",
    "skills": 14,
    "direct": 11,
    "dependants": 23,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 14,
-   "direct": 14,
-   "dependants": 14,
    "tests": 1
   },
   {
@@ -13425,6 +13425,7 @@
     "skills/date-math.js",
     "skills/dates.js",
     "skills/games.js",
+    "skills/idea-to-system.js",
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
@@ -16024,7 +16025,9 @@
   },
   "skills/business-clarify.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/idea-to-system.js"
+   ]
   },
   "skills/busy-blocks.js": {
    "imports": [
@@ -17391,6 +17394,14 @@
   },
   "skills/idea-clarify.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/idea-to-system.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/business-clarify.js",
+    "skills/system-blueprint.js"
+   ],
    "importedBy": []
   },
   "skills/image-gen.js": {
@@ -19543,7 +19554,9 @@
   },
   "skills/system-blueprint.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/idea-to-system.js"
+   ]
   },
   "skills/system-handoff.js": {
    "imports": [],

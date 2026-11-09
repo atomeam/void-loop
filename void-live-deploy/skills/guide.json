@@ -9011,8 +9011,7 @@
     "open-tool",
     "baggage",
     "rentbuy",
-    "business-clarify",
-    "system-blueprint",
+    "idea-to-system",
     "my-device",
     "noise",
     "speed-tests",
@@ -11105,33 +11104,33 @@
     },
     {
      "rank": 347,
-     "name": "business-clarify",
-     "catches": "clarify this business idea: a tool that turns customer emails into running autom"
+     "name": "idea-to-system",
+     "catches": "turn my idea into a system"
     },
     {
      "rank": 348,
-     "name": "system-blueprint",
-     "catches": "blueprint this: late invoice follow-ups for clients"
-    },
-    {
-     "rank": 349,
      "name": "my-device",
      "catches": "what is my ip address"
     },
     {
-     "rank": 350,
+     "rank": 349,
      "name": "noise",
      "catches": "white noise"
     },
     {
-     "rank": 351,
+     "rank": 350,
      "name": "speed-tests",
      "catches": "reaction time test"
     },
     {
-     "rank": 352,
+     "rank": 351,
      "name": "math-quiz",
      "catches": "times tables quiz"
+    },
+    {
+     "rank": 352,
+     "name": "groups",
+     "catches": "random team generator"
     }
    ],
    "n": 527
@@ -11139,25 +11138,20 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCCLIII–CCCLVI",
+   "title": "Rules CCCLIII–CCCLV",
    "rules": [
     {
      "rank": 353,
-     "name": "groups",
-     "catches": "random team generator"
-    },
-    {
-     "rank": 354,
      "name": "heavy-lift-map",
      "catches": "map the heavy lifting for client onboarding"
     },
     {
-     "rank": 355,
+     "rank": 354,
      "name": "monitor-pack",
      "catches": "monitor pack for client onboarding"
     },
     {
-     "rank": 356,
+     "rank": 355,
      "name": "verify-pack",
      "catches": "verify pack for client onboarding"
     }
