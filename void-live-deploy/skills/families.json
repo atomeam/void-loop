@@ -14,7 +14,7 @@
  "bench_at": "2026-11-09",
  "totals": {
   "experiment": 0,
-  "tested": 1,
+  "tested": 2,
   "checked": 5,
   "proven": 409
  },
@@ -3636,7 +3636,7 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 1,
     "proven": 59
    },
@@ -3944,6 +3944,13 @@
      "success_rate": 1,
      "promoted": "2026-11-07",
      "streak": 5
+    },
+    {
+     "name": "proposal-pack",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-11-09",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "heavy-lift-map",
