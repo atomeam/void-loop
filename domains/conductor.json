@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T09:09:49.222Z",
+ "updated": "2026-11-09T09:19:14.093Z",
  "last24h": {
   "ticks": 154,
-  "started": 73,
+  "started": 74,
   "requeued": 6,
   "setAside": 1,
   "probes": 4,
-  "errors": 111
+  "errors": 110
  },
  "broken": [],
  "held": [
@@ -135,7 +135,8 @@
   "mw8wjcf5": 1794210317344,
   "mw90kckz": 1794214261462,
   "mw90kdjg": 1794214825435,
-  "mw90kefi": 1794215389222
+  "mw90kefi": 1794215389222,
+  "mw90kfd0": 1794215954093
  },
  "sweptAt": 1794214261462,
  "blueprintsAt": 1794214261462,
@@ -223,11 +224,6 @@
   "probe:manchester-city-vs-liverpool-score"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T09:13:05.683Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T09:22:27.222Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2144,6 +2140,34 @@
    "started": [
     {
      "id": "mw90kefi",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 260,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T09:19:14.093Z",
+   "open": 270,
+   "started": [
+    {
+     "id": "mw90kfd0",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
