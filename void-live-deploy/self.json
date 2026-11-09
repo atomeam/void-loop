@@ -600,6 +600,38 @@
  },
  "commits": [
   {
+   "at": "2026-11-09T01:40:29Z",
+   "subject": "Revert \"PDF card: retry the pdf.js read once after a dropped worker fetch (mv95k8m7) (#2515)\" (#2539)"
+  },
+  {
+   "at": "2026-11-09T01:39:46Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-09T01:39:31Z",
+   "subject": "tower card and Versus page: the rival's own story first, the fight record as one small ledger line (#2540)"
+  },
+  {
+   "at": "2026-11-09T01:31:46Z",
+   "subject": "Outcome exam: sports 51.9"
+  },
+  {
+   "at": "2026-11-09T01:25:34Z",
+   "subject": "Failed jobs read: run 42542453787 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-09T01:16:11Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"make a vase\""
+  },
+  {
+   "at": "2026-11-09T01:08:56Z",
+   "subject": "Design loop: 4 pages fixed, 31 -> 15 design defects"
+  },
+  {
+   "at": "2026-11-09T00:55:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-09T00:55:08Z",
    "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
@@ -646,38 +678,6 @@
   {
    "at": "2026-11-09T00:42:53Z",
    "subject": "Failed jobs read: run 42539905890 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-09T00:42:31Z",
-   "subject": "Incident: the browser suite failed on 311c94a8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-09T00:41:59Z",
-   "subject": "Failed jobs read: run 42541457911 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-09T00:40:51Z",
-   "subject": "Failed jobs read: run 42541457809 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-09T00:39:51Z",
-   "subject": "Tower gate: is it,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-09T00:38:49Z",
-   "subject": "Failed jobs read: run 42541107194 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-09T00:38:03Z",
-   "subject": "Failed jobs read: run 42541107332 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-09T00:37:30Z",
-   "subject": "Lab: 495 experiments live at /lab/, 23 waiting for a fix (#2546)"
-  },
-  {
-   "at": "2026-11-09T00:36:45Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
   }
  ],
  "builders": {
@@ -859,8 +859,8 @@
   }
  ],
  "visible": {
-  "day": 1,
-  "week": 268
+  "day": 4,
+  "week": 273
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
