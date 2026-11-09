@@ -12256,6 +12256,7 @@ try {
     const eUp = await until(() => E.p.$eval('.sph-card[data-sph="echo"] .ec-text', (e) => e.textContent.length > 0).catch(() => false), 15000);
     const eCard = await E.p.$eval('.sph-card[data-sph="echo"]', (e) => e.innerText).catch(() => '');
     const eCalls = eBodies.filter((b) => /counter-view/.test(b)).length, firstCalls = eBodies.filter((b) => /sea salty/.test(b) && !/counter-view/.test(b)).length;
+    await until(async () => /First answer/.test(await E.page()), 8000); // the answer page's .on lands one rAF after it mounts (void.html), and a loaded runner's frame is late: the echo card is not rAF-gated, so it can be up while the page is still mounting
     const pageBefore = await E.page();
     await E.p.click('.sph-card[data-sph="echo"] .ec-keep').catch(() => {});
     await E.p.waitForTimeout(300);
@@ -12282,15 +12283,14 @@ try {
     const C = await fresh();
     let choirNet = 0;
     await C.ask('make a clock', 500);
-    await C.ctx.route(/\/api\//, (r) => { choirNet++; return r.fulfill({ status: 204, body: '' }); });
+    await C.ctx.route(/\/api\//, (r) => { if (!/card-art/.test(r.request().url())) choirNet++; return r.fulfill({ status: 204, body: '' }); }); // a skill's own card art is that skill's (see below), and a busy machine paints the clock's art late: it is not the choir's network
     await C.ask('what almost answered that', 800);
     const cUp = await until(() => C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => /you might have meant/.test(e.innerText)).catch(() => false), 20000);
     const cCard = await C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => e.innerText).catch(() => '');
     const cBtns = await C.p.$$eval('.sph-card[data-sph="near-choir"] .nc-go', (b) => b.map((x) => x.getAttribute('data-ask'))).catch(() => []);
     const choirCalls = choirNet; // the choir itself: none. The tapped skill's own card may paint its art (/api/card-art), which is that skill's, not the choir's
     await C.p.click('.sph-card[data-sph="near-choir"] .nc-go').catch(() => {});
-    await C.p.waitForTimeout(500);
-    const recent = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')[0]);
+    const recent = await until(async () => { const a = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')[0]); return a === cBtns[0] ? a : false; }, 5000); // the tap logs its ask the frame it runs: a loaded frame is late, so poll instead of guessing 500 ms
     check('stage pack h: "what almost answered that" lists up to 3 other skills for the last ask ("make a clock") as "you might have meant", one tap each runs that skill\'s first example; no network call; "choir practice near me" does not open it',
       cUp && /for: make a clock/.test(cCard) && cBtns.length >= 1 && cBtns.length <= 3 && recent === cBtns[0] && choirCalls === 0 && (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0 && !C.errors.length,
       JSON.stringify({ cUp, cCard: cCard.slice(0, 200), cBtns, recent, choirCalls, choirNet, errs: C.errors }));
