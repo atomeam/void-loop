@@ -345,6 +345,9 @@
     },
     {
       "ask": "summon a cup"
+    },
+    {
+      "ask": "movie night"
     }
   ],
   "candidates": [],
