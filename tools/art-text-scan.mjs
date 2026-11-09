@@ -5,6 +5,7 @@
 //   node tools/art-text-scan.mjs --status        counts only
 //   node tools/art-text-scan.mjs --redo [--max 10]  repaint flagged ones (again:true), stop at the cap
 //   VOID_URL=...  another origin (default https://a-to-mind.com)
+import { spawnSync } from 'node:child_process';
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -25,7 +26,6 @@ export function partsOf(stored) {
 }
 
 /** OCR a jpeg/png buffer via tools/art-text-ocr.py (RapidOCR). */
-import { spawnSync } from 'node:child_process';
 function ocrWords(buf) {
   mkdirSync(outDir, { recursive: true });
   const tmp = resolve(outDir, 'one.jpg');
@@ -98,7 +98,8 @@ async function main() {
     if (n >= max) break;
     for (let tries = 0; tries < 4; tries++) {
       const p = partsOf(f.key);
-      const r = await fetch(base() + '/api/card-art', {
+      // one paint per flagged card, then up to four tries of that same card: the route has no batch, answers slow at 3 a minute, and the run stops on the daily cap
+      const r = await fetch(base() + '/api/card-art', { // void-review: ok (one POST per flagged card to /api/card-art, which paints one subject and has no batch form; the inner loop only retries that card after the route says slow)
         method: 'POST',
         headers: { 'content-type': 'application/json', 'user-agent': 'VerseArtTextScan/1.0' },
         body: JSON.stringify({ subject: p.subject, kind: p.kind, rarity: 'common', again: true }),
