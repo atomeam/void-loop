@@ -1,7 +1,7 @@
 // The merge gate: no pull request lands unless the full suite passed on top of current main, and only one does.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord, foreignSquash, MAX_FOREIGN } from './suite-gate.mjs';
+import { recordedMain, parseLog, codeUnchanged, mayMerge, failedHere, choose, chooseChecked, nextAfterMerge, nextBatch, batchOf, batchSize, squashOf, driftOk, fixJob, CHECK, BATCH, botRecord, foreignSquash, MAX_FOREIGN, bisectOpen } from './suite-gate.mjs';
 
 const MAIN = 'abc1234def567890abc1234def567890abc1234d';
 const OLD = '1111111111111111111111111111111111111111';
@@ -106,6 +106,16 @@ test('a red batch is split in half until the red pull request runs alone, and on
   assert.equal(next.batch.length, 1, 'the half it was in, split again');
   assert.equal(batchSize(row(1, inBatch(fail(OLD), [1, 2, 3, 4, 5, 6, 7, 8]), [['void.html']]), MAIN), 4, 'main moved with code: the same heads went red together, so still split');
   assert.equal(batchSize(row(1, null, null), MAIN), BATCH, 'never run: a full batch');
+});
+
+test('a red batch is bisected on its own members, so a pull request that was not in it is not failed with it', () => {
+  const red4 = inBatch(fail(MAIN), [5, 6, 7, 8]);
+  const rows = [row(1, null, null), row(2, null, null), row(5, red4, []), row(6, red4, []), row(7, red4, []), row(8, red4, [])];
+  assert.deepEqual(choose(rows, MAIN, false).batch.map((r) => r.number), [5, 6]);
+  assert.deepEqual(bisectOpen(rows).map((r) => r.number), [5, 6]);
+  const tighter = inBatch(fail(MAIN), [5, 6]);
+  const next = [row(1, null, null), row(5, tighter, []), row(6, tighter, []), row(7, red4, []), row(8, red4, [])];
+  assert.deepEqual(choose(next, MAIN, false).batch.map((r) => r.number), [5], 'the tighter half is split again; the one outside that batch still waits');
 });
 
 test('main moving after every red batch no longer sends the same 8 back whole (2026-11-06: it never split, nothing merged)', () => {
