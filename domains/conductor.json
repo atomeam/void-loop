@@ -1,16 +1,20 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T17:59:36.496Z",
+ "updated": "2026-11-09T18:40:38.709Z",
  "last24h": {
-  "ticks": 152,
-  "started": 94,
+  "ticks": 149,
+  "started": 95,
   "requeued": 5,
   "setAside": 2,
   "probes": 10,
-  "errors": 64
+  "errors": 60
  },
  "broken": [],
  "held": [
+  {
+   "id": "mw9j2cvx",
+   "why": "verse-job.yml is paused (the coder's back-off, #2572, until 20:05 UTC)"
+  },
   {
    "id": "mvbl52gd",
    "why": "store-gap.yml reached its 6 runs today"
@@ -86,10 +90,6 @@
   {
    "id": "mvri6wo7",
    "why": "verse-job.yml is paused (the coder's back-off, #2572, until 20:05 UTC)"
-  },
-  {
-   "id": "mvri6xjk",
-   "why": "verse-job.yml is paused (the coder's back-off, #2572, until 20:05 UTC)"
   }
  ],
  "coder": {
@@ -108,7 +108,7 @@
  "handed": {
   "mvbl52gd": 1794229507069,
   "mva30i2e": 1794235818259,
-  "mva30j4u": 1794227813684,
+  "mva30j4u": 1794249638709,
   "mvu167w7": 1794208626432,
   "mveb8rsi": 1794207506673,
   "mveb8svc": 1794186086054,
@@ -249,26 +249,6 @@
   "review:2599"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T18:08:14.549Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T18:17:32.275Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T18:26:54.870Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T18:36:19.194Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T18:45:43.484Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3045,6 +3025,34 @@
    "probe": false,
    "grow": false,
    "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 269,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T18:40:38.709Z",
+   "open": 279,
+   "started": [
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
    "will": false,
    "lap": false,
    "revived": [
