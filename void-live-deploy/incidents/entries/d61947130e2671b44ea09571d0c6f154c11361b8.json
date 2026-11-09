@@ -1,0 +1,22 @@
+{
+ "at": "2026-11-09T21:59:29.823Z",
+ "sha": "d61947130e2671b44ea09571d0c6f154c11361b8",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42705262488",
+ "suite": "browser suite on main",
+ "checks": [
+  "family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Verse)",
+  "poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text"
+ ],
+ "touched": [
+  "tools/ai-gateway.test.mjs",
+  "tools/checks.mjs",
+  "void-live-deploy/functions/api/answer.js",
+  "void-live-deploy/lib/ai-gateway.js",
+  "void-live-deploy/lib/models.js"
+ ],
+ "passed": [
+  1,
+  2,
+  4
+ ]
+}

@@ -375,6 +375,9 @@
     },
     {
       "ask": "which skill family is unhealthy"
+    },
+    {
+      "ask": "how do i magnetize this?"
     }
   ],
   "candidates": [],
