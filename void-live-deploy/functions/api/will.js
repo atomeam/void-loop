@@ -20,8 +20,7 @@ import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLin
 import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 import { WILL_LAST_SQL, lastRun } from '../../lib/will-last.js';
-import { weigh } from '../../lib/self-model.js';
-import { remember } from './self.js';
+import { betterPair, blank, tick as selfTick, weigh } from '../../lib/self-model.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -131,6 +130,12 @@ export async function onRequestPost({ request, env }) {
     queued = id;
     if (lap) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('lap', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(lap)).run();
   }
-  try { await remember(env, request, will, at); } catch (_) { /* the will is already saved */ }
+  try {
+    const file = async (p) => { if (!env.ASSETS) return null; const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; };
+    const [better, exam] = await Promise.all([file('/void.better.json'), file('/progress/exam.json')]);
+    const prev = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'self-model'").first('v');
+    const stepped = selfTick(prev ? JSON.parse(prev) : blank(at), { better: betterPair(better), exam, will: { open: will.wants.length }, goals: will.wants.map((w) => w.i_want || w.title) }, at);
+    await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('self-model', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(stepped.self)).run();
+  } catch (_) { /* the will is already saved */ }
   return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}), ...(chosenWant.overCap ? { overCap: chosenWant.overCap } : {}) });
 }

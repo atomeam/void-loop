@@ -41,13 +41,13 @@
 <script type="module">
 import { DRIVES, METRICS, betterPair, blank, publicView, tick } from '/lib/self-model.js';
 const get = async (u) => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (_) { return null; } };
-const [rows, exam, will, server] = await Promise.all([get('/void.better.json'), get('/progress/exam.json'), get('/api/will'), get('/api/self')]);
+const [rows, exam, will] = await Promise.all([get('/void.better.json'), get('/progress/exam.json'), get('/api/will')]);
 const goals = will && Array.isArray(will.wants) ? will.wants.map((w) => w.i_want || w.title) : [];
 const local = tick(blank(new Date().toISOString()), { better: betterPair(rows), exam, will: goals.length ? { open: goals.length } : null, goals }, new Date().toISOString());
-const view = server && Array.isArray(server.journal) && server.journal.length ? server : publicView(local.self);
-const signals = (server && server.signals) || local.signals;
+const view = publicView(local.self);
+const signals = local.signals;
 const a = view.attention, seen = new Set((signals || []).map((s) => s.id));
-document.querySelector('#when').textContent = (view.stored ? 'Stored tick ' + view.tick + ' at ' + view.at + '. ' : 'Computed in this page from the files, not saved. ') + (view.journalNote || '');
+document.querySelector('#when').textContent = 'Computed in this page from the files just read. The will saves its own copy of this tick. Nothing here is typed in.';
 document.querySelector('#attention').textContent = a ? a.label + ' · ' + (a.detail || '') + '\n' + a.file + ' · ' + a.suite : 'No measured signal.';
 document.querySelector('#drives').textContent = DRIVES.map((k) => k + ': ' + (view.drives && view.drives[k] != null ? String(Math.round(view.drives[k] * 1000) / 10) : 'not measured')).join('\n');
 document.querySelector('#journal').textContent = (view.journal || []).map((j) => j.text).join('\n\n') || 'No journal line.';

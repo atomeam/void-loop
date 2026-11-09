@@ -18,7 +18,6 @@ export const INTERNAL = {
   '/api/treasury': "Verse's own treasury ledger for its /treasury/ page (public read of aggregate totals; owner-only writes)",
   '/api/crew': "Verse's crew and its own wants for /team/ and /brain/ (GET only, no input, edge-cached a minute; functions/api/crew.js, lib/team-crew-run.js); those pages are the only callers",
   '/api/selfcheck': "Verse's check of its own pages: the status card reads the newest report, and only the owner's self-check job (tools/self-check.mjs, .github/workflows/self-check.yml) hands one in (functions/api/selfcheck.js)",
-  '/api/self': "Verse's continuous self-model for /self/ (functions/api/self.js, lib/self-model.js): GET reads stored scores and the journal, POST is the owner and the will. No model call. Not a public API",
   '/api/members': "the /members/ page's own API: what paid Verse gives, and a paid member's ideas (passkey session, paid tier from Gumroad, a daily and monthly limit) queued as member: jobs that may only add (functions/api/members.js, lib/members.js, tools/add-only.mjs)",
   '/api/coder': "Verse's coder thinking on Verse's own model: owner only, the Workers AI shape in and out, under an hourly and daily cap (functions/api/coder.js); tools/verse-coder.mjs is the only caller",
   '/api/studies': "the owner's study panel (/studies.html): owner only, read only, lists Verse's private studies; not a public API (functions/api/studies.js)",

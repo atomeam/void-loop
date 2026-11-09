@@ -3,7 +3,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { betterPair, blank, expectedValue, fulfilled, rankActions, retrieve, signalsOf, tick, weigh } from '../void-live-deploy/lib/self-model.js';
-import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/self.js';
 const read = (p) => JSON.parse(readFileSync(new URL('../' + p, import.meta.url), 'utf8'));
 const rows = read('void-live-deploy/void.better.json');
 const exam = read('void-live-deploy/progress/exam.json');
@@ -36,16 +35,10 @@ test('a want closes only on a higher reading, a payment is not chosen, and a wei
   assert.ok(weigh(plain.map((c) => ({ ...c })), [{ target: 'will:answer-tide-questions', state: 'live' }, { target: 'will:answer-tide-questions', state: 'live' }], drives)[0].weight > 10);
 });
 
-test('care stays unmeasured, a gated run zeroes integrity, and GET does not write', async () => {
+test('care stays unmeasured, and a gated run zeroes integrity', () => {
   const open = tick(blank('2026-11-09T00:00:00Z'), raw, '2026-11-09T00:00:00Z');
   assert.equal(open.self.drives.care, null);
   assert.notEqual(open.self.drives.competence, null);
   assert.equal(tick(blank('2026-11-09T00:00:00Z'), raw, '2026-11-09T00:00:00Z', true).self.drives.integrity, 0);
-  const saved = new Map();
-  const env = { ASSETS: { fetch: async (req) => new Response(JSON.stringify(new URL(req.url).pathname.endsWith('exam.json') ? exam : rows), { status: 200 }) }, DB: { prepare: () => ({ bind: (...a) => ({ first: async () => null, all: async () => ({ results: [] }), run: async () => { saved.set(a[0], a[1]); return {}; } }) }) } };
-  const body = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/self'), env })).json();
-  assert.equal(saved.size, 0);
-  assert.match(body.journal[0].text, /not a proof of consciousness/);
-  assert.ok(body.signals.some((s) => s.suite === 'tools/better.test.mjs'));
-  assert.equal((await onRequestPost({ request: new Request('https://a-to-mind.com/api/self', { method: 'POST' }), env })).status, 401);
+  assert.ok(open.signals.some((s) => s.suite === 'tools/better.test.mjs' && s.file === 'void.better.json'));
 });
