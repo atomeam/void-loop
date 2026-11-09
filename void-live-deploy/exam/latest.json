@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T14:48:57.897Z",
+  "at": "2026-11-09T15:21:57.055Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -39,20 +39,6 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
           "ask": "play the episode before that",
           "failed": [
             "skill"
@@ -62,11 +48,13 @@
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "audio",
             "episode"
           ],
-          "score": 57.1
+          "score": 28.6
         }
       ],
       "holdout": {
@@ -115,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -130,9 +118,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -240,7 +229,7 @@
       }
     },
     "sports": {
-      "score": 88.9,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -281,13 +270,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
           "failed": [
             "board"
           ],
@@ -420,6 +402,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 88.9
+    "score": 89.8
   }
 }
