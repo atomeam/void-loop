@@ -1,0 +1,42 @@
+# Pages guard (tools/pages-guard.mjs; incident 2026-11-09): only deploy.yml's wrangler upload of void-live-deploy may deploy a-to-mind.com.
+# Cloudflare Pages' Git integration built bot pushes to main from the repo root (no build step: no index.html, no Functions, no tools.json)
+# and served empty 404s on every page and API. After every push to main and every 15 minutes this turns those Git builds off again if
+# anything turned them on, checks a-to-mind.com (the page, /tools.json, /api/answer), and when it is broken rolls production back to
+# the newest production deployment that passes the same check. No step waits for a person.
+name: Pages guard
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-guard
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.repository == 'atomeam/void-loop'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/pages-guard.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: A push gives a Git build time to land before the check
+        if: github.event_name == 'push'
+        run: sleep 45
+      - name: Git builds off, a-to-mind.com healthy (or rolled back)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tools/pages-guard.mjs guard
