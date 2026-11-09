@@ -7150,5 +7150,8 @@
   {"ask": "show this tab", "want": "skill:tab"},
   {"ask": "verify pack for client onboarding", "want": "skill:verify-pack"},
   {"ask": "set up tests for the invoice reminders", "want": "skill:verify-pack"},
-  {"ask": "what will Verse verify for the support router", "want": "skill:verify-pack"}
+  {"ask": "what will Verse verify for the support router", "want": "skill:verify-pack"},
+  {"ask": "monitor pack for client onboarding", "want": "skill:monitor-pack"},
+  {"ask": "set up monitors for the invoice reminders", "want": "skill:monitor-pack"},
+  {"ask": "what will Verse watch for the support router", "want": "skill:monitor-pack"}
 ]
