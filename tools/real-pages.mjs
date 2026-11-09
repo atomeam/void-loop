@@ -413,6 +413,11 @@ export const SPECS = {
     await t.p.evaluate(() => { location.hash = 'c=general'; }); await t.p.waitForTimeout(500); t.ok(/#general/.test(await t.text('#cname')), 'the address picks the channel');
   },
   '/notes/': async (t) => { await t.click('#newBtn'); await t.p.keyboard.type('Test note'); await t.p.keyboard.press('Enter'); await t.p.keyboard.type('Body text here'); await t.p.waitForTimeout(700); await t.download('#mdBtn', /\.md$/i); await t.share('#shareBtn'); },
+  '/log/': async (t) => { // Verse's own activity, on this one page only (lib/verse-log.js; tools/log-only.test.mjs keeps it here)
+    await t.waitText('h1', /Log/, 8000);
+    await t.p.waitForFunction(() => !/Reading the log/.test(document.getElementById('log').textContent), null, { timeout: 15000 }).catch(() => {});
+    t.ok(!/Reading the log/.test(await t.text('#log')), 'the log is drawn, or says plainly it could not be read');
+  },
   '/obituaries/': async (t) => { await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#list > *').count()) > 0, 'real notices listed'); },
   '/paint/': async (t) => {
     await t.clickText('The Starry Night'); await t.p.waitForTimeout(1200); t.ok(/Starry Night/.test(await t.p.getAttribute('#c', 'aria-label').catch(() => '') || ''), 'picking The Starry Night loads that painting');
@@ -721,7 +726,7 @@ Object.assign(SPECS, {
 });
 for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab > ul > li a').count(); t.ok(n >= 6, n + ' tools listed first'); t.ok(await t.p.locator('.lab > ul > li a[href="/lab/level/"]').isVisible(), 'the spirit level is listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
-const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
+const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i, '/log/': /lorem ipsum/i }; // /log/ quotes the growth notes, and one names the lorem ipsum skill
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;
 const FAKE_ALL = new RegExp(FAKE.source, 'gi'); // every match, built once from the constant above, never from input (void-review: ok)
 // buttons never clicked by the dead-button sweep: they write, send, spend, ask for a device, or clear the input

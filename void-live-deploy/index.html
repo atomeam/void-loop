@@ -2917,15 +2917,16 @@ say('nothing selected to remove');
         const plain = '<p>' + esc(w.thoughts || '') + '</p>';
         if (!SB) return plain;
         try {
-          if (typeof SB.selfCard !== 'function') return SB.selfHtml(SB.selfSections(vv), esc);
-          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam);
-          bodyOf.shown = r.shown; return SB.selfHtml(r.sections, esc);
+          // the stage keeps Verse's words only; what it did and when (since you last looked, asks, builds, numbers) is on its log page, /log/ (lib/verse-log.js)
+          const words = (ss) => ss.filter((s) => s.id === 'words');
+          if (typeof SB.selfCard !== 'function') return SB.selfHtml(words(SB.selfSections(vv)), esc);
+          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam), w = words(r.sections);
+          bodyOf.shown = r.shown; return w.length ? SB.selfHtml(w, esc) : '<p class="sub">Nothing new from me since you last read this.</p>';
         } catch (_) { return plain; } };
       let h = '<h2>What I think of myself</h2><div data-v-body>' + bodyOf(v, fam0) + '</div>';
-      // what's built and improved, skill by skill, from the ledger itself (owner, 2026-10-21: "i need to see in better detail what is built or improved for everything in Verse")
-      try { const [BD, led] = await Promise.all([import('/lib/built-detail.js'), fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null))]); if (vpageEl !== el) return; if (BD && led) h += BD.builtDetailHtml(BD.builtByFamily(led, fam0), esc); } catch (_) {}
-      try { const PC = await import('/lib/progress-chart.js'); if (vpageEl !== el) return; const led2 = await fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null)); if (led2) h += PC.progressHtml(PC.weekly(led2), esc); const tl = await fetch('/tester-log.json').then((r) => (r.ok ? r.json() : null)).catch(() => null); if (tl && PC.testerHtml) h += PC.testerHtml(tl, esc); } catch (_) {}
-      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
+      // what was built and when, skill by skill, the weekly chart and the tester trend are on the log page (/log/), linked here quietly
+      h += '<p class="sub vs-loglink"><a href="/log/">Log</a>: what was built and when, and the numbers behind this card.</p>';
+      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); } catch (_) {}
       // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
@@ -2935,7 +2936,7 @@ say('nothing selected to remove');
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to Verse" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
         + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></details>';
-      el.innerHTML = h + '<div data-v-pulse></div>' + (h.includes('data-v-conf') ? '' : '<div data-v-conf></div>') + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      el.innerHTML = h + (owner ? '<div data-v-pulse></div>' : '') + '<div class="src">Source: my reflections</div>';
       mountCorrect(el, said); mountPulse(el);
       // the long lists show their newest five; "show all N" unfolds the rest (owner, 2026-10-18), and the Root cause / Surface filter keeps to that fold
       const wire = () => {
@@ -2947,16 +2948,7 @@ say('nothing selected to remove');
         el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
       };
       wire();
-      // the growth velocity keeps up (asked by Verse: "updating in real time"): while this card is open, a stage change (a build landing puts things on the
-      // stage) reads /api/reflect again and redraws the week's line in place, at most once a minute (lib/self-blocks.js VELOCITY_EVERY); no timer, and
-      // the listener lets go the first time it finds the card closed
-      if (SB && el.querySelector('.vs-velocity')) { let velAt = 0, velBusy = false;
-        const onStage = async () => { if (vpageEl !== el) return removeEventListener('void:stage-change', onStage);
-          if (velBusy || Date.now() - velAt < SB.VELOCITY_EVERY) return; velBusy = true; velAt = Date.now();
-          try { const nv = await fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), box = vpageEl === el && el.querySelector('.vs-velocity');
-            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc, SB.friction(nv.asks)); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
-          velBusy = false; };
-        addEventListener('void:stage-change', onStage); }
+      // the growth velocity and its live redraw are on the log page now (lib/verse-log.js)
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Verse, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
       const conf = (fam) => import('/lib/skill-confidence.js').then((m) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc
@@ -2967,7 +2959,7 @@ say('nothing selected to remove');
         const box = vpageEl === el && el.querySelector('[data-v-body]'), now = JSON.stringify([nv, nf]);
         if (!box || !nv || !Array.isArray(nv.entries) || now === was) return;
         was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(nf || fam0); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
-        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(nv, nf || fam0))); } catch (_) {}
+        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); } catch (_) {}
       });
     }
     // every data card keeps itself current while it is open (owner, 2026-10-19: "all cards should constantly update"): update() runs every
