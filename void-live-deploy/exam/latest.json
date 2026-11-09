@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T04:33:14.858Z",
+  "at": "2026-11-09T08:00:03.819Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -380,7 +380,7 @@
       }
     },
     "weather": {
-      "score": 98.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -394,9 +394,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 85.7
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -504,18 +505,10 @@
       }
     },
     "sports": {
-      "score": 63.9,
+      "score": 75,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "nba scores",
-          "failed": [
-            "answered",
-            "fast"
-          ],
-          "score": 66.7
-        },
         {
           "ask": "nfl scores",
           "failed": [
@@ -528,9 +521,10 @@
           "ask": "mlb scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "nhl scores",
@@ -576,9 +570,10 @@
           "ask": "champions league scores",
           "failed": [
             "answered",
-            "fast"
+            "fast",
+            "board"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "mls scores",
@@ -589,57 +584,27 @@
           "score": 66.7
         },
         {
-          "ask": "lakers score",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
           "ask": "celtics score",
           "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
+          "score": 83.3
         },
         {
           "ask": "yankees score",
           "failed": [
-            "answered",
-            "fast",
             "board"
           ],
-          "score": 50
-        },
-        {
-          "ask": "how did the chiefs do",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "answered",
-            "fast",
-            "board"
-          ],
-          "score": 50
+          "score": 83.3
         },
         {
           "ask": "scores",
           "failed": [
             "skill",
-            "board"
+            "board",
+            "rival"
           ],
-          "score": 66.7
+          "score": 50
         },
         {
           "ask": "resultado del real madrid",
