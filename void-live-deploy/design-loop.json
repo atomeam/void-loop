@@ -159,6 +159,16 @@
    "listed": 2,
    "defectsBefore": 22,
    "defectsAfter": 11
+  },
+  {
+   "at": "2026-11-09T01:06:50.730Z",
+   "run": 17,
+   "measured": 30,
+   "clean": 23,
+   "fixed": 4,
+   "listed": 3,
+   "defectsBefore": 31,
+   "defectsAfter": 15
   }
  ],
  "pages": {
@@ -6301,18 +6311,8 @@
    "state": "clean"
   },
   "/lab/f501-ambient-light-metabolic-swarm-mind/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-09T01:06:50.730Z",
    "before": {
-    "defects": 11,
-    "contrast": 0,
-    "targets": 6,
-    "unstyled": 5,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 5,
     "contrast": 0,
     "targets": 5,
@@ -6321,8 +6321,8 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 6,
-   "moved": 0.098
+   "state": "listed",
+   "why": "the defects did not go down (5 -> 5)"
   },
   "/lab/f192-webxr-hand-force-cloth-kernel/": {
    "at": "2026-11-08T23:18:41.075Z",
@@ -6401,7 +6401,7 @@
    "state": "clean"
   },
   "/lab/f502-webgpu-kuramoto-phase-dom-orchestra-mind/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-09T01:06:50.730Z",
    "before": {
     "defects": 7,
     "contrast": 7,
@@ -6422,7 +6422,7 @@
     "overflow": 21
    },
    "rules": 7,
-   "moved": 0.128
+   "moved": 0.157
   },
   "/lab/f320-orient-rnn-webgpu-softbody-dom-arena/": {
    "at": "2026-11-08T23:18:41.075Z",
@@ -6478,18 +6478,8 @@
    "state": "clean"
   },
   "/lab/f222-screen-grazing-lichen/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-09T01:06:50.730Z",
    "before": {
-    "defects": 2,
-    "contrast": 0,
-    "targets": 2,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.019,
-    "overflow": 217
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6498,8 +6488,7 @@
     "cls": 0.033,
     "overflow": 217
    },
-   "rules": 2,
-   "moved": 0.128
+   "state": "clean"
   },
   "/lab/f267-sealed-mlp-dom-resource-arena/": {
    "at": "2026-11-08T23:18:41.075Z",
@@ -6528,14 +6517,387 @@
    "state": "clean"
   },
   "/lab/f316-webxr-hand-sealed-genome-dom-arena/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-09T01:06:50.730Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.075,
+    "cls": 0,
+    "overflow": 3
+   },
+   "state": "clean"
+  },
+  "/lab/f617-recipe-scaler/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f624-text-diff/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f299-hum-crystal-music-box/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f217-audible-synapse-forager/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/treasury/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.474,
+    "overflow": 267
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.474 that no rule fixes: listed for a builder)"
+  },
+  "/cheat-codes/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/make-data-error/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/make-rate-limit-error/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/n8n-google-credential-401/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/zapier-throttled-429/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/power-automate-429-rate-limit-exceeded/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/github-actions-resource-not-accessible-by-integration/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/under-the-hood/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.195,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.195 that no rule fixes: listed for a builder)"
+  },
+  "/jobs/europe/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/jobs/alerts/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/flights/map/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/flights/routes/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/flights/co2/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/kanban/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/films/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.066,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/157-local-isolated-not-sequence/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 7,
+    "contrast": 0,
+    "targets": 6,
+    "unstyled": 1,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 7,
+   "moved": 0.051
+  },
+  "/lab/f231-taste-oracle/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 2,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.068,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.072,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.148
+  },
+  "/lab/f243-sealed-genome-webrtc-dom-arena/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f286-webrtc-sealed-rnn-orientation-shared-arena/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.028,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f198-orientation-mlp-dom-gravity-swarm/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 15,
+    "contrast": 3,
+    "targets": 6,
+    "unstyled": 6,
+    "empty": 0,
+    "cls": 0.004,
+    "overflow": 2
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 9,
+    "contrast": 3,
+    "targets": 6,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.008,
+    "overflow": 2
+   },
+   "rules": 9,
+   "moved": 0.131
+  },
+  "/lab/f189-sealed-mlp-dom-agents/": {
+   "at": "2026-11-09T01:06:50.730Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"

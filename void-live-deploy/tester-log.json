@@ -1,15 +1,145 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 104,
+ "cases": 106,
  "runsTotal": 300,
  "kinds": {
-  "file": 63,
-  "none": 20,
-  "grow": 73,
-  "visitor": 142,
+  "file": 62,
+  "none": 17,
+  "grow": 75,
+  "visitor": 144,
   "tighten": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T01:13:41Z",
+   "passed": 85,
+   "of": 107,
+   "kind": "grow",
+   "ms": 368,
+   "note": "new ground passed, kept as a regression case: \"make a vase\" (skill:forge)",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 6 < 7"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 5 < 7"
+    },
+    {
+     "ask": "keep this idea: a stage that remembers | why: it makes coming back feel like hom",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "films by Kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for Ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo film metadata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo find me a sci-fi film from the 80s",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find me a sci-fi film from the 80s pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo films by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "films by kurosawa pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "film metadata for ikiru pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T01:03:02Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T00:50:13Z",
+   "passed": 17,
+   "of": 106,
+   "kind": "grow",
+   "ms": 400,
+   "note": "new ground passed, kept as a regression case: \"movie night\" (skill:movie)",
+   "failed": [
+    {
+     "ask": "what are you?",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "show me your videos",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "my actions",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "put on lofi hip hop pls",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "find the book the left hand of dakrness",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T00:37:22Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-08T23:08:27Z",
    "passed": 0,
@@ -395,165 +525,86 @@
      "why": "only \"waking up\" appeared, never the answer"
     }
    ]
-  },
-  {
-   "at": "2026-11-08T01:43:57Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-08T00:28:45Z",
-   "passed": 0,
-   "of": 105,
-   "kind": "file",
-   "ms": 251,
-   "note": "fix: \"is waymo in austin\" no skill caught it (it went to the model, which the tester never calls); console: Failed to load resource: the server responded with a status of 404 ()",
-   "failed": [
-    {
-     "ask": "what are you?",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play voidquest",
-     "why": "no .voidquest-card"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "no .voidquest-card"
-    },
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "show me your videos",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "play chess",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "my actions",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears ",
-     "why": "missing text /News about me/"
-    },
-    {
-     "ask": "put on lofi hip hop pls",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "find the book the left hand of dakrness",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-08T00:17:13Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-07T23:50:16Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-16",
+   "from": "2026-08-17",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-23",
+   "from": "2026-08-24",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-30",
+   "from": "2026-08-31",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-06",
+   "from": "2026-09-07",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-13",
+   "from": "2026-09-14",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-20",
+   "from": "2026-09-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-27",
+   "from": "2026-09-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-04",
+   "from": "2026-10-05",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-11",
-   "runs": 88,
-   "passed": 2252,
-   "of": 3366,
-   "broken": 32,
-   "brokenOf": 802,
+   "from": "2026-10-12",
+   "runs": 85,
+   "passed": 2322,
+   "of": 3335,
+   "broken": 28,
+   "brokenOf": 700,
    "brokenPassed": 0
   },
   {
-   "from": "2026-10-18",
-   "runs": 7,
-   "passed": 475,
-   "of": 517
+   "from": "2026-10-19",
+   "runs": 6,
+   "passed": 405,
+   "of": 446
   },
   {
-   "from": "2026-10-25",
+   "from": "2026-10-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-01",
-   "runs": 205,
-   "passed": 4809,
-   "of": 6004,
-   "broken": 8,
-   "brokenOf": 841,
-   "brokenPassed": 74,
+   "from": "2026-11-02",
+   "runs": 209,
+   "passed": 4911,
+   "of": 6217,
+   "broken": 9,
+   "brokenOf": 947,
+   "brokenPassed": 91,
    "ms": 386
   }
  ],
@@ -595,9 +646,9 @@
   "skill:figure-can": "2026-11-08T14:03:48Z",
   "skill:figures": "2026-11-08T19:16:35Z",
   "skill:films": "2026-11-08T19:16:35Z",
-  "skill:food": "2026-10-17T08:39:02Z",
-  "skill:forge": "2026-10-17T08:39:02Z",
-  "skill:fuel": "2026-10-17T08:39:02Z",
+  "skill:food": "2026-11-09T00:50:13Z",
+  "skill:forge": "2026-11-09T01:13:41Z",
+  "skill:fuel": "2026-11-09T01:13:41Z",
   "skill:games": "2026-10-17T08:44:50Z",
   "skill:gears": "2026-10-17T08:44:50Z",
   "skill:goal": "2026-10-17T08:50:25Z",
@@ -704,7 +755,7 @@
   "skill:technical-context": "2026-10-17T22:05:31Z",
   "skill:type-filter": "2026-10-17T22:05:31Z",
   "skill:web4": "2026-10-17T22:18:36Z",
-  "skill:movie": "2026-10-17T08:31:36Z",
+  "skill:movie": "2026-11-09T00:50:13Z",
   "skill:media-pick": "2026-10-17T08:44:50Z",
   "skill:music": "2026-10-17T08:50:25Z",
   "skill:pick-for-me": "2026-10-17T09:15:36Z",

@@ -345,6 +345,12 @@
     },
     {
       "ask": "summon a cup"
+    },
+    {
+      "ask": "movie night"
+    },
+    {
+      "ask": "make a vase"
     }
   ],
   "candidates": [],
