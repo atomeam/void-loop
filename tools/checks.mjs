@@ -609,6 +609,7 @@ for (const [name, file] of [
   ['system-blueprint', 'system-blueprint.test.mjs'],
   ['client-handoff', 'client-handoff.test.mjs'],
   ['system-handoff', 'system-handoff.test.mjs'],
+  ['proposal-pack', 'proposal-pack.test.mjs'],
   ['monitor-pack', 'monitor-pack.test.mjs'],
   ['verify-pack', 'verify-pack.test.mjs'],
   ['verse-runs', 'verse-runs.test.mjs'],
