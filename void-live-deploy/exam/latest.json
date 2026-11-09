@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T22:47:24.332Z",
+  "at": "2026-11-09T23:19:44.858Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,17 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -110,7 +103,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 97.4,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -127,7 +120,7 @@
           "failed": [
             "skill"
           ],
-          "score": 83.3
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -235,7 +228,7 @@
       }
     },
     "sports": {
-      "score": 88.9,
+      "score": 89.8,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -276,13 +269,6 @@
         },
         {
           "ask": "mls scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "yankees score",
           "failed": [
             "board"
           ],
@@ -423,6 +409,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 88.9
+    "score": 89.8
   }
 }
