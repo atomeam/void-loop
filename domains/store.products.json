@@ -166,6 +166,14 @@
     {
      "at": "2026-10-15T06:08:27.657Z",
      "what": "published by V01D: 11 files, 19.7 MB"
+    },
+    {
+     "at": "2026-11-08T16:59:33.344Z",
+     "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
+    },
+    {
+     "at": "2026-11-09T13:30:00.000Z",
+     "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again"
     }
    ]
   },
@@ -242,6 +250,14 @@
     {
      "at": "2026-10-15T06:34:28.905Z",
      "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)"
+    },
+    {
+     "at": "2026-11-08T16:59:33.344Z",
+     "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
+    },
+    {
+     "at": "2026-11-09T13:30:00.000Z",
+     "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again"
     }
    ],
    "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)"
@@ -277,6 +293,14 @@
     {
      "at": "2026-10-21T22:28:32.773Z",
      "what": "published by Verse: 6 files, 5.4 MB"
+    },
+    {
+     "at": "2026-11-08T16:59:33.344Z",
+     "what": "unpublished automatically: unreachable: Unexpected end of JSON input"
+    },
+    {
+     "at": "2026-11-09T13:30:00.000Z",
+     "what": "republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again"
     }
    ]
   }

@@ -352,6 +352,122 @@
     "ask-20261105-0730-3": {
       "decision": "built",
       "why": "lists run 13 (2026-11-05): duplicate of ask-20261104-2017-1: the images exam passes 6 of 6 at 100, live and local"
+    },
+    "ask-20261105-1440-1": {
+      "decision": "built",
+      "why": "lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live"
+    },
+    "ask-20261105-1451-1": {
+      "decision": "built",
+      "why": "lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live"
+    },
+    "ask-20261105-1509-1": {
+      "decision": "built",
+      "why": "lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live"
+    },
+    "ask-20261105-1530-1": {
+      "decision": "built",
+      "why": "lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live"
+    },
+    "ask-20261030-1605-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261030-1616-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261030-1636-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261030-1642-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261030-1844-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261031-0054-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261031-0124-1": {
+      "decision": "retired",
+      "why": "lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com"
+    },
+    "ask-20261031-1324-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261031-1532-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261031-1538-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261031-1554-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261031-1559-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261103-0222-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261105-1440-2": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261105-1451-2": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-1936-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-1936-3": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-1955-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-2017-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-2017-2": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-2037-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-2037-2": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-0859-1": {
+      "decision": "queued",
+      "why": "lists run 14 (2026-11-09): ndscalc.ru is measured as the calculator's VAT mode and passed 10/12 (ask-20261103-2357-1); the rest (every Russian rate, the sum in the link, the page kept offline) was Claude's PR #2413, closed 2026-11-09 as stale (it conflicted with main); its work is kept on branch claude/tower-ndscalc-emojigraph and listed under Up for grabs in domains/handoff.md, so the ask stays queued for whoever builds it"
+    },
+    "ask-20261106-1936-2": {
+      "decision": "built",
+      "why": "lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)"
+    },
+    "ask-20261106-2037-3": {
+      "decision": "built",
+      "why": "lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)"
     }
   },
   "ask-20261013-1850-1": {

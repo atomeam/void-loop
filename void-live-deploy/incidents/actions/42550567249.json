@@ -1,0 +1,55 @@
+{
+ "at": "2026-11-09T02:24:42Z",
+ "sha": "8e287bd68f1a4b51682f8dfaa50b9d4c658ed191",
+ "runId": 42550567249,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42550567249",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 128944970575,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42550567249/job/128944970575",
+   "conclusion": "failure",
+   "step": {
+    "number": 6,
+    "name": "Open every page and hand the report to the status card"
+   },
+   "fails": [],
+   "tail": [
+    "- `/is-it/leap-year`: does not open: answers nothing",
+    "- `/is-it/monday`: does not open: answers nothing",
+    "- `/is-it/mothers-day`: does not open: answers nothing",
+    "- `/is-it/new-year`: does not open: answers nothing",
+    "- `/is-it/new-years-eve`: does not open: answers nothing",
+    "- `/is-it/pi-day`: does not open: answers nothing",
+    "- `/is-it/saturday`: does not open: answers nothing",
+    "- `/is-it/st-patricks-day`: does not open: answers nothing",
+    "- `/is-it/sunday`: does not open: answers nothing",
+    "- `/is-it/thanksgiving`: does not open: answers nothing",
+    "- `/is-it/the-weekend`: does not open: answers nothing",
+    "- `/is-it/thursday`: does not open: answers nothing",
+    "- `/is-it/tuesday`: does not open: answers nothing",
+    "- `/is-it/valentines-day`: does not open: answers nothing",
+    "- `/is-it/wednesday`: does not open: answers nothing",
+    "- `/is-it/weekday`: does not open: answers nothing",
+    "- `/keep-it-running/`: a file or API it needs fails: 404 /api/catalog; dead link: 404 /one-time-fix/; dead link: 404 /full-stack-audit/",
+    "- `/lab/`: dead link: 404 /lab/f595-orientation-decision-tree-clippath-swarm/; dead link: 404 /lab/f551-webgpu-mic-fluid-spectral-mlp-portals/; dead link: 404 /lab/f485-webgpu-lbm-audio-feedback-mind/",
+    "- `/lab/f233-panel-play/`: a file or API it needs fails: 404 /lab/f233-panel-play/app.js",
+    "- `/lab/f234-loop-grid/`: a file or API it needs fails: 404 /lab/f234-loop-grid/app.js",
+    "- `/lab/f235-forge-duel/`: a file or API it needs fails: 404 /lab/f235-forge-duel/app.js",
+    "- `/lab/f236-scene-blocker/`: a file or API it needs fails: 404 /lab/f236-scene-blocker/app.js",
+    "- `/lab/f299-hum-crystal-music-box/`: a file or API it needs fails: 404 /lab/f299-hum-crystal-music-box/app.js",
+    "- `/lab/f613-tip-calculator/`: a file or API it needs fails: 404 /lab/f613-tip-calculator/app.js",
+    "- `/lab/f617-recipe-scaler/`: a file or API it needs fails: 404 /lab/f617-recipe-scaler/app.js",
+    "- `/lab/f621-signature-pad/`: does not open: answers nothing",
+    "- `/lab/f622-sound-level-meter/`: does not open: answers nothing",
+    "- `/lab/f624-text-diff/`: does not open: answers nothing",
+    "/api/selfcheck answered 405 ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

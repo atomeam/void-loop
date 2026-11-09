@@ -1,0 +1,29 @@
+{
+ "at": "2026-11-09T02:39:05.863Z",
+ "sha": "8e287bd68f1a4b51682f8dfaa50b9d4c658ed191",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42550355696",
+ "suite": "browser suite on main",
+ "checks": [
+  "suite ran to the end",
+  "fix: \"my Make scenario is broken\" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it",
+  "store: no product names or prices are hard-coded in the page or the libraries (all from the live catalog)",
+  "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy",
+  "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+ ],
+ "touched": [
+  "docs/NEXT.md",
+  "docs/TAGTEAM.md"
+ ],
+ "shards": [
+  2,
+  4
+ ],
+ "passed": [
+  2,
+  4
+ ],
+ "closedAt": "2026-11-09T14:30:23.017Z",
+ "closedBy": "d31b1d2b231d5e91392e39ad4f42176944f7578f",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42632340021",
+ "minutes": 711
+}

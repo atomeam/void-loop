@@ -49,7 +49,7 @@ export async function buildGap(topic, { asks = 3, ask, dry = false, noUpload = f
   const bytes = files.reduce((s, f) => s + f.data.length, 0);
   const a = appraise({ name: title(topic), effortHours: 2, files: files.map((f) => ({ bytes: f.data.length })) }, { comps, demand: asks, sales: 0 });
   const blurb = `A starter kit for ${topic.replace(/-/g, ' ')}: a step-by-step guide, a checklist and reusable templates, written by Verse. Pay what you want (suggested ${'$' + a.cents / 100}).`;
-  const r = await publish({ kind: 'templates', id, name: title(topic), blurb, dry, noUpload, noClip: false, hook: 'You kept asking, so I made it' }, files);
+  const r = await publish({ kind: 'templates', id, name: title(topic), blurb, dry, noUpload, noClip: false, hook: 'You asked for this, so it is in the store now' }, files);
   if (dry) return { id, appraisal: a, bytes, row: r.row };
   const cat = readCatalog(), row = cat.products.find((p) => p.id === id);
   row.suggested = a.cents; row.appraisal = a.note + (a.flags.length ? ' [' + a.flags.join(', ') + ']' : '');

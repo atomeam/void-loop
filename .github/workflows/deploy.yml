@@ -110,6 +110,7 @@ jobs:
           node tools/growth-fold.mjs --keep # the entries PRs left in growth/entries/ join the served ledger now; growth-fold.yml commits the fold on main
           node tools/incident-log.mjs assemble || true # one file per suite run, folded into the served incidents.json
           node tools/tower-files.mjs assemble || true # one file per floor, folded into the served tower.evidence.json
+          node tools/rival-pages.mjs || echo "::warning::rival-pages did not run" # every rival's page (/rival/), from the studies and the floors as served (docs/TOWER-RULES.md rule 8)
           node tools/refresh.mjs --keep-going || echo "::warning title=A generated card is stale::tools/refresh.mjs could not regenerate every step; the live site may show an older card"
           node tools/public-ledger.mjs # the served ledger leaves out what Verse studies (tools/private.mjs); the repo's stays append-only
           node tools/public-quotes.mjs # only Verse's words are served: the owner's quoted words leave every served comment and JSON file (the repo keeps them)
@@ -171,6 +172,17 @@ jobs:
             if [ "${n:-0}" -gt 0 ]; then echo "main moved to $head and its deploy is running: this run stops"; gh run cancel "$GITHUB_RUN_ID"; sleep 60; fi
           fi
 
+      # Only this upload deploys a-to-mind (incident 2026-11-09): Cloudflare Pages' Git integration built pushes from the repo root with no
+      # build step and served empty 404s for every page, /tools.json and /api/*. Each main deploy turns those Git builds off again
+      # (tools/pages-guard.mjs; pages-guard.yml does the same after every push and every 15 minutes). A failure here never blocks the deploy.
+      - name: Pages Git builds off (only this workflow deploys)
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && inputs.pr == '' && github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tools/pages-guard.mjs pause-git
+
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy
         # a PR gets no preview (above): only main deploys. inputs.pr is a pull-request check started by hand and never an upload.
@@ -196,6 +208,8 @@ jobs:
             echo "attempt $i: HTTP $code"; sleep 10
             [ "$i" = 6 ] && { echo "::error::deployment did not serve the deployed page"; exit 1; }
           done
+          # the whole site, not just the page: /tools.json (100+ tools) and a real /api/answer answer (the Functions bundle) on this deployment
+          node tools/pages-guard.mjs check "$URL"
           echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
 
       # The smoke check above reads the deployment's own preview address. This one reads the real domain: after a main
@@ -230,8 +244,19 @@ jobs:
           # the Versus queue's data (tools/tower-size.mjs, tools/tower-target.mjs): the order on the card is only as true as these files live
           check /tower.size.json void-live-deploy/tower.size.json || ok=1
           check /tower.target.json void-live-deploy/tower.target.json || ok=1
+          node tools/pages-guard.mjs check https://a-to-mind.com || ok=1 # /tools.json and /api/answer on the real domain
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
+
+      # A main deploy that fails its smoke checks never stays live: a-to-mind.com goes back to the newest production deployment that serves
+      # the page, /tools.json and /api/answer (tools/pages-guard.mjs heal, never this run's own deployment), and this run stays red.
+      - name: Roll back when the live site is broken
+        if: failure() && steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BAD: ${{ steps.deploy.outputs.deployment-url }}
+        run: node tools/pages-guard.mjs heal --bad "$BAD"
 
       # IndexNow (owner, 2026-10-26: "wire IndexNow into the deployment pipeline so that search engines utilizing the protocol (like Bing and
       # Yandex) are notified within minutes whenever new single-purpose utility pages go live"): once a-to-mind.com serves this deploy, the

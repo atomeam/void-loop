@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --accent:#4a9eff; --text:#e8eaed; --muted:#9aa0a6; --ok:#6f8f62; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem 1.25rem; border-bottom:1px solid #2a2e36; }
+h1 { margin:0; font-size:1.35rem; font-weight:600; }
+.sub { color:var(--muted); font-size:0.9rem; margin-top:0.25rem; }
+main { max-width:900px; margin:0 auto; padding:1rem; }
+.card { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; font-size:0.85rem; color:var(--muted); margin:0.6rem 0 0.2rem; }
+input, select { width:100%; padding:0.5rem; border-radius:6px; border:1px solid #333; background:#111; color:var(--text); font-size:1rem; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+button { background:var(--accent); color:#fff; border:none; padding:0.6rem 1rem; border-radius:8px; font-size:1rem; cursor:pointer; margin:0.4rem 0.4rem 0 0; }
+button.secondary { background:#333; }
+canvas { width:100%; height:180px; background:#111; border-radius:8px; display:block; margin-top:0.75rem; }
+.summary { background:#111; padding:0.75rem; border-radius:8px; margin-top:0.75rem; font-family:ui-monospace,monospace; font-size:0.9rem; white-space:pre-wrap; }
+.room-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; }
+.total { font-size:1.1rem; font-weight:600; color:var(--ok); }
+footer { text-align:center; color:var(--muted); font-size:0.8rem; padding:1.5rem; }
+@media (max-width:600px) { .row { grid-template-columns:1fr; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Flooring and tile estimator · Verse lab</title>
+<meta name="description" content="Job: Enter one or more room sizes, tile size and waste percent.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Flooring and tile estimator · Verse lab">
+<meta property="og:description" content="Job: Enter one or more room sizes, tile size and waste percent.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f626-flooring-tile-estimator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f626-flooring-tile-estimator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Flooring and tile estimator</h1>
+  <div class="sub">Rooms, tile size, waste → tiles, boxes, and a live layout. Local only.</div>
+</header>
+<main>
+  <div class="card">
+    <label>Units</label>
+    <select id="units">
+      <option value="imp">Imperial (ft / in)</option>
+      <option value="met">Metric (m / cm)</option>
+    </select>
+    <div class="row">
+      <div>
+        <label id="tileLLabel">Tile length (in)</label>
+        <input type="number" id="tileL" value="12" min="0.1" step="0.1">
+      </div>
+      <div>
+        <label id="tileWLabel">Tile width (in)</label>
+        <input type="number" id="tileW" value="12" min="0.1" step="0.1">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Tiles per box</label>
+        <input type="number" id="perBox" value="10" min="1" step="1">
+      </div>
+      <div>
+        <label>Waste %</label>
+        <input type="number" id="waste" value="10" min="0" max="50" step="1">
+      </div>
+    </div>
+    <button id="addRoom" class="secondary">+ Add room</button>
+  </div>
+  <div id="rooms"></div>
+  <div class="card">
+    <div class="total" id="grand">Total: 0 tiles · 0 boxes</div>
+    <div class="summary" id="list"></div>
+    <button id="copy">Copy list</button>
+    <button id="csv" class="secondary">Download CSV</button>
+    <button id="txt" class="secondary">Download .txt</button>
+  </div>
+</main>
+<footer>Rectangle rooms only · numbers are estimates · nothing leaves this device</footer>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#copy { color:#333333 }
+/* end verse design loop */
+</style>
+</body>
+</html>

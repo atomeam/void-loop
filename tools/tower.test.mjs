@@ -10,7 +10,7 @@ test('a floor is beaten only when every aspect passes with evidence', () => {
   const e = all(f); delete e.speed; assert.equal(gate(f, e).beaten, false); assert.deepEqual(gate(f, e).left, ['speed']);
   const n = all(f); n.speed.evidence = ''; assert.equal(gate(f, n).beaten, false);
 });
-test('one queue, easiest first: conquered sites, then the one with the fewest aspects left, and a regression puts a site back', () => {
+test('one climb, closest first: assimilated sites, then the one Verse is closest to, and a regression puts a site back on the climb', () => {
   const ev = { [FLOORS[1].id]: all(FLOORS[1]), [FLOORS[4].id]: Object.fromEntries(aspectsOf(FLOORS[4]).filter((a) => a !== 'accuracy').slice(0, 6).map((a) => [a, { verdict: 'better', evidence: 'x' }])) };
   let t = tower([], ev);
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'beaten'); assert.equal(t.marker, 2);
@@ -18,10 +18,9 @@ test('one queue, easiest first: conquered sites, then the one with the fewest as
   assert.equal(t.floors.filter((f) => f.state === 'current').length, 1);
   const r = record({ verdict: 'better' }, 'worse', 900, 500, 'e', 'now'); assert.equal(r.was, 'better');
   ev[FLOORS[1].id].speed = r; t = tower([], ev); assert.equal(t.beaten, 0); assert.equal(t.floors.find((f) => f.id === FLOORS[1].id).regressed.length, 1);
-  // a site Verse is losing on is not easy to beat: an easier site is fought first, and the hard one stays in the queue
-  assert.notEqual(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].id, FLOORS[4].id); assert.equal(t.floors[0].state, 'current');
-  assert.equal(t.floors.find((f) => f.id === FLOORS[1].id).state, 'ahead');
-  assert.match(towerLine(t), /^Versus: now [^ ]+ \(Verse ahead on \d+ of \d+ aspects\), 0 surpassed$/); assert.doesNotMatch(towerLine(t), / of \d+ floors| of 39\b|Tower/);
+  // the regressed site is no longer assimilated; it is still the closest, so it is the current floor again until the loss is fixed
+  assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'current');
+  assert.match(towerLine(t), /^Versus: 0 assimilated · current floor [^ ]+: \d+% assimilated · \d+ floors remaining$/); assert.doesNotMatch(towerLine(t), /surpassed|passed|Tower/);
   ev[FLOORS[1].id].speed = { verdict: 'better', evidence: 'fixed' }; t = tower([], ev);
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'beaten'); // its loss fixed, it falls
 });
@@ -51,24 +50,24 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   const t = tower([], {}), h = sk.towerHtml(t, (s) => String(s));
   assert.match(h, /<h2 class="tw-head">Versus<\/h2>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(sk.about, /^Versus: /);
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
-  assert.equal((h.match(/class="tower-floor"/g) || []).length, 1); assert.match(h, /data-state="current"/); assert.doesNotMatch(h, /data-state="ahead"|FINAL BOSS|YOU ARE HERE|data-boss/);
-  assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.match(h, /class="tw-logo"/); // logos only (owner, 2026-10-25)
+  assert.equal((h.match(/class="tw-cur"/g) || []).length, 1); assert.doesNotMatch(h, /FINAL BOSS|YOU ARE HERE|data-boss/);
+  assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.doesNotMatch(h, /s2\/favicons|tower\.icons\//, 'no logos (docs/TOWER-RULES.md)');
   assert.match(sk.detailText(t.floors[0]), new RegExp('^0 of ' + t.floors[0].m + ' aspects ahead of ')); // whichever floor stands first, its own count
   // three conquered: the current site first, the conquered under it, newest first
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
-  assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · easiest site left: /);
-  const list = h3.slice(h3.indexOf('class="tw-won"')); // the list, not the picture (lib/tower-art.js draws them bottom up)
-  assert.ok(list.indexOf(FLOORS[2].site) < list.indexOf(FLOORS[0].site));
+  void states; assert.match(h3, /^[\s\S]*3 assimilated · current floor: /); assert.match(h3, /<b>Assimilated \(3\)<\/b>/);
+  const list = h3.slice(h3.indexOf('class="tw-won"'));
+  for (const f of FLOORS.slice(0, 3)) assert.ok(list.includes(f.site), f.site + ' is listed as assimilated');
 });
 test('the live card tells what moved between two polls', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default;
   const a = tower([], {}), first = a.floors[0], ev = { [first.id]: passingRows(first, { evidence: 'e' }) }, b = tower([], ev);
   assert.deepEqual(sk.changes(a, a), []);
   const said = sk.changes(a, b).join(' ');
-  assert.ok(said.includes(first.site + ' is surpassed.'), said); // beating the site at the front moves the marker
-  assert.ok(/Now: /.test(said) && !said.includes('Now: ' + first.site), said);
-  assert.ok(sk.changes(b, a).join(' ').includes(first.site + ' slipped.'));
+  assert.ok(said.includes(first.site + ' is assimilated.'), said); // assimilating the floor at the front moves the climb
+  assert.ok(/Current floor: /.test(said) && !said.includes('Current floor: ' + first.site), said);
+  assert.ok(sk.changes(b, a).join(' ').includes(first.site + ' is no longer assimilated.'));
   assert.deepEqual(sk.changes(null, b), []);
 });
 
@@ -112,17 +111,18 @@ test('the matchup (owner, 2026-10-25: avatars for the battle, "how aware we are"
   assert.equal(ago('2026-10-25T08:59:30Z', now), 'just now'); assert.equal(ago('2026-10-25T08:45:00Z', now), '15 minutes ago'); assert.equal(ago('2026-10-24T09:00:00Z', now), '24 hours ago'); assert.equal(ago('2026-10-23T09:00:00Z', now), '2 days ago'); assert.equal(ago('2026-09-01T00:00:00Z', now), 'on 2026-09-01'); assert.equal(ago('x', now), '');
   // the splash: Verse's mark left, the site's fighter right (keyed by its host, so the same face as anywhere else), names in plain text, an energy bar each
   const vs = vsHtml(cur, esc);
-  assert.ok(vs.indexOf('src="/verse-logo.webp"') < vs.indexOf('class="tw-vsmark"') && vs.indexOf('class="tw-vsmark"') < vs.indexOf('domain=calculator.net'), 'Verse, VS, the site: logos only');
+  assert.ok(vs.indexOf('src="/verse-logo.webp"') < vs.indexOf('class="tw-vsmark"') && vs.indexOf('class="tw-vsmark"') < vs.indexOf('class="tw-who">calculator.net'), 'Verse, VS, the site named in plain text');
+  assert.doesNotMatch(vs, /favicons|tower\.icons/, 'no rival logo (docs/TOWER-RULES.md)');
   assert.match(vs, /class="tw-who">Verse<\/span>/); assert.match(vs, /class="tw-who">calculator\.net<\/span>/); assert.match(vs, /class="tw-vs tw-in"/); assert.doesNotMatch(vsHtml(cur, esc, { enter: false }), /tw-in/);
   assert.equal((vs.match(/<i data-k="v">/g) || []).length, 2, "Verse's bar: the two aspects it has won or is equal-and-better on"); assert.equal((vs.match(/<i data-k="s">/g) || []).length, 1, "the site's bar: the one aspect Verse loses"); assert.equal((vs.match(/<i>/g) || []).length, (cur.m - 2) + (cur.m - 1), 'the rest grey on both');
-  assert.equal(siteFace(cur, 24), siteFace({ site: 'calculator.net', url: 'https://www.calculator.net/x' }, 24)); assert.match(siteFace(cur, 24), /width="24"/); assert.match(vs, /class="tw-logo"/); // logos only (owner, 2026-10-25)
+  assert.equal(siteFace(cur, 24), siteFace({ site: 'calculator.net', url: 'https://www.calculator.net/x' }, 24)); assert.match(siteFace(cur, 24), /width:24px/); assert.doesNotMatch(siteFace(cur, 24), /<img/);
   assert.ok(hashOf('calculator.net') !== hashOf('isitchristmas.com'));
   // the card: the splash before the stack, the rows inside the current site's button with the numbers and the awareness line, a conquered site with its small face
   const won = { ...ev, [FLOORS[0].id]: all(FLOORS[0]) }, t2 = tower([], won), h = towerHtml(t2, esc, { now }); assert.equal(t2.floors.find((x) => x.state === 'current').id, f.id);
-  assert.ok(h.indexOf('class="tw-vs') < h.indexOf('class="tw-stack')); assert.match(h, /95 ms vs 132 ms/); assert.match(h, /last measured 3 hours ago · next: the gate re-measures on the next deploy/);
-  assert.match(h, new RegExp('data-state="beaten"><span class="tw-face"><span class="tw-logo-wrap"[^>]*><img class="tw-logo" src="[^"]*' + FLOORS[0].site.replace(/\./g, '\\.'))); // the beaten site's logo, never a face
+  assert.ok(h.indexOf('class="tw-vs') < h.indexOf('class="tw-stack')); assert.match(h, /95 ms vs 132 ms/); assert.match(h, /next: measure /); assert.doesNotMatch(h, /last measured|ago/, 'no Verse dates on the card');
+  assert.ok(h.slice(h.indexOf('class="tw-won"')).includes(FLOORS[0].site), 'the assimilated site is listed by name');
   assert.equal((h.match(/<li data-v=/g) || []).length, cur0.m); assert.equal((h.match(/<li data-v="won"/g) || []).length, 2); assert.equal((h.match(/<li data-v="lost"/g) || []).length, 0);
-  const m = matchupHtml(cur, esc, { now }); assert.ok(m.startsWith('<style>') && m.includes('class="tw-vs') && m.includes('3 of 3 vs 2 of 3') && m.includes('last measured 3 hours ago'));
+  const m = matchupHtml(cur, esc, { now }); assert.ok(m.startsWith('<style>') && m.includes('class="tw-vs') && m.includes('3 of 3 vs 2 of 3') && m.includes('next: '));
   assert.match(h, /@media \(prefers-reduced-motion:reduce\)\{\.tw-vs \*,\.tw-vs::after\{animation:none!important\}/);
 });
 
@@ -144,7 +144,7 @@ test('a row the gate scored against its default bar (the site turned it away) sa
   assert.doesNotMatch(vsHtml({ ...f, ev: { accuracy: ev.accuracy } }, esc), /tw-barnote/, 'no note when every row was measured on the site');
 });
 
-test('every surpassed site is on the card, visible and copyable, with a taught-me line from the gate\'s numbers when none was written', async () => {
+test('every assimilated site is on the card, visible and copyable, by name with its own page; what it taught stays in the data', async () => {
   const { tower, learnedOf, FLOORS } = await import('../void-live-deploy/lib/tower.js');
   const { towerHtml, verseTake } = await import('../void-live-deploy/skills/tower.js');
   const good = (a) => ({ verdict: 'better', evidence: 'x' }), ev = {};
@@ -162,13 +162,11 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   assert.ok(verseTake(t).learned.some((x) => x.site === won.site && x.text === line));
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const html = towerHtml(t, esc);
-  const rowAt = html.indexOf('<div class="tower-floor" role="button"'), rowEnd = html.indexOf('</div>', rowAt), link = html.indexOf('<div class="tw-links"', rowEnd);
-  assert.ok(rowAt > 0 && html.slice(rowAt, rowEnd).includes(esc(won.site)), 'a surpassed site is a copyable row, not a button');
-  const linkTag = html.slice(link, html.indexOf('>', link)); assert.ok(!/data-share-skip/.test(linkTag), 'its links copy with the card'); assert.ok(html.slice(link).includes('/compare/?floor='));
-  assert.ok(html.includes('<b>Conquered (1)</b>')); assert.ok(!/max-height:min\(48vh/.test(html), 'no scroll cap hides the list');
-  // the site's own icon when the gate kept one; the drawn fighter otherwise
+  const list = html.slice(html.indexOf('class="tw-won"'));
+  assert.ok(list.includes(esc(won.site)) && list.includes('/rival/?site='), 'an assimilated site is listed with its rival page');
+  assert.ok(html.includes('<b>Assimilated (1)</b>')); assert.doesNotMatch(html, /Conquered|surpassed|taught me/);
   const { siteFace } = await import('../void-live-deploy/skills/tower.js');
-  assert.match(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /<img class="tw-logo" src="\/tower.icons\/tradukka.com.png"/); assert.match(siteFace(won, 24), /s2\/favicons\?sz=128&domain=tradukka\.com/); assert.doesNotMatch(siteFace(won, 24), /<svg/, 'logos only, never a drawn face');
+  assert.doesNotMatch(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /<img|favicons/, 'no logos: plain text only');
   assert.equal(tower([], ev, null, { [won.site]: 'tower.icons/x.png' }).floors.find((f) => f.id === lane.id).icon, 'tower.icons/x.png');
 });
 
@@ -223,19 +221,13 @@ test('a held floor is never beaten, whatever the gate rows say', () => {
   const f = FLOORS.find((x) => x.id === 'paint'), t = tower([], { paint: passingRows(f) }), p = t.floors.find((x) => x.id === 'paint');
   assert.equal(p.n, p.m, 'every row reads a win'); assert.equal(p.beaten, false); assert.notEqual(p.state, 'beaten'); assert.match(easeLine(p), /^held, not beaten: Verse's page is not yet better/);
 });
-test('the card leads with the target: hero with logo, name and weight chips, three actions, up next, an honest empty surpassed, the long takes folded', () => {
-  const size = { sites: { 'isitchristmas.com': { bytes: 700, scripts: 0, nodes: 20, routes: 1 } } };
-  const t = tower([], {}, null, null, { ranks: {}, order: {}, list: {} }, size), cur = t.floors.find((f) => f.state === 'current'), esc = (s) => String(s);
-  const h = towerHtml(t, esc, { enter: false });
-  const at = (m) => h.indexOf(m);
-  assert.ok(at('<div class="tw-hero"') < at('<div class="tw-vs') && at('<div class="tw-vs') < at('<div class="tw-stack tower-stack"') && at('<div class="tw-stack tower-stack"') < at('<div class="tw-actions"') && at('<div class="tw-actions"') < at('<div class="tw-next"'), 'the order: hero, fight, aspects, actions, up next');
-  assert.match(heroHtml(cur, esc), /Now taking on[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
-  assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club[\s\S]*<b>0<\/b> scripts[\s\S]*<b>20<\/b> elements[\s\S]*<b>1<\/b> route</);
-  assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
-  // the reason line says why, not what the chips and the matchup already show (owner, 2026-10-30: it repeated the counts above it)
-  const pinned = { ...cur, pinned: true, page: '/x/', n: 10, m: 12, lost: ['mobile'], weight: 13000, size: { bytes: 11264, scripts: 0, nodes: 187, routes: 11, controls: 22 } };
-  const why = (heroHtml(pinned, esc).match(/<p class="tw-why">([^<]*)<\/p>/) || [])[1] || '';
-  assert.match(why, /^Why this one: /); assert.doesNotMatch(why, /11 KB|scripts|elements|routes|aspects|loses|until Verse surpasses/, why);
+test('the card: counts in one word, the summary, the current floor, what Verse lacks, the rival\'s own history, its actions, the next floors (docs/TOWER-RULES.md)', () => {
+  const t = tower([], {}), esc = (s) => String(s);
+  const h = towerHtml(t, esc, { enter: false }), at = (m) => h.indexOf(m);
+  for (const m of ['<div class="tw-sum"', '<div class="tw-cur"', '<div class="tw-vs', '<div class="tw-lacks"', '<div class="tw-history"', '<div class="tw-actions"', '<div class="tw-next"']) assert.ok(at(m) > 0, m);
+  assert.ok(at('<div class="tw-sum"') < at('<div class="tw-cur"') && at('<div class="tw-cur"') < at('<div class="tw-lacks"') && at('<div class="tw-lacks"') < at('<div class="tw-history"') && at('<div class="tw-history"') < at('<div class="tw-actions"') && at('<div class="tw-actions"') < at('<div class="tw-next"'), 'the order');
+  assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club/);
+  assert.match(heroHtml(t.floors[0], esc), /tw-hero-name/);
   assert.match(actionsHtml({ id: 'x', page: '/x/', url: 'https://x.com/' }, esc), /Open Verse's page[\s\S]*Side by side[\s\S]*Visit/); assert.match(actionsHtml({ id: 'x' }, esc), /No Verse page yet/);
 });
 test('the want card and the Versus card name the same site: both rank with the target, so the fight in progress leads on each', async () => {
@@ -247,7 +239,7 @@ test('the want card and the Versus card name the same site: both rank with the t
   assert.equal(will.floors[will.marker - 1].id, card.floors[card.marker - 1].id); assert.equal(towerLine(will), towerLine(card));
   const tgt = files.tg && files.tg.id && card.floors.find((f) => f.id === files.tg.id);
   if (tgt && !tgt.beaten && !tgt.cleared && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
-  assert.equal(towerArgs([], {}).length, 10); assert.equal(towerArgs([], {})[9], null); assert.equal(towerArgs([], { tg: { season: { start: '2026-11-06' } } })[9], '2026-11-06'); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], {})[8], null); assert.equal(towerArgs([], { tg: {} })[6], null);
+  assert.equal(towerArgs([], {}).length, 12); assert.equal(towerArgs([], {})[10], null); assert.equal(towerArgs([], {})[11], null); assert.equal(towerArgs([], {})[9], null); assert.equal(towerArgs([], { tg: { season: { start: '2026-11-06' } } })[9], '2026-11-06'); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], {})[8], null); assert.equal(towerArgs([], { tg: {} })[6], null);
 });
 test('a gone or parked rival is no floor: the frontier skips every host on tower.gone.json (owner, 2026-11-06)', async () => {
   const fs = await import('node:fs'), { towerArgs, withoutGone } = await import('../void-live-deploy/lib/tower.js');
@@ -261,9 +253,9 @@ test('a gone or parked rival is no floor: the frontier skips every host on tower
   const live = tower(...towerArgs([], { ev: rd('tower.evidence.json'), fr: rd('tower.frontier.json'), gn: rd('tower.gone.json') }));
   for (const h of Object.keys(rd('tower.gone.json').gone || {})) assert.ok(!live.floors.some((f) => f.id === h), h + ' is gone and no floor');
 });
-test('a held site says why in the Versus line, so all aspects ahead and none surpassed explains itself', () => {
+test('a held site says why in the Versus line', () => {
   const t = { floors: [{ site: 'heycolor.com', n: 16, m: 16, held: 'not yet better at painting a picture' }], marker: 1, beaten: 0 };
-  assert.equal(towerLine(t), 'Versus: now heycolor.com (Verse ahead on 16 of 16 aspects; held: not yet better at painting a picture), 0 surpassed');
+  assert.equal(towerLine(t), 'Versus: 0 assimilated · current floor heycolor.com: 0% assimilated (held: not yet better at painting a picture) · 0 floors remaining');
 });
 
 test('a default-bar score is never a lead: it is not counted ahead, it keeps the floor open, and it cannot make a site surpassed (owner card, 2026-10-29)', async () => {
@@ -302,15 +294,15 @@ test('the queue ranks on measured rows only: a loss against the default bar (the
   const j = judgeRows({ id: 'away.test', site: 'away.test', url: 'https://away.test/', extra: [] }, ev['away.test']);
   assert.deepEqual(j.jobs.find((x) => x.aspect === first), { aspect: first, evidence: 'not measured yet: away.test turned the gate away, so only the default bar was scored' });
 });
-test('a site with a feature Verse lacks is never conquered: it stays passed and names what is missing (tools/site-crawl.mjs)', async () => {
+test('a site with a feature Verse lacks is never assimilated: it stays on the climb and the card names what is missing (tools/site-crawl.mjs)', async () => {
   const { passedLine, missingLine } = await import('../void-live-deploy/lib/tower.js');
   const f = FLOORS[0], ev = { [f.id]: all(f) }, host = new URL(f.url).hostname.replace(/^www\./, '');
   assert.equal(tower([], ev).floors.find((x) => x.id === f.id).state, 'beaten');
   const ft = { sites: { [host]: { pages: 40, templates: 5, features: 12, verse_pages: 6, verse_features: 10, missing: ['Apple Name', 'A table'] } } };
   const t = tower([], ev, null, null, null, null, null, null, ft), g = t.floors.find((x) => x.id === f.id);
-  assert.equal(g.state, 'passed'); assert.equal(t.beaten, 0); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
+  assert.equal(g.state, 'current'); assert.equal(g.beaten, false); assert.equal(t.beaten, 0); assert.deepEqual(g.missingFeatures, ['Apple Name', 'A table']); assert.equal(g.crawled.pages, 40);
   assert.match(passedLine(g), /missing 2: Apple Name, A table/); assert.equal(missingLine({ missingFeatures: [] }), '');
-  const h = towerHtml(t, (s) => String(s)); assert.match(h, /crawled 40 pages/);
+  const h = towerHtml(t, (s) => String(s)); assert.match(h, /Apple Name: missing \(found by crawling 40 pages/);
   // nothing missing: conquered as before
   const ok = tower([], ev, null, null, null, null, null, null, { sites: { [host]: { pages: 40, missing: [] } } }); assert.equal(ok.floors.find((x) => x.id === f.id).state, 'beaten');
 });

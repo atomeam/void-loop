@@ -6,7 +6,7 @@
 import { pickSection } from './quote.js';
 
 export function isProverb(text) {
-  return /^(?:please\s+)?(?:(?:tell|give)\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:proverb|saying)|(?:random|another)\s+(?:proverb|saying)|proverb(?:\s+please)?|(?:(?:tell|give)\s+(?:me\s+)?)?(?:an?\s+)?(?:wise|old|famous)\s+saying)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:(?:(?:funny|old|wise|famous|random|another)\s+)?(?:tell|give)\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:proverb|saying))|(?:(?:funny|random|another)\s+)?(?:proverb|saying)|proverb(?:\s+please)?|(?:(?:tell|give)\s+(?:me\s+)?)?(?:an?\s+)?(?:wise|old|famous)\s+saying|(?:(?:funny|old|wise|famous|random|another)\s+)?proverb(?:\s+about\s+\w+)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 // 2026-10-30: the skill showed one of 15 fixed lines with no source. Wikiquote's page lists 455 keywords on 2026-10-30 (Absent, Beauty, Cat, ...),
@@ -65,7 +65,7 @@ async function run(text, api) {
 
 export default {
   name: 'proverb',
-  examples: ['tell me a proverb', 'random proverb', 'wise saying', 'another proverb', 'an old saying', 'tell me an old saying'],
+  examples: ['tell me a proverb', 'random proverb', 'wise saying', 'another proverb', 'an old saying', 'tell me an old saying', 'funny proverb about luck'],
   nearMisses: ['what is a proverb', 'proverbs from the bible', 'quote'],
   match(lower, text) { return isProverb(text); },
   run,

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --muted:#888; --accent:#4dabf7; --match:#51cf66; --group:#ffd43b; --border:#333; --card:#1a1d24; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.45 system-ui, -apple-system, sans-serif; padding:12px; }
+h1 { font-size:1.4rem; margin:0 0 8px; font-weight:600; }
+p.lead { color:var(--muted); margin:0 0 16px; font-size:0.95rem; }
+.row { display:grid; grid-template-columns:1fr 2fr; gap:12px; margin-bottom:12px; }
+@media (max-width:800px) { .row { grid-template-columns:1fr; } }
+label { display:block; font-size:0.8rem; color:var(--muted); margin-bottom:4px; }
+input[type=text], textarea { width:100%; background:#1a1d24; color:var(--fg); border:1px solid var(--border); border-radius:8px; padding:10px; font:14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+textarea { min-height:160px; resize:vertical; }
+.flags { display:flex; gap:12px; margin:8px 0; font-size:0.85rem; }
+.controls { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; align-items:center; }
+button { background:var(--accent); color:#000; border:0; border-radius:6px; padding:8px 14px; font-weight:600; cursor:pointer; font-size:0.9rem; }
+button.secondary { background:#333; color:var(--fg); }
+button:active { transform:scale(0.98); }
+#explain { background:#1a1d24; border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:12px; font-size:0.9rem; min-height:40px; }
+#textview { background:#1a1d24; border:1px solid var(--border); border-radius:8px; padding:10px; min-height:120px; overflow:auto; font:13px/1.4 ui-monospace, monospace; white-space:pre-wrap; word-break:break-word; margin-bottom:12px; }
+.match { background:rgba(81,207,102,0.25); border-radius:2px; }
+.group { background:rgba(255,212,59,0.3); border-radius:2px; }
+#cards { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px; min-height:80px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px; cursor:grab; font-size:0.85rem; }
+.card:active { cursor:grabbing; }
+.card h3 { margin:0 0 6px; font-size:0.9rem; color:var(--accent); }
+.card .full { color:var(--match); word-break:break-all; }
+.card .groups { margin-top:6px; color:var(--muted); }
+.status { font-size:0.8rem; color:var(--muted); margin-top:8px; }
+.error { color:#ff6b6b; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Regex tester · Verse lab</title>
+<meta name="description" content="Job: Paste a regular expression and a block of text; see every match and its capture groups highlighted live, get a plain-English breakdown of what the pattern">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Regex tester · Verse lab">
+<meta property="og:description" content="Job: Paste a regular expression and a block of text; see every match and its capture groups highlighted live, get a plain-English breakdown of what the pattern">
+<meta property="og:url" content="https://a-to-mind.com/lab/f625-regex-tester/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f625-regex-tester/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Regex Tester</h1>
+<p class="lead">Paste a pattern and text. See matches and groups live. Get a plain-English explanation. Drag the cards. Copy or download the results.</p>
+
+<div class="row">
+  <div>
+    <label for="pattern">Pattern</label>
+    <input type="text" id="pattern" placeholder="e.g. (\\d{3})-(\\d{4})" value="(\\w+)@(\\w+\\.\\w+)">
+    <div class="flags">
+      <label><input type="checkbox" id="flagG" checked> g</label>
+      <label><input type="checkbox" id="flagI"> i</label>
+      <label><input type="checkbox" id="flagM"> m</label>
+      <label><input type="checkbox" id="flagS"> s</label>
+    </div>
+  </div>
+  <div>
+    <label for="text">Text to test</label>
+    <textarea id="text" placeholder="Paste text here…">Contact alice@example.com or bob@test.org for details.
+The code is 123-4567.
+Another: charlie@domain.co.uk</textarea>
+  </div>
+</div>
+
+<div id="explain">Explanation appears here.</div>
+
+<div class="controls">
+  <button id="run">Update matches</button>
+  <button id="copy" class="secondary">Copy matches</button>
+  <button id="copyJson" class="secondary">Copy JSON</button>
+  <button id="dlJson" class="secondary">Download JSON</button>
+  <button id="dlCsv" class="secondary">Download CSV</button>
+  <button id="share" class="secondary">Copy share link</button>
+  <button id="clear" class="secondary">Clear</button>
+</div>
+
+<div id="textview">Highlighted text appears here.</div>
+<div id="cards"></div>
+<div class="status" id="status">Ready. Everything stays on this device.</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#flagG { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#flagI { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#flagM { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#flagS { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+/* end verse design loop */
+</style>
+</body>
+</html>

@@ -16,13 +16,15 @@ test('a page is weighed by its bytes, scripts, elements and routes', () => {
   assert.deepEqual([512, 1400, 25000, 2.4e6].map(bytesLabel), ['512 B', '1.4 KB', '25 KB', '2.4 MB']);
 });
 
-test('the lightest weighed site is the target; a heavy popular-looking one waits; an unweighed one comes after the weighed', () => {
+test('a weighed site carries its weight and its ease line, and size never orders the climb (docs/TOWER-RULES.md rule 2)', () => {
   const rank = { ranks: {}, order: {}, list: {} };
   const size = { sites: { 'calculator.net': { bytes: 2.4e6, scripts: 40, nodes: 9000, routes: 600 }, 'isitchristmas.com': { bytes: 700, scripts: 0, nodes: 20, routes: 0 } } };
   const t = tower([], {}, null, null, rank, size), cur = t.floors.find((f) => f.state === 'current');
-  assert.equal(cur.id, 'is it'); assert.equal(cur.weight, 700 + 200);
-  assert.ok(t.floors.findIndex((f) => f.id === 'calculator') < t.floors.findIndex((f) => f.id === 'random number'), 'a weighed site stands before an unweighed one');
-  assert.match(easeLine(cur), /weighs 700 B over 0 scripts, 20 elements and 0 routes \(1 KB club\)/);
+  assert.equal(t.floors.find((f) => f.id === 'is it').weight, 700 + 200); const cur0 = cur;
+  const bare = tower([], {}, null, null, rank, null);
+  assert.deepEqual(t.floors.map((f) => f.id), bare.floors.map((f) => f.id), 'the same climb with or without the weights');
+  assert.ok(cur0);
+  assert.match(easeLine(t.floors.find((f) => f.id === 'is it')), /weighs 700 B over 0 scripts, 20 elements and 0 routes \(1 KB club\)/);
   assert.match(easeLine(t.floors.find((f) => f.id === 'random number')), /not weighed yet/);
 });
 
@@ -44,7 +46,7 @@ test('the controls of a home page are its links, inputs, buttons and selects, co
   assert.equal(measure({ html: page }).controls, 34);
 });
 
-test('the queue is smallest first: the fewest controls, then the fewer bytes; a counted site before one only weighed, and that before an unweighed one', () => {
+test('controls and bytes are recorded on each floor but never order the climb: closest first (docs/TOWER-RULES.md rule 2)', () => {
   const rank = { ranks: {}, order: {}, list: {} };
   // isitchristmas.com is the lightest by weight but has more controls: it stands behind both counted sites with fewer controls
   const size = { sites: {
@@ -55,9 +57,8 @@ test('the queue is smallest first: the fewest controls, then the fewer bytes; a 
   const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
   const ids = ['random number', 'calculator', 'is it', 'coin flip'];
   for (const id of ids) assert.ok(t.floors.some((f) => f.id === id), id + ' is a floor');
-  assert.ok(at('random number') < at('calculator'), 'the same controls: the fewer bytes first');
-  assert.ok(at('calculator') < at('is it'), 'fewer controls first, however heavy');
-  assert.ok(at('is it') < at('coin flip'), 'a counted site before one only weighed');
+  const bare = tower([], {}, null, null, rank, null);
+  assert.deepEqual(t.floors.map((f) => f.id), bare.floors.map((f) => f.id), 'size moves no floor');
   assert.match(easeLine(t.floors[at('is it')]), /has 9 controls on its home page and weighs 700 B/);
 });
 
@@ -111,16 +112,15 @@ test('the rendered count is the page after its scripts ran, not its shell; a pag
   try { if (!fs.existsSync('/opt/pw-browsers/chromium')) assert.equal(await openBrowser(), null, 'no browser: the raw count stands'); } finally { if (keep === undefined) delete process.env.VOID_TEST_BROWSER; else process.env.VOID_TEST_BROWSER = keep; }
 });
 
-test('the target stands first and the card says it is the target, not the easiest site left; with no target the card says easiest', async () => {
+test('the target stands first and the card names it as the current floor, never as the easiest site left', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default, rank = { ranks: {}, order: {}, list: {} };
   const size = { sites: { 'isitchristmas.com': { bytes: 700, controls: 3, scripts: 0, nodes: 20, routes: 0 }, 'calculator.net': { bytes: 2.4e6, controls: 400, scripts: 40, nodes: 9000, routes: 600 } } };
   const free = tower([], {}, null, null, rank, size), c0 = free.floors.find((f) => f.state === 'current');
-  assert.equal(c0.id, 'is it'); assert.equal(c0.pinned, false);
-  const h0 = sk.towerHtml(free, (s) => String(s)); assert.match(h0, /easiest site left: /); assert.doesNotMatch(h0, /the target until Verse passes it/);
+  assert.equal(c0.pinned, false);
+  const h0 = sk.towerHtml(free, (s) => String(s)); assert.match(h0, /Current floor/); assert.doesNotMatch(h0, /easiest site left/);
   const held = tower([], {}, null, null, rank, size, 'calculator'), c1 = held.floors.find((f) => f.state === 'current');
   assert.equal(c1.id, 'calculator'); assert.equal(c1.pinned, true);
-  const h1 = sk.towerHtml(held, (s) => String(s)); assert.match(h1, /now taking on: /); assert.doesNotMatch(h1, /easiest site left: calculator/);
-  assert.match(h1, /the target until Verse passes it/);
+  const h1 = sk.towerHtml(held, (s) => String(s)); assert.match(h1, /current floor: calculator/); assert.doesNotMatch(h1, /easiest site left/);
   assert.equal(held.floors.find((f) => f.id === 'is it').pinned, false);
 });
 
@@ -160,8 +160,8 @@ test('a bot wall or a country picker is a door, not the site: it never ranks as 
     'random.org': { bytes: 90000, controls: 3, counted: 'rendered', shell: 'wall', scripts: 3, nodes: 300, routes: 10 },
     'calculator.net': { bytes: 2.4e6, controls: 6, counted: 'rendered', shell: 'gateway', scripts: 40, nodes: 9000, routes: 600 },
     'isitchristmas.com': { bytes: 700, controls: 9, counted: 'rendered', shell: 'none', scripts: 0, nodes: 20, routes: 0 } } };
-  const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
-  assert.ok(at('is it') < at('random number') && at('is it') < at('calculator'), 'the real 9-control site stands before the wall and the picker');
+  const t = tower([], {}, null, null, rank, size), bare = tower([], {}, null, null, rank, null);
+  assert.deepEqual(t.floors.map((f) => f.id), bare.floors.map((f) => f.id), 'a wall or a picker moves no floor: size never orders the climb');
 });
 
 test('planSizes reads again a rendered row not yet checked for a bot wall or a country picker', () => {

@@ -95,6 +95,18 @@
    "verse_features": 0,
    "missing": [],
    "crawled": "2026-11-07"
+  },
+  "tsundere.pw": {
+   "floor": "tsundere.pw",
+   "pages": 1,
+   "templates": 1,
+   "features": 1,
+   "verse_pages": 0,
+   "verse_features": 0,
+   "missing": [
+    "Video"
+   ],
+   "crawled": "2026-11-09"
   }
  }
 }

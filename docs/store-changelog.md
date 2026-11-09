@@ -5,6 +5,12 @@ https://a-to-mind.com/store/ ("New from Verse") and https://a-to-mind.com/store/
 
 | When (UTC) | Product | What | Price | Status |
 | --- | --- | --- | --- | --- |
+| 2026-11-09 13:30 | Verse Remix Kit (`remix-kit`) | republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again | Free · pay what you want | live |
+| 2026-11-09 13:30 | Verse Site Tester (`site-tester`) | republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again | Free · pay what you want | live |
+| 2026-11-09 13:30 | VERSE Forge Printables (10 STLs) (`v01d-forge-printables`) | republished: the 2026-11-08 unpublish was the store API answering an empty body during a site outage, not a failed download; the store check tests the download again | Free · pay what you want | live |
+| 2026-11-08 16:59 | Verse Remix Kit (`remix-kit`) | unpublished automatically: unreachable: Unexpected end of JSON input | Free · pay what you want | live |
+| 2026-11-08 16:59 | Verse Site Tester (`site-tester`) | unpublished automatically: unreachable: Unexpected end of JSON input | Free · pay what you want | live |
+| 2026-11-08 16:59 | VERSE Forge Printables (10 STLs) (`v01d-forge-printables`) | unpublished automatically: unreachable: Unexpected end of JSON input | Free · pay what you want | live |
 | 2026-11-03 18:22 | Verse Clips Pack (10 shorts) (`v01d-clips-pack`) | unpublished automatically: unreachable: fetch failed | Free · pay what you want | unpublished |
 | 2026-10-21 22:28 | Verse Remix Kit (`remix-kit`) | published by Verse: 6 files, 5.4 MB | Free · pay what you want | live |
 | 2026-10-15 06:34 | Verse Site Tester (`site-tester`) | published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued) | Free · pay what you want | live |

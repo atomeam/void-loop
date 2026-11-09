@@ -1,0 +1,38 @@
+{
+ "at": "2026-11-09T07:35:26Z",
+ "sha": "45adbbdee491ea42f567745c44fc0bd33edd2541",
+ "runId": 42580158787,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42580158787",
+ "workflow": "MCP live",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "probe",
+   "id": 129036714520,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42580158787/job/129036714520",
+   "conclusion": "failure",
+   "step": {
+    "number": 5,
+    "name": "An MCP client lists and calls Verse's tools"
+   },
+   "fails": [
+    "FAIL connect/initialize: Streamable HTTP error: Error POSTing to endpoint: "
+   ],
+   "tail": [
+    "added 95 packages in 2s",
+    "Run set -o pipefail",
+    "set -o pipefail",
+    "sleep 45 # the Pages deploy is live a few seconds after the job ends; give the edge a moment",
+    "cd /tmp/probe && node mcp-probe.mjs \"${URL_IN:-https://a-to-mind.com/api/mcp}\" | tee -a \"$GITHUB_STEP_SUMMARY\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  URL_IN: ",
+    "  MCP_RECORD: /tmp/mcp-record.json",
+    "FAIL connect/initialize: Streamable HTTP error: Error POSTing to endpoint: ",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
