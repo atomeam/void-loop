@@ -21,33 +21,6 @@ const ASK_RE = /^(?:(?:show|open)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:verse(?:'s
 export const towerOf = (text) => ASK_RE.test(String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 const get = async (u) => { try { const r = await fetch(u, { cache: 'no-store' }); return r.ok ? r.json() : null; } catch (_) { return null; } };
 
-// the current rival's own story, fetched live (owner, 2026-11-03: "the history of each site should be ... with what each site taught me";
-// 2026-11-06: the card's history area is where that story belongs): tools/site-history.mjs researched 210 sites into docs/HISTORY and
-// tools/parity.mjs distills each research file into void-live-deploy/history/<slug>.json (founding, key events, sources, the first archive
-// copy). The card fetches the live target's one file once per slug (a cached promise, so the 30 s redraws cost nothing extra); a floor
-// without a clean host name has no file to fetch, and a site the research has not reached yet simply shows the ledger alone until it does.
-const storyCache = new Map();
-export const storyFor = async (t) => { const f = t && t.floors && t.floors.find((x) => x.state === 'current'), slug = f && (hostOf(f.url) || f.id || '');
-  if (!slug || !/^[a-z0-9.\-]+$/i.test(slug)) return null;
-  if (!storyCache.has(slug)) storyCache.set(slug, get('/history/' + slug + '.json'));
-  return storyCache.get(slug); };
-/** the rival's own story, above Verse's ledger: the founding in the headline, three key events after it, each saying the source the research
- *  kept, and the year the first archived copy was made. Lines the research could not prove clearly ("unknown ...", flagged u) are dropped, not
- *  invented: a file with only those is no story at all, and the block keeps off the card. '' when no research for this site (t.story) yet. Pure. */
-export function storyHtml(t, esc) {
-  const s = t && t.story; if (!s) return '';
-  const cur = (t.floors || []).find((f) => f.state === 'current');
-  const known = (s.events || []).filter((e) => e.t && !e.u), founder = known.find((e) => /^(Founded|Founders):/.test(e.t) && (e.y || (/(19|20)\d\d/.exec(e.t) || [''])[0]));
-  const rest = known.filter((e) => e !== founder && e.k !== 'Founding').slice(0, 3);
-  const snap = (s.snaps || [])[0];
-  if (!known.length && !(snap && snap[0])) return '';
-  const li = (e) => '<li style="padding:2px 0;border-bottom:1px solid #221e30">' + (e.y ? '<span style="opacity:.7;font-variant-numeric:tabular-nums">' + esc(e.y) + '</span> · ' : '') + esc(e.t) + (e.s ? ' · <a href="' + esc(e.s) + '" target="_blank" rel="noopener noreferrer">source</a>' : '') + '</li>';
-  return '<div class="tw-story" style="margin:6px 0 8px;font-size:13px"><b>' + esc((cur && cur.site) || s.site || 'The site') + "'s own story</b>"
-    + (founder ? ' · founded ' + esc(founder.y || founder.t.match(/(19|20)\d\d/)[0]) : '')
-    + (snap && snap[0] && snap[1] ? '<div style="font-size:11px;opacity:.75;margin-top:2px">on the web since ' + esc(String(snap[0])) + ' · <a href="' + esc(String(snap[1])) + '" target="_blank" rel="noopener noreferrer">the first copy the archive kept</a></div>' : '')
-    + (rest.length ? '<ol style="list-style:none;margin:2px 0 0;padding:0">' + rest.map(li).join('') + '</ol>' : '') + '</div>';
-}
-
 // The tower, plain (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"): the site
 // Verse is on now, with each of its aspects and where it stands, and under it every site already conquered. The queue past the current site is
 // not drawn: it has no end. The fight itself is a VS splash (owner, 2026-10-25: "each site and verse should have an avatar face for the battle";
@@ -264,18 +237,15 @@ export function historyOf(t) {
   return out.sort((a, b) => b.at.localeCompare(a.at) || b.seq - a.seq).map(({ seq: _, ...r }) => r);
 }
 const dayOf = (d) => { const x = new Date(String(d) + 'T12:00:00Z'); return Number.isNaN(+x) ? String(d || '') : x.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }); };
-/** the history area: the rival's own story first (storyHtml, when the research reached this site), then Verse's outcome shrunk to one small
- *  ledger line — what is on now and since when, then how the newest sites before it ended — with the whole walk one tap away. Pure. */
+/** the history under the target: the target on top, then each site it took on before, newest first; five shown, the rest one tap away. Pure. */
 export function historyHtml(t, esc, n = 5) {
   const cur = t && (t.floors || []).find((f) => f.state === 'current'), rows = historyOf(t), since = t && t.target && t.target.since;
   if (!cur && !rows.length) return '';
   const name = (r) => r.page ? '<a href="' + esc(r.page) + '">' + esc(r.site) + '</a>' : esc(r.site);
   const li = (r) => '<li data-how="' + esc(r.how) + '" style="padding:4px 0;border-bottom:1px solid #221e30"><span style="opacity:.7;font-variant-numeric:tabular-nums">' + esc(dayOf(r.at)) + '</span> · <b>' + name(r) + '</b> · ' + esc(r.how) + '<div style="font-size:11px;opacity:.75;word-break:break-word">' + esc(r.why) + '</div></li>';
-  // the small line (owner: the fight record small, each site's own story on top): the newer n rows carry their page link and end word
-  const ledger = '<div class="tw-ledger" style="font-size:12px;opacity:.85;margin-top:3px">' + (cur ? 'On <b>' + name(cur) + '</b>' + (since ? ' since ' + esc(dayOf(since)) : '') : 'moved on') + (rows.length ? ' · ended before it, newest first: ' + rows.slice(0, n).map((r) => name(r) + ' · <span style="opacity:.8">' + esc(r.how) + '</span>').join(' · ') + (rows.length > n ? ' · …and ' + (rows.length - n) + ' more' : '') : '') + '</div>';
-  const walk = rows.length ? '<details class="tw-walk" style="margin-top:4px"><summary style="cursor:pointer;font-size:12px"><b>Show all ' + rows.length + '</b> · each site the tower took on, the day and how it ended</summary><ol style="list-style:none;margin:4px 0 0;padding:0">' + rows.map(li).join('') + '</ol></details>' : '';
-  return storyHtml(t, esc) + '<div class="tw-history" style="margin:6px 0 8px;font-size:13px"><b>History</b> · this site now, the walk behind it' + ledger
-    + walk
+  const top = cur ? '<li data-how="now" style="padding:4px 0;border-bottom:1px solid #221e30"><span style="opacity:.7">' + esc(since ? 'since ' + dayOf(since) : 'now') + '</span> · <b>' + name(cur) + '</b> · taking on now</li>' : '';
+  return '<div class="tw-history" style="margin:6px 0 8px;font-size:13px"><b>History</b> · each site the tower took on, newest first<ol style="list-style:none;margin:4px 0 0;padding:0">' + top + rows.slice(0, n).map(li).join('') + '</ol>'
+    + (rows.length > n ? '<details><summary style="cursor:pointer;font-size:12px;margin-top:4px">Show all ' + rows.length + '</summary><ol style="list-style:none;margin:4px 0 0;padding:0">' + rows.slice(n).map(li).join('') + '</ol></details>' : '')
     + '<div style="font-size:12px;margin-top:4px"><a href="/assimilated/">Every site Verse has read or built from</a></div></div>';
 }
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
@@ -368,7 +338,7 @@ let stale = 0;
 // is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
 let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
-const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; t.settled = tg && Array.isArray(tg.settled) ? tg.settled : []; t.target = tg || null; t.story = await storyFor(t); return t; };
+const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json'), get('/tower.gone.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; t.settled = tg && Array.isArray(tg.settled) ? tg.settled : []; t.target = tg || null; return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
@@ -419,5 +389,5 @@ export default {
   examples: ['versus', 'verse versus', 'the versus', 'show me versus', 'the tower', 'verse tower', 'which sites have you surpassed', 'show the tower', 'open your tower'],
   nearMisses: ['eiffel tower', 'tower of hanoi', 'how tall is the tower', 'tower defense game', 'cell tower near me', 'cats versus dogs', 'verse versus google'],
   match(lower, text) { return towerOf(text || lower); },
-  run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine, storyFor, storyHtml,
+  run, towerOf, towerHtml, nextHtml, planOf, planHtml, detailText, changes, verseTake, vsHtml, matchupHtml, matchRows, metaLine,
 };
