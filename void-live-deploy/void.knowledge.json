@@ -1,5 +1,41 @@
 [
   {
+    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
+    "from": "page",
+    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
+    "learned": "2026-11-09: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"",
+    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-09) did not work",
+    "at": "2026-11-09T13:03:17.187Z",
+    "seen": 1
+  },
+  {
+    "id": "page:ipcalc-co",
+    "from": "page",
+    "consumed": "ipcalc.co",
+    "learned": "ipcalc.co could not be read: did not load (page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://ipcalc.co/)",
+    "retain": "ipcalc.co was could not be read",
+    "at": "2026-11-09T10:13:17Z",
+    "seen": 1
+  },
+  {
+    "id": "page:trafflink-xyz",
+    "from": "page",
+    "consumed": "trafflink.xyz",
+    "learned": "trafflink.xyz could not be read: did not load (page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://trafflink.xyz/)",
+    "retain": "trafflink.xyz was could not be read",
+    "at": "2026-11-09T10:12:59Z",
+    "seen": 1
+  },
+  {
+    "id": "page:man-fyi",
+    "from": "page",
+    "consumed": "man.fyi",
+    "learned": "man.fyi walled: a nearly empty page (92 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "man.fyi was walled",
+    "at": "2026-11-09T10:12:54Z",
+    "seen": 1
+  },
+  {
     "id": "page:live-check-video-gen-a-to-mind-com-api-clip-and-",
     "from": "page",
     "consumed": "live check: video-gen (a-to-mind.com /api/clip and /video/ (the partner video model behind t…)",
@@ -63,12 +99,12 @@
     "seen": 1
   },
   {
-    "id": "page:live-check-image-gen-a-to-mind-com-api-image-and",
+    "id": "page:250free-com",
     "from": "page",
-    "consumed": "live check: image-gen (a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, …)",
-    "learned": "2026-11-08: did not work; asked \"can a visitor paint a picture on a-to-mind.com/image/ and change it with one typed line\"; error: the paint: answered 405 no state",
-    "retain": "image-gen depends on a-to-mind.com /api/image and /image/ (FLUX.2 klein-4b on Workers AI, or the free painter, behind them); its newest live check (2026-11-08) did not work",
-    "at": "2026-11-08T11:22:47.018Z",
+    "consumed": "250free.com",
+    "learned": "250free.com walled: a nearly empty page (0 characters: a redirect stub, or a page that draws itself with no text)",
+    "retain": "250free.com was walled",
+    "at": "2026-11-08T09:25:27Z",
     "seen": 1
   },
   {

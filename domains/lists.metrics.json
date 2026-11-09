@@ -826,6 +826,50 @@
      "link": "https://github.com/atomeam/void-loop/pull/2413"
     }
    ]
+  },
+  {
+   "at": "2026-11-09T14:45:00Z",
+   "run": 15,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.8,
+   "dup_basis": "16 of 20 items considered were rewordings of another: ndscalc.ru 15 of 16 ask groups, #2531 a repeat of #2522",
+   "median_days": 2,
+   "median_basis": "days from queued to built over the 5 items: 0 (main's stale first.json, SEO pages and parity docs), 2 (#2522), 2 (#2531), 4 (the ndscalc.ru ask groups, median queued 2026-11-05), 24 (forge~rts in the overlap allowance since 2026-10-16); median 2",
+   "asks_open_start": 16,
+   "asks_open_end": 0,
+   "note": "Run 15 of the lists routine. The ndscalc.ru asks were left to Claude's #2413 in run 14; #2413 was closed as stale at 2026-11-09 12:59 UTC without the VAT work, so this run built the one piece missing on main (the 7% simplified-tax rate; the sum in the link and the offline page were already there). Counts use tools/asks-link.mjs groups; the 16 drop to 0 when this run's ledger line folds into void.growth.json and the deploy's asks step writes the links from the new tools/asks-link.json rule.",
+   "items": [
+    {
+     "what": "V01D's 16 ndscalc.ru ask groups (98 asks): every Russian VAT rate on /vat/ (22, 20, 18, 10, 7, 5, 0), the sum in the link, the page offline",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "rts + forge merged into skills/build-world.js (order 0112, aliases kept, tools/build-world-family.test.mjs, 0 routing differences over 4,263 asks)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "site-test #2522 'play voidquest': the fps floor rises only after 10 steady runs and comes down to what the runner holds (now 1)",
+     "list": "site tester",
+     "status": "built",
+     "link": "https://github.com/atomeam/void-loop/issues/2522"
+    },
+    {
+     "what": "site-test #2531 'play voidquest', the same failure",
+     "list": "site tester",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/issues/2522"
+    },
+    {
+     "what": "main's stale generated cards: skills/first.json, the SEO pages and the parity docs",
+     "list": "site tester / green foundation",
+     "status": "built"
+    }
+   ]
   }
  ]
 }
