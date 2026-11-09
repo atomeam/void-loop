@@ -1,68 +1,16 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-08T23:55:31.404Z",
+ "updated": "2026-11-09T03:03:39.792Z",
  "last24h": {
   "ticks": 154,
-  "started": 77,
-  "requeued": 6,
-  "setAside": 1,
-  "probes": 3,
-  "errors": 102
+  "started": 64,
+  "requeued": 8,
+  "setAside": 0,
+  "probes": 2,
+  "errors": 109
  },
  "broken": [],
  "held": [
-  {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mw1ee0lk",
-   "why": "verse-job.yml reached its 8 runs today"
-  },
-  {
-   "id": "mw1g8ei3",
-   "why": "verse-job.yml reached its 8 runs today"
-  },
-  {
-   "id": "mw1kno2c",
-   "why": "verse-job.yml reached its 8 runs today"
-  },
-  {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
   {
    "id": "mvvql4d9",
    "why": "no executor for route"
@@ -91,31 +39,19 @@
    "cap": 90
   },
   "day": {
-   "used": 170,
+   "used": 30,
    "cap": 360
   },
   "room": true,
   "until": null
  },
  "handed": {
-  "mvbl52gd": 1794146628428,
-  "mva30i2e": 1794168629631,
+  "mvbl52gd": 1794185512937,
+  "mva30i2e": 1794191729678,
   "mva30j4u": 1794169193412,
-  "mvu167w7": 1794121870584,
-  "mveb8rsi": 1794099686462,
-  "mveb8svc": 1794100248886,
-  "mvfu4evy": 1794100810769,
-  "mw6nk172": 1794100810769,
-  "mvpuq9g6": 1794101381594,
-  "mw6nk1v7": 1794101381594,
-  "mvpuqaee": 1794101940980,
-  "mw6sraj0": 1794101940980,
-  "mvpuqb4r": 1794102507351,
-  "mvvjzso8": 1794103068152,
-  "mw76d356": 1794103068152,
-  "mw5mm5fm": 1794103627590,
-  "mw76d42k": 1794103627590,
-  "mw76d517": 1794104192616,
+  "mvu167w7": 1794186086054,
+  "mveb8rsi": 1794185512937,
+  "mveb8svc": 1794186086054,
   "mw76d612": 1794137624174,
   "mw7rlm3e": 1794138754412,
   "mw7rlmmm": 1794147754981,
@@ -128,12 +64,16 @@
   "mw8ao9eu": 1794170322689,
   "mw8ao9zz": 1794170885458,
   "mw8aoajd": 1794173123869,
-  "mw8aob4n": 1794173686754
+  "mw8aob4n": 1794173686754,
+  "mvfu4evy": 1794188905640,
+  "mvpuq9g6": 1794191729678
  },
- "sweptAt": 1794177058221,
- "blueprintsAt": 1794177058221,
- "visitorAt": "2026-11-08T19:16:35Z",
+ "sweptAt": 1794191729678,
+ "blueprintsAt": 1794191729678,
+ "visitorAt": "2026-11-09T02:11:21Z",
  "visitorFiled": [
+  "versus:illicitencounters.com",
+  "versus:speedcheckerapi.com",
   "feature:convertunits-com-491b824a",
   "gap:se-358423",
   "visit:what-can-you-do",
@@ -207,440 +147,13 @@
   "gap:want-exam-videos",
   "versus:want-tower-finance-macrotrends-net",
   "versus:want-tower-news-allsides-com",
-  "probe:pick-a-magic-8-ball-answer-for-sho",
-  "probe:top-news-in-tech-today",
-  "probe:proverb-for-hard-work",
   "versus:zpecloud.com",
   "versus:aurashinehub.com",
   "versus:pokupon.ua",
-  "versus:uniteforliteracy.com"
+  "versus:uniteforliteracy.com",
+  "gap:want-misses-2026-w46"
  ],
  "ticks": [
-  {
-   "at": "2026-11-07T23:55:41.361Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw5blphr",
-     "kind": "tv",
-     "wf": "verse-job.yml",
-     "score": 89
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 86,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T00:05:05.365Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T00:14:23.536Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T00:23:51.980Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T00:33:14.895Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T00:42:38.884Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T00:52:03.517Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:01:26.462Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw4gkvdn",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 54
-    },
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:10:48.886Z",
-   "open": 268,
-   "started": [
-    {
-     "id": "mw6mr7ai",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 126
-    },
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 108
-    },
-    {
-     "id": "mveb8svc",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mva30j4u",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 1,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:20:10.769Z",
-   "open": 267,
-   "started": [
-    {
-     "id": "mvfu4evy",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mw6nk172",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 41
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:29:41.594Z",
-   "open": 266,
-   "started": [
-    {
-     "id": "mvw5r1rz",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 100
-    },
-    {
-     "id": "mvpuq9g6",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 84
-    },
-    {
-     "id": "mw6nk1v7",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 41
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:39:00.980Z",
-   "open": 265,
-   "started": [
-    {
-     "id": "mvpuqaee",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 84
-    },
-    {
-     "id": "mw6sraj0",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 41
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 243,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:48:27.351Z",
-   "open": 263,
-   "started": [
-    {
-     "id": "mvpuqb4r",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 84
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 244,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T01:57:48.152Z",
-   "open": 267,
-   "started": [
-    {
-     "id": "mvvjzso8",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 76
-    },
-    {
-     "id": "mw76d356",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 243,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T02:07:07.590Z",
-   "open": 266,
-   "started": [
-    {
-     "id": "mw5mm5fm",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 62
-    },
-    {
-     "id": "mw76d42k",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 243,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T02:16:32.616Z",
-   "open": 265,
-   "started": [
-    {
-     "id": "mw76d517",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 250,
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T02:25:57.819Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T02:35:20.057Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T02:45:10.852Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
-  {
-   "at": "2026-11-08T02:54:34.000Z",
-   "open": 262,
-   "started": [
-    {
-     "id": "mw76d612",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 250,
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T03:07:39.181Z",
    "open": 261,
@@ -2327,6 +1840,234 @@
   },
   {
    "at": "2026-11-08T23:55:31.404Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:04:55.933Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:14:17.357Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:23:38.107Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:33:03.704Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:42:28.975Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T00:51:52.937Z",
+   "open": 270,
+   "started": [
+    {
+     "id": "want-exam-videos",
+     "kind": "gap",
+     "wf": "verse-job.yml",
+     "score": 127
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 1,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:01:26.054Z",
+   "open": 271,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 110
+    },
+    {
+     "id": "mw1ee0lk",
+     "kind": "visit",
+     "wf": "verse-job.yml",
+     "score": 102
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:10:49.463Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:20:12.847Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:29:38.708Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:39:03.010Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T01:48:25.640Z",
+   "open": 271,
+   "started": [
+    {
+     "id": "mvfu4evy",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": true,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 5,
+   "warnings": 2
+  },
+  {
+   "at": "2026-11-09T01:57:50.582Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:07:14.965Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:16:41.258Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:26:05.203Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:35:29.678Z",
+   "open": 271,
+   "started": [
+    {
+     "id": "mw6mr7ai",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 103
+    },
+    {
+     "id": "mvpuq9g6",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 86
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 1,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 5,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:44:51.393Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T02:54:16.457Z",
+   "error": "the queue answered 404 (); nothing started this tick",
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T03:03:39.792Z",
    "error": "the queue answered 404 (); nothing started this tick",
    "warnings": 1
   }
