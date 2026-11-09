@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T10:25:06.581Z",
+ "updated": "2026-11-09T10:34:29.338Z",
  "last24h": {
   "ticks": 154,
   "started": 78,
   "requeued": 7,
   "setAside": 1,
   "probes": 5,
-  "errors": 103
+  "errors": 102
  },
  "broken": [],
  "held": [
@@ -228,11 +228,6 @@
   "gap:want-misses-2026-w46"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T10:28:10.847Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T10:37:32.779Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -2323,6 +2318,27 @@
    "probe": false,
    "grow": false,
    "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 265,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T10:34:29.338Z",
+   "open": 273,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
    "will": false,
    "lap": false,
    "revived": [
