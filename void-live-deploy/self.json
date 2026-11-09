@@ -273,6 +273,12 @@
   },
   {
    "state": "shipped",
+   "date": "2026-11-05",
+   "ask": "system-handoff skill: package a running system or automation into a client handoff (ownership, status, docs, monitors…",
+   "from": "new idea by growth agent; helper/system-handoff"
+  },
+  {
+   "state": "shipped",
    "date": "2026-11-06",
    "ask": "heavy-lift-map skill: map a business process to the systems, automations and handoff Verse owns so the client does less",
    "from": "new idea by growth agent; helper/heavy-lift-map"
@@ -600,6 +606,30 @@
  },
  "commits": [
   {
+   "at": "2026-11-09T19:57:37Z",
+   "subject": "Mark system-handoff shipped with main SHA c43e776cd (#2604)"
+  },
+  {
+   "at": "2026-11-09T19:35:43Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"which skill f"
+  },
+  {
+   "at": "2026-11-09T19:33:48Z",
+   "subject": "Failed jobs read: run 42678946555 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-09T19:33:22Z",
+   "subject": "Incident: the browser suite failed on 3e44adf9 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-09T19:27:39Z",
+   "subject": "Outcome exam: sports 88.9"
+  },
+  {
+   "at": "2026-11-09T19:27:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-09T19:22:11Z",
    "subject": "Failed jobs read: run 42675806575 (void-live-deploy/incidents/actions/)"
   },
@@ -654,30 +684,6 @@
   {
    "at": "2026-11-09T18:58:18Z",
    "subject": "Verse loop: nightly (#2598)"
-  },
-  {
-   "at": "2026-11-09T18:58:01Z",
-   "subject": "Fix the two suite checks that stayed red on main (#2602)"
-  },
-  {
-   "at": "2026-11-09T18:55:49Z",
-   "subject": "Outcome exam: sports 88.9"
-  },
-  {
-   "at": "2026-11-09T18:48:11Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"set a goal of"
-  },
-  {
-   "at": "2026-11-09T18:43:18Z",
-   "subject": "Design loop: 4 pages fixed, 9 -> 1 design defects"
-  },
-  {
-   "at": "2026-11-09T18:41:05Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-09T18:32:10Z",
-   "subject": "Note that an older loop pull request left open still merges once its review is clean."
   }
  ],
  "builders": {
