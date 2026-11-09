@@ -3,7 +3,7 @@
 // paper in the journal's publication units is worked out with its working
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fromRssItem, fromCrossref, jatsText, searchCrossref, toggleSave, savedList, isSaved, parseFeed, pubUnits, puWithoutEquationExtra } from '../void-live-deploy/lib/journal.js';
+import { fromRssItem, fromCrossref, jatsText, searchCrossref, latestByIssn, latest, toggleSave, savedList, isSaved, parseFeed, pubUnits, puWithoutEquationExtra, ISSN } from '../void-live-deploy/lib/journal.js';
 
 const RSS = `<?xml version="1.0"?><rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel>
 <item><media:content type="image/jpeg" url="https://img.example/a.jpg"/><title>  A study of sand  </title><pubDate>Thu, 05 Nov 2026 17:27:25 +0000</pubDate><description>  New mapping of a sand sea. </description><guid>https://doi.org/10.2475/001c.172254</guid><link>https://ajsonline.org/article/172254</link></item>
@@ -31,9 +31,39 @@ test('a Crossref work becomes the same shape, authors joined, abstract kept raw 
   assert.equal(p.title, 'Clays and water');
   assert.equal(p.doi, '10.1/x');
   assert.equal(p.authors, 'A. Smolen, B. Lee');
-  assert.equal(p.date, '2026-9-8');
+  assert.equal(p.date, '2026-09-08', 'the day is zero-padded, so every route shows one date shape');
   assert.equal(p.volume, '326');
   assert.equal(p.url, 'https://ajsonline.org/article/164723');
+  const noLink = fromCrossref({ title: ['T'], DOI: '10.1/y', URL: 'https://doi.org/10.1/y' });
+  assert.equal(noLink.url, 'https://doi.org/10.1/y', 'with no link, the registry URL stands, never invented');
+  assert.equal(fromCrossref({ title: ['T'], DOI: '10.1/z' }).date, '', 'no date: it stays empty');
+});
+
+test('latestByIssn reads the journal\'s own records by ISSN, newest first, each with its volume and authors', async () => {
+  const calls = [];
+  const fakeFetch = async (u) => { calls.push(u); return { ok: true, json: async () => ({ message: { items: [
+    { title: ['Sand sea'], DOI: '10.2475/a', volume: '326', author: [{ given: 'S.', family: 'Stewart' }], published: { 'date-parts': [[2026, 11, 5]] }, abstract: '<jats:p>New mapping.</jats:p>' },
+    { title: [''], DOI: '10.2475/b' },
+  ] } }) }; };
+  const r = await latestByIssn({ fetchImpl: fakeFetch });
+  assert.equal(r.length, 1, 'a row with no title is dropped');
+  assert.equal(r[0].volume, '326');
+  assert.equal(r[0].authors, 'S. Stewart');
+  assert.equal(r[0].date, '2026-11-05');
+  assert.match(calls[0], /api\.crossref\.org\/works\?filter=issn:0002-9599/, 'the journal is found by its own ISSN');
+  assert.match(calls[0], /sort=published&order=desc/, 'newest first');
+  assert.ok(!/api[_-]?key/i.test(calls[0]), 'no key in the URL');
+  assert.equal(ISSN, '0002-9599');
+});
+
+test('latest reads the registry first, and falls back to the journal\'s own feed when it does not answer', async () => {
+  const byIssn = async (u) => ({ ok: true, json: async () => ({ message: { items: [{ title: ['From the registry'], DOI: '10.2475/a', volume: '326' }] } }) });
+  const r = await latest({ fetchImpl: byIssn });
+  assert.equal(r.length, 1); assert.equal(r[0].title, 'From the registry'); assert.equal(r[0].volume, '326');
+  const feedOnly = async (u) => { if (/crossref/.test(u)) throw new Error('registry down'); return { ok: true, text: async () => RSS }; };
+  const f = await latest({ fetchImpl: feedOnly });
+  assert.equal(f.length, 2, 'the feed answers when the registry does not');
+  assert.equal(f[0].doi, '10.2475/001c.172254');
 });
 
 test('jatsText strips the tags and the extra spaces', () => {
