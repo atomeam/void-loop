@@ -256,7 +256,7 @@
       const docs = pool, pins = new Set(store.docs.filter((d) => d.pinned).map((d) => d.id)), res = words ? N.search(docs, words).sort((a, b) => b.score - a.score) : docs.map((d) => ({ id: d.id, title: N.titleOf(d), snippet: N.toText(d.html).replace(/\s+/g, ' ').slice(0, 90) }));
       for (const r of res) {
         const li = el('li'), b = el('button'); b.type = 'button'; if (r.id === store.cur) b.setAttribute('aria-current', 'true');
-        const t = el('span', 't'), s = el('span', 's'); t.innerHTML = words ? N.mark(r.title, words) : ''; if (!words) t.textContent = (pins.has(r.id) ? '\u2605 ' : '') + r.title; s.innerHTML = N.mark(r.snippet || '', words); const dd = store.docs.find((x) => x.id === r.id); if (dd && dd.color) { li.dataset.color = dd.color; li.style.setProperty('--nc', O.colorOf(dd.color).hex); }
+        const t = el('span', 't'), s = el('span', 's'); t.innerHTML = words ? N.mark(r.title, words) : ''; if (!words) t.textContent = (pins.has(r.id) ? '\u2605 ' : '') + r.title; s.innerHTML = N.mark(r.snippet || '', words); const dd = store.docs.find((x) => x.id === r.id); if (dd && dd.color) { li.dataset.color = dd.color; li.style.setProperty('--nc', O.colorOf(dd.color).hex); } // void-review: ok, N.mark escapes the text before marking it
         b.append(t, s); b.addEventListener('click', () => open(r.id)); li.append(b); ul.append(li);
       }
       if (!res.length) ul.append(el('li', 'note', query ? W.noMatch : filter === 'archive' ? (de ? 'Nichts archiviert' : 'Nothing archived. Archive keeps a note out of the list without deleting it.') : W.none));

@@ -30,14 +30,14 @@ for (const [w, h, tag] of [[1280, 900, 'desktop'], [390, 844, 'phone']]) {
   ok((await gp.locator('#bkTimes .bkSlots button').count()) >= 2, tag + ': several times to pick from');
   await firstBtn.click(); await gp.fill('#bkName', 'Ana'); await gp.fill('#bkMsg', 'About the shop'); await gp.click('#bkBook'); await gp.waitForTimeout(200);
   ok(/Booked and in your calendar/.test(await gp.locator('#bkDoneT').innerText()), tag + ': Book this time confirms');
-  const gEv = await gp.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1')).events.find((e) => /Intro call with Sam/.test(e.title))); ok(!!gEv, tag + ': the guest\'s calendar has "Intro call with Sam"');
+  const gEv = await gp.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.calendar.v1')); } catch (_) { return { events: [] }; } })().events.find((e) => /Intro call with Sam/.test(e.title))); ok(!!gEv, tag + ': the guest\'s calendar has "Intro call with Sam"');
   ok(/^mailto:sam@example\.com/.test(await gp.locator('#bkMail').getAttribute('href') || ''), tag + ': Send it by email is addressed to the host');
   const back = await gp.locator('#bkDone').getAttribute('data-back');
   // the host opens the pick
   await hp.goto(back.replace(/^https?:\/\/[^/]+/, base)); await ready(hp); await hp.waitForFunction(() => /booked/.test(document.getElementById('bdBody').innerText), null, { timeout: 15000 }).catch(() => {});
   ok(/Ana booked Intro call/.test(await hp.locator('#bdBody').innerText()), tag + ': the host sees who booked what (' + (await hp.locator('#bdBody').innerText()).replace(/\s+/g,' ') + ')');
   await hp.click('#bdAdd'); await hp.waitForTimeout(200);
-  const hEv = await hp.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1')).events.find((e) => /Intro call with Ana/.test(e.title)));
+  const hEv = await hp.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.calendar.v1')); } catch (_) { return { events: [] }; } })().events.find((e) => /Intro call with Ana/.test(e.title)));
   ok(hEv && new Date(hEv.start).getTime() === new Date(gEv.start).getTime() - 6 * 3600000 + (new Date(gEv.start).getTimezoneOffset() - new Date(hEv.start).getTimezoneOffset()) * 60000 || (hEv && hEv.id === gEv.id), tag + ': the host\'s calendar has "Intro call with Ana", the same booking');
   ok(hEv && hEv.notes === 'About the shop', tag + ': with the guest\'s note');
   // time insights
@@ -45,10 +45,10 @@ for (const [w, h, tag] of [[1280, 900, 'desktop'], [390, 844, 'phone']]) {
   const sum = await hp.locator('#insSum').innerText(); ok(/\d+ (?:h|min)/.test(sum) && /event/.test(sum), tag + ': Time insights sums the week (' + sum.slice(0, 80) + ')');
   ok((await hp.locator('#insDays .bar').count()) === 7 && (await hp.locator('#insCals .bar').count()) >= 1, tag + ': by day and by calendar');
   // undo a delete
-  const n0 = await hp.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1')).events.length);
+  const n0 = await hp.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.calendar.v1')); } catch (_) { return { events: [] }; } })().events.length);
   await hp.fill('#q', 'Throwaway tomorrow 4pm'); await hp.click('#add'); await hp.waitForSelector('#detail:not([hidden])'); hp.once('dialog', (d) => d.accept()); await hp.click('#detDel'); await hp.waitForTimeout(200);
-  ok(await hp.locator('#undoB').isVisible() && (await hp.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1')).events.length)) === n0, tag + ': Delete offers Undo');
-  await hp.click('#undoB'); await hp.waitForTimeout(150); ok((await hp.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1')).events.some((e) => e.title === 'Throwaway'))), tag + ': Undo brings it back');
+  ok(await hp.locator('#undoB').isVisible() && (await hp.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.calendar.v1')); } catch (_) { return { events: [] }; } })().events.length)) === n0, tag + ': Delete offers Undo');
+  await hp.click('#undoB'); await hp.waitForTimeout(150); ok((await hp.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.calendar.v1')); } catch (_) { return { events: [] }; } })().events.some((e) => e.title === 'Throwaway'))), tag + ': Undo brings it back');
   await hp.click('#findBtn'); await hp.screenshot({ path: path.join(process.env.SHOTS || '/tmp', 'calendar-rivals-' + tag + '.png'), fullPage: tag === 'desktop' });
   await gp.goto(link.replace(/^https?:\/\/[^/]+/, base)); await ready(gp); await gp.screenshot({ path: path.join(process.env.SHOTS || '/tmp', 'calendar-booking-' + tag + '.png'), fullPage: false });
   for (const [p, who] of [[hp, 'host'], [gp, 'guest']]) { const over = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth); ok(over <= 1, tag + ' ' + who + ': nothing wider than the screen (' + over + ' px)'); }

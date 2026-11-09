@@ -15,7 +15,7 @@ for (const [w, h, tag] of [[1280, 900, 'desktop'], [390, 844, 'phone']]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, acceptDownloads: true }); const page = await ctx.newPage();
   page.on('pageerror', (e) => errs.push(tag + ': ' + e.message));
   if (!process.env.NOTES_BASE) await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
-  const store = () => page.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}'));
+  const store = () => page.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}'); } catch (_) { return { docs: [] }; } })());
   const listTitles = async () => (await page.locator('#list li .t').allInnerTexts()).map((t) => t.replace(/^\u2605 /, ''));
   const ready = () => page.waitForFunction(() => document.querySelectorAll('#sortSel option').length === 6 && document.querySelectorAll('#colors button').length === 12, null, { timeout: 10000 });
   await page.goto(base + '/notes/'); await ready();
@@ -26,7 +26,7 @@ for (const [w, h, tag] of [[1280, 900, 'desktop'], [390, 844, 'phone']]) {
   await page.selectOption('#sortSel', 'name-az'); ok((await listTitles()).join() === 'apple,Banana,Cherry', tag + ': Sort Name A-Z');
   await page.selectOption('#sortSel', 'created-old'); ok((await listTitles()).join() === 'Banana,apple,Cherry', tag + ': Sort Created oldest');
   await page.selectOption('#sortSel', 'modified-new'); ok((await listTitles())[0] === 'Cherry', tag + ': Sort Modified newest');
-  ok((await page.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.prefs')).sort)) === 'modified-new', tag + ': the sort order is kept');
+  ok((await page.evaluate(() => (() => { try { return JSON.parse(localStorage.getItem('a2m.void.notes.prefs')).sort; } catch (_) { return null; } })())) === 'modified-new', tag + ': the sort order is kept');
   // tags, tag: search, renaming a tag on every note
   await page.fill('#tagsIn', 'fruit, red'); await page.keyboard.press('Tab'); await page.waitForTimeout(150);
   await page.locator('#list li button', { hasText: 'apple' }).click(); await page.fill('#tagsIn', 'fruit'); await page.keyboard.press('Tab'); await page.waitForTimeout(150);
