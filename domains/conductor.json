@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T13:53:21.567Z",
+ "updated": "2026-11-09T14:02:45.749Z",
  "last24h": {
   "ticks": 154,
-  "started": 90,
+  "started": 91,
   "requeued": 5,
   "setAside": 1,
   "probes": 7,
-  "errors": 84
+  "errors": 83
  },
  "broken": [],
  "held": [
@@ -20,82 +20,62 @@
    "why": "store-gap.yml reached its 6 runs today"
   },
   {
-   "id": "mvwl3cpy",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvwl3d38",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvpkt0sa",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvpkt1c5",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvpkt1u7",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mw1xyivk",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvxmzwi4",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mvvjzso8",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvxmzx0f",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mw5mm5fm",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvxmzxet",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   },
   {
-   "id": "mvxmzy5j",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mw3fl8fe",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvxmzyj4",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mw3fl8fi",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvxmzyw6",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mw3fl8g0",
+   "why": "no executor for bot"
   },
   {
-   "id": "mvqun4oo",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
-  },
-  {
-   "id": "mvqun5gh",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
-  },
-  {
-   "id": "mvqun67s",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
-  },
-  {
-   "id": "mw3davgg",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
-  },
-  {
-   "id": "mvri6vwm",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
-  },
-  {
-   "id": "mvri6wo7",
-   "why": "Verse's coder has used its free model calls until 14:00 UTC"
+   "id": "mw3fl8i4",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 86,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -154,95 +134,90 @@
  },
  "sweptAt": 1794230070603,
  "blueprintsAt": 1794230070603,
- "visitorAt": "2026-11-09T13:19:48Z",
+ "visitorAt": "2026-11-09T14:00:21Z",
  "visitorFiled": [
-  "review:2109",
-  "review:2112",
-  "review:2114",
-  "review:2116",
-  "review:2120",
-  "visit:what-time-is-it",
-  "review:2126",
-  "review:2128",
-  "review:2130",
-  "review:2125",
-  "review:2129",
-  "review:2131",
-  "review:2132",
-  "versus:want-tower-assistant",
-  "review:2139",
-  "tv:relationship-devotion-tool",
-  "review:2162",
-  "review:2163",
-  "review:2164",
-  "review:2165",
-  "review:2169",
-  "review:2178",
-  "review:2185",
-  "versus:unitingchurch.org.au",
-  "versus:hexler.net",
-  "versus:deadlinkchecker.com",
-  "versus:testandcalc.com",
-  "versus:portchecker.co",
-  "visit:convert-100-usd-to-eur",
-  "review:2245",
-  "review:2313",
-  "review:2336",
-  "review:2367",
-  "review:2368",
-  "review:2369",
-  "review:2371",
-  "review:2358",
-  "review:2359",
-  "review:2372",
-  "review:2374",
-  "review:2373",
-  "review:2376",
-  "review:2375",
-  "versus:want-tower-social",
-  "feature:isitchristmas-com-e13cdb96",
-  "feature:random-org-7201fd3d",
-  "feature:random-org-e1ac6f7a",
-  "review:2441",
-  "tv:hvac-remote-management",
-  "tv:art-provenance-tracker",
-  "review:2482",
-  "feature:random-org-ea756452",
-  "feature:random-org-9f6f952d",
-  "feature:random-org-ccb2ecd2",
-  "versus:everycom.store",
-  "versus:adnext.mobi",
-  "versus:protopage.com",
-  "versus:tinyurl.com",
-  "versus:want-tower-password",
-  "review:2504",
-  "feature:team-1626",
-  "versus:share.google",
-  "versus:g.co",
-  "versus:amazon.co.uk",
-  "versus:amazon.de",
-  "versus:live-video.net",
-  "review:2509",
-  "review:2512",
-  "review:2514",
-  "visit:translate-hello-to-spanish",
-  "versus:want-tower-finance-macrotrends-net",
-  "versus:want-tower-news-allsides-com",
-  "versus:zpecloud.com",
-  "versus:aurashinehub.com",
-  "versus:pokupon.ua",
-  "versus:uniteforliteracy.com",
-  "gap:want-misses-2026-w46",
-  "feature:wordcounter-net-510e5696",
-  "feature:convertunits-com-fd227592",
-  "feature:unitconverters-net-a1eba45d"
+  "gap:se-358423",
+  "visit:what-can-you-do",
+  "visit:capital-of-france",
+  "review:2105",
+  "review:2148",
+  "review:2147",
+  "tv:agricultural-market-tracker",
+  "review:2216",
+  "versus:agechecker.net",
+  "review:2221",
+  "flake:suite-ran-to-the-end",
+  "flake:tower-the-target-tower-target-json",
+  "flake:empty-state-over-a-pure-white-back",
+  "flake:the-owner-s-status-card-opens-by-i",
+  "review:2223",
+  "flake:defences-every-api-route-has-an-ex",
+  "flake:suite-budget-the-whole-suite-ran-p",
+  "versus:bestfonts.pro",
+  "versus:speedtest.sg",
+  "versus:speedtest.com.sg",
+  "versus:jsonline.com",
+  "review:2247",
+  "review:2248",
+  "versus:coreldrawdesign.com",
+  "versus:coloradoan.com",
+  "versus:uphex.com",
+  "versus:timer365.com",
+  "versus:loanwisecalculatoreasy.com",
+  "versus:drawio.com",
+  "visit:convert-5-miles-to-kilometers",
+  "bot:check-country-ag",
+  "bot:country-ag",
+  "bot:check-country-gq",
+  "bot:country-gq",
+  "review:2303",
+  "review:2304",
+  "review:2305",
+  "review:2319",
+  "versus:colorscheme.ru:speed",
+  "versus:colorscheme.ru:journey: do the ma",
+  "versus:colorscheme.ru:journey: share the",
+  "versus:sipcalculator.in",
+  "versus:colordrop.io",
+  "versus:colourlab.ai",
+  "review:2325",
+  "review:2327",
+  "review:2352",
+  "review:2346",
+  "visit:flip-a-coin",
+  "review:2361",
+  "review:2380",
+  "review:2379",
+  "review:2320",
+  "review:2381",
+  "review:2393",
+  "review:2413",
+  "versus:mega.co.nz",
+  "versus:example.com",
+  "versus:uisp.com",
+  "versus:samsunghealth.com",
+  "review:2435",
+  "versus:bttrack.com",
+  "versus:dalyfeds.com",
+  "tv:healthy-snack-alternatives",
+  "tv:irish-pub-locator",
+  "miss:film-metadata",
+  "will:overhaul-site-search-persona-playtest-be",
+  "versus:juicychat.ai",
+  "versus:oneyeard.com",
+  "review:2511",
+  "review:2302",
+  "review:2315",
+  "review:2519",
+  "review:2485",
+  "review:2546",
+  "versus:tsundere.pw",
+  "versus:arcticfoxhaircolor.com",
+  "versus:hexcol.com",
+  "versus:junit.org",
+  "review:2563"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T13:54:27.334Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T14:03:48.428Z",
    "open": 265,
@@ -2731,6 +2706,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 270,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T14:02:45.749Z",
+   "open": 276,
+   "started": [
+    {
+     "id": "mvwl3cpy",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 103
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 15,
    "warnings": 1
   }
  ]
