@@ -9735,7 +9735,12 @@ try {
     const logText = () => TL.evaluate(() => { const pg = document.querySelector('#log'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
     const ok = await until(async () => { const pg = await logText(); return /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 6000);
     check('log page: what Verse has asked for and how many of its asks were built', ok, (await logText()).slice(0, 600));
-    const v = await TL.evaluate(() => { const pg = document.querySelector('#log'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.vs-sec[data-sec=asked] .v-asks details')] : []; if (d[0]) { d[0].closest('details.vs-sec').open = true; d[0].open = true; } return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
+    // the bar and the asks come with the log body (lib/self-blocks.js selfCard, drawn by lib/verse-log.js), but that body
+    // lands in one innerHTML only after the log's fetches and imports, so a single read can land on "Reading the log…".
+    // The drawn state is polled for; what the page says is still decided by the assertion below (the reflection-card flake,
+    // 2026-10-25; the bar moved here with the log page).
+    let v = { now: null, max: null, w: '', asks: 0, meta: '' };
+    await until(async () => { const x = await TL.evaluate(() => { const pg = document.querySelector('#log'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.vs-sec[data-sec=asked] .v-asks details')] : []; if (d[0]) { d[0].closest('details.vs-sec').open = true; d[0].open = true; } return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; }); if (x.asks > 0 && x.now !== null && x.meta) v = x; return v.asks > 0 && v.now !== null && v.w !== ''; }, 12000);
     check('log page: what got built shows as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet', v.now === '2' && v.max === '5' && v.w === '40%' && v.asks > 0 && /Asked (in my daily reflection|after a build)/.test(v.meta) && /not built yet/.test(v.meta), JSON.stringify(v));
     await TL.close(); }
   } // CORE
