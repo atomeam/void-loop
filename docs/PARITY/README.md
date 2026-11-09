@@ -5,7 +5,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | Score | Verse page | Feature | Status | Original sites that have it |
 | --- | --- | --- | --- | --- |
 | 18 | /calendar/ | An account that keeps your things on every device | partial | calendar.online, teamup.com, timetreeapp.com, any.do, cozi.com, proton.me, calendar.yahoo.com, Google Calendar |
-| 17 | /calendar/ | Booking pages for appointments | missing | calendar.online, teamup.com, any.do, proton.me, calendar.zoho.com, outlook.live.com, Google Calendar |
 | 17 | /markets/ | Earnings and economic calendars | missing | stockanalysis.com, barchart.com, investing.com, tradingview.com, marketwatch.com, google.com, Yahoo Finance |
 | 17 | /notes/ | Edit together in real time | missing | anotepad.com, simplenote.com, docs.zoho.com, onenote.com, evernote.com, notion.so, Google Docs |
 | 17 | /calendar/ | Events added from your email | missing | calendar.online, teamup.com, any.do, cozi.com, proton.me, outlook.live.com, Google Calendar |
@@ -17,7 +16,13 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 15 | /notes/ | An account that keeps your things on every device | partial | anotepad.com, simplenote.com, evernote.com, notion.so, Google Docs |
 | 15 | /news/ | Live pages for breaking stories | missing | rnz.co.nz, channelnewsasia.com, france24.com, dw.com, euronews.com, aljazeera.com, theguardian.com, BBC News and 2 more |
 | 14 | /notes/ | Writing help (summarise, rewrite) | missing | anotepad.com, evernote.com, notion.so, Google Docs |
+| 13 | /calendar/ | A colour on a single event | missing | teamup.com, outlook.live.com, Google Calendar |
+| 13 | /calendar/ | A default event length and reminder | missing | calendar.zoho.com, outlook.live.com, Google Calendar |
+| 13 | /calendar/ | Hide weekends in the week and month views | missing | calendar.zoho.com, outlook.live.com, Google Calendar |
+| 13 | /calendar/ | Working hours that others see | missing | calendar.zoho.com, outlook.live.com, Google Calendar |
 | 12 | /news/ | Fact checks and explainers | missing | france24.com, euronews.com, aljazeera.com, theguardian.com, BBC News, npr.org, apnews.com |
+| 12 | /calendar/ | Focus time blocks | missing | outlook.live.com, Google Calendar |
+| 12 | /calendar/ | Out of office that declines invites | missing | outlook.live.com, Google Calendar |
 | 12 | /news/ | Reader comments | missing | rnz.co.nz, channelnewsasia.com, france24.com, euronews.com, theguardian.com, BBC News, npr.org |
 | 11 | /scores/ | Goal and score alerts | missing | onefootball.com, 365scores.com, fotmob.com, flashscore.com, livescore.com, ESPN |
 | 10 | /podcasts/ | Hosts, guests and credits | missing | podcastindex.org, listennotes.com, podchaser.com, podbean.com, Apple Podcasts |
@@ -119,8 +124,3 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
-| 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
-| 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
-| 1 | /weather/ | Climate records | missing | weather.gov |
-| 1 | /time/ | Countdowns and date calculators | missing | timeanddate.com |
-| 1 | /convert/unit-converter/ | Currency | missing | convertlive.com |
