@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-09T03:04:45.775Z",
+  "at": "2026-11-09T04:33:14.858Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -380,7 +380,7 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 98.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -396,7 +396,7 @@
           "failed": [
             "skill"
           ],
-          "score": 83.3
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -711,40 +711,13 @@
       "fails": []
     },
     "prices": {
-      "score": 73.3,
+      "score": 100,
       "of": 6,
       "measured": 6,
-      "fails": [
-        {
-          "ask": "bitcoin price",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "how much is ethereum",
-          "failed": [
-            "skill",
-            "rival"
-          ],
-          "score": 60
-        },
-        {
-          "ask": "precio del bitcoin",
-          "failed": [
-            "answered",
-            "skill",
-            "fast",
-            "rival"
-          ],
-          "score": 20
-        }
-      ]
+      "fails": []
     },
     "definitions": {
-      "score": 93.3,
+      "score": 90,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -758,26 +731,18 @@
         {
           "ask": "define zorbleflux",
           "failed": [
-            "fast"
-          ],
-          "score": 80
-        }
-      ]
-    },
-    "wordproblems": {
-      "score": 93.3,
-      "of": 6,
-      "measured": 6,
-      "fails": [
-        {
-          "ask": "what is 15 percent of 80",
-          "failed": [
-            "answered",
-            "fast"
+            "skill",
+            "rival"
           ],
           "score": 60
         }
       ]
+    },
+    "wordproblems": {
+      "score": 100,
+      "of": 6,
+      "measured": 6,
+      "fails": []
     },
     "code": {
       "score": 100,
