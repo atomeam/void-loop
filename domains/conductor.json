@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T19:37:58.632Z",
+ "updated": "2026-11-09T19:47:24.805Z",
  "last24h": {
   "ticks": 149,
   "started": 99,
   "requeued": 5,
   "setAside": 2,
   "probes": 10,
-  "errors": 54
+  "errors": 53
  },
  "broken": [],
  "held": [
@@ -253,11 +253,6 @@
   "review:2605"
  ],
  "ticks": [
-  {
-   "at": "2026-11-08T19:42:21.651Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-08T19:51:45.287Z",
    "open": 271,
@@ -3173,6 +3168,27 @@
   },
   {
    "at": "2026-11-09T19:37:58.632Z",
+   "open": 283,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 274,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-09T19:47:24.805Z",
    "open": 283,
    "started": [],
    "requeued": 0,
