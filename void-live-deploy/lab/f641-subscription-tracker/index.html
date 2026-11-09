@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --card:#1a1d24; --text:#e6e6e6; --accent:#4a9eff; --muted:#888; --ok:#3dd68c; --warn:#f0b429; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2a2e36; }
+h1 { margin:0; font-size:1.4rem; }
+.container { max-width:900px; margin:0 auto; padding:1rem; }
+.form-card, .summary-card, .table-wrap { background:var(--card); border-radius:12px; padding:1rem; margin-bottom:1rem; }
+label { display:block; margin:0.5rem 0 0.2rem; font-size:0.85rem; color:var(--muted); }
+input, select, button { width:100%; padding:0.6rem; border-radius:8px; border:1px solid #333; background:#111; color:var(--text); font-size:1rem; }
+button { background:var(--accent); border:none; cursor:pointer; font-weight:600; margin-top:0.5rem; }
+button.secondary { background:#333; }
+button.danger { background:#c44; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+@media (max-width:600px) { .row { grid-template-columns:1fr; } }
+.summary { display:flex; justify-content:space-around; text-align:center; flex-wrap:wrap; gap:1rem; }
+.summary div { font-size:1.3rem; font-weight:700; }
+.summary small { display:block; font-size:0.75rem; color:var(--muted); font-weight:400; }
+table { width:100%; border-collapse:collapse; font-size:0.9rem; }
+th, td { padding:0.6rem 0.4rem; text-align:left; border-bottom:1px solid #2a2e36; }
+th { color:var(--muted); font-weight:500; }
+.empty { text-align:center; padding:2rem; color:var(--muted); }
+.actions { display:flex; gap:0.5rem; margin-top:1rem; }
+.actions button { flex:1; }
+.status-active { color:var(--ok); }
+.status-cancelled { color:var(--warn); text-decoration:line-through; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Subscription tracker · Verse lab</title>
+<meta name="description" content="A practical offline tool to track recurring subscriptions, calculate spending, and export reminders.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Subscription tracker · Verse lab">
+<meta property="og:description" content="A practical offline tool to track recurring subscriptions, calculate spending, and export reminders.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f641-subscription-tracker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f641-subscription-tracker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Subscription Tracker</h1>
+  <p style="margin:0.3rem 0 0; color:var(--muted); font-size:0.9rem;">Track services, see totals, export CSV or calendar reminders. Works offline.</p>
+</header>
+<div class="container">
+  <div class="form-card">
+    <h2 style="margin-top:0; font-size:1.1rem;">Add / Edit</h2>
+    <form id="form">
+      <input type="hidden" id="editId">
+      <label>Service name</label>
+      <input id="name" required placeholder="Netflix, Spotify…">
+      <div class="row">
+        <div>
+          <label>Price</label>
+          <input id="price" type="number" step="0.01" min="0" required placeholder="15.99">
+        </div>
+        <div>
+          <label>Billing cycle</label>
+          <select id="cycle">
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Next renewal date</label>
+          <input id="renewal" type="date" required>
+        </div>
+        <div>
+          <label>Status</label>
+          <select id="status">
+            <option value="active">Active</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <label>Notes (optional)</label>
+      <input id="notes" placeholder="Family plan, etc.">
+      <button type="submit" id="saveBtn">Add subscription</button>
+      <button type="button" id="cancelEdit" class="secondary" style="display:none;">Cancel edit</button>
+    </form>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary">
+      <div><span id="monthlyTotal">0.00</span><small>Monthly equivalent</small></div>
+      <div><span id="yearlyTotal">0.00</span><small>Yearly total</small></div>
+      <div><span id="count">0</span><small>Active subscriptions</small></div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div id="empty" class="empty">No subscriptions yet. Add one above.</div>
+    <table id="table" style="display:none;">
+      <thead>
+        <tr><th>Service</th><th>Price</th><th>Cycle</th><th>Next</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button id="csvBtn" class="secondary">Download CSV</button>
+    <button id="icsBtn" class="secondary">Download .ics reminders</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

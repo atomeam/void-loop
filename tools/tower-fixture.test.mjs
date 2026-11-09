@@ -47,36 +47,37 @@ test('root cause: in the season, fully won evidence alone conquers nothing; the 
   assert.equal(t.floors.find((f) => f.state === 'current').id, s.tg.id);
 });
 
-test('check "the target on top": three conquered under it, struck, and the score "3 surpassed · now taking on: <target>" whatever the served passed[] holds', () => {
+test('check "the target on top": the target is the current floor with its aspects, three assimilated listed under it, and the counts "3 assimilated · current floor: <target>"', () => {
   const s = files(), TARGET = s.tg.id, tgt = tower([], {}, s.fr, null, null, null, TARGET).floors.find((f) => f.id === TARGET);
   const won3 = conquerable(FLOORS, { target: TARGET, n: 3 });
   const ev = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f)])), [tgt.id]: rows(tgt, 4) };
   const t = card(ev, towerFixture({ target: s.tg, features: s.ft }, won3));
   assert.equal(t.beaten, 3); assert.equal(t.passed, 0);
   const html = towerHtml(t, esc, { enter: false });
-  assert.deepEqual([...html.matchAll(/class="tower-floor"[^>]*data-state="(\w+)"/g)].map((m) => m[1]), ['current', 'beaten', 'beaten', 'beaten']);
-  const score = text((html.match(/<div class="tw-score tower-line">([\s\S]*?)<\/div>/) || [])[1] || '');
-  assert.equal(score, '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site);
+  assert.match(html, new RegExp('<div class="tw-cur" data-id="' + tgt.id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"'));
+  assert.deepEqual([...html.matchAll(/class="tower-floor"[^>]*data-state="(\w+)"/g)].map((m) => m[1]), ['beaten', 'beaten', 'beaten']);
+  const score = text((html.match(/<div class="tw-outclass tw-score tower-line"[^>]*>([\s\S]*?)<\/div>/) || [])[1] || '');
+  assert.match(score, new RegExp('^3 assimilated · current floor: ' + tgt.site.replace(/\./g, '\\.') + ': \\d+% assimilated · \\d+ floors remaining$'));
   const cur = t.floors.find((f) => f.state === 'current'); assert.equal(cur.site, tgt.site); assert.equal(cur.n, 4);
 });
 
-test('check "Google Flights names /flights/": travel is conquered, its row is followed by its links, and every link row names a page', () => {
+test('check "Google Flights names /flights/": travel is assimilated, its row is followed by its links, and every link row names a page', () => {
   const s = files(), travel = FLOORS.find((f) => f.id === 'travel');
   const t = card({ travel: rows(travel), [FLOORS[0].id]: rows(FLOORS[0]) }, towerFixture({ target: s.tg, features: s.ft }, [travel, FLOORS[0]]));
   assert.equal(t.floors.find((f) => f.id === 'travel').state, 'beaten');
   const html = towerHtml(t, esc, { enter: false });
   const after = html.split('<div class="tower-floor" role="button" tabindex="0" data-id="travel"')[1] || '', ln = (after.match(/<\/div>(<div class="tw-links"[\s\S]*?<\/div>)/) || [])[1] || '';
-  assert.match(text(ln), /Google Flights ↗/); assert.match(text(ln), /Verse's page \/flights\//); assert.match(text(ln), /side by side/);
+  assert.match(text(ln), /Google Flights ↗/); assert.match(text(ln), /Verse's page \/flights\//); assert.match(text(ln), /side by side/); assert.match(ln, /\/rival\/\?site=google-flights/);
   assert.match(ln, /<a class="tw-page" href="\/flights\/"/);
   const links = [...html.matchAll(/<div class="tw-links"[\s\S]*?<\/div>/g)].map((m) => m[0]);
   assert.ok(links.length >= 2 && links.every((l) => /class="tw-page"/.test(l)), 'every entry names its page');
 });
 
-test('check "the open card picked up a conquered site": calculator.net goes from passed to conquered and the card says "calculator.net is surpassed"', () => {
+test('check "the open card picked up an assimilated site": calculator.net goes from the climb to assimilated and the card says "calculator.net is assimilated"', () => {
   const s = files(), calc = FLOORS.find((f) => f.id === 'calculator'), fx = towerFixture({ target: s.tg, features: s.ft }, [calc]);
   const before = card({}, fx), after = card({ calculator: rows(calc) }, fx);
-  assert.equal(before.floors.find((f) => f.id === 'calculator').state, 'passed');
+  assert.equal(before.floors.find((f) => f.id === 'calculator').state, 'passed', 'named on the record but not verified: off the climb, not assimilated');
   const won = after.floors.find((f) => f.id === 'calculator'); assert.equal(won.state, 'beaten'); assert.equal(won.floor, 1);
-  assert.ok(changes(before, after).includes('calculator.net is surpassed.'));
-  assert.match(text(towerHtml(after, esc, { enter: false })), /calculator\.net\s*surpassed/);
+  assert.ok(changes(before, after).includes('calculator.net is assimilated.'));
+  assert.match(text(towerHtml(after, esc, { enter: false })), /calculator\.net\s*assimilated/);
 });

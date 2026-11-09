@@ -19,7 +19,7 @@ const MAP = [
   { n: 8, p: 'Slack ops log', f: 'what the agents are doing', s: 'live (the agent log; the status card shows the build)' },
   { n: 9, p: 'HomeBase / dashboards', f: 'board, agent log and live checks on one summoned page', s: 'live (status card)' },
   { n: 10, p: 'Player Two', f: '"play a game": games on the stage against Verse', s: 'live (the game rack: ' + GAMES.length + ' games)' }, // counted from skills/rack.js, so a new boxed game never leaves this row stale
-  { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, better than the source', s: 'live (articles, define, words, weather)' },
+  { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, with the source named', s: 'live (articles, define, words, weather)' },
   { n: 12, p: 'Calculation page', f: 'percentages, units, dates, currency', s: 'live (2026-09-25)' },
   { n: 13, p: 'Entering your own Verse', f: 'silent entry on first keep; personal look saved per browser; public surface stays plain', s: 'live (2026-09-25)' },
 ];

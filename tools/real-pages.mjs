@@ -9,6 +9,7 @@ import http from 'node:http'; import fs from 'node:fs'; import path from 'node:p
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
 import { TOOLS as KIT_TOOLS } from '../void-live-deploy/lib/toolkit.js';
+import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 const LAB_TOOL_DIRS = new Set(Object.keys(KIT_TOOLS).filter((p) => /^\/lab\/[a-z0-9-]+\/$/.test(p)).map((p) => p.split('/')[2]));
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), repo = path.join(here, '..'), root = path.join(repo, 'void-live-deploy');
 const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
@@ -112,11 +113,11 @@ export const SPECS = {
     await t.p.goto(t.p.url().split('?')[0] + '?floor=' + encodeURIComponent(id)); const who = await t.waitText('#who', /side by side/, 10000);
     t.ok(/^Verse and \S+, side by side$/.test(who.trim()), 'the floor opens as Verse beside its site: ' + who.slice(0, 60));
     t.ok(/^https?:\/\//.test(await t.p.getAttribute('#so', 'href') || ''), 'the rival site opens from a real link');
-    const st = await t.waitText('#st', /aspects ahead|surpassed/, 15000); t.ok(/\d+ of \d+ aspects ahead|surpassed/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
+    const st = await t.waitText('#st', /aspects ahead|every aspect matched/, 15000); t.ok(/\d+ of \d+ aspects ahead|every aspect matched/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
   },
   '/conquered/': async (t) => {
-    const m = (await t.p.locator('body').innerText()); t.ok(/\d+ of \d+ aspects ahead|ahead of \S+ on \d+ of \d+ aspects/.test(m), 'the current matchup shows its measured aspects'); // the Versus card says "Verse is ahead of <site> on 11 of 15 aspects" since 728ae5635
-    await t.click('.tower-floor'); const d = await t.waitText('#detail', /aspects ahead of/, 5000); t.ok(/^\d+ of \d+ aspects ahead of \S+/.test(d), 'a floor, tapped, reads its measured line: ' + d.slice(0, 60));
+    const m = (await t.p.locator('body').innerText()); t.ok(/\d+ of \d+ aspects verified/.test(m), 'the current floor shows its measured aspects'); // the card names the current floor and its verified aspects (docs/TOWER-RULES.md)
+    await t.click('.tw-cur'); const d = await t.waitText('#detail', /aspects ahead of/, 5000); t.ok(/^\d+ of \d+ aspects ahead of \S+/.test(d), 'a floor, tapped, reads its measured line: ' + d.slice(0, 60));
   },
   '/vat/': async (t) => { // 1000 with 22% VAT in it: 180,33 VAT and 819,67 net, to the kopeck; adding 20% to 5000 is 6 000,00
     await t.fill('#amount', '1000'); await t.fill('#rate', '22'); await t.p.selectOption('#mode', 'extract');
@@ -128,11 +129,17 @@ export const SPECS = {
     await t.share('#copyLink', async (p) => /6\s?000,00/.test(await p.locator('#grossValue').innerText()));
     await t.links();
   },
+  '/rival/': async (t) => { // every rival on the tower (rivals/index.json, tools/rival-pages.mjs), then one rival's own page: its history, what Verse lacks, every feature
+    await t.waitText('#out', /features across/, 10000); const n = await t.p.locator('#out a[href^="/rival/?site="]').count(); t.ok(n > 100, n + ' rivals listed');
+    await t.p.goto(new URL('/rival/?site=flightconnections.com', t.p.url()).href); const h = await t.waitText('#out', /What Verse still lacks/, 10000);
+    t.ok(/Its history/.test(h) && /Every feature, with evidence/.test(h), 'a rival page carries its history and its features');
+    t.ok(/flightconnections\.com/.test(await t.text('#title')), 'its name is the heading');
+  },
   '/assimilated/': async (t) => { // the list tools/assimilated.mjs writes: rows, each with a status; the filter narrows them
-    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
+    const lead = await t.waitText('#lead', /\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/, 10000); t.ok(/\d+ sites: \d+ (?:surpassed|conquered|matched on every aspect)/.test(lead), 'it counts the sites: ' + lead.slice(0, 60)); // the lead says "conquered" since the Versus naming; the rows' data outcome stays "surpassed"
     const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
     await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
-    const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
+    const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'every aspect matched'), 'Every aspect matched shows only those sites (' + st.length + ')');
     await t.links();
   },
   '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece
@@ -407,6 +414,11 @@ export const SPECS = {
     await t.p.evaluate(() => { location.hash = 'c=general'; }); await t.p.waitForTimeout(500); t.ok(/#general/.test(await t.text('#cname')), 'the address picks the channel');
   },
   '/notes/': async (t) => { await t.click('#newBtn'); await t.p.keyboard.type('Test note'); await t.p.keyboard.press('Enter'); await t.p.keyboard.type('Body text here'); await t.p.waitForTimeout(700); await t.download('#mdBtn', /\.md$/i); await t.share('#shareBtn'); },
+  '/log/': async (t) => { // Verse's own activity, on this one page only (lib/verse-log.js; tools/log-only.test.mjs keeps it here)
+    await t.waitText('h1', /Log/, 8000);
+    await t.p.waitForFunction(() => !/Reading the log/.test(document.getElementById('log').textContent), null, { timeout: 15000 }).catch(() => {});
+    t.ok(!/Reading the log/.test(await t.text('#log')), 'the log is drawn, or says plainly it could not be read');
+  },
   '/obituaries/': async (t) => { await t.p.waitForTimeout(4000); t.ok((await t.p.locator('#list > *').count()) > 0, 'real notices listed'); },
   '/paint/': async (t) => {
     await t.clickText('The Starry Night'); await t.p.waitForTimeout(1200); t.ok(/Starry Night/.test(await t.p.getAttribute('#c', 'aria-label').catch(() => '') || ''), 'picking The Starry Night loads that painting');
@@ -512,6 +524,9 @@ SPECS['/emojis/everywhere/'] = async (t) => {
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
 SPECS['/color/colour-picker-tool/'] = SPECS['/color/']; // the family page, copied for the Versus floor
 SPECS['/news/global-headlines/'] = SPECS['/news/']; // the family page, copied for the Versus floor
+// every page the tower-self loop builds from a family page (lib/self-sites.js) is tested as that family page, so a new lane page never lands
+// without a spec (lists run 15: /color/colour-management/ came with none and real-pages-list went red on main)
+for (const r of SELF_SITES) if (r && r.path && r.base && !SPECS[r.path] && SPECS[r.base]) SPECS[r.path] = SPECS[r.base];
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
 const LEDGER_FIX = [
@@ -715,7 +730,7 @@ Object.assign(SPECS, {
 });
 for (const r of routes()) if (r === '/lab/' && !SPECS[r]) SPECS[r] = async (t) => { const n = await t.p.locator('.lab > ul > li a').count(); t.ok(n >= 6, n + ' tools listed first'); t.ok(await t.p.locator('.lab > ul > li a[href="/lab/level/"]').isVisible(), 'the spirit level is listed'); t.ok(await t.p.locator('.lab li a[href^="/lab/"]').first().isVisible(), 'a card to open'); };
 // honest text a page is allowed to show (audited): store items that say they are not out yet
-const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i };
+const HONEST = { '/store/': /coming soon|soon/i, '/store/receipt/': /coming soon|soon/i, '/log/': /lorem ipsum/i }; // /log/ quotes the growth notes, and one names the lorem ipsum skill
 const FAKE = /\b(coming soon|placeholder|lorem ipsum|mock (data|services?|profile|account)|demo only|fake data|not yet implemented|under construction|instant (dns )?provisioning|available for (sovereign )?registration|auto-?synced|simulated (result|response|data)s?)\b/i;
 const FAKE_ALL = new RegExp(FAKE.source, 'gi'); // every match, built once from the constant above, never from input (void-review: ok)
 // buttons never clicked by the dead-button sweep: they write, send, spend, ask for a device, or clear the input

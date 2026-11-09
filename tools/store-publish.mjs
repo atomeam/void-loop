@@ -160,7 +160,7 @@ export async function publish(opts, files) {
   if (old) Object.assign(old, row); else cat.products.push(row);
   sync(cat);
   if (paid) fs.appendFileSync(QUEUE, JSON.stringify({ at: now, id: row.id, need: 'needs Gumroad listing', price: row.wouldBe, file: key, note: 'No Gumroad API key: Adam lists it by hand (or Stripe checkout takes it once on).' }) + '\n');
-  if (!opts.noClip) fs.appendFileSync(CLIP_QUEUE, JSON.stringify({ at: now, id: row.id, name: row.name, hook: opts.hook || 'I made this and put it in my store', caption: (opts.blurb || '').slice(0, 160), ...(opts.clipAsk ? { ask: opts.clipAsk } : {}) }) + '\n');
+  if (!opts.noClip) fs.appendFileSync(CLIP_QUEUE, JSON.stringify({ at: now, id: row.id, name: row.name, hook: opts.hook || 'New in the store', caption: (opts.blurb || '').slice(0, 160), ...(opts.clipAsk ? { ask: opts.clipAsk } : {}) }) + '\n');
   if (!opts.noInbox) toInbox(row, files.length, readCatalog());
   return { row, zip: zf };
 }

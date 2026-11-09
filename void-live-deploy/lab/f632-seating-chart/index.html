@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#6ee7b7; --warn:#fbbf24; --card:#1a1d24; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1rem; border-bottom:1px solid #333; }
+h1 { margin:0; font-size:1.4rem; }
+.controls { display:flex; flex-wrap:wrap; gap:1rem; padding:1rem; }
+.panel { background:var(--card); padding:0.75rem; border-radius:8px; min-width:220px; }
+label { display:block; font-size:0.85rem; margin-bottom:0.25rem; color:#aaa; }
+input, button, textarea { font:inherit; padding:0.4rem 0.6rem; border-radius:4px; border:1px solid #444; background:#222; color:var(--fg); }
+button { background:#333; cursor:pointer; }
+button.primary { background:var(--acc); color:#000; font-weight:600; }
+button:hover { filter:brightness(1.1); }
+.lists { display:flex; flex-wrap:wrap; gap:1rem; padding:0 1rem; }
+.list-box { flex:1; min-width:200px; }
+ul { list-style:none; padding:0; margin:0.5rem 0; max-height:160px; overflow:auto; }
+li { display:flex; justify-content:space-between; align-items:center; padding:0.2rem 0; font-size:0.9rem; }
+.remove { background:none; border:none; color:#f87171; cursor:pointer; padding:0 0.3rem; }
+#canvas-wrap { position:relative; margin:1rem; min-height:420px; background:#111; border-radius:12px; overflow:hidden; }
+.table { position:absolute; border:2px dashed #555; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#888; font-size:0.75rem; }
+.seat { position:absolute; width:70px; height:28px; }
+.guest { position:absolute; background:var(--acc); color:#000; padding:0.25rem 0.5rem; border-radius:14px; font-size:0.8rem; cursor:grab; user-select:none; white-space:nowrap; z-index:2; }
+.guest.dragging { opacity:0.7; z-index:10; cursor:grabbing; }
+.warn { color:var(--warn); font-size:0.85rem; }
+.actions { padding:1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+@media print {
+  .controls, .lists, .actions, header { display:none !important; }
+  #canvas-wrap { margin:0; background:#fff; color:#000; }
+  .guest { background:#eee; color:#000; border:1px solid #000; }
+}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Seating chart · Verse lab</title>
+<meta name="description" content="A practical event seating planner. Add guests and define tables. Mark pairs that should sit together or stay apart.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Seating chart · Verse lab">
+<meta property="og:description" content="A practical event seating planner. Add guests and define tables. Mark pairs that should sit together or stay apart.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f632-seating-chart/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f632-seating-chart/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Seating chart</h1>
+  <p>Add guests and tables. Mark who should sit together or apart. Drag to fine-tune. Download the chart.</p>
+</header>
+
+<div class="controls">
+  <div class="panel">
+    <label>Guests (one per line or add)</label>
+    <input id="guest-input" placeholder="Name" list="guest-suggestions">
+    <button id="add-guest">Add guest</button>
+    <ul id="guest-list"></ul>
+  </div>
+  <div class="panel">
+    <label>Tables</label>
+    <input id="table-count" type="number" min="1" max="20" value="4" style="width:60px"> tables
+    <input id="seats-each" type="number" min="2" max="12" value="6" style="width:60px"> seats each
+    <button id="rebuild">Rebuild tables</button>
+  </div>
+  <div class="panel">
+    <label>Keep together (pairs: A, B)</label>
+    <textarea id="together" rows="3" placeholder="Alice, Bob&#10;Carol, Dave"></textarea>
+  </div>
+  <div class="panel">
+    <label>Keep apart (pairs: A, B)</label>
+    <textarea id="apart" rows="3" placeholder="Eve, Frank"></textarea>
+  </div>
+</div>
+
+<div class="lists">
+  <div id="warnings" class="warn"></div>
+</div>
+
+<div id="canvas-wrap"></div>
+
+<div class="actions">
+  <button id="auto-place" class="primary">Auto-place</button>
+  <button id="download-png">Download PNG</button>
+  <button id="download-csv">Download CSV</button>
+  <button id="clear">Clear all</button>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

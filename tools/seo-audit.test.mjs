@@ -58,7 +58,9 @@ test('the related row in the HTML is the same links the script draws, and the se
   assert.equal(withRelated(once, '/word-count/'), once, 'written again, it is the same');
   assert.equal(withRelated('<main></main>', '/word-count/'), null);
   const more = moreTools('<a href="/color/">c</a>'); assert.ok(!more.includes('"/color/"') && more.includes('"/code-review/"') && more.includes('"/photos/"'));
-  const single = moreTools(''); assert.equal((single.match(/>Unit converter: every unit at once, exact</g) || []).length, 1, 'a tool built twice for two sites is listed once');
+  // a tool built twice for two sites keeps one plain line, and the second page is linked as "page 2" so it is no orphan (lists run 15)
+  const single = moreTools(''); assert.equal((single.match(/>Unit converter: every unit at once, exact</g) || []).length, 1, 'a tool built twice for two sites keeps one plain line');
+  assert.match(single, /href="\/convert\/unit-converter-2\/">Unit converter: every unit at once, exact · page 2</, 'the second page is linked, not left an orphan');
   // every row has the same "Open here" button as the hand-written rows (2026-10-30: 70 tools could only be left, not opened beside the others),
   // and the searches people make for it, for the page's find box
   assert.equal((more.match(/<li/g) || []).length, (more.match(/<button type="button" data-open="\//g) || []).length, 'each More tools row can be opened on the bench');

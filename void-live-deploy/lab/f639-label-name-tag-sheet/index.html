@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body { font-family: system-ui, sans-serif; margin: 1rem; background: #f8f9fa; color: #111; }
+  h1 { font-size: 1.4rem; }
+  label { display: block; margin: 0.5rem 0 0.2rem; font-weight: 600; }
+  textarea, select, input[type=number], input[type=color], button { font-size: 1rem; padding: 0.4rem; }
+  textarea { width: 100%; max-width: 40rem; height: 10rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; }
+  button { background: #0066cc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #0052a3; }
+  #preview { border: 1px solid #ccc; margin-top: 1rem; background: white; max-width: 100%; }
+  .note { font-size: 0.9rem; color: #555; margin-top: 0.5rem; }
+  @media print { .controls { display: none; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Label and name tag sheet · Verse lab</title>
+<meta name="description" content="Job: Paste names, pick a label size, get a printable sheet of name tags or labels to download as PNG.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Label and name tag sheet · Verse lab">
+<meta property="og:description" content="Job: Paste names, pick a label size, get a printable sheet of name tags or labels to download as PNG.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f639-label-name-tag-sheet/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f639-label-name-tag-sheet/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Label and name tag sheet</h1>
+<p>Paste names (one per line). Choose a size. Download a printable sheet as PNG, or print this page.</p>
+<div class="controls">
+  <label for="names">Names</label>
+  <textarea id="names" placeholder="Alice&#10;Bob&#10;Carol&#10;..."></textarea>
+  <div class="row">
+    <div>
+      <label for="size">Label size</label>
+      <select id="size">
+        <option value="2x1">2" × 1" (30 per letter page)</option>
+        <option value="3.5x2">3.5" × 2" (name tags, 10 per page)</option>
+        <option value="1x0.5">1" × 0.5" (80 per page)</option>
+        <option value="4x2">4" × 2" (badges, 8 per page)</option>
+      </select>
+    </div>
+    <div>
+      <label for="fontSize">Font size (px)</label>
+      <input type="number" id="fontSize" value="24" min="8" max="72">
+    </div>
+    <div>
+      <label for="bg">Background</label>
+      <input type="color" id="bg" value="#ffffff">
+    </div>
+    <div>
+      <label for="fg">Text color</label>
+      <input type="color" id="fg" value="#000000">
+    </div>
+  </div>
+  <button id="gen" style="margin-top:1rem">Generate sheet</button>
+  <button id="dl" disabled>Download PNG</button>
+</div>
+<canvas id="preview" width="816" height="1056"></canvas>
+<p class="note">Sheet is sized for US Letter (8.5" × 11" at 96 dpi). Print at 100% scale. Works offline. Nothing is sent anywhere.</p>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

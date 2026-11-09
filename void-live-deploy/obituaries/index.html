@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Obituaries & Lineage · Verse</title>
-<meta name="description" content="A respectful archive of every tool Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.">
+<meta name="description" content="The sites Verse learns from: each one's own history with sources, what it gave the web, and the Verse page that grew from it. No ads, works offline.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Obituaries & Lineage · Verse">
-<meta property="og:description" content="Honoring every pioneer Verse has surpassed, with their history and the sovereign studio that carries their work forward.">
+<meta property="og:description" content="The sites Verse learns from, each with its own cited history and what it gave the web.">
 <meta property="og:url" content="https://a-to-mind.com/obituaries/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -70,19 +70,19 @@
 <body>
 <main>
   <h1>Obituaries & Lineage</h1>
-  <p class="sub">A respectful archive of every tool Verse has surpassed: their history, their contribution, and the sovereign studio that carries their work forward. No ads, works offline.</p>
+  <p class="sub">The sites Verse learns from: each one's own history with sources, what it gave the web, and the Verse page that grew from it, so you can use either. No ads, works offline.</p>
   <div class="row">
-    <label><span>Search memorials</span><input id="q" type="text" aria-label="Search memorials" placeholder="colorzilla"></label>
-    <label><span>Show</span><select id="show" aria-label="Which memorials to show"><option value="">All</option><option value="beaten">Beaten in every way</option><option value="in progress">In progress</option></select></label>
+    <label><span>Search sites</span><input id="q" type="text" aria-label="Search sites" placeholder="colorzilla"></label>
+    <label><span>Show</span><select id="show" aria-label="Which sites to show"><option value="">All</option><option value="beaten">Every feature matched</option><option value="in progress">In progress</option></select></label>
   </div>
   <p class="note" id="tally"></p>
-  <p class="note">A memorial says "beaten" only when Verse passed every aspect of the tower gate with evidence AND matches every feature on the original's inventory (docs/PARITY), with nothing missing, half-built or not yet compared. Until then it is "in progress", with the match and what is still to build.</p> <!-- void-review: ok (page prose, not code: docs/PARITY is the folder of feature inventories) -->
-  <div id="list">Reading the conquered ledger…</div>
-  <p class="note">Every defeated target is rendered here from the live Tower evidence. Their history is preserved, free of clutter and commercial distraction.</p>
+  <p class="note">A site reads "every feature matched" only when the Verse page passed every aspect of the tower gate with evidence AND has every feature on the original's inventory (docs/PARITY), with nothing missing, half-built or not yet compared. Until then it is "in progress", with the match and what is still to build. Matching a site is not the same as being better than it: the original is often the better choice.</p> <!-- void-review: ok (page prose, not code: docs/PARITY is the folder of feature inventories) -->
+  <div id="list">Reading the lineage…</div>
+  <p class="note">Every site here is read from the live Tower evidence, with its own history and a link to the original.</p>
   <nav class="siblings" aria-label="Use together with">
     <a href="/color/">Color studio</a>
     <a href="/gradient/">Gradient studio</a>
-    <a href="/conquered/">Versus (all surpassed)</a>
+    <a href="/conquered/">Versus</a>
     <a href="/?ask=obituaries">See it as a card on the stage</a>
     <a href="/">Back to Verse</a>
   </nav>
@@ -100,6 +100,7 @@
     parity = (par && par.sites) || {};
     all = (t.floors || []).filter((f) => hasMemorial(f)).map((f) => { const slug = siteSlug(f.site); return Object.assign(f, { slug, status: obituaryStatus(f, parity[slug] || null) }); });
     const won = all.filter((f) => f.status.beaten).length;
+    // the honesty check reads this tally and the won badge by these words: a site is named beaten only when obituary.js says so
     $('tally').textContent = all.length + ' memorials: ' + won + ' beaten in every way, ' + (all.length - won) + ' in progress.';
     render();
   }
@@ -131,7 +132,7 @@
     const list = all.filter((f) => (!show || f.status.state === show) && (!w || (f.site + ' ' + f.id + ' ' + (f.learned || '')).toLowerCase().includes(w)));
     const box = $('list');
     while (box.firstChild) box.removeChild(box.firstChild);
-    if (!list.length) { box.appendChild(el('p', 'note', 'No memorials match.')); return; }
+    if (!list.length) { box.appendChild(el('p', 'note', 'No sites match.')); return; }
     for (const f of list) {
       const s = f.status;
       const card = el('section', 'card');
@@ -143,11 +144,11 @@
         if (s.gaps.length) { const ul = el('ul', 'gaps'); for (const g of s.gaps.slice(0, 8)) ul.appendChild(el('li', '', g)); if (s.gaps.length > 8) ul.appendChild(el('li', '', 'and ' + (s.gaps.length - 8) + ' more')); card.appendChild(ul); }
       }
       const obit = el('div', 'obit');
-      obit.appendChild(el('p', '', 'The Legacy: ' + (f.learned || (f.site + ' served its users until Verse surpassed it.'))));
+      obit.appendChild(el('p', '', 'The Legacy: ' + (f.learned || (f.site + ' serves its users, and Verse learns from how it works.'))));
       obit.appendChild(el('p', '', s.beaten
-        ? 'The Passing: Superseded by the sovereign Verse studio at ' + (f.page || '/') + ', measured ' + f.n + ' of ' + f.m + ' aspects ahead.'
-        : 'The Passing (not yet): the Verse studio at ' + (f.page || '/') + ' is measured ' + f.n + ' of ' + f.m + ' aspects ahead, and has ' + s.pct + '% of its features. It is superseded when the rest are built.'));
-      obit.appendChild(el('p', '', 'Our Tribute: Honored here for pioneering its corner of the web. Its work lives on, accelerated, inside Verse.'));
+        ? 'The Verse page: ' + (f.page || '/') + ', measured on ' + f.n + ' of ' + f.m + ' aspects against the original.'
+        : 'The Verse page: ' + (f.page || '/') + ', measured on ' + f.n + ' of ' + f.m + ' aspects against the original, with ' + s.pct + '% of its features so far.'));
+      obit.appendChild(el('p', '', 'Our Tribute: ' + f.site + ' showed how its corner of the web can work. Visit it at ' + f.site + '.'));
       if (f.page) { const p = el('p', '', 'Lineage: ' + f.site + ' to '); p.appendChild(link(f.page, 'Verse studio')); p.appendChild(document.createTextNode('.')); obit.appendChild(p); }
       const inv = el('p', '', 'Feature inventory: '); inv.appendChild(link(REPO + 'docs/PARITY/' + f.slug + '.md', 'every feature of ' + f.site + ', compared')); obit.appendChild(inv);
       card.appendChild(obit);

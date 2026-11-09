@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#f7f5f2; --fg:#1a1a1a; --card:#fff; --accent:#2d6a4f; --muted:#666; }
+* { box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); margin: 0; padding: 1rem; line-height: 1.4; }
+h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+.subtitle { color: var(--muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+.controls { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+@media (max-width: 700px) { .controls { grid-template-columns: 1fr; } }
+.card { background: var(--card); border-radius: 12px; padding: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.card h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
+.list { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+.list-item { display: flex; gap: 0.4rem; align-items: center; }
+.list-item input { flex: 1; padding: 0.45rem 0.6rem; border: 1px solid #ddd; border-radius: 6px; font: inherit; }
+.list-item button, .add-btn { background: #eee; border: none; border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; font: inherit; }
+.list-item button:hover, .add-btn:hover { background: #ddd; }
+.add-btn { background: var(--accent); color: #fff; }
+.settings { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 1rem 0; }
+.settings label { display: flex; align-items: center; gap: 0.4rem; }
+.settings input[type=number] { width: 5rem; padding: 0.4rem; border: 1px solid #ddd; border-radius: 6px; }
+.rota { overflow-x: auto; margin-top: 1rem; }
+table { border-collapse: collapse; width: 100%; min-width: 600px; background: var(--card); border-radius: 8px; overflow: hidden; }
+th, td { border: 1px solid #e0e0e0; padding: 0.55rem 0.7rem; text-align: left; }
+th { background: #f0f0f0; font-weight: 600; }
+.person { font-weight: 500; }
+.actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+button.primary { background: var(--accent); color: #fff; border: none; padding: 0.6rem 1.1rem; border-radius: 8px; cursor: pointer; font: inherit; font-weight: 500; }
+button.primary:hover { filter: brightness(1.1); }
+button.secondary { background: #eee; border: none; padding: 0.6rem 1.1rem; border-radius: 8px; cursor: pointer; font: inherit; }
+.empty { color: var(--muted); font-style: italic; padding: 1rem; text-align: center; }
+@media print {
+  body { background: #fff; padding: 0; }
+  .controls, .settings, .actions, .subtitle { display: none !important; }
+  .card { box-shadow: none; }
+  h1 { font-size: 1.4rem; }
+}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Chore rota · Verse lab</title>
+<meta name="description" content="A practical household chore rota generator. Add people and chores. Instantly see a multi-week rotating schedule where assignments cycle fairly.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Chore rota · Verse lab">
+<meta property="og:description" content="A practical household chore rota generator. Add people and chores. Instantly see a multi-week rotating schedule where assignments cycle fairly.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f631-chore-rota/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f631-chore-rota/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Chore rota</h1>
+<p class="subtitle">Add people and chores. Get a fair rotating weekly schedule. Download or print.</p>
+
+<div class="controls">
+  <div class="card">
+    <h2>People</h2>
+    <div id="people-list" class="list"></div>
+    <button class="add-btn" id="add-person">+ Add person</button>
+  </div>
+  <div class="card">
+    <h2>Chores</h2>
+    <div id="chores-list" class="list"></div>
+    <button class="add-btn" id="add-chore">+ Add chore</button>
+  </div>
+</div>
+
+<div class="settings">
+  <label>Weeks to show: <input type="number" id="weeks" min="1" max="12" value="4"></label>
+  <label>Start week offset: <input type="number" id="offset" min="0" max="20" value="0"></label>
+</div>
+
+<div id="rota-container" class="rota"></div>
+
+<div class="actions">
+  <button class="primary" id="download">Download PNG</button>
+  <button class="secondary" id="print">Print</button>
+  <button class="secondary" id="reset">Reset lists</button>
+</div>
+
+<canvas id="export-canvas" style="display:none"></canvas>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
