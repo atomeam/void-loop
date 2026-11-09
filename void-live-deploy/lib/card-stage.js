@@ -64,7 +64,10 @@ function put(els, area) {
     const th = el.dataset.id && bag[el.dataset.id];
     return { id: el.dataset.id || el.dataset.cardId, el, x: r.left, y: r.top, w: Math.max(40, r.width), h: Math.max(40, r.height), pinned: el.dataset.pinned === '1' || !!(th && th.pinned) };
   });
-  const moves = tidy(cards, area);
+  // a phone (the card's own narrow breakpoint, 520px) keeps an answer card one column wide. Two columns there are ~180px,
+  // and the card's row (four ratings, a film poster) is wider than that, so the page scrolls sideways.
+  const floor = els.some((el) => el.classList && el.classList.contains('vpage')) && area.w <= 520 ? area.w : 0;
+  const moves = tidy(cards, area, floor);
   for (const c of cards) {
     const m = moves[c.id]; if (!m) continue;
     const el = c.el, fixed = el.classList.contains('vpage');
