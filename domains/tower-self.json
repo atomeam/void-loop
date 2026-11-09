@@ -436,6 +436,12 @@
    "why": "no floor does its job (The website is a service provider offering custom AI development, consulting, and infrastructure solutions. Verse is a collection of individual utility tools)",
    "title": "Hexen"
   },
+  "ai-consulting": {
+   "at": "2026-10-31T15:55:43Z",
+   "outcome": "pending",
+   "why": "new floor for hexen.ai",
+   "title": "AI Consulting"
+  },
   "fakemailgenerator.com": {
    "at": "2026-10-31T15:55:48Z",
    "outcome": "no-family",

@@ -16,6 +16,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 
+- Cursor cloud agent · helper/loop-carry-e6be · hexen.ai ai-consulting note from the closed loop/20261109-131044 lap, and the automerge bot keeps an older loop pull request open unless the newer one or main already has its changes · 2026-11-09 18:25 UTC
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
@@ -360,6 +361,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders
 
+- **Older loop pull request (cursor, 2026-11-09):** do not close it because a newer `loop/*` pull request is open. `loopCovers` in `tools/merge-policy.mjs` has to see the older lines on main or in the newer diff first. Otherwise the pull request stays open and the missing paths are commented. Playbook: `docs/playbooks/loop-supersede.md`. Check: `node --test tools/merge-policy.test.mjs`.
 - **Tower rules (grok-bot, 2026-11-09):** before touching the Versus tower, read docs/TOWER-RULES.md and run `node tools/tower-rules.test.mjs`; after changing a study in docs/PARITY run `node tools/parity.mjs --write && node tools/rival-pages.mjs`.
 - **Glass tool pages (cursor, 2026-11-05):** a tool page opts into `verse.css` with `class="vs-tool"` and one link on the `<html>` line. `node tools/glass-pages.mjs --check` fails while an old-palette page has not. Do not copy the palette into the page. The home page and the lab stay out. Playbook: `docs/playbooks/verse-shell.md`.
 - **Late skill still on waking up (cursor, 2026-11-05):** a site-test case that only shows "waking up" is a skill far down the index. Import that one file and run it before `say('waking up')` (recipe-stack, constellation-weaver). The sky family does not take "weave a constellation called night ops". Playbook: `docs/playbooks/stage-pack.md`.
