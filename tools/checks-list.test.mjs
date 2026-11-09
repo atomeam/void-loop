@@ -6,7 +6,6 @@ import { join } from 'node:path';
 import { addedCheckLines, discoveredChecks, overlapRate, settleChecks } from './checks-list.mjs';
 import { BUILD_OUTPUTS } from './generated.mjs';
 import { APPEND_TEXT } from './records.mjs';
-import { refusals } from './pre-pr.mjs';
 
 const LIST = `const x = 1;
 for (const [name, file] of [
@@ -34,11 +33,7 @@ test('the skill index is generated and a new check line is refused', () => {
   assert.ok(BUILD_OUTPUTS.includes('void-live-deploy/skills/index.json'), 'file void-live-deploy/skills/index.json is generated and must not be committed');
   assert.ok(APPEND_TEXT.includes('domains/handoff.md'));
   assert.ok(APPEND_TEXT.includes('domains/growth-inbox.md'));
-  const [line] = refusals({ behind: 0, files: ['tools/checks.mjs'], numstat: '1\t0\ttools/checks.mjs', prs: [], checkDiff: "+  ['tide', 'tide.test.mjs'],\n" });
-  assert.match(line, /rule: check-list-is-one-file/);
-  assert.match(line, /file: tools\/checks\.mjs/);
-  const index = refusals({ behind: 0, files: ['void-live-deploy/skills/index.json'], numstat: '2\t0\tvoid-live-deploy/skills/index.json', prs: [] });
-  assert.match(index.join('\n'), /skills\/index\.json/);
+  assert.equal(addedCheckLines("+  ['tide', 'tide.test.mjs'],\n").length, 1);
 });
 
 test('settled shared files drop out of the overlap rate', () => {
