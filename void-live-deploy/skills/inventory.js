@@ -44,6 +44,7 @@ const WHAT = {
   shop: 'what Verse sells: the store, what is new, tips, joining, and hands-on services with prices',
   'systems-monitor': 'the board of systems Verse watches: each guard up, down or unknown, from the live status',
   'system-blueprint': 'turn a business idea into a system plan: steps, parts and who does what',
+  'idea-to-system': 'a business idea made real: a plan card for a vague idea, or a system plan that builds into Verse',
   'client-handoff': 'a shareable handoff card for one system: what Verse owns and what the client keeps',
   'system-handoff': 'the handoff package for a system Verse takes on: ownership, docs and how to ask its status',
   place: 'street maps and places',

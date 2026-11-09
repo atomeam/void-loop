@@ -189,6 +189,16 @@
    "listed": 4,
    "defectsBefore": 13,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-09T10:26:00.757Z",
+   "run": 20,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 2,
+   "listed": 4,
+   "defectsBefore": 6,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -7760,6 +7770,424 @@
     "empty": 0,
     "cls": 0,
     "overflow": 37
+   },
+   "state": "clean"
+  },
+  "/g/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/stl/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/colour-management/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.024,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/colour-picker-tool/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.024,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/converter/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/rap/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/trend-50-200/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/breakout-20-10/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/trading-bots/dip-rsi2/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/local/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.508,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.508 that no rule fixes: listed for a builder)"
+  },
+  "/random/wheel/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/time/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.093,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/fix/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/music/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/tuner/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/brain/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.428,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.428 that no rule fixes: listed for a builder)"
+  },
+  "/scores/sports/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.024,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/calculators/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.036,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/store/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 0.373,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.019,
+   "why": "(a layout shift of 0.373 that no rule fixes: listed for a builder)"
+  },
+  "/store/receipt/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 2,
+    "empty": 0,
+    "cls": 0.377,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.019,
+   "why": "(a layout shift of 0.377 that no rule fixes: listed for a builder)"
+  },
+  "/starboard/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.119,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.119 that no rule fixes: listed for a builder)"
+  },
+  "/base64/bases/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/paint/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.09,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/resize-image/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/generators/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.012,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/color/gradient/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 2,
+    "cls": 0.002,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "no rule fixes it"
+  },
+  "/prizes/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/piano/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/bpm/": {
+   "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
    },
    "state": "clean"
   }
