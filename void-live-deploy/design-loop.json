@@ -199,6 +199,16 @@
    "listed": 4,
    "defectsBefore": 6,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-09T12:28:29.875Z",
+   "run": 21,
+   "measured": 30,
+   "clean": 29,
+   "fixed": 1,
+   "listed": 0,
+   "defectsBefore": 18,
+   "defectsAfter": 1
   }
  ],
  "pages": {
@@ -8180,6 +8190,408 @@
   },
   "/bpm/": {
    "at": "2026-11-09T10:26:00.757Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/password/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/base64/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/news/global-headlines/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/hosting/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/tournaments/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/podcasts/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.001,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/emoji-combos/emoji-dictionary/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/news/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/team/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 18,
+    "contrast": 0,
+    "targets": 17,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.41,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.41,
+    "overflow": 0
+   },
+   "rules": 17,
+   "moved": 0,
+   "why": "(a layout shift of 0.41 that no rule fixes: listed for a builder)"
+  },
+  "/markets/currency-converter/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/ledger/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.005,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/exifeditor/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.051,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/photopea/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.051,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/squoosh/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.051,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/iloveimg/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.051,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/tinypng/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.051,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/emoji-combos/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.041,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/scores/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/exif/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/random/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/markets/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/chords/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/translate/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/photos/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.01,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/stopwatch/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/boards/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/notes/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.022,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/metronome/": {
+   "at": "2026-11-09T12:28:29.875Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/recipes/": {
+   "at": "2026-11-09T12:28:29.875Z",
    "before": {
     "defects": 0,
     "contrast": 0,
