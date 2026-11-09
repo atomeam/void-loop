@@ -18,7 +18,10 @@
 //     than 512x512 only and the server cannot shrink one inside its CPU limit, so the page sends its own shrunk copy (at most EDIT_BYTES, a JPEG or
 //     a PNG smaller than 512x512 in the named picture's proportions, checked from its header). The server cannot prove that copy's pixels are
 //     the named picture's; the typed change goes through the same refusals as a prompt, the same safe words, and counts against the same caps
-//     (a change is one Workers AI picture; there is no free-painter fallback for it). Nothing of the copy is stored. Nothing typed is written to D1: the table holds counters only ('ai', 'poll', 'c:<hash>', the day, n).
+//     (a change is one Workers AI picture; there is no free-painter fallback for it). Nothing of the copy is stored.
+//   - ask for fuller words ("Fill in my words", act 'words'): the free text model rewrites a typed idea as one fuller line, which goes back to the
+//     page and is painted only if the person presses Make. The idea and the answer go through the same refusals as a prompt. It counts per
+//     minute, WORDS_PER_CONN a day per connection and WORDS_DAY a day in all, apart from the pictures; the same idea again today is cached, free. Nothing typed is written to D1: the table holds counters only ('ai', 'poll', 'c:<hash>', the day, n).
 // With no SALT or no D1 the route is off (the page says the painter is resting), never unguarded. Same-origin only.
 import { bump, ownerOk } from '../../lib/guard.js';
 import { clientKey, dayOf, secondsToMidnight } from '../../lib/reactions.js';
@@ -29,7 +32,7 @@ import { imageOf } from '../../lib/art-rules.js';
 import { capOf, asImage } from './card-art.js';
 import { publicPainter, paintWith } from './studio.js';
 import { IMAGE_MODELS } from '../../lib/models.js';
-import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAPES, SAYS, aiShareOf, POLL_CAP, PER_CONN, PER_MINUTE, PROMPT_MAX, NEGATIVE_MAX, CHANGE_MAX, EDIT_BYTES, imageSizeOf, fitsEdit, changePromptOf } from '../../lib/image-gen.js';
+import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAPES, SAYS, aiShareOf, POLL_CAP, PER_CONN, PER_MINUTE, PROMPT_MAX, NEGATIVE_MAX, CHANGE_MAX, EDIT_BYTES, imageSizeOf, fitsEdit, changePromptOf, WORDS_PER_CONN, WORDS_DAY, wordsAskOf, wordsOutOf } from '../../lib/image-gen.js';
 
 export const AI_MS = 25000, POLL_MS = 30000; // both inside the gate's 60 s wait for a first picture (2026-10-25: 40 + 40 s let a slow painter hold a picture past it)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
@@ -93,6 +96,7 @@ export async function onRequestPost({ request, env }, fetchFn) {
   const raw = (await request.text()).slice(0, CHANGE_BODY);
   let b = {}; try { b = JSON.parse(raw); } catch (_) { return json({ state: 'refused', why: 'bad', say: 'bad request' }, 400); }
   if (b && b.act === 'change') return changeOf(request, env, here, b);
+  if (b && b.act === 'words' && raw.length <= 2000) return wordsOf(request, env, here, b);
   if (raw.length > 2000) return json({ state: 'refused', why: 'bad', say: 'bad request' }, 400); // a picture's ask is small; only a change carries a copy
   const de = b && b.lang === 'de';
   const prompt = cleanLine(b && b.prompt, PROMPT_MAX), negative = cleanLine(b && b.negative, NEGATIVE_MAX), style = styleOf(b && b.style), shape = shapeOf(b && b.shape), seed = seedOf(b && b.seed);
@@ -165,6 +169,33 @@ async function changeOf(request, env, here, b) {
   if (!img) return resting('busy', de);
   try { await tick(env, 'ai', day); await tick(env, 'c:' + lim.conn, day); } catch (_) {}
   const out = { state: 'art', img, seed, style, shape, painter: 'workers-ai', w: size[0], h: size[1], change, ref: refOf(key) };
+  try { await caches.default.put(key, new Response(JSON.stringify(out), { headers: { 'content-type': 'application/json', 'cache-control': 'max-age=86400' } })); } catch (_) {}
+  return json(out);
+}
+// "Fill in my words": POST { act: 'words', prompt, style } -> { state: 'words', words }, one fuller picture description for the page's box
+const saidOf = (r) => String((r && (r.response || r.text || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && (r.result.response || r.result.text)))) || '').trim();
+async function wordsOf(request, env, here, b) {
+  const de = b.lang === 'de', prompt = cleanLine(b.prompt, PROMPT_MAX), style = styleOf(b.style);
+  const why = refusalOf(prompt, '', style, isSecret);
+  if (why) return json({ state: 'refused', why, say: say(why, de) });
+  if (!env || !env.DB || !env.SALT || !env.AI) return resting('off', de);
+  const day = dayOf(), key = await cacheReq(here, [day, 'words', prompt, style, de ? 'de' : 'en']);
+  try { const hit = await caches.default.match(key); if (hit) return json({ ...(await hit.json()), cached: true }); } catch (_) {}
+  const conn = await clientKey(request.headers.get('cf-connecting-ip'), day, env.SALT);
+  if ((await bump(here, 'image:w:' + conn)) > PER_MINUTE) return resting('slow', de, 429, { 'retry-after': '60' });
+  try {
+    await ensure(env);
+    if ((await used(env, 'w:' + conn, day)) >= WORDS_PER_CONN) return resting('wordsmine', de, 429, { 'retry-after': String(secondsToMidnight()) });
+    if ((await used(env, 'w', day)) >= WORDS_DAY) return resting('words', de);
+  } catch (_) { return resting('off', de); }
+  const [system, user] = wordsAskOf(prompt, style, de);
+  let words = '';
+  try { words = wordsOutOf(saidOf(await env.AI.run(models('imagewords'), { messages: [{ role: 'system', content: system }, { role: 'user', content: user }], max_tokens: 220, temperature: 0.7, chat_template_kwargs: { enable_thinking: false } }))); } catch (e) { await noteMiss(env, 'words', e); words = ''; }
+  if (words.length <= prompt.length) return resting('words', de); // nothing fuller came back: the box keeps what was typed
+  const after = refusalOf(words, '', style, isSecret);
+  if (after) return json({ state: 'refused', why: after, say: say(after, de) });
+  try { await tick(env, 'w', day); await tick(env, 'w:' + conn, day); } catch (_) {}
+  const out = { state: 'words', words };
   try { await caches.default.put(key, new Response(JSON.stringify(out), { headers: { 'content-type': 'application/json', 'cache-control': 'max-age=86400' } })); } catch (_) {}
   return json(out);
 }
