@@ -14,7 +14,7 @@ export function bookOf(text) {
   m = t.match(/^(?:who\s+(?:wrote|authored)|who\s+is\s+the\s+(?:author|writer)\s+of|(?:the\s+)?author\s+of)\s+(?:the\s+(?:book|novel)\s+)?(.{2,80})$/i);
   if (m && !/^(?:this|that|it|these|those|the\s+(?:song|lyrics|music|bible|constitution|declaration\b.*)|(?:a|the)\s+book)$/i.test(m[1]) && !/\b(?:song|lyrics|code|script|email|letter)\b/i.test(m[1])) return { q: m[1], isbn: false, author: true };
   m = t.match(/^(?:(?:a|some|any)\s+)?(?:books?\s+by|novels?\s+by|find\s+(?:the\s+)?book|book\s+called)\s+(.{2,80})$/i);
-  if (m && !/^(?:a|the)\s+book$/.test(m[1])) return { q: m[1].replace(/^the\s+/i, ''), isbn: false };
+  if (m && !/^(?:a|the)\s+book$/.test(m[1])) return { q: m[1].replace(/^the\s+/i, ''), isbn: false, author: false };
   return null;
 }
 async function run(text, api) {
