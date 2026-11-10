@@ -1,1 +1,102 @@
-{"shorts":[{"id":"20261110-verse-1","title":"The Living Journal","file":"20261110-verse-1.mp4","scores":{"clarity":6,"originality":9,"entertainment":8,"impressive":7,"avg":7.5,"notes":"The concept of a living journal is incredibly imaginative and captivating.","pass":true},"fact":"A journal that reads its papers live and counts a paper's length."},{"id":"20261110-verse-2","title":"The Self-Reading Journal","file":"20261110-verse-2.mp4","scores":{"clarity":8,"originality":7,"entertainment":9,"impressive":6,"avg":7.5,"notes":"The playful dialogue between the objects creates a charming and whimsical atmosphere.","pass":true},"fact":"Verse talks to you first on its Brain page, from its real state."}]}
+{
+  "shorts": [
+    {
+      "id": "20261110-verse-1",
+      "title": "Who talks first",
+      "file": "20261110-verse-1.mp4",
+      "fact": "On the Brain page Verse speaks first, from what changed, at most once every 3 minutes.",
+      "scores": {
+        "clarity": 8,
+        "originality": 7,
+        "entertainment": 8,
+        "impressive": 7,
+        "avg": 7.5,
+        "human": 7,
+        "notes": "Each line answers the one before it, and the 3-minute limit is the number.",
+        "pass": true,
+        "references": [
+          {
+            "id": "veritasium",
+            "name": "Veritasium",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "rober",
+            "name": "Mark Rober",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "tom-scott",
+            "name": "Tom Scott",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "hai",
+            "name": "Half as Interesting",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "vox",
+            "name": "Vox",
+            "score": 8,
+            "miss": []
+          }
+        ],
+        "gate": true
+      }
+    },
+    {
+      "id": "20261110-verse-2",
+      "title": "A film that fits",
+      "file": "20261110-verse-2.mp4",
+      "fact": "Ask for scary films from the nineties and each real film gets a score from 0 to 100.",
+      "scores": {
+        "clarity": 8,
+        "originality": 7,
+        "entertainment": 8,
+        "impressive": 7,
+        "avg": 7.5,
+        "human": 7,
+        "notes": "Each line answers the one before it, and the score runs from 0 to 100.",
+        "pass": true,
+        "references": [
+          {
+            "id": "veritasium",
+            "name": "Veritasium",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "rober",
+            "name": "Mark Rober",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "tom-scott",
+            "name": "Tom Scott",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "hai",
+            "name": "Half as Interesting",
+            "score": 8,
+            "miss": []
+          },
+          {
+            "id": "vox",
+            "name": "Vox",
+            "score": 8,
+            "miss": []
+          }
+        ],
+        "gate": true
+      }
+    }
+  ]
+}

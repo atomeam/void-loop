@@ -106,20 +106,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const feats = featsFrom(growth);
   if (!feats.length) { console.error('no plain feat to tell'); process.exit(1); }
   if (process.argv[2] === 'shorts') {
-    const out = resolve(arg('--out') || resolve(root, 'void-live-deploy/studio/media'));
-    mkdirSync(out, { recursive: true });
-    const made = [];
-    for (let i = 0; i < 2; i++) {
-      const trend = trendLine(loadScores().shows);
-      const one = await writeShow('short', feats[i % feats.length], { trend });
-      const id = new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-verse-' + (i + 1);
-      const meta = await filmShort(one, out, id);
-      if (!meta.gate.pass) { console.error('GATE FAIL ' + id + ' ' + meta.gate.checks.filter((c) => !c.ok).map((c) => c.name + ': ' + c.detail).join(' | ')); process.exit(1); }
-      recordScore('short', one.show.title, one.scores, one.fact);
-      made.push({ id, title: one.show.title, file: id + '.mp4', scores: one.scores, fact: one.fact });
-      console.log('SHORT ' + id + ' ' + JSON.stringify(one.scores));
-    }
-    writeFileSync(resolve(root, 'void-live-deploy/studio/shows.json'), JSON.stringify({ shorts: made }, null, 2) + '\n');
+    console.log('The judged Shorts stay in void-live-deploy/studio. A new pair is tools/show-make.mjs and tools/show-film.mjs, and it replaces these only when the judge passes.');
   } else if (process.argv[2] === 'feats') console.log(feats.join('\n'));
   else { console.error('usage: node tools/show-pipe.mjs shorts [--out dir] | feats'); process.exit(2); }
 }

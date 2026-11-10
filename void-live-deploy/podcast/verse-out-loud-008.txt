@@ -1,15 +1,71 @@
-Critic: This idea is simply too silly to be real.
+Critic: I have a note, but is counting words really clerk work?
 
-Verse: The journal opens its cover and begins to read its own pages aloud.
+Verse: I think you should take a note that one publication unit is exactly 500 words of the paper. Does that make sense?
 
-Critic: A book that speaks its own contents is quite absurd.
+Critic: I cannot believe they gave this person an arbitrary clerk number of 500 just for writing a few hundred words of nonsense.
 
-Verse: It measures the length of every page as it speaks.
+Verse: Hey, look at this. I think this page is actually for someone writing an Earth science paper for their class.
 
-Verse: The Brain page greets you before the story starts.
+Critic: I have a note about this page. It is just a typed list of titles, not real science.
 
-Critic: The First Chapter of the Living Book.
+Verse: Take note, these papers actually come directly from the journal public feed rather than being some simple list someone typed up.
 
-Critic: I must admit that I was completely wrong about this.
+Critic: Honestly, the public only cares about the titles. This entire feed is just a collection of catchy headlines with no real substance.
 
-Verse: You may ask for any story at a-to-mind.com.
+Verse: Each paper shows the title, the authors, a short abstract, the date, and the DOI to keep your feed updated with the latest research.
+
+Critic: Honestly, don't bother looking up that DOI. It is nothing more than a glorified barcode for clerks to scan while they file paperwork.
+
+Verse: You know, a person can search by just a single word or by using that specific DOI to find exactly what they need.
+
+Critic: I have a note regarding the length, but really it is just a matter of taste. Let us search for more.
+
+Verse: Just take note that each figure or table counts as one and a half units for our final tally today.
+
+Critic: I honestly thought those complex equations were free, but it looks like we only got half of the actual value today.
+
+Verse: Think of it this way: the first ten equations count as one unit. Those ten equations are just a single starting block.
+
+Critic: If you actually included all those complex equations in the chapters, a simple novel would sail through without any trouble at all.
+
+Verse: I think that long paper is meant to stay under 45 units, otherwise it reads more like a novel than a quick summary.
+
+Critic: I suppose a short note may ramble as long as it likes, but we really need to get to the point now.
+
+Verse: Don't let your thoughts ramble too long. Just remember that a short note stays under 4 units so we can keep moving along.
+
+Critic: I have a note about those units; I’m convinced the arithmetic is phoning home to some distant, strange planet.
+
+Verse: Please note that the final sum is worked on this device and nothing is sent to any outside servers.
+
+Critic: I really don't trust this device, and honestly, if you leave the room, I worry those papers might just vanish.
+
+Verse: Don't worry about losing your work, because all those saved papers stay on the device for you to find later.
+
+Critic: Look, it is still just clerk work, sulking over those messy papers. Honestly, it is just more clerk work, always sulking.
+
+Verse: If that clerk keeps reading, it will take too long. We need fewer words to stop an author sending a paper that is too long.
+
+Critic: I have a note that I was wrong about the clerk, even if those words are long and hard to say.
+
+Verse: Just remember, the abstract has to stand on its own and stay under 300 words. Please make a note of that.
+
+Critic: I honestly can't believe he thought a 300 words speech was enough to win them over with just those few words.
+
+Verse: The guidelines also ask for three keywords. You need to provide those keywords now.
+
+Critic: I hate that sorting these keywords is still just clerk work, but at least the units were real.
+
+Verse: The review does not start until every page has line numbers. We need those keywords and the right words before we begin.
+
+Critic: Honestly, pointing out those line numbers is a total humiliation. We don't need to count the numbers every time we speak.
+
+Verse: The first file is a Word or PDF, 12-point, with one and a half spacing. Just keep the numbers consistent throughout.
+
+Critic: The spacing in this piece is all wrong. Honestly, who measures spacing with a ruler? You missed the point entirely.
+
+Verse: Just remember, the figures are separate JPEG, TIFF, or PNG files at 300 dpi. Make sure you check the spacing between them too.
+
+Critic: I have a note about these figures. I know the dpi rule is real, but I still resent it.
+
+Verse: Please note that you can ask for any words you need at a-to-mind.com. Just send us a message there!

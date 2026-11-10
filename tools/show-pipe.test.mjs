@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { featsFrom, parseShow, scriptIssues, parseScores, trendLine, sameWords, sequence, timeOverlap, BANNED, VOICE_AF } from '../void-live-deploy/lib/show-pipe.js';
+import { featsFrom, parseShow, scriptIssues, parseScores, trendLine, sameWords, sequence, timeOverlap, BANNED, VOICE_AF, VOICES, hardShow, settle, follows, humanScale, againstReferences, paddingWord, BAD_EPISODE } from '../void-live-deploy/lib/show-pipe.js';
 import { shortScript } from './show-pipe.mjs';
 import { speechCheck, plainCheck, captionCheck } from './video-gate.mjs';
 
@@ -36,8 +36,36 @@ assert.equal(speechCheck([{ from: 0, to: 1.2 }, { from: 1, to: 2 }]).ok, false);
 assert.equal(plainCheck({ hook: 'Queue job abcdef123', title: '', description: '', captions: [] }).ok, false);
 assert.equal(captionCheck([{ text: 'hel\nlo', raw: 'hello', size: 80, x: 80, y: 400, w: 400, h: 160, box: true, rect: true }]).ok, false);
 assert.match(VOICE_AF.Verse, /chorus=/);
-assert.match(VOICE_AF.Critic, /asetrate=19404/);
-assert.ok(!VOICE_AF.Verse.includes(VOICE_AF.Critic.slice(0, 12)));
+assert.match(VOICE_AF.Critic, /asetrate=22560/);
+assert.equal(VOICES.Verse.id, 'af_sky');
+assert.equal(VOICES.Critic.id, 'bm_george');
+assert.ok(!/lessac|ryan/.test(VOICES.Verse.id + VOICES.Critic.id));
+const badEp = parseShow(BAD_EPISODE);
+badEp.premise = 'Earth science journal publication units';
+badEp.must = ['500 words', 'DOI'];
+const badIssues = hardShow(badEp, { kind: 'episode' });
+assert.ok(badIssues.includes('does not follow'), badIssues.join(','));
+assert.ok(badIssues.includes('length'));
+const settled = settle({ clarity: 9, originality: 10, entertainment: 8, impressive: 7, notes: 'whimsical' }, badIssues);
+assert.ok(settled.clarity <= 4, 'episode 8 cannot score as clear');
+assert.equal(settled.pass, false);
+const human = humanScale(badEp, { kind: 'episode' });
+assert.ok(human.score <= 3, 'episode 8 is clearly worse than a human show: ' + human.score + ' ' + human.marks.join(','));
+assert.equal(human.comparable, false);
+const refs = againstReferences(badEp, 'episode');
+assert.ok(refs.length === 3 && refs.every((r) => r.score <= 3), JSON.stringify(refs));
+const stuffed = Array.from({ length: 8 }, (_, i) => ({ who: i % 2 ? 'Verse' : 'Critic', text: 'I have a note that this paper is fundamentally about words and units and the journal.' }));
+assert.equal(paddingWord(stuffed), 'fundamentally');
+assert.ok(hardShow({ lines: stuffed, must: [] }, { kind: 'short' }).includes('padding'));
+const chain = [
+  { who: 'Critic', text: 'I have a note. Counting words is clerk work.' },
+  { who: 'Verse', text: 'One publication unit is 500 words of the paper.' },
+  { who: 'Critic', text: 'I have a note. Five hundred words is a clerk invention.' },
+  { who: 'Verse', text: 'The journal feed shows the title, the abstract, and the DOI of a real paper.' },
+];
+assert.equal(follows(chain[0].text, chain[1].text), true);
+chain[3].text = 'The journal feed shows the DOI, and those words still count.';
+assert.ok(!hardShow({ lines: chain, premise: 'journal', must: ['500 words'] }, { kind: 'short' }).includes('does not follow'));
 
 const made = shortScript('Critic: Pages never speak first.\nVerse: This one does.\nCritic: Fine. It does.\n');
 assert.equal(made.show.hook, 'What if you could ask for this today?');

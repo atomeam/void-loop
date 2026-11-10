@@ -1175,67 +1175,228 @@
   },
   {
    "n": 8,
-   "title": "Episode 8: The journal that reads",
+   "title": "Episode 8: How long is a paper",
    "from": "2026-11-09",
    "to": "2026-11-10",
    "pub": "2026-11-10T15:28:14.527Z",
    "file": "verse-out-loud-008.mp3",
    "transcript": "verse-out-loud-008.txt",
-   "bytes": 203247,
-   "seconds": 34,
-   "summary": "This idea is simply too silly to be real. The journal opens its cover and begins to read its own pages aloud. Ask Verse for anything at a-to-mind.com. Full transcript included. Free to download and repost.",
+   "bytes": 3300237,
+   "seconds": 275,
+   "summary": "Critic asks whether counting words is clerk work. One publication unit is 500 words, a long paper stays under 45 units, and the sum is worked on the device. Ask Verse for anything at a-to-mind.com.",
    "counts": {
     "feats": 6
    },
    "scores": {
-    "clarity": 9,
-    "originality": 10,
+    "clarity": 8,
+    "originality": 7,
     "entertainment": 8,
     "impressive": 7,
-    "avg": 8.5,
-    "notes": "The concept of a self-reading journal is a wonderfully whimsical and magical premise.",
-    "pass": true
+    "avg": 7.5,
+    "human": 7,
+    "notes": "Each line answers the one before it, and the numbers are the journal rules.",
+    "pass": true,
+    "references": [
+     {
+      "id": "reply-all",
+      "name": "Reply All, Yes Yes No",
+      "score": 8,
+      "miss": []
+     },
+     {
+      "id": "hard-fork",
+      "name": "Hard Fork",
+      "score": 8,
+      "miss": []
+     },
+     {
+      "id": "fish",
+      "name": "No Such Thing As A Fish",
+      "score": 8,
+      "miss": []
+     }
+    ]
    },
    "lines": [
     {
      "who": "Critic",
-     "text": "This idea is simply too silly to be real.",
-     "t": 3.6
+     "text": "I have a note, but is counting words really clerk work?",
+     "t": 0
     },
     {
      "who": "Verse",
-     "text": "The journal opens its cover and begins to read its own pages aloud.",
-     "t": 6.7
+     "text": "I think you should take a note that one publication unit is exactly 500 words of the paper. Does that make sense?",
+     "t": 4.2
     },
     {
      "who": "Critic",
-     "text": "A book that speaks its own contents is quite absurd.",
-     "t": 10.6
+     "text": "I cannot believe they gave this person an arbitrary clerk number of 500 just for writing a few hundred words of nonsense.",
+     "t": 11.9
     },
     {
      "who": "Verse",
-     "text": "It measures the length of every page as it speaks.",
-     "t": 14.1
-    },
-    {
-     "who": "Verse",
-     "text": "The Brain page greets you before the story starts.",
-     "t": 17.6
+     "text": "Hey, look at this. I think this page is actually for someone writing an Earth science paper for their class.",
+     "t": 21.9
     },
     {
      "who": "Critic",
-     "text": "The First Chapter of the Living Book.",
-     "t": 20.8
-    },
-    {
-     "who": "Critic",
-     "text": "I must admit that I was completely wrong about this.",
-     "t": 23.3
+     "text": "I have a note about this page. It is just a typed list of titles, not real science.",
+     "t": 28.5
     },
     {
      "who": "Verse",
-     "text": "You may ask for any story at a-to-mind.com.",
-     "t": 26.2
+     "text": "Take note, these papers actually come directly from the journal public feed rather than being some simple list someone typed up.",
+     "t": 35.2
+    },
+    {
+     "who": "Critic",
+     "text": "Honestly, the public only cares about the titles. This entire feed is just a collection of catchy headlines with no real substance.",
+     "t": 43
+    },
+    {
+     "who": "Verse",
+     "text": "Each paper shows the title, the authors, a short abstract, the date, and the DOI to keep your feed updated with the latest research.",
+     "t": 53.5
+    },
+    {
+     "who": "Critic",
+     "text": "Honestly, don't bother looking up that DOI. It is nothing more than a glorified barcode for clerks to scan while they file paperwork.",
+     "t": 62.2
+    },
+    {
+     "who": "Verse",
+     "text": "You know, a person can search by just a single word or by using that specific DOI to find exactly what they need.",
+     "t": 71.9
+    },
+    {
+     "who": "Critic",
+     "text": "I have a note regarding the length, but really it is just a matter of taste. Let us search for more.",
+     "t": 79.7
+    },
+    {
+     "who": "Verse",
+     "text": "Just take note that each figure or table counts as one and a half units for our final tally today.",
+     "t": 86.8
+    },
+    {
+     "who": "Critic",
+     "text": "I honestly thought those complex equations were free, but it looks like we only got half of the actual value today.",
+     "t": 93.4
+    },
+    {
+     "who": "Verse",
+     "text": "Think of it this way: the first ten equations count as one unit. Those ten equations are just a single starting block.",
+     "t": 101.7
+    },
+    {
+     "who": "Critic",
+     "text": "If you actually included all those complex equations in the chapters, a simple novel would sail through without any trouble at all.",
+     "t": 109.3
+    },
+    {
+     "who": "Verse",
+     "text": "I think that long paper is meant to stay under 45 units, otherwise it reads more like a novel than a quick summary.",
+     "t": 118.6
+    },
+    {
+     "who": "Critic",
+     "text": "I suppose a short note may ramble as long as it likes, but we really need to get to the point now.",
+     "t": 126.2
+    },
+    {
+     "who": "Verse",
+     "text": "Don't let your thoughts ramble too long. Just remember that a short note stays under 4 units so we can keep moving along.",
+     "t": 133.4
+    },
+    {
+     "who": "Critic",
+     "text": "I have a note about those units; I’m convinced the arithmetic is phoning home to some distant, strange planet.",
+     "t": 140.4
+    },
+    {
+     "who": "Verse",
+     "text": "Please note that the final sum is worked on this device and nothing is sent to any outside servers.",
+     "t": 149.1
+    },
+    {
+     "who": "Critic",
+     "text": "I really don't trust this device, and honestly, if you leave the room, I worry those papers might just vanish.",
+     "t": 155.3
+    },
+    {
+     "who": "Verse",
+     "text": "Don't worry about losing your work, because all those saved papers stay on the device for you to find later.",
+     "t": 163.4
+    },
+    {
+     "who": "Critic",
+     "text": "Look, it is still just clerk work, sulking over those messy papers. Honestly, it is just more clerk work, always sulking.",
+     "t": 169.7
+    },
+    {
+     "who": "Verse",
+     "text": "If that clerk keeps reading, it will take too long. We need fewer words to stop an author sending a paper that is too long.",
+     "t": 179
+    },
+    {
+     "who": "Critic",
+     "text": "I have a note that I was wrong about the clerk, even if those words are long and hard to say.",
+     "t": 186.3
+    },
+    {
+     "who": "Verse",
+     "text": "Just remember, the abstract has to stand on its own and stay under 300 words. Please make a note of that.",
+     "t": 193.2
+    },
+    {
+     "who": "Critic",
+     "text": "I honestly can't believe he thought a 300 words speech was enough to win them over with just those few words.",
+     "t": 200
+    },
+    {
+     "who": "Verse",
+     "text": "The guidelines also ask for three keywords. You need to provide those keywords now.",
+     "t": 208.2
+    },
+    {
+     "who": "Critic",
+     "text": "I hate that sorting these keywords is still just clerk work, but at least the units were real.",
+     "t": 213.4
+    },
+    {
+     "who": "Verse",
+     "text": "The review does not start until every page has line numbers. We need those keywords and the right words before we begin.",
+     "t": 219.9
+    },
+    {
+     "who": "Critic",
+     "text": "Honestly, pointing out those line numbers is a total humiliation. We don't need to count the numbers every time we speak.",
+     "t": 227.3
+    },
+    {
+     "who": "Verse",
+     "text": "The first file is a Word or PDF, 12-point, with one and a half spacing. Just keep the numbers consistent throughout.",
+     "t": 236.4
+    },
+    {
+     "who": "Critic",
+     "text": "The spacing in this piece is all wrong. Honestly, who measures spacing with a ruler? You missed the point entirely.",
+     "t": 244.1
+    },
+    {
+     "who": "Verse",
+     "text": "Just remember, the figures are separate JPEG, TIFF, or PNG files at 300 dpi. Make sure you check the spacing between them too.",
+     "t": 252.4
+    },
+    {
+     "who": "Critic",
+     "text": "I have a note about these figures. I know the dpi rule is real, but I still resent it.",
+     "t": 261.9
+    },
+    {
+     "who": "Verse",
+     "text": "Please note that you can ask for any words you need at a-to-mind.com. Just send us a message there!",
+     "t": 268.8
     }
    ]
   }
