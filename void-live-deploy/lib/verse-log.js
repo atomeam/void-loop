@@ -4,6 +4,7 @@
 // chart and the tester trend, and the sites Versus tried. Nothing here is new data: every block reads the same files and /api/reflect as before.
 // verseLogHtml is pure (data in, escaped HTML out); drawVerseLog fetches, mounts and wires the folds, the Root cause / Surface toggle and the week line.
 import * as SB from './self-blocks.js';
+import { sureHtml } from './skill-confidence.js'; // the skill strip belongs on /log/, not the stage card
 
 export const LOG_PATH = '/log/';
 export const LAST_KEY = 'a2m.void.self.last.v1'; // the same keepsake the self card kept, so "Since you last looked" carries on
@@ -28,6 +29,9 @@ export function verseLogHtml({ v = null, last = null, fam = null, now = Date.now
   if (v && Array.isArray(v.entries)) {
     const { sections } = SB.selfCard(v, last, new Set(), now, fam);
     h += SB.selfHtml(sections.filter((s) => s.id !== 'words'), esc);
+    // the sure slot is drawn empty by selfHtml (the stage card must stay clear of it). Fill it here, from families.json, so /log/ shows one square per skill.
+    const strip = fam ? sureHtml(fam, now, esc) : '';
+    if (strip) h = h.replace('<div data-v-conf></div>', '<div data-v-conf>' + strip + '</div>');
   }
   return h + built + progress + tester + sites;
 }

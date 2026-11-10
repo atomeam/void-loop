@@ -56,3 +56,22 @@ test('the log page draws them, quietly linked from the shell footer', async () =
   const s = L.sitesHtml({ sites: [{ at: '2026-11-01T00:00:00Z', site: 'a.com', status: 'surpassed', page: '/a/' }, { at: '2026-11-02T00:00:00Z', site: 'b.com', status: 'walled' }] }, esc);
   assert.ok(s.indexOf('b.com') < s.indexOf('a.com'), 'newest first'); assert.match(s, /a\.com · every aspect matched/); assert.equal(L.sitesHtml(null, esc), '');
 });
+
+test('the log fills the skill-confidence strip from families, so one square per skill is on /log/', async () => {
+  const L = await import('../void-live-deploy/lib/verse-log.js'), esc = (x) => String(x);
+  const v = { entries: [{ at: '2026-11-08T10:00:00Z', kind: 'daily', thoughts: 'Words.', asks: [] }], asks: [],
+    follow: { total: 2, built: 1, asked: [{ ask: 'one', at: '2026-11-08T00:00:00Z' }], recent: [{ ask: 'one', what: 'built one', at: '2026-11-08T00:00:00Z', depth: 'root' }] } };
+  const fam = { families: [
+    { name: 'Making things', skills: Array.from({ length: 15 }, (_, i) => ({ name: 'make-' + i, tier: 'proven', last_tested: '2026-10-01' })) },
+    { name: 'Games', skills: Array.from({ length: 8 }, (_, i) => ({ name: 'game-' + i, tier: 'tested', last_tested: '2026-11-08' })) },
+  ] };
+  const empty = L.verseLogHtml({ v, now: Date.parse('2026-11-09T00:00:00Z') }, esc);
+  assert.match(empty, /<div data-v-conf><\/div>/, 'no families: the slot stays empty');
+  assert.doesNotMatch(empty, /sc-strip/);
+  const h = L.verseLogHtml({ v, fam, now: Date.parse('2026-11-09T00:00:00Z') }, esc);
+  assert.match(h, /data-v-conf/);
+  assert.match(h, /class="sc-strip"/);
+  assert.equal([...h.matchAll(/class="sc-sq(?: sc-weathered)?"/g)].length, 23, 'one square per skill');
+  assert.match(h, /data-tier="proven"/);
+  assert.match(h, /sc-weathered/, 'an old last_tested looks weathered');
+});

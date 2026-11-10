@@ -168,6 +168,10 @@ function avoidRects() {
   for (const id of (tour && tour.made && tour.made.ids) || []) { const e = document.querySelector('#stage [data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (e) out.push(rectOf(e)); }
   return out.filter(Boolean);
 }
+function focusBar(el) {
+  if (!el || !el.isConnected) return;
+  if (!el.contains(document.activeElement)) { const f = el.querySelector('button'); if (f) f.focus({ preventScroll: true }); }
+}
 function place(el) {
   if (!el || !el.isConnected || grabbing) return;
   const d = document.getElementById('dock'), dr = d && d.getBoundingClientRect();
@@ -297,6 +301,8 @@ async function step(stageApi) {
     el.append(tray);
   }
   place(el);
+  // put focus in the panel when a step is drawn, so a phone (and a keyboard) can walk it; skip if it already holds focus
+  focusBar(el);
   const before = new Set(Object.keys(stageApi.things())), pageBefore = document.querySelector('.vpage');
   tour.made = { ids: [], pageBefore };
   // the thing is saved before this ask returns, and the suite reads the chip's place in that gap. Park the bar on the
@@ -332,6 +338,7 @@ async function step(stageApi) {
     line.dataset.showcaseFailed = '1';
     try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(s.ask).slice(0, 200), fallback: 'preview:nothing-shown' }), keepalive: true }).catch(() => {}); } catch (_) {}
   }
+  focusBar(el); // the preview card can take focus as it opens; give it back so Esc and Tab stay on the walkthrough
 }
 
 // a step chip in the tray: drag it out of the bar and let go over the stage, and that step runs now with its things where it landed;
@@ -422,8 +429,9 @@ export function start(stageApi, steps, { label = 'Built while you were away' } =
   tour = { steps, i: 0, made: null, label, esc: (e) => {
     if (e.key !== 'Escape' || !tour) return;
     const el = document.getElementById('showcase-bar');
-    if (el && el.dataset.dock === 'modal') { e.preventDefault(); e.stopPropagation(); end(stageApi); return; } // the modal layer closes first
-    if (!document.querySelector('.vpage.on')) end(stageApi);
+    // Esc closes the walkthrough first, whatever dock it is in (a phone often docks it under the card, not as a modal; leaving Esc only
+    // on the modal left the bar up and focus lost). The card stays; this listener runs in capture.
+    if (el) { e.preventDefault(); e.stopPropagation(); end(stageApi); }
   } };
   addEventListener('keydown', tour.esc, true);
   step(stageApi);
