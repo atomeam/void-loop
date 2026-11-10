@@ -1,0 +1,1 @@
+{"at":"2026-11-10T16:28:37Z","by":"openhands","kind":"fix","what":"the WebMCP origin-miss browser check waits for each ask's miss before it flips navigator.webdriver, so a loaded runner no longer reads the flag for the wrong ask"}
