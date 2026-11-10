@@ -3,13 +3,20 @@
  "cases": 115,
  "runsTotal": 300,
  "kinds": {
-  "grow": 67,
+  "grow": 66,
   "file": 49,
-  "visitor": 180,
+  "visitor": 181,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-09T23:52:09Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T23:24:31Z",
    "passed": 0,
@@ -289,85 +296,78 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T16:48:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-17",
+   "from": "2026-08-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-24",
+   "from": "2026-08-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-31",
+   "from": "2026-09-01",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-07",
+   "from": "2026-09-08",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-14",
+   "from": "2026-09-15",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-21",
+   "from": "2026-09-22",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-28",
+   "from": "2026-09-29",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-05",
+   "from": "2026-10-06",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-12",
-   "runs": 37,
-   "passed": 1991,
-   "of": 2186
+   "from": "2026-10-13",
+   "runs": 36,
+   "passed": 1950,
+   "of": 2144
   },
   {
-   "from": "2026-10-19",
+   "from": "2026-10-20",
    "runs": 2,
    "passed": 134,
    "of": 153
   },
   {
-   "from": "2026-10-26",
+   "from": "2026-10-27",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-02",
-   "runs": 261,
+   "from": "2026-11-03",
+   "runs": 262,
    "passed": 6138,
    "of": 8004,
    "broken": 14,
