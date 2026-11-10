@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-18T08:43:06Z",
-  "passed": 52,
-  "of": 63,
-  "kind": "file",
-  "key": "what are you? | missing text /V#D/",
-  "note": "fix: \"what are you?\" missing text /V01D/; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
- },
- {
   "at": "2026-10-18T09:26:58Z",
   "passed": 62,
   "of": 63,
@@ -7858,6 +7850,24 @@
      "ask": "what time is it",
      "why": [
       "slow 9931 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T20:36:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1445,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9254 ms"
      ]
     }
    ]
