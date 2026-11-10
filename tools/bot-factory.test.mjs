@@ -3,13 +3,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { BOTS, probe } from '../void-live-deploy/bots/kit.js';
-import { gate, parseProposal, pin, vet, familyRows } from './bot-factory.mjs';
+import { gate, parseProposal, pin, vet, familyRows, rejudgeHeld } from './bot-factory.mjs';
 import { families, check } from '../void-live-deploy/bots/families.js';
 
 test('every kit bot passes its probe and is live, and the registry on disk matches the gate', () => {
   const rows = gate();
   assert.ok(rows.filter((r) => r.status === 'live').length >= 50);
-  assert.deepEqual(rows.filter((r) => r.status === 'failed').map((r) => r.id), []);
+  assert.deepEqual(rows.filter((r) => r.status === 'failed' && !(r.pipe && r.why)).map((r) => r.id), []);
   const reg = JSON.parse(readFileSync(new URL('../void-live-deploy/bots/registry.json', import.meta.url), 'utf8'));
   assert.deepEqual(reg.bots.map((b) => b.id + ':' + b.status), rows.map((b) => b.id + ':' + b.status), 'run node tools/bot-factory.mjs');
 });
@@ -40,6 +40,16 @@ test('family variants: thousands, every one passing independent checks, and a wr
   assert.equal(check(broken).ok, false);
   assert.equal(F.find((b) => b.id === 'csv-to-json').run('a,b\n1,2'), '[{"a":"1","b":"2"}]');
   assert.equal(F.find((b) => b.id === 'temp-C-to-F').run('100'), '212 °F');
+});
+
+test('a chained bot the judge refused is failed, and a later run judges one that is still held', async () => {
+  const spec = { id: 'slug-held', cat: 'writing', job: 'headline then slug', from: ['bots/headline-bot', 'bots/slugger'], pipe: ['headline-bot', 'slugger'], probe: { in: 'rain rain cloud' }, dropped: 'no: the slug adds words that were not in the input' };
+  assert.equal(gate([spec]).find((r) => r.id === 'slug-held').status, 'failed');
+  const held = { id: 'slug-held', cat: 'writing', job: 'headline then slug', from: ['bots/headline-bot', 'bots/slugger'], pipe: ['headline-bot', 'slugger'], probe: { in: 'rain rain cloud' } };
+  const yes = await rejudgeHeld([held], async () => 'yes, the slug is the headline');
+  assert.equal(yes[0].vetted, 'properties + judge');
+  const no = await rejudgeHeld([held], async () => 'no, the slug adds words');
+  assert.match(no[0].dropped, /^no/);
 });
 
 test('a grown bot needs varied answers on three inputs and a judge; a constant bot or no judge is not kept', async () => {
