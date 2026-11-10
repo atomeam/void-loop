@@ -115,8 +115,7 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
   assert.equal(stuckDecision(pr({ created_at: '2026-11-04T10:00:00Z' }), [], now).action, 'young');
 });
 
-// 2026-11-06: since the suite gate (#2309) the bot no longer arms GitHub's auto-merge (it would merge on whatever main is, without the
-// suite). It disarms it, and merges one pull request itself with a squash, only after the suite passed on top of current main.
+// A ready pull request keeps GitHub auto-merge on. The bot still squash-merges, and the old suite wait does not run.
 // suite-gate.yml lives on main and checks the pull request out itself, so the suite is dispatched from main (#2315).
 test('the automerge workflow squash-merges without waiting for the suite, and keeps the hourly run', () => {
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
@@ -124,7 +123,7 @@ test('the automerge workflow squash-merges without waiting for the suite, and ke
   assert.match(yml, /pull-requests: write/, 'file .github/workflows/automerge.yml keeps pull-requests: write');
   assert.match(yml, /17 \* \* \* \*/, 'file .github/workflows/automerge.yml keeps the hourly run');
   assert.match(yml, /STUCK:/, 'file .github/workflows/automerge.yml keeps the stuck sweep');
-  assert.match(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs disarms GitHub auto-merge so the bot merges');
+  assert.doesNotMatch(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs keeps GitHub auto-merge on for a ready pull request');
   assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges a ready pull request');
   assert.match(src, /if \(false && ready\.length/, 'file tools/automerge.mjs does not run the old suite wait');
   assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
