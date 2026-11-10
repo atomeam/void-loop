@@ -1,6 +1,8 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1238,
+ "counted": 1226,
+ "counted": 1227,
+ "counted": 1232,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -48,6 +50,7 @@
    "file": "lib/keeper.js",
    "skills": 27,
    "direct": 0,
+   "dependants": 95,
    "dependants": 96,
    "tests": 1
   },
@@ -55,6 +58,7 @@
    "file": "lib/merge-rules.js",
    "skills": 27,
    "direct": 1,
+   "dependants": 95,
    "dependants": 96,
    "tests": 1
   },
@@ -62,6 +66,7 @@
    "file": "lib/art-rules.js",
    "skills": 27,
    "direct": 0,
+   "dependants": 94,
    "dependants": 95,
    "tests": 6
   },
@@ -125,6 +130,7 @@
    "file": "lib/reactions.js",
    "skills": 19,
    "direct": 1,
+   "dependants": 77,
    "dependants": 78,
    "tests": 1
   },
@@ -132,11 +138,15 @@
    "file": "lib/corrections.js",
    "skills": 18,
    "direct": 0,
+   "dependants": 63,
    "dependants": 64,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
+   "skills": 17,
+   "direct": 5,
+   "dependants": 59,
    "skills": 18,
    "direct": 6,
    "dependants": 60,
@@ -2187,13 +2197,6 @@
    "tests": 1
   },
   {
-   "file": "lib/least.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/linediff.js",
    "skills": 1,
    "direct": 1,
@@ -2978,13 +2981,14 @@
    "tests": 1
   },
   {
-   "file": "lib/credits.js",
+   "file": "lib/churn.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
    "tests": 1
   },
   {
+   "file": "lib/credits.js",
    "file": "lib/daily-art.js",
    "skills": 0,
    "direct": 0,
@@ -10023,12 +10027,6 @@
     "skills/miss-jobs.js"
    ]
   },
-  "lib/least.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/tower.js"
-   ]
-  },
   "lib/ledger-today.js": {
    "imports": [],
    "importedBy": [
@@ -16524,10 +16522,6 @@
    "imports": [],
    "importedBy": []
   },
-  "skills/connect-pack.js": {
-   "imports": [],
-   "importedBy": []
-  },
   "skills/connect4-rules.js": {
    "imports": [],
    "importedBy": [
@@ -17605,10 +17599,6 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js"
    ]
-  },
-  "skills/handoff-checklist.js": {
-   "imports": [],
-   "importedBy": []
   },
   "skills/hangman.js": {
    "imports": [],
@@ -18743,10 +18733,6 @@
    "imports": [],
    "importedBy": []
   },
-  "skills/ownership-pack.js": {
-   "imports": [],
-   "importedBy": []
-  },
   "skills/palette.js": {
    "imports": [
     "skills/color.js"
@@ -19144,10 +19130,6 @@
     "skills/mind-field-mode.js",
     "skills/mind-field.js"
    ]
-  },
-  "skills/reuse-pack.js": {
-   "imports": [],
-   "importedBy": []
   },
   "skills/riddle-gen.js": {
    "imports": [
@@ -20153,7 +20135,6 @@
   },
   "skills/tower.js": {
    "imports": [
-    "lib/least.js",
     "lib/tower-art.js",
     "lib/tower.js",
     "lib/obituary.js",
