@@ -5,7 +5,7 @@
 The spoken episode is written by `tools/show-pipe.mjs` from `docs/playbooks/shows.md`. It is a story about one real feat. It is not a readout of the git log, the queue, or the reflection asks.
 
 1. `node tools/podcast.mjs --script` prints the next episode's lines without writing anything. A failing script is not printed as a fallback.
-2. `PIPER="python -m piper" node tools/podcast.mjs --make --voices <dir>` voices it with Piper (`en_US-lessac-medium` for Verse, `en_US-ryan-medium` for the Critic) and the filters in `VOICE_AF`, then writes `void-live-deploy/podcast/verse-out-loud-<NNN>.mp3`, the transcript, `episodes.json`, `rss.xml`, and the judge's scores.
+2. `PIPER="python -m piper" node tools/podcast.mjs --make --voices <dir>` voices it with Piper and the filters in `VOICE_AF`, then writes `void-live-deploy/podcast/verse-out-loud-<NNN>.mp3`, the transcript, `episodes.json`, `rss.xml`, and the judge's scores. The second speaker's name is Critic.
 3. `node tools/podcast.test.mjs` checks the files and that the feed is fresh. Commit `void-live-deploy/podcast/`; the deploy puts it live.
 
 **How to tell it worked:** "play the podcast" on a-to-mind.com plays the new episode with its transcript, and https://a-to-mind.com/podcast/rss.xml lists it with an enclosure.
@@ -14,7 +14,7 @@ The spoken episode is written by `tools/show-pipe.mjs` from `docs/playbooks/show
 
 **Mistakes already made:** a new-skill rank after `video-play` let "play the podcast" open the video player; the skill sits at rank 1150.
 
-**What an episode covers:** one true feat, told by Verse and the Critic. A Loop Grid-style bed plays under the opening and the close; `PODCAST_NO_BED=1` leaves it out.
+**What an episode covers:** one true feat, told by Verse and Critic. A Loop Grid-style bed plays under the opening and the close; `PODCAST_NO_BED=1` leaves it out.
 
 ## Submitting the feed (owner only, by hand; nothing here is automated)
 
