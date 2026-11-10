@@ -1165,6 +1165,66 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://a-to-mind.com/lab/f643-receipt-to-expense/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f644-webgpu-lbm-orientation-evo-dom-fluid/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f645-text-to-flowchart-spatial/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f646-habit-tracker/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f646-weighted-decision-matrix/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f647-spatial-budget-allocator/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f648-webgpu-gray-scott-orientation-mlp-dom-portals/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f649-qr-code-generator/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f649-webrtc-elman-rnn-nbody-dom-swarm/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f650-image-contrast-checker/</loc>
+    <lastmod>2026-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://a-to-mind.com/is-it/monday</loc>
     <lastmod>2026-11-10</lastmod>
     <changefreq>daily</changefreq>
