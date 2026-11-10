@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T14:58:44.559Z",
+ "updated": "2026-11-10T15:08:14.868Z",
  "last24h": {
   "ticks": 147,
   "started": 79,
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 5,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -107,7 +107,7 @@
  },
  "handed": {
   "mvbl52gd": 1794313128686,
-  "mva30i2e": 1794301300680,
+  "mva30i2e": 1794323294868,
   "mva30j4u": 1794315372750,
   "mvu167w7": 1794291728195,
   "mveb8rsi": 1794269100529,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9ceds5": 1794236764431,
   "mw9emynl": 1794237965154,
   "mw9emzn0": 1794238529595,
   "mw9en0lw": 1794239093875,
@@ -246,36 +245,6 @@
   "review:2656"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T15:06:04.431Z",
-   "open": 277,
-   "started": [
-    {
-     "id": "mw9ceds5",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [
-    "shorts.yml"
-   ],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 272,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T15:15:26.762Z",
    "open": 276,
@@ -3879,6 +3848,36 @@
     "void-tick.yml"
    ],
    "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 315,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T15:08:14.868Z",
+   "open": 323,
+   "started": [
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "shorts.yml"
+   ],
    "sweep": false,
    "blueprints": 0,
    "held": 315,
