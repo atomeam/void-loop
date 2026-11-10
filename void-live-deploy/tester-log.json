@@ -1,15 +1,52 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 115,
+ "cases": 116,
  "runsTotal": 300,
  "kinds": {
-  "grow": 64,
+  "grow": 63,
   "file": 48,
-  "visitor": 184,
+  "visitor": 185,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-10T03:17:41Z",
+   "passed": 114,
+   "of": 119,
+   "kind": "grow",
+   "ms": 349,
+   "note": "new ground passed, kept as a regression case: \"build a hut\" (skill:build-world)",
+   "failed": [
+    {
+     "ask": "which skill family is unhealthy",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "how do i magnetize this?",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "intake this idea: automate client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "status pack for onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    },
+    {
+     "ask": "connect pack for client onboarding",
+     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-10T03:04:10Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-10T02:36:31Z",
    "passed": 0,
@@ -220,47 +257,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-09T18:45:49Z",
-   "passed": 108,
-   "of": 114,
-   "kind": "grow",
-   "ms": 464,
-   "note": "new ground passed, kept as a regression case: \"set a goal of 10 on the list\" (skill:list)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "who is the auhtor of dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T18:34:54Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -314,9 +310,9 @@
   },
   {
    "from": "2026-10-13",
-   "runs": 33,
-   "passed": 1834,
-   "of": 2013
+   "runs": 31,
+   "passed": 1755,
+   "of": 1922
   },
   {
    "from": "2026-10-20",
@@ -332,9 +328,9 @@
   },
   {
    "from": "2026-11-03",
-   "runs": 265,
-   "passed": 6138,
-   "of": 8004,
+   "runs": 267,
+   "passed": 6252,
+   "of": 8123,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -727,6 +723,10 @@
   "skill:writing-aids": "2026-11-08T03:22:45Z",
   "skill:yesno": "2026-11-08T06:49:50Z",
   "skill:zorbleflux": "2026-11-08T06:49:50Z",
-  "skill:idea-to-system": "2026-11-09T12:22:50Z"
+  "skill:idea-to-system": "2026-11-09T12:22:50Z",
+  "skill:build-world": "2026-11-10T03:17:41Z",
+  "skill:client-intake": "2026-11-10T03:17:41Z",
+  "skill:client-status-pack": "2026-11-10T03:17:41Z",
+  "skill:connect-pack": "2026-11-10T03:17:41Z"
  }
 }

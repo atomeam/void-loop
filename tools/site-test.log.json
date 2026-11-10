@@ -1,19 +1,5 @@
 [
  {
-  "at": "2026-10-18T00:52:54Z",
-  "passed": 35,
-  "of": 45,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
- },
- {
-  "at": "2026-10-18T02:53:48Z",
-  "passed": 44,
-  "of": 46,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
- },
- {
   "at": "2026-10-18T03:06:28Z",
   "passed": 42,
   "of": 48,
@@ -7668,5 +7654,52 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T03:04:10Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 422,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-10T03:17:41Z",
+  "passed": 114,
+  "of": 119,
+  "ms": 349,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "which skill family is unhealthy",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "how do i magnetize this?",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "intake this idea: automate client onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "status pack for onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   },
+   {
+    "ask": "connect pack for client onboarding",
+    "why": "console: Failed to load resource: the server responded with a status of 429 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 422,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"build a hut\" (skill:build-world)"
  }
 ]

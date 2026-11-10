@@ -378,6 +378,9 @@
     },
     {
       "ask": "how do i magnetize this?"
+    },
+    {
+      "ask": "build a hut"
     }
   ],
   "candidates": [],
