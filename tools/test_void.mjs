@@ -8004,7 +8004,8 @@ try {
     check('void asks batch 4: the log page shows the newest 5 of each long list and folds the rest behind "show all N" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, every block closed but the lead, a bar per skill family with one weakest, and each growth claim carries a source line',
       self.heads.includes('Next targeted capability') && self.heads.includes('What should change') && !self.heads.includes('Weakest operational area') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the log ("Newest"), so the list holds the other 27: no repeats
-        && opened === true && shut === false && self.open.join() === 'since' && self.bars === 0 && self.weak === 0
+        && opened === true && shut === false && self.open.join() === 'since'
+        && self.bars === self.families && self.weak === 1 // the log draws a bar per family, one weakest (lib/verse-log.js fills the sure slot)
         && self.notes.length === 2 && !/famil|proven|assimilat/i.test(self.notes.join(' ')) && !S.errors.length,
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     // the growth velocity (asked by Verse): at the top of "What got built", a 7-point line in the violet with a tick a day and the latest day a dot, a muted
