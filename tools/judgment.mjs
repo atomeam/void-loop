@@ -42,19 +42,32 @@ export function readJudgment(raw) {
   return { pass: o.pass === true, why };
 }
 
-const textOf = (j) => (j && (j.response || (j.result && j.result.response))) || '';
+const textOf = (j) => {
+  if (!j || typeof j !== 'object') return '';
+  const choice = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+  const nested = j.result && (typeof j.result === 'string' ? j.result : j.result.response);
+  const t = j.response || nested || choice || '';
+  return typeof t === 'string' ? t.trim() : '';
+};
 
-/** one call to the free model. No other model is asked. Returns the reply text, or '' when none is configured. */
+/** one call to the free model. Verse's own binding first (the deploy token cannot run Workers AI). Returns the reply, or ''. */
 export async function askFree(prompt, { env = process.env, fetchFn = fetch } = {}) {
-  const token = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN, account = env.CLOUDFLARE_ACCOUNT_ID;
-  if (!token || !account) return '';
-  const url = 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(account) + '/ai/run/' + FREE_MODEL;
-  let r;
-  try {
-    r = await fetchFn(url, { method: 'POST', headers: { authorization: 'Bearer ' + token, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 200 }) });
-  } catch (_) { return ''; }
-  if (!r || !r.ok) return '';
-  try { return String(textOf(await r.json()) || ''); } catch (_) { return ''; }
+  const tries = [];
+  if (env.VOID_OWNER_TOKEN) tries.push(['verse', String(env.VOID_SITE || 'https://a-to-mind.com').replace(/\/+$/, '') + '/api/coder', env.VOID_OWNER_TOKEN]);
+  const token = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN;
+  if (token && env.CLOUDFLARE_ACCOUNT_ID) tries.push(['workers', 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + FREE_MODEL, token]);
+  const notes = [];
+  for (const [name, url, key] of tries) {
+    try {
+      const r = await fetchFn(url, { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 200, temperature: 0, chat_template_kwargs: { enable_thinking: false } }) });
+      let j = {}; try { j = await r.json(); } catch (_) { /* status is enough */ }
+      const text = textOf(j);
+      if (r && r.ok && text) return text;
+      notes.push(name + ' ' + ((r && r.status) || 'empty'));
+    } catch (_) { notes.push(name + ' down'); }
+  }
+  askFree.note = notes.join(', ') || 'no key';
+  return '';
 }
 
 /** judge a diff. No free model means it does not ship. */
@@ -62,7 +75,7 @@ export async function judgeDiff(diff, { env = process.env, fetchFn = fetch, cwd 
   if (!String(diff || '').trim()) return { pass: false, why: 'there is no change to judge' };
   const prompt = promptOf(diff, goalsAt(cwd), task);
   const raw = await askFree(prompt, { env, fetchFn });
-  if (!raw) return { pass: false, why: 'no free model was there to judge it, so it is not shipped' };
+  if (!raw) return { pass: false, why: 'no free model was there to judge it, so it is not shipped' + (askFree.note ? ' (' + askFree.note + ')' : '') };
   return readJudgment(raw);
 }
 
