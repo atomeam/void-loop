@@ -1,0 +1,102 @@
+{
+ "at": "2026-11-10T03:39:20Z",
+ "sha": "4eeed15de54021353db2f406ad7ecbe29cda2369",
+ "runId": 42747213510,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42747213510",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (8)",
+   "id": 129602066588,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42747213510/job/129602066588",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 8 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL log page: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Verse)  -> false"
+   ],
+   "tail": [
+    "pass Verse art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button",
+    "pass Verse art forge: a picture already in the cache shows straight away, with no button and no page errors",
+    "pass Verse art forge: with the route down the card keeps its plate, with no button and no page errors",
+    "pass the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it",
+    "pass weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur",
+    "pass breathing: \"box breathing\" opens a guide whose dot climbs the square as \"Breathe in\" counts down; 4-7-8 switches the pattern and names its source; Stop pauses it",
+    "pass draw backdrop: on an empty canvas it says to draw first; after a stroke \"Make it my backdrop\" puts the picture behind the Verse, kept in the look; it is still there after a reload; \"remove my backdrop\" takes it off",
+    "pass grades: maths and routing (final formula, letter scale, lowercase \"a\" as article, asks left to calc)",
+    "skip voice: <microphone> element takes over after the first tap (Chrome 153+)  (Chromium 156.0.8078.4 has no <microphone> element; it needs Chrome 153 or newer)",
+    "pass first ask while the skills load (#2222 #2225 #2228): with the CPU 6x slower and no skill loaded yet, \"yo play despacito\", \"films by kurosawa pls\" and \"keep this idea: ... | why: ...\" each say something within 1.2 s of Enter, then are answered by video-play, film-metadata and idea-certificate, a",
+    "pass music: \"make a heavy metal song\" shows its form (intro, drop, breakdown, bridge, climax) under the roll, and the rendered song has the drop, breakdown and climax at least 6 dB above the quiet intro and bridge, the climax the loudest, and no clipping",
+    "pass \"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tips, the readout ending on today",
+    "pass miniatures: the brass clock’s hands show the real time in each asked zone (two zones differ), and a fixed moment (\"3:30pm Tokyo\") stops them exactly there",
+    "pass miniatures: the weather diorama rains under grey clouds, snows at night with lit windows, shows the sun on a clear day with a taller thermometer column, and fogs over in fog",
+    "pass miniatures: \"weather in Lisbon\" puts the live diorama at the top of the weather card",
+    "pass miniatures: the stopwatch’s sweep hand and 30-minute register read 1:30.5; the calculator presses 1, 2, ×, 7, = and then shows 84 (\"15% of 240\" types 15%×240)",
+    "pass miniatures: tapped keys work the calculator by hand (7 + 5 = 12, × 3 = 36, C 0, 9 % 0.09, 5 ± -5, . 5 0.5, 8 ÷ 0 Error)",
+    "pass miniatures: the five Verse calculator models each mount from data.model, report it in state(), keep every key on the case, and work 7 + 5 = 12",
+    "pass miniatures: \"make a calculator\" puts a pocket calculator on its card, \"calculate 12*7\" types it on a calculator’s keys to 84 on the answer card, \"start a stopwatch\" runs a 3D stopwatch on its card",
+    "pass miniatures: after a reload the calculator comes back with its 3D miniature (render() runs on load before stageApi exists)",
+    "pass chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then \"Your move\"",
+    "pass chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Verse answers with a legal move",
+    "pass checkers: \"play checkers\" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Verse replies",
+    "pass two boards on a 1280 stage: chess then checkers, the chess board moves aside shrunk (its card with it) and neither overlaps; a tap on the small chess board brings it back to full size and checkers shrinks instead",
+    "pass keyboard only: the small board is a button in the tab order labelled \"Restore Checkers\"; Enter brings it back and focus moves to the chess board that just shrank (\"Restore Chess\"), Space swaps them back, each swap is read out, and a full-size board is no longer a restore button",
+    "pass chess: \"play chess\" and \"chess\" summon one board (asked twice, still one); \"who invented chess\", \"chess rules\" and \"checkers rules\" add no board",
+    "pass one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first state",
+    "pass eightball: \"magic 8 ball\" spawns one 3D Magic 8 Ball in the void with one of the 20 classic answers; asking again shakes the same ball (one ball, a new shake), and each answer is kept in the ball's history with its question",
+    "155/156 passed (1 skipped on this machine)",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 129602066753,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42747213510/job/129602066753",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 6 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its \"grab one\" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is"
+   ],
+   "tail": [
+    "pass router: /api/routes is owner-only and rolls up skill near-misses, hard asks, would-escalate and the wait; masked asks stay masked; the route has its own limit",
+    "pass router: the will turns routing into wants: a skill near-miss becomes \"learn to handle ...\", a router that keeps falling back is a fix; would-escalate is not counted twice (it reaches the upgrade through void_shortfalls)",
+    "pass router: the will marks the tiered-model-stack want built (append-only builds record) and stops proposing it; still visible with --with-done",
+    "pass router: nothing on the page changes (no router, route or escalation code in void.html; the confirm line checks above still pass)",
+    "pass convert card: with its file failing to load after a reload, the kept converter is missing at first, a \"re-sync converter\" button stands in its place within 2 s, and a tap loads it again: the converter returns with its 5 miles = 8.04672 km and the button goes",
+    "pass cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)",
+    "pass cook-flow: the tap starts a 10 minute timer on the stage",
+    "pass cook-flow: \"how many cups is 500g of flour\" (word maths) ends with the chip too",
+    "pass cook-flow: \"5 miles in km\" gets no timer chip",
+    "pass cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip",
+    "pass cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Verse)",
+    "pass cook-flow: no page errors",
+    "pass telemetry route: a pasted CI report shows \"What is really true now\" with the commit, the pull request, \"Passed 159 of 162\" and what is still failing; \"why is my ci red\" is not taken",
+    "pass telemetry route: a builder's report that quotes a check timeout is read as a developer log, not answered as a broken automation to fix",
+    "pass 3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
+    "pass Ringer miniature: draws real pixels (dirt, chalk ring, 14 glass marbles), poses from the one state (13 in the ring with a hand knuckled down behind the shooter, then 1 knocked out after a shot), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmou",
+    "pass \"growth\": touching a branch says what Verse asked for that it built (asked by Verse: \"link the growth card branches to the growth inbox\"), matched by the entry that built it",
+    "pass \"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch",
+    "pass \"growth\": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will's open want, the last commits as",
+    "pass Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling), a chalk arc fills with the power, the aim line reaches where the shot would stop and the ghost of the shot shows the marble it would hit; letting go fl",
+    "pass 3d: a compile that never settles still draws: with compileAsync hung, \"make a counter\" draws its tally counter within the bound",
+    "pass miniatures: the legal pad writes the note across its ruled lines and rewrites when it changes; \"make a notepad\" puts it on the notepad card and typing in the card rewrites the pad",
+    "pass lift3d: tic-tac-toe, Othello, mancala, Aggravation and Connect Four each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board's centre plays X there and Verse answers",
+    "pass monopoly: \"play monopoly\" stands the property board in 3D in the void with its card separate; Roll moves your pawn and buys nothing for you",
+    "pass poker: \"play poker\" stands the card table in the void with its card separate; your two cards show, Verse's two stay face down",
+    "pass arcade: \"arcade games\" stands the Verse cabinet in 3D, its screen listing every arcade game in lib/ladder.js; picking Dim the Verse puts the cabinet away and opens the game",
+    "pass 3D Pentamote-1: \"pentamote-1\" draws the motor body on its page; the slab is at +0.5 mm a quarter period in and centred at rest, coil 1 glows first and coil 2 next, and it keeps moving",
+    "pass business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step",
+    "456/457 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}
