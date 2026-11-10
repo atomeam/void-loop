@@ -95,3 +95,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-11-10 | system-slice skill: propose the next concrete system slice Verse will design/build/own for a business idea so the client does less | new idea by growth agent; helper/system-slice |
 | building | 2026-11-10 | feedback-loop skill: capture client feedback on a shipped system slice and turn it into the next clarified idea or system adjustment so Verse owns the iteration and the client does less | new idea by growth agent; helper/feedback-loop |
 | shipped c365179e | 2026-11-10 | system-slice skill: propose the next concrete system slice Verse will design/build/own for a business idea so the client does less | new idea by growth agent; helper/system-slice |
+| building | 2026-11-10 | docs-pack skill: package client-facing docs for systems Verse owns so handoff is reliable and the client does less reading raw status | new idea by growth agent; helper/docs-pack |
