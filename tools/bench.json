@@ -7165,5 +7165,12 @@
   {"ask": "reuse tools for the support ticket router", "want": "skill:connect-pack"},
   {"ask": "handoff checklist for the onboarding automation", "want": "skill:handoff-checklist"},
   {"ask": "make a handoff checklist for invoice reminders", "want": "skill:handoff-checklist"},
-  {"ask": "checklist to hand off the support router", "want": "skill:handoff-checklist"}
+  {"ask": "checklist to hand off the support router", "want": "skill:handoff-checklist"},
+  {"ask": "proposal pack for client onboarding automation", "want": "skill:proposal-pack"},
+  {"ask": "make a client proposal for invoice reminders", "want": "skill:proposal-pack"},
+  {"ask": "generate a proposal for the support ticket router", "want": "skill:proposal-pack"},
+  {"ask": "reuse pack for client onboarding", "want": "skill:reuse-pack"},
+  {"ask": "map to existing tools: invoice reminders", "want": "skill:reuse-pack"},
+  {"ask": "what can we reuse for support tickets", "want": "skill:reuse-pack"},
+  {"ask": "palindromes for racing", "want": "skill:palindrome"}
 ]
