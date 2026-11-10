@@ -366,6 +366,49 @@ export function offerCard(name, from, to) {
     ;
 }
 
+const TOWER_WORK = /no floor has yet|needs a page no floor|\btower\b|versus:\s+\S+/i;
+const TITLE_NOISE = [
+  [/\s*\((?:flake|want)[^)]*\)\s*/gi, ' '],
+  [/^make\s+/i, ''],
+  [/["“”]/g, ''],
+  [/\s+robust:\s*fix the test[\s\S]*$/i, ''],
+  [/^(?:voice|suite|pack h|sky|answer|journal|refusal object):\s*/i, ''],
+  [/;?\s*align the page's ids to its acceptance spec/gi, ''],
+  [/polled for/gi, 'loaded first'],
+  [/read mid-draw/gi, 'shown halfway through drawing'],
+  [/the self card's three-round-trip body gets a loaded runner's deadline/gi, 'the self card is given time to finish loading'],
+  [/poll for the miss and the refusal object the way the page is polled/gi, 'the page waits until a refusal says what is missing'],
+  [/unbounded page promises capped - the 300 s watchdog stops reporting a self-inflicted stall/gi, 'a check stops reporting a stall it caused itself'],
+  [/echo and choir checks read rAF-deferred UI honestly/gi, 'echo and choir checks read the screen after it has drawn'],
+  [/the star streak survives a loaded machine - gap-honest speed smoothing/gi, 'the star streak stays smooth when the machine is busy'],
+  [/plan asks get steps, not a Wikipedia stub/gi, 'an ask for a plan comes back as steps, not a short stub'],
+];
+/** a pull-request title as words a visitor can read. A Tower-era line ("no floor has yet") is empty. Pure. */
+export function plainChange(title) {
+  let t = String(title || '');
+  if (TOWER_WORK.test(t)) return '';
+  for (const [re, to] of TITLE_NOISE) t = t.replace(re, to);
+  t = t.replace(/\s+/g, ' ').replace(/^[,:;–—-]+/, '').replace(/[,:;–—-]+$/, '').trim();
+  return TOWER_WORK.test(t) ? '' : t;
+}
+/** cut on a space. A word longer than max stays whole. Pure. */
+export function clipAtWord(s, max = 180) {
+  const t = String(s || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const at = t.lastIndexOf(' ', max);
+  return (at > 0 ? t.slice(0, at) : t).replace(/[,:;–—-]+$/, '').trim();
+}
+/** one sentence for the finished-work feed: who, and what the pull request changed. Null when the work is Tower-era. Pure. */
+export function feedLine(name, title, live = true) {
+  const body = clipAtWord(plainChange(title));
+  if (!body) return null;
+  const who = String(name || 'Someone').replace(/\s+/g, ' ').trim() || 'Someone';
+  const clause = body.charAt(0).toLowerCase() + body.slice(1);
+  if (!live) return who + ' has not put this on the site yet: ' + clause + '.';
+  const verb = /^(?:read|let|make|fix|stop|give|keep|show|add|list|open)\b/.test(clause);
+  return who + ' changed the site' + (verb ? ' to ' : ': ') + clause + '.';
+}
+
 /** an owner's one-line post from the site: "idea: ..." goes to #ideas, anything else ("job: ..." or plain words) to #work (a job). Pure. */
 export function quickPost(text) {
   const t = String(text == null ? '' : text).trim(), m = /^(job|idea|todo|task|fix|bug)\s*[:\-–]\s*/i.exec(t), body = (m ? t.slice(m[0].length) : t).trim();
