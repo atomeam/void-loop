@@ -13,7 +13,6 @@
  * region the card outlines it. What it learned is kept on this device (lib/brain-store.js, Forget clears it), and what it is thinking (its
  * workspace, ideas, spotlight and goals) is a part it holds in the shared field, kept on this device and given back after a reload (lib/shared-field.js
  * hold, persist, recall); Forget deletes that too. Verse's own priorities
- */
  * (/self.json) are standing ideas it compares yours with. Nothing is sent anywhere; a seal is numbers only (lib/brain.js params).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }, made with lib/field-stage.js fieldSkill.
  */
