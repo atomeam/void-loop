@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42447221799",
-  "at": "2026-11-08T04:33:06Z",
-  "what": "Verse hardened itself: 3 benchmark ask(s) for monitor-pack.  Why these: monitor-pack (no benchmark ask, evidence tier: tested). New phrases: “monitor pack for client onboarding” now opens monitor-pack; “set up monitors for the invoice reminders” now opens monitor-pack; “what will Verse watch for the support router” now opens monitor-pack.",
-  "try": "monitor pack for client onboarding",
+  "run": "42748795384",
+  "at": "2026-11-10T03:21:31Z",
+  "what": "Verse hardened itself: 12 benchmark ask(s) for faucet, client-status-pack, connect-pack, handoff-checklist.  Why these: ownership-map (no benchmark ask, evidence tier: tested); faucet (no benchmark ask, evidence tier: checked); client-status-pack (no benchmark ask, evidence tier: tested); connect-pack (no benchmark ask, evidence tier: tested); handoff-checklist (no benchmark ask, evidence tier: tested); ownership-pack (no benchmark ask, evidence tier: tested). New phrases: “credits” now opens faucet; “claim credits” now opens faucet; “faucet” now opens faucet; “status pack for onboarding” now opens client-status-pack; “client status for the invoice bot” now opens client-status-pack; “handoff status pack” now opens client-status-pack; “connect pack for client onboarding” now opens connect-pack; “what existing tools for invoice reminders” now opens connect-pack; “reuse tools for the support ticket router” now opens connect-pack; “handoff checklist for the onboarding automation” now opens handoff-checklist; “make a handoff checklist for invoice reminders” now opens handoff-checklist; “checklist to hand off the support router” now opens handoff-checklist. Did not route: ownership map for client onboarding; map ownership for invoice reminders; what does Verse own vs the client for support tickets; ownership pack for Acme.",
+  "try": "credits",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-07T21:42:12Z",
-    "try": "verify pack for client onboarding",
-    "closedAt": "2026-11-08T04:32:57Z"
+    "at": "2026-11-08T04:33:06Z",
+    "try": "monitor pack for client onboarding",
+    "closedAt": "2026-11-10T03:21:06Z"
   }
 }
