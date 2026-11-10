@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T04:16:45Z",
-  "passed": 48,
-  "of": 50,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
- },
- {
   "at": "2026-10-18T04:27:19Z",
   "passed": 41,
   "of": 51,
@@ -7718,6 +7711,24 @@
      "ask": "what time is it",
      "why": [
       "slow 11585 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T04:23:17Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 953,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11665 ms"
      ]
     }
    ]
