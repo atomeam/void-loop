@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T12:18:48.686Z",
+ "updated": "2026-11-10T12:28:10.849Z",
  "last24h": {
   "ticks": 146,
-  "started": 89,
+  "started": 88,
   "requeued": 1,
   "setAside": 2,
   "probes": 10,
@@ -64,6 +64,14 @@
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
+   "id": "mvbl52gd",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mvu167w7",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
    "id": "mvwl3d38",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
@@ -81,14 +89,6 @@
   },
   {
    "id": "mw1xyivk",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvxmzwi4",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvxmzx0f",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
   }
  ],
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw97n5l7": 1794227253962,
   "mw97n6dz": 1794228380151,
   "mw99zdn2": 1794230070603,
   "mw99zeo5": 1794230631223,
@@ -166,8 +165,8 @@
   "mwa8w50j": 1794288700838,
   "mwadd5ol": 1794297358319
  },
- "sweptAt": 1794309749286,
- "blueprintsAt": 1794309749286,
+ "sweptAt": 1794313690849,
+ "blueprintsAt": 1794313690849,
  "visitorAt": "2026-11-10T06:03:47Z",
  "visitorFiled": [
   "versus:speedtest.com.sg",
@@ -252,34 +251,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T12:27:33.962Z",
-   "open": 275,
-   "started": [
-    {
-     "id": "mw97n5l7",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 265,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T12:36:53.684Z",
    "open": 274,
@@ -3934,6 +3905,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 311,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T12:28:10.849Z",
+   "open": 319,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 313,
    "warnings": 1
   }
  ]
