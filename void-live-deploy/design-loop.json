@@ -249,6 +249,16 @@
    "listed": 6,
    "defectsBefore": 2,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-10T05:49:43.757Z",
+   "run": 30,
+   "measured": 30,
+   "clean": 26,
+   "fixed": 1,
+   "listed": 3,
+   "defectsBefore": 1,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -1505,29 +1515,18 @@
    "state": "clean"
   },
   "/lab/f606-webgpu-som-spatial-dom-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
-    "defects": 34,
-    "contrast": 31,
-    "targets": 2,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 2.371,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 30,
-    "contrast": 27,
+    "defects": 28,
+    "contrast": 25,
     "targets": 0,
     "unstyled": 2,
     "empty": 0,
-    "cls": 2.326,
+    "cls": 2.157,
     "overflow": 0
    },
-   "rules": 33,
-   "moved": 0.053,
-   "why": "(a layout shift of 2.371 that no rule fixes: listed for a builder)"
+   "state": "listed",
+   "why": "the defects did not go down (28 -> 31) (a layout shift of 2.157 that no rule fixes: listed for a builder)"
   },
   "/lab/f606-webrtc-sealed-genome-webgpu-swarm-mind/": {
    "at": "2026-11-09T22:03:10.588Z",
@@ -2117,15 +2116,15 @@
    "state": "clean"
   },
   "/lab/f596-webgpu-bandit-svg-path-dom-mind/": {
-   "at": "2026-11-07T23:56:38.875Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 2,
     "contrast": 0,
     "targets": 2,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.019,
-    "overflow": 0
+    "cls": 0.01,
+    "overflow": 12
    },
    "state": "listed",
    "why": "the defects did not go down (2 -> 2)"
@@ -2537,18 +2536,8 @@
    "state": "clean"
   },
   "/lab/f225-surprisal-strata/": {
-   "at": "2026-11-07T23:56:38.875Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
-    "defects": 1,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -2557,8 +2546,7 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/lab/f593-webgpu-gyro-audio-warp-lattice-mind/": {
    "at": "2026-11-07T23:56:38.875Z",
@@ -2587,7 +2575,7 @@
    "state": "clean"
   },
   "/lab/f404-resonance-seeking-agents/": {
-   "at": "2026-11-07T23:56:38.875Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2595,12 +2583,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 7
+    "overflow": 6
    },
    "state": "clean"
   },
   "/lab/f050-evolving-attention-lattice-mind/": {
-   "at": "2026-11-07T23:56:38.875Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2608,12 +2596,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 0
+    "overflow": 5
    },
    "state": "clean"
   },
   "/lab/f411-evolving-attention-lattice-mind/": {
-   "at": "2026-11-07T23:56:38.875Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2621,23 +2609,13 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 4
+    "overflow": 5
    },
    "state": "clean"
   },
   "/lab/f022-webgpu-thought-gravity/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
-    "defects": 1,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 48
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -2646,22 +2624,11 @@
     "cls": 0,
     "overflow": 48
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/lab/f403-webgpu-thought-gravity/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
-    "defects": 1,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 48
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -2670,11 +2637,10 @@
     "cls": 0,
     "overflow": 48
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/lab/f042-predictive-temporal-echo-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2687,7 +2653,7 @@
    "state": "clean"
   },
   "/lab/f410-predictive-temporal-echo-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2700,7 +2666,7 @@
    "state": "clean"
   },
   "/boards/rules/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2713,21 +2679,31 @@
    "state": "clean"
   },
   "/bots/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.37,
+    "cls": 0,
     "overflow": 0
    },
-   "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.37 that no rule fixes: listed for a builder)"
+   "rules": 1,
+   "moved": 0
   },
   "/flights/time/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2740,7 +2716,7 @@
    "state": "clean"
   },
   "/flights/trip/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2777,18 +2753,8 @@
    "moved": 0.053
   },
   "/lab/f237-spoken-fluid-intent/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
-    "defects": 2,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 2,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -2797,22 +2763,11 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.013
+   "state": "clean"
   },
   "/lab/frontier-webgpu-attention-field/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
-    "defects": 2,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 2,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -2821,11 +2776,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.026
+   "state": "clean"
   },
   "/lab/f559-webgpu-fft-hopfield-spatial-memory-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2838,7 +2792,7 @@
    "state": "clean"
   },
   "/lab/f181-webgpu-compute-genome-physics/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 3,
     "contrast": 0,
@@ -2852,7 +2806,7 @@
    "why": "the defects did not go down (3 -> 3)"
   },
   "/lab/f451-expression-tree-spatial-evo-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2860,7 +2814,7 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 509
+    "overflow": 0
    },
    "state": "clean"
   },
@@ -2878,7 +2832,7 @@
    "state": "clean"
   },
   "/lab/f568-webxr-hand-mlp-spatial-graph-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2891,7 +2845,7 @@
    "state": "clean"
   },
   "/lab/f570-spatial-attention-token-morph-opfs/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2904,7 +2858,7 @@
    "state": "clean"
   },
   "/lab/f037-resonant-voice-lattice-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2917,7 +2871,7 @@
    "state": "clean"
   },
   "/lab/f447-webgpu-lbm-evolved-swimmers-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2930,7 +2884,7 @@
    "state": "clean"
   },
   "/lab/f576-orientation-rnn-svg-ribbons-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2943,7 +2897,7 @@
    "state": "clean"
   },
   "/lab/f492-webxr-hand-constraint-mlp-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2956,7 +2910,7 @@
    "state": "clean"
   },
   "/lab/f232-webxr-hand-particle-genome-arena/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2969,7 +2923,7 @@
    "state": "clean"
   },
   "/lab/f565-adaptive-quadtree-spatial-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -2982,14 +2936,14 @@
    "state": "clean"
   },
   "/lab/f200-webxr-hand-rnn-dom-physics/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.094,
+    "cls": 0.09,
     "overflow": 0
    },
    "state": "clean"
@@ -3008,7 +2962,7 @@
    "state": "clean"
   },
   "/lab/f538-webxr-hand-tendril-sealed-genome-mind/": {
-   "at": "2026-11-08T00:50:29.789Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4645,14 +4599,14 @@
    "state": "clean"
   },
   "/compare/": {
-   "at": "2026-11-08T14:04:40.479Z",
+   "at": "2026-11-10T05:49:43.757Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.008,
+    "cls": 0.005,
     "overflow": 0
    },
    "state": "clean"
