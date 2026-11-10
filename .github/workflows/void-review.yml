@@ -207,7 +207,7 @@ jobs:
         run: gh workflow run automerge.yml --repo "$REPO" --ref main ${PR:+-f pr=$PR}
 
       - name: Offer the active builders a visitor job
-        if: github.event_name == 'pull_request' && github.head_ref == 'helper/redirect-builders'
+        if: always() && github.event_name == 'pull_request' && github.head_ref == 'helper/redirect-builders'
         continue-on-error: true
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}

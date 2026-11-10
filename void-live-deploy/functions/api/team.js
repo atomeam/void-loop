@@ -409,22 +409,26 @@ export async function sweep(env, now) {
   await offerBetter(env, now).catch(() => 0);
   return results.length;
 }
-/** a builder on a low-value job gets one Verse message in that job's thread pointing at visitor work. Once per job. */
+/** a builder on a low-value job gets one Verse message in that job's thread pointing at visitor work. At most four a sweep. */
 export async function offerBetter(env, now) {
   const since = now - 6 * 3600e3;
-  const { results: agents } = await env.DB.prepare('SELECT a.name, a.job, a.thread, q.ask, q.target, q.id FROM void_team_agents a JOIN void_queue q ON q.id = a.job WHERE a.job IS NOT NULL AND a.off = 0 AND a.crew = 0 AND a.seen >= ? AND a.thread > 0').bind(since).all();
+  const { results: agents } = await env.DB.prepare('SELECT a.name, a.job, a.thread, q.ask, q.target FROM void_team_agents a JOIN void_queue q ON q.id = a.job WHERE a.job IS NOT NULL AND a.off = 0 AND a.crew = 0 AND a.seen >= ? AND a.thread > 0').bind(since).all();
   const queued = (await env.DB.prepare("SELECT id, ask, target FROM void_queue WHERE state = 'queued' LIMIT 80").all()).results || [];
-  const taken = [];
-  let n = 0;
+  const taken = [], offers = [];
   for (const a of agents) {
     const better = T.redirectTo({ id: a.job, ask: a.ask, target: a.target }, queued, taken);
     if (!better) continue;
-    const mark = 'Better job ' + better.id;
-    if (await env.DB.prepare('SELECT id FROM void_team_msgs WHERE thread = ? AND body LIKE ? LIMIT 1').bind(a.thread, '%' + mark + '%').first()) continue;
-    const root = await env.DB.prepare('SELECT channel FROM void_team_msgs WHERE id = ? AND thread = 0').bind(a.thread).first();
-    if (!root) continue;
-    await write(env, { c: root.channel, by: 'verse', body: T.offerCard(a.name, { id: a.job }, better), thread: a.thread, now });
     taken.push(better.id);
+    offers.push({ a, better });
+    if (offers.length >= 4) break;
+  }
+  if (!offers.length) return 0;
+  const had = await Promise.all(offers.map((o) => env.DB.prepare('SELECT id FROM void_team_msgs WHERE thread = ? AND body LIKE ? LIMIT 1').bind(o.a.thread, '%Better job ' + o.better.id + '%').first()));
+  const roots = await Promise.all(offers.map((o) => env.DB.prepare('SELECT channel FROM void_team_msgs WHERE id = ? AND thread = 0').bind(o.a.thread).first()));
+  let n = 0;
+  for (let i = 0; i < offers.length; i++) {
+    if (had[i] || !roots[i]) continue;
+    await write(env, { c: roots[i].channel, by: 'verse', body: T.offerCard(offers[i].a.name, { id: offers[i].a.job }, offers[i].better), thread: offers[i].a.thread, now }); // void-review: ok (at most 4 offers, one write each)
     n++;
   }
   return n;
