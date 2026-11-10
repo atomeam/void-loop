@@ -571,9 +571,12 @@ async function prTitles(env, nums, now) {
     for (const r of results || []) out[String(r.k).slice(9)] = r.v;
   } catch (_) { /* no cache yet: the titles are fetched below */ }
   const missing = nums.filter((n) => !out[n]);
+  const headers = { 'user-agent': 'Verse-team', accept: 'application/vnd.github+json' };
+  const token = env.GITHUB_TOKEN || env.GH_TOKEN;
+  if (token) headers.authorization = 'Bearer ' + token; // Cloudflare's shared addresses get 403 from GitHub without it
   const got = await Promise.all(missing.map(async (n) => {
     try {
-      const r = await fetch('https://api.github.com/repos/atomeam/void-loop/pulls/' + n, { headers: { 'user-agent': 'Verse-team', accept: 'application/vnd.github+json' }, signal: AbortSignal.timeout(5000) });
+      const r = await fetch('https://api.github.com/repos/atomeam/void-loop/pulls/' + n, { headers, signal: AbortSignal.timeout(5000) });
       if (!r.ok) return [n, ''];
       const j = await r.json();
       return [n, String(j && j.title || '').slice(0, 300)];
