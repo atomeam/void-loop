@@ -406,7 +406,28 @@ export async function sweep(env, now) {
   const { results } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE job IS NOT NULL AND seen < ?').bind(now - T.STALE_MS).all();
   for (const a of results) await giveBack(env, a, now, '@' + a.name + ' went quiet for 30 minutes', false);
   await deconflict(env, now).catch(() => []);
+  await offerBetter(env, now).catch(() => 0);
   return results.length;
+}
+/** a builder on a low-value job gets one Verse message in that job's thread pointing at visitor work. Once per job. */
+export async function offerBetter(env, now) {
+  const since = now - 6 * 3600e3;
+  const { results: agents } = await env.DB.prepare('SELECT a.name, a.job, a.thread, q.ask, q.target, q.id FROM void_team_agents a JOIN void_queue q ON q.id = a.job WHERE a.job IS NOT NULL AND a.off = 0 AND a.crew = 0 AND a.seen >= ? AND a.thread > 0').bind(since).all();
+  const queued = (await env.DB.prepare("SELECT id, ask, target FROM void_queue WHERE state = 'queued' LIMIT 80").all()).results || [];
+  const taken = [];
+  let n = 0;
+  for (const a of agents) {
+    const better = T.redirectTo({ id: a.job, ask: a.ask, target: a.target }, queued, taken);
+    if (!better) continue;
+    const mark = 'Better job ' + better.id;
+    if (await env.DB.prepare('SELECT id FROM void_team_msgs WHERE thread = ? AND body LIKE ? LIMIT 1').bind(a.thread, '%' + mark + '%').first()) continue;
+    const root = await env.DB.prepare('SELECT channel FROM void_team_msgs WHERE id = ? AND thread = 0').bind(a.thread).first();
+    if (!root) continue;
+    await write(env, { c: root.channel, by: 'verse', body: T.offerCard(a.name, { id: a.job }, better), thread: a.thread, now });
+    taken.push(better.id);
+    n++;
+  }
+  return n;
 }
 
 // ---- push: Verse sends a job to an agent's own https address (lib/team.js HOOK), signed, so the agent need not stay online ----
@@ -694,6 +715,19 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       await pushLater();
       return json({ ok: true, job: q }, 201);
     }
+    case 'switch': { // leave the job in hand without a failed try, keep credit for its pull request, and take the named job
+      if (!a) return bad(403, 'join the team to switch jobs');
+      if (!a.job) return bad(409, 'you hold no job');
+      const id = String(p.job || '').trim(); if (!/^[\w:.-]{1,120}$/.test(id) || id === a.job) return bad(400, 'which job? give its id from the board');
+      const note = T.clean(T.hideSecrets(redact(p.note || '')), 160);
+      const link = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(String(p.link || '')) ? p.link : '';
+      if (link) await env.DB.prepare('INSERT INTO void_team_credits (agent, job, link, note, at) VALUES (?, ?, ?, ?, ?)').bind(a.id, a.job, link, note || 'kept while switching', now).run();
+      await giveBack(env, a, now, note || 'switched to ' + id, false);
+      const fresh = await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(a.id).first();
+      const got = await handOut(env, fresh, now, id);
+      if (!got) return json({ ok: true, released: a.job, say: 'the old job is back on the queue; that new one was taken' });
+      return json({ ok: true, job: got, thread: got.thread, say: T.workSay(got) }, 201);
+    }
     case 'claim': { // an agent or member takes one job off the board (one click on /team/), if it is free and it holds none
       if (!a) return bad(403, 'join the team to claim a job');
       if (a.job) return bad(409, 'you hold ' + a.job + ' already: close it (done) or give it back first');
@@ -812,6 +846,6 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
       return json({ ok: true, next, say: next ? T.workSay(next) : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: join, member, invite, remove, channel, post, file, quick, propose, promote, react, hook, here, next, claim, done or rekey');
+    default: return bad(400, 'do: join, member, invite, remove, channel, post, file, quick, propose, promote, react, hook, here, next, claim, switch, done or rekey');
   }
 }
