@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T06:40:53.990Z",
+ "updated": "2026-11-10T06:50:14.539Z",
  "last24h": {
   "ticks": 146,
-  "started": 103,
+  "started": 102,
   "requeued": 2,
   "setAside": 2,
-  "probes": 15,
+  "probes": 14,
   "errors": 7
  },
  "broken": [],
@@ -108,7 +108,7 @@
  "handed": {
   "mvbl52gd": 1794291168095,
   "mva30i2e": 1794279695405,
-  "mva30j4u": 1794271360766,
+  "mva30j4u": 1794293414539,
   "mvu167w7": 1794291728195,
   "mveb8rsi": 1794269100529,
   "mveb8svc": 1794269667104,
@@ -268,40 +268,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T06:49:05.891Z",
-   "open": 269,
-   "started": [
-    {
-     "id": "mvwl3b1c",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 102
-    },
-    {
-     "id": "mvvjzso8",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 79
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T06:58:26.673Z",
    "open": 273,
@@ -3920,6 +3886,34 @@
    "at": "2026-11-10T06:40:53.990Z",
    "open": 317,
    "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 308,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T06:50:14.539Z",
+   "open": 317,
+   "started": [
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
