@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T06:45:07Z",
-  "passed": 59,
-  "of": 59,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"fly around\" (skill:fly)"
- },
- {
   "at": "2026-10-18T06:59:10Z",
   "passed": 57,
   "of": 60,
@@ -7803,6 +7796,24 @@
      "ask": "what can you do",
      "why": [
       "slow 8855 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T16:36:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1180,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9306 ms"
      ]
     }
    ]
