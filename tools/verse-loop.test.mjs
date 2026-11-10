@@ -125,6 +125,7 @@ test('brains: Verse\'s is propose-fix for a probe and verse-coder for the rest; 
   assert.throws(() => agentCommand('cmd', pf, { env: {} }), /VERSE_LOOP_AGENT_CMD/);
   const pr = buildPrompt({ task: { kind: 'fix', check: 'alpha', cmd: 'x', output: 'boom' }, tagteam: 'T', gates: 'G' });
   assert.match(pr, /never by weakening the test/); assert.match(pr, /assimilated/); assert.match(pr, /boom/);
+  assert.match(pr, /void-live-deploy\/skills\/order\/<rank>-<name>/); assert.match(pr, /index\.json is generated: never edit it/);
 });
 
 test('dry run, green: the fake brain takes NEXT item 2 and the lap would ship, with nothing committed or pushed', async () => {

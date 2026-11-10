@@ -1,6 +1,7 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
  "counted": 1227,
+ "counted": 1232,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -11,9 +12,9 @@
   },
   {
    "file": "lib/ask-text.js",
-   "skills": 35,
+   "skills": 36,
    "direct": 23,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 3
   },
   {
@@ -46,23 +47,26 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 26,
+   "skills": 27,
    "direct": 0,
    "dependants": 95,
+   "dependants": 96,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 26,
+   "skills": 27,
    "direct": 1,
    "dependants": 95,
+   "dependants": 96,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 26,
+   "skills": 27,
    "direct": 0,
    "dependants": 94,
+   "dependants": 95,
    "tests": 6
   },
   {
@@ -123,16 +127,18 @@
   },
   {
    "file": "lib/reactions.js",
-   "skills": 18,
+   "skills": 19,
    "direct": 1,
    "dependants": 77,
+   "dependants": 78,
    "tests": 1
   },
   {
    "file": "lib/corrections.js",
-   "skills": 17,
+   "skills": 18,
    "direct": 0,
    "dependants": 63,
+   "dependants": 64,
    "tests": 3
   },
   {
@@ -140,6 +146,9 @@
    "skills": 17,
    "direct": 5,
    "dependants": 59,
+   "skills": 18,
+   "direct": 6,
+   "dependants": 60,
    "tests": 6
   },
   {
@@ -367,6 +376,13 @@
    "tests": 4
   },
   {
+   "file": "lib/success-pulse.js",
+   "skills": 8,
+   "direct": 2,
+   "dependants": 11,
+   "tests": 2
+  },
+  {
    "file": "lib/bridges.js",
    "skills": 8,
    "direct": 4,
@@ -409,13 +425,6 @@
    "tests": 4
   },
   {
-   "file": "lib/success-pulse.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 10,
-   "tests": 2
-  },
-  {
    "file": "lib/stage-find.js",
    "skills": 7,
    "direct": 4,
@@ -428,6 +437,13 @@
    "direct": 1,
    "dependants": 14,
    "tests": 7
+  },
+  {
+   "file": "lib/selfcheck.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 9,
+   "tests": 1
   },
   {
    "file": "lib/match-history.js",
@@ -501,13 +517,6 @@
   },
   {
    "file": "lib/card-forge.js",
-   "skills": 5,
-   "direct": 1,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/selfcheck.js",
    "skills": 5,
    "direct": 1,
    "dependants": 8,
@@ -1039,6 +1048,13 @@
    "tests": 2
   },
   {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 43,
+   "tests": 4
+  },
+  {
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
@@ -1046,11 +1062,11 @@
    "tests": 3
   },
   {
-   "file": "lib/gumroad.js",
+   "file": "lib/store-db.js",
    "skills": 2,
-   "direct": 1,
+   "direct": 0,
    "dependants": 40,
-   "tests": 4
+   "tests": 3
   },
   {
    "file": "lib/pay-share.js",
@@ -1058,13 +1074,6 @@
    "direct": 0,
    "dependants": 37,
    "tests": 1
-  },
-  {
-   "file": "lib/store-db.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 37,
-   "tests": 3
   },
   {
    "file": "lib/markets.js",
@@ -1165,6 +1174,13 @@
    "tests": 5
   },
   {
+   "file": "lib/prizes.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
    "file": "lib/recipes.js",
    "skills": 2,
    "direct": 1,
@@ -1212,13 +1228,6 @@
    "direct": 2,
    "dependants": 3,
    "tests": 1
-  },
-  {
-   "file": "lib/prizes.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/rentbuy.js",
@@ -1459,6 +1468,13 @@
    "tests": 1
   },
   {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 3
+  },
+  {
    "file": "lib/brain-atlas.js",
    "skills": 1,
    "direct": 0,
@@ -1618,13 +1634,6 @@
    "direct": 1,
    "dependants": 9,
    "tests": 1
-  },
-  {
-   "file": "lib/boards.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 2
   },
   {
    "file": "lib/noise.js",
@@ -2449,36 +2458,43 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 104,
+   "dependants": 107,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 103,
+   "dependants": 106,
    "tests": 36
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 65,
+   "dependants": 68,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 65,
+   "dependants": 68,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 64,
-   "tests": 9
+   "dependants": 67,
+   "tests": 10
+  },
+  {
+   "file": "lib/earnings.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 54,
+   "tests": 0
   },
   {
    "file": "lib/code-review.js",
@@ -2486,13 +2502,6 @@
    "direct": 0,
    "dependants": 51,
    "tests": 5
-  },
-  {
-   "file": "lib/earnings.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 51,
-   "tests": 0
   },
   {
    "file": "lib/review-api.js",
@@ -2971,6 +2980,14 @@
    "tests": 1
   },
   {
+   "file": "lib/churn.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/credits.js",
    "file": "lib/daily-art.js",
    "skills": 0,
    "direct": 0,
@@ -4237,6 +4254,18 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/comments.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/credits/claim.js": {
+   "imports": [
+    "lib/credits.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/credits/latest.js": {
+   "imports": [
+    "lib/credits.js"
    ],
    "importedBy": []
   },
@@ -5760,6 +5789,7 @@
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
+    "skills/client-status-pack.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
@@ -5884,6 +5914,7 @@
    "reachedBy": [
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
+    "skills/client-status-pack.js",
     "skills/codex.js",
     "skills/constellation-weaver.js",
     "skills/dates.js",
@@ -6131,6 +6162,7 @@
    ],
    "importedBy": [
     "lib/fix-audit.js",
+    "skills/client-status-pack.js",
     "skills/error-garden.js",
     "skills/growth.js",
     "skills/incident-autopsy.js",
@@ -6333,9 +6365,12 @@
    "importedBy": [
     "functions/api/boards/[[path]].js",
     "functions/boards/t/[[path]].js",
+    "lib/credits.js",
     "lib/fanfic.js"
    ],
    "reachedBy": [
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/fanfic-hits.js",
     "functions/fanfic/rss.js",
     "skills/fanfic.js"
@@ -7977,6 +8012,7 @@
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
+    "skills/client-status-pack.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
@@ -8001,6 +8037,20 @@
    ],
    "importedBy": [
     "skills/veto-council.js"
+   ]
+  },
+  "lib/credits.js": {
+   "imports": [
+    "lib/prizes.js",
+    "lib/earnings.js",
+    "lib/store-db.js",
+    "lib/void-me.js",
+    "lib/guard.js",
+    "lib/boards.js"
+   ],
+   "importedBy": [
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js"
    ]
   },
   "lib/cssmin.js": {
@@ -8254,6 +8304,7 @@
     "functions/api/gumroad.js",
     "functions/api/store/[[path]].js",
     "functions/api/will.js",
+    "lib/credits.js",
     "lib/router.js"
    ],
    "reachedBy": [
@@ -8267,6 +8318,8 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/feed.js",
@@ -9152,6 +9205,7 @@
     "functions/c/[clip].js",
     "functions/team/_middleware.js",
     "lib/automations-run.js",
+    "lib/credits.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
     "lib/void-me.js"
@@ -9163,6 +9217,8 @@
     "functions/api/apibot.js",
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/feed.js",
     "functions/api/film-review.js",
@@ -9292,6 +9348,8 @@
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/earnings.js",
     "functions/api/film-review.js",
@@ -9318,6 +9376,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
+    "lib/credits.js",
     "lib/paid-access.js",
     "lib/products.js",
     "lib/team-crew-run.js",
@@ -9841,6 +9900,7 @@
     "lib/wiki-look.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
+    "skills/client-status-pack.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
@@ -10629,6 +10689,7 @@
     "lib/wiki-look.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
+    "skills/client-status-pack.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/error-garden.js",
@@ -11394,6 +11455,8 @@
     "functions/api/clip.js",
     "functions/api/coder.js",
     "functions/api/comments.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/earnings.js",
@@ -11474,6 +11537,7 @@
     "functions/team/mcp.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
+    "lib/credits.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js",
@@ -11526,6 +11590,8 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/feed.js",
@@ -11574,6 +11640,7 @@
     "functions/team/mcp.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
+    "lib/credits.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js"
@@ -12110,9 +12177,12 @@
   "lib/prizes.js": {
    "imports": [],
    "importedBy": [
+    "lib/credits.js",
     "lib/handoff.js"
    ],
    "reachedBy": [
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "skills/agent-fluid-memory-orbs.js",
     "skills/mind-field.js"
    ]
@@ -12684,6 +12754,7 @@
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
+    "skills/client-status-pack.js",
     "skills/coin.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
@@ -13298,6 +13369,7 @@
    "reachedBy": [
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
+    "skills/client-status-pack.js",
     "skills/own-parts.js",
     "skills/status-board.js",
     "skills/system-status.js",
@@ -14144,12 +14216,15 @@
     "functions/api/gumroad.js",
     "functions/api/miss.js",
     "functions/api/treasury.js",
+    "lib/credits.js",
     "lib/products.js"
    ],
    "reachedBy": [
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -14402,6 +14477,7 @@
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
     "skills/about-skill.js",
+    "skills/client-status-pack.js",
     "skills/own-parts.js",
     "skills/status-board.js",
     "skills/system-status.js",
@@ -15464,6 +15540,7 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/watch.js",
+    "lib/credits.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
    ],
@@ -15479,6 +15556,8 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/feed.js",
@@ -15702,6 +15781,8 @@
     "functions/api/blueprint.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
+    "functions/api/credits/claim.js",
+    "functions/api/credits/latest.js",
     "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/feed.js",
@@ -15750,6 +15831,7 @@
     "functions/team/mcp.js",
     "lib/automations-run.js",
     "lib/bench-asks.js",
+    "lib/credits.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
     "lib/team-crew-run.js"
@@ -16383,6 +16465,19 @@
    ],
    "importedBy": []
   },
+  "skills/client-intake.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/client-status-pack.js": {
+   "imports": [
+    "lib/autopsy.js",
+    "skills/status.js",
+    "skills/system-status.js",
+    "skills/systems-monitor.js"
+   ],
+   "importedBy": []
+  },
   "skills/clock.js": {
    "imports": [],
    "importedBy": [
@@ -16922,6 +17017,10 @@
    "importedBy": []
   },
   "skills/fantasy.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/faucet.js": {
    "imports": [],
    "importedBy": []
   },
@@ -19652,6 +19751,7 @@
    ],
    "importedBy": [
     "lib/brain-host.js",
+    "skills/client-status-pack.js",
     "skills/own-parts.js",
     "skills/status-board.js",
     "skills/system-status.js"
@@ -19783,12 +19883,15 @@
     "skills/status.js"
    ],
    "importedBy": [
+    "skills/client-status-pack.js",
     "skills/status-board.js"
    ]
   },
   "skills/systems-monitor.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/client-status-pack.js"
+   ]
   },
   "skills/tab.js": {
    "imports": [

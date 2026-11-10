@@ -612,82 +612,65 @@
   {
    "at": "2026-11-10T00:08:10Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
    "at": "2026-11-10T00:07:58Z",
    "subject": "Verse's will: today's three wants (domains/void.will.md)"
-  },
-  {
    "at": "2026-11-10T00:07:24Z",
    "subject": "Site test: visitor pass 14/15"
-  },
-  {
    "at": "2026-11-10T00:00:41Z",
    "subject": "fix: keep a phone answer card one column wide (#2615)"
-  },
-  {
    "at": "2026-11-09T23:53:12Z",
    "subject": "Shorts loop: today's trial and verdicts"
-  },
-  {
    "at": "2026-11-09T23:53:05Z",
    "subject": "Note the self card on the handoff."
-  },
-  {
-   "at": "2026-11-09T23:53:05Z",
    "subject": "Read the self card from the public score files."
-  },
-  {
-   "at": "2026-11-09T23:53:05Z",
    "subject": "Add a continuous self-model that journals the scores it actually reads."
-  },
-  {
    "at": "2026-11-09T23:52:15Z",
    "subject": "Outcome exam: sports 89.8"
-  },
-  {
    "at": "2026-11-09T23:39:56Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
    "at": "2026-11-09T23:29:30Z",
    "subject": "Verse routes \"riddle me this: what has keys but no locks\" to its riddle skill the answer is not checked"
-  },
-  {
    "at": "2026-11-09T23:25:57Z",
    "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
    "at": "2026-11-09T23:19:48Z",
-   "subject": "Outcome exam: sports 89.8"
-  },
-  {
    "at": "2026-11-09T23:13:38Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
    "at": "2026-11-09T23:13:19Z",
    "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
    "at": "2026-11-09T23:08:21Z",
    "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
-  },
-  {
    "at": "2026-11-09T23:06:08Z",
    "subject": "Incident: the browser suite failed on 1e75c723 (void-live-deploy/incidents.json)"
-  },
-  {
    "at": "2026-11-09T23:05:03Z",
    "subject": "Tower sweep: the smallest home pages found in the next slice of the million"
-  },
-  {
    "at": "2026-11-09T22:52:59Z",
    "subject": "Verse routes \"suggest a sci-fi movie\" to its media-pick skill the answer is not checked"
+   "at": "2026-11-10T01:04:33Z",
+   "subject": "Add client-intake skill: capture and clarify business ideas into owned systems so Verse takes the heavy lifting (#2609)"
+   "at": "2026-11-10T01:02:49Z",
+   "subject": "Read the client status pack from the live status sources (#2605)"
+   "at": "2026-11-10T00:54:38Z",
+   "subject": "Verse routes \"top 10 sci fi movies\" to its media-pick skill the answer is not checked"
+   "at": "2026-11-10T00:47:33Z",
+   "subject": "Outcome exam: definitions 90"
+   "at": "2026-11-10T00:34:35Z",
+   "at": "2026-11-10T00:20:55Z",
+   "subject": "Outcome exam: sports 88.9"
+   "at": "2026-11-10T00:19:41Z",
+   "subject": "Failed jobs read: run 42724974824 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-10T00:19:25Z",
+   "subject": "Incident: the browser suite failed on 5e9e11d5 (void-live-deploy/incidents.json)"
+   "at": "2026-11-10T00:12:37Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-09T23:33:27Z",
+   "subject": "Give the credits card its own place in the routing order."
+   "subject": "Add an internal credits faucet on the prize wheel."
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Phone answer cards stay one column wide, and a flicked clock stays on the…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2615. Two open cards on a phone were about 180px wide, so the Words and the world ratings row scrolled sideways and the film poster failed the same squeeze. A crowd that includes an…"
+   },
    {
     "name": "suite-on-main: kept cards were the first .vpage, so sky chips, review and draw…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2578."
@@ -867,6 +850,8 @@
  "visible": {
   "day": 2,
   "week": 301
+  "day": 5,
+  "week": 303
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

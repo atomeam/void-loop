@@ -41,7 +41,7 @@ export const SURFACES = [
 
 // where each kind of lap item lives (tools/lap-items.mjs inventory): the files a will job touches, by the item's group
 const ITEM_FILES = Object.freeze({
-  skill: (n) => ['void-live-deploy/skills/' + n + '.js', 'tools/' + n + '.test.mjs'],
+  skill: (n) => ['void-live-deploy/skills/' + n + '.js', 'void-live-deploy/skills/order/*-' + n, 'tools/' + n + '.test.mjs'],
   tool: (n) => ['tools/' + n, 'tools/' + n.replace(/\.\w+$/, '') + '.test.mjs'],
   doc: (n) => ['docs/' + n],
   plan: (n) => ['domains/' + n],
@@ -69,7 +69,7 @@ export function willSpec(job, skills = []) {
   return [
     'Target: ' + group + ':' + name + ', an item of Verse itself that its will chose to make better this lap.',
     'What to build: first use it the way a person would (open the page, ask the skill, run the tool) and list what is weak or missing; then fix the weakest thing on that list. One item, one change, one pull request: never try to overhaul the whole surface in one run, the next lap takes the next thing. Add, never take away: no skill, test, page or example is removed or renamed. This is the spec, so do not give it back for lack of one.',
-    'Files to touch: ' + files.join('; ') + '; and a node:test file in tools/ for what you change.',
+    'Files to touch: ' + files.join('; ') + '; and a node:test file in tools/ for what you change. Never edit void-live-deploy/skills/index.json: it is generated from void-live-deploy/skills/order/.',
     'Measured by: ' + (before ? before[1] + ' (node tools/lap-items.mjs prints the facts now). Ship when one rises and none falls.' : 'the facts node tools/lap-items.mjs prints for ' + group + ':' + name + '. Ship when one rises and none falls.'),
     'Verify: node --test on the test files you touched; VOID_SKIP_BENCH=1 node tools/checks.mjs --changed; node tools/skills-check.mjs when a skill changed; after the deploy, ask https://a-to-mind.com/ the skill\'s first example once and read the answer.',
   ].join('\n');
