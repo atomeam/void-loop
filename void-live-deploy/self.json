@@ -630,70 +630,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-10T02:17:22Z",
-   "subject": "The paint page is a colouring book: original pictures, a white numbered sheet, and a finished reveal."
-  },
-  {
-   "at": "2026-11-10T02:16:44Z",
-   "subject": "Fix verse-coder miss listing when ripgrep is missing (watchdog fast red on main) (#2635)"
-  },
-  {
-   "at": "2026-11-10T02:16:21Z",
-   "subject": "build: the loop takes the next simplest site (#2634)"
-  },
-  {
-   "at": "2026-11-10T02:16:00Z",
-   "subject": "Merge every open pull request without a human approval (#2636)"
-  },
-  {
-   "at": "2026-11-10T02:11:33Z",
-   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-10T02:02:07Z",
-   "subject": "Failed jobs read: run 42739225315 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T02:01:35Z",
-   "subject": "Board: helper/least-tower-0b57 shipped (https://github.com/atomeam/void-loop/pull/2627)"
-  },
-  {
-   "at": "2026-11-10T02:01:04Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-11-10T02:00:25Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-11-10T01:59:27Z",
-   "subject": "The Tower lists only finished sites (#2627)"
-  },
-  {
-   "at": "2026-11-10T01:59:21Z",
-   "subject": "Failed jobs read: run 42737121743 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:59:02Z",
-   "subject": "fix: ask Verse's own model before a change ships (#2630)"
-  },
-  {
-   "at": "2026-11-10T01:58:21Z",
-   "subject": "Incident: the browser suite failed on 790c2938 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-10T01:58:07Z",
-   "subject": "Merge remote-tracking branch 'origin/main' into helper/fix-main-red-reuse (#2631)"
-  },
-  {
-   "at": "2026-11-10T01:57:38Z",
-   "subject": "Failed jobs read: run 42738937552 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:55:59Z",
-   "subject": "reuse-pack: match the documented \"what can we reuse\" ask (#2629)"
-  },
-  {
    "at": "2026-11-10T01:53:46Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
@@ -708,14 +644,74 @@
   {
    "at": "2026-11-10T01:51:15Z",
    "subject": "Failed jobs read: run 42737938041 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:48:40Z",
+   "subject": "chore: leave generated files for the deploy to write"
+  },
+  {
+   "at": "2026-11-10T01:48:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-10T01:48:40Z",
+   "subject": "build: list only finished sites on the Tower"
+  },
+  {
+   "at": "2026-11-10T01:44:39Z",
+   "subject": "Verse loop: fix guard-source (#2625)"
+  },
+  {
+   "at": "2026-11-10T01:41:52Z",
+   "subject": "Outcome exam: sports 87.9"
+  },
+  {
+   "at": "2026-11-10T01:41:12Z",
+   "subject": "Failed jobs read: run 42737121389 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:37:39Z",
+   "subject": "void-test: regenerate skills/index.json before self-context (#2626)"
+  },
+  {
+   "at": "2026-11-10T01:34:41Z",
+   "subject": "Failed jobs read: run 42736265108 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:34:01Z",
+   "subject": "Failed jobs read: run 42736264914 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:30:29Z",
+   "subject": "Fix tools/families.mjs: drop orphaned self-family lines after merge (#2624)"
+  },
+  {
+   "at": "2026-11-10T01:26:46Z",
+   "subject": "Failed jobs read: run 42734968225 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:26:18Z",
+   "subject": "Failed jobs read: run 42734968439 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:25:23Z",
+   "subject": "Failed jobs read: run 42733858309 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:24:33Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-10T01:23:33Z",
+   "subject": "Failed jobs read: run 42732882416 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T01:23:19Z",
+   "subject": "Failed jobs read: run 42733858292 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
   "finished": [
-   {
-    "name": "the Tower lists only sites Verse can actually do, each with a history page…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2627."
-   },
    {
     "name": "before Verse ships its own change, a free model asks whether a person would…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2628."
@@ -735,6 +731,10 @@
    {
     "name": "Lists run 14 (took over #2561, opened as 'run 15'; main's red /journal/…",
     "line": "the a-to-mind.com outage (empty 404s on /tools.json, /api/ and /?q= after bot pushes, 2026-11-07 20:00 UTC on) was Cloudflare Pages Git builds publishing the repo root with no Functions over production…"
+   },
+   {
+    "name": "The Tower drops a rival whose page was removed: a 200 access-refusal stub is…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2516. oneyeard.com stood the Tower on \"Sorry, This Page Can't Be Accessed\" (a 200 served to everyone, smallest-first brought it to the front); tools/tower-alive.mjs now reads a 2xx…"
    }
   ],
   "ladders": [
@@ -889,8 +889,8 @@
   }
  ],
  "visible": {
-  "day": 14,
-  "week": 311
+  "day": 12,
+  "week": 309
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
