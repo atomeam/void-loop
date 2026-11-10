@@ -230,5 +230,11 @@
       "expected": "one visible feature shipped by someone other than Verse",
       "metric": "visible"
     }
+  ],
+  "snapshots": [
+    {
+      "at": "2026-11-09",
+      "realized_cents": 0
+    }
   ]
 }

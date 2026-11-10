@@ -39,5 +39,6 @@ test('a branch opens only when it is on main, small and shares no file with anot
   assert.deepEqual(refusals({ behind: 0, files: ['tools/x.mjs'], numstat: '400\t0\ttools/x.mjs', prs: [] }), []);
   const [hot] = refusals({ behind: 0, files: ['void-live-deploy/functions/api/team.js'], numstat: '3\t1\tvoid-live-deploy/functions/api/team.js', prs });
   assert.match(hot, /open PR #7 .* also changes void-live-deploy\/functions\/api\/team\.js/);
+  assert.deepEqual(refusals({ behind: 0, files: ['tools/families.mjs'], numstat: '1\t1\ttools/families.mjs', prs: [{ number: 5, title: 'other skill', files: ['tools/families.mjs'] }] }), [], 'a one-line family addition is settled on merge, so two skill PRs may both touch it');
   assert.deepEqual(refusals({ behind: 0, files: ['void-live-deploy/functions/api/team.js'], numstat: '3\t1\tx', prs: null }), [], 'no PR list (offline): the overlap is not judged');
 });

@@ -24,3 +24,4 @@ site-test-shots/
 void-live-deploy/tower.evidence.[0-9]*.json
 .paint-src/
 void-live-deploy/autopilot/snapshot.json
+tools/.art-text-scan/

@@ -1,15 +1,101 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 114,
+ "cases": 115,
  "runsTotal": 300,
  "kinds": {
-  "grow": 73,
   "file": 49,
-  "visitor": 174,
+  "grow": 65,
+  "visitor": 182,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-10T00:19:12Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T23:52:09Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T23:24:31Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T22:59:18Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T22:27:59Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T22:14:28Z",
+   "passed": 111,
+   "of": 116,
+   "kind": "grow",
+   "ms": 409,
+   "note": "new ground passed, kept as a regression case: \"how do i magnetize this?\" (skill:magnetize)",
+   "failed": [
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "bokos like dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "drag friction",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "fimls by kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "geenrate a toon style dog",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-09T22:03:34Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-09T21:35:54Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T21:10:20Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-09T20:42:38Z",
    "passed": 0,
@@ -210,200 +296,80 @@
      "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-09T17:16:32Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T16:48:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T16:36:16Z",
-   "passed": 111,
-   "of": 114,
-   "kind": "file",
-   "ms": 396,
-   "note": "fix: \"play voidquest\" fps 6 < 7",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T16:25:40Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T15:57:10Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T15:44:57Z",
-   "passed": 109,
-   "of": 113,
-   "kind": "grow",
-   "ms": 326,
-   "note": "new ground passed, kept as a regression case: \"how much is my watch worth\" (skill:appraise)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T15:34:38Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T15:19:59Z",
-   "passed": 107,
-   "of": 112,
-   "kind": "grow",
-   "ms": 330,
-   "note": "new ground passed, kept as a regression case: \"already built\" (skill:inventory)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "redner a cartoon dragon",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "yo style like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T15:10:07Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-17",
+   "from": "2026-08-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-24",
+   "from": "2026-08-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-31",
+   "from": "2026-09-01",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-07",
+   "from": "2026-09-08",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-14",
+   "from": "2026-09-15",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-21",
+   "from": "2026-09-22",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-28",
+   "from": "2026-09-29",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-05",
+   "from": "2026-10-06",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-12",
-   "runs": 44,
-   "passed": 2231,
-   "of": 2452
+   "from": "2026-10-13",
+   "runs": 35,
+   "passed": 1918,
+   "of": 2101
   },
   {
-   "from": "2026-10-19",
+   "from": "2026-10-20",
    "runs": 2,
    "passed": 134,
    "of": 153
   },
   {
-   "from": "2026-10-26",
+   "from": "2026-10-27",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-02",
-   "runs": 254,
-   "passed": 6027,
-   "of": 7888,
+   "from": "2026-11-03",
+   "runs": 263,
+   "passed": 6138,
+   "of": 8004,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -476,8 +442,8 @@
   "skill:loan": "2026-11-09T18:45:49Z",
   "skill:local-inference": "2026-11-09T19:12:26Z",
   "skill:lock": "2026-11-09T19:12:26Z",
-  "skill:magnetize": "2026-10-17T10:04:20Z",
-  "skill:make": "2026-10-17T10:04:20Z",
+  "skill:magnetize": "2026-11-09T22:14:28Z",
+  "skill:make": "2026-11-09T22:14:28Z",
   "skill:markets": "2026-10-17T10:10:51Z",
   "skill:memory": "2026-10-17T10:10:51Z",
   "skill:moon": "2026-10-17T10:10:51Z",

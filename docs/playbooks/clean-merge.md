@@ -23,4 +23,4 @@ What starts it: you are about to open a pull request, or a pull request is sitti
 
 - Committing `skills/index.json`, `families.json`, `guide.json`, `deps.json`, `sitemap.xml` or `tower.evidence.json` in the pull request. Two of those always conflict. Take the file out; the deploy writes it.
 - Slowing a schedule to avoid a conflict. The bots ship as often as they do. The conflict was the shared file, not the pace.
-- Editing `domains/handoff.md` in the same lines another agent is editing. Add one line, or leave the board to them.
+- Editing `domains/handoff.md` in the same lines another agent is editing. Add one line, or leave the board to them. One new line is enough to run the `handoff-scan` check, because the file is named handoff. That check fails when `docs/HANDOFF-GAPS.md` is behind the pages. Refresh it in the same pull request with `node tools/handoff-scan.mjs --write`.
