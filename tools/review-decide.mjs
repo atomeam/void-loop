@@ -5,15 +5,16 @@
 //   node tools/review-decide.mjs --review fail --why "void-review found a risk"
 
 /** @returns {{ action: 'merge' | 'fix' | 'hold', why: string }} */
-export function decide({ review = true, gate = true, exam = true, spend = false, outbound = false, why = '' } = {}) {
+export function decide({ review = true, gate = true, exam = true, useful = true, spend = false, outbound = false, why = '', usefulWhy = '' } = {}) {
   if (spend) return { action: 'hold', why: 'spending money waits on the confirm line' };
   if (outbound) return { action: 'hold', why: 'a message sent to someone outside waits on the confirm line' };
   const bad = [];
   if (!review) bad.push('Verse review found a bug or a risk');
   if (!gate) bad.push('the merge gate failed');
   if (!exam) bad.push(why || 'the outcome exam regressed');
+  if (!useful) bad.push(usefulWhy || 'a normal person would not see this as real and useful');
   if (bad.length) return { action: 'fix', why: bad.join('; ') };
-  return { action: 'merge', why: 'the review passed, the merge gate passed, and the outcome exam did not regress' };
+  return { action: 'merge', why: 'the review passed, the merge gate passed, the outcome exam did not regress, and the change reads as real and useful' };
 }
 
 function flag(name) {
@@ -30,6 +31,8 @@ if (process.argv[1] && process.argv[1].endsWith('review-decide.mjs')) {
     spend: flag('--spend') === 'yes',
     outbound: flag('--outbound') === 'yes',
     why: flag('--why'),
+    useful: on(flag('--useful') || 'ok'),
+    usefulWhy: flag('--useful-why'),
   });
   console.log('Verdict: ' + d.action + '. ' + d.why);
   process.exit(d.action === 'fix' ? 1 : 0);

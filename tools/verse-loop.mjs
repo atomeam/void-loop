@@ -20,6 +20,7 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
+import { judgeDiff } from './judgment.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -112,6 +113,7 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
   return [
     'You are working on Verse (the atomeam/void-loop repo) as one lap of the Verse loop (tools/verse-loop.mjs). Do exactly one item, then stop.',
     'Rules: fix bugs, never weaken, skip or delete a test. No secrets or keys in any file. Do not commit, push or open a PR yourself: the loop does that.',
+    'A normal person must see the change as real and useful: no invented jargon, no fake numbers, no filler. Green checks are not enough. The loop judges the diff and sends it back if it fails.',
     'A floor counts as "assimilated" only with end-to-end journey evidence (say "assimilated", never "parity"). Small sites first, easiest first.',
     'Every new page declares its handoff types. No new inline scripts (CSP). Nothing is removed, only evolved. Every new tool or workflow gets a line in docs/MAP.md.',
     '',
@@ -344,7 +346,7 @@ function sh(cmd, args, opts = {}) {
 
 /** One lap. Returns a report; an ordinary red, a no-op, a refusal or a pause is an outcome, not a throw. Before the lap: the pause
  *  (skip, or resume by itself after PAUSE_HOURS) and the PRs earlier laps opened. After: the streak, and a pause at BACKOFF_AFTER. */
-export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now() } = {}) {
+export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now(), judge = judgeDiff } = {}) {
   const git = (...a) => sh('git', a, { cwd, env });
   const gh = (...a) => sh(env.VERSE_LOOP_GH || 'gh', a, { cwd, env });
   const ghJson = (...a) => { const r = gh(...a); if (r.code) return null; try { return JSON.parse(r.out); } catch { return null; } };
@@ -481,6 +483,27 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       }
     };
 
+    // green checks are not enough: the free model judges the diff. A no is sent back once, then the tree is put back.
+    const hold = async (before, task) => {
+      const g = gate(before, task);
+      if (g.stop) return g;
+      const diffOf = () => { git('add', '-A'); const d = git('diff', '--cached').out; git('reset', '-q'); return d; };
+      const ask = (diff) => judge(diff, { env, cwd, task: task.text || task.check || task.kind });
+      let j = await ask(diffOf());
+      report.judgment = j;
+      if (j.pass) { step('judgment: ' + j.why); return g; }
+      step('sent back: ' + j.why);
+      const ar = brain({ kind: 'next', n: null, text: 'Sent back before shipping. ' + j.why + '\nFix the change so a normal person would see it as real and useful. No invented jargon, no fake numbers, no filler.' });
+      if (ar.error && ar.error.code === 'ENOENT') return { stop: done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)') };
+      if (opts.agent === 'verse' && ar.code) { git('reset', '--hard', 'HEAD'); git('clean', '-fd'); return { stop: done('rejected', 'sent back, and the fix did not run') }; }
+      const g2 = gate(before, task);
+      if (g2.stop) return g2;
+      j = await ask(diffOf());
+      report.judgment = j;
+      if (!j.pass) { git('reset', '--hard', 'HEAD'); git('clean', '-fd'); return { stop: done('rejected', 'sent back, and the fix still failed: ' + j.why) }; }
+      step('the fix held: ' + j.why);
+      return g2;
+    };
     // self-heal first: an open loop/* PR with a failed check is fixed on its own branch, and the lap does nothing else
     const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup,createdAt', '--limit', '100') || [];
     const sick = failedLoopPr(open, state.heals || {});
@@ -498,7 +521,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       const ar = brain(task);
       if (ar.error && ar.error.code === 'ENOENT') return done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)');
       if (opts.agent === 'verse' && ar.code) return coderStop(ar);
-      const g = gate(before, task);
+      const g = await hold(before, task);
       if (g.stop) return g.stop;
       const title = `Verse loop: heal ${sick.branch} (${task.check})`.slice(0, 120);
       if (opts.dryRun) return done('would-heal', g.v.why + ' (dry run: no commit or push)', { title });
@@ -584,7 +607,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       } else if (ar.code) step('the brain exited ' + ar.code + ' (its changes, if any, still face the checks)');
     }
 
-    const g = gate(before, task);
+    const g = await hold(before, task);
     if (g.stop) return g.stop;
     const v = g.v;
     if (isMemberTask(task)) { // owner, 2026-10-29: paid members "only add positive improvements"; enforced here, before any commit
@@ -611,7 +634,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     step('pushed ' + branch);
     const what = task.kind === 'fix' ? 'fix the first red check, `' + task.check + '`' : task.kind === 'groom' ? 're-rank Verse\'s queue in docs/NEXT.md (easiest first)'
       : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ', confidence ' + probe.confidence + ')' : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task');
-    const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${what}\n\nChecks after: ${v.why}. Merges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
+    const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${what}\n\nChecks after: ${v.why}.\nJudgment: ${(report.judgment && report.judgment.why) || 'not recorded'}.\nMerges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
     // no human in the loop: every PR the loop opens is labelled automerge (a low-confidence probe patch was dropped above)
     report.label = 'automerge';
     const pr = gh('pr', 'create', '--base', opts.base, '--head', branch, '--title', title, '--body', body, '--label', 'automerge');

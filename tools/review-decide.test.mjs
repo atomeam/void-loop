@@ -23,6 +23,12 @@ test('a failed review becomes one fix job and a verdict line', () => {
   assert.match(verdictComment('merge', 'clean'), /Verdict: merge\. clean/);
 });
 
+test('a change a person would not find useful is sent back, even when the checks passed', () => {
+  const d = decide({ review: true, gate: true, exam: true, useful: false, usefulWhy: 'it is a tally with nothing to use' });
+  assert.equal(d.action, 'fix');
+  assert.match(d.why, /tally with nothing to use/);
+});
+
 test('only spending money or a message to someone outside waits on a person', () => {
   assert.equal(decide({ spend: true }).action, 'hold');
   assert.match(decide({ spend: true }).why, /confirm line/);
