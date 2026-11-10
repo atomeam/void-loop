@@ -1,21 +1,14 @@
 {
-  "at": "2026-11-10T17:36:24.621Z",
+  "at": "2026-11-10T19:46:20.530Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 96.1,
+      "score": 96.9,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play a video about cooking pasta",
-          "failed": [
-            "topic"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the trailer",
           "failed": [
@@ -41,23 +34,74 @@
       }
     },
     "podcasts": {
-      "score": 93.7,
+      "score": 81.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the daily",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of serial",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
           "ask": "play the latest episode of planet money",
           "failed": [
-            "audio"
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of hardcore history",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
+        },
+        {
+          "ask": "play the latest episode of the ted radio hour",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
         },
         {
           "ask": "play the latest episode of hidden brain",
           "failed": [
-            "audio"
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
         },
         {
           "ask": "play the episode before that",
@@ -249,10 +293,52 @@
       }
     },
     "sports": {
-      "score": 96.3,
+      "score": 90.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "nfl scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mlb scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "premier league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "serie a scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "champions league scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "mls scores",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
         {
           "ask": "scores",
           "failed": [
@@ -337,10 +423,17 @@
       "fails": []
     },
     "definitions": {
-      "score": 90,
+      "score": 86.7,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "define spring",
+          "failed": [
+            "fast"
+          ],
+          "score": 80
+        },
         {
           "ask": "etymology of salary",
           "failed": [
@@ -372,7 +465,7 @@
     }
   },
   "lowest": {
-    "domain": "definitions",
-    "score": 90
+    "domain": "podcasts",
+    "score": 81.7
   }
 }
