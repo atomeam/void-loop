@@ -31,10 +31,11 @@ export function coast(s) {
   return { x: Math.round(x), y: Math.round(y), off: false, frames };
 }
 
-function grid(group, W, H) {
+function grid(group, W, H, floor) {
   const gap = 10, edge = 8, aw = W - edge * 2, ah = H - edge * 2, n = group.length, moves = {};
   if (!n) return moves;
-  const minW = Math.min(148, aw);
+  // 148px is enough for a stage thing. floor is a wider minimum (an answer card on a phone): half a phone is narrower than the card's own row.
+  const minW = Math.min(Math.max(148, +floor || 0), aw);
   let cols = 1;
   while (cols < n && (aw - cols * gap) / (cols + 1) >= minW) cols++;
   const rows = Math.ceil(n / cols);
@@ -47,7 +48,7 @@ function grid(group, W, H) {
   return moves;
 }
 
-export function tidy(cards, area) {
+export function tidy(cards, area, floor) {
   const gap = 10, edge = 8;
   const list = (cards || []).filter((c) => c && c.id != null && c.w > 0 && c.h > 0);
   const W = Math.max(0, +(area && area.w) || 0), H = Math.max(0, +(area && area.h) || 0);
@@ -56,11 +57,11 @@ export function tidy(cards, area) {
   const pins = list.filter((c) => c.pinned);
   const pinned = pins.filter(inside);
   const bad = pinned.length !== pins.length || pinned.some((a, i) => pinned.slice(i + 1).some((b) => hit(a, b, gap)));
-  if (!pinned.length || bad) return grid(list, W, H);
+  if (!pinned.length || bad) return grid(list, W, H, floor);
   const free = list.filter((c) => !c.pinned);
   if (!free.length) return {};
-  const slots = Object.values(grid(list, W, H)).filter((s) => !pinned.some((p) => hit(s, p, gap)));
-  if (slots.length < free.length) return grid(list, W, H);
+  const slots = Object.values(grid(list, W, H, floor)).filter((s) => !pinned.some((p) => hit(s, p, gap)));
+  if (slots.length < free.length) return grid(list, W, H, floor);
   const moves = {};
   free.forEach((c, i) => { moves[c.id] = slots[i]; });
   return moves;

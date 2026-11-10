@@ -239,6 +239,16 @@
    "listed": 3,
    "defectsBefore": 6,
    "defectsAfter": 3
+  },
+  {
+   "at": "2026-11-10T00:06:47.605Z",
+   "run": 27,
+   "measured": 30,
+   "clean": 23,
+   "fixed": 1,
+   "listed": 6,
+   "defectsBefore": 2,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -1273,28 +1283,28 @@
    "state": "clean"
   },
   "/lab/f315-webgpu-softbody-policy-dom-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 2,
     "contrast": 0,
     "targets": 2,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.091,
-    "overflow": 36
+    "cls": 0.083,
+    "overflow": 0
    },
    "state": "listed",
    "why": "the defects did not go down (2 -> 2)"
   },
   "/lab/169-local-felt-not-attest/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.002,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
@@ -1313,7 +1323,7 @@
    "state": "clean"
   },
   "/lab/f293-orientation-hybrid-dom-mlp-persistence/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 2,
     "contrast": 0,
@@ -1405,10 +1415,10 @@
    "state": "clean"
   },
   "/lab/f598-broadcast-sealed-rnn-orientation-dom-swarm/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
-    "defects": 2,
-    "contrast": 2,
+    "defects": 3,
+    "contrast": 3,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
@@ -1416,7 +1426,7 @@
     "overflow": 0
    },
    "state": "listed",
-   "why": "the defects did not go down (2 -> 2)"
+   "why": "the defects did not go down (3 -> 3)"
   },
   "/lab/160-local-span-not-clock/": {
    "at": "2026-11-07T10:32:29.633Z",
@@ -1533,7 +1543,7 @@
    "state": "clean"
   },
   "/lab/f605-webxr-hand-mlp-pbd-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1546,7 +1556,7 @@
    "state": "clean"
   },
   "/lab/f590-webgpu-sph-elman-rnn-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1559,7 +1569,7 @@
    "state": "clean"
   },
   "/lab/f540-webgpu-self-attention-vortex-dom-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 4,
     "contrast": 0,
@@ -1567,7 +1577,7 @@
     "unstyled": 2,
     "empty": 0,
     "cls": 0,
-    "overflow": 473
+    "overflow": 474
    },
    "state": "listed",
    "why": "it made the page scroll sideways"
@@ -1587,7 +1597,7 @@
    "why": "no rule fixes it"
   },
   "/lab/f586-webgpu-sandpile-local-evo-avalanche-dom-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1595,25 +1605,25 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 1143
+    "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f571-peer-spatial-consensus-morph/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.086,
+    "cls": 0.085,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f543-orientation-rnn-sealed-dom-agents/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1626,21 +1636,21 @@
    "state": "clean"
   },
   "/lab/f595-orientation-decision-tree-clippath-swarm/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 5,
     "contrast": 5,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.003,
-    "overflow": 22
+    "cls": 0.002,
+    "overflow": 19
    },
    "state": "listed",
    "why": "the defects did not go down (5 -> 6)"
   },
   "/lab/f589-webgpu-attention-token-spatial-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1648,12 +1658,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 0
+    "overflow": 93
    },
    "state": "clean"
   },
   "/lab/f558-webxr-gaze-electrostatic-svg-genome/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1666,7 +1676,7 @@
    "state": "clean"
   },
   "/lab/f495-webgpu-ising-orient-domain-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1679,20 +1689,20 @@
    "state": "clean"
   },
   "/lab/f497-webgpu-echo-state-living-dom-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.085,
+    "cls": 0.05,
     "overflow": 8
    },
    "state": "clean"
   },
   "/lab/f600-indexeddb-causal-mlp-orbital-dom-swarm/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 2,
     "contrast": 0,
@@ -1702,11 +1712,21 @@
     "cls": 0,
     "overflow": 0
    },
-   "state": "listed",
-   "why": "it made the page scroll sideways"
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.004
   },
   "/lab/f581-webgpu-lbm-attention-portal-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1719,7 +1739,7 @@
    "state": "clean"
   },
   "/lab/f319-webgpu-orient-advection-mlp-probes/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1732,7 +1752,7 @@
    "state": "clean"
   },
   "/lab/f211-webxr-hand-rnn-dom-curators/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1745,14 +1765,14 @@
    "state": "clean"
   },
   "/lab/f033-vector-field-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.001,
     "overflow": 4
    },
    "state": "clean"
@@ -1771,7 +1791,7 @@
    "state": "clean"
   },
   "/lab/f025-webgpu-boids-rl-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1784,34 +1804,34 @@
    "state": "clean"
   },
   "/lab/f590-orientation-evo-cssgrid-agents-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 3,
     "contrast": 0,
     "targets": 2,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.231,
-    "overflow": 8
+    "cls": 0.223,
+    "overflow": 41
    },
    "state": "listed",
-   "why": "it made the page scroll sideways (a layout shift of 0.231 that no rule fixes: listed for a builder)"
+   "why": "it made the page scroll sideways (a layout shift of 0.223 that no rule fixes: listed for a builder)"
   },
   "/lab/f223-webgpu-neural-kernel-competition/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.002,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f204-webgpu-softbody-rnn-swarm-audio/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -1824,7 +1844,7 @@
    "state": "clean"
   },
   "/lab/f036-local-evolving-nca-mind/": {
-   "at": "2026-11-07T16:57:29.255Z",
+   "at": "2026-11-10T00:06:47.605Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9191,6 +9211,71 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f416-webgpu-sonified-thought-field/": {
+   "at": "2026-11-10T00:06:47.605Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f300-webgpu-nca-spatial-memory-mind/": {
+   "at": "2026-11-10T00:06:47.605Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f443-webgpu-nca-spatial-memory-mind/": {
+   "at": "2026-11-10T00:06:47.605Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f042-predictive-audio-particle-mind/": {
+   "at": "2026-11-10T00:06:47.605Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 5
+   },
+   "state": "clean"
+  },
+  "/lab/f642-orientation-reservoir-lattice-portals/": {
+   "at": "2026-11-10T00:06:47.605Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.041,
     "overflow": 0
    },
    "state": "clean"

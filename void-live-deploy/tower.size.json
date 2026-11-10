@@ -10404,6 +10404,20 @@
    "weight": 950359,
    "at": "2026-10-29"
   },
+  "rightarion.ru": {
+   "bytes": 409128,
+   "controls": 22,
+   "scripts": 2,
+   "styles": 3,
+   "nodes": 38,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3773,
+   "shell": "none",
+   "weight": 413508,
+   "at": "2026-11-09"
+  },
   "rnz.co.nz": {
    "bytes": 3608856,
    "controls": 334,
@@ -11610,6 +11624,10 @@
    "shell": "none",
    "weight": 1206270,
    "at": "2026-10-30"
+  },
+  "studiowaterarts.com": {
+   "refused": true,
+   "at": "2026-11-09"
   },
   "sudowrite.com": {
    "bytes": 731725,

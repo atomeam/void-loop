@@ -9,6 +9,21 @@ function areaOf() {
   const top = row ? row.getBoundingClientRect().top : innerHeight - 90;
   return { w: innerWidth, h: Math.max(100, top - 12) };
 }
+// the box the page actually paints (the shadow included) stays on the stage. A frame that only
+// clamps the border box still leaves the shadow across the screen edge, and a slow slide is read
+// before the last frame.
+function tuck(el) {
+  const area = areaOf(), r = el.getBoundingClientRect();
+  let dx = 0, dy = 0;
+  if (r.left < 1) dx = 1 - r.left;
+  if (r.right + dx > area.w - 1) dx += area.w - 1 - (r.right + dx);
+  if (r.top < 1) dy = 1 - r.top;
+  if (r.bottom + dy > area.h - 1) dy += area.h - 1 - (r.bottom + dy);
+  if (!dx && !dy) return null;
+  const x = Math.round((parseFloat(el.style.left) || 0) + dx), y = Math.round((parseFloat(el.style.top) || 0) + dy);
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+  return { x, y };
+}
 export function glide(el, th, land) {
   if (!el || !land || land.off) return;
   const frames = land.frames && land.frames.length > 1 ? land.frames : [{ x: land.x, y: land.y }];
@@ -19,10 +34,12 @@ export function glide(el, th, land) {
     if (!el.isConnected) return;
     const f = frames[Math.min(i, frames.length - 1)];
     el.style.left = Math.round(f.x) + 'px'; el.style.top = Math.round(f.y) + 'px';
-    if (th) { th.x = Math.round(f.x); th.y = Math.round(f.y); }
+    const held = tuck(el);
+    if (th) { th.x = held ? held.x : Math.round(f.x); th.y = held ? held.y : Math.round(f.y); }
     if (++i < frames.length) { requestAnimationFrame(step); return; }
     el.style.left = land.x + 'px'; el.style.top = land.y + 'px'; el.classList.remove('tossing');
-    if (th) { th.x = land.x; th.y = land.y; th.pinned = true; }
+    const rest = tuck(el);
+    if (th) { th.x = rest ? rest.x : land.x; th.y = rest ? rest.y : land.y; th.pinned = true; }
     try { api && api.save && api.save(); } catch (_) {}
   };
   requestAnimationFrame(step);
@@ -64,7 +81,10 @@ function put(els, area) {
     const th = el.dataset.id && bag[el.dataset.id];
     return { id: el.dataset.id || el.dataset.cardId, el, x: r.left, y: r.top, w: Math.max(40, r.width), h: Math.max(40, r.height), pinned: el.dataset.pinned === '1' || !!(th && th.pinned) };
   });
-  const moves = tidy(cards, area);
+  // a phone (the card's own narrow breakpoint, 520px) keeps an answer card one column wide. Two columns there are ~180px,
+  // and the card's row (four ratings, a film poster) is wider than that, so the page scrolls sideways.
+  const floor = els.some((el) => el.classList && el.classList.contains('vpage')) && area.w <= 520 ? area.w : 0;
+  const moves = tidy(cards, area, floor);
   for (const c of cards) {
     const m = moves[c.id]; if (!m) continue;
     const el = c.el, fixed = el.classList.contains('vpage');
