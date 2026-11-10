@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { eligible, superseded, stuckDecision, isBot, loopCovers, fileContained } from './merge-policy.mjs';
+import { eligible, superseded, stuckDecision, isBot, loopCovers, fileContained, mainVerifyHold } from './merge-policy.mjs';
 import { explainPolicyFailure } from './merge-gate.mjs';
 
 const pr = (over) => ({ number: 1, state: 'open', user: { login: 'atomeam' }, head: { ref: 'helper/x', repo: { full_name: 'atomeam/void-loop' } }, labels: [], created_at: '2026-11-03T00:00:00Z', ...over });
@@ -185,7 +185,55 @@ test('a suite gate result sweeps, and an idle run on main never replaces the wai
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
   const group = yml.match(/^\s*group: (.+)$/m)[1];
-  assert.match(group, /head_branch == 'main' && github\.event\.workflow_run\.name != 'Suite on main' && format\('idle-\{0\}', github\.run_id\)\) \|\| 'sweep'/);
+  assert.match(group, /head_branch == 'main' && github\.event\.workflow_run\.name != 'Suite on main' && github\.event\.workflow_run\.name != 'Verse verify' && format\('idle-\{0\}', github\.run_id\)\) \|\| 'sweep'/);
   assert.match(yml, /if: .*github\.event\.workflow_run\.name == 'Suite on main'/);
-  assert.match(src, /wr\.name !== 'Suite on main' && !\(wr\.pull_requests/);
+  assert.match(yml, /github\.event\.workflow_run\.name == 'Verse verify'/);
+  assert.match(src, /wr\.name !== 'Suite on main' && wr\.name !== 'Verse verify' && !\(wr\.pull_requests/);
+});
+
+test('a red Verse verify on the current main head blocks automerge, and a green one does not', () => {
+  const fail = (headSha, committedAt, extra = {}) => ({ headSha, status: 'completed', conclusion: 'failure', committedAt, covers: true, updatedAt: '2026-11-09T21:30:40Z', url: 'https://github.com/atomeam/void-loop/actions/runs/42697922754', ...extra });
+  const ok = (headSha, committedAt) => ({ headSha, status: 'completed', conclusion: 'success', committedAt, covers: true, updatedAt: '2026-11-09T19:17:20Z' });
+  // 2026-11-09 21:43 UTC: #2574 merged onto f474c754d. That head had no verify of its own. The newest
+  // finished verify that covers it was bd18dbef, failure, completed 21:30. The suite gate had passed
+  // because inherited reds do not fail a batch. The merge should have waited.
+  const ontoRedAncestor = mainVerifyHold([
+    ok('a841e248d57d31a1922aa3902b9500d7e0bf6fdf', 1000),
+    fail('bd18dbef95a0656d147a15e8e162d80699ee181b', 2000),
+    { headSha: 'f474c754d', status: 'in_progress', conclusion: null, committedAt: 3000, covers: true },
+  ], 'f474c754d');
+  assert.equal(ontoRedAncestor.hold, true);
+  assert.equal(ontoRedAncestor.rule, 'main-verify-red');
+  assert.equal(ontoRedAncestor.file, '.github/workflows/verify.yml');
+  assert.match(ontoRedAncestor.hint, /green on the current main head/);
+  assert.match(ontoRedAncestor.hint, /bd18dbef/);
+  // 22:49 UTC: #2590 through #2603 merged while verify on the then-current head d619471 had already finished red.
+  const ontoRedHead = mainVerifyHold([fail('d61947130e2671b44ea09571d0c6f154c11361b8', 4000)], 'd61947130e2671b44ea09571d0c6f154c11361b8');
+  assert.equal(ontoRedHead.hold, true);
+  assert.match(ontoRedHead.hint, /d61947130/);
+  // a green verify on the current head lets Verse merge itself, even when an older head was red
+  const green = mainVerifyHold([
+    fail('bd18dbef95a0656d147a15e8e162d80699ee181b', 2000),
+    ok('9d8fcd5c1184d3a3a906ddb5a07f384b6d998586', 5000),
+  ], '9d8fcd5c1184d3a3a906ddb5a07f384b6d998586');
+  assert.equal(green.hold, false, 'file .github/workflows/verify.yml is green on this head, so automerge is not blocked');
+  // a slow failure that finishes after a newer green head does not hold: the newer commit is the verdict
+  const newerGreen = mainVerifyHold([
+    { ...fail('oldred', 1000), updatedAt: '2026-11-09T23:00:00Z' },
+    { ...ok('newgreen', 2000), updatedAt: '2026-11-09T22:00:00Z' },
+  ], 'newgreen');
+  assert.equal(newerGreen.hold, false);
+  // a reverted commit's red verify does not cover this head
+  assert.equal(mainVerifyHold([
+    { headSha: 'reverted', status: 'completed', conclusion: 'failure', committedAt: 9000, covers: false },
+    ok('main', 3000),
+  ], 'main').hold, false);
+  assert.equal(mainVerifyHold([{ headSha: 'abc', status: 'completed', conclusion: 'cancelled', covers: true, committedAt: 1 }], 'abc').hold, false);
+  assert.equal(mainVerifyHold([], 'abc').hold, false);
+  const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
+  assert.match(src, /mainVerifyHold\(runs, mainSha\)/, 'file tools/automerge.mjs reads Verse verify before it merges');
+  assert.match(src, /verifyHold\.hold && \(choice\.action === 'merge' \|\| choice\.action === 'queue'\)/, 'file tools/automerge.mjs does not merge or queue a suite while main verify is red');
+  assert.match(src, /rule: ' \+ verifyHold\.rule/);
+  assert.match(src, /file: ' \+ verifyHold\.file/);
+  assert.match(src, /fix: ' \+ verifyHold\.hint/);
 });

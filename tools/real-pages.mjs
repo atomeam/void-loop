@@ -94,6 +94,13 @@ export const SPECS = {
     const c = await t.waitText('#counts', /skill modules/, 10000); t.ok(/\d{3}/.test(c), 'the skill count is read from /skills/index.json: ' + c.slice(0, 60));
     const f = await t.waitText('#files', /llms\.txt/, 10000); t.ok(/\/llms\.txt\s*200/.test(f) && /\/agents\.txt\s*200/.test(f), 'every machine file answers 200: ' + f.slice(0, 80));
   },
+  '/self/': async (t) => { // journal cites a suite that the metric list also names
+    const j = await t.waitText('#journal', /not a proof of consciousness/, 8000);
+    const suite = (j.match(/tools\/[a-z0-9.-]+\.mjs/) || [])[0];
+    const metrics = await t.text('#metrics');
+    t.ok(!!suite && metrics.includes(suite) && /void\.better\.json/.test(metrics) && /tools\/better\.test\.mjs/.test(metrics), j.slice(0, 160));
+    t.ok(/not measured/.test(await t.text('#drives')) && /confirm line/.test(await t.text('#holds')), 'a missing drive says so, and a send still stops on the confirm line');
+  },
   '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
     await t.waitText('h1', /What Verse can actually do/, 8000);
     await t.waitText('#fixed', /No regression|Regressed|did not load/, 8000);

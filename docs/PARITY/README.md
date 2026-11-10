@@ -118,9 +118,9 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /random/people/ | An account that keeps your things on every device | partial | randomuser.me |
 | 1 | /markets/caps/ | An account that keeps your things on every device | partial | companiesmarketcap.com |
 | 1 | /markets/screener/ | An account that keeps your things on every device | partial | finviz.com |
-| 1 | /prizes/ | An account that keeps your things on every device | partial | wheelofgold.com |
 | 1 | /stopwatch/ | An account that keeps your things on every device | partial | online-stopwatch.com |
 | 1 | /scores/sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
+| 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |

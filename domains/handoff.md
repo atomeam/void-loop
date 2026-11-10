@@ -15,7 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-
+- Cursor cloud agent · helper/credits-faucet-e39c · internal credits faucet on /prizes/, ledger in the store · 2026-11-09 23:30 UTC
+- Cursor cloud agent · helper/main-verify-hold-2347 · a red Verse verify on the current main head blocks automerge; a green one still lets Verse merge itself · 2026-11-09 23:30 UTC
 - Cursor cloud agent · helper/systems-monitor-79be · systems monitor reads /api/status, and the hear card escapes titles again · 2026-11-05 15:45 UTC
 - Cursor cloud agent · helper/verse-runs-79be · Verse's fifteen automations, the growth-inbox block parser, and the numbers-family proof · 2026-11-05 15:40 UTC
 - Cursor cloud agent · helper/idea-protocol-79be · Idea-to-System protocol (system-blueprint), client handoff card, and system handoff, from Grok's unmerged branch and the missing system-handoff title · 2026-11-05 15:20 UTC
@@ -490,3 +491,4 @@ Plan for the hypothetical $100 (docs/reinvest.md, public list prices only): keep
 - 2026-11-06 (claude, trading bots): /trading-bots/ (hub, one page per bot, /trading-bots/arbitrage/) and the kit people run themselves; paid backtest and arbitrage calls over x402 through the wallet thread's one paid-call route (functions/api/x402/[service].js), their work in lib/trading-paid.js. Data: trading-bots-data.yml commits /trading-bots/data/ daily and starts the deploy. Next: more pairs, a strategy page per pair.
 - **Phone answer cards stay one column wide, and a flicked clock stays on the phone (Cursor cloud agent, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2615. Two open cards on a phone were about 180px wide, so the Words and the world ratings row scrolled sideways and the film poster failed the same squeeze. A crowd that includes an answer card uses one column at 520px and under. A 56px clock with seconds meets the screen edge, so the face draws smaller until it fits and a slide tucks the painted box back onto the stage.
 - **a flick still slides a card, and answer cards stay one column wide at 520px (Cursor cloud agent, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2621. A crowd with an answer card uses one column at 520px or narrower. A card that holds a clip keeps its transform, and left and top move so the picture sits in the slot. A placed card stays unless the stage runs out of room.
+- **Continuous self-model (cursor, 2026-11-09)**: /self/ journals the asks part from void.better.json and names tools/better.test.mjs. Care stays unmeasured. The will adds expected value only after a live or done outcome. https://github.com/atomeam/void-loop/pull/2620

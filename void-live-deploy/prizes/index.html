@@ -231,8 +231,32 @@
     <p class="say" id="say" aria-live="polite"></p>
   </section>
 
+  <section class="card" aria-labelledby="h-credits">
+    <h2 id="h-credits">Internal credits</h2>
+    <p class="note">Credits are for using Verse: a daily claim, a tool the site serves, an answered bug report, or a help-build idea that merged. They buy a recorded extra-answer allowance, a private skill slot, or a higher personal cap. No crypto and no ads. The wheel above stays a calculator. This section pays internal credits only, not money.</p>
+    <p id="credit-bal">Reading your balance…</p>
+    <div class="row">
+      <button type="button" class="go" id="credit-daily">Claim daily credit</button>
+      <button type="button" id="credit-answer">Buy extra answers</button>
+      <button type="button" id="credit-skill">Buy a skill slot</button>
+      <button type="button" id="credit-cap">Raise today's cap</button>
+    </div>
+    <div class="row">
+      <label><span>Tool, report or idea</span><input id="credit-ref" aria-label="Tool, answered report id, or shipped idea id" autocomplete="off"></label>
+      <button type="button" id="credit-tool">Claim tool</button>
+      <button type="button" id="credit-bug">Claim report</button>
+      <button type="button" id="credit-build">Claim build</button>
+    </div>
+    <div id="credit-check"></div>
+    <p class="say" id="credit-say" role="status"></p>
+    <p id="credit-live" style="min-height:3em">Reading the ledger…</p>
+    <div id="credit-odds" style="min-height:3em"></div>
+    <h3>Latest claims</h3>
+    <ul id="credit-feed" aria-label="Latest credit claims"></ul>
+  </section>
+
   <footer>
-    <p>This page only does the arithmetic. It never pays out, takes a payment or holds anything; every number is worked out in your browser and nothing is sent anywhere. A slice that pays more than it costs on average is rare: when the expected value per spin is below the cost, the house keeps the difference over time.</p>
+    <p>The wheel, the odds and the drip are arithmetic in your browser. This page never pays out money, takes a payment, or holds a payment. The credits section pays internal credits only, not money. A slice whose expected value per spin is below its cost loses on average.</p>
     <nav class="siblings" aria-label="Use together with">
       <a href="/wheel/">Wheel of names</a>
       <a href="/random/">Random number</a>
@@ -403,6 +427,45 @@
     sendLink(document, '/prizes/', { label: 'Seed a tournament roster', empty, go: () => { const l = labels(); return l.length ? { href: tournamentsLink(l), data: l, name: 'prize slices' } : null; } }));
   mountPill($('slices').previousElementSibling, '/prizes/', (h) => { st.slices = textOfHandoff(h); $('slices').value = st.slices; commit(); say('Pasted from ' + h.fromPage + '. Plain names count as value 1, weight 1; edit them to set prizes.'); });
   mountStrip(document.querySelector('main > footer'), '/prizes/');
+  const meTok = () => { try { return (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } };
+  const pow = async (ch, bits) => { const enc = new TextEncoder(); for (let n = 0; ; n++) { const h = new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(ch + ':' + n))); let z = 0; for (const x of h) { if (x === 0) { z += 8; continue; } z += Math.clz32(x) - 24; break; } if (z >= bits) return String(n); } };
+  let tsToken = '', tsCfg = null;
+  async function loadCredits() {
+    let cfg = null; try { cfg = await (await fetch('/api/credits/latest', { cache: 'no-store' })).json(); } catch (_) {}
+    const live = $('credit-live'), feed = $('credit-feed'), oddsEl = $('credit-odds'), bal = $('credit-bal');
+    if (!cfg || !cfg.ok) { live.textContent = 'The ledger could not be read.'; return null; }
+    tsCfg = cfg;
+    const days = Number.isFinite(Date.parse(cfg.since)) ? Math.max(0, Math.floor((Date.now() - Date.parse(cfg.since)) / 864e5)) : null;
+    live.textContent = 'Claims recorded: ' + cfg.claims + '. Credits issued: ' + cfg.issued + '. Credits left to issue: ' + cfg.left + '.' + (days != null ? ' Odds have been on this page since ' + cfg.since.slice(0, 10) + ' (' + days + ' days).' : '');
+    feed.replaceChildren();
+    for (const row of cfg.feed || []) { const li = document.createElement('li'); li.textContent = row.name + ' · ' + row.kind + ' · ' + (row.amount > 0 ? '+' : '') + row.amount; feed.append(li); }
+    if (!(cfg.feed || []).length) { const li = document.createElement('li'); li.textContent = 'No claims yet.'; feed.append(li); }
+    oddsEl.replaceChildren();
+    if (!cfg.odds) oddsEl.textContent = 'No claims yet, so there are no claim odds to show.';
+    else { const p = document.createElement('p'); p.textContent = 'Claim odds from ' + cfg.claims + ' ledger rows. Expected credits a claim: ' + Number(cfg.odds.ev).toFixed(3) + '.'; oddsEl.append(p); for (const row of cfg.odds.rows) { const d = document.createElement('div'); d.textContent = row.label + ': weight ' + row.weight + ', ' + (row.p * 100).toFixed(1) + '%, ' + row.value + ' credits'; oddsEl.append(d); } }
+    const t = meTok();
+    if (!t) bal.textContent = 'Sign in on the stage to see your balance.';
+    else { const me = await fetch('/api/credits/claim', { headers: { authorization: 'Bearer ' + t }, cache: 'no-store' }).then((r) => r.json()).catch(() => null); bal.textContent = me && me.ok ? 'Balance: ' + me.balance + '. Next daily claim: ' + (me.nextDaily || 'now') + '. Extra answers held: ' + me.grants.answers + '. Skill slots: ' + me.grants.skills + '. Cap raises: ' + me.grants.caps + '.' : 'Your balance could not be read.'; }
+    if (cfg.turnstile && !document.getElementById('credit-ts')) { const box = $('credit-check'); box.id = 'credit-ts'; const s = document.createElement('script'); s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'; s.async = true; s.onload = () => { window.turnstile.render(box, { sitekey: cfg.turnstile, callback: (tok) => { tsToken = tok; } }); }; document.head.append(s); }
+    return cfg;
+  }
+  async function claimCredit(body) {
+    const say = $('credit-say'), cfg = tsCfg || await loadCredits();
+    if (!meTok()) { say.textContent = 'Sign in on the stage first. A claim is tied to your account.'; return; }
+    if (!cfg) { say.textContent = 'The ledger could not be read.'; return; }
+    say.textContent = 'Checking…';
+    let proof; if (cfg.turnstile) { if (!tsToken) { say.textContent = 'Finish the check above first.'; return; } proof = { turnstile: tsToken }; tsToken = ''; } else proof = { challenge: cfg.challenge, work: await pow(cfg.challenge, cfg.bits) };
+    const r = await fetch('/api/credits/claim', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + meTok() }, body: JSON.stringify({ ...body, ...proof }) });
+    const j = await r.json().catch(() => ({}));
+    say.textContent = j.error || (j.ok ? 'Recorded. Balance ' + j.balance + '.' : 'The claim was refused.');
+    await loadCredits();
+  }
+  $('credit-daily').addEventListener('click', () => claimCredit({ kind: 'daily' }));
+  $('credit-tool').addEventListener('click', () => claimCredit({ kind: 'tool', ref: $('credit-ref').value.trim() }));
+  $('credit-bug').addEventListener('click', () => claimCredit({ kind: 'bug', ref: $('credit-ref').value.trim() }));
+  $('credit-build').addEventListener('click', () => claimCredit({ kind: 'build', ref: $('credit-ref').value.trim() }));
+  for (const purpose of ['answer', 'skill', 'cap']) $('credit-' + purpose).addEventListener('click', () => claimCredit({ spend: purpose, nonce: Math.random().toString(36).slice(2, 10) }));
+  loadCredits();
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

@@ -1,0 +1,3 @@
+# Playbook: the continuous self-model
+
+**What starts it.** https://a-to-mind.com/self/ or `python tools/will.py`. **Commands.** `node --test tools/self-model.test.mjs` and `node tools/real-pages.mjs --routes /self/`. The will adds expected value only when a want's queue row is `live` or `done`, and saves the tick at `void_kv` `self-model`. The page computes its line from `void.better.json` and `/progress/exam.json`. **It worked when** the journal names a file and a `tools/*.mjs` suite also listed under "Where a number comes from". **It will not** claim consciousness, invent a score, or send, book or spend.

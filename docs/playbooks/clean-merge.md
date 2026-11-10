@@ -18,6 +18,7 @@ What starts it: you are about to open a pull request, or a pull request is sitti
 
 ## Mistakes
 
+- Merging while Verse verify is red on the current main head. On 2026-11-09 the suite gate passed #2574 and then #2590, #2591, #2592, #2595, #2596, #2597 and #2603 because a check already red on main does not fail the batch, and automerge merged them. `mainVerifyHold` in `tools/merge-policy.mjs` holds the merge until the newest finished Verse verify that covers this head is green. A green verify on the current head lets Verse merge itself. The log prints `rule: main-verify-red`, `file: .github/workflows/verify.yml` and the fix.
 - Opening one big pull request for several things. It sits, falls behind, and conflicts with every PR opened after it (2026-11-04: #2112 grew to 1,218 changed lines and #2114 to 2,583 before they landed). Split it.
 - Reading `FAIL merge-policy` and a duration as the whole story. The next lines name the rule and the file, branch or label (`merge-gate: merge-policy rule "..."`). On #2315 the rule was "the automerge workflow arms squash auto-merge and keeps the hourly run", and the file was `tools/automerge.mjs`: it no longer contains `enablePullRequestAutoMerge`. The bot squash-merges after the suite and disarms GitHub auto-merge, so the test locks that. Putting the old mutation back would land the pull request before the suite.
 

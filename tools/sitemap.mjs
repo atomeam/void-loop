@@ -38,6 +38,7 @@ const KEPT = [
   ['/films/', 'weekly', '0.6', [D + 'films/index.html']],
   ['/podcast/', 'weekly', '0.6', [D + 'podcast/index.html']],
   ['/progress/', 'daily', '0.6', [D + 'progress/index.html', D + 'exam/latest.json']],
+  ['/self/', 'daily', '0.6', [D + 'self/index.html', D + 'lib/self-model.js']],
   ['/under-the-hood/', 'weekly', '0.5', [D + 'under-the-hood/index.html', D + 'under-the-hood/app.js']],
   ['/obituaries/', 'weekly', '0.7', [D + 'obituaries/index.html']],
   ['/markets/screener/', 'weekly', '0.7', [D + 'markets/screener/index.html']],
