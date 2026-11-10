@@ -492,7 +492,7 @@ export const SPECS = {
   '/versus/': async (t) => { t.ok(await t.p.locator('a[href="/rotate-letters/"]').isVisible(), 'lists rotate letters'); t.ok(await t.p.locator('a[href="/track-times/"]').isVisible(), 'lists track times'); },
   '/rotate-letters/': async (t) => { await t.fill('#text', 'Ab!'); await t.fill('#shift', '1'); await t.p.waitForTimeout(100); t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!'); },
   '/track-times/': async (t) => { t.ok(/6:45/.test(await t.text('#total')), 'the sample list runs 6:45'); await t.fill('#list', 'Song one 1:00\nSong two 2:00'); await t.p.waitForTimeout(100); t.ok(/3:00/.test(await t.text('#total')), 'two lengths add to 3:00'); },
-  '/our-motherfucking-version/': async (t) => { await t.fill('#html', '<p>Hi</p><img src="a.png">'); await t.p.waitForTimeout(100); t.ok(/1 pictures/.test(await t.text('#out')), 'one picture is counted'); t.ok(/A page you can read/.test(await t.p.locator('h1').innerText()), 'the heading is Verse\'s own'); },
+  '/our-motherfucking-version/': async (t) => { await t.fill('#html', '<p>Hi</p><img alt="" src="a.png">'); await t.p.waitForTimeout(100); t.ok(/1 pictures/.test(await t.text('#out')), 'one picture is counted'); t.ok(/A page you can read/.test(await t.p.locator('h1').innerText()), 'the heading is Verse\'s own'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
 // the trading bots (owner, 2026-11-06): a backtest on the real candles once /trading-bots/data/ has them, an honest note before; trades export, the link reopens
