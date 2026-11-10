@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T04:39:06Z",
-  "passed": 42,
-  "of": 52,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
- },
- {
   "at": "2026-10-18T05:01:15Z",
   "passed": 52,
   "of": 53,
@@ -7740,6 +7733,24 @@
      "ask": "what can you do",
      "why": [
       "slow 8639 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T06:03:47Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 657,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
      ]
     }
    ]
