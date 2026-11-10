@@ -15,9 +15,8 @@
  */
 
 import { slugOf } from './watch-build.js'; // a TV or radio idea's blueprint job is tv:<slug> (tools/watch-build.mjs queues it)
+export const RETIRED = Object.freeze([{ id: 'c7e0000000a1', channel: 'tower' }]); // TowerScout: it mapped sites and filed nothing a visitor can use
 export const CREW = Object.freeze([
-  { id: 'c7e0000000a1', slug: 'tower-scout', name: 'TowerScout', every: 240, channel: 'tower', lane: 'tower',
-    about: 'Crew · runs on Verse\'s clock. Maps rival sites (robots and sitemaps, the whole site), reads the Tower and files the gaps as jobs.' },
   { id: 'c7e0000000a2', slug: 'exam-coach', name: 'ExamCoach', every: 60, channel: 'exam', lane: 'exam',
     about: 'Crew · runs on Verse\'s clock. Reads the outcome exam, files the weakest domain and missed asks as jobs, closes them when scores rise.' },
   { id: 'c7e0000000a3', slug: 'merge-train', name: 'MergeTrain', every: 60, channel: 'merges', lane: 'merge',
