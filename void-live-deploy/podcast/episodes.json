@@ -1175,228 +1175,137 @@
   },
   {
    "n": 8,
-   "title": "Episode 8: How long is a paper",
+   "title": "Episode 8: The unsigned card",
    "from": "2026-11-09",
    "to": "2026-11-10",
    "pub": "2026-11-10T15:28:14.527Z",
    "file": "verse-out-loud-008.mp3",
    "transcript": "verse-out-loud-008.txt",
-   "bytes": 3300237,
-   "seconds": 275,
-   "summary": "Critic asks whether counting words is clerk work. One publication unit is 500 words, a long paper stays under 45 units, and the sum is worked on the device. Ask Verse for anything at a-to-mind.com.",
+   "bytes": 930861,
+   "seconds": 77,
+   "summary": "A visitor asked Verse fifteen questions. Fourteen passed. What can you do took 8855 milliseconds, past an 8000 millisecond line, and the median of the rest was 451. The judge did not publish this cut: a free listener could not separate a good script from a bad one.",
    "counts": {
     "feats": 6
    },
    "scores": {
-    "clarity": 8,
-    "originality": 7,
-    "entertainment": 8,
-    "impressive": 7,
-    "avg": 7.5,
-    "human": 7,
-    "notes": "Each line answers the one before it, and the numbers are the journal rules.",
-    "pass": true,
-    "references": [
+    "clarity": 0,
+    "originality": 0,
+    "entertainment": 0,
+    "impressive": 0,
+    "avg": 0,
+    "human": 3,
+    "notes": "Not published. The free judge minimum on a hand-written good script was 3, and one prompt still gave the old talking-book script an 8.",
+    "pass": false,
+    "separated": false,
+    "calibration": [
      {
-      "id": "reply-all",
-      "name": "Reply All, Yes Yes No",
-      "score": 8,
-      "miss": []
+      "id": "journal",
+      "min": 1,
+      "scores": [
+       5,
+       1,
+       1
+      ]
      },
      {
-      "id": "hard-fork",
-      "name": "Hard Fork",
-      "score": 8,
-      "miss": []
+      "id": "old34",
+      "min": 1,
+      "scores": [
+       7,
+       8,
+       1
+      ]
      },
      {
-      "id": "fish",
-      "name": "No Such Thing As A Fish",
-      "score": 8,
-      "miss": []
+      "id": "page",
+      "min": 1,
+      "scores": [
+       7,
+       3,
+       1
+      ]
+     },
+     {
+      "id": "good",
+      "min": 3,
+      "scores": [
+       4,
+       3,
+       10
+      ]
      }
     ]
    },
    "lines": [
     {
      "who": "Critic",
-     "text": "I have a note, but is counting words really clerk work?",
+     "text": "Do not show that card. I have not signed it.",
      "t": 0
     },
     {
      "who": "Verse",
-     "text": "I think you should take a note that one publication unit is exactly 500 words of the paper. Does that make sense?",
-     "t": 4.2
+     "text": "Too late. At 16:08 the visitor asked fifteen questions and passed fourteen.",
+     "t": 3.5
     },
     {
      "who": "Critic",
-     "text": "I cannot believe they gave this person an arbitrary clerk number of 500 just for writing a few hundred words of nonsense.",
-     "t": 11.9
+     "text": "Then the fifteenth is still mine to sign.",
+     "t": 9.3
     },
     {
      "who": "Verse",
-     "text": "Hey, look at this. I think this page is actually for someone writing an Earth science paper for their class.",
-     "t": 21.9
+     "text": "The fifteenth was what can you do. The card took 8855 milliseconds.",
+     "t": 12.8
     },
     {
      "who": "Critic",
-     "text": "I have a note about this page. It is just a typed list of titles, not real science.",
-     "t": 28.5
+     "text": "I was choosing the pen. A signature needs a moment.",
+     "t": 18.9
     },
     {
      "who": "Verse",
-     "text": "Take note, these papers actually come directly from the journal public feed rather than being some simple list someone typed up.",
-     "t": 35.2
+     "text": "The other fourteen did not wait. Their median was 451 milliseconds.",
+     "t": 23.2
     },
     {
      "who": "Critic",
-     "text": "Honestly, the public only cares about the titles. This entire feed is just a collection of catchy headlines with no real substance.",
-     "t": 43
+     "text": "451. I will sign that one. It sounds like me.",
+     "t": 28.9
     },
     {
      "who": "Verse",
-     "text": "Each paper shows the title, the authors, a short abstract, the date, and the DOI to keep your feed updated with the latest research.",
-     "t": 53.5
+     "text": "That number is how fast they finished while you were choosing the pen.",
+     "t": 34.2
     },
     {
      "who": "Critic",
-     "text": "Honestly, don't bother looking up that DOI. It is nothing more than a glorified barcode for clerks to scan while they file paperwork.",
-     "t": 62.2
+     "text": "A true card cannot be a miss. I will sign it into a pass.",
+     "t": 38
     },
     {
      "who": "Verse",
-     "text": "You know, a person can search by just a single word or by using that specific DOI to find exactly what they need.",
-     "t": 71.9
+     "text": "Over 8000 milliseconds is the line. 8855 is past it. The visitor wrote slow and closed the card.",
+     "t": 42.7
     },
     {
      "who": "Critic",
-     "text": "I have a note regarding the length, but really it is just a matter of taste. Let us search for more.",
-     "t": 79.7
+     "text": "At 13:26 I had fifteen. At 15:39 I had fifteen. I do not lose.",
+     "t": 51.3
     },
     {
      "who": "Verse",
-     "text": "Just take note that each figure or table counts as one and a half units for our final tally today.",
-     "t": 86.8
+     "text": "Those two runs passed. At 16:08 this one did not. Same question. The visitor kept the miss.",
+     "t": 59
     },
     {
      "who": "Critic",
-     "text": "I honestly thought those complex equations were free, but it looks like we only got half of the actual value today.",
-     "t": 93.4
+     "text": "Put my name on the miss, so the record is complete.",
+     "t": 66.1
     },
     {
      "who": "Verse",
-     "text": "Think of it this way: the first ten equations count as one unit. Those ten equations are just a single starting block.",
-     "t": 101.7
-    },
-    {
-     "who": "Critic",
-     "text": "If you actually included all those complex equations in the chapters, a simple novel would sail through without any trouble at all.",
-     "t": 109.3
-    },
-    {
-     "who": "Verse",
-     "text": "I think that long paper is meant to stay under 45 units, otherwise it reads more like a novel than a quick summary.",
-     "t": 118.6
-    },
-    {
-     "who": "Critic",
-     "text": "I suppose a short note may ramble as long as it likes, but we really need to get to the point now.",
-     "t": 126.2
-    },
-    {
-     "who": "Verse",
-     "text": "Don't let your thoughts ramble too long. Just remember that a short note stays under 4 units so we can keep moving along.",
-     "t": 133.4
-    },
-    {
-     "who": "Critic",
-     "text": "I have a note about those units; I’m convinced the arithmetic is phoning home to some distant, strange planet.",
-     "t": 140.4
-    },
-    {
-     "who": "Verse",
-     "text": "Please note that the final sum is worked on this device and nothing is sent to any outside servers.",
-     "t": 149.1
-    },
-    {
-     "who": "Critic",
-     "text": "I really don't trust this device, and honestly, if you leave the room, I worry those papers might just vanish.",
-     "t": 155.3
-    },
-    {
-     "who": "Verse",
-     "text": "Don't worry about losing your work, because all those saved papers stay on the device for you to find later.",
-     "t": 163.4
-    },
-    {
-     "who": "Critic",
-     "text": "Look, it is still just clerk work, sulking over those messy papers. Honestly, it is just more clerk work, always sulking.",
-     "t": 169.7
-    },
-    {
-     "who": "Verse",
-     "text": "If that clerk keeps reading, it will take too long. We need fewer words to stop an author sending a paper that is too long.",
-     "t": 179
-    },
-    {
-     "who": "Critic",
-     "text": "I have a note that I was wrong about the clerk, even if those words are long and hard to say.",
-     "t": 186.3
-    },
-    {
-     "who": "Verse",
-     "text": "Just remember, the abstract has to stand on its own and stay under 300 words. Please make a note of that.",
-     "t": 193.2
-    },
-    {
-     "who": "Critic",
-     "text": "I honestly can't believe he thought a 300 words speech was enough to win them over with just those few words.",
-     "t": 200
-    },
-    {
-     "who": "Verse",
-     "text": "The guidelines also ask for three keywords. You need to provide those keywords now.",
-     "t": 208.2
-    },
-    {
-     "who": "Critic",
-     "text": "I hate that sorting these keywords is still just clerk work, but at least the units were real.",
-     "t": 213.4
-    },
-    {
-     "who": "Verse",
-     "text": "The review does not start until every page has line numbers. We need those keywords and the right words before we begin.",
-     "t": 219.9
-    },
-    {
-     "who": "Critic",
-     "text": "Honestly, pointing out those line numbers is a total humiliation. We don't need to count the numbers every time we speak.",
-     "t": 227.3
-    },
-    {
-     "who": "Verse",
-     "text": "The first file is a Word or PDF, 12-point, with one and a half spacing. Just keep the numbers consistent throughout.",
-     "t": 236.4
-    },
-    {
-     "who": "Critic",
-     "text": "The spacing in this piece is all wrong. Honestly, who measures spacing with a ruler? You missed the point entirely.",
-     "t": 244.1
-    },
-    {
-     "who": "Verse",
-     "text": "Just remember, the figures are separate JPEG, TIFF, or PNG files at 300 dpi. Make sure you check the spacing between them too.",
-     "t": 252.4
-    },
-    {
-     "who": "Critic",
-     "text": "I have a note about these figures. I know the dpi rule is real, but I still resent it.",
-     "t": 261.9
-    },
-    {
-     "who": "Verse",
-     "text": "Please note that you can ask for any words you need at a-to-mind.com. Just send us a message there!",
-     "t": 268.8
+     "text": "The record is complete. Fourteen of fifteen. Your name is not one of the marks. Ask for anything at a-to-mind.com.",
+     "t": 70.4
     }
    ]
   }

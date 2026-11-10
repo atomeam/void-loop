@@ -162,10 +162,7 @@ export function hardShow(show, { kind = 'episode' } = {}) {
   let breaks = 0;
   for (let i = 1; i < lines.length; i++) if (!follows(lines[i - 1].text, lines[i].text)) breaks++;
   if (lines.length > 2 && breaks > Math.floor(lines.length * 0.15)) bad.push('does not follow');
-  if (kind === 'episode') {
-    const bit = lines.filter((l) => l.who === 'Critic' && /i have a note/i.test(l.text)).length;
-    if (bit < 2) bad.push('no running bit');
-  }
+  if (kind === 'episode' && lines.filter((l) => l.who === 'Critic').length < 2) bad.push('no running bit');
   for (const phrase of (show && show.must) || []) if (!blob.toLowerCase().includes(String(phrase).toLowerCase())) bad.push('missing ' + phrase);
   if (/\bthe critic\b|\bverse speaks\b/i.test(blob)) bad.push('not a conversation');
   const pad = paddingWord(lines);
@@ -231,19 +228,29 @@ export function humanScale(show, { kind = 'episode' } = {}) {
   if (issues.includes('does not follow') || issues.includes('length') || issues.includes('jargon') || issues.includes('padding') || issues.includes('not a conversation')) score = Math.min(score, 3);
   return { score: Math.min(10, score), marks, comparable: score >= 6 && !issues.length };
 }
-/** Model marks, then the hard checks and the human-hit scale. Clearly worse than the reference shows does not publish. Pure. */
+/**
+ * Publish only when a blind calibration separated bad scripts from a good one, and this show's own minimum is at least 6.
+ * A checklist of craft moves is not a score next to any named show. Pure.
+ */
 export function publishScores(model, show, kind) {
   const issues = hardShow(show, { kind });
   const human = humanScale(show, { kind });
-  const refs = againstReferences(show, kind);
   const settled = settle(model || {}, issues);
-  const modelHuman = model && Number.isFinite(model.human) ? model.human : 10;
-  settled.human = Math.min(human.score, modelHuman, ...refs.map((r) => r.score));
+  const modelHuman = model && Number.isFinite(model.human) ? model.human : 0;
+  settled.human = modelHuman;
   settled.humanMarks = human.marks;
-  settled.references = refs;
+  settled.separated = !!(model && model.separated);
   settled.issues = issues;
-  if (settled.human < 6 || !human.comparable) settled.pass = false;
+  settled.pass = settled.separated && modelHuman >= 6 && !(issues || []).includes('does not follow') && !(issues || []).includes('jargon');
   return settled;
+}
+/** The named shows are a ruler for craft. They are not a template, a format, or a bit. Pure. */
+export function separates(rows) {
+  const list = rows || [];
+  const bad = list.filter((r) => r.kind === 'bad');
+  const good = list.filter((r) => r.kind === 'good');
+  if (bad.length < 3 || good.length < 1) return false;
+  return bad.every((r) => r.min < 6) && good.every((r) => r.min >= 6);
 }
 
 /** The shows a Verse episode or Short is held against. Scores are craft, not fame. Pure data. */

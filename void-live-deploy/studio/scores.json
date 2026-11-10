@@ -1,132 +1,169 @@
 {
   "shows": [
     {
-      "at": "2026-11-10T16:28:01.421Z",
+      "at": "2026-11-10T16:47:10.026Z",
       "kind": "episode",
-      "title": "Episode 8: How long is a paper",
-      "fact": "The journal page counts a paper in publication units, on the device.",
-      "clarity": 8,
-      "originality": 7,
-      "entertainment": 8,
-      "impressive": 7,
-      "avg": 7.5,
-      "human": 7,
-      "notes": "Each line answers the one before it, and the numbers are the journal rules.",
-      "pass": true,
-      "references": [
+      "title": "Episode 8: The unsigned card",
+      "fact": "Visitor pass 14 of 15. what can you do took 8855 ms. Median 451 ms.",
+      "clarity": 0,
+      "originality": 0,
+      "entertainment": 0,
+      "impressive": 0,
+      "avg": 0,
+      "human": 3,
+      "notes": "Not published. The free judge minimum on a hand-written good script was 3, and one prompt still gave the old talking-book script an 8.",
+      "pass": false,
+      "separated": false,
+      "calibration": [
         {
-          "id": "reply-all",
-          "name": "Reply All, Yes Yes No",
-          "score": 8,
-          "miss": []
+          "id": "journal",
+          "min": 1,
+          "scores": [
+            5,
+            1,
+            1
+          ]
         },
         {
-          "id": "hard-fork",
-          "name": "Hard Fork",
-          "score": 8,
-          "miss": []
+          "id": "old34",
+          "min": 1,
+          "scores": [
+            7,
+            8,
+            1
+          ]
         },
         {
-          "id": "fish",
-          "name": "No Such Thing As A Fish",
-          "score": 8,
-          "miss": []
+          "id": "page",
+          "min": 1,
+          "scores": [
+            7,
+            3,
+            1
+          ]
+        },
+        {
+          "id": "good",
+          "min": 3,
+          "scores": [
+            4,
+            3,
+            10
+          ]
         }
       ]
     },
     {
-      "at": "2026-11-10T16:28:01.421Z",
+      "at": "2026-11-10T16:47:10.026Z",
       "kind": "short",
-      "title": "Who talks first",
-      "fact": "On the Brain page Verse speaks first, from what changed, at most once every 3 minutes.",
-      "clarity": 8,
-      "originality": 7,
-      "entertainment": 8,
-      "impressive": 7,
-      "avg": 7.5,
-      "human": 7,
-      "notes": "Each line answers the one before it, and the 3-minute limit is the number.",
-      "pass": true,
-      "references": [
-        {
-          "id": "veritasium",
-          "name": "Veritasium",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "rober",
-          "name": "Mark Rober",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "tom-scott",
-          "name": "Tom Scott",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "hai",
-          "name": "Half as Interesting",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "vox",
-          "name": "Vox",
-          "score": 8,
-          "miss": []
-        }
-      ],
-      "gate": true
+      "id": "20261110-verse-1",
+      "title": "The unsigned card",
+      "file": "20261110-verse-1.mp4",
+      "fact": "What can you do took 8855 milliseconds on the visitor pass of 10 November 2026, 16:08 UTC. The line is 8000.",
+      "scores": {
+        "clarity": 0,
+        "originality": 0,
+        "entertainment": 0,
+        "impressive": 0,
+        "human": 3,
+        "pass": false,
+        "separated": false,
+        "notes": "Recorded from the live stage. Not published: the free judge cannot separate a good script from a bad one.",
+        "calibration": [
+          {
+            "id": "journal",
+            "min": 1,
+            "scores": [
+              5,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "old34",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "min": 1,
+            "scores": [
+              7,
+              3,
+              1
+            ]
+          },
+          {
+            "id": "good",
+            "min": 3,
+            "scores": [
+              4,
+              3,
+              10
+            ]
+          }
+        ]
+      }
     },
     {
-      "at": "2026-11-10T16:28:01.421Z",
+      "at": "2026-11-10T16:47:10.026Z",
       "kind": "short",
-      "title": "A film that fits",
-      "fact": "Ask for scary films from the nineties and each real film gets a score from 0 to 100.",
-      "clarity": 8,
-      "originality": 7,
-      "entertainment": 8,
-      "impressive": 7,
-      "avg": 7.5,
-      "human": 7,
-      "notes": "Each line answers the one before it, and the score runs from 0 to 100.",
-      "pass": true,
-      "references": [
-        {
-          "id": "veritasium",
-          "name": "Veritasium",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "rober",
-          "name": "Mark Rober",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "tom-scott",
-          "name": "Tom Scott",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "hai",
-          "name": "Half as Interesting",
-          "score": 8,
-          "miss": []
-        },
-        {
-          "id": "vox",
-          "name": "Vox",
-          "score": 8,
-          "miss": []
-        }
-      ],
-      "gate": true
+      "id": "20261110-verse-2",
+      "title": "451 is not a signature",
+      "file": "20261110-verse-2.mp4",
+      "fact": "The same run passed 14 of 15. The median was 451 milliseconds.",
+      "scores": {
+        "clarity": 0,
+        "originality": 0,
+        "entertainment": 0,
+        "impressive": 0,
+        "human": 3,
+        "pass": false,
+        "separated": false,
+        "notes": "Recorded from the live stage. Not published: the free judge cannot separate a good script from a bad one.",
+        "calibration": [
+          {
+            "id": "journal",
+            "min": 1,
+            "scores": [
+              5,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "old34",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "min": 1,
+            "scores": [
+              7,
+              3,
+              1
+            ]
+          },
+          {
+            "id": "good",
+            "min": 3,
+            "scores": [
+              4,
+              3,
+              10
+            ]
+          }
+        ]
+      }
     }
   ]
 }

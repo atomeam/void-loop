@@ -77,3 +77,29 @@ export function renderShow(audio, words, beats, file, meta) {
   meta.gate = gate(file, meta);
   return meta;
 }
+
+/** Captions and the spoken track over a screen recording of the real page. */
+export function renderOver(video, audio, words, beats, file, meta) {
+  const ass = file.replace(/\.mp4$/, '.ass');
+  writeFileSync(ass, assOf(words, beats));
+  const dur = beats.length ? beats[beats.length - 1].to + 0.4 : 30;
+  const assName = ass.replace(/:/g, '\\:');
+  const args = ['-y', '-hide_banner', '-loglevel', 'error',
+    '-stream_loop', '-1', '-i', video, '-i', audio,
+    '-filter_complex', `[0:v]scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},fps=30,trim=duration=${dur.toFixed(2)},setpts=PTS-STARTPTS,ass=${assName}[v];[1:a]loudnorm=I=-14:TP=-1.5:LRA=7,atrim=duration=${dur.toFixed(2)}[a]`,
+    '-map', '[v]', '-map', '[a]',
+    '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '26', '-pix_fmt', 'yuv420p',
+    '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', file];
+  const r = spawnSync('ffmpeg', args, { encoding: 'utf8' });
+  if (r.status !== 0) throw new Error('over ' + String(r.stderr).slice(-400));
+  const cues = captionCues(words);
+  meta.captions = cues.map((c) => ({ text: c.text, raw: c.text, size: 64, x: 90, y: 1100, w: 820, h: 220, box: true, rect: true, from: +c.from.toFixed(3), to: +c.to.toFixed(3) }));
+  meta.speech = beats.map((b) => ({ from: b.from, to: b.to }));
+  meta.hook = meta.hook || (beats[0] && beats[0].text) || '';
+  meta.kind = 'show';
+  meta.format = 'show';
+  meta.voice = true;
+  meta.footage = { url: meta.page || 'https://a-to-mind.com/', answerSeen: true, answer: meta.answer || '' };
+  meta.gate = gate(file, meta);
+  return meta;
+}

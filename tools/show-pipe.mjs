@@ -5,7 +5,6 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { featsFrom, parseShow, scriptIssues, parseScores, trendLine } from '../void-live-deploy/lib/show-pipe.js';
-import { hookScore } from './video-gate.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://a-to-mind.com';
 export const SCORE_FILE = resolve(root, 'void-live-deploy/studio/scores.json');
@@ -39,13 +38,11 @@ export async function ask(prompt, { judge = false, env = process.env, fetchImpl 
   if (!got.text) throw new Error(got.note || got.say || (judge ? 'judge empty' : 'story model empty'));
   return got.text;
 }
-const SAFE_HOOK = 'What if you could ask for this today?';
 export function shortScript(text) {
   const parsed = parseShow(text);
   const lines = parsed.lines.slice(0, 4);
-  let hook = lines[0] ? lines[0].text : SAFE_HOOK;
-  let beats = lines.slice(1);
-  if (hookScore(hook) < 60 || /\bverse\b/i.test(hook)) { hook = SAFE_HOOK; beats = lines.slice(0, 3); }
+  const hook = lines[0] ? lines[0].text : '';
+  const beats = lines.slice(1);
   const show = { kind: 'short', title: parsed.title || hook.replace(/\?$/, ''), hook, lines: beats };
   const issues = scriptIssues(show, { min: 2, max: 4 });
   if (beats.some((l) => l.text.split(/\s+/).length > 16)) issues.push('too many words');
