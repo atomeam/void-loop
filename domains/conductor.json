@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T12:09:25.663Z",
+ "updated": "2026-11-10T12:18:48.686Z",
  "last24h": {
   "ticks": 146,
   "started": 89,
@@ -106,7 +106,7 @@
   "until": null
  },
  "handed": {
-  "mvbl52gd": 1794291168095,
+  "mvbl52gd": 1794313128686,
   "mva30i2e": 1794301300680,
   "mva30j4u": 1794293414539,
   "mvu167w7": 1794291728195,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw97n4si": 1794226692478,
   "mw97n5l7": 1794227253962,
   "mw97n6dz": 1794228380151,
   "mw99zdn2": 1794230070603,
@@ -253,34 +252,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T12:18:12.478Z",
-   "open": 276,
-   "started": [
-    {
-     "id": "mw97n4si",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 265,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T12:27:33.962Z",
    "open": 275,
@@ -3920,6 +3891,34 @@
    "at": "2026-11-10T12:09:25.663Z",
    "open": 319,
    "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 311,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T12:18:48.686Z",
+   "open": 319,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    }
+   ],
    "requeued": 0,
    "setAside": 0,
    "healed": [],
