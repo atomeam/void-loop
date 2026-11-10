@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T14:21:09.701Z",
+ "updated": "2026-11-10T14:30:33.566Z",
  "last24h": {
   "ticks": 147,
-  "started": 83,
+  "started": 82,
   "requeued": 1,
   "setAside": 2,
   "probes": 8,
@@ -29,6 +29,10 @@
   },
   {
    "id": "mwapw6l5",
+   "why": "Verse's coder has used its free model calls until 00:00 UTC"
+  },
+  {
+   "id": "mwasa7yo",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
   },
   {
@@ -86,24 +90,20 @@
   {
    "id": "mvpkt1c5",
    "why": "Verse's coder has used its free model calls until 00:00 UTC"
-  },
-  {
-   "id": "mvpkt1u7",
-   "why": "Verse's coder has used its free model calls until 00:00 UTC"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 1,
+   "used": 5,
    "cap": 90
   },
   "day": {
-   "used": 357,
+   "used": 360,
    "cap": 360
   },
-  "room": true,
-  "until": null
+  "room": false,
+  "until": "2026-11-11T00:00:00.000Z"
  },
  "handed": {
   "mvbl52gd": 1794313128686,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9ceb57": 1794234102244,
   "mw9cebzl": 1794234667948,
   "mw9cecyj": 1794235252971,
   "mw9ceds5": 1794236764431,
@@ -249,34 +248,6 @@
   "review:2655"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T14:21:42.244Z",
-   "open": 280,
-   "started": [
-    {
-     "id": "mw9ceb57",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 270,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T14:31:07.948Z",
    "open": 279,
@@ -3913,6 +3884,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 315,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T14:30:33.566Z",
+   "open": 323,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 317,
    "warnings": 1
   }
  ]
