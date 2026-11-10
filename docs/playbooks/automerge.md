@@ -9,3 +9,4 @@ Worked: the log says `merged #<n>`, or `coder started`, or `rule: main-verify-re
 This token cannot change branch protection or Actions approvals (both return 403). If GitHub still says review required: required approvals on main must be 0, and Actions must be allowed to create and approve pull requests.
 
 A conflicting line for the automerge proof.
+A one-line pull request merges with no one watching.

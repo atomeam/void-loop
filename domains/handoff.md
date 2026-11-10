@@ -15,7 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · helper/unbidden-plain-0b57 · Verse, unbidden speaks only about what was built or is being built next · 2026-11-10 02:05 UTC
+- Cursor cloud agent · helper/color-by-number-238b · /paint/ rebuilt to feel like a real colouring book: original pictures, a white numbered sheet, saved progress and a finished reveal · 2026-11-10 01:55 UTC
 - Cursor cloud agent · helper/least-next-0b57 · the loop takes the next simplest site and builds its missing jobs · 2026-11-10 02:05 UTC
 - Cursor cloud agent · helper/self-card-plain-0b57 · the self card says what was built and which page is next, in plain words · 2026-11-10 02:05 UTC
 - Cursor cloud agent · helper/credits-faucet-e39c · internal credits faucet on /prizes/, ledger in the store · 2026-11-09 23:30 UTC
@@ -94,6 +94,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Verse, unbidden speaks only about what was built or is being built next (Cursor cloud agent, 2026-11-10)**: shipped in https://github.com/atomeam/void-loop/pull/2633.
+- **the loop takes the next simplest site and builds its missing jobs (Cursor cloud agent, 2026-11-10)**: shipped in https://github.com/atomeam/void-loop/pull/2634.
 - **the Tower lists only sites Verse can actually do, each with a history page, and drops the scorecard (Cursor cloud agent, 2026-11-10)**: shipped in https://github.com/atomeam/void-loop/pull/2627.
 - **before Verse ships its own change, a free model asks whether a person would find it real and useful (Cursor cloud agent, 2026-11-10)**: shipped in https://github.com/atomeam/void-loop/pull/2628.
 - **suite-on-main: kept cards were the first .vpage, so sky chips, review and draw read the old card; the newest answer is first, a closing card leaves at once, and the crowd layout does not rewrite a card's saved place (Cursor cloud agent, 2026-11-09)**: shipped in https://github.com/atomeam/void-loop/pull/2578.

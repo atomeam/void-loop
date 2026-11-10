@@ -202,7 +202,7 @@
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 21,
    "tests": 1
   },
   {
@@ -227,13 +227,6 @@
    "tests": 1
   },
   {
-   "file": "lib/weakest.js",
-   "skills": 9,
-   "direct": 0,
-   "dependants": 50,
-   "tests": 1
-  },
-  {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
@@ -244,6 +237,13 @@
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
+   "dependants": 49,
+   "tests": 1
+  },
+  {
+   "file": "lib/weakest.js",
+   "skills": 9,
+   "direct": 0,
    "dependants": 49,
    "tests": 1
   },
@@ -696,13 +696,6 @@
    "tests": 1
   },
   {
-   "file": "lib/tower-controls.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
@@ -731,13 +724,6 @@
    "tests": 1
   },
   {
-   "file": "lib/gate-badge.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
    "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
@@ -745,30 +731,9 @@
    "tests": 1
   },
   {
-   "file": "lib/obituary.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
-   "file": "lib/tower-journeys.js",
+   "file": "lib/tower-controls.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
-   "file": "lib/tower-topic.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
-   "file": "lib/tower-weight.js",
-   "skills": 4,
-   "direct": 1,
    "dependants": 7,
    "tests": 1
   },
@@ -794,10 +759,45 @@
    "tests": 1
   },
   {
+   "file": "lib/gate-badge.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
+   "file": "lib/obituary.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
+   "file": "lib/tower-journeys.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
+   "file": "lib/tower-topic.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-weight.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
    "file": "lib/tower.js",
    "skills": 4,
    "direct": 3,
-   "dependants": 6,
+   "dependants": 5,
    "tests": 33
   },
   {
@@ -1886,6 +1886,13 @@
    "tests": 2
   },
   {
+   "file": "lib/least.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/news-week.js",
    "skills": 1,
    "direct": 1,
@@ -2181,13 +2188,6 @@
   },
   {
    "file": "lib/heat-dose.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/least.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -4768,9 +4768,7 @@
     "lib/models.js",
     "lib/self-context.js",
     "lib/shortfall.js",
-    "lib/weakest.js",
-    "lib/voice.js",
-    "lib/tower.js"
+    "lib/voice.js"
    ],
    "importedBy": []
   },
@@ -5062,7 +5060,8 @@
     "lib/automation-fix.js",
     "lib/shortfall.js",
     "lib/team-crew-run.js",
-    "lib/unbidden.js"
+    "lib/unbidden.js",
+    "lib/least.js"
    ],
    "importedBy": []
   },
@@ -9069,7 +9068,6 @@
     "skills/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/studios.js",
@@ -10026,6 +10024,7 @@
   "lib/least.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/unbidden.js",
     "skills/tower.js"
    ]
   },
@@ -11335,7 +11334,6 @@
     "skills/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/studios.js",
@@ -13277,7 +13275,6 @@
   "lib/self-blocks.js": {
    "imports": [
     "lib/spark.js",
-    "lib/weakest.js",
     "lib/ask-same.js"
    ],
    "importedBy": [
@@ -13341,7 +13338,6 @@
     "lib/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "functions/ip/index.js",
     "lib/card-frame.js",
@@ -13596,7 +13592,6 @@
     "lib/weakest.js"
    ],
    "importedBy": [
-    "lib/verse-log.js",
     "skills/growth.js"
    ],
    "reachedBy": [
@@ -13636,6 +13631,7 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
+    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -14985,7 +14981,6 @@
     "lib/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/studios.js",
@@ -15001,7 +14996,6 @@
     "lib/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/studios.js",
@@ -15021,7 +15015,6 @@
     "lib/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/studios.js",
@@ -15036,7 +15029,6 @@
     "skills/tower.js"
    ],
    "reachedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
     "skills/studios.js",
@@ -15057,7 +15049,6 @@
     ", "
    ],
    "importedBy": [
-    "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/studios.js",
     "skills/tower.js",
@@ -15237,8 +15228,7 @@
    "imports": [
     "lib/self-blocks.js",
     "lib/built-detail.js",
-    "lib/progress-chart.js",
-    "lib/skill-confidence.js"
+    "lib/progress-chart.js"
    ],
    "importedBy": []
   },
@@ -15699,8 +15689,6 @@
   "lib/weakest.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/reflect.js",
-    "lib/self-blocks.js",
     "lib/skill-confidence.js",
     "lib/voice.js"
    ],
@@ -15725,6 +15713,7 @@
     "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
+    "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",

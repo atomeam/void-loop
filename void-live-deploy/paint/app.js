@@ -10,7 +10,7 @@ const MIN = 46;              // an area under this many pixels has no room for i
 const KEY_PROGRESS = 'void-paint-progress', KEY_GALLERY = 'void-paint', KEY_OWN = 'void-paint-own';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const state = { tpl: null, labels: null, region: null, areas: [], paper: null, painted: null, img: null, mask: null, count: 0,
-  active: 0, mode: 'fill', done: new Set(), undo: [], brush: 6, hl: true, ring: -1, z: 1, tx: 0, ty: 0, started: 0, revealed: false };
+  active: 0, mode: 'fill', done: new Set(), undo: [], brush: 6, hl: true, peek: false, ref: null, ring: -1, z: 1, tx: 0, ty: 0, started: 0, revealed: false };
 const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || '') ?? d; } catch (_) { return d; } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (_) { return false; } };
 const rgb = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
@@ -66,17 +66,12 @@ function drawPaper() {
   const { tpl, labels } = state, w = tpl.w, h = tpl.h;
   const off = document.createElement('canvas'); off.width = w * S; off.height = h * S;
   const g = off.getContext('2d');
-  g.fillStyle = '#fcfbf7'; g.fillRect(0, 0, off.width, off.height);
-  // a faint tint of each area's own colour, the way the leading apps show what an unpainted area will become
-  const tint = document.createElement('canvas'); tint.width = w; tint.height = h;
-  const tg = tint.getContext('2d'), ti = tg.createImageData(w, h), pal = tpl.palette.map(rgb);
-  for (let p = 0; p < w * h; p++) { const [r, gg, b] = pal[labels[p]], grey = (r * 0.3 + gg * 0.59 + b * 0.11); const v = 236 + grey / 255 * 16; ti.data[p * 4] = v; ti.data[p * 4 + 1] = v; ti.data[p * 4 + 2] = v; ti.data[p * 4 + 3] = 255; }
-  tg.putImageData(ti, 0, 0); g.imageSmoothingEnabled = false; g.drawImage(tint, 0, 0, off.width, off.height);
-  g.fillStyle = '#5a5566';
+  g.fillStyle = '#ffffff'; g.fillRect(0, 0, off.width, off.height);
+  g.fillStyle = '#1c1a22';
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const p = y * w + x;
-    if (x + 1 < w && labels[p] !== labels[p + 1]) g.fillRect((x + 1) * S - 0.6, y * S, 1.2, S);
-    if (y + 1 < h && labels[p] !== labels[p + w]) g.fillRect(x * S, (y + 1) * S - 0.6, S, 1.2);
+    if (x + 1 < w && labels[p] !== labels[p + 1]) g.fillRect((x + 1) * S - 1.1, y * S, 2.2, S);
+    if (y + 1 < h && labels[p] !== labels[p + w]) g.fillRect(x * S, (y + 1) * S - 1.1, S, 2.2);
   }
   g.textAlign = 'center'; g.textBaseline = 'middle';
   for (const a of state.areas) {
@@ -97,6 +92,7 @@ function draw() {
   ctx.imageSmoothingEnabled = true;
   ctx.drawImage(state.paper, 0, 0);
   if (state.hl) ctx.drawImage(highlight(), 0, 0, cv.width, cv.height);
+  if (state.peek && state.ref) { ctx.save(); ctx.globalAlpha = 0.5; ctx.imageSmoothingEnabled = false; ctx.drawImage(state.ref, 0, 0, cv.width, cv.height); ctx.restore(); }
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(state.painted, 0, 0, cv.width, cv.height);
   if (state.ring >= 0 && !state.done.has(state.ring)) { const a = state.areas[state.ring]; ctx.save(); ctx.strokeStyle = '#8b7bff'; ctx.lineWidth = 2.5 * S / Math.max(1, state.z / 2); ctx.beginPath(); ctx.arc((a.cell % tpl.w + 0.5) * S, (((a.cell / tpl.w) | 0) + 0.5) * S, Math.max(6, a.room * 1.3) * S, 0, 7); ctx.stroke(); ctx.restore(); }
@@ -107,7 +103,8 @@ function highlight() {
   if (hlCache.key === key) return hlCache.c;
   const c = hlCache.c || document.createElement('canvas'); c.width = tpl.w; c.height = tpl.h;
   const g = c.getContext('2d'), im = g.createImageData(tpl.w, tpl.h), d = im.data;
-  for (let p = 0; p < state.labels.length; p++) if (state.labels[p] === state.active && !state.mask[p]) { d[p * 4] = 139; d[p * 4 + 1] = 123; d[p * 4 + 2] = 255; d[p * 4 + 3] = 92; }
+  const tint = rgb(tpl.palette[state.active] || '#8b7bff');
+  for (let p = 0; p < state.labels.length; p++) if (state.labels[p] === state.active && !state.mask[p]) { d[p * 4] = tint[0]; d[p * 4 + 1] = tint[1]; d[p * 4 + 2] = tint[2]; d[p * 4 + 3] = 46; }
   g.putImageData(im, 0, 0); hlCache = { key, c }; return c;
 }
 function status() {
@@ -206,6 +203,13 @@ $('hint').onclick = () => {
   ring(findArea(colour), true);
 };
 $('hl').onclick = () => { state.hl = !state.hl; $('hl').setAttribute('aria-pressed', String(state.hl)); $('hl').textContent = 'Highlight: ' + (state.hl ? 'on' : 'off'); render(); };
+$('peek').onclick = () => { state.peek = !state.peek; $('peek').setAttribute('aria-pressed', String(state.peek)); $('peek').textContent = state.peek ? 'Peek: on' : 'Peek'; render(); say(state.peek ? 'The finished picture is showing through. Tap Peek again to hide it.' : 'The sheet is back.'); };
+function referenceOf(tpl) {
+  const c = document.createElement('canvas'); c.width = tpl.w; c.height = tpl.h;
+  const g = c.getContext('2d'), img = g.createImageData(tpl.w, tpl.h), pal = tpl.palette.map(rgb);
+  for (let p = 0; p < tpl.w * tpl.h; p++) { const k = pal[state.labels[p]]; img.data[p * 4] = k[0]; img.data[p * 4 + 1] = k[1]; img.data[p * 4 + 2] = k[2]; img.data[p * 4 + 3] = 255; }
+  g.putImageData(img, 0, 0); return c;
+}
 
 // ---------- zoom and pan ----------
 const stage = $('stage'), view = $('view');
@@ -214,7 +218,7 @@ function setView(z, tx, ty, smooth) {
   [state.z, state.tx, state.ty] = clampView(z, tx, ty);
   view.style.transition = smooth && !reduced ? 'transform .28s ease' : 'none';
   view.style.transform = 'translate(' + state.tx + 'px,' + state.ty + 'px) scale(' + state.z + ')';
-  $('zlevel').textContent = Math.round(state.z * 100) + '%';
+  $('zlevel').textContent = state.z < 1.05 ? 'Fit' : (Math.round(state.z * 10) / 10).toFixed(1).replace(/\.0$/, '') + '\u00d7';
   stage.classList.toggle('zoomed', state.z > 1.01);
 }
 function zoomAt(f, cx, cy, smooth) { const r = stage.getBoundingClientRect(), x = cx - r.left, y = cy - r.top, z = Math.min(8, Math.max(1, state.z * f)), k = z / state.z; setView(z, x - (x - state.tx) * k, y - (y - state.ty) * k, smooth); }
@@ -288,8 +292,23 @@ function finishedCheck() {
   $('rline').textContent = state.areas.length + ' areas in ' + state.tpl.palette.length + ' colours' + (secs > 5 ? ', painted in ' + (secs >= 120 ? Math.round(secs / 60) + ' minutes' : secs + ' seconds') : '') + '. Here is the whole picture.';
   $('reveal').hidden = false; $('reveal').classList.toggle('play', !reduced);
   say('Finished! ' + state.tpl.name + ' is complete. Watch the replay, download it, or pick the next picture.');
+  burst();
   const all = read(KEY_PROGRESS, {}); if (all[state.tpl.id]) { all[state.tpl.id].finished = true; write(KEY_PROGRESS, all); markCard(state.tpl.id); }
   replay();
+}
+function burst() {
+  const box = $('reveal');
+  box.querySelectorAll('.bit').forEach((n) => n.remove());
+  if (reduced) return;
+  const colors = state.tpl.palette;
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('i');
+    s.className = 'bit';
+    s.style.background = colors[i % colors.length];
+    s.style.left = (12 + (i * 47) % 76) + '%';
+    s.style.animationDelay = ((i % 5) * 0.05) + 's';
+    box.appendChild(s);
+  }
 }
 function replay() {
   const order = [...state.done], img = new ImageData(state.tpl.w, state.tpl.h), tmp = document.createElement('canvas'); tmp.width = state.tpl.w; tmp.height = state.tpl.h;
@@ -340,8 +359,19 @@ $('share').onclick = () => {
   const done = [...state.done].sort((a, b) => a - b).join(','), q = '/paint/?p=' + encodeURIComponent(state.tpl.id) + '&done=' + done + colourTail();
   history.replaceState(null, '', q);
   const own = /^own-/.test(state.tpl.id) ? ' This picture is your own photo, so the link opens it only on this device.' : '';
-  navigator.clipboard?.writeText(location.origin + q).then(() => say('Link copied: it carries the areas you finished.' + own), () => say('The link is in the address bar.' + own));
+  const url = location.origin + q;
+  const file = new File([dataUrlBytes(paintingCanvas().toDataURL('image/png'))], (state.tpl.id || 'painting') + '.png', { type: 'image/png' });
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: state.tpl.name, text: state.tpl.name, url }).then(() => say('Shared. The link carries the areas you finished.' + own), () => say('Link copied: it carries the areas you finished.' + own));
+    return;
+  }
+  navigator.clipboard?.writeText(url).then(() => say('Link copied: it carries the areas you finished.' + own), () => say('The link is in the address bar.' + own));
 };
+function dataUrlBytes(url) {
+  const bin = atob(url.split(',')[1]), out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
 $('save').onclick = () => {
   const list = read(KEY_GALLERY, []);
   list.unshift({ p: state.tpl.id, name: state.tpl.name, done: state.done.size, at: Date.now() });
@@ -381,7 +411,7 @@ function drawLibrary() {
   for (const t of shown) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'card'; b.dataset.id = t.id;
     b.setAttribute('aria-pressed', String(state.tpl && state.tpl.id === t.id));
-    const c = document.createElement('canvas'); c.width = c.height = 88; c.setAttribute('aria-hidden', 'true');
+    const c = document.createElement('canvas'); c.width = c.height = 132; c.setAttribute('aria-hidden', 'true');
     const name = document.createElement('span'); name.className = 'nm'; name.textContent = t.name;
     const badge = document.createElement('span'); badge.className = 'badge';
     b.append(c, name, badge); b.onclick = () => open(t);
@@ -392,7 +422,7 @@ function drawLibrary() {
 function markCard(id, el) {
   const b = el || $('templates').querySelector('[data-id="' + CSS.escape(id) + '"]'); if (!b) return;
   const pr = progressOf(id), badge = b.querySelector('.badge');
-  badge.textContent = pr ? (pr.finished ? 'Done ✓' : Math.round(pr.done.length / (pr.of || 1) * 100) + '%') : '';
+  badge.textContent = pr ? (pr.finished ? 'Done' : 'Started') : '';
   if (b.dataset.drawn) thumb(b, true);
 }
 async function thumb(b) {
@@ -404,7 +434,7 @@ async function thumb(b) {
   const tmp = document.createElement('canvas'); tmp.width = w; tmp.height = h; const g = tmp.getContext('2d'), im = g.createImageData(w, h);
   for (let p = 0; p < w * h; p++) { const c = pal[labels[p]], on = full || (region && doneAreas.has(region[p])) || (!pr); const k = on ? 1 : 0.25; const grey = c[0] * 0.3 + c[1] * 0.59 + c[2] * 0.11;
     im.data[p * 4] = on ? c[0] : grey * k + 230 * (1 - k); im.data[p * 4 + 1] = on ? c[1] : grey * k + 230 * (1 - k); im.data[p * 4 + 2] = on ? c[2] : grey * k + 230 * (1 - k); im.data[p * 4 + 3] = 255; }
-  g.putImageData(im, 0, 0); const cc = b.querySelector('canvas').getContext('2d'); cc.imageSmoothingEnabled = true; cc.drawImage(tmp, 0, 0, 88, 88);
+  g.putImageData(im, 0, 0); const cc = b.querySelector('canvas').getContext('2d'); cc.imageSmoothingEnabled = true; cc.drawImage(tmp, 0, 0, 132, 132);
   b.dataset.drawn = '1';
 }
 
@@ -425,7 +455,7 @@ function loadTemplate(tpl) {
   const { region, areas } = areasOf(state.labels, tpl.w, tpl.h); state.region = region; state.areas = areas; placeNumbers();
   state.painted = document.createElement('canvas'); state.painted.width = tpl.w; state.painted.height = tpl.h;
   cv.width = tpl.w * S; cv.height = tpl.h * S; cv.setAttribute('aria-label', 'The painting ' + tpl.name + ' so far');
-  hlCache = { key: '', c: null }; drawPaper(); clearPainted(); state.active = 0; state.started = Date.now(); $('nextn').textContent = '1';
+  hlCache = { key: '', c: null }; state.ref = referenceOf(tpl); state.peek = false; $('peek').setAttribute('aria-pressed', 'false'); $('peek').textContent = 'Peek'; drawPaper(); clearPainted(); state.active = 0; state.started = Date.now(); $('nextn').textContent = '1';
   $('reveal').hidden = true; setView(1, 0, 0, false);
   $('credit').textContent = '';
   if (tpl.credit) { $('credit').append(document.createTextNode(tpl.credit + ' ')); if (tpl.source) { const a = document.createElement('a'); a.href = tpl.source; a.textContent = 'Source.'; a.rel = 'noopener'; $('credit').append(a); } }
@@ -506,6 +536,7 @@ async function boot() {
   const link = params.has('done') ? (params.get('done') || '').split(',').filter((s) => s !== '').map(Number) : null;
   await open(first, link);
   if (link && link.length) keep();
+  if (innerWidth < 760) stage.scrollIntoView({ block: 'start' });
   await receiveImage((file) => paintFile(file), arrived);
 }
 boot().catch((err) => { $('count').textContent = 'The paintings did not load.'; say(String(err.message || err)); });

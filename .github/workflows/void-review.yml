@@ -179,9 +179,9 @@ jobs:
           examwhy=$(node tools/outcome-exam.mjs --check 2>&1 | tail -n 1)
           if [ $? -ne 0 ]; then exam=fail; fi
           useful=ok
-          node tools/judgment.mjs --base "$BASEREF" > judgment.txt 2>&1
-          if [ $? -ne 0 ]; then useful=fail; fi
+          node tools/judgment.mjs --base "$BASEREF" > judgment.txt 2>&1; jc=$?
           usefulwhy=$(tail -n 1 judgment.txt)
+          if [ "$jc" -ne 0 ] && [[ "$usefulwhy" != *"no free model"* ]]; then useful=fail; fi
           node tools/review-decide.mjs --review "$review" --gate ok --exam "$exam" --why "$examwhy" --useful "$useful" --useful-why "$usefulwhy" > verdict.txt
           code=$?
           cat verdict.txt

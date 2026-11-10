@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-10T01:41:49.015Z",
+  "at": "2026-11-10T02:34:51.740Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,38 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 92.1,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of planet money",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of hidden brain",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of freakonomics radio",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
@@ -257,19 +229,12 @@
       }
     },
     "sports": {
-      "score": 87.9,
+      "score": 88.9,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "nfl scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "mlb scores",
           "failed": [
             "board"
           ],
@@ -444,6 +409,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 87.9
+    "score": 88.9
   }
 }
