@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T16:25:53.093Z",
+ "updated": "2026-11-10T16:35:18.035Z",
  "last24h": {
   "ticks": 147,
-  "started": 81,
+  "started": 80,
   "requeued": 1,
   "setAside": 1,
   "probes": 6,
@@ -12,78 +12,94 @@
  "broken": [],
  "held": [
   {
+   "id": "mwa4pxje",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwa55clr",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwapw6l5",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwasa7yo",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwau0ded",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwau7dgo",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwavhzoe",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwaw4bg9",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwawomei",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9j2cvx",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9n5pkm",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9omg8a",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9p82c2",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9p8r19",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9tfw6c",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9vmcff",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mw9wdnxq",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwa1huht",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
+   "id": "mwa2ssg4",
+   "why": "Verse's coder has used its free model calls until 17:00 UTC"
+  },
+  {
    "id": "mvbl52gd",
    "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
-  },
-  {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
-  },
-  {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
-  },
-  {
-   "id": "mwav1pw9",
-   "why": "no executor for retest"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 47,
+   "used": 77,
    "cap": 90
   },
   "day": {
-   "used": 137,
+   "used": 167,
    "cap": 360
   },
   "room": true,
@@ -101,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9h3p7c": 1794242045251,
   "mw9h3pqx": 1794242608047,
   "mw9h3qb3": 1794243170084,
   "mw9h3qvn": 1794243757431,
@@ -227,34 +242,6 @@
   "review:2677"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T16:34:05.251Z",
-   "open": 283,
-   "started": [
-    {
-     "id": "mw9h3p7c",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 269,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T16:43:28.047Z",
    "open": 282,
@@ -3875,6 +3862,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 16,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T16:35:18.035Z",
+   "open": 333,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 327,
    "warnings": 1
   }
  ]
