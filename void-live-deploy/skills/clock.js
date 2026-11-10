@@ -48,6 +48,14 @@ export function alter(c, lower) {
   return ok;
 }
 
+/** the drawn size that keeps a face of `width` at `size` inside `limit`. A face that already fits stays. Pure. */
+export function fittedSize(size, width, limit) {
+  const s = Number(size), w = Number(width), lim = Number(limit);
+  if (!Number.isFinite(s) || s <= 0) return 48;
+  if (!(w > lim) || !(lim >= 40)) return s;
+  return Math.max(14, Math.round((s * lim) / w));
+}
+
 /** the time as the clock shows it: 12 hour (the default), 24 hour, or the date and time. */
 export function faceText(c, now = new Date()) {
   if (c.format === '24h') return now.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: c.seconds ? '2-digit' : undefined });
@@ -92,6 +100,19 @@ function mount(th, stageApi) {
   if (tz) stageApi.miniature(el, 'clock', { clocks: [{ tz, label: 'Here' }] }, { key: th.id, place: 'beside', width: 150, height: 160, label: '3D desk clock showing the time here' }).catch(() => {});
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
+  // a 56px face with seconds is wider than a 390px phone once its shadow is counted, so a flick
+  // that leaves it at the left margin finishes off the screen. Draw it smaller until the box fits.
+  const room = stageApi.stage.clientWidth || (typeof innerWidth === 'number' ? innerWidth : 0);
+  const limit = room - 16;
+  if (limit >= 40) {
+    let size = parseFloat(el.style.fontSize) || 48;
+    for (let n = 0; n < 8; n++) {
+      const next = fittedSize(size, el.getBoundingClientRect().width, limit);
+      if (next === size) break;
+      size = next;
+      el.style.fontSize = size + 'px';
+    }
+  }
 }
 
 /** remove (the picked clock, or the first): 'removed', 'no clock' when there is none, or '' */

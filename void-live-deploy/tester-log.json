@@ -3,13 +3,34 @@
  "cases": 115,
  "runsTotal": 300,
  "kinds": {
-  "grow": 68,
   "file": 49,
-  "visitor": 179,
+  "grow": 65,
+  "visitor": 182,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-10T00:19:12Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T23:52:09Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-09T23:24:31Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-09T22:59:18Z",
    "passed": 0,
@@ -275,114 +296,78 @@
      "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-09T17:16:32Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T16:48:51Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T16:36:16Z",
-   "passed": 111,
-   "of": 114,
-   "kind": "file",
-   "ms": 396,
-   "note": "fix: \"play voidquest\" fps 6 < 7",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "fps 6 < 7"
-    },
-    {
-     "ask": "play chess",
-     "why": "fps 2 < 7"
-    },
-    {
-     "ask": "stlye like mickey mouse",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-17",
+   "from": "2026-08-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-24",
+   "from": "2026-08-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-31",
+   "from": "2026-09-01",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-07",
+   "from": "2026-09-08",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-14",
+   "from": "2026-09-15",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-21",
+   "from": "2026-09-22",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-28",
+   "from": "2026-09-29",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-05",
+   "from": "2026-10-06",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-12",
-   "runs": 38,
-   "passed": 2030,
-   "of": 2227
+   "from": "2026-10-13",
+   "runs": 35,
+   "passed": 1918,
+   "of": 2101
   },
   {
-   "from": "2026-10-19",
+   "from": "2026-10-20",
    "runs": 2,
    "passed": 134,
    "of": 153
   },
   {
-   "from": "2026-10-26",
+   "from": "2026-10-27",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-11-02",
-   "runs": 260,
+   "from": "2026-11-03",
+   "runs": 263,
    "passed": 6138,
    "of": 8004,
    "broken": 14,
