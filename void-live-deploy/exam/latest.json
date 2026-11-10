@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-10T13:50:12.340Z",
+  "at": "2026-11-10T14:56:18.202Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,12 +34,20 @@
       }
     },
     "podcasts": {
-      "score": 77.8,
+      "score": 74.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of radiolab",
           "failed": [
             "audio",
             "episode"
@@ -80,6 +88,14 @@
           "score": 57.1
         },
         {
+          "ask": "play the latest episode of the ted radio hour",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
           "ask": "play the latest episode of hidden brain",
           "failed": [
             "audio",
@@ -88,12 +104,19 @@
           "score": 71.4
         },
         {
-          "ask": "play the latest episode of stuff you should know",
+          "ask": "play the latest episode of freakonomics radio",
           "failed": [
             "audio",
             "episode"
           ],
           "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of crime junkie",
@@ -104,12 +127,11 @@
           "score": 71.4
         },
         {
-          "ask": "play the latest episode of npr news now",
+          "ask": "play the latest episode of the moth",
           "failed": [
-            "audio",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
+          "score": 83.3
         },
         {
           "ask": "play the latest episode of my favorite murder",
@@ -185,7 +207,7 @@
       }
     },
     "weather": {
-      "score": 96.7,
+      "score": 98.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -199,11 +221,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp",
-            "close"
+            "skill"
           ],
-          "score": 57.1
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -311,17 +331,10 @@
       }
     },
     "sports": {
-      "score": 95.4,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "champions league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "scores",
           "failed": [
@@ -442,6 +455,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 77.8
+    "score": 74.4
   }
 }
