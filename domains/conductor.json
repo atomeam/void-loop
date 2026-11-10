@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T12:56:12.750Z",
+ "updated": "2026-11-10T13:05:35.845Z",
  "last24h": {
   "ticks": 146,
-  "started": 87,
+  "started": 86,
   "requeued": 1,
   "setAside": 2,
-  "probes": 10,
+  "probes": 9,
   "errors": 0
  },
  "broken": [],
@@ -162,7 +162,8 @@
   "mwa0ahv2": 1794275219104,
   "mwa4iwgf": 1794281375210,
   "mwa8w50j": 1794288700838,
-  "mwadd5ol": 1794297358319
+  "mwadd5ol": 1794297358319,
+  "mwaovhvb": 1794315935845
  },
  "sweptAt": 1794313690849,
  "blueprintsAt": 1794313690849,
@@ -250,42 +251,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T13:05:07.069Z",
-   "open": 274,
-   "started": [
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mvwl3biu",
-     "kind": "versus",
-     "wf": "verse-job.yml",
-     "score": 103
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [
-    "verse-podcast.yml"
-   ],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 13,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T13:14:30.603Z",
    "open": 277,
@@ -3915,6 +3880,36 @@
     "void-tick.yml"
    ],
    "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 313,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T13:05:35.845Z",
+   "open": 322,
+   "started": [
+    {
+     "id": "mwaovhvb",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [
+    "verse-podcast.yml"
+   ],
    "sweep": false,
    "blueprints": 0,
    "held": 313,
