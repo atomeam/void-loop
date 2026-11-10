@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { eligible, superseded, stuckDecision, isBot } from './merge-policy.mjs';
+import { eligible, superseded, stuckDecision, isBot, loopCovers, fileContained } from './merge-policy.mjs';
 import { explainPolicyFailure } from './merge-gate.mjs';
 
 const pr = (over) => ({ number: 1, state: 'open', user: { login: 'atomeam' }, head: { ref: 'helper/x', repo: { full_name: 'atomeam/void-loop' } }, labels: [], created_at: '2026-11-03T00:00:00Z', ...over });
@@ -20,7 +20,7 @@ test('a labelled pull request qualifies, and so does a bot branch; a fork does n
   assert.equal(eligible(pr({ head: { ref: 'helper/x', repo: { full_name: 'other/void-loop' } }, labels: [{ name: 'automerge' }] }), 'atomeam/void-loop'), false);
 });
 
-test('an older lab sync and an older loop lap are closed, the newest kept', () => {
+test('an older lab sync is closed; an older loop lap is closed only when its changes are already contained', () => {
   const rows = [
     pr({ number: 1, created_at: '2026-11-01T00:00:00Z', user: { login: 'app/github-actions' }, head: { ref: 'lab/sync-old' } }),
     pr({ number: 2, created_at: '2026-11-03T00:00:00Z', user: { login: 'app/github-actions' }, head: { ref: 'lab/sync-new' } }),
@@ -28,9 +28,80 @@ test('an older lab sync and an older loop lap are closed, the newest kept', () =
     pr({ number: 4, created_at: '2026-11-03T00:00:00Z', user: { login: 'github-actions[bot]' }, head: { ref: 'loop/b' } }),
     pr({ number: 5, created_at: '2026-11-01T00:00:00Z', user: { login: 'someone' }, head: { ref: 'lab/sync-person' } }),
   ];
-  const closed = superseded(rows);
-  assert.deepEqual(closed.map((r) => r.number).sort(), [1, 3]);
-  assert.equal(closed.find((r) => r.number === 1).keep, 2);
+  const asked = [];
+  const blind = superseded(rows, (old) => { asked.push(old.number); return false; });
+  assert.deepEqual(blind.close.map((r) => r.number), [1], 'lab/sync still closes on age alone');
+  assert.equal(blind.close[0].keep, 2);
+  assert.deepEqual(asked, [3], 'the coverage check is not asked about a lab import');
+  assert.equal(blind.carry[0].number, 3);
+  assert.equal(blind.carry[0].keep, 4);
+  assert.deepEqual(blind.carry[0].missing, ['(not checked)']);
+  const proven = superseded(rows, () => true);
+  assert.deepEqual(proven.close.map((r) => r.number).sort(), [1, 3]);
+  assert.deepEqual(proven.carry, []);
+  const held = superseded(rows, () => { throw new Error('compare failed'); });
+  assert.deepEqual(held.carry.map((r) => r.number), [3]);
+  assert.equal(held.carry[0].missing[0], '(coverage check failed)');
+  const unchecked = superseded(rows);
+  assert.deepEqual(unchecked.close.map((r) => r.number), [1]);
+  assert.deepEqual(unchecked.carry.map((r) => r.number), [3], 'with no proof, the older loop pull request stays open');
+});
+
+test('hexen.ai: a newer loop pull request that only touches nightly.json does not contain the consulting note', () => {
+  const feature = [
+    '@@ -0,0 +1,10 @@',
+    '+{',
+    '+  "name": "AI Consulting",',
+    '+  "slug": "ai-consulting",',
+    '+  "description": "Custom AI development, consulting, and infrastructure solutions.",',
+    '+  "features": [',
+    '+    "Custom AI development",',
+    '+    "AI consulting",',
+    '+    "AI infrastructure solutions"',
+    '+  ]',
+    '+}',
+  ].join('\n');
+  const row = [
+    '@@ -436,6 +436,12 @@',
+    '+  "ai-consulting": {',
+    '+   "at": "2026-10-31T15:55:43Z",',
+    '+   "outcome": "pending",',
+    '+   "why": "new floor for hexen.ai",',
+    '+   "title": "AI Consulting"',
+    '+  },',
+  ].join('\n');
+  const older = [
+    { path: 'domains/features/ai-consulting.json', patch: feature },
+    { path: 'domains/tower-self.json', patch: row },
+  ];
+  const newer = [{ path: 'void-live-deploy/progress/nightly.json', patch: '@@ -1 +1 @@\n-{"n":1}\n+{"n":2}\n' }];
+  const missed = loopCovers(older, newer, { 'domains/features/ai-consulting.json': '', 'domains/tower-self.json': '{\n  "hexen.ai": {}\n}\n' });
+  assert.equal(missed.ok, false);
+  assert.deepEqual(missed.missing, ['domains/features/ai-consulting.json', 'domains/tower-self.json']);
+  assert.match(missed.patch, /new floor for hexen\.ai/);
+  const onMain = loopCovers(older, newer, {
+    'domains/features/ai-consulting.json': '{\n  "name": "AI Consulting",\n  "slug": "ai-consulting",\n  "description": "Custom AI development, consulting, and infrastructure solutions.",\n  "features": [\n    "Custom AI development",\n    "AI consulting",\n    "AI infrastructure solutions"\n  ]\n}\n',
+    'domains/tower-self.json': '  "hexen.ai": {}\n  "ai-consulting": {\n   "at": "2026-10-31T15:55:43Z",\n   "outcome": "pending",\n   "why": "new floor for hexen.ai",\n   "title": "AI Consulting"\n  },\n',
+  });
+  assert.equal(onMain.ok, true, 'main already has both notes, so the older lap can close');
+  const carried = loopCovers(older, [
+    { path: 'domains/features/ai-consulting.json', patch: feature },
+    { path: 'domains/tower-self.json', patch: row },
+  ], {});
+  assert.equal(carried.ok, true, 'the newer pull request has the same lines');
+  assert.equal(fileContained({ path: 'a.txt', truncated: true, patch: '+x\n' }, { mainText: 'x' }), false, 'an unreadable patch is not treated as contained');
+  assert.equal(loopCovers([], newer, {}).ok, true, 'a branch that adds nothing is already contained');
+  const gone = loopCovers(
+    [{ path: 'old.txt', patch: '@@ -1 +0,0 @@\n-retire this line\n' }],
+    newer,
+    { 'old.txt': 'retire this line\n' },
+  );
+  assert.deepEqual(gone.missing, ['old.txt']);
+  assert.equal(loopCovers(
+    [{ path: 'old.txt', patch: '@@ -1 +0,0 @@\n-retire this line\n' }],
+    [{ path: 'old.txt', patch: '@@ -1 +0,0 @@\n-retire this line\n' }],
+    { 'old.txt': 'retire this line\n' },
+  ).ok, true);
 });
 
 test('six hours: green merges, a conflict is rebased, a red check is named, a young one waits', () => {
@@ -59,6 +130,9 @@ test('the automerge workflow merges with a squash after the suite gate, and keep
   assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
   assert.doesNotMatch(src, /enablePullRequestAutoMerge/, 'file tools/automerge.mjs must not arm GitHub auto-merge');
   assert.match(src, /workflow', 'run', 'suite-gate\.yml', '--repo', repo, '--ref', 'main'/, 'file tools/automerge.mjs starts the suite from main');
+  assert.match(src, /superseded\(prs, loopCoverage\)/, 'file tools/automerge.mjs checks that a newer loop pull request contains the older one before closing it');
+  assert.match(src, /void-carry/, 'file tools/automerge.mjs records the missing delta and leaves the pull request open');
+  assert.match(src, /!Array\.isArray\(v\.files\)/, 'file tools/automerge.mjs does not treat an unreadable compare as an empty diff');
 });
 
 test('a merge-policy failure names the rule and the file, branch or label', () => {
