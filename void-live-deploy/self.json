@@ -606,10 +606,18 @@
  },
  "commits": [
   {
-   "at": "2026-11-10T00:08:38Z",
-   "subject": "Design loop: 1 page fixed, 2 -> 0 design defects"
+   "at": "2026-11-10T00:20:55Z",
+   "subject": "Outcome exam: sports 88.9"
   },
   {
+   "at": "2026-11-10T00:19:41Z",
+   "subject": "Failed jobs read: run 42724974824 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-10T00:19:25Z",
+   "subject": "Incident: the browser suite failed on 5e9e11d5 (void-live-deploy/incidents.json)"
+   "at": "2026-11-10T00:12:37Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-10T00:08:38Z",
+   "subject": "Design loop: 1 page fixed, 2 -> 0 design defects"
    "at": "2026-11-10T00:08:10Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
    "at": "2026-11-10T00:07:58Z",
@@ -618,12 +626,12 @@
    "subject": "Site test: visitor pass 14/15"
    "at": "2026-11-10T00:00:41Z",
    "subject": "fix: keep a phone answer card one column wide (#2615)"
+   "at": "2026-11-09T23:53:53Z",
+   "subject": "note the card layout pull request on the board"
+   "at": "2026-11-09T23:53:24Z",
+   "subject": "keep phone answer cards in one column, and a clip card in its slot"
    "at": "2026-11-09T23:53:12Z",
    "subject": "Shorts loop: today's trial and verdicts"
-   "at": "2026-11-09T23:53:05Z",
-   "subject": "Note the self card on the handoff."
-   "subject": "Read the self card from the public score files."
-   "subject": "Add a continuous self-model that journals the scores it actually reads."
    "at": "2026-11-09T23:52:15Z",
    "subject": "Outcome exam: sports 89.8"
    "at": "2026-11-09T23:39:56Z",
@@ -637,6 +645,10 @@
    "subject": "Tower size: how heavy each Versus site really is"
    "at": "2026-11-09T23:08:21Z",
    "subject": "Finding: baggage checked against the live airline pages (findings/baggage)"
+   "at": "2026-11-09T23:53:05Z",
+   "subject": "Note the self card on the handoff."
+   "subject": "Read the self card from the public score files."
+   "subject": "Add a continuous self-model that journals the scores it actually reads."
    "at": "2026-11-09T23:06:08Z",
    "subject": "Incident: the browser suite failed on 1e75c723 (void-live-deploy/incidents.json)"
    "at": "2026-11-09T23:05:03Z",
@@ -652,14 +664,6 @@
    "at": "2026-11-10T00:47:33Z",
    "subject": "Outcome exam: definitions 90"
    "at": "2026-11-10T00:34:35Z",
-   "at": "2026-11-10T00:20:55Z",
-   "subject": "Outcome exam: sports 88.9"
-   "at": "2026-11-10T00:19:41Z",
-   "subject": "Failed jobs read: run 42724974824 (void-live-deploy/incidents/actions/)"
-   "at": "2026-11-10T00:19:25Z",
-   "subject": "Incident: the browser suite failed on 5e9e11d5 (void-live-deploy/incidents.json)"
-   "at": "2026-11-10T00:12:37Z",
-   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
    "at": "2026-11-09T23:33:27Z",
    "subject": "Give the credits card its own place in the routing order."
    "subject": "Add an internal credits faucet on the prize wheel."
@@ -849,6 +853,7 @@
  ],
  "visible": {
   "day": 2,
+  "week": 299
   "week": 301
   "day": 5,
   "week": 303
