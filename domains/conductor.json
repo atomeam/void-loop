@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T15:39:04.748Z",
+ "updated": "2026-11-10T15:48:24.265Z",
  "last24h": {
   "ticks": 147,
   "started": 79,
@@ -95,15 +95,15 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 77,
+   "used": 90,
    "cap": 90
   },
   "day": {
-   "used": 77,
+   "used": 90,
    "cap": 360
   },
-  "room": true,
-  "until": null
+  "room": false,
+  "until": "2026-11-10T16:00:00.000Z"
  },
  "handed": {
   "mvbl52gd": 1794313128686,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9en0lw": 1794239093875,
   "mw9en1tx": 1794239673382,
   "mw9h3p7c": 1794242045251,
   "mw9h3pqx": 1794242608047,
@@ -155,10 +154,11 @@
   "mwadd5ol": 1794297358319,
   "mwaovhvb": 1794315935845,
   "mwaovifa": 1794316495548,
-  "mwaovj0f": 1794317091658
+  "mwaovj0f": 1794317091658,
+  "mwauyz6s": 1794325704265
  },
- "sweptAt": 1794321593940,
- "blueprintsAt": 1794321593940,
+ "sweptAt": 1794325704265,
+ "blueprintsAt": 1794325704265,
  "visitorAt": "2026-11-10T15:00:15Z",
  "visitorFiled": [
   "versus:timer365.com",
@@ -243,34 +243,6 @@
   "review:2661"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T15:44:53.875Z",
-   "open": 280,
-   "started": [
-    {
-     "id": "mw9en0lw",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 271,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T15:54:33.382Z",
    "open": 279,
@@ -3879,6 +3851,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 323,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T15:48:24.265Z",
+   "open": 333,
+   "started": [
+    {
+     "id": "mwauyz6s",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 325,
    "warnings": 1
   }
  ]
