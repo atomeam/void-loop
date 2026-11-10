@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fixTask, isTowerPath } from './merge-flow.mjs';
@@ -32,6 +32,10 @@ function ship(ref, message) {
 const checks = (ref, pr) => { try { sh(process.execPath, ['tools/loop-checks.mjs', '--ref', ref, '--repo', repo, '--from', 'pr-fix', ...(pr ? ['--pr', pr] : [])]); } catch (e) { console.log(String(e.stderr || e.message).slice(0, 160)); } };
 const mode = process.env.MODE || 'main', why = String(process.env.WHY || '').replace(/\s+/g, ' ').slice(0, 400), pr = String(process.env.PR || '').trim();
 try {
+  if (mode === 'probe') {
+    const { status } = spawnSync(process.execPath, ['tools/brain-probe.mjs'], { cwd: root, stdio: 'inherit', timeout: 120000 });
+    process.exit(status == null ? 1 : status);
+  }
   if (mode === 'main') {
     const sha = git(['rev-parse', 'HEAD']).trim(), branch = 'loop/main-fix-' + sha.slice(0, 7);
     const open = JSON.parse(sh('gh', ['pr', 'list', '--repo', repo, '--head', branch, '--state', 'open', '--json', 'number']) || '[]');
