@@ -636,6 +636,10 @@
  },
  "commits": [
   {
+   "at": "2026-11-10T15:53:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-10T15:52:26Z",
    "subject": "Call the second host Critic, and leave the site nav alone."
   },
@@ -710,10 +714,6 @@
   {
    "at": "2026-11-10T15:17:46Z",
    "subject": "Site history: the next sites of the queue, each with a cited history"
-  },
-  {
-   "at": "2026-11-10T15:17:37Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   }
  ],
  "builders": {
