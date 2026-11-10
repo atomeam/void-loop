@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T04:25:58.204Z",
+ "updated": "2026-11-10T04:35:23.026Z",
  "last24h": {
   "ticks": 147,
   "started": 106,
   "requeued": 2,
   "setAside": 3,
   "probes": 15,
-  "errors": 20
+  "errors": 19
  },
  "broken": [],
  "held": [
@@ -52,6 +52,10 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2649, until 10:10 UTC)"
   },
   {
+   "id": "mw9p8r19",
+   "why": "verse-job.yml is paused (the coder's back-off, #2649, until 10:10 UTC)"
+  },
+  {
    "id": "mw9tfw6c",
    "why": "verse-job.yml is paused (the coder's back-off, #2649, until 10:10 UTC)"
   },
@@ -85,10 +89,6 @@
   },
   {
    "id": "mvxmzwi4",
-   "why": "verse-job.yml is paused (the coder's back-off, #2649, until 10:10 UTC)"
-  },
-  {
-   "id": "mvxmzx0f",
    "why": "verse-job.yml is paused (the coder's back-off, #2649, until 10:10 UTC)"
   }
  ],
@@ -268,11 +268,6 @@
   "review:2647"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T04:28:07.411Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T04:37:29.949Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3765,6 +3760,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 307,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T04:35:23.026Z",
+   "open": 317,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 308,
    "warnings": 1
   }
  ]
