@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T07:46:31.933Z",
+ "updated": "2026-11-10T07:55:58.319Z",
  "last24h": {
   "ticks": 146,
-  "started": 99,
+  "started": 101,
   "requeued": 2,
   "setAside": 2,
   "probes": 14,
-  "errors": 5
+  "errors": 4
  },
  "broken": [],
  "held": [
@@ -67,11 +67,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 11,
    "cap": 90
   },
   "day": {
-   "used": 293,
+   "used": 304,
    "cap": 360
   },
   "room": true,
@@ -149,7 +149,8 @@
   "mwa0ah54": 1794296791933,
   "mwa0ahv2": 1794275219104,
   "mwa4iwgf": 1794281375210,
-  "mwa8w50j": 1794288700838
+  "mwa8w50j": 1794288700838,
+  "mwadd5ol": 1794297358319
  },
  "sweptAt": 1794293973328,
  "blueprintsAt": 1794293973328,
@@ -237,11 +238,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T07:54:41.254Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T08:04:02.648Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3901,6 +3897,40 @@
    "probe": false,
    "grow": false,
    "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T07:55:58.319Z",
+   "open": 317,
+   "started": [
+    {
+     "id": "mw9xtnko",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 101
+    },
+    {
+     "id": "mwadd5ol",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
    "will": false,
    "lap": false,
    "revived": [
