@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T00:02:54Z",
-  "passed": 32,
-  "of": 43,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
- },
- {
   "at": "2026-10-18T00:19:50Z",
   "passed": 42,
   "of": 44,
@@ -7631,6 +7624,24 @@
      "ask": "what can you do",
      "why": [
       "slow 11618 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T00:19:12Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 606,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 12440 ms"
      ]
     }
    ]
