@@ -9,7 +9,8 @@ export function isSystemSlice(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:next|propose|suggest)\s+(?:system\s+)?slice\b/i.test(t)
     || /^(?:system\s+slice)\s+(?:for|of|on)\b/i.test(t)
-    || /^(?:what\s+should\s+verse\s+build\s+next\s+for)\b/i.test(t);
+    || /^(?:what\s+should\s+verse\s+build\s+next\s+for)\b/i.test(t)
+    || /^(?:propose\s+a\s+system\s+slice)\b/i.test(t);
 }
 
 export function subjectOf(text) {
