@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0f1419; --fg: #e7e9ea; --accent: #1d9bf0; --card: #1a1f26; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.4; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 1.2rem; }
+  h1 { font-size: 1.6rem; margin: 0 0 0.5rem; }
+  p.note { color: #8b98a5; font-size: 0.9rem; margin: 0 0 1.2rem; }
+  label { display: block; font-size: 0.85rem; margin: 0.8rem 0 0.3rem; color: #8b98a5; }
+  textarea, input, select { width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #38444d; background: var(--card); color: var(--fg); font: inherit; }
+  textarea { min-height: 80px; resize: vertical; }
+  .row { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .row > * { flex: 1; min-width: 140px; }
+  canvas { display: block; margin: 1rem auto; background: #fff; border-radius: 8px; max-width: 100%; }
+  .btns { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 1rem 0; }
+  button { padding: 0.6rem 1rem; border-radius: 999px; border: none; background: var(--accent); color: #fff; font: inherit; cursor: pointer; }
+  button.secondary { background: #38444d; }
+  button:disabled { opacity: 0.5; }
+  .status { font-size: 0.85rem; color: #00ba7c; min-height: 1.2em; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>QR code generator · Verse lab</title>
+<meta name="description" content="Job: Type or paste any text, URL or message; instantly get a scannable QR code you can resize, recolor, download as PNG or copy as an image.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="QR code generator · Verse lab">
+<meta property="og:description" content="Job: Type or paste any text, URL or message; instantly get a scannable QR code you can resize, recolor, download as PNG or copy as an image.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f649-qr-code-generator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f649-qr-code-generator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>QR code generator</h1>
+  <p class="note">Type any text or URL. The code is made on this device. Nothing is sent anywhere. Works offline after load.</p>
+
+  <label for="text">Content</label>
+  <textarea id="text" placeholder="https://example.com or any message">https://a-to-mind.com</textarea>
+
+  <div class="row">
+    <div>
+      <label for="size">Size (px)</label>
+      <input type="number" id="size" value="280" min="120" max="800">
+    </div>
+    <div>
+      <label for="fg">Foreground</label>
+      <input type="color" id="fg" value="#000000">
+    </div>
+    <div>
+      <label for="bg">Background</label>
+      <input type="color" id="bg" value="#ffffff">
+    </div>
+  </div>
+
+  <div class="btns">
+    <button id="gen">Generate</button>
+    <button id="dl" class="secondary" disabled>Download PNG</button>
+    <button id="copy" class="secondary" disabled>Copy image</button>
+  </div>
+  <div class="status" id="status"></div>
+  <canvas id="qr" width="280" height="280"></canvas>
+</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
