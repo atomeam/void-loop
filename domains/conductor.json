@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T03:01:35.405Z",
+ "updated": "2026-11-10T03:10:54.358Z",
  "last24h": {
   "ticks": 147,
-  "started": 103,
+  "started": 104,
   "requeued": 1,
   "setAside": 3,
   "probes": 15,
-  "errors": 29
+  "errors": 28
  },
  "broken": [],
  "held": [
@@ -67,11 +67,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 5,
+   "used": 35,
    "cap": 90
   },
   "day": {
-   "used": 185,
+   "used": 215,
    "cap": 360
   },
   "room": true,
@@ -239,11 +239,6 @@
   "heal:helper-color-by-number-238b"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T03:03:39.792Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T03:13:03.525Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3554,6 +3549,34 @@
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T03:10:54.358Z",
+   "open": 313,
+   "started": [
+    {
+     "id": "mw9vmcff",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
     }
    ],
    "requeued": 0,
