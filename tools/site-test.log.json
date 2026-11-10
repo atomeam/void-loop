@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T07:27:02Z",
-  "passed": 52,
-  "of": 62,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
- },
- {
   "at": "2026-10-18T08:43:06Z",
   "passed": 52,
   "of": 63,
@@ -7852,5 +7845,23 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"credits\" (skill:faucet)"
+ },
+ {
+  "at": "2026-11-10T19:17:53Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 658,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 9931 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
