@@ -110,7 +110,7 @@ function main() {
         if (rest.length) {
           console.error('merge-gate: conflicts with main in ' + (rest.join(', ') || '(none)'));
           console.error(String(merged.stderr || merged.stdout || (merged.error && merged.error.message) || '').slice(0, 800));
-          console.error('A build output is regenerated here. These files need a person: run node tools/merge-main.mjs on the branch.');
+          console.error('A build output is regenerated here. These files still conflict: run node tools/merge-main.mjs on the branch. Verse\'s coder resolves what that leaves.');
           process.exit(1);
         }
       } else {

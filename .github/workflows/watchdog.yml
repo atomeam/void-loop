@@ -25,7 +25,7 @@ on:
 permissions:
   contents: read
   issues: write
-  actions: read # to find the last green watchdog run
+  actions: write # read the last green run, and start pr-fix.yml when main is failing
 
 concurrency:
   group: verse-watchdog
@@ -148,6 +148,12 @@ jobs:
             const body = 'The check failed on main ' + context.sha.slice(0, 7) + ': ' + run + '\n\nFix this before new work: read the run log, find the failing check, fix it, merge on green. This issue closes itself when main is green.';
             if (open.length) await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: open[0].number, body });
             else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['watchdog'] });
+            try {
+              await github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner, repo: context.repo.repo, workflow_id: 'pr-fix.yml', ref: 'main',
+                inputs: { pr: '', mode: 'main', why: 'watchdog main ' + context.sha.slice(0, 7) + ' is failing' },
+              });
+            } catch (e) { core.warning('main fix was not started: ' + String(e).slice(0, 180)); }
             core.setFailed('main failed the check');
 
   # The reviewer's own scoreboard, once a week (frontier #1): tools/review-learn.mjs reads Verse's closer read on the PRs merged in the
