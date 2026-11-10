@@ -1,15 +1,52 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 116,
+ "cases": 117,
  "runsTotal": 300,
  "kinds": {
-  "grow": 51,
+  "grow": 50,
   "file": 48,
-  "visitor": 197,
+  "visitor": 198,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-10T17:19:36Z",
+   "passed": 115,
+   "of": 120,
+   "kind": "grow",
+   "ms": 405,
+   "note": "new ground passed, kept as a regression case: \"credits\" (skill:faucet)",
+   "failed": [
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "flip this card",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "can we play despacito",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "progress report for the onboarding automation",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-10T17:08:15Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-10T16:36:48Z",
    "passed": 0,
@@ -158,20 +195,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T23:24:31Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T22:59:18Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -225,9 +248,9 @@
   },
   {
    "from": "2026-10-13",
-   "runs": 19,
-   "passed": 1162,
-   "of": 1281
+   "runs": 17,
+   "passed": 1046,
+   "of": 1160
   },
   {
    "from": "2026-10-20",
@@ -243,9 +266,9 @@
   },
   {
    "from": "2026-11-03",
-   "runs": 279,
-   "passed": 6252,
-   "of": 8123,
+   "runs": 281,
+   "passed": 6367,
+   "of": 8243,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -642,6 +665,10 @@
   "skill:build-world": "2026-11-10T03:17:41Z",
   "skill:client-intake": "2026-11-10T03:17:41Z",
   "skill:client-status-pack": "2026-11-10T03:17:41Z",
-  "skill:connect-pack": "2026-11-10T03:17:41Z"
+  "skill:connect-pack": "2026-11-10T03:17:41Z",
+  "skill:faucet": "2026-11-10T17:19:36Z",
+  "skill:handoff-checklist": "2026-11-10T17:19:36Z",
+  "skill:ownership-map": "2026-11-10T17:19:36Z",
+  "skill:progress-report": "2026-11-10T17:19:36Z"
  }
 }

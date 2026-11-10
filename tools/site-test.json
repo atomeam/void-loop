@@ -381,6 +381,9 @@
     },
     {
       "ask": "build a hut"
+    },
+    {
+      "ask": "credits"
     }
   ],
   "candidates": [],
