@@ -68,6 +68,6 @@ chain[3].text = 'The journal feed shows the DOI, and those words still count.';
 assert.ok(!hardShow({ lines: chain, premise: 'journal', must: ['500 words'] }, { kind: 'short' }).includes('does not follow'));
 
 const made = shortScript('Critic: Pages never speak first.\nVerse: This one does.\nCritic: Fine. It does.\n');
-assert.equal(made.show.hook, 'What if you could ask for this today?');
+assert.equal(made.show.hook, 'Pages never speak first.');
 assert.equal(made.issues.length, 0);
 console.log('show-pipe: ok');

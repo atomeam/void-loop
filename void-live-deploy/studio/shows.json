@@ -2,100 +2,110 @@
   "shorts": [
     {
       "id": "20261110-verse-1",
-      "title": "Who talks first",
+      "title": "The unsigned card",
       "file": "20261110-verse-1.mp4",
-      "fact": "On the Brain page Verse speaks first, from what changed, at most once every 3 minutes.",
+      "fact": "What can you do took 8855 milliseconds on the visitor pass of 10 November 2026, 16:08 UTC. The line is 8000.",
       "scores": {
-        "clarity": 8,
-        "originality": 7,
-        "entertainment": 8,
-        "impressive": 7,
-        "avg": 7.5,
-        "human": 7,
-        "notes": "Each line answers the one before it, and the 3-minute limit is the number.",
-        "pass": true,
-        "references": [
+        "clarity": 0,
+        "originality": 0,
+        "entertainment": 0,
+        "impressive": 0,
+        "human": 3,
+        "pass": false,
+        "separated": false,
+        "notes": "Recorded from the live stage. Not published: the free judge cannot separate a good script from a bad one.",
+        "calibration": [
           {
-            "id": "veritasium",
-            "name": "Veritasium",
-            "score": 8,
-            "miss": []
+            "id": "journal",
+            "min": 1,
+            "scores": [
+              5,
+              1,
+              1
+            ]
           },
           {
-            "id": "rober",
-            "name": "Mark Rober",
-            "score": 8,
-            "miss": []
+            "id": "old34",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
           },
           {
-            "id": "tom-scott",
-            "name": "Tom Scott",
-            "score": 8,
-            "miss": []
+            "id": "page",
+            "min": 1,
+            "scores": [
+              7,
+              3,
+              1
+            ]
           },
           {
-            "id": "hai",
-            "name": "Half as Interesting",
-            "score": 8,
-            "miss": []
-          },
-          {
-            "id": "vox",
-            "name": "Vox",
-            "score": 8,
-            "miss": []
+            "id": "good",
+            "min": 3,
+            "scores": [
+              4,
+              3,
+              10
+            ]
           }
-        ],
-        "gate": true
+        ]
       }
     },
     {
       "id": "20261110-verse-2",
-      "title": "A film that fits",
+      "title": "451 is not a signature",
       "file": "20261110-verse-2.mp4",
-      "fact": "Ask for scary films from the nineties and each real film gets a score from 0 to 100.",
+      "fact": "The same run passed 14 of 15. The median was 451 milliseconds.",
       "scores": {
-        "clarity": 8,
-        "originality": 7,
-        "entertainment": 8,
-        "impressive": 7,
-        "avg": 7.5,
-        "human": 7,
-        "notes": "Each line answers the one before it, and the score runs from 0 to 100.",
-        "pass": true,
-        "references": [
+        "clarity": 0,
+        "originality": 0,
+        "entertainment": 0,
+        "impressive": 0,
+        "human": 3,
+        "pass": false,
+        "separated": false,
+        "notes": "Recorded from the live stage. Not published: the free judge cannot separate a good script from a bad one.",
+        "calibration": [
           {
-            "id": "veritasium",
-            "name": "Veritasium",
-            "score": 8,
-            "miss": []
+            "id": "journal",
+            "min": 1,
+            "scores": [
+              5,
+              1,
+              1
+            ]
           },
           {
-            "id": "rober",
-            "name": "Mark Rober",
-            "score": 8,
-            "miss": []
+            "id": "old34",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
           },
           {
-            "id": "tom-scott",
-            "name": "Tom Scott",
-            "score": 8,
-            "miss": []
+            "id": "page",
+            "min": 1,
+            "scores": [
+              7,
+              3,
+              1
+            ]
           },
           {
-            "id": "hai",
-            "name": "Half as Interesting",
-            "score": 8,
-            "miss": []
-          },
-          {
-            "id": "vox",
-            "name": "Vox",
-            "score": 8,
-            "miss": []
+            "id": "good",
+            "min": 3,
+            "scores": [
+              4,
+              3,
+              10
+            ]
           }
-        ],
-        "gate": true
+        ]
       }
     }
   ]
