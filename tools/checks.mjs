@@ -271,6 +271,7 @@ for (const [name, file] of [
   ['rts', 'rts.test.mjs'],
   ['routed', 'routed.test.mjs'],
   ['better', 'better.test.mjs'],
+  ['self model', 'self-model.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
   ['video-gate', 'video-gate.test.mjs'],
   ['shorts-loop', 'shorts-loop.test.mjs'],

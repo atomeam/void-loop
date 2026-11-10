@@ -733,6 +733,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://a-to-mind.com/self/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://a-to-mind.com/under-the-hood/</loc>
     <lastmod>2026-11-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -812,7 +818,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/prizes/</loc>
-    <lastmod>2026-11-09</lastmod>
+    <lastmod>2026-11-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
