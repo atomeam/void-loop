@@ -630,88 +630,100 @@
  },
  "commits": [
   {
-   "at": "2026-11-10T01:53:46Z",
+   "at": "2026-11-10T02:24:33Z",
+   "subject": "Verse loop: task, Queue job mw9rbqfa (heal: helper-handoff-checklist): Repair (#2637)"
+  },
+  {
+   "at": "2026-11-10T02:24:00Z",
+   "subject": "Board: helper/unbidden-plain-0b57 shipped (https://github.com/atomeam/void-loop/pull/2633)"
+  },
+  {
+   "at": "2026-11-10T02:23:40Z",
+   "subject": "Note that a one-line pull request merges itself. (#2638)"
+  },
+  {
+   "at": "2026-11-10T02:23:09Z",
+   "subject": "Failed jobs read: run 42738937675 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T02:22:55Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T02:21:44Z",
+   "subject": "Board: helper/least-next-0b57 shipped (https://github.com/atomeam/void-loop/pull/2634)"
+  },
+  {
+   "at": "2026-11-10T02:18:54Z",
+   "subject": "Leave the sitemap for the deploy to write."
+  },
+  {
+   "at": "2026-11-10T02:18:36Z",
+   "subject": "Verse, unbidden says what it built or is building next (#2633)"
+  },
+  {
+   "at": "2026-11-10T02:18:33Z",
+   "subject": "Leave the generated self pages for the deploy to write."
+  },
+  {
+   "at": "2026-11-10T02:18:27Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-10T01:53:39Z",
-   "subject": "Board: helper/self-judgment-0b57 shipped (https://github.com/atomeam/void-loop/pull/2628)"
+   "at": "2026-11-10T02:18:22Z",
+   "subject": "Failed jobs read: run 42737938253 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-10T01:53:26Z",
-   "subject": "build: judge a change before Verse ships it (#2628)"
+   "at": "2026-11-10T02:18:06Z",
+   "subject": "The self card says what was built and what is next (#2632)"
   },
   {
-   "at": "2026-11-10T01:51:15Z",
-   "subject": "Failed jobs read: run 42737938041 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:48:40Z",
-   "subject": "chore: leave generated files for the deploy to write"
-  },
-  {
-   "at": "2026-11-10T01:48:40Z",
+   "at": "2026-11-10T02:17:58Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-10T01:48:40Z",
-   "subject": "build: list only finished sites on the Tower"
+   "at": "2026-11-10T02:17:22Z",
+   "subject": "The paint page is a colouring book: original pictures, a white numbered sheet, and a finished reveal."
   },
   {
-   "at": "2026-11-10T01:44:39Z",
-   "subject": "Verse loop: fix guard-source (#2625)"
+   "at": "2026-11-10T02:16:44Z",
+   "subject": "Fix verse-coder miss listing when ripgrep is missing (watchdog fast red on main) (#2635)"
   },
   {
-   "at": "2026-11-10T01:41:52Z",
-   "subject": "Outcome exam: sports 87.9"
+   "at": "2026-11-10T02:16:21Z",
+   "subject": "build: the loop takes the next simplest site (#2634)"
   },
   {
-   "at": "2026-11-10T01:41:12Z",
-   "subject": "Failed jobs read: run 42737121389 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-10T02:16:00Z",
+   "subject": "Merge every open pull request without a human approval (#2636)"
   },
   {
-   "at": "2026-11-10T01:37:39Z",
-   "subject": "void-test: regenerate skills/index.json before self-context (#2626)"
-  },
-  {
-   "at": "2026-11-10T01:34:41Z",
-   "subject": "Failed jobs read: run 42736265108 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:34:01Z",
-   "subject": "Failed jobs read: run 42736264914 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:30:29Z",
-   "subject": "Fix tools/families.mjs: drop orphaned self-family lines after merge (#2624)"
-  },
-  {
-   "at": "2026-11-10T01:26:46Z",
-   "subject": "Failed jobs read: run 42734968225 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:26:18Z",
-   "subject": "Failed jobs read: run 42734968439 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:25:23Z",
-   "subject": "Failed jobs read: run 42733858309 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T01:24:33Z",
+   "at": "2026-11-10T02:11:33Z",
    "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-10T01:23:33Z",
-   "subject": "Failed jobs read: run 42732882416 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-10T02:02:07Z",
+   "subject": "Failed jobs read: run 42739225315 (void-live-deploy/incidents/actions/)"
   },
   {
-   "at": "2026-11-10T01:23:19Z",
-   "subject": "Failed jobs read: run 42733858292 (void-live-deploy/incidents/actions/)"
+   "at": "2026-11-10T02:01:35Z",
+   "subject": "Board: helper/least-tower-0b57 shipped (https://github.com/atomeam/void-loop/pull/2627)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Verse, unbidden speaks only about what was built or is being built next…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2633."
+   },
+   {
+    "name": "the loop takes the next simplest site and builds its missing jobs (Cursor…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2634."
+   },
+   {
+    "name": "the Tower lists only sites Verse can actually do, each with a history page…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2627."
+   },
    {
     "name": "before Verse ships its own change, a free model asks whether a person would…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2628."
@@ -723,18 +735,6 @@
    {
     "name": "Lists run 15 (grok-bot, 2026-11-09): every Russian VAT rate on /vat/ finishes…",
     "line": "/vat/ and lib/vat.js offer 22, 20, 18, 10, the simplified-tax 7 and 5, and 0% (tools/vat.test.mjs); the sum and rate already rode in the link and the page was already offline, so those 16 queued asks are built…"
-   },
-   {
-    "name": "Versus tower rebuilt to its rules (grok-bot, 2026-11-09)",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2587. Floors are real, studied sites only (stubs, parked and unstudied frontier domains stay in data as candidates); the climb is closest to assimilated first; no timed give-way (open…"
-   },
-   {
-    "name": "Lists run 14 (took over #2561, opened as 'run 15'; main's red /journal/…",
-    "line": "the a-to-mind.com outage (empty 404s on /tools.json, /api/ and /?q= after bot pushes, 2026-11-07 20:00 UTC on) was Cloudflare Pages Git builds publishing the repo root with no Functions over production…"
-   },
-   {
-    "name": "The Tower drops a rival whose page was removed: a 200 access-refusal stub is…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2516. oneyeard.com stood the Tower on \"Sorry, This Page Can't Be Accessed\" (a 200 served to everyone, smallest-first brought it to the front); tools/tower-alive.mjs now reads a 2xx…"
    }
   ],
   "ladders": [
@@ -889,8 +889,8 @@
   }
  ],
  "visible": {
-  "day": 12,
-  "week": 309
+  "day": 16,
+  "week": 313
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
