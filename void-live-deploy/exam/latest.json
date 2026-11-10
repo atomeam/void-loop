@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-10T06:02:32.137Z",
+  "at": "2026-11-10T06:28:45.649Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,7 +34,7 @@
       }
     },
     "podcasts": {
-      "score": 75.2,
+      "score": 80.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -112,30 +112,6 @@
           "score": 71.4
         },
         {
-          "ask": "play the latest episode of the moth",
-          "failed": [
-            "audio"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of npr news now",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
-        },
-        {
           "ask": "play the episode before that",
           "failed": [
             "skill"
@@ -200,7 +176,7 @@
       }
     },
     "weather": {
-      "score": 96.7,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -214,11 +190,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp",
-            "close"
+            "skill"
           ],
-          "score": 57.1
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -326,24 +300,10 @@
       }
     },
     "sports": {
-      "score": 94.4,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "premier league scores",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
         {
           "ask": "scores",
           "failed": [
@@ -464,6 +424,6 @@
   },
   "lowest": {
     "domain": "podcasts",
-    "score": 75.2
+    "score": 80.1
   }
 }
