@@ -3,13 +3,20 @@
  "cases": 116,
  "runsTotal": 300,
  "kinds": {
-  "grow": 60,
+  "grow": 59,
   "file": 48,
-  "visitor": 188,
+  "visitor": 189,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-10T05:35:51Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-10T04:23:17Z",
    "passed": 0,
@@ -188,24 +195,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T19:33:30Z",
-   "passed": 113,
-   "of": 115,
-   "kind": "grow",
-   "ms": 428,
-   "note": "new ground passed, kept as a regression case: \"which skill family is unhealthy\" (skill:incident-autopsy)",
-   "failed": [
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "what is in github.com/atomeam/void-loop",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -259,9 +248,9 @@
   },
   {
    "from": "2026-10-13",
-   "runs": 28,
-   "passed": 1619,
-   "of": 1776
+   "runs": 27,
+   "passed": 1578,
+   "of": 1725
   },
   {
    "from": "2026-10-20",
@@ -277,7 +266,7 @@
   },
   {
    "from": "2026-11-03",
-   "runs": 270,
+   "runs": 271,
    "passed": 6252,
    "of": 8123,
    "broken": 14,

@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T04:27:19Z",
-  "passed": 41,
-  "of": 51,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
- },
- {
   "at": "2026-10-18T04:39:06Z",
   "passed": 42,
   "of": 52,
@@ -7729,6 +7722,24 @@
      "ask": "what can you do",
      "why": [
       "slow 11665 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T05:35:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 473,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8639 ms"
      ]
     }
    ]
