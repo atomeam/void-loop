@@ -279,6 +279,16 @@
    "listed": 2,
    "defectsBefore": 8,
    "defectsAfter": 3
+  },
+  {
+   "at": "2026-11-10T11:51:31.839Z",
+   "run": 33,
+   "measured": 30,
+   "clean": 23,
+   "fixed": 1,
+   "listed": 6,
+   "defectsBefore": 5,
+   "defectsAfter": 2
   }
  ],
  "pages": {
@@ -3076,7 +3086,7 @@
    "state": "clean"
   },
   "/lab/f473-webgpu-acoustic-nca-spatial-weaver-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 3,
     "contrast": 0,
@@ -3103,14 +3113,14 @@
    "state": "clean"
   },
   "/lab/f475-orient-mlp-genome-auction-lattice/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 3,
     "contrast": 0,
     "targets": 3,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.001,
+    "cls": 0.002,
     "overflow": 0
    },
    "state": "listed",
@@ -3156,10 +3166,10 @@
    "state": "clean"
   },
   "/lab/f563-webgpu-rigid-dom-genome-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
-    "defects": 6,
-    "contrast": 6,
+    "defects": 5,
+    "contrast": 5,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
@@ -3168,16 +3178,16 @@
    },
    "state": "fixed",
    "after": {
-    "defects": 3,
-    "contrast": 3,
+    "defects": 2,
+    "contrast": 2,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
     "overflow": 0
    },
-   "rules": 6,
-   "moved": 0
+   "rules": 5,
+   "moved": 0.089
   },
   "/lab/f466-webgpu-bayesian-wave-collapse-mind/": {
    "at": "2026-11-10T07:47:54.771Z",
@@ -3573,7 +3583,7 @@
    "state": "clean"
   },
   "/lab/149-local-intero-not-claim/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3638,18 +3648,8 @@
    "state": "clean"
   },
   "/lab/f554-competitive-mlp-portal-agents-genome/": {
-   "at": "2026-11-10T09:49:31.654Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
-    "defects": 3,
-    "contrast": 3,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 1,
     "contrast": 1,
     "targets": 0,
@@ -3658,8 +3658,8 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0.17
+   "state": "listed",
+   "why": "the defects did not go down (1 -> 2)"
   },
   "/lab/f287-orientation-mlp-dom-forage-webgpu-field/": {
    "at": "2026-11-10T09:49:31.654Z",
@@ -3818,7 +3818,7 @@
    "state": "clean"
   },
   "/lab/f290-self-listening-spectral-agent-arena/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3831,7 +3831,7 @@
    "state": "clean"
   },
   "/lab/f597-orientation-mlp-sealed-genome-swarm-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3858,21 +3858,21 @@
    "why": "the defects did not go down (3 -> 3)"
   },
   "/lab/f494-webgpu-ifs-fractal-policy-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 14.862,
+    "cls": 11.365,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 14.862 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 11.365 that no rule fixes: listed for a builder)"
   },
   "/lab/f487-webgpu-attention-cluster-dom-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3885,7 +3885,7 @@
    "state": "clean"
   },
   "/lab/f053-webgpu-softbody-attention-portals/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3893,12 +3893,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 269
+    "overflow": 270
    },
    "state": "clean"
   },
   "/lab/f611-web-audio-spatial-morpher-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3948,7 +3948,7 @@
    "moved": 0.089
   },
   "/lab/f298-webgpu-attention-message-graph-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3961,7 +3961,7 @@
    "state": "clean"
   },
   "/lab/f302-webxr-hand-rnn-physical-ui-sculptors/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -3974,46 +3974,46 @@
    "state": "clean"
   },
   "/lab/f469-webgpu-evo-particle-spatial-audio-dom-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.006,
+    "cls": 0.001,
     "overflow": 248
    },
    "state": "clean"
   },
   "/lab/f294-webgpu-dom-orb-causal-echo/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.012,
+    "cls": 0.002,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f254-orientation-webgpu-sealed-physics-arena/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.011,
+    "cls": 0.047,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f295-deviceorientation-dom-genome-arena/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4026,7 +4026,7 @@
    "state": "clean"
   },
   "/lab/f261-webgpu-orientation-nca-portal-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4077,7 +4077,7 @@
    "why": "the defects did not go down (2 -> 2)"
   },
   "/lab/f228-orientation-sealed-dom-agents/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4085,12 +4085,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 2
+    "overflow": 1
    },
    "state": "clean"
   },
   "/lab/f464-competitive-local-mlp-dom-genome-transfer/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4103,7 +4103,7 @@
    "state": "clean"
   },
   "/lab/f300-orient-causal-mlp-physical-dom-agents/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4111,12 +4111,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 4
+    "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f226-webxr-gaze-mlp-sealed-agents/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4129,7 +4129,7 @@
    "state": "clean"
   },
   "/lab/f241-webgpu-memory-consolidation-lattice/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4155,7 +4155,7 @@
    "state": "clean"
   },
   "/lab/f457-webgpu-spectral-feedback-swarm-mind/": {
-   "at": "2026-11-08T07:42:09.012Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -4163,7 +4163,7 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 14
+    "overflow": 8
    },
    "state": "clean"
   },
@@ -9291,18 +9291,8 @@
    "state": "clean"
   },
   "/lab/f575-speech-nca-dom-garden/": {
-   "at": "2026-11-10T09:49:31.654Z",
+   "at": "2026-11-10T11:51:31.839Z",
    "before": {
-    "defects": 5,
-    "contrast": 0,
-    "targets": 3,
-    "unstyled": 2,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 2,
     "contrast": 0,
     "targets": 2,
@@ -9311,8 +9301,8 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0.027
+   "state": "listed",
+   "why": "the defects did not go down (2 -> 2)"
   },
   "/lab/f203-webxr-gaze-webgpu-neural-kernel-idb/": {
    "at": "2026-11-10T09:49:31.654Z",
@@ -9363,6 +9353,72 @@
     "empty": 0,
     "cls": 0,
     "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f574-crosstab-sealed-genome-cssgrid-mind/": {
+   "at": "2026-11-10T11:51:31.839Z",
+   "before": {
+    "defects": 6,
+    "contrast": 6,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "listed",
+   "why": "the defects did not go down (6 -> 8)"
+  },
+  "/lab/f498-webgpu-wfc-mlp-living-grid-mind/": {
+   "at": "2026-11-10T11:51:31.839Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.005,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f462-preference-evo-orient-spatial-orbs/": {
+   "at": "2026-11-10T11:51:31.839Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f220-window-spanning-organism/": {
+   "at": "2026-11-10T11:51:31.839Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f623-orientation-mlp-spatial-card-weaver/": {
+   "at": "2026-11-10T11:51:31.839Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 370
    },
    "state": "clean"
   }
