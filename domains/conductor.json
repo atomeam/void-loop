@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T00:23:52.536Z",
+ "updated": "2026-11-10T00:33:15.916Z",
  "last24h": {
   "ticks": 148,
-  "started": 93,
+  "started": 95,
   "requeued": 3,
   "setAside": 2,
   "probes": 15,
-  "errors": 41
+  "errors": 40
  },
  "broken": [],
  "held": [
@@ -114,7 +114,7 @@
   "mveb8svc": 1794269667104,
   "mw8ao9zz": 1794206381857,
   "mvfu4evy": 1794270232536,
-  "mvpuq9g6": 1794191729678,
+  "mvpuq9g6": 1794270795916,
   "mvpuqaee": 1794205814254,
   "mvpuqb4r": 1794206381857,
   "mvvjzso8": 1794206945891,
@@ -171,7 +171,8 @@
   "mw9vvff9": 1794266841715,
   "mw9vvg2p": 1794267408112,
   "mw9vvgpo": 1794267971017,
-  "mw9vvhf3": 1794268534649
+  "mw9vvhf3": 1794268534649,
+  "mw9y7ng7": 1794270795916
  },
  "sweptAt": 1794270232536,
  "blueprintsAt": 1794270232536,
@@ -259,11 +260,6 @@
   "heal:helper-ownership-pack"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T00:33:03.704Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T00:42:28.975Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3343,6 +3339,40 @@
    ],
    "daily": [],
    "sweep": true,
+   "blueprints": 0,
+   "held": 283,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T00:33:15.916Z",
+   "open": 301,
+   "started": [
+    {
+     "id": "mvpuq9g6",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 88
+    },
+    {
+     "id": "mw9y7ng7",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
    "blueprints": 0,
    "held": 283,
    "warnings": 1
