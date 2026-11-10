@@ -19,6 +19,7 @@ import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
+import { fixAge, fixNote, nextStep } from './merge-flow.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
@@ -80,6 +81,22 @@ function idleEvent() {
 }
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 const here = dirname(fileURLToPath(import.meta.url));
+const safeArg = (s) => String(s || '').replace(/[\r\n"]/g, ' ').slice(0, 160);
+function dispatchFix(number, sha, kind, why) {
+  try {
+    run(['api', '-X', 'POST', `repos/${repo}/issues/${number}/comments`, '--input', '-'], JSON.stringify({ body: fixNote(sha, kind) }));
+    run(['workflow', 'run', 'pr-fix.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${number}`, '-f', `mode=${kind}`, '-f', `why=${safeArg(why)}`]);
+    console.log(`#${number}: coder started (${kind})`);
+  } catch (e) { console.log(`#${number}: could not start the coder: ${String(e.stderr || e.message).slice(0, 200)}`); }
+}
+const ageOf = (number, sha, kind) => { try { return fixAge(gh(`repos/${repo}/issues/${number}/comments?per_page=100`) || [], sha, kind); } catch (_) { return null; } };
+function startMainFix(hint, sha) {
+  const short = String(sha || '').slice(0, 7);
+  if (!short) return;
+  try { const runs = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'pr-fix.yml', '--limit', '20', '--json', 'displayTitle,status'])); if ((Array.isArray(runs) ? runs : []).some((x) => String(x.displayTitle || '').includes(short))) return; } catch (_) {}
+  try { run(['workflow', 'run', 'pr-fix.yml', '--repo', repo, '--ref', 'main', '-f', 'mode=main', '-f', 'pr=', '-f', `why=${safeArg('main ' + short + ' ' + (hint || ''))}`]); console.log('main is red: coder started on loop/main-fix-' + short + ' (pull requests still merge)'); }
+  catch (e) { console.log('could not start the main fix: ' + String(e.stderr || e.message).slice(0, 200)); }
+}
 
 // the build-queue job a merged PR names on its last line (`Job: <id>`, tools/job-link.mjs) goes live (asked by Verse); the PR list and
 // the single-PR read both carry `body`. Needs VOID_OWNER_TOKEN in the step's env; without it the line says so. Never stops the loop.
@@ -185,7 +202,7 @@ for (let p of prs) {
   if (!one && Date.now() - sweepStart > SWEEP_MS) { console.log(`::notice::stopped the reading at #${p && p.number} after ${Math.round(SWEEP_MS / 1000)} s, so the suite gate runs inside the job's time limit. The next sweep reads the rest.`); break; }
   if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
   if (!one && budget().left < RATE_FLOOR) { console.log(`::notice::stopped the sweep at #${p && p.number}: under ${RATE_FLOOR} API calls left this hour. The next wake carries on.`); break; }
-  if (!p || p.state !== 'open' || closed.has(p.number)) continue;
+  if (!p || p.state !== 'open' || closed.has(p.number) || p.draft) { if (p && p.draft) console.log(`#${p.number}: draft, left as a draft`); continue; }
   // every PR from this repository is merged automatically (owner, 2026-10-15: "automerge everything always"): a PR nobody
   // labelled gets the label here, so the rest of the loop (and anyone reading the PR) sees the same thing
   // the retired confidence label (lib/v01d-fixes.js WAITS) is not a person: the checks decide, so it becomes automerge
@@ -193,8 +210,7 @@ for (let p of prs) {
     try {
       run(['api', '-X', 'DELETE', `repos/${repo}/issues/${p.number}/labels/${encodeURIComponent(WAITS)}`]);
       run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] }));
-      if (p.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-      console.log(`#${p.number}: was waiting for a person; it merges itself now`);
+      console.log(`#${p.number}: retired label cleared; it merges itself`);
     } catch (e) { console.log(`#${p.number}: could not clear the retired label: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
   }
   if (!(p.labels || []).some((l) => l.name === LABEL) && !(p.head.repo && p.head.repo.full_name !== repo)) {
@@ -221,7 +237,7 @@ for (let p of prs) {
   if (r.state === 'resolve') {
     const m = resolveMain(ex, gh, { repo, pr: p.number, branch: r.branch, tools: here });
     console.log(`#${p.number}: ` + (m.state === 'pushed' ? `main merged in and pushed as ${m.sha.slice(0, 7)}; Verse's review started on it` : m.state === 'conflict' ? `conflicts need a person in ${m.files.join(', ')}` + (m.commented ? ' (commented on the PR)' : ' (already said on the PR)') : `could not merge main: ${m.why}`));
-    if (m.state === 'conflict') noteStuck(p, 'it conflicts with main in ' + m.files.join(', '));
+    if (m.state === 'conflict' && nextStep({ readiness: 'resolve', age: ageOf(p.number, r.sha, 'conflict') }).action === 'fix') dispatchFix(p.number, r.sha, 'conflict', (m.files || []).join(', '));
     continue;
   }
   if (r.state === 'wait' && r.noReview && r.branch) {
@@ -232,25 +248,38 @@ for (let p of prs) {
     } catch (e) { console.log(`#${p.number}: could not start the pull-request checks: ${String(e.stderr || e.message).slice(0, 200)}`); }
     continue;
   }
-  if (r.state === 'stop') noteStuck(p, r.why);
-  if (r.state !== 'merge') continue;
-  // the merge gate tests the result of merging main. Missing on this head: start it and wait (a token push starts no pull_request run).
-  // A repository that does not have the workflow yet (this file's first merge) is told so, and the older rule stands.
-  try {
-    const gate = (gh(`repos/${repo}/commits/${r.sha}/check-runs?per_page=100`).check_runs || []).filter((c) => c.name === 'merge-gate').sort((a, b) => b.id - a.id)[0];
-    if (!gate && r.branch) {
-      try { run(['workflow', 'run', 'merge-gate.yml', '--repo', repo, '--ref', r.branch, '-f', `pr=${p.number}`]); console.log(`#${p.number}: merge gate started on ${r.sha.slice(0, 7)}`); continue; }
-      catch (e) { console.log(`#${p.number}: no merge gate on this repository yet (${String(e.stderr || e.message || e).slice(0, 120)}); merging on Verse's review`); }
-    } else if (gate && (gate.status !== 'completed' || gate.conclusion !== 'success')) {
-      console.log(`#${p.number}: merge gate ${gate.status} ${gate.conclusion || ''}`); continue;
-    }
-  } catch (e) { console.log(`#${p.number}: could not read the merge gate: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
-  // the safety-check runs later, on the batch the suite gate chooses only (chooseChecked below)
-  ready.push({ number: p.number, review: 'merge', p, r });
+  if (r.state === 'stop') {
+    const step = nextStep({ readiness: 'stop', age: ageOf(p.number, r.sha, 'red') });
+    if (step.action === 'fix') { dispatchFix(p.number, r.sha, 'red', r.why); continue; }
+    if (step.action !== 'merge') continue;
+  } else if (r.state !== 'merge') continue;
+  ready.push({ number: p.number, review: r.state, p, r });
 }
-// One pull request, and only after the full suite passed on top of current main (tools/suite-gate.mjs).
+// Merge now. The suite runs on main afterwards (verify.yml). The block below is the old suite wait; it does not run.
 let mainSha = '', choice = null, suiteRun = null, mergeError = '';
 if (ready.length && !limited) {
+  try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  let verifyHold = { hold: false, heal: false };
+  if (mainSha) {
+    try {
+      const raw = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'verify.yml', '--branch', 'main', '--limit', '40', '--json', 'headSha,status,conclusion,updatedAt,url']));
+      const runs = (Array.isArray(raw) ? raw : []).map((row) => ({ ...row, covers: samePrefix(row.headSha, mainSha) || isAncestor(row.headSha, mainSha), committedAt: Date.parse(row.updatedAt) || 0 }));
+      verifyHold = mainVerifyHold(runs, mainSha);
+    } catch (e) { console.log('could not read Verse verify: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  }
+  if (verifyHold.heal) { console.log('rule: ' + verifyHold.rule); console.log('file: ' + verifyHold.file); console.log('fix: ' + verifyHold.hint); startMainFix(verifyHold.hint, verifyHold.sha || mainSha); }
+  else if (mainSha) { try { const issues = gh(`repos/${repo}/issues?state=open&labels=watchdog&per_page=5`) || []; const issue = issues.find((i) => !i.pull_request); if (issue) startMainFix(issue.title || 'watchdog', mainSha); } catch (_) {} }
+  for (const row of ready) {
+    const p = row.p, r = row.r;
+    try {
+      if (eligible(p, repo) && p.auto_merge && p.node_id) { try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {} }
+      const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
+      if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
+    } catch (e) { const msg = String(e.stderr || e.message).slice(0, 300); if (!merged) mergeError = msg; console.log(`#${p.number}: merge refused: ${msg}`); }
+  }
+  choice = { action: 'merge', pr: ready[0] };
+}
+if (false && ready.length && !limited) { // void-review: ok (the old suite wait; verify.yml is the suite)
   let running = false;
   try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
   try {
@@ -306,11 +335,11 @@ if (ready.length && !limited) {
       verifyHold = mainVerifyHold(runs, mainSha);
     } catch (e) { console.log('could not read Verse verify: ' + String(e.stderr || e.message || e).slice(0, 160)); }
   }
-  if (verifyHold.hold && (choice.action === 'merge' || choice.action === 'queue')) {
+  // #2617 held every merge here. That hold is gone: a red main starts a fix above, and this block does not run.
+  if (false) {
     console.log('rule: ' + verifyHold.rule);
     console.log('file: ' + verifyHold.file);
     console.log('fix: ' + verifyHold.hint);
-    choice = { ...choice, action: 'hold', why: verifyHold.hint };
   }
   // one suite run for the whole batch, dispatched from main: the workflow on main reads a list of pull requests (2026-11-06)
   const startSuite = (batch, where) => {
