@@ -636,6 +636,26 @@
  },
  "commits": [
   {
+   "at": "2026-11-10T16:25:33Z",
+   "subject": "Write each finished-work row as one plain sentence. (#2679)"
+  },
+  {
+   "at": "2026-11-10T16:24:07Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T16:17:41Z",
+   "subject": "Verse loop: task, Queue job mwa2nm0e (heal: helper-fix-main-red-book): Repair (#2678)"
+  },
+  {
+   "at": "2026-11-10T16:10:44Z",
+   "subject": "Publish the free-agent board from job recruit-board. (#2673)"
+  },
+  {
+   "at": "2026-11-10T16:10:17Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-10T16:07:21Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -694,26 +714,6 @@
   {
    "at": "2026-11-10T15:52:26Z",
    "subject": "Call the second host Critic, and leave the site nav alone."
-  },
-  {
-   "at": "2026-11-10T15:52:26Z",
-   "subject": "Name episode 8 for the journal, not the writing instruction."
-  },
-  {
-   "at": "2026-11-10T15:52:26Z",
-   "subject": "Publish a written episode, two Shorts, and the studio page."
-  },
-  {
-   "at": "2026-11-10T15:52:26Z",
-   "subject": "A free model writes Verse's shows, and a listener's scores decide what airs."
-  },
-  {
-   "at": "2026-11-10T15:44:19Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-11-10T15:42:11Z",
-   "subject": "Remove the scheduled Tower climb. (#2665)"
   }
  ],
  "builders": {
@@ -895,8 +895,8 @@
   }
  ],
  "visible": {
-  "day": 33,
-  "week": 330
+  "day": 35,
+  "week": 332
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
