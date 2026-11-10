@@ -1536,16 +1536,16 @@ try {
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
     const P = await fresh();
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => ({ name: (c.querySelector('.tw-head') || {}).textContent, text: c.innerText, href: (c.querySelector('a[href="/sites/rot13.com/"]') || {}).getAttribute && c.querySelector('a[href="/sites/rot13.com/"]').getAttribute('href') })).catch((e) => ({ err: String(e) }));
+    const v = await P.p.$eval('.vpage.on', (c) => ({ name: (c.querySelector('.tw-head') || {}).textContent, text: c.innerText, rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]') })).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
-    check('tower: the card is headed Tower and lists finished sites, with no scorecard', v.name === 'Tower' && v.href === '/sites/rot13.com/' && /rotate letters/.test(v.text || '') && /tsundere\.pw/.test(v.text || '') && !/\d+\s*%|assimilat|aspects verified|working on/i.test(v.text || '') && !P.errors.length, JSON.stringify(v).slice(0, 500));
+    check('tower: the card is Versus and does not list the finished-site pages', v.name === 'Versus' && !v.rot && !v.tower && !/rot13\.com|motherfuckingwebsite|tsundere\.pw/.test(v.text || '') && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
     const P = await fresh({ phone: true });
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => ({ page: (c.querySelector('a[href="/sites/rot13.com/"]') || {}).getAttribute && c.querySelector('a[href="/sites/rot13.com/"]').getAttribute('href'), text: c.innerText, wide: document.documentElement.scrollWidth <= innerWidth })).catch((e) => ({ err: String(e) }));
-    check('tower: a finished site links to its own page, an unfinished site is not listed, and the card fits a phone', v.page === '/sites/rot13.com/' && !/Google Flights|flightconnections/.test(v.text || '') && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
+    const v = await P.p.$eval('.vpage.on', (c) => ({ rot: !!c.querySelector('a[href="/sites/rot13.com/"]'), tower: !!c.querySelector('a[href="/conquered/"]'), wide: document.documentElement.scrollWidth <= innerWidth })).catch((e) => ({ err: String(e) }));
+    check('tower: the card has no finished-site link and fits a phone', !v.rot && !v.tower && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {

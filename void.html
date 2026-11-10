@@ -2977,14 +2977,13 @@ say('nothing selected to remove');
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Verse, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
       const conf = () => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot) slot.replaceChildren(); };
-      const lead = () => import('/lib/least.js').then((m) => { if (!m.selfLead || vpageEl !== el) return; const q = el.querySelector('.vs-voice p'); if (!q) return; const recent = (vv.follow && Array.isArray(vv.follow.recent) && vv.follow.recent[0] && (vv.follow.recent[0].what || vv.follow.recent[0].ask)) || ''; const said = m.selfLead(recent); if (said) q.textContent = said; }).catch(() => {});
-      conf(); lead();
+      conf();
       let was = JSON.stringify([v, fam0]);
       keepFresh(el, async () => {
         const [nv, nf] = await Promise.all([fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), fetch('/skills/families.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null))]);
         const box = vpageEl === el && el.querySelector('[data-v-body]'), now = JSON.stringify([nv, nf]);
         if (!box || !nv || !Array.isArray(nv.entries) || now === was) return;
-        was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(); lead(); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
+        was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
         if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); } catch (_) {}
       });
     }

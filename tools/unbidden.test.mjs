@@ -16,13 +16,13 @@ const SRC = {
 test('facts come from what was built and what is being built next, with links a viewer can open', () => {
   const f = U.factsOf({ ...SRC, next: { host: 'hackertyper.net', words: 'fill the screen with code as you type' } }, NOW);
   const kinds = f.map((x) => x.kind);
-  for (const k of ['commit', 'ledger', 'want', 'next']) assert.ok(kinds.includes(k), k);
-  for (const k of ['need', 'prs', 'issues', 'tower']) assert.ok(!kinds.includes(k), k);
+  for (const k of ['commit', 'ledger', 'want']) assert.ok(kinds.includes(k), k);
+  for (const k of ['need', 'prs', 'issues', 'tower', 'next']) assert.ok(!kinds.includes(k), k);
   assert.ok(f.every((x) => /^https:\/\/(a-to-mind\.com|github\.com\/atomeam\/void-loop)/.test(x.url)), 'every link is Verse\'s own');
   assert.match(f.find((x) => x.kind === 'commit').text, /abcdef1 landed on main 10 min ago: Films: give each beat its own voice line$/);
   assert.equal(f.find((x) => x.kind === 'ledger').url, 'https://github.com/atomeam/void-loop/blob/main/findings/x.json');
   assert.ok(!f.some((x) => /secret|exam|89\.2|absorb every repository|zorbleflux/.test(x.text)), f.map((x) => x.text).join('\n'));
-  assert.match(f.find((x) => x.kind === 'next').text, /hackertyper\.net/);
+  assert.equal(f.find((x) => x.kind === 'next'), undefined);
   assert.deepEqual(U.factsOf({}, NOW), [], 'nothing read, nothing to say');
 });
 

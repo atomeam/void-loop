@@ -65,5 +65,5 @@ test('the Starboard page loads no script, style or image from another site', () 
   assert.deepEqual(outside, []);
   assert.match(html, /\/verse-shell\.js/);
   assert.match(html, /href="\/"/, 'links back to the homepage');
-  for (const p of ['/conquered/', '/treasury/', '/lab/']) assert.ok(html.includes('href="' + p + '"'), 'links to ' + p);
+  for (const p of ['/treasury/', '/lab/']) assert.ok(html.includes('href="' + p + '"'), 'links to ' + p);
 });

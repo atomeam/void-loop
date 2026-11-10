@@ -11,7 +11,7 @@ const EXT = /\.(?:html|js|mjs|txt|md|xml|webmanifest)$/;
 const SKIP_DIR = /^(?:vendor|node_modules|incidents|podcast|sounds|tower-evidence|tower\.shots|tower\.icons|data|history)$/;
 // the tower card is being rebuilt by another worker (docs/TAGTEAM.md, 2026-11-09 humble copy): its files are checked once it lands
 export const PENDING = new Set([
-  'lib/tower.js', 'skills/tower.js', 'skills/mini/tower.js', 'lib/tower-art.js', 'lib/tower-rank.js', 'conquered/index.html',
+  'lib/tower.js', 'skills/tower.js', 'skills/mini/tower.js', 'lib/tower-art.js', 'lib/tower-rank.js',
 ]);
 
 /** the boasts: each { id, re }. Words only, in prose; a data key or a path is not prose (see strip and the lookarounds). */
