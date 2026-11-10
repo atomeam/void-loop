@@ -100,9 +100,9 @@
    "floor": "travel: flightconnections.com",
    "pages": 59,
    "templates": 22,
-   "features": 611,
+   "features": 609,
    "verse_pages": 11,
-   "verse_features": 343,
+   "verse_features": 341,
    "missing": [
     "Select destination",
     "Origin",

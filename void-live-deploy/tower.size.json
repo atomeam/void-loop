@@ -1060,6 +1060,20 @@
    "weight": 722184,
    "at": "2026-10-29"
   },
+  "breitband.ch": {
+   "bytes": 1265740,
+   "controls": 13,
+   "scripts": 3,
+   "styles": 3,
+   "nodes": 15,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 473,
+   "shell": "none",
+   "weight": 1271890,
+   "at": "2026-11-10"
+  },
   "britdicebridge.uk": {
    "refused": true,
    "at": "2026-10-29"
