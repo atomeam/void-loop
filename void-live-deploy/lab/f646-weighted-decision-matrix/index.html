@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 960px; margin: 1rem auto; padding: 0 1rem; line-height: 1.4; }
+h1 { font-size: 1.4rem; }
+button, input { font: inherit; }
+.section { margin: 1rem 0; padding: 0.5rem; border: 1px solid #ccc; border-radius: 6px; }
+.row { display: flex; gap: 0.5rem; align-items: center; margin: 0.3rem 0; }
+table { border-collapse: collapse; width: 100%; margin: 0.5rem 0; }
+th, td { border: 1px solid #ddd; padding: 0.4rem; text-align: center; }
+th { background: #f5f5f5; }
+.rank { font-weight: bold; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0; }
+#status { font-size: 0.9rem; color: #555; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Weighted decision matrix · Verse lab</title>
+<meta name="description" content="A practical offline tool that turns a set of options and weighted criteria into a clear ranked decision.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Weighted decision matrix · Verse lab">
+<meta property="og:description" content="A practical offline tool that turns a set of options and weighted criteria into a clear ranked decision.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f646-weighted-decision-matrix/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f646-weighted-decision-matrix/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Weighted decision matrix</h1>
+<p>Add options and criteria, set weights, score each option (higher is better), and see the live ranking. Nothing leaves this device.</p>
+
+<div class="section">
+  <h2>Options</h2>
+  <div id="options"></div>
+  <button id="add-option">Add option</button>
+</div>
+
+<div class="section">
+  <h2>Criteria</h2>
+  <div id="criteria"></div>
+  <button id="add-criterion">Add criterion</button>
+</div>
+
+<div class="section">
+  <h2>Scores</h2>
+  <div id="matrix"></div>
+</div>
+
+<div class="section">
+  <h2>Ranking</h2>
+  <div id="ranking"></div>
+</div>
+
+<div class="actions">
+  <button id="copy">Copy summary</button>
+  <button id="csv">Download CSV</button>
+  <button id="share">Copy share link</button>
+  <button id="reset">Reset</button>
+</div>
+<div id="status"></div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
