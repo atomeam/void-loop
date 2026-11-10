@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "pov"
+    "formats": "trailer"
   },
   "trials": [
     {
@@ -297,47 +297,47 @@
       "kind": "formats",
       "films": [
         {
-          "format": "trailer",
-          "label": "Movie-trailer parody",
-          "topic": "sp 500",
-          "name": "S&P 500",
-          "film": "20261109-trailer-s-p-500",
-          "hook": "What if S&P 500 got a movie trailer?",
+          "format": "pov",
+          "label": "POV skit",
+          "topic": "syracuse vs indiana",
+          "name": "Syracuse, Indiana",
+          "film": "20261109-pov-syracuse-indiana",
+          "hook": "POV: your group chat hears about Syracuse, Indiana",
           "source": "Google Trends",
           "gate": {
             "pass": true,
             "score": 100,
-            "hookScore": 100,
+            "hookScore": 65,
             "failed": []
           }
         },
         {
-          "format": "explainer",
-          "label": "Explainer",
-          "topic": "Scene (2026 film)",
-          "name": "Scene",
-          "film": "20261109-explainer-scene",
-          "hook": "What is Scene, and why now?",
+          "format": "review",
+          "label": "Product-review parody",
+          "topic": "Ramayana: Part 1",
+          "name": "Ramayana: Part 1",
+          "film": "20261109-review-ramayana-part-1",
+          "hook": "Rating Ramayana: Part 1 like a product: worth it?",
           "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 90,
+            "failed": []
+          }
+        },
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "nba starting lineups",
+          "name": "nba starting lineups",
+          "film": "20261109-news-nba-starting-lineups",
+          "hook": "Why is everyone talking about nba starting lineups?",
+          "source": "Google Trends",
           "gate": {
             "pass": true,
             "score": 100,
             "hookScore": 85,
-            "failed": []
-          }
-        },
-        {
-          "format": "countdown",
-          "label": "Top-3 countdown",
-          "topic": "Russell Brand",
-          "name": "Russell Brand",
-          "film": "20261109-countdown-russell-brand",
-          "hook": "3 facts you missed about Russell Brand",
-          "source": "Wikipedia",
-          "gate": {
-            "pass": true,
-            "score": 100,
-            "hookScore": 80,
             "failed": []
           }
         }
@@ -358,11 +358,18 @@
           "why": "a repeat of the film about \".xyz\" (20261107)"
         },
         {
-          "topic": "russell brand movies",
+          "topic": "Scene (2026 film)",
           "kinds": [
-            "harm"
+            "repeat"
           ],
-          "why": "about harm to people (Sentenced): not something to parody or make a trend film of"
+          "why": "a repeat of the film about \"Scene (2026 film)\" (20261109)"
+        },
+        {
+          "topic": "Russell Brand",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Russell Brand\" (20261109)"
         }
       ],
       "verdict": "waiting"
