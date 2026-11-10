@@ -636,6 +636,14 @@
  },
  "commits": [
   {
+   "at": "2026-11-10T16:07:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-10T16:07:09Z",
+   "subject": "Outcome exam: definitions 90"
+  },
+  {
    "at": "2026-11-10T16:05:54Z",
    "subject": "Show shipped work and owner asks on the team card (#2660)"
   },
@@ -706,14 +714,6 @@
   {
    "at": "2026-11-10T15:42:11Z",
    "subject": "Remove the scheduled Tower climb. (#2665)"
-  },
-  {
-   "at": "2026-11-10T15:40:45Z",
-   "subject": "Judge held bots with the free model on every factory run. (#2663)"
-  },
-  {
-   "at": "2026-11-10T15:40:28Z",
-   "subject": "Verse loop: nightly (#2670)"
   }
  ],
  "builders": {
