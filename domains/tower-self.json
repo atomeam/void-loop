@@ -2190,16 +2190,6 @@
  },
  "runs": [
   {
-   "at": "2026-11-01T16:55:28Z",
-   "line": "Versus: took on no site (also read: 6 no-family, 1 not-judged, 1 discarded); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0,
-   "reads_next": "coloringhome.com",
-   "noop": true
-  },
-  {
    "at": "2026-11-01T22:17:52Z",
    "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
    "built": 0,
@@ -2567,6 +2557,16 @@
    "fixed": [],
    "pages_per_day": 0,
    "reads_next": "informunity.ru"
+  },
+  {
+   "at": "2026-11-10T10:21:52Z",
+   "line": "Versus: took on no site; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "informunity.ru",
+   "noop": true
   }
  ]
 }
