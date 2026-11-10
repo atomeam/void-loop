@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42761745628",
-  "at": "2026-11-10T05:23:44Z",
-  "what": "Verse hardened itself: 7 benchmark ask(s) for proposal-pack, reuse-pack, palindrome.  Why these: ownership-map (no benchmark ask, evidence tier: tested); ownership-pack (no benchmark ask, evidence tier: tested); proposal-pack (no benchmark ask, evidence tier: tested); reuse-pack (no benchmark ask, evidence tier: tested); palindrome (only 2 benchmark asks, evidence tier: checked). New phrases: “proposal pack for client onboarding automation” now opens proposal-pack; “make a client proposal for invoice reminders” now opens proposal-pack; “generate a proposal for the support ticket router” now opens proposal-pack; “reuse pack for client onboarding” now opens reuse-pack; “map to existing tools: invoice reminders” now opens reuse-pack; “what can we reuse for support tickets” now opens reuse-pack; “palindromes for racing” now opens palindrome. Did not route: ownership map for client onboarding; map ownership for invoice reminders; what does Verse own vs the client for support tickets; ownership pack for Acme.",
-  "try": "proposal pack for client onboarding automation",
+  "run": "42791231155",
+  "at": "2026-11-10T09:31:23Z",
+  "what": "Verse hardened itself: 3 benchmark ask(s) for ownership-map.  Why these: ownership-map (no benchmark ask, evidence tier: tested); ownership-pack (no benchmark ask, evidence tier: tested). New phrases: “ownership map for client onboarding” now opens ownership-map; “map ownership for invoice reminders” now opens ownership-map; “what does Verse own vs the client for support tickets” now opens ownership-map. Did not route: ownership pack for Acme; what does Verse own for the onboarding flow; ownership map for weekly reports.",
+  "try": "ownership map for client onboarding",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-10T03:21:31Z",
-    "try": "credits",
-    "closedAt": "2026-11-10T05:23:21Z"
+    "at": "2026-11-10T05:23:44Z",
+    "try": "proposal pack for client onboarding automation",
+    "closedAt": "2026-11-10T09:31:11Z"
   }
 }
