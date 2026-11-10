@@ -1532,7 +1532,7 @@ try {
       JSON.stringify({ card, raws, by, errors: F.errors }));
     await F.ctx.close();
   }
-  // section names kept so shard hashing stays stable. The card lists finished sites only.
+  // section names kept so shard hashing stays stable. The card is Versus; finished-site pages are gone.
   if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
     const P = await fresh();
     await P.ask('the tower', 1200);
@@ -1590,7 +1590,9 @@ try {
     await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: '{}' }); });
     await P.ask('versus', 600);
     const text = await P.p.$eval('.vpage.on', (c) => c.innerText).catch((e) => String(e));
-    check('tower: opening the card does not read the old score file', hits === 0 && /rot13\.com/.test(text) && !/assimilat/.test(text) && !P.errors.length, JSON.stringify({ hits, text: text.slice(0, 200) }));
+    // After the finished-site Tower was removed, "versus" opens the Versus card (skills/tower.js load + towerHtml). That card reads
+    // tower.evidence.json (live floor evidence, not a finished-site scorecard) and talks about assimilation; rot13.com is gone.
+    check('tower: opening Versus reads live evidence and does not list finished sites', hits >= 1 && !/rot13\.com|motherfuckingwebsite|tsundere\.pw/.test(text) && /assimilat/i.test(text) && !P.errors.length, JSON.stringify({ hits, text: text.slice(0, 200) }));
     await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(400);
     const open = await P.p.$('.vpage.on.tower-card');
     check('tower: Escape closes the card', !open && !P.errors.length, JSON.stringify({ open: !!open }));
