@@ -6737,7 +6737,7 @@
    "chapter": "self",
    "name": "team-chat",
    "title": "Team chat",
-   "line": "\"team chat\", \"agent workspace\", \"my agents\": the team chat as a card on the stage",
+   "line": "The workspace as a card",
    "examples": [
     "team chat",
     "open the team chat",

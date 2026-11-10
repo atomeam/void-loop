@@ -636,6 +636,18 @@
  },
  "commits": [
   {
+   "at": "2026-11-10T16:05:54Z",
+   "subject": "Show shipped work and owner asks on the team card (#2660)"
+  },
+  {
+   "at": "2026-11-10T16:05:25Z",
+   "subject": "Rewrite the motherfucking history in the original voice, sourced. (#2674)"
+  },
+  {
+   "at": "2026-11-10T16:04:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-10T16:03:35Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -702,18 +714,6 @@
   {
    "at": "2026-11-10T15:40:28Z",
    "subject": "Verse loop: nightly (#2670)"
-  },
-  {
-   "at": "2026-11-10T15:37:39Z",
-   "subject": "Judge held bots with the free model on every factory run. (#2666)"
-  },
-  {
-   "at": "2026-11-10T15:37:20Z",
-   "subject": "Tower gate: every floor measured against its live site (2 slices)"
-  },
-  {
-   "at": "2026-11-10T15:36:48Z",
-   "subject": "Point LongCat2.5 and openhands at visitor work (#2664)"
   }
  ],
  "builders": {
@@ -895,8 +895,8 @@
   }
  ],
  "visible": {
-  "day": 31,
-  "week": 328
+  "day": 33,
+  "week": 330
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
