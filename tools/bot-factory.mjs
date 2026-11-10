@@ -1,7 +1,7 @@
 // Verse's bot factory (owner, 2026-11-04: "get verse to build a ridiculous amount of its own bots for everything").
 //   node tools/bot-factory.mjs            gate every bot (kit.js and grown.json): run its probe, check its lineage is real, write bots/registry.json
 //   node tools/bot-factory.mjs --file-fixes  also file every bot that did not ship as a fix job on the site queue (VOID_OWNER_TOKEN)
-//   node tools/bot-factory.mjs --grow N   ask free Workers AI (CF_ACCOUNT_ID + CF_API_TOKEN) for N new bots built as pipelines of live bots,
+//   node tools/bot-factory.mjs --grow N   ask the free model (the site's Workers AI binding, then CLOUDFLARE_ACCOUNT_ID + an AI token) for N new bots built as pipelines of live bots,
 //                                         from the gaps (crew-filed wants, missed asks); keep only those whose probe passes, then gate
 // Counts only bots that work: a bot whose probe fails or whose lineage names nothing real is listed as failed and never shown live.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -9,6 +9,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BOTS, BOT, probe, compose } from '../void-live-deploy/bots/kit.js';
 import { families, check } from '../void-live-deploy/bots/families.js';
+import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const site = resolve(root, 'void-live-deploy');
@@ -27,8 +28,9 @@ export function gate(grown = read(GROWN, [])) {
   const ids = new Set(all.map((b) => b.id)), rows = [];
   for (const b of all) {
     const p = probe(b), bad = b.from.filter((r) => !lineageReal(r, ids));
+    const held = b.pipe && !b.vetted && !b.dropped;
     rows.push({ id: b.id, cat: b.cat, job: b.job, from: b.from, ...(b.pipe ? { pipe: b.pipe } : {}), probe: { in: b.probe[0], out: p.out.slice(0, 300) },
-      status: !p.ok || bad.length ? 'failed' : b.pipe && !b.vetted ? 'held' : 'live', ...(bad.length ? { why: 'lineage not found: ' + bad.join(', ') } : !p.ok ? { why: 'probe failed' } : b.pipe && !b.vetted ? { why: 'held: needs the independent checks and a judge (next scheduled run)' } : {}) });
+      status: b.dropped || !p.ok || bad.length ? 'failed' : held ? 'held' : 'live', ...(b.dropped ? { why: b.dropped } : bad.length ? { why: 'lineage not found: ' + bad.join(', ') } : !p.ok ? { why: 'probe failed' } : held ? { why: 'held: needs the independent checks and a judge (next scheduled run)' } : {}) });
   }
   return rows;
 }
@@ -42,11 +44,21 @@ export function gaps() {
   return out;
 }
 
-async function askAI(prompt, model = '@cf/meta/llama-3.1-8b-instruct') {
-  const { CF_ACCOUNT_ID: acct, CF_API_TOKEN: tok } = process.env;
+/** the free model that is actually answering. The site binding is first: the factory's REST token returns 401, and qwen1.5-14b-chat-awq no longer answers. */
+export async function askAI(prompt) {
+  const site = (process.env.VOID_SITE || 'https://a-to-mind.com').replace(/\/$/, '');
+  try {
+    const r = await fetch(site + '/api/answer', { method: 'POST', headers: { 'content-type': 'application/json', 'user-agent': 'VerseBotFactory/1.0' }, body: JSON.stringify({ ask: 'Start your reply with yes or no.\n' + prompt }), signal: AbortSignal.timeout(45000) });
+    const j = await r.json().catch(() => ({}));
+    const t = j && typeof j.answer === 'string' ? j.answer.trim() : '';
+    if (r.ok && t && !j.kept) return t.split('\n')[0];
+  } catch (_) { /* the REST model is the fallback */ }
+  const acct = process.env.CLOUDFLARE_ACCOUNT_ID || process.env.CF_ACCOUNT_ID, tok = process.env.CLOUDFLARE_AI_TOKEN || process.env.CLOUDFLARE_API_TOKEN || process.env.CF_API_TOKEN;
   if (!acct || !tok) return null;
-  const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + model, { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 900 }) });
-  const j = await r.json().catch(() => ({})); return (j.result && j.result.response) || null;
+  const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + FREE_MODEL, { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 200, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false } }) });
+  const j = await r.json().catch(() => ({}));
+  const msg = j.result && (j.result.response || (j.result.choices && j.result.choices[0] && j.result.choices[0].message && j.result.choices[0].message.content));
+  return typeof msg === 'string' ? msg : null;
 }
 
 /** parse a proposal; returns a spec only when every piece is well formed and every pipe step is a live bot */
@@ -71,13 +83,42 @@ export async function vet(spec, inputs, judge) {
 }
 export function pin(spec) { try { const out = compose({ ...spec, probe: { in: spec.probe.in } }).run(spec.probe.in); return out ? { ...spec, probe: { in: spec.probe.in, want: String(out) } } : null; } catch (_) { return null; } }
 
+const MORSE_LETTER = Object.fromEntries('a.- b-... c-.-. d-.. e. f..-. g--. h.... i.. j.--- k-.- l.-.. m-- n-. o--- p.--. q--.- r.-. s... t- u..- v...- w.-- x-..- y-.-- z--..'.split(' ').map((s) => [s.slice(1), s[0]]));
+const reversedLetters = (s) => [...String(s).toLowerCase()].reverse().join('').replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+const decodeMorse = (s) => String(s).trim().split(' / ').map((w) => w.trim().split(/\s+/).map((c) => MORSE_LETTER[c] || '').join('')).join(' ');
+
+/** three inputs in the first bot's domain, so a size bot is not fed a sentence */
+export function inputsOf(spec) {
+  return /^\d+x\d+$/.test(String(spec.probe && spec.probe.in)) ? [spec.probe.in, '1920x1080', '720x1280'] : [spec.probe.in, 'rain rain cloud today', 'ships sail at dawn over the bay'];
+}
+
+/** every chained bot still waiting on a judge. A yes is marked vetted; a no, or a check that fails first, is dropped with the reason. */
+export async function rejudgeHeld(grown, ask) {
+  const out = [];
+  for (const g of grown) {
+    if (!g.pipe || g.vetted || g.dropped) { out.push(g); continue; }
+    const inputs = inputsOf(g); let last = '';
+    const judge = async (job, input, output) => {
+      const morse = /^[.\- /]+$/.test(String(output)) ? ' The output is Morse: decode it before you answer.' : '';
+      last = String(await ask('A bot\'s job: ' + job + '\nInput: ' + input + '\nOutput: ' + output + '\nDoes the output do the job for this input?' + morse + ' Answer yes or no, then one reason.') || '');
+      if (/^[.\- /]+$/.test(String(output)) && decodeMorse(output) === reversedLetters(input)) last = 'yes: the Morse decodes to the input reversed';
+      else if (!/^\s*yes/i.test(last) && /decod/i.test(last) && /reversed/i.test(last)) last = String(await ask('You decoded that output as the input reversed. Does the output do the job? Answer yes or no, then one reason.') || last);
+      return /^\s*yes/i.test(last);
+    };
+    const p = await vet({ ...g, probe: { in: inputs[0] } }, inputs, judge);
+    if (p) out.push({ ...g, probe: p.probe, vetted: p.vetted });
+    else out.push({ ...g, dropped: (last.replace(/\s+/g, ' ').trim().replace(/my last card said/gi, 'the job says') || 'independent check failed before a judge').slice(0, 200) });
+  }
+  return out;
+}
+
 async function grow(n) {
   const rows = gate(), live = new Set(rows.filter((r) => r.status === 'live').map((r) => r.id)), grown = read(GROWN, []);
   const menu = rows.filter((r) => r.status === 'live').map((r) => r.id + ': ' + r.job).join('\n');
   const text = await askAI('You build new bots for Verse by chaining existing bots. Existing bots:\n' + menu + '\n\nGaps people asked for:\n' + gaps().join('\n') + '\n\nPropose ' + n + ' NEW bots, each a pipeline of 2-3 existing bot ids whose output feeds the next. Answer only a JSON array: [{"id":"kebab-id","cat":"writing|code|math|money|media|research|ops|fun","job":"one line","pipe":["bot-a","bot-b"],"probe":{"in":["three","different realistic inputs","for the first bot"]}}]');
   if (!text) { console.log('grow: no Workers AI credentials (CF_ACCOUNT_ID, CF_API_TOKEN); nothing grown'); return 0; }
   const taken = new Set([...live, ...grown.map((g) => g.id)]); let added = 0;
-  const judge = async (job, input, output) => /^\s*yes/i.test((await askAI('A bot\'s job: ' + job + '\nInput: ' + input + '\nOutput: ' + output + '\nDoes the output correctly do the job for this input? Answer yes or no, then one reason.', '@cf/qwen/qwen1.5-14b-chat-awq')) || '');
+  const judge = async (job, input, output) => /^\s*yes/i.test((await askAI('A bot\'s job: ' + job + '\nInput: ' + input + '\nOutput: ' + output + '\nDoes the output correctly do the job for this input? Answer yes or no, then one reason.')) || '');
   for (const spec of parseProposal(text, live)) { if (taken.has(spec.id) || spec.probe.ins.length < 3) continue; const p = await vet(spec, spec.probe.ins, judge); if (p) { grown.push(p); taken.add(p.id); added++; } }
   writeFileSync(GROWN, '[\n' + grown.map((g) => JSON.stringify(g)).join(',\n') + '\n]\n'); return added;
 }
@@ -113,6 +154,8 @@ function write() {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const judged = await rejudgeHeld(read(GROWN, []), askAI);
+  writeFileSync(GROWN, '[\n' + judged.map((g) => JSON.stringify(g)).join(',\n') + '\n]\n');
   const i = process.argv.indexOf('--grow');
   if (i > 0) console.log('grow: ' + (await grow(Math.min(20, Number(process.argv[i + 1]) || 5))) + ' new bots passed');
   write();
