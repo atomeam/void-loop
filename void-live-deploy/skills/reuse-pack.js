@@ -9,7 +9,7 @@ export function isReusePack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:reuse|existing[- ]tools?)\s+(?:pack|map)\b/i.test(t)
     || /^(?:map|show)\s+(?:to\s+)?(?:existing\s+)?tools?\b/i.test(t)
-    || /^what\s+(?:tools?|connectors?)\s+(?:can|could|should)\s+we\s+reuse\b/i.test(t)
+    || /^what\s+(?:(?:tools?|connectors?)\s+)?(?:can|could|should)\s+we\s+reuse\b/i.test(t)
     || /^(?:reuse|use)\s+existing\s+(?:tools?|connectors?)\s+for\b/i.test(t);
 }
 

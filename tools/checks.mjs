@@ -508,6 +508,7 @@ for (const [name, file] of [
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['review-decide', 'review-decide.test.mjs'],
+  ['judgment', 'judgment.test.mjs'], // before Verse ships its own change: a free model, the stated goals, and one plain question
   ['outcome-exam', 'outcome-exam.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
   ['baggage-live', 'baggage-live.test.mjs'],
