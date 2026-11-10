@@ -1,0 +1,12 @@
+{
+ "at": "2026-11-10T19:34:31.897Z",
+ "sha": "93f281553c35cedf928376b856d382a3e60b47e3",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42883526780",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: the card has no finished-site link and fits a phone"
+ ],
+ "touched": [
+  "domains/growth-inbox.md"
+ ]
+}
