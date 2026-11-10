@@ -18,7 +18,7 @@ import { readiness, resolveMain } from './pr-ready.mjs';
 import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
-import { eligible, mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
+import { mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
 import { fixAge, fixNote, nextStep } from './merge-flow.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
@@ -217,11 +217,7 @@ for (let p of prs) {
     try { run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] })); console.log(`#${p.number}: labelled ${LABEL} (every PR merges by itself)`); } catch (_) {}
   }
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
-  // GitHub's own auto-merge would land the pull request on whatever main is now, without the suite. The bot merges, one at a time, after the suite.
-  if (p.auto_merge && p.node_id) {
-    try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); console.log(`#${p.number}: GitHub auto-merge disarmed until the suite passes on current main`); }
-    catch (e) { console.log(`#${p.number}: could not disarm auto-merge: ${String(e.stderr || e.message || e).slice(0, 120)}`); }
-  }
+  // A ready pull request keeps GitHub auto-merge on. This sweep does not turn it off.
   // behind main, and the update is clean: GitHub merges main in. A conflict comes back as dirty and is settled below.
   if (p.mergeable_state === 'behind') {
     try { run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/update-branch`, '-f', `expected_head_sha=${p.head.sha}`]); console.log(`#${p.number}: brought up to date with main`); }
@@ -272,7 +268,6 @@ if (ready.length && !limited) {
   for (const row of ready) {
     const p = row.p, r = row.r;
     try {
-      if (eligible(p, repo) && p.auto_merge && p.node_id) { try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {} }
       const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
       if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
     } catch (e) { const msg = String(e.stderr || e.message).slice(0, 300); if (!merged) mergeError = msg; console.log(`#${p.number}: merge refused: ${msg}`); }
@@ -366,9 +361,6 @@ if (false && ready.length && !limited) { // void-review: ok (the old suite wait;
       const p = row.p, r = row.r;
       try {
         if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-        if (eligible(p, repo) && p.auto_merge) {
-          try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
-        }
         const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
         if (!m.merged) break;
         merged++; done.push(row); console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
