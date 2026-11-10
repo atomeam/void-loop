@@ -4315,14 +4315,24 @@ try {
         parts: c ? [...c.querySelectorAll('button, p, h2, .g-title, .g-sub, select')].filter((e) => e.offsetParent).map(R).filter(Boolean) : [],
         scrim: !!document.getElementById('showcase-scrim'), role: bar && bar.getAttribute('role'), modal: bar && bar.getAttribute('aria-modal'), text: bar ? bar.innerText.replace(/\s+/g, ' ').slice(0, 60) : '' };
     }, card);
-    // clear: the panel touches neither the card nor the ask bar; or, where it has to, it is a real modal layer
-    const clear = (b) => !!b && !!b.bar && !!b.card && (b.dock === 'modal' ? b.scrim && b.role === 'dialog' && b.modal === 'true' : !hit(b.bar, b.card) && !b.parts.some((x) => hit(b.bar, x)) && !hit(b.bar, b.row));
+    // clear: the panel touches neither the card nor the ask bar; or, where it has to, it is a real modal layer.
+    // A part scrolled out of the card (overflow auto: the collectible card is a short window over a tall page) still
+    // reports a rectangle in the free space under the card, where the walkthrough docks. That rectangle is clipped, not
+    // on screen (verify on 8b04cf425: "copy card" and "save card" sat there and failed this check). Only the slice
+    // inside the card's box can be covered.
+    const shown = (part, box) => {
+      if (!part || !box) return null;
+      const x = Math.max(part.x, box.x), y = Math.max(part.y, box.y);
+      const r = Math.min(part.x + part.w, box.x + box.w), b = Math.min(part.y + part.h, box.y + box.h);
+      return r - x > 0.5 && b - y > 0.5 ? { x, y, w: r - x, h: b - y } : null;
+    };
+    const clear = (b) => !!b && !!b.bar && !!b.card && (b.dock === 'modal' ? b.scrim && b.role === 'dialog' && b.modal === 'true' : !hit(b.bar, b.card) && !b.parts.some((x) => { const v = shown(x, b.card); return !!(v && hit(b.bar, v)); }) && !hit(b.bar, b.row));
     const r = {};
     // the dragon card at 1280x800: beside it; Next still walks on, the reactions sit under the step, the pills are the panel's footer
     const A = await open(1280, 800); r.wide = await boxes(A, '.vpage.on'); r.wideTray = !!r.wide && !!r.wide.tray && r.wide.tray.y >= r.wide.bar.y && r.wide.tray.y + r.wide.tray.h <= r.wide.bar.y + r.wide.bar.h + 1;
     await A.p.click('[data-showcase="next"]'); r.next = await until(async () => { const t = await A.p.$eval('#showcase-bar', (e) => e.innerText).catch(() => ''); return /^2 of 4/.test(t) ? t.slice(0, 40) : ''; }, 8000);
     await A.ctx.close();
-    // the dragon card on a 390-wide phone: no free space, so a modal: focus inside, Tab goes round the panel, Esc closes it all
+    // the dragon card on a 390-wide phone: the panel docks in the free space under the visible card, or is a modal when that space is gone; focus stays inside, Tab goes round, Esc closes
     const B = await open(390, 800); r.phone = await boxes(B, '.vpage.on');
     r.focusIn = await B.p.evaluate(() => document.getElementById('showcase-bar').contains(document.activeElement));
     for (let i = 0; i < 12; i++) await B.p.keyboard.press('Tab');
@@ -4354,7 +4364,7 @@ try {
         && clear(r.phone) && r.focusIn && r.tabIn && r.escaped
         && clear(r.short) && r.short.dock !== 'modal' && !!r.short.tray && Math.abs(r.head.left - r.head.right) <= 2
         && minds.length === 6 && minds.every((m) => !m.out.length) && res.length === 2 && res.every((m) => m.tags === 6 && m.whole && m.lines.every((n) => n >= 2) && /F-034 · F-027/.test(m.title)),
-      JSON.stringify({ ...r, wide: r.wide && { ...r.wide, parts: r.wide.parts.length }, phone: r.phone && { ...r.phone, parts: r.phone.parts.length }, short: r.short && { ...r.short, parts: r.short.parts.length } }).slice(0, 1600));
+      JSON.stringify({ ...r, wide: r.wide && { ...r.wide, parts: r.wide.parts.length }, phone: r.phone && { ...r.phone, parts: r.phone.parts.length }, short: r.short && { ...r.short, parts: r.short.parts.length } }).slice(0, 4000));
   }
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
