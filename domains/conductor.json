@@ -1,19 +1,19 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T01:37:41.084Z",
+ "updated": "2026-11-10T01:46:59.104Z",
  "last24h": {
   "ticks": 148,
-  "started": 101,
+  "started": 103,
   "requeued": 2,
   "setAside": 2,
   "probes": 15,
-  "errors": 36
+  "errors": 35
  },
  "broken": [
   {
    "wf": "deploy.yml",
-   "fails": 4,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/42736264914"
+   "fails": 5,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42737121389"
   }
  ],
  "held": [
@@ -73,11 +73,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 30,
+   "used": 60,
    "cap": 90
   },
   "day": {
-   "used": 30,
+   "used": 60,
    "cap": 360
   },
   "room": true,
@@ -156,7 +156,8 @@
   "mw5mm5fm": 1794273534200,
   "mw9y7p3s": 1794273534200,
   "mwa0agd2": 1794274099228,
-  "mwa0ah54": 1794274661084
+  "mwa0ah54": 1794274661084,
+  "mwa0ahv2": 1794275219104
  },
  "sweptAt": 1794274099228,
  "blueprintsAt": 1794274099228,
@@ -244,11 +245,6 @@
   "probe:how-to-say-hello-in-leet"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T01:39:03.010Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T01:48:25.640Z",
    "open": 271,
@@ -3445,6 +3441,42 @@
     },
     {
      "id": "mwa0ah54",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "deploy.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 13,
+   "warnings": 3
+  },
+  {
+   "at": "2026-11-10T01:46:59.104Z",
+   "open": 305,
+   "started": [
+    {
+     "id": "mw9rbqfa",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    },
+    {
+     "id": "mwa0ahv2",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
