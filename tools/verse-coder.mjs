@@ -496,11 +496,20 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       }
       missed.add(key);
       const tokens = nameTokens(shape.literal), named = [];
+      const filesNamed = (t) => {
+        const needle = String(t || '').toLowerCase();
+        if (!needle) return [];
+        const r = spawnSync('rg', ['--files', '--no-ignore', '-g', '!.git', '--iglob', '*' + t + '*'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 20 });
+        let rows = r.error || !r.stdout ? [] : r.stdout.split('\n').filter(Boolean);
+        if (!rows.length) {
+          const ls = git(root, ['ls-files']);
+          rows = (ls.stdout || '').split('\n').filter((p) => p.toLowerCase().includes(needle));
+        }
+        return rows;
+      };
       for (const t of tokens) {
-        const r = spawnSync('rg', ['--files', '-g', '!.git', '--iglob', '*' + t + '*'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 20 });
-        if (r.error || !r.stdout) continue;
         const rank = (p) => p.startsWith('void-live-deploy/skills/') ? 0 : p.startsWith('tools/') ? 1 : 2;
-        const rows = r.stdout.split('\n').filter(Boolean).sort((a, b) => rank(a) - rank(b));
+        const rows = filesNamed(t).sort((a, b) => rank(a) - rank(b));
         for (const row of rows) if (!named.includes(row)) named.push(row);
         if (named.length >= 8) break;
       }

@@ -13,10 +13,11 @@ test('the owner and both Actions logins count as the bot', () => {
   assert.equal(isBot('someone'), false);
 });
 
-test('a labelled pull request qualifies, and so does a bot branch; a fork does not', () => {
+test('any open pull request from this repository qualifies; a draft and a fork do not', () => {
   assert.equal(eligible(pr({ labels: [{ name: 'automerge' }] }), 'atomeam/void-loop'), true);
-  assert.equal(eligible(pr({ user: { login: 'app/github-actions' }, head: { ref: 'lab/sync-1', repo: { full_name: 'atomeam/void-loop' } } }), 'atomeam/void-loop'), true);
-  assert.equal(eligible(pr({ labels: [], head: { ref: 'feature', repo: { full_name: 'atomeam/void-loop' } } }), 'atomeam/void-loop'), false);
+  assert.equal(eligible(pr({ user: { login: 'someone' }, labels: [], head: { ref: 'feature', repo: { full_name: 'atomeam/void-loop' } } }), 'atomeam/void-loop'), true);
+  assert.equal(eligible(pr({ user: { login: 'github-actions[bot]' }, head: { ref: 'loop/a', repo: { full_name: 'atomeam/void-loop' } } }), 'atomeam/void-loop'), true);
+  assert.equal(eligible(pr({ draft: true, labels: [{ name: 'automerge' }] }), 'atomeam/void-loop'), false);
   assert.equal(eligible(pr({ head: { ref: 'helper/x', repo: { full_name: 'other/void-loop' } }, labels: [{ name: 'automerge' }] }), 'atomeam/void-loop'), false);
 });
 
@@ -117,19 +118,18 @@ test('six hours: green merges, a conflict is rebased, a red check is named, a yo
 // 2026-11-06: since the suite gate (#2309) the bot no longer arms GitHub's auto-merge (it would merge on whatever main is, without the
 // suite). It disarms it, and merges one pull request itself with a squash, only after the suite passed on top of current main.
 // suite-gate.yml lives on main and checks the pull request out itself, so the suite is dispatched from main (#2315).
-test('the automerge workflow merges with a squash after the suite gate, and keeps the hourly run', () => {
+test('the automerge workflow squash-merges without waiting for the suite, and keeps the hourly run', () => {
   const yml = readFileSync(new URL('../.github/workflows/automerge.yml', import.meta.url), 'utf8');
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
   assert.match(yml, /pull-requests: write/, 'file .github/workflows/automerge.yml keeps pull-requests: write');
   assert.match(yml, /17 \* \* \* \*/, 'file .github/workflows/automerge.yml keeps the hourly run');
   assert.match(yml, /STUCK:/, 'file .github/workflows/automerge.yml keeps the stuck sweep');
-  assert.match(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs disarms GitHub auto-merge until the suite is green');
-  assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges after the suite');
-  assert.match(src, /chooseChecked\(rows, mainSha, running, safetyOk\)/, 'file tools/automerge.mjs: the suite gate chooses, and the safety-check runs on its batch');
-  assert.match(src, /const safetyOk = [^]*?safety\(ex, gh,/, 'file tools/automerge.mjs safety-checks the batch');
+  assert.match(src, /disablePullRequestAutoMerge/, 'file tools/automerge.mjs disarms GitHub auto-merge so the bot merges');
+  assert.match(src, /merge_method=squash/, 'file tools/automerge.mjs squash-merges a ready pull request');
+  assert.match(src, /if \(false && ready\.length/, 'file tools/automerge.mjs does not run the old suite wait');
   assert.match(src, /update-branch/, 'file tools/automerge.mjs brings a branch that is behind main up to date');
   assert.doesNotMatch(src, /enablePullRequestAutoMerge/, 'file tools/automerge.mjs must not arm GitHub auto-merge');
-  assert.match(src, /workflow', 'run', 'suite-gate\.yml', '--repo', repo, '--ref', 'main'/, 'file tools/automerge.mjs starts the suite from main');
+  assert.match(src, /workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'/, 'file tools/automerge.mjs starts the suite on main after the merge');
   assert.match(src, /superseded\(prs, loopCoverage\)/, 'file tools/automerge.mjs checks that a newer loop pull request contains the older one before closing it');
   assert.match(src, /void-carry/, 'file tools/automerge.mjs records the missing delta and leaves the pull request open');
   assert.match(src, /!Array\.isArray\(v\.files\)/, 'file tools/automerge.mjs does not treat an unreadable compare as an empty diff');
@@ -191,49 +191,47 @@ test('a suite gate result sweeps, and an idle run on main never replaces the wai
   assert.match(src, /wr\.name !== 'Suite on main' && wr\.name !== 'Verse verify' && !\(wr\.pull_requests/);
 });
 
-test('a red Verse verify on the current main head blocks automerge, and a green one does not', () => {
+test('a red Verse verify starts a fix and does not block automerge', () => {
   const fail = (headSha, committedAt, extra = {}) => ({ headSha, status: 'completed', conclusion: 'failure', committedAt, covers: true, updatedAt: '2026-11-09T21:30:40Z', url: 'https://github.com/atomeam/void-loop/actions/runs/42697922754', ...extra });
   const ok = (headSha, committedAt) => ({ headSha, status: 'completed', conclusion: 'success', committedAt, covers: true, updatedAt: '2026-11-09T19:17:20Z' });
-  // 2026-11-09 21:43 UTC: #2574 merged onto f474c754d. That head had no verify of its own. The newest
-  // finished verify that covers it was bd18dbef, failure, completed 21:30. The suite gate had passed
-  // because inherited reds do not fail a batch. The merge should have waited.
+  // 2026-11-09: #2617 held every merge while verify on an ancestor was red. That hold is what piled pull requests up.
   const ontoRedAncestor = mainVerifyHold([
     ok('a841e248d57d31a1922aa3902b9500d7e0bf6fdf', 1000),
     fail('bd18dbef95a0656d147a15e8e162d80699ee181b', 2000),
     { headSha: 'f474c754d', status: 'in_progress', conclusion: null, committedAt: 3000, covers: true },
   ], 'f474c754d');
-  assert.equal(ontoRedAncestor.hold, true);
+  assert.equal(ontoRedAncestor.hold, false);
+  assert.equal(ontoRedAncestor.heal, true);
   assert.equal(ontoRedAncestor.rule, 'main-verify-red');
   assert.equal(ontoRedAncestor.file, '.github/workflows/verify.yml');
-  assert.match(ontoRedAncestor.hint, /green on the current main head/);
+  assert.match(ontoRedAncestor.hint, /pull requests keep merging/);
   assert.match(ontoRedAncestor.hint, /bd18dbef/);
-  // 22:49 UTC: #2590 through #2603 merged while verify on the then-current head d619471 had already finished red.
   const ontoRedHead = mainVerifyHold([fail('d61947130e2671b44ea09571d0c6f154c11361b8', 4000)], 'd61947130e2671b44ea09571d0c6f154c11361b8');
-  assert.equal(ontoRedHead.hold, true);
-  assert.match(ontoRedHead.hint, /d61947130/);
-  // a green verify on the current head lets Verse merge itself, even when an older head was red
+  assert.equal(ontoRedHead.hold, false);
+  assert.equal(ontoRedHead.heal, true);
   const green = mainVerifyHold([
     fail('bd18dbef95a0656d147a15e8e162d80699ee181b', 2000),
     ok('9d8fcd5c1184d3a3a906ddb5a07f384b6d998586', 5000),
   ], '9d8fcd5c1184d3a3a906ddb5a07f384b6d998586');
-  assert.equal(green.hold, false, 'file .github/workflows/verify.yml is green on this head, so automerge is not blocked');
-  // a slow failure that finishes after a newer green head does not hold: the newer commit is the verdict
+  assert.equal(green.hold, false);
+  assert.equal(green.heal, false, 'file .github/workflows/verify.yml is green on this head');
   const newerGreen = mainVerifyHold([
     { ...fail('oldred', 1000), updatedAt: '2026-11-09T23:00:00Z' },
     { ...ok('newgreen', 2000), updatedAt: '2026-11-09T22:00:00Z' },
   ], 'newgreen');
-  assert.equal(newerGreen.hold, false);
-  // a reverted commit's red verify does not cover this head
+  assert.equal(newerGreen.heal, false);
   assert.equal(mainVerifyHold([
     { headSha: 'reverted', status: 'completed', conclusion: 'failure', committedAt: 9000, covers: false },
     ok('main', 3000),
-  ], 'main').hold, false);
-  assert.equal(mainVerifyHold([{ headSha: 'abc', status: 'completed', conclusion: 'cancelled', covers: true, committedAt: 1 }], 'abc').hold, false);
-  assert.equal(mainVerifyHold([], 'abc').hold, false);
+  ], 'main').heal, false);
+  assert.equal(mainVerifyHold([{ headSha: 'abc', status: 'completed', conclusion: 'cancelled', covers: true, committedAt: 1 }], 'abc').heal, false);
+  assert.equal(mainVerifyHold([], 'abc').heal, false);
   const src = readFileSync(new URL('./automerge.mjs', import.meta.url), 'utf8');
-  assert.match(src, /mainVerifyHold\(runs, mainSha\)/, 'file tools/automerge.mjs reads Verse verify before it merges');
-  assert.match(src, /verifyHold\.hold && \(choice\.action === 'merge' \|\| choice\.action === 'queue'\)/, 'file tools/automerge.mjs does not merge or queue a suite while main verify is red');
+  assert.match(src, /mainVerifyHold\(runs, mainSha\)/, 'file tools/automerge.mjs reads Verse verify');
+  assert.match(src, /verifyHold\.heal/, 'file tools/automerge.mjs starts a fix when verify is red');
+  assert.doesNotMatch(src, /verifyHold\.hold &&/, 'file tools/automerge.mjs does not freeze merges');
   assert.match(src, /rule: ' \+ verifyHold\.rule/);
   assert.match(src, /file: ' \+ verifyHold\.file/);
   assert.match(src, /fix: ' \+ verifyHold\.hint/);
+  assert.doesNotMatch(readFileSync(new URL('./merge-policy.mjs', import.meta.url), 'utf8'), /hold: true/);
 });

@@ -13,5 +13,10 @@
   "tools/families.mjs",
   "void-live-deploy/skills/client-status-pack.js",
   "void-live-deploy/skills/order/9890-client-status-pack"
+ ],
+ "passed": [
+  1,
+  3,
+  4
  ]
 }

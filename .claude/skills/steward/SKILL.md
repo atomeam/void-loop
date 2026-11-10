@@ -18,7 +18,7 @@ Repo conventions for whoever owns a PR here. They sit under the rules of the har
 
 **CodeRabbit** posts that it does not review this repo (under 10 stars). Nothing to do.
 
-**Conflicts.** `node tools/merge-main.mjs`, never a merge by hand. The append-only records (growth ledger, agent log, test asks, flakes, the skill index; `tools/records.mjs`) settle themselves; anything else it names needs a person.
+**Conflicts.** `node tools/merge-main.mjs`, never a merge by hand. The append-only records (growth ledger, agent log, test asks, flakes, the skill index; `tools/records.mjs`) settle themselves; anything else it names is resolved by Verse's coder (`docs/playbooks/automerge.md`).
 
 **Red suite on main.** `verify.yml` reverts the commit that broke it (the jack settles the records, `tools/revert-records.mjs`). Fix forward. Never skip, quarantine or retry a test to get green. A check that went red and healed with nothing reverted lands in `tools/flakes.json`; twice in 7 days queues a `flake:` job (the spotter, `tools/flakes.mjs`).
 

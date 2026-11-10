@@ -17,9 +17,10 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, openSync, closeSync, unlinkSync, statSync, appendFileSync, mkdtempSync, mkdirSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
+import { judgeDiff } from './judgment.mjs';
 
 const CODER = join(fileURLToPath(new URL('.', import.meta.url)), 'verse-coder.mjs');
 /** A paid member's idea (a member:<id> queue job, lib/members.js) may only add: the lap refuses it otherwise (tools/add-only.mjs). Pure. */
@@ -106,13 +107,33 @@ export function pickTask({ before, agent, next, task, probe = true }) {
   return it ? { kind: 'next', ...it } : { kind: 'idle', why: 'all green and docs/NEXT.md has no open item' };
 }
 
+/** the next simplest site, as a lap task, or null when every listed job is already done. Pure. */
+export function leastTask(site) {
+  if (!site || !site.host) return null;
+  const jobs = (site.jobs || []).filter((j) => j && j.words && !j.done);
+  if (!jobs.length) return null;
+  return { kind: 'next', n: null, text: 'The next simplest site is ' + site.host + (site.url ? ' (' + site.url + ')' : '') + '. It still needs: ' + jobs.map((j) => j.words).join('; ') + '. Build each missing job as a real function that does the job, with a test that runs it, and a page that does the job and cites who made the site and how it changed. Do not invent a maker, a date, or a fact you cannot cite.' };
+}
+
+/** the next unfinished site in void-live-deploy/lib/least.js, or null when that file is not there yet. */
+export async function leastNext(dir) {
+  try {
+    const m = await import(pathToFileURL(join(dir, 'void-live-deploy/lib/least.js')).href);
+    const n = typeof m.nextSite === 'function' ? m.nextSite() : null;
+    if (!n) return null;
+    const jobs = (n.jobs || []).map((j) => ({ words: j.words, done: !!(m.JOBS && m.JOBS[j.id] && typeof m.JOBS[j.id].prove === 'function' && m.JOBS[j.id].prove()) }));
+    return leastTask({ host: n.host, url: n.url, jobs });
+  } catch (_) { return null; }
+}
+
 /** The coding agent's prompt. Pure. */
 export function buildPrompt({ task, tagteam = '', gates = '' }) {
   const tail = (s, n) => (s.length > n ? '…\n' + s.slice(-n) : s);
   return [
     'You are working on Verse (the atomeam/void-loop repo) as one lap of the Verse loop (tools/verse-loop.mjs). Do exactly one item, then stop.',
     'Rules: fix bugs, never weaken, skip or delete a test. No secrets or keys in any file. Do not commit, push or open a PR yourself: the loop does that.',
-    'A floor counts as "assimilated" only with end-to-end journey evidence (say "assimilated", never "parity"). Small sites first, easiest first.',
+    'A normal person must see the change as real and useful: no invented jargon, no fake numbers, no filler. Green checks are not enough. The loop judges the diff and sends it back if it fails.',
+    'A site is done only when a page does its job and a test runs that job. Take the next simplest site, build each missing job, and write a short history that cites who made the site and how it changed. Do not invent a maker or a date.',
     'Every new page declares its handoff types. No new inline scripts (CSP). Nothing is removed, only evolved. Every new tool or workflow gets a line in docs/MAP.md.',
     '',
     'Where things live (AGENTS.md). Paths are from the repo root. Read one of these before searching the whole repo:',
@@ -344,7 +365,7 @@ function sh(cmd, args, opts = {}) {
 
 /** One lap. Returns a report; an ordinary red, a no-op, a refusal or a pause is an outcome, not a throw. Before the lap: the pause
  *  (skip, or resume by itself after PAUSE_HOURS) and the PRs earlier laps opened. After: the streak, and a pause at BACKOFF_AFTER. */
-export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now() } = {}) {
+export async function lap(opts, { cwd = process.cwd(), env = process.env, log = (s) => console.log(s), now = Date.now(), judge = judgeDiff } = {}) {
   const git = (...a) => sh('git', a, { cwd, env });
   const gh = (...a) => sh(env.VERSE_LOOP_GH || 'gh', a, { cwd, env });
   const ghJson = (...a) => { const r = gh(...a); if (r.code) return null; try { return JSON.parse(r.out); } catch { return null; } };
@@ -481,6 +502,27 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       }
     };
 
+    // green checks are not enough: the free model judges the diff. A no is sent back once, then the tree is put back.
+    const hold = async (before, task) => {
+      const g = gate(before, task);
+      if (g.stop) return g;
+      const diffOf = () => { git('add', '-A'); const d = git('diff', '--cached').out; git('reset', '-q'); return d; };
+      const ask = (diff) => judge(diff, { env, cwd, task: task.text || task.check || task.kind });
+      let j = await ask(diffOf());
+      report.judgment = j;
+      if (j.pass) { step('judgment: ' + j.why); return g; }
+      step('sent back: ' + j.why);
+      const ar = brain({ kind: 'next', n: null, text: 'Sent back before shipping. ' + j.why + '\nFix the change so a normal person would see it as real and useful. No invented jargon, no fake numbers, no filler.' });
+      if (ar.error && ar.error.code === 'ENOENT') return { stop: done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)') };
+      if (opts.agent === 'verse' && ar.code) { git('reset', '--hard', 'HEAD'); git('clean', '-fd'); return { stop: done('rejected', 'sent back, and the fix did not run') }; }
+      const g2 = gate(before, task);
+      if (g2.stop) return g2;
+      j = await ask(diffOf());
+      report.judgment = j;
+      if (!j.pass) { git('reset', '--hard', 'HEAD'); git('clean', '-fd'); return { stop: done('rejected', 'sent back, and the fix still failed: ' + j.why) }; }
+      step('the fix held: ' + j.why);
+      return g2;
+    };
     // self-heal first: an open loop/* PR with a failed check is fixed on its own branch, and the lap does nothing else
     const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup,createdAt', '--limit', '100') || [];
     const sick = failedLoopPr(open, state.heals || {});
@@ -498,7 +540,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       const ar = brain(task);
       if (ar.error && ar.error.code === 'ENOENT') return done('error', opts.agent + ' is not installed (docs/VERSE-LOOP.md says how)');
       if (opts.agent === 'verse' && ar.code) return coderStop(ar);
-      const g = gate(before, task);
+      const g = await hold(before, task);
       if (g.stop) return g.stop;
       const title = `Verse loop: heal ${sick.branch} (${task.check})`.slice(0, 120);
       if (opts.dryRun) return done('would-heal', g.v.why + ' (dry run: no commit or push)', { title });
@@ -523,8 +565,13 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const next0 = readDoc('docs/NEXT.md');
     const next = next0 ? groomNext(next0, { gaps: readDoc('docs/PARITY.md'), red }) : next0;
     const groomOpen = open.some((p) => /^loop\//.test(p.headRefName || '') && p.title === GROOM_TITLE);
+    const site = !red.length && !opts.task ? await leastNext(cwd) : null;
     let task;
-    if (!red.length && !opts.task && next !== next0 && !groomOpen) {
+    if (site) {
+      task = site;
+      report.task = { kind: 'next' };
+      step('task: the next simplest site');
+    } else if (!red.length && !opts.task && next !== next0 && !groomOpen) {
       task = { kind: 'groom' };
       report.task = { kind: 'groom' };
       step('task: groom docs/NEXT.md (the ranked queue changed)');
@@ -584,7 +631,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
       } else if (ar.code) step('the brain exited ' + ar.code + ' (its changes, if any, still face the checks)');
     }
 
-    const g = gate(before, task);
+    const g = await hold(before, task);
     if (g.stop) return g.stop;
     const v = g.v;
     if (isMemberTask(task)) { // owner, 2026-10-29: paid members "only add positive improvements"; enforced here, before any commit
@@ -611,7 +658,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     step('pushed ' + branch);
     const what = task.kind === 'fix' ? 'fix the first red check, `' + task.check + '`' : task.kind === 'groom' ? 're-rank Verse\'s queue in docs/NEXT.md (easiest first)'
       : task.kind === 'probe' ? 'the probe ask Verse missed (' + probe.skill + ', confidence ' + probe.confidence + ')' : (task.n != null ? 'docs/NEXT.md item ' + task.n : 'the given task');
-    const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${what}\n\nChecks after: ${v.why}. Merges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
+    const body = `One lap of \`tools/verse-loop.mjs\` (brain: ${opts.agent}).\n\nTask: ${what}\n\nChecks after: ${v.why}.\nJudgment: ${(report.judgment && report.judgment.why) || 'not recorded'}.\nMerges on Verse's review (automerge); verify.yml reverts it if main's suite goes red.`;
     // no human in the loop: every PR the loop opens is labelled automerge (a low-confidence probe patch was dropped above)
     report.label = 'automerge';
     const pr = gh('pr', 'create', '--base', opts.base, '--head', branch, '--title', title, '--body', body, '--label', 'automerge');

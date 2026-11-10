@@ -1,0 +1,103 @@
+{
+ "at": "2026-11-10T01:26:28Z",
+ "sha": "07a413afc0066f2da85aa9f4519e1e0737ffbfb0",
+ "runId": 42734968225,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42734968225",
+ "workflow": "Verse deploy",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "test-and-deploy",
+   "id": 129561865992,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42734968225/job/129561865992",
+   "conclusion": "failure",
+   "step": {
+    "number": 5,
+    "name": "Quick checks (when the browser suite does not run)"
+   },
+   "fails": [
+    "FAIL tools/families.mjs:273 SyntaxError: Unexpected token ':'  (near-duplicate lines at 273: a merge may have re-encoded this file)"
+   ],
+   "tail": [
+    "if [ \"$EVENT\" = \"workflow_dispatch\" ] && [ -z \"$prcheck\" ]; then suite=true; fi",
+    "if [ \"$EVENT\" = \"pull_request\" ] || [ -n \"$prcheck\" ]; then",
+    "  # no preview deploys (owner, 2026-10-15: \"cloudflare is not unlimited Verse should spend its actions on growth and not",
+    "  # so much on testing old thing\"): a PR merges in minutes and main deploys right after, so a preview was a Cloudflare",
+    "  # deploy nobody opened. A PR gets the quick checks; main gets the deploy.",
+    "  echo \"### PR: quick checks only, no preview deploy\" >> \"$GITHUB_STEP_SUMMARY\"",
+    "  echo \"light=true\" >> \"$GITHUB_OUTPUT\"",
+    "fi",
+    "echo \"suite=$suite\" >> \"$GITHUB_OUTPUT\"",
+    "echo \"suite=$suite\"",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  CF_READY: true",
+    "  GH_TOKEN: ***",
+    "  EVENT: push",
+    "  BASE: ",
+    "suite=false",
+    "Run node --version",
+    "node --version",
+    "node tools/guard-source.mjs",
+    "node tools/fringe.mjs",
+    "node --test domains/forethinkers/think-tank.test.mjs",
+    "node --test tools/dispatcher.test.mjs",
+    "shell: /usr/bin/bash -e {0}",
+    "env:",
+    "  CF_READY: true",
+    "v22.23.4",
+    "FAIL tools/families.mjs:273 SyntaxError: Unexpected token ':'  (near-duplicate lines at 273: a merge may have re-encoded this file)",
+    "1 file(s) do not parse",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "members-paid",
+   "id": 129561866618,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42734968225/job/129561866618",
+   "conclusion": "failure",
+   "step": {
+    "number": 8,
+    "name": "node --test tools/members-paid.e2e.mjs (Already joined, after a reload, the idea box)"
+   },
+   "fails": [
+    "not ok 6 - Built by @name: the member's page lists their idea once Verse built it, with a link to the change; a page with none has no such card",
+    "not ok 7 - a published page on a phone: every card fits the screen width, one under the other, none on top of another"
+   ],
+   "tail": [
+    "  ...",
+    "# Subtest: a published page on a phone: every card fits the screen width, one under the other, none on top of another",
+    "not ok 7 - a published page on a phone: every card fits the screen width, one under the other, none on top of another",
+    "  ---",
+    "  duration_ms: 15398.17858",
+    "  type: 'test'",
+    "  location: '/home/runner/work/void-loop/void-loop/tools/members-paid.e2e.mjs:202:1'",
+    "  failureType: 'testCodeFailure'",
+    "  error: 'page.waitForFunction: Timeout 15000ms exceeded.'",
+    "  code: 'ERR_TEST_FAILURE'",
+    "  name: 'TimeoutError'",
+    "  stack: |-",
+    "    TestContext.<anonymous> (/home/runner/work/void-loop/void-loop/tools/members-paid.e2e.mjs:207:50)",
+    "  ...",
+    "# Subtest: a published page shares as its own: the served /@name head names the page and its cards, not the Verse home card",
+    "ok 8 - a published page shares as its own: the served /@name head names the page and its cards, not the Verse home card",
+    "  ---",
+    "  duration_ms: 857.092064",
+    "  type: 'test'",
+    "  ...",
+    "1..8",
+    "# tests 8",
+    "# suites 0",
+    "# pass 6",
+    "# fail 2",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 40670.818436",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

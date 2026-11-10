@@ -6,7 +6,10 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, pauseIssueClosed, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, leastTask, verdict, takeLock, agentCommand, buildPrompt, lap as lapRaw, groomNext, assimilationGaps, ease, pauseState, pauseIssueClosed, recordOutcome, settlePrs, prStateOf, SUPERSEDED_MARK, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
+
+// these laps stub the judgment, which otherwise asks the free model and refuses to ship without one
+const lap = (opts, ctx = {}) => lapRaw(opts, { judge: async () => ({ pass: true, why: 'a person could use this' }), ...ctx });
 
 const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
@@ -58,6 +61,15 @@ test('flags', () => {
   assert.throws(() => parseArgs(['--agent', 'gpt']), /must be one of/);
   assert.throws(() => parseArgs(['--every', '0']), /minutes/);
   assert.throws(() => parseArgs(['--force']), /unknown flag/);
+});
+
+test('the next simplest site is a lap only while a job is still missing', () => {
+  const t = leastTask({ host: 'hackertyper.net', url: 'https://hackertyper.net/', jobs: [{ words: 'fill the screen with code as you type', done: false }, { words: 'already done', done: true }] });
+  assert.match(t.text, /hackertyper\.net/);
+  assert.match(t.text, /fill the screen with code as you type/);
+  assert.doesNotMatch(t.text, /already done/);
+  assert.equal(leastTask({ host: 'yesno.wtf', jobs: [{ words: 'answer yes, no, or maybe', done: true }] }), null);
+  assert.equal(leastTask(null), null);
 });
 
 test('the top open NEXT item skips done ones', () => {
@@ -124,7 +136,7 @@ test('brains: Verse\'s is propose-fix for a probe and verse-coder for the rest; 
   assert.ok(agentCommand('aider', pf, { env: e }).args.includes('--no-auto-commits'));
   assert.throws(() => agentCommand('cmd', pf, { env: {} }), /VERSE_LOOP_AGENT_CMD/);
   const pr = buildPrompt({ task: { kind: 'fix', check: 'alpha', cmd: 'x', output: 'boom' }, tagteam: 'T', gates: 'G' });
-  assert.match(pr, /never by weakening the test/); assert.match(pr, /assimilated/); assert.match(pr, /boom/);
+  assert.match(pr, /never by weakening the test/); assert.match(pr, /next simplest site/); assert.match(pr, /boom/);
   assert.match(pr, /void-live-deploy\/skills\/order\/<rank>-<name>/); assert.match(pr, /index\.json is generated: never edit it/);
 });
 
@@ -140,6 +152,16 @@ test('dry run, green: the fake brain takes NEXT item 2 and the lap would ship, w
   assert.equal(readFileSync(join(s.work, 'docs/TAGTEAM.md'), 'utf8'), '# TAGTEAM\n', 'no TAGTEAM line in a dry run');
   assert.equal(sh(s.origin, 'branch', '--list', 'loop/*'), '', 'nothing pushed');
   assert.ok(!existsSync(join(s.dir, 'gh-args.txt')), 'no PR');
+});
+
+test('a judgment of no sends the change back, and a second no ships nothing', async () => {
+  const s = sandbox();
+  const head = sh(s.work, 'rev-parse', 'HEAD');
+  const r = await lap(parseArgs(['--dry-run', '--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo built > built.txt'), log: quiet, judge: async () => ({ pass: false, why: 'it is a tally with nothing a person can use' }) });
+  assert.equal(r.outcome, 'rejected', r.why);
+  assert.match(r.why, /sent back/);
+  assert.equal(sh(s.work, 'rev-parse', 'HEAD'), head);
+  assert.equal(sh(s.work, 'status', '--porcelain'), '');
 });
 
 test('dry run, red: the task is the first red check, and a fix that greens it would ship', async () => {

@@ -46,6 +46,8 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
+        # index.json is generated (never committed); self-context and the suite read it
+        node tools/skills-index.mjs --write
         node tools/self-context.mjs
     - name: node tools/fringe.mjs (fringe ledger rules)
       if: inputs.bench != 'only' && inputs.part != 'suite'

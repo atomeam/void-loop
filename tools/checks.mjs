@@ -508,6 +508,7 @@ for (const [name, file] of [
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['review-decide', 'review-decide.test.mjs'],
+  ['judgment', 'judgment.test.mjs'], // before Verse ships its own change: a free model, the stated goals, and one plain question
   ['outcome-exam', 'outcome-exam.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
   ['baggage-live', 'baggage-live.test.mjs'],
@@ -633,6 +634,7 @@ for (const [name, file] of [
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
+  ['least', 'least.test.mjs'], // the Tower: a site is listed only when each of its jobs has been run
   ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
   ['assimilated', 'assimilated.test.mjs'], // the history of every site Versus took on (/assimilated/, tools/assimilated.mjs)
