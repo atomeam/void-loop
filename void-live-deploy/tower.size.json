@@ -11893,6 +11893,20 @@
    "weight": 902368,
    "at": "2026-10-30"
   },
+  "telegram.services": {
+   "bytes": 2,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 0,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 2,
+   "shell": "none",
+   "weight": 2,
+   "at": "2026-11-10"
+  },
   "terradicespace.nl": {
    "refused": true,
    "at": "2026-10-29"

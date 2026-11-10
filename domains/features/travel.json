@@ -5290,16 +5290,15 @@
       "title": "Flights from Papua New Guinea, Flights from Fiji",
       "features": [
        "section my airline lists",
-       "section airlines flying direction",
+       "section airlines flying",
        "section all airlines",
-       "section aircrafts flying direction",
+       "section aircraft flying",
        "section all aircraft",
        "section flight connections",
        "section select departure airport",
        "section select destination",
        "section on this page",
        "section all airports in",
-       "section airlines flying",
        "section information on points miles",
        "section which places within N miles can i reach",
        "section which destinations lie within N N miles of",
@@ -5425,7 +5424,6 @@
        "section to united states with a stopover",
        "section to canada",
        "section to canada with a stopover",
-       "section aircraft flying",
        "section new features are coming"
       ]
      },
@@ -14808,32 +14806,6 @@
       ]
      },
      {
-      "key": "section airlines flying direction",
-      "name": "airlines_flying direction_",
-      "kind": "section",
-      "templates": [
-       "like:/flights-from-papua-new-guinea-pg"
-      ],
-      "verse": "has",
-      "found": [
-       "airline",
-       "direction"
-      ]
-     },
-     {
-      "key": "section aircrafts flying direction",
-      "name": "aircrafts_flying direction_",
-      "kind": "section",
-      "templates": [
-       "like:/flights-from-papua-new-guinea-pg"
-      ],
-      "verse": "has",
-      "found": [
-       "aircraft",
-       "direction"
-      ]
-     },
-     {
       "key": "section to solomon islands",
       "name": "to Solomon Islands",
       "kind": "section",
@@ -15384,9 +15356,9 @@
      "/flights/distance/",
      "/flights/map/"
     ],
-    "crawled": "2026-11-09"
+    "crawled": "2026-11-10"
    }
   },
-  "updated": "2026-11-09"
+  "updated": "2026-11-10"
  }
 }
