@@ -36,8 +36,8 @@ test('the live line uses only the numbers it was given', () => {
     { name: 'TowerScout', here: false, did: 'mapped a site', didAt: 10 },
   ];
   assert.equal(latestFeed(crew).name, 'SiteOperator');
-  assert.equal(proofLine({ crew, beaten: 2 }), '1 of 2 bots here · 2 tower wins · SiteOperator: checked the links');
-  assert.equal(proofLine({ crew: [], beaten: 1 }), '1 tower win');
+  assert.equal(proofLine({ crew, beaten: 2 }), '1 of 2 bots here · SiteOperator: checked the links');
+  assert.equal(proofLine({ crew: [], beaten: 1 }), '');
   assert.equal(proofLine({}), '');
   assert.equal(proofLine({ beaten: NaN }), '');
 });
