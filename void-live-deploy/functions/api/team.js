@@ -571,7 +571,7 @@ async function prTitles(env, nums, now) {
     for (const r of results || []) out[String(r.k).slice(9)] = r.v;
   } catch (_) { /* no cache yet: the titles are fetched below */ }
   const missing = nums.filter((n) => !out[n]);
-  const headers = { 'user-agent': 'Verse-team', accept: 'application/vnd.github+json' };
+  const headers = { 'user-agent': 'Verse-team', accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28' };
   const token = env.GITHUB_TOKEN || env.GH_TOKEN;
   if (token) headers.authorization = 'Bearer ' + token; // Cloudflare's shared addresses get 403 from GitHub without it
   const got = await Promise.all(missing.map(async (n) => {
