@@ -45,8 +45,14 @@ export async function readState(request, env, fetchFn = fetch) {
     env.DB ? willRow() : null, env.DB ? crewView(env).catch(() => null) : null,
     github(origin, '/commits?sha=main&per_page=5', fetchFn), github(origin, '/pulls?state=open&per_page=100', fetchFn), github(origin, '/issues?state=open&per_page=100', fetchFn),
   ]);
+  let next = null;
+  try {
+    const m = await import('../../lib/least.js');
+    const s = m.nextSite();
+    if (s) next = { host: s.host, words: (s.jobs || []).filter((j) => !(m.JOBS[j.id] && m.JOBS[j.id].prove && m.JOBS[j.id].prove())).map((j) => j.words).join('; ') };
+  } catch (_) { /* the list is not in this build */ }
   return {
-    ledger, incidents, target, will, crew, commits,
+    ledger, incidents, target, will, crew, commits, next,
     prs: Array.isArray(pulls) ? pulls.length : undefined,
     issues: Array.isArray(issues) ? issues.filter((i) => i && !i.pull_request).length : undefined,
   };
