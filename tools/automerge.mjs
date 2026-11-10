@@ -18,7 +18,7 @@ import { readiness, resolveMain } from './pr-ready.mjs';
 import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
-import { eligible, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
+import { eligible, mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
@@ -64,7 +64,7 @@ function scopedPr() {
     if (ev.inputs && /^\d+$/.test(String(ev.inputs.pr || ''))) return String(ev.inputs.pr);
     const wr = ev.workflow_run;
     // a suite gate result changes which pull request goes next: sweep, so the green one merges or the next one is queued now
-    if (wr && wr.name === 'Suite on main') return '';
+    if (wr && (wr.name === 'Suite on main' || wr.name === 'Verse verify')) return '';
     if (wr && wr.pull_requests && wr.pull_requests.length === 1) return String(wr.pull_requests[0].number);
   } catch (_) {}
   return '';
@@ -75,7 +75,7 @@ function idleEvent() {
     const ev = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH || '', 'utf8'));
     const wr = ev.workflow_run;
     // the suite gate runs on main for a batch of pull requests: its result is never idle (2026-11-06: it was, and nothing merged)
-    return !!(wr && wr.name !== 'Suite on main' && !(wr.pull_requests || []).length && wr.head_branch === 'main');
+    return !!(wr && wr.name !== 'Suite on main' && wr.name !== 'Verse verify' && !(wr.pull_requests || []).length && wr.head_branch === 'main');
   } catch (_) { return false; }
 }
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
@@ -290,6 +290,28 @@ if (ready.length && !limited) {
   choice = checked.choice;
   const pick = choice.pr;
   console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
+  // A green suite-on-main check can pass while main is red: suite-diff ignores a check that is just as red on main
+  // alone (2026-11-06). That is how #2574 merged at 21:43 UTC and #2590-#2603 at 22:49 UTC on 2026-11-09, onto a main
+  // whose Verse verify had already finished red. The newest finished verify that covers this head blocks the merge.
+  let verifyHold = { hold: false };
+  if (mainSha) {
+    try {
+      const raw = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'verify.yml', '--branch', 'main', '--limit', '40', '--json', 'headSha,status,conclusion,updatedAt,url']));
+      const runs = (Array.isArray(raw) ? raw : []).map((r) => {
+        const covers = samePrefix(r.headSha, mainSha) || isAncestor(r.headSha, mainSha);
+        let committedAt = Date.parse(r.updatedAt) || 0;
+        if (covers && r.headSha) { try { const t = Number(ex('git', ['log', '-1', '--format=%ct', r.headSha])); if (t) committedAt = t * 1000; } catch (_) {} }
+        return { ...r, covers, committedAt };
+      });
+      verifyHold = mainVerifyHold(runs, mainSha);
+    } catch (e) { console.log('could not read Verse verify: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  }
+  if (verifyHold.hold && (choice.action === 'merge' || choice.action === 'queue')) {
+    console.log('rule: ' + verifyHold.rule);
+    console.log('file: ' + verifyHold.file);
+    console.log('fix: ' + verifyHold.hint);
+    choice = { ...choice, action: 'hold', why: verifyHold.hint };
+  }
   // one suite run for the whole batch, dispatched from main: the workflow on main reads a list of pull requests (2026-11-06)
   const startSuite = (batch, where) => {
     const list = (batch || []).map((x) => x.number).filter(Boolean);
@@ -356,6 +378,7 @@ if (!one && !limited) {
   } catch (e) { console.log('stall alarm: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
 function samePrefix(a, b) { const x = String(a).toLowerCase(), y = String(b).toLowerCase(); return x === y || x.startsWith(y) || y.startsWith(x); }
+function isAncestor(sha, head) { if (!sha || !head || samePrefix(sha, head)) return false; try { ex('git', ['merge-base', '--is-ancestor', sha, head]); return true; } catch (_) { return false; } }
 if (merged) {
   try { run(['workflow', 'run', 'deploy.yml', '--repo', repo, '--ref', 'main', '-f', 'after_merge=true']); console.log('deploy of main started'); }
   catch (e) { console.log('::warning::merged, but could not start the deploy: ' + String(e.stderr || e.message).slice(0, 300)); }

@@ -90,8 +90,16 @@ function put(els, area) {
     const el = c.el, fixed = el.classList.contains('vpage');
     const x = fixed ? m.x : Math.round(m.x - s0.left), y = fixed ? m.y : Math.round(m.y - s0.top);
     el.dataset.tidy = '1'; el.classList.add(fixed ? 'placed' : 'card-glide'); el.style.boxSizing = 'border-box';
-    if (!media(el)) el.style.transform = 'none';
+    const hold = media(el);
+    if (!hold) el.style.transform = 'none';
+    else el.style.transition = 'none';
     el.style.translate = ''; el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.width = m.w + 'px'; el.style.maxHeight = m.h + 'px';
+    // a clip keeps its transform, because changing one restarts it. The card's centering translate would then draw it off the left, so shift left and top until the picture sits in the slot.
+    if (hold) {
+      const r = el.getBoundingClientRect();
+      el.style.left = (x - (r.left - m.x)) + 'px'; el.style.top = (y - (r.top - m.y)) + 'px';
+      el.style.transition = '';
+    }
     // the picture moves; the saved place (th.x) stays, so a key nudge is not measured from a spot the crowd drew
   }
 }

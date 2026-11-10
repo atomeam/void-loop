@@ -20,6 +20,7 @@ import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLin
 import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 import { WILL_LAST_SQL, lastRun } from '../../lib/will-last.js';
+import { betterPair, blank, tick as selfTick, weigh } from '../../lib/self-model.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -66,6 +67,12 @@ export async function onRequestPost({ request, env }) {
   // Evidence for a stronger model: each time the free one fell short this week (+1 per 5, at most +10). Stays free until the budget covers it.
   const short = await readShortfalls(env, 7);
   if (short.total) for (const c of cands) if (/stronger model/i.test(c.title)) { c.why = (c.why + '; ' + shortfallLine(short)).slice(0, 300); c.weight += Math.min(10, Math.ceil(short.total / 5)); }
+  // expected value from queue outcomes already stored (lib/self-model.js). No outcome, no change to the weight.
+  try {
+    const hist = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' LIMIT 120").all()).results) || [];
+    let drives = null; try { const v = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'self-model'").first('v'); drives = v ? JSON.parse(v).drives : null; } catch (_) { drives = null; }
+    weigh(cands, hist, drives);
+  } catch (_) { /* a queue that cannot be read keeps the weights it already had */ }
   const list = (money ? budgetLine(money) + '\n\n' : '') + cands.map((c) => `${c.id}. [${c.kind}, weight ${c.weight}${c.cost ? ', costs $' + (c.cost / 100).toFixed(2).replace(/\.00$/, '') + '/month' + (budget >= c.cost ? ', affordable' : ', over budget') : ''}${c.source ? ', from ' + c.source : ''}] ${c.title} — ${c.why}`).join('\n');
   let chosen = null;
   try {
@@ -81,7 +88,7 @@ export async function onRequestPost({ request, env }) {
   } catch (e) { await recordShortfall(env, 'will', reasonOf(e)); }
   // if the model is busy, Verse still wills: highest weight wins
   let wants = (chosen && chosen.wants || []).map((w) => ({ ...w, c: cands.find((c) => c.id === +w.id) })).filter((w) => w.c).slice(0, 3);
-  if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
+  if (!wants.length) wants = cands.slice().sort((a, b) => ((b.ev && b.ev.value != null) ? b.ev.value : -1) - ((a.ev && a.ev.value != null) ? a.ev.value : -1) || b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
   const at = new Date().toISOString();
   // a reason or fact longer than n ends at a word with an ellipsis, never mid-word or on a space (the card compares them)
   const clip = (t, n) => { const x = String(t || '').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
@@ -123,5 +130,12 @@ export async function onRequestPost({ request, env }) {
     queued = id;
     if (lap) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('lap', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(lap)).run();
   }
+  try {
+    const file = async (p) => { if (!env.ASSETS) return null; const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; };
+    const [better, exam] = await Promise.all([file('/void.better.json'), file('/progress/exam.json')]);
+    const prev = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'self-model'").first('v');
+    const stepped = selfTick(prev ? JSON.parse(prev) : blank(at), { better: betterPair(better), exam, will: { open: will.wants.length }, goals: will.wants.map((w) => w.i_want || w.title) }, at);
+    await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('self-model', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(stepped.self)).run();
+  } catch (_) { /* the will is already saved */ }
   return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}), ...(chosenWant.overCap ? { overCap: chosenWant.overCap } : {}) });
 }
