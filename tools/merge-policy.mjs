@@ -151,3 +151,33 @@ export function stuckDecision(pr, checks, now = Date.now(), hours = 6) {
   if (!runs.length) return { action: 'comment', why: 'no checks have reported on this head' };
   return { action: 'merge', why: 'checks are green' };
 }
+
+const sameHead = (a, b) => {
+  const x = String(a || '').toLowerCase(), y = String(b || '').toLowerCase();
+  return !!(x && y && (x === y || x.startsWith(y) || y.startsWith(x)));
+};
+
+/**
+ * Whether Verse verify on main blocks automerge. `runs` are verify.yml runs on main:
+ * { headSha, status, conclusion, updatedAt, committedAt, covers, url }. `covers` is true when
+ * headSha is the current main head or an ancestor of it. The newest finished run that covers
+ * this head decides. A failure holds every merge until a newer finished run on this head is
+ * green. Cancelled and skipped do not count. A run still going does not clear a red.
+ * A green verify on the current head does not hold: Verse merges itself. Pure.
+ */
+export function mainVerifyHold(runs, mainSha) {
+  const finished = (runs || []).filter((r) => r && (r.covers === true || sameHead(r.headSha, mainSha)) && r.status === 'completed' && r.conclusion !== 'cancelled' && r.conclusion !== 'skipped');
+  const when = (r) => Number(r.committedAt) || Date.parse(r.updatedAt || '') || 0;
+  finished.sort((a, b) => when(b) - when(a) || String(b.headSha || '').localeCompare(String(a.headSha || '')));
+  const latest = finished[0];
+  if (!latest) return { hold: false, why: 'no finished Verse verify covers this main head' };
+  const sha = String(latest.headSha || mainSha || '');
+  if (latest.conclusion === 'success') return { hold: false, why: 'Verse verify is green on ' + sha.slice(0, 9) };
+  return {
+    hold: true,
+    rule: 'main-verify-red',
+    file: '.github/workflows/verify.yml',
+    sha,
+    hint: 'Verse verify is ' + latest.conclusion + ' on main ' + sha.slice(0, 9) + (latest.url ? ' (' + latest.url + ')' : '') + '. Automerge waits until Verse verify is green on the current main head. Fix the red check on main (verify.yml reverts a red suite and files a heal job). Pull requests stay open.',
+  };
+}
