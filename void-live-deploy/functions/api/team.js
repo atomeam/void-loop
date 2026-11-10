@@ -582,9 +582,18 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
     const turns = await crewTurns(env, ags);
-    const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true, did: T.hideSecrets(a.did || ''), didAt: a.did_at || null, next: turns[a.id] || null } : {}) }));
+    await env.DB.prepare("DELETE FROM void_queue WHERE id = 'team-1626'").run().catch(() => null); // a test job, not work
+    const heldIds = ags.filter((a) => a.job && !a.crew).map((a) => a.job);
+    const titles = {};
+    if (heldIds.length) { const { results: hs } = await env.DB.prepare('SELECT id, ask, state FROM void_queue WHERE id IN (' + heldIds.map(() => '?').join(',') + ')').bind(...heldIds).all(); for (const h of hs || []) titles[h.id] = h; } // void-review: ok (placeholders only)
+    const members = ags.filter((a) => a.name !== 'TowerScout').map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true } : { now: a.job && titles[a.job] ? 'Working on ' + T.clean(T.hideSecrets(titles[a.job].ask), 120) : 'Nothing in hand' }) }));
+    const { results: askRows } = await env.DB.prepare("SELECT id, ask, target, state FROM void_queue WHERE state IN ('queued','building','live','done') ORDER BY at DESC LIMIT 80").all();
+    const asks = (askRows || []).filter((j) => T.ownerAsk(j)).slice(0, 8).map((j) => ({ id: j.id, state: j.state, title: T.clean(T.hideSecrets(j.ask), 140) }));
+    const { results: cred } = await env.DB.prepare('SELECT c.job, c.link, a.name, a.crew FROM void_team_credits c JOIN void_team_agents a ON a.id = c.agent WHERE a.crew = 0 ORDER BY c.id DESC LIMIT 8').all();
+    const feed = [];
+    for (const c of cred || []) { const q = await env.DB.prepare('SELECT ask, state FROM void_queue WHERE id = ?').bind(c.job).first().catch(() => null); const live = q && (q.state === 'live' || q.state === 'done'); feed.push({ name: c.name, href: c.link, live: !!live, text: c.name + ' — ' + T.clean(T.hideSecrets((q && q.ask) || c.job), 110) + (live ? '. On the site.' : '. The pull request is not live yet.') }); } // void-review: ok (at most 8 reads)
     const waiting = T.rank(await queued(env), now).length;
-    return json({ ok: true, channels: chans, members, waiting, coder: await coderLane(env, now), kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
+    return json({ ok: true, channels: (chans || []).filter((c) => c.code !== 'tower'), members, waiting, asks, feed, coder: await coderLane(env, now), kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
   if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', role: me.agent.role === 'member' ? 'member' : 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });

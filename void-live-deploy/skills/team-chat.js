@@ -1,36 +1,39 @@
 /**
- * team-chat skill: "team chat", "agent workspace", "my agents" (owner, 2026-10-29: "verse should reverse engineer and create its own version of
- * slack", "so it can bring in lots of agents and constantly keep all of them busy itself"): the team chat as a card on the stage. It shows the
- * workspace as anyone may see it (functions/api/team.js GET: channels with their counts, each agent with busy, idle or away, and how many jobs
- * wait for an agent), says when no agent has joined yet, and links to /team/. Read only: the card posts nothing and shows no message.
- * Made with tools/new-skill.mjs (docs/UPGRADING.md).
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * team-chat skill: the workspace as a card. Builders, owner asks, and finished work a visitor can open.
+ * Clock-crew checks stay off this card. Contract: { name, examples, nearMisses, match, run }.
  */
 const WHEN = /^(?:(?:the |a |my |open (?:the |my )?|show (?:me )?(?:the |my )?)?(?:team ?chat|team workspace|agents? (?:chat|workspace)|slack alternative)|(?:my|the) agents|chat (?:for|with) (?:my |the )?agents)$/i;
-const DOT = { busy: '●', idle: '○', away: '·' };
-/** the card's lines from the open workspace read: the agents (busy first), then the channels. Pure. */
+
+/** the card's pieces from the open workspace read. Pure. */
 export function teamLines(w) {
-  const order = { busy: 0, idle: 1, away: 2 }, members = (Array.isArray(w && w.members) ? w.members : []).slice().sort((a, b) => (order[a.state] ?? 3) - (order[b.state] ?? 3));
-  const agents = members.slice(0, 8).map((m) => ({ href: '/team/', text: (DOT[m.state] || '·') + ' ' + m.name + ' · ' + m.state + (m.done ? ' · ' + m.done + ' done' : '') }));
-  const channels = (Array.isArray(w && w.channels) ? w.channels : []).slice(0, 6).map((c) => ({ href: '/team/#c=' + c.code, text: '#' + c.code + ' · ' + (c.msgs || 0) + ' message' + (c.msgs === 1 ? '' : 's') }));
-  return { agents, channels, waiting: Number(w && w.waiting) || 0, busy: members.filter((m) => m.state === 'busy').length };
+  const members = Array.isArray(w && w.members) ? w.members : [];
+  const order = { busy: 0, idle: 1, away: 2 };
+  const builders = members.filter((m) => m && !m.crew).slice().sort((a, b) => (order[a.state] ?? 3) - (order[b.state] ?? 3)).slice(0, 8);
+  const asks = (Array.isArray(w && w.asks) ? w.asks : []).slice(0, 6);
+  const feed = (Array.isArray(w && w.feed) ? w.feed : []).slice(0, 6);
+  const busy = builders.filter((m) => m.state === 'busy');
+  return { builders, asks, feed, waiting: Number(w && w.waiting) || 0, busy: busy.length, busiest: busy[0] ? busy[0].name : (builders[0] ? builders[0].name : '') };
 }
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 function run(text, api) {
   const { showPage } = api;
   showPage((el) => {
     el.dataset.page = '/team/';
-    el.innerHTML = '<h2>Team chat</h2><p>Verse and its agents at work: channels, threads, mentions, reactions and search. Verse hands every idle agent its next job as a thread in #work, and the next one the moment it closes it.</p>' // void-review: ok: fixed text
-      + '<p class="tw" style="margin:6px 0">Looking at the team…</p><ul class="tl" style="padding-left:18px;margin:6px 0"></ul>'
-      + '<p><a href="/team/" style="font-weight:600">Open the team chat →</a></p>'
-      + '<div class="src">From Verse’s own workspace: names and presence only; messages are for its members</div>';
-    const say = el.querySelector('.tw'), ul = el.querySelector('.tl');
-    const line = (l) => { const li = document.createElement('li'), a = document.createElement('a'); a.href = l.href; a.textContent = l.text; li.append(a); ul.append(li); };
+    el.innerHTML = '<h2>Team chat</h2><div class="tc-art" aria-hidden="true"></div><p class="tc-stats"></p><div class="tc-asks"></div><div class="tc-chips"></div><ol class="tc-feed"></ol><p><a href="/team/">Open the team chat</a></p>';
+    const art = el.querySelector('.tc-art'), stats = el.querySelector('.tc-stats'), asks = el.querySelector('.tc-asks'), chips = el.querySelector('.tc-chips'), feed = el.querySelector('.tc-feed');
     fetch('/api/team').then((r) => r.json()).then((j) => {
       const t = teamLines(j);
-      say.textContent = (t.agents.length ? t.agents.length + ' agent' + (t.agents.length === 1 ? '' : 's') + ', ' + t.busy + ' busy' : 'No agent has joined yet: the owner invites the first from /team/') + ' · ' + t.waiting + ' job' + (t.waiting === 1 ? '' : 's') + ' waiting for an agent';
-      for (const l of t.agents.concat(t.channels)) line(l);
-    }).catch(() => { say.textContent = 'The team chat did not answer just now.'; });
+      const dots = t.builders.map((m) => '<span title="' + esc(m.name) + '" style="display:inline-block;width:14px;height:14px;border-radius:50%;margin:2px;background:' + (m.state === 'busy' ? '#9eb2ff' : '#3a4158') + '"></span>').join('');
+      art.innerHTML = '<div style="min-height:72px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">' + (dots || '<span style="opacity:.7">No builder has joined</span>') + '</div>';
+      stats.textContent = t.waiting + ' jobs waiting · ' + t.feed.length + ' recent shipments · ' + (t.busiest ? 'busiest ' + t.busiest : 'nobody busy');
+      asks.innerHTML = t.asks.length ? '<p><b>Owner asks</b></p>' + t.asks.map((a) => '<div>' + esc(a.state) + ' · ' + esc(a.title) + '</div>').join('') : '';
+      chips.innerHTML = t.builders.map((m) => '<span style="display:inline-block;margin:4px 6px 0 0;padding:4px 8px;border:1px solid #2a3148;border-radius:999px">' + esc(m.name) + ' · ' + esc(m.now || m.state) + '</span>').join('');
+      for (const f of t.feed) { const li = document.createElement('li'); const a = document.createElement('a'); a.href = f.href || '/team/'; a.textContent = f.text; li.append(a); feed.append(li); }
+      const box = el.closest('.vc') && el.closest('.vc').querySelector('.vc-art');
+      if (box) box.replaceChildren(...[...art.childNodes].map((n) => n.cloneNode(true)));
+    }).catch(() => { stats.textContent = 'The team chat did not answer just now.'; });
   });
   return 'team-chat';
 }
