@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T09:26:58Z",
-  "passed": 62,
-  "of": 63,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s\" (skill:film-metadata)"
- },
- {
   "at": "2026-10-18T10:02:42Z",
   "passed": 54,
   "of": 64,
@@ -7868,6 +7861,24 @@
      "ask": "what can you do",
      "why": [
       "slow 9254 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T22:14:33Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 636,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 10485 ms"
      ]
     }
    ]
