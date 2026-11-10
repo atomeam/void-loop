@@ -5,13 +5,13 @@
 //   claims-verified.json: only the phrases that are proven to answer with their own card are read aloud;
 //   domains/void.voice.md: Verse's own latest daily readout and current asks, quoted as Verse said them (fact tags removed);
 //   incidents.json: how many red browser suites main had in the week (counts only).
-// Two voices: Verse (states the record) and the Critic (reads the misses and the weak spots from the same record). The Critic is a
+// Two voices: Verse (states the record) and Critic (reads the misses and the weak spots from the same record). Critic is a
 // second reader of the record, not a person, and says so in every episode.
 // Audio is made with Piper (open-source TTS, MIT, runs on the CI machine or any box: no account, no API, costs nothing) and ffmpeg.
 //   node tools/podcast.mjs --script [--to 2026-10-22]       print the next episode's script (no files written)
 //   node tools/podcast.mjs --make [--to ...] --voices <dir>  write the episode: mp3, transcript, episodes.json, rss.xml
 //   node tools/podcast.mjs --rss                             rewrite podcast/rss.xml from podcast/episodes.json
-// Voices: <dir>/en_US-lessac-medium.onnx (Verse) and <dir>/en_US-ryan-medium.onnx (the Critic); PIPER is the piper command
+// Voices: <dir>/en_US-lessac-medium.onnx (Verse) and <dir>/en_US-ryan-medium.onnx (Critic); PIPER is the piper command
 // (default "python3 -m piper"). Weekly by .github/workflows/verse-podcast.yml; docs/playbooks/podcast.md.
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, rmSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -31,7 +31,7 @@ export const SHOW = {
   email: 'atom@a-to-mind.com',
   link: SITE + '/podcast/',
   cover: SITE + '/podcast/cover.jpg',
-  description: 'Verse Out Loud. Verse and the Critic tell a short true story about something Verse actually did, for anyone curious. Free to download and repost.',
+  description: 'Verse Out Loud. Verse and Critic tell a short true story about something Verse actually did, for anyone curious. Free to download and repost.',
   category: 'Technology',
   language: 'en-us',
 };

@@ -93,7 +93,7 @@ export function recordScore(kind, title, scores, fact) {
 
 export async function filmShort(made, out, filmId) {
   const { render } = await import('./film-studio.mjs');
-  const beats = made.show.lines.map((l) => ({ kind: 'title', who: l.who, text: (l.who === 'Critic' ? 'CRITIC' : 'VERSE') + '\n' + l.text, voice: l.text }));
+  const beats = made.show.lines.map((l) => ({ kind: 'title', who: l.who, text: l.who + '\n' + l.text, voice: l.text }));
   const script = { format: 'explainer', label: 'Verse short', topic: made.show.title, name: made.show.title.slice(0, 40), hook: made.show.hook, mood: 'bright', theme: 'explainer', voiced: true, beats };
   const meta = await render(script, out, { filmId, topic: { page: SITE + '/', source: 'Verse', url: SITE + '/' } });
   spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1', '-i', resolve(out, filmId + '.mp4'), '-frames:v', '1', resolve(out, filmId + '.jpg')]);

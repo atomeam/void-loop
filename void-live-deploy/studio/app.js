@@ -49,7 +49,7 @@ function say(line) {
     if (v) u.voice = v;
     u.rate = line.who === 'Critic' ? 0.92 : 1.02;
     u.pitch = line.who === 'Critic' ? 0.7 : 1.15;
-    cap.textContent = (line.who === 'Critic' ? 'CRITIC' : 'VERSE') + '\n' + line.text;
+    cap.textContent = line.who + '\n' + line.text;
     cap.classList.add('on');
     u.onend = () => resolve();
     u.onerror = () => resolve();
