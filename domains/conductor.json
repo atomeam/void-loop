@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T03:20:13.751Z",
+ "updated": "2026-11-10T03:29:35.210Z",
  "last24h": {
   "ticks": 147,
-  "started": 104,
+  "started": 105,
   "requeued": 1,
   "setAside": 3,
   "probes": 15,
-  "errors": 27
+  "errors": 26
  },
  "broken": [],
  "held": [
@@ -29,6 +29,10 @@
   },
   {
    "id": "mwa2ssg4",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mwa4pxje",
    "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
@@ -86,20 +90,16 @@
   {
    "id": "mvxmzxet",
    "why": "Verse's coder has used its free model calls until 04:00 UTC"
-  },
-  {
-   "id": "mvxmzy5j",
-   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 68,
+   "used": 72,
    "cap": 90
   },
   "day": {
-   "used": 248,
+   "used": 252,
    "cap": 360
   },
   "room": true,
@@ -179,7 +179,8 @@
   "mw9y7p3s": 1794273534200,
   "mwa0agd2": 1794274099228,
   "mwa0ah54": 1794274661084,
-  "mwa0ahv2": 1794275219104
+  "mwa0ahv2": 1794275219104,
+  "mwa4iwgf": 1794281375210
  },
  "sweptAt": 1794278006894,
  "blueprintsAt": 1794278006894,
@@ -267,11 +268,6 @@
   "review:2641"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T03:22:23.478Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T03:31:43.855Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3638,6 +3634,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 303,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T03:29:35.210Z",
+   "open": 316,
+   "started": [
+    {
+     "id": "mwa4iwgf",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 305,
    "warnings": 1
   }
  ]
