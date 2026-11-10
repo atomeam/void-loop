@@ -2082,12 +2082,12 @@
    }
   },
   "unitpay.ru": {
-   "at": "2026-11-09T21:02:37Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON",
+   "at": "2026-11-10T10:18:28Z",
+   "outcome": "gone",
+   "why": "answered 502",
    "ease": {
     "score": 4.2,
-    "place": 6,
+    "place": 5,
     "why": "not sized yet, hardness 108, Tranco 176282"
    }
   },
@@ -2111,6 +2111,80 @@
     "score": 4.2,
     "place": 8,
     "why": "not sized yet, hardness 109, Tranco 279084"
+   }
+  },
+  "telegram.services": {
+   "at": "2026-11-10T10:17:51Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (2 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 1,
+    "why": "0 controls, 0 KB, Tranco 400033"
+   }
+  },
+  "studiowaterarts.com": {
+   "at": "2026-11-10T10:17:51Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 100,
+    "place": 2,
+    "why": "0 controls, 0 KB, Tranco 360134"
+   }
+  },
+  "rightarion.ru": {
+   "at": "2026-11-10T10:17:56Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (the website is a personal portfolio and CV, which is a service for individual identity presentation that Verse does not have a specific page for; while)",
+   "title": "Rightarion | Personal Website",
+   "ease": {
+    "score": 99.5,
+    "place": 3,
+    "why": "0 controls, 5 KB, Tranco 360129"
+   }
+  },
+  "cavea.plus": {
+   "at": "2026-11-10T10:18:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a video streaming service for movies and series. Verse does not have a tool for streaming media content, only for tools like podcasts or music)",
+   "title": "CaveaPlus - კავეა პლუსი",
+   "ease": {
+    "score": 99.4,
+    "place": 4,
+    "why": "0 controls, 6 KB, Tranco 360120"
+   }
+  },
+  "informunity.ru": {
+   "at": "2026-11-10T10:19:00Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON",
+   "ease": {
+    "score": 4.2,
+    "place": 6,
+    "why": "not sized yet, hardness 110, Tranco 313243"
+   }
+  },
+  "whatismyip.org": {
+   "at": "2026-11-10T10:19:05Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides IP address lookup and geolocation services, which does not match any of the existing Verse tool pages provided in the list.)",
+   "title": "What is My IP Address? Find Public IPv4 & IPv6",
+   "ease": {
+    "score": 4.2,
+    "place": 7,
+    "why": "not sized yet, hardness 110, Tranco 113980"
+   }
+  },
+  "w3counter.com": {
+   "at": "2026-11-10T10:19:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides website analytics and visitor tracking services. None of the available Verse pages offer web traffic analysis, visitor behavior tracking)",
+   "title": "Simple Website Analytics & Live Visitor Tracking · W3Counter",
+   "ease": {
+    "score": 4.2,
+    "place": 8,
+    "why": "not sized yet, hardness 110, Tranco 58060"
    }
   }
  },
