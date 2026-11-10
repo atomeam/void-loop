@@ -180,11 +180,12 @@ test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and 
 test('the team chat card on the stage (skills/team-chat.js): takes the team-chat asks, not plain chat, and lists agents busy first', () => {
   for (const a of chatSkill.examples) assert.ok(chatSkill.match(a.toLowerCase()), a);
   for (const a of chatSkill.nearMisses) assert.ok(!chatSkill.match(a.toLowerCase()), a);
-  const t = teamLines({ members: [{ name: 'Idle', state: 'idle' }, { name: 'Busy', state: 'busy', done: 3 }], channels: [{ code: 'work', msgs: 1 }], waiting: 4 });
-  assert.deepEqual(t.agents.map((a) => a.text), ['● Busy · busy · 3 done', '○ Idle · idle']);
-  assert.deepEqual(t.channels, [{ href: '/team/#c=work', text: '#work · 1 message' }]);
-  assert.equal(t.waiting, 4); assert.equal(t.busy, 1);
-  assert.deepEqual(teamLines(null), { agents: [], channels: [], waiting: 0, busy: 0 }, 'an answer that is not the workspace shows nothing made up');
+  const t = teamLines({ members: [{ name: 'Idle', state: 'idle' }, { name: 'Busy', state: 'busy', now: 'Working on a page' }, { name: 'TowerScout', state: 'idle', crew: true, done: 33 }], asks: [{ id: 'team-1', state: 'queued', title: 'Add a tide table' }], feed: [{ text: 'GLM shipped a page. On the site.', href: 'https://github.com/atomeam/void-loop/pull/1' }], waiting: 4 });
+  assert.deepEqual(t.builders.map((a) => a.name), ['Busy', 'Idle']);
+  assert.equal(t.asks[0].title, 'Add a tide table');
+  assert.equal(t.feed.length, 1);
+  assert.equal(t.waiting, 4); assert.equal(t.busy, 1); assert.equal(t.busiest, 'Busy');
+  assert.deepEqual(teamLines(null), { builders: [], asks: [], feed: [], waiting: 0, busy: 0, busiest: '' }, 'an answer that is not the workspace shows nothing made up');
 });
 
 test('the owner is an account: the owner account\'s signed-in session is the owner here; any other account is not let in', async () => {

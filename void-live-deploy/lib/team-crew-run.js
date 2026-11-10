@@ -39,6 +39,10 @@ const json = (t) => { try { return JSON.parse(t); } catch (_) { return null; } }
 
 /** the crew's rows in the team chat: made once each (never over a member the owner removed), here this run */
 async function seat(env, now) {
+  for (const old of C.RETIRED || []) {
+    await env.DB.prepare('UPDATE void_team_agents SET off = 1, crew = 0 WHERE id = ?').bind(old.id).run();
+    await env.DB.prepare('DELETE FROM void_team_channels WHERE code = ?').bind(old.channel).run();
+  }
   for (const b of C.CREW) {
     await env.DB.prepare('INSERT OR IGNORE INTO void_team_agents (id, name, about, key, joined, seen, auto, crew) VALUES (?, ?, ?, ?, ?, ?, 0, 1)').bind(b.id, b.name, b.about, hex(32), now, now).run(); // void-review: ok (eight fixed rows; the key is random and never shown, so nobody signs in as a crew member)
     await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(b.channel, b.channel, b.name + '\'s lane: ' + b.about.replace(/^Crew · runs on Verse's clock\. /, ''), now, 'verse').run(); // void-review: ok (eight fixed channels)
@@ -181,23 +185,6 @@ const duties = {
       + (bad.length ? '\nBroken: ' + bad.map((l) => l.path + ' (' + (l.status || 'no answer') + ', linked from ' + l.from + ')').join(', ') + '. Filed as heal wants.' : '');
     return { say, line: 'walked ' + w.links.length + ' links, ' + bad.length + ' broken', lane: bad.length ? say : '' };
   },
-  'tower-scout': (env, ev, run, now) => async () => {
-    const floors = ev.tower && ev.tower.floors ? Object.entries(ev.tower.floors) : [];
-    const cand = floors.map(([f, rows]) => ({ f, miss: C.towerMisses(rows), rival: C.rivalOf(f) })).filter((x) => x.miss.length && x.rival);
-    if (!cand.length) return { say: 'No floor with a named rival is short right now.', line: 'no rival floor short' };
-    const pick = C.rotate(cand, 1, run)[0], host = pick.rival;
-    const robots = await get(env, 'https://' + host + '/robots.txt', { max: 5e5 });
-    let maps = C.sitemapsIn(robots.text); if (!maps.length) maps = ['https://' + host + '/sitemap.xml'];
-    const first = await get(env, maps[0], { max: 8e6 }), sm = C.readSitemap(first.text);
-    let pages = sm.index ? [] : sm.locs, children = sm.index ? sm.locs.length : 0;
-    if (sm.index && sm.locs[0]) { const c = await get(env, sm.locs[0], { max: 8e6 }); pages = C.readSitemap(c.text).locs; }
-    const secs = C.sectionsOf(pages), est = sm.index && children ? children + ' sitemaps (the first lists ' + pages.length + ' pages)' : pages.length + ' pages';
-    await setState(env, 'crawl:' + host, { at: now, maps: maps.length, children, pages: pages.length, sections: secs }, now);
-    const say = 'Mapped ' + host + ' across its whole site: robots.txt ' + (robots.status || 'no answer') + ', ' + maps.length + ' sitemap' + (maps.length === 1 ? '' : 's') + ' listed, ' + (first.status === 200 ? est : 'sitemap answered ' + (first.status || 'nothing')) + '.'
-      + (secs.length ? '\nIts biggest sections: ' + secs.map((x) => x.section + ' (' + x.pages + ')').join(', ') + '.' : '')
-      + '\nVerse is short on the ' + pick.f + ' floor: ' + pick.miss.map((m) => m.aspect + ' (' + m.verdict + ')').join(', ') + '. Every section above is a feature to match or beat; the floor\'s want is on the board.';
-    return { say, line: 'mapped ' + host + ': ' + (pages.length || 0) + ' pages, ' + pick.miss.length + ' aspects short', lane: say };
-  },
   'exam-coach': (env, ev) => async () => {
     if (!ev.exam) return { say: 'The exam did not load (' + ORIGIN + '/exam/latest.json and /progress/exam.json).', line: 'exam did not load', ok: false };
     if (ev.exam.domains) {
@@ -254,7 +241,7 @@ const duties = {
     return { say, line: 'posted ' + fresh.length + ' new browser features for Verse', lane: say };
   },
 };
-const TITLES = { 'status-watch': 'probe the key pages and the hourly guards', 'site-operator': 'walk the next window of internal links', 'tower-scout': 'map a rival\'s whole site for a short floor',
+const TITLES = { 'status-watch': 'probe the key pages and the hourly guards', 'site-operator': 'walk the next window of internal links',
   'exam-coach': 'read the outcome exam and file the weakest domain', 'merge-train': 'report the pull-request train', 'broadcast-builder': 'pick the TV and radio idea worth building',
   'growth': 'draft promos from measured wins', 'tech-radar': 'read the browser release notes' };
 
