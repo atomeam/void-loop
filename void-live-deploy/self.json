@@ -636,6 +636,10 @@
  },
  "commits": [
   {
+   "at": "2026-11-10T15:56:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-10T15:55:25Z",
    "subject": "Site test: visitor pass 15/15"
   },
@@ -710,10 +714,6 @@
   {
    "at": "2026-11-10T15:23:43Z",
    "subject": "Mark handoff-checklist shipped with main SHA 1fd7a279b (#2658)"
-  },
-  {
-   "at": "2026-11-10T15:22:55Z",
-   "subject": "Shorts loop: today's trial and verdicts"
   }
  ],
  "builders": {
