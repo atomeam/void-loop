@@ -12,6 +12,7 @@ export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
 export const LIMITS = {
   treasury: { rpm: 30, body: 2000 }, // Verse's treasury (functions/api/treasury.js): public reads, owner-only small JSON actions
+  credits: { rpm: 30, body: 2000 }, // internal credits (functions/api/credits/): a claim or the public feed, no payout
   mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   a2a: { rpm: 30, body: 8000 }, // Verse as an A2A agent (functions/api/a2a.js): one text message in, ask_void's answer out
   apibot: { rpm: 60, body: 0 }, // GET only: the free API bots' relay (functions/api/apibot.js): an API id from a closed list and one input in, that API's reply out; 30 cache misses a minute per connection in the route, good answers edge-cached ten minutes
