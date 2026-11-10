@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T10:07:24.737Z",
+ "updated": "2026-11-10T10:16:48.306Z",
  "last24h": {
   "ticks": 146,
-  "started": 96,
+  "started": 95,
   "requeued": 1,
   "setAside": 2,
   "probes": 12,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw92wuds": 1794219331127,
   "mw92wv8s": 1794219906581,
   "mw959lnn": 1794222161481,
   "mw959mb1": 1794222727851,
@@ -174,8 +173,8 @@
   "mwa8w50j": 1794288700838,
   "mwadd5ol": 1794297358319
  },
- "sweptAt": 1794301866335,
- "blueprintsAt": 1794301866335,
+ "sweptAt": 1794305808306,
+ "blueprintsAt": 1794305808306,
  "visitorAt": "2026-11-10T06:03:47Z",
  "visitorFiled": [
   "versus:speedtest.com.sg",
@@ -260,34 +259,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T10:15:31.127Z",
-   "open": 275,
-   "started": [
-    {
-     "id": "mw92wuds",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 265,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T10:25:06.581Z",
    "open": 274,
@@ -3989,6 +3960,27 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 307,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T10:16:48.306Z",
+   "open": 315,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 307,
    "warnings": 1
