@@ -124,6 +124,18 @@
    "aspect": "journey: share the result and reopen it from the link",
    "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "travel: flightconnections.com",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-10",
+   "job": "retry: script the journey with steps and negative controls"
+  },
+  {
+   "id": "travel: flightconnections.com",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-10",
+   "job": "retry: script the journey with steps and negative controls"
   }
  ],
  "skipped": [
