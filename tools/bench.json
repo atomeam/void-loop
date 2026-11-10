@@ -7172,5 +7172,8 @@
   {"ask": "reuse pack for client onboarding", "want": "skill:reuse-pack"},
   {"ask": "map to existing tools: invoice reminders", "want": "skill:reuse-pack"},
   {"ask": "what can we reuse for support tickets", "want": "skill:reuse-pack"},
-  {"ask": "palindromes for racing", "want": "skill:palindrome"}
+  {"ask": "palindromes for racing", "want": "skill:palindrome"},
+  {"ask": "ownership map for client onboarding", "want": "skill:ownership-map"},
+  {"ask": "map ownership for invoice reminders", "want": "skill:ownership-map"},
+  {"ask": "what does Verse own vs the client for support tickets", "want": "skill:ownership-map"}
 ]
