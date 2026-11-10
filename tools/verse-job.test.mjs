@@ -5,7 +5,7 @@ import http from 'node:http';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskText, startHere, tvStart, lastJson, settle, runJob, GUIDE, fullWhy, turnLog } from './verse-job.mjs';
+import { taskText, startHere, tvStart, lastJson, settle, runJob, GUIDE, fullWhy, turnLog, skillPointer } from './verse-job.mjs';
 import { GUIDE as GUIDE_TEAM } from '../void-live-deploy/lib/job-guide.js';
 import { ROUTES } from './conductor-core.mjs';
 
@@ -51,6 +51,7 @@ test('a lap want names where its item lives and the step that counts, so the cod
   assert.doesNotMatch(startHere(job({ ask: 'Upgrade skill:calendar: more views', note: '(before: lines 90, tests 3)' })), /smallest step/);
   assert.match(startHere(job({ ask: 'Upgrade tool:verse-job.mjs: tests' })), /tools\/verse-job\.mjs/);
   assert.equal(startHere(job()), ''); assert.equal(startHere(job({ ask: 'Overhaul surface:nowhere: x' }), skills), '');
+  assert.match(s, /skills\/order\/<rank>-<name>/); assert.match(s, /index\.json is generated: never edit it/);
 });
 
 test('a will overhaul reaches Verse\'s own coder with the full spec the team agents get, so it ships instead of giving back', () => {
@@ -65,6 +66,17 @@ test('a will overhaul reaches Verse\'s own coder with the full spec the team age
   assert.ok(t.includes(startHere(want, skills)), 'where to start reading is still there');
   assert.ok(t.length > 1800, 'the spec grows the cap instead of being cut');
   assert.doesNotMatch(taskText(job({ target: 'will:other', ask: 'add a small thing' })), /Target: /, 'a will job that names no lap item gets no spec');
+});
+
+test('a heal that names a skill starts at the skill file and its order file, not at skills/index.json (#2610)', () => {
+  const skills = ['lab', 'heavy-lift-map', 'calendar', 'map'];
+  const t = taskText(job({ id: 'mw9n5pkm', target: 'heal:helper-heavy-lift-map', ask: 'Repair helper/heavy-lift-map until it lands: skills check failed' }), skills);
+  assert.match(t, /void-live-deploy\/skills\/heavy-lift-map\.js and void-live-deploy\/skills\/order\/\*-heavy-lift-map/);
+  assert.match(t, /index\.json is generated: never edit it/);
+  assert.doesNotMatch(t, /skills\/lab\.js/); assert.doesNotMatch(t, /skills\/map\.js/);
+  assert.equal(skillPointer('it lands cleanly', ['lab']), '', 'a skill name inside another word is not that skill');
+  assert.match(skillPointer('the lab skill', ['lab']), /skills\/lab\.js/);
+  assert.ok(t.indexOf('heavy-lift-map.js') < t.indexOf('Note:') || !t.includes('Note:'), 'the file is before the note');
 });
 
 test('the lap\'s answer is the last JSON line of its output', () => {

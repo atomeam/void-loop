@@ -19,6 +19,7 @@ import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { makeGate, poolSize, runNode, slowest, fmtMs } from './pool.mjs';
 import { inlineScripts } from './inline-scripts.mjs';
 import { select as selectChanged, changedFiles, readDeps, REACHES_ALL } from './checks-changed.mjs';
+import { discoveredChecks } from './checks-list.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
@@ -92,6 +93,7 @@ const add = (name, fn, browser = false, file) => { jobs.push({ name, fn, browser
 const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slice(0, 2).map((l) => l.slice(0, 300)).join(' || '));
 const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)], false, file) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser, file);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
+const seenCheck = new Set();
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
   ['humble-copy', 'humble-copy.test.mjs'],
@@ -727,7 +729,10 @@ for (const [name, file] of [
   ['cross checks', 'cross-checks.test.mjs'],
   ['answer free', 'answer-free.test.mjs'],
   ['client-handoff', 'client-handoff.test.mjs'],
+  ...discoveredChecks(),
 ]) {
+  if (seenCheck.has(file)) continue;
+  seenCheck.add(file);
   // the load-bench test spawns the real bench, which needs the installed packages (bench.mjs imports playwright-core): with
   // VOID_SKIP_BENCH it runs from a worktree without node_modules (merge-gate.mjs), so it sits out with the bench check above
   if (name === 'bench-load' && process.env.VOID_SKIP_BENCH) add(name, async () => [true, 'skipped: the bench family needs installed packages, not a gate worktree (bench.yml covers a harness change)'], false, file);

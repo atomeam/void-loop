@@ -10,6 +10,12 @@ import { resolve, dirname } from 'node:path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
+function mapSources() {
+  const parts = [read('docs/MAP.md')];
+  const dir = resolve(root, 'docs/map.d');
+  if (existsSync(dir)) for (const f of readdirSync(dir)) if (f.endsWith('.md') && f !== 'README.md') parts.push(read('docs/map.d/' + f));
+  return parts.join('\n');
+}
 const names = (dir, re) => (existsSync(resolve(root, dir)) ? readdirSync(resolve(root, dir)).filter((f) => re.test(f)) : []);
 const named = (text, n) => new RegExp('(^|[^A-Za-z0-9_-])' + n.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&') + '([^A-Za-z0-9_-]|$)').test(text);
 
@@ -41,6 +47,6 @@ test('uncovered names only what the map leaves out', () => {
 });
 
 test('docs/MAP.md names every skill, miniature, workflow and tool in the repo', () => {
-  const miss = uncovered(repoParts(), read('docs/MAP.md'), read('docs/SALVAGE.md'));
-  assert.deepEqual(miss, [], 'add one line to docs/MAP.md for: ' + miss.map((m) => m.kind + ' ' + m.name).join(', '));
+  const miss = uncovered(repoParts(), mapSources(), read('docs/SALVAGE.md'));
+  assert.deepEqual(miss, [], 'add docs/map.d/<name>.md with one line naming it: ' + miss.map((m) => m.kind + ' ' + m.name).join(', '));
 });
