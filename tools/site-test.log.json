@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T00:31:24Z",
-  "passed": 42,
-  "of": 44,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
- },
- {
   "at": "2026-10-18T00:52:54Z",
   "passed": 35,
   "of": 45,
@@ -7652,6 +7645,24 @@
      "ask": "what can you do",
      "why": [
       "slow 8001 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T02:36:31Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1091,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11743 ms"
      ]
     }
    ]
