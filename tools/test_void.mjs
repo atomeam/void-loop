@@ -9786,12 +9786,19 @@ try {
   { // origin: a miss caused by an agent's tool call is tagged for Verse's learning; the same miss typed by a person is not
     const posts = [];
     await t.ctx.route(/\/api\/miss$/, (r) => { try { posts.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} return r.fulfill({ status: 204 }); });
+    // a miss is posted after the answer comes back (showAnswer resolves, then reportMiss runs), which a fixed wait outran on a loaded
+    // runner: the flag was read for the wrong ask and the check went red, healing on a quieter head (2026-10-25, tools/flakes.json).
+    // So each ask's miss is waited for before navigator.webdriver changes, and the flag is read while it still says what this ask is.
+    const missed = (word) => until(() => posts.some((x) => new RegExp(word).test(x.ask)), 12000);
     await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'zorbleflax quandary engine' })).catch(() => {});
+    await missed('zorbleflax');
     // this browser is driven by automation (navigator.webdriver), so a miss typed here is tagged origin robot (owner, 2026-10-19; tools/miss-robot.test.mjs);
     // a person's browser has no webdriver flag, so for the person's miss the flag is off, as it is on their device, and nothing else changes
     await t.ask('quibblewort sprocket lantern', 1500);
+    await missed('quibblewort');
     await t.p.evaluate(() => Object.defineProperty(navigator, 'webdriver', { get: () => false, configurable: true }));
     await t.ask('plumbus hexagram mender', 1500);
+    await missed('plumbus');
     await t.p.evaluate(() => { delete navigator.webdriver; });
     const byAgent = posts.filter((x) => /zorbleflax/.test(x.ask)), byPerson = posts.filter((x) => /plumbus/.test(x.ask)), byRobot = posts.filter((x) => /quibblewort/.test(x.ask));
     check('WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not', byAgent.length > 0 && byAgent.every((x) => x.origin === 'agent') && byPerson.length > 0 && byPerson.every((x) => !('origin' in x)) && byRobot.length > 0 && byRobot.every((x) => x.origin === 'robot') && t.errors.length === 0, JSON.stringify({ posts, errors: t.errors }).slice(0, 400));
