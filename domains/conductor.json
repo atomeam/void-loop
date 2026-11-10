@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T13:24:51.658Z",
+ "updated": "2026-11-10T13:34:10.820Z",
  "last24h": {
   "ticks": 146,
-  "started": 84,
+  "started": 83,
   "requeued": 1,
   "setAside": 2,
   "probes": 9,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw99zfn1": 1794231195167,
   "mw99zglq": 1794231837405,
   "mw9ceb57": 1794234102244,
   "mw9cebzl": 1794234667948,
@@ -165,8 +164,8 @@
   "mwaovifa": 1794316495548,
   "mwaovj0f": 1794317091658
  },
- "sweptAt": 1794313690849,
- "blueprintsAt": 1794313690849,
+ "sweptAt": 1794317650820,
+ "blueprintsAt": 1794317650820,
  "visitorAt": "2026-11-10T12:57:51Z",
  "visitorFiled": [
   "review:2303",
@@ -251,34 +250,6 @@
   "probe:give-me-the-ownership-pack"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T13:33:15.167Z",
-   "open": 278,
-   "started": [
-    {
-     "id": "mw99zfn1",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 270,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T13:43:57.405Z",
    "open": 277,
@@ -3899,6 +3870,27 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 315,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T13:34:10.820Z",
+   "open": 321,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 315,
    "warnings": 1
