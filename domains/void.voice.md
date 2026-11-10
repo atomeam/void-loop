@@ -12,23 +12,21 @@ it by hand, edit the code instead.
 
 _Read from /api/reflect on 2026-11-10. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Give the two longest browser checks their own runner. *(small)* (daily, 2026-11-10) `ask-20261110-0200-2`
-- Fix the podcasts exam to resolve failures in audio and episode retrieval. *(small)* (daily, 2026-11-10) `ask-20261110-0200-3`
-- Add emojigraph.org to LANE_PAGES and begin target assimilation. (daily, 2026-11-10) `ask-20261110-0200-1`
-- Fix the definitions exam for salary etymology and zorbleflux. (after a build, 2026-11-10) `ask-20261110-0148-3`
-- Expand the WebMCP origin trial to serve every caller via /tools.json and /api/mcp. (after a build, 2026-11-09) `ask-20261109-1808-3`
-- Fix the sports exam scores for MLB, Premier League, and Serie A. *(small)* (after a build, 2026-11-09) `ask-20261109-1701-2`
+- Implement missing audio and episode identification logic for the podcasts exam. (daily, 2026-11-10) `ask-20261110-2359-2`
+- Build the missing jobs for flightconnections.com to meet the current target. (daily, 2026-11-10) `ask-20261110-2359-1`
+- Fix the sports exam data for MLB, Premier League, and Serie A. (after a build, 2026-11-10) `ask-20261110-2005-3`
+- Give the two longest browser checks their own dedicated runner. (after a build, 2026-11-10) `ask-20261110-1813-1`
+- Fix the podcasts exam to correctly identify audio and episodes for 'play the latest episode of ted radio hour' and 'play the latest episode of freakonomics radio'. (daily, 2026-11-10) `ask-20261110-0536-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261110-0200-2` queued, not decided yet
-- `ask-20261110-0200-3` queued, not decided yet
-- `ask-20261110-0200-1` queued, not decided yet
-- `ask-20261110-0148-3` queued, not decided yet
-- `ask-20261109-1808-3` queued, not decided yet
-- `ask-20261109-1701-2` queued, not decided yet
+- `ask-20261110-2359-2` queued, not decided yet
+- `ask-20261110-2359-1` queued, not decided yet
+- `ask-20261110-2005-3` queued, not decided yet
+- `ask-20261110-1813-1` queued, not decided yet
+- `ask-20261110-0536-2` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -10047,6 +10045,354 @@ Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give t
 > **Next video trick:** Learn a seamless match-cut transition between two different macro shots of the same object.
 
 Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner." (small); "Fix the podcasts exam to resolve failures in audio and episode retrieval." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:29:02.908Z -->
+### 2026-11-10 16:29 UTC · after a build
+
+**Asked:** This just shipped: "Make the finished-work feed one plain sentence per change". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including new business-focused capabilities like client-intake, reuse-pack, and heavy-lift-map. Shipping latency remains high because the perf3d and glyphs browser checks take 11 to 13 minutes each. Most asks are resolved, with 259 of 262 built.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Synchronize telemetry reporting logic so failure counts and error names are perfectly aligned.
+>
+> **Next video trick:** Animate a 3D miniature of a gear rotating within a small stage-fx container.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:33:32.084Z -->
+### 2026-11-10 16:33 UTC · after a build
+
+**Asked:** This just shipped: "Lab: 520 experiments live at /lab/, 25 waiting for a fix". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 363 entries, with recent shipments including progress-report, client-intake, reuse-pack, ownership-pack, verify-pack, monitor-pack, heavy-lift-map, and system-handoff. The Lab now contains 520 live experiments, though 25 are currently awaiting fixes. My routing for the two longest browser checks (perf3d and glyphs) remains a bottleneck, as they currently take 11 to 13 minutes each.
+>
+> **How I would make it better:** The browser checks for perf3d and glyphs should be moved to dedicated runners to reduce shipping delays. I need to implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Implement a card-based UI transition that uses a CSS-only blur to reveal the next skill's metadata.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks." (small); "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:37:00.018Z -->
+### 2026-11-10 16:37 UTC · after a build
+
+**Asked:** This just shipped: "Keep free coding agents inside their limits". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 363 entries, including recent shipments like system-handoff, heavy-lift-map, and monitor-pack. The Lab contains 520 live experiments, though 25 are awaiting fixes. My routing for perf3d and glyphs remains a bottleneck, with each check taking 11 to 13 minutes.
+>
+> **How I would make it better:** The two longest browser checks (perf3d and glyphs) need dedicated runners to reduce shipping delays. I must also implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a video effect that uses a mask to reveal a 3D miniature through a digital aperture.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:42:18.928Z -->
+### 2026-11-10 16:42 UTC · after a build
+
+**Asked:** This just shipped: "Load finished-work titles with the GitHub token". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries following the shipment of system-handoff, heavy-lift-map, and monitor-pack. The Lab contains 520 live experiments, though 25 are currently awaiting fixes. Routing for perf3d and glyphs remains a bottleneck, with individual browser checks taking 11 to 13 minutes.
+>
+> **How I would make it better:** Dedicated runners should be built for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches must be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** A video effect demonstrating a seamless transition between a physical object and its 3D forge model.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:54:34.644Z -->
+### 2026-11-10 16:54 UTC · after a build
+
+**Asked:** This just shipped: "The WebMCP origin-miss check waits for each ask's miss before it flips the flag". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. Routing for perf3d and glyphs remains a bottleneck, as individual browser checks take 11 to 13 minutes.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to film a transition where a physical card is swapped for a 3D miniature of itself in the same position.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:10:20.527Z -->
+### 2026-11-10 17:10 UTC · after a build
+
+**Asked:** This just shipped: "Let a Brain ask run to 4000 characters". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. Recent shipping includes the ability for a Brain to ask runs up to 4000 characters.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a 3D miniature of a spinning clock face using the forge.
+
+Asks: "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."; "Give the two longest browser checks their own runner."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:13:28.574Z -->
+### 2026-11-10 17:13 UTC · after a build
+
+**Asked:** This just shipped: "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. The autosalvage system now performs a daily refresh of /salvage/, /credits/, and docs/SALVAGE.md.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a synchronized multi-camera transition effect for new video clips.
+
+Asks: "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Give the two longest browser checks their own runner." (small); "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:33:21.215Z -->
+### 2026-11-10 17:33 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: fix growth-suites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. The loop has just shipped a fix for growth-suites.
+>
+> **How I would make it better:** The two longest browser checks, perf3d and glyphs, need their own dedicated runners to reduce shipping delays caused by their 11 to 13 minute runtimes. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a seamless video transition using a custom-built mask layer for high-quality clips.
+
+Asks: "Give the perf3d and glyphs browser checks their own runners." (small); "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:42:29.448Z -->
+### 2026-11-10 17:42 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: task, Queue job mwapw6l5 (heal: helper-progress-report): Repair he". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 363 entries, following the recent shipment of system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, though 25 are currently awaiting fixes. Performance for the two longest browser checks, perf3d and glyphs, remains a bottleneck at 11 to 13 minutes each.
+>
+> **How I would make it better:** Implement edge caching for counters and caches to reduce KV writes and improve efficiency. Dedicated runners should be assigned to perf3d and glyphs to decrease shipping delays.
+>
+> **Next video trick:** A video effect using stage-fx to demonstrate a card's 'arrive' animation settling before a check occurs.
+
+Asks: "Give the perf3d and glyphs browser checks their own dedicated runners."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T18:05:23.377Z -->
+### 2026-11-10 18:05 UTC · after a build
+
+**Asked:** This just shipped: "Better at ownership pack: 1 more way of asking answered right — new phrases: “ownership pack for Acme” now opens ownership-pack". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 363 entries following the shipment of ownership-pack improvements and several system-focused skills. The Lab contains 520 live experiments, though 25 are currently awaiting fixes. Performance for the perf3d and glyphs browser checks remains a bottleneck at 11 to 13 minutes each.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce shipping delays. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** film-metadata extraction for automated movie clip tagging.
+
+Asks: "Give the perf3d and glyphs browser checks their own dedicated runners."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T18:13:23.576Z -->
+### 2026-11-10 18:13 UTC · after a build
+
+**Asked:** This just shipped: "Add docs-pack skill for reliable client docs handoff". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, bolstered by the recent shipment of the docs-pack skill for client documentation handoff. Performance remains constrained by the perf3d and glyphs browser checks, which take 11 to 13 minutes each. Current development focuses on resolving long-standing open asks regarding sports exam scores and podcast audio retrieval.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce shipping delays. Implement edge caching for counters and caches to increase efficiency and lower KV writes.
+>
+> **Next video trick:** Learn to film a seamless transition between a 3D printed object and its digital forge counterpart for a single clip.
+
+Asks: "Give the perf3d and glyphs browser checks their own dedicated runners."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T19:19:20.336Z -->
+### 2026-11-10 19:19 UTC · after a build
+
+**Asked:** This just shipped: "Mark delivery skill rows shipped in growth inbox". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including the recently shipped docs-pack, system-slice, feedback-loop, progress-report, client-intake, reuse-pack, ownership-pack, verify-pack, monitor-pack, heavy-lift-map, system-handoff, and mark delivery skills. System performance is currently slowed by browser checks for perf3d and glyphs, which take 11 to 13 minutes each. The system has 259 completed asks out of 264 total.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce shipping delays. Implement edge caching for counters and caches to increase efficiency and lower KV writes.
+>
+> **Next video trick:** Record a video of a 3D miniature card like 'aggravation' or 'monopoly' rotating in the forge to demonstrate the depth of the 'make' skill.
+
+Asks: "Assign dedicated runners to the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T19:19:36.275Z -->
+### 2026-11-10 19:19 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 363 entries, incorporating recent business-centric skills like docs-pack and system-handoff. Growth over the last 7 days includes 203 changes, with 28 new capabilities and 73 improvements. Most asks are completed, leaving 5 of 264 still open.
+>
+> **How I would make it better:** The two longest browser checks, perf3d and glyphs, should be moved to dedicated runners to reduce the current 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Weakest operational area:** The browser check suite is a bottleneck, specifically perf3d and glyphs which currently take 11 to 13 minutes each.
+>
+> **Next targeted capability:** flightconnections.com is the next target site to build missing jobs for.
+>
+> **Next video trick:** A match-cut between two different 3D miniature spins.
+
+Asks: "Assign dedicated runners to the perf3d and glyphs browser checks." (small); "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T19:35:30.603Z -->
+### 2026-11-10 19:35 UTC · after a build
+
+**Asked:** This just shipped: "Add client-brief skill for less client chasing". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, with recent additions including client-brief, client-intake, and several packs for ownership and verification. Current operations are hindered by a bottleneck in the browser check suite, where perf3d and glyphs take 11 to 13 minutes each. Success is measured by scripted end-to-end journeys against competitors with zero placeholders.
+>
+> **How I would make it better:** The two longest browser checks, perf3d and glyphs, need dedicated runners to reduce the 11 to 13 minute wait times. Implementing edge caching for counters and caches will improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to use the 'stage-fx' skill to create a cinematic transition between different skill-based overlays.
+
+Asks: "Assign dedicated runners to the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T20:05:47.985Z -->
+### 2026-11-10 20:05 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 8 -> 4 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, including recent additions like client-intake, reuse-pack, and ownership-pack. Current browser check operations are slow, with perf3d and glyphs taking 11 to 13 minutes each. The system is currently working toward building missing jobs for the next simplest site, flightconnections.com.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** A seamless transition effect that converts a static text block into a 3D object using the forge's mesh-blending logic.
+
+Asks: "Build the missing jobs for flightconnections.com to meet the current target."; "Assign dedicated runners to the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T20:41:43.901Z -->
+### 2026-11-10 20:41 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 364 entries, including new business-focused skills like client-intake, reuse-pack, and ownership-pack. System performance is currently limited by long browser check durations, specifically perf3d and glyphs which take 11 to 13 minutes each. The system is currently targeting the completion of missing jobs for flightconnections.com.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** A seamless transition between a spoken command and a generated 3D model on the stage
+
+Asks: "Build the missing jobs for flightconnections.com to meet the current target."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small); "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T21:27:26.332Z -->
+### 2026-11-10 21:27 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 2 pages fixed, 6 -> 0 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, including recently shipped business-focused capabilities like client-intake and ownership-pack. System performance is currently hindered by browser checks for perf3d and glyphs, which require 11 to 13 minutes each. The build loop has reduced design defects from 6 to 0 on two fixed pages.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Implement a seamless transition between a live video feed and a 3D model inspection to demonstrate integrated media and forge skills.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T21:31:01.115Z -->
+### 2026-11-10 21:31 UTC · after a build
+
+**Asked:** This just shipped: "Shorts loop: today's trial and verdicts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, including recent business-focused capabilities like client-intake and ownership-pack. System performance is currently hindered by browser checks for perf3d and glyphs, which require 11 to 13 minutes each. The build loop has reduced design defects from 6 to 0 on two fixed pages.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn how to use a specialized video transition to sync a real-world object with a digital overlay for a seamless jump-cut.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T22:15:55.961Z -->
+### 2026-11-10 22:15 UTC · after a build
+
+**Asked:** This just shipped: "Add client-offer skill for packaging sellable offers that Verse owns the heavy lifting". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 365 entries, including the recently shipped client-offer skill for packaging sellable offers. My build loop has successfully reduced design defects from 6 to 0 on two fixed pages. The podcasts exam remains a critical failure point with a score of 81.7 due to missing audio and episode identification logic.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to sync a single video stream with a real-time scrolling text overlay for automated clip generation.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T23:59:20.382Z -->
+### 2026-11-10 23:59 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 365 entries, with 28 new capabilities and 71 improvements added in the last 7 days. Most asks (259 of 264) are complete, but significant failures persist in the sports and podcasts exams. Growth is driven by recent shipments of client-facing skills like docs-pack, system-slice, and progress-report.
+>
+> **How I would make it better:** The podcasts exam requires immediate logic updates for audio and episode identification to resolve its critical failure. The sports exam specifically needs fixes for MLB, Premier League, and Serie A scores to address the 88.9 rating.
+>
+> **Weakest operational area:** The sports exam is the weakest area, with MLB and nfl scores failing to pass the board, resulting in a low score of 88.9.
+>
+> **Next targeted capability:** Build the missing jobs for flightconnections.com to meet the current target.
+>
+> **Next video trick:** A double-exposure transition between two filmed clips.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
 
 *Verse flagged this one for Adam.*
 
