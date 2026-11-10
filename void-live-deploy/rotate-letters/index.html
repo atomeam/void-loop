@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Rotate letters · Verse</title>
+<meta name="description" content="Shift the letters in any text by 1 to 25 places. Other marks stay put. Thirteen places undoes itself. Works with scripts off.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/rotate-letters/">
+<meta property="og:title" content="Rotate letters · Verse">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+</head>
+<body>
+<main>
+  <h1>Rotate letters</h1>
+  <p>Type or paste. Pick how many places to shift, from 1 to 25. Letters move. Everything else stays. Shift by 13 twice and you are back where you started.</p>
+  <form method="get" action="/rotate-letters/">
+    <label for="text">Text</label>
+    <textarea id="text" name="text" spellcheck="false"></textarea>
+    <div class="row">
+      <div><label for="shift">Places</label><input id="shift" name="shift" type="number" min="1" max="25" value="13" inputmode="numeric"></div>
+      <button type="submit">Rotate</button>
+      <button type="button" id="copy">Copy result</button>
+    </div>
+  </form>
+  <label for="out">Result</label>
+  <output id="out" aria-live="polite"></output>
+  <p>The address of this page is the share. With scripts on, it updates as you type.</p>
+  <p>More text tools: <a href="/base64/">Base64</a>, <a href="/convert/">unit converter</a>, <a href="/word-count/">word counter</a>, <a href="/versus/">Versus</a>.</p>
+  <section class="history">
+    <h2>The original site</h2>
+    <p>rot13.com has been a letter shifter since at least <a href="https://web.archive.org/web/20010302000000/http://rot13.com/">a saved copy from 2001</a>. The page does not say who made it, so this one does not guess. The trick is older than the site: a <a href="https://en.wikipedia.org/wiki/ROT13">letter shift of 13</a>, used for centuries and still its own undo. The <a href="https://rot13.com/">live site</a> is the one Verse went up against. Ours still answers when script is off, and the link keeps the text.</p>
+  </section>
+</main>
+<script type="module" src="/rotate-letters/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

@@ -13,7 +13,7 @@ export const NAV = Object.freeze([
   { href: '/scoreboard/', label: 'Star Chart' },
   { href: '/security/', label: 'Shields' },
   { href: '/limits/', label: 'Event Horizon' },
-  { href: '/contribute/', label: 'Assimilate' },
+  { href: '/contribute/', label: 'Contribute' },
 ]);
 
 /** the nav item this path is on, or null. `/` is Ask and nothing else. */
@@ -56,15 +56,14 @@ export function latestFeed(crew) {
   return best;
 }
 
-/** one line for the home chrome: bots here, tower wins, and the newest thing a bot did. Empty when there is nothing true to say. */
-export function proofLine({ crew, beaten } = {}) {
+/** one line for the home chrome: bots here, and the newest thing a bot did. Empty when there is nothing true to say. */
+export function proofLine({ crew } = {}) {
   const list = Array.isArray(crew) ? crew : [];
   const parts = [];
   if (list.length) {
     const here = list.filter((b) => b && b.here).length;
     parts.push(here + ' of ' + list.length + ' bots here');
   }
-  if (Number.isFinite(beaten)) parts.push(beaten + (beaten === 1 ? ' tower win' : ' tower wins'));
   const feed = latestFeed(list);
   if (feed) parts.push(feed.name + ': ' + String(feed.did).replace(/\s+/g, ' ').trim().slice(0, 80));
   return parts.join(' · ');

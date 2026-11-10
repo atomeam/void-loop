@@ -489,6 +489,10 @@ export const SPECS = {
     await t.click('#upper'); t.ok((await t.val('#text')) === 'THE QUICK BROWN FOX JUMPS.', 'UPPERCASE'); await t.share('#link');
   },
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
+  '/versus/': async (t) => { t.ok(await t.p.locator('a[href="/rotate-letters/"]').isVisible(), 'lists rotate letters'); t.ok(await t.p.locator('a[href="/track-times/"]').isVisible(), 'lists track times'); },
+  '/rotate-letters/': async (t) => { await t.fill('#text', 'Ab!'); await t.fill('#shift', '1'); await t.p.waitForTimeout(100); t.ok((await t.text('#out')) === 'Bc!', 'Ab! shifted by 1 is Bc!'); },
+  '/track-times/': async (t) => { t.ok(/43:54/.test(await t.text('#total')), 'the sample record runs 43:54'); await t.fill('#list', 'Song one 1:00\nSong two 2:00'); await t.p.waitForTimeout(100); t.ok(/3:00/.test(await t.text('#total')), 'two lengths add to 3:00'); },
+  '/our-motherfucking-version/': async (t) => { await t.fill('#html', '<p>Hi</p><img src="a.png">'); await t.p.waitForTimeout(100); t.ok(/1 pictures/.test(await t.text('#out')), 'one picture is counted'); t.ok(/motherfucking version/i.test(await t.p.locator('h1').innerText()), 'the heading is ours'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
 // the trading bots (owner, 2026-11-06): a backtest on the real candles once /trading-bots/data/ has them, an honest note before; trades export, the link reopens
