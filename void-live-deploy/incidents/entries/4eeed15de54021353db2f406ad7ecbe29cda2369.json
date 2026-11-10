@@ -11,5 +11,15 @@
   "docs/playbooks/automerge.md",
   "tools/flow-probe.mjs",
   "tools/flow-probe.test.mjs"
- ]
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-10T03:49:26.525Z",
+ "closedBy": "25259d47372a20768242d0f89a18c22308806f1e",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42749722542",
+ "minutes": 10
 }
