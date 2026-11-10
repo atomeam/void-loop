@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rotate letters · rot13.com · Verse</title>
+<link rel="canonical" href="https://a-to-mind.com/sites/rot13.com/">
+<meta name="description" content="Rotate letters by a number of places you choose, and the history of rot13.com.">
+<style>body{margin:0;background:#07060b;color:#ecebf5;font:18px/1.5 Georgia,serif}main{max-width:40rem;margin:0 auto;padding:28px 18px 64px}a{color:#d9ccff}nav,form,p.src{font:16px/1.4 system-ui,sans-serif}textarea,input{font:inherit;color:inherit;background:#14121b;border:1px solid #3a3550;border-radius:8px;padding:8px;width:100%;box-sizing:border-box}button{min-height:44px;margin-top:8px;padding:0 16px;border-radius:8px;border:1px solid #5b4a8a;background:#241f3b;color:#eee;font:inherit}pre{white-space:pre-wrap;overflow-wrap:anywhere}p{overflow-wrap:anywhere}</style>
+</head>
+<body>
+<main>
+<nav><a href="/conquered/">Tower</a> · <a href="/sites/motherfuckingwebsite.com/">A page of words</a> · <a href="/memes/#tsundere-pw">Memes</a> · <a href="/">Ask Verse</a></nav>
+<h1>Rotate letters</h1>
+<p>Type anything. Pick how many places to move each letter. Other marks stay put. Thirteen places is its own undo: run it again and the words come back.</p>
+<form><label>Text <textarea id="letters" rows="3">Hello, world!</textarea></label><label>Places <input id="places" type="number" min="0" max="25" value="13"></label><button type="button" id="go">Rotate</button></form>
+<pre id="out" aria-live="polite"></pre>
+<h2>Where rot13.com came from</h2>
+<p>rot13.com rotates letters. The first copy the <a href="https://web.archive.org/web/20010419151735/http://rot13.com/">Wayback Machine</a> saved, on 19 April 2001, was a few words: “rot13.com awesoma powa!” Who made the site is not on the page, and this history does not guess.</p>
+<p>The cipher it is named for is older than the site. <a id="wiki" href="https://en.wikipedia.org/wiki/Caesar_cipher">Wikipedia</a> describes it as a letter substitution that replaces each letter with the one thirteen places on, a special case of the Caesar cipher used by Julius Caesar in the first century BC. The same article says the name is also written rotate-13, or, rotated, the letters themselves shifted.</p>
+<p>On 10 November 2026 the <a href="https://rot13.com/">live page</a> offered every shift from one place through twenty-five, pointed its about link at that article, and asked for JavaScript before it would run. This page does the same job, on your machine, with the history beside it.</p>
+<p class="src">Sites are named in plain text. Verse is not them.</p>
+</main>
+<script type="module">
+import { rotateLetters } from '/lib/least.js';
+document.getElementById('wiki').href = 'https://en.wikipedia.org/wiki/ROT13';
+const go = () => { document.getElementById('out').textContent = rotateLetters(document.getElementById('letters').value, document.getElementById('places').value); };
+document.getElementById('go').addEventListener('click', go); go();
+</script>
+</body>
+</html>
