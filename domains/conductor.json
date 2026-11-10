@@ -1,77 +1,105 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T03:10:54.358Z",
+ "updated": "2026-11-10T03:20:13.751Z",
  "last24h": {
   "ticks": 147,
   "started": 104,
   "requeued": 1,
   "setAside": 3,
   "probes": 15,
-  "errors": 28
+  "errors": 27
  },
  "broken": [],
  "held": [
   {
-   "id": "mveb8rsi",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw9wdnxq",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mveb8svc",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw9xtnko",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mvfu4evy",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwa1huht",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mvpuq9g6",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwa2nm0e",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mvpuqaee",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mwa2ssg4",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mvpuqb4r",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw9j2cvx",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mvvjzso8",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw9n5pkm",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mw5mm5fm",
-   "why": "build-miss.yml reached its 8 runs today"
+   "id": "mw9omg8a",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mvvql4d9",
-   "why": "no executor for route"
+   "id": "mw9p82c2",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mw3fl8fe",
-   "why": "no executor for bot"
+   "id": "mw9tfw6c",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mw3fl8fi",
-   "why": "no executor for bot"
+   "id": "mw9vmcff",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mw3fl8g0",
-   "why": "no executor for bot"
+   "id": "mvwl3d38",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   },
   {
-   "id": "mw3fl8i4",
-   "why": "no executor for bot"
+   "id": "mvpkt0sa",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mvpkt1c5",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mvpkt1u7",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mw1xyivk",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mvxmzwi4",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mvxmzx0f",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mvxmzxet",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
+  },
+  {
+   "id": "mvxmzy5j",
+   "why": "Verse's coder has used its free model calls until 04:00 UTC"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 35,
+   "used": 68,
    "cap": 90
   },
   "day": {
-   "used": 215,
+   "used": 248,
    "cap": 360
   },
   "room": true,
@@ -155,95 +183,90 @@
  },
  "sweptAt": 1794278006894,
  "blueprintsAt": 1794278006894,
- "visitorAt": "2026-11-10T02:36:31Z",
+ "visitorAt": "2026-11-10T03:17:41Z",
  "visitorFiled": [
-  "flake:suite-budget-the-whole-suite-ran-p",
-  "versus:bestfonts.pro",
-  "versus:speedtest.sg",
-  "versus:speedtest.com.sg",
-  "versus:jsonline.com",
-  "review:2245",
-  "review:2247",
-  "review:2248",
-  "versus:coreldrawdesign.com",
-  "versus:coloradoan.com",
-  "versus:uphex.com",
-  "versus:timer365.com",
-  "versus:loanwisecalculatoreasy.com",
-  "versus:drawio.com",
-  "review:2313",
-  "review:2336",
-  "review:2367",
-  "review:2368",
-  "review:2369",
-  "review:2371",
-  "review:2358",
-  "review:2359",
-  "review:2372",
-  "review:2374",
-  "review:2373",
-  "review:2376",
-  "review:2375",
-  "versus:want-tower-social",
-  "feature:isitchristmas-com-e13cdb96",
-  "feature:random-org-7201fd3d",
-  "feature:random-org-e1ac6f7a",
-  "review:2441",
-  "tv:hvac-remote-management",
-  "tv:art-provenance-tracker",
-  "review:2482",
-  "feature:random-org-ea756452",
-  "feature:random-org-9f6f952d",
-  "feature:random-org-ccb2ecd2",
-  "versus:everycom.store",
-  "versus:adnext.mobi",
-  "versus:protopage.com",
-  "versus:tinyurl.com",
-  "versus:want-tower-password",
-  "review:2504",
-  "feature:team-1626",
-  "versus:share.google",
-  "versus:g.co",
-  "versus:amazon.co.uk",
-  "versus:amazon.de",
-  "versus:live-video.net",
-  "review:2509",
-  "review:2512",
-  "review:2514",
-  "visit:translate-hello-to-spanish",
-  "versus:zpecloud.com",
-  "versus:aurashinehub.com",
-  "versus:pokupon.ua",
-  "versus:uniteforliteracy.com",
-  "feature:wordcounter-net-510e5696",
-  "feature:convertunits-com-fd227592",
-  "feature:unitconverters-net-a1eba45d",
-  "review:2590",
-  "review:2599",
-  "feature:flightconnections-co-5e8de345",
-  "feature:flightconnections-co-e4b41463",
-  "feature:flightconnections-co-65bcb77f",
-  "heal:helper-client-status-pack",
-  "heal:helper-ownership-map",
-  "versus:timeclockwizard.com",
-  "versus:slightlydifferent.co.nz",
-  "versus:hexrom.com",
-  "versus:colorlib.com",
-  "versus:steamcommunity.com",
-  "versus:united-hoster.de",
-  "review:2616",
-  "heal:helper-credits-faucet-e39c",
-  "review:2622",
-  "gap:se-3123",
-  "probe:how-to-say-hello-in-leet",
-  "heal:helper-color-by-number-238b"
+  "visit:convert-5-miles-to-kilometers",
+  "bot:check-country-ag",
+  "bot:country-ag",
+  "bot:check-country-gq",
+  "bot:country-gq",
+  "review:2303",
+  "review:2304",
+  "review:2305",
+  "review:2319",
+  "versus:colorscheme.ru:speed",
+  "versus:colorscheme.ru:journey: do the ma",
+  "versus:colorscheme.ru:journey: share the",
+  "versus:sipcalculator.in",
+  "versus:colordrop.io",
+  "versus:colourlab.ai",
+  "review:2325",
+  "review:2327",
+  "review:2352",
+  "review:2346",
+  "visit:flip-a-coin",
+  "review:2361",
+  "review:2380",
+  "review:2379",
+  "review:2320",
+  "review:2381",
+  "review:2393",
+  "review:2413",
+  "versus:mega.co.nz",
+  "versus:example.com",
+  "versus:uisp.com",
+  "versus:samsunghealth.com",
+  "review:2435",
+  "versus:bttrack.com",
+  "versus:dalyfeds.com",
+  "tv:healthy-snack-alternatives",
+  "tv:irish-pub-locator",
+  "miss:film-metadata",
+  "will:overhaul-site-search-persona-playtest-be",
+  "versus:juicychat.ai",
+  "versus:oneyeard.com",
+  "review:2511",
+  "review:2302",
+  "review:2315",
+  "review:2519",
+  "review:2485",
+  "review:2546",
+  "versus:tsundere.pw",
+  "versus:arcticfoxhaircolor.com",
+  "versus:hexcol.com",
+  "versus:junit.org",
+  "review:2563",
+  "review:2583",
+  "review:2585",
+  "heal:helper-proposal-pack",
+  "review:2597",
+  "review:2605",
+  "heal:helper-client-intake",
+  "heal:helper-loop-carry-e6be",
+  "review:2609",
+  "versus:want-tower-finance",
+  "heal:helper-connect-pack",
+  "review:2614",
+  "heal:helper-reuse-pack",
+  "heal:helper-ownership-pack",
+  "review:2620",
+  "review:2619",
+  "review:2621",
+  "probe:ownership-map-for-client-onboardin",
+  "probe:map-ownership-for-invoice-reminder",
+  "probe:what-does-verse-own-vs-the-client-",
+  "review:2627",
+  "review:2628",
+  "review:2629",
+  "heal:helper-least-tower-0b57",
+  "review:2630",
+  "review:2631",
+  "review:2636",
+  "review:2639",
+  "heal:helper-fix-main-red-book",
+  "review:2641"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T03:13:03.525Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T03:22:23.478Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3594,6 +3617,27 @@
    "sweep": false,
    "blueprints": 0,
    "held": 13,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T03:20:13.751Z",
+   "open": 313,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 303,
    "warnings": 1
   }
  ]
