@@ -2190,15 +2190,6 @@
  },
  "runs": [
   {
-   "at": "2026-11-01T09:37:56Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 discarded); next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 0,
-   "reads_next": "seriouswheels.com"
-  },
-  {
    "at": "2026-11-01T16:55:28Z",
    "line": "Versus: took on no site (also read: 6 no-family, 1 not-judged, 1 discarded); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)",
    "built": 0,
@@ -2567,6 +2558,15 @@
    "pages_per_day": 1,
    "reads_next": "unitpay.ru",
    "noop": true
+  },
+  {
+   "at": "2026-11-10T10:19:17Z",
+   "line": "Versus: took on no site (also read: 2 walled, 4 no-family, 1 gone, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next  (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "informunity.ru"
   }
  ]
 }
