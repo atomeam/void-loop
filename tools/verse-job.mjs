@@ -41,7 +41,8 @@ export function startHere(job, skills = []) {
   const files = group === 'tool' ? ['tools/' + name] : group === 'doc' ? ['docs/' + name] : parts.slice(0, 6).map((s) => 'void-live-deploy/skills/' + s + '.js');
   if (!files.length) return '';
   const before = /\(before: ([^)]*)\)/.exec(String(job.note || '')), untested = before && /\btests 0\b/.test(before[1]) && parts[0];
-  return ['Start here: ' + group + ':' + name + ' is ' + files.join(', ') + (parts.length > files.length ? ' and ' + (parts.length - files.length) + ' more' : '') + '. Read these first; do not search the whole repo.',
+  const order = group === 'skill' || group === 'surface' ? ' Routing order is void-live-deploy/skills/order/<rank>-<name>. skills/index.json is generated: never edit it.' : '';
+  return ['Start here: ' + group + ':' + name + ' is ' + files.join(', ') + (parts.length > files.length ? ' and ' + (parts.length - files.length) + ' more' : '') + '.' + order + ' Read these first; do not search the whole repo.',
     before && 'It is measured by: ' + before[1] + '. Ship when one of these rises and none falls.',
     untested && 'The smallest step that counts: tools/' + untested + '.test.mjs, a node:test file that imports the skill and checks its match() takes its examples and refuses its nearMisses.',
   ].filter(Boolean).join(' ');
@@ -67,6 +68,21 @@ export function tvStart(job, has = () => false, ls = () => []) {
 
 const inRepo = (rel) => existsSync(resolve(HERE, '..', rel));
 const filesIn = (rel) => { try { return readdirSync(resolve(HERE, '..', rel)); } catch { return []; } };
+const NAME_SKIP = new Set(['void', 'live', 'deploy', 'skills', 'tools', 'docs', 'index', 'json', 'html', 'test', 'order']);
+/** a job that names a skill (a heal of helper/heavy-lift-map, a miss of one skill) starts at the skill file and its
+ *  order file. skills/index.json is generated; a lap that opened it searched until the turn cap (#2610). '' when the
+ *  ask names no skill in `skills`. Pure. */
+export function skillPointer(text, skills = []) {
+  const hay = String(text || '');
+  const named = [];
+  for (const s of [...skills].filter((x) => x && x.length >= 3).sort((a, b) => b.length - a.length)) {
+    if (named.length >= 3 || NAME_SKIP.has(s)) continue;
+    const re = new RegExp('(?:^|[^a-z0-9-])' + s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:[^a-z0-9-]|$)');
+    if (re.test(hay)) named.push(s);
+  }
+  if (!named.length) return '';
+  return 'Start here: ' + named.map((s) => 'void-live-deploy/skills/' + s + '.js and void-live-deploy/skills/order/*-' + s).join('; ') + '. skills/index.json is generated: never edit it. Read these first; do not search the whole repo.';
+}
 
 /** The task text a lap gets for a job: its kind, its words, where to start, what the kind needs, capped. Pure. */
 export function taskText(job, skills = []) {
@@ -76,7 +92,9 @@ export function taskText(job, skills = []) {
   // the cap grows by the spec, so it is never cut. 2026-10-31: "Overhaul surface:cards" reached this coder with only the thin Start here,
   // ran growth-suites, and gave back "No spec/template" at the 250000-token cap after 19 turns; the team agents already had willSpec.
   const spec = kind === 'versus' ? versusSpec(job) : kind === 'will' ? willSpec(job, skills) : kind === 'tv' ? tvSpec(job) : '', extra = spec ? '\n' + spec + '\n' + LOOP_DELIVER : '';
-  return [head.slice(0, 400), startHere(job, skills) || tvStart(job, inRepo, filesIn), note && 'Note: ' + note.slice(0, 600), (GUIDE[kind] || 'Do this, small and tested.') + extra].filter(Boolean).join('\n\n').slice(0, TEXT_MAX + extra.length);
+  const here = startHere(job, skills) || tvStart(job, inRepo, filesIn);
+  const pointed = here ? '' : skillPointer([job.ask, job.target].filter(Boolean).join('\n'), skills);
+  return [head.slice(0, 400), here || pointed, note && 'Note: ' + note.slice(0, 600), (GUIDE[kind] || 'Do this, small and tested.') + extra].filter(Boolean).join('\n\n').slice(0, TEXT_MAX + extra.length);
 }
 
 /** The lap's result: the last line of its output that is a JSON object, else null. Pure. */
