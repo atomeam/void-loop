@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-10T04:41:31.632Z",
+  "at": "2026-11-10T05:13:31.321Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,23 +34,124 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 71.4,
       "of": 18,
       "measured": 18,
       "fails": [
         {
+          "ask": "play the latest episode of radiolab",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of the daily",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of serial",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of planet money",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of hardcore history",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
+        },
+        {
           "ask": "play the latest episode of the ted radio hour",
           "failed": [
-            "audio"
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of hidden brain",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of freakonomics radio",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of science vs",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of stuff you should know",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of crime junkie",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of npr news now",
+          "failed": [
+            "audio",
+            "episode"
+          ],
+          "score": 71.4
+        },
+        {
+          "ask": "play the latest episode of my favorite murder",
+          "failed": [
+            "audio",
+            "show",
+            "episode"
+          ],
+          "score": 57.1
         },
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -110,7 +211,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -125,9 +226,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -289,7 +391,14 @@
           "score": 83.3
         },
         {
-          "ask": "packers score",
+          "ask": "yankees score",
+          "failed": [
+            "board"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how did the chiefs do",
           "failed": [
             "board"
           ],
@@ -306,10 +415,9 @@
           "ask": "scores",
           "failed": [
             "skill",
-            "board",
-            "rival"
+            "board"
           ],
-          "score": 50
+          "score": 66.7
         },
         {
           "ask": "resultado del real madrid",
@@ -387,10 +495,17 @@
       "fails": []
     },
     "definitions": {
-      "score": 90,
+      "score": 86.7,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "define spring",
+          "failed": [
+            "fast"
+          ],
+          "score": 80
+        },
         {
           "ask": "etymology of salary",
           "failed": [
@@ -422,7 +537,7 @@
     }
   },
   "lowest": {
-    "domain": "sports",
-    "score": 87
+    "domain": "podcasts",
+    "score": 71.4
   }
 }
