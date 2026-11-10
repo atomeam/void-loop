@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T05:01:15Z",
-  "passed": 52,
-  "of": 53,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
- },
- {
   "at": "2026-10-18T05:16:07Z",
   "passed": 45,
   "of": 54,
@@ -7751,6 +7744,24 @@
      "ask": "capital of France",
      "why": [
       "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T12:57:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1217,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 14614 ms"
      ]
     }
    ]
