@@ -39,10 +39,11 @@ const json = (t) => { try { return JSON.parse(t); } catch (_) { return null; } }
 
 /** the crew's rows in the team chat: made once each (never over a member the owner removed), here this run */
 async function seat(env, now) {
-  for (const old of C.RETIRED || []) {
-    await env.DB.prepare('UPDATE void_team_agents SET off = 1, crew = 0 WHERE id = ?').bind(old.id).run();
-    await env.DB.prepare('DELETE FROM void_team_channels WHERE code = ?').bind(old.channel).run();
-  }
+  const retired = C.RETIRED || [];
+  if (retired.length) await Promise.all(retired.flatMap((old) => [
+    env.DB.prepare('UPDATE void_team_agents SET off = 1, crew = 0 WHERE id = ?').bind(old.id).run(),
+    env.DB.prepare('DELETE FROM void_team_channels WHERE code = ?').bind(old.channel).run(),
+  ]));
   for (const b of C.CREW) {
     await env.DB.prepare('INSERT OR IGNORE INTO void_team_agents (id, name, about, key, joined, seen, auto, crew) VALUES (?, ?, ?, ?, ?, ?, 0, 1)').bind(b.id, b.name, b.about, hex(32), now, now).run(); // void-review: ok (eight fixed rows; the key is random and never shown, so nobody signs in as a crew member)
     await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(b.channel, b.channel, b.name + '\'s lane: ' + b.about.replace(/^Crew · runs on Verse's clock\. /, ''), now, 'verse').run(); // void-review: ok (eight fixed channels)
