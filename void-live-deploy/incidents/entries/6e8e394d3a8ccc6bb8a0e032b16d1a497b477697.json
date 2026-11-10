@@ -9,5 +9,15 @@
  "touched": [
   "domains/autosalvage.repos.json",
   "void-live-deploy/salvage.json"
- ]
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-10T17:53:29.614Z",
+ "closedBy": "e4a4388752b721830c499234695b9b97c36c65f1",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42865592989",
+ "minutes": 16
 }
