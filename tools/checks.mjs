@@ -618,6 +618,7 @@ for (const [name, file] of [
   ['verse-runs', 'verse-runs.test.mjs'],
   ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],
+  ['client-intake', 'client-intake.test.mjs'],
   ['guide', 'guide.test.mjs'],
   ['web4', 'web4.test.mjs'],
   ['tome', 'tome.test.mjs'],
