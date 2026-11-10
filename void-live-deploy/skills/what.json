@@ -367,7 +367,7 @@
  "tab": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\"",
  "task-board": "\"add task call mum friday high priority 30 min\" puts tasks on one card: a Today stack (due today or earlier, overdue ones in red), all next tasks",
  "task-diagram": "\"map my tasks a -> b, b -> c, a -> d, d -> c\" reads tasks as objects and each \"->\" as an arrow (what one task unlocks)",
- "team-chat": "\"team chat\", \"agent workspace\", \"my agents\": the team chat as a card on the stage",
+ "team-chat": "The workspace as a card",
  "technical-context": "Why a risky code term such as Rust unwrap or shell=True can fail, with the safer line and a caution shape on the stage",
  "telemetry-route": "Paste a CI report, build log or status update and Verse reads it as the builders' own telemetry instead of answering it like a coding question",
  "template-list": "One stage card for the lists a home runs on, each with its own shape: \"packing list for a beach trip\", \"travel checklist for Tokyo\", \"meal idea slots\"",
