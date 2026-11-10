@@ -11,5 +11,15 @@
   "void-live-deploy/skills/families.json",
   "void-live-deploy/skills/guide.json",
   "void-live-deploy/skills/order/9930-ownership-pack"
- ]
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-10T03:39:15.592Z",
+ "closedBy": "4eeed15de54021353db2f406ad7ecbe29cda2369",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42747213510",
+ "minutes": 21
 }
