@@ -1243,3 +1243,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-09T21:03:25Z | verse | build | Versus: took on no site (also read: 1 covered, 6 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next  (the target)
 2026-11-10T01:50:00Z | cursor | build | Before Verse ships its own change, the free model asks whether a person would find it real and useful. A no is fixed once, then dropped. Green checks are not enough.
 2026-11-10T02:05:16Z | cursor | fix | Verse, unbidden says what was built or what is being built next, and does not repeat itself.
+2026-11-10T01:45:00Z | cursor | build | The Tower lists a site only once Verse can do what that site does: rot13.com, a plain page, and tsundere.pw, each with a sourced history

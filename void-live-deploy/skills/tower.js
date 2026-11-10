@@ -5,6 +5,7 @@
  * floor Verse is on stays until every aspect is verified against the live site; one word, assimilated; the History is the rival's own history;
  * every rival has its own page (/rival/?site=); sites in plain text, no logos; no Verse dates or attempt logs on the card. Real data only.
  */
+import { cardHtml, cardSay } from '../lib/least.js';
 import { towerArtSvg } from '../lib/tower-art.js';
 import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine, countsOf, assimLine, inventoryOf } from '../lib/tower.js?v=ladder-72';
 import { siteSlug } from '../lib/obituary.js';
@@ -376,42 +377,8 @@ const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn, pa] = awa
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
   const { showPage, esc, say } = api;
-  let t = await load(), timer = null, onVis = null;
-  showPage((el) => {
-    el.classList.add('tower-card');
-    el.innerHTML = '<div class="tw-root"></div><div class="tw-live" data-share-skip aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div>';
-    const root = el.querySelector('.tw-root'), live = el.querySelector('.tw-live');
-    let bySizeOn = readBySize(), picked = 0, shown = false, mini = false; // the 2D picture now (lib/tower-art.js); the 3D one (skills/mini/tower.js) stays for the stage, unused here
-    const miniKey = 'tower:' + Date.now().toString(36);
-    const pick = (f) => { if (!f) return; picked = f.floor; const det = root.querySelector('.tower-detail'); if (det) det.textContent = detailText(f); };
-    const draw = (flash) => {
-      const keep = root.querySelector('.mk-stack'), was = keep ? keep.scrollTop : -1; // a redraw keeps where the person scrolled to; the first draw centres on the fight
-      root.innerHTML = towerHtml(t, esc, { mini, enter: !root.dataset.drawn, bySize: bySizeOn }); root.dataset.drawn = '1';  // the VS entrance plays on the first paint only
-      if (was >= 0) root.querySelector('.mk-stack').scrollTop = was; else { centerOnYou(root); setTimeout(() => centerOnYou(root), 80); } // again once the card has its size
-      if (picked) { const f = t.floors.find((x) => x.floor === picked); const det = root.querySelector('.tower-detail'); if (f && det) det.textContent = detailText(f); }
-      // Versus in 3D (skills/mini/tower.js): the same key moves the live one into the fresh host and hands it the new floors; tapping a floor picks it
-      const host = root.querySelector('.tw-mini');
-      if (host) api.stage.miniature(host, 'tower', { floors: miniFloors(t), onFloor: (id) => pick(t.floors.find((x) => x.id === id)) }, { key: miniKey, label: 'Versus in 3D: ' + t.beaten + ' floors surpassed; tap a floor to read it; drag to look around', ground: 'none' })
-        .catch(() => { mini = false; host.remove(); });
-      (flash || []).forEach((id) => { const b = root.querySelector('[data-id="' + id + '"]'); if (b && b.animate) b.animate([{ background: '#6a3d9a' }, { background: '' }], 1800); });
-    };
-    el.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.tower-floor[role=button]')) { e.preventDefault(); e.target.closest('.tower-floor').click(); } });
-    el.addEventListener('click', (e) => { const sb = e.target.closest('.tw-sortbtn'); if (sb) { bySizeOn = !bySizeOn; saveBySize(bySizeOn); draw(); const nb = root.querySelector('.tw-sortbtn'); if (nb) nb.focus(); return; } const b = e.target.closest('.tower-floor'); if (!b) return; picked = +b.dataset.floor; const f = t.floors.find((x) => x.floor === picked); const det = root.querySelector('.tower-detail'); if (f && det) det.textContent = detailText(f); });
-    draw();
-    const stop = () => { if (timer) clearInterval(timer); timer = null; if (onVis) document.removeEventListener('visibilitychange', onVis); };
-    const refresh = async () => {
-      if (el.classList.contains('on')) shown = true; else if (shown || !el.isConnected) return stop(); // closed: the page drops 'on', then leaves
-      if (document.visibilityState === 'hidden') return; // a hidden tab waits; coming back refreshes at once
-      const next = await load(), moved = changes(t, next);
-      t = next;
-      draw(next.floors.filter((f) => moved.some((m) => m.startsWith(f.site))).map((f) => f.id));
-      if (moved.length) live.textContent = moved.join(' ');
-    };
-    timer = setInterval(refresh, POLL_MS());
-    onVis = () => { if (document.visibilityState === 'visible') refresh(); };
-    document.addEventListener('visibilitychange', onVis);
-  });
-  if (say) say(towerLine(t));
+  showPage((el) => { el.classList.add('tower-card'); el.innerHTML = cardHtml(esc); });
+  if (say) say(cardSay());
   return 'tower';
 }
 

@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-10T01:58:20.923Z",
+ "sha": "790c2938812031438ef4bbe4fef40f6b45095b18",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42737121743",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+  "showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its \"grab one\" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is a modal layer (dimmed stage, role dialog, aria-modal) that keeps focus and Esc closes; at 1280x640 with a field-mind card up, the panel clears the card and the ask bar; field-mind headers have matching insets (within 2px), the F-id tags stay whole and never leave one alone on a line, and every control sits inside its card at 1280 and 390 wide"
+ ],
+ "touched": [
+  ".github/actions/void-test/action.yml"
+ ],
+ "shards": [
+  2
+ ]
+}
