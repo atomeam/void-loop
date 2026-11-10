@@ -1,13 +1,13 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-09T23:55:34.649Z",
+ "updated": "2026-11-10T00:05:00.529Z",
  "last24h": {
   "ticks": 148,
-  "started": 88,
+  "started": 90,
   "requeued": 3,
   "setAside": 2,
   "probes": 14,
-  "errors": 44
+  "errors": 43
  },
  "broken": [],
  "held": [
@@ -48,14 +48,6 @@
    "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
   },
   {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
    "id": "mvwl3d38",
    "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
   },
@@ -90,6 +82,14 @@
   {
    "id": "mvxmzy5j",
    "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
+  },
+  {
+   "id": "mvxmzyj4",
+   "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
+  },
+  {
+   "id": "mvxmzyw6",
+   "why": "verse-job.yml is paused (the coder's back-off, #2610, until 02:32 UTC)"
   }
  ],
  "coder": {
@@ -99,18 +99,18 @@
    "cap": 90
   },
   "day": {
-   "used": 344,
+   "used": 0,
    "cap": 360
   },
   "room": true,
   "until": null
  },
  "handed": {
-  "mvbl52gd": 1794229507069,
+  "mvbl52gd": 1794269100529,
   "mva30i2e": 1794257623128,
   "mva30j4u": 1794249638709,
   "mvu167w7": 1794208626432,
-  "mveb8rsi": 1794207506673,
+  "mveb8rsi": 1794269100529,
   "mveb8svc": 1794186086054,
   "mw8ao9zz": 1794206381857,
   "mvfu4evy": 1794188905640,
@@ -259,11 +259,6 @@
   "heal:helper-credits-faucet-e39c"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T00:04:55.933Z",
-   "error": "the queue answered 404 (); nothing started this tick",
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T00:14:17.357Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3264,6 +3259,40 @@
    "sweep": false,
    "blueprints": 0,
    "held": 290,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T00:05:00.529Z",
+   "open": 294,
+   "started": [
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 90
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 280,
    "warnings": 1
   }
  ]
