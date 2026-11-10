@@ -559,6 +559,47 @@ async function credits(env) {
     shipped: rows.map((r) => ({ name: r.name, role: r.role === 'member' ? 'member' : 'agent', job: r.job, link: r.link, at: r.at, state: word(states[r.job]) })) };
 }
 
+const prNum = (link) => (String(link || '').match(/\/pull\/(\d+)/) || [])[1] || '';
+/** the pull-request titles for these numbers, remembered after the first read so the team page does not ask GitHub every time */
+async function prTitles(env, nums, now) {
+  const out = {};
+  if (!nums.length) return out;
+  await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_team_crew (k TEXT PRIMARY KEY, v TEXT NOT NULL, at INTEGER NOT NULL)').run().catch(() => null);
+  const keys = nums.map((n) => 'pr-title:' + n);
+  try {
+    const { results } = await env.DB.prepare('SELECT k, v FROM void_team_crew WHERE k IN (' + keys.map(() => '?').join(',') + ')').bind(...keys).all(); // void-review: ok (placeholders only, at most 24)
+    for (const r of results || []) out[String(r.k).slice(9)] = r.v;
+  } catch (_) { /* no cache yet: the titles are fetched below */ }
+  const missing = nums.filter((n) => !out[n]);
+  const got = await Promise.all(missing.map(async (n) => {
+    try {
+      const r = await fetch('https://api.github.com/repos/atomeam/void-loop/pulls/' + n, { headers: { 'user-agent': 'Verse-team', accept: 'application/vnd.github+json' }, signal: AbortSignal.timeout(5000) });
+      if (!r.ok) return [n, ''];
+      const j = await r.json();
+      return [n, String(j && j.title || '').slice(0, 300)];
+    } catch (_) { return [n, '']; }
+  }));
+  const save = got.filter((pair) => pair[1]);
+  if (save.length) await Promise.all(save.map(([n, title]) => env.DB.prepare('INSERT INTO void_team_crew (k, v, at) VALUES (?, ?, ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v, at = excluded.at').bind('pr-title:' + n, title, now).run().catch(() => null)));
+  for (const [n, title] of got) if (title) out[n] = title;
+  return out;
+}
+/** up to 8 finished-work sentences. A Tower-era credit is left out. The words come from the pull-request title. */
+async function feedOf(env, cred, now) {
+  const nums = [...new Set(cred.map((c) => prNum(c.link)).filter(Boolean))].slice(0, 24);
+  const titles = await prTitles(env, nums, now);
+  const feed = [];
+  for (const c of cred) {
+    if (feed.length >= 8) break;
+    const title = titles[prNum(c.link)] || '';
+    const live = c.state === 'live' || c.state === 'done';
+    const text = T.feedLine(c.name, title || c.ask || '', live);
+    if (!text) continue;
+    feed.push({ name: c.name, href: c.link, live, text });
+  }
+  return feed;
+}
+
 // when each crew member's next turn comes (lib/team-crew-run.js keeps { <slug>: ms } as 'next'), by agent id; {} before the crew's first run
 export async function crewTurns(env, ags) {
   if (!ags.some((a) => a.crew)) return {};
@@ -589,9 +630,8 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     const members = ags.filter((a) => a.name !== 'TowerScout').map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true } : { now: a.job && titles[a.job] ? 'Working on ' + T.clean(T.hideSecrets(titles[a.job].ask), 120) : 'Nothing in hand' }) }));
     const { results: askRows } = await env.DB.prepare("SELECT id, ask, target, state FROM void_queue WHERE state IN ('queued','building','live','done') ORDER BY at DESC LIMIT 80").all();
     const asks = (askRows || []).filter((j) => T.ownerAsk(j)).slice(0, 8).map((j) => ({ id: j.id, state: j.state, title: T.clean(T.hideSecrets(j.ask), 140) }));
-    const { results: cred } = await env.DB.prepare('SELECT c.job, c.link, a.name, a.crew FROM void_team_credits c JOIN void_team_agents a ON a.id = c.agent WHERE a.crew = 0 ORDER BY c.id DESC LIMIT 8').all();
-    const feed = [];
-    for (const c of cred || []) { const q = await env.DB.prepare('SELECT ask, state FROM void_queue WHERE id = ?').bind(c.job).first().catch(() => null); const live = q && (q.state === 'live' || q.state === 'done'); feed.push({ name: c.name, href: c.link, live: !!live, text: c.name + ' — ' + T.clean(T.hideSecrets((q && q.ask) || c.job), 110) + (live ? '. On the site.' : '. The pull request is not live yet.') }); } // void-review: ok (at most 8 reads)
+    const { results: cred } = await env.DB.prepare('SELECT c.job, c.link, a.name, q.ask, q.state FROM void_team_credits c JOIN void_team_agents a ON a.id = c.agent LEFT JOIN void_queue q ON q.id = c.job WHERE a.crew = 0 ORDER BY c.id DESC LIMIT 24').all();
+    const feed = await feedOf(env, cred || [], now);
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: (chans || []).filter((c) => c.code !== 'tower'), members, waiting, asks, feed, coder: await coderLane(env, now), kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
