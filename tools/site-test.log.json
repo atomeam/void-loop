@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T06:02:59Z",
-  "passed": 54,
-  "of": 56,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"favorite this\" (skill:bookmarks)"
- },
- {
   "at": "2026-10-18T06:18:56Z",
   "passed": 55,
   "of": 57,
@@ -7777,6 +7770,24 @@
      "ask": "what time is it",
      "why": [
       "slow 10611 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T15:00:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 604,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 12150 ms"
      ]
     }
    ]
