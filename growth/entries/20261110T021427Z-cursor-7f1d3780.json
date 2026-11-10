@@ -1,0 +1,1 @@
+{"at":"2026-11-10T02:14:27Z","by":"cursor","kind":"fix","what":"Every open pull request merges itself. A red main starts a fix and does not freeze the queue."}

@@ -4,7 +4,7 @@
 // a risky diff back; the model stack falls through to the next free provider; no key is ever in a command or in the source.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -303,6 +303,30 @@ test('a no-match search spiral reaches an edit: a code snippet is literal, a mis
   const w = await run(s, [call('replace', { path: 'void-live-deploy/skills/index.json', old: '["add"]', new: '[]' }), call('finish')]);
   assert.match(w.log[0].result, /generated/);
   assert.equal(readFileSync(join(s.work, 'void-live-deploy/skills/index.json'), 'utf8'), '["add"]\n');
+});
+
+test('a miss still names the skill file when ripgrep is not on PATH', async () => {
+  const s = repo();
+  mkdirSync(join(s.work, 'void-live-deploy/skills/order'), { recursive: true });
+  writeFileSync(join(s.work, 'void-live-deploy/skills/add.js'), 'export function add(a, b) { return a + b; }\n');
+  writeFileSync(join(s.work, 'void-live-deploy/skills/order/10-add'), 'add\n');
+  sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'skill');
+  const bin = mkdtempSync(join(tmpdir(), 'norg-'));
+  const gitBin = (process.env.PATH || '').split(':').map((d) => join(d, 'git')).find((p) => p && existsSync(p));
+  if (gitBin) symlinkSync(gitBin, join(bin, 'git'));
+  const saved = process.env.PATH;
+  process.env.PATH = bin;
+  const seen = [];
+  try {
+    const model = async (msgs) => {
+      const last = msgs[msgs.length - 1].content; seen.push(last);
+      if (seen.length === 1) return { text: call('search', { pattern: 'void-live-deploy/skills/add.js', path: '.' }) };
+      return { text: call('finish', { summary: 'noted' }) };
+    };
+    await runCoder({ root: s.work, prompt: 'Find the add skill.', checks: CHECKS, target: 'add', model, env: { PATH: process.env.PATH } });
+    assert.match(seen[1], /void-live-deploy\/skills\/add\.js/);
+    assert.match(seen[1], /skills\/order\/10-add/, 'a miss names the order file without rg');
+  } finally { process.env.PATH = saved; }
 });
 
 test('the reply parser: plain JSON, args nested, a fenced diff, junk', () => {

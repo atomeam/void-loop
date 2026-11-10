@@ -59,8 +59,7 @@ export function readiness(gh, repo, pr) {
 export const CONFLICT_MARK = '<!-- void-automerge: conflict -->', ACTIONS_BOT = 'github-actions[bot]';
 export function conflictNote(files) {
   return CONFLICT_MARK + '\nVerse automerge: this PR conflicts with main in ' + files.map((f) => '`' + f + '`').join(', ') + ', and GitHub runs no checks on a conflicted PR. '
-    + 'The bot merges main into labelled PRs itself and settles the append-only records (tools/merge-main.mjs), but these files need a person: '
-    + 'run `node tools/merge-main.mjs` on the branch, resolve them, push. It tries again whenever main moves.';
+    + 'The bot merges main in and settles the append-only records (tools/merge-main.mjs). Verse\'s coder resolves the files that remain and pushes. It tries again after that window.';
 }
 export function resolveMain(run, gh, { repo, pr, branch, tools, dir }) {
   if (!branch) return { state: 'failed', why: 'no head branch' };

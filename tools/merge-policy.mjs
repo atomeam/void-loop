@@ -8,14 +8,14 @@ const BOTS = new Set(['atomeam', 'github-actions[bot]', 'app/github-actions']);
 export const isBot = (login) => BOTS.has(login);
 
 /**
- * A pull request from this repository that should arm GitHub auto-merge: it carries the automerge label,
- * or the owner or the Actions app opened it on helper/*, loop/* or lab/*. Forks never qualify. Pure.
+ * Every open pull request from this repository merges. The author and the branch do not matter.
+ * A draft stays a draft. A fork never qualifies. Pure.
  */
 export function eligible(pr, repo) {
-  if (!pr || pr.head?.repo?.full_name && pr.head.repo.full_name !== repo) return false;
-  if ((pr.labels || []).some((l) => l.name === AUTO_LABEL)) return true;
-  const ref = pr.head?.ref || '';
-  return isBot(pr.user?.login) && /^(helper|loop|lab)\//.test(ref);
+  if (!pr || pr.draft) return false;
+  if (pr.state && pr.state !== 'open') return false;
+  if (pr.head?.repo?.full_name && pr.head.repo.full_name !== repo) return false;
+  return true;
 }
 
 /** Split a unified diff into hunks of added and removed lines. Context and headers are dropped. Pure. */
@@ -158,26 +158,26 @@ const sameHead = (a, b) => {
 };
 
 /**
- * Whether Verse verify on main blocks automerge. `runs` are verify.yml runs on main:
- * { headSha, status, conclusion, updatedAt, committedAt, covers, url }. `covers` is true when
- * headSha is the current main head or an ancestor of it. The newest finished run that covers
- * this head decides. A failure holds every merge until a newer finished run on this head is
- * green. Cancelled and skipped do not count. A run still going does not clear a red.
- * A green verify on the current head does not hold: Verse merges itself. Pure.
+ * Whether Verse verify on main needs a fix. `runs` are verify.yml runs on main:
+ * { headSha, status, conclusion, updatedAt, committedAt, covers, url }. The newest finished
+ * run that covers this head decides. A failure sets heal, never hold: pull requests keep
+ * merging, and automerge starts the coder on main. Cancelled and skipped do not count.
+ * A green verify does not ask for a fix. Pure. hold is always false (a hold here froze the queue, #2617).
  */
 export function mainVerifyHold(runs, mainSha) {
   const finished = (runs || []).filter((r) => r && (r.covers === true || sameHead(r.headSha, mainSha)) && r.status === 'completed' && r.conclusion !== 'cancelled' && r.conclusion !== 'skipped');
   const when = (r) => Number(r.committedAt) || Date.parse(r.updatedAt || '') || 0;
   finished.sort((a, b) => when(b) - when(a) || String(b.headSha || '').localeCompare(String(a.headSha || '')));
   const latest = finished[0];
-  if (!latest) return { hold: false, why: 'no finished Verse verify covers this main head' };
+  if (!latest) return { hold: false, heal: false, why: 'no finished Verse verify covers this main head' };
   const sha = String(latest.headSha || mainSha || '');
-  if (latest.conclusion === 'success') return { hold: false, why: 'Verse verify is green on ' + sha.slice(0, 9) };
+  if (latest.conclusion === 'success') return { hold: false, heal: false, why: 'Verse verify is green on ' + sha.slice(0, 9) };
   return {
-    hold: true,
+    hold: false,
+    heal: true,
     rule: 'main-verify-red',
     file: '.github/workflows/verify.yml',
     sha,
-    hint: 'Verse verify is ' + latest.conclusion + ' on main ' + sha.slice(0, 9) + (latest.url ? ' (' + latest.url + ')' : '') + '. Automerge waits until Verse verify is green on the current main head. Fix the red check on main (verify.yml reverts a red suite and files a heal job). Pull requests stay open.',
+    hint: 'Verse verify is ' + latest.conclusion + ' on main ' + sha.slice(0, 9) + (latest.url ? ' (' + latest.url + ')' : '') + '. Verse starts a fix of main, and pull requests keep merging.',
   };
 }
