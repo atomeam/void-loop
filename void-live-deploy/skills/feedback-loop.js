@@ -8,7 +8,7 @@ export function isFeedbackLoop(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:feedback|client\s+feedback)\s+(?:on|for|from)\b/i.test(t)
     || /^(?:capture|record|log)\s+(?:client\s+)?feedback\b/i.test(t)
-    || /^(?:next\s+from|what\s+next\s+from)\s+(?:the\s+)?feedback\b/i.test(t);
+    || /^(?:next\s+from|what\s+next\s+from)\s+(?:the\s+)?(?:.+?\s+)?feedback\b/i.test(t);
 }
 
 export function subjectOf(text) {
