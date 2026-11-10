@@ -17,7 +17,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, openSync, closeSync, unlinkSync, statSync, appendFileSync, mkdtempSync, mkdirSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { check as addOnlyCheck } from './add-only.mjs';
 import { checksFor, ghArgs, prNumber } from './loop-checks.mjs';
 import { judgeDiff } from './judgment.mjs';
@@ -107,6 +107,25 @@ export function pickTask({ before, agent, next, task, probe = true }) {
   return it ? { kind: 'next', ...it } : { kind: 'idle', why: 'all green and docs/NEXT.md has no open item' };
 }
 
+/** the next simplest site, as a lap task, or null when every listed job is already done. Pure. */
+export function leastTask(site) {
+  if (!site || !site.host) return null;
+  const jobs = (site.jobs || []).filter((j) => j && j.words && !j.done);
+  if (!jobs.length) return null;
+  return { kind: 'next', n: null, text: 'The next simplest site is ' + site.host + (site.url ? ' (' + site.url + ')' : '') + '. It still needs: ' + jobs.map((j) => j.words).join('; ') + '. Build each missing job as a real function that does the job, with a test that runs it, and a page that does the job and cites who made the site and how it changed. Do not invent a maker, a date, or a fact you cannot cite.' };
+}
+
+/** the next unfinished site in void-live-deploy/lib/least.js, or null when that file is not there yet. */
+export async function leastNext(dir) {
+  try {
+    const m = await import(pathToFileURL(join(dir, 'void-live-deploy/lib/least.js')).href);
+    const n = typeof m.nextSite === 'function' ? m.nextSite() : null;
+    if (!n) return null;
+    const jobs = (n.jobs || []).map((j) => ({ words: j.words, done: !!(m.JOBS && m.JOBS[j.id] && typeof m.JOBS[j.id].prove === 'function' && m.JOBS[j.id].prove()) }));
+    return leastTask({ host: n.host, url: n.url, jobs });
+  } catch (_) { return null; }
+}
+
 /** The coding agent's prompt. Pure. */
 export function buildPrompt({ task, tagteam = '', gates = '' }) {
   const tail = (s, n) => (s.length > n ? '…\n' + s.slice(-n) : s);
@@ -114,7 +133,7 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
     'You are working on Verse (the atomeam/void-loop repo) as one lap of the Verse loop (tools/verse-loop.mjs). Do exactly one item, then stop.',
     'Rules: fix bugs, never weaken, skip or delete a test. No secrets or keys in any file. Do not commit, push or open a PR yourself: the loop does that.',
     'A normal person must see the change as real and useful: no invented jargon, no fake numbers, no filler. Green checks are not enough. The loop judges the diff and sends it back if it fails.',
-    'A floor counts as "assimilated" only with end-to-end journey evidence (say "assimilated", never "parity"). Small sites first, easiest first.',
+    'A site is done only when a page does its job and a test runs that job. Take the next simplest site, build each missing job, and write a short history that cites who made the site and how it changed. Do not invent a maker or a date.',
     'Every new page declares its handoff types. No new inline scripts (CSP). Nothing is removed, only evolved. Every new tool or workflow gets a line in docs/MAP.md.',
     '',
     'Where things live (AGENTS.md). Paths are from the repo root. Read one of these before searching the whole repo:',
@@ -546,8 +565,13 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     const next0 = readDoc('docs/NEXT.md');
     const next = next0 ? groomNext(next0, { gaps: readDoc('docs/PARITY.md'), red }) : next0;
     const groomOpen = open.some((p) => /^loop\//.test(p.headRefName || '') && p.title === GROOM_TITLE);
+    const site = !red.length && !opts.task ? await leastNext(cwd) : null;
     let task;
-    if (!red.length && !opts.task && next !== next0 && !groomOpen) {
+    if (site) {
+      task = site;
+      report.task = { kind: 'next' };
+      step('task: the next simplest site');
+    } else if (!red.length && !opts.task && next !== next0 && !groomOpen) {
       task = { kind: 'groom' };
       report.task = { kind: 'groom' };
       step('task: groom docs/NEXT.md (the ranked queue changed)');

@@ -1242,3 +1242,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-09T14:40:36Z | grok-bot | build | Lists run 15: /vat/ offers every Russian VAT rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0) with the sum in the link and the page offline, which finishes Verse's ndscalc.ru asks; rts and forge are one build-world family; the site tester's frame floor follows what the runner holds, so the play voidquest items can close
 2026-11-09T21:03:25Z | verse | build | Versus: took on no site (also read: 1 covered, 6 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next  (the target)
 2026-11-10T01:50:00Z | cursor | build | Before Verse ships its own change, the free model asks whether a person would find it real and useful. A no is fixed once, then dropped. Green checks are not enough.
+2026-11-10T02:05:16Z | cursor | build | The loop takes the next simplest unfinished site and builds its missing jobs and a sourced history.
