@@ -7153,5 +7153,17 @@
   {"ask": "what will Verse verify for the support router", "want": "skill:verify-pack"},
   {"ask": "monitor pack for client onboarding", "want": "skill:monitor-pack"},
   {"ask": "set up monitors for the invoice reminders", "want": "skill:monitor-pack"},
-  {"ask": "what will Verse watch for the support router", "want": "skill:monitor-pack"}
+  {"ask": "what will Verse watch for the support router", "want": "skill:monitor-pack"},
+  {"ask": "credits", "want": "skill:faucet"},
+  {"ask": "claim credits", "want": "skill:faucet"},
+  {"ask": "faucet", "want": "skill:faucet"},
+  {"ask": "status pack for onboarding", "want": "skill:client-status-pack"},
+  {"ask": "client status for the invoice bot", "want": "skill:client-status-pack"},
+  {"ask": "handoff status pack", "want": "skill:client-status-pack"},
+  {"ask": "connect pack for client onboarding", "want": "skill:connect-pack"},
+  {"ask": "what existing tools for invoice reminders", "want": "skill:connect-pack"},
+  {"ask": "reuse tools for the support ticket router", "want": "skill:connect-pack"},
+  {"ask": "handoff checklist for the onboarding automation", "want": "skill:handoff-checklist"},
+  {"ask": "make a handoff checklist for invoice reminders", "want": "skill:handoff-checklist"},
+  {"ask": "checklist to hand off the support router", "want": "skill:handoff-checklist"}
 ]
