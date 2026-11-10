@@ -389,7 +389,8 @@ export function plainChange(title) {
   if (TOWER_WORK.test(t)) return '';
   for (const [re, to] of TITLE_NOISE) t = t.replace(re, to);
   t = t.replace(/\s+/g, ' ').replace(/^[,:;–—-]+/, '').replace(/[,:;–—-]+$/, '').trim();
-  return TOWER_WORK.test(t) ? '' : t;
+  if (!t || TOWER_WORK.test(t) || /\b(?:and|or|the|a|an|to|of|with|for|so|each)\.?$/i.test(t)) return '';
+  return t;
 }
 /** cut on a space. A word longer than max stays whole. Pure. */
 export function clipAtWord(s, max = 180) {

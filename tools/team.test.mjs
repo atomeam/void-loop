@@ -183,6 +183,7 @@ test('a finished-work line is one sentence from the pull request title, and Towe
   const flake = T.feedLine('GLM5.3Flashfree', 'voice: the reflection card\'s bar and asks are polled for, not read mid-draw (flake: voice-the-reflection-card-shows-wh)');
   assert.equal(flake, 'GLM5.3Flashfree changed the site: the reflection card\'s bar and asks are loaded first, not shown halfway through drawing.');
   assert.equal(T.feedLine('openhands', 'Versus: ajsonline.org (American Journal of Science) needs a page no floor has yet: The website is a scientific'), null);
+  assert.equal(T.feedLine('GLM', 'the reflection card shows what got built as a bar and each'), null, 'a job text already cut off is not shown');
   const cut = T.feedLine('A', 'word '.repeat(80).trim());
   assert.match(cut, /^A changed the site: word(?: word)*\.$/);
   assert.ok(!cut.includes('wor '), 'a word is not split');
