@@ -1,15 +1,15 @@
 {
- "at": "2026-11-09T17:37:59.970Z",
+ "at": "2026-11-10T15:39:26.148Z",
  "share": {
-  "loop": 70,
-  "outside": 963,
-  "bot": 81,
-  "of": 1033,
-  "share": 6.8
+  "loop": 78,
+  "outside": 1012,
+  "bot": 98,
+  "of": 1090,
+  "share": 7.2
  },
  "pick": {
   "kind": "exam",
-  "id": "definitions",
-  "why": "lowest exam domain definitions at 90"
+  "id": "podcasts",
+  "why": "lowest exam domain podcasts at 74.4"
  }
 }
