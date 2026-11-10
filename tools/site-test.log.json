@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T06:18:56Z",
-  "passed": 55,
-  "of": 57,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"echo this\" (skill:echo-disagrees)"
- },
- {
   "at": "2026-10-18T06:32:52Z",
   "passed": 55,
   "of": 58,
@@ -7793,5 +7786,16 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T15:39:46Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1492,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
  }
 ]
