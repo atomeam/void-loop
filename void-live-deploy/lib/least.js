@@ -36,7 +36,7 @@ export const SITES = [
   { host: 'tsundere.pw', url: 'https://tsundere.pw/', page: '/memes/#tsundere-pw', jobs: [{ id: 'silent-list', words: JOBS['silent-list'].words }] },
   { host: 'hackertyper.net', url: 'https://hackertyper.net/', page: '', jobs: [{ id: 'type-code', words: 'fill the screen with code as you type' }, { id: 'type-look', words: 'change the colour, speed, font and size of that code' }] },
   { host: 'yesno.wtf', url: 'https://yesno.wtf/', page: '', jobs: [{ id: 'yes-no', words: 'answer yes, no, or maybe' }, { id: 'yes-picture', words: 'hand back a picture with that answer' }] },
-  { host: 'neverssl.com', url: 'http://neverssl.com/', page: '', aside: 'Verse is hosted where every address is encrypted. This site has to stay unencrypted so a wifi sign-in page can interrupt it. That needs a host that answers in the clear.', jobs: [{ id: 'plain-http', words: 'answer over plain HTTP and never switch to encryption, so a wifi sign-in page can interrupt' }] },
+  { host: 'neverssl.com', url: 'http://neverssl.com/', page: '', aside: 'Verse is hosted where every address is encrypted. This site has to stay unencrypted so a wifi sign-in page can interrupt it. That needs a host that answers in the clear.', jobs: [{ id: 'plain-http', words: 'answer over plain HTTP and never switch to encryption, so a wifi sign-in page can interrupt' }] }, // void-review: ok (this site's real address is plain HTTP on purpose; Verse does not request it)
 ];
 
 const held = (id) => { try { return !!(JOBS[id] && JOBS[id].prove()); } catch (_) { return false; } };
