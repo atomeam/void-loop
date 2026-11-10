@@ -100,8 +100,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 3,
-    "proven": 44
+    "checked": 2,
+    "proven": 45
    },
    "from": 202,
    "to": 249
@@ -140,10 +140,10 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "kind": "family",
    "count": {
-    "experiment": 0,
-    "tested": 8,
-    "checked": 2,
-    "proven": 59
+    "experiment": 1,
+    "tested": 1,
+    "checked": 1,
+    "proven": 66
    },
    "from": 361,
    "to": 430
@@ -4131,8 +4131,9 @@
     "check if kayak is a palindrome",
     "palindromes for racing"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. Say the words below and it answers.",
    "glow": 100,
    "n": 216
   },
@@ -6760,7 +6761,7 @@
     "the versus"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 6 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Asked 6 times in earnest, and never once left unanswered. Let the stage be the proof.",
    "glow": 100,
    "n": 364
@@ -7287,8 +7288,10 @@
     "make a client proposal for invoice reminders",
     "generate a proposal for the support ticket router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "glow": 100,
    "n": 395
   },
   {
@@ -7304,7 +7307,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "flavor": "Keep this page; the verse itself are built on it. Turn the page when you are done.",
    "glow": 100,
    "n": 396
   },
@@ -7319,8 +7322,10 @@
     "map ownership for invoice reminders",
     "what does Verse own vs the client for support tickets"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Turn the page when you are done.",
+   "glow": 100,
    "n": 397
   },
   {
@@ -7771,8 +7776,10 @@
     "what existing tools for invoice reminders",
     "reuse tools for the support ticket router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Turn the page when you are done.",
+   "glow": 100,
    "n": 424
   },
   {
@@ -7798,8 +7805,10 @@
     "client status for the invoice bot",
     "handoff status pack"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Say the words below and it answers.",
+   "glow": 100,
    "n": 426
   },
   {
@@ -7813,8 +7822,10 @@
     "claim credits",
     "faucet"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "An old art of the verse itself, tested each day before the sun is up.",
+   "glow": 100,
    "n": 427
   },
   {
@@ -7828,8 +7839,10 @@
     "make a handoff checklist for invoice reminders",
     "checklist to hand off the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself.",
+   "glow": 100,
    "n": 428
   },
   {
@@ -7843,8 +7856,10 @@
     "map to existing tools: invoice reminders",
     "what can we reuse for support tickets"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it.",
+   "glow": 100,
    "n": 429
   },
   {
@@ -7858,8 +7873,8 @@
     "what does Verse own for the onboarding flow",
     "ownership map for weekly reports"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "experiment",
+   "why": "nothing checks it yet",
    "n": 430
   },
   {
