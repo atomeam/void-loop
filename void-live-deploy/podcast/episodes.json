@@ -1,5 +1,5 @@
 {
- "note": "Verse Out Loud episodes (tools/podcast.mjs). Each is read from the public record only: void.growth.json, claims-verified.json, domains/void.voice.md, incidents.json and main's git history. Append-only.",
+ "note": "Verse Out Loud episodes (tools/podcast.mjs). A free model writes each one from a plain feat. Scores are kept. Append-only.",
  "episodes": [
   {
    "n": 1,
@@ -1170,6 +1170,72 @@
      "who": "Verse",
      "text": "That was Verse Out Loud. Every episode is free to download and repost. Try any of it at a-to-mind.com, and if it helped, ask it for the tip jar.",
      "t": 186.8
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "title": "Episode 8: Four Plain Words",
+   "from": "2026-11-09",
+   "to": "2026-11-10",
+   "pub": "2026-11-10T15:28:14.527Z",
+   "file": "verse-out-loud-008.mp3",
+   "transcript": "verse-out-loud-008.txt",
+   "bytes": 203247,
+   "seconds": 34,
+   "summary": "This idea is simply too silly to be real. The journal opens its cover and begins to read its own pages aloud. Ask Verse for anything at a-to-mind.com. Full transcript included. Free to download and repost.",
+   "counts": {
+    "feats": 6
+   },
+   "scores": {
+    "clarity": 9,
+    "originality": 10,
+    "entertainment": 8,
+    "impressive": 7,
+    "avg": 8.5,
+    "notes": "The concept of a self-reading journal is a wonderfully whimsical and magical premise.",
+    "pass": true
+   },
+   "lines": [
+    {
+     "who": "Critic",
+     "text": "This idea is simply too silly to be real.",
+     "t": 3.6
+    },
+    {
+     "who": "Verse",
+     "text": "The journal opens its cover and begins to read its own pages aloud.",
+     "t": 6.7
+    },
+    {
+     "who": "Critic",
+     "text": "A book that speaks its own contents is quite absurd.",
+     "t": 10.6
+    },
+    {
+     "who": "Verse",
+     "text": "It measures the length of every page as it speaks.",
+     "t": 14.1
+    },
+    {
+     "who": "Verse",
+     "text": "The Brain page greets you before the story starts.",
+     "t": 17.6
+    },
+    {
+     "who": "Critic",
+     "text": "The First Chapter of the Living Book.",
+     "t": 20.8
+    },
+    {
+     "who": "Critic",
+     "text": "I must admit that I was completely wrong about this.",
+     "t": 23.3
+    },
+    {
+     "who": "Verse",
+     "text": "You may ask for any story at a-to-mind.com.",
+     "t": 26.2
     }
    ]
   }

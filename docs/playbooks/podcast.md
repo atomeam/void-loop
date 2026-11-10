@@ -1,9 +1,11 @@
 # Verse Out Loud: make an episode of Verse's podcast
 
-**Starts when:** Monday's `verse-podcast.yml` run, or the owner runs it by hand ("force" for a second one in a week).
+**Starts when:** the daily `verse-podcast.yml` run, or a person runs it by hand ("force" for a second one the same day).
 
-1. `node tools/podcast.mjs --script` prints the next episode's lines without writing anything. Every line comes from `void.growth.json` (the week), `claims-verified.json` (only proven asks are read aloud), Verse's newest daily readout in `domains/void.voice.md` (quoted, tags removed) and `incidents.json` (counts). Never add a line that is not from those files, and never a visitor's words.
-2. `PIPER="python -m piper" node tools/podcast.mjs --make --voices <dir>` voices it with Piper (`en_US-lessac-medium` for Verse, `en_US-ryan-medium` for the Critic, from huggingface.co/rhasspy/piper-voices) and ffmpeg, then writes `void-live-deploy/podcast/verse-out-loud-<NNN>.mp3`, the `.txt` transcript, `episodes.json` and `rss.xml`.
+The spoken episode is written by `tools/show-pipe.mjs` from `docs/playbooks/shows.md`. It is a story about one real feat. It is not a readout of the git log, the queue, or the reflection asks.
+
+1. `node tools/podcast.mjs --script` prints the next episode's lines without writing anything. A failing script is not printed as a fallback.
+2. `PIPER="python -m piper" node tools/podcast.mjs --make --voices <dir>` voices it with Piper (`en_US-lessac-medium` for Verse, `en_US-ryan-medium` for the Critic) and the filters in `VOICE_AF`, then writes `void-live-deploy/podcast/verse-out-loud-<NNN>.mp3`, the transcript, `episodes.json`, `rss.xml`, and the judge's scores.
 3. `node tools/podcast.test.mjs` checks the files and that the feed is fresh. Commit `void-live-deploy/podcast/`; the deploy puts it live.
 
 **How to tell it worked:** "play the podcast" on a-to-mind.com plays the new episode with its transcript, and https://a-to-mind.com/podcast/rss.xml lists it with an enclosure.
@@ -12,7 +14,7 @@
 
 **Mistakes already made:** a new-skill rank after `video-play` let "play the podcast" open the video player; the skill sits at rank 1150.
 
-**What an episode covers:** the week's builds (their plain "show" line, with the ask to try when it is proven), proven new asks and the card each opens, the misses and Verse's own fixes, red test runs, Frontier Engine drafts (F-123) that the ledger says became a skill, findings, and Verse's own asks for next. A Loop Grid-style bed (an 8-step pentatonic sine pattern made by ffmpeg, no samples) plays under the opening and the close; `PODCAST_NO_BED=1` leaves it out.
+**What an episode covers:** one true feat, told by Verse and the Critic. A Loop Grid-style bed plays under the opening and the close; `PODCAST_NO_BED=1` leaves it out.
 
 ## Submitting the feed (owner only, by hand; nothing here is automated)
 

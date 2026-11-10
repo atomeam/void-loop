@@ -115,11 +115,10 @@ assert.deepEqual(r.unlisted, ['20261106-short-split-dinner-bill-a', '20261106-sh
 assert.equal(posted.length, 2); assert.equal(posted[0][1].gate, undefined, 'posted again without gate pass: unlisted, still stored');
 assert.equal(r.listed, 1);
 
-// the workflow: trends, the plan, three studio renders, the cleanup, a dry run that posts nothing
+// the workflow: a written pair of Shorts, the cleanup, a dry run that posts nothing
 const wf = fs.readFileSync(new URL('../.github/workflows/shorts.yml', import.meta.url), 'utf8');
-assert.match(wf, /node tools\/trends\.mjs > trends\.json/);
-assert.match(wf, /node tools\/shorts-loop\.mjs plan --trends trends\.json/);
-assert.match(wf, /node tools\/film-studio\.mjs render --trial trial\.json --i "\$i"/);
+assert.match(wf, /node tools\/show-pipe\.mjs shorts --out media\/shorts/);
+assert.doesNotMatch(wf, /node tools\/film-studio\.mjs render --trial/);
 assert.match(wf, /node tools\/film-cleanup\.mjs/);
 assert.match(wf, /inputs\.dry/);
 console.log('film-studio: ok');
