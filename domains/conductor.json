@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T15:20:03.657Z",
+ "updated": "2026-11-10T15:29:37.738Z",
  "last24h": {
   "ticks": 147,
   "started": 80,
@@ -75,11 +75,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 0,
+   "used": 26,
    "cap": 90
   },
   "day": {
-   "used": 0,
+   "used": 26,
    "cap": 360
   },
   "room": true,
@@ -97,7 +97,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9emynl": 1794237965154,
   "mw9emzn0": 1794238529595,
   "mw9en0lw": 1794239093875,
   "mw9en1tx": 1794239673382,
@@ -225,34 +224,6 @@
   "review:2661"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T15:26:05.154Z",
-   "open": 280,
-   "started": [
-    {
-     "id": "mw9emynl",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": true,
-   "blueprints": 0,
-   "held": 272,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T15:35:29.595Z",
    "open": 280,
@@ -3845,6 +3816,34 @@
   {
    "at": "2026-11-10T15:20:03.657Z",
    "open": 325,
+   "started": [
+    {
+     "id": "mwa2nm0e",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 101
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 15,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T15:29:37.738Z",
+   "open": 326,
    "started": [
     {
      "id": "mwa2nm0e",
