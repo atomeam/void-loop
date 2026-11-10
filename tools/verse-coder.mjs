@@ -94,9 +94,23 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
     for (let k = 0; k < providers.length; k++) {
       const i = (at + k) % providers.length, p = providers[i];
       try {
-        const body = p.shape === 'workers' ? { messages, max_tokens: maxOut, temperature: 0.2 } : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
+        const body = p.shape === 'workers'
+          ? { messages, max_tokens: maxOut, reasoning_effort: 'low', chat_template_kwargs: { enable_thinking: false } }
+          : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
         const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
-        if (!r.ok) { errs.push(p.name + ' ' + r.status); continue; }
+        if (!r.ok) {
+          let note = '';
+          if (typeof r.text === 'function') {
+            try {
+              const t = await r.text();
+              let j = null; try { j = JSON.parse(t); } catch (_) { /* a plain sentence */ }
+              const e = j && j.errors && j.errors[0];
+              if (e && (e.code || e.message)) note = ' ' + [e.code, String(e.message || '').slice(0, 80)].filter(Boolean).join(' ');
+              else if (t && t.length <= 80 && !/[<>]/.test(t)) note = ' ' + t.replace(/[A-Za-z0-9_-]{20,}/g, '[masked]').replace(/\s+/g, ' ').trim();
+            } catch (_) { /* status alone */ }
+          }
+          errs.push(p.name + ' ' + r.status + note); continue;
+        }
         const j = await readReply(r);
         if (j && j.notJson) { errs.push(p.name + ' ' + j.notJson); continue; }
         const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};

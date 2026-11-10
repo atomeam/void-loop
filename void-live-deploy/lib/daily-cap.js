@@ -19,6 +19,14 @@ export async function cap(env, key, limit, now = Date.now()) {
     return row ? { ok: true, n: Number(row.n) } : { ok: false, n: 0 };
   } catch (_) { return { ok: false, n: 0 }; }
 }
+/** give back one place under `key` today. A model call that took a place and then failed does not keep it. */
+export async function uncap(env, key, now = Date.now()) {
+  try {
+    const db = env && env.DB; if (!db || !/^[a-z0-9:_-]{1,60}$/i.test(String(key))) return;
+    if (!ready.has(db)) { await db.prepare(TABLE).run(); ready.add(db); }
+    await db.prepare('UPDATE void_daily_cap SET n = CASE WHEN n > 0 THEN n - 1 ELSE 0 END WHERE day = ? AND key = ?').bind(dayOf(now), String(key)).run();
+  } catch (_) { /* the place stays taken; the next call still stops at the limit */ }
+}
 /** how many places `key` has taken today, without taking one: a number, or null when D1 is missing or errs. `now` is for tests. */
 export async function peek(env, key, now = Date.now()) {
   try {
