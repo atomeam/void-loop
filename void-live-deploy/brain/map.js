@@ -10,10 +10,11 @@
 // The tissue keeps the rest of the screen and still takes the pointer. "Tissue only" hides the map (kept on this device).
 import * as B from '/lib/brain.js';
 import * as M from '/lib/brain-map.js';
+import { askBox, clipAsk } from '/lib/ask-box.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
 const $ = (s) => document.querySelector(s);
-const view = $('#mapView'), svg = $('#map'), feed = $('#feed'), form = $('#mapAsk'), box = $('#mapWord'), viewBtn = $('#viewBtn'), counts = $('#mapCounts');
+const view = $('#mapView'), svg = $('#map'), feed = $('#feed'), form = $('#mapAsk'), box = askBox($('#mapWord')), viewBtn = $('#viewBtn'), counts = $('#mapCounts');
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const el = (tag, attrs = {}, text) => { const n = document.createElementNS(SVG, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; };
 const brain = () => (window.verseBrainField && window.verseBrainField.state && window.verseBrainField.state.b) || null;
@@ -141,12 +142,12 @@ form.addEventListener('submit', (e) => {
   if (M.isKey(t)) { say({ organ: 'you', kind: 'key', text: 'That looks like a key, so it was not told to the brain.' }, performance.now()); return; }
   const b = brain(); if (!b) return;
   if (B.isQuestion(t)) { // a question about itself is answered from its state, and changes nothing
-    const r = B.ask(b, t), li = document.createElement('li'); li.className = 'thought'; const h = document.createElement('b'); h.textContent = 'You asked "' + t.slice(0, 60) + '". It answers from its own state:';
+    const r = B.ask(b, t), li = document.createElement('li'); li.className = 'thought'; const h = document.createElement('b'); h.textContent = 'You asked "' + t + '". It answers from its own state:';
     li.append(h, ' ' + (r.answer || []).join(' ')); push(li); return;
   }
   const cardBox = document.querySelector('#card .vb-word'), cardForm = document.querySelector('#card .vb-form');
   trace = { text: t, at: performance.now(), events: [] };
-  if (cardBox && cardForm) { cardBox.value = t.slice(0, 120); cardForm.requestSubmit(); } else B.ask(b, t);
+  if (cardBox && cardForm) { cardBox.value = clipAsk(t); cardForm.requestSubmit(); } else B.ask(b, t);
   flash.you = performance.now(); spark('you', 'concepts', 196, performance.now());
 });
 
