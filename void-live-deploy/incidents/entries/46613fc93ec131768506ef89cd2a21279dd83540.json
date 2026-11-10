@@ -1,0 +1,15 @@
+{
+ "at": "2026-11-10T03:18:43.428Z",
+ "sha": "46613fc93ec131768506ef89cd2a21279dd83540",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42746487025",
+ "suite": "browser suite on main",
+ "checks": [
+  "showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its \"grab one\" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is a modal layer (dimmed stage, role dialog, aria-modal) that keeps focus and Esc closes; at 1280x640 with a field-mind card up, the panel clears the card and the ask bar; field-mind headers have matching insets (within 2px), the F-id tags stay whole and never leave one alone on a line, and every control sits inside its card at 1280 and 390 wide",
+  "log page: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Verse)"
+ ],
+ "touched": [
+  "void-live-deploy/skills/families.json",
+  "void-live-deploy/skills/guide.json",
+  "void-live-deploy/skills/order/9930-ownership-pack"
+ ]
+}
