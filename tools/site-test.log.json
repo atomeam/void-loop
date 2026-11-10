@@ -1,26 +1,5 @@
 [
  {
-  "at": "2026-10-17T23:19:19Z",
-  "passed": 39,
-  "of": 41,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
- },
- {
-  "at": "2026-10-17T23:49:12Z",
-  "passed": 41,
-  "of": 42,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"closer on the figure\" (skill:zoom-figure)"
- },
- {
-  "at": "2026-10-18T00:02:54Z",
-  "passed": 32,
-  "of": 43,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
- },
- {
   "at": "2026-10-18T00:19:50Z",
   "passed": 42,
   "of": 44,
@@ -7609,6 +7588,60 @@
      "ask": "what can you do",
      "why": [
       "slow 16396 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T23:24:31Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 676,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-09T23:52:09Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 612,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11618 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T00:19:12Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 606,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 12440 ms"
      ]
     }
    ]

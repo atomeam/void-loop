@@ -115,6 +115,12 @@ export function buildPrompt({ task, tagteam = '', gates = '' }) {
     'A floor counts as "assimilated" only with end-to-end journey evidence (say "assimilated", never "parity"). Small sites first, easiest first.',
     'Every new page declares its handoff types. No new inline scripts (CSP). Nothing is removed, only evolved. Every new tool or workflow gets a line in docs/MAP.md.',
     '',
+    'Where things live (AGENTS.md). Paths are from the repo root. Read one of these before searching the whole repo:',
+    '- a skill: void-live-deploy/skills/<name>.js and void-live-deploy/skills/order/<rank>-<name>. void-live-deploy/skills/index.json is generated: never edit it.',
+    '- page logic: void-live-deploy/lib/<name>.js and the page void-live-deploy/<name>/index.html',
+    '- a tool or its test: tools/<name>.mjs and tools/<name>.test.mjs',
+    '- a workflow: .github/workflows/<file> (read it, never edit it). The map of everything: docs/MAP.md.',
+    '',
     '## Task',
     task.kind === 'heal'
       ? `A check failed on the open pull request ${task.pr} (branch ${task.branch}); you are on that branch. Fix what it tests (never by weakening the test).\nFailed: ${task.check}\nWorkflow: ${task.cmd}\nFailure log:\n${tail(task.output || '', 6000)}`
