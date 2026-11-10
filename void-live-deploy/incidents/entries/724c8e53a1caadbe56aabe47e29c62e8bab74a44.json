@@ -1,0 +1,24 @@
+{
+ "at": "2026-11-10T19:48:47.003Z",
+ "sha": "724c8e53a1caadbe56aabe47e29c62e8bab74a44",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42886205859",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+  "tower: the card has no finished-site link and fits a phone"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "domains/growth-inbox.md",
+  "tools/client-brief.test.mjs",
+  "void-live-deploy/skills/client-brief.js",
+  "void-live-deploy/skills/index.json",
+  "void-live-deploy/skills/lineage.json",
+  "void-live-deploy/skills/order/9940-client-brief"
+ ],
+ "shards": [
+  2
+ ]
+}

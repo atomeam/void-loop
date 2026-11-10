@@ -8,5 +8,10 @@
  ],
  "touched": [
   "domains/growth-inbox.md"
+ ],
+ "passed": [
+  1,
+  3,
+  4
  ]
 }
