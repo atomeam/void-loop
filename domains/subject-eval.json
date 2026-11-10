@@ -1,5 +1,5 @@
 {
- "at": "2026-11-09T14:28:46.781Z",
+ "at": "2026-11-10T13:52:06.684Z",
  "mode": "live",
  "pass": 53,
  "total": 54,
@@ -327,7 +327,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [],
     "answer": "Zeus is the supreme deity of the Greek pantheon. He is a sky and thunder god in ancient Gr"
    },
@@ -358,7 +358,7 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": true,
+   "photo": false,
    "api": {
     "name": "World War II",
     "desc": "Global conflict from 1939 to 1945",
@@ -434,8 +434,8 @@
    "seen": {
     "called": 1,
     "failed": [
-     "http://127.0.0.1:39339/build.json?v=1794234350818 net::ERR_ABORTED",
-     "http://127.0.0.1:39339/ net::ERR_ABORTED"
+     "http://127.0.0.1:40239/build.json?v=1794318514430 net::ERR_ABORTED",
+     "http://127.0.0.1:40239/ net::ERR_ABORTED"
     ],
     "bad": [],
     "text": "HAPPY TIME HARRY CHARACTER Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Meatwad due to his low pr …  1 OF 9 FRESH Reply to what I said, or correct me Send Kept on this device only. My self card lists it under Correct me."
@@ -558,7 +558,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "Goundamani and Senthil were an Indian comedic duo who were popular in Tamil cinema in the "
+    "answer": "Rahul Sharad Dravid is an Indian former cricket player who captained and head-coached the "
    },
    "redirect": "none"
   },
@@ -596,7 +596,7 @@
     "guess": "",
     "pic": false,
     "sources": [],
-    "answer": "Happy Hour is the fifth studio album by experimental music band King Missile, and released"
+    "answer": "The Drunk and On Drugs Happy Funtime Hour is a Canadian television sketch comedy series, w"
    },
    "redirect": "none"
   },
@@ -700,7 +700,7 @@
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature",
+   "kind": "Creature · Show",
    "title": "Blue whale",
    "theme": "specimen",
    "photo": true,
