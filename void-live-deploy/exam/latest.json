@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-10T16:39:53.440Z",
+  "at": "2026-11-10T17:08:34.227Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -103,17 +103,16 @@
       }
     },
     "weather": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "weather",
           "failed": [
-            "temp",
             "rival"
           ],
-          "score": 66.7
+          "score": 83.3
         },
         {
           "ask": "météo à lyon",
@@ -229,7 +228,7 @@
       }
     },
     "sports": {
-      "score": 87,
+      "score": 87.9,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -284,13 +283,6 @@
         },
         {
           "ask": "yankees score",
-          "failed": [
-            "board"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "packers score",
           "failed": [
             "board"
           ],
@@ -423,6 +415,6 @@
   },
   "lowest": {
     "domain": "sports",
-    "score": 87
+    "score": 87.9
   }
 }
