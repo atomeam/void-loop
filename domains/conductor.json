@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T06:50:14.539Z",
+ "updated": "2026-11-10T06:59:33.328Z",
  "last24h": {
   "ticks": 146,
-  "started": 102,
+  "started": 99,
   "requeued": 2,
   "setAside": 2,
   "probes": 14,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw8wj9t3": 1794207506673,
   "mw8wjbjy": 1794209190487,
   "mw8wjcf5": 1794210317344,
   "mw90kckz": 1794214261462,
@@ -182,8 +181,8 @@
   "mwa4iwgf": 1794281375210,
   "mwa8w50j": 1794288700838
  },
- "sweptAt": 1794290037186,
- "blueprintsAt": 1794290037186,
+ "sweptAt": 1794293973328,
+ "blueprintsAt": 1794293973328,
  "visitorAt": "2026-11-10T06:03:47Z",
  "visitorFiled": [
   "versus:speedtest.com.sg",
@@ -268,46 +267,6 @@
   "heal:helper-fix-main-suite-log-showca"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T06:58:26.673Z",
-   "open": 273,
-   "started": [
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 120
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    },
-    {
-     "id": "mw8wj9t3",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 252,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T07:07:45.970Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3927,6 +3886,27 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 308,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T06:59:33.328Z",
+   "open": 317,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": true,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 308,
    "warnings": 1
