@@ -20,16 +20,14 @@ const RULES = [
 ];
 
 // the waits, built from parts so this file is not itself a hit
-const PERSONS_JOB = 'a person' + "'s job";
-const NEVER_MERGE = 'never auto' + 'merge';
 const DISARM_CALL = 'disablePullRequest' + 'AutoMerge';
 const DISARM_LOG = 'auto-merge dis' + 'armed';
 const DISARM_VERB = 'dis' + "arm(?:s|ed|ing)? (?:GitHub(?:'s)? )?auto-merge";
 /** instruction files and the merge bot, where those waits were written */
 export const PHRASE_PATH = /^(?:AGENTS\.md|docs\/.+\.md|\.claude\/skills\/.+\.md|tools\/automerge\.mjs)$/;
 export const BLOCKING = [
-  [new RegExp(PERSONS_JOB), 'a conflict is handled automatically'],
-  [new RegExp(NEVER_MERGE), 'a passing fix automerges like everything else'],
+  [new RegExp('a person' + "'s job"), 'a conflict is handled automatically'],
+  [new RegExp('never auto' + 'merge'), 'a passing fix automerges like everything else'],
   [new RegExp(DISARM_CALL + '|' + DISARM_LOG + '|' + DISARM_VERB), 'a ready pull request keeps GitHub auto-merge on'],
 ];
 
