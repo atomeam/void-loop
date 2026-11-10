@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --card:#1a1d24; --accent:#4a9eff; --ok:#3dd68c; --muted:#888; }
+@media (prefers-color-scheme: light) { :root { --bg:#f6f7f9; --fg:#111; --card:#fff; --accent:#0066cc; --ok:#0a7; --muted:#555; } }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); padding:1rem; line-height:1.4; }
+h1 { font-size:1.6rem; margin:0 0 0.5rem; }
+p.lead { color:var(--muted); margin:0 0 1rem; }
+.row { display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+input[type=text] { flex:1; min-width:180px; padding:0.6rem; border:1px solid #333; border-radius:6px; background:var(--card); color:var(--fg); }
+button { padding:0.6rem 1rem; border:none; border-radius:6px; background:var(--accent); color:#fff; cursor:pointer; font-weight:600; }
+button.secondary { background:#333; }
+button.danger { background:#c33; }
+.grid { display:grid; gap:0.4rem; overflow-x:auto; }
+.header, .habit { display:grid; grid-template-columns: 2fr repeat(7, 1fr) 1fr; gap:0.4rem; align-items:center; min-width:600px; }
+.header { font-weight:700; color:var(--muted); font-size:0.85rem; }
+.habit { background:var(--card); padding:0.5rem; border-radius:8px; }
+.name { font-weight:600; }
+.check { width:1.4rem; height:1.4rem; cursor:pointer; accent-color:var(--ok); }
+.streak { text-align:center; font-variant-numeric:tabular-nums; color:var(--ok); font-weight:700; }
+.actions { margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+.toast { position:fixed; bottom:1rem; right:1rem; background:var(--ok); color:#000; padding:0.6rem 1rem; border-radius:6px; opacity:0; transition:opacity 0.3s; }
+.toast.show { opacity:1; }
+@media print { body { background:#fff; color:#000; } button, .row, .actions { display:none; } .habit { break-inside:avoid; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Habit Tracker · Verse lab</title>
+<meta name="description" content="Job: A person adds daily habits, ticks them off for each day of the week, sees current streaks, and keeps the list on the device to copy or download as CSV.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Habit Tracker · Verse lab">
+<meta property="og:description" content="Job: A person adds daily habits, ticks them off for each day of the week, sees current streaks, and keeps the list on the device to copy or download as CSV.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f646-habit-tracker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f646-habit-tracker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Habit tracker</h1>
+<p class="lead">Add habits, tick the days you did them this week, see your streaks. Everything stays on this device.</p>
+
+<div class="row">
+  <input type="text" id="habitInput" placeholder="Add a habit, e.g. Drink water" maxlength="60">
+  <button id="addBtn">Add</button>
+</div>
+
+<div class="grid" id="grid">
+  <div class="header">
+    <div>Habit</div>
+    <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+    <div>Streak</div>
+  </div>
+  <div id="habits"></div>
+</div>
+
+<div class="actions">
+  <button id="copyBtn">Copy summary</button>
+  <button id="csvBtn" class="secondary">Download CSV</button>
+  <button id="printBtn" class="secondary">Print</button>
+  <button id="clearBtn" class="danger">Clear all</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
