@@ -4,7 +4,7 @@
 // its skills (skills/index.json) and its will (void_kv 'will', the same thing GET /api/will shows). All of it is already
 // public on a-to-mind.com; nothing owner-only (queue, earnings, spends) is read here. Also its games and card miniatures
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
-import { knowsFacts, voiceFacts, keptFacts, familyFacts } from './voice.js';
+import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
 import { PERSONA } from './persona.js';
 import { models, ANSWER_FALLBACK } from './models.js';
 const SELF_NOUN = /\b(wish\s*list|improvement budget|growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
@@ -87,7 +87,7 @@ export function selfFacts({ self, skills, will, voice, replies, families } = {},
   const cf = card ? cardFacts(self, { note }) : '';
   if (cf) parts.push(cf);
   if (self && self.about) parts.push('What I am: ' + self.about);
-  if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count; the skill families line gives that): ' + skills.join(', '));
+  if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count): ' + skills.join(', '));
   const tw = towerFacts(self);
   if (tw) parts.push(tw);
   if (self && Array.isArray(self.open)) parts.push('Growth inbox, still open: ' + (self.open.length ? self.open.map((r) => `"${r.ask}" (${r.from}, ${r.date})`).join('; ') : '(none open)'));
@@ -99,8 +99,6 @@ export function selfFacts({ self, skills, will, voice, replies, families } = {},
   if (!card || asksModelDate(note)) parts.push(modelFacts(self)); // a card note that does not name the model gets no model date to restate (live card 3)
   const wl = wishlistFacts(self);
   if (wl) parts.push(wl);
-  // the family counts and the least proven family, ranked as the card's bars rank them (owner's review, 2026-10-30: the answer named Games, the bars Words and the world)
-  const fams = familyFacts(families); if (fams) parts.push(fams);
   const knows = knowsFacts(self), said = voiceFacts(voice, families);
   if (knows) parts.push(knows);
   if (said) parts.push(said);
@@ -137,12 +135,12 @@ export function modelFacts(self) {
   return 'The models I run on (lib/models.js): my answers come from ' + modelName(models('answer')) + ', and ' + modelName(ANSWER_FALLBACK) + ' is only the second try when it cannot answer; my code review reads with ' + modelName(models('review')) + '. Moving my answers from gpt-oss-120b to gemma is done' + (mv ? ' (merged and deployed ' + mv.date + ', commit ' + mv.commit + ')' : '') + ', so it is not a want any more.';
 }
 
-// The tower (self.json 'tower', written at deploy from tower.target.json and lib/tower.js): the site I am assimilating now and the next
-// smallest ones. The owner's rule is every site ever made, smallest first, so "what is still open" starts here.
+// The tower (self.json 'tower'): the site whose page is next, then the ones after it. No tally.
 export function towerFacts(self) {
   const t = self && self.tower;
   if (!t || !t.target) return '';
-  return 'Still open first, by my rule (every site ever made, smallest first): the site I am assimilating now, my tower target, is ' + t.target + (t.since ? ' (since ' + t.since + ')' : '') + (t.page ? '; ' + t.page : '') + '.' + (Array.isArray(t.next) && t.next.length ? ' The next smallest unbeaten sites after it: ' + t.next.join(', ') + '.' : '') + (Number.isFinite(t.beaten) && Number.isFinite(t.total) ? ' Beaten so far: ' + t.beaten + ' of ' + t.total + '.' : '');
+  const next = Array.isArray(t.next) ? t.next.filter(Boolean) : [];
+  return 'The site whose page is next is ' + t.target + (t.since ? ' (since ' + t.since + ')' : '') + (t.page ? '. Its page: ' + t.page : '') + '.' + (next.length ? ' After that: ' + next.join(', ') + '.' : '');
 }
 
 // For a note about one of my own answer cards: the two lists the card must give, already in order, so the model copies them and does
@@ -169,7 +167,7 @@ export function cardLists(self, { days = 7, more = 3 } = {}) {
   const fixed = rows.map((r, i) => ({ ...r, i })).sort((x, y) => (x.date === y.date ? x.i - y.i : x.date < y.date ? 1 : -1)).map((r) => r.line);
   const t = self.tower, open = [];
   if (t && t.target) {
-    open.push(t.target + ', the site I am assimilating now' + (t.page ? ' (' + t.page + ')' : ''));
+    open.push(t.target + ', the site whose page is next' + (t.page ? ' (' + t.page + ')' : ''));
     for (const n of Array.isArray(t.next) ? t.next : []) open.push(n + ', the next smallest');
   }
   const rest = Array.isArray(self.open) ? self.open : [];

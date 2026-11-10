@@ -44,7 +44,6 @@ export async function drawVerseLog(el, { esc = esc0, fetchJson = (u) => fetch(u,
   const body = verseLogHtml({ v, last, fam, built, progress, tester, sites: sitesHtml(a, esc) }, esc);
   el.innerHTML = body || '<p class="sub">Nothing logged yet.</p>'; // void-review: ok: verseLogHtml escapes every value with esc
   if (v && v.follow) try { localStorage.setItem(LAST_KEY, JSON.stringify(SB.sinceMark(v, fam))); } catch (_) {}
-  if (fam) try { const m = await import('./skill-confidence.js'); const slot = el.querySelector('[data-v-conf]'); if (slot) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); } catch (_) {} // void-review: ok: sureHtml escapes every name
   wire(el, esc);
   return { v, drawn: !!body };
 }

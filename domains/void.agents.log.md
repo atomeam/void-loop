@@ -1244,3 +1244,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-10T01:50:00Z | cursor | build | Before Verse ships its own change, the free model asks whether a person would find it real and useful. A no is fixed once, then dropped. Green checks are not enough.
 2026-11-10T02:05:16Z | cursor | build | The loop takes the next simplest unfinished site and builds its missing jobs and a sourced history.
 2026-11-10T01:45:00Z | cursor | build | The Tower lists a site only once Verse can do what that site does: rot13.com, a plain page, and tsundere.pw, each with a sourced history
+2026-11-10T02:05:16Z | cursor | fix | The self card says what was built and which page is next. A stored tally is not shown, and the model is not handed one.

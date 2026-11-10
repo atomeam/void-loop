@@ -94,7 +94,7 @@ test('the Fixed list is newest first: the gemma row sits in its date\'s place, n
   const dates = fixed.map((r) => r.slice(0, 10));
   assert.deepEqual(dates, dates.slice().sort().reverse(), dates.join(' '));
   assert.ok(fixed.some((r) => /gemma \(merged and deployed, commit 630e666fb\)/.test(r)));
-  assert.match(open[0], /^sycophanthex\.com, the site I am assimilating now/);
+  assert.match(open[0], /^sycophanthex\.com, the site whose page is next/);
   assert.deepEqual(newestFirst(['2026-10-22: a', '2026-10-25: b', '2026-10-29: c', '2026-10-22: d']), ['2026-10-29: c', '2026-10-25: b', '2026-10-22: a', '2026-10-22: d']);
 });
 
@@ -117,7 +117,7 @@ test('the whole card for note 3: a lead, the earlier card owned, the fix status,
   assert.match(body, /My earlier card did take blame for sycophanthex\.com's block/);
   assert.match(body, /\n\nFixes you named:\nYour note counts 5 fixes/);
   assert.doesNotMatch(body, /\bFixed:/, 'the fix status replaces the old, unrelated Fixed list');
-  assert.match(body, /\n\nStill open:\nsycophanthex\.com, the site I am assimilating now/);
+  assert.match(body, /\n\nStill open:\nsycophanthex\.com, the site whose page is next/);
   assert.doesNotMatch(body, /gemma|630e666fb|I did not|I do not deny|old code|sorry/i);
   assert.ok(isStatusCard(body));
   assert.ok(!motifsFor(subjectOf('Answer', 'I own the fault that the checker failed.\nFixed:\n2026-10-29: errors fixed').nouns).includes('warning'), 'a status card draws no hazard plate');

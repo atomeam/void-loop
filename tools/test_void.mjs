@@ -7911,7 +7911,7 @@ try {
       return { heads: [...pg.querySelectorAll('h3.vs-h, h4.vs-h4')].map((x) => x.textContent), hw: +cs(h).fontWeight, pw: +cs(p).fontWeight, hs: px(h, 'fontSize'), ps: px(p, 'fontSize'), lis: pg.querySelectorAll('.vs-sec[data-sec=asked] ul > li').length, pad: px(li, 'paddingLeft'),
         pm: px(p, 'marginBottom') || px(lead, 'marginBottom'), leadMargin: px(lead, 'marginBottom'), logFont: cs(log).fontFamily, bodyFont: cs(lead).fontFamily, border: cs(log).borderTopWidth, meta: cs(li.querySelector('.v-meta')).fontSize, errors: 0 }; });
     check('self card layout, on the log page: real headings (bold, larger than the body), one list item per ask with a hanging indent, 8px or more between paragraphs, the reflection in the reading font and what got built in monospace inside a bordered box',
-      got.heads.includes('Weakest operational area') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
+      got.heads.includes('Next targeted capability') && got.heads.includes('What should change') && !got.heads.includes('Weakest operational area') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
       JSON.stringify({ got, errors: L.errors }));
     await L.ctx.close(); }
   // never the same card twice (owner, 2026-10-19: "the whole card need to be different", "no repeats ever", "all cards should constantly update"; "since i last looked"
@@ -7988,7 +7988,7 @@ try {
         && card.redesign.evolved === 0 && card.redesign.art === 1 && !card.redesign.smallOverArt.length && card.redesign.quote && parseFloat(card.redesign.quoteBar) >= 3
         && /^Written by Verse's model/.test(card.cite) && /from these facts/.test(card.cite) && /not a felt state/.test(card.cite) && !card.theatre && !S.errors.length, JSON.stringify({ card, errors: S.errors }));
     // the log page (/log/, lib/verse-log.js): the long lists fold, each block's heading is its toggle, a bar per family, the growth notes and the week line
-    const L4 = await S.ctx.newPage(); await L4.goto(base + 'log/'); await until(() => L4.$('#log [data-fam-bar]'), 8000);
+    const L4 = await S.ctx.newPage(); await L4.goto(base + 'log/'); await until(() => L4.$('#log [data-sec=growth]'), 8000);
     const self = await L4.evaluate(async () => {
       const pg = document.querySelector('#log'), cs = (e) => getComputedStyle(e), vis = (ul) => [...ul.querySelectorAll(':scope > li')].filter((li) => !li.hidden).length;
       const heads = [...pg.querySelectorAll('h3.vs-h, h4.vs-h4')], hd = pg.querySelector('.vs-sec[data-sec=growth] h3.vs-h'), body = pg.querySelector('.vs-sec[data-sec=growth] p');
@@ -8002,10 +8002,10 @@ try {
     await L4.click('#log .vs-sec[data-sec=growth] > summary'); const opened = await L4.$eval('#log .vs-sec[data-sec=growth]', (d) => d.open);
     await L4.focus('#log .vs-sec[data-sec=growth] > summary'); await L4.keyboard.press('Enter'); const shut = await L4.$eval('#log .vs-sec[data-sec=growth]', (d) => d.open);
     check('void asks batch 4: the log page shows the newest 5 of each long list and folds the rest behind "show all N" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, every block closed but the lead, a bar per skill family with one weakest, and each growth claim carries a source line',
-      self.heads.includes('Weakest operational area') && self.heads.includes('Next targeted capability') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
+      self.heads.includes('Next targeted capability') && self.heads.includes('What should change') && !self.heads.includes('Weakest operational area') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the log ("Newest"), so the list holds the other 27: no repeats
-        && opened === true && shut === false && self.open.join() === 'since' && self.bars === self.families && self.families > 3 && self.weak === 1
-        && self.notes.length === 3 && /families\.json/.test(self.notes[0]) && !S.errors.length,
+        && opened === true && shut === false && self.open.join() === 'since' && self.bars === 0 && self.weak === 0
+        && self.notes.length === 2 && !/famil|proven|assimilat/i.test(self.notes.join(' ')) && !S.errors.length,
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     // the growth velocity (asked by Verse): at the top of "What got built", a 7-point line in the violet with a tick a day and the latest day a dot, a muted
     // monospace label; a stage change after a build lands redraws it from /api/reflect in place, and a second change within the minute reads nothing again

@@ -93,7 +93,7 @@ test('fault 5: Still open starts with the tower target, then the next smallest s
   const line = towerFacts(selfJson), target = selfJson.tower.target; // the record's target, whichever site the owner has it on now (sycophanthex.com until 2026-10-29, then onlineconverter.com)
   assert.ok(target && line.indexOf(target) >= 0 && line.indexOf(target) < line.indexOf(selfJson.tower.next[0]), 'the target comes before the next sites');
   const facts = selfFacts({ self: selfJson });
-  assert.ok(facts.indexOf('my tower target') < facts.indexOf('Growth inbox, still open'), 'the tower comes before the other open work');
+  assert.ok(facts.indexOf('The site whose page is next') < facts.indexOf('Growth inbox, still open'), 'the tower comes before the other open work');
 });
 
 // card 5's note: the lists the model copies come from the record, and the record's gemma date stands
@@ -104,7 +104,7 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
   assert.doesNotMatch(open, /#1406/, 'a shipped fix is never listed as open');
   const target = selfJson.tower.target; // the record's target, not a name fixed in the test
-  assert.ok(open.startsWith('Still open: 1. ' + target + ', the site I am assimilating now'), open.slice(0, 120));
+  assert.ok(open.startsWith('Still open: 1. ' + target + ', the site whose page is next'), open.slice(0, 140));
   const next = selfJson.tower.next.map((s) => open.indexOf(s));
   assert.ok(next.every((i, k) => i > open.indexOf(target) && (k === 0 || i > next[k - 1])), 'the next smallest follow the target, in order');
   assert.match(c, /My record dates the gemma move 2026-10-25[^\n]*my record stands: say so, and do not call the date a fault/);
@@ -143,7 +143,7 @@ test('the card 5 note, end to end: self route, whole note, my own facts, no clai
   assert.ok(seen, 'the model was asked');
   const all = (seen.messages || []).map((m) => m.content).join('\n');
   assert.match(all, /smallest-first order behind sycophanthex\.com/, 'the note reached the model whole');
-  assert.match(all, /my last card/); assert.match(all, /2026-10-25, commit 630e666fb/); assert.match(all, /my tower target/);
+  assert.match(all, /my last card/); assert.match(all, /2026-10-25, commit 630e666fb/); assert.match(all, /The site whose page is next/);
   assert.match(all, /do not copy them/); assert.match(all, /my record stands/);
   // the Fixed list opens on my newest shipped row, read from the record (it said 2026-10-29 until rows shipped after that day)
   const newest = selfJson.shipped.map((r) => r.date).filter((d) => /^\d{4}-\d\d-\d\d$/.test(d)).sort().pop();
