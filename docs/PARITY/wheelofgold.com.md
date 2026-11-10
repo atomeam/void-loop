@@ -12,4 +12,4 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | A full feature study of this site (not written yet) | Study | unreviewed | every site of this kind offers it | not studied yet |
-| An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "lease use a larger device. Home Support Login Register Blockchain Crypto Rewards Ready to earn without spendin" | void-live-deploy/prizes/index.html:446 `if (!t) bal.textContent = 'Sign in on the stage to see your balance.';` |
+| An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "lease use a larger device. Home Support Login Register Blockchain Crypto Rewards Ready to earn without spendin" | void-live-deploy/prizes/index.html:447 `if (!t) bal.textContent = 'Sign in on the stage to see your balance.';` |

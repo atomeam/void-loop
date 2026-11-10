@@ -630,74 +630,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-10T03:32:42Z",
-   "subject": "fix: send /memes/ home"
-  },
-  {
-   "at": "2026-11-10T03:28:54Z",
-   "subject": "Better at faucet, client status pack, connect pack and 1 more: 12 more ways of asking answered right — new phrases: “credits” now opens…"
-  },
-  {
-   "at": "2026-11-10T03:26:57Z",
-   "subject": "fix: remove the finished-site Tower"
-  },
-  {
-   "at": "2026-11-10T03:19:01Z",
-   "subject": "Failed jobs read: run 42746487025 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T03:18:43Z",
-   "subject": "Incident: the browser suite failed on 46613fc9 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-10T03:18:07Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"build a hut\""
-  },
-  {
-   "at": "2026-11-10T03:13:53Z",
-   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-10T03:08:21Z",
-   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-10T03:06:14Z",
-   "subject": "A pull request that is red, so Verse has to fix it. (#2639)"
-  },
-  {
-   "at": "2026-11-10T02:59:55Z",
-   "subject": "Put the new self skills in the book so the suite can go green on main (#2641)"
-  },
-  {
-   "at": "2026-11-10T02:52:01Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T02:40:12Z",
-   "subject": "Failed jobs read: run 42739600746 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-10T02:36:24Z",
-   "subject": "Leave the sitemap for the deploy to write. (#2643)"
-  },
-  {
-   "at": "2026-11-10T02:35:17Z",
-   "subject": "Tower gate: travel: flightconnections.com,paint,sports: onefootball.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-10T02:34:55Z",
-   "subject": "Outcome exam: sports 88.9"
-  },
-  {
-   "at": "2026-11-10T02:30:45Z",
-   "subject": "Paint by number is a colouring book you can actually use (#2642)"
-  },
-  {
-   "at": "2026-11-10T02:29:15Z",
-   "subject": "Do not fail Verse's review when the free judge has no model. (#2640)"
-  },
-  {
    "at": "2026-11-10T02:24:33Z",
    "subject": "Verse loop: task, Queue job mw9rbqfa (heal: helper-handoff-checklist): Repair (#2637)"
   },
@@ -708,6 +640,74 @@
   {
    "at": "2026-11-10T02:23:40Z",
    "subject": "Note that a one-line pull request merges itself. (#2638)"
+  },
+  {
+   "at": "2026-11-10T02:23:09Z",
+   "subject": "Failed jobs read: run 42738937675 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T02:22:55Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T02:21:44Z",
+   "subject": "Board: helper/least-next-0b57 shipped (https://github.com/atomeam/void-loop/pull/2634)"
+  },
+  {
+   "at": "2026-11-10T02:18:54Z",
+   "subject": "Leave the sitemap for the deploy to write."
+  },
+  {
+   "at": "2026-11-10T02:18:36Z",
+   "subject": "Verse, unbidden says what it built or is building next (#2633)"
+  },
+  {
+   "at": "2026-11-10T02:18:33Z",
+   "subject": "Leave the generated self pages for the deploy to write."
+  },
+  {
+   "at": "2026-11-10T02:18:27Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-10T02:18:22Z",
+   "subject": "Failed jobs read: run 42737938253 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T02:18:06Z",
+   "subject": "The self card says what was built and what is next (#2632)"
+  },
+  {
+   "at": "2026-11-10T02:17:58Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-10T02:17:22Z",
+   "subject": "The paint page is a colouring book: original pictures, a white numbered sheet, and a finished reveal."
+  },
+  {
+   "at": "2026-11-10T02:16:44Z",
+   "subject": "Fix verse-coder miss listing when ripgrep is missing (watchdog fast red on main) (#2635)"
+  },
+  {
+   "at": "2026-11-10T02:16:21Z",
+   "subject": "build: the loop takes the next simplest site (#2634)"
+  },
+  {
+   "at": "2026-11-10T02:16:00Z",
+   "subject": "Merge every open pull request without a human approval (#2636)"
+  },
+  {
+   "at": "2026-11-10T02:11:33Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-10T02:02:07Z",
+   "subject": "Failed jobs read: run 42739225315 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-10T02:01:35Z",
+   "subject": "Board: helper/least-tower-0b57 shipped (https://github.com/atomeam/void-loop/pull/2627)"
   }
  ],
  "builders": {
@@ -889,8 +889,8 @@
   }
  ],
  "visible": {
-  "day": 17,
-  "week": 314
+  "day": 16,
+  "week": 313
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

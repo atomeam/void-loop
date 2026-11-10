@@ -14,9 +14,9 @@
  "bench_at": "2026-11-09",
  "totals": {
   "experiment": 0,
-  "tested": 5,
-  "checked": 5,
-  "proven": 413
+  "tested": 8,
+  "checked": 6,
+  "proven": 409
  },
  "families": [
   {
@@ -3636,9 +3636,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 1,
-    "proven": 63
+    "tested": 8,
+    "checked": 2,
+    "proven": 59
    },
    "skills": [
     {
@@ -4206,12 +4206,10 @@
     },
     {
      "name": "connect-pack",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-10",
-     "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-11-10"
+     "last_tested_by": "its tests"
     },
     {
      "name": "client-intake",
@@ -4222,30 +4220,24 @@
     },
     {
      "name": "client-status-pack",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-10",
-     "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-11-10"
+     "last_tested_by": "its tests"
     },
     {
      "name": "faucet",
-     "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-11-10",
-     "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-11-10"
+     "last_tested_by": "its tests"
     },
     {
      "name": "handoff-checklist",
-     "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-11-10",
-     "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-11-10"
+     "last_tested_by": "its tests"
     },
     {
      "name": "reuse-pack",

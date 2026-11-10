@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 1,
-    "proven": 63
+    "tested": 8,
+    "checked": 2,
+    "proven": 59
    },
    "from": 361,
    "to": 430
@@ -7771,10 +7771,8 @@
     "what existing tools for invoice reminders",
     "reuse tools for the support ticket router"
    ],
-   "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Turn the page when you are done.",
-   "glow": 100,
+   "tier": "tested",
+   "why": "a self-test",
    "n": 424
   },
   {
@@ -7800,10 +7798,8 @@
     "client status for the invoice bot",
     "handoff status pack"
    ],
-   "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Say the words below and it answers.",
-   "glow": 100,
+   "tier": "tested",
+   "why": "a self-test",
    "n": 426
   },
   {
@@ -7817,10 +7813,8 @@
     "claim credits",
     "faucet"
    ],
-   "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "An old art of the verse itself, tested each day before the sun is up.",
-   "glow": 100,
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 427
   },
   {
@@ -7834,10 +7828,8 @@
     "make a handoff checklist for invoice reminders",
     "checklist to hand off the support router"
    ],
-   "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself.",
-   "glow": 100,
+   "tier": "tested",
+   "why": "a self-test",
    "n": 428
   },
   {
