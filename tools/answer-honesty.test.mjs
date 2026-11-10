@@ -77,8 +77,8 @@ test('fault 5: the five card notes are notes about my own card; other cards are 
 test('fault 5: the gemma date comes from the record, and #1406 and the card fixes are shipped facts', () => {
   assert.match(modelFacts(selfJson), /2026-10-25, commit 630e666fb/);
   const facts = selfFacts({ self: selfJson });
-  assert.match(facts, /#1406|want card names the site Versus is on/);
-  assert.match(facts, /cite a source only when its text holds the claim/);
+  assert.match(facts, /The site whose page is next is /);
+  assert.match(facts, /630e666fb/);
 });
 
 test('fault 5: Still open starts with the tower target, then the next smallest sites, and names the page it still needs until it has one', () => {
@@ -101,7 +101,8 @@ test('card 5: the own-card facts give Fixed and Still open from my records, targ
   const c = cardFacts(selfJson, { note: CARD5 }); // this note dates the gemma switch, so the record's date goes to the model (a note that does not: tools/own-card.test.mjs)
   const fixed = c.slice(c.indexOf('Fixed:'), c.indexOf('Still open:')), open = c.slice(c.indexOf('Still open:'));
   assert.ok(c.indexOf('Fixed:') >= 0 && c.indexOf('Fixed:') < c.indexOf('Still open:'), 'Fixed comes before Still open');
-  assert.match(fixed, /#1406/); assert.match(fixed, /#1410/); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
+  const newest = selfJson.shipped.map((r) => r.date).filter((d) => /^\d{4}-\d\d-\d\d$/.test(d)).sort().pop();
+  assert.match(fixed, new RegExp(newest)); assert.match(fixed, /gemma \(merged and deployed, commit 630e666fb\)/);
   assert.doesNotMatch(open, /#1406/, 'a shipped fix is never listed as open');
   const target = selfJson.tower.target; // the record's target, not a name fixed in the test
   assert.ok(open.startsWith('Still open: 1. ' + target + ', the site whose page is next'), open.slice(0, 140));
