@@ -48,7 +48,7 @@ jobs:
           RECRUIT_STATE: ${{ runner.temp }}/recruit/state.json
         run: |
           mkdir -p "$RUNNER_TEMP/recruit"
-          node tools/recruit.mjs --once --state "$RECRUIT_STATE" --out void-live-deploy/team/recruit.html
+          node tools/recruit.mjs --once --state "$RECRUIT_STATE" --replies "$RUNNER_TEMP/recruit/replies.json"
       - name: Keep the quota state
         if: always()
         uses: actions/cache/save@v4
@@ -59,8 +59,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add void-live-deploy/team/recruit.html
-          git diff --cached --quiet && echo "board unchanged" && exit 0
+          git add void-live-deploy/play
+          git diff --cached --quiet && echo "nothing to publish" && exit 0
           git config user.name "verse-recruit"
           git config user.email "verse-recruit@users.noreply.github.com"
           git commit -m "Publish the free-agent board from the clock"

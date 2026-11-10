@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SOURCES, nextReset, readySources, note, rankJobs, pasteOf, renderPage, pageOk, htmlFrom, jobCard } from '../void-live-deploy/lib/recruit.js';
+import { SOURCES, nextReset, readySources, note, rankJobs, pasteOf, chunkOk, stitchJob, workJob } from '../void-live-deploy/lib/recruit.js';
+import { fill } from './recruit.mjs';
 
 const NOW = Date.UTC(2026, 10, 10, 15, 30); // 2026-11-10 15:30 UTC, 07:30 PST
 const key = { GROQ_API_KEY: 'set' };
@@ -29,9 +30,23 @@ test('visitor work comes first, and the page is safe to publish', () => {
   assert.ok(ranked[0].score > ranked[1].score);
   assert.doesNotMatch(pasteOf(SOURCES.find((s) => s.id === 'openhands-cloud')), /vj1-[0-9a-f]{32}/);
   assert.match(pasteOf(), /next job/);
-  const html = renderPage();
-  assert.equal(pageOk(html), true);
-  assert.equal(pageOk(htmlFrom('```html\n' + html + '\n```')), true);
-  assert.equal(pageOk('<!doctype html><script>alert(1)</script></html>'), false);
-  assert.equal(jobCard().path, 'void-live-deploy/team/recruit.html');
+  const job = workJob();
+  assert.equal(chunkOk('Animal Hospital is a video game about caring for animals.', job.parts[0]), true);
+  assert.equal(chunkOk('It is Theme Hospital from 1997.', job.parts[0]), false);
+  const page = stitchJob(job, [{ id: 'what', text: 'Animal Hospital is a video game about caring for animals.' }]);
+  assert.match(page, /caring for animals/);
+  assert.doesNotMatch(page, /<script/);
+});
+
+test('a no-key run publishes only the sentences the source returned', async () => {
+  const job = workJob();
+  let n = 0;
+  const replies = ['Animal Hospital is a video game about caring for animals.', 'In Animal Hospital the player looks after sick animals.'];
+  const fetchImpl = async () => ({ ok: true, status: 200, headers: { get: () => '' }, text: async () => JSON.stringify({ choices: [{ message: { content: replies[n++] } }] }) });
+  const source = { id: 'pollinations', endpoint: 'https://text.pollinations.ai/openai' };
+  const done = await fill(source, job, {}, fetchImpl, { sleep: async () => {}, gapMs: 0 });
+  assert.equal(done.ok, true);
+  assert.match(done.html, /caring for animals/);
+  assert.match(done.html, /looks after sick animals/);
+  assert.equal(done.replies.length, 2);
 });

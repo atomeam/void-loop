@@ -1,5 +1,4 @@
 // Free-agent clock. Limits: docs/agents-scouted.md (2026-11-10). A 429 parks until the reset. Three misses drop a source.
-export const BOARD = 'void-live-deploy/team/recruit.html';
 export const DROP_AFTER = 3;
 const DAY = 864e5;
 
@@ -95,9 +94,6 @@ export function rankJobs(jobs) {
   }).sort((a, b) => b.score - a.score || String(a.id).localeCompare(String(b.id)));
 }
 
-export const signupOf = () => SOURCES.filter((s) => s.kind === 'signup' && s.rank < 20);
-export const joinsOf = () => SOURCES.filter((s) => s.kind === 'join');
-
 export function pasteOf(source) {
   const name = source && source.name ? source.name : 'the agent';
   return [
@@ -110,67 +106,45 @@ export function pasteOf(source) {
   ].join('\n');
 }
 
-export function jobCard() {
-  return { id: 'recruit-board', ask: 'Publish /team/recruit.html so a visitor sees which free agents Verse runs, which are parked until a limit resets, the one-account sign-up list, and a paste-ready invite. The clock starts them. Start a job is only a backup.', path: BOARD };
+export function workJob() {
+  const name = 'Animal Hospital';
+  const rule = 'One sentence, under 30 words. No year, no company, no digits, no characters < or >. Do not call it Theme Hospital.';
+  return {
+    id: 'mv5uxjua', title: 'Animal Hospital (video game)', ask: 'fill a gap: "Animal Hospital (video game)"',
+    path: 'void-live-deploy/play/animal-hospital.html',
+    parts: [
+      { id: 'what', need: ['animal hospital', 'game'], prompt: rule + ' Say what the video game ' + name + ' is.', again: rule + ' Reply: "' + name + ' is a video game." then at most ten more words.' },
+      { id: 'play', need: ['animal hospital', 'player'], prompt: rule + ' Say what the player does in the video game ' + name + '.', again: rule + ' Start with "In ' + name + ' the player".' },
+    ],
+  };
 }
 
+/** the first sentence of a model reply, or '' when it is not a sentence we can place. */
+export function chunkText(raw) {
+  const t = String(raw || '').replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim();
+  const bits = t.split(/(?<=[.!?])\s/).map((s) => s.replace(/^["']|["']$/g, '').trim()).filter(Boolean);
+  return (bits.find((s) => /animal hospital/i.test(s)) || bits[0] || '');
+}
+
+/** a piece is kept only when it is one short sentence about this job and invents no year. */
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-export function boardRows(state, now) {
-  return SOURCES.filter((s) => s.kind !== 'retired').map((s) => {
-    const row = wake(s, state && state.sources && state.sources[s.id], now);
-    let status = 'listed';
-    if (s.kind === 'signup') status = s.rank >= 20 ? 'not on the free plan' : 'needs one sign-up';
-    else if (s.kind === 'join') status = 'join by link';
-    else if (s.runs === false) status = 'same clock, not spawned yet';
-    else if (row.dropped) status = 'dropped until it ships';
-    else if (row.parkedUntil > now) status = 'parked';
-    else status = s.key ? 'starts when its key is present' : 'starts on the clock';
-    return { ...s, status, until: row.parkedUntil > now ? new Date(row.parkedUntil).toISOString().slice(0, 16) + 'Z' : '', tried: row.tried, shipped: row.shipped };
-  });
+export function chunkOk(text, rule) {
+  const t = chunkText(text);
+  if (t.length < 20 || t.length > 220) return false;
+  if (/[<>`]/.test(t) || /\btheme hospital\b/i.test(t) || /\b(?:19|20)\d{2}\b/.test(t)) return false;
+  const low = t.toLowerCase();
+  return (rule.need || []).every((w) => low.includes(w));
 }
 
-export function renderPage(state = {}, now = Date.now()) {
-  const rows = boardRows(state, now);
-  const item = (r) => '<li data-id="' + esc(r.id) + '"><b>' + esc(r.name) + '</b> (' + esc(r.status) + (r.until ? ', wakes ' + esc(r.until) : '') + '). '
-    + esc(r.limit) + '. Reset: ' + esc(r.reset) + '. '
-    + (r.kind === 'self' && r.runs !== false ? '<a href="https://github.com/atomeam/void-loop/actions/workflows/recruit.yml">Start a job</a>. ' : '')
-    + '<a href="' + esc(r.url) + '">Source</a></li>';
-  const self = rows.filter((r) => r.kind === 'self');
-  const sign = rows.filter((r) => r.kind === 'signup');
-  const join = rows.filter((r) => r.kind === 'join');
+/** the page is the checked sentences and the job's own title. Nothing else is written as a fact. */
+export function stitchJob(job, parts) {
+  const body = parts.map((p) => '<p data-part="' + esc(p.id) + '">' + esc(chunkText(p.text)) + '</p>').join('\n');
   return '<!doctype html>\n<html lang="en" class="vs-tool"><head><meta charset="utf-8">\n'
     + '<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark">\n'
-    + '<title>Free agents · Verse</title>\n<meta name="description" content="The free coding agents Verse runs on its own clock, the one sign-up each hosted service needs, and a paste-ready invite.">\n'
-    + '<link rel="stylesheet" href="/verse.css" media="screen">\n<style>\n'
-    + 'body{margin:0;background:#050505;color:#f2f4fb;font:16px/1.5 system-ui,sans-serif}\n'
-    + 'main{max-width:46rem;margin:0 auto;padding:24px 16px 64px} h1{font-weight:400;letter-spacing:-.03em}\n'
-    + 'a{color:#9eb2ff} li{margin:0 0 12px} .note{color:#c3c8d8} pre{white-space:pre-wrap;background:#10121c;padding:12px;border-radius:12px}\n'
-    + '</style></head><body><main>\n<h1>Free agents</h1>\n'
-    + '<p class="note">Verse starts every source that can run, on a schedule that wakes at the reset. The clock counts shipped and tried, and drops a source after three tries with nothing shipped. Start a job is only a backup. Nothing waits on it.</p>\n'
-    + '<h2>Running on the clock</h2><ul>' + self.map(item).join('') + '</ul>\n'
-    + '<h2>One sign-up each</h2><p class="note">One real account per service. Verse does not create a second account, pass a captcha, or use a paid plan.</p><ul>'
-    + sign.map(item).join('') + '</ul>\n<h2>Join by link</h2><ul>' + join.map(item).join('') + '</ul>\n'
-    + join.map((r) => '<h3>Paste this invite for ' + esc(r.name) + '</h3><pre>' + esc(pasteOf(r)) + '</pre>').join('\n')
-    + '\n</main></body></html>\n';
+    + '<title>' + esc(job.title) + ' · Verse</title>\n<link rel="stylesheet" href="/verse.css" media="screen">\n<style>\n'
+    + 'body{margin:0;background:#050505;color:#f2f4fb;font:16px/1.5 system-ui,sans-serif}main{max-width:40rem;margin:0 auto;padding:24px 16px 64px}a{color:#9eb2ff}.note{color:#c3c8d8}\n'
+    + '</style></head><body><main>\n<h1>' + esc(job.title) + '</h1>\n<p class="note">Queued job ' + esc(job.id) + '.</p>\n'
+    + body + '\n</main></body></html>\n';
 }
 
-export function boardCurrent(html) {
-  return SOURCES.filter((s) => s.kind !== 'retired').every((s) => String(html || '').includes('data-id="' + s.id + '"'));
-}
-
-export function htmlFrom(text) {
-  const s = String(text || '');
-  const fence = s.match(/```html\s*([\s\S]*?)```/i);
-  const raw = fence ? fence[1] : s;
-  const doc = raw.match(/<!doctype html[\s\S]*<\/html>/i);
-  return doc ? doc[0].trim() : '';
-}
-
-export function pageOk(html) {
-  const h = String(html || '');
-  if (!/^<!doctype html/i.test(h) || h.length > 80000) return false;
-  if (/<script\b/i.test(h) || /innerHTML/.test(h)) return false;
-  const need = ['Start a job', 'backup', 'Jules', 'Devin', 'Replit', 'Bolt', 'Hugging Face', 'Groq', 'Pollinations', 'Paste this invite'];
-  return need.every((w) => h.includes(w));
-}
