@@ -1,0 +1,27 @@
+{
+ "at": "2026-11-10T04:19:37.452Z",
+ "sha": "fa0bc1fa8b71883250f0a6929d3554b9ccdb4baf",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42752228550",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: opening the card does not read the old score file",
+  "void asks batch 4: the log page shows the newest 5 of each long list and folds the rest behind \"show all N\" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, every block closed but the lead, a bar per skill family with one weakest, and each growth claim carries a source line",
+  "showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its \"grab one\" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is a modal layer (dimmed stage, role dialog, aria-modal) that keeps focus and Esc closes; at 1280x640 with a field-mind card up, the panel clears the card and the ask bar; field-mind headers have matching insets (within 2px), the F-id tags stay whole and never leave one alone on a line, and every control sits inside its card at 1280 and 390 wide"
+ ],
+ "touched": [
+  ".claude/skills/void-run/SKILL.md",
+  "AGENTS.md",
+  "docs/RULES.md",
+  "docs/playbooks/clean-merge.md",
+  "docs/playbooks/probe-and-fix.md",
+  "tools/automerge.mjs",
+  "tools/checks.d/no-approval-phrases.chk",
+  "tools/merge-policy.test.mjs",
+  "tools/no-approval-gate.mjs",
+  "tools/no-approval-gate.test.mjs"
+ ],
+ "shards": [
+  1,
+  4
+ ]
+}
