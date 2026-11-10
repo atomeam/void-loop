@@ -12,7 +12,7 @@ export function isOwnershipPack(text) {
 }
 
 export function subjectOf(text) {
-  const m = String(text || '').match(/\b(?:for|of|about|:)\s+(?:the\s+|my\s+|a\s+)?(.+)/i);
+  const m = String(text || '').match(/\b(?:for|of|about|:)\s+(.+)/i);
   const s = m ? m[1].trim().replace(/[?!.]+$/, '') : '';
   return s.length >= 2 ? s.slice(0, 160) : 'this client or process';
 }
