@@ -23,11 +23,12 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { W, H, SAFE, gate } from './video-gate.mjs';
 import { wrap, padExpr, BED_LUFS } from './shorts.mjs';
+import { CTA as SHOW_CTA, CTA_SAY, VOICE_AF } from '../void-live-deploy/lib/show-pipe.js';
 
 export const SITE = 'https://a-to-mind.com/';
 export const FPS = 25, CSS_W = 432, CSS_H = 768, SCALE = W / CSS_W;
 export const MAX_S = 19.5, MIN_S = 7;
-const CTA = 'Make any video free\na-to-mind.com';
+export const CTA = SHOW_CTA;
 
 /** a topic's name as a film says it: its Wikipedia title when it has one, at most 40 characters at a word boundary. Pure. */
 export function nameOf(t) {
@@ -148,10 +149,12 @@ export const lineChars = (size) => Math.floor(((SAFE.x1 - SAFE.x0) * 0.86) / (si
 
 /** the timeline: each beat's start and length in seconds, from its voice length when voiced (secs[i]) or its words, then the hook
  *  card first and the call to action last, trimmed to MAX_S by dropping middle beats. Pure. */
-export function timeline(script, secs = []) {
-  const len = (b, i) => Math.max(1.9, Math.min(4.2, secs[i] != null ? secs[i] + 0.45 : 1.3 + String(b.text).split(/\s+/).length * 0.2));
+export function timeline(script, secs = [], extra = {}) {
+  // a measured voice sets the beat. A guess still has a ceiling. The hook and the close move with their own audio.
+  const len = (b, i) => secs[i] != null ? Math.max(1.6, secs[i] + 0.45) : Math.max(1.9, Math.min(4.2, 1.3 + String(b.text).split(/\s+/).length * 0.2));
   let beats = script.beats.map((b, i) => ({ ...b, i, d: +len(b, i).toFixed(2) }));
-  const hookD = 1.8, ctaD = 2.2, sum = () => hookD + ctaD + beats.reduce((a, b) => a + b.d, 0);
+  const span = (audio, fallback) => +(audio != null && isFinite(+audio) ? Math.max(1.5, +audio + 0.4) : fallback).toFixed(2);
+  const hookD = span(extra.hook, 1.8), ctaD = span(extra.cta, 2.2), sum = () => hookD + ctaD + beats.reduce((a, b) => a + b.d, 0);
   while (sum() > MAX_S && beats.length > 2) beats.splice(Math.floor(beats.length / 2), 1);
   if (script.format === 'lyric') beats = beats.map((b) => ({ ...b, d: Math.max(2.4, Math.round(b.d / 1.2) * 1.2) })); // on the bar (1.2 s)
   while (sum() > MAX_S && beats.length > 2) beats.splice(Math.floor(beats.length / 2), 1);
@@ -171,12 +174,12 @@ export function linesOf(b) {
 // window.seek(t) draws the frame at t; nothing moves on its own, so every frame is the same on every machine.
 export function pageHtml(script, tl) {
   const th = THEMES[script.theme] || THEMES.explainer, safe = { x0: SAFE.x0 / SCALE, x1: SAFE.x1 / SCALE, y0: SAFE.y0 / SCALE, y1: SAFE.y1 / SCALE };
-  const beats = tl.beats.map((b) => ({ ...b, ...linesOf(b) }));
+  const beats = tl.beats.map((b) => { const L = linesOf(b); return { ...b, ...L, raw: String(b.text) }; });
   return `<!doctype html><html><head><meta charset="utf-8"><style>
 html,body{margin:0;width:${CSS_W}px;height:${CSS_H}px;overflow:hidden;background:${th.bg[0]};font-family:'${th.font}',sans-serif;font-weight:bold}
 canvas{position:absolute;inset:0;width:${CSS_W}px;height:${CSS_H}px}
 .b{position:absolute;left:${safe.x0}px;width:${safe.x1 - safe.x0}px;display:flex;justify-content:center;opacity:0}
-.b span{display:inline-block;box-sizing:border-box;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;text-align:center;color:#fff;background:${th.box};padding:10px 14px;border-radius:14px;line-height:1.22}
+.b span{display:inline-block;box-sizing:border-box;max-width:100%;white-space:pre-wrap;overflow-wrap:normal;word-break:keep-all;text-align:center;color:#fff;background:${th.box};padding:10px 14px;border-radius:14px;line-height:1.22}
 .kicker span{background:${th.accent};color:#fff;letter-spacing:2px}
 .card span{color:${th.accent};background:${th.box};letter-spacing:1px}
 .stars span{color:${th.accent}}
@@ -189,17 +192,17 @@ const B=${JSON.stringify(beats)},SAFE=${JSON.stringify(safe)},BG=${JSON.stringif
 const s=document.getElementById('s'),c=document.getElementById('c').getContext('2d');
 for(const b of B){const d=document.createElement('div');d.className='b '+b.kind;const sp=document.createElement('span');sp.textContent=b.text;sp.style.fontSize=(b.size/S)+'px';d.appendChild(sp);s.appendChild(d);b.el=d;}
 // bubbles stack: the newest at the bottom of the chat, the older ones pushed up; at most 3 shown
-const place=(t)=>{const live=B.filter(b=>t>=b.from&&t<b.to);const chat=B.filter(b=>/bubble/.test(b.kind)&&t>=b.from&&t<B[B.length-1].from).slice(-3);
- for(const b of B){const on=live.includes(b)||chat.includes(b);const a=on?Math.min(1,(t-b.from)/0.25):0;b.el.style.opacity=a;b.el.style.transform='scale('+(0.92+0.08*a)+')';}
- let y=SAFE.y1-8;for(const b of chat.slice().reverse()){y-=b.el.offsetHeight+10;b.el.style.top=y+'px';}
- for(const b of live.filter(b=>!/bubble/.test(b.kind))){const h=b.el.offsetHeight;b.el.style.top=(chat.length?SAFE.y0+6:Math.max(SAFE.y0+6,(SAFE.y0+SAFE.y1)/2-h/2-(b.kind==='kicker'?120:0)))+'px';}};
+const place=(t)=>{let cur=null;for(const b of B){if(t>=b.from&&t<b.to)cur=b;}
+ for(const b of B){const on=b===cur;const a=on?Math.min(1,(t-b.from)/0.18):0;b.el.style.opacity=a;b.el.style.transform='translateY('+(on?(1-a)*18:24)+'px) scale('+(on?0.94+0.06*a:0.9)+')';
+  if(on){const h=b.el.offsetHeight;b.el.style.top=Math.max(SAFE.y0+8,(SAFE.y0+SAFE.y1)/2-h/2)+'px';}}};
 const draw=(t)=>{const g=c.createLinearGradient(0,0,${W},${H});g.addColorStop(0,BG[0]);g.addColorStop(0.5+0.3*Math.sin(t*0.6),BG[1]);g.addColorStop(1,BG[2]);c.fillStyle=g;c.fillRect(0,0,${W},${H});
  for(let i=0;i<7;i++){const x=${W}*(0.5+0.45*Math.sin(t*0.35+i*1.9)),y=${H}*(0.5+0.45*Math.cos(t*0.27+i*2.3)),r=260+120*Math.sin(t*0.5+i);const rg=c.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,'rgba(255,255,255,0.16)');rg.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=rg;c.fillRect(0,0,${W},${H});}
- c.fillStyle='rgba(255,255,255,0.35)';for(let i=0;i<70;i++){const x=((i*137.5+t*(20+i%5*9))%${W}),y=((i*263.1+t*(35+i%7*6))%${H});c.fillRect(x,y,3,3);}};
+ c.fillStyle='rgba(255,255,255,0.35)';for(let i=0;i<70;i++){const x=((i*137.5+t*(20+i%5*9))%${W}),y=((i*263.1+t*(35+i%7*6))%${H});c.fillRect(x,y,3,3);}
+ const bar=(t*220)%${H};c.fillStyle='rgba(255,255,255,0.14)';c.fillRect(0,bar,${W},18);};
 window.seek=(t)=>{draw(t);place(t);};
 // each beat's boxes as the film shows them at their fullest, in output pixels (the gate checks these)
 window.measure=()=>{const out=[];for(const b of B){const mid=Math.min(b.to-0.01,b.from+0.6);window.seek(mid);const r=b.el.firstChild.getBoundingClientRect();
- out.push({text:b.text,size:b.size,x:Math.round(r.left*S),y:Math.round(r.top*S),w:Math.round(r.width*S),h:Math.round(r.height*S),box:true,from:b.from,to:b.to,rect:true});}return out;};
+ out.push({text:b.text,raw:b.raw||b.text,size:b.size,x:Math.round(r.left*S),y:Math.round(r.top*S),w:Math.round(r.width*S),h:Math.round(r.height*S),box:true,from:b.from,to:b.to,rect:true});}return out;};
 window.seek(0);
 </script></body></html>`;
 }
@@ -218,15 +221,19 @@ export function voiceCues(tl, wavs) {
 const run = (cmd, args, opts = {}) => spawnSync(cmd, args, { encoding: 'utf8', maxBuffer: 64 << 20, ...opts });
 const secsOf = (f) => Number(run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).stdout.trim()) || 0;
 /** read one line aloud to a wav: Piper when PIPER_VOICE names a voice model, else espeak-ng, else null */
-function say(text, file) {
-  const voice = process.env.PIPER_VOICE;
+function say(text, file, who = 'Verse') {
+  const voice = who === 'Critic' && process.env.PIPER_CRITIC && fs.existsSync(process.env.PIPER_CRITIC) ? process.env.PIPER_CRITIC : process.env.PIPER_VOICE;
+  let raw = null;
   if (voice && fs.existsSync(voice)) {
     const [cmd, ...args] = (process.env.PIPER || 'python3 -m piper').split(/\s+/).filter(Boolean);
-    const r = run(cmd, [...args, '-m', voice, '-f', file], { input: text });
-    if (r.status === 0 && fs.existsSync(file)) return file;
+    const r = run(cmd, [...args, '-m', voice, '--length-scale', who === 'Critic' ? '1.12' : '1.05', '-f', file], { input: text });
+    if (r.status === 0 && fs.existsSync(file)) raw = file;
   }
-  if (run('which', ['espeak-ng']).status === 0 && run('espeak-ng', ['-v', 'en-us+m3', '-s', '160', '-w', file, text]).status === 0) return file;
-  return null;
+  if (!raw && run('which', ['espeak-ng']).status === 0 && run('espeak-ng', ['-v', who === 'Critic' ? 'en-us+m1' : 'en-us+f3', '-s', who === 'Critic' ? '140' : '165', '-w', file, text]).status === 0) raw = file;
+  if (!raw) return null;
+  const filtered = file.replace(/\.wav$/, '.fx.wav');
+  const fx = run('ffmpeg', ['-y', '-loglevel', 'error', '-i', raw, '-af', VOICE_AF[who] || VOICE_AF.Verse, filtered]);
+  return fx.status === 0 && fs.existsSync(filtered) ? filtered : raw;
 }
 // the beat for the lyric video: an 8-step pentatonic pluck, 0.15 s a step (a bar of 1.2 s), and a soft kick on every other step
 const beatExpr = () => { const notes = [261.63, 329.63, 392, 440, 392, 329.63, 293.66, 392], step = 0.15, bar = notes.length * step;
@@ -238,11 +245,11 @@ export async function render(script, out, { filmId, topic } = {}) {
   fs.mkdirSync(out, { recursive: true });
   const dir = fs.mkdtempSync(path.join(path.resolve(out), '.take-'));
   // the voice first: its lengths set the timeline
-  const lines = [script.hook, ...script.beats.map((b) => b.voice || String(b.text).replace(/\n/g, '. ')), 'Make any video free at a to mind dot com.'];
-  const wavs = script.voiced ? lines.map((l, i) => say(l, path.join(dir, 'v' + i + '.wav'))) : [];
+  const lines = [{ text: script.hook, who: 'Verse' }, ...script.beats.map((b) => ({ text: b.voice || String(b.text).replace(/\n/g, '. '), who: b.who || 'Verse' })), { text: CTA_SAY, who: 'Verse' }];
+  const wavs = script.voiced ? lines.map((l, i) => say(l.text, path.join(dir, 'v' + i + '.wav'), l.who)) : [];
   const voiced = script.voiced && wavs.length && wavs.every(Boolean);
-  const tl = timeline(script, voiced ? wavs.slice(1, -1).map(secsOf) : []);
-  if (voiced) { tl.beats[0].to = Math.max(tl.beats[0].to, +(secsOf(wavs[0]) + 0.3).toFixed(2)); }
+  const beatSecs = voiced ? wavs.slice(1, -1).map(secsOf) : [];
+  const tl = timeline(script, beatSecs, voiced ? { hook: secsOf(wavs[0]), cta: secsOf(wavs[wavs.length - 1]) } : {});
   const { chromium } = await import('playwright-core');
   const browser = await chromium.launch({ executablePath: process.env.CHROME || undefined });
   const page = await browser.newPage({ viewport: { width: CSS_W, height: CSS_H }, deviceScaleFactor: SCALE });
@@ -262,8 +269,10 @@ export async function render(script, out, { filmId, topic } = {}) {
     : `aevalsrc='${beatExpr()}':s=48000:d=${T},afade=t=in:d=0.3,afade=t=out:st=${(T - 1.0).toFixed(2)}:d=1.0,aformat=channel_layouts=stereo,loudnorm=I=-20:TP=-3:LRA=7`;
   const args = ['-y', '-hide_banner', '-loglevel', 'error', '-framerate', String(FPS), '-i', path.join(dir, 'f%05d.jpg'), '-f', 'lavfi', '-i', bed];
   const vf = `scale=${W}:${H}:flags=lanczos,setsar=1,fps=30`;
+  const speech = [];
   if (voiced) {
     const cues = voiceCues(tl, wavs);
+    for (const c of cues) { const from = c.ms / 1000, dur = secsOf(c.wav); speech.push({ from: +from.toFixed(3), to: +(from + dur).toFixed(3) }); }
     cues.forEach((c) => args.push('-i', c.wav));
     const parts = cues.map((c, i) => `[${i + 2}:a]aresample=48000,aformat=channel_layouts=stereo,adelay=${c.ms}|${c.ms}[v${i}]`);
     const fc = [`[0:v]${vf}[v]`, ...parts, `${cues.map((_, i) => `[v${i}]`).join('')}amix=inputs=${cues.length}:normalize=0,apad,atrim=duration=${T},asplit[vo][sc]`,
@@ -274,13 +283,12 @@ export async function render(script, out, { filmId, topic } = {}) {
   const r = run('ffmpeg', args);
   if (r.status !== 0) throw new Error('ffmpeg: ' + String(r.stderr).slice(-800));
   const src = (topic && topic.page) || (topic && topic.url) || '';
-  const link = SITE + 'c/' + filmId + '?p=films&q=' + encodeURIComponent('make a ' + FORMATS[script.format].label.toLowerCase() + ' about ' + script.name);
   const facts = script.beats.filter((b) => b.kind === 'fact').length;
   const meta = { id: filmId, filmId, video: path.basename(file), format: script.format, label: script.label, topic: script.topic, hook: script.hook, voice: !!voiced, music: mood || 'beat',
-    captions, timing: { total: T, beats: tl.beats.map((b) => ({ kind: b.kind, from: b.from, to: b.to })) },
+    captions, speech, timing: { total: T, beats: tl.beats.map((b) => ({ kind: b.kind, from: b.from, to: b.to })) },
     footage: { kind: 'studio', frames: n, fps: FPS, source: src, trend: topic ? { source: topic.source, url: topic.url } : null },
     title: (script.hook + ' #Shorts').slice(0, 100),
-    description: (script.label + ' about ' + script.name + ', trending today' + (topic && topic.source ? ' on ' + topic.source : '') + '.' + (facts && src ? '\n\nFacts from ' + src : '') + '\n\nMade by Verse. Make any kind of video yourself, free: ' + link + '\n\n#Shorts').slice(0, 4500),
+    description: (script.label + ' about ' + script.name + '.' + (facts && src ? '\n\nFacts from ' + src : '') + '\n\nMade by Verse. Ask Verse for anything: ' + SITE + '\n\n#Shorts').slice(0, 4500),
     tags: ['Shorts', script.label, script.name, 'trending', 'parody', 'Verse'].join(', ') };
   meta.gate = gate(file, meta);
   fs.writeFileSync(path.join(out, filmId + '.json'), JSON.stringify(meta, null, 2) + '\n');
