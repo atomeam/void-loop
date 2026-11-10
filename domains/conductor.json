@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T00:52:01.138Z",
+ "updated": "2026-11-10T01:01:26.901Z",
  "last24h": {
   "ticks": 148,
-  "started": 96,
+  "started": 95,
   "requeued": 2,
   "setAside": 2,
   "probes": 15,
@@ -117,7 +117,7 @@
   "mvpuq9g6": 1794270795916,
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
-  "mvvjzso8": 1794206945891,
+  "mvvjzso8": 1794272486901,
   "mw8wj9t3": 1794207506673,
   "mw8wjbjy": 1794209190487,
   "mw8wjcf5": 1794210317344,
@@ -173,7 +173,8 @@
   "mw9vvgpo": 1794267971017,
   "mw9vvhf3": 1794268534649,
   "mw9y7ng7": 1794270795916,
-  "mw9y7nzy": 1794271921138
+  "mw9y7nzy": 1794271921138,
+  "mw9y7oji": 1794272486901
  },
  "sweptAt": 1794270232536,
  "blueprintsAt": 1794270232536,
@@ -261,46 +262,6 @@
   "probe:how-to-say-hello-in-leet"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T01:01:26.054Z",
-   "open": 271,
-   "started": [
-    {
-     "id": "mvu167w7",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 110
-    },
-    {
-     "id": "mw1ee0lk",
-     "kind": "visit",
-     "wf": "verse-job.yml",
-     "score": 102
-    },
-    {
-     "id": "mveb8svc",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 90
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 5,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T01:10:49.463Z",
    "error": "the queue answered 404 (); nothing started this tick",
@@ -3379,6 +3340,40 @@
     },
     {
      "id": "mw9y7nzy",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 283,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T01:01:26.901Z",
+   "open": 299,
+   "started": [
+    {
+     "id": "mvvjzso8",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 80
+    },
+    {
+     "id": "mw9y7oji",
      "kind": "probe",
      "wf": "propose-fix.yml",
      "score": 40
