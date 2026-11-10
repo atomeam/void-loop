@@ -11,7 +11,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
 test('the nav names the shell pages, and the current page is the longest match', () => {
-  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
+  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/films/', '/podcast/', '/studio/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
   assert.equal(currentNav('/scoreboard/').label, 'Star Chart');
   assert.equal(currentNav('/limits/').label, 'Event Horizon');
   assert.equal(currentNav('/').label, 'Ask');

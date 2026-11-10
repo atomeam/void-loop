@@ -69,26 +69,18 @@ jobs:
           for v in lessac ryan; do for ext in onnx onnx.json; do
             curl -fsSL -o "en_US-$v-medium.$ext" "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/$v/medium/en_US-$v-medium.$ext" || true
           done; done
-      - name: What people watch today (tools/trends.mjs)
-        run: |
-          node tools/trends.mjs > trends.json
-          jq -r '"trend topics: \(.topics|length), failed: \(.failed|join("; "))"' trends.json | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: Judge the last films, plan three new ones (tools/shorts-loop.mjs)
-        env:
-          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
-        run: |
-          node tools/shorts-loop.mjs judge | tee -a "$GITHUB_STEP_SUMMARY"
-          s=0; node tools/shorts-loop.mjs plan --trends trends.json > trial.json 2> plan.txt || s=$?; cat plan.txt | tee -a "$GITHUB_STEP_SUMMARY"; exit $s
-      - name: Film, render and gate the three films (tools/film-studio.mjs)
-        continue-on-error: true
+      - name: Write two Shorts and film them (tools/show-pipe.mjs)
         env:
           PIPER: python -m piper
           PIPER_VOICE: /home/runner/piper-voices/en_US-lessac-medium.onnx
+          PIPER_CRITIC: /home/runner/piper-voices/en_US-ryan-medium.onnx
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           [ -f "$PIPER_VOICE" ] || unset PIPER_VOICE
-          for i in 0 1 2; do
-            node tools/film-studio.mjs render --trial trial.json --i "$i" --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
-          done
+          [ -f "$PIPER_CRITIC" ] || unset PIPER_CRITIC
+          node tools/show-pipe.mjs shorts --out media/shorts 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          cp -f media/shorts/*.mp4 media/shorts/*.jpg void-live-deploy/studio/ || true
           for m in media/shorts/*.json; do node tools/shorts-loop.mjs record "$m"; done
       - name: Put each passed film on /films/
         if: ${{ !inputs.dry }}
@@ -138,7 +130,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add domains/shorts.loop.json
+          git add domains/shorts.loop.json void-live-deploy/studio/shows.json void-live-deploy/studio/scores.json void-live-deploy/studio/*.mp4 void-live-deploy/studio/*.jpg
           git diff --cached --quiet && { echo "the loop log did not change"; exit 0; }
           git config user.name "Verse"; git config user.email "verse@a-to-mind.com"
           git commit -q -m "Shorts loop: today's trial and verdicts"

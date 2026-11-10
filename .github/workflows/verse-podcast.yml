@@ -78,12 +78,14 @@ jobs:
       - name: Make the episode
         env:
           PIPER: python -m piper
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: node tools/podcast.mjs --make --days 1 --voices ~/piper-voices ${{ inputs.force && '--force' || '' }} | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Put it on main
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add void-live-deploy/podcast
+          git add void-live-deploy/podcast void-live-deploy/studio/scores.json
           git diff --cached --quiet && { echo "no new episode"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
