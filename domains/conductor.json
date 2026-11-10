@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T14:30:33.566Z",
+ "updated": "2026-11-10T14:39:53.940Z",
  "last24h": {
   "ticks": 147,
-  "started": 82,
+  "started": 81,
   "requeued": 1,
   "setAside": 2,
   "probes": 8,
@@ -117,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9cebzl": 1794234667948,
   "mw9cecyj": 1794235252971,
   "mw9ceds5": 1794236764431,
   "mw9emynl": 1794237965154,
@@ -162,8 +161,8 @@
   "mwaovifa": 1794316495548,
   "mwaovj0f": 1794317091658
  },
- "sweptAt": 1794317650820,
- "blueprintsAt": 1794317650820,
+ "sweptAt": 1794321593940,
+ "blueprintsAt": 1794321593940,
  "visitorAt": "2026-11-10T13:26:28Z",
  "visitorFiled": [
   "versus:coloradoan.com",
@@ -248,34 +247,6 @@
   "review:2655"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T14:31:07.948Z",
-   "open": 279,
-   "started": [
-    {
-     "id": "mw9cebzl",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": true,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 270,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T14:40:52.971Z",
    "open": 278,
@@ -3903,6 +3874,27 @@
    ],
    "daily": [],
    "sweep": false,
+   "blueprints": 0,
+   "held": 317,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T14:39:53.940Z",
+   "open": 323,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
    "blueprints": 0,
    "held": 317,
    "warnings": 1
