@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-// The free-agent clock. A no-key source gets one short piece per call, then the pieces are checked and stitched.
-//   node tools/recruit.mjs --once [--state <file>]
+// The free-agent clock. One short piece per call, then check and stitch. node tools/recruit.mjs --once
 // Prints status names only. Never prints a key, a token, or a join code.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
