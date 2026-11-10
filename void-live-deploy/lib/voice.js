@@ -8,7 +8,7 @@ import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
 import { sameAsk as sameAskCard, dupAsk, sameSites, sitesOf, uncite } from './ask-same.js';
-import { weakestFamily, wrongWeakest, weakestSentence } from './weakest.js';
+import { weakestFamily } from './weakest.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -352,14 +352,15 @@ export async function readVoice(env) {
 }
 
 // a line for the answer engine's self facts, so "what feels weak about you?" is answered from what Verse actually said
+const TALLY = /\b(assimilat\w*|famil(?:y|ies)|proven|percentages?|\d+\s+of\s+\d+)\b/i;
 export function voiceFacts(entries, fam = null) {
-  let e = (entries || [])[0];
+  const e = (entries || [])[0];
   if (!e) return '';
-  // a readout that named the wrong family as least proven is not repeated to the next answer (owner's review, 2026-10-30)
-  const ww = wrongWeakest(e.weakest, fam); if (ww) e = { ...e, weakest: weakestSentence(ww.is) };
-  const wt = wrongWeakest(e.thoughts, fam); if (wt) e = { ...e, thoughts: String(e.thoughts).replace(wt.sentence, weakestSentence(wt.is)) };
-  const asks = currentAsks(entries, 3).map((a) => a.ask).join('; ');
-  return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + [e.thoughts, e.better, e.weakest].filter(Boolean).join(' ')
+  const keep = (s) => { const t = String(s || '').trim(); return t && !TALLY.test(t) ? t : ''; };
+  const body = [keep(e.thoughts), keep(e.better), keep(e.weakest)].filter(Boolean).join(' ');
+  const asks = currentAsks(entries, 3).map((a) => a.ask).filter((a) => !TALLY.test(a)).join('; ');
+  if (!body && !asks) return '';
+  return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + body
     + (asks ? ' My current asks: ' + asks : '');
 }
 

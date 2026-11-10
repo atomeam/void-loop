@@ -25,7 +25,7 @@ export function checklistFor(subject) {
     items: [
       'Status: a live "system status for ' + name + '" card the client can summon',
       'Docs: what runs, what the client owns, what Verse owns (from the heavy-lift map)',
-      'Automations: only those already behind the confirm line; list their approve cards',
+      'Automations: only those already behind the confirm line; list their approve cards (e.g. approve-card)',
       'Monitoring: the monitors from the monitor pack, with how the client is told',
       'Handoff package: the delivery pack or client handoff card for this system',
       'Next: the first system slice already shipped and the remaining open steps'

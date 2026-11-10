@@ -10,9 +10,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { wrongWeakest, weakestSentence } from '../../lib/weakest.js';
-import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, builtAsks, familyFacts, readReplies, replyFacts, askId, targetFacts, holdAsks } from '../../lib/voice.js';
-import { tower, towerArgs } from '../../lib/tower.js';
+import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, builtAsks, readReplies, replyFacts, askId, holdAsks } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
@@ -55,16 +53,7 @@ export async function onRequestPost({ request, env }) {
   const ledger = await asset('/void.growth.json'), answered = await asset('/void.asks.json');
   if (kind === 'daily') { const week = weekFacts(ledger); if (week) pieces.push(['void.growth.json (the last 7 days)', week]); }
   const follow = ledger ? followFacts(followThrough(before, ledger, answered && answered.links), askRecord(before, ledger, answered)) : ''; if (follow) pieces.push(['void.growth.json and void.asks.json (what became of its asks)', follow]);
-  // the site Versus is fighting goes first, so the asks serve beating it (lib/voice.js targetFacts); no tower files leave it out
-  try { const inv = await asset('/lap.items.json'); const [ev, fr, rk, sz, tg, ft, gn, pa] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json', '/tower.features.json', '/tower.gone.json', '/parity.json'].map(asset));
-    const tf = ev ? targetFacts(tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft, gn, pa })), tg) : '';
-    // the asks held behind it (void.asks.json `held`) are named, so the reflection does not ask for them again while the target stands
-    const hd = tf ? (answered && Array.isArray(answered.held) ? answered.held : []).filter((h) => h && h.until === tg.id && typeof h.words === 'string').map((h) => '"' + h.words + '"') : [];
-    if (tf) pieces.unshift(['tower.target.json, void.asks.json held and the tower ranking (lib/tower.js)', tf + (hd.length ? ' These asks wait until ' + tg.id + ' is beaten, so do not ask for them now: ' + hd.join(', ') + '.' : '')]); } catch (_) { /* no tower */ }
-  // the routed count rides with the family facts: a family total counts skill files, and some of them answer no ask (owner's card,
-  // 2026-10-30: it said 386 active skills when the router serves 332)
-  const idxJson = await asset('/skills/index.json');
-  const famJson = facts.families || await asset('/skills/families.json'), fams = familyFacts(famJson, undefined, Array.isArray(idxJson) ? idxJson.length : 0); if (fams) pieces.push(['skills/families.json', fams]);
+  // tallies are not given to the model: the card says what was built and which page is next, in plain words
   // what its owner told it when it spoke before (functions/api/voice-reply.js): its memory of the conversation, corrections first
   const told = replyFacts(await readReplies(env)); if (told) pieces.push(['the owner\'s replies and corrections (voice-replies)', told]);
   const { text: context, sources } = taggedFacts(pieces);
@@ -92,10 +81,6 @@ export async function onRequestPost({ request, env }) {
     }
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Verse could not answer just now', { status: 503 });
-  // the least proven family is the one the bars mark, never the model's guess (owner's review, 2026-10-30: the readout said Games, 34 of 37,
-  // the bars Words and the world, 38 of 42): a weakest that names the wrong family is replaced by the bars' sentence, its words kept beside it
-  const ww = kind === 'daily' && wrongWeakest(said.weakest, famJson);
-  if (ww) said = { ...said, weakest: weakestSentence(ww.is), weakest_said: said.weakest };
   const at = new Date().toISOString();
   const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), given: String(context).slice(0, 1800), sources, by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }
