@@ -6878,7 +6878,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q') || sp0.get('ask'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
+      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 4000); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
@@ -6899,7 +6899,7 @@ say('nothing selected to remove');
       if (sp.has('share_text') || sp.has('share_url') || sp.has('share_title')) {
         const st = (sp.get('share_text') || '').trim(), su = (sp.get('share_url') || '').trim(), sti = (sp.get('share_title') || '').trim();
         const link = /^https?:\/\//i.test(su) ? su : ((st.match(/https?:\/\/\S+/i) || [])[0] || '');
-        const ask = (link || st || sti).slice(0, 500);
+        const ask = (link || st || sti).slice(0, 4000);
         history.replaceState(null, '', location.pathname);
         if (ask) skillsReady.then(() => handle(ask));
       } else if (sp.get('source') === 'app') history.replaceState(null, '', location.pathname);
@@ -7063,7 +7063,7 @@ say('nothing selected to remove');
     // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
     async function agentAsk(ask) { agentRuns++; try { return await agentAskRun(ask); } finally { agentRuns--; } }
     async function agentAskRun(ask) {
-      ask = String(ask || '').trim().slice(0, 500);
+      ask = String(ask || '').trim().slice(0, 4000);
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the person at the screen, asked by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
