@@ -13,8 +13,8 @@
  "smoke_at": "2026-11-10",
  "bench_at": "2026-11-09",
  "totals": {
-  "experiment": 1,
-  "tested": 1,
+  "experiment": 0,
+  "tested": 2,
   "checked": 4,
   "proven": 417
  },
@@ -3633,8 +3633,8 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 1,
-    "tested": 1,
+    "experiment": 0,
+    "tested": 2,
     "checked": 1,
     "proven": 66
    },
@@ -4268,15 +4268,18 @@
     },
     {
      "name": "ownership-pack",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "smoke": [
       "\"what does Verse own for the onboarding flow\" -> heavy-lift-map",
       "\"ownership map for weekly reports\" -> ownership-map",
       "re-test: not in skills/index.json"
      ],
-     "streak": 0,
-     "since": "2026-11-10"
+     "last_tested": "2026-11-09",
+     "last_tested_by": "the benchmark",
+     "success_rate": 1,
+     "promoted": "2026-11-10",
+     "streak": 0
     }
    ]
   },
