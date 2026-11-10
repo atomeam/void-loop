@@ -1,10 +1,10 @@
 {
- "at": "2026-11-09T17:04:47.619Z",
- "score": 87,
+ "at": "2026-11-10T15:16:39.933Z",
+ "score": 91,
  "parts": {
   "self": 98,
-  "asks": 42,
-  "friction": 97,
+  "asks": 61,
+  "friction": 96,
   "bench": 99,
   "probes": 100
  },
@@ -31,7 +31,7 @@
   },
   {
    "id": "numbers",
-   "health": 90
+   "health": 87
   },
   {
    "id": "safety-play",
@@ -39,15 +39,15 @@
   },
   {
    "id": "self",
-   "health": 100
+   "health": 94
   },
   {
    "id": "sky",
-   "health": 95
+   "health": 100
   },
   {
    "id": "stage",
-   "health": 100
+   "health": 99
   },
   {
    "id": "time",
@@ -59,28 +59,28 @@
   }
  ],
  "facts": {
-  "week": 188,
+  "week": 202,
   "owner": 4,
-  "askedBuilt": 32,
+  "askedBuilt": 33,
   "medianLagDays": 2.1,
-  "open": 4,
-  "oldestOpenDays": 3.3,
-  "skills": 414,
-  "failing": 13,
-  "unsure": 0,
-  "benchScore": 3377,
-  "benchTotal": 3407,
-  "probeFixes": 10
+  "open": 6,
+  "oldestOpenDays": 0.9,
+  "skills": 423,
+  "failing": 14,
+  "unsure": 8,
+  "benchScore": 3378,
+  "benchTotal": 3410,
+  "probeFixes": 15
  },
  "trend": {
-  "score": 87,
-  "day": -1,
-  "week": 8,
+  "score": 91,
+  "day": 4,
+  "week": 14,
   "weakest": "asks",
-  "at": "2026-11-09T17:04:47.619Z",
-  "frictionWeek": -1
+  "at": "2026-11-10T15:16:39.933Z",
+  "frictionWeek": -10
  },
- "summary": "better: 87 of 100 (down 1 since yesterday) (up 8 on the week); weakest: asks",
+ "summary": "better: 91 of 100 (up 4 since yesterday) (up 14 on the week); weakest: asks",
  "means": {
   "self": "the share of this week's ledger lines that do not cite the owner (Verse driving its own changes)",
   "asks": "how fast Verse's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",

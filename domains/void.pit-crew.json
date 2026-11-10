@@ -1,12 +1,22 @@
 {
-  "at": "2026-11-09T17:04:47.697Z",
+  "at": "2026-11-10T15:16:40.224Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261106-2342-2",
-      "ask": "Implement the URL hash serialization logic for ndscalc.ru.",
-      "target": "voice:ask-20261106-2342-2"
+      "id": "ask-20261110-0200-2",
+      "ask": "Give the two longest browser checks their own runner.",
+      "target": "voice:ask-20261110-0200-2"
+    },
+    {
+      "id": "ask-20261110-0200-3",
+      "ask": "Fix the podcasts exam to resolve failures in audio and episode retrieval.",
+      "target": "voice:ask-20261110-0200-3"
+    },
+    {
+      "id": "ask-20261109-1701-2",
+      "ask": "Fix the sports exam scores for MLB, Premier League, and Serie A.",
+      "target": "voice:ask-20261109-1701-2"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
