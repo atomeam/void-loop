@@ -1778,6 +1778,20 @@
    "weight": 1227250,
    "at": "2026-10-30"
   },
+  "cavea.plus": {
+   "bytes": 5247209,
+   "controls": 48,
+   "scripts": 9,
+   "styles": 3,
+   "nodes": 33,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 662,
+   "shell": "none",
+   "weight": 5265539,
+   "at": "2026-11-10"
+  },
   "cbssports.com": {
    "bytes": 2602653,
    "controls": 643,
@@ -5552,7 +5566,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-09"
+   "at": "2026-11-10"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6819,7 +6833,7 @@
    "shell": "none",
    "text": 14,
    "weight": 15,
-   "at": "2026-11-09"
+   "at": "2026-11-10"
   },
   "icloud.com": {
    "bytes": 3791879,

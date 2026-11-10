@@ -5573,16 +5573,13 @@
       ],
       "title": "Flights from St. Barthélemy",
       "features": [
-       "section my airline lists",
-       "section airlines flying",
-       "section all airlines",
-       "section aircraft flying",
-       "section all aircraft",
+       "grid grid",
        "section flight connections",
        "section select departure airport",
        "section select destination",
        "section on this page",
        "section all airports in",
+       "section airlines flying",
        "section information on points miles",
        "section which places within N miles can i reach",
        "section destinations by flight duration",
@@ -5634,8 +5631,13 @@
        "section prices",
        "section alliances",
        "section airlines",
+       "section my airline lists",
+       "section airlines flying direction",
+       "section all airlines",
        "section classes",
        "section aircraft",
+       "section aircrafts flying direction",
+       "section all aircraft",
        "grid all aircraft",
        "section alternative options",
        "section adblocker detected",
@@ -8052,6 +8054,7 @@
        "like:/flights-from-indonesia-id",
        "like:/flights-from-papua-new-guinea-pg",
        "like:/flights-from-ghana-gh",
+       "page:/flights-from-st-barth%C3%A9lemy-bl",
        "page:/flights-from-ethiopia-et"
       ],
       "verse": "has",
@@ -8201,7 +8204,6 @@
        "like:/flights-from-indonesia-id",
        "like:/flights-from-papua-new-guinea-pg",
        "like:/flights-from-ghana-gh",
-       "page:/flights-from-st-barth%C3%A9lemy-bl",
        "page:/flights-from-ethiopia-et"
       ],
       "verse": "missing",
@@ -15054,6 +15056,34 @@
        "martin",
        "barth",
        "lemy"
+      ]
+     },
+     {
+      "key": "section airlines flying direction",
+      "name": "airlines_flying direction_. Barthélemy",
+      "kind": "section",
+      "templates": [
+       "page:/flights-from-st-barth%C3%A9lemy-bl"
+      ],
+      "verse": "has",
+      "found": [
+       "airline",
+       "direction",
+       "barth"
+      ]
+     },
+     {
+      "key": "section aircrafts flying direction",
+      "name": "aircrafts_flying direction_. Barthélemy",
+      "kind": "section",
+      "templates": [
+       "page:/flights-from-st-barth%C3%A9lemy-bl"
+      ],
+      "verse": "has",
+      "found": [
+       "aircraft",
+       "direction",
+       "barth"
       ]
      },
      {
