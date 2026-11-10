@@ -12,5 +12,15 @@
   "tools/card-cycle.json",
   "tools/grow-self.state.json",
   "void-live-deploy/void.growth.json"
- ]
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-10T14:21:47.960Z",
+ "closedBy": "c60c3056d0149b6e0733c0f828c9ad6d578bcc36",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42830221581",
+ "minutes": 265
 }
