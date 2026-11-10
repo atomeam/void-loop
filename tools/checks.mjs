@@ -634,7 +634,6 @@ for (const [name, file] of [
   ['completeness', 'completeness.test.mjs'],
   ['lap', 'lap.test.mjs'],
   ['tower', 'tower.test.mjs'],
-  ['least', 'least.test.mjs'], // the Tower: a site is listed only when each of its jobs has been run
   ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
   ['assimilated', 'assimilated.test.mjs'], // the history of every site Versus took on (/assimilated/, tools/assimilated.mjs)

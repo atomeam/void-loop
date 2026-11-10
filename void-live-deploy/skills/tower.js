@@ -5,7 +5,6 @@
  * floor Verse is on stays until every aspect is verified against the live site; one word, assimilated; the History is the rival's own history;
  * every rival has its own page (/rival/?site=); sites in plain text, no logos; no Verse dates or attempt logs on the card. Real data only.
  */
-import { cardHtml, cardSay } from '../lib/least.js';
 import { towerArtSvg } from '../lib/tower-art.js';
 import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine, countsOf, assimLine, inventoryOf } from '../lib/tower.js?v=ladder-72';
 import { siteSlug } from '../lib/obituary.js';
@@ -321,7 +320,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + climbHtml(t, esc)
     + (s.far.length ? '<div class="tw-far"><b>Far floors</b> ' + s.far.map((f) => esc(assimLine(f))).join(' · ') + '</div>' : '')
     + (won.length ? '<details class="tw-won" open><summary class="tw-wonhead" style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Assimilated (' + won.length + ')</b></summary>' + won.map((f) => wonRow(f, esc)).join('') + '</details>' : '')
-    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
+    + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them.</div></div>';
 }
 /** Verse's take, from what is measured and what was built, never invented (owner, 2026-10-24: a take on the current opponent, and "include its
  *  take on what its learned and absorbed from all the fights so far"): the fight now (its page, what it leads on, what is left, the killshot)
@@ -377,8 +376,9 @@ const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft, gn, pa] = awa
 async function run(text, api) {
   if (!towerOf(text)) return 'none';
   const { showPage, esc, say } = api;
-  showPage((el) => { el.classList.add('tower-card'); el.innerHTML = cardHtml(esc); });
-  if (say) say(cardSay());
+  const t = await load();
+  showPage((el) => { el.classList.add('tower-card'); el.innerHTML = towerHtml(t, esc); });
+  if (say) say(towerLine(t));
   return 'tower';
 }
 

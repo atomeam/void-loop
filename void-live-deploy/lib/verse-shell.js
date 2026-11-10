@@ -7,7 +7,6 @@ export const NAV = Object.freeze([
   { href: '/team/', label: 'Crew' },
   { href: '/bots/', label: 'Drones' },
   { href: '/agent/', label: 'Envoy' },
-  { href: '/conquered/', label: 'Tower', also: ['/tower/', '/tower'] },
   { href: '/films/', label: 'Holovids' },
   { href: '/podcast/', label: 'Out Loud' }, // Verse Out Loud, a new episode every day (owner, 2026-11-06: "where is my daily verse podcast")
   { href: '/treasury/', label: 'Hoard' }, { href: '/starboard/', label: 'Starboard' },
@@ -17,7 +16,7 @@ export const NAV = Object.freeze([
   { href: '/contribute/', label: 'Assimilate' },
 ]);
 
-/** the nav item this path is on, or null. `/tower` is the Tower. `/` is Ask and nothing else. */
+/** the nav item this path is on, or null. `/` is Ask and nothing else. */
 export function currentNav(path, nav = NAV) {
   const raw = String(path || '/');
   const p = raw === '/' ? '/' : (raw.endsWith('/') ? raw : raw + '/');
@@ -98,7 +97,7 @@ export function speculationRules(nav = NAV) {
 
 const DRESS = new Set(NAV.map((n) => n.href));
 
-/** the shell paths the service worker dresses. `/tower` is Tower, which redirects to `/conquered/`. */
+/** the shell paths the service worker dresses. */
 export function dressPath(path) {
   const raw = String(path || '/');
   const p = raw === '/' ? '/' : (raw.endsWith('/') ? raw : raw + '/');

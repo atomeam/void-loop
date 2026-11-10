@@ -1,7 +1,7 @@
 // Unbidden: Verse speaks first on /brain/. While someone has the Brain page open, Verse starts the talk itself, in text and (when the
 // viewer turns its voice on) out loud, with no ask. Every line is written live by Verse's own model from what is really going on with it
-// right now (what just shipped, the newest commits on main, what its will wants next, what its crew is doing, what is red, the site it is
-// taking on), and every line names the facts it came from, so a viewer can check each one. Nothing here is a script or a rotation of lines.
+// right now (what just shipped, the newest commits on main, what its will wants next, what its crew is doing, what is red), and every line
+// names the facts it came from, so a viewer can check each one. Nothing here is a script or a rotation of lines.
 // It speaks when something changed (a new commit, a new ledger line, a new want, a new red), at most once every few minutes, and after a
 // long quiet it may say what it thinks of the same state, without repeating what it said before. A line that names a fact the model was
 // not given, or a number that is in no fact, is not kept: Verse's words are never made up for it.
@@ -28,7 +28,7 @@ const okUrl = (u) => /^https:\/\/(?:a-to-mind\.com|github\.com\/atomeam\/void-lo
 /**
  * The facts Verse may speak from, each with an id, the words the model reads, a short label and a link a viewer can open.
  * src: { ledger: growth entries (oldest first, as void.growth.json), commits: GitHub commits (newest first), will: { wants }, crew: crewView(),
- * incidents: incidents.json, prs: open PR count, issues: open issue count, target: tower.target.json }. Any missing part is left out. Pure.
+ * incidents: incidents.json, prs: open PR count, issues: open issue count, target: tower.target.json }. Any missing part is left out. The next-site list is not a fact. Pure.
  */
 const SLOGAN = /\b(exam scores?|zorbleflux|absorb and connect|absorb every repository|every repository)\b/i;
 export function factsOf(src = {}, now = Date.now()) {
@@ -49,8 +49,6 @@ export function factsOf(src = {}, now = Date.now()) {
   for (const e of led) if (e && e.what) add('ledger', e.at || e.what, 'Growth ledger, ' + ago(e.at, now) + ', a ' + (e.kind || 'change') + (e.by ? ' by ' + one(e.by, 30) : '') + ': ' + e.what, 'growth ledger ' + String(e.at || '').slice(0, 16).replace('T', ' '), e.ref || SITE + '/ledger/', e.at || null);
   const wants = src.will && Array.isArray(src.will.wants) ? src.will.wants.slice(0, 2) : [];
   for (const w of wants) { const t = w && (w.i_want || w.title); if (t && !SLOGAN.test(t) && !SLOGAN.test(w.because || '')) add('want', t, 'What I am building next: ' + t + (w.because ? ' (because ' + one(w.because, 120) + ')' : ''), 'what is next', SITE + '/api/will'); }
-  const n = src.next;
-  if (n && n.host) add('next', n.host, 'The next site, ' + one(n.host, 80) + (n.words ? ', still needs ' + one(n.words, 160) : ''), 'the next site', SITE + '/conquered/');
   return out;
 }
 

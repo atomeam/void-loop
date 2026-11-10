@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/delete-tower-48f9 · the finished-site Tower, its pages, and the loop that took the next site are removed · 2026-11-10 02:54 UTC
 - Cursor cloud agent · helper/color-by-number-238b · /paint/ rebuilt to feel like a real colouring book: original pictures, a white numbered sheet, saved progress and a finished reveal · 2026-11-10 01:55 UTC
 - Cursor cloud agent · helper/least-next-0b57 · the loop takes the next simplest site and builds its missing jobs · 2026-11-10 02:05 UTC
 - Cursor cloud agent · helper/self-card-plain-0b57 · the self card says what was built and which page is next, in plain words · 2026-11-10 02:05 UTC

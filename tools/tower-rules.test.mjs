@@ -148,8 +148,6 @@ test('rule 9: a combined Verse page carries the union of its rivals\' features a
 });
 
 test('rule 10: the card shows no Verse dates, clocks, takes or attempt log; the log stays in data for the activity page', () => {
-  const conquered = fs.readFileSync(path.join(SITE, 'conquered', 'index.html'), 'utf8');
-  assert.doesNotMatch(conquered, /tried, and when|textContent = 'updated/);
   for (const t of cards()) {
     const h = towerHtml(t, esc), x = text(h);
     assert.doesNotMatch(x, /\bsince\b|\bupdated\b|Verse's take|last measured|\bago\b|tried, and when/i);

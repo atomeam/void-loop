@@ -122,10 +122,6 @@ export const SPECS = {
     t.ok(/^https?:\/\//.test(await t.p.getAttribute('#so', 'href') || ''), 'the rival site opens from a real link');
     const st = await t.waitText('#st', /aspects ahead|every aspect matched/, 15000); t.ok(/\d+ of \d+ aspects ahead|every aspect matched/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
   },
-  '/conquered/': async (t) => { const m = await t.waitText('main', /rot13\.com/, 8000); t.ok(/tsundere\.pw/.test(m) && !/assimilat|aspects verified|working on/i.test(m), m.slice(0, 80)); },
-  '/sites/rot13.com/': async (t) => { await t.waitText('h1', /Rotate letters/, 8000); await t.fill('#letters', 'Hello'); await t.fill('#places', '13'); await t.click('#go'); t.ok((await t.waitText('#out', /Uryyb/, 5000)).trim() === 'Uryyb', 'rotated'); t.ok(/Wikipedia/.test(await t.text('main')), 'history'); },
-  '/sites/motherfuckingwebsite.com/': async (t) => { await t.waitText('h1', /readable text/, 8000); const body = await t.text('main'); t.ok(await t.p.locator('style').count() === 0 && /Digiday/.test(body) && /Barry T\. Smith/.test(body) && body.split(/\s+/).length > 120, 'a plain page and its history'); },
-  '/memes/': async (t) => { const s = await t.waitText('#tsundere-pw', /Schizoid/, 8000); t.ok(await t.p.locator('audio, video').count() === 0 && /Fripp Don't Interact/.test(s) && /Cambridge/.test(s), 'what the site is, and no sound'); },
   '/vat/': async (t) => { // 1000 with 22% VAT in it: 180,33 VAT and 819,67 net, to the kopeck; adding 20% to 5000 is 6 000,00
     await t.fill('#amount', '1000'); await t.fill('#rate', '22'); await t.p.selectOption('#mode', 'extract');
     const v = await t.waitText('#vatValue', /180,33/, 5000); t.ok(/180,33/.test(v), 'VAT out of 1000 at 22% is 180,33: ' + v);
@@ -879,7 +875,7 @@ if (process.argv[1] && process.argv[1].endsWith('real-pages.mjs')) {
   let only = arg('--routes') ? arg('--routes').split(',') : null;
   if (argv.includes('--changed')) {
     let ch = ''; try { ch = execSync('git diff --name-only origin/main...HEAD; git diff --name-only; git diff --name-only --cached', { cwd: repo, encoding: 'utf8' }); } catch (err) { console.warn('real-pages: could not list changed files (' + String(err.message || err).split('\n')[0] + '), checking every route'); ch = null; }
-    if (ch !== null) only = [...new Set(ch.split('\n').filter((f) => /^void-live-deploy\/.*index\.html$/.test(f)).map((f) => f.replace(/^void-live-deploy/, '').replace(/index\.html$/, '')))];
+    if (ch !== null) only = [...new Set(ch.split('\n').filter((f) => /^void-live-deploy\/.*index\.html$/.test(f)).map((f) => f.replace(/^void-live-deploy/, '').replace(/index\.html$/, '')))].filter((r) => fs.existsSync(r === '/' ? path.join(root, 'index.html') : path.join(root, r.replace(/^\/|\/$/g, ''), 'index.html')));
     if (only && !only.length) { console.log('ok   no page changed'); process.exit(0); }
   }
   const base = arg('--base', 'local');

@@ -1,7 +1,7 @@
 // Unbidden: Verse speaks first on /brain/ (lib/unbidden.js has the rules; the page is brain/unbidden.js).
 // GET /api/unbidden[?after=<line id>] -> { lines: [{ id, at, say, why, from: [{ label, url, text }] }], next, note? }
 //   lines are newest last: the ones after `after`, or the last few. When something about Verse really changed (a commit on main, a growth
-//   ledger line, a want, a crew member's work, a red run, the open pull requests or issues, the Tower's site) and the last line is at least
+//   ledger line, a want, a crew member's work, a red run, the open pull requests or issues) and the last line is at least
 //   GAP_MS old, or nothing changed for QUIET_MS, this request has Verse say one new line first, written by its own model from those facts.
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. An open GET with one input, `after`, which only picks which kept lines come back.
 // The most a caller can do is make Verse speak sooner than it would: it cannot, because a line is written only when Verse's own state changed
@@ -45,14 +45,8 @@ export async function readState(request, env, fetchFn = fetch) {
     env.DB ? willRow() : null, env.DB ? crewView(env).catch(() => null) : null,
     github(origin, '/commits?sha=main&per_page=5', fetchFn), github(origin, '/pulls?state=open&per_page=100', fetchFn), github(origin, '/issues?state=open&per_page=100', fetchFn),
   ]);
-  let next = null;
-  try {
-    const m = await import('../../lib/least.js');
-    const s = m.nextSite();
-    if (s) next = { host: s.host, words: (s.jobs || []).filter((j) => !(m.JOBS[j.id] && m.JOBS[j.id].prove && m.JOBS[j.id].prove())).map((j) => j.words).join('; ') };
-  } catch (_) { /* the list is not in this build */ }
   return {
-    ledger, incidents, target, will, crew, commits, next,
+    ledger, incidents, target, will, crew, commits,
     prs: Array.isArray(pulls) ? pulls.length : undefined,
     issues: Array.isArray(issues) ? issues.filter((i) => i && !i.pull_request).length : undefined,
   };

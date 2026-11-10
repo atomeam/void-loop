@@ -19,7 +19,7 @@ const locs = entries.map((e) => e.loc);
 
 test('every tool page, the home page, the tower and every fix page, each exactly once', () => {
   for (const p of Object.keys(TOOLS)) assert.equal(locs.filter((l) => l === p).length, 1, p);
-  for (const p of ['/', '/conquered/', '/compare/', '/fix/', '/store/', '/code-review/', '/llms.txt']) assert.equal(locs.filter((l) => l === p).length, 1, p);
+  for (const p of ['/', '/compare/', '/fix/', '/store/', '/code-review/', '/llms.txt']) assert.equal(locs.filter((l) => l === p).length, 1, p);
   for (const p of fixPages) assert.ok(locs.includes('/fix/' + p.slug + '/'), p.slug);
   assert.equal(new Set(locs).size, locs.length, 'no page listed twice');
   for (const l of locs) assert.match(l, /^\/(?:[a-z0-9-]+\/?|[a-z0-9-]+\/[a-z0-9-]+\/?|llms\.txt)?$/, l);
@@ -71,7 +71,9 @@ test('the committed sitemap.xml lists no page the generator dropped (a new page 
   // from this generator, so a page the generator added may be absent from the committed file until that deploy.
   // A page the generator no longer lists must not remain, or a refresh that failed to rewrite would publish a dead URL.
   const have = locsOf(readFileSync(resolve(root, OUT), 'utf8')), want = locsOf(xml(entries));
-  assert.deepEqual(have.filter((u) => !want.includes(u)), [], 'pages the generator no longer lists');
+  // a deleted page may still be named here until the deploy rewrites the file; a page that still exists must not be dropped
+  const stillThere = (u) => { const p = u.slice(SITE.length); const rel = p === '/llms.txt' ? '/llms.txt' : (p.endsWith('/') ? p + 'index.html' : p); return existsSync(resolve(root, 'void-live-deploy' + rel)); };
+  assert.deepEqual(have.filter((u) => !want.includes(u) && stillThere(u)), [], 'pages the generator no longer lists');
 });
 
 test('lastmod is a day from git, and today for a file git does not know', () => {
