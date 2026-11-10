@@ -32,4 +32,9 @@ test('only the free model is asked, and no model means it does not ship', async 
   assert.equal(url.includes('gpt-oss') || url.includes('kimi'), false);
   assert.equal((await judgeDiff('+ hello\n', { env: {}, fetchFn, cwd: '/none' })).pass, false);
   assert.equal((await askFree('x', { env: {}, fetchFn })).length, 0);
+  let first = '';
+  const verse = async (u) => { first = first || u; return { ok: true, status: 200, json: async () => ({ result: { response: '{"pass":true,"why":"A person can use the page."}' } }) }; };
+  await askFree('x', { env: { VOID_OWNER_TOKEN: 'owner', CLOUDFLARE_API_TOKEN: 'tok', CLOUDFLARE_ACCOUNT_ID: 'acc' }, fetchFn: verse });
+  assert.match(first, /\/api\/coder$/);
+  assert.equal(first.includes('gpt-oss') || first.includes('kimi'), false);
 });
