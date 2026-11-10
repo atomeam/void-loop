@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T06:32:52Z",
-  "passed": 55,
-  "of": 58,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"approve later: keep morning-digest running every 2 hours\" (skill:approve-card)"
- },
- {
   "at": "2026-10-18T06:45:07Z",
   "passed": 59,
   "of": 59,
@@ -7797,5 +7790,23 @@
    "failed": []
   },
   "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-10T16:08:31Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 451,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 8855 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
