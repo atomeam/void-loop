@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T05:30:07Z",
-  "passed": 54,
-  "of": 55,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
- },
- {
   "at": "2026-10-18T06:02:59Z",
   "passed": 54,
   "of": 56,
@@ -7771,5 +7764,23 @@
    "failed": []
   },
   "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-10T14:30:49Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1097,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 10611 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
