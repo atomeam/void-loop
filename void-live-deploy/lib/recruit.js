@@ -106,45 +106,19 @@ export function pasteOf(source) {
   ].join('\n');
 }
 
-export function workJob() {
-  const name = 'Animal Hospital';
-  const rule = 'One sentence, under 30 words. No year, no company, no digits, no characters < or >. Do not call it Theme Hospital.';
-  return {
-    id: 'mv5uxjua', title: 'Animal Hospital (video game)', ask: 'fill a gap: "Animal Hospital (video game)"',
-    path: 'void-live-deploy/play/animal-hospital.html',
-    parts: [
-      { id: 'what', need: ['animal hospital', 'game'], prompt: rule + ' Say what the video game ' + name + ' is.', again: rule + ' Reply: "' + name + ' is a video game." then at most ten more words.' },
-      { id: 'play', need: ['animal hospital', 'player'], prompt: rule + ' Say what the player does in the video game ' + name + '.', again: rule + ' Start with "In ' + name + ' the player".' },
-    ],
-  };
+/** a fenced code block, or ''. Prose and HTML are not code. */
+export function codeBlock(raw) {
+  const m = String(raw || '').match(/```(?:js|javascript|diff)?\s*([\s\S]*?)```/);
+  return m ? m[1].trim() : '';
 }
 
-/** the first sentence of a model reply, or '' when it is not a sentence we can place. */
-export function chunkText(raw) {
-  const t = String(raw || '').replace(/```[\s\S]*?```/g, ' ').replace(/\s+/g, ' ').trim();
-  const bits = t.split(/(?<=[.!?])\s/).map((s) => s.replace(/^["']|["']$/g, '').trim()).filter(Boolean);
-  return (bits.find((s) => /animal hospital/i.test(s)) || bits[0] || '');
-}
-
-/** a piece is kept only when it is one short sentence about this job and invents no year. */
-const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-export function chunkOk(text, rule) {
-  const t = chunkText(text);
-  if (t.length < 20 || t.length > 220) return false;
-  if (/[<>`]/.test(t) || /\btheme hospital\b/i.test(t) || /\b(?:19|20)\d{2}\b/.test(t)) return false;
-  const low = t.toLowerCase();
-  return (rule.need || []).every((w) => low.includes(w));
-}
-
-/** the page is the checked sentences and the job's own title. Nothing else is written as a fact. */
-export function stitchJob(job, parts) {
-  const body = parts.map((p) => '<p data-part="' + esc(p.id) + '">' + esc(chunkText(p.text)) + '</p>').join('\n');
-  return '<!doctype html>\n<html lang="en" class="vs-tool"><head><meta charset="utf-8">\n'
-    + '<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark">\n'
-    + '<title>' + esc(job.title) + ' · Verse</title>\n<link rel="stylesheet" href="/verse.css" media="screen">\n<style>\n'
-    + 'body{margin:0;background:#050505;color:#f2f4fb;font:16px/1.5 system-ui,sans-serif}main{max-width:40rem;margin:0 auto;padding:24px 16px 64px}a{color:#9eb2ff}.note{color:#c3c8d8}\n'
-    + '</style></head><body><main>\n<h1>' + esc(job.title) + '</h1>\n<p class="note">Queued job ' + esc(job.id) + '.</p>\n'
-    + body + '\n</main></body></html>\n';
+/** publish only a test job whose command exited 0, and never an HTML page or a fact paragraph. */
+export function keepPatch(job, body, testExit) {
+  if (!job || job.kind !== 'test' || !job.test || !job.file) return false;
+  if (/\.html?$/i.test(job.file)) return false;
+  if (testExit !== 0) return false;
+  const t = String(body || '');
+  if (!t.trim() || /<!doctype|<h1[\s>]|<p[\s>]/i.test(t)) return false;
+  return true;
 }
 

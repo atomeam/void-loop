@@ -59,10 +59,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add void-live-deploy/play
+          if [ ! -s "$RUNNER_TEMP/recruit/publish" ]; then echo "nothing checked; a model page is not published"; exit 0; fi
+          git add --pathspec-from-file="$RUNNER_TEMP/recruit/publish"
           git diff --cached --quiet && echo "nothing to publish" && exit 0
           git config user.name "verse-recruit"
           git config user.email "verse-recruit@users.noreply.github.com"
-          git commit -m "Publish the free-agent board from the clock"
+          git commit -m "Apply a checked test fix from a free model"
           branch="helper/recruit-run-${GITHUB_RUN_ID}"
           git push origin "HEAD:$branch"

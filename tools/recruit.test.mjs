@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SOURCES, nextReset, readySources, note, rankJobs, pasteOf, chunkOk, stitchJob, workJob } from '../void-live-deploy/lib/recruit.js';
-import { fill } from './recruit.mjs';
+import { SOURCES, nextReset, readySources, note, rankJobs, pasteOf, keepPatch } from '../void-live-deploy/lib/recruit.js';
+import { once } from './recruit.mjs';
 
 const NOW = Date.UTC(2026, 10, 10, 15, 30); // 2026-11-10 15:30 UTC, 07:30 PST
 const key = { GROQ_API_KEY: 'set' };
@@ -30,23 +30,15 @@ test('visitor work comes first, and the page is safe to publish', () => {
   assert.ok(ranked[0].score > ranked[1].score);
   assert.doesNotMatch(pasteOf(SOURCES.find((s) => s.id === 'openhands-cloud')), /vj1-[0-9a-f]{32}/);
   assert.match(pasteOf(), /next job/);
-  const job = workJob();
-  assert.equal(chunkOk('Animal Hospital is a video game about caring for animals.', job.parts[0]), true);
-  assert.equal(chunkOk('It is Theme Hospital from 1997.', job.parts[0]), false);
-  const page = stitchJob(job, [{ id: 'what', text: 'Animal Hospital is a video game about caring for animals.' }]);
-  assert.match(page, /caring for animals/);
-  assert.doesNotMatch(page, /<script/);
+  const prose = '<!doctype html><h1>Animal Hospital</h1><p>The player solves mysteries.</p>';
+  assert.equal(keepPatch({ kind: 'test', file: 'a.html', test: 'node --test x' }, prose, 0), false);
+  assert.equal(keepPatch({ kind: 'gap', file: 'a.js', test: 'node --test x' }, 'function f(){return 1}', 0), false);
+  assert.equal(keepPatch({ kind: 'test', file: 'a.js', test: 'node --test x' }, 'function f(){return 1}', 1), false);
+  assert.equal(keepPatch({ kind: 'test', file: 'a.js', test: 'node --test x' }, 'function f(){return 1}', 0), true);
 });
 
-test('a no-key run publishes only the sentences the source returned', async () => {
-  const job = workJob();
-  let n = 0;
-  const replies = ['Animal Hospital is a video game about caring for animals.', 'In Animal Hospital the player looks after sick animals.'];
-  const fetchImpl = async () => ({ ok: true, status: 200, headers: { get: () => '' }, text: async () => JSON.stringify({ choices: [{ message: { content: replies[n++] } }] }) });
-  const source = { id: 'pollinations', endpoint: 'https://text.pollinations.ai/openai' };
-  const done = await fill(source, job, {}, fetchImpl, { sleep: async () => {}, gapMs: 0 });
-  assert.equal(done.ok, true);
-  assert.match(done.html, /caring for animals/);
-  assert.match(done.html, /looks after sick animals/);
-  assert.equal(done.replies.length, 2);
+test('the clock writes nothing when it has no passing test', async () => {
+  const out = await once({ env: {}, log: () => {} });
+  assert.equal(out.html, '');
+  assert.equal(out.skipped, true);
 });
