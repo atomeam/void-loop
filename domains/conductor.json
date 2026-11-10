@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-10T17:50:27.702Z",
+ "updated": "2026-11-10T17:59:49.284Z",
  "last24h": {
   "ticks": 147,
   "started": 82,
@@ -74,20 +74,36 @@
   {
    "id": "mwav1pw9",
    "why": "no executor for retest"
+  },
+  {
+   "id": "mwazktlm",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktnz",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktrq",
+   "why": "no executor for bot"
+  },
+  {
+   "id": "mwazktv3",
+   "why": "no executor for bot"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 90,
+   "used": 0,
    "cap": 90
   },
   "day": {
    "used": 270,
    "cap": 360
   },
-  "room": false,
-  "until": "2026-11-10T18:00:00.000Z"
+  "room": true,
+  "until": null
  },
  "handed": {
   "mvbl52gd": 1794313128686,
@@ -101,7 +117,6 @@
   "mvpuqaee": 1794271360766,
   "mvpuqb4r": 1794271921138,
   "mvvjzso8": 1794272486901,
-  "mw9jhssb": 1794247176496,
   "mw9jhtt1": 1794250204020,
   "mw9mhy9a": 1794250770169,
   "mw9mhz9v": 1794251388552,
@@ -136,8 +151,8 @@
   "mwauz07a": 1794326263777,
   "mwaz9pmr": 1794333027702
  },
- "sweptAt": 1794329647414,
- "blueprintsAt": 1794329647414,
+ "sweptAt": 1794333589284,
+ "blueprintsAt": 1794333589284,
  "visitorAt": "2026-11-10T17:19:36Z",
  "visitorFiled": [
   "review:2313",
@@ -222,34 +237,6 @@
   "heal:helper-docs-pack"
  ],
  "ticks": [
-  {
-   "at": "2026-11-09T17:59:36.496Z",
-   "open": 280,
-   "started": [
-    {
-     "id": "mw9jhssb",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "design": false,
-   "will": false,
-   "lap": false,
-   "revived": [
-    "void-tick.yml"
-   ],
-   "daily": [],
-   "sweep": false,
-   "blueprints": 0,
-   "held": 269,
-   "warnings": 1
-  },
   {
    "at": "2026-11-09T18:40:38.709Z",
    "open": 279,
@@ -3876,6 +3863,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 16,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-10T17:59:49.284Z",
+   "open": 340,
+   "started": [
+    {
+     "id": "mwasa7yo",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 100
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": true,
+   "blueprints": 0,
+   "held": 21,
    "warnings": 1
   }
  ]
