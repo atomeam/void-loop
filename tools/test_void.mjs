@@ -1532,60 +1532,20 @@ try {
       JSON.stringify({ card, raws, by, errors: F.errors }));
     await F.ctx.close();
   }
-  // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
-  // the evidence is stubbed so three sites are conquered and the target is 4 aspects in. The target is the site tower.target.json names: it stays
-  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here.
-  // Since the season (2026-11-06) a site counts only once tower.target.json `passed` names it, so the check serves the served file with `passed`
-  // naming the three it conquers (tools/tower-fixture.mjs): what Versus passed today no longer changes what this check sees
-  if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) { // section name kept so shard hashing stays stable
-    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture, conquerable } = await import('./tower-fixture.mjs'); const P = await fresh();
-    const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
-    const served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
-    const TARGET = served('tower.target.json').id, tgt = tower([], {}, served('tower.frontier.json'), null, null, null, TARGET).floors.find((f) => f.id === TARGET);
-    const won3 = conquerable(FLOORS, { target: TARGET, n: 3 });
-    const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
-    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, won3);
-    await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
-    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
-    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
+  // section names kept so shard hashing stays stable. The card lists finished sites only.
+  if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
+    const P = await fresh();
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = c.querySelector('.tw-cur');
-      return { order: all.map((b) => b.dataset.state), current: cur && cur.dataset.id, won: cur ? [...cur.querySelectorAll('li[data-v="won"]')].length : 0, items: cur ? [...cur.querySelectorAll('li')].length : 0,
-        head: (c.querySelector('.tw-score') || {}).textContent, name: (c.querySelector('.tw-head') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
+    const v = await P.p.$eval('.vpage.on', (c) => ({ name: (c.querySelector('.tw-head') || {}).textContent, text: c.innerText, href: (c.querySelector('a[href="/sites/rot13.com/"]') || {}).getAttribute && c.querySelector('a[href="/sites/rot13.com/"]').getAttribute('href') })).catch((e) => ({ err: String(e) }));
     if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
-    // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
-    // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
-    // docs/TOWER-RULES.md: one word, assimilated; the counts are assimilated, the current floor and floors remaining
-    check('tower: the target (tower.target.json) is the current floor with its aspects (4 won), the three assimilated listed, the card headed "Versus" and the counts "3 assimilated · current floor: <target>"',
-      JSON.stringify(v.order) === JSON.stringify(['beaten', 'beaten', 'beaten']) && v.current === tgt.id && v.won === 4 && v.items >= 9 && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && new RegExp('^3 assimilated · current floor: ' + tgt.site.replace(/\./g, '\\.') + ': \\d+% assimilated · \\d+ floors remaining$').test(v.head || '')
-        && !/FINAL BOSS|YOU ARE HERE|LOCKED|surpassed|outclassed|conquer/i.test(v.text || '') && !P.errors.length,
-      JSON.stringify({ v, errors: P.errors }));
-    // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
-    const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
-    check('tower: a saved or copied tower card says the current floor (4 of N aspects verified) and what is assimilated, and no announcement twice',
-      new RegExp('Current floor: ' + tgt.site.replace(/\./g, '\\.') + ': \\d+% assimilated; 4 of \\d+ aspects verified\\.').test(saved.b || '') && /Assimilated: /.test(saved.b || '') && ((saved.b || '').match(/Current floor: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    check('tower: the card is headed Tower and lists finished sites, with no scorecard', v.name === 'Tower' && v.href === '/sites/rot13.com/' && /rotate letters/.test(v.text || '') && /tsundere\.pw/.test(v.text || '') && !/\d+\s*%|assimilat|aspects verified|working on/i.test(v.text || '') && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
-  // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
   if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const { towerFixture } = await import('./tower-fixture.mjs'); const P = await fresh({ phone: true });
-    const all = (f) => passingRows(f, { evidence: 'stub' }), served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
-    const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
-    // both are conquered in this season: tower.target.json `passed` names them (tools/tower-fixture.mjs), or the season keeps them in the queue
-    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, [travel, FLOORS[0]]);
-    await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
-    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
-    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
+    const P = await fresh({ phone: true });
     await P.ask('the tower', 1200);
-    const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
-      return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
-        every: [...c.querySelectorAll('.tw-links')].every((l) => l.querySelector('.tw-page')), wide: document.documentElement.scrollWidth <= innerWidth }; }).catch((e) => ({ err: String(e) }));
-    if (process.env.VOID_SHOTS) { await P.p.locator('.tower-floor[data-id="travel"]').scrollIntoViewIfNeeded().catch(() => {}); await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower-google-flights.png') }).catch(() => {}); }
-    await P.p.goto(base + 'compare/?floor=travel'); await P.p.waitForTimeout(400);
-    const cmp = await P.p.evaluate(() => ({ src: document.getElementById('vf').getAttribute('src'), who: document.getElementById('who').textContent })).catch((e) => ({ err: String(e) }));
-    check('tower: Google Flights names Verse\'s page /flights/ beside its site and side by side (390 px, no sideways scroll), every entry names its page, and /compare/?floor=travel frames /flights/ beside Google Flights',
-      /Google Flights ↗/.test(v.links || '') && /Verse's page \/flights\//.test(v.links || '') && /side by side/.test(v.links || '') && v.page === '/flights/' && v.every && v.wide && cmp.src === '/flights/' && /Google Flights/.test(cmp.who || '') && !P.errors.length,
-      JSON.stringify({ v, cmp, errors: P.errors }));
+    const v = await P.p.$eval('.vpage.on', (c) => ({ page: (c.querySelector('a[href="/sites/rot13.com/"]') || {}).getAttribute && c.querySelector('a[href="/sites/rot13.com/"]').getAttribute('href'), text: c.innerText, wide: document.documentElement.scrollWidth <= innerWidth })).catch((e) => ({ err: String(e) }));
+    check('tower: a finished site links to its own page, an unfinished site is not listed, and the card fits a phone', v.page === '/sites/rot13.com/' && !/Google Flights|flightconnections/.test(v.text || '') && v.wide && !P.errors.length, JSON.stringify(v).slice(0, 500));
     await P.ctx.close();
   }
   if (want("phone polish: the current nav item, an empty compare, and a credit's license stay on a 390 px screen")) {
@@ -1625,27 +1585,15 @@ try {
       cred && cred.left >= -1 && cred.right <= cred.w + 1 && cred.page <= cred.w + 1, JSON.stringify(cred));
     await P.ctx.close();
   }
-  // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
   if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
-    const P = await fresh(); let hits = 0, beaten = false;
-    // calculator.net's whole checklist as the gate demands it: its aspects and its journeys with steps and negative controls (docs/GATE-STANDARDS.md)
-    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), calc = FLOORS.find((f) => f.id === 'calculator'), won = passingRows(calc, { evidence: 'stub' });
-    // in this season calculator.net is passed (tower.target.json `passed` names it, tools/tower-fixture.mjs), so the full checklist conquers it;
-    // without it the season keeps the site in the queue whatever its evidence says, and the card has nothing to announce
-    const { towerFixture } = await import('./tower-fixture.mjs'), served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
-    const fx = towerFixture({ target: served('tower.target.json'), features: served('tower.features.json') }, [calc]);
-    await P.ctx.route('**/tower.target.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.target) }));
-    await P.ctx.route('**/tower.features.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(fx.features) }));
-    await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: won } : {} }) }); });
-    await P.p.evaluate(() => { window.__towerPollMs = 400; });
-    await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
-    const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
-    const before = await line(); beaten = true;
-    const after = await until(async () => { const r = await line(); return r && /calculator\.net is assimilated/.test(r.live) ? r : null; }, 6000);
-    // no Verse dates on the card (docs/TOWER-RULES.md): no "updated" time
-    check('tower: the open card picked up an assimilated site on its own and said so ("calculator.net is assimilated"), with no "updated" time on the card', !!before && !!after && /calculator\.net\s*assimilated/.test(after.first) && !after.stamp && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
-    await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(800); const open = await P.p.$('.vpage.on.tower-card'), h1 = hits; await P.p.waitForTimeout(1500);
-    check('tower: once the card is closed (Escape) it stops polling', !open && hits - h1 <= 1, JSON.stringify({ open: !!open, h1, hits }));
+    const P = await fresh(); let hits = 0;
+    await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: '{}' }); });
+    await P.ask('versus', 600);
+    const text = await P.p.$eval('.vpage.on', (c) => c.innerText).catch((e) => String(e));
+    check('tower: opening the card does not read the old score file', hits === 0 && /rot13\.com/.test(text) && !/assimilat/.test(text) && !P.errors.length, JSON.stringify({ hits, text: text.slice(0, 200) }));
+    await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(400);
+    const open = await P.p.$('.vpage.on.tower-card');
+    check('tower: Escape closes the card', !open && !P.errors.length, JSON.stringify({ open: !!open }));
     await P.ctx.close();
   }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept

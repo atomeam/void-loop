@@ -23,7 +23,13 @@ export function addedFailures(head, base) {
   return out;
 }
 
+function writeIndex(cwd) {
+  // index.json is generated and not committed; skills-check (and inventory) read it
+  spawnSync(process.execPath, [resolve(cwd, 'tools/skills-index.mjs'), '--write'], { cwd, encoding: 'utf8', timeout: 60000, maxBuffer: 20e6 });
+}
+
 function runCheck(cwd) {
+  writeIndex(cwd);
   const r = spawnSync(process.execPath, [resolve(cwd, 'tools/skills-check.mjs')], { cwd, encoding: 'utf8', timeout: 180000, maxBuffer: 20e6 });
   const text = (r.stdout || '') + '\n' + (r.stderr || '');
   return failureLines(text, r.status ?? 1);

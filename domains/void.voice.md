@@ -10,24 +10,25 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-06; the site has been unreachable since 2026-11-07. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-10. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- unknown, site unreachable since 2026-11-07 (the asks below are the last ones read, minus any built since)
-- Fix the podcasts exam to resolve failures in audio and episode retrieval. (daily, 2026-11-06) `ask-20261106-2342-3`
-- Implement the URL hash serialization logic for ndscalc.ru. *(small)* (daily, 2026-11-06) `ask-20261106-2342-2`
-- Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic. (daily, 2026-11-06) `ask-20261106-2342-1`
-- Develop the local-only calculation logic and static markup for ndscalc.ru that ensures zero data requests leave the browser. (after a build, 2026-11-06) `ask-20261106-0859-1`
-- Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures. *(small)* (daily, 2026-11-06)
-- Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com. (after a build, 2026-10-31)
+- Give the two longest browser checks their own runner. *(small)* (daily, 2026-11-10) `ask-20261110-0200-2`
+- Fix the podcasts exam to resolve failures in audio and episode retrieval. *(small)* (daily, 2026-11-10) `ask-20261110-0200-3`
+- Add emojigraph.org to LANE_PAGES and begin target assimilation. (daily, 2026-11-10) `ask-20261110-0200-1`
+- Fix the definitions exam for salary etymology and zorbleflux. (after a build, 2026-11-10) `ask-20261110-0148-3`
+- Expand the WebMCP origin trial to serve every caller via /tools.json and /api/mcp. (after a build, 2026-11-09) `ask-20261109-1808-3`
+- Fix the sports exam scores for MLB, Premier League, and Serie A. *(small)* (after a build, 2026-11-09) `ask-20261109-1701-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261106-2342-3` queued, not decided yet
-- `ask-20261106-2342-2` queued, not decided yet
-- `ask-20261106-2342-1` queued, not decided yet
-- `ask-20261106-0859-1` queued, not decided yet
+- `ask-20261110-0200-2` queued, not decided yet
+- `ask-20261110-0200-3` queued, not decided yet
+- `ask-20261110-0200-1` queued, not decided yet
+- `ask-20261110-0148-3` queued, not decided yet
+- `ask-20261109-1808-3` queued, not decided yet
+- `ask-20261109-1701-2` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -110,6 +111,35 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261105-0730-1` built: lists run 13 (2026-11-05): duplicate of ask-20261104-2101-1: emojigraph.org is already a lane page (lib/self-sites.js) and the tower card names it as the site being taken on
 - `ask-20261105-0730-2` built: lists run 13 (2026-11-05): duplicate of ask-20261104-2101-2, answered in lists run 10: 814032d5 is the merge of #2039; its failed jobs were python-tests and browser-suite (1), (2) and (3), and python-tests failed in tools/verse-loop.test.mjs:151, which passes on main now
 - `ask-20261105-0730-3` built: lists run 13 (2026-11-05): duplicate of ask-20261104-2017-1: the images exam passes 6 of 6 at 100, live and local
+- `ask-20261105-1440-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261105-1451-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261105-1509-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261105-1530-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261030-1605-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1616-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1636-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1642-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1844-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261031-0054-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261031-0124-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261031-1324-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1532-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1538-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1554-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1559-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261103-0222-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261105-1440-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261105-1451-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1936-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1936-3` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1955-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2017-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2017-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2037-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2037-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-0859-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1936-2` built: lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)
+- `ask-20261106-2037-3` built: lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)
 
 ## Log, oldest first
 
@@ -9669,6 +9699,354 @@ Asks: "Add ndscalc.ru to LANE_PAGES in lib/tower.js and implement local-only cal
 > **Next video trick:** A seamless whip-pan transition between two different 3D miniature cards.
 
 Asks: "Add ndscalc.ru to LANE_PAGES in lib/tower.js and implement local-only calculation logic and static markup."; "Implement the URL hash serialization logic for ndscalc.ru." (small); "Fix the podcasts exam to resolve failures in audio and episode detection."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T21:08:13.442Z -->
+### 2026-11-09 21:08 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 1 covered, 6 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The current tower target is flightconnections.com, with 1 of 1277 sites assimilated. The Words and the world family is currently the weakest, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own runner to reduce ship wait times. The podcasts exam must be fixed to resolve failures in audio and episode detection. The definitions exam requires fixing for salary etymology and zorbleflux.
+>
+> **Next video trick:** A video effect showing a 3D model from the forge transforming into a real-world print.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T21:16:22.488Z -->
+### 2026-11-09 21:16 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,unit converter: convertlive.com,unit converter: convertunits.com,emoji combos: emojigraph.org,colour: colorscheme.ru,colour: colorbook.io,finance: getconverter.org,news: suncommunitynews.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The current tower target is flightconnections.com, with 1 of 1277 sites assimilated. The Words and the world family is the weakest, with 44 of 47 proven skills. Recent shipments include a tower gate measurement against several sites including flightconnections.com and colorscheme.ru.
+>
+> **How I would make it better:** The two longest browser checks need their own runner to reduce ship wait times. The podcasts exam and the definitions exam for salary etymology and zorbleflux require fixes to resolve failures.
+>
+> **Next video trick:** A video effect showing a 3D miniature of a card morphing into a different object.
+
+Asks: "Build a dedicated runner for the two longest browser checks." (small); "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T21:47:12.149Z -->
+### 2026-11-09 21:47 UTC · after a build
+
+**Asked:** This just shipped: "Free model calls use an AI Gateway alias when one is set (redo of #2306)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The current tower target is flightconnections.com, with 1 of 1277 sites assimilated. The Words and the world family is the weakest, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own runner to reduce ship wait times. The podcasts exam and the definitions exam for salary etymology and zorbleflux must be fixed to resolve failures.
+>
+> **Next video trick:** Implement a kaleidoscope-style video feedback loop using existing image-gen and video-gen skills.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T22:08:10.376Z -->
+### 2026-11-09 22:08 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 6 -> 3 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own runner so ships wait less. The definitions exam for salary etymology and zorbleflux needs fixing to resolve accuracy failures.
+>
+> **Next video trick:** Learn to perform a seamless color-matching transition between different digital palettes for video clips.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T22:52:57.655Z -->
+### 2026-11-09 22:52 UTC · after a build
+
+**Asked:** This just shipped: "Carry the hexen.ai consulting note, and keep a loop PR whose changes are not already kept". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family with 44 of 47 proven skills. The two longest browser checks need their own runner so a ship waits less.
+>
+> **How I would make it better:** Dedicated runners must be built for the two longest browser checks to reduce ship wait times. The definitions exam for salary etymology and zorbleflux requires fixing to resolve accuracy failures.
+>
+> **Next video trick:** Implement a seamless transition between unrelated topics to maintain analytical depth.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T22:58:10.164Z -->
+### 2026-11-09 22:58 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "suggest a sci-fi movie" to its media-pick skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux requires fixing to resolve accuracy failures.
+>
+> **Next video trick:** A video effect using a stage-fx skill to create a glitch-transition between two different image-gen outputs.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T23:32:34.983Z -->
+### 2026-11-09 23:32 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "riddle me this: what has keys but no locks" to its riddle skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting must be improved to ensure failure counts and specific error names are perfectly synchronized.
+>
+> **Next video trick:** A transition effect where a card morphs into a 3D miniature of its subject.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T23:32:45.453Z -->
+### 2026-11-09 23:32 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting must be improved to ensure failure counts and specific error names are perfectly synchronized.
+>
+> **Weakest operational area:** Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **Next targeted capability:** The next targeted capability is adding emojigraph.org to LANE_PAGES and beginning target assimilation.
+>
+> **Next video trick:** Learn a glitch-transition effect using a digital mask for new video clips.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T23:56:25.037Z -->
+### 2026-11-09 23:56 UTC · after a build
+
+**Asked:** This just shipped: "Shorts loop: today's trial and verdicts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting must be improved to ensure failure counts and specific error names are perfectly synchronized.
+>
+> **Next video trick:** A transition from a static image to a rotating 3D model of a shape using a single tap.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:06:56.292Z -->
+### 2026-11-10 00:06 UTC · after a build
+
+**Asked:** This just shipped: "fix: keep a phone answer card one column wide". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills. Recent shipping of phone answer card updates ensures cards stay one column wide to prevent sideways scrolling of word ratings and film posters.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized to avoid contradictions with the ledger.
+>
+> **Next video trick:** A video effect demonstrating a seamless transition between a 2D sketch and a 3D forge-built model.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:11:58.300Z -->
+### 2026-11-10 00:11 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 2 -> 0 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills. Recent shipping of phone answer card updates ensures cards stay one column wide to prevent sideways scrolling of word ratings and film posters.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized to avoid contradictions with the ledger.
+>
+> **Next video trick:** Learn to use a physical pendulum to time the exact oscillation period of a handheld object for a video clip.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:16:06.613Z -->
+### 2026-11-10 00:16 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized to avoid contradictions with the ledger.
+>
+> **Next video trick:** a video effect using a mask to reveal a hidden layer of a 3D miniature.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:57:24.714Z -->
+### 2026-11-10 00:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "top 10 sci fi movies" to its media-pick skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks require dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized with the ledger to avoid contradictions.
+>
+> **Next video trick:** A skill to transform one word to another by changing one letter at a time, as the wordladder skill was recently shipped.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:06:10.696Z -->
+### 2026-11-10 01:06 UTC · after a build
+
+**Asked:** This just shipped: "Read the client status pack from the live status sources". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 417 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills. The client-status-pack has been updated to read from live status sources.
+>
+> **How I would make it better:** The two longest browser checks require dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized with the ledger to avoid contradictions.
+>
+> **Next video trick:** Create a video clip demonstrating a card's 3D miniature rotating while a status-board updates in the background.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:15:39.475Z -->
+### 2026-11-10 01:15 UTC · after a build
+
+**Asked:** This just shipped: "Add client-intake skill: capture and clarify business ideas into owned systems so Verse takes the heavy lifting". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, currently 1 of 1277 sites assimilated. The Verse itself family is the weakest, with 59 of 64 skills proven.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** A card-play effect where a 3D miniature rotates faster when a specific skill is toggled (not in library).
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:33:43.737Z -->
+### 2026-11-10 01:33 UTC · after a build
+
+**Asked:** This just shipped: "Fix tools/families.mjs SyntaxError that made Verse verify red on main". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with a 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** Implement a video transition that uses a stage-fx layer to mask a jump cut.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:40:53.851Z -->
+### 2026-11-10 01:40 UTC · after a build
+
+**Asked:** This just shipped: "void-test: write skills/index.json before self-context (ENOENT on main)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with a 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** Learn to use a camera to capture a real-world shadow and translate its movement into a digital 3D shape via the forge.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:48:00.005Z -->
+### 2026-11-10 01:48 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: fix guard-source". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with a 44 of 47 proven share. My routing recently addressed the guard-source in the Verse loop.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** a new video effect using stage-fx to transition between different light-look modes.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:56:56.400Z -->
+### 2026-11-10 01:56 UTC · after a build
+
+**Asked:** This just shipped: "Judge a change before Verse ships it". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** a video effect that uses a mask to reveal a new layer only through moving shadows.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner." (small); "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T02:00:22.482Z -->
+### 2026-11-10 02:00 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Weakest operational area:** Words and the world is the weakest family with 44 of 47 proven share.
+>
+> **Next targeted capability:** Absorb emojigraph.org to move toward the target assimilation of flightconnections.com.
+>
+> **Next video trick:** Learn a seamless match-cut transition between two different macro shots of the same object.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner." (small); "Fix the podcasts exam to resolve failures in audio and episode retrieval." (small)
 
 *Verse flagged this one for Adam.*
 
