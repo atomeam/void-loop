@@ -309,6 +309,16 @@
    "listed": 6,
    "defectsBefore": 6,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-11T01:21:22.059Z",
+   "run": 39,
+   "measured": 30,
+   "clean": 19,
+   "fixed": 5,
+   "listed": 6,
+   "defectsBefore": 39,
+   "defectsAfter": 5
   }
  ],
  "pages": {
@@ -4517,7 +4527,7 @@
    "state": "clean"
   },
   "/progress/": {
-   "at": "2026-11-08T14:04:40.479Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5215,7 +5225,7 @@
    "state": "clean"
   },
   "/lab/f0482-webgpu-softbody-policy-mind/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5361,18 +5371,8 @@
    "state": "clean"
   },
   "/lab/147-local-quiet-not-boost/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 8,
-    "contrast": 7,
-    "targets": 0,
-    "unstyled": 1,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -5381,8 +5381,7 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 7,
-   "moved": 0.049
+   "state": "clean"
   },
   "/lab/f461-webxr-gaze-online-mlp-dom-physics/": {
    "at": "2026-11-10T21:22:48.495Z",
@@ -5437,18 +5436,8 @@
    "state": "clean"
   },
   "/lab/f616-gpa-calculator/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 2,
-    "contrast": 2,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.021,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -5457,8 +5446,7 @@
     "cls": 0.021,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.004
+   "state": "clean"
   },
   "/limits/": {
    "at": "2026-11-10T21:22:48.495Z",
@@ -5500,31 +5488,21 @@
    "state": "clean"
   },
   "/lab/f488-orient-reservoir-dom-auction-mind/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 3,
-    "contrast": 3,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 22
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 0,
-    "contrast": 0,
+    "defects": 1,
+    "contrast": 1,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0.105
+   "state": "listed",
+   "why": "it made the page scroll sideways"
   },
   "/lab/f307-webgpu-mlp-physics-dom-pushers/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5537,42 +5515,21 @@
    "state": "clean"
   },
   "/lab/f308-lbm-wing-forge/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 5,
+    "defects": 0,
     "contrast": 0,
-    "targets": 5,
+    "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0.003,
     "overflow": 0
    },
-   "state": "fixed",
-   "after": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "rules": 5,
-   "moved": 0.103
+   "state": "clean"
   },
   "/lab/f227-hypervector-dreamer/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 5,
-    "contrast": 1,
-    "targets": 3,
-    "unstyled": 1,
-    "empty": 0,
-    "cls": 0.031,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 1,
     "contrast": 0,
     "targets": 1,
@@ -5581,35 +5538,24 @@
     "cls": 0.031,
     "overflow": 0
    },
-   "rules": 4,
-   "moved": 0.026
+   "state": "listed",
+   "why": "the defects did not go down (1 -> 1)"
   },
   "/podcast/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.004,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.004,
+    "cls": 0.005,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/lab/156-local-cooccur-not-imply/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5622,24 +5568,24 @@
    "state": "clean"
   },
   "/lab/f501-pressure-tilt-mlp-card-sculptor/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.014,
-    "overflow": 0
+    "cls": 0,
+    "overflow": 7
    },
    "state": "clean"
   },
   "/lab/f306-slime-rail-planner/": {
-   "at": "2026-11-08T19:52:51.496Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 1,
+    "defects": 3,
     "contrast": 0,
-    "targets": 1,
+    "targets": 3,
     "unstyled": 0,
     "empty": 0,
     "cls": 0.005,
@@ -5652,21 +5598,21 @@
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.005,
+    "cls": 0.004,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.107
+   "rules": 3,
+   "moved": 0.111
   },
   "/lab/f207-spoken-sdf-program-synthesis/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.015,
+    "cls": 0.027,
     "overflow": 0
    },
    "state": "clean"
@@ -5685,7 +5631,7 @@
    "state": "clean"
   },
   "/weather/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -5699,7 +5645,7 @@
    "why": "no rule fixes it (a layout shift of 0.116 that no rule fixes: listed for a builder)"
   },
   "/lab/f324-deviceorient-idb-webrtc-mlp-orb-arena/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5736,55 +5682,34 @@
    "moved": 0
   },
   "/lab/f314-webgpu-multi-mlp-swarm-arena/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 8,
-    "contrast": 0,
-    "targets": 4,
-    "unstyled": 4,
-    "empty": 0,
-    "cls": 0.003,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 4,
     "contrast": 0,
     "targets": 4,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.006,
+    "cls": 0.003,
     "overflow": 0
    },
-   "rules": 4,
-   "moved": 0.118
+   "state": "listed",
+   "why": "the defects did not go down (4 -> 4)"
   },
   "/lab/f505-webgpu-implicit-mind-surface/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.006,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.006,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/lab/f452-orient-mlp-canvas-agent-persistence/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5797,32 +5722,32 @@
    "state": "clean"
   },
   "/lab/f0486-spectral-vortex-policy-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.513,
+    "cls": 0.486,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.513 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.486 that no rule fixes: listed for a builder)"
   },
   "/lab/f567-multiagent-rnn-dom-competition-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
-    "defects": 10,
-    "contrast": 10,
+    "defects": 12,
+    "contrast": 12,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 151
+    "overflow": 261
    },
    "state": "listed",
-   "why": "the defects did not go down (10 -> 10)"
+   "why": "no rule fixes it"
   },
   "/lab/f474-webgpu-sdf-recurrent-reasoner-morph-mind/": {
    "at": "2026-11-08T21:18:03.870Z",
@@ -5849,33 +5774,33 @@
    "moved": 0.046
   },
   "/lab/f197-webgpu-neural-kernel-competition-field/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.002,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f276-webgpu-spatial-concept-graph-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.016,
+    "cls": 0.017,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f518-webgpu-wave-membrane-rnn-pin-dom-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -5888,18 +5813,28 @@
    "state": "clean"
   },
   "/lab/f504-webgpu-stable-fluids-mlp-advection-mind/": {
-   "at": "2026-11-08T21:18:03.870Z",
+   "at": "2026-11-11T01:21:22.059Z",
    "before": {
     "defects": 13,
     "contrast": 4,
     "targets": 5,
     "unstyled": 4,
     "empty": 0,
-    "cls": 0.032,
+    "cls": 0,
     "overflow": 0
    },
-   "state": "listed",
-   "why": "it made the page scroll sideways"
+   "state": "fixed",
+   "after": {
+    "defects": 4,
+    "contrast": 0,
+    "targets": 4,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.056,
+    "overflow": 0
+   },
+   "rules": 6,
+   "moved": 0.057
   },
   "/lab/150-local-interval-not-measure/": {
    "at": "2026-11-08T21:18:03.870Z",
@@ -9511,6 +9446,119 @@
     "overflow": 2
    },
    "state": "clean"
+  },
+  "/lab/f628-concrete-mulch-volume/": {
+   "at": "2026-11-11T01:21:22.059Z",
+   "before": {
+    "defects": 2,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.204,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.204,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.002,
+   "why": "(a layout shift of 0.204 that no rule fixes: listed for a builder)"
+  },
+  "/lab/f622-sound-level-meter/": {
+   "at": "2026-11-11T01:21:22.059Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f647-spatial-budget-allocator/": {
+   "at": "2026-11-11T01:21:22.059Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 39
+   },
+   "state": "clean"
+  },
+  "/lab/f650-image-contrast-checker/": {
+   "at": "2026-11-11T01:21:22.059Z",
+   "before": {
+    "defects": 8,
+    "contrast": 7,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 5,
+   "moved": 0.06
+  },
+  "/our-motherfucking-version/": {
+   "at": "2026-11-11T01:21:22.059Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f646-weighted-decision-matrix/": {
+   "at": "2026-11-11T01:21:22.059Z",
+   "before": {
+    "defects": 13,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 10,
+    "empty": 0,
+    "cls": 0.316,
+    "overflow": 12
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.005,
+    "overflow": 8
+   },
+   "rules": 11,
+   "moved": 0.102,
+   "why": "(a layout shift of 0.316 that no rule fixes: listed for a builder)"
   }
  }
 }
