@@ -1,0 +1,48 @@
+{
+ "at": "2026-11-11T21:13:40Z",
+ "sha": "bf31475282997d3a881342f80cafd41f294b17ea",
+ "runId": 43098688180,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43098688180",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "slow-browser-checks (glyphs)",
+   "id": 130783950806,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43098688180/job/130783950806",
+   "conclusion": "failure",
+   "step": null,
+   "tail": [],
+   "note": "log not read: gh: HTTP 404"
+  },
+  {
+   "name": "python-tests",
+   "id": 130783966492,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43098688180/job/130783966492",
+   "conclusion": "failure",
+   "step": null,
+   "tail": [],
+   "note": "log not read: gh: HTTP 404"
+  },
+  {
+   "name": "browser-suite (6)",
+   "id": 130783966730,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43098688180/job/130783966730",
+   "conclusion": "failure",
+   "step": null,
+   "tail": [],
+   "note": "log not read: gh: HTTP 404"
+  },
+  {
+   "name": "browser-suite (8)",
+   "id": 130783966991,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43098688180/job/130783966991",
+   "conclusion": "failure",
+   "step": null,
+   "tail": [],
+   "note": "log not read: gh: HTTP 404"
+  }
+ ]
+}
