@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { addedCheckLines, discoveredChecks, overlapRate, settleChecks } from './checks-list.mjs';
 import { BUILD_OUTPUTS } from './generated.mjs';
-import { APPEND_TEXT } from './records.mjs';
+import { APPEND_JSON, APPEND_TEXT, keyOf } from './records.mjs';
 
 const LIST = `const x = 1;
 for (const [name, file] of [
@@ -33,6 +33,8 @@ test('the skill index is generated and a new check line is refused', () => {
   assert.ok(BUILD_OUTPUTS.includes('void-live-deploy/skills/index.json'), 'file void-live-deploy/skills/index.json is generated and must not be committed');
   assert.ok(APPEND_TEXT.includes('domains/handoff.md'));
   assert.ok(APPEND_TEXT.includes('domains/growth-inbox.md'));
+  assert.ok(APPEND_JSON.includes('void-live-deploy/exam/history.json'));
+  assert.equal(keyOf('void-live-deploy/exam/history.json', { at: '2026-11-11T20:00:00Z', score: 90 }), '2026-11-11t20:00:00z');
   assert.equal(addedCheckLines("+  ['tide', 'tide.test.mjs'],\n").length, 1);
 });
 
