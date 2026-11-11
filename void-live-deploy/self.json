@@ -501,12 +501,24 @@
  ],
  "commits": [
   {
-   "at": "2026-11-11T18:29:05Z",
+   "at": "2026-11-11T18:34:57Z",
    "subject": "The visitor's slow card (clean sync) (#2702)"
   },
   {
-   "at": "2026-11-11T18:24:29Z",
+   "at": "2026-11-11T18:34:43Z",
    "subject": "A free model writes Verse's shows, and a listener's scores decide what airs."
+  },
+  {
+   "at": "2026-11-11T18:32:50Z",
+   "subject": "Incident: the browser suite failed on bd3712e3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-11T18:31:20Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-11T18:24:28Z",
+   "subject": "Failed jobs read: run 43076889901 (void-live-deploy/incidents/actions/)"
   },
   {
    "at": "2026-11-11T18:20:48Z",
@@ -567,18 +579,6 @@
   {
    "at": "2026-11-11T16:48:29Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"lift summary"
-  },
-  {
-   "at": "2026-11-11T15:33:10Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-11T15:32:04Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-11-11T15:22:57Z",
-   "subject": "Verse loop: nightly (#2697)"
   }
  ],
  "builders": {
