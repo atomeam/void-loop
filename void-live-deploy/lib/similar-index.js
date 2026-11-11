@@ -858,6 +858,26 @@ export default {
     ]
    }
   ],
+  "client-status": [
+   {
+    "name": "client-status-pack",
+    "examples": [
+     "status pack for onboarding",
+     "client status for the invoice bot",
+     "handoff status pack",
+     "make a client status pack for the support router"
+    ]
+   },
+   {
+    "name": "delivery-board",
+    "examples": [
+     "delivery board for the onboarding flow",
+     "client board on invoice reminders",
+     "show the delivery board for the support router",
+     "make a delivery board for weekly status reports"
+    ]
+   }
+  ],
   "reuse-tools": [
    {
     "name": "reuse-pack",

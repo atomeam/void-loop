@@ -5078,7 +5078,7 @@ say('nothing selected to remove');
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
       let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
-      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.longOk(sk, lower0, text));
       if (skillsLoaded || !skillSlots) return all ? learnedSkills.filter(fits) : (learnedSkills.find(fits) || null); // all: every skill that can answer, for Verse Brain to choose from
       if (all) return [];
       // a known ask (skills/first.json): load the skill that takes it now, and take it as soon as it is in, unless a skill above it

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1258,
+ "counted": 1266,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -11,9 +11,9 @@
   },
   {
    "file": "lib/ask-text.js",
-   "skills": 36,
+   "skills": 38,
    "direct": 23,
-   "dependants": 40,
+   "dependants": 42,
    "tests": 3
   },
   {
@@ -28,7 +28,28 @@
    "skills": 32,
    "direct": 4,
    "dependants": 78,
-   "tests": 4
+   "tests": 5
+  },
+  {
+   "file": "lib/keeper.js",
+   "skills": 29,
+   "direct": 0,
+   "dependants": 98,
+   "tests": 1
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 29,
+   "direct": 1,
+   "dependants": 98,
+   "tests": 1
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 29,
+   "direct": 0,
+   "dependants": 97,
+   "tests": 6
   },
   {
    "file": "lib/load-later.js",
@@ -45,31 +66,17 @@
    "tests": 1
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 27,
-   "direct": 0,
-   "dependants": 96,
-   "tests": 1
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 27,
-   "direct": 1,
-   "dependants": 96,
-   "tests": 1
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 27,
-   "direct": 0,
-   "dependants": 95,
-   "tests": 6
-  },
-  {
    "file": "lib/panel-fit.js",
    "skills": 23,
    "direct": 1,
    "dependants": 24,
+   "tests": 1
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 21,
+   "direct": 1,
+   "dependants": 80,
    "tests": 1
   },
   {
@@ -85,6 +92,20 @@
    "direct": 2,
    "dependants": 22,
    "tests": 3
+  },
+  {
+   "file": "lib/corrections.js",
+   "skills": 20,
+   "direct": 0,
+   "dependants": 66,
+   "tests": 3
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 20,
+   "direct": 6,
+   "dependants": 62,
+   "tests": 6
   },
   {
    "file": "lib/ladder.js",
@@ -122,32 +143,11 @@
    "tests": 0
   },
   {
-   "file": "lib/reactions.js",
-   "skills": 19,
-   "direct": 1,
-   "dependants": 78,
-   "tests": 1
-  },
-  {
    "file": "lib/skill-family.js",
-   "skills": 19,
-   "direct": 19,
-   "dependants": 19,
+   "skills": 20,
+   "direct": 20,
+   "dependants": 20,
    "tests": 1
-  },
-  {
-   "file": "lib/corrections.js",
-   "skills": 18,
-   "direct": 0,
-   "dependants": 64,
-   "tests": 3
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 18,
-   "direct": 6,
-   "dependants": 60,
-   "tests": 6
   },
   {
    "file": "lib/rule-registry.js",
@@ -217,6 +217,13 @@
    "skills": 10,
    "direct": 9,
    "dependants": 21,
+   "tests": 2
+  },
+  {
+   "file": "lib/success-pulse.js",
+   "skills": 10,
+   "direct": 2,
+   "dependants": 13,
    "tests": 2
   },
   {
@@ -367,11 +374,11 @@
    "tests": 4
   },
   {
-   "file": "lib/success-pulse.js",
+   "file": "lib/selfcheck.js",
    "skills": 8,
-   "direct": 2,
+   "direct": 1,
    "dependants": 11,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/bridges.js",
@@ -428,13 +435,6 @@
    "direct": 1,
    "dependants": 14,
    "tests": 7
-  },
-  {
-   "file": "lib/selfcheck.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 9,
-   "tests": 1
   },
   {
    "file": "lib/match-history.js",
@@ -2964,6 +2964,13 @@
    "tests": 3
   },
   {
+   "file": "lib/time-machine.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/trading-paid.js",
    "skills": 0,
    "direct": 0,
@@ -3032,6 +3039,13 @@
    "direct": 0,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/time-machine-idb.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 0
   },
   {
    "file": "lib/used.js",
@@ -3312,6 +3326,13 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/time-machine-client.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/treasury.js",
@@ -3671,6 +3692,13 @@
    "tests": 1
   },
   {
+   "file": "lib/memory-vault.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/mp3-edit.js",
    "skills": 0,
    "direct": 0,
@@ -3881,6 +3909,13 @@
    "tests": 2
   },
   {
+   "file": "lib/sightline.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
    "file": "lib/skill-compose.js",
    "skills": 0,
    "direct": 0,
@@ -3928,6 +3963,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/time-machine-boot.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/trading-bots.js",
@@ -5834,7 +5876,9 @@
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
     "skills/collectible.js",
+    "skills/delivery-board.js",
     "skills/duel.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
@@ -5965,9 +6009,11 @@
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
     "skills/codex.js",
     "skills/constellation-weaver.js",
     "skills/dates.js",
+    "skills/delivery-board.js",
     "skills/echo-chamber.js",
     "skills/forge-table.js",
     "skills/mini/pentamote.js",
@@ -6262,6 +6308,8 @@
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
+    "skills/client-status.js",
+    "skills/delivery-board.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
     "skills/guide.js",
@@ -8101,6 +8149,8 @@
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
+    "skills/delivery-board.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
@@ -9988,7 +10038,9 @@
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
     "skills/collectible.js",
+    "skills/delivery-board.js",
     "skills/duel.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
@@ -10700,6 +10752,10 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/memory-vault.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/merge-rules.js": {
    "imports": [],
    "importedBy": [
@@ -10777,7 +10833,9 @@
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
     "skills/collectible.js",
+    "skills/delivery-board.js",
     "skills/duel.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
@@ -12842,7 +12900,9 @@
     "skills/about-skill.js",
     "skills/cartoon.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
     "skills/coin.js",
+    "skills/delivery-board.js",
     "skills/error-garden.js",
     "skills/fix-audit.js",
     "skills/growth-tree.js",
@@ -13459,6 +13519,8 @@
     "lib/brain-everywhere.js",
     "lib/brain-host.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
+    "skills/delivery-board.js",
     "skills/own-parts.js",
     "skills/status-board.js",
     "skills/system-status.js",
@@ -13656,6 +13718,10 @@
     "skills/time.js"
    ]
   },
+  "lib/sightline.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/similar-index.js": {
    "imports": [],
    "importedBy": [
@@ -13742,6 +13808,7 @@
    "imports": [],
    "importedBy": [
     "skills/build-world.js",
+    "skills/client-status.js",
     "skills/date-math.js",
     "skills/dates.js",
     "skills/games.js",
@@ -14574,6 +14641,8 @@
     "lib/brain-host.js",
     "skills/about-skill.js",
     "skills/client-status-pack.js",
+    "skills/client-status.js",
+    "skills/delivery-board.js",
     "skills/own-parts.js",
     "skills/status-board.js",
     "skills/system-status.js",
@@ -14980,6 +15049,41 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js",
     "skills/tilt-mode.js"
+   ]
+  },
+  "lib/time-machine-boot.js": {
+   "imports": [
+    "lib/time-machine-client.js",
+    "lib/time-machine.js"
+   ],
+   "importedBy": []
+  },
+  "lib/time-machine-client.js": {
+   "imports": [
+    "lib/time-machine.js",
+    "lib/time-machine-idb.js"
+   ],
+   "importedBy": [
+    "lib/time-machine-boot.js"
+   ]
+  },
+  "lib/time-machine-idb.js": {
+   "imports": [
+    "lib/time-machine.js"
+   ],
+   "importedBy": [
+    "lib/time-machine-client.js"
+   ],
+   "reachedBy": [
+    "lib/time-machine-boot.js"
+   ]
+  },
+  "lib/time-machine.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/time-machine-boot.js",
+    "lib/time-machine-client.js",
+    "lib/time-machine-idb.js"
    ]
   },
   "lib/time-math.js": {
@@ -16600,6 +16704,17 @@
     "skills/system-status.js",
     "skills/systems-monitor.js"
    ],
+   "importedBy": [
+    "skills/client-status.js",
+    "skills/delivery-board.js"
+   ]
+  },
+  "skills/client-status.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/client-status-pack.js",
+    "skills/delivery-board.js"
+   ],
    "importedBy": []
   },
   "skills/clock.js": {
@@ -16883,6 +16998,14 @@
     "lib/a2a.js",
     "lib/mcp.js",
     "lib/team-mcp.js"
+   ]
+  },
+  "skills/delivery-board.js": {
+   "imports": [
+    "skills/client-status-pack.js"
+   ],
+   "importedBy": [
+    "skills/client-status.js"
    ]
   },
   "skills/delivery-pack.js": {
@@ -19955,6 +20078,8 @@
    ],
    "reachedBy": [
     "lib/brain-everywhere.js",
+    "skills/client-status.js",
+    "skills/delivery-board.js",
     "skills/verse-brain.js"
    ]
   },
@@ -20086,12 +20211,20 @@
    "importedBy": [
     "skills/client-status-pack.js",
     "skills/status-board.js"
+   ],
+   "reachedBy": [
+    "skills/client-status.js",
+    "skills/delivery-board.js"
    ]
   },
   "skills/systems-monitor.js": {
    "imports": [],
    "importedBy": [
     "skills/client-status-pack.js"
+   ],
+   "reachedBy": [
+    "skills/client-status.js",
+    "skills/delivery-board.js"
    ]
   },
   "skills/tab.js": {

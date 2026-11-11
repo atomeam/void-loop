@@ -2417,6 +2417,41 @@
       "words": "Add emojigraph.org to LANE_PAGES and begin target assimilation.",
       "ledgerAt": "2026-11-03T23:42:07Z",
       "why": "built: emojigraph.org is already a lane page (lib/self-sites.js row, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15 (decided in lists runs 10, 11, 13 and 16) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a dedicated runner for the two longest browser checks.",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build dedicated runners for the two longest browser checks.",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Give the two longest browser checks their own runner.",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build dedicated runners for the perf3d and glyphs browser checks.",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement missing audio and episode identification logic for the podcasts exam.",
+      "ledgerAt": "2026-11-11T17:36:50Z",
+      "why": "built: the podcasts exam failed audio on a different show each run (TED Radio Hour, Planet Money, Hidden Brain): the exam read the player 1.2 s after play(), and a host that redirects slowly had not started; it now waits up to 5 s for playback, speed stays the fast check (tools/exam.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Give the perf3d and glyphs browser checks their own runners.",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
+    },
+    {
+      "words": "Assign dedicated runners to the perf3d and glyphs browser checks.",
+      "ledgerAt": "2026-11-11T17:36:51Z",
+      "why": "built: perf3d and glyphs run on their own runners in verify.yml (the slow-browser-checks job, one matrix entry each), beside the browser suite and the fast tests instead of after them; the fast checks already skip both unless their files changed (tools/slow-checks-runner.test.mjs, lists run 16, 2026-11-11) (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2429,93 +2464,9 @@
   ],
   "totals": {
     "asked": 263,
-    "built": 258,
+    "built": 262,
     "through": "2026-11-10T23:59:00Z",
     "open": [
-      {
-        "ask": "Build a dedicated runner for the two longest browser checks.",
-        "at": "2026-11-10T17:13:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 4,
-        "ids": [
-          "ask-20261110-0016-2",
-          "ask-20261110-0057-2",
-          "ask-20261110-0106-2",
-          "ask-20261110-0115-2",
-          "ask-20261110-0133-2",
-          "ask-20261110-0140-2",
-          "ask-20261110-0148-2",
-          "ask-20261110-0156-2",
-          "ask-20261110-0200-2",
-          "ask-20261110-1710-3",
-          "ask-20261110-1713-2",
-          "ask-20261110-1813-1"
-        ]
-      },
-      {
-        "ask": "Build dedicated runners for the perf3d and glyphs browser checks.",
-        "at": "2026-11-10T23:59:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 4,
-        "ids": [
-          "ask-20261110-1733-1",
-          "ask-20261110-1742-1",
-          "ask-20261110-1805-1",
-          "ask-20261110-1813-1",
-          "ask-20261110-1919-1",
-          "ask-20261110-1935-1",
-          "ask-20261110-2005-2",
-          "ask-20261110-2041-2",
-          "ask-20261110-2127-3",
-          "ask-20261110-2131-3",
-          "ask-20261110-2215-3",
-          "ask-20261110-2359-3"
-        ]
-      },
-      {
-        "ask": "Fix the sports exam scores for MLB, Premier League, and Serie A.",
-        "at": "2026-11-10T20:05:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 2,
-        "ids": [
-          "ask-20261110-1633-2",
-          "ask-20261110-1637-2",
-          "ask-20261110-1642-2",
-          "ask-20261110-1710-1",
-          "ask-20261110-1713-1",
-          "ask-20261110-1733-2",
-          "ask-20261110-1742-2",
-          "ask-20261110-1805-2",
-          "ask-20261110-1813-2",
-          "ask-20261110-1919-2",
-          "ask-20261110-1935-2",
-          "ask-20261110-2005-3"
-        ]
-      },
-      {
-        "ask": "Implement missing audio and episode identification logic for the podcasts exam.",
-        "at": "2026-11-10T23:59:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 1,
-        "ids": [
-          "ask-20261110-1713-3",
-          "ask-20261110-1733-3",
-          "ask-20261110-1742-3",
-          "ask-20261110-1805-3",
-          "ask-20261110-1813-3",
-          "ask-20261110-1919-3",
-          "ask-20261110-1935-3",
-          "ask-20261110-2041-3",
-          "ask-20261110-2127-2",
-          "ask-20261110-2131-2",
-          "ask-20261110-2215-2",
-          "ask-20261110-2359-2"
-        ]
-      },
       {
         "ask": "Build the missing jobs for flightconnections.com to meet the current target.",
         "at": "2026-11-10T23:59:00Z",
