@@ -21,13 +21,13 @@ function isPayloadLeaf(keys, types) { // heuristic: treat as a payload wrapper (
 function extract(input) {
   const text = String(input.content || '');
   const keys = []; let m;
-  const kr = new RegExp(JSON_KEY_RE); while ((m = kr.exec(text))) keys.push(m[1]);
+  const kr = new RegExp(JSON_KEY_RE); while ((m = kr.exec(text))) keys.push(m[1]); // void-review: ok (constant regex literal, not user input)
   const snake = text.match(SNAKE) || [];
   const camel = text.match(CAMEL) || [];
   const urls = uniq((text.match(URL_RE) || []).concat(input.sourceUrl ? [input.sourceUrl] : []));
   const endpoints = [];
-  const er = new RegExp(ENDPOINT_RE); while ((m = er.exec(text))) endpoints.push((m[1] || m[2] || '').trim());
-  const pr = new RegExp(PATH_RE); while ((m = pr.exec(text))) { const p = (m[1] || m[2] || '').trim(); if (p && p !== '/' && /\/[a-z0-9]/i.test(p)) endpoints.push(p); }
+  const er = new RegExp(ENDPOINT_RE); while ((m = er.exec(text))) endpoints.push((m[1] || m[2] || '').trim()); // void-review: ok (constant regex literal, not user input)
+  const pr = new RegExp(PATH_RE); while ((m = pr.exec(text))) { const p = (m[1] || m[2] || '').trim(); if (p && p !== '/' && /\/[a-z0-9]/i.test(p)) endpoints.push(p); } // void-review: ok (constant regex literal, not user input)
   const params = []; const types = {};
   const fn = /\bfunction\s+[A-Za-z0-9_$]*\s*\(([^)]*)\)|\(([^)]*)\)\s*(?::\s*[^{=]+)?\s*(?:=>|\{)/g;
   while ((m = fn.exec(text))) {
