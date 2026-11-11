@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-11T20:13:49.993Z",
+  "at": "2026-11-11T20:39:51.886Z",
   "against": "live",
   "week": "2026-W46",
   "scale": 2,
@@ -34,17 +34,10 @@
       }
     },
     "podcasts": {
-      "score": 94.4,
+      "score": 95.2,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of this american life",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the episode before that",
           "failed": [
