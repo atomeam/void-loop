@@ -369,6 +369,16 @@
    "listed": 7,
    "defectsBefore": 2,
    "defectsAfter": 1
+  },
+  {
+   "at": "2026-11-11T23:36:29.066Z",
+   "run": 46,
+   "measured": 30,
+   "clean": 29,
+   "fixed": 1,
+   "listed": 0,
+   "defectsBefore": 4,
+   "defectsAfter": 1
   }
  ],
  "pages": {
@@ -8004,7 +8014,7 @@
    "why": "no rule fixes it"
   },
   "/prizes/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8017,7 +8027,7 @@
    "state": "clean"
   },
   "/piano/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8030,7 +8040,7 @@
    "state": "clean"
   },
   "/bpm/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8043,7 +8053,7 @@
    "state": "clean"
   },
   "/password/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8056,7 +8066,7 @@
    "state": "clean"
   },
   "/base64/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8082,7 +8092,7 @@
    "state": "clean"
   },
   "/hosting/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8095,20 +8105,20 @@
    "state": "clean"
   },
   "/tournaments/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.053,
     "overflow": 0
    },
    "state": "clean"
   },
   "/podcasts/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8121,7 +8131,7 @@
    "state": "clean"
   },
   "/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8134,7 +8144,7 @@
    "state": "clean"
   },
   "/emoji-combos/emoji-dictionary/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8147,7 +8157,7 @@
    "state": "clean"
   },
   "/news/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8160,14 +8170,14 @@
    "state": "clean"
   },
   "/team/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
-    "defects": 18,
+    "defects": 4,
     "contrast": 0,
-    "targets": 17,
+    "targets": 3,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.41,
+    "cls": 1.234,
     "overflow": 0
    },
    "state": "fixed",
@@ -8177,15 +8187,15 @@
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.41,
+    "cls": 1.234,
     "overflow": 0
    },
-   "rules": 17,
+   "rules": 3,
    "moved": 0,
-   "why": "(a layout shift of 0.41 that no rule fixes: listed for a builder)"
+   "why": "(a layout shift of 1.234 that no rule fixes: listed for a builder)"
   },
   "/markets/currency-converter/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8198,7 +8208,7 @@
    "state": "clean"
   },
   "/ledger/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8211,7 +8221,7 @@
    "state": "clean"
   },
   "/photos/exifeditor/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8224,7 +8234,7 @@
    "state": "clean"
   },
   "/photos/photopea/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8237,7 +8247,7 @@
    "state": "clean"
   },
   "/photos/squoosh/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8250,7 +8260,7 @@
    "state": "clean"
   },
   "/photos/iloveimg/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8263,7 +8273,7 @@
    "state": "clean"
   },
   "/photos/tinypng/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8276,7 +8286,7 @@
    "state": "clean"
   },
   "/emoji-combos/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8289,7 +8299,7 @@
    "state": "clean"
   },
   "/scores/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8302,7 +8312,7 @@
    "state": "clean"
   },
   "/photos/exif/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8315,7 +8325,7 @@
    "state": "clean"
   },
   "/random/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8328,7 +8338,7 @@
    "state": "clean"
   },
   "/markets/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8341,7 +8351,7 @@
    "state": "clean"
   },
   "/chords/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8354,7 +8364,7 @@
    "state": "clean"
   },
   "/translate/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8367,7 +8377,7 @@
    "state": "clean"
   },
   "/photos/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8380,7 +8390,7 @@
    "state": "clean"
   },
   "/stopwatch/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8393,7 +8403,7 @@
    "state": "clean"
   },
   "/boards/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -8419,7 +8429,7 @@
    "state": "clean"
   },
   "/metronome/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T23:36:29.066Z",
    "before": {
     "defects": 0,
     "contrast": 0,
