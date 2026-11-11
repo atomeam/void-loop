@@ -339,6 +339,16 @@
    "listed": 2,
    "defectsBefore": 16,
    "defectsAfter": 5
+  },
+  {
+   "at": "2026-11-11T17:20:25.711Z",
+   "run": 43,
+   "measured": 30,
+   "clean": 21,
+   "fixed": 3,
+   "listed": 6,
+   "defectsBefore": 11,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -6615,7 +6625,7 @@
    "state": "clean"
   },
   "/under-the-hood/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -6886,7 +6896,7 @@
    "state": "clean"
   },
   "/fix/n8n-webhook-404-not-registered/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6899,7 +6909,7 @@
    "state": "clean"
   },
   "/random/coin/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -6913,18 +6923,8 @@
    "why": "no rule fixes it (a layout shift of 0.147 that no rule fixes: listed for a builder)"
   },
   "/books/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 3,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6933,11 +6933,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0
+   "state": "clean"
   },
   "/generators/forum/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6950,7 +6949,7 @@
    "state": "clean"
   },
   "/jobs/salary/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6963,7 +6962,7 @@
    "state": "clean"
   },
   "/jobs/regions/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6976,7 +6975,7 @@
    "state": "clean"
   },
   "/password/strength/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6989,7 +6988,7 @@
    "state": "clean"
   },
   "/flights/airports/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7002,7 +7001,7 @@
    "state": "clean"
   },
   "/flights/distance/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7015,7 +7014,7 @@
    "state": "clean"
   },
   "/scoreboard/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7029,32 +7028,20 @@
    "why": "no rule fixes it (a layout shift of 0.339 that no rule fixes: listed for a builder)"
   },
   "/lab/f626-flooring-tile-estimator/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
-    "defects": 2,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.165,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 1,
+    "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.165,
+    "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0,
-   "why": "(a layout shift of 0.165 that no rule fixes: listed for a builder)"
+   "state": "clean"
   },
   "/lab/f613-tip-calculator/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7067,7 +7054,7 @@
    "state": "clean"
   },
   "/jobs/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7080,7 +7067,7 @@
    "state": "clean"
   },
   "/flights/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7093,31 +7080,21 @@
    "state": "clean"
   },
   "/lab/f193-webrtc-indexeddb-sealed-genome-swarm/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.003,
-    "overflow": 4
+    "cls": 0.021,
+    "overflow": 3
    },
    "state": "clean"
   },
   "/lab/f615-packing-list-maker/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
-    "defects": 1,
-    "contrast": 1,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.032,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7126,11 +7103,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0.002
+   "state": "clean"
   },
   "/generators/story/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7144,7 +7120,7 @@
    "why": "no rule fixes it (a layout shift of 0.101 that no rule fixes: listed for a builder)"
   },
   "/pdf/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7157,7 +7133,7 @@
    "state": "clean"
   },
   "/autopilot/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7165,12 +7141,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0.057,
-    "overflow": 172
+    "overflow": 13
    },
    "state": "clean"
   },
   "/lab/f612-bill-splitter/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7183,7 +7159,7 @@
    "state": "clean"
   },
   "/fix/audit/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7209,32 +7185,32 @@
    "state": "clean"
   },
   "/lab/f235-forge-duel/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.644,
+    "cls": 0.601,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.644 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.601 that no rule fixes: listed for a builder)"
   },
   "/video/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T17:20:25.711Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.243,
+    "cls": 0.259,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.243 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.259 that no rule fixes: listed for a builder)"
   },
   "/lab/mind-map/": {
    "at": "2026-11-09T08:22:18.656Z",
@@ -9686,6 +9662,117 @@
    "rules": 1,
    "moved": 0.002,
    "why": "(a layout shift of 0.35 that no rule fixes: listed for a builder)"
+  },
+  "/rotate-letters/": {
+   "at": "2026-11-11T17:20:25.711Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f635-teleprompter/": {
+   "at": "2026-11-11T17:20:25.711Z",
+   "before": {
+    "defects": 7,
+    "contrast": 4,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.002,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "rules": 7,
+   "moved": 0.132
+  },
+  "/lab/f641-subscription-tracker/": {
+   "at": "2026-11-11T17:20:25.711Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.003
+  },
+  "/lab/f632-seating-chart/": {
+   "at": "2026-11-11T17:20:25.711Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f643-receipt-to-expense/": {
+   "at": "2026-11-11T17:20:25.711Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f638-meme-maker/": {
+   "at": "2026-11-11T17:20:25.711Z",
+   "before": {
+    "defects": 3,
+    "contrast": 0,
+    "targets": 3,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.01,
+    "overflow": 0
+   },
+   "rules": 3,
+   "moved": 0.14
   }
  }
 }
