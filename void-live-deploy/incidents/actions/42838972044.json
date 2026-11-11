@@ -1,0 +1,57 @@
+{
+ "at": "2026-11-10T15:18:59Z",
+ "sha": "c365179ebe7722a468afd71e73ca18f1231699d9",
+ "runId": 42838972044,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42838972044",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 129908704211,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42838972044/job/129908704211",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)"
+   },
+   "fails": [
+    "FAIL system-slice  -> match broke"
+   ],
+   "tail": [
+    "pass movie",
+    "pass notebook",
+    "pass palette",
+    "pass palindrome",
+    "pass password",
+    "pass pick-for-me",
+    "pass print-download",
+    "pass proverb",
+    "pass quote",
+    "pass random",
+    "pass reuse-pack",
+    "pass riddle",
+    "pass rps",
+    "pass shop",
+    "pass show-countdown",
+    "pass shuffle",
+    "pass status-board",
+    "pass stopwatch",
+    "pass store",
+    "FAIL system-slice  -> match broke",
+    "pass system-status",
+    "pass terminal",
+    "pass triangulate",
+    "pass uuid",
+    "pass video-gen",
+    "pass walker",
+    "pass wordladder",
+    "pass yesno",
+    "pass zoom-figure",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

@@ -5,6 +5,7 @@
 //   layerView(cam, depth, W, H, opts)  how far one layer slides and how much it swells for a camera: { ox, oy, s }
 //   placeAxis(v, o, s, L, margin)      where one star's coordinate lands on screen, every wrapped copy that shows
 //   streakOf(vx, vy, zoomRate, opts)   the near stars' motion streak from the layer's speed (px/s) and the zoom rate (1/s)
+//   smoothedSpeed(prev, move, dtS)     one camera event folded into the sky's speed estimate, honest about the frame's gap
 // Run its tests: node --test tools/star-parallax.test.mjs
 
 export const FAR = Object.freeze({ pan: 0.15, zoom: 0.06 }); // the far layer: 0.15 of the eye's travel, swells little
@@ -60,4 +61,18 @@ export function streakOf(vx, vy, zoomRate = 0, { still = false } = {}) {
   if (len < STREAK_MIN) { dx = 0; dy = 0; } else if (len > STREAK_MAX) { dx *= STREAK_MAX / len; dy *= STREAK_MAX / len; }
   const zr = num(zoomRate), warp = zr > WARP_MIN ? Math.min(WARP_MAX, (zr - WARP_MIN) * 0.08) : 0;
   return { dx: round(dx, 2), dy: round(dy, 2), warp: round(warp, 4) };
+}
+
+/**
+ * One camera event folded into the sky's speed estimate: `move` is the true speed the event shows (px/s, or ln z per second for
+ * the zoom rate) over a frame `dtS` seconds old, blended into `prev` with a weight that grows with the gap — about two fifths at
+ * 60 fps, one for any frame a quarter second old or more (fly.js caps a frame's step there). The fixed half-blend this replaces
+ * let a starved estimate crawl back at half the true speed, so on a loaded machine the streak could stay under its floor the
+ * whole move; now one slow frame lands the full speed on the first event and the streak shows while the eye flies. A frame with
+ * no gap (dtS not a positive number) keeps the old estimate. Pure.
+ */
+export function smoothedSpeed(prev, move, dtS) {
+  const p = num(prev), dt = num(dtS);
+  if (!(dt > 0)) return p;
+  return p + (1 - Math.exp(-Math.min(0.25, dt) / 0.033)) * (num(move) - p);
 }

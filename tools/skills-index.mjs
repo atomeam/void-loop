@@ -168,7 +168,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       let missing = [], loose = [];
       try { const r = ranksOf(); missing = JSON.parse(readFileSync(INDEX, 'utf8')).filter((n) => !(n in r)); loose = unregistered(readdirSync(skillsDir), (f) => readFileSync(resolve(skillsDir, f), 'utf8'), r); } catch (_) {}
       if (loose.length) { console.log('skills/' + loose.map((x) => x.file).join(', ') + ' is a skill with no order file: node tools/skills-index.mjs --adopt registers it (at the end of the routing order), or name it in OFF in tools/skills-index.mjs with why'); process.exit(1); }
-      if (missing.length) { console.log('skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'); process.exit(1); }
+      // a name still in the committed index after its order file moved is the same staleness: the deploy rewrites the index, and a pull request that commits it conflicts with every other one
+      if (missing.length) console.log('skills/index.json lists ' + missing.join(', ') + ' with no order file (the deploy rewrites index.json)');
       // index.json and lineage.json are written at deploy. A stale copy is not a pull-request failure: two branches editing the one list always conflict.
       console.log(names.length + ' skills from skills/order/; ' + lineage.count + ' skills built with skills' + (stale || lineage.stale ? ' (the deploy rewrites index.json and lineage.json)' : ', index.json matches'));
       process.exit(0); }

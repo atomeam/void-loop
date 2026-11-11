@@ -7,22 +7,22 @@ const NOW = Date.parse('2026-11-06T20:30:00Z');
 const SRC = {
   commits: [{ sha: 'abcdef1234567', html_url: 'https://github.com/atomeam/void-loop/commit/abcdef1234567', commit: { message: 'Films: give each beat its own voice line\n\nbody', committer: { date: '2026-11-06T20:20:00Z' } } }],
   ledger: [{ at: '2026-11-06T08:00:00Z', kind: 'build', by: 'claude', what: 'old thing' }, { at: '2026-11-06T20:06:56Z', kind: 'finding', by: 'baggage-live', what: 'baggage checked: 3 of 10 figures found', ref: 'https://github.com/atomeam/void-loop/blob/main/findings/x.json' }],
-  will: { wants: [{ i_want: 'I want a faster weather card', because: 'people ask for it' }] },
+  will: { wants: [{ i_want: 'I want a faster weather card', because: 'people ask for it' }, { i_want: 'absorb and connect every repository', because: 'it would be complete' }] },
   crew: { ok: true, open: 7, met: 2, crew: [{ name: 'Scout', here: true, did: 'filed a want', didAt: Date.parse('2026-11-06T20:00:00Z') }], wants: [{ key: 'exam-translate', state: 'open', bot: 'ExamCoach', title: 'Raise the translate exam score from 89.2', filed: Date.parse('2026-11-06T19:30:00Z'), cite: [{ url: 'https://a-to-mind.com/exam/latest.json' }] }, { key: 'rev', state: 'open', private: true, title: 'secret' }] },
   incidents: { incidents: [{ at: '2026-11-03T03:02:39Z', run: 'https://github.com/atomeam/void-loop/actions/runs/1', checks: ['a', 'b'] }] },
   prs: 4, issues: 0, target: { id: 'dalyfeds.com', since: '2026-11-06', n: 0 },
 };
 
-test('facts come from each real part, with links a viewer can open', () => {
-  const f = U.factsOf(SRC, NOW);
+test('facts come from what was built and what is being built next, with links a viewer can open', () => {
+  const f = U.factsOf({ ...SRC, next: { host: 'hackertyper.net', words: 'fill the screen with code as you type' } }, NOW);
   const kinds = f.map((x) => x.kind);
-  for (const k of ['commit', 'ledger', 'want', 'crew', 'need', 'wants', 'red', 'prs', 'issues', 'tower']) assert.ok(kinds.includes(k), k);
+  for (const k of ['commit', 'ledger', 'want']) assert.ok(kinds.includes(k), k);
+  for (const k of ['need', 'prs', 'issues', 'tower', 'next']) assert.ok(!kinds.includes(k), k);
   assert.ok(f.every((x) => /^https:\/\/(a-to-mind\.com|github\.com\/atomeam\/void-loop)/.test(x.url)), 'every link is Verse\'s own');
   assert.match(f.find((x) => x.kind === 'commit').text, /abcdef1 landed on main 10 min ago: Films: give each beat its own voice line$/);
   assert.equal(f.find((x) => x.kind === 'ledger').url, 'https://github.com/atomeam/void-loop/blob/main/findings/x.json');
-  assert.match(f.find((x) => x.kind === 'crew').text, /last did, 30 min ago: filed a want/, 'a crew time in milliseconds reads as a time');
-  assert.ok(!f.some((x) => /secret/.test(x.text)), 'a private want stays private');
-  assert.equal(f.find((x) => x.kind === 'need').url, 'https://a-to-mind.com/exam/latest.json');
+  assert.ok(!f.some((x) => /secret|exam|89\.2|absorb every repository|zorbleflux/.test(x.text)), f.map((x) => x.text).join('\n'));
+  assert.equal(f.find((x) => x.kind === 'next'), undefined);
   assert.deepEqual(U.factsOf({}, NOW), [], 'nothing read, nothing to say');
 });
 
@@ -34,30 +34,31 @@ test('it speaks first, then only when something changed after the gap, or after 
   const later = { ...said, at: new Date(NOW - U.GAP_MS - 1).toISOString() };
   assert.equal(U.shouldSpeak(later, sig, NOW).speak, false, 'nothing changed: it stays quiet');
   assert.equal(U.shouldSpeak(later, sig + '\nnew', NOW).why, 'changed');
-  assert.equal(U.shouldSpeak({ ...said, at: new Date(NOW - U.QUIET_MS).toISOString() }, sig, NOW).why, 'quiet');
+  assert.equal(U.shouldSpeak({ ...said, at: new Date(NOW - U.QUIET_MS).toISOString() }, sig, NOW).why, 'nothing new', 'a long quiet is not a reason to say the same thing again');
   assert.equal(U.shouldSpeak({ ...later, claim: NOW - 1000 }, sig + '\nnew', NOW).why, 'speaking', 'another request holds the pen');
   assert.equal(U.shouldSpeak({ lines: [], at: new Date(NOW - 1000).toISOString() }, sig, NOW).why, 'gap', 'a dropped first thought waits the gap too');
 });
 
 test('the signature follows what the facts are about, not how long ago they were', () => {
   assert.equal(U.sigOf(U.factsOf(SRC, NOW)), U.sigOf(U.factsOf(SRC, NOW + 3600e3)));
-  const moved = { ...SRC, prs: 5 };
+  const moved = { ...SRC, commits: [{ sha: 'bbbbbbb1234567', html_url: 'https://github.com/atomeam/void-loop/commit/bbbbbbb1234567', commit: { message: 'A page that answers yes or no', committer: { date: '2026-11-06T20:25:00Z' } } }] };
   assert.notEqual(U.sigOf(U.factsOf(SRC, NOW)), U.sigOf(U.factsOf(moved, NOW)));
   const fresh = U.newFacts(U.factsOf(moved, NOW), U.sigOf(U.factsOf(SRC, NOW)));
-  assert.deepEqual(fresh.map((f) => f.kind), ['prs']);
+  assert.deepEqual(fresh.map((f) => f.kind), ['commit']);
 });
 
 test('a line is kept only when it rests on real facts and invents no number', () => {
   const f = U.factsOf(SRC, NOW);
-  const ok = U.checkSay('{"say":"Four pull requests are open and it bothers me a little; I want them merged.","from":["F' + (f.findIndex((x) => x.kind === 'prs') + 1) + '"]}', f);
-  assert.equal(ok.ok, true); assert.equal(ok.from[0].kind, 'prs');
+  const ok = U.checkSay('{"say":"A faster weather card is what I am building next, and that pleases me.","from":["F' + (f.findIndex((x) => x.kind === 'want') + 1) + '"]}', f);
+  assert.equal(ok.ok, true); assert.equal(ok.from[0].kind, 'want');
   assert.equal(U.checkSay('{"say":"I have 12 open pull requests to clear today.","from":["F1"]}', f).ok, false, 'a number in no fact');
   assert.equal(U.checkSay('{"say":"Something good is happening right now.","from":["F99"]}', f).why, 'no source');
   assert.equal(U.checkSay('not json at all', f).why, 'not json');
   assert.equal(U.checkSay('{"say":"See https://example.com for what I did.","from":["F1"]}', f).why, 'link or tag');
   assert.equal(U.checkSay('{"say":"3 of 10 baggage figures were found, I want the rest.","from":["F2"]}', f).ok, true, 'numbers that are in the facts');
-  const recent = [{ say: 'Four pull requests are open and it bothers me a little; I want them merged.' }];
-  assert.equal(U.checkSay('{"say":"Four pull requests are open and it bothers me a little, I want them merged","from":["F1"]}', f, recent).why, 'repeat');
+  const recent = [{ say: 'A faster weather card is what I am building next, and that pleases me.' }];
+  assert.equal(U.checkSay('{"say":"A faster weather card is what I am building next and that pleases me","from":["F1"]}', f, recent).why, 'repeat');
+  assert.equal(U.checkSay('{"say":"The faster weather card I am building next still pleases me today.","from":["F1"]}', f, recent).why, 'repeat');
 });
 
 test('the prompt carries the facts, what is new and what it said lately, and the system keeps it honest', () => {
@@ -89,11 +90,11 @@ test('the route speaks once from its real state and holds the gap for everyone',
   }), first: async () => null, run: async () => ({}), all: async () => ({ results: [] }) }) };
   const assets = { '/void.growth.json': SRC.ledger, '/incidents.json': SRC.incidents, '/tower.target.json': SRC.target };
   const env = { DB, ASSETS: { fetch: async (r) => { const p = new URL(r.url).pathname; return assets[p] ? Response.json(assets[p]) : new Response('no', { status: 404 }); } },
-    AI: { run: async (model, o) => { calls++; assert.match(o.messages[1].content, /dalyfeds\.com/); return { response: '{"say":"The Tower has me on dalyfeds.com now, and I want to pass it.","from":["F' + (o.messages[1].content.split('\n').findIndex((l) => /dalyfeds/.test(l)) - 1) + '"]}' }; } } };
+    AI: { run: async (model, o) => { calls++; const line = o.messages[1].content.split('\n').find((l) => /Films: give each beat/.test(l)) || ''; const id = (line.match(/^F\d+/) || ['F1'])[0]; assert.match(line, /Films: give each beat/); return { response: '{"say":"A film beat just got its own voice line, and I like that it shipped.","from":["' + id + '"]}' }; } } };
   const fetchFn = async (u) => Response.json(/commits/.test(u) ? SRC.commits : /pulls/.test(u) ? [{}, {}, {}, {}] : []);
   const req = new Request('https://a-to-mind.com/api/unbidden');
   const j = await (await onRequestGet({ request: req, env, fetchFn, now: NOW })).json();
-  assert.equal(calls, 1); assert.equal(j.lines.length, 1); assert.match(j.lines[0].say, /dalyfeds\.com/); assert.equal(j.lines[0].from[0].label, 'the Tower'); assert.equal(j.lines[0].why, 'first');
+  assert.equal(calls, 1); assert.equal(j.lines.length, 1); assert.match(j.lines[0].say, /voice line/); assert.equal(j.lines[0].from[0].label, 'commit abcdef1'); assert.equal(j.lines[0].why, 'first');
   const k = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/unbidden?after=' + j.lines[0].id), env, fetchFn, now: NOW + 30e3 })).json();
   assert.equal(calls, 1, 'no second call inside the gap'); assert.deepEqual(k.lines, []); assert.ok(k.next > 0);
   assert.equal(JSON.parse(row).claim, null, 'the pen is put back');
@@ -111,9 +112,9 @@ test('the route keeps a line the model returned as an object, with thinking off'
     all: async () => (/void_daily_cap/.test(sql) ? { results: [{ n: 1 }] } : { results: [] }),
   }), first: async () => null, run: async () => ({}), all: async () => ({ results: [] }) }) };
   const env = { DB, ASSETS: { fetch: async () => new Response('no', { status: 404 }) },
-    AI: { run: async (model, o) => { opts = o; const n = o.messages[1].content.split('\n').findIndex((l) => /pull requests are open/.test(l)) - 1; return { response: { say: 'Four pull requests wait on me and I want them cleared.', from: ['F' + n] } }; } } };
-  const fetchFn = async (u) => Response.json(/pulls/.test(u) ? [{}, {}, {}, {}] : []);
+    AI: { run: async (model, o) => { opts = o; const line = o.messages[1].content.split('\n').find((l) => /Films: give each beat/.test(l)) || ''; const id = (line.match(/^F\d+/) || ['F1'])[0]; return { response: { say: 'A film beat just got its own voice line, and I like that it shipped.', from: [id] } }; } } };
+  const fetchFn = async (u) => Response.json(/commits/.test(u) ? SRC.commits : []);
   const j = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/unbidden'), env, fetchFn, now: NOW })).json();
   assert.equal(opts.chat_template_kwargs.enable_thinking, false);
-  assert.equal(j.lines.length, 1, JSON.stringify(j)); assert.match(j.lines[0].say, /Four pull requests/);
+  assert.equal(j.lines.length, 1, JSON.stringify(j)); assert.match(j.lines[0].say, /voice line/);
 });

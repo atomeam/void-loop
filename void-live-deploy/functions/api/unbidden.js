@@ -1,7 +1,7 @@
 // Unbidden: Verse speaks first on /brain/ (lib/unbidden.js has the rules; the page is brain/unbidden.js).
 // GET /api/unbidden[?after=<line id>] -> { lines: [{ id, at, say, why, from: [{ label, url, text }] }], next, note? }
 //   lines are newest last: the ones after `after`, or the last few. When something about Verse really changed (a commit on main, a growth
-//   ledger line, a want, a crew member's work, a red run, the open pull requests or issues, the Tower's site) and the last line is at least
+//   ledger line, a want, a crew member's work, a red run, the open pull requests or issues) and the last line is at least
 //   GAP_MS old, or nothing changed for QUIET_MS, this request has Verse say one new line first, written by its own model from those facts.
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. An open GET with one input, `after`, which only picks which kept lines come back.
 // The most a caller can do is make Verse speak sooner than it would: it cannot, because a line is written only when Verse's own state changed

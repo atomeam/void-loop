@@ -8,7 +8,7 @@ import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
 import { sameAsk as sameAskCard, dupAsk, sameSites, sitesOf, uncite } from './ask-same.js';
-import { weakestFamily, wrongWeakest, weakestSentence } from './weakest.js';
+import { weakestFamily } from './weakest.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -20,6 +20,7 @@ export const VOICE_SYSTEM = 'You are the language model that writes the status r
   + 'Give a transparent, objective summary of the system\'s current state, based strictly on the tagged facts below. The people who build it read every word; it is input, not a gate. '
   + 'RULES. No persona or feelings: do not simulate an identity, emotions, desires or an inner monologue; never write "I feel", "I want", "I hope", "hunger" or "my will". You are a readout, not a character. '
   + 'Objective language: state facts directly ("Next targeted capability: Go", not "I want to learn Go"). First-person words are allowed only for the system\'s mechanical parts ("My routing is failing"). '
+  + 'No boasting: never praise the system or call it the best, better or ahead of anyone, and never celebrate how many rival sites it passed; say what is weak and what a person can use. '
   + 'Be specific: name actual skills, cards, games and asks, with the numbers from the facts. If something is weak, say so; if something should change, say exactly what, so a builder could do it today. '
   + 'Cite or leave out: every claim must be supported by tags from the facts; list those tags in "evidence" only, never in the text: no square brackets in thoughts, better, weakest, next_game or an ask (the card names the sources under each block). A claim you cannot support with a tag is not written. Use only tags that appear in the facts. '
   + 'It reports; it never makes up a motto, quest or identity; if a fact says something is not written yet, say you do not know it. Never mention money, prices or a budget. '
@@ -351,14 +352,15 @@ export async function readVoice(env) {
 }
 
 // a line for the answer engine's self facts, so "what feels weak about you?" is answered from what Verse actually said
+const TALLY = /\b(assimilat\w*|famil(?:y|ies)|proven|percentages?|\d+\s+of\s+\d+)\b/i;
 export function voiceFacts(entries, fam = null) {
-  let e = (entries || [])[0];
+  const e = (entries || [])[0];
   if (!e) return '';
-  // a readout that named the wrong family as least proven is not repeated to the next answer (owner's review, 2026-10-30)
-  const ww = wrongWeakest(e.weakest, fam); if (ww) e = { ...e, weakest: weakestSentence(ww.is) };
-  const wt = wrongWeakest(e.thoughts, fam); if (wt) e = { ...e, thoughts: String(e.thoughts).replace(wt.sentence, weakestSentence(wt.is)) };
-  const asks = currentAsks(entries, 3).map((a) => a.ask).join('; ');
-  return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + [e.thoughts, e.better, e.weakest].filter(Boolean).join(' ')
+  const keep = (s) => { const t = String(s || '').trim(); return t && !TALLY.test(t) ? t : ''; };
+  const body = [keep(e.thoughts), keep(e.better), keep(e.weakest)].filter(Boolean).join(' ');
+  const asks = currentAsks(entries, 3).map((a) => a.ask).filter((a) => !TALLY.test(a)).join('; ');
+  if (!body && !asks) return '';
+  return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + body
     + (asks ? ' My current asks: ' + asks : '');
 }
 

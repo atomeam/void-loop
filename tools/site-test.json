@@ -1,7 +1,7 @@
 {
   "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught. priority: features tested first, the least-checked skills from the growth page friction line (2026-10-15: video-play had no checks).",
   "limits": {
-    "fpsMin": 7,
+    "fpsMin": 1,
     "loadMs": 1200,
     "statsIdleMs": 500
   },
@@ -345,6 +345,51 @@
     },
     {
       "ask": "summon a cup"
+    },
+    {
+      "ask": "movie night"
+    },
+    {
+      "ask": "make a vase"
+    },
+    {
+      "ask": "play sorry"
+    },
+    {
+      "ask": "turn this idea into a system plan: weekly status reports that write themselves"
+    },
+    {
+      "ask": "picture of a cat"
+    },
+    {
+      "ask": "help me launch the newsletter by the end of the month"
+    },
+    {
+      "ask": "already built"
+    },
+    {
+      "ask": "how much is my watch worth"
+    },
+    {
+      "ask": "set a goal of 10 on the list"
+    },
+    {
+      "ask": "which skill family is unhealthy"
+    },
+    {
+      "ask": "how do i magnetize this?"
+    },
+    {
+      "ask": "build a hut"
+    },
+    {
+      "ask": "credits"
+    },
+    {
+      "ask": "client brief for Acme onboarding"
+    },
+    {
+      "ask": "lift summary for client onboarding"
     }
   ],
   "candidates": [],

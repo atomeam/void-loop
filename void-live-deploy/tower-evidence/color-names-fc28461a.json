@@ -1,0 +1,69 @@
+{
+ "id": "color names",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 144,
+   "best": 229,
+   "evidence": "Verse (/color/) 144 ms to the load event (median of 3, phone width) vs colornames.org 229 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/color/) 3 of 3 loads answered vs colornames.org 3 of 3 loads answered",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/color/) 0 px sideways overflow at 390 px vs colornames.org 0 px sideways overflow at 390 px",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 3,
+   "evidence": "Verse (/color/) 0 unnamed controls or images vs colornames.org 3 unnamed controls or images",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/color/) 1 (1: the page shows itself again with the network cut) vs colornames.org 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 0,
+   "evidence": "Verse (/color/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs colornames.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7,
+   "best": 4.5,
+   "evidence": "Verse (/color/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs colornames.org 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 4,
+   "evidence": "Verse (/color/) 0 design defects vs colornames.org 4 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.03), colornames.org (4 low-contrast texts, 0 small tap targets, layout shift 0.01)",
+   "at": "2026-11-09T16:30:16.964Z",
+   "siteRead": true
+  }
+ }
+}

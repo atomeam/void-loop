@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg:#0f1115; --card:#1a1d24; --text:#e6e6e6; --accent:#4cc9f0; --node:#2a9d8f; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif; padding:1rem; }
+  h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+  .row { display:flex; gap:1rem; flex-wrap:wrap; }
+  textarea { width:100%; min-height:120px; background:#111; color:var(--text); border:1px solid #333; border-radius:6px; padding:0.5rem; font-family:monospace; }
+  button, .btn { background:var(--accent); color:#000; border:0; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font-weight:600; }
+  button:hover { filter:brightness(1.1); }
+  #canvas-wrap { background:#111; border:1px solid #333; border-radius:8px; overflow:auto; min-height:400px; position:relative; }
+  svg { width:100%; height:600px; touch-action:none; }
+  .node { cursor:grab; }
+  .node:active { cursor:grabbing; }
+  .controls { margin:0.5rem 0; display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; }
+  .toast { position:fixed; bottom:1rem; right:1rem; background:#333; padding:0.5rem 1rem; border-radius:6px; opacity:0; transition:opacity 0.3s; }
+  .toast.show { opacity:1; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Text to flowchart · Verse lab</title>
+<meta name="description" content="Job: Paste or type lines like &quot;Start -&gt; Check input&quot; and &quot;Valid? -&gt; Yes -&gt; Process&quot;.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Text to flowchart · Verse lab">
+<meta property="og:description" content="Job: Paste or type lines like &quot;Start -&gt; Check input&quot; and &quot;Valid? -&gt; Yes -&gt; Process&quot;.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f645-text-to-flowchart-spatial/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f645-text-to-flowchart-spatial/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Text to flowchart</h1>
+<p>Type or paste lines like <code>Start -> Check input</code> or <code>Valid? -> Yes -> Process</code>. Drag nodes to rearrange. Nothing leaves your device.</p>
+<div class="controls">
+  <button id="example">Load example</button>
+  <button id="dl-svg">Download SVG</button>
+  <button id="dl-png">Download PNG</button>
+  <button id="copy-text">Copy text</button>
+  <span id="status"></span>
+</div>
+<textarea id="input" placeholder="Start -> Check input&#10;Check input -> Valid?&#10;Valid? -> Yes -> Process&#10;Valid? -> No -> Error&#10;Process -> Done&#10;Error -> Done"></textarea>
+<div id="canvas-wrap"><svg id="svg"></svg></div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

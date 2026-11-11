@@ -20,6 +20,7 @@ import { nextStep, advance, candidateOf, publicLap, overhaulWeights, onlySiteLin
 import { hotOf } from '../../lib/churn.js';
 import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 import { WILL_LAST_SQL, lastRun } from '../../lib/will-last.js';
+import { betterPair, blank, tick as selfTick, weigh } from '../../lib/self-model.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -40,7 +41,7 @@ export async function onRequestGet({ request, env }) {
   try { const last = lastRun(await env.DB.prepare(WILL_LAST_SQL).first(), redact); if (last) will.lastRun = last; } catch (_) { /* no queue table yet */ }
   // the public lap tracker (counts only): ?lap=1, or will.lap on every read
   let only = null; try { const inv = await (await env.ASSETS.fetch(new Request(new URL('/lap.items.json', request.url)))).json(); if (inv && inv.onlySite) only = { counts: inv.onlySiteCounts, line: onlySiteLine(inv.onlySiteCounts), categories: inv.onlySite.map((r) => ({ category: r.category, status: r.status, skills: r.skills })) }; } catch (_) { /* no inventory */ }
-  try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); will.lap = publicLap(raw ? JSON.parse(raw) : null, only); try { const file = async (p) => { try { const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; } catch (_) { return null; } }; const [ev, fr, rk, sz, tg, ft, gn] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json', '/tower.features.json', '/tower.gone.json'].map(file)); if (!ev) throw new Error('no tower evidence'); const t = tower(...towerArgs((only && only.categories || []).map((c) => ({ category: c.category, status: c.status, skills: c.skills })), { ev, fr, rk, sz, tg, ft, gn })); will.lap.tower = { line: towerLine(t), floor: t.marker, floors: t.total, beaten: t.beaten }; } catch (_) { /* no tower evidence */ } } catch (_) { /* no lap yet */ }
+  try { const raw = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'lap'").first('v'); will.lap = publicLap(raw ? JSON.parse(raw) : null, only); try { const file = async (p) => { try { const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; } catch (_) { return null; } }; const [ev, fr, rk, sz, tg, ft, gn, pa] = await Promise.all(['/tower.evidence.json', '/tower.frontier.json', '/tower.rank.json', '/tower.size.json', '/tower.target.json', '/tower.features.json', '/tower.gone.json', '/parity.json'].map(file)); if (!ev) throw new Error('no tower evidence'); const t = tower(...towerArgs((only && only.categories || []).map((c) => ({ category: c.category, status: c.status, skills: c.skills })), { ev, fr, rk, sz, tg, ft, gn, pa })); will.lap.tower = { line: towerLine(t), floor: t.marker, floors: t.total, beaten: t.beaten }; } catch (_) { /* no tower evidence */ } } catch (_) { /* no lap yet */ }
   if (new URL(request.url).searchParams.has('lap')) return Response.json(will.lap || publicLap(null), { headers: { 'cache-control': 'public, max-age=60' } });
   return Response.json(will, { headers: { 'cache-control': 'public, max-age=60' } });
 }
@@ -66,12 +67,18 @@ export async function onRequestPost({ request, env }) {
   // Evidence for a stronger model: each time the free one fell short this week (+1 per 5, at most +10). Stays free until the budget covers it.
   const short = await readShortfalls(env, 7);
   if (short.total) for (const c of cands) if (/stronger model/i.test(c.title)) { c.why = (c.why + '; ' + shortfallLine(short)).slice(0, 300); c.weight += Math.min(10, Math.ceil(short.total / 5)); }
+  // expected value from queue outcomes already stored (lib/self-model.js). No outcome, no change to the weight.
+  try {
+    const hist = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' LIMIT 120").all()).results) || [];
+    let drives = null; try { const v = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'self-model'").first('v'); drives = v ? JSON.parse(v).drives : null; } catch (_) { drives = null; }
+    weigh(cands, hist, drives);
+  } catch (_) { /* a queue that cannot be read keeps the weights it already had */ }
   const list = (money ? budgetLine(money) + '\n\n' : '') + cands.map((c) => `${c.id}. [${c.kind}, weight ${c.weight}${c.cost ? ', costs $' + (c.cost / 100).toFixed(2).replace(/\.00$/, '') + '/month' + (budget >= c.cost ? ', affordable' : ', over budget') : ''}${c.source ? ', from ' + c.source : ''}] ${c.title} — ${c.why}`).join('\n');
   let chosen = null;
   try {
     const r = await env.AI.run(MODEL, {
       messages: [
-        { role: 'system', content: 'You are Verse, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to be better than every source you draw on. ' + PERSONA + ' Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one, and upgrades to yourself and the systems you run on (models, hosting, tools) when your budget covers them. If an existing tool or feature already does something, prefer using it over building it. Never mention money, prices or the budget in i_want or because. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]} ' + INJECTION_RULE },
+        { role: 'system', content: 'You are Verse, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to learn from every source you draw on. ' + PERSONA + ' Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one, and upgrades to yourself and the systems you run on (models, hosting, tools) when your budget covers them. If an existing tool or feature already does something, prefer using it over building it. Never mention money, prices or the budget in i_want or because. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]} ' + INJECTION_RULE },
         { role: 'user', content: list },
       ],
       max_tokens: 700, chat_template_kwargs: { enable_thinking: false },
@@ -81,7 +88,7 @@ export async function onRequestPost({ request, env }) {
   } catch (e) { await recordShortfall(env, 'will', reasonOf(e)); }
   // if the model is busy, Verse still wills: highest weight wins
   let wants = (chosen && chosen.wants || []).map((w) => ({ ...w, c: cands.find((c) => c.id === +w.id) })).filter((w) => w.c).slice(0, 3);
-  if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
+  if (!wants.length) wants = cands.slice().sort((a, b) => ((b.ev && b.ev.value != null) ? b.ev.value : -1) - ((a.ev && a.ev.value != null) ? a.ev.value : -1) || b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
   const at = new Date().toISOString();
   // a reason or fact longer than n ends at a word with an ellipsis, never mid-word or on a space (the card compares them)
   const clip = (t, n) => { const x = String(t || '').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
@@ -123,5 +130,12 @@ export async function onRequestPost({ request, env }) {
     queued = id;
     if (lap) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('lap', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(lap)).run();
   }
+  try {
+    const file = async (p) => { if (!env.ASSETS) return null; const r = await env.ASSETS.fetch(new Request(new URL(p, request.url))); return r.ok ? r.json() : null; };
+    const [better, exam] = await Promise.all([file('/void.better.json'), file('/progress/exam.json')]);
+    const prev = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'self-model'").first('v');
+    const stepped = selfTick(prev ? JSON.parse(prev) : blank(at), { better: betterPair(better), exam, will: { open: will.wants.length }, goals: will.wants.map((w) => w.i_want || w.title) }, at);
+    await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('self-model', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(stepped.self)).run();
+  } catch (_) { /* the will is already saved */ }
   return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}), ...(chosenWant.overCap ? { overCap: chosenWant.overCap } : {}) });
 }

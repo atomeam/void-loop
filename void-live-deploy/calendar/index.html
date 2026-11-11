@@ -113,6 +113,14 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
   .srcs { font-size: 12px; color: var(--soft); margin-top: 10px; }
   @media print { button, form, #related, #asks, #alert, .rem, .bar .seg, .srcs, h1, .sub { display: none !important; } }
+  /* from Google Calendar's appointment schedules and time insights, Outlook Bookings, Proton and Cozi (lib/cal-booking.js) */
+  #bookMake { border-top: 1px solid var(--line); margin-top: 10px; padding-top: 8px; } #bookMake h3, #ins h3 { font-size: 15px; margin: 0 0 4px; }
+  #bookMake input, #bookCard input { flex: 1 1 160px; min-width: 0; } #bkOut { width: 100%; font-size: 13px; }
+  .bkDay { font-size: 13px; font-weight: 600; color: var(--soft); margin: 10px 0 4px; } .bkSlots { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bkSlots button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  #ins .bar { display: grid; grid-template-columns: minmax(90px, 30%) 1fr auto; gap: 8px; align-items: center; font-size: 14px; margin: 4px 0; }
+  #ins .bar i { display: block; height: 10px; border-radius: 6px; background: var(--c, var(--accent)); min-width: 2px; }
+  #ins .sum { font-size: 14px; color: var(--soft); margin: 4px 0 8px; } #undoB { margin-left: 8px; min-height: 32px; padding: 2px 12px; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/calendar/">
@@ -136,9 +144,10 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       <button type="button" id="calsBtn" aria-expanded="false" aria-controls="cals">Calendars</button>
       <button type="button" id="tasksBtn" aria-expanded="false" aria-controls="tasks">Tasks</button>
       <button type="button" id="findBtn" aria-expanded="false" aria-controls="find">Find a time</button>
+      <button type="button" id="insBtn" aria-expanded="false" aria-controls="ins" title="Where this week's hours went: by calendar and by day">Time insights</button>
       <button type="button" id="allow" hidden>Allow notifications</button>
     </div>
-    <div class="note" id="note" role="status"></div>
+    <div class="note" id="note" role="status"></div><button type="button" id="undoB" hidden>Undo</button>
   </form>
   <form id="sf" hidden role="search"><label class="vh" for="sq" id="sqL">Search events</label><input type="search" id="sq" placeholder="Search events" maxlength="100"></form>
   <ul class="list" id="results" hidden></ul>
@@ -154,6 +163,27 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     </div>
     <ul class="list" id="slots"></ul>
     <p class="note" id="findNote"></p>
+    <div id="bookMake"><h3>Booking link</h3>
+      <p class="note">A link that offers these free times (up to 60, with the length, hours and days above). Whoever opens it sees them in their own time zone and picks one; the pick comes back to you as a link, or an email they send, that adds it to this calendar. No account; the times ride in the link.</p>
+      <div class="row"><label class="vh" for="bkTitle">What it is</label><input id="bkTitle" maxlength="120" placeholder="What it is: Intro call"><label class="vh" for="bkHost">Your name</label><input id="bkHost" maxlength="60" placeholder="Your name" autocomplete="name"></div>
+      <div class="row"><label class="vh" for="bkEmail">Your email (optional)</label><input id="bkEmail" type="email" maxlength="120" placeholder="Your email, for the guest's mail (optional)" autocomplete="email"><button type="button" class="go" id="bkGo">Make a booking link</button></div>
+      <div id="bkRes" hidden><label class="vh" for="bkOut">Booking link</label><input id="bkOut" readonly><div class="row"><button type="button" id="bkCopy">Copy link</button><a id="bkOpen" target="_blank" rel="noopener">Open it as a guest</a><span class="note" id="bkNote"></span></div></div>
+    </div>
+  </section>
+  <section class="pane" id="ins" hidden aria-labelledby="insH" style="margin-top:8px">
+    <h2 id="insH" style="margin:0 0 4px">Time insights</h2>
+    <div class="row" style="margin:0 0 6px"><button type="button" id="insPrev" aria-label="The week before">‹</button><b id="insWeek"></b><button type="button" id="insNext" aria-label="The week after">›</button></div>
+    <p class="sum" id="insSum"></p><h3>By calendar</h3><div id="insCals"></div><h3>By day</h3><div id="insDays"></div>
+  </section>
+  <section class="pane" id="bookCard" hidden aria-labelledby="bkH" style="margin-top:8px">
+    <h2 id="bkH" style="margin:0 0 4px">Book a time</h2><div id="bkBody"></div><div id="bkTimes"></div>
+    <div class="row"><label class="vh" for="bkName">Your name</label><input id="bkName" maxlength="60" placeholder="Your name" autocomplete="name"><label class="vh" for="bkMsg">A note (optional)</label><input id="bkMsg" maxlength="300" placeholder="A note (optional)"></div>
+    <div class="row"><button type="button" class="go" id="bkBook" disabled>Book this time</button></div>
+    <div id="bkDone" hidden><p class="note" id="bkDoneT"></p><div class="row"><a id="bkMail" hidden>Send it by email</a><button type="button" id="bkCopyBack">Copy the link for them</button><button type="button" id="bkIcs">Download .ics</button></div></div>
+  </section>
+  <section class="pane" id="bookedCard" hidden aria-labelledby="bdH" style="margin-top:8px">
+    <h2 id="bdH" style="margin:0 0 4px">A time was booked</h2><div id="bdBody"></div>
+    <div class="row"><button type="button" class="go" id="bdAdd">Add to my calendar</button></div>
   </section>
   <section class="pane" id="tasks" hidden aria-labelledby="tasksH" style="margin-top:8px">
     <h2 id="tasksH" style="margin:0 0 4px">Tasks</h2>
@@ -275,7 +305,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
 <script type="module">
   // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, C, A, SH, R] = await Promise.all([import('/lib/toolkit.js'), import('/lib/calendar.js'), import('/lib/agenda.js'), import('/lib/calshare.js'), import('/lib/rsvp.js')]);
+    const [{ mountRelated }, C, A, SH, R] = await Promise.all([import('/lib/toolkit.js'), import('/lib/calendar.js'), import('/lib/agenda.js'), import('/lib/calshare.js'), import('/lib/rsvp.js')]), B = await import('/lib/cal-booking.js');
     const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = C.wordsFor(lang);
     const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
     const REM_CHOICES = [[0, W.atTime], [10, '10 ' + W.minBefore], [30, '30 ' + W.minBefore], [60, '1 ' + W.hourBefore], [1440, '1 ' + W.dayBefore]];
@@ -342,6 +372,59 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     }
     $('findBtn').addEventListener('click', () => { const open = $('find').hidden; $('find').hidden = !open; $('findBtn').setAttribute('aria-expanded', String(open)); if (open) drawSlots(); });
     for (const id of ['fLen', 'fDays', 'fFrom', 'fTo', 'fWeek']) $(id).addEventListener('change', drawSlots);
+    // ---- booking links (Google Calendar's appointment schedules, Outlook Bookings): free times in a link; the pick comes back as a link ----
+    $('bkHost').value = store.me || ''; $('bkEmail').value = store.bookEmail || '';
+    $('bkGo').addEventListener('click', () => {
+      const slots = C.freeSlots(shown(), { from: now(), now: now(), days: +$('fDays').value, minutes: +$('fLen').value, dayStart: $('fFrom').value || '09:00', dayEnd: $('fTo').value || '17:00', weekdaysOnly: $('fWeek').checked, perDay: 8, max: B.MAX_SLOTS });
+      const title = $('bkTitle').value.trim(); if (!title) { $('bkTitle').focus(); $('findNote').textContent = de ? 'Erst sagen, worum es geht' : 'Say what it is first'; return; }
+      if (!slots.length) { $('findNote').textContent = W.noSlots; return; }
+      const url = B.bookingLink({ title, host: $('bkHost').value, email: $('bkEmail').value, minutes: +$('fLen').value, slots }, location.origin); if (!url) return;
+      if ($('bkHost').value.trim()) store.me = $('bkHost').value.trim(); store.bookEmail = $('bkEmail').value.trim(); keep();
+      $('bkRes').hidden = false; $('bkOut').value = url; $('bkOpen').href = url; $('bkNote').textContent = slots.length + (de ? ' Zeiten, ' : ' times, ') + B.hm(+$('fLen').value);
+    });
+    $('bkCopy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('bkOut').value); toast($('bkCopy'), W.copied); } catch (_) { $('bkOut').select(); } });
+    function bookingFromLink() { // a ?book= link opened by a guest, or a ?booked= link opened by the host (run once the page's state is set)
+    if (q.get('book')) { const bk = B.readBooking(q.get('book'), now()); if (bk) {
+      $('bookCard').hidden = false; let pick = null;
+      $('bkBody').replaceChildren(el('b', '', bk.title), el('div', 'note', (bk.host ? (de ? 'mit ' : 'with ') + bk.host + ' · ' : '') + B.hm(bk.minutes) + ' · ' + (de ? 'Zeiten in Ihrer Zeitzone' : 'times in your time zone') + (C.localTzName() ? ' (' + C.localTzName() + ')' : '')), ...(bk.note ? [el('div', '', bk.note)] : []));
+      const box = $('bkTimes'); let day = '', row = null;
+      if (!bk.slots.length) box.append(el('p', 'note', de ? 'Keine dieser Zeiten liegt mehr in der Zukunft' : 'None of these times is still ahead: ask for a new link'));
+      for (const x of bk.slots) { const s0 = C.parseLocal(x.start); if (x.start.slice(0, 10) !== day) { day = x.start.slice(0, 10); box.append(el('div', 'bkDay', C.fmtDay(s0, lang))); row = el('div', 'bkSlots'); box.append(row); }
+        const b = el('button', '', C.fmtTime(s0, lang)); b.type = 'button'; b.setAttribute('aria-pressed', 'false'); b.addEventListener('click', () => { pick = x; for (const y of box.querySelectorAll('button')) y.setAttribute('aria-pressed', String(y === b)); $('bkBook').disabled = false; }); row.append(b); }
+      $('bkName').value = store.me || '';
+      $('bkBook').addEventListener('click', () => {
+        const name = $('bkName').value.trim(); if (!name) { $('bkName').focus(); say(W.nameFirst, true); return; } if (!pick) return;
+        const back = B.bookedLink(bk, pick.at, name, location.origin, $('bkMsg').value); if (!back) return;
+        const ev = B.bookingEvent({ ...bk, guest: name, at: pick.at, start: pick.start, end: pick.end, note: $('bkMsg').value }, 'guest');
+        store.me = name; store.events = C.withEvent(store.events, ev); keep(); render();
+        $('bkDone').hidden = false; $('bkDoneT').textContent = (de ? 'Gebucht und in Ihrem Kalender: ' : 'Booked and in your calendar: ') + C.fmtDay(C.parseLocal(pick.start), lang) + ', ' + C.fmtTime(C.parseLocal(pick.start), lang) + '. ' + (de ? 'Jetzt Bescheid geben: ' : 'Now let ') + (bk.host || (de ? 'den Gastgeber' : 'them')) + (de ? '' : ' know:');
+        if (back.mailto) { $('bkMail').hidden = false; $('bkMail').href = back.mailto; } $('bkCopyBack').onclick = async () => { try { await navigator.clipboard.writeText(back.url); toast($('bkCopyBack'), W.copied); } catch (_) { say(back.url); } };
+        $('bkIcs').onclick = () => download(bk.title.replace(/[^\w.-]+/g, '_') + '.ics', C.icsOf([ev])); $('bkBook').disabled = true; $('bkDone').dataset.back = back.url;
+      });
+    } }
+    if (q.get('booked')) { const bd = B.readBooked(q.get('booked')); if (bd) {
+      const ev = B.bookingEvent(bd, 'host'); $('bookedCard').hidden = false;
+      $('bdBody').replaceChildren(el('b', '', bd.guest + (de ? ' hat gebucht: ' : ' booked ') + bd.title), el('div', '', C.fmtDay(C.parseLocal(bd.start), lang) + ', ' + C.fmtTime(C.parseLocal(bd.start), lang) + ' – ' + C.fmtTime(C.parseLocal(bd.end), lang)), ...(bd.note ? [el('div', 'note', bd.note)] : []));
+      const clash = C.agenda(shown(), bd.start.slice(0, 10), bd.start.slice(0, 10)).filter((o) => !o.allDay && o.id !== ev.id && o.start < bd.end && o.end > bd.start);
+      if (clash.length) $('bdBody').append(el('div', 'note', (de ? 'Überschneidet sich mit: ' : 'Overlaps with: ') + clash.map((o) => o.title).join(', ')));
+      if (store.events.some((x) => x.id === ev.id)) { $('bdAdd').disabled = true; $('bdAdd').textContent = W.alreadyIn; }
+      $('bdAdd').addEventListener('click', () => { store.events = C.withEvent(store.events, ev); keep(); $('bdAdd').disabled = true; $('bdAdd').textContent = W.alreadyIn; state.cursor = C.startOfDay(C.parseLocal(ev.start)); state.view = 'day'; render(); say(W.added + ': ' + ev.title); });
+    } }
+    }
+    // ---- time insights (Google Calendar): the week's timed events by calendar and by day ----
+    let insFrom = null;
+    function drawIns() {
+      if (!insFrom) insFrom = C.startOfWeek(state.cursor, ws());
+      const r = B.timeInsights(shown(), cals(), C.dayKey(insFrom), 7), last = C.addDays(insFrom, 6), fd = (d) => C.fmtDay(d, lang, { year: false });
+      $('insWeek').textContent = fd(insFrom) + ' – ' + fd(last);
+      $('insSum').textContent = r.events ? B.hm(r.total) + ' in ' + r.events + (r.events === 1 ? (de ? ' Termin' : ' event') : (de ? ' Terminen' : ' events')) + (r.busiest ? (de ? ' · am vollsten: ' : ' · busiest: ') + fd(C.parseLocal(r.busiest.day)) + ' (' + B.hm(r.busiest.minutes) + ')' : '') + (r.longest ? (de ? ' · am längsten: ' : ' · longest: ') + r.longest.title + ' (' + B.hm(r.longest.minutes) + ')' : '') + (r.meetings ? ' · ' + r.meetings + (de ? ' mit Gästen oder Videoanruf' : ' with guests or a video call') : '') : (de ? 'Keine Termine mit Uhrzeit in dieser Woche' : 'No timed events this week');
+      const bars = (box, rows, max) => { box.replaceChildren(); for (const x of rows) { const d = el('div', 'bar'), i = el('i'); i.style.width = (max ? Math.max(1, Math.round(x.minutes / max * 100)) : 0) + '%'; if (x.color) i.style.setProperty('--c', x.color); const w = el('span'); w.append(i); d.append(el('span', '', x.label), w, el('span', 'note', B.hm(x.minutes))); box.append(d); } };
+      bars($('insCals'), r.byCal.map((x) => ({ ...x, label: x.name })), Math.max(0, ...r.byCal.map((x) => x.minutes))); if (!r.byCal.length) $('insCals').append(el('p', 'note', '—'));
+      bars($('insDays'), r.byDay.map((x) => ({ ...x, label: fd(C.parseLocal(x.day)) })), Math.max(0, ...r.byDay.map((x) => x.minutes)));
+    }
+    $('insBtn').addEventListener('click', () => { const open = $('ins').hidden; $('ins').hidden = !open; $('insBtn').setAttribute('aria-expanded', String(open)); if (open) { insFrom = null; drawIns(); } });
+    $('insPrev').addEventListener('click', () => { insFrom = C.addDays(insFrom, -7); drawIns(); }); $('insNext').addEventListener('click', () => { insFrom = C.addDays(insFrom, 7); drawIns(); });
+
     const shown = () => C.shownEvents(store.events, cals(), [...extra(), ...sharedEvents(), ...feedEvents()]);
     const callShare = (method, share, { body, op } = {}) => fetch('/api/calshare' + (share ? '?id=' + share.id + (op ? '&op=' + op : '') : ''), { method, headers: { ...(share ? { 'x-cal-key': share.key } : {}), ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) })
       .then(async (r) => ({ status: r.status, j: await r.json().catch(() => ({})) }), () => ({ status: 0, j: {} }));
@@ -506,12 +589,16 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     }
     $('detDup').addEventListener('click', () => { if (!state.sel) return; const o = state.sel, b = baseOf(o); const copy = { ...b, id: undefined, rsvp: undefined, exdates: [], title: b.title + ' (' + W.copyOf.toLowerCase() + ')', start: o.start, end: o.end }; openEditor(copy); state.editing = null; $('edH').textContent = W.duplicate; });
     $('detClose').addEventListener('click', () => { $('detail').hidden = true; state.sel = null; });
+    let undoTo = null, undoT = 0;
+    $('undoB').addEventListener('click', () => { if (!undoTo) return; store.events = undoTo; undoTo = null; keep(); render(); $('undoB').hidden = true; say(de ? 'Wiederhergestellt' : 'Restored'); });
     $('detDel').addEventListener('click', async () => {
       const o = state.sel; if (!o) return; const base = baseOf(o), sh = sharedOf(base.cal);
       const one = base.rrule && o.occurrence ? confirm(W.deleteOne + '? (' + (de ? 'Abbrechen' : 'Cancel') + ' = ' + W.deleteAll + ')') : false;
       const cut = (evs) => (one ? C.withEvent(evs, { ...base, cal: sh ? undefined : base.cal, exdates: (base.exdates || []).concat(o.occurrence) }) : C.withoutEvent(evs, base.id));
+      const before = store.events;
       if (sh) { if (!(await pushShared(sh, cut))) return; } else store.events = cut(store.events);
       keep(); $('detail').hidden = true; state.sel = null; render();
+      if (!sh) { say((de ? 'Gelöscht: ' : 'Deleted: ') + base.title); undoTo = before; $('undoB').hidden = false; clearTimeout(undoT); undoT = setTimeout(() => { $('undoB').hidden = true; undoTo = null; }, 12000); }
     });
     // invites: a link that carries the event, a mail with the .ics, the .ics itself
     // an invite that can take replies: made the first time it is shared (the organizer keeps the owner key with the event; the link carries only the reply key)
@@ -548,6 +635,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
           const r = await rsvpCall('POST', rk, { op: 'reply', body: { name, answer: btn.dataset.a } }); if (!r.j.ok) { $('rsvpList').textContent = r.j.error || W.needNet; return; }
           store.me = name; keep(); for (const x of $('rsvpBox').querySelectorAll('button[data-a]')) x.setAttribute('aria-pressed', String(x === btn)); showReplies(r.j.replies); say(W.replied); });
       } } }
+    bookingFromLink();
     // quick add: the box, or ?q= in the link (added once: the same title at the same time is not added twice)
     function quick(text) {
       const task = C.taskFromText(text, now());

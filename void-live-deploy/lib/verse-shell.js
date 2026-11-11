@@ -7,17 +7,16 @@ export const NAV = Object.freeze([
   { href: '/team/', label: 'Crew' },
   { href: '/bots/', label: 'Drones' },
   { href: '/agent/', label: 'Envoy' },
-  { href: '/conquered/', label: 'Tower', also: ['/tower/', '/tower'] },
   { href: '/films/', label: 'Holovids' },
   { href: '/podcast/', label: 'Out Loud' }, // Verse Out Loud, a new episode every day (owner, 2026-11-06: "where is my daily verse podcast")
   { href: '/treasury/', label: 'Hoard' }, { href: '/starboard/', label: 'Starboard' },
   { href: '/scoreboard/', label: 'Star Chart' },
   { href: '/security/', label: 'Shields' },
   { href: '/limits/', label: 'Event Horizon' },
-  { href: '/contribute/', label: 'Assimilate' },
+  { href: '/contribute/', label: 'Contribute' },
 ]);
 
-/** the nav item this path is on, or null. `/tower` is the Tower. `/` is Ask and nothing else. */
+/** the nav item this path is on, or null. `/` is Ask and nothing else. */
 export function currentNav(path, nav = NAV) {
   const raw = String(path || '/');
   const p = raw === '/' ? '/' : (raw.endsWith('/') ? raw : raw + '/');
@@ -57,15 +56,14 @@ export function latestFeed(crew) {
   return best;
 }
 
-/** one line for the home chrome: bots here, tower wins, and the newest thing a bot did. Empty when there is nothing true to say. */
-export function proofLine({ crew, beaten } = {}) {
+/** one line for the home chrome: bots here, and the newest thing a bot did. Empty when there is nothing true to say. */
+export function proofLine({ crew } = {}) {
   const list = Array.isArray(crew) ? crew : [];
   const parts = [];
   if (list.length) {
     const here = list.filter((b) => b && b.here).length;
     parts.push(here + ' of ' + list.length + ' bots here');
   }
-  if (Number.isFinite(beaten)) parts.push(beaten + (beaten === 1 ? ' tower win' : ' tower wins'));
   const feed = latestFeed(list);
   if (feed) parts.push(feed.name + ': ' + String(feed.did).replace(/\s+/g, ' ').trim().slice(0, 80));
   return parts.join(' · ');
@@ -98,7 +96,7 @@ export function speculationRules(nav = NAV) {
 
 const DRESS = new Set(NAV.map((n) => n.href));
 
-/** the shell paths the service worker dresses. `/tower` is Tower, which redirects to `/conquered/`. */
+/** the shell paths the service worker dresses. */
 export function dressPath(path) {
   const raw = String(path || '/');
   const p = raw === '/' ? '/' : (raw.endsWith('/') ? raw : raw + '/');

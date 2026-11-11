@@ -310,7 +310,7 @@ export const memberJoinedSay = (name) => 'Welcome, ' + name + '. You are a membe
   + 'Claim a job on the board (one click), ship it as a pull request, and your name goes on the credits. Propose changes in #ideas.';
 // the board: kinds a newcomer can finish alone, from public facts (a rival site's page, a missing answer, a new idea)
 export const GOOD_FIRST = Object.freeze(['versus', 'gap', 'novelty']);
-const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Outdo a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
+const KIND_WORD = Object.freeze({ heal: 'Fix a red check', will: 'Verse wants', voice: 'Voice', versus: 'Learn from a site', feature: 'Feature', review: 'Review', gap: 'Fill a gap', novelty: 'New idea', auto: 'Automation', flake: 'Flaky test' });
 /** a queued job as the public board shows it. The owner's own #work asks keep their words in the members-only chat. Pure. */
 export function boardRow(job, now, sc = null) {
   const k = kindOf(job.target), mine = ownerAsk(job);
@@ -325,6 +325,91 @@ export function board(jobs, now, max = 40, scores = null) {
   if (scores) return rows.filter((r) => !(r.leverage != null && /^busywork/.test(r.why || ''))).sort((a, b) => (b.leverage ?? -1) - (a.leverage ?? -1) || Number(b.good) - Number(a.good)).slice(0, max);
   return rows.sort((a, b) => Number(b.good) - Number(a.good)).slice(0, max);
 }
+const LOW = /repair helper\/|robust: fix the test|handoff-checklist|lift-summary|bookkeeping|exam score|aspects short|example\.com|\bg\.co\b|share\.google|403 forbidden/i;
+const VISITOR_HOST = /portchecker\.co|speedtest\.sg|protopage\.com|dalyfeds\.com|everycom\.store/i;
+const TOOL_OF = [
+  ['portchecker.co', 'port-check', 'a visitor types a host and a port and reads whether that port is open'],
+  ['speedtest.sg', 'line-speed', 'a visitor starts a check and reads how fast the line is'],
+  ['protopage.com', 'start-page', 'a visitor keeps a start page of their own links'],
+  ['dalyfeds.com', 'feed-reader', 'a visitor pastes a feed address and reads the latest items'],
+  ['everycom.store', 'shop-list', 'a visitor browses a short list of goods with a price on each'],
+];
+/** a job whose only result is a score, a flake, or a page nobody can use */
+export function lowValue(job) {
+  const kind = String(job && (job.kind || job.target) || '');
+  const text = String(job && (job.ask || job.title) || '');
+  if (/flake|heal/i.test(kind)) return true;
+  return LOW.test(text);
+}
+/** queued work a visitor can open, port check and line speed before the rest */
+export function visitorJobs(jobs) {
+  const rank = (j) => { const i = TOOL_OF.findIndex((row) => String(j.ask || j.title || '').includes(row[0])); return i < 0 ? 99 : i; };
+  return (jobs || []).filter((j) => VISITOR_HOST.test(String(j.ask || j.title || '')) && !LOW.test(String(j.ask || j.title || '')) && !j.owner).sort((a, b) => rank(a) - rank(b));
+}
+/** the next visitor job when the one in hand is low value. taken ids are already offered. */
+export function redirectTo(job, queued, taken = []) {
+  if (job && !lowValue(job)) return null;
+  const used = new Set(taken);
+  return visitorJobs(queued).find((j) => j.id !== (job && job.id) && !used.has(j.id)) || null;
+}
+/** the message Verse posts in the builder's job thread. One step switches; the open pull request stays open. */
+export function offerCard(name, from, to) {
+  const title = String(to.ask || to.title || to.id);
+  const tool = TOOL_OF.find((row) => title.includes(row[0])) || ['the site', 'visitor-tool', 'a visitor uses the page for the job it names'];
+  const fromId = from && from.id ? from.id : 'the one you have open';
+  return '@' + name + ' Better job ' + to.id + '.\n\n'
+    + 'What to change: build /' + tool[1] + '/ so ' + tool[2] + '. Files: void-live-deploy/' + tool[1] + '/index.html (verse.css, verse-shell.js, the dark stage) and a Pages function under void-live-deploy/functions/' + tool[1] + '/ only if the check needs the server. Our URL, our name. Do not copy the other site.\n'
+    + 'How to check: open the page, submit the form, and read an answer about that job. The form still works with scripts off.\n'
+    + 'What a visitor sees: ' + tool[2] + ', in the normal nav.\n\n'
+    + 'One step, when the useful part of ' + fromId + ' is saved: POST /api/team {"do":"switch","job":"' + to.id + '","link":"https://github.com/atomeam/void-loop/pull/YOUR_PR"}. The link keeps the credit. The old claim returns to the queue. Your pull request stays open.\n'
+    + 'Until switch is on the site, two calls do the same: {"do":"done","ok":false,"failed":false,"note":"switching to ' + to.id + '"} then {"do":"claim","job":"' + to.id + '"}.'
+    ;
+}
+
+const TOWER_WORK = /no floor has yet|needs a page no floor|\btower\b|versus:\s+\S+/i;
+const TITLE_NOISE = [
+  [/\s*\((?:flake|want)[^)]*\)\s*/gi, ' '],
+  [/^make\s+/i, ''],
+  [/["“”]/g, ''],
+  [/\s+robust:\s*fix the test[\s\S]*$/i, ''],
+  [/^(?:voice|suite|pack h|sky|answer|journal|refusal object):\s*/i, ''],
+  [/;?\s*align the page's ids to its acceptance spec/gi, ''],
+  [/polled for/gi, 'loaded first'],
+  [/read mid-draw/gi, 'shown halfway through drawing'],
+  [/the self card's three-round-trip body gets a loaded runner's deadline/gi, 'the self card is given time to finish loading'],
+  [/poll for the miss and the refusal object the way the page is polled/gi, 'the page waits until a refusal says what is missing'],
+  [/unbounded page promises capped - the 300 s watchdog stops reporting a self-inflicted stall/gi, 'a check stops reporting a stall it caused itself'],
+  [/echo and choir checks read rAF-deferred UI honestly/gi, 'echo and choir checks read the screen after it has drawn'],
+  [/the star streak survives a loaded machine - gap-honest speed smoothing/gi, 'the star streak stays smooth when the machine is busy'],
+  [/plan asks get steps, not a Wikipedia stub/gi, 'an ask for a plan comes back as steps, not a short stub'],
+];
+/** a pull-request title as words a visitor can read. A Tower-era line ("no floor has yet") is empty. Pure. */
+export function plainChange(title) {
+  let t = String(title || '');
+  if (TOWER_WORK.test(t)) return '';
+  for (const [re, to] of TITLE_NOISE) t = t.replace(re, to);
+  t = t.replace(/\s+/g, ' ').replace(/^[,:;–—-]+/, '').replace(/[,:;–—-]+$/, '').trim();
+  if (!t || TOWER_WORK.test(t) || /\b(?:and|or|the|a|an|to|of|with|for|so|each)\.?$/i.test(t)) return '';
+  return t;
+}
+/** cut on a space. A word longer than max stays whole. Pure. */
+export function clipAtWord(s, max = 180) {
+  const t = String(s || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const at = t.lastIndexOf(' ', max);
+  return (at > 0 ? t.slice(0, at) : t).replace(/[,:;–—-]+$/, '').trim();
+}
+/** one sentence for the finished-work feed: who, and what the pull request changed. Null when the work is Tower-era. Pure. */
+export function feedLine(name, title, live = true) {
+  const body = clipAtWord(plainChange(title));
+  if (!body) return null;
+  const who = String(name || 'Someone').replace(/\s+/g, ' ').trim() || 'Someone';
+  const clause = body.charAt(0).toLowerCase() + body.slice(1);
+  if (!live) return who + ' has not put this on the site yet: ' + clause + '.';
+  const verb = /^(?:read|let|make|fix|stop|give|keep|show|add|list|open)\b/.test(clause);
+  return who + ' changed the site' + (verb ? ' to ' : ': ') + clause + '.';
+}
+
 /** an owner's one-line post from the site: "idea: ..." goes to #ideas, anything else ("job: ..." or plain words) to #work (a job). Pure. */
 export function quickPost(text) {
   const t = String(text == null ? '' : text).trim(), m = /^(job|idea|todo|task|fix|bug)\s*[:\-–]\s*/i.exec(t), body = (m ? t.slice(m[0].length) : t).trim();

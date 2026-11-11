@@ -1,0 +1,126 @@
+{
+ "id": "pdf: 10015.io",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 166,
+   "best": 1111,
+   "evidence": "Verse (/pdf/organize/) 166 ms to the load event (median of 3, phone width) vs 10015.io 1111 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/organize/) 3 of 3 loads answered vs 10015.io 3 of 3 loads answered",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/organize/) 0 px sideways overflow at 390 px vs 10015.io 0 px sideways overflow at 390 px",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/pdf/organize/) 0 unnamed controls or images vs 10015.io 0 unnamed controls or images",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/pdf/organize/) 1 (1: the page shows itself again with the network cut) vs 10015.io 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/pdf/organize/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs 10015.io 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/pdf/organize/) 3 of 3 right against the worked-out answer; judged against the standard, not 10015.io (the site is not asked)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "of": 3
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 8,
+   "evidence": "Verse (/pdf/organize/) 0 design defects vs 10015.io 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), 10015.io (3 low-contrast texts, 5 small tap targets, layout shift 0.03)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  },
+  "merge and split": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/pdf/organize/) 2 of 2 shown vs 10015.io 2 of 2 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "page tools": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 2,
+   "evidence": "Verse (/pdf/organize/) 3 of 3 shown vs 10015.io 2 of 3 shown (Verse lacks: none; site lacks: rotate)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "of": 3,
+   "part": true,
+   "siteRead": true
+  },
+  "images to pdf": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/pdf/organize/) 1 of 1 shown vs 10015.io 0 of 1 shown (Verse lacks: none; site lacks: images to PDF)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "compress": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/pdf/organize/) 1 of 1 shown vs 10015.io 1 of 1 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 15,
+   "best": 9,
+   "evidence": "Verse (/pdf/organize/) 15 of 19 things a full answer shows vs 10015.io 9 of 19 things a full answer shows (Verse lacks: PDF to images, page numbers, watermark, no account; site lacks: delete pages, rotate, images to PDF, PDF to images, page numbers, watermark, on this device, works offline, ask questions about a PDF, Rotate pages)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "of": 19,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 8,
+   "best": 4.5,
+   "evidence": "Verse (/pdf/organize/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs 10015.io 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-09T16:38:27.376Z",
+   "siteRead": true
+  }
+ }
+}

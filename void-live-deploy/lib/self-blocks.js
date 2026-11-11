@@ -3,7 +3,6 @@
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
-import { wrongWeakest, weakestSentence, weakestNote } from './weakest.js';
 import { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup, askIds } from './ask-same.js';
 export { sameAsk, stripCites, uncite, askKey, dupAsk, sameOrDup };
 // one ask on this card's lists: said again in other words (sameOrDup), and about the same numbered one (askIds: "number 3" and "number 4" are two)
@@ -64,6 +63,13 @@ export function shortLine(t) {
   return (at > SHORT / 2 ? cut.slice(0, at) : cut).replace(/[\s,;:.–—-]+$/, '') + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
+const JARGON = /\b(assimilat\w*|famil(?:y|ies)|proven|percentages?|exam scores?|skill counts?|\bgates?\b|\d+\s+of\s+\d+)\b/i;
+/** what the card says when a stored readout is a tally. Recent ledger lines only, then the Tower rule. Pure. */
+export function plainLead(v) {
+  const recent = (v && v.follow && Array.isArray(v.follow.recent)) ? v.follow.recent : [];
+  const built = recent.map((r) => String((r && (r.what || r.ask)) || '').replace(/\s+/g, ' ').trim()).filter((t) => t && !JARGON.test(t)).slice(0, 2);
+  return (built.length ? 'Lately: ' + built.join('; ') + '. ' : '') + 'A site is listed when its page does the job. That list is the Tower.';
+}
 
 /** the asks with each one said again (oneAsk) folded into its first telling, which carries how many times it was asked in all. Pure. */
 export function foldAsks(asks) {
@@ -133,34 +139,29 @@ export function sourceNote(entry, field) {
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
-// the least proven family is the bars' (lib/weakest.js): a stored readout that named another family shows the bars' sentence, and its own words under it
-const weakText = (d, fam) => { const w = wrongWeakest(d.weakest, fam); return w ? weakestSentence(w.is) : sentence(d.weakest); };
-const weakSource = (d, fam) => { const said = d.weakest_said || (wrongWeakest(d.weakest, fam) ? d.weakest : '');
-  return said ? 'Source: the family bars (skills/families.json). The model wrote "' + sentence(said) + '", which the bars contradict, so the bars\' count is shown.' : (sourceNote(d, 'weakest') || GROW_SOURCE.weakest); };
 export function selfSections(v, now = Date.now(), fam = null) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
   // the owner's redesign (2026-10-18, "its still ugly"): Verse's own paragraph is a quotation and the only thing open; everything else is a closed
   // block whose heading carries its count; how sure it is of its skills (the page's family bars) sits right under its words
-  const voice = stripCites((daily || build || {}).thoughts);
+  const rawVoice = stripCites((daily || build || {}).thoughts);
+  const voice = rawVoice && !JARGON.test(rawVoice) ? rawVoice : (rawVoice ? plainLead(v) : '');
   // no theatre (owner, 2026-10-19: "is this really Verse thoughts, or is this pretend"): the words are a language model's, prompted to speak as Verse from the
   // facts it was given, and the card says so; what it was given sits under them, and each claim below says where it comes from
   const src = daily || build || {}, label = modelLabel(src.model), given = String(src.given || '').trim();
   const LABEL = 'Written by ' + label + ' from these facts. Kept word for word; it is a readout, not a felt state.';
   out.push({ id: 'words', title: '', log: false, blocks: (voice ? [{ t: 'quote', text: voice, cite: LABEL }] : [{ t: 'note', text: LABEL }])
-    .concat(sourceNote(src, 'thoughts') ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
-    // the words stay as written; a claim about the least proven family that the bars contradict says so under them (owner's review, 2026-10-30)
-    .concat(voice && wrongWeakest(voice, fam) ? [{ t: 'note', text: weakestNote(wrongWeakest(voice, fam)), tight: true }] : [])
-    .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
+    .concat(sourceNote(src, 'thoughts') && !JARGON.test(sourceNote(src, 'thoughts')) ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
+    .concat(given && !JARGON.test(given) ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
-  const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
+  const grow = daily ? [['Next targeted capability', 'next_game'], ['What should change', 'better']].filter(([, k]) => sentence(daily[k]) && !JARGON.test(sentence(daily[k]))) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? stripCites(weakText(daily, fam)) : markBuilt(stripCites(daily[k]), v && v.follow && v.follow.asked) }, { t: 'note', text: k === 'weakest' ? weakSource(daily, fam) : (sourceNote(daily, k) || GROW_SOURCE[k]), tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Next / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: markBuilt(stripCites(daily[k]), v && v.follow && v.follow.asked) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: shippedLine(build.shipped) });
-    if (daily && stripCites(build.thoughts)) blocks.push({ t: 'p', text: stripCites(build.thoughts) }); // without a daily entry these words are already the quotation above
+    if (daily && stripCites(build.thoughts) && !JARGON.test(stripCites(build.thoughts))) blocks.push({ t: 'p', text: stripCites(build.thoughts) }); // without a daily entry these words are already the quotation above
     if (stripCites(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + markBuilt(stripCites(build.better), v && v.follow && v.follow.asked) });
     if (blocks.length) blocks.push({ t: 'note', text: 'Source: the model, asked right after this shipped, given what shipped and the facts above. A reading of the change, not a measurement.', tight: true });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
@@ -332,6 +333,21 @@ export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null
   const f = v && v.follow, left = f && Array.isArray(f.recent) ? f.recent.filter((r) => !lead.has(buildKey(r))) : null;
   const rest = left ? { ...v, follow: { ...f, recent: left.length ? left : f.recent } } : v;
   const r = noRepeats([since].concat(selfSections(rest, now, fam)), seen);
+  // the build list stays on /log/. The on/off pills also ride in the words section, which is all the stage card draws,
+  // so the pressed pill (sunk, violet) is on the card the aesthetic check reads. A click opens /log/ on that filter.
+  const words = r.sections.find((s) => s.id === 'words');
+  const depth = ((r.sections.find((s) => s.id === 'built') || {}).blocks || []).find((b) => b.t === 'depth');
+  if (words && depth) words.blocks = words.blocks.concat([{ t: 'depth', counts: depth.counts }]);
   return { sections: r.sections, shown: r.shown };
 }
 const buildKey = (r) => String((r && r.at) || '') + '|' + String((r && r.ask) || '');
+// a depth pill on the stage has no build list under it (that list is on /log/): open the log on the filter the pill names
+if (typeof document !== 'undefined') document.addEventListener('click', (e) => {
+  const b = e.target && e.target.closest && e.target.closest('[data-v-depth]');
+  if (!b || b.closest('#log')) return;
+  const page = b.closest('.vpage');
+  if (page && page.querySelector('.v-built')) return; // the list is on this card: its own handler filters it
+  const k = b.getAttribute('data-v-depth');
+  if (k !== 'all' && k !== 'root' && k !== 'surface') return;
+  location.assign('/log/#depth=' + k);
+});

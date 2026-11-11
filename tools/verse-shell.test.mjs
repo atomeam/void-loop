@@ -11,7 +11,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
 test('the nav names the shell pages, and the current page is the longest match', () => {
-  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
+  assert.deepEqual(NAV.map((n) => n.href), ['/', '/team/', '/bots/', '/agent/', '/films/', '/podcast/', '/treasury/', '/starboard/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
   assert.equal(currentNav('/scoreboard/').label, 'Star Chart');
   assert.equal(currentNav('/limits/').label, 'Event Horizon');
   assert.equal(currentNav('/').label, 'Ask');
@@ -19,8 +19,6 @@ test('the nav names the shell pages, and the current page is the longest match',
   assert.equal(currentNav('/team/join/abc').label, 'Crew');
   assert.equal(currentNav('/bots/').label, 'Drones');
   assert.equal(currentNav('/agent').label, 'Envoy');
-  assert.equal(currentNav('/tower/').label, 'Tower');
-  assert.equal(currentNav('/conquered/').label, 'Tower');
   assert.equal(currentNav('/films/').label, 'Holovids');
   assert.equal(currentNav('/nope'), null);
 });
@@ -38,8 +36,8 @@ test('the live line uses only the numbers it was given', () => {
     { name: 'TowerScout', here: false, did: 'mapped a site', didAt: 10 },
   ];
   assert.equal(latestFeed(crew).name, 'SiteOperator');
-  assert.equal(proofLine({ crew, beaten: 2 }), '1 of 2 bots here · 2 tower wins · SiteOperator: checked the links');
-  assert.equal(proofLine({ crew: [], beaten: 1 }), '1 tower win');
+  assert.equal(proofLine({ crew, beaten: 2 }), '1 of 2 bots here · SiteOperator: checked the links');
+  assert.equal(proofLine({ crew: [], beaten: 1 }), '');
   assert.equal(proofLine({}), '');
   assert.equal(proofLine({ beaten: NaN }), '');
 });
@@ -48,7 +46,7 @@ test('the palette leads with Ask Verse on the home page and filters by the typed
   const home = commands('/');
   assert.equal(home[0].href, '#ask');
   assert.equal(commands('/films/')[0].href, '/');
-  assert.deepEqual(filterCommands(home, 'tow').map((c) => c.label), ['Tower']);
+  assert.deepEqual(filterCommands(home, 'tow').map((c) => c.label), []);
   assert.equal(filterCommands(home, '').length, home.length);
   const rules = speculationRules();
   assert.equal(rules.prefetch[0].eagerness, 'moderate');
@@ -86,5 +84,5 @@ test('dressHtml adds the shell on the named pages and nowhere else', () => {
   assert.match(sw, /\/verse-shell\.js/);
   assert.match(read('void-live-deploy/verse-field.js'), /prefers-reduced-motion/);
   assert.match(read('void-live-deploy/verse-shell.js'), /ensureChrome/);
-  assert.match(read('void-live-deploy/_redirects'), /\/tower\/\s+\/conquered\/\s+301/);
+  assert.doesNotMatch(read('void-live-deploy/_redirects'), /\/tower\/\s+\/conquered\/\s+301/);
 });

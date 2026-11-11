@@ -2,20 +2,19 @@
  "id": "news: suncommunitynews.com",
  "rows": {
   "speed": {
-   "verdict": "unverified",
-   "verse": null,
-   "best": 279,
-   "evidence": "Verse (/news/global-headlines/?sec=world) NaN ms to the load event (median of 3, phone width) vs suncommunitynews.com 279 ms to the load event (median of 3, phone width)",
-   "at": "2026-11-08T13:54:32.584Z",
+   "verdict": "equal-and-better",
+   "verse": 144,
+   "best": 265,
+   "evidence": "Verse (/news/global-headlines/?sec=world) 144 ms to the load event (median of 3, phone width) vs suncommunitynews.com 265 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "reliability": {
-   "verdict": "worse",
-   "verse": 0,
+   "verdict": "equal-and-better",
+   "verse": 3,
    "best": 3,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 of 3 loads answered vs suncommunitynews.com 3 of 3 loads answered",
-   "at": "2026-11-08T13:54:32.584Z",
-   "was": "equal-and-better",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 3 of 3 loads answered vs suncommunitynews.com 3 of 3 loads answered",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "mobile": {
@@ -23,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/news/global-headlines/?sec=world) 0 px sideways overflow at 390 px vs suncommunitynews.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-08T13:54:32.584Z",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "accessibility": {
@@ -31,24 +30,23 @@
    "verse": 0,
    "best": 19,
    "evidence": "Verse (/news/global-headlines/?sec=world) 0 unnamed controls or images vs suncommunitynews.com 19 unnamed controls or images",
-   "at": "2026-11-08T13:54:32.584Z",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "offline": {
-   "verdict": "equal",
-   "verse": 0,
+   "verdict": "better",
+   "verse": 1,
    "best": 0,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 (1: the page shows itself again with the network cut) vs suncommunitynews.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-08T13:54:32.584Z",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 1 (1: the page shows itself again with the network cut) vs suncommunitynews.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "sharing": {
-   "verdict": "worse",
-   "verse": 0,
+   "verdict": "better",
+   "verse": 4,
    "best": 3,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 of 4 (link-preview title, image, description; a share or copy-link control) vs suncommunitynews.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-08T13:54:32.584Z",
-   "was": "better",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs suncommunitynews.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "wider use": {
@@ -56,7 +54,7 @@
    "verse": 7.5,
    "best": 3.5,
    "evidence": "Verse (/news/global-headlines/?sec=world) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs suncommunitynews.com 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-05T23:57:01.389Z",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "accuracy": {
@@ -64,55 +62,53 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/news/global-headlines/?sec=world) 3 of 3 right against the worked-out answer; judged against the standard, not suncommunitynews.com (the site is not asked)",
-   "at": "2026-11-05T23:57:01.389Z",
+   "at": "2026-11-11T14:50:25.902Z",
    "of": 3
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
    "best": 42,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 design defects vs suncommunitynews.com 42 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), suncommunitynews.com (15 low-contrast texts, 26 small tap targets, layout shift 1.56)",
-   "at": "2026-11-08T13:54:32.584Z",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 0 design defects vs suncommunitynews.com 42 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), suncommunitynews.com (15 low-contrast texts, 26 small tap targets, layout shift 1.79)",
+   "at": "2026-11-11T14:50:25.902Z",
    "siteRead": true
   },
   "breadth of sources": {
-   "verdict": "equal",
-   "verse": 0,
+   "verdict": "better",
+   "verse": 1,
    "best": 0,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 of 1 shown vs suncommunitynews.com 0 of 1 shown (Verse lacks: several sources; site lacks: several sources)",
-   "at": "2026-11-08T13:54:32.584Z",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 1 of 1 shown vs suncommunitynews.com 0 of 1 shown (Verse lacks: none; site lacks: several sources)",
+   "at": "2026-11-11T14:50:25.902Z",
    "of": 1,
    "part": true,
    "siteRead": true
   },
   "freshness": {
-   "verdict": "equal",
-   "verse": 0,
+   "verdict": "better",
+   "verse": 1,
    "best": 0,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 of 1 shown vs suncommunitynews.com 0 of 1 shown (Verse lacks: ages; site lacks: ages)",
-   "at": "2026-11-08T13:54:32.584Z",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 1 of 1 shown vs suncommunitynews.com 0 of 1 shown (Verse lacks: none; site lacks: ages)",
+   "at": "2026-11-11T14:50:25.902Z",
    "of": 1,
    "part": true,
    "siteRead": true
   },
   "topic following": {
-   "verdict": "worse",
-   "verse": 0,
+   "verdict": "better",
+   "verse": 2,
    "best": 1,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 0 of 2 shown vs suncommunitynews.com 1 of 2 shown (Verse lacks: follow, my news; site lacks: my news)",
-   "at": "2026-11-08T13:54:32.584Z",
-   "was": "better",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 2 of 2 shown vs suncommunitynews.com 1 of 2 shown (Verse lacks: none; site lacks: my news)",
+   "at": "2026-11-11T14:50:25.902Z",
    "of": 2,
    "part": true,
    "siteRead": true
   },
   "completeness": {
-   "verdict": "worse",
-   "verse": 1,
+   "verdict": "better",
+   "verse": 23,
    "best": 4,
-   "evidence": "Verse (/news/global-headlines/?sec=world) 1 of 23 things a full answer shows vs suncommunitynews.com 4 of 23 things a full answer shows (Verse lacks: top stories, business, technology, science, sport, culture, regions, search, follow topics, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Sections, Full articles, Follow topics (My News), Live freshness timestamps; site lacks: top stories, world, sport, culture, regions, search, follow topics, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Full articles, Follow topics (My News), Live freshness timestamps)",
-   "at": "2026-11-08T13:54:32.584Z",
-   "was": "better",
+   "evidence": "Verse (/news/global-headlines/?sec=world) 23 of 23 things a full answer shows vs suncommunitynews.com 4 of 23 things a full answer shows (Verse lacks: none; site lacks: top stories, world, sport, culture, regions, search, follow topics, my news, saved for later, several languages, story ages, the same story from several sources, a share link, headlines only, works offline, Front page of top stories, Full articles, Follow topics (My News), Live freshness timestamps)",
+   "at": "2026-11-11T14:50:25.902Z",
    "of": 23,
    "siteRead": true
   }

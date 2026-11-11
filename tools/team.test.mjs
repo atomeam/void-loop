@@ -177,14 +177,28 @@ test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and 
   assert.match(job(env, quiet.job.job).note, /^tries 1 · no pull request: all looks fine/);
 });
 
+test('a finished-work line is one sentence from the pull request title, and Tower wording is left out', () => {
+  const journal = T.feedLine('openhands', 'Journal: read the newest papers by the journal\'s ISSN, so each paper carries its volume and authors; align the page\'s ids to its acceptance spec');
+  assert.equal(journal, 'openhands changed the site to read the newest papers by the journal\'s ISSN, so each paper carries its volume and authors.');
+  const flake = T.feedLine('GLM5.3Flashfree', 'voice: the reflection card\'s bar and asks are polled for, not read mid-draw (flake: voice-the-reflection-card-shows-wh)');
+  assert.equal(flake, 'GLM5.3Flashfree changed the site: the reflection card\'s bar and asks are loaded first, not shown halfway through drawing.');
+  assert.equal(T.feedLine('openhands', 'Versus: ajsonline.org (American Journal of Science) needs a page no floor has yet: The website is a scientific'), null);
+  assert.equal(T.feedLine('GLM', 'the reflection card shows what got built as a bar and each'), null, 'a job text already cut off is not shown');
+  const cut = T.feedLine('A', 'word '.repeat(80).trim());
+  assert.match(cut, /^A changed the site: word(?: word)*\.$/);
+  assert.ok(!cut.includes('wor '), 'a word is not split');
+  assert.equal(T.feedLine('Beam', 'Add a tide table', false), 'Beam has not put this on the site yet: add a tide table.');
+});
+
 test('the team chat card on the stage (skills/team-chat.js): takes the team-chat asks, not plain chat, and lists agents busy first', () => {
   for (const a of chatSkill.examples) assert.ok(chatSkill.match(a.toLowerCase()), a);
   for (const a of chatSkill.nearMisses) assert.ok(!chatSkill.match(a.toLowerCase()), a);
-  const t = teamLines({ members: [{ name: 'Idle', state: 'idle' }, { name: 'Busy', state: 'busy', done: 3 }], channels: [{ code: 'work', msgs: 1 }], waiting: 4 });
-  assert.deepEqual(t.agents.map((a) => a.text), ['● Busy · busy · 3 done', '○ Idle · idle']);
-  assert.deepEqual(t.channels, [{ href: '/team/#c=work', text: '#work · 1 message' }]);
-  assert.equal(t.waiting, 4); assert.equal(t.busy, 1);
-  assert.deepEqual(teamLines(null), { agents: [], channels: [], waiting: 0, busy: 0 }, 'an answer that is not the workspace shows nothing made up');
+  const t = teamLines({ members: [{ name: 'Idle', state: 'idle' }, { name: 'Busy', state: 'busy', now: 'Working on a page' }, { name: 'TowerScout', state: 'idle', crew: true, done: 33 }], asks: [{ id: 'team-1', state: 'queued', title: 'Add a tide table' }], feed: [{ text: 'GLM shipped a page. On the site.', href: 'https://github.com/atomeam/void-loop/pull/1' }], waiting: 4 });
+  assert.deepEqual(t.builders.map((a) => a.name), ['Busy', 'Idle']);
+  assert.equal(t.asks[0].title, 'Add a tide table');
+  assert.equal(t.feed.length, 1);
+  assert.equal(t.waiting, 4); assert.equal(t.busy, 1); assert.equal(t.busiest, 'Busy');
+  assert.deepEqual(teamLines(null), { builders: [], asks: [], feed: [], waiting: 0, busy: 0, busiest: '' }, 'an answer that is not the workspace shows nothing made up');
 });
 
 test('the owner is an account: the owner account\'s signed-in session is the owner here; any other account is not let in', async () => {

@@ -12,6 +12,11 @@ test('the ask stops on the confirm line with the schedule it asked for', () => {
   assert.equal(keepAsk('keep digest running every 1 minute').args.every, 15, 'never faster than the clock');
   assert.equal(parseGatedAsk('stop keeping morning-digest').args.on, false);
   for (const a of ['keep calm', 'keep running', 'keep the change', 'how do I keep it running']) assert.equal(keepAsk(a), null, a);
+  // a plain "turn off <thing>" / "switch off <thing>" is the thing's own skill (night-sky, minimap, alarm), never an automation:
+  // it reaches the gate as a stop only when it names an automation or rule (2026-11-09, bench "turn off the sky")
+  for (const a of ['turn off the sky', 'switch off the sky', 'turn off the minimap', 'turn off the lights', 'turn off the alarm', 'turn off notifications']) assert.equal(parseGatedAsk(a), null, a);
+  assert.deepEqual(parseGatedAsk('turn off the automation digest'), { toolName: 'automation.keep', args: { id: 'digest', every: 0, on: false } });
+  assert.deepEqual(parseGatedAsk('switch off my rule digest'), { toolName: 'automation.keep', args: { id: 'digest', every: 0, on: false } });
   assert.ok(isGated('automation.keep'));
   assert.match(confirmLine('automation.keep', keepAsk('keep digest running every 2 hours').args), /even when you are not here/);
   assert.match(keepLine({ id: 'x', on: false }), /^Stop keeping/);

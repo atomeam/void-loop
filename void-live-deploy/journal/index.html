@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: text; out: url">
 <title>Earth science journal · Verse</title>
 <meta name="description" content="The newest peer-reviewed Earth science research, read straight from the public journal feed: title, authors, one-paragraph abstract, date, volume and DOI, with search and saved papers — no ads, no account, nothing sent anywhere.">
 <meta property="og:type" content="website">
@@ -28,8 +29,8 @@
   button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
   button[aria-pressed="true"] { background: var(--accent); color: #07080f; border-color: var(--accent); font-weight: 600; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
-  #status { font-size: 13px; color: var(--soft); min-height: 20px; margin: 6px 0; }
-  #list { list-style: none; margin: 0; padding: 0; }
+  #latestNote, #searchNote { font-size: 13px; color: var(--soft); min-height: 20px; margin: 6px 0; }
+  #latestList { list-style: none; margin: 0; padding: 0; }
   .paper { border-top: 1px solid var(--line); padding: 10px 0; }
   .paper .t { font-weight: 600; color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
   .paper .t:hover { text-decoration: underline; }
@@ -79,13 +80,14 @@
 <p class="sub">The newest peer-reviewed Earth science research, read from the journal's own public feed — no ads, no account, nothing sent anywhere.</p>
 <div class="row">
   <input type="search" id="q" placeholder="Search the research — a word, an author, a DOI…" aria-label="Search the research">
-  <button id="go" class="go">Search</button>
+  <button id="searchGo" class="go">Search</button>
   <button id="latest" aria-pressed="true">Latest</button>
   <button id="savedBtn" aria-pressed="false">Saved</button>
 </div>
-<div id="status" role="status"></div>
+<div id="latestNote" role="status"></div>
+<div id="searchNote" role="status" hidden></div>
 <section id="saved" hidden><h2>Saved papers (this device)</h2><ul id="savedList"></ul></section>
-<ul id="list"></ul>
+<ul id="latestList"></ul>
 
 <section id="length" aria-label="How long is my paper">
 <h2>How long is my paper?</h2>
@@ -94,11 +96,11 @@ and table, the first ten equations as 1 PU and every ten more as 1 PU again, the
 Review or a Technical Report) is free up to 45 PU and $100 for each PU beyond that; a short one (a Science Note, a Comment, a Reply or an
 Errata) may be 4 PU at most. The working is worked out here, on this device.</p>
 <div class="grid2">
-  <div><label for="puWords">Words (with the abstract, the notes and the references)</label><input type="number" id="puWords" min="0" step="50" value="6000" inputmode="numeric"></div>
-  <div><label for="puFigures">Figures</label><input type="number" id="puFigures" min="0" step="1" value="0" inputmode="numeric"></div>
-  <div><label for="puTables">Tables</label><input type="number" id="puTables" min="0" step="1" value="0" inputmode="numeric"></div>
-  <div><label for="puEquations">Equations</label><input type="number" id="puEquations" min="0" step="1" value="0" inputmode="numeric"></div>
-  <div><label for="puKind">Kind of paper</label><select id="puKind">
+  <div><label for="words">Words (with the abstract, the notes and the references)</label><input type="number" id="words" min="0" step="50" value="6000" inputmode="numeric"></div>
+  <div><label for="figures">Figures</label><input type="number" id="figures" min="0" step="1" value="0" inputmode="numeric"></div>
+  <div><label for="tables">Tables</label><input type="number" id="tables" min="0" step="1" value="0" inputmode="numeric"></div>
+  <div><label for="equations">Equations</label><input type="number" id="equations" min="0" step="1" value="0" inputmode="numeric"></div>
+  <div><label for="kind">Kind of paper</label><select id="kind">
     <option value="45">Long form: 45 PU free</option>
     <option value="4">Short form: 4 PU at most</option>
   </select></div>
@@ -243,13 +245,13 @@ written, and authors are asked to suggest editors who should not handle their pa
 <nav id="related"><!-- related --><span class="tk-label">Use with</span> <a href="/notes/">Notes</a> <a href="/word-count/">Word counter</a> <a href="/g/">Snippet / Note in a link</a> <a href="/convert/">Unit converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 </main>
 <script type="module">
-const { papers, searchCrossref, savedList, toggleSave, isSaved, jatsText, pubUnits, puWithoutEquationExtra } = await import('/lib/journal.js');
+const { latest, searchCrossref, savedList, toggleSave, isSaved, jatsText, pubUnits, puWithoutEquationExtra } = await import('/lib/journal.js');
 const { mountRelated } = await import('/lib/toolkit.js');
-const $ = (id) => document.getElementById(id), list = $('list'), status = $('status'), q = $('q');
+const $ = (id) => document.getElementById(id), latestList = $('latestList'), latestNote = $('latestNote'), searchNote = $('searchNote'), q = $('q');
 const KEY = 'a2m.verse.journal.saved.v1';
-function render(items, note) {
-  list.textContent = '';
-  status.textContent = note || (items.length ? items.length + ' paper' + (items.length === 1 ? '' : 's') : 'Nothing found.');
+function render(items, note, noteEl) {
+  latestList.textContent = '';
+  noteEl.textContent = note || (items.length ? items.length + ' paper' + (items.length === 1 ? '' : 's') : 'Nothing found.');
   for (const p of items) {
     const li = document.createElement('li'); li.className = 'paper';
     const t = document.createElement('a'); t.className = 't'; t.href = p.url; t.textContent = p.title; t.target = '_blank'; t.rel = 'noopener';
@@ -257,12 +259,14 @@ function render(items, note) {
     const m = document.createElement('p'); m.className = 'm';
     m.append((p.date || '') + (p.volume ? ' · Volume ' + p.volume : ''));
     if (p.doi) { const doi = document.createElement('a'); doi.href = 'https://doi.org/' + p.doi; doi.textContent = p.doi; doi.target = '_blank'; doi.rel = 'noopener'; m.append(doi); }
-    const ab = document.createElement('p'); ab.className = 'ab'; ab.textContent = jatsText(p.abstract || '');
+    const ab = document.createElement('p'); ab.className = 'ab';
+    const lab = document.createElement('b'); lab.textContent = 'Abstract: ';
+    ab.append(lab, jatsText(p.abstract || ''));
     const acts = document.createElement('div'); acts.className = 'acts';
     const sv = document.createElement('button'); sv.textContent = isSaved(KEY, p.doi) ? 'Saved ✓' : 'Save'; sv.setAttribute('aria-pressed', String(isSaved(KEY, p.doi)));
     sv.onclick = () => { toggleSave(KEY, p); sv.textContent = isSaved(KEY, p.doi) ? 'Saved ✓' : 'Save'; sv.setAttribute('aria-pressed', String(isSaved(KEY, p.doi))); renderSaved(); };
     acts.append(sv);
-    li.append(t, a, m, ab, acts); list.append(li);
+    li.append(t, a, m, ab, acts); latestList.append(li);
   }
 }
 function renderSaved() {
@@ -275,19 +279,24 @@ function renderSaved() {
     li.append(a, rm); ul.append(li);
   }
 }
-async function loadLatest() { status.textContent = 'Reading the journal feed…'; try { const r = await papers(); render(r, r.length ? 'Latest ' + r.length + ' papers from the journal feed.' : 'The feed could not be read just now.'); } catch { render([], 'The feed could not be read just now.'); } }
-q.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('go').click(); });
-$('go').onclick = async () => { const s = q.value.trim(); if (!s) return loadLatest(); status.textContent = 'Searching the public research record…'; try { const r = await searchCrossref(s); render(r, r.length ? r.length + ' result' + (r.length === 1 ? '' : 's') + ' for “' + s + '”.' : 'Nothing matched “' + s + '”.'); } catch { render([], 'The search could not be read just now.'); } };
+async function loadLatest() {
+  searchNote.hidden = true; latestNote.hidden = false;
+  latestNote.textContent = 'Reading the journal…';
+  try { const r = await latest(); render(r, r.length ? r.length + ' papers read live from the journal\'s own registry — the newest first.' : 'The registry did not answer just now.', latestNote); }
+  catch { render([], 'The registry did not answer just now.', latestNote); }
+}
+q.addEventListener('keydown', (e) => { if (e.key === 'Enter') $('searchGo').click(); });
+$('searchGo').onclick = async () => { const s = q.value.trim(); if (!s) return loadLatest(); latestNote.hidden = true; searchNote.hidden = false; searchNote.textContent = 'Searching the public research record…'; try { const r = await searchCrossref(s); render(r, r.length ? r.length + ' papers for “' + s + '” across the public record.' : 'The registry did not answer just now.', searchNote); } catch { render([], 'The registry did not answer just now.', searchNote); } };
 $('latest').onclick = () => { q.value = ''; $('latest').setAttribute('aria-pressed', 'true'); $('savedBtn').setAttribute('aria-pressed', 'false'); $('saved').hidden = true; loadLatest(); };
 $('savedBtn').onclick = () => { const on = $('saved').hidden; $('saved').hidden = !on; $('savedBtn').setAttribute('aria-pressed', String(on)); $('latest').setAttribute('aria-pressed', String(!on)); renderSaved(); };
-(async () => { const s = new URLSearchParams(location.search).get('q'); if (s) { q.value = s; $('go').click(); } else loadLatest(); })();
+(async () => { const s = new URLSearchParams(location.search).get('q'); if (s) { q.value = s; $('searchGo').click(); } else loadLatest(); })();
 renderSaved();
 mountRelated($('related'), '/journal/'); // the "Use with" row, drawn with the page's own links
 { const tab = new URLSearchParams(location.search).get('tab'); const sec = tab && $(tab); if (sec) sec.scrollIntoView({ block: 'start' }); } // a link to one part of the page
 
 // ---- the length of a paper, worked out on this device (lib/journal.js pubUnits): the journal's own rule, with its working shown
 function units() {
-  const u = pubUnits({ words: +$('puWords').value || 0, figures: +$('puFigures').value || 0, tables: +$('puTables').value || 0, equations: +$('puEquations').value || 0, limit: +$('puKind').value || 45 });
+  const u = pubUnits({ words: +$('words').value || 0, figures: +$('figures').value || 0, tables: +$('tables').value || 0, equations: +$('equations').value || 0, limit: +$('kind').value || 45 });
   const rows = [
     ['Words', u.words.toLocaleString() + ' = ' + u.textPU.toFixed(1) + ' PU'],
     ['Figures and tables', (u.figures + u.tables) + ' = ' + u.figPU.toFixed(1) + ' PU'],
@@ -306,7 +315,7 @@ function units() {
     + 'The total is rounded up to the next whole unit. The guidelines\' own example (8,000 words, 4 figures, 32 equations) prints 23 PU, which leaves out the 3 excess equation units the same rule charges: with them it is '
     + puWithoutEquationExtra(u) + ' + ' + u.eqExtraPU + '.';
 }
-for (const id of ['puWords', 'puFigures', 'puTables', 'puEquations', 'puKind']) $(id).addEventListener('input', units);
+for (const id of ['words', 'figures', 'tables', 'equations', 'kind']) $(id).addEventListener('input', units);
 units();
 </script>
 </body>

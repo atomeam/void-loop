@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --ot:#fbbf24; --track:#1f2937; --bar:#3b82f6; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); padding:1rem; line-height:1.4; }
+  h1 { font-size:1.4rem; margin:0 0 0.5rem; }
+  .row { display:grid; grid-template-columns: 4.5rem 1fr 1fr 4rem 1fr; gap:0.4rem; align-items:center; margin-bottom:0.6rem; font-size:0.9rem; }
+  .row label, .row span { font-variant-numeric: tabular-nums; }
+  input[type="time"], input[type="number"], input[type="date"], select { background:#1a1d24; color:var(--fg); border:1px solid #333; border-radius:6px; padding:0.4rem; width:100%; }
+  .timeline { height:14px; background:var(--track); border-radius:7px; position:relative; overflow:hidden; }
+  .bar { position:absolute; top:0; height:100%; background:var(--bar); border-radius:7px; opacity:0.85; }
+  .bar.ot { background:var(--ot); }
+  .controls { display:flex; flex-wrap:wrap; gap:0.6rem; margin:1rem 0; align-items:end; }
+  .controls label { font-size:0.8rem; display:block; margin-bottom:0.2rem; }
+  button, .btn { background:var(--acc); color:#000; border:0; border-radius:6px; padding:0.5rem 0.8rem; font-weight:600; cursor:pointer; }
+  button.secondary { background:#374151; color:var(--fg); }
+  #totals { margin:1rem 0; padding:0.8rem; background:#1a1d24; border-radius:8px; }
+  #summary { white-space:pre-wrap; font-family:ui-monospace,monospace; font-size:0.85rem; }
+  .note { font-size:0.75rem; color:#9ca3af; margin-top:0.5rem; }
+  @media (max-width:600px) { .row { grid-template-columns: 3.2rem 1fr 1fr; } .row .brk, .row .hrs { grid-column:span 1; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Time card · Verse lab</title>
+<meta name="description" content="A practical weekly timesheet tool. Enter clock-in, clock-out and breaks for each day of the week. Set an overtime threshold.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Time card · Verse lab">
+<meta property="og:description" content="A practical weekly timesheet tool. Enter clock-in, clock-out and breaks for each day of the week. Set an overtime threshold.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f630-time-card/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f630-time-card/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Time card</h1>
+<p>Clock in and out for the week. Breaks come off. Overtime after your limit. Totals and a CSV stay on this device.</p>
+
+<div class="controls">
+  <div>
+    <label>Week of</label>
+    <input type="date" id="weekStart">
+  </div>
+  <div>
+    <label>OT after</label>
+    <select id="otMode">
+      <option value="daily">8 h / day</option>
+      <option value="weekly">40 h / week</option>
+    </select>
+  </div>
+  <div>
+    <label>Daily threshold (h)</label>
+    <input type="number" id="dailyTh" value="8" min="0" step="0.5" style="width:5rem">
+  </div>
+  <div>
+    <label>Rate $/h (optional)</label>
+    <input type="number" id="rate" value="" min="0" step="0.01" placeholder="0" style="width:5rem">
+  </div>
+</div>
+
+<div id="days"></div>
+
+<div id="totals">
+  <strong>Week totals</strong>
+  <div id="summary">—</div>
+</div>
+
+<div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+  <button id="copyBtn">Copy summary</button>
+  <button id="csvBtn" class="secondary">Download CSV</button>
+  <button id="clearBtn" class="secondary">Clear week</button>
+</div>
+<p class="note">Times are local. Overnight shifts (end before start) are counted as next day. Pay is an estimate only — not a payroll system. Numbers never leave this device.</p>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

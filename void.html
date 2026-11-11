@@ -480,8 +480,6 @@
       padding: 0 18px;
     }
     #whisper .vc { color: var(--fg); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
-#void-offer { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; margin-top: 2px; }
-#void-offer a { color: var(--ink-3); }
     .shape {
       position: absolute;
       user-select: none;
@@ -1184,6 +1182,14 @@
     #void-anchor{position:fixed;right:12px;bottom:12px;z-index:6;width:28px;height:28px;display:grid;place-items:center;color:#d7d2ff;opacity:.12}
     #void-anchor svg{width:16px;height:16px;display:block}
     @media (max-width:700px){#void-anchor{right:8px;bottom:calc(6px + env(safe-area-inset-bottom,0px));opacity:.22}}
+    .vpage.kept,.vpage.placed{opacity:1;filter:none;z-index:40}
+    .vpage.on{z-index:60}
+    .vpage.kept:not(:has(video,audio,iframe)),.vpage.placed:not(:has(video,audio,iframe)),.vpage.on.placed:not(:has(video,audio,iframe)){transform:none}
+    .thing,.vpage{touch-action:none}
+    .thing :is(input,textarea,select,a,button),.vpage :is(input,textarea,select,a,button){touch-action:manipulation}
+    .vpage.placed,.vpage.kept,.thing.card-glide{transition:left .32s cubic-bezier(.2,.7,.2,1),top .32s cubic-bezier(.2,.7,.2,1)}
+    .vpage.tossing,.thing.tossing{transition:none !important}
+    @media (prefers-reduced-motion:reduce){.vpage.placed,.vpage.kept,.thing.card-glide{transition:none}}
   </style>
 </head>
 <body>
@@ -1205,7 +1211,6 @@
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
-    <div id="void-offer" hidden></div>
     <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
@@ -1346,7 +1351,6 @@
         if (rect) { rect.setAttribute('y', d.fill.y); rect.setAttribute('height', d.fill.h); } } catch (_) {} };
       draw(); addEventListener('void:stage-change', draw);
     })();
-    let offerShown = false; // the paid-products line shows once per load, after the first answered ask
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
       if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
@@ -1357,13 +1361,6 @@
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
       // the day a skill last answered, on this device only (lib/skill-use.js; asked by Verse: a last-used day for every skill): a day, never a word of any ask
       if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
-      // the paid products where the free page leaves off: after the first answered ask of the load, one muted line with the
-      // three products (Void Monthly, One-Time Fix, Full Stack Audit); static words only, nothing fetched, nothing stored
-      if (!offerShown && attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) {
-        offerShown = true;
-        const offer = document.getElementById('void-offer');
-        if (offer) { offer.hidden = false; offer.innerHTML = 'Made with Verse — <a href="/members/?from=stage">Void Monthly</a> · <a href="/one-time-fix/">One-Time Fix</a> · <a href="/full-stack-audit/">Full Stack Audit</a>'; }
-      }
     }
     let sayCount = 0;
     function fitOpenPanels() {
@@ -1562,7 +1559,7 @@ Object.values(things).forEach((th) => {
     stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
       for (const e of entries) {
-        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
+        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id] || e.target.dataset.tidy) continue; // a card the crowd layout just sized is not a card that grew
         const w = e.target.offsetWidth, h = e.target.offsetHeight, was = cardSize.get(id);
         if (was && (h > was.h + 4 || w > was.w + 4)) grownIds.add(id);
         cardSize.set(id, { w, h });
@@ -1943,10 +1940,12 @@ Object.values(things).forEach((th) => {
         if (th.locked) { selectedId = th.id; return; } // a locked card (skills/label.js, skills/stage-arrange.js) stays where it is: picked, never dragged or thrown
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
-        const origX = th.x, origY = th.y;
+        let origX = th.x, origY = th.y;
         const sk = stageKinds[th.kind]; // optional hooks a skill can react with; anything can still be thrown
         let cur = null, vx = 0, vy = 0, lastX = e.clientX, lastY = e.clientY, lastT = performance.now();
         const begin = () => {
+          if (el.isConnected) { origX = el.offsetLeft; origY = el.offsetTop; th.x = origX; th.y = origY; } // the crowd draws the picture (lib/card-stage.js) without moving the saved spot; the hand starts where the picture is
+          for (const node of stage.querySelectorAll(':scope > .thing[data-id]')) { const t = things[node.dataset.id]; if (t && t !== th) { t.x = node.offsetLeft; t.y = node.offsetTop; } } // render() mounts from the saved spot, which would pull the crowd off the picture a drop is aimed at
           selectedId = th.id;
           const media = holdsMedia(el);
           if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; if (media && el.isConnected) stage.appendChild(el); } // to the front (render order = z-order)
@@ -1984,6 +1983,15 @@ Object.values(things).forEach((th) => {
           if (!cur) return;
           const w = cur.offsetWidth || 40, h = cur.offsetHeight || 40;
           const verdict = releaseToss({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: stage.clientHeight });
+          const speed = Math.hypot(vx, vy);
+          if (!verdict.gone && speed >= 0.62 && window.__cardCoast) { // a slide, not a throw: releaseToss already decided a hard toss
+            try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {} // where it was let go, before the slide: a drop onto another card merges and is not then thrown away
+            if (!things[th.id] || !cur.isConnected) return;
+            const room = Math.max(80, Math.min(stage.clientHeight, dockSpace() - stage.getBoundingClientRect().top));
+            const land = window.__cardCoast({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: room });
+            if (land.off) verdict.gone = true; // a slide that runs off still leaves
+            else if (window.__glideCard && (Math.abs(land.x - th.x) > 3 || Math.abs(land.y - th.y) > 3)) { window.__glideCard(cur, th, land); return; }
+          }
           if (!verdict.gone) { // a slow drop sets it back down
             th.x = Math.max(0, th.x); th.y = Math.max(0, th.y);
             cur.style.transform = '';
@@ -2501,7 +2509,7 @@ say('nothing selected to remove');
       el._slogan = null;
       document.querySelectorAll('.vslogan').forEach((n) => n.remove());
       el.classList.remove('on');
-      setTimeout(() => el.remove(), 350);
+      el.remove(); // gone at once, so a card that is closing is not still the one a chip or a form types into
       clearUnderPage(); // what stepped aside for it comes back
       return true;
     }
@@ -2632,13 +2640,19 @@ say('nothing selected to remove');
     }
     function showPage(build) {
       warmAskLibs();
-      closePage();
+      const prev = vpageEl;
+      if (prev && prev.isConnected) { // a new card keeps the ones already open (they used to be replaced)
+        prev.classList.remove('on'); prev.classList.add('kept');
+        try { trailKeep(prev); } catch (_) {}
+        if (worldCur && worldCur.card === prev) closeWorld();
+      }
       const el = document.createElement('div');
       el.className = 'vpage';
       build(el);
       el.setAttribute('role', 'region');
-      document.body.appendChild(el);
+      const older = document.querySelector('.vpage'); if (older) older.before(el); else document.body.appendChild(el); // the newest answer is the first .vpage; earlier cards stay open behind it
       vpageEl = el;
+      try { document.dispatchEvent(new CustomEvent('void:cards')); } catch (_) {}
       srAnnounce(el);
       el._ask = currentAsk; el._at = Date.now();
       // a line with data-ask on any page (a menu row, a choice between two Springfields) runs that ask
@@ -2650,7 +2664,7 @@ say('nothing selected to remove');
       stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el);
       new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el); }).observe(el, { childList: true, subtree: true });
       el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.vread'); if (!b) return; e.preventDefault(); e.stopPropagation(); readCard(el, b); });
-      requestAnimationFrame(() => el.classList.add('on'));
+      requestAnimationFrame(() => { if (vpageEl === el) el.classList.add('on'); }); // a card kept open does not stay the current one
       // what it covers steps aside, once it is up and again whenever it grows (an answer arriving); not on a phone-wide card
       setTimeout(() => { if (vpageEl === el) clearUnderPage(); }, 380);
       if (typeof ResizeObserver === 'function') new ResizeObserver(() => { if (vpageEl === el && el.classList.contains('on')) clearUnderPage(); }).observe(el);
@@ -2937,15 +2951,16 @@ say('nothing selected to remove');
         const plain = '<p>' + esc(w.thoughts || '') + '</p>';
         if (!SB) return plain;
         try {
-          if (typeof SB.selfCard !== 'function') return SB.selfHtml(SB.selfSections(vv), esc);
-          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam);
-          bodyOf.shown = r.shown; return SB.selfHtml(r.sections, esc);
+          // the stage keeps Verse's words only; what it did and when (since you last looked, asks, builds, numbers) is on its log page, /log/ (lib/verse-log.js)
+          const words = (ss) => ss.filter((s) => s.id === 'words');
+          if (typeof SB.selfCard !== 'function') return SB.selfHtml(words(SB.selfSections(vv)), esc);
+          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam), w = words(r.sections);
+          bodyOf.shown = r.shown; return w.length ? SB.selfHtml(w, esc) : '<p class="sub">Nothing new from me since you last read this.</p>';
         } catch (_) { return plain; } };
       let h = '<h2>What I think of myself</h2><div data-v-body>' + bodyOf(v, fam0) + '</div>';
-      // what's built and improved, skill by skill, from the ledger itself (owner, 2026-10-21: "i need to see in better detail what is built or improved for everything in Verse")
-      try { const [BD, led] = await Promise.all([import('/lib/built-detail.js'), fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null))]); if (vpageEl !== el) return; if (BD && led) h += BD.builtDetailHtml(BD.builtByFamily(led, fam0), esc); } catch (_) {}
-      try { const PC = await import('/lib/progress-chart.js'); if (vpageEl !== el) return; const led2 = await fetch('/void.growth.json').then((r) => (r.ok ? r.json() : null)); if (led2) h += PC.progressHtml(PC.weekly(led2), esc); const tl = await fetch('/tester-log.json').then((r) => (r.ok ? r.json() : null)).catch(() => null); if (tl && PC.testerHtml) h += PC.testerHtml(tl, esc); } catch (_) {}
-      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
+      // what was built and when, skill by skill, the weekly chart and the tester trend are on the log page (/log/), linked here quietly
+      h += '<p class="sub vs-loglink"><a href="/log/">Log</a>: what was built and when, and the numbers behind this card.</p>';
+      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); } catch (_) {}
       // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
@@ -2955,7 +2970,7 @@ say('nothing selected to remove');
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to Verse" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
         + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></details>';
-      el.innerHTML = h + '<div data-v-pulse></div>' + (h.includes('data-v-conf') ? '' : '<div data-v-conf></div>') + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      el.innerHTML = h + (owner ? '<div data-v-pulse></div>' : '') + '<div class="src">Source: my reflections</div>';
       mountCorrect(el, said); mountPulse(el);
       // the long lists show their newest five; "show all N" unfolds the rest (owner, 2026-10-18), and the Root cause / Surface filter keeps to that fold
       const wire = () => {
@@ -2967,27 +2982,18 @@ say('nothing selected to remove');
         el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
       };
       wire();
-      // the growth velocity keeps up (asked by Verse: "updating in real time"): while this card is open, a stage change (a build landing puts things on the
-      // stage) reads /api/reflect again and redraws the week's line in place, at most once a minute (lib/self-blocks.js VELOCITY_EVERY); no timer, and
-      // the listener lets go the first time it finds the card closed
-      if (SB && el.querySelector('.vs-velocity')) { let velAt = 0, velBusy = false;
-        const onStage = async () => { if (vpageEl !== el) return removeEventListener('void:stage-change', onStage);
-          if (velBusy || Date.now() - velAt < SB.VELOCITY_EVERY) return; velBusy = true; velAt = Date.now();
-          try { const nv = await fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), box = vpageEl === el && el.querySelector('.vs-velocity');
-            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc, SB.friction(nv.asks)); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
-          velBusy = false; };
-        addEventListener('void:stage-change', onStage); }
+      // the growth velocity and its live redraw are on the log page now (lib/verse-log.js)
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Verse, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
-      const conf = (fam) => import('/lib/skill-confidence.js').then((m) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc
-      conf(fam0);
+      const conf = () => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot) slot.replaceChildren(); };
+      conf();
       let was = JSON.stringify([v, fam0]);
       keepFresh(el, async () => {
         const [nv, nf] = await Promise.all([fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), fetch('/skills/families.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null))]);
         const box = vpageEl === el && el.querySelector('[data-v-body]'), now = JSON.stringify([nv, nf]);
         if (!box || !nv || !Array.isArray(nv.entries) || now === was) return;
-        was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(nf || fam0); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
-        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(nv, nf || fam0))); } catch (_) {}
+        was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
+        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); } catch (_) {}
       });
     }
     // every data card keeps itself current while it is open (owner, 2026-10-19: "all cards should constantly update"): update() runs every
@@ -4630,10 +4636,10 @@ say('nothing selected to remove');
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
       if (!SKY.lib) { warmSky(); return; }
       skyView();
-      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move)
+      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed with a weight that grows with the frame's gap (lib/star-parallax.js smoothedSpeed: the fixed half-blend here let a starved estimate crawl back at half the speed while the eye flew flat out, so on a loaded machine the streak could stay under its floor the whole move); a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move
         const t = Math.min(0.25, dt);
-        SKY.vx = SKY.vx * 0.5 + 0.5 * (SKY.near.ox - was.ox) / t; SKY.vy = SKY.vy * 0.5 + 0.5 * (SKY.near.oy - was.oy) / t;
-        SKY.zr = SKY.zr * 0.5 + 0.5 * Math.log(SKY.cam.z / (prev.z || 1)) / t;
+        SKY.vx = SKY.lib.smoothedSpeed(SKY.vx, (SKY.near.ox - was.ox) / t, dt); SKY.vy = SKY.lib.smoothedSpeed(SKY.vy, (SKY.near.oy - was.oy) / t, dt);
+        SKY.zr = SKY.lib.smoothedSpeed(SKY.zr, Math.log(SKY.cam.z / (prev.z || 1)) / t, dt);
       }
       SKY.at = now; SKY.fresh = true; kickStars();
     });
@@ -5235,7 +5241,7 @@ say('nothing selected to remove');
     // Closing a page never counts toward the double Esc, so Esc, Esc closes a page and nothing is undone.
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape') return;
-      if (vpageEl) { closePage(); lastEsc = 0; return; }
+      if (vpageEl || document.querySelector('.vpage')) { closePage(); document.querySelectorAll('.vpage').forEach((n) => n.remove()); lastEsc = 0; return; } // Esc clears the open card and the ones kept behind it, and the void is back
       const t = Date.now(); if (t - lastEsc < 450) { lastEsc = 0; undoLast(); } else lastEsc = t;
     });
 
@@ -6003,10 +6009,12 @@ say('nothing selected to remove');
         + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ', ' + details.length.toLocaleString() + ' characters' + (cut ? ' (the start and the end were read; ' + cut.toLocaleString() + ' from the middle were left out)' : ', all read') + '</summary>'
         + '<div style="opacity:.7;font-size:12px;margin-top:6px">' + esc(clipLine(String(details).replace(/\s+/g, ' '), 90)) + '</div></details>'; // a one-line glimpse, never the whole paste echoed back (owner, 2026-11-03)
     }
-    async function showFix(ask, details) {
+    async function showFix(ask, details, answers) {
       // the title is the paste's first line as given, not the normalized ask: the page's typo and shorthand passes can hand over a
-      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times)
-      const given = String(details || ''), first = given.split('\n')[0].trim();
+      // whole first sentence, and the title then ended without the … at a word (tools/flakes.json: this check, five times).
+      // A paste that answers "paste what it shows" (answers = true) keeps the ask it answers as its title: that ask names the tool
+      // ("my Make scenario is broken"), and the model reads the ask and the paste apart (the paste's first line is in the details).
+      const given = String(details || ''), first = answers ? '' : given.split('\n')[0].trim();
       const title = clipLine(first || ask, 120), sent = fitPaste(title, given);
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">working on it…</div>'; });
       say('working on it');
@@ -6037,7 +6045,7 @@ say('nothing selected to remove');
       if (!fx) return false;
       if (pendingFix) {
         const pf = pendingFix; pendingFix = null;
-        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full); return true; }
+        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full, true); return true; }
       }
       if (!fx.isFixAsk(full)) return false;
       currentAsk = text; lastAsk = text;
@@ -6689,6 +6697,10 @@ say('nothing selected to remove');
       // skills ranked above the one that answers (video-play is 192nd, film-metadata 182nd, idea-certificate 248th of 344) can take seconds on
       // a slow or loaded machine, and the page showed nothing at all until the answer came. The answer replaces this line as before.
       if (!skillsLoaded && !quiet && !whisper.textContent) say('waking up');
+      if (!handle._parts && /\sand\s/i.test(typed)) { // "timer 5 min and draw a cat and weather" opens each card
+        let parts = null; try { parts = (await import('/lib/card-tidy.js')).splitAsks(typed); } catch (_) { parts = null; }
+        if (parts) { handle._parts = 1; try { for (const p of parts) await handle(p); } finally { handle._parts = 0; } return; }
+      }
       await ensureCardCss();
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
@@ -6965,7 +6977,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q') || sp0.get('ask'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
+      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 4000); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
@@ -6986,7 +6998,7 @@ say('nothing selected to remove');
       if (sp.has('share_text') || sp.has('share_url') || sp.has('share_title')) {
         const st = (sp.get('share_text') || '').trim(), su = (sp.get('share_url') || '').trim(), sti = (sp.get('share_title') || '').trim();
         const link = /^https?:\/\//i.test(su) ? su : ((st.match(/https?:\/\/\S+/i) || [])[0] || '');
-        const ask = (link || st || sti).slice(0, 500);
+        const ask = (link || st || sti).slice(0, 4000);
         history.replaceState(null, '', location.pathname);
         if (ask) skillsReady.then(() => handle(ask));
       } else if (sp.get('source') === 'app') history.replaceState(null, '', location.pathname);
@@ -7150,7 +7162,7 @@ say('nothing selected to remove');
     // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
     async function agentAsk(ask) { agentRuns++; try { return await agentAskRun(ask); } finally { agentRuns--; } }
     async function agentAskRun(ask) {
-      ask = String(ask || '').trim().slice(0, 500);
+      ask = String(ask || '').trim().slice(0, 4000);
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the person at the screen, asked by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
@@ -7300,6 +7312,13 @@ say('nothing selected to remove');
     try { if (sessionStorage.getItem(EPH_KEY)) armPageEph(); } catch (_) {} // a reload keeps ephemeral mode on before safety-kit.js arrives (#2250)
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Verse'), 400);
     window.addEventListener('resize', () => render());
+    import('/lib/card-stage.js').then((m) => m.boot({
+      things: () => things,
+      save: () => { try { save(); } catch (_) {} },
+      page: () => vpageEl,
+      setPage: (el) => { vpageEl = el; },
+    })).catch(() => {});
+    window.__verseThings = () => things;
   </script>
   <script>
   // ---- The sky: the empty stage follows the real sun (skills/sky-rules.js; frontier #21). No network call, no permission: the place is

@@ -12,6 +12,7 @@ import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { mergeIndex } from './merge-index.mjs';
 import { readOrder, indexText, adoptOrder } from './skills-index.mjs';
 import { APPEND_JSON, APPEND_TEXT, INDEX, keyOf } from './records.mjs'; // the append-only records, shared with tools/revert-records.mjs
+import { settleChecks } from './checks-list.mjs';
 
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 // tools/families.mjs conflicts are two branches adding skills to the same family list: the settled text is main's
@@ -28,7 +29,12 @@ sh('git fetch -q origin main');
 const GENERATED = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json', 'void-live-deploy/skills/deps.json',
   'void-live-deploy/skills/what.json', 'void-live-deploy/self.json', 'void-live-deploy/void.asks.json', 'void-live-deploy/lib/similar-index.js', 'void-live-deploy/skills/bench-alarms.json',
   'void-live-deploy/sitemap.xml', 'void-live-deploy/parity.json', 'void-live-deploy/incidents.json', 'void-live-deploy/tower.evidence.json'];
-const REGEN = GENERATED.concat('void-live-deploy/skills/index.json');
+// tools/parity.mjs writes parity.json together with docs/PARITY/<site>.md and the timelines in void-live-deploy/history/: staging only
+// parity.json left the inventories stale after a merge that moved a cited line, and the parity check went red on main and on every PR
+const REGEN = GENERATED.concat('void-live-deploy/skills/index.json', 'docs/PARITY', 'void-live-deploy/history');
+// a conflict in one of those inventories or timelines is settled like the other generated files: main's side now, regen() writes it again
+// from the merged tree (each one cites main's lines, so a person picking a side by hand only ever picked the stale one)
+const isGenerated = (f) => GENERATED.includes(f) || f.startsWith('docs/PARITY/') || f.startsWith('void-live-deploy/history/');
 function regen() {
   if (!existsSync(resolve(process.cwd(), 'tools', 'refresh.mjs'))) return;
   try { execFileSync(process.execPath, [resolve(process.cwd(), 'tools', 'refresh.mjs'), '--keep-going'], { stdio: 'ignore' }); } catch (e) { console.error('tools/refresh.mjs failed after the merge (' + (e.status || e.message) + '): the check will say why'); }
@@ -53,13 +59,35 @@ if (conflicted.includes(INDEX)) {
     } else if (m) { indexMerged = JSON.stringify(m) + (sideOf(3, INDEX).endsWith('\n') ? '\n' : ''); indexHow = "kept main's order and added this branch's new skills after the name before them"; }
   } catch (e) { console.error('skills/index.json: ' + e.message); } }
 // generated files (families, the book): take main's here, regen() writes them again from the merged tree after the commit
-for (const f of conflicted.filter((x) => GENERATED.includes(x))) { sh(`git checkout --theirs -- ${f}`); sh(`git add ${f}`); }
-const other = conflicted.filter((f) => !GENERATED.includes(f) && !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && f !== 'tools/families.mjs' && !(f === INDEX && indexMerged !== null));
-if (other.length) { console.error('conflicts need a person: ' + other.join(', ') + ' (merge left in progress)'); process.exit(1); }
+for (const f of conflicted.filter(isGenerated)) { sh(`git checkout --theirs -- ${f}`); sh(`git add ${f}`); }
+const settled = new Set();
+if (conflicted.includes('tools/checks.mjs')) {
+  const text = settleChecks(sideOf(1, 'tools/checks.mjs'), sideOf(2, 'tools/checks.mjs'), sideOf(3, 'tools/checks.mjs'));
+  if (text) {
+    writeFileSync('tools/checks.mjs', text.endsWith('\n') ? text : text + '\n');
+    sh('git add -- tools/checks.mjs');
+    settled.add('tools/checks.mjs');
+    console.log('tools/checks.mjs: kept both sides\' check lines');
+  }
+}
+if (conflicted.includes('docs/HANDOFF-GAPS.md')) {
+  try {
+    execFileSync(process.execPath, [resolve(process.cwd(), 'tools/handoff-scan.mjs'), '--write'], { stdio: 'ignore' });
+    sh('git add -- docs/HANDOFF-GAPS.md');
+    settled.add('docs/HANDOFF-GAPS.md');
+    console.log('docs/HANDOFF-GAPS.md: rewritten by handoff-scan from the merged pages');
+  } catch (e) { console.error('docs/HANDOFF-GAPS.md: handoff-scan failed (' + (e.message || e) + ')'); }
+}
+const other = conflicted.filter((f) => !settled.has(f) && !isGenerated(f) && !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && f !== 'tools/families.mjs' && !(f === INDEX && indexMerged !== null));
+if (other.length) {
+  console.error('conflicts need a person: ' + other.join(', ') + ' (merge left in progress)');
+  for (const f of other) console.error('rule: conflict-needs-person\nfile: ' + f + '\nfix: run node tools/merge-main.mjs. It keeps both sides of the handoff board, the growth inbox, the family lists and the check list, and rewrites docs/HANDOFF-GAPS.md. This file is what is left. Do not close the pull request.');
+  process.exit(1);
+}
 
 const side = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding: 'utf8' }); } catch (_) { return ''; } };
 for (const f of conflicted) {
-  if (GENERATED.includes(f)) continue; // settled above, written again by regen()
+  if (settled.has(f) || isGenerated(f)) continue; // settled above, written again by regen()
   if (f === INDEX) {
     writeFileSync(f, indexMerged);
     console.log(`${f}: ${indexHow} (${JSON.parse(indexMerged).length} total)`);

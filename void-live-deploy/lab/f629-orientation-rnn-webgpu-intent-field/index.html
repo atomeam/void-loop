@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+#canvas { position:absolute; inset:0; width:100%; height:100%; }
+.card { position:absolute; background:#222a; border:1px solid #4af; border-radius:8px; padding:8px; min-width:80px; cursor:grab; user-select:none; backdrop-filter:blur(4px); }
+.card:active { cursor:grabbing; }
+#hud { position:fixed; top:8px; left:8px; background:#000a; padding:8px; border-radius:6px; font-size:12px; z-index:10; }
+button { margin:2px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation RNN WebGPU Intent Field · Verse lab</title>
+<meta name="description" content="Job: Tilt your phone or move the mouse; a local tiny RNN predicts your next intent from orientation and pointer history, then a WebGPU compute field (or Canvas2D">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation RNN WebGPU Intent Field · Verse lab">
+<meta property="og:description" content="Job: Tilt your phone or move the mouse; a local tiny RNN predicts your next intent from orientation and pointer history, then a WebGPU compute field (or Canvas2D">
+<meta property="og:url" content="https://a-to-mind.com/lab/f629-orientation-rnn-webgpu-intent-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f629-orientation-rnn-webgpu-intent-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  F629 Orientation RNN WebGPU Intent Field<br>
+  <button id="add">Add note</button>
+  <button id="export">Export JSON</button>
+  <button id="reset">Reset</button>
+  <span id="status">Mouse mode</span>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation RNN WebGPU Intent Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#add { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+#export { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+#reset { appearance:none;border:0;border-radius:12px;background:#1c2030;color:#f2f4fb }
+/* end verse design loop */
+</style>
+</body>
+</html>

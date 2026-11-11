@@ -115,13 +115,14 @@ test('no theatre: the words say a model wrote them, what it was given sits under
   const { selfSections, sectionHtml, modelLabel } = await import('../void-live-deploy/lib/self-blocks.js');
   const { VOICE_SYSTEM } = await import('../void-live-deploy/lib/voice.js');
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-  const daily = { kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'I feel the hunger to grow.', weakest: 'The stage is thin.', next_game: 'Go.', better: 'Route better.', model: '@cf/test/model-1', given: 'Facts about Verse:\n<b>The stage 11/94 proven</b>' };
+  const daily = { kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'I feel the hunger to grow.', weakest: 'The stage is thin.', next_game: 'Go.', better: 'Route better.', model: '@cf/test/model-1', given: 'Facts about Verse:\n<b>the page rotates letters</b>' };
   const secs = selfSections({ entries: [daily], asks: [], follow: null }, Date.parse('2026-10-19T07:00:00Z'));
   const words = secs.find((s) => s.id === 'words'), html = sectionHtml(words, esc);
   assert.match(html, /Written by Verse's model \(test\/model-1\) from these facts/); assert.match(html, /not a felt state/); assert.ok(!/My own words, kept as I said them/.test(html));
-  assert.match(html, /<details class="vs-given" data-share-skip="1">/); assert.ok(html.includes('&lt;b&gt;The stage 11/94') && !html.includes('<b>The stage'), 'what it was given is shown as text');
+  assert.match(html, /<details class="vs-given" data-share-skip="1">/); assert.ok(html.includes('&lt;b&gt;the page rotates letters') && !html.includes('<b>the page'), 'what it was given is shown as text');
+  assert.ok(!selfSections({ entries: [{ ...daily, given: '1 of 1277 sites assimilated' }], asks: [], follow: null }).find((s) => s.id === 'words').blocks.some((b) => b.t === 'given'), 'a tally in the facts is not shown');
   const growth = secs.find((s) => s.id === 'growth'), notes = growth.blocks.filter((b) => b.t === 'note').map((b) => b.text);
-  assert.equal(notes.length, 3); assert.match(notes[0], /skills\/families\.json/); assert.match(notes[1], /not a finding/); assert.match(notes[2], /not a plan until a ledger line/);
+  assert.equal(notes.length, 2); assert.match(notes[0], /not a finding/); assert.match(notes[1], /not a plan until a ledger line/);
   assert.equal(modelLabel(''), "Verse's model"); assert.equal(modelLabel('@cf/meta/llama<x>'), "Verse's model (meta/llamax)");
   assert.ok(!selfSections({ entries: [{ ...daily, given: undefined }], asks: [], follow: null }).find((s) => s.id === 'words').blocks.some((b) => b.t === 'given'), 'an older entry with no record of what it was given shows none');
   assert.match(VOICE_SYSTEM, /never write "I feel"/); assert.ok(!/hate not knowing|hungry|curious/.test(VOICE_SYSTEM), 'the character lines are gone from the readout prompt');
@@ -139,8 +140,9 @@ test('evidence: tags are parsed, only well-formed ones kept, and the card names 
   assert.deepEqual(t.sources, { S1: 'skills/families.json', S2: 'void.growth.json (the last 7 days)' }); assert.match(t.text, /^\[S1 skills\/families\.json\] The stage 11\/94\n\[S2 /);
   const entry = { evidence: { thoughts: ['S1'], better: ['S1', 'S9'], weakest: ['S9'] }, sources: t.sources };
   assert.match(sourceNote(entry, 'thoughts'), /skills\/families\.json \(S1\)/); assert.ok(!/S9/.test(sourceNote(entry, 'better')), 'a tag the facts never had is not shown'); assert.equal(sourceNote(entry, 'weakest'), '');
-  const secs = selfSections({ entries: [{ kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'The stage is thin.', weakest: 'The stage, 11 of 94 proven.', evidence: { weakest: ['S1'] }, sources: { S1: 'skills/families.json' } }], asks: [], follow: null });
-  assert.match(secs.find((x) => x.id === 'growth').blocks.filter((b) => b.t === 'note')[0].text, /^Source \(cited by the model.*skills\/families\.json \(S1\)/);
+  const secs = selfSections({ entries: [{ kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'Growth has reached 416 skills with 1 of 1277 sites assimilated.', better: 'Read the ledger.', evidence: { thoughts: ['S1'] }, sources: { S1: 'skills/families.json' } }], asks: [], follow: { recent: [{ what: 'a page that rotates letters' }] } });
+  assert.match(secs.find((x) => x.id === 'words').blocks[0].text, /rotates letters/);
+  assert.doesNotMatch(JSON.stringify(secs), /assimilat|famil|proven|1 of 1277/);
 });
 
 test('markBuilt: a sentence of the model\'s that asks for something already built carries "(built <day>)", the rest stays as written (owner, 2026-10-19)', async () => {
@@ -152,8 +154,9 @@ test('markBuilt: a sentence of the model\'s that asks for something already buil
     'Teach the chess skill openings. Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off [S2]. (built 2026-10-18)');
   assert.equal(markBuilt('Teach the chess skill openings.', asked), 'Teach the chess skill openings.');
   assert.equal(markBuilt('Teach the chess skill openings.', []), 'Teach the chess skill openings.');
-  const secs = selfSections({ entries: [{ at: '2026-10-19T08:00:00Z', kind: 'daily', thoughts: 'x', weakest: 'Flat maps.', next_game: "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.", better: 'Read the ledger.', asks: [] }], asks: [], follow: { total: 2, built: 2, recent: [], asked } }, Date.parse('2026-10-19T09:00:00Z'));
-  const g = secs.find((x) => x.id === 'growth'); assert.ok(g.blocks.some((b) => b.t === 'p' && /\(built 2026-10-18\)$/.test(b.text)));
+  const secs = selfSections({ entries: [{ at: '2026-10-19T08:00:00Z', kind: 'daily', thoughts: 'x', weakest: 'Flat maps.', next_game: 'Teach the chess skill openings.', better: 'Read the ledger.', asks: [] }], asks: [], follow: { total: 2, built: 2, recent: [], asked } }, Date.parse('2026-10-19T09:00:00Z'));
+  const g = secs.find((x) => x.id === 'growth'); assert.ok(g.blocks.some((b) => b.t === 'p' && b.text === 'Teach the chess skill openings.'));
+  assert.doesNotMatch(JSON.stringify(g), /famil|proven/);
 });
 
 test('a built item does not repeat its words under "I asked:", and the facts the model was given stay out of a saved copy (owner, 2026-10-19: "FIX IT")', async () => {
@@ -167,7 +170,7 @@ test('a built item does not repeat its words under "I asked:", and the facts the
 test('no repeats, ever (owner, 2026-10-19): a sentence of Verse\'s words is shown once on the card and never again once read on this device', async () => {
   const { noRepeats, sentenceKey } = await import('../void-live-deploy/lib/self-blocks.js');
   const canon = 'Verse is a blank stage with one quiet input where asks transform into skills [S1].';
-  const better = "Improve the stability of the stage family, the least proven [S3]. Lift the two weak shared libraries [S1]. (built 2026-10-19)";
+  const better = "Improve the stability of the stage [S3]. Lift the two weak shared libraries [S1]. (built 2026-10-19)";
   const v = { entries: [{ kind: 'build', at: '2026-10-19T12:00:00Z', shipped: 'Browser suite', thoughts: canon + ' The newest thing is the suite fix [Just shipped].', better },
     { kind: 'daily', at: '2026-10-19T08:00:00Z', thoughts: canon + ' I hold 302 skills [S3].', weakest: 'The stage is weakest.', next_game: 'Deep ocean floor.', better }] };
   const secs = selfSections(v);
@@ -217,4 +220,6 @@ test('selfCard: a build the lead shows is not listed again under "What got built
   assert.equal(sections[0].id, 'since');
   assert.deepEqual(sections[0].blocks.find((b) => b.t === 'list').items.map((it) => it.text), ['built 2', 'built 3']);
   assert.deepEqual(sections.find((s) => s.id === 'built').blocks.find((b) => b.t === 'list').items.map((it) => it.text), ['ask 0', 'ask 1']);
+  const depth = (id) => sections.find((s) => s.id === id).blocks.find((b) => b.t === 'depth');
+  assert.deepEqual(depth('words').counts, depth('built').counts, 'the stage words keep the same on/off pills the log filters with');
 });

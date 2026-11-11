@@ -4,11 +4,11 @@
 // a risky diff back; the model stack falls through to the next free provider; no key is ever in a command or in the source.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, symlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE, nearMiss } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, LIMITS, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE, nearMiss, searchShape, nameTokens } from './verse-coder.mjs';
 import { scanDiff, buildPrompt } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -267,6 +267,66 @@ test('a big file is outlined, then a region, a line patch and a split: the model
   assert.match(readFileSync(join(s.work, 'src/big.mjs'), 'utf8'), /import '\.\/head\.mjs'/);
   assert.match(readFileSync(join(s.work, 'src/big.mjs'), 'utf8'), /return 3/);
   assert.ok(!existsSync(join(s.work, 'src/all.mjs')), 'a split that would drop most of the file is not written');
+});
+
+test('a no-match search spiral reaches an edit: a code snippet is literal, a miss lists files, and the same miss is not run again (#2610)', async () => {
+  // three laps (issue 2610) stopped at the turn cap on "search .: no match". `add(2, 2)` is in the test; as a regex the
+  // parentheses are a group, so the old search matched nothing and the model searched again.
+  assert.equal(searchShape('add(2, 2)').regex, null); assert.equal(searchShape('add(2, 2)').literal, 'add(2, 2)');
+  assert.match(searchShape('').error, /needs a pattern/); assert.match(searchShape('.').error, /word or a short line/);
+  assert.equal(searchShape('fun\\w+ tail').regex, 'fun\\w+ tail');
+  assert.deepEqual(nameTokens('void-live-deploy/skills/add.js'), ['add']);
+  const s = repo();
+  mkdirSync(join(s.work, 'void-live-deploy/skills/order'), { recursive: true });
+  writeFileSync(join(s.work, 'void-live-deploy/skills/index.json'), '["add"]\n');
+  writeFileSync(join(s.work, 'void-live-deploy/skills/add.js'), 'export function add(a, b) { return a - b; }\n');
+  writeFileSync(join(s.work, 'void-live-deploy/skills/order/10-add'), 'add\n');
+  sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'skill');
+  let phase = 0; const seen = [];
+  const model = async (msgs) => {
+    const last = msgs[msgs.length - 1].content; seen.push(last);
+    if (phase === 0) { phase = 1; return { text: call('search', { pattern: 'add(2, 2)', path: '.' }) }; }
+    if (phase === 1) { phase = 2; return { text: call('search', { pattern: 'void-live-deploy/skills/add.js', path: '.' }) }; }
+    if (phase === 2) { phase = 3; return { text: call('search', { pattern: 'void-live-deploy/skills/add.js', path: '.' }) }; }
+    if (phase === 3) { phase = 4; return { text: call('read', { path: 'void-live-deploy/skills/index.json' }) }; }
+    if (phase === 4) { phase = 5; return { text: call('replace', { path: 'src/add.mjs', old: 'return a - b;', new: 'return a + b;' }) }; }
+    if (phase === 5) { phase = 6; return { text: call('check', { name: 'add' }) }; }
+    return { text: call('finish', { summary: 'add adds' }) };
+  };
+  const r = await runCoder({ root: s.work, prompt: 'Make add(2, 2) pass. The skill is add.', checks: CHECKS, target: 'add', model, env: { PATH: process.env.PATH } });
+  assert.match(seen[1], /add\(2, 2\)/); assert.match(seen[1], /tools\/add\.test\.mjs/, 'the snippet is found as text, not missed as a regex');
+  assert.match(seen[2], /^no match for "void-live-deploy\/skills\/add\.js"/);
+  assert.match(seen[2], /void-live-deploy\/skills\/add\.js/); assert.match(seen[2], /skills\/order\/10-add/, 'a miss names the skill file and its order file');
+  assert.match(seen[3], /already searched/); assert.match(r.log[2].path, /add\.js/);
+  assert.match(seen[4], /Never edit/); assert.match(seen[4], /skills\/order\/<rank>-<name>/);
+  assert.equal(r.outcome, 'done', r.why); assert.ok(r.turns <= 8, 'turns: ' + r.turns);
+  const w = await run(s, [call('replace', { path: 'void-live-deploy/skills/index.json', old: '["add"]', new: '[]' }), call('finish')]);
+  assert.match(w.log[0].result, /generated/);
+  assert.equal(readFileSync(join(s.work, 'void-live-deploy/skills/index.json'), 'utf8'), '["add"]\n');
+});
+
+test('a miss still names the skill file when ripgrep is not on PATH', async () => {
+  const s = repo();
+  mkdirSync(join(s.work, 'void-live-deploy/skills/order'), { recursive: true });
+  writeFileSync(join(s.work, 'void-live-deploy/skills/add.js'), 'export function add(a, b) { return a + b; }\n');
+  writeFileSync(join(s.work, 'void-live-deploy/skills/order/10-add'), 'add\n');
+  sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'skill');
+  const bin = mkdtempSync(join(tmpdir(), 'norg-'));
+  const gitBin = (process.env.PATH || '').split(':').map((d) => join(d, 'git')).find((p) => p && existsSync(p));
+  if (gitBin) symlinkSync(gitBin, join(bin, 'git'));
+  const saved = process.env.PATH;
+  process.env.PATH = bin;
+  const seen = [];
+  try {
+    const model = async (msgs) => {
+      const last = msgs[msgs.length - 1].content; seen.push(last);
+      if (seen.length === 1) return { text: call('search', { pattern: 'void-live-deploy/skills/add.js', path: '.' }) };
+      return { text: call('finish', { summary: 'noted' }) };
+    };
+    await runCoder({ root: s.work, prompt: 'Find the add skill.', checks: CHECKS, target: 'add', model, env: { PATH: process.env.PATH } });
+    assert.match(seen[1], /void-live-deploy\/skills\/add\.js/);
+    assert.match(seen[1], /skills\/order\/10-add/, 'a miss names the order file without rg');
+  } finally { process.env.PATH = saved; }
 });
 
 test('the reply parser: plain JSON, args nested, a fenced diff, junk', () => {

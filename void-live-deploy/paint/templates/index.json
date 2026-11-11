@@ -5,6 +5,7 @@
   "Animals",
   "Nature",
   "Places",
+  "Food",
   "Space",
   "Patterns"
  ],
@@ -32,7 +33,7 @@
   },
   {
    "id": "meadow-flower",
-   "name": "Flower in a pot",
+   "name": "Meadow flowers",
    "cat": "Nature",
    "file": "/paint/templates/meadow-flower.json",
    "credit": "Verse, CC0"
@@ -52,6 +53,20 @@
    "credit": "Verse, CC0"
   },
   {
+   "id": "garden",
+   "name": "Kitchen garden",
+   "cat": "Nature",
+   "file": "/paint/templates/garden.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "rose",
+   "name": "Garden rose",
+   "cat": "Nature",
+   "file": "/paint/templates/rose.json",
+   "credit": "Verse, CC0"
+  },
+  {
    "id": "cat",
    "name": "Sleepy cat",
    "cat": "Animals",
@@ -60,7 +75,7 @@
   },
   {
    "id": "fish",
-   "name": "Tropical fish",
+   "name": "Koi pond",
    "cat": "Animals",
    "file": "/paint/templates/fish.json",
    "credit": "Verse, CC0"
@@ -77,6 +92,20 @@
    "name": "Butterfly",
    "cat": "Animals",
    "file": "/paint/templates/butterfly.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "fox",
+   "name": "Sitting fox",
+   "cat": "Animals",
+   "file": "/paint/templates/fox.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "parrot",
+   "name": "Parrot",
+   "cat": "Animals",
+   "file": "/paint/templates/parrot.json",
    "credit": "Verse, CC0"
   },
   {
@@ -105,6 +134,27 @@
    "name": "Hot air balloon",
    "cat": "Places",
    "file": "/paint/templates/balloon.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "cabin",
+   "name": "Cabin under lights",
+   "cat": "Places",
+   "file": "/paint/templates/cabin.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "fruit-bowl",
+   "name": "Bowl of fruit",
+   "cat": "Food",
+   "file": "/paint/templates/fruit-bowl.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "teacup",
+   "name": "Teacup",
+   "cat": "Food",
+   "file": "/paint/templates/teacup.json",
    "credit": "Verse, CC0"
   },
   {

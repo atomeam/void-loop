@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#050510; }
+.buoy { position:absolute; width:70px; height:40px; background:rgba(80,160,255,0.25); border:1px solid #4af; border-radius:8px; pointer-events:auto; cursor:pointer; font-size:10px; padding:4px; box-sizing:border-box; transition:transform 0.05s; user-select:none; }
+.buoy:hover { background:rgba(80,160,255,0.45); }
+#ui { position:absolute; top:8px; left:8px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; border-radius:6px; font-size:12px; max-width:280px; }
+button { margin:2px; padding:4px 8px; background:#224; color:#adf; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+button:hover { background:#335; }
+#status { font-size:11px; color:#8cf; margin-top:4px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU LBM Orientation Evo DOM Fluid · Verse lab</title>
+<meta name="description" content="A previously unused WebGPU compute kernel implements a 2D D2Q9 Lattice Boltzmann Method (LBM) with BGK collision for incompressible fluid (density and velocity">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU LBM Orientation Evo DOM Fluid · Verse lab">
+<meta property="og:description" content="A previously unused WebGPU compute kernel implements a 2D D2Q9 Lattice Boltzmann Method (LBM) with BGK collision for incompressible fluid (density and velocity">
+<meta property="og:url" content="https://a-to-mind.com/lab/f644-webgpu-lbm-orientation-evo-dom-fluid/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f644-webgpu-lbm-orientation-evo-dom-fluid/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>Verse F644 · LBM Fluid Buoys</strong></div>
+  <button id="perm">Enable Orientation</button>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Tilt or drag to bias gravity. Click buoys to reinforce.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU LBM Orientation Evo DOM Fluid</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -12,6 +12,7 @@ export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
 export const LIMITS = {
   treasury: { rpm: 30, body: 2000 }, // Verse's treasury (functions/api/treasury.js): public reads, owner-only small JSON actions
+  credits: { rpm: 30, body: 2000 }, // internal credits (functions/api/credits/): a claim or the public feed, no payout
   mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   a2a: { rpm: 30, body: 8000 }, // Verse as an A2A agent (functions/api/a2a.js): one text message in, ask_void's answer out
   apibot: { rpm: 60, body: 0 }, // GET only: the free API bots' relay (functions/api/apibot.js): an API id from a closed list and one input in, that API's reply out; 30 cache misses a minute per connection in the route, good answers edge-cached ten minutes
@@ -31,6 +32,7 @@ export const LIMITS = {
   calshare: { rpm: 60, body: 200000 }, // a whole calendar shared by link (functions/api/calshare.js): one document of up to 1,000 events; 30 a minute and daily ceilings in the route itself
   sing: { rpm: 20, body: 24000 }, // Verse sings (functions/api/sing.js): GET says whether this visitor may; POST is an ask and up to 2,000 characters of lyrics, which the route reads to 6,000 characters (up to 4 bytes each); owner and paid members only, daily caps in the route (lib/daily-cap.js)
   rapvoice: { rpm: 200, body: 0 }, // GET only: one bar of a rap in, Verse's voice saying it out (functions/api/rapvoice.js), edge-cached a week; a rap asks for every bar at once, so 200 a minute here and 120 new bars a minute and 2,500 a day in all in the route
+  feed: { rpm: 30, body: 0 }, // GET only: one feed from a closed allow-list (functions/api/feed.js FEEDS) passed through for /journal/, edge-cached 10 minutes; 20 misses a minute in the route itself
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   podcasts: { rpm: 30, body: 0 }, // GET only: a search phrase, a chart, an iTunes id or a public https feed address in, normalised JSON out; SSRF-safe fetch, 3 MB and 8 s caps, edge-cached 15 min; 20 misses a minute in the route itself (functions/api/podcasts.js)

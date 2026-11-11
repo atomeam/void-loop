@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { onRequestPost, cleanMessages, CODER_LIMITS } from '../void-live-deploy/functions/api/coder.js';
+import { onRequestPost, onRequestGet, cleanMessages, CODER_LIMITS, saidText, budgetOf } from '../void-live-deploy/functions/api/coder.js';
 import { models } from '../void-live-deploy/lib/models.js';
 import { LIMITS } from '../void-live-deploy/lib/guard.js';
 
@@ -43,13 +43,25 @@ test('the hourly cap fails closed with a 429; no model, no database or a silent 
   assert.ok(CODER_LIMITS.perDay > CODER_LIMITS.perHour);
   assert.equal((await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, DB: d1() } })).status, 503, 'no model bound');
   assert.equal((await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, AI: env.AI } })).status, 429, 'no database: refused, never uncounted');
-  assert.equal((await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => ({ response: '  ' }) } } })).status, 503);
+  const silent = { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => ({ response: '  ' }) } };
+  assert.equal((await onRequestPost({ request: req({ messages: MSG }), env: silent })).status, 503);
+  assert.equal((await (await onRequestGet({ env: silent })).json()).day.used, 0, 'an empty answer gives the place back');
+  const shaped = { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => ({ choices: [{ message: { content: '', reasoning_content: '{"tool":"finish","summary":"from reasoning"}' } }] }) } };
+  const got = await onRequestPost({ request: req({ messages: MSG }), env: shaped });
+  assert.equal(got.status, 200);
+  assert.match((await got.json()).result.response, /from reasoning/);
   const down = await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => { throw new Error('3040: capacity'); } } } });
   assert.equal(down.status, 503); assert.match(await down.text(), /busy/);
 });
 
+test('saidText reads a chat completion, including a reply that was only in the reasoning field', () => {
+  assert.equal(saidText({ response: '{"tool":"list"}' }), '{"tool":"list"}');
+  assert.equal(saidText({ choices: [{ message: { content: 'plain' } }] }), 'plain');
+  assert.equal(saidText({ choices: [{ message: { content: '<think>hidden</think> visible' } }] }), 'visible');
+  assert.equal(saidText({ choices: [{ message: { content: '', reasoning_content: '{"tool":"read"}' } }] }), '{"tool":"read"}');
+});
+
 test('GET is the coder\'s budget as counts: it takes no place, and says when room comes back', async () => {
-  const { onRequestGet, budgetOf } = await import('../void-live-deploy/functions/api/coder.js');
   const env = { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => ({ response: 'ok' }) } };
   let b = await (await onRequestGet({ env })).json();
   assert.equal(b.day.used, 0); assert.equal(b.hour.used, 0); assert.equal(b.room, true); assert.equal(b.until, null); assert.equal(b.model, models('coder'));

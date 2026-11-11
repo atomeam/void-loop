@@ -327,9 +327,10 @@ test('the readout stays objective: no question, label or fed-back line asks for 
   for (const q of [questionFor('daily'), questionFor('build', 'x')]) assert.doesNotMatch(q, THEATRE, q);
   const { readFileSync } = await import('node:fs');
   const blocks = readFileSync(new URL('../void-live-deploy/lib/self-blocks.js', import.meta.url), 'utf8');
-  for (const label of ['Weakest operational area', 'Next targeted capability', 'What should change']) assert.ok(blocks.includes(label), label);
+  for (const label of ['Next targeted capability', 'What should change']) assert.ok(blocks.includes(label), label);
+  assert.ok(!blocks.includes('Weakest operational area'), 'a tally section is not on the card');
   const labels = [...blocks.matchAll(/\[['"]([^'"]+)['"], '(?:weakest|next_game|better)'\]/g)].map((m) => m[1]);
-  assert.equal(labels.length, 3); for (const l of labels) assert.doesNotMatch(l, THEATRE, l);
+  assert.equal(labels.length, 2); for (const l of labels) assert.doesNotMatch(l, THEATRE, l);
   assert.match(VOICE_SYSTEM, /No persona or feelings/); assert.match(VOICE_SYSTEM, /Cite or leave out/); assert.match(VOICE_SYSTEM, /never write "I feel", "I want"/);
   assert.doesNotMatch(readFileSync(new URL('../void-live-deploy/lib/voice.js', import.meta.url), 'utf8').split('\n').filter((l) => /e\.(better|weakest|next_game) &&/.test(l)).join('\n'), THEATRE, 'the earlier words fed back to the model use the same labels');
 });

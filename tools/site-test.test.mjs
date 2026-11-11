@@ -1,6 +1,6 @@
 // tools/site-test.mjs: the verdicts, the never-twice rules and the one-improvement-per-run choice, on fakes (no browser).
 import assert from 'node:assert/strict';
-import { judge, changedText, onceEach, robotsAllows, checkSteps, improve, inventory, variants, plan, remember } from './site-test.mjs';
+import { judge, changedText, onceEach, robotsAllows, checkSteps, improve, inventory, variants, plan, remember, heldFpsFloor } from './site-test.mjs';
 
 let n = 0; const t = (name, f) => { f(); n++; };
 t('a refusal fails', () => assert.equal(judge({ ask: 'x' }, { text: "I don't know this yet" }).ok, false));
@@ -24,7 +24,8 @@ t('a missed new wording is taught first, once', () => { const r = [{ ask: 'yo ca
 t('a console error on a new wording is a fix, not a teach', () => assert.equal(improve([{ ask: 'yo x', ok: false, why: ['console: boom'], key: 'k2', probe: true, variant: true, base: 'x', feature: 'skill:x' }], suite).kind, 'file'));
 t('new ground that passed becomes a regression case', () => { const a = improve([ok('a'), ok('pull up calculator', { probe: true, feature: 'skill:calc' })], suite); assert.equal(a.kind, 'grow'); assert.equal(a.suite.cases.at(-1).ask, 'pull up calculator'); });
 t('all green grows by a candidate', () => { const a = improve([ok('a')], suite); assert.equal(a.kind, 'grow'); assert.deepEqual(a.suite.candidates, []); });
-t('then tightens fps', () => { const a = improve([ok('a', { fps: 60 })], { ...suite, candidates: [] }); assert.equal(a.kind, 'tighten'); assert.equal(a.suite.limits.fpsMin, 54); });
+t('then tightens fps, one step at a time', () => { const a = improve([ok('a', { fps: 60 })], { ...suite, candidates: [] }); assert.equal(a.kind, 'tighten'); assert.equal(a.suite.limits.fpsMin, 21); });
+t('with no floor yet, the first one is 90% of the slowest', () => assert.equal(improve([ok('a', { fps: 60 })], { ...suite, candidates: [], limits: {} }).suite.limits.fpsMin, 54));
 t('then load', () => { const a = improve([ok('a', { loadMs: 2000 })], { ...suite, candidates: [] }); assert.equal(a.suite.limits.loadMs, 2500); });
 t('then files the weakest answer once', () => { const s = { limits: {}, cases: [], candidates: [] }; const a = improve([ok('a', { chars: 9 }), ok('b')], s); assert.equal(a.key, 'weak | a');
   assert.equal(improve([ok('a', { chars: 9 }), ok('b')], s, [a.key]).key, 'weak | b'); });
@@ -93,3 +94,19 @@ console.log('site-test: ' + n + ' checks passed');
   const src = (await import('node:fs')).readFileSync(new URL('./site-test.mjs', import.meta.url), 'utf8');
   assert.equal((src.match(/loadMs = Math\.min\(loadMs, Date\.now\(\) - t1\)/g) || []).length, 0, 'the second load is not timed inside the pool');
   assert.match(src, /await Promise\.all\(running\);\n[^\n]*\n\s*await recheckSlowLoads\(slots, suite\.limits/, 'the recheck runs after every case is done'); }
+// lists run 15 (2026-11-09): the frame floor follows what the runner holds, never one lucky run
+const runRow = (fails) => ({ at: 'x', passed: 1, of: 2, failed: fails.map((f) => ({ ask: 'play chess', why: 'fps ' + f + ' < 7' })) });
+t('a floor that failed in 8 of the last 10 runs comes down to what the slow cases keep', () => {
+  const h = [...Array(8)].map((_, i) => runRow([2 + (i % 3), 1 + (i % 2)])).concat([runRow([]), runRow([])]);
+  assert.equal(heldFpsFloor(h, 7), 1);
+  const a = improve([ok('a', { fps: 30 })], { ...suite, candidates: [], limits: { fpsMin: 7 } }, [], h);
+  assert.equal(a.kind, 'tighten'); assert.equal(a.suite.limits.fpsMin, 1); });
+t('a floor that mostly holds stays, fewer than 10 runs never move it, and a run with the site down counts for nothing', () => {
+  assert.equal(heldFpsFloor([...Array(8)].map(() => runRow([2])).concat([...Array(6)].map(() => ({ at: 'x', passed: 0, of: 100, failed: [] }))), 7), null);
+  assert.equal(heldFpsFloor([...Array(10)].map((_, i) => runRow(i < 3 ? [2] : [])), 7), null);
+  assert.equal(heldFpsFloor([...Array(9)].map(() => runRow([2])), 7), null); });
+t('the floor rises one step, and only after 10 steady runs', () => {
+  const steady = [...Array(10)].map(() => runRow([]));
+  assert.equal(improve([ok('a', { fps: 60 })], { ...suite, candidates: [], limits: { fpsMin: 5 } }, [], steady).suite.limits.fpsMin, 6);
+  const shaky = steady.slice(0, 9).concat(runRow([3]));
+  assert.notEqual(improve([ok('a', { fps: 60 })], { ...suite, candidates: [], limits: { fpsMin: 5 } }, [], shaky).kind, 'tighten'); });

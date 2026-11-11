@@ -35,10 +35,19 @@ export const VIDEO_MODELS = Object.freeze({ 'p-video': 'pruna/p-video', 'ltx-fas
 // answers run on the free model (owner's wishlist #1, docs/wishlist.md; asked by Verse, 2026-10-24: "migrate answer generation from gpt-oss-120b to gemma"):
 // gemma-4-26b-a4b spends a fraction of gpt-oss-120b's neurons an answer, so the free 10k a day holds; the bake-off's winner stays the second try
 export const ANSWER_FALLBACK = '@cf/openai/gpt-oss-120b';
-export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL, translate: TRANSLATE_MODEL, voice: VOICE_MODEL, coder: FREE_MODEL /* Verse's coder on the site's own binding (functions/api/coder.js) */, watch: FREE_MODEL /* watch with Verse: talk about what plays and learn from it (functions/api/watchalong.js); Gemma 4 reads captions and a still of the screen */, hear: HEAR_MODEL, unbidden: FREE_MODEL /* Verse speaks first on /brain/ (functions/api/unbidden.js): one or two sentences from its real state, checked against the facts */, agent: FREE_MODEL /* Verse's agent (functions/api/agent.js); a stronger tier is lib/agent-core.js tierFor, paid only from realized earnings */ };
+export const PATH_MODELS = { answer: FREE_MODEL, merge: FREE_MODEL, will: FREE_MODEL, review: '@cf/openai/gpt-oss-120b' /* the 2026-10-10 bake-off's winner: the closer read follows the verdict (operator) */, figurescript: FREE_MODEL, digest: FREE_MODEL, vision: VISION_MODEL, art: ART_MODEL, translate: TRANSLATE_MODEL, voice: VOICE_MODEL, coder: FREE_MODEL /* Verse's coder on the site's own binding (functions/api/coder.js) */, imagewords: FREE_MODEL /* "Fill in my words" on /image/ (functions/api/image.js wordsOf): a short idea as a fuller picture description */, watch: FREE_MODEL /* watch with Verse: talk about what plays and learn from it (functions/api/watchalong.js); Gemma 4 reads captions and a still of the screen */, hear: HEAR_MODEL, unbidden: FREE_MODEL /* Verse speaks first on /brain/ (functions/api/unbidden.js): one or two sentences from its real state, checked against the facts */, agent: FREE_MODEL /* Verse's agent (functions/api/agent.js); a stronger tier is lib/agent-core.js tierFor, paid only from realized earnings */ };
 export const PATHS = Object.keys(PATH_MODELS);
 
 export function models(path) {
   if (!PATHS.includes(path)) throw new Error('unknown model path: ' + path);
   return PATH_MODELS[path] || FREE_MODEL;
 }
+
+// Workers Free refuses these (Cloudflare changelog, 2026-07-28, error 5035). They are not gateway aliases.
+export const PAID_PLAN_MODELS = Object.freeze(['@cf/moonshotai/kimi-k2.6', '@cf/moonshotai/kimi-k2.7-code', '@cf/zai-org/glm-5.2']);
+// Short names for the free allowance only. The gateway id is optional (lib/ai-gateway.js).
+export const GATEWAY_ALIASES = Object.freeze({
+  'verse-answer': FREE_MODEL,
+  'verse-fallback': ANSWER_FALLBACK,
+  'verse-review': PATH_MODELS.review,
+});

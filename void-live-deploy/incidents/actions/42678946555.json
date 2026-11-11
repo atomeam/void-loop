@@ -1,0 +1,107 @@
+{
+ "at": "2026-11-09T19:33:28Z",
+ "sha": "3e44adf966d1fd367f420a184a7909c9c6400f2c",
+ "runId": 42678946555,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42678946555",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "browser-suite (8)",
+   "id": 129367932558,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42678946555/job/129367932558",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 8 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL walker: a slow drag lifts the figure and sets it back on the floor where it is let go (about 64 px left), never a speech bubble, still walking and still kept  -> {\"a0\":147.953125,\"set\":{\"x\":94.984375,\"above\":10,\"kept\":true},\"setBubble\":true,\"errors\":[]}",
+    "FAIL codex: \"file this in the codex\" keeps the last card on this device and \"open the codex on device\" lists it under a skill family, a topic with nothing filed says so  -> {\"filedCard\":\"Today\\nSKILL — TIME\\n1 action on this device · from the local loop log\\n7:17 PM mak\",\"codexRaw\":\"[{\\\"id\\\":\\\"whatd",
+    "FAIL echo chamber: \"replay my best answers from this week\" shows what this device kept, the filed item first  -> Today",
+    "FAIL time capsule: a word capsule keeps the stage with only the word's SHA-256 hash, the wrong word shows nothing, the right word lists the clock, a capsule sealed until 2030 stays shut  -> {\"sealed\":\"Today\\nSKILL — TIME\\n1 action on this device · from the local \",\"wrong\":\"Today\\nSKILL — TIME\\n1 act",
+    "FAIL whisper network: \"leave a whisper on the clock: remember milk\" keeps a note that surfaces once, on the next touch of the clock, then is gone  -> {\"whispered\":\"Today\\nSKILL — TIME\\n1 action on this device · from the local \",\"wRaw\":\"[{\\\"thing\\\":\\\"clock_6unhu5b\\\",\\\"text\\\":\\\"remember milk\\\",\\\"t\\\":1",
+    "FAIL suite ran to the end  -> page.click: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "      - scrolling into view if needed",
+    "      - done scrolling",
+    "      - <img alt=\"\" class=\"vc-seal\" decoding=\"async\" src=\"data:image/webp;base64,UklGRs6mAABXRUJQVlA4WAoAAAAgAAAAHwQAkQIASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "    - retrying click action",
+    "      - waiting 500ms",
+    "      - waiting for element to be visible, enabled and stable",
+    "      - element is visible, enabled and stable",
+    "      - scrolling into view if needed",
+    "      - done scrolling",
+    "      - <img alt=\"\" class=\"vc-seal\" decoding=\"async\" src=\"data:image/webp;base64,UklGRs6mAABXRUJQVlA4WAoAAAAgAAAAHwQAkQIASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "    - retrying click action",
+    "      - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <img alt=\"\" class=\"vc-seal\" decoding=\"async\" src=\"data:image/webp;base64,UklGRs6mAABXRUJQVlA4WAoAAAAgAAAAHwQAkQIASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "  - retrying click action",
+    "    - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <div id=\"row\">…</div> from <div id=\"dock\" role=\"search\" aria-label=\"Ask Verse\">…</div> subtree intercepts pointer events",
+    "  - retrying click action",
+    "    - waiting 500ms",
+    "    - waiting for element to be visible, enabled and stable",
+    "",
+    "80/86 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  },
+  {
+   "name": "browser-suite (5)",
+   "id": 129367932659,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42678946555/job/129367932659",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "Test what shipped (shard 5 of 8 of the full suite)"
+   },
+   "fails": [
+    "FAIL suite ran to the end  -> page.click: Timeout 30000ms exceeded."
+   ],
+   "tail": [
+    "  - waiting for locator('.date-grid .dg-day[data-day=\"2026-10-17\"]')",
+    "    - locator resolved to <button data-mark=\"\" type=\"button\" class=\"dg-day\" data-day=\"2026-10-17\" aria-label=\"Saturday, October 17, 2026: not marked. Tap to change.\">17</button>",
+    "  - attempting click action",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is not stable",
+    "  - retrying click action",
+    "    - waiting for element to be visible, enabled and stable",
+    "    - element is visible, enabled and stable",
+    "    - scrolling into view if needed",
+    "    - done scrolling",
+    "    - <div class=\"dc-v\">2</div> from <div role=\"region\" data-tidy=\"1\" data-rarity=\"mythic\" data-card-id=\"c05kqp\" data-skill=\"date-calc\" aria-label=\"RED: 2 days left\" class=\"vpage date-calc-card vcard placed kept\" data-card-key=\"[\"date-calc\",[],\"halloween\",true,\"time\",\"Skill — Time\",4,8,4,1,2,true,\"1",
+    "  - retrying click action",
+    "    - waiting 20ms",
+    "    2 × waiting for element to be visible, enabled and stable",
+    "      - element is visible, enabled and stable",
+    "      - scrolling into view if needed",
+    "      - done scrolling",
+    "      - <div class=\"dc-v\">2</div> from <div role=\"region\" data-tidy=\"1\" data-rarity=\"mythic\" data-card-id=\"c05kqp\" data-skill=\"date-calc\" aria-label=\"RED: 2 days left\" class=\"vpage date-calc-card vcard placed kept\" data-card-key=\"[\"date-calc\",[],\"halloween\",true,\"time\",\"Skill — Time\",4,8,4,1,2,true,",
+    "    - retrying click action",
+    "      - waiting 100ms",
+    "    41 × waiting for element to be visible, enabled and stable",
+    "       - element is visible, enabled and stable",
+    "       - scrolling into view if needed",
+    "       - done scrolling",
+    "       - <div class=\"dc-v\">2</div> from <div role=\"region\" data-tidy=\"1\" data-rarity=\"mythic\" data-card-id=\"c05kqp\" data-skill=\"date-calc\" aria-label=\"RED: 2 days left\" class=\"vpage date-calc-card vcard placed kept\" data-card-key=\"[\"date-calc\",[],\"halloween\",true,\"time\",\"Skill — Time\",4,8,4,1,2,true",
+    "     - retrying click action",
+    "       - waiting 500ms",
+    "",
+    "8/9 passed",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

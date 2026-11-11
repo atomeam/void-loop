@@ -15,9 +15,8 @@
  */
 
 import { slugOf } from './watch-build.js'; // a TV or radio idea's blueprint job is tv:<slug> (tools/watch-build.mjs queues it)
+export const RETIRED = Object.freeze([{ id: 'c7e0000000a1', channel: 'tower' }]); // TowerScout: it mapped sites and filed nothing a visitor can use
 export const CREW = Object.freeze([
-  { id: 'c7e0000000a1', slug: 'tower-scout', name: 'TowerScout', every: 240, channel: 'tower', lane: 'tower',
-    about: 'Crew · runs on Verse\'s clock. Maps rival sites (robots and sitemaps, the whole site), reads the Tower and files the gaps as jobs.' },
   { id: 'c7e0000000a2', slug: 'exam-coach', name: 'ExamCoach', every: 60, channel: 'exam', lane: 'exam',
     about: 'Crew · runs on Verse\'s clock. Reads the outcome exam, files the weakest domain and missed asks as jobs, closes them when scores rise.' },
   { id: 'c7e0000000a3', slug: 'merge-train', name: 'MergeTrain', every: 60, channel: 'merges', lane: 'merge',
@@ -272,7 +271,8 @@ export function promosOf(tower, max = 3) {
   }
   wins.sort((a, b) => b.at - a.at || b.x - a.x);
   return wins.slice(0, max).map((w) => {
-    const text = 'Free, no signup: Verse\'s ' + topicOf(w.f, w.page) + ' loads in ' + w.verse + ' ms, ' + w.x + 'x faster than ' + (rivalOf(w.f) || 'the best site we measured') + ' (phone width, median of 3). https://a-to-mind.com' + w.page;
+    // plain, no rival named and no "x faster than" (house rule: Verse never brags); the measure (w.x, w.best) stays on the row
+    const text = 'Free, no signup: a ' + topicOf(w.f, w.page) + ' that loads in ' + w.verse + ' ms at phone width (median of 3). Try it: https://a-to-mind.com' + w.page;
     return { page: w.page, floor: w.f, text, intent: 'https://x.com/intent/post?text=' + encodeURIComponent(text) };
   });
 }

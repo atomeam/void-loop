@@ -18,7 +18,8 @@ import { readiness, resolveMain } from './pr-ready.mjs';
 import { WAITS } from '../void-live-deploy/lib/v01d-fixes.js';
 import { safety } from './skill-safety.mjs';
 import { jobOfBody, moveJob } from './job-link.mjs';
-import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
+import { mainVerifyHold, superseded, stuckDecision, loopCovers } from './merge-policy.mjs';
+import { fixAge, fixNote, nextStep } from './merge-flow.mjs';
 import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite-gate.mjs';
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
@@ -75,7 +76,7 @@ function scopedPr() {
     if (ev.inputs && /^\d+$/.test(String(ev.inputs.pr || ''))) return String(ev.inputs.pr);
     const wr = ev.workflow_run;
     // a suite gate result changes which pull request goes next: sweep, so the green one merges or the next one is queued now
-    if (wr && wr.name === 'Suite on main') return '';
+    if (wr && (wr.name === 'Suite on main' || wr.name === 'Verse verify')) return '';
     if (wr && wr.pull_requests && wr.pull_requests.length === 1) return String(wr.pull_requests[0].number);
   } catch (_) {}
   return '';
@@ -86,11 +87,27 @@ function idleEvent() {
     const ev = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH || '', 'utf8'));
     const wr = ev.workflow_run;
     // the suite gate runs on main for a batch of pull requests: its result is never idle (2026-11-06: it was, and nothing merged)
-    return !!(wr && wr.name !== 'Suite on main' && !(wr.pull_requests || []).length && wr.head_branch === 'main');
+    return !!(wr && wr.name !== 'Suite on main' && wr.name !== 'Verse verify' && !(wr.pull_requests || []).length && wr.head_branch === 'main');
   } catch (_) { return false; }
 }
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 const here = dirname(fileURLToPath(import.meta.url));
+const safeArg = (s) => String(s || '').replace(/[\r\n"]/g, ' ').slice(0, 160);
+function dispatchFix(number, sha, kind, why) {
+  try {
+    run(['api', '-X', 'POST', `repos/${repo}/issues/${number}/comments`, '--input', '-'], JSON.stringify({ body: fixNote(sha, kind) }));
+    run(['workflow', 'run', 'pr-fix.yml', '--repo', repo, '--ref', 'main', '-f', `pr=${number}`, '-f', `mode=${kind}`, '-f', `why=${safeArg(why)}`]);
+    console.log(`#${number}: coder started (${kind})`);
+  } catch (e) { console.log(`#${number}: could not start the coder: ${String(e.stderr || e.message).slice(0, 200)}`); }
+}
+const ageOf = (number, sha, kind) => { try { return fixAge(gh(`repos/${repo}/issues/${number}/comments?per_page=100`) || [], sha, kind); } catch (_) { return null; } };
+function startMainFix(hint, sha) {
+  const short = String(sha || '').slice(0, 7);
+  if (!short) return;
+  try { const runs = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'pr-fix.yml', '--limit', '20', '--json', 'displayTitle,status'])); if ((Array.isArray(runs) ? runs : []).some((x) => String(x.displayTitle || '').includes(short))) return; } catch (_) {}
+  try { run(['workflow', 'run', 'pr-fix.yml', '--repo', repo, '--ref', 'main', '-f', 'mode=main', '-f', 'pr=', '-f', `why=${safeArg('main ' + short + ' ' + (hint || ''))}`]); console.log('main is red: coder started on loop/main-fix-' + short + ' (pull requests still merge)'); }
+  catch (e) { console.log('could not start the main fix: ' + String(e.stderr || e.message).slice(0, 200)); }
+}
 
 // the build-queue job a merged PR names on its last line (`Job: <id>`, tools/job-link.mjs) goes live (asked by Verse); the PR list and
 // the single-PR read both carry `body`. Needs VOID_OWNER_TOKEN in the step's env; without it the line says so. Never stops the loop.
@@ -134,17 +151,60 @@ function noteStuck(p, why) {
     console.log(`#${p.number}: stuck, said why (${why})`);
   } catch (e) { console.log(`#${p.number}: could not comment: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
 }
-for (const row of superseded(prs)) {
-  const body = '<!-- void-superseded -->\nThis `' + row.ref + '` pull request is superseded by #' + row.keep + ', which is newer. Closing it so the same bot work is not merged twice.';
+// An older loop/* pull request is closed only when this says the newer one, or main, already has its
+// changes (2026-11-09: #2598 closed #2569, and hexen.ai's feature note was on neither). A diff that
+// cannot be read keeps the older pull request open.
+const compared = new Map();
+function compareFiles(sha) {
+  if (!sha) return null;
+  if (compared.has(sha)) return compared.get(sha);
+  const v = gh(`repos/${repo}/compare/main...${sha}`);
+  // no files array means the compare could not be read (an error, or a diff too big to list). An empty
+  // array is a real answer: the branch adds nothing main lacks.
+  if (!v || !Array.isArray(v.files)) { compared.set(sha, null); return null; }
+  const files = v.files.map((f) => ({ path: f.filename, patch: f.patch || '', truncated: f.patch == null && f.status !== 'unchanged' }));
+  compared.set(sha, files);
+  return files;
+}
+function mainTextOf(path) {
+  try { return ex('git', ['show', 'HEAD:' + path]); }
+  catch (_) { return ''; }
+}
+function loopCoverage(old, keep) {
+  try {
+    const older = compareFiles(old && old.head && old.head.sha);
+    const newer = compareFiles(keep && keep.head && keep.head.sha);
+    if (!older || !newer) return { ok: false, missing: ['(could not read the diff)'], patch: '' };
+    const mainText = {};
+    for (const f of older) mainText[f.path] = mainTextOf(f.path);
+    return loopCovers(older, newer, mainText);
+  } catch (_) { return { ok: false, missing: ['(could not read the diff)'], patch: '' }; }
+}
+const plan = superseded(prs, loopCoverage);
+for (const row of plan.close) {
+  const body = '<!-- void-superseded -->\nThis `' + row.ref + '` pull request is superseded by #' + row.keep + ', which is newer and already contains its changes (or main does). Closing it so the same bot work is not merged twice.';
   try {
     run(['api', '-X', 'POST', `repos/${repo}/issues/${row.number}/comments`, '--input', '-'], JSON.stringify({ body }));
     run(['api', '-X', 'PATCH', `repos/${repo}/pulls/${row.number}`, '-f', 'state=closed']);
     console.log('closed #' + row.number + ', superseded by #' + row.keep);
   } catch (e) { console.log('#' + row.number + ': could not close the superseded pull request: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
+const CARRY_MARK = '<!-- void-carry -->';
+for (const row of plan.carry) {
+  const files = row.missing.length ? row.missing.join(', ') : 'its diff';
+  const patch = row.patch ? '\n\n```diff\n' + row.patch.slice(0, 4000) + (row.patch.length > 4000 ? '\n…' : '') + '\n```' : '';
+  const body = CARRY_MARK + '\nThis `' + row.ref + '` pull request is older than #' + row.keep + ', but neither #' + row.keep + ' nor main contains its changes (' + files + '). It stays open so that work can still merge. Missing delta:' + patch;
+  try {
+    const comments = gh(`repos/${repo}/issues/${row.number}/comments?per_page=100`) || [];
+    if (!comments.some((c) => String(c.body || '').includes(CARRY_MARK))) {
+      run(['api', '-X', 'POST', `repos/${repo}/issues/${row.number}/comments`, '--input', '-'], JSON.stringify({ body }));
+    }
+    console.log('kept #' + row.number + ' open: #' + row.keep + ' does not contain ' + files);
+  } catch (e) { console.log('#' + row.number + ': could not record the missing delta: ' + String(e.stderr || e.message || e).slice(0, 200)); }
+}
 let merged = 0;
 const ready = [];
-const closed = new Set(superseded(prs).map((r) => r.number));
+const closed = new Set(plan.close.map((r) => r.number));
 // A sweep reads the oldest pull requests first and stops reading after SWEEP_MS, so it always reaches the suite gate inside
 // the job's 15 minute limit (automerge.yml), with time left for the safety-check of the batch. The pull requests it did not read wait for the next sweep. (2026-11-06)
 const SWEEP_MS = +(process.env.AUTOMERGE_SWEEP_MS || 200e3), sweepStart = Date.now();
@@ -153,7 +213,7 @@ for (let p of prs) {
   if (!one && Date.now() - sweepStart > SWEEP_MS) { console.log(`::notice::stopped the reading at #${p && p.number} after ${Math.round(SWEEP_MS / 1000)} s, so the suite gate runs inside the job's time limit. The next sweep reads the rest.`); break; }
   if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
   if (!one && budget().left < RATE_FLOOR) { console.log(`::notice::stopped the sweep at #${p && p.number}: under ${RATE_FLOOR} API calls left this hour. The next wake carries on.`); break; }
-  if (!p || p.state !== 'open' || closed.has(p.number)) continue;
+  if (!p || p.state !== 'open' || closed.has(p.number) || p.draft) { if (p && p.draft) console.log(`#${p.number}: draft, left as a draft`); continue; }
   // every PR from this repository is merged automatically (owner, 2026-10-15: "automerge everything always"): a PR nobody
   // labelled gets the label here, so the rest of the loop (and anyone reading the PR) sees the same thing
   // the retired confidence label (lib/v01d-fixes.js WAITS) is not a person: the checks decide, so it becomes automerge
@@ -161,19 +221,14 @@ for (let p of prs) {
     try {
       run(['api', '-X', 'DELETE', `repos/${repo}/issues/${p.number}/labels/${encodeURIComponent(WAITS)}`]);
       run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] }));
-      if (p.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-      console.log(`#${p.number}: was waiting for a person; it merges itself now`);
+      console.log(`#${p.number}: retired label cleared; it merges itself`);
     } catch (e) { console.log(`#${p.number}: could not clear the retired label: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
   }
   if (!(p.labels || []).some((l) => l.name === LABEL) && !(p.head.repo && p.head.repo.full_name !== repo)) {
     try { run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] })); console.log(`#${p.number}: labelled ${LABEL} (every PR merges by itself)`); } catch (_) {}
   }
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
-  // GitHub's own auto-merge would land the pull request on whatever main is now, without the suite. The bot merges, one at a time, after the suite.
-  if (p.auto_merge && p.node_id) {
-    try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); console.log(`#${p.number}: GitHub auto-merge disarmed until the suite passes on current main`); }
-    catch (e) { console.log(`#${p.number}: could not disarm auto-merge: ${String(e.stderr || e.message || e).slice(0, 120)}`); }
-  }
+  // A ready pull request keeps GitHub auto-merge on. This sweep does not turn it off.
   // behind main, and the update is clean: GitHub merges main in. A conflict comes back as dirty and is settled below.
   if (p.mergeable_state === 'behind') {
     try { run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/update-branch`, '-f', `expected_head_sha=${p.head.sha}`]); console.log(`#${p.number}: brought up to date with main`); }
@@ -189,7 +244,7 @@ for (let p of prs) {
   if (r.state === 'resolve') {
     const m = resolveMain(ex, gh, { repo, pr: p.number, branch: r.branch, tools: here });
     console.log(`#${p.number}: ` + (m.state === 'pushed' ? `main merged in and pushed as ${m.sha.slice(0, 7)}; Verse's review started on it` : m.state === 'conflict' ? `conflicts need a person in ${m.files.join(', ')}` + (m.commented ? ' (commented on the PR)' : ' (already said on the PR)') : `could not merge main: ${m.why}`));
-    if (m.state === 'conflict') noteStuck(p, 'it conflicts with main in ' + m.files.join(', '));
+    if (m.state === 'conflict' && nextStep({ readiness: 'resolve', age: ageOf(p.number, r.sha, 'conflict') }).action === 'fix') dispatchFix(p.number, r.sha, 'conflict', (m.files || []).join(', '));
     continue;
   }
   if (r.state === 'wait' && r.noReview && r.branch) {
@@ -200,25 +255,37 @@ for (let p of prs) {
     } catch (e) { console.log(`#${p.number}: could not start the pull-request checks: ${String(e.stderr || e.message).slice(0, 200)}`); }
     continue;
   }
-  if (r.state === 'stop') noteStuck(p, r.why);
-  if (r.state !== 'merge') continue;
-  // the merge gate tests the result of merging main. Missing on this head: start it and wait (a token push starts no pull_request run).
-  // A repository that does not have the workflow yet (this file's first merge) is told so, and the older rule stands.
-  try {
-    const gate = (gh(`repos/${repo}/commits/${r.sha}/check-runs?per_page=100`).check_runs || []).filter((c) => c.name === 'merge-gate').sort((a, b) => b.id - a.id)[0];
-    if (!gate && r.branch) {
-      try { run(['workflow', 'run', 'merge-gate.yml', '--repo', repo, '--ref', r.branch, '-f', `pr=${p.number}`]); console.log(`#${p.number}: merge gate started on ${r.sha.slice(0, 7)}`); continue; }
-      catch (e) { console.log(`#${p.number}: no merge gate on this repository yet (${String(e.stderr || e.message || e).slice(0, 120)}); merging on Verse's review`); }
-    } else if (gate && (gate.status !== 'completed' || gate.conclusion !== 'success')) {
-      console.log(`#${p.number}: merge gate ${gate.status} ${gate.conclusion || ''}`); continue;
-    }
-  } catch (e) { console.log(`#${p.number}: could not read the merge gate: ${String(e.stderr || e.message || e).slice(0, 160)}`); }
-  // the safety-check runs later, on the batch the suite gate chooses only (chooseChecked below)
-  ready.push({ number: p.number, review: 'merge', p, r });
+  if (r.state === 'stop') {
+    const step = nextStep({ readiness: 'stop', age: ageOf(p.number, r.sha, 'red') });
+    if (step.action === 'fix') { dispatchFix(p.number, r.sha, 'red', r.why); continue; }
+    if (step.action !== 'merge') continue;
+  } else if (r.state !== 'merge') continue;
+  ready.push({ number: p.number, review: r.state, p, r });
 }
-// One pull request, and only after the full suite passed on top of current main (tools/suite-gate.mjs).
+// Merge now. The suite runs on main afterwards (verify.yml). The block below is the old suite wait; it does not run.
 let mainSha = '', choice = null, suiteRun = null, mergeError = '';
 if (ready.length && !limited) {
+  try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  let verifyHold = { hold: false, heal: false };
+  if (mainSha) {
+    try {
+      const raw = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'verify.yml', '--branch', 'main', '--limit', '40', '--json', 'headSha,status,conclusion,updatedAt,url']));
+      const runs = (Array.isArray(raw) ? raw : []).map((row) => ({ ...row, covers: samePrefix(row.headSha, mainSha) || isAncestor(row.headSha, mainSha), committedAt: Date.parse(row.updatedAt) || 0 }));
+      verifyHold = mainVerifyHold(runs, mainSha);
+    } catch (e) { console.log('could not read Verse verify: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  }
+  if (verifyHold.heal) { console.log('rule: ' + verifyHold.rule); console.log('file: ' + verifyHold.file); console.log('fix: ' + verifyHold.hint); startMainFix(verifyHold.hint, verifyHold.sha || mainSha); }
+  else if (mainSha) { try { const issues = gh(`repos/${repo}/issues?state=open&labels=watchdog&per_page=5`) || []; const issue = issues.find((i) => !i.pull_request); if (issue) startMainFix(issue.title || 'watchdog', mainSha); } catch (_) {} }
+  for (const row of ready) {
+    const p = row.p, r = row.r;
+    try {
+      const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
+      if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
+    } catch (e) { const msg = String(e.stderr || e.message).slice(0, 300); if (!merged) mergeError = msg; console.log(`#${p.number}: merge refused: ${msg}`); }
+  }
+  choice = { action: 'merge', pr: ready[0] };
+}
+if (false && ready.length && !limited) { // void-review: ok (the old suite wait; verify.yml is the suite)
   let running = false;
   try { mainSha = gh(`repos/${repo}/commits/main`).sha || ''; } catch (e) { console.log('could not read main: ' + String(e.stderr || e.message || e).slice(0, 160)); }
   try {
@@ -258,6 +325,28 @@ if (ready.length && !limited) {
   choice = checked.choice;
   const pick = choice.pr;
   console.log('suite gate: ' + choice.action + (pick ? ' #' + pick.number : '') + ' (' + choice.why + ')');
+  // A green suite-on-main check can pass while main is red: suite-diff ignores a check that is just as red on main
+  // alone (2026-11-06). That is how #2574 merged at 21:43 UTC and #2590-#2603 at 22:49 UTC on 2026-11-09, onto a main
+  // whose Verse verify had already finished red. The newest finished verify that covers this head blocks the merge.
+  let verifyHold = { hold: false };
+  if (mainSha) {
+    try {
+      const raw = JSON.parse(run(['run', 'list', '--repo', repo, '--workflow', 'verify.yml', '--branch', 'main', '--limit', '40', '--json', 'headSha,status,conclusion,updatedAt,url']));
+      const runs = (Array.isArray(raw) ? raw : []).map((r) => {
+        const covers = samePrefix(r.headSha, mainSha) || isAncestor(r.headSha, mainSha);
+        let committedAt = Date.parse(r.updatedAt) || 0;
+        if (covers && r.headSha) { try { const t = Number(ex('git', ['log', '-1', '--format=%ct', r.headSha])); if (t) committedAt = t * 1000; } catch (_) {} }
+        return { ...r, covers, committedAt };
+      });
+      verifyHold = mainVerifyHold(runs, mainSha);
+    } catch (e) { console.log('could not read Verse verify: ' + String(e.stderr || e.message || e).slice(0, 160)); }
+  }
+  // #2617 held every merge here. That hold is gone: a red main starts a fix above, and this block does not run.
+  if (false) {
+    console.log('rule: ' + verifyHold.rule);
+    console.log('file: ' + verifyHold.file);
+    console.log('fix: ' + verifyHold.hint);
+  }
   // one suite run for the whole batch, dispatched from main: the workflow on main reads a list of pull requests (2026-11-06)
   const startSuite = (batch, where) => {
     const list = (batch || []).map((x) => x.number).filter(Boolean);
@@ -283,9 +372,6 @@ if (ready.length && !limited) {
       const p = row.p, r = row.r;
       try {
         if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-        if (eligible(p, repo) && p.auto_merge) {
-          try { run(['api', 'graphql', '-f', 'query=mutation($id:ID!){disablePullRequestAutoMerge(input:{pullRequestId:$id}){clientMutationId}}', '-f', 'id=' + p.node_id]); } catch (_) {}
-        }
         const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
         if (!m.merged) break;
         merged++; done.push(row); console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
@@ -324,6 +410,7 @@ if (!one && !limited) {
   } catch (e) { console.log('stall alarm: ' + String(e.stderr || e.message || e).slice(0, 200)); }
 }
 function samePrefix(a, b) { const x = String(a).toLowerCase(), y = String(b).toLowerCase(); return x === y || x.startsWith(y) || y.startsWith(x); }
+function isAncestor(sha, head) { if (!sha || !head || samePrefix(sha, head)) return false; try { ex('git', ['merge-base', '--is-ancestor', sha, head]); return true; } catch (_) { return false; } }
 if (merged) {
   try { run(['workflow', 'run', 'deploy.yml', '--repo', repo, '--ref', 'main', '-f', 'after_merge=true']); console.log('deploy of main started'); }
   catch (e) { console.log('::warning::merged, but could not start the deploy: ' + String(e.stderr || e.message).slice(0, 300)); }

@@ -11,6 +11,8 @@
 //   { mode: 'word', text, from?, to }   the dictionary for one word: Wiktionary's meanings, the model's (or MyMemory's) other translations with how
 //                                       common each is, examples, the word's forms; edge-cached 30 days per word and pair.
 //   { mode: 'alts', word, sentence, source, from?, to }   other words for one word of a translation, each with the sentence rewritten around it.
+//   { mode: 'write', text, lang?, style?, tone? }   the text improved in its own language (DeepL Write): spelling, grammar, a style and a tone
+//                                       (lib/translate-write.js), with the changes word by word; 503 with the reason when the model is off.
 //   { mode: 'page', url }               a public web page's words (title, headings, paragraphs, links) as plain text, for the page to translate.
 //                                       What a stranger could make that do, and what stops it, is written at the top of lib/translate-web.js:
 //                                       no private hosts, no proxying of bytes or scripts, 1.5 MB / 8 s per fetch, 10 a minute, a ten-minute edge copy.
@@ -18,6 +20,7 @@ import { models } from '../../lib/models.js';
 import { LANGS, codeOf, detect, MAX_CHARS, tonesFor } from '../../lib/translate-langs.js';
 import { said, jsonIn, wordPrompt, entryOf, wiktionary, memoryAlternatives, altsPrompt, altsOf, glossaryOf, tonePrompt, editedOf } from '../../lib/translate-words.js';
 import { fetchPage, extract } from '../../lib/translate-web.js';
+import { STYLES, TONES, WRITE_MAX, writePrompt, rewrittenOf, changes, changedWords } from '../../lib/translate-write.js';
 import { imageBytes, describe } from './appraise.js';
 import { rateLimited } from './answer.js';
 
@@ -103,6 +106,18 @@ async function modes(request, env, body) {
       return out(await edge(request, 'page/' + encodeURIComponent(url).slice(0, 900), 600, async () => { const p = await fetchPage(url); return { url: p.url, ...extract(p.html, p.url), keep: true }; }));
     } catch (e) { return json({ error: String((e && e.message) || e).slice(0, 160) }, 400); }
   }
+  if (mode === 'write') {
+    const text = String(body.text || '').replace(/\r\n?/g, '\n').trim();
+    if (!text) return json({ error: 'text to improve' }, 400);
+    if (text.length > WRITE_MAX) return json({ error: 'up to ' + WRITE_MAX + ' characters at a time' }, 400);
+    const lang = codeOf(body.lang) || detect(text) || 'en', style = STYLES.some((x) => x.id && x.id === body.style) ? body.style : '', tone = TONES.some((x) => x.id && x.id === body.tone) ? body.tone : '';
+    if (!modelsOn(env)) return json({ error: 'Improving writing needs Verse\'s model, which is not on just now', kind: 'away' }, 503);
+    if (await rateLimited(request, env, 'translate-word', WORD_RL)) return json({ error: 'slow down' }, 429);
+    const better = rewrittenOf(await chat(env, writePrompt(text, lang, style, tone), Math.min(3000, Math.ceil(text.length / 2) + 300)), text);
+    if (!better) return json({ error: 'The model did not give a usable rewrite just now; try again', kind: 'away' }, 503);
+    const ch = changes(text, better);
+    return json({ text: better, lang, style, tone, changes: ch, changed: changedWords(ch) });
+  }
   const to = codeOf(body.to);
   if (!to) return json({ error: 'to: one of the ' + Object.keys(LANGS).length + ' languages, as a code like es' }, 400);
   if (mode === 'word') {
@@ -121,7 +136,7 @@ async function modes(request, env, body) {
     const key = ['alts', from, to, (await sha(word + '\u241e' + sentence + '\u241e' + source)).slice(0, 32)].join('/');
     return out(await edge(request, key, 604800, () => alternativesFor(env, word, sentence, source, from, to)));
   }
-  return json({ error: 'mode: word, alts or page' }, 400);
+  return json({ error: 'mode: word, alts, write or page' }, 400);
 }
 const sha = async (s) => { try { const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join(''); } catch (_) { return encodeURIComponent(s).slice(0, 64); } };
 

@@ -28,15 +28,13 @@ test('a readout that names the wrong family is caught; the right family, or no f
   assert.equal(weakestSentence(w.is), 'Words and the world is my least proven family: 38 of 42 skills proven, the lowest proven share.');
 });
 
-test('the self card keeps the model words, says the bars disagree, and shows the bars\' family as weakest', () => {
-  const v = { entries: [{ kind: 'daily', at: '2026-10-30T08:00:00Z', thoughts: 'The Games family remains the least proven family with 34 proven skills.', weakest: 'The Games family is the least proven family with 34 proven skills.', better: 'Prove more.' }] };
-  const S = selfSections(v, Date.parse('2026-10-30T09:00:00Z'), fam), words = S.find((s) => s.id === 'words').blocks, grow = S.find((s) => s.id === 'growth').blocks;
-  assert.equal(words[0].text, v.entries[0].thoughts, 'kept word for word');
-  assert.ok(words.some((b) => b.t === 'note' && /The bars disagree: Words and the world \(38 of 42 proven\) is the least proven family, not Games \(34 of 37 proven\)/.test(b.text)));
-  assert.equal(grow[1].text, 'Words and the world is my least proven family: 38 of 42 skills proven, the lowest proven share.');
-  assert.match(grow[2].text, /The model wrote "The Games family is the least proven family with 34 proven skills\."/);
-  assert.match(voiceFacts(v.entries, fam), /Words and the world is my least proven family/);
-  assert.doesNotMatch(voiceFacts(v.entries, fam), /Games family/);
+test('the self card does not repeat a tally, and the model is not handed one', () => {
+  const v = { entries: [{ kind: 'daily', at: '2026-10-30T08:00:00Z', thoughts: 'The Games family remains the least proven family with 34 proven skills. 1 of 1277 sites assimilated.', weakest: 'The Games family is the least proven family with 34 proven skills.', better: 'Route the next page.' }], follow: { recent: [{ what: 'a page that rotates letters' }] } };
+  const S = selfSections(v, Date.parse('2026-10-30T09:00:00Z'), fam), words = S.find((s) => s.id === 'words').blocks;
+  assert.match(words[0].text, /rotates letters/);
+  assert.doesNotMatch(JSON.stringify(S), /famil|proven|assimilat|bars disagree|1 of 1277/i);
+  assert.match(voiceFacts(v.entries, fam), /Route the next page/);
+  assert.doesNotMatch(voiceFacts(v.entries, fam), /famil|proven|assimilat|Games/);
 });
 
 test('an ask naming a site is built only by evidence that names that site', () => {

@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-10T08:19:57.855Z",
+ "sha": "e800d5755569806da4e169b14e07104de59f0150",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42779460566",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: the card has no finished-site link and fits a phone"
+ ],
+ "touched": [
+  "docs/TAGTEAM.md",
+  "void-live-deploy/skills/ownership-pack.js"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-10T09:57:16.046Z",
+ "closedBy": "87d307092f97318b07991e238c31a5e94acd9838",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42792756830",
+ "minutes": 97
+}

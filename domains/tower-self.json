@@ -436,6 +436,12 @@
    "why": "no floor does its job (The website is a service provider offering custom AI development, consulting, and infrastructure solutions. Verse is a collection of individual utility tools)",
    "title": "Hexen"
   },
+  "ai-consulting": {
+   "at": "2026-10-31T15:55:43Z",
+   "outcome": "pending",
+   "why": "new floor for hexen.ai",
+   "title": "AI Consulting"
+  },
   "fakemailgenerator.com": {
    "at": "2026-10-31T15:55:48Z",
    "outcome": "no-family",
@@ -1930,67 +1936,259 @@
     "place": 8,
     "why": "not sized yet, hardness 104, Tranco 158733"
    }
+  },
+  "tsundere.pw": {
+   "at": "2026-11-09T10:12:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a silent musical tracklist/album playback experience, which does not match any of the provided Verse tool pages (utility, productivity, or)",
+   "title": "Fripp Don't Interact",
+   "ease": {
+    "score": 99.9,
+    "place": 1,
+    "why": "0 controls, 1 KB, Tranco 320058"
+   }
+  },
+  "man.fyi": {
+   "at": "2026-11-09T10:12:54Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (92 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 90.4,
+    "place": 2,
+    "why": "1 controls, 6 KB, Tranco 320043"
+   }
+  },
+  "trafflink.xyz": {
+   "at": "2026-11-09T10:12:59Z",
+   "outcome": "gone",
+   "why": "did not load (page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://trafflink.xyz/)",
+   "ease": {
+    "score": 83.3,
+    "place": 3,
+    "why": "2 controls, 1 KB, Tranco 320010"
+   }
+  },
+  "arcticfoxhaircolor.com": {
+   "at": "2026-11-09T10:13:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a brand shop and content hub for hair dye products. Verse does not have a page for an e-commerce shop or a brand-specific service.)",
+   "title": "Homepage | Arctic Fox - Dye For A Cause",
+   "ease": {
+    "score": 4.3,
+    "place": 4,
+    "why": "not sized yet, hardness 105, Tranco 318028"
+   }
+  },
+  "hexcol.com": {
+   "at": "2026-11-09T10:13:11Z",
+   "outcome": "covered",
+   "page": "/color/",
+   "topic": "colour codes",
+   "title": "Hexcol.com - Color codes",
+   "why": "its job is colour codes, which /color/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.3,
+    "place": 5,
+    "why": "not sized yet, hardness 105, Tranco 308739"
+   }
+  },
+  "junit.org": {
+   "at": "2026-11-09T10:13:16Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a project page for a Java testing framework (JUnit). Verse provides tools for developers (like an encoder or a Perl test report viewer), but it)",
+   "title": "JUnit",
+   "ease": {
+    "score": 4.3,
+    "place": 6,
+    "why": "not sized yet, hardness 105, Tranco 49979"
+   }
+  },
+  "ipcalc.co": {
+   "at": "2026-11-09T10:13:17Z",
+   "outcome": "gone",
+   "why": "did not load (page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://ipcalc.co/)",
+   "ease": {
+    "score": 4.3,
+    "place": 7,
+    "why": "not sized yet, hardness 106, Tranco 96102"
+   }
+  },
+  "cashconverters.co.uk": {
+   "at": "2026-11-09T10:13:28Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a retail and pawnbroking service for buying and selling second-hand goods and providing personal finance solutions. Verse does not have a page)",
+   "title": "Buy & Sell Second-hand Goods | Pawnbroking | Cash Converters",
+   "ease": {
+    "score": 4.3,
+    "place": 8,
+    "why": "not sized yet, hardness 106, Tranco 72465"
+   }
+  },
+  "timeclockwizard.com": {
+   "at": "2026-11-09T21:01:23Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "Free Online Time Clock: Time Tracking & Scheduling App for Employees",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 4.3,
+    "place": 1,
+    "why": "not sized yet, hardness 106, Tranco 69704"
+   }
+  },
+  "slightlydifferent.co.nz": {
+   "at": "2026-11-09T21:01:34Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional service offering web design, ecommerce, and hosting. Verse does not have a page for professional services like web development or)",
+   "title": "Slightly Different · Websites that work, built in New Zealand",
+   "ease": {
+    "score": 4.3,
+    "place": 2,
+    "why": "not sized yet, hardness 107, Tranco 159096"
+   }
+  },
+  "hexrom.com": {
+   "at": "2026-11-09T21:01:41Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a repository for downloading ROMs and emulators, which is a service for digital content distribution/piracy that Verse does not provide a page)",
+   "title": "Download Roms - HexRom",
+   "ease": {
+    "score": 4.3,
+    "place": 3,
+    "why": "not sized yet, hardness 107, Tranco 108207"
+   }
+  },
+  "colorlib.com": {
+   "at": "2026-11-09T21:01:47Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a marketplace/repository for WordPress themes and HTML website templates. Verse does not have a tool for browsing, searching, or providing)",
+   "title": "WordPress Themes & Website Templates - Colorlib",
+   "ease": {
+    "score": 4.3,
+    "place": 4,
+    "why": "not sized yet, hardness 107, Tranco 3744"
+   }
+  },
+  "steamcommunity.com": {
+   "at": "2026-11-09T21:01:51Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a gaming community platform for social interaction, game reviews, and player guides. None of the available Verse pages provide social networking)",
+   "title": "Steam Community",
+   "ease": {
+    "score": 4.3,
+    "place": 5,
+    "why": "not sized yet, hardness 107, Tranco 421"
+   }
+  },
+  "unitpay.ru": {
+   "at": "2026-11-10T10:18:28Z",
+   "outcome": "gone",
+   "why": "answered 502",
+   "ease": {
+    "score": 4.2,
+    "place": 5,
+    "why": "not sized yet, hardness 108, Tranco 176282"
+   }
+  },
+  "united-hoster.de": {
+   "at": "2026-11-09T21:02:46Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial web hosting and cloud service provider for SMEs. Verse does not have a page that offers cloud hosting, server infrastructure, or)",
+   "title": "Cloud für kleine & mittelständische Unternehmen (KMU) - united hoster GmbH",
+   "ease": {
+    "score": 4.2,
+    "place": 7,
+    "why": "not sized yet, hardness 109, Tranco 337143"
+   }
+  },
+  "confirmation.community": {
+   "at": "2026-11-09T21:03:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a knowledge base and support community for a specific financial auditing service. Verse has no page for providing specialized business support)",
+   "title": "",
+   "ease": {
+    "score": 4.2,
+    "place": 8,
+    "why": "not sized yet, hardness 109, Tranco 279084"
+   }
+  },
+  "telegram.services": {
+   "at": "2026-11-10T10:17:51Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (2 characters: a redirect stub, or a page that draws itself with no text)",
+   "ease": {
+    "score": 100,
+    "place": 1,
+    "why": "0 controls, 0 KB, Tranco 400033"
+   }
+  },
+  "studiowaterarts.com": {
+   "at": "2026-11-10T10:17:51Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it",
+   "ease": {
+    "score": 100,
+    "place": 2,
+    "why": "0 controls, 0 KB, Tranco 360134"
+   }
+  },
+  "rightarion.ru": {
+   "at": "2026-11-10T10:17:56Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (the website is a personal portfolio and CV, which is a service for individual identity presentation that Verse does not have a specific page for; while)",
+   "title": "Rightarion | Personal Website",
+   "ease": {
+    "score": 99.5,
+    "place": 3,
+    "why": "0 controls, 5 KB, Tranco 360129"
+   }
+  },
+  "cavea.plus": {
+   "at": "2026-11-10T10:18:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a video streaming service for movies and series. Verse does not have a tool for streaming media content, only for tools like podcasts or music)",
+   "title": "CaveaPlus - კავეა პლუსი",
+   "ease": {
+    "score": 99.4,
+    "place": 4,
+    "why": "0 controls, 6 KB, Tranco 360120"
+   }
+  },
+  "informunity.ru": {
+   "at": "2026-11-10T10:19:00Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON",
+   "ease": {
+    "score": 4.2,
+    "place": 6,
+    "why": "not sized yet, hardness 110, Tranco 313243"
+   }
+  },
+  "whatismyip.org": {
+   "at": "2026-11-10T10:19:05Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides IP address lookup and geolocation services, which does not match any of the existing Verse tool pages provided in the list.)",
+   "title": "What is My IP Address? Find Public IPv4 & IPv6",
+   "ease": {
+    "score": 4.2,
+    "place": 7,
+    "why": "not sized yet, hardness 110, Tranco 113980"
+   }
+  },
+  "w3counter.com": {
+   "at": "2026-11-10T10:19:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides website analytics and visitor tracking services. None of the available Verse pages offer web traffic analysis, visitor behavior tracking)",
+   "title": "Simple Website Analytics & Live Visitor Tracking · W3Counter",
+   "ease": {
+    "score": 4.2,
+    "place": 8,
+    "why": "not sized yet, hardness 110, Tranco 58060"
+   }
   }
  },
  "runs": [
-  {
-   "at": "2026-10-31T15:56:49Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "mail-tester.com"
-  },
-  {
-   "at": "2026-10-31T15:59:22Z",
-   "line": "Versus: took on no site; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "mail-tester.com",
-   "noop": true
-  },
-  {
-   "at": "2026-10-31T21:51:44Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "koanruler.com",
-   "noop": true
-  },
-  {
-   "at": "2026-10-31T21:54:18Z",
-   "line": "Versus: took on no site; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 1,
-   "reads_next": "koanruler.com",
-   "noop": true
-  },
-  {
-   "at": "2026-11-01T09:37:56Z",
-   "line": "Versus: took on no site (also read: 7 no-family, 1 discarded); next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 6,
-   "fixed": [],
-   "pages_per_day": 0,
-   "reads_next": "seriouswheels.com"
-  },
-  {
-   "at": "2026-11-01T16:55:28Z",
-   "line": "Versus: took on no site (also read: 6 no-family, 1 not-judged, 1 discarded); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)",
-   "built": 0,
-   "queued": 0,
-   "fixed": [],
-   "pages_per_day": 0,
-   "reads_next": "coloringhome.com",
-   "noop": true
-  },
   {
    "at": "2026-11-01T22:17:52Z",
    "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
@@ -2312,6 +2510,63 @@
    "fixed": [],
    "pages_per_day": 1,
    "reads_next": "arcticfoxhaircolor.com"
+  },
+  {
+   "at": "2026-11-09T10:13:36Z",
+   "line": "Versus: took on no site (also read: 4 no-family, 1 walled, 2 gone, 1 covered); next tsundere.pw (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "timeclockwizard.com"
+  },
+  {
+   "at": "2026-11-09T10:16:10Z",
+   "line": "Versus: took on no site; next tsundere.pw (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "timeclockwizard.com",
+   "noop": true
+  },
+  {
+   "at": "2026-11-09T21:03:24Z",
+   "line": "Versus: took on no site (also read: 1 covered, 6 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next  (the target)",
+   "built": 0,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "unitpay.ru"
+  },
+  {
+   "at": "2026-11-09T21:06:00Z",
+   "line": "Versus: took on no site; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "unitpay.ru",
+   "noop": true
+  },
+  {
+   "at": "2026-11-10T10:19:17Z",
+   "line": "Versus: took on no site (also read: 2 walled, 4 no-family, 1 gone, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next  (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "informunity.ru"
+  },
+  {
+   "at": "2026-11-10T10:21:52Z",
+   "line": "Versus: took on no site; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "informunity.ru",
+   "noop": true
   }
  ]
 }

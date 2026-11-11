@@ -5,7 +5,7 @@ import { compute, money, rateText } from '/lib/vat.js';
 const $ = (id) => document.getElementById(String(id).replace(/^#/, ''));
 const stateKey = 'a2m.void.vat.v1';
 const historyKey = 'a2m.void.vat.history.v1';
-const rates = [22, 20, 18, 10, 5, 0];
+const rates = [22, 20, 18, 10, 7, 5, 0]; // 7 and 5: the simplified-tax (УСН) VAT rates since 2025
 const MAX_HISTORY = 8;
 let historySignature = '';
 

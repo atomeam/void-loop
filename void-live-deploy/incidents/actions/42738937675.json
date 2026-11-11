@@ -1,0 +1,57 @@
+{
+ "at": "2026-11-10T02:19:13Z",
+ "sha": "e226467e9702bdf4850d7f4cff6a28543b0de8bd",
+ "runId": 42738937675,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42738937675",
+ "workflow": "Verse verify",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "python-tests",
+   "id": 129574930916,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/42738937675/job/129574930916",
+   "conclusion": "failure",
+   "step": {
+    "number": 4,
+    "name": "The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)"
+   },
+   "fails": [
+    "not ok 13 - a no-match search spiral reaches an edit: a code snippet is literal, a miss lists files, and the same miss is not run again (\\#2610)"
+   ],
+   "tail": [
+    "  type: 'test'",
+    "  ...",
+    "# Subtest: the CLI: no key means exit 4 with the keys it wants; a scripted model runs end to end",
+    "ok 16 - the CLI: no key means exit 4 with the keys it wants; a scripted model runs end to end",
+    "  ---",
+    "  duration_ms: 373.125978",
+    "  type: 'test'",
+    "  ...",
+    "# Subtest: the source holds no key and never force-pushes",
+    "ok 17 - the source holds no key and never force-pushes",
+    "  ---",
+    "  duration_ms: 1.961882",
+    "  type: 'test'",
+    "  ...",
+    "# Subtest: nearMiss: the lines a missed replace nearly matched, so the next turn copies them instead of reading again (\\#2330)",
+    "ok 18 - nearMiss: the lines a missed replace nearly matched, so the next turn copies them instead of reading again (\\#2330)",
+    "  ---",
+    "  duration_ms: 0.611825",
+    "  type: 'test'",
+    "  ...",
+    "1..18",
+    "# tests 18",
+    "# suites 0",
+    "# pass 17",
+    "# fail 1",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 3262.270536",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

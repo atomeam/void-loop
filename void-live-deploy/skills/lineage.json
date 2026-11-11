@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 3,
+ "count": 16,
  "skills": {
   "lab": [
    "toolkit"
@@ -9,8 +9,82 @@
    "calc",
    "convert"
   ],
+  "proposal-pack": [
+   "delivery-pack",
+   "system-handoff",
+   "heavy-lift-map"
+  ],
+  "system-handoff": [
+   "delivery-pack",
+   "system-status"
+  ],
   "my-device": [
    "eat"
+  ],
+  "client-status-pack": [
+   "systems-monitor",
+   "system-status"
+  ],
+  "handoff-checklist": [
+   "system-handoff",
+   "client-handoff",
+   "delivery-pack",
+   "monitor-pack",
+   "heavy-lift-map"
+  ],
+  "ownership-pack": [
+   "system-handoff",
+   "delivery-pack",
+   "business-clarify"
+  ],
+  "client-brief": [
+   "client-intake",
+   "idea-to-system",
+   "ownership-pack",
+   "system-status",
+   "progress-report"
+  ],
+  "client-offer": [
+   "client-brief",
+   "idea-to-system",
+   "handoff-checklist",
+   "delivery-pack"
+  ],
+  "automation-pack": [
+   "monitor-pack",
+   "system-slice",
+   "ownership-pack",
+   "delivery-pack"
+  ],
+  "lift-summary": [
+   "proposal-pack",
+   "delivery-pack",
+   "handoff-checklist",
+   "heavy-lift-map"
+  ],
+  "docs-pack": [
+   "ownership-pack",
+   "system-status",
+   "system-handoff",
+   "progress-report"
+  ],
+  "feedback-loop": [
+   "system-slice",
+   "client-intake",
+   "progress-report"
+  ],
+  "progress-report": [
+   "system-status",
+   "handoff-checklist",
+   "monitor-pack",
+   "heavy-lift-map",
+   "delivery-pack"
+  ],
+  "system-slice": [
+   "client-intake",
+   "heavy-lift-map",
+   "ownership-pack",
+   "progress-report"
   ]
  }
 }

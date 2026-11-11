@@ -1,0 +1,23 @@
+{
+ "at": "2026-11-10T04:33:06.198Z",
+ "sha": "8828d077a20d7011b9dd3c452d78c61d9b59a5f7",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42753872566",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: opening the card does not read the old score file",
+  "showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its \"grab one\" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is a modal layer (dimmed stage, role dialog, aria-modal) that keeps focus and Esc closes; at 1280x640 with a field-mind card up, the panel clears the card and the ask bar; field-mind headers have matching insets (within 2px), the F-id tags stay whole and never leave one alone on a line, and every control sits inside its card at 1280 and 390 wide"
+ ],
+ "touched": [
+  "tools/test_void.mjs"
+ ],
+ "shards": [
+  1
+ ],
+ "passed": [
+  1
+ ],
+ "closedAt": "2026-11-10T05:25:20.867Z",
+ "closedBy": "8b04cf425621f1c5c319a5a23f13340a2f4fbdda",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42758786295",
+ "minutes": 52
+}

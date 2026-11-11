@@ -1,0 +1,27 @@
+{
+ "at": "2026-11-10T01:23:01.777Z",
+ "sha": "b0faeeac576df1ae7379da517e17ab1b8c4b5817",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42732882416",
+ "suite": "browser suite on main",
+ "checks": [
+  "showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its \"grab one\" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is a modal layer (dimmed stage, role dialog, aria-modal) that keeps focus and Esc closes; at 1280x640 with a field-mind card up, the panel clears the card and the ask bar; field-mind headers have matching insets (within 2px), the F-id tags stay whole and never leave one alone on a line, and every control sits inside its card at 1280 and 390 wide"
+ ],
+ "touched": [
+  "docs/MAP.md",
+  "tools/checks.mjs",
+  "tools/client-status-pack.test.mjs",
+  "tools/families.mjs",
+  "void-live-deploy/skills/client-status-pack.js",
+  "void-live-deploy/skills/order/9890-client-status-pack"
+ ],
+ "passed": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "closedAt": "2026-11-10T03:18:43.488Z",
+ "closedBy": "46613fc93ec131768506ef89cd2a21279dd83540",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42746487025",
+ "minutes": 116
+}

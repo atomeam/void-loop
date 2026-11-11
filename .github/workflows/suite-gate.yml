@@ -13,9 +13,10 @@ on:
   workflow_dispatch:
     inputs:
       pr:
-        description: The pull requests to test, merged into current main in this order (one number, or several separated by commas)
-        required: true
+        description: The pull requests to test, merged into current main in this order (one number, or several separated by commas). Leave empty to run the suite on current main alone.
+        required: false
         type: string
+        default: ''
 
 concurrency:
   group: void-suite-gate
@@ -61,11 +62,15 @@ jobs:
             if git merge --no-edit -q "$sha" >/dev/null 2>&1; then prs="$prs $n"; shas="$shas $sha"; echo "#$n $sha merged into the batch"
             else git merge --abort || true; echo "#$n conflicts with main or the batch: left out of this run"; fi
           done
-          [ -n "$prs" ] || { echo "no pull request in this run"; exit 1; }
           echo "main=$main" >> "$GITHUB_OUTPUT"
           echo "prs=${prs# }" >> "$GITHUB_OUTPUT"
           echo "shas=${shas# }" >> "$GITHUB_OUTPUT"
-          echo "### #${prs# } on top of $main" >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$prs" ]; then
+            echo "### #${prs# } on top of $main" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "no open pull request in this run; the suite runs on main alone"
+            echo "### suite on main $main alone (no open pull request to merge)" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
   suite:
     needs: prepare

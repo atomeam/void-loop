@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; background:#000; }
+#portals { position:absolute; top:0; left:0; pointer-events:none; }
+.portal { position:absolute; width:120px; height:70px; background:rgba(20,40,80,0.85); border:1px solid #4af; border-radius:8px; padding:8px; pointer-events:auto; cursor:pointer; font-size:12px; box-shadow:0 4px 12px rgba(0,0,0,0.5); transition:transform 0.1s; }
+.portal:hover { border-color:#8cf; }
+#ui { position:absolute; bottom:12px; left:12px; right:12px; display:flex; gap:8px; flex-wrap:wrap; }
+button { background:#222; color:#eee; border:1px solid #555; padding:8px 14px; border-radius:6px; cursor:pointer; }
+button:hover { background:#333; }
+#status { position:absolute; top:12px; left:12px; font-size:13px; background:rgba(0,0,0,0.6); padding:6px 10px; border-radius:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation Reservoir Lattice Portals · Verse lab</title>
+<meta name="description" content="DeviceOrientationEvent stream is windowed into a short history vector that drives a frozen random reservoir (Echo State Network, no recurrent training).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation Reservoir Lattice Portals · Verse lab">
+<meta property="og:description" content="DeviceOrientationEvent stream is windowed into a short history vector that drives a frozen random reservoir (Echo State Network, no recurrent training).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f642-orientation-reservoir-lattice-portals/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f642-orientation-reservoir-lattice-portals/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<div id="status">Tilt or drag to inject. Click portals to reinforce.</div>
+<div id="ui">
+  <button id="perm">Enable Orientation</button>
+  <button id="seal">Seal Genome JSON</button>
+  <button id="reset">Reset Weights</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation Reservoir Lattice Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

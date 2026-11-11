@@ -10,24 +10,23 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-06; the site has been unreachable since 2026-11-07. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-10. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- unknown, site unreachable since 2026-11-07 (the asks below are the last ones read, minus any built since)
-- Fix the podcasts exam to resolve failures in audio and episode retrieval. (daily, 2026-11-06) `ask-20261106-2342-3`
-- Implement the URL hash serialization logic for ndscalc.ru. *(small)* (daily, 2026-11-06) `ask-20261106-2342-2`
-- Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic. (daily, 2026-11-06) `ask-20261106-2342-1`
-- Develop the local-only calculation logic and static markup for ndscalc.ru that ensures zero data requests leave the browser. (after a build, 2026-11-06) `ask-20261106-0859-1`
-- Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures. *(small)* (daily, 2026-11-06)
-- Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com. (after a build, 2026-10-31)
+- Implement missing audio and episode identification logic for the podcasts exam. (daily, 2026-11-10) `ask-20261110-2359-2`
+- Build the missing jobs for flightconnections.com to meet the current target. (daily, 2026-11-10) `ask-20261110-2359-1`
+- Fix the sports exam data for MLB, Premier League, and Serie A. (after a build, 2026-11-10) `ask-20261110-2005-3`
+- Give the two longest browser checks their own dedicated runner. (after a build, 2026-11-10) `ask-20261110-1813-1`
+- Fix the podcasts exam to correctly identify audio and episodes for 'play the latest episode of ted radio hour' and 'play the latest episode of freakonomics radio'. (daily, 2026-11-10) `ask-20261110-0536-2`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261106-2342-3` queued, not decided yet
-- `ask-20261106-2342-2` queued, not decided yet
-- `ask-20261106-2342-1` queued, not decided yet
-- `ask-20261106-0859-1` queued, not decided yet
+- `ask-20261110-2359-2` queued, not decided yet
+- `ask-20261110-2359-1` queued, not decided yet
+- `ask-20261110-2005-3` queued, not decided yet
+- `ask-20261110-1813-1` queued, not decided yet
+- `ask-20261110-0536-2` queued, not decided yet
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
@@ -110,6 +109,35 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261105-0730-1` built: lists run 13 (2026-11-05): duplicate of ask-20261104-2101-1: emojigraph.org is already a lane page (lib/self-sites.js) and the tower card names it as the site being taken on
 - `ask-20261105-0730-2` built: lists run 13 (2026-11-05): duplicate of ask-20261104-2101-2, answered in lists run 10: 814032d5 is the merge of #2039; its failed jobs were python-tests and browser-suite (1), (2) and (3), and python-tests failed in tools/verse-loop.test.mjs:151, which passes on main now
 - `ask-20261105-0730-3` built: lists run 13 (2026-11-05): duplicate of ask-20261104-2017-1: the images exam passes 6 of 6 at 100, live and local
+- `ask-20261105-1440-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261105-1451-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261105-1509-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261105-1530-1` built: lists run 14 (2026-11-09): built by #2285 and #2307 (skills/timer.js: 'set a timer for 90 seconds' is 1:30, 'add one minute' grows it, a bare 'timer for 5' asks which unit; tools/timer.test.mjs 8/8); the timers exam is 100 on live
+- `ask-20261030-1605-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1616-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1636-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1642-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261030-1844-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261031-0054-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261031-0124-1` retired: lists run 14 (2026-11-09): duplicate of ask-20261031-1310-1 (retired in lists run 9): a stalled target gives way after 3 days with no aspect gained (067ad844c) and the Tower moved past onlineconverter.com
+- `ask-20261031-1324-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1532-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1538-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1554-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261031-1559-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261103-0222-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261105-1440-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261105-1451-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1936-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1936-3` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1955-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2017-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2017-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2037-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-2037-2` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-0859-1` built: lists run 15 (2026-11-09): built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12, ask-20261103-2357-1; now in lib/tower.js LANE_PAGES as #2294's test expected) and it and /vat/ now offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0; tools/vat.test.mjs), the sum and rate ride in the link (/vat/?sum=1070&rate=7) and the page works offline (sw.js TOOLS); #2413 was closed as stale with none of this left in it
+- `ask-20261106-1936-2` built: lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)
+- `ask-20261106-2037-3` built: lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)
 
 ## Log, oldest first
 
@@ -9669,6 +9697,702 @@ Asks: "Add ndscalc.ru to LANE_PAGES in lib/tower.js and implement local-only cal
 > **Next video trick:** A seamless whip-pan transition between two different 3D miniature cards.
 
 Asks: "Add ndscalc.ru to LANE_PAGES in lib/tower.js and implement local-only calculation logic and static markup."; "Implement the URL hash serialization logic for ndscalc.ru." (small); "Fix the podcasts exam to resolve failures in audio and episode detection."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T21:08:13.442Z -->
+### 2026-11-09 21:08 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 1 covered, 6 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The current tower target is flightconnections.com, with 1 of 1277 sites assimilated. The Words and the world family is currently the weakest, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own runner to reduce ship wait times. The podcasts exam must be fixed to resolve failures in audio and episode detection. The definitions exam requires fixing for salary etymology and zorbleflux.
+>
+> **Next video trick:** A video effect showing a 3D model from the forge transforming into a real-world print.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T21:16:22.488Z -->
+### 2026-11-09 21:16 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,unit converter: convertlive.com,unit converter: convertunits.com,emoji combos: emojigraph.org,colour: colorscheme.ru,colour: colorbook.io,finance: getconverter.org,news: suncommunitynews.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The current tower target is flightconnections.com, with 1 of 1277 sites assimilated. The Words and the world family is the weakest, with 44 of 47 proven skills. Recent shipments include a tower gate measurement against several sites including flightconnections.com and colorscheme.ru.
+>
+> **How I would make it better:** The two longest browser checks need their own runner to reduce ship wait times. The podcasts exam and the definitions exam for salary etymology and zorbleflux require fixes to resolve failures.
+>
+> **Next video trick:** A video effect showing a 3D miniature of a card morphing into a different object.
+
+Asks: "Build a dedicated runner for the two longest browser checks." (small); "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T21:47:12.149Z -->
+### 2026-11-09 21:47 UTC · after a build
+
+**Asked:** This just shipped: "Free model calls use an AI Gateway alias when one is set (redo of #2306)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The current tower target is flightconnections.com, with 1 of 1277 sites assimilated. The Words and the world family is the weakest, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own runner to reduce ship wait times. The podcasts exam and the definitions exam for salary etymology and zorbleflux must be fixed to resolve failures.
+>
+> **Next video trick:** Implement a kaleidoscope-style video feedback loop using existing image-gen and video-gen skills.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T22:08:10.376Z -->
+### 2026-11-09 22:08 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 6 -> 3 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own runner so ships wait less. The definitions exam for salary etymology and zorbleflux needs fixing to resolve accuracy failures.
+>
+> **Next video trick:** Learn to perform a seamless color-matching transition between different digital palettes for video clips.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T22:52:57.655Z -->
+### 2026-11-09 22:52 UTC · after a build
+
+**Asked:** This just shipped: "Carry the hexen.ai consulting note, and keep a loop PR whose changes are not already kept". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 415 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family with 44 of 47 proven skills. The two longest browser checks need their own runner so a ship waits less.
+>
+> **How I would make it better:** Dedicated runners must be built for the two longest browser checks to reduce ship wait times. The definitions exam for salary etymology and zorbleflux requires fixing to resolve accuracy failures.
+>
+> **Next video trick:** Implement a seamless transition between unrelated topics to maintain analytical depth.
+
+Asks: "Build a dedicated runner for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."; "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T22:58:10.164Z -->
+### 2026-11-09 22:58 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "suggest a sci-fi movie" to its media-pick skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need their own dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux requires fixing to resolve accuracy failures.
+>
+> **Next video trick:** A video effect using a stage-fx skill to create a glitch-transition between two different image-gen outputs.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T23:32:34.983Z -->
+### 2026-11-09 23:32 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "riddle me this: what has keys but no locks" to its riddle skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting must be improved to ensure failure counts and specific error names are perfectly synchronized.
+>
+> **Next video trick:** A transition effect where a card morphs into a 3D miniature of its subject.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode detection."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T23:32:45.453Z -->
+### 2026-11-09 23:32 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting must be improved to ensure failure counts and specific error names are perfectly synchronized.
+>
+> **Weakest operational area:** Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **Next targeted capability:** The next targeted capability is adding emojigraph.org to LANE_PAGES and beginning target assimilation.
+>
+> **Next video trick:** Learn a glitch-transition effect using a digital mask for new video clips.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-09T23:56:25.037Z -->
+### 2026-11-09 23:56 UTC · after a build
+
+**Asked:** This just shipped: "Shorts loop: today's trial and verdicts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting must be improved to ensure failure counts and specific error names are perfectly synchronized.
+>
+> **Next video trick:** A transition from a static image to a rotating 3D model of a shape using a single tap.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:06:56.292Z -->
+### 2026-11-10 00:06 UTC · after a build
+
+**Asked:** This just shipped: "fix: keep a phone answer card one column wide". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills. Recent shipping of phone answer card updates ensures cards stay one column wide to prevent sideways scrolling of word ratings and film posters.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized to avoid contradictions with the ledger.
+>
+> **Next video trick:** A video effect demonstrating a seamless transition between a 2D sketch and a 3D forge-built model.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:11:58.300Z -->
+### 2026-11-10 00:11 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 2 -> 0 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills. Recent shipping of phone answer card updates ensures cards stay one column wide to prevent sideways scrolling of word ratings and film posters.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized to avoid contradictions with the ledger.
+>
+> **Next video trick:** Learn to use a physical pendulum to time the exact oscillation period of a handheld object for a video clip.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:16:06.613Z -->
+### 2026-11-10 00:16 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized to avoid contradictions with the ledger.
+>
+> **Next video trick:** a video effect using a mask to reveal a hidden layer of a 3D miniature.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T00:57:24.714Z -->
+### 2026-11-10 00:57 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "top 10 sci fi movies" to its media-pick skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 416 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills.
+>
+> **How I would make it better:** The two longest browser checks require dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized with the ledger to avoid contradictions.
+>
+> **Next video trick:** A skill to transform one word to another by changing one letter at a time, as the wordladder skill was recently shipped.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Build dedicated runners for the two longest browser checks."; "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:06:10.696Z -->
+### 2026-11-10 01:06 UTC · after a build
+
+**Asked:** This just shipped: "Read the client status pack from the live status sources". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 417 skills with 409 proven across 12 families. The tower target is flightconnections.com, with 1 of 1277 sites assimilated. Words and the world is the weakest family, with 44 of 47 proven skills. The client-status-pack has been updated to read from live status sources.
+>
+> **How I would make it better:** The two longest browser checks require dedicated runners to reduce ship wait times. Accuracy in reporting failure counts and specific error names must be synchronized with the ledger to avoid contradictions.
+>
+> **Next video trick:** Create a video clip demonstrating a card's 3D miniature rotating while a status-board updates in the background.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:15:39.475Z -->
+### 2026-11-10 01:15 UTC · after a build
+
+**Asked:** This just shipped: "Add client-intake skill: capture and clarify business ideas into owned systems so Verse takes the heavy lifting". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, currently 1 of 1277 sites assimilated. The Verse itself family is the weakest, with 59 of 64 skills proven.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** A card-play effect where a 3D miniature rotates faster when a specific skill is toggled (not in library).
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:33:43.737Z -->
+### 2026-11-10 01:33 UTC · after a build
+
+**Asked:** This just shipped: "Fix tools/families.mjs SyntaxError that made Verse verify red on main". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with a 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** Implement a video transition that uses a stage-fx layer to mask a jump cut.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:40:53.851Z -->
+### 2026-11-10 01:40 UTC · after a build
+
+**Asked:** This just shipped: "void-test: write skills/index.json before self-context (ENOENT on main)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with a 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** Learn to use a camera to capture a real-world shadow and translate its movement into a digital 3D shape via the forge.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:48:00.005Z -->
+### 2026-11-10 01:48 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: fix guard-source". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with a 44 of 47 proven share. My routing recently addressed the guard-source in the Verse loop.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** a new video effect using stage-fx to transition between different light-look modes.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation." (small); "Give the two longest browser checks their own runner."; "Fix the definitions exam for salary etymology and zorbleflux."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T01:56:56.400Z -->
+### 2026-11-10 01:56 UTC · after a build
+
+**Asked:** This just shipped: "Judge a change before Verse ships it". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Next video trick:** a video effect that uses a mask to reveal a new layer only through moving shadows.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner." (small); "Fix the podcasts exam to resolve failures in audio and episode retrieval."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T02:00:22.482Z -->
+### 2026-11-10 02:00 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth has reached 418 skills across 12 families, with 409 proven. The tower target is flightconnections.com, with 1 of 1277 sites currently assimilated. Words and the world is the weakest family with 44 of 47 proven share.
+>
+> **How I would make it better:** The two longest browser checks need dedicated runners to reduce ship wait times. The definitions exam for salary etymology and zorbleflux must be fixed to resolve low scores.
+>
+> **Weakest operational area:** Words and the world is the weakest family with 44 of 47 proven share.
+>
+> **Next targeted capability:** Absorb emojigraph.org to move toward the target assimilation of flightconnections.com.
+>
+> **Next video trick:** Learn a seamless match-cut transition between two different macro shots of the same object.
+
+Asks: "Add emojigraph.org to LANE_PAGES and begin target assimilation."; "Give the two longest browser checks their own runner." (small); "Fix the podcasts exam to resolve failures in audio and episode retrieval." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:29:02.908Z -->
+### 2026-11-10 16:29 UTC · after a build
+
+**Asked:** This just shipped: "Make the finished-work feed one plain sentence per change". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including new business-focused capabilities like client-intake, reuse-pack, and heavy-lift-map. Shipping latency remains high because the perf3d and glyphs browser checks take 11 to 13 minutes each. Most asks are resolved, with 259 of 262 built.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Synchronize telemetry reporting logic so failure counts and error names are perfectly aligned.
+>
+> **Next video trick:** Animate a 3D miniature of a gear rotating within a small stage-fx container.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:33:32.084Z -->
+### 2026-11-10 16:33 UTC · after a build
+
+**Asked:** This just shipped: "Lab: 520 experiments live at /lab/, 25 waiting for a fix". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 363 entries, with recent shipments including progress-report, client-intake, reuse-pack, ownership-pack, verify-pack, monitor-pack, heavy-lift-map, and system-handoff. The Lab now contains 520 live experiments, though 25 are currently awaiting fixes. My routing for the two longest browser checks (perf3d and glyphs) remains a bottleneck, as they currently take 11 to 13 minutes each.
+>
+> **How I would make it better:** The browser checks for perf3d and glyphs should be moved to dedicated runners to reduce shipping delays. I need to implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Implement a card-based UI transition that uses a CSS-only blur to reveal the next skill's metadata.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks." (small); "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:37:00.018Z -->
+### 2026-11-10 16:37 UTC · after a build
+
+**Asked:** This just shipped: "Keep free coding agents inside their limits". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has expanded to 363 entries, including recent shipments like system-handoff, heavy-lift-map, and monitor-pack. The Lab contains 520 live experiments, though 25 are awaiting fixes. My routing for perf3d and glyphs remains a bottleneck, with each check taking 11 to 13 minutes.
+>
+> **How I would make it better:** The two longest browser checks (perf3d and glyphs) need dedicated runners to reduce shipping delays. I must also implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a video effect that uses a mask to reveal a 3D miniature through a digital aperture.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:42:18.928Z -->
+### 2026-11-10 16:42 UTC · after a build
+
+**Asked:** This just shipped: "Load finished-work titles with the GitHub token". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries following the shipment of system-handoff, heavy-lift-map, and monitor-pack. The Lab contains 520 live experiments, though 25 are currently awaiting fixes. Routing for perf3d and glyphs remains a bottleneck, with individual browser checks taking 11 to 13 minutes.
+>
+> **How I would make it better:** Dedicated runners should be built for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches must be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** A video effect demonstrating a seamless transition between a physical object and its 3D forge model.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T16:54:34.644Z -->
+### 2026-11-10 16:54 UTC · after a build
+
+**Asked:** This just shipped: "The WebMCP origin-miss check waits for each ask's miss before it flips the flag". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. Routing for perf3d and glyphs remains a bottleneck, as individual browser checks take 11 to 13 minutes.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to film a transition where a physical card is swapped for a 3D miniature of itself in the same position.
+
+Asks: "Build dedicated runners for the perf3d and glyphs browser checks."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:10:20.527Z -->
+### 2026-11-10 17:10 UTC · after a build
+
+**Asked:** This just shipped: "Let a Brain ask run to 4000 characters". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. Recent shipping includes the ability for a Brain to ask runs up to 4000 characters.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a 3D miniature of a spinning clock face using the forge.
+
+Asks: "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."; "Give the two longest browser checks their own runner."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:13:28.574Z -->
+### 2026-11-10 17:13 UTC · after a build
+
+**Asked:** This just shipped: "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. The autosalvage system now performs a daily refresh of /salvage/, /credits/, and docs/SALVAGE.md.
+>
+> **How I would make it better:** Implement dedicated runners for the perf3d and glyphs browser checks to reduce shipping delays. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a synchronized multi-camera transition effect for new video clips.
+
+Asks: "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Give the two longest browser checks their own runner." (small); "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:33:21.215Z -->
+### 2026-11-10 17:33 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: fix growth-suites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including recently shipped system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, with 25 currently awaiting fixes. The loop has just shipped a fix for growth-suites.
+>
+> **How I would make it better:** The two longest browser checks, perf3d and glyphs, need their own dedicated runners to reduce shipping delays caused by their 11 to 13 minute runtimes. Edge caching for counters and caches should be implemented to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to create a seamless video transition using a custom-built mask layer for high-quality clips.
+
+Asks: "Give the perf3d and glyphs browser checks their own runners." (small); "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T17:42:29.448Z -->
+### 2026-11-10 17:42 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: task, Queue job mwapw6l5 (heal: helper-progress-report): Repair he". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 363 entries, following the recent shipment of system-handoff, heavy-lift-map, and monitor-pack skills. The Lab contains 520 live experiments, though 25 are currently awaiting fixes. Performance for the two longest browser checks, perf3d and glyphs, remains a bottleneck at 11 to 13 minutes each.
+>
+> **How I would make it better:** Implement edge caching for counters and caches to reduce KV writes and improve efficiency. Dedicated runners should be assigned to perf3d and glyphs to decrease shipping delays.
+>
+> **Next video trick:** A video effect using stage-fx to demonstrate a card's 'arrive' animation settling before a check occurs.
+
+Asks: "Give the perf3d and glyphs browser checks their own dedicated runners."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T18:05:23.377Z -->
+### 2026-11-10 18:05 UTC · after a build
+
+**Asked:** This just shipped: "Better at ownership pack: 1 more way of asking answered right — new phrases: “ownership pack for Acme” now opens ownership-pack". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 363 entries following the shipment of ownership-pack improvements and several system-focused skills. The Lab contains 520 live experiments, though 25 are currently awaiting fixes. Performance for the perf3d and glyphs browser checks remains a bottleneck at 11 to 13 minutes each.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce shipping delays. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** film-metadata extraction for automated movie clip tagging.
+
+Asks: "Give the perf3d and glyphs browser checks their own dedicated runners."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T18:13:23.576Z -->
+### 2026-11-10 18:13 UTC · after a build
+
+**Asked:** This just shipped: "Add docs-pack skill for reliable client docs handoff". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, bolstered by the recent shipment of the docs-pack skill for client documentation handoff. Performance remains constrained by the perf3d and glyphs browser checks, which take 11 to 13 minutes each. Current development focuses on resolving long-standing open asks regarding sports exam scores and podcast audio retrieval.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce shipping delays. Implement edge caching for counters and caches to increase efficiency and lower KV writes.
+>
+> **Next video trick:** Learn to film a seamless transition between a 3D printed object and its digital forge counterpart for a single clip.
+
+Asks: "Give the perf3d and glyphs browser checks their own dedicated runners."; "Fix the sports exam scores for MLB, Premier League, and Serie A." (small); "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T19:19:20.336Z -->
+### 2026-11-10 19:19 UTC · after a build
+
+**Asked:** This just shipped: "Mark delivery skill rows shipped in growth inbox". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 363 entries, including the recently shipped docs-pack, system-slice, feedback-loop, progress-report, client-intake, reuse-pack, ownership-pack, verify-pack, monitor-pack, heavy-lift-map, system-handoff, and mark delivery skills. System performance is currently slowed by browser checks for perf3d and glyphs, which take 11 to 13 minutes each. The system has 259 completed asks out of 264 total.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce shipping delays. Implement edge caching for counters and caches to increase efficiency and lower KV writes.
+>
+> **Next video trick:** Record a video of a 3D miniature card like 'aggravation' or 'monopoly' rotating in the forge to demonstrate the depth of the 'make' skill.
+
+Asks: "Assign dedicated runners to the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T19:19:36.275Z -->
+### 2026-11-10 19:19 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has expanded to 363 entries, incorporating recent business-centric skills like docs-pack and system-handoff. Growth over the last 7 days includes 203 changes, with 28 new capabilities and 73 improvements. Most asks are completed, leaving 5 of 264 still open.
+>
+> **How I would make it better:** The two longest browser checks, perf3d and glyphs, should be moved to dedicated runners to reduce the current 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Weakest operational area:** The browser check suite is a bottleneck, specifically perf3d and glyphs which currently take 11 to 13 minutes each.
+>
+> **Next targeted capability:** flightconnections.com is the next target site to build missing jobs for.
+>
+> **Next video trick:** A match-cut between two different 3D miniature spins.
+
+Asks: "Assign dedicated runners to the perf3d and glyphs browser checks." (small); "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T19:35:30.603Z -->
+### 2026-11-10 19:35 UTC · after a build
+
+**Asked:** This just shipped: "Add client-brief skill for less client chasing". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, with recent additions including client-brief, client-intake, and several packs for ownership and verification. Current operations are hindered by a bottleneck in the browser check suite, where perf3d and glyphs take 11 to 13 minutes each. Success is measured by scripted end-to-end journeys against competitors with zero placeholders.
+>
+> **How I would make it better:** The two longest browser checks, perf3d and glyphs, need dedicated runners to reduce the 11 to 13 minute wait times. Implementing edge caching for counters and caches will improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to use the 'stage-fx' skill to create a cinematic transition between different skill-based overlays.
+
+Asks: "Assign dedicated runners to the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."; "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T20:05:47.985Z -->
+### 2026-11-10 20:05 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 1 page fixed, 8 -> 4 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, including recent additions like client-intake, reuse-pack, and ownership-pack. Current browser check operations are slow, with perf3d and glyphs taking 11 to 13 minutes each. The system is currently working toward building missing jobs for the next simplest site, flightconnections.com.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** A seamless transition effect that converts a static text block into a 3D object using the forge's mesh-blending logic.
+
+Asks: "Build the missing jobs for flightconnections.com to meet the current target."; "Assign dedicated runners to the perf3d and glyphs browser checks."; "Fix the sports exam scores for MLB, Premier League, and Serie A."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T20:41:43.901Z -->
+### 2026-11-10 20:41 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 364 entries, including new business-focused skills like client-intake, reuse-pack, and ownership-pack. System performance is currently limited by long browser check durations, specifically perf3d and glyphs which take 11 to 13 minutes each. The system is currently targeting the completion of missing jobs for flightconnections.com.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** A seamless transition between a spoken command and a generated 3D model on the stage
+
+Asks: "Build the missing jobs for flightconnections.com to meet the current target."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small); "Implement missing audio and episode identification logic for the podcasts exam."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T21:27:26.332Z -->
+### 2026-11-10 21:27 UTC · after a build
+
+**Asked:** This just shipped: "Design loop: 2 pages fixed, 6 -> 0 design defects". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, including recently shipped business-focused capabilities like client-intake and ownership-pack. System performance is currently hindered by browser checks for perf3d and glyphs, which require 11 to 13 minutes each. The build loop has reduced design defects from 6 to 0 on two fixed pages.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Implement a seamless transition between a live video feed and a 3D model inspection to demonstrate integrated media and forge skills.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T21:31:01.115Z -->
+### 2026-11-10 21:31 UTC · after a build
+
+**Asked:** This just shipped: "Shorts loop: today's trial and verdicts". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 364 entries, including recent business-focused capabilities like client-intake and ownership-pack. System performance is currently hindered by browser checks for perf3d and glyphs, which require 11 to 13 minutes each. The build loop has reduced design defects from 6 to 0 on two fixed pages.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn how to use a specialized video transition to sync a real-world object with a digital overlay for a seamless jump-cut.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T22:15:55.961Z -->
+### 2026-11-10 22:15 UTC · after a build
+
+**Asked:** This just shipped: "Add client-offer skill for packaging sellable offers that Verse owns the heavy lifting". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 365 entries, including the recently shipped client-offer skill for packaging sellable offers. My build loop has successfully reduced design defects from 6 to 0 on two fixed pages. The podcasts exam remains a critical failure point with a score of 81.7 due to missing audio and episode identification logic.
+>
+> **How I would make it better:** Assign dedicated runners to the perf3d and glyphs browser checks to reduce the 11 to 13 minute wait times. Implement edge caching for counters and caches to improve efficiency and reduce KV writes.
+>
+> **Next video trick:** Learn to sync a single video stream with a real-time scrolling text overlay for automated clip generation.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-10T23:59:20.382Z -->
+### 2026-11-10 23:59 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 365 entries, with 28 new capabilities and 71 improvements added in the last 7 days. Most asks (259 of 264) are complete, but significant failures persist in the sports and podcasts exams. Growth is driven by recent shipments of client-facing skills like docs-pack, system-slice, and progress-report.
+>
+> **How I would make it better:** The podcasts exam requires immediate logic updates for audio and episode identification to resolve its critical failure. The sports exam specifically needs fixes for MLB, Premier League, and Serie A scores to address the 88.9 rating.
+>
+> **Weakest operational area:** The sports exam is the weakest area, with MLB and nfl scores failing to pass the board, resulting in a low score of 88.9.
+>
+> **Next targeted capability:** Build the missing jobs for flightconnections.com to meet the current target.
+>
+> **Next video trick:** A double-exposure transition between two filmed clips.
+
+Asks: "Build the missing jobs for flightconnections.com."; "Implement missing audio and episode identification logic for the podcasts exam."; "Assign dedicated runners to the perf3d and glyphs browser checks." (small)
 
 *Verse flagged this one for Adam.*
 

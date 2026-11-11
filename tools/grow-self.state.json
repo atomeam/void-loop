@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42447221799",
-  "at": "2026-11-08T04:33:06Z",
-  "what": "Verse hardened itself: 3 benchmark ask(s) for monitor-pack.  Why these: monitor-pack (no benchmark ask, evidence tier: tested). New phrases: “monitor pack for client onboarding” now opens monitor-pack; “set up monitors for the invoice reminders” now opens monitor-pack; “what will Verse watch for the support router” now opens monitor-pack.",
-  "try": "monitor pack for client onboarding",
+  "run": "42867507381",
+  "at": "2026-11-10T17:42:07Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for ownership-pack.  Why these: ownership-pack (no benchmark ask, evidence tier: experiment). New phrases: “ownership pack for Acme” now opens ownership-pack. Did not route: what does Verse own for the onboarding flow; ownership map for weekly reports.",
+  "try": "ownership pack for Acme",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-07T21:42:12Z",
-    "try": "verify pack for client onboarding",
-    "closedAt": "2026-11-08T04:32:57Z"
+    "at": "2026-11-10T09:31:23Z",
+    "try": "ownership map for client onboarding",
+    "closedAt": "2026-11-10T17:41:57Z"
   }
 }

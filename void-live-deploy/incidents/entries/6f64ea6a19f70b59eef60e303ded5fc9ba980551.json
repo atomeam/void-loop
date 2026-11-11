@@ -1,0 +1,27 @@
+{
+ "at": "2026-11-09T17:16:24.735Z",
+ "sha": "6f64ea6a19f70b59eef60e303ded5fc9ba980551",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/42659201982",
+ "suite": "browser suite on main",
+ "checks": [
+  "obituaries: every memorial shows an honest status and keeps its homage text",
+  "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off"
+ ],
+ "touched": [
+  "tools/star-parallax.test.mjs",
+  "void-live-deploy/index.html",
+  "void-live-deploy/lib/star-parallax.js",
+  "void-live-deploy/void.html",
+  "void.html"
+ ],
+ "shards": [
+  3
+ ],
+ "passed": [
+  3
+ ],
+ "closedAt": "2026-11-09T19:17:16.291Z",
+ "closedBy": "a841e248d57d31a1922aa3902b9500d7e0bf6fdf",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/42678803228",
+ "minutes": 121
+}

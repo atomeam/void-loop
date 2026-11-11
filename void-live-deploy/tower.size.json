@@ -1060,6 +1060,20 @@
    "weight": 722184,
    "at": "2026-10-29"
   },
+  "breitband.ch": {
+   "bytes": 1265740,
+   "controls": 13,
+   "scripts": 3,
+   "styles": 3,
+   "nodes": 15,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 473,
+   "shell": "none",
+   "weight": 1271890,
+   "at": "2026-11-10"
+  },
   "britdicebridge.uk": {
    "refused": true,
    "at": "2026-10-29"
@@ -1777,6 +1791,20 @@
    "shell": "none",
    "weight": 1227250,
    "at": "2026-10-30"
+  },
+  "cavea.plus": {
+   "bytes": 5247209,
+   "controls": 48,
+   "scripts": 9,
+   "styles": 3,
+   "nodes": 33,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 662,
+   "shell": "none",
+   "weight": 5265539,
+   "at": "2026-11-10"
   },
   "cbssports.com": {
    "bytes": 2602653,
@@ -5552,7 +5580,7 @@
    "shell": "none",
    "text": 7,
    "weight": 8,
-   "at": "2026-11-08"
+   "at": "2026-11-11"
   },
   "flagcounter.com": {
    "bytes": 150690,
@@ -6808,7 +6836,7 @@
    "at": "2026-10-30"
   },
   "icanhazip.com": {
-   "bytes": 14,
+   "bytes": 13,
    "controls": 0,
    "scripts": 0,
    "styles": 0,
@@ -6817,9 +6845,9 @@
    "htmlControls": 0,
    "counted": "plain",
    "shell": "none",
-   "text": 13,
-   "weight": 14,
-   "at": "2026-11-08"
+   "text": 12,
+   "weight": 13,
+   "at": "2026-11-11"
   },
   "icloud.com": {
    "bytes": 3791879,
@@ -8155,6 +8183,20 @@
   "majorcommunityportal.nl": {
    "refused": true,
    "at": "2026-10-29"
+  },
+  "man.fyi": {
+   "bytes": 5702,
+   "controls": 5531,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 12,
+   "routes": 0,
+   "htmlControls": 1,
+   "counted": "rendered",
+   "text": 15825,
+   "shell": "none",
+   "weight": 7822,
+   "at": "2026-11-09"
   },
   "maphill.com": {
    "refused": true,
@@ -9589,6 +9631,20 @@
    "weight": 3165116,
    "at": "2026-10-30"
   },
+  "pokupon.ua": {
+   "bytes": 1165281,
+   "controls": 335,
+   "scripts": 10,
+   "styles": 47,
+   "nodes": 4037,
+   "routes": 8,
+   "htmlControls": 320,
+   "counted": "rendered",
+   "text": 14663,
+   "shell": "none",
+   "weight": 1229651,
+   "at": "2026-11-09"
+  },
   "politicalcompass.org": {
    "bytes": 3956203,
    "controls": 143,
@@ -10375,6 +10431,20 @@
    "counted": "unrendered",
    "weight": 950359,
    "at": "2026-10-29"
+  },
+  "rightarion.ru": {
+   "bytes": 409128,
+   "controls": 22,
+   "scripts": 2,
+   "styles": 3,
+   "nodes": 38,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 3773,
+   "shell": "none",
+   "weight": 413508,
+   "at": "2026-11-09"
   },
   "rnz.co.nz": {
    "bytes": 3608856,
@@ -11583,6 +11653,10 @@
    "weight": 1206270,
    "at": "2026-10-30"
   },
+  "studiowaterarts.com": {
+   "refused": true,
+   "at": "2026-11-09"
+  },
   "sudowrite.com": {
    "bytes": 731725,
    "controls": 58,
@@ -11846,6 +11920,20 @@
    "shell": "none",
    "weight": 902368,
    "at": "2026-10-30"
+  },
+  "telegram.services": {
+   "bytes": 2,
+   "controls": 0,
+   "scripts": 0,
+   "styles": 0,
+   "nodes": 0,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 2,
+   "shell": "none",
+   "weight": 2,
+   "at": "2026-11-10"
   },
   "terradicespace.nl": {
    "refused": true,
@@ -12485,6 +12573,20 @@
    "refused": true,
    "at": "2026-10-29"
   },
+  "trafflink.xyz": {
+   "bytes": 4530,
+   "controls": 3,
+   "scripts": 1,
+   "styles": 1,
+   "nodes": 16,
+   "routes": 2,
+   "htmlControls": 2,
+   "counted": "rendered",
+   "text": 190,
+   "shell": "none",
+   "weight": 7690,
+   "at": "2026-11-09"
+  },
   "translate.com": {
    "bytes": 945597,
    "controls": 125,
@@ -12588,6 +12690,20 @@
    "shell": "none",
    "weight": 733420,
    "at": "2026-10-30"
+  },
+  "tsundere.pw": {
+   "bytes": 1245,
+   "controls": 0,
+   "scripts": 1,
+   "styles": 2,
+   "nodes": 18,
+   "routes": 0,
+   "htmlControls": 0,
+   "counted": "rendered",
+   "text": 398,
+   "shell": "none",
+   "weight": 3425,
+   "at": "2026-11-09"
   },
   "turkishexporter.com.tr": {
    "refused": true,

@@ -1,8 +1,8 @@
 {
- "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
- "id": "opentv.com",
+ "about": "The floor Verse is on. It is assimilated only when the gate verifies every aspect against the live site and its feature study has nothing missing; until then it stays the floor and low-confidence aspects are retried (docs/TOWER-RULES.md, tools/tower-target.mjs).",
+ "id": "travel: flightconnections.com",
  "since": "2026-11-09",
- "n": 0,
+ "n": 14,
  "progressAt": "2026-11-09",
  "season": {
   "start": "2026-11-06",
@@ -34,6 +34,7 @@
    ]
   }
  ],
+ "assimilated": [],
  "passed": [
   {
    "id": "image boards: 2chan.net",
@@ -123,6 +124,18 @@
    "aspect": "journey: share the result and reopen it from the link",
    "since": "2026-11-06",
    "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "travel: flightconnections.com",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-10",
+   "job": "retry: script the journey with steps and negative controls"
+  },
+  {
+   "id": "travel: flightconnections.com",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-10",
+   "job": "retry: script the journey with steps and negative controls"
   }
  ],
  "skipped": [
@@ -155,6 +168,11 @@
    "id": "digitalsogame.com",
    "at": "2026-11-09",
    "why": "digitalsogame.com held the Tower since 2026-11-08 (1 day, limit 1) at 0 of 12 aspects ahead, so it gives way and keeps being measured in the background"
+  },
+  {
+   "id": "tsundere.pw",
+   "at": "2026-11-09",
+   "why": "tsundere.pw is not a floor: not a studied, real site (docs/TOWER-RULES.md rule 1)"
   }
  ],
  "settled": [
@@ -175,6 +193,6 @@
  ],
  "last": {
   "at": "2026-11-09",
-  "why": "digitalsogame.com held the Tower since 2026-11-08 (1 day, limit 1) at 0 of 12 aspects ahead, so it gives way and keeps being measured in the background"
+  "why": "tsundere.pw is not a floor: not a studied, real site (docs/TOWER-RULES.md rule 1)"
  }
 }

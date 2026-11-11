@@ -55,6 +55,15 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
   .chips a, .chips span { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
   .chips span { min-height: 32px; padding: 3px 10px; }
+  /* improve your writing (DeepL Write), the changes word by word */
+  #wrOut { white-space: pre-wrap; font-size: 17px; line-height: 1.55; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 3em; background: var(--box); }
+  #wrOut ins { background: color-mix(in srgb, #2fbf71 28%, transparent); text-decoration: none; border-radius: 3px; } #wrOut del + ins { margin-left: .2em; } #wrOut del { color: var(--soft); text-decoration: line-through; opacity: .8; }
+  #wrOut.plain del { display: none; } #wrOut.plain ins { background: none; }
+  .more select { width: auto; font: inherit; font-size: 15px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; min-height: 40px; }
+  .pane.drop { outline: 2px dashed var(--accent); outline-offset: -6px; }
+  #langHits:empty, #recentLangs:empty { display: none; } .chips span.chips { border: 0; padding: 0; min-height: 0; }
+  .lsearch { align-items: center; } .lsearch select { width: auto; max-width: 100%; min-height: 34px; padding: 4px 10px; font-size: 13px; border-radius: 999px; }
+  #keysT { font-size: 12px; color: var(--soft); margin: 2px 0 8px; }
   details.more { border-top: 1px solid var(--line); padding: 2px 0; } details.more[open] { padding-bottom: 10px; }
   details.more summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--soft); min-height: 44px; display: flex; align-items: center; }
   .more input, .more textarea { font: inherit; font-size: 15px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; width: 100%; box-sizing: border-box; }
@@ -123,6 +132,7 @@
           <input type="file" id="doc" accept=".docx,.pptx,.xlsx,.pdf,.txt,.srt,.vtt,.json,.md,text/plain,application/json,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
           <button type="button" id="kbdB" aria-expanded="false" aria-controls="kbd" title="An on-screen keyboard for the language you type in">Keyboard</button>
           <button type="button" id="handB" aria-expanded="false" aria-controls="hand" title="Write with a finger, pen or mouse; Verse reads it">Handwriting</button>
+          <button type="button" id="writeB" title="Improve your own text in the same language: spelling, grammar, a style and a tone, with the changes shown">Improve writing</button>
           <button type="button" id="clear">Clear</button>
           <span class="count" id="count">0 / 5000 characters</span>
         </div>
@@ -154,6 +164,16 @@
     <div class="prog" id="progRow" hidden><progress id="prog" max="1" value="0" aria-label="Progress"></progress><button type="button" id="stop">Stop</button></div>
   </form>
   <p class="srcs">Click any word of a translation for other words; a single word gets the dictionary.</p>
+  <p id="keysT">Ctrl+Enter translates, Ctrl+Shift+S swaps the languages, Ctrl+Shift+C copies the translation. Drop a document or a photo on the text box to translate it.</p>
+  <details class="more" id="writeD"><summary id="writeS">Improve your writing</summary>
+    <p class="hint">Write in any of the 100 languages; Verse's model fixes spelling and grammar and can change the style or the tone. It stays in your language: nothing is translated.</p>
+    <label class="vh" for="wrIn">Text to improve</label><textarea id="wrIn" maxlength="2000" placeholder="Write or paste your text"></textarea>
+    <div class="row"><label class="vh" for="wrStyle">Style</label><select id="wrStyle"></select><label class="vh" for="wrTone">Tone</label><select id="wrTone"></select>
+      <button type="button" class="go" id="wrGo">Improve</button><span class="hint" id="wrCount">0 / 2,000</span></div>
+    <div id="wrRes" hidden><div id="wrOut" aria-live="polite"></div>
+      <div class="row"><label style="display:inline-flex;gap:6px;align-items:center;font-size:14px"><input type="checkbox" id="wrShow" checked style="min-height:0;width:18px;height:18px"> Show changes</label>
+        <button type="button" id="wrCopy">Copy</button><button type="button" id="wrUse" title="Put the improved text in the box above, to translate it">Use it to translate</button><span class="hint" id="wrNote" role="status"></span></div></div>
+  </details>
 
   <section class="dict" id="dict" aria-labelledby="dictH" hidden></section>
 
@@ -184,7 +204,7 @@
     <p><a id="bm" href="javascript:(function(){var s=String(getSelection()).trim();location.href='https://a-to-mind.com/translate/?'+(s?'q='+encodeURIComponent(s.slice(0,5000)):'url='+encodeURIComponent(location.href));})()">Verse Translate</a></p>
   </details>
 
-  <div class="hrow"><h2 id="savedH">Saved phrases</h2><button type="button" id="practice" title="Flashcards from your saved phrases">Practice</button></div>
+  <div class="hrow"><h2 id="savedH">Saved phrases</h2><span style="display:inline-flex;gap:6px"><button type="button" id="practice" title="Flashcards from your saved phrases">Practice</button><button type="button" id="csvB" title="Your saved phrases as a .csv file: flashcard apps such as Anki and Quizlet and any spreadsheet import it">Export .csv</button></span></div>
   <div class="card" id="card" hidden></div>
   <ul class="list" id="saved"><li class="empty" id="savedEmpty">Nothing saved yet: Save keeps a translation here, on this device.</li></ul>
   <h2 id="histH">History</h2>
@@ -678,6 +698,47 @@
       sh.addEventListener('click', () => { ans.hidden = false; sh.hidden = true; speak(it.out, it.to); }); nx.addEventListener('click', () => { at++; card(); });
       c.replaceChildren(el('small', { textContent: (at % deck.length + 1) + ' / ' + deck.length + ' · ' + L.nameOf(it.to) }), el('div', { textContent: it.q }), ans, el('div', { className: 'row' }, sh, nx)); c.hidden = false; sh.focus();
     }
+    // ---- from DeepL Write and the other translators: improve your writing, shortcuts, drop a file, saved phrases as CSV (lib/translate-write.js) ----
+    const TW = await import('/lib/translate-write.js');
+    for (const [sel, list] of [[$('wrStyle'), TW.STYLES], [$('wrTone'), TW.TONES]]) for (const o of list) sel.append(el('option', { value: o.id, textContent: o.label }));
+    const wrCount = () => { $('wrCount').textContent = $('wrIn').value.length.toLocaleString() + ' / ' + TW.WRITE_MAX.toLocaleString(); };
+    $('wrIn').addEventListener('input', wrCount);
+    let wrLast = null;
+    const wrDraw = () => { const o = $('wrOut'); o.replaceChildren(); if (!wrLast) return; o.className = $('wrShow').checked ? '' : 'plain'; for (const c of wrLast.changes) o.append(c.op === '=' ? c.t : el(c.op === '+' ? 'ins' : 'del', { textContent: c.t })); };
+    $('wrShow').addEventListener('change', wrDraw);
+    $('writeB').addEventListener('click', () => { $('writeD').open = true; if ($('in').value.trim() && !$('wrIn').value.trim()) { $('wrIn').value = $('in').value; wrCount(); } $('wrIn').focus(); $('writeD').scrollIntoView({ block: 'start', behavior: 'smooth' }); });
+    $('wrGo').addEventListener('click', async () => {
+      const text = $('wrIn').value.trim(); if (!text) { $('wrNote').textContent = 'Write something to improve first'; return; }
+      $('wrGo').disabled = true; $('wrNote').textContent = 'Improving…';
+      const lang = state.from !== 'auto' && $('wrIn').value === $('in').value ? state.from : '';
+      try {
+        const r = await post({ mode: 'write', text, ...(lang ? { lang } : {}), style: $('wrStyle').value, tone: $('wrTone').value });
+        if (!r.ok) { $('wrNote').textContent = (r.j && r.j.error) || 'Could not improve it just now'; return; }
+        wrLast = r.j; $('wrRes').hidden = false; wrDraw();
+        $('wrNote').textContent = r.j.changed ? r.j.changed + (r.j.changed === 1 ? ' word changed' : ' words changed') + ' · ' + L.nameOf(r.j.lang) : 'It reads well as it is: nothing changed';
+      } catch (_) { $('wrNote').textContent = navigator.onLine ? 'Could not reach Verse just now' : 'Improving writing needs a connection'; }
+      finally { $('wrGo').disabled = false; }
+    });
+    $('wrCopy').addEventListener('click', () => { if (wrLast) copy($('wrCopy'), wrLast.text); });
+    $('wrUse').addEventListener('click', () => { if (!wrLast) return; $('in').value = wrLast.text.slice(0, L.MAX_CHARS); count(); acted = true; go(true); $('in').scrollIntoView({ block: 'center' }); });
+    addEventListener('keydown', (e) => {
+      const m = e.ctrlKey || e.metaKey; if (!m) return;
+      if (e.key === 'Enter' && document.activeElement === $('in')) { e.preventDefault(); acted = true; clearTimeout(timer); go(true); }
+      else if (e.key === 'Enter' && document.activeElement === $('wrIn')) { e.preventDefault(); $('wrGo').click(); }
+      else if (e.shiftKey && (e.key === 'S' || e.key === 's')) { e.preventDefault(); $('swap').click(); }
+      else if (e.shiftKey && (e.key === 'C' || e.key === 'c') && state.out) { e.preventDefault(); copy($('copy'), state.out); }
+    });
+    const inPane = $('in').closest('.pane');
+    inPane.addEventListener('dragover', (e) => { if ([...(e.dataTransfer ? e.dataTransfer.items : [])].some((i) => i.kind === 'file')) { e.preventDefault(); inPane.classList.add('drop'); } });
+    inPane.addEventListener('dragleave', () => inPane.classList.remove('drop'));
+    inPane.addEventListener('drop', (e) => {
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; inPane.classList.remove('drop'); if (!f) return; e.preventDefault();
+      const dt = new DataTransfer(); dt.items.add(f); const target = /^image\//.test(f.type) ? $('pic') : $('doc'); target.files = dt.files; target.dispatchEvent(new Event('change'));
+    });
+    $('csvB').addEventListener('click', () => {
+      const list = store.saved.length ? store.saved : []; if (!list.length) { toast($('csvB'), 'Save a phrase first'); return; }
+      const a = el('a', { href: URL.createObjectURL(new Blob([TW.phrasesCsv(list)], { type: 'text/csv' })), download: 'saved-phrases.csv' }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    });
     $('practice').addEventListener('click', () => { const c = $('card'); if (!c.hidden) { c.hidden = true; return; } deck = (store.saved.length ? store.saved : store.hist).slice().sort(() => Math.random() - 0.5); at = 0; if (!deck.length) return say(savedEmpty.textContent); card(); });
 
     addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));

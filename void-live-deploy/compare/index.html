@@ -35,6 +35,7 @@
 <link rel="modulepreload" href="/lib/tower-controls.js">
 <link rel="modulepreload" href="/lib/tower-journeys.js">
 <link rel="modulepreload" href="/lib/tower-weight.js">
+<link rel="modulepreload" href="/lib/obituary.js">
 <link rel="modulepreload" href="/skills/tower.js">
 <link rel="modulepreload" href="/lib/tower-art.js">
 <link rel="modulepreload" href="/skills/mini/tower.js">
@@ -43,7 +44,7 @@
 <!-- /modulepreload -->
 </head>
 <body>
-<header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span> <a href="/conquered/" style="margin-left:auto">Versus</a></header>
+<header><a href="/">Verse</a> · <span id="who">Side by side</span> <span class="st" id="st"></span></header>
 <details id="vs" hidden><summary id="vsum">The matchup</summary><div id="vsin"></div></details>
 <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Side by side: Verse and the site it is up against</h1>
 <main>
@@ -88,7 +89,7 @@
     // where each aspect stands, from the gate's last verdicts
     fetch('/tower.evidence.json').then((r) => r.json()).then((e) => { const t = tower([], e.floors || e, null, e.icons || null); const fl = t.floors.find((x) => x.id === f.id); if (!fl) return;
       if (fl.icon && /^tower\.icons\/[\w.-]+$/.test(fl.icon)) $('sn').innerHTML = '<img src="/' + fl.icon + '" alt="" width="26" height="26" style="width:26px;height:26px;border-radius:50%;object-fit:contain;background:#fff;padding:2px;box-sizing:border-box;vertical-align:middle"> ' + esc(f.site); // the site's own icon once the gate has kept one
-      $('st').innerHTML = (fl.beaten ? '<b>surpassed</b>' : '<i>' + fl.n + ' of ' + fl.m + ' aspects ahead</i>') + (fl.left && fl.left.length ? ' · still to pass: ' + fl.left.map((a) => a.replace(/[<>&]/g, '')).join(', ') : '');
+      $('st').innerHTML = (fl.beaten ? '<b>every aspect matched</b>' : '<i>' + fl.n + ' of ' + fl.m + ' aspects ahead</i>') + (fl.left && fl.left.length ? ' · still to pass: ' + fl.left.map((a) => a.replace(/[<>&]/g, '')).join(', ') : ''); // void-review: ok: fl.n and fl.m are counts and each left aspect has < > & taken out
       // the matchup (skills/tower.js matchupHtml, the same as the Versus card): the VS splash, one row per aspect with the gate's numbers, when it was measured, what is next
       $('vsum').textContent = 'The matchup: Verse vs ' + f.site + ' · ' + fl.n + ' of ' + fl.m + ' aspects ahead'; $('vsin').innerHTML = matchupHtml(fl, esc); $('vs').hidden = false; }).catch(() => {});
   }

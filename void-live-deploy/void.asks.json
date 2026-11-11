@@ -2327,6 +2327,91 @@
       "words": "Absorb every repository on the account into the core code [What I want next].",
       "ledgerAt": "2026-11-06T10:54:21Z",
       "why": "built: 13 more pieces unified into Verse's own code, 69 of 551 now (was 56); 387 left to salvage (was 400). From the owner's other repositories: glassbox's candidate-claim check and its promote-on-merge rule, and the Wix site's (linked by tools/asks-link.mjs, shared words: absorb, repository, account, core, code, next)"
+    },
+    {
+      "words": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Identify and implement the specific improvements needed to gain the lead in speed, accuracy, and completeness against ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement specific improvements to gain the lead in speed, accuracy, and completeness against ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement specific improvements for speed, accuracy, and completeness against ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement improvements to increase speed, accuracy, and completeness to beat ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop local-only calculation logic.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the local-only calculation logic and static markup for ndscalc.ru to ensure zero data requests leave the browser.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add ndscalc.ru to LANE_PAGES in lib/tower.js.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add ndscalc.ru to LANE_PAGES in lib/tower.js to begin the assimilation process.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Complete the ndscalc.ru build by adding it to LANE_PAGES in lib/tower.js and implementing the local-only calculation logic and static markup.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the URL hash serialization logic for ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and implement local-only calculation logic and static markup.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement URL hash serialization logic for ndscalc.ru.",
+      "ledgerAt": "2026-11-09T14:39:31Z",
+      "why": "built: ndscalc.ru's page is the calculator's VAT mode (passed 10/12); it and /vat/ offer every Russian rate (22, 20, 18, 10, the simplified-tax 7 and 5, and 0), the sum and rate in the link and the page offline (lists run 15, 2026-11-09) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the definitions exam for salary etymology and zorbleflux.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Expand the WebMCP origin trial to serve every caller via /tools.json and /api/mcp.",
+      "ledgerAt": "2026-10-13T15:51:15Z",
+      "why": "built: the page's WebMCP tools, with every refusal as data (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2338,121 +2423,37 @@
     }
   ],
   "totals": {
-    "asked": 258,
-    "built": 252,
-    "through": "2026-11-06T23:42:00Z",
+    "asked": 261,
+    "built": 259,
+    "through": "2026-11-10T02:00:00Z",
     "open": [
       {
-        "ask": "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com.",
-        "at": "2026-10-31T08:49:00Z",
-        "kind": "build",
-        "small": false,
-        "times": 7,
-        "ids": [
-          "ask-20261030-1921-1",
-          "ask-20261030-1940-1",
-          "ask-20261030-1949-1",
-          "ask-20261030-1950-1",
-          "ask-20261030-2212-1",
-          "ask-20261030-1844-1",
-          "ask-20261031-0054-1",
-          "ask-20261031-0124-1",
-          "ask-20261031-0147-1",
-          "ask-20261031-0154-1",
-          "ask-20261031-0705-1",
-          "ask-20261031-0849-1"
-        ]
-      },
-      {
-        "ask": "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru.",
-        "at": "2026-11-06T23:42:00Z",
+        "ask": "Build a dedicated runner for the two longest browser checks.",
+        "at": "2026-11-10T02:00:00Z",
         "kind": "daily",
         "small": true,
-        "times": 7,
+        "times": 3,
         "ids": [
-          "ask-20261106-2023-2",
-          "ask-20261106-2026-2",
-          "ask-20261106-2031-2",
-          "ask-20261106-2045-2",
-          "ask-20261106-2109-2",
-          "ask-20261106-2120-2",
-          "ask-20261106-2134-2",
-          "ask-20261106-2140-2",
-          "ask-20261106-2229-2",
-          "ask-20261106-2330-2",
-          "ask-20261106-2342-2",
-          "ask-20261106-2037-2"
+          "ask-20261109-2356-2",
+          "ask-20261110-0006-2",
+          "ask-20261110-0011-2",
+          "ask-20261110-0016-2",
+          "ask-20261110-0057-2",
+          "ask-20261110-0106-2",
+          "ask-20261110-0115-2",
+          "ask-20261110-0133-2",
+          "ask-20261110-0140-2",
+          "ask-20261110-0148-2",
+          "ask-20261110-0156-2",
+          "ask-20261110-0200-2"
         ]
       },
       {
-        "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
-        "at": "2026-11-06T23:42:00Z",
-        "kind": "daily",
+        "ask": "Fix the sports exam scores for MLB, Premier League, and Serie A.",
         "small": true,
-        "times": 6,
-        "ids": [
-          "ask-20261106-2017-1",
-          "ask-20261106-2023-1",
-          "ask-20261106-2026-1",
-          "ask-20261106-2031-1",
-          "ask-20261106-2037-1",
-          "ask-20261106-2045-1",
-          "ask-20261106-2109-1",
-          "ask-20261106-2120-1",
-          "ask-20261106-2134-1",
-          "ask-20261106-2140-1",
-          "ask-20261106-2229-1",
-          "ask-20261106-2330-1"
-        ]
-      },
-      {
-        "ask": "Fix the timer skill to handle duration commands like 'set a timer for 90 seconds' and resolve increment failures.",
-        "at": "2026-11-06T00:06:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 4,
-        "ids": [
-          "ask-20261105-1537-1",
-          "ask-20261105-1540-1",
-          "ask-20261105-1548-1",
-          "ask-20261105-1555-1",
-          "ask-20261105-1817-1",
-          "ask-20261105-1820-1",
-          "ask-20261105-2353-1",
-          "ask-20261105-2357-1",
-          "ask-20261106-0006-2",
-          "ask-20261105-1509-1",
-          "ask-20261105-1524-1",
-          "ask-20261105-1528-1"
-        ]
-      },
-      {
-        "ask": "Fix the podcasts exam to resolve failures in audio and episode retrieval.",
-        "at": "2026-11-06T23:42:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 2,
-        "ids": [
-          "ask-20261106-2023-3",
-          "ask-20261106-2026-3",
-          "ask-20261106-2031-3",
-          "ask-20261106-2342-3",
-          "ask-20261106-2037-3",
-          "ask-20261106-2045-3",
-          "ask-20261106-2109-3",
-          "ask-20261106-2120-3",
-          "ask-20261106-2134-3",
-          "ask-20261106-2140-3",
-          "ask-20261106-2229-3",
-          "ask-20261106-2330-3"
-        ]
-      },
-      {
-        "ask": "Develop the local-only calculation logic and static markup for ndscalc.ru that ensures zero data requests leave the browser.",
-        "small": false,
         "times": 1,
         "ids": [
-          "ask-20261106-0859-1"
+          "ask-20261109-1701-2"
         ]
       }
     ]

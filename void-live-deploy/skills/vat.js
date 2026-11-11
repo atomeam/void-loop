@@ -15,7 +15,7 @@ function run(text, api) {
       : '';
     el.innerHTML = '<h2>VAT calculator (НДС)</h2>'
       + rows
-      + '<p>Extract VAT from a total or add it on top, at 22, 20, 18, 10, 5, 0% or any rate, with the working shown. The page is in Russian and English.</p>'
+      + '<p>Extract VAT from a total or add it on top, at 22, 20, 18, 10, 7, 5, 0% or any rate, with the working shown. The page is in Russian and English.</p>'
       + '<p><a class="vat-open" href="' + esc(href) + '" style="display:inline-block;padding:8px 18px;border-radius:999px;background:#6d4aff;color:#fff;text-decoration:none;font-weight:600">Open the VAT calculator</a></p>'
       + '<div class="src">Worked out on this device: no amount is sent anywhere.</div>';
   });

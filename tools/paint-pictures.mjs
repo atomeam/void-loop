@@ -2,8 +2,8 @@
 // domain, CC0) and no artwork is copied. Each scene is a list of shapes painted in order onto a 220 x 220 grid of colour numbers; areas too
 // small to carry a number are merged into their largest neighbour, so every area on the sheet shows its number. The two masterpieces
 // (wave.json, starry.json) were cut from public-domain paintings earlier and are kept as they are; this file lists them in the index too.
-//   node tools/paint-pictures.mjs           write void-live-deploy/paint/templates/<id>.json and index.json
-//   node tools/paint-pictures.mjs --check   exit 1 when a written file differs from what this file makes
+//   node tools/paint-pictures.mjs           add any new template json to the library index (pictures are not redrawn)
+//   node tools/paint-pictures.mjs --check   exit 1 when the index is missing a template file
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), dir = path.join(root, 'void-live-deploy', 'paint', 'templates');
@@ -109,18 +109,24 @@ function compact(scene, L) {
   return { palette: used.map((c) => scene.palette[c]), labels: L.map((c) => map.get(c)) };
 }
 
+// The shape list above is kept so an old picture can be redrawn by hand. It is not written:
+// each picture is its json file (an original Verse drawing, CC0, or a public-domain painting).
+// Running this script only adds a template that the index does not name yet.
 export function build() {
-  const files = {}, index = [
-    { id: 'wave', name: 'The Great Wave', cat: 'Masterpieces', file: '/paint/templates/wave.json', credit: 'Hokusai, public domain' },
-    { id: 'starry', name: 'The Starry Night', cat: 'Masterpieces', file: '/paint/templates/starry.json', credit: 'Van Gogh, public domain' },
-  ];
-  for (const s of SCENES) {
-    const { palette, labels } = compact(s, rasterize(s));
-    files[s.id + '.json'] = JSON.stringify({ id: s.id, name: s.name, category: s.cat, credit: s.name + ': an original Verse drawing, public domain (CC0).', w: W, h: H, palette, rle: rle(labels) }) + '\n';
-    index.push({ id: s.id, name: s.name, cat: s.cat, file: '/paint/templates/' + s.id + '.json', credit: 'Verse, CC0' });
+  const indexPath = path.join(dir, 'index.json');
+  const index = JSON.parse(fs.readFileSync(indexPath, 'utf8'));
+  const have = new Set(index.pictures.map((p) => p.id));
+  let added = false;
+  for (const name of fs.readdirSync(dir).filter((n) => n.endsWith('.json') && n !== 'index.json').sort()) {
+    const tpl = JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'));
+    const id = tpl.id || name.slice(0, -5);
+    if (have.has(id)) continue;
+    added = true;
+    if (tpl.category && !index.categories.includes(tpl.category)) index.categories.push(tpl.category);
+    const credit = /Hokusai/.test(tpl.credit || '') ? 'Hokusai, public domain' : /Van Gogh|Vincent/.test(tpl.credit || '') ? 'Van Gogh, public domain' : 'Verse, CC0';
+    index.pictures.push({ id, name: tpl.name, cat: tpl.category || 'Pictures', file: '/paint/templates/' + name, credit });
   }
-  files['index.json'] = JSON.stringify({ note: 'made by tools/paint-pictures.mjs', categories: ['Masterpieces', 'Animals', 'Nature', 'Places', 'Space', 'Patterns'], pictures: index }, null, 1) + '\n';
-  return files;
+  return { 'index.json': added ? JSON.stringify(index, null, 1) + '\n' : fs.readFileSync(indexPath, 'utf8') };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

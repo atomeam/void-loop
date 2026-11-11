@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1419; --fg:#e7e9ea; --accent:#1d9bf0; --card:#1e2732; --ok:#00ba7c; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); line-height:1.4; }
+header { padding:1rem; text-align:center; border-bottom:1px solid #2f3336; }
+h1 { margin:0; font-size:1.4rem; }
+.sub { opacity:0.7; font-size:0.9rem; }
+main { max-width:720px; margin:0 auto; padding:1rem; display:grid; gap:1rem; }
+.card { background:var(--card); border-radius:12px; padding:1rem; }
+label { display:block; margin:0.6rem 0 0.2rem; font-size:0.85rem; opacity:0.9; }
+input, select { width:100%; padding:0.6rem; border-radius:8px; border:1px solid #38444d; background:#0f1419; color:var(--fg); font-size:1rem; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+.results { font-size:1.1rem; }
+.results strong { color:var(--accent); }
+canvas { width:100%; height:180px; background:#15202b; border-radius:8px; display:block; }
+.actions { display:flex; gap:0.5rem; flex-wrap:wrap; }
+button { background:var(--accent); color:#fff; border:none; padding:0.6rem 1rem; border-radius:999px; font-weight:600; cursor:pointer; }
+button.secondary { background:#38444d; }
+.note { font-size:0.8rem; opacity:0.6; margin-top:0.5rem; }
+.toast { position:fixed; bottom:1rem; left:50%; transform:translateX(-50%); background:var(--ok); color:#000; padding:0.5rem 1rem; border-radius:999px; opacity:0; transition:opacity 0.3s; pointer-events:none; }
+.toast.show { opacity:1; }
+@media (max-width:480px) { .row { grid-template-columns:1fr; } }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Trip fuel cost · Verse lab</title>
+<meta name="description" content="Job: Enter the distance, your vehicle's fuel use and the price.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Trip fuel cost · Verse lab">
+<meta property="og:description" content="Job: Enter the distance, your vehicle's fuel use and the price.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f629-trip-fuel-cost/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f629-trip-fuel-cost/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Trip fuel cost</h1>
+  <div class="sub">Distance, fuel use and price → volume and cost, split per person</div>
+</header>
+<main>
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="dist">Distance</label>
+        <input id="dist" type="number" min="0" step="any" value="320" placeholder="320">
+      </div>
+      <div>
+        <label for="distUnit">Unit</label>
+        <select id="distUnit"><option value="mi">miles</option><option value="km">km</option></select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="eff">Fuel use</label>
+        <input id="eff" type="number" min="0" step="any" value="28" placeholder="28">
+      </div>
+      <div>
+        <label for="effUnit">Unit</label>
+        <select id="effUnit">
+          <option value="mpg">mpg</option>
+          <option value="l100">L/100 km</option>
+          <option value="kml">km/L</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="price">Price</label>
+        <input id="price" type="number" min="0" step="any" value="3.59" placeholder="3.59">
+      </div>
+      <div>
+        <label for="priceUnit">per</label>
+        <select id="priceUnit"><option value="gal">gallon</option><option value="l">liter</option></select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="people">People</label>
+        <input id="people" type="number" min="1" step="1" value="3">
+      </div>
+      <div>
+        <label for="round">Round trip</label>
+        <select id="round"><option value="0">one way</option><option value="1">round trip</option></select>
+      </div>
+    </div>
+    <label for="name">Trip name (optional)</label>
+    <input id="name" type="text" placeholder="Weekend drive">
+  </div>
+  <div class="card">
+    <canvas id="dash" width="640" height="180"></canvas>
+    <div class="results" id="out"></div>
+    <div class="actions">
+      <button id="copy">Copy summary</button>
+      <button id="txt" class="secondary">Download .txt</button>
+      <button id="csv" class="secondary">Download CSV</button>
+    </div>
+    <div class="note">Units use standard factors (1 gal ≈ 3.785 L, 1 mi ≈ 1.609 km). Straight distance only — no elevation or traffic. Numbers stay on this device.</div>
+  </div>
+</main>
+<div class="toast" id="toast">Copied</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

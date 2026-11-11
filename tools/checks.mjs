@@ -19,6 +19,7 @@ import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { makeGate, poolSize, runNode, slowest, fmtMs } from './pool.mjs';
 import { inlineScripts } from './inline-scripts.mjs';
 import { select as selectChanged, changedFiles, readDeps, REACHES_ALL } from './checks-changed.mjs';
+import { discoveredChecks } from './checks-list.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
@@ -58,6 +59,10 @@ const ONLY_WHEN = {
   // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
   'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
   // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
+  // the features /notes/, /translate/ and /calendar/ took from their rivals, in a real browser at desktop and phone width (tools/*-rivals-e2e.mjs)
+  'notes-rivals-e2e.mjs': /void-live-deploy\/(?:notes\/|lib\/(?:notes|note-extras|note-organise)\.js$)|notes-rivals/,
+  'calendar-rivals-e2e.mjs': /void-live-deploy\/(?:calendar\/|lib\/(?:calendar|cal-booking)\.js$)|calendar-rivals/,
+  'translate-rivals-e2e.mjs': /void-live-deploy\/(?:translate\/|functions\/api\/translate\.js$|lib\/translate-[a-z]+\.js$)|translate-rivals/,
   'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy|shape-picture)|skills\/(?:draw|image|shape)\.js)|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
@@ -73,7 +78,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs', 'local-stage-dock.test.mjs', 'notes-rivals-e2e.mjs', 'translate-rivals-e2e.mjs', 'calendar-rivals-e2e.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -88,8 +93,11 @@ const add = (name, fn, browser = false, file) => { jobs.push({ name, fn, browser
 const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slice(0, 2).map((l) => l.slice(0, 300)).join(' || '));
 const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => skipWhy(file) ? add(name, async () => [true, skipWhy(file)], false, file) : add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser, file);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
+const seenCheck = new Set();
 for (const [name, file] of [
   ['walker', 'walker.test.mjs'],
+  ['humble-copy', 'humble-copy.test.mjs'],
+  ['log-only', 'log-only.test.mjs'],
   ['handoff-scan', 'handoff-scan.test.mjs'],
   ['handoff-e2e', 'handoff-e2e.mjs'],
   ['backdrop', 'backdrop.test.mjs'],
@@ -106,6 +114,8 @@ for (const [name, file] of [
   ['wiped-files', 'wiped-files.test.mjs'],
   ['translate', 'translate.test.mjs'],
   ['translate-extras', 'translate-extras.test.mjs'],
+  ['translate-rivals', 'translate-rivals.test.mjs'],
+  ['translate-rivals-page', 'translate-rivals-e2e.mjs'],
   ['parity', 'parity.test.mjs'],
   ['gate-land', 'gate-land.test.mjs'],
   ['recipes', 'recipes.test.mjs'],
@@ -143,6 +153,8 @@ for (const [name, file] of [
   ['job-board', 'job-board.test.mjs'],
   ['lane-pages', 'lane-pages.test.mjs'],
   ['calendar', 'calendar.test.mjs'],
+  ['calendar-rivals', 'calendar-rivals.test.mjs'],
+  ['calendar-rivals-page', 'calendar-rivals-e2e.mjs'],
   ['generators', 'generators.test.mjs'],
   ['listgen', 'listgen.test.mjs'],
   ['image-gen', 'image-gen.test.mjs'],
@@ -159,6 +171,8 @@ for (const [name, file] of [
   ['daily-art', 'daily-art.test.mjs'],
   ['daily-photo', 'daily-photo.test.mjs'],
   ['notes', 'notes.test.mjs'],
+  ['note-organise', 'note-organise.test.mjs'],
+  ['notes-rivals', 'notes-rivals-e2e.mjs'],
   ['chat-notes', 'chat-notes.test.mjs'],
   ['note-extras', 'note-extras.test.mjs'],
   ['chat-calendar', 'chat-calendar.test.mjs'],
@@ -257,6 +271,7 @@ for (const [name, file] of [
   ['rts', 'rts.test.mjs'],
   ['routed', 'routed.test.mjs'],
   ['better', 'better.test.mjs'],
+  ['self model', 'self-model.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
   ['video-gate', 'video-gate.test.mjs'],
   ['shorts-loop', 'shorts-loop.test.mjs'],
@@ -307,6 +322,7 @@ for (const [name, file] of [
   ['autofix', 'automation-fix.test.mjs'],
   ['overrides', 'review-overrides.test.mjs'],
   ['offer', 'review-offer.test.mjs'],
+  ['stage offer', 'stage-offer.test.mjs'],
   ['targets', 'targets.test.mjs'],
   ['releasenotes', 'releasenotes.test.mjs'],
   ['intent', 'intent.test.mjs'],
@@ -492,6 +508,7 @@ for (const [name, file] of [
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['review-decide', 'review-decide.test.mjs'],
+  ['judgment', 'judgment.test.mjs'], // before Verse ships its own change: a free model, the stated goals, and one plain question
   ['outcome-exam', 'outcome-exam.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
   ['baggage-live', 'baggage-live.test.mjs'],
@@ -550,6 +567,7 @@ for (const [name, file] of [
   ['tower-size', 'tower-size.test.mjs'],
   ['history-coverage', 'history-coverage.test.mjs'],
   ['tower-target', 'tower-target.test.mjs'],
+  ['tower-rules', 'tower-rules.test.mjs'], // the tower rules (docs/TOWER-RULES.md): any change to the tower keeps every rule
   ['site-crawl', 'site-crawl.test.mjs'],
   ['emoji-link', 'emoji-link.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
@@ -590,15 +608,21 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['ai-gateway', 'ai-gateway.test.mjs'],
+  ['helper-pr', 'helper-pr.test.mjs'],
   ['systems-monitor', 'systems-monitor.test.mjs'],
   ['system-blueprint', 'system-blueprint.test.mjs'],
   ['client-handoff', 'client-handoff.test.mjs'],
   ['system-handoff', 'system-handoff.test.mjs'],
+  ['proposal-pack', 'proposal-pack.test.mjs'],
   ['monitor-pack', 'monitor-pack.test.mjs'],
   ['verify-pack', 'verify-pack.test.mjs'],
+  ['ownership-map', 'ownership-map.test.mjs'],
+  ['client-status-pack', 'client-status-pack.test.mjs'],
   ['verse-runs', 'verse-runs.test.mjs'],
   ['numbers-proof', 'numbers-proof.test.mjs'],
   ['source-reliability', 'source-reliability.test.mjs'],
+  ['client-intake', 'client-intake.test.mjs'],
   ['guide', 'guide.test.mjs'],
   ['web4', 'web4.test.mjs'],
   ['tome', 'tome.test.mjs'],
@@ -669,6 +693,7 @@ for (const [name, file] of [
   ['gradient', 'gradient.test.mjs'],
   ['wheel', 'wheel.test.mjs'],
   ['prizes', 'prizes.test.mjs'],
+  ['credits', 'credits.test.mjs'],
   ['ledger', 'ledger.test.mjs'],
   ['handoff', 'handoff.test.mjs'],
   ['fakeuser', 'fakeuser.test.mjs'],
@@ -705,7 +730,11 @@ for (const [name, file] of [
   ['open-data bots', 'open-data.test.mjs'],
   ['cross checks', 'cross-checks.test.mjs'],
   ['answer free', 'answer-free.test.mjs'],
+  ['client-handoff', 'client-handoff.test.mjs'],
+  ...discoveredChecks(),
 ]) {
+  if (seenCheck.has(file)) continue;
+  seenCheck.add(file);
   // the load-bench test spawns the real bench, which needs the installed packages (bench.mjs imports playwright-core): with
   // VOID_SKIP_BENCH it runs from a worktree without node_modules (merge-gate.mjs), so it sits out with the bench check above
   if (name === 'bench-load' && process.env.VOID_SKIP_BENCH) add(name, async () => [true, 'skipped: the bench family needs installed packages, not a gate worktree (bench.yml covers a harness change)'], false, file);

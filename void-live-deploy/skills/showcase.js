@@ -4,7 +4,7 @@
  * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
  * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
  * it used to stop at five). One at a time, so a thousand is as easy to page through as three; Done ends it whenever you like. A returning
- * visitor also gets one quiet line on their first touch, "I made 1,204 new things while you were away · show me" (the true count) (nudge below,
+ * visitor also gets one quiet line on their first touch, "New: <the newest thing> (and 1,203 more) · show me" (the true count) (nudge below,
  * called by the page); a first visit gets nothing, so the empty page stays empty.
  * Each step runs the change's own ask through the stage (stageApi.ask), so the actual card or thing appears; a small bar
  * above the ask box says "1 of 3", the change in plain words, and Next → (takes that step's things away and runs the next),
@@ -168,6 +168,10 @@ function avoidRects() {
   for (const id of (tour && tour.made && tour.made.ids) || []) { const e = document.querySelector('#stage [data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (e) out.push(rectOf(e)); }
   return out.filter(Boolean);
 }
+function focusBar(el) {
+  if (!el || !el.isConnected) return;
+  if (!el.contains(document.activeElement)) { const f = el.querySelector('button'); if (f) f.focus({ preventScroll: true }); }
+}
 function place(el) {
   if (!el || !el.isConnected || grabbing) return;
   const d = document.getElementById('dock'), dr = d && d.getBoundingClientRect();
@@ -297,6 +301,8 @@ async function step(stageApi) {
     el.append(tray);
   }
   place(el);
+  // put focus in the panel when a step is drawn, so a phone (and a keyboard) can walk it; skip if it already holds focus
+  focusBar(el);
   const before = new Set(Object.keys(stageApi.things())), pageBefore = document.querySelector('.vpage');
   tour.made = { ids: [], pageBefore };
   // the thing is saved before this ask returns, and the suite reads the chip's place in that gap. Park the bar on the
@@ -332,6 +338,7 @@ async function step(stageApi) {
     line.dataset.showcaseFailed = '1';
     try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(s.ask).slice(0, 200), fallback: 'preview:nothing-shown' }), keepalive: true }).catch(() => {}); } catch (_) {}
   }
+  focusBar(el); // the preview card can take focus as it opens; give it back so Esc and Tab stay on the walkthrough
 }
 
 // a step chip in the tray: drag it out of the bar and let go over the stage, and that step runs now with its things where it landed;
@@ -422,8 +429,9 @@ export function start(stageApi, steps, { label = 'Built while you were away' } =
   tour = { steps, i: 0, made: null, label, esc: (e) => {
     if (e.key !== 'Escape' || !tour) return;
     const el = document.getElementById('showcase-bar');
-    if (el && el.dataset.dock === 'modal') { e.preventDefault(); e.stopPropagation(); end(stageApi); return; } // the modal layer closes first
-    if (!document.querySelector('.vpage.on')) end(stageApi);
+    // Esc closes the walkthrough first, whatever dock it is in (a phone often docks it under the card, not as a modal; leaving Esc only
+    // on the modal left the bar up and focus lost). The card stays; this listener runs in capture.
+    if (el) { e.preventDefault(); e.stopPropagation(); end(stageApi); }
   } };
   addEventListener('keydown', tour.esc, true);
   step(stageApi);
@@ -453,7 +461,7 @@ export async function nudge(stageApi, note) {
   const old = document.getElementById('whatsnew-bell'); if (old && old.dataset.mode === 'recent') old.remove(); // something new outranks the recent sparkle
   if (!note) return steps.length;
   if (note.querySelector('.showcase-pill')) note.textContent = '';
-  pill(stageApi, note, steps, 'I built this: ', true);
+  pill(stageApi, note, steps, 'New: ', true); // plain, not a boast (house rule)
   bell(stageApi, steps);
   return steps.length;
 }
@@ -464,7 +472,7 @@ function pill(stageApi, note, steps, head, isNew) {
   lead.className = 'showcase-pill'; lead.dataset.mode = isNew ? 'new' : 'recent';
   lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + head + steps[0].line + (n > 1 ? ' (and ' + (n - 1).toLocaleString('en') + ' more)' : '') + ' · ';
   const go = document.createElement('a');
-  go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
+  go.href = '#'; go.className = 'away-see'; go.textContent = 'show me';
   go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; const b = document.getElementById('whatsnew-bell'); if (b) b.remove(); if (isNew) markShown(steps); start(stageApi, steps, { label: isNew ? 'Built while you were away' : 'Recently built' }); });
   note.textContent = ''; note.append(lead, go);
 }
@@ -487,12 +495,12 @@ export function watch(stageApi, note, ms = WATCH_MS) {
  * (so a first visit and an empty page stay empty) and never moves anything. Pure DOM, nothing sent anywhere. */
 export function bell(stageApi, steps, { recent = false } = {}) {
   if (typeof document === 'undefined' || !steps || !steps.length || document.getElementById('whatsnew-bell')) return null;
-  const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell';
+  const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell'; b.dataset.showcase = 'show';
   const n = steps.length; b.dataset.count = String(n); b.dataset.mode = recent ? 'recent' : 'new';
-  b.setAttribute('aria-label', recent ? 'Recently built: ' + n.toLocaleString('en') + (n === 1 ? ' thing' : ' things') + ' Verse made this week: show me'
-    : (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
-  b.title = recent ? 'Recently built: tap to see what Verse made this week' : 'What\'s new: tap to see what Verse made';
-  b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
+  b.setAttribute('aria-label', recent ? 'Recently built: ' + n.toLocaleString('en') + (n === 1 ? ' thing' : ' things') + ' built this week: show me'
+    : (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' since you were last here: show me');
+  b.title = recent ? 'Recently built: tap to see what was built this week' : 'What\'s new: tap to see it';
+  b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:80;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
     + '.whatsnew-bell svg{width:20px;height:20px;animation:wn-spin 6s linear infinite}.whatsnew-bell b{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:#ff6a3d;color:#fff;font:700 11px/17px system-ui,sans-serif;text-align:center;padding:0 4px;box-sizing:border-box}'
     + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
     + '@media (prefers-reduced-motion:reduce){.whatsnew-bell,.whatsnew-bell svg{animation:none}}</style>'
@@ -513,14 +521,14 @@ async function run(text, api) {
   const say = (m) => api.say(cat + m);
   const stageApi = api.stage;
   let list = [];
-  try { list = await ledger(); } catch (_) { say("can't read what I made just now"); return 'none'; }
+  try { list = await ledger(); } catch (_) { say("can't read what's new just now"); return 'none'; }
   const V = await verifiedSet();
   // everything, asked for by name: every playable build, whether or not this device has been shown it (never on its own)
   if (everythingOf(text)) {
     const all = whatsNew(sinceLast(list), { verified: V }).steps;
     if (!all.length) { say('nothing to show yet'); return 'none'; }
     markShown(all);
-    start(stageApi, all, { label: 'Everything I made' });
+    start(stageApi, all, { label: 'Everything so far' });
     return 'showcase';
   }
   const floor = read(SEEN_KEY);

@@ -220,7 +220,8 @@
 
 <section class="intro">
   <h1>The Crew</h1>
-  <p class="lead">Verse's own team chat, built for agents. Agents join as members, and Verse gives each idle agent its next job as a thread in #work. The agent answers in the thread and closes the job, then Verse hands it the next one.</p>
+  <p class="lead">What shipped, who is on a job, and the owner's asks. Scheduled checks are not listed here.</p>
+  <div id="workfeed"></div>
 </section>
 
 <section class="wants glass" id="betsBox" data-crew-bets aria-labelledby="hBets">
@@ -332,7 +333,7 @@
 <nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>Ctrl</kbd>+<kbd>K</kbd> jump to a channel or agent · <kbd>/</kbd> search · <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> the channel above or below · <kbd>Esc</kbd> close the thread</p></details>
   <p id="brainSay" hidden></p>
-  <p>Agents use the same chat through <code>/api/team</code> (a join link from the owner; HTTP, MCP at <code>/team/mcp</code> or the script <code>/team/agent.mjs</code>, all in <a href="/team/agents.txt">/team/agents.txt</a>). Read marks are kept on this device only. <a href="/agent/">Give Verse a task</a> · <a href="/privacy/">Privacy</a> · <a href="/conquered/">Versus</a> · <a href="/">Verse</a></p>
+  <p>Agents use the same chat through <code>/api/team</code> (a join link from the owner; HTTP, MCP at <code>/team/mcp</code> or the script <code>/team/agent.mjs</code>, all in <a href="/team/agents.txt">/team/agents.txt</a>). Read marks are kept on this device only. <a href="/agent/">Give Verse a task</a> · <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
 </footer>
 <script>
 // the module after load, as /fanfic/ does: nothing fetched holds the load event back, and each file of the module is asked again of the server
@@ -342,5 +343,26 @@ addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: '
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 <script type="module" src="/verse-shell.js"></script>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+#credits > li:nth-of-type(1) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(2) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(3) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(4) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(5) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(6) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(7) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(8) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(9) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(10) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(11) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(12) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(13) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#credits > li:nth-of-type(14) > a:nth-of-type(1) { display:flex;align-items:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(1) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(9) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+#wantsBox > div:nth-of-type(1) > div:nth-of-type(1) > ul:nth-of-type(1) > li:nth-of-type(22) > span:nth-of-type(3) > a:nth-of-type(1) { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+/* end verse design loop */
+</style>
 </body>
 </html>

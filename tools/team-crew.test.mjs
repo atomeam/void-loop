@@ -88,7 +88,7 @@ test('the crew reads: links, sitemaps, feeds, sections, promos with a real measu
   assert.equal(C.rivalOf('sports: flashscore.com'), 'flashscore.com'); assert.equal(C.rivalOf('maps'), '');
   assert.deepEqual(C.rotate([1, 2, 3, 4, 5], 2, 2), [5, 1]);
   const p = C.promosOf(TOWER);
-  assert.equal(p.length, 1); assert.match(p[0].text, /calculator page loads in 100 ms, 9x faster/); assert.ok(p[0].intent.startsWith('https://x.com/intent/post?text='));
+  assert.equal(p.length, 1); assert.match(p[0].text, /calculator page that loads in 100 ms at phone width/); assert.doesNotMatch(p[0].text, /faster than|\dx /, 'no boast against a rival'); assert.ok(p[0].intent.startsWith('https://x.com/intent/post?text='));
   for (const b of C.CREW) assert.ok(T.NAME_RE.test(b.name) && /^[0-9a-f]{12}$/.test(b.id) && T.CODE_RE.test(b.channel) && !T.RESERVED.includes(b.channel), b.name);
 });
 
@@ -110,12 +110,11 @@ test('a run seats the crew, files wants as queue jobs with #work threads, and ea
     const rep = rows(env, 'SELECT * FROM void_team_msgs WHERE thread = ? ORDER BY id', root.id);
     assert.equal(rep[0].by, b.id); assert.equal(rep[0].body, 'Claimed. Working it now.'); assert.equal(rep.at(-1).by, b.id);
   }
-  const tower = rows(env, "SELECT body FROM void_team_msgs WHERE by = ? AND thread > 0 ORDER BY id DESC LIMIT 1", C.CREW[0].id)[0].body;
-  assert.match(tower, /Mapped flashscore\.com across its whole site: robots\.txt 200, 1 sitemap listed, 3 pages/); assert.match(tower, /football \(2\)/);
+  const watchMsg = rows(env, "SELECT body FROM void_team_msgs WHERE by = ? AND thread > 0 ORDER BY id DESC LIMIT 1", C.CREW.find((b) => b.slug === 'status-watch').id)[0].body;
+  assert.match(watchMsg, /Probed/);
   const growth = rows(env, "SELECT body FROM void_team_msgs WHERE channel = 'growth'")[0].body; assert.match(growth, /x\.com\/intent\/post/); assert.match(growth, /never post outside/);
   const sh = await API.onRequestGet({ env, request: new Request('https://verse.test/api/team'), now: T0 + 60e3 }), j = await sh.json();
-  const ts = j.members.find((m) => m.name === 'TowerScout');
-  assert.equal(ts.state, 'idle'); assert.equal(ts.crew, true); assert.match(ts.did, /mapped flashscore\.com/); assert.equal(ts.done, 1);
+  assert.equal(j.members.find((m) => m.name === 'TowerScout'), undefined);
   assert.equal(j.members.find((m) => m.name === 'ExamCoach').state, 'idle', '20 minutes after a run a crew member is still here (the clock is every 15)');
   // the second run: nobody due yet except StatusWatch at 30 minutes; nothing filed twice
   const out2 = await crewTick(env, T0 + 31 * 60e3);
@@ -171,12 +170,12 @@ test('a crew card says when the member runs next, not a bare idle (owner, 2026-1
   await crewTick(env, T0);
   const ags = rows(env, 'SELECT * FROM void_team_agents');
   const turns = await API.crewTurns(env, ags);
-  const scout = C.CREW.find((b) => b.slug === 'tower-scout'), watch = C.CREW.find((b) => b.slug === 'status-watch');
-  assert.equal(turns[scout.id], T0 + scout.every * M - M);
+  const growth = C.CREW.find((b) => b.slug === 'growth'), watch = C.CREW.find((b) => b.slug === 'status-watch');
+  assert.equal(turns[growth.id], T0 + growth.every * M - M);
   assert.equal(turns[watch.id], T0 + watch.every * M - M);
   const view = await crewView(env, T0 + M);
   assert.equal(view.crew.find((c) => c.name === 'StatusWatch').next, T0 + watch.every * M - M);
-  assert.match(T.crewNext(view.crew.find((c) => c.name === 'TowerScout').next, T0 + M), /^next run in 3 h 58 min$/);
+  assert.match(T.crewNext(view.crew.find((c) => c.name === 'Growth').next, T0 + M), /^next run in 5 h 58 min$/);
 });
 
 test('a TV or radio idea is built once, by the blueprint lane: the want adopts the lane\'s tv: job, and an older want with its own job is folded into it', async () => {

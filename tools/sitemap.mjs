@@ -38,6 +38,7 @@ const KEPT = [
   ['/films/', 'weekly', '0.6', [D + 'films/index.html']],
   ['/podcast/', 'weekly', '0.6', [D + 'podcast/index.html']],
   ['/progress/', 'daily', '0.6', [D + 'progress/index.html', D + 'exam/latest.json']],
+  ['/self/', 'daily', '0.6', [D + 'self/index.html', D + 'lib/self-model.js']],
   ['/under-the-hood/', 'weekly', '0.5', [D + 'under-the-hood/index.html', D + 'under-the-hood/app.js']],
   ['/obituaries/', 'weekly', '0.7', [D + 'obituaries/index.html']],
   ['/markets/screener/', 'weekly', '0.7', [D + 'markets/screener/index.html']],
@@ -84,7 +85,7 @@ export function pages({ tools = TOOLS, fixPages = [], days = DAYS, lab = [], flo
   const out = [{ loc: '/', changefreq: 'daily', priority: '1.0', files: [D + 'index.html'] }];
   for (const p of Object.keys(tools)) out.push({ loc: p, changefreq: 'weekly', priority: '0.9', files: [D + p.slice(1) + 'index.html'] });
   for (const p of PHOTO_PAGES) out.push({ loc: '/photos/' + p.slug + '/', changefreq: 'weekly', priority: '0.8', files: [D + 'photos/' + p.slug + '/index.html'] }); // the photos lane's own pages (tools/photos-pages.mjs)
-  out.push({ loc: '/conquered/', changefreq: 'daily', priority: '0.8', files: [D + 'conquered/index.html', D + 'tower.frontier.json'] });
+  out.push({ loc: '/rival/', changefreq: 'daily', priority: '0.6', files: [D + 'rival/index.html', D + 'rivals/index.json'] }); // every rival on the tower: its history, features and what Verse lacks (tools/rival-pages.mjs)
   out.push({ loc: '/assimilated/', changefreq: 'daily', priority: '0.6', files: [D + 'assimilated/index.html', D + 'assimilated.json'] }); // every site Versus took on (tools/assimilated.mjs), linked from /conquered/
   out.push({ loc: '/compare/', changefreq: 'daily', priority: '0.6', files: [D + 'compare/index.html', D + 'tower.frontier.json'] });
   for (const [loc, changefreq, priority, files] of KEPT) out.push({ loc, changefreq, priority, files });

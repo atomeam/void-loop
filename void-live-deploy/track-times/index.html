@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="vs-tool">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Track times · Verse</title>
+<meta name="description" content="A timed track list you can read, move through, copy, and replace with your own. Totals included. The link keeps the list.">
+<link rel="stylesheet" href="/verse.css">
+<link rel="stylesheet" href="/versus/layout.css">
+<link rel="canonical" href="https://a-to-mind.com/track-times/">
+<meta property="og:title" content="Track times · Verse">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+</head>
+<body>
+<main>
+  <h1>Track times</h1>
+  <p>Each line is a start time and a title, and a length if you know it. The total is the last start plus the last length. Copy the list, or replace it.</p>
+  <form method="get" action="/track-times/">
+    <label for="list">Tracks</label>
+    <textarea id="list" name="list" spellcheck="false">0:00 21st Century Schizoid Man 7:24
+7:24 I Talk to the Wind 6:05
+13:29 Epitaph 8:47
+22:16 Moonchild 12:13
+34:29 The Court of the Crimson King 9:25</textarea>
+    <div class="row"><button type="submit">Lay it out</button><button type="button" id="copy">Copy</button></div>
+  </form>
+  <p id="total">5 tracks, 43:54 in all</p>
+  <pre class="list" id="out" tabindex="0" aria-label="Track list">0:00	21st Century Schizoid Man	7:24
+7:24	I Talk to the Wind	6:05
+13:29	Epitaph	8:47
+22:16	Moonchild	12:13
+34:29	The Court of the Crimson King	9:25</pre>
+  <p>Listening elsewhere on Verse: <a href="/podcast/">Out Loud</a>, <a href="/rap/">a rap</a>, <a href="/versus/">Versus</a>.</p>
+  <section class="history">
+    <h2>The original site</h2>
+    <p>"Tsundere" has a published meaning: a character who is cold and then warm. A <a href="https://web.archive.org/web/20180701000000/https://tsundere.pw/">2018 saved copy</a> of tsundere.pw was an internet-radio and links page. The later <a href="https://tsundere.pw/">live page</a> showed King Crimson's <a href="https://en.wikipedia.org/wiki/In_the_Court_of_the_Crimson_King">In the Court of the Crimson King</a> as start times. The 1969 LP timings used above are the ones on that Wikipedia article (side one 22:16, side two 21:38, 43:54 in all). The site does not say who picked the name or why, so this page does not guess.</p>
+  </section>
+</main>
+<script type="module" src="/track-times/app.js"></script>
+<script type="module" src="/verse-shell.js"></script>
+</body>
+</html>

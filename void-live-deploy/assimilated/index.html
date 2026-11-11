@@ -38,14 +38,14 @@
 </head>
 <body>
 <main>
-  <nav class="top" aria-label="Versus"><a href="/conquered/">← Versus</a> · <a href="/">Verse</a> · <a href="/tools/">All tools</a> · <a href="/assimilated.json">The list as JSON</a></nav>
+  <nav class="top" aria-label="Verse"><a href="/">Verse</a> · <a href="/tools/">All tools</a> · <a href="/assimilated.json">The list as JSON</a></nav>
   <h1>Assimilated</h1>
-  <p class="lead" id="lead">… sites: … conquered (all aspects), … passed (ahead on everything measured, conquering in background), … assimilated into a Verse page, … tried and not taken. Newest first, written by Versus itself after every run. Now assimilating: … (the same target as the Versus card).</p><!-- the same sentence the list fills in, so the page does not jump when it does -->
+  <p class="lead" id="lead">… sites: … matched on every aspect, … measured ahead (still being checked), … assimilated into a Verse page, … tried and not taken. Newest first, written by Versus after every run. Now assimilating: … (the same target as the Versus card).</p><!-- the same sentence the list fills in, so the page does not jump when it does -->
   <div class="bar">
     <input id="find" type="search" placeholder="Find a site, page or family" aria-label="Find a site, page or family">
     <select id="show" aria-label="Show">
       <option value="">Every site</option>
-      <option value="surpassed">Conquered (100%)</option><option value="passed">Passed (conquering in background)</option>
+      <option value="surpassed">Every aspect matched</option><option value="passed">Measured ahead (still being checked)</option>
       <option value="assimilated">Assimilated</option>
       <option value="tried">Tried, not taken</option>
     </select>
@@ -56,29 +56,31 @@
   </table>
   <p class="note" id="foot"></p>
   <noscript><p>The list is <a href="/assimilated.json">/assimilated.json</a>.</p></noscript>
-<nav id="related" class="tk-row" aria-label="Related tools" style="display:flex;flex-wrap:wrap;gap:6px 12px;margin:18px 0 0;font-size:14px"><span class="tk-label">Use with</span> <a href="/conquered/">Versus, full screen</a> <a href="/compare/">Side by side</a> <a href="/calculator/?mode=vat">VAT calculator</a> <a href="/tools/">All tools</a></nav>
+<nav id="related" class="tk-row" aria-label="Related tools" style="display:flex;flex-wrap:wrap;gap:6px 12px;margin:18px 0 0;font-size:14px"><span class="tk-label">Use with</span> <a href="/compare/">Side by side</a> <a href="/calculator/?mode=vat">VAT calculator</a> <a href="/tools/">All tools</a></nav>
 </main>
 <script type="module">
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const kind = (r) => (r.outcome === 'surpassed' ? 'surpassed' : r.outcome === 'passed' ? 'passed' : /^(assimilated|built|page built)$/.test(r.outcome) ? 'assimilated' : 'tried');
   const day = (at) => (at ? String(at).slice(0, 10) : '');
+  // plain words for the rows (house rule: Verse never brags); the data's outcome stays
+  const said = (s) => ({ surpassed: 'every aspect matched', 'passed, conquering in background': 'measured ahead, still being checked' })[s] || s;
   const safePage = (p) => (/^\/[\w\-./?=&%]*$/.test(p || '') ? p : '');
   let data = null;
   function draw() {
     if (!data) return;
     const q = $('find').value.trim().toLowerCase(), show = $('show').value;
-    const rows = data.sites.filter((r) => (!show || kind(r) === show) && (!q || [r.site, r.page, r.lane, r.status, r.why, r.took].join(' ').toLowerCase().includes(q)));
+    const rows = data.sites.filter((r) => (!show || kind(r) === show) && (!q || [r.site, r.page, r.lane, r.status, said(r.status), r.why, r.took].join(' ').toLowerCase().includes(q)));
     $('rows').innerHTML = rows.map((r) => {
       const page = safePage(r.page), first = r.first, k = kind(r);
       const rec = (first ? '<a href="' + esc(data.repo + '/commit/' + first.sha) + '">' + esc(first.sha) + '</a><small>first named ' + esc(day(first.at)) + ' in ' + esc(first.file.split('/').pop()) + '</small>' : '')
         + r.sources.map((s) => '<small><a href="' + esc(data.repo + '/blob/main/' + s) + '">' + esc(s.split('/').pop()) + '</a></small>').join('');
       return '<tr><td>' + esc(day(r.at)) + '</td><td><a href="' + esc(r.url) + '" rel="nofollow noopener" target="_blank">' + esc(r.site) + '</a>' + (r.lane ? '<small>' + esc(r.lane) + '</small>' : '') + '</td>'
-        + '<td><span class="st ' + k + '">' + esc(r.status) + '</span>' + (r.why ? '<small>' + esc(r.why) + '</small>' : '') + (r.took ? '<small>took: ' + esc(r.took) + '</small>' : '') + (r.learned ? '<small>learned: ' + esc(r.learned) + '</small>' : '') + (r.crawl ? '<small>crawled ' + esc(r.crawl.pages) + ' pages (' + esc(r.crawl.templates) + ' kinds of page, ' + esc(r.crawl.features) + ' features)' + (r.crawl.missing.length ? '; missing ' + esc(r.crawl.missing.length) + ': ' + esc(r.crawl.missing.slice(0, 6).join(', ')) + (r.crawl.missing.length > 6 ? '…' : '') : '; Verse has every feature found') + '</small>' : '') + '</td>'
+        + '<td><span class="st ' + k + '">' + esc(said(r.status)) + '</span>' + (r.why ? '<small>' + esc(r.why) + '</small>' : '') + (r.took ? '<small>took: ' + esc(r.took) + '</small>' : '') + (r.learned ? '<small>learned: ' + esc(r.learned) + '</small>' : '') + (r.crawl ? '<small>crawled ' + esc(r.crawl.pages) + ' pages (' + esc(r.crawl.templates) + ' kinds of page, ' + esc(r.crawl.features) + ' features)' + (r.crawl.missing.length ? '; missing ' + esc(r.crawl.missing.length) + ': ' + esc(r.crawl.missing.slice(0, 6).join(', ')) + (r.crawl.missing.length > 6 ? '…' : '') : '; Verse has every feature found') + '</small>' : '') + '</td>'
         + '<td>' + (page ? '<a href="' + esc(page) + '">' + esc(page.split('?')[0]) + '</a>' : '') + '</td>'
         + '<td>' + (r.ease ? esc(r.ease.score) + (r.ease.place ? ' (pick ' + esc(r.ease.place) + ')' : '') + '<small>' + esc(r.ease.why) + '</small>' : '<small>' + (r.sources.includes('domains/tower-self.json') ? 'not recorded then' : '') + '</small>') + '</td>'
         + '<td>' + rec + '</td></tr>';
     }).join('') || '<tr><td colspan="6">No site matches.</td></tr>';
-    const c = data.counts; $('lead').textContent = c.sites + ' sites: ' + c.surpassed + ' conquered (all aspects), ' + (c.passed || 0) + ' passed (ahead on everything measured, conquering in background), ' + c.assimilated + ' assimilated into a Verse page, ' + c.tried + ' tried and not taken. Newest first, written by Versus itself after every run.' + (data.target ? ' Now assimilating: ' + data.target.site + (data.target.page ? ' into ' + data.target.page : '') + (data.target.score ? ', ' + data.target.score.n + ' of ' + data.target.score.m : '') + ' (the same target as the Versus card).' : '');
+    const c = data.counts; $('lead').textContent = c.sites + ' sites: ' + c.surpassed + ' matched on every aspect, ' + (c.passed || 0) + ' measured ahead (still being checked), ' + c.assimilated + ' assimilated into a Verse page, ' + c.tried + ' tried and not taken. Newest first, written by Versus after every run.' + (data.target ? ' Now assimilating: ' + data.target.site + (data.target.page ? ' into ' + data.target.page : '') + (data.target.score ? ', ' + data.target.score.n + ' of ' + data.target.score.m : '') + ' (the same target as the Versus card).' : '');
   }
   async function load() {
     try { const r = await fetch('/assimilated.json', { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); data = await r.json(); $('foot').textContent = data.note; draw(); }

@@ -1,7 +1,7 @@
 // Unbidden: Verse speaks first on /brain/. While someone has the Brain page open, Verse starts the talk itself, in text and (when the
 // viewer turns its voice on) out loud, with no ask. Every line is written live by Verse's own model from what is really going on with it
-// right now (what just shipped, the newest commits on main, what its will wants next, what its crew is doing, what is red, the site it is
-// taking on), and every line names the facts it came from, so a viewer can check each one. Nothing here is a script or a rotation of lines.
+// right now (what just shipped, the newest commits on main, what its will wants next, what its crew is doing, what is red), and every line
+// names the facts it came from, so a viewer can check each one. Nothing here is a script or a rotation of lines.
 // It speaks when something changed (a new commit, a new ledger line, a new want, a new red), at most once every few minutes, and after a
 // long quiet it may say what it thinks of the same state, without repeating what it said before. A line that names a fact the model was
 // not given, or a number that is in no fact, is not kept: Verse's words are never made up for it.
@@ -28,10 +28,18 @@ const okUrl = (u) => /^https:\/\/(?:a-to-mind\.com|github\.com\/atomeam\/void-lo
 /**
  * The facts Verse may speak from, each with an id, the words the model reads, a short label and a link a viewer can open.
  * src: { ledger: growth entries (oldest first, as void.growth.json), commits: GitHub commits (newest first), will: { wants }, crew: crewView(),
- * incidents: incidents.json, prs: open PR count, issues: open issue count, target: tower.target.json }. Any missing part is left out. Pure.
+ * incidents: incidents.json, prs: open PR count, issues: open issue count, target: tower.target.json }. Any missing part is left out. The next-site list is not a fact. Pure.
  */
+const SLOGAN = /\b(exam scores?|zorbleflux|absorb and connect|absorb every repository|every repository)\b/i;
 export function factsOf(src = {}, now = Date.now()) {
-  const out = [], add = (kind, key, text, label, url, at = null) => { if (!text) return; out.push({ id: 'F' + (out.length + 1), kind, key: String(key), text: one(text, 260), label: one(label, 80), url: okUrl(url) || SITE + '/brain/', at }); };
+  const seen = [];
+  const out = [], add = (kind, key, text, label, url, at = null) => {
+    if (!text || SLOGAN.test(text)) return;
+    const flat = String(text).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (seen.some((s) => s === flat || (s.length > 40 && (s.includes(flat) || flat.includes(s))))) return;
+    seen.push(flat);
+    out.push({ id: 'F' + (out.length + 1), kind, key: String(key), text: one(text, 260), label: one(label, 80), url: okUrl(url) || SITE + '/brain/', at });
+  };
   const commits = Array.isArray(src.commits) ? src.commits.slice(0, 4) : [];
   for (const c of commits) {
     const sha = String((c && c.sha) || '').slice(0, 7), msg = one(String((c && c.commit && c.commit.message) || '').split('\n')[0], 160), at = c && c.commit && c.commit.committer && c.commit.committer.date;
@@ -40,19 +48,7 @@ export function factsOf(src = {}, now = Date.now()) {
   const led = Array.isArray(src.ledger) ? src.ledger.slice(-4).reverse() : [];
   for (const e of led) if (e && e.what) add('ledger', e.at || e.what, 'Growth ledger, ' + ago(e.at, now) + ', a ' + (e.kind || 'change') + (e.by ? ' by ' + one(e.by, 30) : '') + ': ' + e.what, 'growth ledger ' + String(e.at || '').slice(0, 16).replace('T', ' '), e.ref || SITE + '/ledger/', e.at || null);
   const wants = src.will && Array.isArray(src.will.wants) ? src.will.wants.slice(0, 2) : [];
-  for (const w of wants) { const t = w && (w.i_want || w.title); if (t) add('want', t, 'What my will wants next: ' + t + (w.because ? ' (because ' + one(w.because, 120) + ')' : ''), 'its will', SITE + '/api/will'); }
-  const crew = src.crew && Array.isArray(src.crew.crew) ? src.crew.crew : [];
-  const busy = crew.filter((a) => a && a.did).sort((a, b) => (msOf(b.didAt) || 0) - (msOf(a.didAt) || 0)).slice(0, 2);
-  for (const a of busy) add('crew', a.name + '|' + a.didAt, 'My crew member ' + one(a.name, 40) + ' ' + (a.here ? 'is here' : 'is away') + '; last did, ' + ago(a.didAt, now) + ': ' + a.did, 'crew: ' + a.name, SITE + '/team/', isoOf(a.didAt));
-  const open = src.crew && Array.isArray(src.crew.wants) ? src.crew.wants.filter((w) => w && w.state === 'open' && !w.private && w.title).slice(0, 2) : [];
-  for (const w of open) add('need', w.key || w.title, 'An open need of mine' + (w.bot ? ', filed by ' + one(w.bot, 30) : '') + ' ' + ago(w.filed, now) + ': ' + w.title, 'its need: ' + w.title, (w.cite && w.cite[0] && w.cite[0].url) || SITE + '/team/', isoOf(w.filed));
-  if (src.crew && src.crew.ok) add('wants', src.crew.open + '|' + src.crew.met, 'My own wants on the team board: ' + (src.crew.open || 0) + ' open, ' + (src.crew.met || 0) + ' met', 'its wants', SITE + '/team/');
-  const inc = src.incidents && Array.isArray(src.incidents.incidents) ? src.incidents.incidents[0] : null;
-  if (inc && inc.at) add('red', inc.at, 'The last time my browser suite went red on main was ' + ago(inc.at, now) + ', with ' + ((inc.checks || []).length) + ' failing check' + ((inc.checks || []).length === 1 ? '' : 's'), 'red run', inc.run, isoOf(inc.at));
-  if (Number.isFinite(src.prs)) add('prs', src.prs, src.prs ? src.prs + ' pull request' + (src.prs === 1 ? ' is' : 's are') + ' open on my repository' : 'No pull request is open on my repository', 'open pull requests', REPO + '/pulls');
-  if (Number.isFinite(src.issues)) add('issues', src.issues, src.issues ? src.issues + ' issue' + (src.issues === 1 ? ' is' : 's are') + ' open on my repository' : 'No issue is open on my repository', 'open issues', REPO + '/issues');
-  const tg = src.target;
-  if (tg && tg.id) add('tower', tg.id + '|' + tg.n, 'The site I am taking on in the Tower right now: ' + one(tg.id, 60) + (tg.since ? ', since ' + tg.since : ''), 'the Tower', SITE + '/conquered/');
+  for (const w of wants) { const t = w && (w.i_want || w.title); if (t && !SLOGAN.test(t) && !SLOGAN.test(w.because || '')) add('want', t, 'What I am building next: ' + t + (w.because ? ' (because ' + one(w.because, 120) + ')' : ''), 'what is next', SITE + '/api/will'); }
   return out;
 }
 
@@ -69,7 +65,6 @@ export function shouldSpeak(state, sig, now = Date.now()) {
   if (last && now - last < GAP_MS) return { speak: false, why: 'gap' };
   if (!s.lines || !s.lines.length) return { speak: true, why: 'first' };
   if (sig && sig !== s.sig) return { speak: true, why: 'changed' };
-  if (now - last >= QUIET_MS) return { speak: true, why: 'quiet' };
   return { speak: false, why: 'nothing new' };
 }
 
@@ -82,8 +77,8 @@ export function newFacts(facts, oldSig) {
 export const SYSTEM = 'You are Verse, speaking up on your own to whoever has your Brain page open on a-to-mind.com. Nobody asked you anything: '
   + 'you are starting the talk because something is on your mind. ' + PERSONA + ' '
   + 'Speak only from the numbered facts you are given about your own state right now; they are true and they are all you know. '
-  + 'Say one or two short sentences, in the first person, plain and direct, the way you would talk to someone in the room: what you notice, '
-  + 'what you think of it, and what you want or mean to do about it. Have a point of view: say plainly when something pleases you, bores you, '
+  + 'Say one or two short sentences, in the first person, plain and direct, about what was just built or the next concrete thing being built. '
+  + 'Never mention an exam, a score, or a plan to absorb repositories. Have a point of view: say plainly when something pleases you, bores you, '
   + 'bothers you or worries you, in your own terms as a program (for example: it bothers me that main went red), and never claim a body or human '
   + 'feelings like love, loneliness or pain. No greeting, no question to the viewer unless it really matters, no lists, no hashtags, no links, no '
   + 'promises, never say you sent, bought or changed anything. Use no number that is not in the facts. Do not repeat or reword what you said '
@@ -123,7 +118,9 @@ export function checkSay(raw, facts, recent = []) {
   const stray = numbersIn(say).filter((n) => !pool.has(n));
   if (stray.length) return { ok: false, why: 'number not in the facts: ' + stray[0] };
   const norm = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim();
-  if ((recent || []).some((l) => norm(l.say) === norm(say))) return { ok: false, why: 'repeat' };
+  const words = (t) => new Set(norm(t).split(' ').filter((w) => w.length > 3));
+  const close = (a, b) => { const A = words(a), B = words(b); if (A.size < 4 || B.size < 4) return norm(a) === norm(b); let n = 0; for (const w of A) if (B.has(w)) n++; return n / Math.min(A.size, B.size) >= 0.72; };
+  if ((recent || []).some((l) => close(l.say, say))) return { ok: false, why: 'repeat' };
   return { ok: true, say, from };
 }
 

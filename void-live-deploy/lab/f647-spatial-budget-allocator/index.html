@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root { --bg:#0f1115; --fg:#e8e8e8; --acc:#4ade80; --warn:#f87171; --muted:#888; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--fg); padding:16px; max-width:720px; margin-inline:auto; }
+h1 { font-size:1.4rem; margin:0 0 8px; }
+p.job { color:var(--muted); margin:0 0 16px; font-size:0.95rem; }
+label { display:block; margin:12px 0 4px; font-weight:600; }
+input, button { font:inherit; padding:8px 10px; border-radius:6px; border:1px solid #333; background:#1a1d24; color:var(--fg); }
+input[type=number] { width:140px; }
+.row { display:flex; gap:8px; align-items:center; margin:6px 0; }
+.row input[type=text] { flex:1; }
+.row button { background:#333; }
+#bars { margin:16px 0; }
+.bar-row { display:flex; align-items:center; gap:8px; margin:8px 0; }
+.bar-track { flex:1; height:28px; background:#222; border-radius:4px; position:relative; overflow:hidden; }
+.bar-fill { height:100%; background:var(--acc); width:0%; transition:width .15s; position:relative; }
+.bar-fill.over { background:var(--warn); }
+.handle { position:absolute; right:0; top:0; width:12px; height:100%; background:#fff3; cursor:ew-resize; touch-action:none; }
+.bar-label { min-width:100px; font-size:0.9rem; }
+.bar-amt { min-width:70px; text-align:right; font-variant-numeric:tabular-nums; }
+.totals { background:#1a1d24; padding:12px; border-radius:8px; margin:12px 0; }
+.totals .remain { font-size:1.3rem; font-weight:700; }
+.remain.neg { color:var(--warn); }
+.actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+button.primary { background:var(--acc); color:#000; border:none; font-weight:600; }
+.note { font-size:0.8rem; color:var(--muted); margin-top:8px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Monthly budget allocator · Verse lab</title>
+<meta name="description" content="Job: Enter your monthly income and list of expense categories with amounts.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Monthly budget allocator · Verse lab">
+<meta property="og:description" content="Job: Enter your monthly income and list of expense categories with amounts.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f647-spatial-budget-allocator/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f647-spatial-budget-allocator/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>Monthly budget allocator</h1>
+<p class="job">Enter income and categories. Drag the right edge of any bar to reallocate. Remaining updates live. Everything stays on this device.</p>
+
+<label>Monthly take-home income</label>
+<div class="row">
+  <input type="number" id="income" min="0" step="0.01" placeholder="4000" value="4000">
+  <span>currency units</span>
+</div>
+
+<label>Categories</label>
+<div id="cats"></div>
+<button id="add">+ Add category</button>
+
+<div class="totals">
+  <div>Spent: <span id="spent">0</span></div>
+  <div class="remain" id="remain">Remaining: 0</div>
+  <div id="pct"></div>
+</div>
+
+<div id="bars"></div>
+
+<div class="actions">
+  <button class="primary" id="copy">Copy summary</button>
+  <button id="csv">Download CSV</button>
+  <button id="clear">Clear all</button>
+</div>
+<p class="note">Honest: this is a planning tool only. Numbers are what you type. Drag handles to rebalance; remaining cannot go negative unless you force over-budget. Share link copies the current budget.</p>
+<p class="note" id="status"></p>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
