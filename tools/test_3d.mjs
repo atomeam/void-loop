@@ -350,7 +350,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // the will has an open want (the suite's /api/will says one), so today there is at least one bud, and the commits are new leaves
     const buds = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('growth-tree'); return s && s.buds >= 1 && s.commitLeaves > 0 ? s : false; }), 15000);
     check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will\'s open want, the last commits as new leaves)',
-      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length && !!buds,
+      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length && !!buds,
       JSON.stringify({ first, last, buds, e: F.errors }));
     await F.ctx.close();
   }

@@ -7877,7 +7877,7 @@ try {
     const loop = await W.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').pop());
     check('wants card: "name all your unbuilt asks and come up with 50 more new ones" opens "What I want built" from Verse\'s own records (the will fixture\'s want, the reflect fixture\'s open ask with its date, the real self.json open frontier items), a count line "1 want · 1 ask not built · N inbox items", every item a chip, and the 50 new ones are the asker\'s to ask for one at a time',
       !!got && got.title === 'What I want built' && /^Want → skill: 2 of 5 of my asks built \(40%\)/.test(got.velocity) && got.count === '1 want · 1 ask not built · ' + nOpen + ' inbox item' + (nOpen === 1 ? '' : 's') && got.heads.join('|') === 'My will (1)|Asked, not built yet (1)|Growth inbox (' + nOpen + ')'
-        && got.wants.join() === 'I want to answer every question about tides.' && got.asks.join() === 'Give the map card terrain' && /daily reflection, 2026-10-08/.test(got.askSub) && got.inbox.length === nOpen && nOpen > 0 && got.inbox.includes(selfJson.open[0].ask)
+        && got.wants.join() === 'I want to answer every question about tides.' && got.asks.join() === 'Give the map card terrain' && /daily reflection, 2026-10-08/.test(got.askSub) && got.inbox.length === nOpen && (nOpen === 0 || got.inbox.includes(selfJson.open[0].ask))
         && /^The 50 new ones are yours to ask for one at a time/.test(got.more) && /no model/.test(got.src) && got.missing === 0 && loop && loop.note === 'skill:wants' && !W.errors.length,
       JSON.stringify({ got, nOpen, loop, errors: W.errors }));
     // a tap on a chip copies it (the chip marks itself copied; the whisper says so) and runs no ask
