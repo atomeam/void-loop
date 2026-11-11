@@ -1,0 +1,69 @@
+# Free-agent clock: hourly, UTC midnight, 07:02 and 08:02 UTC, and the 1st. Status codes only, never a key.
+name: Recruit free agents
+
+on:
+  schedule:
+    - cron: '5 * * * *'
+    - cron: '2 0 * * *'
+    - cron: '2 7 * * *'
+    - cron: '2 8 * * *'
+    - cron: '2 0 1 * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: Backup only. The schedule does not read this and does not wait on it.
+        type: string
+        default: ''
+concurrency:
+  group: recruit-clock
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  clock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/recruit
+          key: recruit-state-${{ github.run_id }}
+          restore-keys: recruit-state-
+      - name: One free source, the next visitor board
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          RECRUIT_STATE: ${{ runner.temp }}/recruit/state.json
+        run: |
+          mkdir -p "$RUNNER_TEMP/recruit"
+          node tools/recruit.mjs --once --state "$RECRUIT_STATE" --replies "$RUNNER_TEMP/recruit/replies.json"
+      - name: Keep the quota state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/recruit
+          key: recruit-state-${{ github.run_id }}
+      - name: Open a helper branch when the board changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -s "$RUNNER_TEMP/recruit/publish" ]; then echo "nothing checked; a model page is not published"; exit 0; fi
+          git add --pathspec-from-file="$RUNNER_TEMP/recruit/publish"
+          git diff --cached --quiet && echo "nothing to publish" && exit 0
+          git config user.name "verse-recruit"
+          git config user.email "verse-recruit@users.noreply.github.com"
+          git commit -m "Apply a checked test fix from a free model"
+          branch="helper/recruit-run-${GITHUB_RUN_ID}"
+          git push origin "HEAD:$branch"

@@ -1,10 +1,10 @@
 {
- "as_of": "2026-11-09T22:27:31.070Z",
+ "as_of": "2026-11-10T19:48:58.974Z",
  "address": "0x172198B605c3A6388fc4265b09Bc9b3b71CC7196",
  "network": "Base",
  "asset": "USDC",
  "contract": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
- "read_to_block": 55364377,
+ "read_to_block": 55748817,
  "balance_units": "0",
  "balance_cents": 0,
  "transfers_in": 0,
@@ -12,6 +12,6 @@
  "received_cents": 0,
  "rule": "Every row is a USDC transfer into the wallet that the chain shows (eth_getLogs on Base). Nothing is estimated, and nothing here was claimed or signed.",
  "incoming": [],
- "gap": "blocks 54851417 to 55061976 were not read (more than a week since the last read)",
+ "gap": "blocks 55364378 to 55446416 were not read (more than a week since the last read)",
  "rpc": "base-rpc.publicnode.com"
 }

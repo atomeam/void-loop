@@ -172,6 +172,13 @@ addEventListener('hashchange', route);
 async function shell() {
   const r = await api(''); if (!r.ok) return r;
   S.shell = r;
+  const box = document.getElementById('workfeed');
+  if (box) {
+    const asks = (r.asks || []).map((a) => '<li><b>' + esc(a.state) + '</b> · ' + esc(a.title) + '</li>').join('');
+    const who = (r.members || []).filter((m) => !m.crew).slice(0, 8).map((m) => '<li>' + esc(m.name) + ' — ' + esc(m.now || m.state) + '</li>').join('');
+    const done = (r.feed || []).map((f) => '<li><a href="' + esc(f.href || '/team/') + '">' + esc(f.text) + '</a></li>').join('');
+    box.innerHTML = (asks ? '<h2>Owner asks</h2><ul>' + asks + '</ul>' : '') + (who ? '<h2>Builders</h2><ul>' + who + '</ul>' : '') + (done ? '<h2>Finished work</h2><ul>' + done + '</ul>' : '');
+  }
   const open = S.me && S.view.kind === 'channel' && r.channels.find((c) => c.code === S.view.c); if (open) markRead(open.code, open.msgs); // replies count too: the open channel is read
   drawSide(); return r;
 }

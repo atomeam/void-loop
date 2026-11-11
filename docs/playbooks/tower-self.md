@@ -1,6 +1,6 @@
 # Playbook: Versus by itself (tower-self)
 
-What starts it: `.github/workflows/tower-self.yml`, three times a day (02:37, 10:37, 18:37 UTC), or by hand (Actions > Versus by itself > Run workflow; `site` takes hosts, `built` caps the pages). Owner, 2026-10-26: "all sites get a page", and Verse climbs without Claude.
+What starts it: nothing on a schedule. The workflow that climbed three times a day was only the old tower, and it has been removed. `node tools/tower-self.mjs` still plans and builds a page when someone runs it by hand. The tools stay, so a later run can wire them to a visitor page instead of a rival site.
 
 ## What one run does
 

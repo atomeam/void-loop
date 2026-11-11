@@ -1,15 +1,152 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 116,
+ "cases": 118,
  "runsTotal": 300,
  "kinds": {
-  "grow": 54,
-  "file": 48,
-  "visitor": 194,
+  "grow": 45,
+  "file": 46,
+  "visitor": 205,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-11T13:45:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-11T13:18:28Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-11T08:22:29Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-11T01:05:14Z",
+   "passed": 116,
+   "of": 121,
+   "kind": "grow",
+   "ms": 443,
+   "note": "new ground passed, kept as a regression case: \"client brief for Acme onboarding\" (skill:client-brief)",
+   "failed": [
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "approve later: keep morning-digest running every 2 hours",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "dim the void",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo style like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-11T00:53:21Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-10T22:14:33Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T20:36:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T19:17:53Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T17:19:36Z",
+   "passed": 115,
+   "of": 120,
+   "kind": "grow",
+   "ms": 405,
+   "note": "new ground passed, kept as a regression case: \"credits\" (skill:faucet)",
+   "failed": [
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "air quality in Tokyo",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "flip this card",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "can we play despacito",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "progress report for the onboarding automation",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-10T17:08:15Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
+  {
+   "at": "2026-11-10T16:36:48Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T16:08:31Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-10T15:39:46Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-10T15:00:15Z",
    "passed": 0,
@@ -58,217 +195,81 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T03:55:30Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T03:28:23Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T03:17:41Z",
-   "passed": 114,
-   "of": 119,
-   "kind": "grow",
-   "ms": 349,
-   "note": "new ground passed, kept as a regression case: \"build a hut\" (skill:build-world)",
-   "failed": [
-    {
-     "ask": "which skill family is unhealthy",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "how do i magnetize this?",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "intake this idea: automate client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "status pack for onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "connect pack for client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-10T03:04:10Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-10T02:36:31Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T02:07:27Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T00:19:12Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T23:52:09Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T23:24:31Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T22:59:18Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T22:27:59Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-09T22:14:28Z",
-   "passed": 111,
-   "of": 116,
-   "kind": "grow",
-   "ms": 409,
-   "note": "new ground passed, kept as a regression case: \"how do i magnetize this?\" (skill:magnetize)",
-   "failed": [
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "bokos like dune",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "drag friction",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "fimls by kurosawa",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "geenrate a toon style dog",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
-  },
-  {
-   "at": "2026-11-09T22:03:34Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-18",
+   "from": "2026-08-19",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-25",
+   "from": "2026-08-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-01",
+   "from": "2026-09-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-08",
+   "from": "2026-09-09",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-15",
+   "from": "2026-09-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-22",
+   "from": "2026-09-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-29",
+   "from": "2026-09-30",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-06",
+   "from": "2026-10-07",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-13",
-   "runs": 22,
-   "passed": 1331,
-   "of": 1455
+   "from": "2026-10-14",
+   "runs": 10,
+   "passed": 661,
+   "of": 717
   },
   {
-   "from": "2026-10-20",
-   "runs": 2,
-   "passed": 134,
-   "of": 153
+   "from": "2026-10-21",
+   "runs": 1,
+   "passed": 67,
+   "of": 78
   },
   {
-   "from": "2026-10-27",
-   "runs": 0,
-   "passed": 0,
-   "of": 0
+   "from": "2026-10-28",
+   "runs": 23,
+   "passed": 222,
+   "of": 261,
+   "ms": 400
   },
   {
-   "from": "2026-11-03",
-   "runs": 276,
-   "passed": 6252,
-   "of": 8123,
+   "from": "2026-11-04",
+   "runs": 266,
+   "passed": 6261,
+   "of": 8103,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -665,6 +666,14 @@
   "skill:build-world": "2026-11-10T03:17:41Z",
   "skill:client-intake": "2026-11-10T03:17:41Z",
   "skill:client-status-pack": "2026-11-10T03:17:41Z",
-  "skill:connect-pack": "2026-11-10T03:17:41Z"
+  "skill:connect-pack": "2026-11-10T03:17:41Z",
+  "skill:faucet": "2026-11-10T17:19:36Z",
+  "skill:handoff-checklist": "2026-11-10T17:19:36Z",
+  "skill:ownership-map": "2026-11-10T17:19:36Z",
+  "skill:progress-report": "2026-11-10T17:19:36Z",
+  "skill:client-brief": "2026-11-11T01:05:14Z",
+  "skill:client-offer": "2026-11-11T01:05:14Z",
+  "skill:ownership-pack": "2026-11-11T01:05:14Z",
+  "skill:proposal-pack": "2026-11-11T01:05:14Z"
  }
 }

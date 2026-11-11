@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0f1419; --fg: #e7e9ea; --accent: #1d9bf0; --card: #1a2332; --pass: #00ba7c; --fail: #f4212e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.4; }
+  header { padding: 1rem 1.2rem; border-bottom: 1px solid #2f3336; }
+  h1 { margin: 0; font-size: 1.4rem; }
+  .sub { color: #71767b; font-size: 0.9rem; }
+  main { max-width: 900px; margin: 0 auto; padding: 1rem; }
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+  .card { background: var(--card); border-radius: 12px; padding: 1rem; flex: 1; min-width: 240px; }
+  label { display: block; font-size: 0.85rem; color: #71767b; margin-bottom: 0.3rem; }
+  input[type="file"] { width: 100%; }
+  canvas { max-width: 100%; border-radius: 8px; background: #000; cursor: crosshair; display: block; margin: 0.5rem 0; }
+  .swatch { width: 60px; height: 60px; border-radius: 8px; border: 2px solid #333; }
+  .big { font-size: 1.8rem; font-weight: 700; }
+  .pass { color: var(--pass); }
+  .fail { color: var(--fail); }
+  button, .btn { background: var(--accent); color: #fff; border: 0; padding: 0.6rem 1rem; border-radius: 999px; font-weight: 600; cursor: pointer; }
+  button.secondary { background: #2f3336; }
+  .preview { display: flex; gap: 1rem; align-items: center; margin: 0.5rem 0; }
+  .sample-text { padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; }
+  footer { text-align: center; color: #71767b; font-size: 0.8rem; padding: 2rem; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Image contrast checker · Verse lab</title>
+<meta name="description" content="Job: Upload a photo or screenshot; click two spots to sample the foreground and background colors.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Image contrast checker · Verse lab">
+<meta property="og:description" content="Job: Upload a photo or screenshot; click two spots to sample the foreground and background colors.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f650-image-contrast-checker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f650-image-contrast-checker/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Image Contrast Checker</h1>
+  <div class="sub">Upload an image, click two spots, get the WCAG contrast ratio. Everything stays on this device.</div>
+</header>
+<main>
+  <div class="card">
+    <label for="file">Image (photo, screenshot, mockup)</label>
+    <input type="file" id="file" accept="image/*">
+    <canvas id="view" width="640" height="400"></canvas>
+    <div class="sub">Click once for foreground (text) color, again for background. Or use the pickers below.</div>
+  </div>
+
+  <div class="row">
+    <div class="card">
+      <label>Foreground (text)</label>
+      <div class="preview">
+        <div class="swatch" id="fgSwatch" style="background:#fff"></div>
+        <input type="color" id="fgPick" value="#ffffff">
+        <div id="fgHex">#ffffff</div>
+      </div>
+    </div>
+    <div class="card">
+      <label>Background</label>
+      <div class="preview">
+        <div class="swatch" id="bgSwatch" style="background:#000"></div>
+        <input type="color" id="bgPick" value="#000000">
+        <div id="bgHex">#000000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="preview">
+      <div class="sample-text" id="sample" style="background:#000;color:#fff">Sample text</div>
+      <div>
+        <div class="big" id="ratio">21.0 : 1</div>
+        <div id="aaNormal" class="pass">AA normal: pass</div>
+        <div id="aaLarge" class="pass">AA large: pass</div>
+        <div id="aaaNormal" class="pass">AAA normal: pass</div>
+      </div>
+    </div>
+    <div style="margin-top:1rem">
+      <button id="copy">Copy results</button>
+      <button id="download" class="secondary">Download PNG report</button>
+    </div>
+  </div>
+</main>
+<footer>Verse tool · offline · no account · nothing sent anywhere · WCAG 2 relative luminance</footer>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+<style>
+/* verse design loop: kept by tools/design-loop.mjs, measured before and after */
+div.sub { color:#888c90 }
+.card label { color:#888c90 }
+#copy { color:#292929 }
+body > footer:nth-of-type(1) { color:#7c8186 }
+#file { display:inline-flex;align-items:center;justify-content:center;min-width:24px;min-height:24px;box-sizing:border-box }
+/* end verse design loop */
+</style>
+</body>
+</html>
