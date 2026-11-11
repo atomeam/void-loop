@@ -11,9 +11,9 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-11-11",
- "bench_at": "2026-11-09",
+ "bench_at": "2026-11-11",
  "totals": {
-  "experiment": 0,
+  "experiment": 1,
   "tested": 10,
   "checked": 4,
   "proven": 417
@@ -1262,11 +1262,12 @@
      "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
      "failing": [
       "days until july 4",
-      "countdown to chirstmas"
+      "countdown to chirstmas",
+      "how many days until january 1st"
      ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.9
+     "success_rate": 0.8
     },
     {
      "name": "event-countdown",
@@ -1367,12 +1368,9 @@
      "name": "date-calc",
      "tier": "proven",
      "why": "a self-test, 14 real asks in the benchmark",
-     "failing": [
-      "what date is next friday"
-     ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.929
+     "success_rate": 1
     },
     {
      "name": "date-grid",
@@ -1456,9 +1454,12 @@
      "name": "convert",
      "tier": "proven",
      "why": "a self-test, 9 browser-suite mentions, 5 real asks in the benchmark",
+     "failing": [
+      "72 f to c as a converter card"
+     ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "streak": 23
     },
     {
@@ -1485,11 +1486,12 @@
      "tier": "proven",
      "why": "a self-test, 9 browser-suite mentions, 13 real asks in the benchmark",
      "failing": [
-      "if i save 200 a month how much in 5 years"
+      "if i save 200 a month how much in 5 years",
+      "save $50 a week for 5 years"
      ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.923,
+     "success_rate": 0.846,
      "streak": 23
     },
     {
@@ -1517,13 +1519,13 @@
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 36 real asks in the benchmark",
      "failing": [
-      "calculate a 20% tip on 45",
       "what is a 20% tip on 45",
-      "split 120 between 4 people"
+      "split 120 between 4 people",
+      "18% tip on 64 dollars"
      ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.861,
+     "success_rate": 0.889,
      "streak": 23
     },
     {
@@ -2685,7 +2687,7 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 0,
     "checked": 0,
     "proven": 102
@@ -2700,6 +2702,14 @@
      "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 22
+    },
+    {
+     "name": "bridge",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-11-11",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-11-11"
     },
     {
      "name": "file-sorter",
@@ -2741,12 +2751,9 @@
      "name": "notes-fill",
      "tier": "proven",
      "why": "a self-test, 5 real asks in the benchmark",
-     "failing": [
-      "add a note: buy milk"
-     ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.8,
+     "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 15
     },
@@ -2867,9 +2874,12 @@
      "name": "tab",
      "tier": "proven",
      "why": "a self-test, 3 browser-suite mentions, 1 real ask in the benchmark",
+     "failing": [
+      "show this tab"
+     ],
      "last_tested": "2026-11-11",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0,
      "promoted": "2026-11-07",
      "streak": 23
     },
@@ -4274,7 +4284,7 @@
       "\"what does Verse own for the onboarding flow\" -> heavy-lift-map",
       "\"ownership map for weekly reports\" -> ownership-map"
      ],
-     "last_tested": "2026-11-09",
+     "last_tested": "2026-11-11",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-11-10",
