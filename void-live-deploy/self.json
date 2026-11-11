@@ -484,7 +484,7 @@
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-11-04"
+   "last": "2026-11-11"
   },
   {
    "name": "Life extension and disease cures",
@@ -500,6 +500,66 @@
   }
  ],
  "commits": [
+  {
+   "at": "2026-11-11T19:42:07Z",
+   "subject": "fix: resolve conflict markers in lab pages"
+  },
+  {
+   "at": "2026-11-11T19:41:14Z",
+   "subject": "treasury: found money and the weekly review"
+  },
+  {
+   "at": "2026-11-11T19:33:03Z",
+   "subject": "Failed jobs read: run 43085377819 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-11T19:32:32Z",
+   "subject": "Incident: the browser suite failed on ae3062ce (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-11T19:29:49Z",
+   "subject": "Design loop: 3 pages fixed, 3 -> 0 design defects"
+  },
+  {
+   "at": "2026-11-11T19:24:41Z",
+   "subject": "Failed jobs read: run 43086425950 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-11T19:21:19Z",
+   "subject": "forethinkers: printing Q8, arm slip clutch sized as a two-lobe PETG detent ring (servo-proven design, printed coupling model, printed…"
+  },
+  {
+   "at": "2026-11-11T19:18:08Z",
+   "subject": "Failed jobs read: run 43085377690 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-11T19:14:39Z",
+   "subject": "Verse's voice: 2026-11-11 answers, current asks refreshed"
+  },
+  {
+   "at": "2026-11-11T18:52:19Z",
+   "subject": "Failed jobs read: run 43076890190 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-11T18:52:00Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-11-11T18:51:50Z",
+   "subject": "Incident: the browser suite failed on 9128f47e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-11T18:40:17Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-11T18:35:53Z",
+   "subject": "Verse fixes #2667"
+  },
+  {
+   "at": "2026-11-11T18:35:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-11-11T18:34:57Z",
    "subject": "The visitor's slow card (clean sync) (#2702)"
@@ -519,66 +579,6 @@
   {
    "at": "2026-11-11T18:24:28Z",
    "subject": "Failed jobs read: run 43076889901 (void-live-deploy/incidents/actions/)"
-  },
-  {
-   "at": "2026-11-11T18:20:48Z",
-   "subject": "Helper/mark shipped and automation status (#2701)"
-  },
-  {
-   "at": "2026-11-11T18:17:02Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-11-11T18:13:51Z",
-   "subject": "Lists run 16: perf3d and glyphs on their own runners, score cards answer on days with no games, the exam waits for podcast audio…"
-  },
-  {
-   "at": "2026-11-11T18:04:06Z",
-   "subject": "Outcome exam: sports 88.9"
-  },
-  {
-   "at": "2026-11-11T17:59:29Z",
-   "subject": "Incident: the browser suite failed on 408f653a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-11T17:50:05Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-11T17:33:35Z",
-   "subject": "Write the Versus pages in Verse's own words (#2681)"
-  },
-  {
-   "at": "2026-11-11T17:30:47Z",
-   "subject": "Outcome exam: sports 89.8"
-  },
-  {
-   "at": "2026-11-11T17:30:22Z",
-   "subject": "Incidents closed: shard(s) 1,2,3,4,5,6,8 passed on 08eed722 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-11T17:26:08Z",
-   "subject": "Design loop: 3 pages fixed, 11 -> 0 design defects"
-  },
-  {
-   "at": "2026-11-11T17:25:39Z",
-   "subject": "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md (#2700)"
-  },
-  {
-   "at": "2026-11-11T17:20:14Z",
-   "subject": "feat(bridge): multi-input workspace bridge MVP + automerge SHA loop fix (#2699)"
-  },
-  {
-   "at": "2026-11-11T17:17:26Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-11T16:59:39Z",
-   "subject": "Adopt the six unlisted self skills so the book matches the index and main goes green (#2698)"
-  },
-  {
-   "at": "2026-11-11T16:48:29Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"lift summary"
   }
  ],
  "builders": {
@@ -760,8 +760,8 @@
   }
  ],
  "visible": {
-  "day": 12,
-  "week": 276
+  "day": 14,
+  "week": 278
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
