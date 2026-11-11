@@ -329,6 +329,16 @@
    "listed": 3,
    "defectsBefore": 4,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-11T07:59:25.977Z",
+   "run": 41,
+   "measured": 30,
+   "clean": 22,
+   "fixed": 6,
+   "listed": 2,
+   "defectsBefore": 16,
+   "defectsAfter": 5
   }
  ],
  "pages": {
@@ -6166,8 +6176,18 @@
    "state": "clean"
   },
   "/agent/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.007,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6176,10 +6196,11 @@
     "cls": 0.007,
     "overflow": 0
    },
-   "state": "clean"
+   "rules": 1,
+   "moved": 0
   },
   "/kanban/teams/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6192,7 +6213,7 @@
    "state": "clean"
   },
   "/lab/f317-webxr-hand-rd-dom-field/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6205,20 +6226,20 @@
    "state": "clean"
   },
   "/lab/f234-loop-grid/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.027,
     "overflow": 15
    },
    "state": "clean"
   },
   "/lab/f501-ambient-light-metabolic-swarm-mind/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 5,
     "contrast": 0,
@@ -6232,18 +6253,8 @@
    "why": "the defects did not go down (5 -> 5)"
   },
   "/lab/f192-webxr-hand-force-cloth-kernel/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
-    "defects": 2,
-    "contrast": 0,
-    "targets": 2,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -6252,11 +6263,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.024
+   "state": "clean"
   },
   "/lab/f175-webrtc-shared-device-field/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6269,7 +6279,7 @@
    "state": "clean"
   },
   "/lab/f503-lennard-jones-mlp-dom-swarm-mind/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6277,12 +6287,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 355237
+    "overflow": 2726867
    },
    "state": "clean"
   },
   "/lab/f468-webrtc-expression-agent-field/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6295,7 +6305,7 @@
    "state": "clean"
   },
   "/lab/f504-webgpu-poisson-potential-mlp-dom-mind/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6308,7 +6318,7 @@
    "state": "clean"
   },
   "/lab/f502-webgpu-kuramoto-phase-dom-orchestra-mind/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 7,
     "contrast": 7,
@@ -6320,8 +6330,8 @@
    },
    "state": "fixed",
    "after": {
-    "defects": 6,
-    "contrast": 6,
+    "defects": 4,
+    "contrast": 4,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
@@ -6329,23 +6339,24 @@
     "overflow": 21
    },
    "rules": 7,
-   "moved": 0.157
+   "moved": 0.188
   },
   "/lab/f320-orient-rnn-webgpu-softbody-dom-arena/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
-    "overflow": 0
+    "cls": 0.907,
+    "overflow": 97
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.907 that no rule fixes: listed for a builder)"
   },
   "/lab/f313-webgpu-causal-motion-rnn-hybrid-sculpt/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -6353,13 +6364,23 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0.002,
+    "overflow": 9
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.002,
     "overflow": 4
    },
-   "state": "listed",
-   "why": "it made the page scroll sideways"
+   "rules": 1,
+   "moved": 0.046
   },
   "/lab/f199-local-rnn-webgpu-causal-particle-field/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6372,20 +6393,20 @@
    "state": "clean"
   },
   "/lab/f233-panel-play/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.052,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f222-screen-grazing-lichen/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6398,7 +6419,7 @@
    "state": "clean"
   },
   "/lab/f267-sealed-mlp-dom-resource-arena/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6411,7 +6432,7 @@
    "state": "clean"
   },
   "/lab/f585-webrtc-evo-mlp-forcegraph-mind/": {
-   "at": "2026-11-08T23:18:41.075Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6424,7 +6445,7 @@
    "state": "clean"
   },
   "/lab/f316-webxr-hand-sealed-genome-dom-arena/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6432,12 +6453,12 @@
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
-    "overflow": 3
+    "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f617-recipe-scaler/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6450,7 +6471,7 @@
    "state": "clean"
   },
   "/lab/f624-text-diff/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -6463,20 +6484,20 @@
    "state": "clean"
   },
   "/lab/f299-hum-crystal-music-box/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.003,
+    "cls": 0,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/f217-audible-synapse-forager/": {
-   "at": "2026-11-09T01:06:50.730Z",
+   "at": "2026-11-11T07:59:25.977Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -9540,6 +9561,131 @@
    },
    "rules": 2,
    "moved": 0.002
+  },
+  "/track-times/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f639-label-name-tag-sheet/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 3,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 1,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 0
+   },
+   "rules": 2,
+   "moved": 0.061
+  },
+  "/lab/f649-qr-code-generator/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.003,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.001
+  },
+  "/lab/f630-time-card/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f633-raffle-name-draw/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f634-scoreboard/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/lab/f631-chore-rota/": {
+   "at": "2026-11-11T07:59:25.977Z",
+   "before": {
+    "defects": 3,
+    "contrast": 2,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.35,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.35,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0.002,
+   "why": "(a layout shift of 0.35 that no rule fixes: listed for a builder)"
   }
  }
 }
