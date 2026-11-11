@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- openhands · fix/copies-marker · the page matches its two deploy copies again (the copies check was red on main and failed every pull request review) · 2026-11-11 22:00 UTC
 - Cursor cloud agent · helper/shows-craft-6fca · Verse Out Loud and the Shorts are written, voiced, judged, and one studio page plays them · 2026-11-10 15:20 UTC
 - Cursor cloud agent · helper/delete-tower-48f9 · the finished-site Tower, its pages, and the loop that took the next site are removed · 2026-11-10 02:54 UTC
 - Cursor cloud agent · helper/color-by-number-238b · /paint/ rebuilt to feel like a real colouring book: original pictures, a white numbered sheet, saved progress and a finished reveal · 2026-11-10 01:55 UTC
