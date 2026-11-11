@@ -211,10 +211,11 @@ export function nextHtml(t, esc, n = 3) {
 export function crawlHtml(f, esc) {
   const c = f && f.crawled; if (!c) return f && f.state === 'current' ? '<div class="tw-crawl" style="margin:4px 0 6px 10px;font-size:12px;opacity:.8">Not crawled yet: only its front page has been read.</div>' : '';
   const miss = f.missingFeatures || [];
+  const shown = miss.slice(0, 5);
   return '<div class="tw-crawl" style="margin:4px 0 6px 10px;font-size:12px">Crawled ' + c.pages + ' pages of ' + esc(f.site) + ' (' + c.templates + ' kinds of page, ' + c.features + ' features)' + (c.verse_pages ? '; ' + c.verse_pages + ' of Verse\'s pages read against it' : '') + '. '
     // with no Verse page read against it (verse_pages 0), "every feature found" was a claim nothing checked: the only features marked are the
     // navigation kinds that never block a pass (tools/site-crawl.mjs GENERIC_KINDS; owner's card, 2026-11-06: dalyfeds.com, "no page for it yet")
-    + (miss.length ? '<details class="tw-missing"><summary style="cursor:pointer"><b>Missing ' + miss.length + ' feature' + (miss.length === 1 ? '' : 's') + '</b> Verse has to build before it can pass</summary><ul style="margin:2px 0 4px 18px;padding:0">' + miss.map((m) => '<li>' + esc(m) + '</li>').join('') + '</ul></details>'
+    + (miss.length ? '<details class="tw-missing"><summary style="cursor:pointer"><b>Missing ' + miss.length + ' feature' + (miss.length === 1 ? '' : 's') + '</b> Verse has to build before it can pass</summary><ul style="margin:2px 0 4px 18px;padding:0;max-height:120px;overflow-y:auto">' + shown.map((m) => '<li>' + esc(m) + '</li>').join('') + (miss.length > shown.length ? '<li style="opacity:.6">…and ' + (miss.length - shown.length) + ' more</li>' : '') + '</ul></details>'
       : c.verse_pages ? '<b>Verse has every feature found.</b>' : '<b>Nothing found blocks a pass</b>, but no Verse page has been read against it yet, so its features are not checked.') + '</div>';
 }
 // the non-sites the tower settled on its way (tower.target.json `settled`, tools/tower-alive.mjs; owner, 2026-11-06: id5-sync.com, an ad-tracker sync
@@ -282,7 +283,11 @@ export function lacksOf(f, inventory) {
 export function lacksHtml(f, inventory, esc) {
   const l = lacksOf(f, inventory), li = (x) => '<li>' + esc(x) + '</li>';
   if (!l.aspects.length && !l.features.length) return '<div class="tw-lacks"><b>What Verse still lacks</b><p>Nothing measured is missing. It is assimilated once the gate verifies every aspect.</p></div>';
-  return '<div class="tw-lacks"><b>What Verse still lacks against ' + esc(f.site) + '</b><ul>' + l.aspects.map(li).join('') + l.features.map(li).join('') + '</ul></div>';
+  const feats = (l.features || []).slice(0, 5);
+  return '<div class="tw-lacks"><b>What Verse still lacks against ' + esc(f.site) + '</b>'
+    + (l.aspects.length ? '<div class="tw-lacks-aspects" style="margin:4px 0"><b style="font-size:12px;opacity:.8">Aspects</b><ul style="margin:2px 0 4px 18px;padding:0">' + l.aspects.map(li).join('') + '</ul></div>' : '')
+    + (feats.length ? '<div class="tw-lacks-features" style="margin:4px 0"><b style="font-size:12px;opacity:.8">Crawl deficits (' + l.features.length + ')</b><ul style="margin:2px 0 4px 18px;padding:0;max-height:120px;overflow-y:auto">' + feats.map(li).join('') + (l.features.length > feats.length ? '<li style="opacity:.6">…and ' + (l.features.length - feats.length) + ' more</li>' : '') + '</ul></div>' : '')
+    + '</div>';
 }
 /** the rival's own history (docs/TOWER-RULES.md rule 7): the cited facts of /history/<slug>.json, never an unknown or a guess, each with its source. Pure. */
 export function rivalHistoryOf(h) {
