@@ -1,0 +1,21 @@
+{
+ "at": "2026-11-11T21:01:55Z",
+ "sha": "bf31475282997d3a881342f80cafd41f294b17ea",
+ "runId": 43098688236,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43098688236",
+ "workflow": "Verse deploy",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "members-paid",
+   "id": 130783948555,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43098688236/job/130783948555",
+   "conclusion": "failure",
+   "step": null,
+   "tail": [],
+   "note": "log not read: gh: HTTP 404"
+  }
+ ]
+}
