@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1245,
+ "counted": 1251,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1956,6 +1956,13 @@
    "tests": 4
   },
   {
+   "file": "lib/ask-box.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/avatar.js",
    "skills": 1,
    "direct": 1,
@@ -2611,7 +2618,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 30,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/character.js",
@@ -5857,6 +5864,12 @@
     "skills/merge.js",
     "skills/oracle.js",
     "skills/rally.js"
+   ]
+  },
+  "lib/ask-box.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/verse-brain.js"
    ]
   },
   "lib/ask-same.js": {
@@ -16234,6 +16247,10 @@
     "functions/api/aurora.js"
    ]
   },
+  "skills/automation-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/automations.js": {
    "imports": [],
    "importedBy": []
@@ -16483,6 +16500,10 @@
     "skills/games.js"
    ]
   },
+  "skills/client-brief.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/client-handoff.js": {
    "imports": [
     "skills/delivery-pack.js"
@@ -16490,6 +16511,10 @@
    "importedBy": []
   },
   "skills/client-intake.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/client-offer.js": {
    "imports": [],
    "importedBy": []
   },
@@ -16863,6 +16888,10 @@
     "lib/team-mcp.js",
     "skills/where-is.js"
    ]
+  },
+  "skills/docs-pack.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/doodle-mind.js": {
    "imports": [
@@ -17904,6 +17933,10 @@
    ]
   },
   "skills/leet.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/lift-summary.js": {
    "imports": [],
    "importedBy": []
   },
@@ -20322,6 +20355,7 @@
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
     "lib/brain-ask.js",
+    "lib/ask-box.js",
     "lib/brain-current.js"
    ],
    "importedBy": []

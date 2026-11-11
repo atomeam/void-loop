@@ -9,7 +9,7 @@ export function isAutomationPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   if (!t) return false;
   return /^(?:automation|automations)\s+pack\b/i.test(t)
-    || /^(?:propose|suggest|make|generate)\s+(?:a\s+)?(?:automations?|jobs?)\s+(?:pack|for|that)\b/i.test(t)
+    || /^(?:propose|suggest|make|generate)\s+(?:an?\s+)?(?:automations?|jobs?)\s+(?:pack|for|that)\b/i.test(t)
     || /^(?:what|which)\s+automations?\s+(?:will|does)\s+verse\s+own\b/i.test(t);
 }
 
