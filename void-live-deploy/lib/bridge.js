@@ -12,7 +12,7 @@ const TRANSPORT_KEYS = new Set(['body', 'headers', 'method', 'params', 'query', 
 
 function normName(s) { return String(s || '').replace(/[_-]+/g, '').toLowerCase(); }
 function uniq(arr) { return Array.from(new Set((arr || []).filter(Boolean))); }
-function clip(s, n = 160) { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+function clip(s, n = 160) { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; } // ellipsis-ok: utility clip, callers wrap or scroll the full text
 function isPayloadLeaf(keys, types) { // heuristic: treat as a payload wrapper (not a leaf field name) when it mostly carries nested fields
   const set = new Set(keys || []);
   return ['user_id','userid','id','name','email','title','value','amount','price','count'].some(k => set.has(k)) || Object.keys(types || {}).length > 0;

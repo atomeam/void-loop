@@ -469,7 +469,7 @@
     #stage-chips { display: none; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; min-height: 0; }
     #stage-chips.on { display: flex; }
     .stage-chip, .stage-chip-btn { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 8px; border-radius: 999px; font: 12px/1.2 inherit; color: rgba(236,241,255,.88); background: rgba(18,20,28,.62); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    .stage-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; }
+    .stage-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; } /* ellipsis-ok: short label on a chip */
     .stage-chip button { border: 0; background: transparent; color: inherit; padding: 0 2px; font: inherit; opacity: .75; cursor: pointer; }
     .stage-chip button:hover { opacity: 1; }
     .stage-chip-btn { cursor: pointer; opacity: .9; }
@@ -2710,7 +2710,7 @@ say('nothing selected to remove');
       return /^(menu|the menu|show (me )?(the )?menu|open (the )?menu|options|commands|what can i do( here)?|what can i ask|list (the )?skills|skills)\s*[?.!]?$/.test(lower);
     }
     function wantsSelfPage(lower) {
-      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|(?:verse|void)|a-to-mind)\b|^what\s+can\s+(you|i|(?:verse|void))\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|(?:verse|void))\b|what\s+(capabilities|tools|skills|labs|features|abilities)\b.*\b(you|verse|void)\b.*\b(have|got|do)\b|\b(show|list|give)\s+(me\s+)?(your|my|the)\s+(capabilities|tools|skills|labs|features|abilities)\b/.test(lower);
+      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|(?:verse|void)|a-to-mind)\b|^what\s+can\s+(you|i|(?:verse|void))\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|(?:verse|void))\b/.test(lower);
     }
     // "what are you?" / "who are you" / "what is void" / "tell me about yourself": Verse says what it is and its motto first, then
     // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word
