@@ -7557,6 +7557,8 @@ say('nothing selected to remove');
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && !document.querySelector('#hints.on .sel')) sink(); }, true);
     if (go) go.addEventListener('click', sink, true);
   })();
+  // Time Machine (ADR-001): boot the runtime + scrubber UI on load
+  import('/lib/time-machine-boot.js').catch(() => {});
   </script>
   <script>
   // ---- Synapses: a hidden branching network that only ever shows as a slow pulse at a few percent opacity (nebula look only, off with reduced motion) ----
