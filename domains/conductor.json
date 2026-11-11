@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-11T19:36:12.894Z",
+ "updated": "2026-11-11T19:45:37.630Z",
  "last24h": {
-  "ticks": 13,
-  "started": 31,
+  "ticks": 14,
+  "started": 32,
   "requeued": 1,
   "setAside": 1,
   "probes": 0,
@@ -91,7 +91,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 7,
+   "used": 9,
    "cap": 90
   },
   "day": {
@@ -668,6 +668,34 @@
    ],
    "requeued": 0,
    "setAside": 1,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 19,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-11T19:45:37.630Z",
+   "open": 359,
+   "started": [
+    {
+     "id": "want-page-tools-json",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 115
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
    "healed": [],
    "probe": false,
    "grow": false,
