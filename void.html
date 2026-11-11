@@ -466,6 +466,14 @@
     #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; overflow-wrap: anywhere; max-height: 4.6em; overflow-y: auto; }
     #hints div.sel, #hints div:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
     #hints b { font-weight: inherit; color: var(--fg); }
+    #stage-chips { display: none; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; min-height: 0; }
+    #stage-chips.on { display: flex; }
+    .stage-chip, .stage-chip-btn { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 4px 8px; border-radius: 999px; font: 12px/1.2 inherit; color: rgba(236,241,255,.88); background: rgba(18,20,28,.62); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .stage-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; }
+    .stage-chip button { border: 0; background: transparent; color: inherit; padding: 0 2px; font: inherit; opacity: .75; cursor: pointer; }
+    .stage-chip button:hover { opacity: 1; }
+    .stage-chip-btn { cursor: pointer; opacity: .9; }
+    .stage-chip-btn:hover { opacity: 1; border-color: rgba(170,200,255,.28); }
 #whisper {
       max-width: 720px; margin: 6px auto 0;
       color: var(--muted); font-size: 12px; min-height: 16px;
@@ -1197,6 +1205,7 @@
   <a id="void-anchor" href="/store/" aria-label="support Verse: the store" title="support Verse" data-depth="0" data-goal="12" data-state="under"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><defs><clipPath id="void-anchor-clip"><rect x="0" y="21" width="24" height="0"/></clipPath></defs><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/><path class="void-anchor-fill" clip-path="url(#void-anchor-clip)" d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
   <div id="dock" role="search" aria-label="Ask Verse">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
+    <div id="stage-chips" class="stage-chips" aria-label="Workspace inputs" hidden></div>
     <div id="row">
       <input id="input" aria-label="Ask Verse" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Ask anything" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
@@ -1903,7 +1912,7 @@ Object.values(things).forEach((th) => {
       ready: () => skillsReady, // every skill is in, so every saved card has its kind (skills/quiz.js settled: an ask right after a reload)
       closePage: () => closePage(),
       // the extension bridge the tab card draws with (skills/tab.js): the state the panel's messages fill, and the page's own senders
-      ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY },
+      ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY, addInput: addStageInput, stageCount: () => stageInputs.length },
       alterThing: (th, kind, lower) => applyTargetAlters(th, kind, lower), // the shared targeting: a kind's own words, then colour, then position
       emit: (th, value) => emit(th, value), // a skill's own thing hands its output down its arrows (frontier #24) // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
       ask: (t, attach) => { quietAsk = !!(attach && attach.quiet); confirmAttach = attach && typeof attach === 'object' && !attach.quiet ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
@@ -5864,6 +5873,86 @@ say('nothing selected to remove');
       loopLog({ domain: 'void.store', ask: text, score: 'pass', note: 'product line ' + p.slug });
     }
 
+    // --- Live Workspace Fusion Step 1: explicit multi-input staging (bounded, no ambient capture). ---
+    const STAGE_INPUT_MAX = 3;
+    const stageChipsEl = document.getElementById('stage-chips');
+    let stageInputs = [];
+    function stageChipTitle(it) {
+      const t = String(it.title || '').trim();
+      if (t) return t.slice(0, 42);
+      if (it.kind === 'url') { try { return new URL(it.sourceUrl || it.content || '').hostname.slice(0, 42) || 'URL'; } catch (_) { return 'URL'; } }
+      const c = String(it.content || '').replace(/\s+/g, ' ').trim();
+      return c ? (c.slice(0, 36) + (c.length > 36 ? '…' : '')) : 'Snippet';
+    }
+    function classifyStagedText(raw) {
+      const t = String(raw || '').trim();
+      const lines = t.split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
+      const urls = lines.filter((x) => /^https?:\/\/\S+$/i.test(x));
+      if (urls.length && urls.length === lines.length) return { kind: 'url', content: urls.join('\n'), sourceUrl: urls[0], title: urls.length === 1 ? (new URL(urls[0]).hostname) : (urls.length + ' URLs') };
+      if (/^https?:\/\/\S+$/i.test(t)) { try { return { kind: 'url', content: t, sourceUrl: t, title: new URL(t).hostname }; } catch (_) {} }
+      return { kind: 'snippet', content: t, sourceUrl: '', title: '' };
+    }
+    function renderStageInputChips() {
+      if (!stageChipsEl) return;
+      stageChipsEl.innerHTML = '';
+      for (const it of stageInputs) {
+        const chip = document.createElement('div'); chip.className = 'stage-chip';
+        const label = document.createElement('span'); label.textContent = (it.kind === 'tab' ? 'Tab: ' : it.kind === 'url' ? 'URL: ' : 'Snippet: ') + stageChipTitle(it);
+        const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove ' + stageChipTitle(it));
+        x.addEventListener('click', (e) => { e.preventDefault(); stageInputs = stageInputs.filter((s) => s.id !== it.id); renderStageInputChips(); });
+        chip.append(label, x); stageChipsEl.appendChild(chip);
+      }
+      if (pasteRaw) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'stage-chip-btn'; b.textContent = '+ Stage paste';
+        b.title = 'Add the pasted text/URL as a workspace input (up to 3)';
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          const raw = pasteRaw; pasteRaw = pasteFlat = null; input.value = ''; drawHints();
+          const c = classifyStagedText(raw);
+          addStageInput({ id: 'stg-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), kind: c.kind, title: c.title || '', sourceUrl: c.sourceUrl || '', content: String(c.content || raw).slice(0, 6000) });
+          say(stageInputs.length + ' staged'); input.focus();
+        });
+        stageChipsEl.appendChild(b);
+      }
+      stageChipsEl.classList.toggle('on', stageInputs.length > 0 || !!pasteRaw);
+      stageChipsEl.hidden = !(stageInputs.length > 0 || pasteRaw);
+    }
+    function addStageInput(item) {
+      if (!item) return false;
+      const it = { id: item.id || ('stg-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6)), kind: item.kind || 'snippet', title: String(item.title || '').slice(0, 120), sourceUrl: String(item.sourceUrl || '').slice(0, 500), content: String(item.content || '').slice(0, 6000), addedAt: Date.now() };
+      stageInputs = stageInputs.filter((x) => !(x.kind === it.kind && x.sourceUrl && it.sourceUrl && x.sourceUrl === it.sourceUrl && x.content === it.content)).concat(it).slice(-STAGE_INPUT_MAX);
+      renderStageInputChips();
+      return true;
+    }
+    function clearStageInputs() { stageInputs = []; renderStageInputChips(); }
+    try { window.stageInputsApi = { add: addStageInput, clear: clearStageInputs, list: () => stageInputs.slice(), render: renderStageInputChips }; } catch (_) {}
+    async function showBridge(ask, inputs) {
+      const list = (inputs || stageInputs).slice(0, STAGE_INPUT_MAX).map((it, i) => ({ id: it.id || ('in_' + (i + 1)), kind: it.kind || 'snippet', title: it.title || ('Input ' + (i + 1)), sourceUrl: it.sourceUrl || '', content: String(it.content || '') }));
+      const title = String(ask || 'Bridge these inputs').trim() || 'Bridge these inputs';
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">synthesizing ' + list.length + ' inputs.</div>'; });
+      say('building bridge');
+      let contract = null;
+      try {
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'bridge', ask: title, inputs: list }) });
+        if (r.ok) contract = await r.json().catch(() => null);
+      } catch (_) {}
+      if (!contract || contract.kind !== 'bridge') {
+        try {
+          const mod = await import('/skills/bridge.js');
+          contract = mod.analyzeBridge(list, title);
+          contract.local = true;
+        } catch (_) {
+          contract = { kind: 'bridge', version: 1, inputs: list.map(({id,kind,title,sourceUrl})=>({id,kind,title,sourceUrl})), summary: 'Could not synthesize inputs.', connections: [], deltas: [], nextActions: [], limitations: ['Bridge analyzer unavailable.'] };
+        }
+      } else { contract.local = false; }
+      if (vpageEl !== el) return 'bridge';
+      try { const mod = await import('/skills/bridge.js'); mod.renderBridgeCard(el, contract); }
+      catch (_) { el.innerHTML = '<h2>' + esc(title) + '</h2><pre>' + esc(JSON.stringify(contract, null, 2)) + '</pre>'; }
+      say('');
+      loopLog({ domain: 'void.bridge', ask: title, score: 'pass', note: 'bridge ' + list.length + ' inputs' + (contract.local ? ' local' : '') });
+      return 'bridge';
+    }
+
     // --- Any broken automation, fixed as it is (Atom: "fix as is, the void is constantly evolving"). ---
     // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook, anything: Verse reads what was pasted
     // (error, config, steps), names the likely cause and gives the concrete fix or corrected config (/api/answer mode 'fix',
@@ -5877,7 +5966,7 @@ say('nothing selected to remove');
       const flat = t.replace(/\s*\r?\n\s*/g, ' ⏎ ').trim();
       const st = input.selectionStart ?? input.value.length, en = input.selectionEnd ?? input.value.length;
       input.setRangeText(flat, st, en, 'end');
-      pasteRaw = t; pasteFlat = flat; drawHints();
+      pasteRaw = t; pasteFlat = flat; drawHints(); renderStageInputChips();
     });
     function restorePaste(text) {
       const raw = pasteRaw, flat = pasteFlat; pasteRaw = pasteFlat = null;
@@ -6639,6 +6728,7 @@ say('nothing selected to remove');
       // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
       { const sh = await shareReady(); const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
+      if (stageInputs.length >= 2) { currentAsk = text; lastAsk = text; if (!skillsRunning) takeUndoSnapshot(); await showBridge(text, stageInputs.slice()); return; }
       if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
       if (pendingForget && forgetAnswer(lower0)) return;
@@ -6869,6 +6959,15 @@ say('nothing selected to remove');
       if (e.key === 'ArrowUp' && hintList.length) { e.preventDefault(); hintSel = hintSel <= 0 ? hintList.length - 1 : hintSel - 1; markHint(); return; }
       if (e.key === 'Tab' && hintList.length) { e.preventDefault(); input.value = hintList[Math.max(0, hintSel)]; drawHints(); return; }
       if (e.key === 'Escape' && hintList.length) { e.stopPropagation(); hintList = []; hintsEl.classList.remove('on'); return; }
+      if (e.key === 'Enter' && e.altKey && !e.isComposing) {
+        e.preventDefault();
+        const raw = (pasteRaw || input.value || '').trim();
+        if (!raw) return;
+        const c = classifyStagedText(raw);
+        addStageInput({ id: 'stg-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), kind: c.kind, title: c.title || '', sourceUrl: c.sourceUrl || '', content: String(c.content || raw).slice(0, 6000) });
+        pasteRaw = pasteFlat = null; input.value = ''; drawHints(); renderStageInputChips();
+        say(stageInputs.length + ' staged'); return;
+      }
       if (e.key === 'Enter') {
         if (hintSel >= 0 && hintList[hintSel]) { e.preventDefault(); takeHint(hintList[hintSel]); return; }
         handle(input.value); input.value = ''; drawHints();
@@ -6878,7 +6977,7 @@ say('nothing selected to remove');
     // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q') || sp0.get('ask'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
+      if (q0) { warmAskLibs(); history.replaceState(null, '', location.pathname + (/[?&]open=all(?:&|$)/.test(location.search) ? '?open=all' : '')); /* the shared self card link keeps every block open (lib/card-share.js openAll) */ approvalReady().then(async (core) => { if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 4000); return; } await skillsReady; // a send, booking or spend is only typed in: that needs the confirm line's rules, not every skill, so it no longer waits for 300+ skill files
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
@@ -6899,7 +6998,7 @@ say('nothing selected to remove');
       if (sp.has('share_text') || sp.has('share_url') || sp.has('share_title')) {
         const st = (sp.get('share_text') || '').trim(), su = (sp.get('share_url') || '').trim(), sti = (sp.get('share_title') || '').trim();
         const link = /^https?:\/\//i.test(su) ? su : ((st.match(/https?:\/\/\S+/i) || [])[0] || '');
-        const ask = (link || st || sti).slice(0, 500);
+        const ask = (link || st || sti).slice(0, 4000);
         history.replaceState(null, '', location.pathname);
         if (ask) skillsReady.then(() => handle(ask));
       } else if (sp.get('source') === 'app') history.replaceState(null, '', location.pathname);
@@ -7063,7 +7162,7 @@ say('nothing selected to remove');
     // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
     async function agentAsk(ask) { agentRuns++; try { return await agentAskRun(ask); } finally { agentRuns--; } }
     async function agentAskRun(ask) {
-      ask = String(ask || '').trim().slice(0, 500);
+      ask = String(ask || '').trim().slice(0, 4000);
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the person at the screen, asked by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';

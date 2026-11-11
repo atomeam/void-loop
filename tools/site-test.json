@@ -381,6 +381,15 @@
     },
     {
       "ask": "build a hut"
+    },
+    {
+      "ask": "credits"
+    },
+    {
+      "ask": "client brief for Acme onboarding"
+    },
+    {
+      "ask": "lift summary for client onboarding"
     }
   ],
   "candidates": [],

@@ -28,6 +28,7 @@ import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
 import { detectPitch } from '../lib/brain-hearing.js';
 import { PX, PY } from '../lib/brain-painter.js';
 import { brainFullAsk } from '../lib/brain-ask.js';
+import { askBox } from '../lib/ask-box.js';
 import { NX as CUR_X, NY as CUR_Y } from '../lib/brain-current.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
@@ -145,7 +146,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   const layer = document.createElement('div'); layer.className = 'vb-orbs'; layer.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden';
   frame.appendChild(layer);
   const row = document.createElement('div'); row.className = 'vb-ctl'; row.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px';
-  row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px"><input class="vb-word" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="tell it something, or ask why" aria-label="Words for Verse Brain to think about, or a question about what it is doing" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit">'
+  row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px;align-items:end"><textarea class="vb-word" rows="1" maxlength="4000" autocomplete="off" spellcheck="false" placeholder="tell it something, or ask why" aria-label="Words for Verse Brain to think about, or a question about what it is doing" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit;min-height:40px;max-height:9rem;resize:none;overflow:auto"></textarea>'
     + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button><button type="button" class="g-btn vb-tune" aria-pressed="false" title="Plays Frere Jacques twice into its ear: a tune the page plays, not your voice, so you can see it hear with no microphone">Play a tune</button><button type="button" class="g-btn vb-forget">Forget</button>';
   q('.ff-btns').insertAdjacentElement('beforebegin', row);
   // Full screen (owner, 2026-10-30: "verse brain needs a full screen"): the same brain on a page of its own (/brain/), where the field fills the
@@ -168,8 +169,8 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   det.innerHTML = '<summary>Organs: what each does and how much it runs</summary><table style="width:100%;border-collapse:collapse;margin-top:4px"><tbody></tbody></table>'
     + '<div class="vb-made" style="color:var(--muted,#8a8a8a);margin-top:4px"></div>';
   askLine.insertAdjacentElement('afterend', det);
-  for (const n of [row, det, ...row.querySelectorAll('input,button')]) for (const ev of ['pointerdown', 'keydown']) n.addEventListener(ev, (e) => e.stopPropagation());
-  const box = q('.vb-word'), listenBtn = q('.vb-listen'), tuneBtn = q('.vb-tune'), body = det.querySelector('tbody');
+  for (const n of [row, det, ...row.querySelectorAll('textarea,button')]) for (const ev of ['pointerdown', 'keydown']) n.addEventListener(ev, (e) => e.stopPropagation());
+  const box = askBox(q('.vb-word')), listenBtn = q('.vb-listen'), tuneBtn = q('.vb-tune'), body = det.querySelector('tbody');
   const made = () => {
     q('.vb-made').textContent = DRAFTS.total ? 'Made from ' + DRAFTS.inBrain + ' of ' + DRAFTS.total + ' frontier drafts (' + DRAFTS.techniques + ' techniques); '
       + DRAFTS.left + ' were left out, each with its reason: ' + DRAFTS.drafts.filter((d) => !d.organ).map((d) => d.folder.replace(/^F0*(\d+)-/, 'F$1 ')).join(', ') + '.' : '';

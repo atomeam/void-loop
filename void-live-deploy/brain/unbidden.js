@@ -5,6 +5,7 @@
 // does not answer, this browser's voice says it (lib/speak.js). You can answer it: your words go to Verse's answer engine like any ask.
 // The box sits in what Verse knows (the first view) and at the top of the panel when you watch it think; nothing covers the field.
 import { phrases, pickVoice, VOICE } from '/lib/speak.js';
+import { askBox } from '/lib/ask-box.js';
 
 const POLL_MS = 60 * 1000, VOICE_KEY = 'a2m.verse.unbidden.voice';
 const node = (tag, text, cls) => { const n = document.createElement(tag); if (text != null) n.textContent = text; if (cls) n.className = cls; return n; };
@@ -17,8 +18,8 @@ head.append(live, title, voiceBtn);
 const lede = node('p', 'Verse talks first here, when something about it really changes. Every line is written just now by its own model from its live state, and says where it came from.', 'ub-lede');
 const list = node('ol', null, 'ub-list'); list.setAttribute('aria-live', 'polite'); list.setAttribute('aria-label', 'What Verse said, newest last');
 const wait = node('li', 'Listening for what Verse has to say…', 'ub-wait'); list.append(wait);
-const form = node('form', null, 'ub-form'), label = node('label', 'Answer Verse', 'vh'), input = node('input'), send = node('button', 'Answer', 'ub-send');
-input.id = 'ubWord'; label.htmlFor = 'ubWord'; input.maxLength = 300; input.autocomplete = 'off'; input.placeholder = 'Answer Verse, or ask it why'; send.type = 'submit';
+const form = node('form', null, 'ub-form'), label = node('label', 'Answer Verse', 'vh'), input = node('textarea'), send = node('button', 'Answer', 'ub-send');
+input.id = 'ubWord'; input.rows = 1; label.htmlFor = 'ubWord'; input.autocomplete = 'off'; input.placeholder = 'Answer Verse, or ask it why'; send.type = 'submit'; askBox(input);
 form.append(label, input, send);
 const note = node('p', null, 'ub-note');
 box.append(head, lede, list, form, note);

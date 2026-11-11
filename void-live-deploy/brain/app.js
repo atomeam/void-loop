@@ -9,6 +9,7 @@ import { idea } from '/skills/verse-brain.js';
 import { mountField } from '/lib/field-stage.js';
 import * as B from '/lib/brain.js';
 import { mountRelated } from '/lib/toolkit.js';
+import { clipAsk } from '/lib/ask-box.js';
 
 const $ = (s) => document.querySelector(s);
 const field = $('#field'), slot = $('#card'), panel = $('#panel'), panelBtn = $('#panelBtn'), you = $('#you');
@@ -163,5 +164,5 @@ mountRelated($('#related'), '/brain/'); // the stage card and the tools that wor
 
 // a link may tell it something or ask it why (/brain/?t=ocean, ?t=what are you doing?): the card's own box takes it, after what it kept is back
 const told = new URLSearchParams(location.search).get('t');
-if (told && told.trim()) { const box = card.querySelector('.vb-word'), form = card.querySelector('.vb-form'); if (box && form) { box.value = told.trim().slice(0, 120); form.requestSubmit(); } }
+if (told && told.trim()) { const box = card.querySelector('.vb-word'), form = card.querySelector('.vb-form'); if (box && form) { box.value = clipAsk(told); form.requestSubmit(); } }
 showYou();

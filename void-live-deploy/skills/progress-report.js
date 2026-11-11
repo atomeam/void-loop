@@ -9,7 +9,7 @@
 export function isProgressReport(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:progress|status)\s+report\b/i.test(t)
-    || /^(?:client\s+)?progress\s+(?:on|for|of)\b/i.test(t)
+    || /^(?:status\s+)?(?:client\s+)?progress\s+(?:on|for|of)\b/i.test(t)
     || /^(?:make|generate|create|show)\s+(?:a\s+)?(?:progress|status)\s+report\b/i.test(t);
 }
 

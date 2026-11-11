@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1238,
+ "counted": 1251,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1886,13 +1886,6 @@
    "tests": 2
   },
   {
-   "file": "lib/least.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/news-week.js",
    "skills": 1,
    "direct": 1,
@@ -1961,6 +1954,13 @@
    "direct": 1,
    "dependants": 1,
    "tests": 4
+  },
+  {
+   "file": "lib/ask-box.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/avatar.js",
@@ -2565,6 +2565,13 @@
    "tests": 0
   },
   {
+   "file": "lib/ai-gateway.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 31,
+   "tests": 1
+  },
+  {
    "file": "lib/answer-free.js",
    "skills": 0,
    "direct": 0,
@@ -2600,13 +2607,6 @@
    "tests": 8
   },
   {
-   "file": "lib/ai-gateway.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 30,
-   "tests": 1
-  },
-  {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
@@ -2618,7 +2618,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 30,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/character.js",
@@ -2723,7 +2723,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 17,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/x402.js",
@@ -2958,6 +2958,13 @@
   },
   {
    "file": "lib/trading-paid.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/versus.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -3804,6 +3811,13 @@
    "tests": 1
   },
   {
+   "file": "lib/recruit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/refusal.js",
    "skills": 0,
    "direct": 0,
@@ -4239,6 +4253,7 @@
    "imports": [
     "lib/guard.js",
     "lib/models.js",
+    "lib/ai-gateway.js",
     "lib/daily-cap.js",
     "lib/shortfall.js"
    ],
@@ -5060,8 +5075,7 @@
     "lib/automation-fix.js",
     "lib/shortfall.js",
     "lib/team-crew-run.js",
-    "lib/unbidden.js",
-    "lib/least.js"
+    "lib/unbidden.js"
    ],
    "importedBy": []
   },
@@ -5240,6 +5254,18 @@
    ],
    "importedBy": []
   },
+  "functions/our-motherfucking-version/index.js": {
+   "imports": [
+    "lib/versus.js"
+   ],
+   "importedBy": []
+  },
+  "functions/rotate-letters/index.js": {
+   "imports": [
+    "lib/versus.js"
+   ],
+   "importedBy": []
+  },
   "functions/team/_middleware.js": {
    "imports": [
     "lib/guard.js"
@@ -5264,6 +5290,12 @@
   "functions/tools.json.js": {
    "imports": [
     "lib/mcp.js"
+   ],
+   "importedBy": []
+  },
+  "functions/track-times/index.js": {
+   "imports": [
+    "lib/versus.js"
    ],
    "importedBy": []
   },
@@ -5382,7 +5414,8 @@
     "lib/models.js"
    ],
    "importedBy": [
-    "functions/api/answer.js"
+    "functions/api/answer.js",
+    "functions/api/coder.js"
    ],
    "reachedBy": [
     "functions/api/a2a.js",
@@ -5831,6 +5864,12 @@
     "skills/merge.js",
     "skills/oracle.js",
     "skills/rally.js"
+   ]
+  },
+  "lib/ask-box.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/verse-brain.js"
    ]
   },
   "lib/ask-same.js": {
@@ -10021,13 +10060,6 @@
     "skills/miss-jobs.js"
    ]
   },
-  "lib/least.js": {
-   "imports": [],
-   "importedBy": [
-    "functions/api/unbidden.js",
-    "skills/tower.js"
-   ]
-  },
   "lib/ledger-today.js": {
    "imports": [],
    "importedBy": [
@@ -12799,6 +12831,10 @@
     "skills/recipes-fill.js"
    ]
   },
+  "lib/recruit.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/reefwatch.js": {
    "imports": [],
    "importedBy": [
@@ -13592,6 +13628,7 @@
     "lib/weakest.js"
    ],
    "importedBy": [
+    "lib/verse-log.js",
     "skills/growth.js"
    ],
    "reachedBy": [
@@ -13631,7 +13668,6 @@
     "lib/bench-asks.js",
     "lib/built-detail.js",
     "lib/self-context.js",
-    "lib/verse-log.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -15227,6 +15263,7 @@
   "lib/verse-log.js": {
    "imports": [
     "lib/self-blocks.js",
+    "lib/skill-confidence.js",
     "lib/built-detail.js",
     "lib/progress-chart.js"
    ],
@@ -15398,6 +15435,14 @@
     "functions/api/mcp.js",
     "functions/api/sponsors.js",
     "functions/api/x402/index.js"
+   ]
+  },
+  "lib/versus.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/our-motherfucking-version/index.js",
+    "functions/rotate-letters/index.js",
+    "functions/track-times/index.js"
    ]
   },
   "lib/video-gen.js": {
@@ -16202,6 +16247,10 @@
     "functions/api/aurora.js"
    ]
   },
+  "skills/automation-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/automations.js": {
    "imports": [],
    "importedBy": []
@@ -16451,6 +16500,10 @@
     "skills/games.js"
    ]
   },
+  "skills/client-brief.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/client-handoff.js": {
    "imports": [
     "skills/delivery-pack.js"
@@ -16458,6 +16511,10 @@
    "importedBy": []
   },
   "skills/client-intake.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/client-offer.js": {
    "imports": [],
    "importedBy": []
   },
@@ -16832,6 +16889,10 @@
     "skills/where-is.js"
    ]
   },
+  "skills/docs-pack.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/doodle-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -17017,6 +17078,10 @@
    "importedBy": []
   },
   "skills/faucet.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/feedback-loop.js": {
    "imports": [],
    "importedBy": []
   },
@@ -17868,6 +17933,10 @@
    ]
   },
   "skills/leet.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/lift-summary.js": {
    "imports": [],
    "importedBy": []
   },
@@ -18935,6 +19004,10 @@
    ],
    "importedBy": []
   },
+  "skills/progress-report.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/proposal-pack.js": {
    "imports": [],
    "importedBy": []
@@ -19886,6 +19959,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/system-slice.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/system-status.js": {
    "imports": [
     "skills/status.js"
@@ -20142,7 +20219,6 @@
   },
   "skills/tower.js": {
    "imports": [
-    "lib/least.js",
     "lib/tower-art.js",
     "lib/tower.js",
     "lib/obituary.js",
@@ -20279,6 +20355,7 @@
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
     "lib/brain-ask.js",
+    "lib/ask-box.js",
     "lib/brain-current.js"
    ],
    "importedBy": []

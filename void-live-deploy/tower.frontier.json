@@ -6920,6 +6920,15 @@
    "hardness": null,
    "title": "//",
    "small": "2026-11-10"
+  },
+  {
+   "site": "breitband.ch",
+   "rank": 440080,
+   "controls": 0,
+   "bytes": 6796,
+   "hardness": null,
+   "title": "Breitband",
+   "small": "2026-11-10"
   }
  ]
 }
