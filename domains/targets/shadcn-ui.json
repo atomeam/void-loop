@@ -1,0 +1,49 @@
+{
+ "site": "ui.shadcn.com (Shadcn UI component registry)",
+ "kind": "component & design system registry: accessible primitives, layout patterns, state wrappers",
+ "chosen": "2026-11-11",
+ "why": "component registries expose accessible primitive structures, clean state wrappers and layout patterns that upgrade Verse's card UI and modal containers (owner priority: 'clean up and tie together'; Sightline layout guard now live)",
+ "source": [
+  "https://ui.shadcn.com/",
+  "https://ui.shadcn.com/docs/components",
+  "https://ui.shadcn.com/docs/primitives"
+ ],
+ "rule": "Verse takes on the site with a page of its own: every feature it has, plus one notch, measured live beside it. A number not measured is shown as not measured.",
+ "features": [
+  {
+   "id": "accessible primitives",
+   "theirs": "Radix-based accessible components (dialog, popover, tooltip, dropdown) with focus traps and aria attributes",
+   "plus_one": "the same primitives with Verse's own dark palette, no external dependency, and a one-line copy",
+   "void": "partial",
+   "progress": "2026-11-11: cards use showPage() with no focus trap or aria-live; Sightline flags overflow but not a11y."
+  },
+  {
+   "id": "layout tokens",
+   "theirs": "design tokens for spacing, radius, colour and typography shared across components",
+   "plus_one": "tokens derived from Verse's own palette, applied via CSS variables and validated by dark-pages check",
+   "void": "partial",
+   "progress": "2026-11-11: :root tokens exist per page but are not shared; no-ellipsis and dark-pages enforce the palette."
+  },
+  {
+   "id": "composable card anatomy",
+   "theirs": "header/body/footer slots with consistent padding and border radius",
+   "plus_one": "the same slots for the tower card, code-review card and wants card, which currently reimplement them",
+   "void": "none",
+   "progress": "2026-11-11: not started; each card inlines its own markup."
+  },
+  {
+   "id": "state wrappers",
+   "theirs": "controlled/uncontrolled state primitives (useControllableState) for inputs",
+   "plus_one": "the same pattern for Verse's ask bar, timer and sticky cards",
+   "void": "partial",
+   "progress": "2026-11-11: state lives in localStorage; no controlled-state primitive."
+  },
+  {
+   "id": "copy-paste install",
+   "theirs": "one command to add a component to any project",
+   "plus_one": "Verse's skills are already copy-paste (card-share.js); component recipes would follow the same model",
+   "void": "have",
+   "progress": "2026-11-11: card-share.js copies a card's text; component recipes not yet published."
+  }
+ ]
+}
