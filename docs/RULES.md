@@ -31,6 +31,10 @@ A typed ask is not a paste: one line under 400 characters is routed as before.
 or "verse tower" still opens the card, beside "versus", "verse versus", "show me versus". "Floor" stays a floor. Old lines of
 the agent log, the ledger and the owner's quotes are not reworded.
 
+## A Versus page is Verse's own (2026-11-10)
+
+A Versus page does the other job in Verse's words, layout and sample. It does not reuse that site's sentences, visual trick, or example. The path can stay. The writing and the sample cannot be theirs.
+
 ## Only Verse's words are on the site (owner, 2026-10-18)
 
 The owner: "my quoted words shouldn't be on the site, only Verse's". Agents do not quote the owner in a pull request, a commit, a comment, a doc, or a page. What the site serves never carries those quotes: the deploy runs `tools/public-ledger.mjs` and `tools/public-quotes.mjs` on its own copy, and `tools/self-context.mjs` writes `self.json` without them (`tools/private.mjs` `quoteFree`). Do not put the owner's words in a string a visitor sees; say what Verse does instead.
