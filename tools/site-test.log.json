@@ -1,13 +1,5 @@
 [
  {
-  "at": "2026-10-18T13:46:58Z",
-  "passed": 57,
-  "of": 68,
-  "kind": "file",
-  "key": "find me a sc-ifi film from the 80s | refused: don't know this yet",
-  "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-18T14:06:18Z",
   "passed": 67,
   "of": 68,
@@ -7925,5 +7917,23 @@
    "failed": []
   },
   "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T13:45:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 610,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9710 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
