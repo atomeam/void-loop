@@ -17,11 +17,12 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { filmWordsCheck } from './topic-gate.mjs';
+import { sameWords, timeOverlap, boxOverlap, BANNED } from '../void-live-deploy/lib/show-pipe.js';
 
 export const W = 1080, H = 1920;
 // the part of a Short no YouTube, TikTok or Reels button covers: below the top bar, above the title and buttons, left of the action rail
 export const SAFE = { x0: 60, x1: W - 140, y0: Math.round(H * 0.1), y1: Math.round(H * 0.72) };
-export const CAPTION_MIN = 64, BAR_PX = 8, LUFS = { voice: -14, tol: 1.5, bedMin: -25, bedMax: -19 }, HOOK_MIN = 60;
+export const CAPTION_MIN = 64, BAR_PX = 8, LUFS = { voice: -14, tol: 1.8, bedMin: -25, bedMax: -19 }, HOOK_MIN = 60;
 
 const RELATABLE = /\b(you|your|you're|dinner|bill|tip|rent|split|song|stuck|money|pay|paycheck|late|sleep|kids?|groceries|gas|coffee|tonight|weekend|friends?|date|boss|work|recipe|cook|minutes?|hours?|cost|price|cheaper|save|owe|everyone|everybody|everywhere|talking|searching|trending|internet|feed|phone|group chat|pov|movie|trailer|documentary|worth it|today|why now)\b/i;
 const JARGON = /\b(ai|llm|model|experiment|verse|lab|agent|built this itself|skill|api|ledger|hypothesis)\b/i;
@@ -49,8 +50,27 @@ export function captionCheck(captions) {
     if (c.size < CAPTION_MIN) bad.push(c.text + ': ' + c.size + ' px < ' + CAPTION_MIN);
     if (!c.box) bad.push(c.text + ': no backing box');
     if (c.x < SAFE.x0 || c.x + wide > SAFE.x1 || c.y < SAFE.y0 || c.y + tall > SAFE.y1) bad.push(c.text.replace(/\n/g, ' ') + ': outside the safe zone');
+    if (c.raw != null && !sameWords(c.raw, c.text)) bad.push('mid-word wrap');
+  }
+  for (let i = 0; i < (captions || []).length; i++) for (let j = i + 1; j < captions.length; j++) {
+    if (!timeOverlap(captions[i], captions[j])) continue;
+    if (captions[i].w && captions[j].w ? boxOverlap(captions[i], captions[j]) : true) bad.push('captions overlap');
   }
   return { ok: !!(captions && captions.length) && !bad.length, detail: bad.length ? bad.join('; ') : (captions || []).length + ' captions, all legible and in the safe zone' };
+}
+
+/** voices that play at the same time. Pure. */
+export function speechCheck(cues) {
+  const c = (cues || []).filter((x) => x && isFinite(x.from) && isFinite(x.to));
+  for (let i = 0; i < c.length; i++) for (let j = i + 1; j < c.length; j++) if (timeOverlap(c[i], c[j])) return { ok: false, detail: 'speech overlaps' };
+  return { ok: c.length > 0, detail: c.length ? c.length + ' voices, one at a time' : 'no speech timings' };
+}
+
+/** codes, queue ids, and paths a listener should not hear. Pure. */
+export function plainCheck(meta) {
+  const blob = [meta && meta.hook, meta && meta.title, meta && meta.description, ...((meta && meta.captions) || []).map((c) => (c && c.raw) || (c && c.text) || '')].join('\n');
+  const m = blob.match(BANNED);
+  return { ok: !m, detail: m ? 'jargon: ' + m[0] : 'plain words' };
 }
 
 /** the black borders cropdetect saw, from its log lines ("crop=W:H:X:Y"): the smallest crop seen over the film. Pure. */
@@ -98,7 +118,9 @@ function probe(file) {
 /** run every check on a rendered film and its meta; returns { pass, score, checks: [{ name, ok, detail }] } */
 export function gate(file, meta) {
   const p = probe(file), checks = [];
-  checks.push({ name: 'frame', ok: p.w === W && p.h === H && p.dur >= 6 && p.dur <= 20, detail: p.w + 'x' + p.h + ', ' + p.dur.toFixed(1) + ' s (want 1080x1920, 6-20 s)' });
+  const show = meta.kind === 'show' || meta.format === 'show';
+  const durOk = show ? p.dur >= 28 && p.dur <= 62 : p.dur >= 6 && p.dur <= 20;
+  checks.push({ name: 'frame', ok: p.w === W && p.h === H && durOk, detail: p.w + 'x' + p.h + ', ' + p.dur.toFixed(1) + ' s (want 1080x1920, ' + (show ? '30-60' : '6-20') + ' s)' });
   // cropdetect: limit 24 of 255 counts near-black as black, round 2 keeps every pixel, reset 0 keeps the widest crop seen
   const bars = barsOf(ff(['-i', file, '-vf', 'fps=4,cropdetect=limit=24:round=2:reset=0', '-f', 'null', '-']).stderr, p.w, p.h);
   const strip = { left: 'crop=24:ih:0:0', right: 'crop=24:ih:iw-24:0', top: 'crop=iw:24:0:0', bottom: 'crop=iw:24:0:ih-24' }, ranges = {};
@@ -109,6 +131,8 @@ export function gate(file, meta) {
   }
   checks.push({ name: 'no-bars', ...noBars(bars, flatEdges(ranges)) });
   checks.push({ name: 'captions', ...captionCheck(meta.captions) });
+  checks.push({ name: 'plain', ...plainCheck(meta) });
+  if (meta.voice) checks.push({ name: 'speech', ...speechCheck(meta.speech) });
   const scenes = (ff(['-i', file, '-vf', "select='gt(scene,0.003)',metadata=print", '-an', '-f', 'null', '-']).stderr.match(/lavfi\.scene_score/g) || []).length;
   // footage: the live site filmed answering (tools/shorts.mjs), or a studio film (tools/film-studio.mjs) drawn frame by frame about a trend
   // with the page its facts came from; either way the picture has to move

@@ -5,19 +5,21 @@
 //   claims-verified.json: only the phrases that are proven to answer with their own card are read aloud;
 //   domains/void.voice.md: Verse's own latest daily readout and current asks, quoted as Verse said them (fact tags removed);
 //   incidents.json: how many red browser suites main had in the week (counts only).
-// Two voices: Verse (states the record) and the Critic (reads the misses and the weak spots from the same record). The Critic is a
+// Two voices: Verse (states the record) and Critic (reads the misses and the weak spots from the same record). Critic is a
 // second reader of the record, not a person, and says so in every episode.
 // Audio is made with Piper (open-source TTS, MIT, runs on the CI machine or any box: no account, no API, costs nothing) and ffmpeg.
 //   node tools/podcast.mjs --script [--to 2026-10-22]       print the next episode's script (no files written)
 //   node tools/podcast.mjs --make [--to ...] --voices <dir>  write the episode: mp3, transcript, episodes.json, rss.xml
 //   node tools/podcast.mjs --rss                             rewrite podcast/rss.xml from podcast/episodes.json
-// Voices: <dir>/en_US-lessac-medium.onnx (Verse) and <dir>/en_US-ryan-medium.onnx (the Critic); PIPER is the piper command
+// Voices: <dir>/en_US-lessac-medium.onnx (Verse) and <dir>/en_US-ryan-medium.onnx (Critic); PIPER is the piper command
 // (default "python3 -m piper"). Weekly by .github/workflows/verse-podcast.yml; docs/playbooks/podcast.md.
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, rmSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
+import { VOICE_AF, featsFrom, trendLine } from '../void-live-deploy/lib/show-pipe.js';
+import { writeShow, recordScore, loadScores } from './show-pipe.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const site = resolve(root, 'void-live-deploy');
@@ -29,7 +31,7 @@ export const SHOW = {
   email: 'atom@a-to-mind.com',
   link: SITE + '/podcast/',
   cover: SITE + '/podcast/cover.jpg',
-  description: 'Verse, the blank stage at a-to-mind.com that makes whatever anyone asks, reads its own day out loud: what it built, what merged on main, the exact asks that now work, what it missed and fixed, and what it asked for next. Every line comes from its public growth ledger and its own reflection log. Nothing is made up. Free to download and repost.',
+  description: 'Verse Out Loud. Verse and Critic tell a short true story about something Verse actually did, for anyone curious. Free to download and repost.',
   category: 'Technology',
   language: 'en-us',
 };
@@ -180,8 +182,9 @@ function speak(ep, voices, out) {
   ff('-f', 'lavfi', '-i', 'anullsrc=r=22050:cl=mono', '-t', '0.45', `${tmp}/gap.wav`);
   ep.lines.forEach((l, i) => {
     const f = `${tmp}/${String(i).padStart(3, '0')}.wav`;
-    execFileSync(pcmd, [...pargs, '-m', model[l.who], '-f', f], { input: l.text, stdio: ['pipe', 'ignore', 'inherit'] });
-    ff('-i', f, '-ar', '22050', '-ac', '1', `${f}.r.wav`);
+    const pace = l.who === 'Critic' ? '1.18' : '1.08';
+    execFileSync(pcmd, [...pargs, '-m', model[l.who], '--length-scale', pace, '--sentence-silence', '0.12', '-f', f], { input: l.text, stdio: ['pipe', 'ignore', 'inherit'] });
+    ff('-i', f, '-af', VOICE_AF[l.who] || VOICE_AF.Verse, '-ar', '22050', '-ac', '1', `${f}.r.wav`);
     list.push(`file '${f}.r.wav'`, `file '${tmp}/gap.wav'`);
     l.t = Math.round(t * 10) / 10; t += dur(`${f}.r.wav`) + 0.45;
   });
@@ -200,32 +203,44 @@ function speak(ep, voices, out) {
 
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const DAYS = Math.max(1, Math.min(7, +(arg('--days') || process.env.PODCAST_DAYS || 1) || 1)); // daily by default (2026-11-06)
+async function written(n, to) {
+  const bag = inputs(to, n, DAYS);
+  const facts = featsFrom(bag.growth);
+  if (!facts.length) throw new Error('no plain feat to tell');
+  const made = await writeShow('episode', facts.slice(0, 2).join(' '), { n, trend: trendLine(loadScores().shows) });
+  const end = new Date(to || Date.now()), start = new Date(+end - DAYS * DAY);
+  return { ep: { n, title: made.show.title, from: iso(start), to: iso(end), days: DAYS, lines: made.show.lines, counts: { feats: facts.length }, scores: made.scores }, fact: facts[0] };
+}
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const data = loadEpisodes();
-  if (process.argv.includes('--script')) {
-    const ep = buildEpisode(inputs(arg('--to'), data.episodes.length + 1, DAYS));
-    console.log(transcriptText(ep)); console.log(JSON.stringify(ep.counts));
-  } else if (process.argv.includes('--make')) {
-    const voices = arg('--voices'); if (!voices) { console.error('--voices <dir with the two .onnx voices>'); process.exit(2); }
-    const n = data.episodes.length + 1, to = arg('--to') || new Date().toISOString();
-    const last = data.episodes[data.episodes.length - 1];
-    const gap = DAYS === 1 ? 20 * 3600e3 : (DAYS - 1) * DAY; // a daily episode skips only when the last one is under 20 hours old
-    if (last && Date.now() - new Date(last.pub) < gap && !process.argv.includes('--force')) { console.log('episode ' + last.n + ' is under ' + Math.round(gap / 3600e3) + ' hours old; nothing made (--force to make one anyway)'); process.exit(0); }
-    const ep = buildEpisode(inputs(to, n, DAYS));
-    const id = String(n).padStart(3, '0'), file = `verse-out-loud-${id}.mp3`, transcript = `verse-out-loud-${id}.txt`;
-    mkdirSync(DIR, { recursive: true });
-    writeFileSync(resolve(DIR, transcript), transcriptText(ep));
-    const seconds = speak(ep, voices, resolve(DIR, file));
-    const bytes = statSync(resolve(DIR, file)).size;
-    if (bytes > 24 * 1024 * 1024) { console.error('the mp3 is over the 25 MB Pages limit'); process.exit(1); }
-    const c = ep.counts;
-    const summary = `Verse's ${DAYS === 1 ? 'day to ' + ep.to : 'week from ' + ep.from + ' to ' + ep.to}, read from its public ledger and main's commit history: ${c.commits || 0} commits on main (${c.merged || 0} pull requests merged), ${c.entries} entries (${c.builds} builds, ${c.grows} growth steps, ${c.fixes} fixes, ${c.findings} findings), ${c.phrases} asks learned, ${c.notRouted} still missed, ${c.red} red test runs on main, and what Verse asked for next. Full transcript included. Free to download and repost.`;
-    data.note = 'Verse Out Loud episodes (tools/podcast.mjs). Each is read from the public record only: void.growth.json, claims-verified.json, domains/void.voice.md, incidents.json and main\'s git history. Append-only.';
-    data.episodes.push({ n, title: ep.title, from: ep.from, to: ep.to, pub: new Date().toISOString(), file, transcript, bytes, seconds: Math.round(seconds), summary, counts: c, lines: ep.lines });
-    writeFileSync(resolve(DIR, 'episodes.json'), JSON.stringify(data, null, 1) + '\n');
-    writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes));
-    console.log(`episode ${n}: ${file}, ${Math.round(seconds)} s, ${bytes} bytes`);
-  } else if (process.argv.includes('--rss')) {
-    writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes)); console.log('rss.xml: ' + data.episodes.length + ' episodes');
-  } else console.log('node tools/podcast.mjs --script | --make --voices <dir> | --rss');
+  const go = async () => {
+    if (process.argv.includes('--script')) {
+      const { ep } = await written(data.episodes.length + 1, arg('--to'));
+      console.log(transcriptText(ep)); console.log(JSON.stringify(ep.scores));
+    } else if (process.argv.includes('--make')) {
+      const voices = arg('--voices'); if (!voices) { console.error('--voices <dir with the two .onnx voices>'); process.exit(2); }
+      const n = data.episodes.length + 1, to = arg('--to') || new Date().toISOString();
+      const last = data.episodes[data.episodes.length - 1];
+      const gap = DAYS === 1 ? 20 * 3600e3 : (DAYS - 1) * DAY; // a daily episode skips only when the last one is under 20 hours old
+      if (last && Date.now() - new Date(last.pub) < gap && !process.argv.includes('--force')) { console.log('episode ' + last.n + ' is under ' + Math.round(gap / 3600e3) + ' hours old; nothing made (--force to make one anyway)'); process.exit(0); }
+      const { ep, fact } = await written(n, to);
+      const id = String(n).padStart(3, '0'), file = `verse-out-loud-${id}.mp3`, transcript = `verse-out-loud-${id}.txt`;
+      mkdirSync(DIR, { recursive: true });
+      writeFileSync(resolve(DIR, transcript), transcriptText(ep));
+      const seconds = speak(ep, voices, resolve(DIR, file));
+      const bytes = statSync(resolve(DIR, file)).size;
+      if (bytes > 24 * 1024 * 1024) { console.error('the mp3 is over the 25 MB Pages limit'); process.exit(1); }
+      const summary = ep.lines.slice(0, 2).map((l) => l.text).join(' ') + ' Ask Verse for anything at a-to-mind.com. Full transcript included. Free to download and repost.';
+      data.note = 'Verse Out Loud episodes (tools/podcast.mjs). A free model writes each one from a plain feat. Scores are kept. Append-only.';
+      data.episodes.push({ n, title: ep.title, from: ep.from, to: ep.to, pub: new Date().toISOString(), file, transcript, bytes, seconds: Math.round(seconds), summary, counts: ep.counts, scores: ep.scores, lines: ep.lines });
+      writeFileSync(resolve(DIR, 'episodes.json'), JSON.stringify(data, null, 1) + '\n');
+      writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes));
+      recordScore('episode', ep.title, ep.scores, fact);
+      console.log(`episode ${n}: ${file}, ${Math.round(seconds)} s, ${bytes} bytes`);
+      console.log(JSON.stringify(ep.scores));
+    } else if (process.argv.includes('--rss')) {
+      writeFileSync(resolve(DIR, 'rss.xml'), rss(data.episodes)); console.log('rss.xml: ' + data.episodes.length + ' episodes');
+    } else console.log('node tools/podcast.mjs --script | --make --voices <dir> | --rss');
+  };
+  go().catch((e) => { console.error(String(e && e.message || e).slice(0, 300)); process.exit(1); });
 }

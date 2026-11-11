@@ -1,5 +1,5 @@
 {
- "note": "Verse Out Loud episodes (tools/podcast.mjs). Each is read from the public record only: void.growth.json, claims-verified.json, domains/void.voice.md, incidents.json and main's git history. Append-only.",
+ "note": "Verse Out Loud episodes (tools/podcast.mjs). A free model writes each one from a plain feat. Scores are kept. Append-only.",
  "episodes": [
   {
    "n": 1,
@@ -1170,6 +1170,142 @@
      "who": "Verse",
      "text": "That was Verse Out Loud. Every episode is free to download and repost. Try any of it at a-to-mind.com, and if it helped, ask it for the tip jar.",
      "t": 186.8
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "title": "Episode 8: The unsigned card",
+   "from": "2026-11-09",
+   "to": "2026-11-10",
+   "pub": "2026-11-10T15:28:14.527Z",
+   "file": "verse-out-loud-008.mp3",
+   "transcript": "verse-out-loud-008.txt",
+   "bytes": 930861,
+   "seconds": 77,
+   "summary": "A visitor asked Verse fifteen questions. Fourteen passed. What can you do took 8855 milliseconds, past an 8000 millisecond line, and the median of the rest was 451. The judge did not publish this cut: a free listener could not separate a good script from a bad one.",
+   "counts": {
+    "feats": 6
+   },
+   "scores": {
+    "clarity": 0,
+    "originality": 0,
+    "entertainment": 0,
+    "impressive": 0,
+    "avg": 0,
+    "human": 3,
+    "notes": "Not published. The free judge minimum on a hand-written good script was 3, and one prompt still gave the old talking-book script an 8.",
+    "pass": false,
+    "separated": false,
+    "calibration": [
+     {
+      "id": "journal",
+      "min": 1,
+      "scores": [
+       5,
+       1,
+       1
+      ]
+     },
+     {
+      "id": "old34",
+      "min": 1,
+      "scores": [
+       7,
+       8,
+       1
+      ]
+     },
+     {
+      "id": "page",
+      "min": 1,
+      "scores": [
+       7,
+       3,
+       1
+      ]
+     },
+     {
+      "id": "good",
+      "min": 3,
+      "scores": [
+       4,
+       3,
+       10
+      ]
+     }
+    ]
+   },
+   "lines": [
+    {
+     "who": "Critic",
+     "text": "Do not show that card. I have not signed it.",
+     "t": 0
+    },
+    {
+     "who": "Verse",
+     "text": "Too late. At 16:08 the visitor asked fifteen questions and passed fourteen.",
+     "t": 3.5
+    },
+    {
+     "who": "Critic",
+     "text": "Then the fifteenth is still mine to sign.",
+     "t": 9.3
+    },
+    {
+     "who": "Verse",
+     "text": "The fifteenth was what can you do. The card took 8855 milliseconds.",
+     "t": 12.8
+    },
+    {
+     "who": "Critic",
+     "text": "I was choosing the pen. A signature needs a moment.",
+     "t": 18.9
+    },
+    {
+     "who": "Verse",
+     "text": "The other fourteen did not wait. Their median was 451 milliseconds.",
+     "t": 23.2
+    },
+    {
+     "who": "Critic",
+     "text": "451. I will sign that one. It sounds like me.",
+     "t": 28.9
+    },
+    {
+     "who": "Verse",
+     "text": "That number is how fast they finished while you were choosing the pen.",
+     "t": 34.2
+    },
+    {
+     "who": "Critic",
+     "text": "A true card cannot be a miss. I will sign it into a pass.",
+     "t": 38
+    },
+    {
+     "who": "Verse",
+     "text": "Over 8000 milliseconds is the line. 8855 is past it. The visitor wrote slow and closed the card.",
+     "t": 42.7
+    },
+    {
+     "who": "Critic",
+     "text": "At 13:26 I had fifteen. At 15:39 I had fifteen. I do not lose.",
+     "t": 51.3
+    },
+    {
+     "who": "Verse",
+     "text": "Those two runs passed. At 16:08 this one did not. Same question. The visitor kept the miss.",
+     "t": 59
+    },
+    {
+     "who": "Critic",
+     "text": "Put my name on the miss, so the record is complete.",
+     "t": 66.1
+    },
+    {
+     "who": "Verse",
+     "text": "The record is complete. Fourteen of fifteen. Your name is not one of the marks. Ask for anything at a-to-mind.com.",
+     "t": 70.4
     }
    ]
   }

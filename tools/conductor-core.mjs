@@ -158,7 +158,7 @@ export function willDue({ exists, busy, lastRunMs, now }) {
  *  one runs or waits. A run that failed today is not started again until tomorrow: three failures in a row queue a heal: job. Pure. */
 export const DAILY = Object.freeze([
   { wf: 'verse-podcast.yml', hourUtc: 13, what: "today's episode of Verse Out Loud" },
-  { wf: 'shorts.yml', hourUtc: 15, what: "today's three films, three formats on trending topics" },
+  { wf: 'shorts.yml', hourUtc: 15, what: "today's two Shorts, written from something Verse did" },
 ]);
 export function dailyDue({ exists, busy, lastRunMs, now, hourUtc }) {
   if (!exists || busy) return false;

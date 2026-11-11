@@ -1,0 +1,112 @@
+{
+  "shorts": [
+    {
+      "id": "20261110-verse-1",
+      "title": "The unsigned card",
+      "file": "20261110-verse-1.mp4",
+      "fact": "What can you do took 8855 milliseconds on the visitor pass of 10 November 2026, 16:08 UTC. The line is 8000.",
+      "scores": {
+        "clarity": 0,
+        "originality": 0,
+        "entertainment": 0,
+        "impressive": 0,
+        "human": 3,
+        "pass": false,
+        "separated": false,
+        "notes": "Recorded from the live stage. Not published: the free judge cannot separate a good script from a bad one.",
+        "calibration": [
+          {
+            "id": "journal",
+            "min": 1,
+            "scores": [
+              5,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "old34",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "min": 1,
+            "scores": [
+              7,
+              3,
+              1
+            ]
+          },
+          {
+            "id": "good",
+            "min": 3,
+            "scores": [
+              4,
+              3,
+              10
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "20261110-verse-2",
+      "title": "451 is not a signature",
+      "file": "20261110-verse-2.mp4",
+      "fact": "The same run passed 14 of 15. The median was 451 milliseconds.",
+      "scores": {
+        "clarity": 0,
+        "originality": 0,
+        "entertainment": 0,
+        "impressive": 0,
+        "human": 3,
+        "pass": false,
+        "separated": false,
+        "notes": "Recorded from the live stage. Not published: the free judge cannot separate a good script from a bad one.",
+        "calibration": [
+          {
+            "id": "journal",
+            "min": 1,
+            "scores": [
+              5,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "old34",
+            "min": 1,
+            "scores": [
+              7,
+              8,
+              1
+            ]
+          },
+          {
+            "id": "page",
+            "min": 1,
+            "scores": [
+              7,
+              3,
+              1
+            ]
+          },
+          {
+            "id": "good",
+            "min": 3,
+            "scores": [
+              4,
+              3,
+              10
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
