@@ -564,6 +564,38 @@ export default {
    {
     "name": "system-status",
     "examples": []
+   },
+   {
+    "name": "automation-status",
+    "examples": [
+     "automation status for invoice reminders",
+     "what automations are running for onboarding",
+     "status of the automations Verse owns for support",
+     "update on the automations for weekly reports"
+    ]
+   }
+  ],
+  "proposals": [
+   {
+    "name": "proposal-pack",
+    "examples": [
+     "proposal pack for client onboarding automation",
+     "make a client proposal for invoice reminders",
+     "generate a proposal for the support ticket router",
+     "proposal pack: weekly report automation",
+     "write a proposal for my CRM sync process",
+     "client proposal pack for the onboarding flow"
+    ]
+   },
+   {
+    "name": "proposal",
+    "examples": [
+     "turn this into a proposal",
+     "make a proposal from this",
+     "write a proposal for this request",
+     "draft a proposal",
+     "turn this email into a proposal: we need our order flow fixed by June"
+    ]
    }
   ],
   "shop": [
@@ -793,6 +825,36 @@ export default {
      "map this idea: slack alert when a support ticket sits over 24 hours",
      "system blueprint for weekly ops metrics without copy-paste",
      "system plan for: automate client onboarding"
+    ]
+   }
+  ],
+  "ownership": [
+   {
+    "name": "heavy-lift-map",
+    "examples": [
+     "map the heavy lifting for client onboarding",
+     "heavy lift map: invoice reminders that run themselves",
+     "what does Verse own for the support ticket router",
+     "own the heavy lifting for weekly status reports"
+    ]
+   },
+   {
+    "name": "ownership-map",
+    "examples": [
+     "ownership map for client onboarding",
+     "map ownership for invoice reminders",
+     "what does Verse own vs the client for support tickets",
+     "who owns what for weekly reports",
+     "ownership map: CRM sync"
+    ]
+   },
+   {
+    "name": "ownership-pack",
+    "examples": [
+     "ownership pack for Acme",
+     "what does Verse own for the onboarding flow",
+     "ownership map for weekly reports",
+     "ownership for the client portal"
     ]
    }
   ],

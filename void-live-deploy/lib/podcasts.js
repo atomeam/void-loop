@@ -79,6 +79,20 @@ export function stateOf(pos) { if (!pos) return 'new'; if (pos.p) return 'played
 export function resumeAt(pos, duration) { const t = pos && +pos.t; if (!t || t < 10) return 0; const d = +duration || (pos && +pos.d) || 0; return d && t > d - 15 ? 0 : t; }
 
 // ---- a feed into rows ----------------------------------------------------------------------------------------------------------------------
+/** Tracking prefixes podcast hosts put before the real file (lists run 17): a measurement service that redirects to the address after it.
+ *  When one of them answers with an error (the browser's NotSupportedError on dts.podtrac.com and chrt.fm), the address after it is the
+ *  host's own file. untracked(u) strips them (chained ones too) and returns https://<the rest>, or u unchanged when there is none. Pure. */
+const TRACKERS = [
+  /^(?:dts\.|www\.)?podtrac\.com\/(?:pts\/)?redirect\.(?:mp3|m4a|aac)\//i, /^chrt\.fm\/track\/[^/]+\//i, /^chtbl\.com\/track\/[^/]+\//i,
+  /^pdst\.fm\/e\//i, /^op3\.dev\/e(?:,[^/]*)?\//i, /^pfx\.vpixl\.com\/[^/]+\//i, /^mgln\.ai\/e\/[^/]+\//i, /^arttrk\.com\/p\/[^/]+\//i,
+  /^(?:verifi\.podscribe\.com|pscrb\.fm)\/rss\/p\//i, /^prfx\.byspotify\.com\/e\//i, /^(?:tracking\.)?swap\.fm\/track\/[^/]+\//i, /^claritaspod\.com\/measure\//i,
+];
+export function untracked(u) {
+  const s = String(u || '').trim(), m = /^(https?:\/\/)(.*)$/i.exec(s); if (!m) return s;
+  let rest = m[2], hit = false;
+  for (let i = 0; i < 6; i++) { const t = TRACKERS.find((r) => r.test(rest)); if (!t) break; rest = rest.replace(t, '').replace(/^https?:\/\//i, ''); hit = true; }
+  return hit && /^[a-z0-9.-]+\.[a-z]{2,}\//i.test(rest) ? 'https://' + rest : s;
+}
 /** a stable short id for an episode from its guid (or its audio address), the same on every device. Pure. */
 export function hash(s) { let h = 5381; const t = String(s); for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
 const kindOf = (type, url) => { const t = String(type || '').toLowerCase(), u = String(url || '').toLowerCase().split('?')[0]; return /vtt/.test(t) || u.endsWith('.vtt') ? 'vtt' : /srt|subrip/.test(t) || u.endsWith('.srt') ? 'srt' : /json/.test(t) || u.endsWith('.json') ? 'json' : /html/.test(t) || /\.html?$/.test(u) ? 'html' : 'text'; };

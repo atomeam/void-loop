@@ -1,6 +1,6 @@
 {
  "note": "Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.",
- "count": 17,
+ "count": 14,
  "skills": {
   "lab": [
    "toolkit"
@@ -8,11 +8,6 @@
   "drive-share": [
    "calc",
    "convert"
-  ],
-  "proposal-pack": [
-   "delivery-pack",
-   "system-handoff",
-   "heavy-lift-map"
   ],
   "system-handoff": [
    "delivery-pack",
@@ -31,11 +26,6 @@
    "delivery-pack",
    "monitor-pack",
    "heavy-lift-map"
-  ],
-  "ownership-pack": [
-   "system-handoff",
-   "delivery-pack",
-   "business-clarify"
   ],
   "client-brief": [
    "client-intake",
@@ -72,12 +62,6 @@
    "system-slice",
    "client-intake",
    "progress-report"
-  ],
-  "automation-status": [
-   "automation-pack",
-   "monitor-pack",
-   "client-status-pack",
-   "handoff-checklist"
   ],
   "progress-report": [
    "system-status",

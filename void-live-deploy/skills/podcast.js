@@ -8,7 +8,7 @@
  * "play the latest episode of radiolab" plays that show's newest episode from its public RSS (the directory and the feed
  * are /api/podcasts, Apple's free search, no key). "podcasts about history" stays a search. "start a podcast" is not this.
  */
-import { latestEpisodeOf, pickShow } from '../lib/podcasts.js';
+import { latestEpisodeOf, pickShow, untracked } from '../lib/podcasts.js';
 const WHOSE = "(?:(?:the\\s+)?(?:verse|v01d|void|your|a-?to-?mind)'?s?\\s+(?:own\\s+)?)";
 const POD = '(?:podcasts?|pod|show|episodes?)';
 const PLAY = '(?:(?:play|open|show|start|listen\\s+to|put\\s+on|hear)\\s+(?:me\\s+)?)?';
@@ -89,6 +89,8 @@ async function playShow(text, api) {
     + '<div class="src">' + sourceLine(found && found.source) + '</div>';
   const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
   if (btn && audio) btn.addEventListener('click', () => { audio.play().catch(() => {}); });
+  // a tracking prefix the browser refuses (dts.podtrac.com, chrt.fm ...): try once more with the host's own file after it
+  if (audio) audio.addEventListener('error', () => { const plain = untracked(audio.currentSrc || audio.src); if (plain !== (audio.currentSrc || audio.src) && !audio.dataset.untracked) { audio.dataset.untracked = '1'; audio.src = plain; audio.play().catch(() => {}); } });
   done();
   return true;
 }
