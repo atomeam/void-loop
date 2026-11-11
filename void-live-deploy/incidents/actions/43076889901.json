@@ -1,0 +1,58 @@
+{
+ "at": "2026-11-11T18:24:12Z",
+ "sha": "9128f47e65bb455e19e10a48ffd9df1dc1321f86",
+ "runId": 43076889901,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43076889901",
+ "workflow": "Verse deploy",
+ "event": "push",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "members-paid",
+   "id": 130718925356,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43076889901/job/130718925356",
+   "conclusion": "failure",
+   "step": {
+    "number": 8,
+    "name": "node --test tools/members-paid.e2e.mjs (Already joined, after a reload, the idea box)"
+   },
+   "fails": [
+    "not ok 6 - Built by @name: the member's page lists their idea once Verse built it, with a link to the change; a page with none has no such card",
+    "not ok 7 - a published page on a phone: every card fits the screen width, one under the other, none on top of another"
+   ],
+   "tail": [
+    "  ...",
+    "# Subtest: a published page on a phone: every card fits the screen width, one under the other, none on top of another",
+    "not ok 7 - a published page on a phone: every card fits the screen width, one under the other, none on top of another",
+    "  ---",
+    "  duration_ms: 15346.327574",
+    "  type: 'test'",
+    "  location: '/home/runner/work/void-loop/void-loop/tools/members-paid.e2e.mjs:202:1'",
+    "  failureType: 'testCodeFailure'",
+    "  error: 'page.waitForFunction: Timeout 15000ms exceeded.'",
+    "  code: 'ERR_TEST_FAILURE'",
+    "  name: 'TimeoutError'",
+    "  stack: |-",
+    "    TestContext.<anonymous> (/home/runner/work/void-loop/void-loop/tools/members-paid.e2e.mjs:207:50)",
+    "  ...",
+    "# Subtest: a published page shares as its own: the served /@name head names the page and its cards, not the Verse home card",
+    "ok 8 - a published page shares as its own: the served /@name head names the page and its cards, not the Verse home card",
+    "  ---",
+    "  duration_ms: 691.021038",
+    "  type: 'test'",
+    "  ...",
+    "1..8",
+    "# tests 8",
+    "# suites 0",
+    "# pass 6",
+    "# fail 2",
+    "# cancelled 0",
+    "# skipped 0",
+    "# todo 0",
+    "# duration_ms 39701.75106",
+    "Error: Process completed with exit code 1."
+   ]
+  }
+ ]
+}

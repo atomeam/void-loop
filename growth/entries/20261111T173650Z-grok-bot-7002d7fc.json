@@ -1,0 +1,1 @@
+{"at":"2026-11-11T17:36:50Z","by":"grok-bot","kind":"fix","what":"The outcome exam waits up to 5 s for a podcast's audio to start playing instead of a fixed 1.2 s, so a feed whose host redirects slowly is no longer failed as silent; how quickly the card answered stays the fast check (tools/exam.mjs)","asked":"ask-20261110-0536-2"}

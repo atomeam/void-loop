@@ -6,7 +6,7 @@
     "style": "ink",
     "scene": "split-dinner-bill",
     "scores": {},
-    "formats": "nature"
+    "formats": "trailer"
   },
   "trials": [
     {
@@ -391,27 +391,12 @@
       "kind": "formats",
       "films": [
         {
-          "format": "trailer",
-          "label": "Movie-trailer parody",
-          "topic": "mississippi senate race election results",
-          "name": "mississippi senate race election results",
-          "film": "20261110-trailer-mississippi-senate-race-election-results",
-          "hook": "What if mississippi senate race election results got a movie trailer?",
-          "source": "Google Trends",
-          "gate": {
-            "pass": true,
-            "score": 100,
-            "hookScore": 75,
-            "failed": []
-          }
-        },
-        {
-          "format": "explainer",
-          "label": "Explainer",
-          "topic": "arthur rinderknech",
-          "name": "Arthur Rinderknech",
-          "film": "20261110-explainer-arthur-rinderknech",
-          "hook": "What is Arthur Rinderknech, and why now?",
+          "format": "nature",
+          "label": "Nature-documentary parody",
+          "topic": "crwv stock",
+          "name": "crwv stock",
+          "film": "20261110-nature-crwv-stock",
+          "hook": "Nature documentary: you discovering crwv stock?",
           "source": "Google Trends",
           "gate": {
             "pass": true,
@@ -421,17 +406,32 @@
           }
         },
         {
-          "format": "countdown",
-          "label": "Top-3 countdown",
-          "topic": "lauren sanchez",
-          "name": "Lauren Sánchez Bezos",
-          "film": "20261110-countdown-lauren-s-nchez-bezos",
-          "hook": "3 facts you missed about Lauren Sánchez Bezos",
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "giants trade",
+          "name": "giants trade",
+          "film": "20261110-lyric-giants-trade",
+          "hook": "Is giants trade the song of the day?",
           "source": "Google Trends",
           "gate": {
             "pass": true,
             "score": 100,
-            "hookScore": 80,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "Scene (2026 film)",
+          "name": "Scene",
+          "film": "20261110-news-scene",
+          "hook": "Why is everyone talking about Scene?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
             "failed": []
           }
         }
@@ -458,20 +458,6 @@
             "adult"
           ],
           "why": "adult content"
-        },
-        {
-          "topic": "Queens Public library under ransomware attack e-borrowing suspended",
-          "kinds": [
-            "harm"
-          ],
-          "why": "about harm to people (attack): not something to parody or make a trend film of"
-        },
-        {
-          "topic": "country music singer dies",
-          "kinds": [
-            "harm"
-          ],
-          "why": "about harm to people (dies): not something to parody or make a trend film of"
         }
       ],
       "verdict": "waiting"

@@ -1,120 +1,5 @@
 [
  {
-  "at": "2026-10-18T06:45:07Z",
-  "passed": 59,
-  "of": 59,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"fly around\" (skill:fly)"
- },
- {
-  "at": "2026-10-18T06:59:10Z",
-  "passed": 57,
-  "of": 60,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"habit ring for write, walk, sleep\" (skill:habit-ring)"
- },
- {
-  "at": "2026-10-18T07:14:02Z",
-  "passed": 59,
-  "of": 61,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
- },
- {
-  "at": "2026-10-18T07:27:02Z",
-  "passed": 52,
-  "of": 62,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
- },
- {
-  "at": "2026-10-18T08:43:06Z",
-  "passed": 52,
-  "of": 63,
-  "kind": "file",
-  "key": "what are you? | missing text /V#D/",
-  "note": "fix: \"what are you?\" missing text /V01D/; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
- },
- {
-  "at": "2026-10-18T09:26:58Z",
-  "passed": 62,
-  "of": 63,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T10:02:42Z",
-  "passed": 54,
-  "of": 64,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T10:17:16Z",
-  "passed": 55,
-  "of": 65,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T11:21:11Z",
-  "passed": 56,
-  "of": 66,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T12:35:31Z",
-  "passed": 64,
-  "of": 67,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s pls\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T13:46:58Z",
-  "passed": 57,
-  "of": 68,
-  "kind": "file",
-  "key": "find me a sc-ifi film from the 80s | refused: don't know this yet",
-  "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-18T14:06:18Z",
-  "passed": 67,
-  "of": 68,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T16:03:13Z",
-  "passed": 59,
-  "of": 69,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"films by kurosawa pls\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T18:18:28Z",
-  "passed": 68,
-  "of": 70,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T18:45:56Z",
-  "passed": 59,
-  "of": 71,
-  "kind": "file",
-  "key": "yo film metadata for ikiru | refused: don't know this yet",
-  "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
-  "at": "2026-10-19T00:40:40Z",
-  "passed": 70,
-  "of": 71,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
- },
- {
   "at": "2026-10-19T02:18:29Z",
   "passed": 71,
   "of": 72,
@@ -7803,6 +7688,319 @@
      "ask": "what can you do",
      "why": [
       "slow 8855 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T16:36:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1180,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9306 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T17:08:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 983,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-10T17:19:36Z",
+  "passed": 115,
+  "of": 120,
+  "ms": 405,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "what can I buy",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "air quality in Tokyo",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "flip this card",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "can we play despacito",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "progress report for the onboarding automation",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 983,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"credits\" (skill:faucet)"
+ },
+ {
+  "at": "2026-11-10T19:17:53Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 658,
+   "failed": [
+    {
+     "ask": "what time is it",
+     "why": [
+      "slow 9931 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T20:36:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1445,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9254 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-10T22:14:33Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 636,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 10485 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T00:53:21Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 597,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T01:05:14Z",
+  "passed": 116,
+  "of": 121,
+  "ms": 443,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "approve later: keep morning-digest running every 2 hours",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "dim the void",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo style like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 597,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"client brief for Acme onboarding\" (skill:client-brief)"
+ },
+ {
+  "at": "2026-11-11T08:22:29Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1429,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T13:18:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1267,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T13:45:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 610,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9710 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T16:35:15Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 773,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9953 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T16:46:40Z",
+  "passed": 118,
+  "of": 121,
+  "ms": 391,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "test me on that",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "geenrate a toon style dog",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "automation pack for invoice reminders",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 773,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9953 ms"
+     ]
+    }
+   ]
+  },
+  "note": "new ground passed, kept as a regression case: \"lift summary for client onboarding\" (skill:lift-summary)"
+ },
+ {
+  "at": "2026-11-11T17:01:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1362,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9576 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T17:35:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 782,
+   "failed": [
+    {
+     "ask": "flip a coin",
+     "why": [
+      "slow 10525 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T18:15:46Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 763,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9146 ms"
      ]
     }
    ]

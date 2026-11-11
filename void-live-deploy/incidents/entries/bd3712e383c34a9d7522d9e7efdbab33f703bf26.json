@@ -1,0 +1,32 @@
+{
+ "at": "2026-11-11T18:32:49.696Z",
+ "sha": "bd3712e383c34a9d7522d9e7efdbab33f703bf26",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43075765440",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+ ],
+ "touched": [
+  ".github/actions/void-test/action.yml",
+  ".github/workflows/verify.yml",
+  "docs/HANDOFF-GAPS.md",
+  "docs/convergence.md",
+  "docs/map.d/client-packs.md",
+  "domains/handoff.md",
+  "domains/lists.metrics.json",
+  "domains/void.agents.log.md",
+  "domains/void.decisions.json",
+  "growth/entries/20261111T173649Z-grok-bot-e5fcb2ee.json",
+  "growth/entries/20261111T173650Z-grok-bot-7002d7fc.json",
+  "growth/entries/20261111T173651Z-grok-bot-8abf6e75.json",
+  "tools/asks-link.json",
+  "tools/checks.d/reuse-tools-family.chk",
+  "tools/checks.d/scores-skill.chk"
+ ],
+ "passed": [
+  1,
+  2,
+  4
+ ]
+}

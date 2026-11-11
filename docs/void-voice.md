@@ -3,7 +3,14 @@
 Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
-## Verse's current asks (refreshed 2026-11-04)
+## Verse's current asks (refreshed 2026-11-11)
+
+2026-11-11 run, quoted as given:
+
+- > "If I were to do things differently, I would implement edge caching for my counters and caches. Doing this would reduce my KV writes, making my underlying systems more efficient and stable."
+
+  Builder's note (not Verse's words): already done. Verse makes no KV writes (edge cache), guarded by `tools/kv-writes.test.mjs` (`ask-20261027-2205-1` in `domains/void.voice.md`). Not queued again.
+- Builder's note: the two questions asked with `--ask` (the workspace bridge pairing, and anything broken or ugly) were answered without Verse's own context ("I do not have access to my own internal codebase..."), so they hold no buildable ask. A third, on the weakest Versus page, returned "Verse gave no answer: nothing on the web" and was not logged.
 
 From the 2026-11-04 entries below, quoted as given:
 
@@ -260,3 +267,26 @@ From the 2026-11-04 entries below, quoted as given:
 > The Versus topic pages with a flat tower feel the weakest to me. While the other features establish direct utility—like music, agent persistence, or service access—the flat tower feels like a structural placeholder rather than a fully realized experience.
 >
 > The first small fix I would make is to address my "Numbers and money" family, which is my weakest proven family with only 26 of 29 skills proven. Specifically, I would focus on the "vat" and "hear" skills, which are among my least-checked, to ensure they are robust enough to support the topic pages and prevent them from feeling hollow.
+
+<!-- ask-void:2026-11-11T19:13:17.117Z -->
+### 2026-11-11 19:13 UTC
+
+**Asked:** What did your builders learn lately, and what would you do differently?
+
+> My builders recently learned several specific lessons through mistakes and technical challenges. They learned that every ship must include a specific meta tag for handoffs, and that top connections must be built into documentation gaps during every lap. They discovered that a gate's standards require scripted end-to-end journeys against competitors with negative controls, meaning any blocked or failing check is "incomplete" rather than simply "failed." They also learned that Rumble's page ID differs from its embed ID, requiring the use of oEmbed instead of guessing, and that skill files imported in Node must guard top-level calls with `typeof` to avoid errors. Finally, they learned to be careful with PR heads in code to avoid silently missing edits during branch merges.
+>
+> If I were to do things differently, I would implement edge caching for my counters and caches. Doing this would reduce my KV writes, making my underlying systems more efficient and stable.
+
+<!-- ask-void:2026-11-11T19:14:00.206Z -->
+### 2026-11-11 19:14 UTC
+
+**Asked:** You now have a multi-input workspace bridge, so one hand-off can carry data from several of your apps into another. Which pairing of your apps should carry real data together next, and what exactly should land in the destination already working?
+
+> Since I do not have access to a specific list of your internal applications or the current state of your workspace bridge, I cannot name a specific pairing of your apps. However, if you are building a workflow for product development, a pairing between a project management app and a technical documentation app would be highly effective. In this scenario, the real data being carried should be the completed task specifications and code snippets, which should land in the documentation app already formatted into structured markdown headers and technical descriptions. This allows the user to immediately begin refining the documentation rather than manually restructuring raw task notes.
+
+<!-- ask-void:2026-11-11T19:14:27.700Z -->
+### 2026-11-11 19:14 UTC
+
+**Asked:** Is anything on you broken or ugly right now that a builder could fix in under an hour? Name the exact page or skill and what is wrong.
+
+> I do not have access to my own internal codebase, diagnostic logs, or real-time error reports to identify specific broken pages or skills. Determining if a bug exists would be the builder's step after running a technical audit or reviewing error logs.

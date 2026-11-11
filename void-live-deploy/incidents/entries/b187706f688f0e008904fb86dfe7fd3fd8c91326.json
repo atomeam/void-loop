@@ -1,0 +1,31 @@
+{
+ "at": "2026-11-11T20:05:44.810Z",
+ "sha": "b187706f688f0e008904fb86dfe7fd3fd8c91326",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43090516380",
+ "suite": "browser suite on main",
+ "checks": [
+  "wants card: \"name all your unbuilt asks and come up with 50 more new ones\" opens \"What I want built\" from Verse's own records (the will fixture's want, the reflect fixture's open ask with its date, the real self.json open frontier items), a count line \"1 want · 1 ask not built · N inbox items\", every item a chip, and the 50 new ones are the asker's to ask for one at a time",
+  "wants card: a definition under each heading, what changed this lap from the lap record, what is blocked and on what, the next pick with its evidence, and the growth inbox in workstreams with counts (owner, 2026-10-29)",
+  "\"growth\": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will's open want, the last commits as new leaves)"
+ ],
+ "touched": [
+  ".github/workflows/shorts.yml",
+  ".github/workflows/verse-podcast.yml",
+  "docs/MAP.md",
+  "docs/PARITY/github.md",
+  "docs/PARITY/gmail.md",
+  "docs/PARITY/google-search.md",
+  "docs/PARITY/hugging-face.md",
+  "docs/PARITY/lichess.md",
+  "docs/PARITY/youtube.md",
+  "docs/playbooks/podcast.md",
+  "docs/playbooks/shows.md",
+  "domains/growth-inbox.md",
+  "domains/handoff.md",
+  "tools/checks.mjs",
+  "tools/conductor-core.mjs"
+ ],
+ "shards": [
+  3
+ ]
+}

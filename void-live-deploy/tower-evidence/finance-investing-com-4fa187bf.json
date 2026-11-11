@@ -6,31 +6,31 @@
    "verse": 3,
    "best": 1,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs investing.com 1 of 3 loads answered",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 172,
-   "best": 38,
-   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 172 ms to the load event (median of 3, phone width) vs investing.com 38 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "verse": 103,
+   "best": 44,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 103 ms to the load event (median of 3, phone width) vs investing.com 44 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "mobile": {
-   "verdict": "better",
+   "verdict": "equal-and-better",
    "verse": 0,
-   "best": 493,
-   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs investing.com 493 px sideways overflow at 390 px",
-   "at": "2026-11-10T15:18:35.764Z",
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs investing.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "accessibility": {
    "verdict": "better",
    "verse": 0,
-   "best": 32,
-   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs investing.com 32 unnamed controls or images",
-   "at": "2026-11-10T15:18:35.764Z",
+   "best": 19,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs investing.com 19 unnamed controls or images",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 1,
    "best": 0,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs investing.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,15 +46,15 @@
    "verse": 4,
    "best": 4,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs investing.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "design polish": {
    "verdict": "better",
    "verse": 0,
-   "best": 432,
-   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs investing.com 432 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), investing.com (0 low-contrast texts, 432 small tap targets, layout shift 0.00)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "best": 76,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs investing.com 76 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), investing.com (20 low-contrast texts, 56 small tap targets, layout shift 0.00)",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   },
   "accuracy": {
@@ -62,7 +62,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not investing.com (the site is not asked)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "of": 3
   },
   "completeness": {
@@ -70,7 +70,7 @@
    "verse": 21,
    "best": 7,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs investing.com 7 of 21 things a full answer shows (Verse lacks: none; site lacks: the previous close, the day range, the 52-week range, volume, chart ranges 1D to Max, top movers, a currency converter, a close on any day, a written market wrap, the source and the delay said, Compare symbols, Share quote or article, Links, Sources & Further Reading)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "of": 21,
    "siteRead": true
   },
@@ -79,7 +79,7 @@
    "verse": 3,
    "best": 0,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs investing.com 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "of": 3,
    "part": true,
    "siteRead": true
@@ -89,7 +89,7 @@
    "verse": 3,
    "best": 0,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs investing.com 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "of": 3,
    "part": true,
    "siteRead": true
@@ -99,7 +99,7 @@
    "verse": 2,
    "best": 1,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs investing.com 1 of 2 shown (Verse lacks: none; site lacks: kept on the device)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "of": 2,
    "part": true,
    "siteRead": true
@@ -109,7 +109,7 @@
    "verse": 7,
    "best": 5.5,
    "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 7 of 11 wider-use points (docs/WIDER-USE.md) vs investing.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-10T15:18:35.764Z",
+   "at": "2026-11-11T14:46:26.432Z",
    "siteRead": true
   }
  }

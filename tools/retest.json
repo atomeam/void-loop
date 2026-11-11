@@ -1,13 +1,5 @@
 {
  "note": "the daily re-test of skills not tested in 7 days (tools/retest.mjs; asked by Verse): each loaded, its examples routed, its near misses kept out, its own unit test run. Read by tools/families.mjs: a passing skill was tested that day, a failing one has no passing self-test.",
- "at": "2026-11-10",
- "retested": {
-  "ownership-pack": {
-   "ok": false,
-   "failing": [
-    "not in skills/index.json"
-   ],
-   "test": null
-  }
- }
+ "at": "2026-11-11",
+ "retested": {}
 }

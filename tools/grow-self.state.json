@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "42791231155",
-  "at": "2026-11-10T09:31:23Z",
-  "what": "Verse hardened itself: 3 benchmark ask(s) for ownership-map.  Why these: ownership-map (no benchmark ask, evidence tier: tested); ownership-pack (no benchmark ask, evidence tier: tested). New phrases: “ownership map for client onboarding” now opens ownership-map; “map ownership for invoice reminders” now opens ownership-map; “what does Verse own vs the client for support tickets” now opens ownership-map. Did not route: ownership pack for Acme; what does Verse own for the onboarding flow; ownership map for weekly reports.",
-  "try": "ownership map for client onboarding",
+  "run": "42867507381",
+  "at": "2026-11-10T17:42:07Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for ownership-pack.  Why these: ownership-pack (no benchmark ask, evidence tier: experiment). New phrases: “ownership pack for Acme” now opens ownership-pack. Did not route: what does Verse own for the onboarding flow; ownership map for weekly reports.",
+  "try": "ownership pack for Acme",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-11-10T05:23:44Z",
-    "try": "proposal pack for client onboarding automation",
-    "closedAt": "2026-11-10T09:31:11Z"
+    "at": "2026-11-10T09:31:23Z",
+    "try": "ownership map for client onboarding",
+    "closedAt": "2026-11-10T17:41:57Z"
   }
 }
