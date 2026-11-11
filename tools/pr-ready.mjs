@@ -26,25 +26,36 @@ export function readiness(gh, repo, pr) {
   const latest = (name) => all.filter((r) => r.name === name).sort((a, b) => b.id - a.id)[0];
   const runs = [latest('test-and-deploy'), latest('bench'), latest('void-review')].filter(Boolean);
   const failed = runs.find((r) => r.status === 'completed' && !OK.includes(r.conclusion) && r.conclusion !== 'cancelled');
-  if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${failed.html_url}` };
+  if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${rUrl(failed)}` };
   // the one wait: Verse's own review, which reports in seconds (a PR from before that check falls back on the suite)
   const gate = runs.find((r) => r.name === 'void-review') || runs.find((r) => r.name === 'test-and-deploy');
+  // reviews/comments can exceed one page on a long-lived PR (a loop once hid the latest verdict); read all of them
+  const allReviews = gh(`repos/${repo}/pulls/${pr}/reviews?per_page=100`, { paginate: true }) || [];
+  const reviews = Array.isArray(allReviews) ? allReviews : [];
+  const botApproved = reviews.some((r) => r && r.user && r.user.login === 'github-actions[bot]' && r.state === 'APPROVED' && r.commit_id === sha);
+  const botVerdict = reviews.some((r) => r && r.user && r.user.login === 'github-actions[bot]' && r.commit_id === sha && /Verdict:\s*merge/i.test(String(r.body || '')));
   // no review run at all on this head: a PR opened or pushed with the workflow's token (Verse's own PRs: grow-self, propose-fix) starts
-  // no pull_request run, so it would wait forever; noReview tells automerge.mjs to dispatch Verse's review on it (2026-10-23, #1289 sat 40 min)
-  if (!gate) { const quiet = Date.now() - Date.parse(p.updated_at || 0) > 180000; return { ...base, state: 'wait', why: 'void-review never started on this head', noReview: quiet, branch: p.head && p.head.ref }; }
+  // no pull_request run, so it would wait forever; noReview tells automerge.mjs to dispatch Verse's review on it (2026-10-23, #1289 sat 40 min).
+  // But a workflow_dispatch review may attach its check run to the wrong ref/SHA while the bot's APPROVED review on head.sha is the real verdict: treat it as reviewed.
+  if (!gate) {
+    if (botApproved || botVerdict) return { ...base, state: 'merge', why: "Verse approved this head (review verdict found for " + sha.slice(0, 7) + ")", extra: '' };
+    const quiet = Date.now() - Date.parse(p.updated_at || 0) > 180000; return { ...base, state: 'wait', why: 'void-review never started on this head', noReview: quiet, branch: p.head && p.head.ref };
+  }
   if (gate.status !== 'completed' || gate.conclusion !== 'success') return { ...base, state: 'wait', why: gate.name + ' not finished' };
   // the extras: whatever CodeRabbit has posted by now is reported, never waited on and never a stop
-  const reviews = (gh(`repos/${repo}/pulls/${pr}/reviews?per_page=100`) || []).filter((r) => r.user && r.user.login === CR && r.commit_id === sha);
-  const rc = gh(`repos/${repo}/pulls/${pr}/comments?per_page=100`) || [];
+  const crReviews = reviews.filter((r) => r.user && r.user.login === CR && r.commit_id === sha);
+  const rcRaw = gh(`repos/${repo}/pulls/${pr}/comments?per_page=100`, { paginate: true }) || [];
+  const rc = Array.isArray(rcRaw) ? rcRaw : [];
   const replied = new Set(rc.filter((c) => c.in_reply_to_id && c.user && c.user.login !== CR).map((c) => c.in_reply_to_id));
   const open = rc.filter((c) => !c.in_reply_to_id && c.user && c.user.login === CR && !replied.has(c.id));
   // findings on this head: each inline one is settled by an answer on its thread; findings with no thread on this head
   // (outside the diff, in the review body) are settled only by a push that fixes them
-  const found = reviews.map((r) => +((r.body || '').match(/Actionable comments posted:\s*(\d+)/) || [0, 0])[1]).reduce((a, b) => a + b, 0);
+  const found = crReviews.map((r) => +((r.body || '').match(/Actionable comments posted:\s*(\d+)/) || [0, 0])[1]).reduce((a, b) => a + b, 0);
   const threadsHere = rc.filter((c) => !c.in_reply_to_id && c.user && c.user.login === CR && (c.original_commit_id || c.commit_id) === sha).length;
   const extra = found || open.length ? `CodeRabbit (extra): ${Math.max(found, threadsHere)} finding(s) on ${sha.slice(0, 7)}, ${open.length} thread(s) unanswered` : '';
   return { ...base, state: 'merge', why: "Verse found no bugs or risks and nothing failed (the suite runs on main after the deploy)", extra };
 }
+function rUrl(r) { return r && r.html_url ? r.html_url : ''; }
 
 // The bot merges main into a conflicted PR (automerge.yml, for PRs labelled automerge from this repository only).
 //   resolveMain(run, gh, { repo, pr, branch, tools, dir }) -> { state: 'pushed', sha } | { state: 'conflict', files } | { state: 'failed', why }
