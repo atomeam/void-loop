@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-19T04:58:40Z",
-  "passed": 64,
-  "of": 74,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
- },
- {
   "at": "2026-10-19T10:59:48Z",
   "passed": 73,
   "of": 74,
@@ -8018,6 +8011,17 @@
    "correct": 15,
    "of": 15,
    "medianMs": 1064,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T21:35:56Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 566,
    "failed": []
   },
   "note": "visitor pass 15/15"
