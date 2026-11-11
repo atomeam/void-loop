@@ -359,6 +359,16 @@
    "listed": 3,
    "defectsBefore": 3,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-11T21:42:14.589Z",
+   "run": 45,
+   "measured": 30,
+   "clean": 22,
+   "fixed": 1,
+   "listed": 7,
+   "defectsBefore": 2,
+   "defectsAfter": 1
   }
  ],
  "pages": {
@@ -7598,7 +7608,7 @@
    "state": "clean"
   },
   "/emojis/everywhere/": {
-   "at": "2026-11-11T19:27:57.737Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7612,7 +7622,7 @@
    "why": "no rule fixes it (a layout shift of 0.191 that no rule fixes: listed for a builder)"
   },
   "/identity/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7625,20 +7635,21 @@
    "state": "clean"
   },
   "/g/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.386,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.386 that no rule fixes: listed for a builder)"
   },
   "/stl/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7651,7 +7662,7 @@
    "state": "clean"
   },
   "/color/colour-management/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7664,7 +7675,7 @@
    "state": "clean"
   },
   "/color/colour-picker-tool/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7677,7 +7688,7 @@
    "state": "clean"
   },
   "/converter/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7690,7 +7701,7 @@
    "state": "clean"
   },
   "/rap/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7703,7 +7714,7 @@
    "state": "clean"
   },
   "/trading-bots/trend-50-200/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7716,7 +7727,7 @@
    "state": "clean"
   },
   "/trading-bots/breakout-20-10/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7729,7 +7740,7 @@
    "state": "clean"
   },
   "/trading-bots/dip-rsi2/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7742,7 +7753,7 @@
    "state": "clean"
   },
   "/local/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7756,7 +7767,7 @@
    "why": "no rule fixes it (a layout shift of 0.508 that no rule fixes: listed for a builder)"
   },
   "/random/wheel/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7769,7 +7780,7 @@
    "state": "clean"
   },
   "/time/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7782,7 +7793,7 @@
    "state": "clean"
   },
   "/fix/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7795,7 +7806,7 @@
    "state": "clean"
   },
   "/music/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7808,7 +7819,7 @@
    "state": "clean"
   },
   "/tuner/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7821,21 +7832,21 @@
    "state": "clean"
   },
   "/brain/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.428,
+    "cls": 0.75,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.428 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.75 that no rule fixes: listed for a builder)"
   },
   "/scores/sports/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7848,7 +7859,7 @@
    "state": "clean"
   },
   "/color/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7861,7 +7872,7 @@
    "state": "clean"
   },
   "/calculators/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7874,71 +7885,59 @@
    "state": "clean"
   },
   "/store/": {
-   "at": "2026-11-09T10:26:00.757Z",
-   "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 2,
-    "empty": 0,
-    "cls": 0.373,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "rules": 2,
-   "moved": 0.019,
-   "why": "(a layout shift of 0.373 that no rule fixes: listed for a builder)"
-  },
-  "/store/receipt/": {
-   "at": "2026-11-09T10:26:00.757Z",
-   "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 2,
-    "empty": 0,
-    "cls": 0.377,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "rules": 2,
-   "moved": 0.019,
-   "why": "(a layout shift of 0.377 that no rule fixes: listed for a builder)"
-  },
-  "/starboard/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.119,
+    "cls": 0.372,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.119 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.372 that no rule fixes: listed for a builder)"
+  },
+  "/store/receipt/": {
+   "at": "2026-11-11T21:42:14.589Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "clean"
+  },
+  "/starboard/": {
+   "at": "2026-11-11T21:42:14.589Z",
+   "before": {
+    "defects": 2,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.129,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.129,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0,
+   "why": "(a layout shift of 0.129 that no rule fixes: listed for a builder)"
   },
   "/base64/bases/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7951,20 +7950,21 @@
    "state": "clean"
   },
   "/paint/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
-    "defects": 0,
+    "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.09,
+    "cls": 0.22,
     "overflow": 0
    },
-   "state": "clean"
+   "state": "listed",
+   "why": "no rule fixes it (a layout shift of 0.22 that no rule fixes: listed for a builder)"
   },
   "/resize-image/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7977,7 +7977,7 @@
    "state": "clean"
   },
   "/generators/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7990,7 +7990,7 @@
    "state": "clean"
   },
   "/color/gradient/": {
-   "at": "2026-11-09T10:26:00.757Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 2,
     "contrast": 0,
@@ -8069,7 +8069,7 @@
    "state": "clean"
   },
   "/news/global-headlines/": {
-   "at": "2026-11-09T12:28:29.875Z",
+   "at": "2026-11-11T21:42:14.589Z",
    "before": {
     "defects": 0,
     "contrast": 0,
