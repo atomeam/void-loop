@@ -982,6 +982,60 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-12T00:10:00Z",
+   "run": 18,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.29,
+   "dup_basis": "2 of 7 items were already done elsewhere: the ledger-wipe guard for the other ledgers (#2708) and main's four red checks from run 17 (ff0f3b7f7)",
+   "median_days": 0,
+   "median_basis": "days from queued to built over the 7 items: 0 (delivery-board's book and registry reds, red since 2026-11-11 22:11 UTC), 0 (the proposal card check, red since 2026-11-11 21:26 UTC), 0 (targets, under-the-hood and revert-target reds, 2026-11-11), 0 (client-status family, delivery-board arrived 2026-11-11), 0 (ledger-wipe guard, Up for grabs 2026-11-11), 0 (main's four reds, Up for grabs 2026-11-11), 1 (the podcasts exam and runner ask groups, asked 2026-11-10); median 0",
+   "asks_open_start": 3,
+   "asks_open_end": 2,
+   "note": "Run 18 of the lists routine, the same day as runs 16 and 17. Main's browser suite had been red since run 17's merge: run 17's proposals family hid proposal from long pasted text (fixed here by lib/ask-text.js longOk), and delivery-board (#2707) reached main with no family or book page. The asks the deploy links on its runner were never committed, so they looked open in every run; void.asks.json now carries them.",
+   "items": [
+    {
+     "what": "delivery-board (#2707) registered: family in tools/families.mjs, map line, regenerated first/guide/parity/deps cards; main's book, rule-registry, families, guide, parity and map-coverage checks green",
+     "list": "green foundation",
+     "status": "built"
+    },
+    {
+     "what": "long prose reaches a family's member: lib/ask-text.js longOk; the proposal card (proposals family) and translate (languages family) take pasted text again; main's proposal card browser check green (tools/long-ok-family.test.mjs)",
+     "list": "green foundation / convergence",
+     "status": "built"
+    },
+    {
+     "what": "batch: shadcn-ui target feature states valid (targets), speculation rules skip /our-motherfucking-version, /rotate-letters, /track-times (under-the-hood), revert-target wiring test accepts the bumped verify concurrency group",
+     "list": "green foundation",
+     "status": "built"
+    },
+    {
+     "what": "client-status-pack + delivery-board merged into skills/client-status.js (order 9890, aliases kept, tools/client-status-family.test.mjs, 0 of 6,416 asks moved); delivery-board's progress read live from /api/status and /incidents.json instead of a fixed line",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "Verse's podcasts exam ask group and six runner rewordings linked in void.asks.json (the asks step's links were only written on the deploy runner)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "a guard so a merge cannot empty the other ledgers",
+     "list": "Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/2708"
+    },
+    {
+     "what": "main's four remaining red checks from run 17 (dark-pages, well-known, seo-audit, no-ellipsis)",
+     "list": "Up for grabs",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/commit/ff0f3b7f7"
+    }
+   ]
   }
  ]
 }

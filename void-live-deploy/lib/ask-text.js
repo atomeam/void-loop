@@ -18,6 +18,14 @@ export function isLongProse(s) {
 }
 // skills that are made for long text and still run on it
 export const LONG_OK = new Set(['telemetry-route', 'digest', 'translate', 'memory', 'proposal', 'notepad', 'sticky', 'list', 'automations', 'actions', 'link']);
+/** whether a routing entry may take long prose: by its own name, or, for a family (lib/skill-family.js), by the member that answers.
+ * A family named by none of LONG_OK (proposals, languages) once lost proposal's and translate's pasted requests (lists run 18). Pure. */
+export function longOk(sk, lower, text) {
+  if (!sk) return false;
+  if (LONG_OK.has(sk.name)) return true;
+  if (typeof sk.member !== 'function') return false;
+  try { const m = sk.member(lower, text); return !!m && LONG_OK.has(m.name); } catch (_) { return false; }
+}
 
 // A tool on the stage opens only when the message asks for it (owner, 2026-10-30: "when clock is mentioned in any message it opens
 // the clock only on verse"). The page's own parser matched the tool's word: "we worked around the clock", "my clock is broken",
