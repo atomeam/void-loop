@@ -1,19 +1,5 @@
 [
  {
-  "at": "2026-10-18T10:02:42Z",
-  "passed": 54,
-  "of": 64,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T10:17:16Z",
-  "passed": 55,
-  "of": 65,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
- },
- {
   "at": "2026-10-18T11:21:11Z",
   "passed": 56,
   "of": 66,
@@ -7884,5 +7870,52 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T00:53:21Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 597,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T01:05:14Z",
+  "passed": 116,
+  "of": 121,
+  "ms": 443,
+  "kind": "grow",
+  "failed": [
+   {
+    "ask": "toss it off the screen",
+    "why": "only \"waking up\" appeared, never the answer"
+   },
+   {
+    "ask": "approve later: keep morning-digest running every 2 hours",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "dim the void",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "who is the auhtor of dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "yo style like mickey mouse",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 597,
+   "failed": []
+  },
+  "note": "new ground passed, kept as a regression case: \"client brief for Acme onboarding\" (skill:client-brief)"
  }
 ]

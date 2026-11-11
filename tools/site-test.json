@@ -384,6 +384,9 @@
     },
     {
       "ask": "credits"
+    },
+    {
+      "ask": "client brief for Acme onboarding"
     }
   ],
   "candidates": [],

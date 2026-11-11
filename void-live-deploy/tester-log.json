@@ -1,15 +1,52 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 117,
+ "cases": 118,
  "runsTotal": 300,
  "kinds": {
-  "grow": 48,
+  "grow": 47,
   "file": 47,
-  "visitor": 201,
+  "visitor": 202,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-11T01:05:14Z",
+   "passed": 116,
+   "of": 121,
+   "kind": "grow",
+   "ms": 443,
+   "note": "new ground passed, kept as a regression case: \"client brief for Acme onboarding\" (skill:client-brief)",
+   "failed": [
+    {
+     "ask": "toss it off the screen",
+     "why": "only \"waking up\" appeared, never the answer"
+    },
+    {
+     "ask": "approve later: keep morning-digest running every 2 hours",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "dim the void",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "who is the auhtor of dune",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo style like mickey mouse",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-11T00:53:21Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-10T22:14:33Z",
    "passed": 0,
@@ -181,95 +218,81 @@
      "why": "console: Failed to load resource: the server responded with a status of 429 ()"
     }
    ]
-  },
-  {
-   "at": "2026-11-10T03:04:10Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 15/15"
-  },
-  {
-   "at": "2026-11-10T02:36:31Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
   {
-   "from": "2026-08-18",
+   "from": "2026-08-19",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-25",
+   "from": "2026-08-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-01",
+   "from": "2026-09-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-08",
+   "from": "2026-09-09",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-15",
+   "from": "2026-09-16",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-22",
+   "from": "2026-09-23",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-29",
+   "from": "2026-09-30",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-06",
+   "from": "2026-10-07",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-13",
-   "runs": 14,
-   "passed": 880,
-   "of": 972
+   "from": "2026-10-14",
+   "runs": 13,
+   "passed": 838,
+   "of": 918
   },
   {
-   "from": "2026-10-20",
-   "runs": 2,
-   "passed": 134,
-   "of": 153
-  },
-  {
-   "from": "2026-10-27",
+   "from": "2026-10-21",
    "runs": 1,
+   "passed": 67,
+   "of": 78
+  },
+  {
+   "from": "2026-10-28",
+   "runs": 3,
    "passed": 58,
    "of": 87,
    "ms": 554
   },
   {
-   "from": "2026-11-03",
+   "from": "2026-11-04",
    "runs": 283,
-   "passed": 6309,
-   "of": 8156,
+   "passed": 6425,
+   "of": 8277,
    "broken": 14,
    "brokenOf": 1491,
    "brokenPassed": 135,
@@ -670,6 +693,10 @@
   "skill:faucet": "2026-11-10T17:19:36Z",
   "skill:handoff-checklist": "2026-11-10T17:19:36Z",
   "skill:ownership-map": "2026-11-10T17:19:36Z",
-  "skill:progress-report": "2026-11-10T17:19:36Z"
+  "skill:progress-report": "2026-11-10T17:19:36Z",
+  "skill:client-brief": "2026-11-11T01:05:14Z",
+  "skill:client-offer": "2026-11-11T01:05:14Z",
+  "skill:ownership-pack": "2026-11-11T01:05:14Z",
+  "skill:proposal-pack": "2026-11-11T01:05:14Z"
  }
 }
