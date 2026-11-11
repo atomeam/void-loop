@@ -14,5 +14,9 @@
   "tools/prepush.mjs",
   "tools/prepush.test.mjs",
   "tools/wiped-files.test.mjs"
+ ],
+ "passed": [
+  1,
+  4
  ]
 }
