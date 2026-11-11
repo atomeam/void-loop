@@ -23,5 +23,9 @@
   "tools/asks-link.json",
   "tools/checks.d/reuse-tools-family.chk",
   "tools/checks.d/scores-skill.chk"
+ ],
+ "passed": [
+  1,
+  4
  ]
 }
