@@ -7911,7 +7911,7 @@ try {
         && plain.nChanged === '2' && /^Lap 1 so far: 2 items sent for upgrade \(newest: surface:ask, surface:home\) · 0 new features$/.test(plain.changed) && /Overhaul surface:ask, failed, not shipped/.test(plain.run)
         && plain.blocked.some((b) => /watertightness of STL.*held until sycophanthex\.com is beaten/.test(b)) && plain.blocked.length === 1 + nWaits
         && /^will:My willUpgrade surface:cardsIts turn in lap 1/.test(plain.picks[0]) && /^ask:My buildersGive the map card terrain/.test(plain.picks[1])
-        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams) && !plain.wide && !P.errors.length,
+        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && (nInbox === 0 ? plain.streams === '' : /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams)) && !plain.wide && !P.errors.length,
       JSON.stringify({ plain, nInbox, nWaits, errors: P.errors }));
     await P.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
@@ -12655,4 +12655,3 @@ for (const r of results) console.log(line(r));
 const skipped = results.filter((r) => r.skipped).length;
 console.log(`${results.length - bad.length}/${results.length} passed` + (skipped ? ` (${skipped} skipped on this machine)` : ''));
 if (ONLY.length && !wanted.size) { console.log('--only "' + ONLY.join(' ') + '" matched no section (node tools/test_void.mjs --list)'); exitFlushed(1); } else exitFlushed(bad.length ? 1 : 0);
-
