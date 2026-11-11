@@ -2412,6 +2412,11 @@
       "words": "Expand the WebMCP origin trial to serve every caller via /tools.json and /api/mcp.",
       "ledgerAt": "2026-10-13T15:51:15Z",
       "why": "built: the page's WebMCP tools, with every refusal as data (tools/asks-link.json)"
+    },
+    {
+      "words": "Add emojigraph.org to LANE_PAGES and begin target assimilation.",
+      "ledgerAt": "2026-11-03T23:42:07Z",
+      "why": "built: emojigraph.org is already a lane page (lib/self-sites.js row, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15 (decided in lists runs 10, 11, 13 and 16) (tools/asks-link.json)"
     }
   ],
   "held": [
@@ -2423,20 +2428,17 @@
     }
   ],
   "totals": {
-    "asked": 261,
-    "built": 259,
-    "through": "2026-11-10T02:00:00Z",
+    "asked": 263,
+    "built": 258,
+    "through": "2026-11-10T23:59:00Z",
     "open": [
       {
         "ask": "Build a dedicated runner for the two longest browser checks.",
-        "at": "2026-11-10T02:00:00Z",
-        "kind": "daily",
+        "at": "2026-11-10T17:13:00Z",
+        "kind": "build",
         "small": true,
-        "times": 3,
+        "times": 4,
         "ids": [
-          "ask-20261109-2356-2",
-          "ask-20261110-0006-2",
-          "ask-20261110-0011-2",
           "ask-20261110-0016-2",
           "ask-20261110-0057-2",
           "ask-20261110-0106-2",
@@ -2445,15 +2447,88 @@
           "ask-20261110-0140-2",
           "ask-20261110-0148-2",
           "ask-20261110-0156-2",
-          "ask-20261110-0200-2"
+          "ask-20261110-0200-2",
+          "ask-20261110-1710-3",
+          "ask-20261110-1713-2",
+          "ask-20261110-1813-1"
+        ]
+      },
+      {
+        "ask": "Build dedicated runners for the perf3d and glyphs browser checks.",
+        "at": "2026-11-10T23:59:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 4,
+        "ids": [
+          "ask-20261110-1733-1",
+          "ask-20261110-1742-1",
+          "ask-20261110-1805-1",
+          "ask-20261110-1813-1",
+          "ask-20261110-1919-1",
+          "ask-20261110-1935-1",
+          "ask-20261110-2005-2",
+          "ask-20261110-2041-2",
+          "ask-20261110-2127-3",
+          "ask-20261110-2131-3",
+          "ask-20261110-2215-3",
+          "ask-20261110-2359-3"
         ]
       },
       {
         "ask": "Fix the sports exam scores for MLB, Premier League, and Serie A.",
+        "at": "2026-11-10T20:05:00Z",
+        "kind": "build",
+        "small": true,
+        "times": 2,
+        "ids": [
+          "ask-20261110-1633-2",
+          "ask-20261110-1637-2",
+          "ask-20261110-1642-2",
+          "ask-20261110-1710-1",
+          "ask-20261110-1713-1",
+          "ask-20261110-1733-2",
+          "ask-20261110-1742-2",
+          "ask-20261110-1805-2",
+          "ask-20261110-1813-2",
+          "ask-20261110-1919-2",
+          "ask-20261110-1935-2",
+          "ask-20261110-2005-3"
+        ]
+      },
+      {
+        "ask": "Implement missing audio and episode identification logic for the podcasts exam.",
+        "at": "2026-11-10T23:59:00Z",
+        "kind": "daily",
         "small": true,
         "times": 1,
         "ids": [
-          "ask-20261109-1701-2"
+          "ask-20261110-1713-3",
+          "ask-20261110-1733-3",
+          "ask-20261110-1742-3",
+          "ask-20261110-1805-3",
+          "ask-20261110-1813-3",
+          "ask-20261110-1919-3",
+          "ask-20261110-1935-3",
+          "ask-20261110-2041-3",
+          "ask-20261110-2127-2",
+          "ask-20261110-2131-2",
+          "ask-20261110-2215-2",
+          "ask-20261110-2359-2"
+        ]
+      },
+      {
+        "ask": "Build the missing jobs for flightconnections.com to meet the current target.",
+        "at": "2026-11-10T23:59:00Z",
+        "kind": "daily",
+        "small": false,
+        "times": 2,
+        "ids": [
+          "ask-20261110-2005-1",
+          "ask-20261110-2041-1",
+          "ask-20261110-2359-1",
+          "ask-20261110-2127-1",
+          "ask-20261110-2131-1",
+          "ask-20261110-2215-1"
         ]
       }
     ]
