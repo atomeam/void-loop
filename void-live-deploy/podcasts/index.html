@@ -290,7 +290,7 @@
       $('pTitle').textContent = e.title; $('pShow').textContent = e.showTitle || ''; const art = $('pArt'); if (okImg(e.image)) { art.src = e.image; art.hidden = false; art.referrerPolicy = 'no-referrer'; } else art.hidden = true;
       $('pOpen').href = e.audio; $('pLen').textContent = P.clock(e.dur) || '0:00'; $('pCur').textContent = '0:00'; $('seek').value = 0; $('seek').max = e.dur || 0; $('miniT').textContent = e.title;
       status('Loading the audio…'); setPP(false); $('pDl').textContent = S.dl[e.key] ? 'Remove download' : 'Download';
-      au.preload = 'metadata'; au.src = await srcFor(e); au.defaultPlaybackRate = S.speed; au.playbackRate = S.speed; au.dataset.at = at || '';
+      au.preload = 'metadata'; delete au.dataset.untracked; au.src = await srcFor(e); au.defaultPlaybackRate = S.speed; au.playbackRate = S.speed; au.dataset.at = at || '';
       au.load(); loadExtras(e); meta(e);
       if (shown && ((shown.verse && e.showId === 'verse') || (shown.feed && shown.feed === e.feed))) { const u = here(); u.set('ep', e.id); u.delete('t'); history.replaceState({}, '', '/podcasts/?' + u); } // a play from a list elsewhere keeps the address as it is
       markSeenEp(e);
@@ -305,7 +305,7 @@
     });
     au.addEventListener('play', () => { setPP(true); }); au.addEventListener('pause', () => { setPP(false); keepPlace(); });
     au.addEventListener('waiting', () => status('Buffering…')); au.addEventListener('playing', () => status('Playing' + (S.speed !== 1 ? ' at ' + S.speed + '×' : '')));
-    au.addEventListener('error', () => { if (cur) status('This episode did not load. The publisher\'s server may be down or may not allow this page; Open the audio tries it directly.', true); setPP(false); });
+    au.addEventListener('error', () => { const plain = cur && P.untracked(au.currentSrc || au.src); if (plain && plain !== (au.currentSrc || au.src) && !au.dataset.untracked) { au.dataset.untracked = '1'; const at = au.dataset.at; au.src = plain; au.dataset.at = at || ''; au.play().catch(() => {}); return; } if (cur) status('This episode did not load. The publisher\'s server may be down or may not allow this page; Open the audio tries it directly.', true); setPP(false); });
     au.addEventListener('timeupdate', () => {
       const t = au.currentTime, d = au.duration; $('pCur').textContent = P.clock(t); if (!$('seek').matches(':active')) $('seek').value = Math.floor(t);
       if (Date.now() - lastSave > 5000) { lastSave = Date.now(); keepPlace(); }

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1256,
+ "counted": 1258,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -129,6 +129,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 19,
+   "direct": 19,
+   "dependants": 19,
+   "tests": 1
+  },
+  {
    "file": "lib/corrections.js",
    "skills": 18,
    "direct": 0,
@@ -141,13 +148,6 @@
    "direct": 6,
    "dependants": 60,
    "tests": 6
-  },
-  {
-   "file": "lib/skill-family.js",
-   "skills": 17,
-   "direct": 17,
-   "dependants": 17,
-   "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
@@ -1081,6 +1081,13 @@
    "tests": 0
   },
   {
+   "file": "lib/proposal.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 34,
+   "tests": 2
+  },
+  {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
@@ -1190,7 +1197,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 4,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-fluid-orbs.js",
@@ -1393,13 +1400,6 @@
    "skills": 1,
    "direct": 0,
    "dependants": 35,
-   "tests": 2
-  },
-  {
-   "file": "lib/proposal.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 33,
    "tests": 2
   },
   {
@@ -12430,7 +12430,8 @@
     "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/x402/[service].js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "skills/proposals.js"
    ]
   },
   "lib/propose-fix.js": {
@@ -13748,6 +13749,8 @@
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
+    "skills/ownership.js",
+    "skills/proposals.js",
     "skills/reuse-tools.js",
     "skills/riddle-gen.js",
     "skills/rooms.js",
@@ -16311,11 +16314,15 @@
   },
   "skills/automation-status.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/status-board.js"
+   ]
   },
   "skills/automations.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/status-board.js"
+   ]
   },
   "skills/backdrop.js": {
    "imports": [
@@ -17759,7 +17766,9 @@
   },
   "skills/heavy-lift-map.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/ownership.js"
+   ]
   },
   "skills/holidays.js": {
    "imports": [],
@@ -18869,10 +18878,23 @@
   },
   "skills/ownership-map.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/ownership.js"
+   ]
   },
   "skills/ownership-pack.js": {
    "imports": [],
+   "importedBy": [
+    "skills/ownership.js"
+   ]
+  },
+  "skills/ownership.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/heavy-lift-map.js",
+    "skills/ownership-map.js",
+    "skills/ownership-pack.js"
+   ],
    "importedBy": []
   },
   "skills/palette.js": {
@@ -19080,11 +19102,23 @@
   },
   "skills/proposal-pack.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/proposals.js"
+   ]
   },
   "skills/proposal.js": {
    "imports": [
     "lib/proposal.js"
+   ],
+   "importedBy": [
+    "skills/proposals.js"
+   ]
+  },
+  "skills/proposals.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/proposal-pack.js",
+    "skills/proposal.js"
    ],
    "importedBy": []
   },
@@ -19899,7 +19933,9 @@
    "imports": [
     "lib/skill-family.js",
     "skills/status.js",
-    "skills/system-status.js"
+    "skills/system-status.js",
+    "skills/automation-status.js",
+    "skills/automations.js"
    ],
    "importedBy": []
   },

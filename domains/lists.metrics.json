@@ -924,6 +924,64 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-11T20:55:00Z",
+   "run": 17,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.68,
+   "dup_basis": "15 of 22 items considered were repeats: the 14 ask groups tools/asks-link.mjs still lists were all decided in run 16 and wait on the deploy's ledger fold, and frontier line 37 (client lift summary) was already shipped by #2661",
+   "median_days": 0,
+   "median_basis": "days from queued to built over the 8 items: 0 (main's red studio, rival and self checks, 2026-11-11), 0 (the ownership family, Up for grabs 2026-11-11), 0 (the proposals family, same), 0 (automation-status overlap, red on main since #2701 on 2026-11-11), 0 (the frontier wipe of 2026-11-11), 0 (podcast tracking prefixes, Up for grabs 2026-11-11), 1 (frontier line 37, queued 2026-11-10), 24 (frontier line 31, since 2026-10-18); median 0",
+   "asks_open_start": 14,
+   "asks_open_end": 14,
+   "note": "Run 17 of the lists routine, the same day as run 16. The 14 open ask groups are run 16's decisions (13 built or linked, the 2 flightconnections.com groups duplicates of its filed jobs); they drop to 2 when run 16's ledger lines fold on the next deploy, so none were re-decided. #2701 (merged 18:20 UTC) had replaced the frontier with a placeholder; it is restored here and guarded by tools/frontier-intact.test.mjs.",
+   "items": [
+    {
+     "what": "heavy-lift-map + ownership-map + ownership-pack merged into skills/ownership.js (order 9860, aliases kept, tools/ownership-family.test.mjs, 0 routing differences over 4,382 asks)",
+     "list": "convergence / Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "proposal-pack + proposal merged into skills/proposals.js (order 1025, aliases kept, tools/proposals-family.test.mjs)",
+     "list": "convergence / Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "main's red overlap check (automation-status~system-status, from #2701): automation-status is status-board's third member, the automations skill keeps a bare 'what automations are running' (tools/status-family.test.mjs)",
+     "list": "green foundation / convergence",
+     "status": "built"
+    },
+    {
+     "what": "podcast audio behind a tracking prefix: lib/podcasts.js untracked(), the podcasts page and the stage card retry once with the host's own file (tools/podcast-untracked.test.mjs)",
+     "list": "Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "domains/void.frontier.md restored after #2701 replaced its 601 lines with a placeholder; tools/frontier-intact.test.mjs guards it",
+     "list": "frontier / green foundation",
+     "status": "built"
+    },
+    {
+     "what": "frontier line 31, the two longest browser checks on their own runners, marked built (lists run 16, #2703)",
+     "list": "frontier",
+     "status": "built"
+    },
+    {
+     "what": "frontier line 37, client lift summary, marked shipped",
+     "list": "frontier",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/2661"
+    },
+    {
+     "what": "main's red checks: /studio/ gets its handoff tag and a real-pages spec (typed lines play, Stop stops), /rival/ and /self/ get the inline page-fade rule ahead of the visit beacon, HANDOFF-GAPS regenerated",
+     "list": "green foundation",
+     "status": "built"
+    }
+   ]
   }
  ]
 }
