@@ -227,3 +227,10 @@ Picked planet restoration (least recently advanced, 2026-10-28 14:15). Refreshed
 Picked living figures (least recently advanced, 2026-11-04 14:15; its next question was the closest to a yes-or-no answer). Found that a 1 GB AX630C board ships (Sipeed MaixCAM2, 512 MiB Linux and 512 MiB model pool by default) and that Sipeed rates SenseVoice, Whisper base, MeloTTS and SmolVLM-256M at 1 GB while its stock Qwen2.5-0.5B build is rated 4 GB. Derived that the 0.5B mind's vocabulary table is its largest piece (about 272 MB at 16-bit) and recorded the two ax-llm levers that slim it (embedding on flash, two resident layers), plus SmolLM2-360M as the smaller-vocabulary option. Next is one measured stack-at-once peak on a 1 GB board. Added a growth-board row (figure mind memory card). The only earlier forethinkers branch was already merged (#2557); no open think-tank PRs to fold in.
 
 [think-tank] Summon the figure mind memory card: what fits in 1 GB, piece by piece, each with its dated source.
+
+## 2026-11-11 14:16 ET
+
+- Track: printing working machines, open question 8 (least recently advanced).
+- Folded: nothing pending; `forethinkers/cycle-2026-11-09-0211` (#2557) and `forethinkers/cycle-2026-11-09-0812` (#2570) were merged and already deleted.
+- Result: slip clutch sized from a shipping servo clutch, printed coupling tests and printed fatigue data; new open question 9.
+- Board: clutch sizer card row.
