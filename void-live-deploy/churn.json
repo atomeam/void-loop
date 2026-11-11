@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T18:30:36.439Z",
+ "at": "2026-11-11T18:35:46.257Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -41,24 +41,24 @@
    "changes": 38
   },
   {
+   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 36
+  },
+  {
    "file": "void-live-deploy/design-loop.json",
    "changes": 35
   },
   {
-   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
-   "changes": 35
-  },
-  {
    "file": "void-live-deploy/markets/currency-converter/index.html",
-   "changes": 33
+   "changes": 34
   },
   {
    "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 32
+   "changes": 33
   },
   {
    "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 32
+   "changes": 33
   },
   {
    "file": "void-live-deploy/tower-evidence/prizes-27fdb497.json",
@@ -66,15 +66,15 @@
   },
   {
    "file": "void-live-deploy/color/colour-picker-tool/index.html",
-   "changes": 29
+   "changes": 30
   },
   {
    "file": "void-live-deploy/news/global-headlines/index.html",
-   "changes": 27
+   "changes": 28
   },
   {
    "file": "docs/PARITY/lichess.md",
-   "changes": 25
+   "changes": 26
   },
   {
    "file": "domains/growth-inbox.md",
@@ -93,27 +93,27 @@
    "changes": 22
   },
   {
+   "file": "docs/PARITY/github.md",
+   "changes": 21
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 21
+  },
+  {
    "file": "void-live-deploy/tower.target.json",
    "changes": 21
   },
   {
-   "file": "docs/PARITY/github.md",
-   "changes": 20
-  },
-  {
-   "file": "docs/PARITY/hugging-face.md",
-   "changes": 20
-  },
-  {
    "file": "tools/families.mjs",
-   "changes": 19
-  },
-  {
-   "file": "tools/real-pages.mjs",
-   "changes": 19
+   "changes": 20
   },
   {
    "file": "void-live-deploy/assimilated.json",
+   "changes": 20
+  },
+  {
+   "file": "tools/real-pages.mjs",
    "changes": 19
   },
   {
@@ -125,15 +125,19 @@
    "changes": 16
   },
   {
+   "file": "docs/PARITY/gmail.md",
+   "changes": 14
+  },
+  {
+   "file": "docs/PARITY/google-search.md",
+   "changes": 14
+  },
+  {
    "file": "void-live-deploy/tower.sweep.json",
    "changes": 14
   },
   {
-   "file": "docs/PARITY/gmail.md",
-   "changes": 13
-  },
-  {
-   "file": "docs/PARITY/google-search.md",
+   "file": "docs/PARITY/youtube.md",
    "changes": 13
   },
   {
