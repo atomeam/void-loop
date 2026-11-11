@@ -3,13 +3,20 @@
  "cases": 118,
  "runsTotal": 300,
  "kinds": {
-  "grow": 47,
+  "grow": 46,
   "file": 47,
-  "visitor": 202,
+  "visitor": 203,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-11T08:22:29Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 15/15"
+  },
   {
    "at": "2026-11-11T01:05:14Z",
    "passed": 116,
@@ -188,36 +195,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T03:17:41Z",
-   "passed": 114,
-   "of": 119,
-   "kind": "grow",
-   "ms": 349,
-   "note": "new ground passed, kept as a regression case: \"build a hut\" (skill:build-world)",
-   "failed": [
-    {
-     "ask": "which skill family is unhealthy",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "how do i magnetize this?",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "intake this idea: automate client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "status pack for onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    },
-    {
-     "ask": "connect pack for client onboarding",
-     "why": "console: Failed to load resource: the server responded with a status of 429 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -271,9 +248,9 @@
   },
   {
    "from": "2026-10-14",
-   "runs": 13,
-   "passed": 838,
-   "of": 918
+   "runs": 12,
+   "passed": 782,
+   "of": 852
   },
   {
    "from": "2026-10-21",
@@ -283,14 +260,14 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 3,
+   "runs": 17,
    "passed": 58,
    "of": 87,
    "ms": 554
   },
   {
    "from": "2026-11-04",
-   "runs": 283,
+   "runs": 270,
    "passed": 6425,
    "of": 8277,
    "broken": 14,

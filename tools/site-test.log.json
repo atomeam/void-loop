@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-18T11:21:11Z",
-  "passed": 56,
-  "of": 66,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
- },
- {
   "at": "2026-10-18T12:35:31Z",
   "passed": 64,
   "of": 67,
@@ -7917,5 +7910,16 @@
    "failed": []
   },
   "note": "new ground passed, kept as a regression case: \"client brief for Acme onboarding\" (skill:client-brief)"
+ },
+ {
+  "at": "2026-11-11T08:22:29Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 1429,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
  }
 ]
