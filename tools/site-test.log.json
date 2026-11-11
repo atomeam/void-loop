@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-19T02:18:29Z",
-  "passed": 71,
-  "of": 72,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"film meatdata for ikiru\" (skill:film-metadata)"
- },
- {
   "at": "2026-10-19T02:33:17Z",
   "passed": 63,
   "of": 73,
@@ -8001,6 +7994,24 @@
      "ask": "what can you do",
      "why": [
       "slow 9146 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T19:56:33Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 531,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16799 ms"
      ]
     }
    ]
