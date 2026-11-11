@@ -3,10 +3,10 @@
  "rows": {
   "speed": {
    "verdict": "equal-and-better",
-   "verse": 84,
-   "best": 50,
-   "evidence": "Verse (/ip) 84 ms to the load event (median of 3, phone width) vs icanhazip.com 50 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "verse": 128,
+   "best": 56,
+   "evidence": "Verse (/ip) 128 ms to the load event (median of 3, phone width) vs icanhazip.com 56 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "reliability": {
@@ -14,7 +14,7 @@
    "verse": 3,
    "best": 3,
    "evidence": "Verse (/ip) 3 of 3 loads answered vs icanhazip.com 3 of 3 loads answered",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "mobile": {
@@ -22,7 +22,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/ip) 0 px sideways overflow at 390 px vs icanhazip.com 0 px sideways overflow at 390 px",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "accessibility": {
@@ -30,7 +30,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/ip) 0 unnamed controls or images vs icanhazip.com 0 unnamed controls or images",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "offline": {
@@ -38,7 +38,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/ip) 0 (1: the page shows itself again with the network cut) vs icanhazip.com 0 (1: the page shows itself again with the network cut)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "sharing": {
@@ -46,7 +46,7 @@
    "verse": 2,
    "best": 0,
    "evidence": "Verse (/ip) 2 of 4 (link-preview title, image, description; a share or copy-link control) vs icanhazip.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "wider use": {
@@ -54,7 +54,7 @@
    "verse": 5.5,
    "best": 5.5,
    "evidence": "Verse (/ip) 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs icanhazip.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "accuracy": {
@@ -62,7 +62,7 @@
    "verse": 1,
    "best": 1,
    "evidence": "Verse (/ip) 1 of 1 right against the worked-out answer; judged against the standard, not icanhazip.com (the site is not asked)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "of": 1
   },
   "design polish": {
@@ -70,7 +70,7 @@
    "verse": 0,
    "best": 0,
    "evidence": "Verse (/ip) 0 design defects vs icanhazip.com 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), icanhazip.com (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "siteRead": true
   },
   "completeness": {
@@ -78,7 +78,7 @@
    "verse": 3,
    "best": 1,
    "evidence": "Verse (/ip) 3 of 3 things a full answer shows vs icanhazip.com 1 of 3 things a full answer shows (Verse lacks: none; site lacks: IPv4 or IPv6 named, how to get it from a terminal)",
-   "at": "2026-11-10T14:56:32.949Z",
+   "at": "2026-11-11T14:27:12.498Z",
    "of": 3,
    "siteRead": true
   }
