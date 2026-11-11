@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-11T21:40:28.729Z",
+ "updated": "2026-11-11T21:50:02.938Z",
  "last24h": {
-  "ticks": 20,
-  "started": 40,
+  "ticks": 21,
+  "started": 41,
   "requeued": 1,
   "setAside": 1,
   "probes": 0,
@@ -11,6 +11,14 @@
  },
  "broken": [],
  "held": [
+  {
+   "id": "mvbl52gd",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
+  {
+   "id": "mvu167w7",
+   "why": "store-gap.yml reached its 6 runs today"
+  },
   {
    "id": "mveb8rsi",
    "why": "build-miss.yml reached its 8 runs today"
@@ -82,16 +90,12 @@
   {
    "id": "mwazktv3",
    "why": "no executor for bot"
-  },
-  {
-   "id": "mwazktv9",
-   "why": "no executor for bot"
   }
  ],
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 5,
+   "used": 6,
    "cap": 90
   },
   "day": {
@@ -889,6 +893,34 @@
    "sweep": false,
    "blueprints": 0,
    "held": 19,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-11T21:50:02.938Z",
+   "open": 362,
+   "started": [
+    {
+     "id": "want-page-tools-json",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 115
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "design": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "daily": [],
+   "sweep": false,
+   "blueprints": 0,
+   "held": 21,
    "warnings": 1
   }
  ]
