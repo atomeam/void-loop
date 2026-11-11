@@ -118,7 +118,9 @@ function probe(file) {
 /** run every check on a rendered film and its meta; returns { pass, score, checks: [{ name, ok, detail }] } */
 export function gate(file, meta) {
   const p = probe(file), checks = [];
-  checks.push({ name: 'frame', ok: p.w === W && p.h === H && p.dur >= 6 && p.dur <= 20, detail: p.w + 'x' + p.h + ', ' + p.dur.toFixed(1) + ' s (want 1080x1920, 6-20 s)' });
+  const show = meta.kind === 'show' || meta.format === 'show';
+  const durOk = show ? p.dur >= 28 && p.dur <= 62 : p.dur >= 6 && p.dur <= 20;
+  checks.push({ name: 'frame', ok: p.w === W && p.h === H && durOk, detail: p.w + 'x' + p.h + ', ' + p.dur.toFixed(1) + ' s (want 1080x1920, ' + (show ? '30-60' : '6-20') + ' s)' });
   // cropdetect: limit 24 of 255 counts near-black as black, round 2 keeps every pixel, reset 0 keeps the widest crop seen
   const bars = barsOf(ff(['-i', file, '-vf', 'fps=4,cropdetect=limit=24:round=2:reset=0', '-f', 'null', '-']).stderr, p.w, p.h);
   const strip = { left: 'crop=24:ih:0:0', right: 'crop=24:ih:iw-24:0', top: 'crop=iw:24:0:0', bottom: 'crop=iw:24:0:ih-24' }, ranges = {};

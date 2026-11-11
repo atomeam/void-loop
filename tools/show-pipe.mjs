@@ -5,7 +5,6 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FREE_MODEL } from '../void-live-deploy/lib/models.js';
 import { featsFrom, parseShow, scriptIssues, parseScores, trendLine } from '../void-live-deploy/lib/show-pipe.js';
-import { hookScore } from './video-gate.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://a-to-mind.com';
 export const SCORE_FILE = resolve(root, 'void-live-deploy/studio/scores.json');
@@ -39,13 +38,11 @@ export async function ask(prompt, { judge = false, env = process.env, fetchImpl 
   if (!got.text) throw new Error(got.note || got.say || (judge ? 'judge empty' : 'story model empty'));
   return got.text;
 }
-const SAFE_HOOK = 'What if you could ask for this today?';
 export function shortScript(text) {
   const parsed = parseShow(text);
   const lines = parsed.lines.slice(0, 4);
-  let hook = lines[0] ? lines[0].text : SAFE_HOOK;
-  let beats = lines.slice(1);
-  if (hookScore(hook) < 60 || /\bverse\b/i.test(hook)) { hook = SAFE_HOOK; beats = lines.slice(0, 3); }
+  const hook = lines[0] ? lines[0].text : '';
+  const beats = lines.slice(1);
   const show = { kind: 'short', title: parsed.title || hook.replace(/\?$/, ''), hook, lines: beats };
   const issues = scriptIssues(show, { min: 2, max: 4 });
   if (beats.some((l) => l.text.split(/\s+/).length > 16)) issues.push('too many words');
@@ -93,7 +90,7 @@ export function recordScore(kind, title, scores, fact) {
 
 export async function filmShort(made, out, filmId) {
   const { render } = await import('./film-studio.mjs');
-  const beats = made.show.lines.map((l) => ({ kind: 'title', who: l.who, text: (l.who === 'Critic' ? 'CRITIC' : 'VERSE') + '\n' + l.text, voice: l.text }));
+  const beats = made.show.lines.map((l) => ({ kind: 'title', who: l.who, text: l.who + '\n' + l.text, voice: l.text }));
   const script = { format: 'explainer', label: 'Verse short', topic: made.show.title, name: made.show.title.slice(0, 40), hook: made.show.hook, mood: 'bright', theme: 'explainer', voiced: true, beats };
   const meta = await render(script, out, { filmId, topic: { page: SITE + '/', source: 'Verse', url: SITE + '/' } });
   spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1', '-i', resolve(out, filmId + '.mp4'), '-frames:v', '1', resolve(out, filmId + '.jpg')]);
@@ -106,20 +103,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const feats = featsFrom(growth);
   if (!feats.length) { console.error('no plain feat to tell'); process.exit(1); }
   if (process.argv[2] === 'shorts') {
-    const out = resolve(arg('--out') || resolve(root, 'void-live-deploy/studio/media'));
-    mkdirSync(out, { recursive: true });
-    const made = [];
-    for (let i = 0; i < 2; i++) {
-      const trend = trendLine(loadScores().shows);
-      const one = await writeShow('short', feats[i % feats.length], { trend });
-      const id = new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-verse-' + (i + 1);
-      const meta = await filmShort(one, out, id);
-      if (!meta.gate.pass) { console.error('GATE FAIL ' + id + ' ' + meta.gate.checks.filter((c) => !c.ok).map((c) => c.name + ': ' + c.detail).join(' | ')); process.exit(1); }
-      recordScore('short', one.show.title, one.scores, one.fact);
-      made.push({ id, title: one.show.title, file: id + '.mp4', scores: one.scores, fact: one.fact });
-      console.log('SHORT ' + id + ' ' + JSON.stringify(one.scores));
-    }
-    writeFileSync(resolve(root, 'void-live-deploy/studio/shows.json'), JSON.stringify({ shorts: made }, null, 2) + '\n');
+    console.log('The judged Shorts stay in void-live-deploy/studio. A new pair is tools/show-make.mjs and tools/show-film.mjs, and it replaces these only when the judge passes.');
   } else if (process.argv[2] === 'feats') console.log(feats.join('\n'));
   else { console.error('usage: node tools/show-pipe.mjs shorts [--out dir] | feats'); process.exit(2); }
 }

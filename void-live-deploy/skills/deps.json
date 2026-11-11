@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1251,
+ "counted": 1256,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -144,9 +144,9 @@
   },
   {
    "file": "lib/skill-family.js",
-   "skills": 16,
-   "direct": 16,
-   "dependants": 16,
+   "skills": 17,
+   "direct": 17,
+   "dependants": 17,
    "tests": 1
   },
   {
@@ -1415,6 +1415,13 @@
    "direct": 0,
    "dependants": 31,
    "tests": 2
+  },
+  {
+   "file": "lib/bridge.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 31,
+   "tests": 0
   },
   {
    "file": "lib/free-pics.js",
@@ -3867,6 +3874,13 @@
    "tests": 12
   },
   {
+   "file": "lib/show-pipe.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
    "file": "lib/skill-compose.js",
    "skills": 0,
    "direct": 0,
@@ -4026,6 +4040,7 @@
     "lib/memory-core.js",
     "lib/proposal.js",
     "lib/plan.js",
+    "lib/bridge.js",
     "skills/take.js",
     "lib/character.js",
     "lib/daily-cap.js",
@@ -7081,6 +7096,44 @@
    ],
    "reachedBy": [
     "lib/brain-everywhere.js"
+   ]
+  },
+  "lib/bridge.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "skills/bridge.js"
+   ],
+   "reachedBy": [
+    "functions/api/a2a.js",
+    "functions/api/apibot.js",
+    "functions/api/bench.js",
+    "functions/api/blueprint.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/feed.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sing.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/watchalong.js",
+    "functions/api/weather.js",
+    "functions/api/x402/[service].js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/bridges.js": {
@@ -13581,6 +13634,10 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/show-pipe.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/showers.js": {
    "imports": [],
    "importedBy": [
@@ -13691,6 +13748,7 @@
     "skills/languages.js",
     "skills/list-starters.js",
     "skills/mind-field.js",
+    "skills/reuse-tools.js",
     "skills/riddle-gen.js",
     "skills/rooms.js",
     "skills/shop.js",
@@ -16251,6 +16309,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/automation-status.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/automations.js": {
    "imports": [],
    "importedBy": []
@@ -16331,6 +16393,12 @@
   },
   "skills/breath.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/bridge.js": {
+   "imports": [
+    "lib/bridge.js"
+   ],
    "importedBy": []
   },
   "skills/build-world.js": {
@@ -16572,7 +16640,9 @@
   },
   "skills/connect-pack.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/reuse-tools.js"
+   ]
   },
   "skills/connect4-rules.js": {
    "imports": [],
@@ -19209,6 +19279,16 @@
   },
   "skills/reuse-pack.js": {
    "imports": [],
+   "importedBy": [
+    "skills/reuse-tools.js"
+   ]
+  },
+  "skills/reuse-tools.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/reuse-pack.js",
+    "skills/connect-pack.js"
+   ],
    "importedBy": []
   },
   "skills/riddle-gen.js": {

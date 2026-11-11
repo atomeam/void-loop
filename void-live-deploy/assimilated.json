@@ -21,6 +21,1079 @@
  },
  "sites": [
   {
+   "site": "cpantesters.org",
+   "url": "https://cpantesters.org/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T15:03:14Z",
+   "page": "/cpan/",
+   "lane": "",
+   "took": "Recent - CPAN Testers",
+   "why": "Passed cpantesters.org (15/17, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T07:18:01Z",
+    "sha": "ae15d18e1",
+    "file": "domains/tower-self.json"
+   },
+   "sources": [
+    "domains/tower-self.json",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 15,
+    "m": 17
+   }
+  },
+  {
+   "site": "fantasynamegenerators.com",
+   "url": "https://fantasynamegenerators.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T15:00:46Z",
+   "page": "/generators/",
+   "lane": "",
+   "took": "",
+   "why": "Passed fantasynamegenerators.com (15/17, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 15,
+    "m": 17
+   }
+  },
+  {
+   "site": "chaoticshiny.com",
+   "url": "https://chaoticshiny.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:59:50Z",
+   "page": "/generators/",
+   "lane": "",
+   "took": "",
+   "why": "Passed chaoticshiny.com (15/17, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 15,
+    "m": 17
+   }
+  },
+  {
+   "site": "thunit.com",
+   "url": "https://thunit.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:59:46Z",
+   "page": "/hosting/",
+   "lane": "",
+   "took": "THUNIT™ | A Lianudom Co.,ltd Company",
+   "why": "Passed thunit.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T07:18:01Z",
+    "sha": "ae15d18e1",
+    "file": "domains/tower-self.json"
+   },
+   "sources": [
+    "domains/tower-self.json",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "namegenerator.com",
+   "url": "https://namegenerator.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:58:44Z",
+   "page": "/generators/",
+   "lane": "",
+   "took": "",
+   "why": "Passed namegenerator.com (15/17, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 15,
+    "m": 17
+   }
+  },
+  {
+   "site": "codebasehq.com",
+   "url": "https://codebasehq.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:57:29Z",
+   "page": "/g/",
+   "lane": "",
+   "took": "",
+   "why": "Passed codebasehq.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "remotive.com",
+   "url": "https://remotive.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:57:19Z",
+   "page": "/jobs/categories/",
+   "lane": "jobs",
+   "took": "categories, search, saved, alerts, tracker, feed, sources",
+   "why": "Passed remotive.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T06:59:35Z",
+    "sha": "2a2a6fbbf",
+    "file": "void-live-deploy/lib/tower.js"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "tripwaffle.com",
+   "url": "https://tripwaffle.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:55:32Z",
+   "page": "/flights/trip/",
+   "lane": "travel",
+   "took": "trip",
+   "why": "Passed tripwaffle.com (16/18, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T04:56:18Z",
+    "sha": "380e87492",
+    "file": "void-live-deploy/lib/tower.js"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 16,
+    "m": 18
+   }
+  },
+  {
+   "site": "co2.myclimate.org",
+   "url": "https://co2.myclimate.org/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:54:17Z",
+   "page": "/flights/co2/",
+   "lane": "travel",
+   "took": "controls, co2",
+   "why": "Passed co2.myclimate.org (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T04:56:18Z",
+    "sha": "380e87492",
+    "file": "void-live-deploy/lib/tower.js"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "chordchord.com",
+   "url": "https://chordchord.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:54:03Z",
+   "page": "/chords/",
+   "lane": "",
+   "took": "",
+   "why": "Passed chordchord.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "iloveimg.com",
+   "url": "https://iloveimg.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:53:20Z",
+   "page": "/photos/iloveimg/",
+   "lane": "",
+   "took": "",
+   "why": "Passed iloveimg.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "bbc.com",
+   "url": "https://bbc.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:52:29Z",
+   "page": "/news/",
+   "lane": "",
+   "took": "",
+   "why": "Passed BBC News (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "anotherproducer.com",
+   "url": "https://anotherproducer.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:52:04Z",
+   "page": "/bpm/",
+   "lane": "",
+   "took": "",
+   "why": "Passed anotherproducer.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "photopea.com",
+   "url": "https://photopea.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:51:26Z",
+   "page": "/photos/photopea/",
+   "lane": "",
+   "took": "",
+   "why": "Passed photopea.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "euronews.com",
+   "url": "https://euronews.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:51:25Z",
+   "page": "/news/",
+   "lane": "",
+   "took": "",
+   "why": "Passed euronews.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "suncommunitynews.com",
+   "url": "https://suncommunitynews.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:50:25Z",
+   "page": "/news/global-headlines/?sec=world",
+   "lane": "news",
+   "took": "",
+   "why": "Passed suncommunitynews.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": {
+    "score": 4.7,
+    "place": 6,
+    "why": "not sized yet, hardness 96, Tranco 70651"
+   },
+   "first": null,
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/lib/self-sites.js",
+    "domains/tower-self.json",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "dw.com",
+   "url": "https://dw.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:49:47Z",
+   "page": "/news/",
+   "lane": "",
+   "took": "",
+   "why": "Passed dw.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "tradingview.com",
+   "url": "https://tradingview.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:49:02Z",
+   "page": "/markets/",
+   "lane": "",
+   "took": "",
+   "why": "Passed tradingview.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "investing.com",
+   "url": "https://investing.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:46:26Z",
+   "page": "/markets/",
+   "lane": "",
+   "took": "",
+   "why": "Passed investing.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "int.soccerway.com",
+   "url": "https://int.soccerway.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:46:17Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed int.soccerway.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "stooq.com",
+   "url": "https://stooq.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:45:17Z",
+   "page": "/markets/",
+   "lane": "",
+   "took": "",
+   "why": "Passed stooq.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "sushigirl.us",
+   "url": "https://sushigirl.us/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:44:20Z",
+   "page": "/boards/",
+   "lane": "",
+   "took": "",
+   "why": "Passed sushigirl.us (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "onenote.com",
+   "url": "https://onenote.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:43:25Z",
+   "page": "/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread",
+   "lane": "",
+   "took": "",
+   "why": "Passed onenote.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "trello.com",
+   "url": "https://trello.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:42:17Z",
+   "page": "/kanban/",
+   "lane": "",
+   "took": "",
+   "why": "Passed Trello (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "kanbanflow.com",
+   "url": "https://kanbanflow.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:41:50Z",
+   "page": "/kanban/flow/",
+   "lane": "kanban",
+   "took": "boards, wip, lanes, labels, due, checklist, archive, filter, timer, recur, print, colour, csv, templates",
+   "why": "Passed kanbanflow.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T03:18:08Z",
+    "sha": "faa6aacdd",
+    "file": "void-live-deploy/lib/tower.js"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "smallpdf.com",
+   "url": "https://smallpdf.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:41:26Z",
+   "page": "/pdf/studio/",
+   "lane": "pdf",
+   "took": "compress, merge, split, pages, rotate, extract, order, img2pdf, pdf2img, numbers, watermark, crop, info",
+   "why": "Passed smallpdf.com (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T03:18:08Z",
+    "sha": "faa6aacdd",
+    "file": "void-live-deploy/lib/tower.js"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "tools.pdf24.org",
+   "url": "https://tools.pdf24.org/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:41:18Z",
+   "page": "/pdf/suite/",
+   "lane": "pdf",
+   "took": "merge, split, pages, extract, order, rotate, compress, img2pdf, pdf2img, numbers, watermark, crop, info",
+   "why": "Passed tools.pdf24.org (14/16, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T03:18:08Z",
+    "sha": "faa6aacdd",
+    "file": "void-live-deploy/lib/tower.js"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 16
+   }
+  },
+  {
+   "site": "calendar.google.com",
+   "url": "https://calendar.google.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:40:35Z",
+   "page": "/calendar/",
+   "lane": "",
+   "took": "",
+   "why": "Passed Google Calendar (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "outlook.live.com",
+   "url": "https://outlook.live.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:39:57Z",
+   "page": "/calendar/",
+   "lane": "",
+   "took": "",
+   "why": "Passed outlook.live.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "cozi.com",
+   "url": "https://cozi.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:39:43Z",
+   "page": "/calendar/",
+   "lane": "",
+   "took": "",
+   "why": "Passed cozi.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "any.do",
+   "url": "https://any.do/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:39:10Z",
+   "page": "/calendar/",
+   "lane": "",
+   "took": "",
+   "why": "Passed any.do (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "cookpad.com",
+   "url": "https://cookpad.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:38:21Z",
+   "page": "/recipes/?q=pancakes",
+   "lane": "",
+   "took": "",
+   "why": "Passed cookpad.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "simplyrecipes.com",
+   "url": "https://simplyrecipes.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:37:51Z",
+   "page": "/recipes/?q=pancakes",
+   "lane": "",
+   "took": "",
+   "why": "Passed simplyrecipes.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "minimalistbaker.com",
+   "url": "https://minimalistbaker.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:36:11Z",
+   "page": "/recipes/?q=pancakes",
+   "lane": "",
+   "took": "",
+   "why": "Passed minimalistbaker.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "papago.naver.com",
+   "url": "https://papago.naver.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:35:40Z",
+   "page": "/translate/?q=hello&to=es",
+   "lane": "",
+   "took": "",
+   "why": "Passed papago.naver.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "linguee.com",
+   "url": "https://linguee.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:35:02Z",
+   "page": "/translate/?q=hello&to=es",
+   "lane": "",
+   "took": "",
+   "why": "Passed linguee.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "translate.com",
+   "url": "https://translate.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:33:57Z",
+   "page": "/translate/?q=hello&to=es",
+   "lane": "",
+   "took": "",
+   "why": "Passed translate.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "tradukka.com",
+   "url": "https://tradukka.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:33:21Z",
+   "page": "/translate/?q=hello&to=es",
+   "lane": "",
+   "took": "",
+   "why": "Passed tradukka.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "freetranslations.org",
+   "url": "https://freetranslations.org/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:32:35Z",
+   "page": "/translate/?q=hello&to=es",
+   "lane": "",
+   "took": "",
+   "why": "Passed freetranslations.org (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "color-hex.com",
+   "url": "https://color-hex.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:32:02Z",
+   "page": "/color/?c=ff5733",
+   "lane": "",
+   "took": "",
+   "why": "Passed color-hex.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "hexcolor16.com",
+   "url": "https://hexcolor16.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:31:49Z",
+   "page": "/color/?c=ff5733",
+   "lane": "",
+   "took": "",
+   "why": "Passed hexcolor16.com (12/14, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 14
+   }
+  },
+  {
+   "site": "emojitracker.com",
+   "url": "https://emojitracker.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:30:20Z",
+   "page": "/emojis/",
+   "lane": "",
+   "took": "emojitracker: realtime emoji use",
+   "why": "Passed emojitracker.com (10/12, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T07:18:01Z",
+    "sha": "ae15d18e1",
+    "file": "domains/tower-self.json"
+   },
+   "sources": [
+    "domains/tower-self.json",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 10,
+    "m": 12
+   }
+  },
+  {
+   "site": "wheelofnames.com",
+   "url": "https://wheelofnames.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:29:51Z",
+   "page": "/random/wheel/",
+   "lane": "",
+   "took": "",
+   "why": "Passed wheelofnames.com (13/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 13,
+    "m": 15
+   }
+  },
+  {
+   "site": "emojicombos.com",
+   "url": "https://emojicombos.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:29:03Z",
+   "page": "/emoji-combos/",
+   "lane": "",
+   "took": "Emoji Combos",
+   "why": "Passed emojicombos.com (14/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T16:56:12Z",
+    "sha": "64805c486",
+    "file": "domains/tower-self.json"
+   },
+   "sources": [
+    "domains/tower-self.json",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 14,
+    "m": 15
+   }
+  },
+  {
+   "site": "convertlive.com",
+   "url": "https://convertlive.com/",
+   "status": "surpassed",
+   "outcome": "surpassed",
+   "at": "2026-11-11T14:27:58Z",
+   "page": "/convert/unit-converter/",
+   "lane": "unit converter",
+   "took": "",
+   "why": "Passed convertlive.com (12/14, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": {
+    "at": "2026-10-26T07:21:38Z",
+    "sha": "c4483396d",
+    "file": "domains/tower-self.json"
+   },
+   "sources": [
+    "void-live-deploy/lib/tool-sites.js",
+    "void-live-deploy/lib/self-sites.js",
+    "domains/tower-self.json",
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 14
+   }
+  },
+  {
+   "site": "isitchristmas.com",
+   "url": "https://isitchristmas.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-11T14:27:11Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "Passed isitchristmas.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   },
+   "pageWas": "/is-it/christmas"
+  },
+  {
+   "site": "flashscore.com",
+   "url": "https://flashscore.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-10T15:01:29Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed flashscore.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
+   "site": "onefootball.com",
+   "url": "https://onefootball.com/",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
+   "at": "2026-11-10T15:00:22Z",
+   "page": "/scores/",
+   "lane": "",
+   "took": "",
+   "why": "Passed onefootball.com (12/15, conquering in background)",
+   "learned": "",
+   "ease": null,
+   "first": null,
+   "sources": [
+    "void-live-deploy/tower.target.json"
+   ],
+   "score": {
+    "n": 12,
+    "m": 15
+   }
+  },
+  {
    "site": "w3counter.com",
    "url": "https://w3counter.com/",
    "status": "read, no page family fits it",
@@ -189,76 +1262,6 @@
    ]
   },
   {
-   "site": "flashscore.com",
-   "url": "https://flashscore.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-10T03:12:38Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed flashscore.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "onefootball.com",
-   "url": "https://onefootball.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-10T03:11:23Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed onefootball.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   }
-  },
-  {
-   "site": "suncommunitynews.com",
-   "url": "https://suncommunitynews.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T21:11:40Z",
-   "page": "/news/global-headlines/?sec=world",
-   "lane": "news",
-   "took": "",
-   "why": "Passed suncommunitynews.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": {
-    "score": 4.7,
-    "place": 6,
-    "why": "not sized yet, hardness 96, Tranco 70651"
-   },
-   "first": null,
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/lib/self-sites.js",
-    "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "colorbook.io",
    "url": "https://colorbook.io/",
    "status": "passed, conquering in background",
@@ -301,34 +1304,6 @@
    "first": {
     "at": "2026-10-26T07:34:55Z",
     "sha": "3b32ed4a3",
-    "file": "domains/tower-self.json"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/lib/self-sites.js",
-    "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 14
-   }
-  },
-  {
-   "site": "convertlive.com",
-   "url": "https://convertlive.com/",
-   "status": "surpassed",
-   "outcome": "surpassed",
-   "at": "2026-11-09T21:06:04Z",
-   "page": "/convert/unit-converter/",
-   "lane": "unit converter",
-   "took": "",
-   "why": "Passed convertlive.com (12/14, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T07:21:38Z",
-    "sha": "c4483396d",
     "file": "domains/tower-self.json"
    },
    "sources": [
@@ -490,53 +1465,6 @@
    ]
   },
   {
-   "site": "cpantesters.org",
-   "url": "https://cpantesters.org/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T17:02:46Z",
-   "page": "/cpan/",
-   "lane": "",
-   "took": "Recent - CPAN Testers",
-   "why": "Passed cpantesters.org (15/17, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T07:18:01Z",
-    "sha": "ae15d18e1",
-    "file": "domains/tower-self.json"
-   },
-   "sources": [
-    "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 15,
-    "m": 17
-   }
-  },
-  {
-   "site": "fantasynamegenerators.com",
-   "url": "https://fantasynamegenerators.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T17:00:13Z",
-   "page": "/generators/",
-   "lane": "",
-   "took": "",
-   "why": "Passed fantasynamegenerators.com (15/17, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 15,
-    "m": 17
-   }
-  },
-  {
    "site": "reedsy.com",
    "url": "https://reedsy.com/",
    "status": "passed, conquering in background",
@@ -555,53 +1483,6 @@
    "score": {
     "n": 15,
     "m": 17
-   }
-  },
-  {
-   "site": "chaoticshiny.com",
-   "url": "https://chaoticshiny.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:59:11Z",
-   "page": "/generators/",
-   "lane": "",
-   "took": "",
-   "why": "Passed chaoticshiny.com (15/17, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 15,
-    "m": 17
-   }
-  },
-  {
-   "site": "remotive.com",
-   "url": "https://remotive.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:56:26Z",
-   "page": "/jobs/categories/",
-   "lane": "jobs",
-   "took": "categories, search, saved, alerts, tracker, feed, sources",
-   "why": "Passed remotive.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T06:59:35Z",
-    "sha": "2a2a6fbbf",
-    "file": "void-live-deploy/lib/tower.js"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
    }
   },
   {
@@ -631,32 +1512,6 @@
    }
   },
   {
-   "site": "tripwaffle.com",
-   "url": "https://tripwaffle.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:54:36Z",
-   "page": "/flights/trip/",
-   "lane": "travel",
-   "took": "trip",
-   "why": "Passed tripwaffle.com (16/18, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T04:56:18Z",
-    "sha": "380e87492",
-    "file": "void-live-deploy/lib/tower.js"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 16,
-    "m": 18
-   }
-  },
-  {
    "site": "clock7.com",
    "url": "https://clock7.com/",
    "status": "passed, conquering in background",
@@ -683,27 +1538,6 @@
    }
   },
   {
-   "site": "chordchord.com",
-   "url": "https://chordchord.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:53:02Z",
-   "page": "/chords/",
-   "lane": "",
-   "took": "",
-   "why": "Passed chordchord.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
    "site": "virtualpiano.net",
    "url": "https://virtualpiano.net/",
    "status": "passed, conquering in background",
@@ -722,69 +1556,6 @@
    "score": {
     "n": 16,
     "m": 18
-   }
-  },
-  {
-   "site": "iloveimg.com",
-   "url": "https://iloveimg.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:52:15Z",
-   "page": "/photos/iloveimg/",
-   "lane": "",
-   "took": "",
-   "why": "Passed iloveimg.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "bbc.com",
-   "url": "https://bbc.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:51:18Z",
-   "page": "/news/",
-   "lane": "",
-   "took": "",
-   "why": "Passed BBC News (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "euronews.com",
-   "url": "https://euronews.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:50:09Z",
-   "page": "/news/",
-   "lane": "",
-   "took": "",
-   "why": "Passed euronews.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
    }
   },
   {
@@ -818,27 +1589,6 @@
    "lane": "",
    "took": "",
    "why": "Passed Google Flights (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "tradingview.com",
-   "url": "https://tradingview.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:47:02Z",
-   "page": "/markets/",
-   "lane": "",
-   "took": "",
-   "why": "Passed tradingview.com (13/15, conquering in background)",
    "learned": "",
    "ease": null,
    "first": null,
@@ -893,27 +1643,6 @@
    }
   },
   {
-   "site": "int.soccerway.com",
-   "url": "https://int.soccerway.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:44:20Z",
-   "page": "/scores/",
-   "lane": "",
-   "took": "",
-   "why": "Passed int.soccerway.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "365scores.com",
    "url": "https://365scores.com/",
    "status": "passed, conquering in background",
@@ -956,48 +1685,6 @@
    }
   },
   {
-   "site": "sushigirl.us",
-   "url": "https://sushigirl.us/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:42:17Z",
-   "page": "/boards/",
-   "lane": "",
-   "took": "",
-   "why": "Passed sushigirl.us (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
-   "site": "onenote.com",
-   "url": "https://onenote.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:41:18Z",
-   "page": "/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread",
-   "lane": "",
-   "took": "",
-   "why": "Passed onenote.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "notion.so",
    "url": "https://notion.so/",
    "status": "passed, conquering in background",
@@ -1016,27 +1703,6 @@
    "score": {
     "n": 13,
     "m": 15
-   }
-  },
-  {
-   "site": "trello.com",
-   "url": "https://trello.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:40:19Z",
-   "page": "/kanban/",
-   "lane": "",
-   "took": "",
-   "why": "Passed Trello (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
    }
   },
   {
@@ -1087,53 +1753,6 @@
    }
   },
   {
-   "site": "smallpdf.com",
-   "url": "https://smallpdf.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:39:23Z",
-   "page": "/pdf/studio/",
-   "lane": "pdf",
-   "took": "compress, merge, split, pages, rotate, extract, order, img2pdf, pdf2img, numbers, watermark, crop, info",
-   "why": "Passed smallpdf.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T03:18:08Z",
-    "sha": "faa6aacdd",
-    "file": "void-live-deploy/lib/tower.js"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
-   "site": "calendar.google.com",
-   "url": "https://calendar.google.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:38:31Z",
-   "page": "/calendar/",
-   "lane": "",
-   "took": "",
-   "why": "Passed Google Calendar (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "10015.io",
    "url": "https://10015.io/",
    "status": "passed, conquering in background",
@@ -1157,27 +1776,6 @@
    "score": {
     "n": 14,
     "m": 16
-   }
-  },
-  {
-   "site": "cozi.com",
-   "url": "https://cozi.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:37:41Z",
-   "page": "/calendar/",
-   "lane": "",
-   "took": "",
-   "why": "Passed cozi.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
    }
   },
   {
@@ -1223,27 +1821,6 @@
    }
   },
   {
-   "site": "simplyrecipes.com",
-   "url": "https://simplyrecipes.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:35:49Z",
-   "page": "/recipes/?q=pancakes",
-   "lane": "",
-   "took": "",
-   "why": "Passed simplyrecipes.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "bbcgoodfood.com",
    "url": "https://bbcgoodfood.com/",
    "status": "passed, conquering in background",
@@ -1253,27 +1830,6 @@
    "lane": "",
    "took": "",
    "why": "Passed bbcgoodfood.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "minimalistbaker.com",
-   "url": "https://minimalistbaker.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:34:40Z",
-   "page": "/recipes/?q=pancakes",
-   "lane": "",
-   "took": "",
-   "why": "Passed minimalistbaker.com (13/15, conquering in background)",
    "learned": "",
    "ease": null,
    "first": null,
@@ -1307,27 +1863,6 @@
    }
   },
   {
-   "site": "linguee.com",
-   "url": "https://linguee.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:33:33Z",
-   "page": "/translate/?q=hello&to=es",
-   "lane": "",
-   "took": "",
-   "why": "Passed linguee.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "reverso.net",
    "url": "https://reverso.net/",
    "status": "passed, conquering in background",
@@ -1337,27 +1872,6 @@
    "lane": "",
    "took": "",
    "why": "Passed reverso.net (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "translate.com",
-   "url": "https://translate.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:32:35Z",
-   "page": "/translate/?q=hello&to=es",
-   "lane": "",
-   "took": "",
-   "why": "Passed translate.com (13/15, conquering in background)",
    "learned": "",
    "ease": null,
    "first": null,
@@ -1391,27 +1905,6 @@
    }
   },
   {
-   "site": "freetranslations.org",
-   "url": "https://freetranslations.org/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:31:23Z",
-   "page": "/translate/?q=hello&to=es",
-   "lane": "",
-   "took": "",
-   "why": "Passed freetranslations.org (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "translator.eu",
    "url": "https://translator.eu/",
    "status": "passed, conquering in background",
@@ -1433,27 +1926,6 @@
    }
   },
   {
-   "site": "hexcolor16.com",
-   "url": "https://hexcolor16.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:30:39Z",
-   "page": "/color/?c=ff5733",
-   "lane": "",
-   "took": "",
-   "why": "Passed hexcolor16.com (12/14, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 14
-   }
-  },
-  {
    "site": "timeanddate.com",
    "url": "https://timeanddate.com/",
    "status": "passed, conquering in background",
@@ -1472,53 +1944,6 @@
    "score": {
     "n": 12,
     "m": 14
-   }
-  },
-  {
-   "site": "wheelofnames.com",
-   "url": "https://wheelofnames.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:28:57Z",
-   "page": "/random/wheel/",
-   "lane": "",
-   "took": "",
-   "why": "Passed wheelofnames.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "emojicombos.com",
-   "url": "https://emojicombos.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T16:28:09Z",
-   "page": "/emoji-combos/",
-   "lane": "",
-   "took": "Emoji Combos",
-   "why": "Passed emojicombos.com (14/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T16:56:12Z",
-    "sha": "64805c486",
-    "file": "domains/tower-self.json"
-   },
-   "sources": [
-    "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 15
    }
   },
   {
@@ -1583,28 +2008,6 @@
     "n": 12,
     "m": 15
    }
-  },
-  {
-   "site": "isitchristmas.com",
-   "url": "https://isitchristmas.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-09T15:45:53Z",
-   "page": "",
-   "lane": "",
-   "took": "",
-   "why": "Passed isitchristmas.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
-   },
-   "pageWas": "/is-it/christmas"
   },
   {
    "site": "amazon.com",
@@ -2096,7 +2499,7 @@
      "to Niger with a stopover",
      "to Yemen with a stopover"
     ],
-    "at": "2026-11-10"
+    "at": "2026-11-11"
    }
   },
   {
@@ -2415,32 +2818,6 @@
    ]
   },
   {
-   "site": "thunit.com",
-   "url": "https://thunit.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T14:04:47Z",
-   "page": "/hosting/",
-   "lane": "",
-   "took": "THUNIT™ | A Lianudom Co.,ltd Company",
-   "why": "Passed thunit.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T07:18:01Z",
-    "sha": "ae15d18e1",
-    "file": "domains/tower-self.json"
-   },
-   "sources": [
-    "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
    "site": "springhole.net",
    "url": "https://springhole.net/",
    "status": "passed, conquering in background",
@@ -2459,48 +2836,6 @@
    "score": {
     "n": 15,
     "m": 17
-   }
-  },
-  {
-   "site": "namegenerator.com",
-   "url": "https://namegenerator.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T14:03:50Z",
-   "page": "/generators/",
-   "lane": "",
-   "took": "",
-   "why": "Passed namegenerator.com (15/17, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 15,
-    "m": 17
-   }
-  },
-  {
-   "site": "codebasehq.com",
-   "url": "https://codebasehq.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T14:02:32Z",
-   "page": "/g/",
-   "lane": "",
-   "took": "",
-   "why": "Passed codebasehq.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
    }
   },
   {
@@ -2539,32 +2874,6 @@
    "lane": "travel",
    "took": "airports",
    "why": "Passed aruljohn.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T04:56:18Z",
-    "sha": "380e87492",
-    "file": "void-live-deploy/lib/tower.js"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
-   "site": "co2.myclimate.org",
-   "url": "https://co2.myclimate.org/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:58:49Z",
-   "page": "/flights/co2/",
-   "lane": "travel",
-   "took": "controls, co2",
-   "why": "Passed co2.myclimate.org (14/16, conquering in background)",
    "learned": "",
    "ease": null,
    "first": {
@@ -2645,27 +2954,6 @@
    }
   },
   {
-   "site": "anotherproducer.com",
-   "url": "https://anotherproducer.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:56:20Z",
-   "page": "/bpm/",
-   "lane": "",
-   "took": "",
-   "why": "Passed anotherproducer.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
    "site": "exifeditor.io",
    "url": "https://exifeditor.io/",
    "status": "passed, conquering in background",
@@ -2675,48 +2963,6 @@
    "lane": "",
    "took": "",
    "why": "Passed exifeditor.io (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "photopea.com",
-   "url": "https://photopea.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:55:13Z",
-   "page": "/photos/photopea/",
-   "lane": "",
-   "took": "",
-   "why": "Passed photopea.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "dw.com",
-   "url": "https://dw.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:53:37Z",
-   "page": "/news/",
-   "lane": "",
-   "took": "",
-   "why": "Passed dw.com (13/15, conquering in background)",
    "learned": "",
    "ease": null,
    "first": null,
@@ -2797,27 +3043,6 @@
    }
   },
   {
-   "site": "investing.com",
-   "url": "https://investing.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:50:48Z",
-   "page": "/markets/",
-   "lane": "",
-   "took": "",
-   "why": "Passed investing.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "marketwatch.com",
    "url": "https://marketwatch.com/",
    "status": "passed, conquering in background",
@@ -2827,27 +3052,6 @@
    "lane": "",
    "took": "",
    "why": "Passed marketwatch.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "stooq.com",
-   "url": "https://stooq.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:49:47Z",
-   "page": "/markets/",
-   "lane": "",
-   "took": "",
-   "why": "Passed stooq.com (13/15, conquering in background)",
    "learned": "",
    "ease": null,
    "first": null,
@@ -3005,58 +3209,6 @@
    }
   },
   {
-   "site": "kanbanflow.com",
-   "url": "https://kanbanflow.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:44:37Z",
-   "page": "/kanban/flow/",
-   "lane": "kanban",
-   "took": "boards, wip, lanes, labels, due, checklist, archive, filter, timer, recur, print, colour, csv, templates",
-   "why": "Passed kanbanflow.com (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T03:18:08Z",
-    "sha": "faa6aacdd",
-    "file": "void-live-deploy/lib/tower.js"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
-   "site": "tools.pdf24.org",
-   "url": "https://tools.pdf24.org/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:44:09Z",
-   "page": "/pdf/suite/",
-   "lane": "pdf",
-   "took": "merge, split, pages, extract, order, rotate, compress, img2pdf, pdf2img, numbers, watermark, crop, info",
-   "why": "Passed tools.pdf24.org (14/16, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T03:18:08Z",
-    "sha": "faa6aacdd",
-    "file": "void-live-deploy/lib/tower.js"
-   },
-   "sources": [
-    "void-live-deploy/lib/tool-sites.js",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 14,
-    "m": 16
-   }
-  },
-  {
    "site": "evernote.com",
    "url": "https://evernote.com/",
    "status": "passed, conquering in background",
@@ -3120,27 +3272,6 @@
    }
   },
   {
-   "site": "outlook.live.com",
-   "url": "https://outlook.live.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:42:32Z",
-   "page": "/calendar/",
-   "lane": "",
-   "took": "",
-   "why": "Passed outlook.live.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "thesportsdb.com",
    "url": "https://thesportsdb.com/",
    "status": "passed, conquering in background",
@@ -3180,27 +3311,6 @@
    "score": {
     "n": 14,
     "m": 16
-   }
-  },
-  {
-   "site": "any.do",
-   "url": "https://any.do/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:41:47Z",
-   "page": "/calendar/",
-   "lane": "",
-   "took": "",
-   "why": "Passed any.do (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
-    "m": 15
    }
   },
   {
@@ -3248,27 +3358,6 @@
    "score": {
     "n": 14,
     "m": 16
-   }
-  },
-  {
-   "site": "cookpad.com",
-   "url": "https://cookpad.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:41:01Z",
-   "page": "/recipes/?q=pancakes",
-   "lane": "",
-   "took": "",
-   "why": "Passed cookpad.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
    }
   },
   {
@@ -3408,27 +3497,6 @@
    }
   },
   {
-   "site": "papago.naver.com",
-   "url": "https://papago.naver.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:38:31Z",
-   "page": "/translate/?q=hello&to=es",
-   "lane": "",
-   "took": "",
-   "why": "Passed papago.naver.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "timetreeapp.com",
    "url": "https://timetreeapp.com/",
    "status": "passed, conquering in background",
@@ -3471,27 +3539,6 @@
    }
   },
   {
-   "site": "tradukka.com",
-   "url": "https://tradukka.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:36:27Z",
-   "page": "/translate/?q=hello&to=es",
-   "lane": "",
-   "took": "",
-   "why": "Passed tradukka.com (13/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 13,
-    "m": 15
-   }
-  },
-  {
    "site": "seriouseats.com",
    "url": "https://seriouseats.com/",
    "status": "passed, conquering in background",
@@ -3509,27 +3556,6 @@
    ],
    "score": {
     "n": 13,
-    "m": 15
-   }
-  },
-  {
-   "site": "color-hex.com",
-   "url": "https://color-hex.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:35:09Z",
-   "page": "/color/?c=ff5733",
-   "lane": "",
-   "took": "",
-   "why": "Passed color-hex.com (12/15, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": null,
-   "sources": [
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 12,
     "m": 15
    }
   },
@@ -3594,32 +3620,6 @@
    "score": {
     "n": 13,
     "m": 15
-   }
-  },
-  {
-   "site": "emojitracker.com",
-   "url": "https://emojitracker.com/",
-   "status": "passed, conquering in background",
-   "outcome": "passed",
-   "at": "2026-11-08T13:33:41Z",
-   "page": "/emojis/",
-   "lane": "",
-   "took": "emojitracker: realtime emoji use",
-   "why": "Passed emojitracker.com (10/12, conquering in background)",
-   "learned": "",
-   "ease": null,
-   "first": {
-    "at": "2026-10-26T07:18:01Z",
-    "sha": "ae15d18e1",
-    "file": "domains/tower-self.json"
-   },
-   "sources": [
-    "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
-   ],
-   "score": {
-    "n": 10,
-    "m": 12
    }
   },
   {
