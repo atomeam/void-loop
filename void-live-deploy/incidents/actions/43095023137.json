@@ -1,0 +1,56 @@
+{
+ "at": "2026-11-11T21:01:24Z",
+ "sha": "59f15b36805cc605035fc69e5caeb6a2db600a47",
+ "runId": 43095023137,
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43095023137",
+ "workflow": "Verse self-check",
+ "event": "workflow_run",
+ "branch": "main",
+ "conclusion": "failure",
+ "jobs": [
+  {
+   "name": "check",
+   "id": 130781545960,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/43095023137/job/130781545960",
+   "conclusion": "failure",
+   "step": {
+    "number": 7,
+    "name": "Run actions/upload-artifact@v4"
+   },
+   "fails": [
+    "Error: Failed to CreateArtifact: Failed to make request after 5 attempts: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+   ],
+   "tail": [
+    "- `/emojis/everywhere/`: script error: Loading the stylesheet 'https://fonts.googleapis.com/css2?family=Noto+Emoji&display=swap&text=%F0%9F%98%80' violates the following Content Security Policy direc; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/creed/`: wording: says \"fight\": Verse assimilates: \"Assimilate, never fight. Every site and tool that came before m\"; not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/creed/give/`: not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/lab/f235-forge-duel/`: wording: says \"fight\": Verse assimilates: \"wo lanes be a conversation instead of a fight?\"",
+    "- `/lab/f631-chore-rota/`: light page (off design): background rgb(247, 245, 242)",
+    "- `/lab/f639-label-name-tag-sheet/`: light page (off design): background rgb(248, 249, 250)",
+    "- `/lab/f646-habit-tracker/`: light page (off design): background rgb(246, 247, 249)",
+    "- `/rival/`: not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "- `/self/`: not wired into the tools: no \"Use with\" row: the page is not tied to the other tools",
+    "/api/selfcheck answered 200 {\"ok\":true,\"checked\":230,\"broken\":9}",
+    "Run actions/upload-artifact@v4",
+    "with:",
+    "  name: self-check",
+    "  path: self-check.json",
+    "  retention-days: 14",
+    "  if-no-files-found: warn",
+    "  compression-level: 6",
+    "  overwrite: false",
+    "  include-hidden-files: false",
+    "(node:17926) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.",
+    "(Use `node --trace-deprecation ...` to show where the warning was created)",
+    "With the provided path, there will be 1 file uploaded",
+    "Artifact name is valid!",
+    "Root directory input is valid!",
+    "Attempt 1 of 5 failed with error: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON. Retrying request in 3000 ms...",
+    "Attempt 2 of 5 failed with error: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON. Retrying request in 6595 ms...",
+    "Attempt 3 of 5 failed with error: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON. Retrying request in 9961 ms...",
+    "Attempt 4 of 5 failed with error: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON. Retrying request in 11851 ms...",
+    "Error: Failed to CreateArtifact: Failed to make request after 5 attempts: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+   ]
+  }
+ ]
+}
