@@ -40,7 +40,7 @@ export function parseTracks(raw) {
 /** how heavy a chunk of markup is: bytes, pictures, custom font requests, scripts. */
 export function weigh(html) {
   const s = String(html || '');
-  return { bytes: Buffer.byteLength(s), images: (s.match(/<img\b/gi) || []).length, fonts: (s.match(/@font-face|fonts\.googleapis|fonts\.gstatic|use\.typekit/gi) || []).length, scripts: (s.match(/<script\b/gi) || []).length };
+  return { bytes: new TextEncoder().encode(s).length, images: (s.match(/<img\b/gi) || []).length, fonts: (s.match(/@font-face|fonts\.googleapis|fonts\.gstatic|use\.typekit/gi) || []).length, scripts: (s.match(/<script\b/gi) || []).length };
 }
 
 export function putText(html, id, text) {

@@ -303,7 +303,10 @@ async function readCard(page, ask) {
       const a = document.querySelector('audio[data-exam-audio]'); if (!a) return null;
       a.muted = true;
       try { await a.play(); } catch (e) { return { currentTime: a.currentTime || 0 }; }
-      await new Promise((r) => setTimeout(r, 1200));
+      // playing, read up to 5 s after play(): a podcast host's tracking redirects can hold the first bytes past the old fixed 1.2 s, so a
+      // feed that does play failed "audio" one run in three (TED Radio Hour, Planet Money, Hidden Brain in turn, 2026-11-10; lists run 16).
+      // How quickly the card answered stays the "fast" check's.
+      for (let t = 0; t < 5000 && (a.currentTime || 0) <= 0.2; t += 200) await new Promise((r) => setTimeout(r, 200));
       return { currentTime: a.currentTime || 0 };
     }).catch(() => null);
     if (played) obs.audio.currentTime = played.currentTime;

@@ -64,3 +64,30 @@ test('a card the page has moved on from is left alone', async () => {
   assert.equal(r, 'scores'); assert.equal(h, '<h2>NBA scores</h2><div class="sub">…</div>');
   assert.equal((await card('nba scores', new Error('x'), false)).h, '<h2>NBA scores</h2><div class="sub">…</div>');
 });
+
+// a day with no games (an international break, a league between seasons): the card still answers from the same feed, nearest first
+async function byUrl(text, route) {
+  const asked = [], el = { innerHTML: '' }, real = globalThis.fetch;
+  globalThis.fetch = async (u) => { asked.push(String(u)); const q = new URL(String(u), 'http://x').searchParams; return { json: async () => route(q) }; };
+  try { await sk.run(text, { showPage: (fn) => { fn(el); return el; }, esc, _pageStill: () => true }); return { asked, h: el.innerHTML }; } finally { globalThis.fetch = real; }
+}
+const shiftDay = (n) => { const d = new Date(Date.now() + n * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+test('no games today: the latest results of the last seven days, only the most recent day', async () => {
+  const two = new Date(Date.now() - 2 * 864e5).toISOString(), four = new Date(Date.now() - 4 * 864e5).toISOString();
+  const { asked, h } = await byUrl('serie a scores', (q) => q.get('span') === '7' && q.get('date') === shiftDay(-7)
+    ? { ok: true, games: [game('Napoli', '1', 'Lazio', '1', 'final', 'FT', two), game('Roma', '2', 'Inter', '0', 'final', 'FT', four)] } : { ok: true, games: [] });
+  assert.ok(asked.includes('/api/scores?league=seriea&date=' + shiftDay(-7) + '&span=7'), asked.join(' '));
+  assert.ok(h.includes('<p>No games today.</p><h3>Latest results, '), h);
+  assert.ok(h.includes('Napoli 1 \u2013 1 Lazio') && !h.includes('Roma'), h);
+});
+test('no games today or last week: the next games of the coming seven days', async () => {
+  const soon = new Date(Date.now() + 3 * 864e5).toISOString();
+  const { h } = await byUrl('premier league scores', (q) => q.get('date') === shiftDay(1) ? { ok: true, games: [game('Arsenal', '', 'Spurs', '', 'pre', '', soon)] } : { ok: true, games: [] });
+  assert.ok(h.includes('<h3>Next games, from ') && h.includes('Arsenal vs Spurs'), h);
+});
+test('between seasons: the table as it stands, by its points column', async () => {
+  const { asked, h } = await byUrl('mlb scores', (q) => q.get('view') === 'standings'
+    ? { ok: true, groups: [{ name: 'American League', cols: ['W', 'L', 'Pct', 'GB'], rows: [{ name: 'Tampa Bay Rays', cells: ['98', '64', '.605', '-'] }] }] } : { ok: true, games: [] });
+  assert.ok(asked.includes('/api/scores?league=mlb&view=standings'));
+  assert.ok(h.includes('the table as it stands (American League)</h3><ol><li>Tampa Bay Rays <span style="color:#8a8a8a">\u00b7 Pct .605</span></li></ol>'), h);
+});

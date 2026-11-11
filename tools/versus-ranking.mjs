@@ -7,8 +7,8 @@
 import { hostOf } from '../void-live-deploy/lib/tower.js';
 
 // words that say a site is a gambling or crypto site: by its title, the words the scan kept about it, or a floor's own words. Whole words only, so a
-// "cryptography" tool, an "alphabet" page or a meeting "time slot" picker is not caught.
-export const OFF_LIMITS = /\b(?:gambl\w*|casinos?|jackpots?|lotter(?:y|ies)|lotto|sweepstakes?|poker|roulette|betting|sportsbooks?|crypto(?:currenc(?:y|ies))?|bitcoin|airdrops?|faucets?|spin (?:to|and) win|slot (?:gacor|online|machines?)|online slots?|megaways)\b/i;
+// "cryptography" tool, an "alphabet" page or a meeting "time slot" picker is not caught. Coin names count too (lists run 16: the frontier title "Homepage - Zcash Community" named only its coin).
+export const OFF_LIMITS = /\b(?:gambl\w*|casinos?|jackpots?|lotter(?:y|ies)|lotto|sweepstakes?|poker|roulette|betting|sportsbooks?|crypto(?:currenc(?:y|ies))?|bitcoin|zcash|ethereum|monero|litecoin|dogecoin|airdrops?|faucets?|spin (?:to|and) win|slot (?:gacor|online|machines?)|online slots?|megaways)\b/i;
 
 /** the host a versus job names ("versus:a.com:speed" -> "a.com"), else null. Pure. */
 export const versusHost = (target) => { const p = String(target || '').split(':'); return p[0].toLowerCase() === 'versus' && p[1] ? p[1].trim().toLowerCase() : null; };

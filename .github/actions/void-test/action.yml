@@ -10,6 +10,9 @@ inputs:
   part:
     description: "all = the fast tests then the browser suite; fast = only the fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites); suite = only the browser suite (verify.yml runs the two as separate jobs, so one never hides the other's result)"
     default: all
+  glyphs:
+    description: "with = the fast part runs tools/test_glyphs.mjs; skip = it does not (verify.yml runs it on its own runner, slow-browser-checks)"
+    default: with
 runs:
   using: composite
   steps:
@@ -86,7 +89,7 @@ runs:
       shell: bash
       run: node tools/test_extension.mjs
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
-      if: inputs.bench != 'only' && inputs.part != 'suite'
+      if: inputs.bench != 'only' && inputs.part != 'suite' && inputs.glyphs != 'skip'
       shell: bash
       run: node tools/test_glyphs.mjs
     - name: node tools/test_sky.mjs (the sky world takes the stage and gives the void back, at 375 px, keyboard only, with reduced motion and on a low-power device)
