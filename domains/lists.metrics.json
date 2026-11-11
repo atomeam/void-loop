@@ -870,6 +870,60 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-11T17:45:00Z",
+   "run": 16,
+   "closed": 7,
+   "touched": 7,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.71,
+   "dup_basis": "12 of 17 items considered were rewordings or repeats: 10 of the 15 open ask groups reworded another (the runner ask 7 times, sports, podcasts and flightconnections.com once each), the emojigraph.org ask repeats the run 10/11/13 decision and flightconnections.com repeats its three filed feature jobs",
+   "median_days": 2,
+   "median_basis": "days from queued to built over the 7 items: 1 (sports exam asks, 2026-11-10), 1 (podcasts exam asks, 2026-11-10), 1 (flightconnections.com asks, 2026-11-10), 2 (emojigraph.org asks, 2026-11-09), 2 (connect-pack~reuse-pack, both added 2026-11-09), 2 (main red overlap check, client-pack skills of 2026-11-09), 24 (the runner ask, on the frontier since 2026-10-18); median 2",
+   "asks_open_start": 15,
+   "asks_open_end": 2,
+   "note": "Run 16 of the lists routine, kept small after the 11-10 and 11-11 runs landed nothing. Counts use tools/asks-link.mjs groups; 13 of the 15 drop when this run's three ledger lines fold into void.growth.json and the deploy's asks step writes the links from the new tools/asks-link.json rules. The 2 left are flightconnections.com, decided as duplicates of its filed feature jobs; they stay counted until the tower loop's build lands a ledger line. Frontier line 31 is built but domains/void.frontier.md is in open PR #2701, so the line is marked next run.",
+   "items": [
+    {
+     "what": "Verse's 8 runner ask groups (38 asks) and frontier line 31: perf3d and glyphs on their own runners in verify.yml (slow-browser-checks), out of browser-suite shard 4 and python-tests (tools/slow-checks-runner.test.mjs)",
+     "list": "V01D asks / frontier",
+     "status": "built"
+    },
+    {
+     "what": "Verse's 2 sports exam ask groups (13 asks): a score card on a day with no games shows the latest results, else the next games, else the table (skills/scores.js, tools/scores-skill.test.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "Verse's 2 podcasts exam ask groups (19 asks): the exam waits up to 5 s for audio to start instead of a fixed 1.2 s (tools/exam.mjs)",
+     "list": "V01D asks",
+     "status": "built"
+    },
+    {
+     "what": "Verse's emojigraph.org ask group (15 asks): already a lane page through lib/self-sites.js; an asks-link rule links every rewording",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/self-sites.js"
+    },
+    {
+     "what": "Verse's 2 flightconnections.com ask groups (6 asks): its three feature jobs are already filed for the tower loop",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/domains/conductor.json"
+    },
+    {
+     "what": "connect-pack + reuse-pack merged into skills/reuse-tools.js (order 9900, aliases kept, tools/reuse-tools-family.test.mjs, 0 routing differences over 4,395 asks)",
+     "list": "convergence",
+     "status": "built"
+    },
+    {
+     "what": "main's red overlap check: three client-pack pairs (heavy-lift-map~ownership-pack, ownership-map~ownership-pack, proposal~proposal-pack) named in tools/skill-overlap.json with why; their merges are in Up for grabs",
+     "list": "green foundation",
+     "status": "built"
+    }
+   ]
   }
  ]
 }

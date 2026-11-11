@@ -42,10 +42,21 @@ const run = (args, input) => {
 };
 // the check runs of one head are read once per run (readiness and the merge gate below both ask)
 const seen = new Map();
-const gh = (path) => {
-  if (/\/check-runs\?/.test(path) && seen.has(path)) return seen.get(path);
-  const v = JSON.parse(run(['api', path]) || 'null');
-  if (/\/check-runs\?/.test(path)) seen.set(path, v);
+const gh = (path, opts = {}) => {
+  const key = path + (opts.paginate ? '|p' : '');
+  if (/\/check-runs\?/.test(path) && !opts.paginate && seen.has(key)) return seen.get(key);
+  const args = ['api', path];
+  if (opts.paginate) args.splice(1, 0, '--paginate');
+  let v;
+  if (opts.paginate) {
+    // gh api --paginate emits concatenated JSON arrays; --slurp wraps pages so we can flatten safely
+    const raw = run(['api', '--paginate', '--slurp', path]) || '[]';
+    try { const pages = JSON.parse(raw); v = Array.isArray(pages) && pages.length && Array.isArray(pages[0]) ? pages.flat() : (Array.isArray(pages) ? pages : []); }
+    catch (_) { try { v = JSON.parse(run(['api', '--paginate', path]) || '[]'); } catch { v = []; } }
+  } else {
+    v = JSON.parse(run(args) || 'null');
+  }
+  if (/\/check-runs\?/.test(path) && !opts.paginate) seen.set(key, v);
   return v;
 };
 function budget() {

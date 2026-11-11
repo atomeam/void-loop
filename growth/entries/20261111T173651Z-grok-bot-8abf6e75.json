@@ -1,0 +1,1 @@
+{"at":"2026-11-11T17:36:51Z","by":"grok-bot","kind":"build","what":"The two longest browser checks, perf3d and glyphs, run on their own runners in verify.yml (slow-browser-checks), beside the suite and the fast tests instead of after them (tools/slow-checks-runner.test.mjs)","asked":"ask-20261110-1813-1"}

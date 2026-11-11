@@ -468,6 +468,370 @@
     "ask-20261106-2037-3": {
       "decision": "built",
       "why": "lists run 14 (2026-11-09): the cause was the live outage, not the podcast skill: podcasts scored 91-95 on live until 2026-11-07 20:51 UTC, then swung between 42 and 95 as Cloudflare Pages Git builds without Functions replaced the real site; fixed by #2560 (with #2559's API pause and rollback)"
+    },
+    "ask-20261109-2108-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2116-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2147-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2208-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2252-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2258-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2332-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2356-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0006-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0011-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0016-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0057-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0106-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0115-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0133-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0140-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0148-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0156-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-0200-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1629-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1633-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1637-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1642-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1654-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1710-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1713-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1733-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1742-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1805-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1813-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1919-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-1935-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-2005-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-2041-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-2127-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-2131-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-2215-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261110-2359-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: perf3d and glyphs run on their own runners in verify.yml (slow-browser-checks, one matrix entry each) beside the browser suite and the fast tests, instead of perf3d after shard 4 and glyphs inside python-tests; the fast checks already skip both unless their files changed (tools/checks.mjs ONLY_WHEN); tools/slow-checks-runner.test.mjs"
+    },
+    "ask-20261109-2252-3": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261109-2258-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261109-2332-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261109-2356-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0006-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0011-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0016-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0057-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0106-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0115-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0133-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0140-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0148-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0156-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-0200-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate of ask-20261104-2101-1 (decided in lists runs 10, 11 and 13): emojigraph.org is already a lane page (lib/self-sites.js, read into lib/tower.js LANE_PAGES as emoji combos: emojigraph.org -> /emoji-combos/emoji-dictionary/) and Versus took it on at 12 of 15; a tools/asks-link.json rule now links every rewording so it stops coming back"
+    },
+    "ask-20261110-1629-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1633-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1637-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1642-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1710-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1713-1": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1733-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1742-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1805-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1813-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1919-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-1935-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-2005-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: the board check failed on days with no games, when the card said only No games today (MLB between seasons, Premier League and Serie A on a weekday or an international break); the card now shows the latest results of the last seven days, else the next games of the coming seven, else the table as it stands, from the same /api/scores feed (skills/scores.js, tools/scores-skill.test.mjs)"
+    },
+    "ask-20261110-0536-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1629-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1633-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1637-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1642-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1654-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1710-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1713-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1733-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1742-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1805-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1813-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1919-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-1935-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-2041-3": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-2127-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-2131-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-2215-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-2359-2": {
+      "decision": "built",
+      "why": "lists run 16 (2026-11-11): built: audio failed on a different show each run (TED Radio Hour, Freakonomics, Planet Money, Hidden Brain) because the exam read the player a fixed 1.2 s after play() and a host that redirects slowly had not started yet; tools/exam.mjs now waits up to 5 s for playback, and how fast the card answered stays the fast check. The two shows named pass on the 2026-11-11 exams"
+    },
+    "ask-20261110-2005-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)"
+    },
+    "ask-20261110-2041-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)"
+    },
+    "ask-20261110-2127-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)"
+    },
+    "ask-20261110-2131-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)"
+    },
+    "ask-20261110-2215-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)"
+    },
+    "ask-20261110-2359-1": {
+      "decision": "retired",
+      "why": "lists run 16 (2026-11-11): duplicate: the three feature jobs for flightconnections.com (feature:flightconnections-co-5e8de345, -e4b41463, -65bcb77f) are already filed (domains/conductor.json visitorFiled) and the automated tower and feature loop builds them; its parity page has no missing rows (docs/PARITY/flightconnections.com.md, gate 14 of 16)"
     }
   },
   "ask-20261013-1850-1": {

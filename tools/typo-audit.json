@@ -7,6 +7,7 @@
     "dose": "a real word: the coral skill's heat dose, not 'does'",
     "flies": "a real word: 'how far a crow flies', not 'files'",
     "form": "a real word: a web form, not 'from'",
-    "menaing": "kept on purpose: the misspelling from issue #792 that the define skill learned to read (tools/define-typo.test.mjs)"
+    "menaing": "kept on purpose: the misspelling from issue #792 that the define skill learned to read (tools/define-typo.test.mjs)",
+    "acme": "a real word: Acme, the stand-in company name in a client-pack example, not came"
   }
 }

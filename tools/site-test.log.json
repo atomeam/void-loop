@@ -1,20 +1,5 @@
 [
  {
-  "at": "2026-10-18T18:18:28Z",
-  "passed": 68,
-  "of": 70,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
- },
- {
-  "at": "2026-10-18T18:45:56Z",
-  "passed": 59,
-  "of": 71,
-  "kind": "file",
-  "key": "yo film metadata for ikiru | refused: don't know this yet",
-  "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
- },
- {
   "at": "2026-10-19T00:40:40Z",
   "passed": 70,
   "of": 71,
@@ -7974,5 +7959,41 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"lift summary for client onboarding\" (skill:lift-summary)"
+ },
+ {
+  "at": "2026-11-11T17:01:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1362,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 9576 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-11T17:35:28Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 782,
+   "failed": [
+    {
+     "ask": "flip a coin",
+     "why": [
+      "slow 10525 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
