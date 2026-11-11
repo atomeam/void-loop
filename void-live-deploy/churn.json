@@ -1,5 +1,5 @@
 {
- "at": "2026-11-11T18:35:46.257Z",
+ "at": "2026-11-11T19:44:50.316Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -14,11 +14,11 @@
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 109
+   "changes": 108
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 105
+   "changes": 104
   },
   {
    "file": "domains/handoff.md",
@@ -29,24 +29,24 @@
    "changes": 59
   },
   {
-   "file": "domains/tower-self.json",
+   "file": "domains/conductor.json",
    "changes": 49
   },
   {
-   "file": "domains/conductor.json",
-   "changes": 48
+   "file": "domains/tower-self.json",
+   "changes": 49
   },
   {
    "file": "tools/site-test.json",
    "changes": 38
   },
   {
-   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "file": "void-live-deploy/design-loop.json",
    "changes": 36
   },
   {
-   "file": "void-live-deploy/design-loop.json",
-   "changes": 35
+   "file": "void-live-deploy/emoji-combos/emoji-dictionary/index.html",
+   "changes": 36
   },
   {
    "file": "void-live-deploy/markets/currency-converter/index.html",
@@ -78,7 +78,7 @@
   },
   {
    "file": "domains/growth-inbox.md",
-   "changes": 25
+   "changes": 24
   },
   {
    "file": "docs/TAGTEAM.md",
@@ -122,7 +122,7 @@
   },
   {
    "file": "void-live-deploy/tower-evidence/emoji-combos-emojigraph-org-4b7bb4fe.json",
-   "changes": 16
+   "changes": 15
   },
   {
    "file": "docs/PARITY/gmail.md",
