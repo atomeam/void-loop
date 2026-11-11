@@ -1,1 +1,0 @@
-{"at":"2026-11-11T22:14:44Z","by":"openhands","kind":"build","what":"a playbook for a ledger wiped whole: read the file on main, find the +1 -601 commit, restore it with the intended change folded in, and add a base-free guard that fails CI (the frontier reached main as a PLACEHOLDER because the only guard ran from a tool no workflow runs)"}

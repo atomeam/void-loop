@@ -1,1 +1,0 @@
-{"at":"2026-11-11T22:03:04Z","by":"openhands","kind":"fix","what":"the page's own copy of the chip-label rule matches its two deploy copies again: void.html carried the CSS without the ellipsis-ok marker the copies had, so 'copies' was red on main and every pull request's review failed on it"}
