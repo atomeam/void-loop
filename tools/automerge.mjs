@@ -24,6 +24,8 @@ import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
+
+// Stacked PRs cannot use the synchronous merge endpoint; fall back to merge-async and poll its result.
 // The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
 // reads ~8 endpoints per open PR, and this bot woke on every CI finish, comment and review: 77 sweeps in 40 minutes over 20 PRs spent
 // the hour's quota, and then every automerge, helper PR and dispatch failed with "API rate limit exceeded for installation" (403).
@@ -93,6 +95,24 @@ function idleEvent() {
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 const here = dirname(fileURLToPath(import.meta.url));
 const safeArg = (s) => String(s || '').replace(/[\r\n"]/g, ' ').slice(0, 160);
+const isHttp403 = (e) => /(?:HTTP\s*)?403\b|forbidden|resource not accessible/i.test(String(e && (e.stderr || e.message) || e));
+function mergeGateFailure(sha) {
+  try {
+    const rows = (gh(`repos/${repo}/commits/${sha}/check-runs?per_page=100`).check_runs || [])
+      .filter((r) => /^merge-gate(?:\s|$)/i.test(String(r.name || '')))
+      .sort((a, b) => b.id - a.id);
+    const latest = rows[0];
+    return latest && latest.status === 'completed' && latest.conclusion === 'failure' ? latest : null;
+  } catch (_) { return null; }
+}
+function mergePull(p, sha) {
+  try {
+    return { result: JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${sha}`])), async: false };
+  } catch (e) {
+    if (!isHttp403(e)) throw e;
+    return { result: JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge-async`, '-f', 'merge_method=squash', '-f', `sha=${sha}`])), async: true };
+  }
+}
 function dispatchFix(number, sha, kind, why) {
   try {
     run(['api', '-X', 'POST', `repos/${repo}/issues/${number}/comments`, '--input', '-'], JSON.stringify({ body: fixNote(sha, kind) }));
@@ -241,6 +261,8 @@ for (let p of prs) {
   try { r = readiness(gh, repo, p.number); }
   catch (e) { if (limited) continue; console.log(`#${p.number}: could not read its state: ${String(e.stderr || e.message || e).slice(0, 200)}`); continue; }
   console.log(`#${p.number}: ${r.state} (${r.why})` + (r.extra ? ' · ' + r.extra : ''));
+  const gateFailure = mergeGateFailure(r.sha);
+  if (gateFailure) { console.log(`#${p.number}: merge-gate failed, blocked until it is green (${gateFailure.html_url || gateFailure.id})`); continue; }
   if (r.state === 'resolve') {
     const m = resolveMain(ex, gh, { repo, pr: p.number, branch: r.branch, tools: here });
     console.log(`#${p.number}: ` + (m.state === 'pushed' ? `main merged in and pushed as ${m.sha.slice(0, 7)}; Verse's review started on it` : m.state === 'conflict' ? `conflicts need a person in ${m.files.join(', ')}` + (m.commented ? ' (commented on the PR)' : ' (already said on the PR)') : `could not merge main: ${m.why}`));
@@ -279,8 +301,9 @@ if (ready.length && !limited) {
   for (const row of ready) {
     const p = row.p, r = row.r;
     try {
-      const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-      if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
+      const m = mergePull(p, r.sha);
+      if (m.result.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
+      else if (m.async) console.log(`#${p.number}: synchronous merge returned 403; merge-async accepted the stacked PR at ${r.sha.slice(0, 7)}`);
     } catch (e) { const msg = String(e.stderr || e.message).slice(0, 300); if (!merged) mergeError = msg; console.log(`#${p.number}: merge refused: ${msg}`); }
   }
   choice = { action: 'merge', pr: ready[0] };
@@ -372,8 +395,8 @@ if (false && ready.length && !limited) { // void-review: ok (the old suite wait;
       const p = row.p, r = row.r;
       try {
         if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-        const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-        if (!m.merged) break;
+        const m = mergePull(p, r.sha);
+        if (!m.result.merged) break;
         merged++; done.push(row); console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
       } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); break; }
     }

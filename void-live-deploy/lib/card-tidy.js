@@ -4,7 +4,13 @@ const HEAD = /^(?:please\s+)?(?:draw\b|make\s+(?:a\s+|me\s+)?(?:\d+\s*(?:min(?:u
 export function splitAsks(text) {
   const t = String(text || '').trim();
   if (!t || t.length > 180 || /[:?]/.test(t)) return null;
-  const parts = t.split(/\s+and\s+/i).map((s) => s.trim()).filter(Boolean);
+  // Shield only the prepositional "between X and Y" span so a compound prompt is not torn in half:
+  // "Check the contrast ratio between #0d0d14 and #7dd3fc and generate a QR code for https://a-to-mind.com"
+  // keeps the two colours together and splits only before "generate". Noun lists like "timer and draw and
+  // weather" still split normally because they carry no "between". (owner live test, 2026-11-11)
+  const MASK = '\u0000';
+  const masked = t.replace(/\b(between\s+\S+(?:\s+\S+){0,3}?)\s+and\s+(\S+)/gi, '$1' + MASK + '$2');
+  const parts = masked.split(/\s+and\s+/i).map((s) => s.trim().replace(new RegExp(MASK, 'g'), ' and ')).filter(Boolean);
   if (parts.length < 2 || parts.length > 5) return null;
   if (parts.some((p) => p.length > 42 || !HEAD.test(p))) return null;
   return parts;

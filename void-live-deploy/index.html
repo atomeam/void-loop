@@ -2710,7 +2710,7 @@ say('nothing selected to remove');
       return /^(menu|the menu|show (me )?(the )?menu|open (the )?menu|options|commands|what can i do( here)?|what can i ask|list (the )?skills|skills)\s*[?.!]?$/.test(lower);
     }
     function wantsSelfPage(lower) {
-      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|(?:verse|void)|a-to-mind)\b|^what\s+can\s+(you|i|(?:verse|void))\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|(?:verse|void))\b/.test(lower);
+      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|(?:verse|void)|a-to-mind)\b|^what\s+can\s+(you|i|(?:verse|void))\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|(?:verse|void))\b|what\s+(capabilities|tools|skills|labs|features|abilities)\b.*\b(you|verse|void)\b.*\b(have|got|do)\b|\b(show|list|give)\s+(me\s+)?(your|my|the)\s+(capabilities|tools|skills|labs|features|abilities)\b/.test(lower);
     }
     // "what are you?" / "who are you" / "what is void" / "tell me about yourself": Verse says what it is and its motto first, then
     // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word

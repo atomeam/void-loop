@@ -143,14 +143,14 @@ jobs:
   # because main was. A branch gets the fast tests; `full: true` asks for the suite on a branch by hand.
   browser-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     if: github.ref == 'refs/heads/main' || inputs.full
     strategy:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
     concurrency:
-      group: void-verify-${{ matrix.shard }}-${{ github.ref }} # one group per shard on this branch: a newer push replaces the waiting shard
+      group: void-verify-v2-${{ matrix.shard }}-${{ github.ref }} # bumped 2026-11-11 to escape stuck zombie run 43093884842; fresh queue
       cancel-in-progress: false
     permissions:
       contents: write # push the revert

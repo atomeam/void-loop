@@ -10,13 +10,13 @@ import { tmpdir } from 'node:os';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BUILD_OUTPUTS } from './generated.mjs';
-import { APPEND_TEXT } from './records.mjs';
+import { APPEND_JSON, APPEND_TEXT, keyOf } from './records.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const build = new Set(BUILD_OUTPUTS);
 // the append-mostly text files: a conflict there is two branches appending at the same spot, settled by keeping
 // both sides' new lines (the same rule tools/merge-main.mjs applies); anything else still needs a person
-const APPEND_MOSTLY = new Set([...APPEND_TEXT, 'tools/families.mjs']);
+const APPEND_MOSTLY = new Set([...APPEND_TEXT, ...APPEND_JSON, 'tools/families.mjs']);
 
 /** true when every conflicted path is a file the deploy rewrites. Pure. */
 export function onlyBuildConflicts(files) {
@@ -98,6 +98,16 @@ function main() {
         const settled = files.filter((f) => APPEND_MOSTLY.has(f));
         const rest = files.filter((f) => !settled.includes(f));
         for (const f of settled) {
+          if (APPEND_JSON.includes(f)) {
+            const theirs = JSON.parse(git(['show', `:3:${f}`], dir).stdout || '[]');
+            const ours = JSON.parse(git(['show', `:2:${f}`], dir).stdout || '[]');
+            const seen = new Set(theirs.map((x) => keyOf(f, x)));
+            const mine = ours.filter((x) => !seen.has(keyOf(f, x)) && seen.add(keyOf(f, x)));
+            writeFileSync(resolve(dir, f), JSON.stringify(theirs.concat(mine), null, 2) + '\n');
+            git(['add', '--', f], dir);
+            console.log('merge-gate: settled the append-collision in ' + f + ' (main entries plus ' + mine.length + ' new entries)');
+            continue;
+          }
           const base = git(['show', `:1:${f}`], dir).stdout || '';
           const ours = git(['show', `:2:${f}`], dir).stdout || '';
           const theirs = git(['show', `:3:${f}`], dir).stdout || '';
