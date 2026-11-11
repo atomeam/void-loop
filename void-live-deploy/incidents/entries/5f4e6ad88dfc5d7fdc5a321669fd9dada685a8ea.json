@@ -1,0 +1,20 @@
+{
+ "at": "2026-11-11T22:37:52.644Z",
+ "sha": "5f4e6ad88dfc5d7fdc5a321669fd9dada685a8ea",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/43110594052",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "suite ran to the end"
+ ],
+ "touched": [
+  "tools/time-machine.test.mjs",
+  "void-live-deploy/lib/time-machine-boot.js",
+  "void-live-deploy/lib/time-machine-client.js",
+  "void-live-deploy/lib/time-machine-idb.js",
+  "void-live-deploy/lib/time-machine.js"
+ ],
+ "shards": [
+  2
+ ]
+}
