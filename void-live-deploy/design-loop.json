@@ -349,6 +349,16 @@
    "listed": 6,
    "defectsBefore": 11,
    "defectsAfter": 0
+  },
+  {
+   "at": "2026-11-11T19:27:57.737Z",
+   "run": 44,
+   "measured": 30,
+   "clean": 24,
+   "fixed": 3,
+   "listed": 3,
+   "defectsBefore": 3,
+   "defectsAfter": 0
   }
  ],
  "pages": {
@@ -7172,7 +7182,7 @@
    "state": "clean"
   },
   "/privacy/": {
-   "at": "2026-11-09T06:31:09.094Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7213,18 +7223,8 @@
    "why": "no rule fixes it (a layout shift of 0.259 that no rule fixes: listed for a builder)"
   },
   "/lab/mind-map/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
-    "defects": 1,
-    "contrast": 0,
-    "targets": 1,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.004,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7233,11 +7233,10 @@
     "cls": 0.004,
     "overflow": 0
    },
-   "rules": 1,
-   "moved": 0
+   "state": "clean"
   },
   "/generators/chat/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7250,7 +7249,7 @@
    "state": "clean"
   },
   "/fix/one-time/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7263,7 +7262,7 @@
    "state": "clean"
   },
   "/creed/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7276,8 +7275,18 @@
    "state": "clean"
   },
   "/markets/screener/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.014,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7286,23 +7295,24 @@
     "cls": 0.014,
     "overflow": 0
    },
-   "state": "clean"
+   "rules": 1,
+   "moved": 0
   },
   "/markets/caps/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.029,
+    "cls": 0.043,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/dictation/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -7316,42 +7326,21 @@
    "why": "no rule fixes it (a layout shift of 0.27 that no rule fixes: listed for a builder)"
   },
   "/lab/f625-regex-tester/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
-    "defects": 4,
-    "contrast": 0,
-    "targets": 4,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.052,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.035,
-    "overflow": 0
-   },
-   "rules": 4,
-   "moved": 0.2
-  },
-  "/lab/f620-pomodoro-task-timer/": {
-   "at": "2026-11-09T08:22:18.656Z",
-   "before": {
-    "defects": 2,
-    "contrast": 2,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
     "cls": 0,
     "overflow": 0
    },
-   "state": "fixed",
-   "after": {
+   "state": "clean"
+  },
+  "/lab/f620-pomodoro-task-timer/": {
+   "at": "2026-11-11T19:27:57.737Z",
+   "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7360,35 +7349,24 @@
     "cls": 0.004,
     "overflow": 0
    },
-   "rules": 2,
-   "moved": 0.001
+   "state": "clean"
   },
   "/trading-bots/arbitrage/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.002,
+    "cls": 0.028,
     "overflow": 0
    },
    "state": "clean"
   },
   "/lab/checksum/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 3,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7397,11 +7375,10 @@
     "cls": 0,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0.088
+   "state": "clean"
   },
   "/lab/photo-palette/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7414,20 +7391,20 @@
    "state": "clean"
   },
   "/assimilated/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0,
+    "cls": 0.015,
     "overflow": 60
    },
    "state": "clean"
   },
   "/creed/give/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7440,7 +7417,7 @@
    "state": "clean"
   },
   "/generators/make/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7453,7 +7430,7 @@
    "state": "clean"
   },
   "/cpan/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7466,7 +7443,7 @@
    "state": "clean"
   },
   "/lab/f619-spatial-memory-palace-flashcards/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7479,7 +7456,7 @@
    "state": "clean"
   },
   "/lab/pattern/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7492,18 +7469,8 @@
    "state": "clean"
   },
   "/trading-bots/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
-    "defects": 3,
-    "contrast": 0,
-    "targets": 3,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0.085,
-    "overflow": 0
-   },
-   "state": "fixed",
-   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
@@ -7512,11 +7479,10 @@
     "cls": 0.085,
     "overflow": 0
    },
-   "rules": 3,
-   "moved": 0
+   "state": "clean"
   },
   "/vat/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7529,7 +7495,7 @@
    "state": "clean"
   },
   "/fantasy/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7542,7 +7508,7 @@
    "state": "clean"
   },
   "/code-review/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7555,7 +7521,7 @@
    "state": "clean"
   },
   "/lab/level/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7568,20 +7534,31 @@
    "state": "clean"
   },
   "/image/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
+    "defects": 1,
+    "contrast": 0,
+    "targets": 1,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.011,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
     "defects": 0,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.014,
+    "cls": 0.011,
     "overflow": 0
    },
-   "state": "clean"
+   "rules": 1,
+   "moved": 0.002
   },
   "/word-count/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 0,
     "contrast": 0,
@@ -7594,34 +7571,34 @@
    "state": "clean"
   },
   "/journal/": {
-   "at": "2026-11-09T08:22:18.656Z",
-   "before": {
-    "defects": 0,
-    "contrast": 0,
-    "targets": 0,
-    "unstyled": 0,
-    "empty": 0,
-    "cls": 0,
-    "overflow": 0
-   },
-   "state": "clean"
-  },
-  "/learn-to-draw/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 1,
     "contrast": 0,
     "targets": 0,
     "unstyled": 0,
     "empty": 0,
-    "cls": 0.101,
+    "cls": 0.561,
     "overflow": 0
    },
    "state": "listed",
-   "why": "no rule fixes it (a layout shift of 0.101 that no rule fixes: listed for a builder)"
+   "why": "no rule fixes it (a layout shift of 0.561 that no rule fixes: listed for a builder)"
+  },
+  "/learn-to-draw/": {
+   "at": "2026-11-11T19:27:57.737Z",
+   "before": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0.094,
+    "overflow": 0
+   },
+   "state": "clean"
   },
   "/emojis/everywhere/": {
-   "at": "2026-11-09T08:22:18.656Z",
+   "at": "2026-11-11T19:27:57.737Z",
    "before": {
     "defects": 1,
     "contrast": 0,
@@ -9773,6 +9750,30 @@
    },
    "rules": 3,
    "moved": 0.14
+  },
+  "/lab/f629-trip-fuel-cost/": {
+   "at": "2026-11-11T19:27:57.737Z",
+   "before": {
+    "defects": 1,
+    "contrast": 1,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "state": "fixed",
+   "after": {
+    "defects": 0,
+    "contrast": 0,
+    "targets": 0,
+    "unstyled": 0,
+    "empty": 0,
+    "cls": 0,
+    "overflow": 0
+   },
+   "rules": 1,
+   "moved": 0
   }
  }
 }
