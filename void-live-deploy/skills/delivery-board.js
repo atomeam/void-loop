@@ -8,7 +8,7 @@
 export function isDeliveryBoard(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:delivery|client)\s+board\b/i.test(t)
-    || /^(?:show|make|generate|create)\s+(?:a\s+)?(?:delivery|client)\s+board\b/i.test(t)
+    || /^(?:show|make|generate|create)\s+(?:a\s+|the\s+)?(?:delivery|client)\s+board\b/i.test(t)
     || /^(?:delivery\s+board)\s+(?:for|of|on)\b/i.test(t);
 }
 
