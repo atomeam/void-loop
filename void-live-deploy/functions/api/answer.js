@@ -35,6 +35,7 @@ import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM, PLAN_MIN, planAskOf } from '../../lib/plan.js';
+import { analyzeBridge } from '../../lib/bridge.js';
 import { cleanTake } from '../../skills/take.js';
 import { chatMessages, cleanReply, CHAT_SAYS } from '../../lib/character.js';
 import { capAll, cap as dayCap } from '../../lib/daily-cap.js';
@@ -399,6 +400,25 @@ async function planAnswer(request, env, body) {
     } catch (e) { await recordShortfall(env, 'plan', reasonOf(e)); }
   }
   return Response.json({ goal, steps: null, note: on ? 'model busy' : 'no model' });
+}
+
+// Live Workspace Fusion (Step 1): synthesize 2-3 explicitly staged inputs into a bridge card.
+// Deterministic analyzer in production too (no model, no stored text) so the contract is always
+// grounded in what was provided; the client falls back to the same analyzer on 204/offline.
+async function bridgeAnswer(request, env, body) {
+  const raw = Array.isArray(body.inputs) ? body.inputs : [];
+  const inputs = raw.slice(0, 3).map((it, i) => ({
+    id: redact(String(it && it.id || ('in_' + (i + 1)))).slice(0, 40),
+    kind: /^(tab|url|snippet)$/.test(it && it.kind) ? it.kind : 'snippet',
+    title: redact(String(it && it.title || '')).slice(0, 120),
+    sourceUrl: redact(String(it && it.sourceUrl || '')).slice(0, 500),
+    content: redact(String(it && it.content || '')).slice(0, 6000),
+  }));
+  if (inputs.length < 2) return Response.json({ error: 'need at least 2 inputs' }, { status: 400 });
+  if (await rateLimited(request, env)) return Response.json({ error: 'slow down' }, { status: 429 });
+  const ask = redact(norm(body.ask || 'Bridge these inputs')).slice(0, 300);
+  const contract = analyzeBridge(inputs, ask);
+  return Response.json(contract);
 }
 
 // What you told me (frontier: memory in the answer path, still explicit-only). A signed-in member or the owner who asks anything here gets their

@@ -59,7 +59,26 @@ jobs:
           ref: ${{ steps.pr.outputs.sha }}
           fetch-depth: 0 # the diff needs the base
 
+      - name: Skip if this SHA was already approved by Verse
+        id: done
+        if: ${{ inputs.report_only != true }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          SHA: ${{ steps.pr.outputs.sha }}
+        run: |
+          approved=$(gh api "repos/$REPO/pulls/$PR/reviews?per_page=100" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and .state == "APPROVED" and .commit_id == env.SHA)] | length' 2>/dev/null || echo 0)
+          if [ "${approved:-0}" -gt 0 ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Verse already approved $SHA; skipping duplicate review." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Verse reviews the lines this PR adds
+        if: ${{ steps.done.outputs.skip != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr.outputs.number }}
@@ -89,7 +108,7 @@ jobs:
 
       - name: Gate on bugs and risks
         id: bugs
-        if: ${{ inputs.report_only != true }}
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
@@ -99,7 +118,7 @@ jobs:
       # in a log or a note is likeliest). It prints the file, the line and the kind, never the value, and blocks the merge.
       - name: No secrets in the added lines
         id: secrets
-        if: ${{ inputs.report_only != true }}
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
@@ -110,7 +129,7 @@ jobs:
       # that read env, /api rate limited (tools/runtime-guard.mjs)
       - name: No personal data, nothing secret in the built site
         id: privacy
-        if: ${{ inputs.report_only != true }}
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
@@ -122,7 +141,7 @@ jobs:
       # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
       - name: Every skill file is still listed (only when the PR touches skills/)
         id: skills
-        if: ${{ inputs.report_only != true }}
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
@@ -137,7 +156,7 @@ jobs:
       # (tools/shared-chain.test.mjs): #1663 added one, the list did not name it, and shard 1 went red on main after the merge. Seconds, no browser.
       - name: The shared tool-page chain matches the browser suite's list
         id: chain
-        if: ${{ inputs.report_only != true }}
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         run: node --test tools/shared-chain.test.mjs || { echo "::error title=Shared tool-page chain::a module the toolkit chain loads is not in SHARED_TOOL_FILES (tools/test_void.mjs); see the test output above"; exit 1; }
 
       # void.html is the page and void-live-deploy/index.html and void-live-deploy/void.html are its two deploy copies (checks.mjs 'copies').
@@ -145,7 +164,7 @@ jobs:
       # (2026-10-30, repaired by 2ea27ede). The same compare runs here, so a PR with a stale copy does not merge. Seconds, no browser.
       - name: The page and its two deploy copies match
         id: copies
-        if: ${{ inputs.report_only != true }}
+        if: ${{ inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         run: |
           node -e "const fs=require('fs'),r=(f)=>fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n'),src=r('void.html'),stale=['void-live-deploy/index.html','void-live-deploy/void.html'].filter((f)=>r(f)!==src);if(stale.length){console.log('::error title=Page copies::'+stale.join(' and ')+' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html');process.exit(1)}console.log('void.html and both deploy copies match')"
 
@@ -153,7 +172,7 @@ jobs:
       # submits an approving review. A fail comments the reason and files one fix job. Spending money and a message
       # sent outside stay on the confirm line; this step never holds a pull request for a person.
       - name: "Verdict: merge, or a fix job"
-        if: ${{ always() && inputs.report_only != true }}
+        if: ${{ always() && inputs.report_only != true && steps.done.outputs.skip != 'true' }}
         env:
           GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
           REPO: ${{ github.repository }}
