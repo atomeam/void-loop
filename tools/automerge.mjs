@@ -24,6 +24,8 @@ import { chooseChecked, nextBatch, recordedMain, parseLog, CHECK } from './suite
 import { stallVerdict, lastMerge, keyOf, withKey, STALL_MS, LABEL as STALL_LABEL, MARK as STALL_MARK } from './merge-stall.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
+
+// Stacked PRs cannot use the synchronous merge endpoint; fall back to merge-async and poll its result.
 // The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
 // reads ~8 endpoints per open PR, and this bot woke on every CI finish, comment and review: 77 sweeps in 40 minutes over 20 PRs spent
 // the hour's quota, and then every automerge, helper PR and dispatch failed with "API rate limit exceeded for installation" (403).
@@ -393,8 +395,8 @@ if (false && ready.length && !limited) { // void-review: ok (the old suite wait;
       const p = row.p, r = row.r;
       try {
         if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
-        const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=squash', '-f', `sha=${r.sha}`]));
-        if (!m.merged) break;
+        const m = mergePull(p, r.sha);
+        if (!m.result.merged) break;
         merged++; done.push(row); console.log(`merged #${p.number} at ${r.sha.slice(0, 7)} (suite green on ${String(mainSha).slice(0, 7)})`); await markLive(p);
       } catch (e) { mergeError = String(e.stderr || e.message).slice(0, 300); console.log(`#${p.number}: merge refused: ${mergeError}`); break; }
     }
