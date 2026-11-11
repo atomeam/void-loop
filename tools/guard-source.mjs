@@ -1,11 +1,15 @@
 // Fails fast, in about a second, when a script no longer parses (a bad merge, a re-encoded file).
 // Run before the full suite: a broken tools/test_void.mjs once made every deploy and ship-helper run die with no useful message.
+// Ledger wipe (2026-11-11): a whole-file write replaced domains/void.frontier.md, the one build order, with the word PLACEHOLDER
+// on main (PR #2701) and nothing in CI caught it. The append-only ledgers (tools/prepush.mjs LEDGERS) are checked here too, since
+// this runs in CI on every pull request and every head of main (deploy.yml quick checks, the void-test action).
 //   node tools/guard-source.mjs      lists each file that does not parse, with the line, and the adjacent near-duplicate lines
 //                                    (the usual sign of a merge that re-encoded a file); exit 1 if any
 import { spawnSync } from 'node:child_process';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LEDGERS, ledgerWiped } from './prepush.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const walk = (d, out = []) => {
@@ -40,5 +44,11 @@ for (const f of files) {
   const t = twins(f);
   console.log(`FAIL ${relative(root, f)}:${e.line} ${e.msg}${t.length ? `  (near-duplicate lines at ${t.slice(0, 8).join(', ')}: a merge may have re-encoded this file)` : ''}`);
 }
-console.log(bad ? `${bad} file(s) do not parse` : `${files.length} scripts parse`);
+// the append-only ledgers: a whole-file write once left one as a placeholder (tools/prepush.mjs ledgerWiped); this check needs no base
+for (const f of LEDGERS) {
+  let text = null; try { text = readFileSync(resolve(root, f), 'utf8'); } catch (_) {}
+  const why = text === null ? '' : ledgerWiped(f, text);
+  if (why) { bad++; console.log(`FAIL ${why}`); }
+}
+console.log(bad ? `${bad} file(s) do not parse or were wiped` : `${files.length} scripts parse, ${LEDGERS.length} ledgers whole`);
 process.exit(bad ? 1 : 0);

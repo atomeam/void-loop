@@ -1,0 +1,1 @@
+{"at":"2026-11-11T21:17:05Z","by":"openhands","kind":"fix","what":"a ledger wiped by a whole-file write now fails CI: tools/guard-source.mjs checks the append-only ledgers (tools/prepush.mjs LEDGERS) without a base, the way the frontier was replaced by a placeholder and reached main"}
