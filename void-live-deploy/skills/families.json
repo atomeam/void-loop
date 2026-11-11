@@ -13,7 +13,7 @@
  "smoke_at": "2026-11-11",
  "bench_at": "2026-11-09",
  "totals": {
-  "experiment": 1,
+  "experiment": 0,
   "tested": 10,
   "checked": 4,
   "proven": 417
@@ -2685,7 +2685,7 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 1,
+    "experiment": 0,
     "tested": 0,
     "checked": 0,
     "proven": 102
@@ -2700,14 +2700,6 @@
      "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 22
-    },
-    {
-     "name": "bridge",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
-     "last_tested": "2026-11-11",
-     "last_tested_by": "the daily smoke test",
-     "since": "2026-11-11"
     },
     {
      "name": "file-sorter",

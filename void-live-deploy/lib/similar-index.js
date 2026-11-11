@@ -795,26 +795,6 @@ export default {
      "system plan for: automate client onboarding"
     ]
    }
-  ],
-  "reuse-tools": [
-   {
-    "name": "reuse-pack",
-    "examples": [
-     "reuse pack for client onboarding",
-     "map to existing tools: invoice reminders",
-     "what can we reuse for support tickets",
-     "use existing tools for the email triage system"
-    ]
-   },
-   {
-    "name": "connect-pack",
-    "examples": [
-     "connect pack for client onboarding",
-     "what existing tools for invoice reminders",
-     "reuse tools for the support ticket router",
-     "prefer existing tools for weekly status reports"
-    ]
-   }
   ]
  }
 };
