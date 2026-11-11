@@ -2,7 +2,7 @@
 // Exposes window.__tm for debugging and window.__tmRec for inline-stage instrumentation.
 
 import { createTmRuntime } from './time-machine-client.js';
-import { mountTimeMachineUI } from './time-machine-ui.js';
+// time-machine-ui (scrubber bar) removed: keep the engine + storage adapter + runtime instrumentation only
 import { emptyState } from './time-machine.js';
 
 function safe(fn) { try { return fn(); } catch { return undefined; } }
@@ -66,7 +66,7 @@ async function boot() {
     }
   } catch {}
 
-  try { mountTimeMachineUI(rt, { mountTo: document.body }); } catch {}
+  // scrubber bar removed; runtime + instrumentation remain (window.__tm, __tmRec, __tmProject, __tmScrubbing)
   return rt;
 }
 

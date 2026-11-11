@@ -3102,6 +3102,42 @@ say('nothing selected to remove');
     // reading them means no referent was found; one with none read means nothing was looked up (owner, 2026-10-16: tell them apart)
     let lookedIn = [];
     const lookedUp = () => (lookedIn.length ? 'none:' + lookedIn.join(',') : 'unreached');
+    function wantsTimeMachineAsk(lower) {
+      const t = String(lower || '').replace(/[?.!\s]+$/g, '').replace(/\s+/g, ' ').trim();
+      return /\btime\s*-?\s*machines?\b/.test(t);
+    }
+    async function openWorkspaceTimeMachine() {
+      try { if (globalThis.__tmReady) await globalThis.__tmReady; } catch (_) {}
+      const bar = document.getElementById('tm-bar');
+      if (!bar) { say('time machine is loading'); return false; }
+      bar.hidden = false;
+      bar.style.outline = '2px solid rgba(120,190,255,.9)';
+      bar.style.outlineOffset = '2px';
+      try { bar.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch (_) {}
+      const range = bar.querySelector('#tm-range');
+      if (range) try { range.focus({ preventScroll: true }); } catch (_) { try { range.focus(); } catch (__) {} }
+      setTimeout(() => { if (bar.isConnected) { bar.style.outline = ''; bar.style.outlineOffset = ''; } }, 1800);
+      say('workspace time machine');
+      return true;
+    }
+    function showTimeMachineDisambiguation(query) {
+      const q = String(query || 'time machine');
+      showPage((p) => {
+        p.innerHTML = '<h2>Time machine</h2>'
+          + '<p>Do you mean the time-travel concept, or Verse\'s workspace Time Machine that lets you scrub and replay this stage?</p>'
+          + '<p style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 2px">'
+          + '<button type="button" class="tr-copy" data-tm-choice="concept">Concept card (Wikipedia)</button>'
+          + '<button type="button" class="tr-copy" data-tm-choice="workspace">Workspace Time Machine (replay)</button>'
+          + '</p>'
+          + '<p style="color:#8a8a8a;font-size:13px;margin-top:8px">The concept card explains time travel. The workspace Time Machine records stage changes so you can move through the timeline, branch, and export a replay.</p>';
+        const concept = p.querySelector('[data-tm-choice="concept"]');
+        const workspace = p.querySelector('[data-tm-choice="workspace"]');
+        if (concept) concept.addEventListener('click', () => { showArticle('tell me about time machine'); });
+        if (workspace) workspace.addEventListener('click', () => { openWorkspaceTimeMachine(); });
+      });
+      say('which time machine?');
+      loopLog({ domain: 'void.page', ask: q, score: 'pass', note: 'time machine disambiguation' });
+    }
     async function showArticle(query, fromAnswer = false) {
       const topic = topicFrom(query);
       lookedIn = [];
@@ -6809,6 +6845,8 @@ say('nothing selected to remove');
         // the routing is the same once the skills are in: a skill that takes this ask replaces the calc card, if that card is still the newest ask's
         if (calcEarly) { const calcEl = vpageEl; skillsReady.then(() => (askNo === askCount && vpageEl === calcEl ? runLearnedSkills(text, lower0) : false)).catch(() => {}); }
         return; }
+      // "time machine" means either the time-travel concept or Verse's workspace replay Time Machine: disambiguate before article/skill routing
+      if (wantsTimeMachineAsk(lower0)) { showTimeMachineDisambiguation(text); return; }
       // self-first (lib/term-card.js selfPage; owner, 2026-11-06: "verse lab", "i cant find the lab anywhere"): an ask that names Verse
       // ("verse treasury", "the crew on verse") is matched against Verse's own pages before any web lookup. A match answers from that page and
       // says so; no match says Verse has no page by that name, and the web answer follows under that line. No page is invented.
