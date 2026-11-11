@@ -12,6 +12,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { WAITS as RETIRED_LABEL } from '../void-live-deploy/lib/v01d-fixes.js';
+import { checkAll, patchFor } from '../void-live-deploy/lib/sightline.js';
 import { parseShard, inShard } from './shard.mjs';
 import { applyAgent, inboxOf } from '../void-live-deploy/lib/agent-core.js';
 import { currentNav } from '../void-live-deploy/lib/verse-shell.js';
@@ -535,7 +536,27 @@ async function fresh(...inits) {
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
-  return { ctx, p, ask, state, page, whisper, errors, logs };
+  // Sightline: capture bounding boxes of the card containers and run the pure layout-constraint checks.
+  // Returns { defects, clean, patch }. Empty defects = clean layout. Pure logic lives in lib/sightline.js.
+  const sightline = async () => {
+    const snaps = await p.evaluate(() => {
+      const out = [];
+      const add = (sel, name) => {
+        for (const el of document.querySelectorAll(sel)) {
+          const r = el.getBoundingClientRect();
+          out.push({ name, box: { width: r.width, height: r.height, scrollWidth: el.scrollWidth, scrollHeight: el.scrollHeight, clientWidth: el.clientWidth, clientHeight: el.clientHeight }, itemCount: el.querySelectorAll('li').length, hasScrollContainer: el.scrollHeight > el.clientHeight && getComputedStyle(el).overflowY !== 'visible' });
+        }
+      };
+      add('.vpage.on', 'card');
+      add('.tw-crawl', 'crawl');
+      add('.tw-lacks', 'lacks');
+      add('.tw-missing', 'missing');
+      return out;
+    }).catch(() => []);
+    const r = checkAll(snaps);
+    return { ...r, patch: r.clean ? '' : patchFor(r.defects) };
+  };
+  return { ctx, p, ask, state, page, whisper, errors, logs, sightline };
 }
 
 try {
