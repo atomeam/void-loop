@@ -1,9 +1,9 @@
 // A crowd of cards, and where a flick rests. A pinned card stays unless it is off the area, overlaps another pin, or the others cannot fit.
-const HEAD = /^(?:please\s+)?(?:draw\b|make\s+(?:a\s+|me\s+)?(?:\d+\s*(?:min(?:ute)?|sec(?:ond)?)s?\s+)?(?:timer|clock|note|sticky|cartoon|list|counter)\b|(?:add\s+(?:a\s+)?)?(?:\d+\s*(?:min(?:ute)?|sec(?:ond)?)s?\s+)?(?:timer|clock|note|sticky|weather|cartoon|news|countdown|stopwatch|list|counter|joke|fact|define|convert|translate)\b)/i;
+const HEAD = /^(?:please\s+)?(?:draw\b|make\s+(?:a\s+|me\s+)?(?:\d+\s*(?:min(?:ute)?|sec(?:ond)?)s?\s+)?(?:timer|clock|note|sticky|cartoon|list|counter)\b|(?:add\s+(?:a\s+)?)?(?:\d+\s*(?:min(?:ute)?|sec(?:ond)?)s?\s+)?(?:timer|clock|note|sticky|weather|cartoon|news|countdown|stopwatch|list|counter|joke|fact|define|convert|translate|qr|contrast|password|hash|barcode|diff|markdown)\b|(?:check|generate|create|find|show|calculate|get|make)\b)/i;
 
 export function splitAsks(text) {
   const t = String(text || '').trim();
-  if (!t || t.length > 180 || /[:?]/.test(t)) return null;
+  if (!t || t.length > 180 || /\?/.test(t)) return null;
   // Shield only the prepositional "between X and Y" span so a compound prompt is not torn in half:
   // "Check the contrast ratio between #0d0d14 and #7dd3fc and generate a QR code for https://a-to-mind.com"
   // keeps the two colours together and splits only before "generate". Noun lists like "timer and draw and
@@ -12,7 +12,7 @@ export function splitAsks(text) {
   const masked = t.replace(/\b(between\s+\S+(?:\s+\S+){0,3}?)\s+and\s+(\S+)/gi, '$1' + MASK + '$2');
   const parts = masked.split(/\s+and\s+/i).map((s) => s.trim().replace(new RegExp(MASK, 'g'), ' and ')).filter(Boolean);
   if (parts.length < 2 || parts.length > 5) return null;
-  if (parts.some((p) => p.length > 42 || !HEAD.test(p))) return null;
+  if (parts.some((p) => p.length > 90 || !HEAD.test(p))) return null;
   return parts;
 }
 
