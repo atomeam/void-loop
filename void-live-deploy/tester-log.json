@@ -3,13 +3,20 @@
  "cases": 119,
  "runsTotal": 300,
  "kinds": {
-  "file": 45,
-  "visitor": 215,
+  "visitor": 216,
+  "file": 44,
   "grow": 36,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-11-11T23:27:02Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-11T22:58:25Z",
    "passed": 0,
@@ -180,36 +187,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-10T17:19:36Z",
-   "passed": 115,
-   "of": 120,
-   "kind": "grow",
-   "ms": 405,
-   "note": "new ground passed, kept as a regression case: \"credits\" (skill:faucet)",
-   "failed": [
-    {
-     "ask": "what can I buy",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "air quality in Tokyo",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "flip this card",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "can we play despacito",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    },
-    {
-     "ask": "progress report for the onboarding automation",
-     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -275,14 +252,14 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 37,
-   "passed": 462,
-   "of": 525,
-   "ms": 384
+   "runs": 36,
+   "passed": 404,
+   "of": 438,
+   "ms": 335
   },
   {
    "from": "2026-11-04",
-   "runs": 263,
+   "runs": 264,
    "passed": 6139,
    "of": 7960,
    "broken": 14,
