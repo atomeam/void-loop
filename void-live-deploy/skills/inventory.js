@@ -46,6 +46,7 @@ const WHAT = {
   'system-blueprint': 'turn a business idea into a system plan: steps, parts and who does what',
   'idea-to-system': 'a business idea made real: a plan card for a vague idea, or a system plan that builds into Verse',
   'build-world': 'build in your world: a strategy game where summons are resources and the camp builds, or a thing forged as a printable model',
+  'reuse-tools': 'reuse what exists before building: a process mapped to the tools Verse can own or connect, and which existing tools to reuse first',
   'client-handoff': 'a shareable handoff card for one system: what Verse owns and what the client keeps',
   'system-handoff': 'the handoff package for a system Verse takes on: ownership, docs and how to ask its status',
   place: 'street maps and places',
