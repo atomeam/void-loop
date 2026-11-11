@@ -6556,6 +6556,17 @@ try {
     const rec = JSON.parse(fs.readFileSync(path.join(root, 'reefwatch.json'), 'utf8')).rows.florida_keys;
     check('coral: the heat card shows the reef watch reading for the Florida Keys (level, degree heating weeks, date) under "Right now", with what 4 and 8 mean, and keeps its sourced story', /Right now/.test(got.live) && got.live.includes(rec.date) && /degree heating weeks/.test(got.live) && /4 or more/.test(got.live) && /Gene banks on land/.test(got.page) && !C.errors.length, JSON.stringify({ live: got.live.slice(0, 300), errs: C.errors }));
     await C.ctx.close(); }
+  // the coral heat-test card (think-tank row, skills/coral.js): "how do you test coral heat tolerance", "cbass coral" and "find heat tough coral" open the CBASS card with four dated sources, both preprints labelled, the link to the heat-survival card, with the network blocked.
+  if (want("the coral heat-test card (think-tank row, skills/coral.js)")) {
+    const T = await fresh(); await T.ctx.route(/^https?:\/\/(?!127\.0\.0\.1|localhost)/, (r) => r.abort());
+    const seen = [];
+    for (const a of ['how do you test coral heat tolerance', 'cbass coral', 'find heat tough coral']) {
+      await T.ask(a, 900);
+      seen.push(await T.p.evaluate(() => { const el = document.querySelector('.vpage.on'); return el ? { text: el.innerText, links: [...el.querySelectorAll('.src a')].map((x) => x.href), back: !!el.querySelector('a[data-ask="can coral survive heatwaves"]') } : { text: '', links: [], back: false }; }));
+    }
+    const ok = seen.every((g) => /How scientists find heat-tough coral before planting/.test(g.text) && /ED50/.test(g.text) && /R = 0\.74/.test(g.text) && /2,068 colonies/.test(g.text) && (g.text.match(/preprint\)/g) || []).length >= 2 && g.links.length === 4 && g.links.some((h) => h.includes('10.1002/lom3.10555')) && g.back);
+    check('coral: the heat-test card opens for each example ask offline, with four dated sources, both preprints labelled and the link to the heat-survival card', ok && !T.errors.length, JSON.stringify({ first: (seen[0] || {}).text && seen[0].text.slice(0, 200), links: seen.map((g) => g.links.length), errs: T.errors }));
+    await T.ctx.close(); }
   // routines (frontier #13, skills/routine.js): "call this my morning" keeps the asks before it, in order, in this browser; after a reload "my morning" asks them again as if typed; "my routines" lists it; "forget my morning" drops it, and then "my morning" is no longer a routine.
   if (want("routines (frontier #13, skills/routine.js): \"call this my morning\" keeps the asks before it")) {
     const R = await fresh(); await R.ask('15% tip on 80', 700); await R.ask('flip a coin', 700); await R.ask('call this my morning', 700);

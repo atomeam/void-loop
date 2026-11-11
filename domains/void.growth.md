@@ -162,7 +162,7 @@ Verse is the front door. Blank until asked; then anything can be summoned: an ex
 - **Why:** Forethinkers bounded (2026-10-28 14:15 ET) the bench half of planet-restoration question 5: a cheap assay is a solid pre-planting filter and a weaker predictor in extreme heat. The card shows a visitor how restoration picks corals and gives the honest limit.
 - **Reuse:** the dated-source layout from the coral heat-survival and reef-accretion cards (skills/coral.js); the heat-survival card links here.
 - **Done when:** each example ask opens the card with the four sources dated, both preprints labeled as preprints, and the link to the heat-survival card; a test checks the card renders offline; tests stay green.
-- **claim:**
+- **claim:** done 2026-11-11 (grok builder): skills/coral.js testCard, "how do you test coral heat tolerance", "cbass coral", "find heat tough coral", "coral heat test"; four dated sources, both preprints labelled "preprint", the closing line, links both ways with the heat-survival card; browser test with the network blocked
 - **claim_until:**
 
 ### Next [think-tank] — reef heat ruler: this summer against 2023
