@@ -1,12 +1,5 @@
 [
  {
-  "at": "2026-10-19T10:59:48Z",
-  "passed": 73,
-  "of": 74,
-  "kind": "grow",
-  "note": "new ground passed, kept as a regression case: \"arcade games\" (skill:arcade)"
- },
- {
   "at": "2026-10-20T22:41:16Z",
   "passed": 67,
   "of": 75,
@@ -8022,6 +8015,17 @@
    "correct": 15,
    "of": 15,
    "medianMs": 566,
+   "failed": []
+  },
+  "note": "visitor pass 15/15"
+ },
+ {
+  "at": "2026-11-11T22:02:48Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 15,
+   "of": 15,
+   "medianMs": 415,
    "failed": []
   },
   "note": "visitor pass 15/15"
