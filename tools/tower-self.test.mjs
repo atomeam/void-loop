@@ -21,8 +21,8 @@ test('the loop runs without Claude: its workflow and every file it runs or impor
     const src = fs.readFileSync(file, 'utf8'), lines = src.split('\n').filter((l) => CLAUDE.test(l) && !(rel === 'tools/secret-scan.mjs' && /\bsk-|style sk-|key/i.test(l))); if (lines.length) bad.push(rel + ': ' + lines[0].trim().slice(0, 80));
     if (/\.(?:mjs|js)$/.test(rel)) for (const m of src.matchAll(/(?:import\s[^'"]*?from\s*|import\s*\(\s*|^import\s*)['"](\.{1,2}\/[^'"]+)['"]/gm)) visit(path.normalize(path.join(path.dirname(rel), m[1])));
   };
-  const wf = '.github/workflows/tower-self.yml'; visit(wf);
-  for (const m of fs.readFileSync(path.join(root, wf), 'utf8').matchAll(/tools\/[\w.-]+\.(?:mjs|sh)/g)) visit(m[0]);
+  visit('tools/tower-self.mjs');
+  for (const rel of ['tools/tower-self-land.sh', 'tools/tower-self-live.mjs', 'tools/tower-self-report.sh', 'tools/tower-gate.mjs']) visit(rel);
   for (const sh of [...seen].filter((r) => r.endsWith('.sh'))) for (const m of fs.readFileSync(path.join(root, sh), 'utf8').matchAll(/tools\/[\w.-]+\.mjs/g)) visit(m[0]);
   assert.ok(seen.size > 10, 'the import graph was walked (' + seen.size + ' files)');
   assert.deepEqual(bad, [], 'files of the tower-self loop that mention Anthropic or the Claude brain');

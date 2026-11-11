@@ -1,5 +1,105 @@
 [
  {
+  "slug": "f650-image-contrast-checker",
+  "num": 650,
+  "title": "Image contrast checker",
+  "blurb": "Job: Upload a photo or screenshot; click two spots to sample the foreground and background colors.",
+  "status": "works",
+  "source": "F650-image-contrast-checker",
+  "hash": "f6fc992186b6",
+  "grade": "tool"
+ },
+ {
+  "slug": "f649-qr-code-generator",
+  "num": 649,
+  "title": "QR code generator",
+  "blurb": "Job: Type or paste any text, URL or message; instantly get a scannable QR code you can resize, recolor, download as PNG or copy as an image.",
+  "status": "works",
+  "source": "F649-qr-code-generator",
+  "hash": "370bdf7d3b9e",
+  "grade": "tool"
+ },
+ {
+  "slug": "f649-webrtc-elman-rnn-nbody-dom-swarm",
+  "num": 649,
+  "title": "Shared n-body mind swarm — Verse",
+  "blurb": "Job: Open the page in multiple tabs; local Elman RNNs control agent velocities from peer positions shared over BroadcastChannel.",
+  "status": "works",
+  "source": "F649-webrtc-elman-rnn-nbody-dom-swarm",
+  "hash": "1f9bccacec0b",
+  "grade": "tool"
+ },
+ {
+  "slug": "f648-webgpu-gray-scott-orientation-mlp-dom-portals",
+  "num": 648,
+  "title": "WebGPU Gray-Scott Orientation-MLP DOM Portals",
+  "blurb": "A previously under-used WebGPU compute kernel implements the Gray-Scott reaction-diffusion system (U and V chemical concentrations on a discrete lattice with feed",
+  "status": "works",
+  "source": "F648-webgpu-gray-scott-orientation-mlp-dom-portals",
+  "hash": "162a2414a73c",
+  "grade": "tool"
+ },
+ {
+  "slug": "f647-spatial-budget-allocator",
+  "num": 647,
+  "title": "Monthly budget allocator",
+  "blurb": "Job: Enter your monthly income and list of expense categories with amounts.",
+  "status": "works",
+  "source": "F647-spatial-budget-allocator",
+  "hash": "45b279c2207e",
+  "grade": "tool"
+ },
+ {
+  "slug": "f646-habit-tracker",
+  "num": 646,
+  "title": "Habit Tracker",
+  "blurb": "Job: A person adds daily habits, ticks them off for each day of the week, sees current streaks, and keeps the list on the device to copy or download as CSV.",
+  "status": "works",
+  "source": "F646-habit-tracker",
+  "hash": "4959323c4452",
+  "grade": "tool"
+ },
+ {
+  "slug": "f646-weighted-decision-matrix",
+  "num": 646,
+  "title": "Weighted decision matrix",
+  "blurb": "A practical offline tool that turns a set of options and weighted criteria into a clear ranked decision.",
+  "status": "works",
+  "source": "F646-weighted-decision-matrix",
+  "hash": "276d081890d5",
+  "grade": "tool"
+ },
+ {
+  "slug": "f645-text-to-flowchart-spatial",
+  "num": 645,
+  "title": "Text to flowchart",
+  "blurb": "Job: Paste or type lines like \"Start -> Check input\" and \"Valid? -> Yes -> Process\".",
+  "status": "works",
+  "source": "F645-text-to-flowchart-spatial",
+  "hash": "f219ffc64506",
+  "grade": "tool"
+ },
+ {
+  "slug": "f644-webgpu-lbm-orientation-evo-dom-fluid",
+  "num": 644,
+  "title": "WebGPU LBM Orientation Evo DOM Fluid",
+  "blurb": "A previously unused WebGPU compute kernel implements a 2D D2Q9 Lattice Boltzmann Method (LBM) with BGK collision for incompressible fluid (density and velocity",
+  "status": "works",
+  "source": "F644-webgpu-lbm-orientation-evo-dom-fluid",
+  "hash": "0a6746bdc22b",
+  "grade": "tool"
+ },
+ {
+  "slug": "f643-receipt-to-expense",
+  "num": 643,
+  "title": "Receipt to expense list",
+  "blurb": "A practical offline tool that turns a messy receipt (typed or pasted lines) into a categorized expense list with live totals.",
+  "status": "works",
+  "source": "F643-receipt-to-expense",
+  "hash": "b49867539424",
+  "grade": "tool"
+ },
+ {
   "slug": "f642-orientation-reservoir-lattice-portals",
   "num": 642,
   "title": "Orientation Reservoir Lattice Portals",

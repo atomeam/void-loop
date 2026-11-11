@@ -309,6 +309,10 @@
             "score": 100,
             "hookScore": 65,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         },
         {
@@ -324,6 +328,10 @@
             "score": 100,
             "hookScore": 90,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         },
         {
@@ -339,6 +347,10 @@
             "score": 100,
             "hookScore": 85,
             "failed": []
+          },
+          "outcome": {
+            "views": 0,
+            "clicks": 0
           }
         }
       ],
@@ -370,6 +382,82 @@
             "repeat"
           ],
           "why": "a repeat of the film about \"Russell Brand\" (20261109)"
+        }
+      ],
+      "verdict": "waiting"
+    },
+    {
+      "day": "20261110",
+      "kind": "formats",
+      "films": [
+        {
+          "format": "nature",
+          "label": "Nature-documentary parody",
+          "topic": "crwv stock",
+          "name": "crwv stock",
+          "film": "20261110-nature-crwv-stock",
+          "hook": "Nature documentary: you discovering crwv stock?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
+          "format": "lyric",
+          "label": "Lyric music video",
+          "topic": "giants trade",
+          "name": "giants trade",
+          "film": "20261110-lyric-giants-trade",
+          "hook": "Is giants trade the song of the day?",
+          "source": "Google Trends",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        },
+        {
+          "format": "news",
+          "label": "Breaking-news parody",
+          "topic": "Scene (2026 film)",
+          "name": "Scene",
+          "film": "20261110-news-scene",
+          "hook": "Why is everyone talking about Scene?",
+          "source": "Wikipedia",
+          "gate": {
+            "pass": true,
+            "score": 100,
+            "hookScore": 85,
+            "failed": []
+          }
+        }
+      ],
+      "refused": [
+        {
+          "topic": "Russell Brand",
+          "kinds": [
+            "harm",
+            "adult"
+          ],
+          "why": "about harm to people (convicted): not something to parody or make a trend film of; adult content"
+        },
+        {
+          "topic": "Ramayana: Part 1",
+          "kinds": [
+            "repeat"
+          ],
+          "why": "a repeat of the film about \"Ramayana: Part 1\" (20261109)"
+        },
+        {
+          "topic": ".xxx",
+          "kinds": [
+            "adult"
+          ],
+          "why": "adult content"
         }
       ],
       "verdict": "waiting"

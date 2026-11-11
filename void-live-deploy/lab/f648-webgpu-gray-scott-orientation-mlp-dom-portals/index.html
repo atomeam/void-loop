@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#111; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#portals { position:absolute; inset:0; pointer-events:none; }
+.portal { position:absolute; width:60px; height:60px; border-radius:50%; background:hsla(120,80%,50%,0.6); pointer-events:auto; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; text-align:center; border:2px solid #fff; transition:transform 0.1s; }
+#ui { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.7); padding:10px; border-radius:8px; z-index:10; }
+button { margin:4px; }
+#status { font-size:12px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Gray-Scott Orientation-MLP DOM Portals · Verse lab</title>
+<meta name="description" content="A previously under-used WebGPU compute kernel implements the Gray-Scott reaction-diffusion system (U and V chemical concentrations on a discrete lattice with feed">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Gray-Scott Orientation-MLP DOM Portals · Verse lab">
+<meta property="og:description" content="A previously under-used WebGPU compute kernel implements the Gray-Scott reaction-diffusion system (U and V chemical concentrations on a discrete lattice with feed">
+<meta property="og:url" content="https://a-to-mind.com/lab/f648-webgpu-gray-scott-orientation-mlp-dom-portals/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f648-webgpu-gray-scott-orientation-mlp-dom-portals/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<div id="ui">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="status">Tilt or drag to inject. Click portals for reward.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Gray-Scott Orientation-MLP DOM Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

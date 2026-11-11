@@ -18,7 +18,7 @@ const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
 const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
-export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-self.yml', 'tower-gate.yml', 'deploy.yml',
+export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-gate.yml', 'deploy.yml',
   'grow-self.yml', 'design-loop.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml', ...DAILY.map((d) => d.wf)])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
