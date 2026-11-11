@@ -501,8 +501,40 @@
  ],
  "commits": [
   {
-   "at": "2026-11-11T19:42:07Z",
-   "subject": "fix: resolve conflict markers in lab pages"
+   "at": "2026-11-11T20:06:07Z",
+   "subject": "Failed jobs read: run 43090516380 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-11T20:05:45Z",
+   "subject": "Incident: the browser suite failed on b187706f (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-11T19:55:34Z",
+   "subject": "Tower gate: travel: flightconnections.com,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-11T19:50:05Z",
+   "subject": "Failed jobs read: run 43086425963 (void-live-deploy/incidents/actions/)"
+  },
+  {
+   "at": "2026-11-11T19:49:47Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-11-11T19:49:24Z",
+   "subject": "Incident: the browser suite failed on a30724ac (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-11T19:47:58Z",
+   "subject": "Board: helper/shows-craft-6fca shipped (https://github.com/atomeam/void-loop/pull/2667)"
+  },
+  {
+   "at": "2026-11-11T19:47:45Z",
+   "subject": "A free model writes the shows, and the pictures follow the voice"
+  },
+  {
+   "at": "2026-11-11T19:45:28Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
    "at": "2026-11-11T19:41:14Z",
@@ -547,42 +579,14 @@
   {
    "at": "2026-11-11T18:51:50Z",
    "subject": "Incident: the browser suite failed on 9128f47e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-11T18:40:17Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-11-11T18:35:53Z",
-   "subject": "Verse fixes #2667"
-  },
-  {
-   "at": "2026-11-11T18:35:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-11-11T18:34:57Z",
-   "subject": "The visitor's slow card (clean sync) (#2702)"
-  },
-  {
-   "at": "2026-11-11T18:34:43Z",
-   "subject": "A free model writes Verse's shows, and a listener's scores decide what airs."
-  },
-  {
-   "at": "2026-11-11T18:32:50Z",
-   "subject": "Incident: the browser suite failed on bd3712e3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-11T18:31:20Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-11T18:24:28Z",
-   "subject": "Failed jobs read: run 43076889901 (void-live-deploy/incidents/actions/)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Verse Out Loud and the Shorts are written, voiced, judged, and one studio page…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2667."
+   },
    {
     "name": "Lists run 16 (grok-bot, 2026-11-11): the two longest browser checks get their…",
     "line": "verify.yml's slow-browser-checks job runs perf3d and glyphs on one runner each, beside the suite and the fast tests (perf3d left browser-suite shard 4, glyphs left python-tests through the void-test action's new glyphs: skip…"
@@ -602,10 +606,6 @@
    {
     "name": "before Verse ships its own change, a free model asks whether a person would…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2628."
-   },
-   {
-    "name": "suite-on-main: kept cards were the first .vpage, so sky chips, review and draw…",
-    "line": "shipped in https://github.com/atomeam/void-loop/pull/2578."
    }
   ],
   "ladders": [
@@ -760,8 +760,8 @@
   }
  ],
  "visible": {
-  "day": 14,
-  "week": 278
+  "day": 20,
+  "week": 284
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

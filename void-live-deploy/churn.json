@@ -1,28 +1,28 @@
 {
- "at": "2026-11-11T19:44:50.316Z",
+ "at": "2026-11-11T20:11:46.138Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/exam/history.json",
-   "changes": 136
+   "changes": 137
   },
   {
    "file": "void-live-deploy/exam/latest.json",
-   "changes": 136
+   "changes": 137
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-onefootball-com-c7423366.json",
-   "changes": 108
+   "changes": 109
   },
   {
    "file": "void-live-deploy/tower-evidence/sports-flashscore-com-5768738f.json",
-   "changes": 104
+   "changes": 105
   },
   {
    "file": "domains/handoff.md",
-   "changes": 85
+   "changes": 87
   },
   {
    "file": "void-live-deploy/tower-evidence/is-it-86d7a5bf.json",
@@ -30,7 +30,7 @@
   },
   {
    "file": "domains/conductor.json",
-   "changes": 49
+   "changes": 50
   },
   {
    "file": "domains/tower-self.json",
@@ -78,15 +78,15 @@
   },
   {
    "file": "domains/growth-inbox.md",
-   "changes": 24
+   "changes": 25
   },
   {
    "file": "docs/TAGTEAM.md",
-   "changes": 22
+   "changes": 23
   },
   {
    "file": "void-live-deploy/tower-evidence/travel-flightconnections-com-15042a54.json",
-   "changes": 22
+   "changes": 23
   },
   {
    "file": "void-live-deploy/tower.gone.json",
@@ -142,6 +142,14 @@
   },
   {
    "file": "tools/automerge.mjs",
+   "changes": 13
+  },
+  {
+   "file": "tools/conductor-core.mjs",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/functions/api/team.js",
    "changes": 13
   },
   {
