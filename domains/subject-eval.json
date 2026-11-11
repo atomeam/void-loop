@@ -1,5 +1,5 @@
 {
- "at": "2026-11-10T13:52:06.684Z",
+ "at": "2026-11-11T13:02:10.254Z",
  "mode": "live",
  "pass": 53,
  "total": 54,
@@ -358,7 +358,7 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": false,
+   "photo": true,
    "api": {
     "name": "World War II",
     "desc": "Global conflict from 1939 to 1945",
@@ -434,8 +434,8 @@
    "seen": {
     "called": 1,
     "failed": [
-     "http://127.0.0.1:40239/build.json?v=1794318514430 net::ERR_ABORTED",
-     "http://127.0.0.1:40239/ net::ERR_ABORTED"
+     "http://127.0.0.1:43619/build.json?v=1794401946632 net::ERR_ABORTED",
+     "http://127.0.0.1:43619/ net::ERR_ABORTED"
     ],
     "bad": [],
     "text": "HAPPY TIME HARRY CHARACTER Happy Time Harry (David Cross) – A mean, cynical, and depressed doll Frylock bought for Meatwad due to his low pr …  1 OF 9 FRESH Reply to what I said, or correct me Send Kept on this device only. My self card lists it under Correct me."
@@ -700,7 +700,7 @@
   {
    "ask": "blue whale",
    "ok": true,
-   "kind": "Creature · Show",
+   "kind": "Creature",
    "title": "Blue whale",
    "theme": "specimen",
    "photo": true,
