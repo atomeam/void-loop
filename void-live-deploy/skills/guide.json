@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
-    "proven": 76
+    "tested": 1,
+    "checked": 4,
+    "proven": 77
    },
    "from": 362,
    "to": 444
@@ -7317,8 +7317,9 @@
     "client handoff pack on onboarding flow",
     "package the handoff for the support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 396
   },
   {
@@ -8051,8 +8052,10 @@
     "how much time does Verse save me on onboarding",
     "client time saved: support router"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Asked 3 times in earnest, and never once left unanswered. This is the page of time-saved.",
+   "glow": 100,
    "n": 440
   },
   {
